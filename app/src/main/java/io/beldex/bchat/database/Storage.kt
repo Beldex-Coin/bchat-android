@@ -5,10 +5,21 @@ import android.net.Uri
 import com.beldex.libbchat.database.StorageProtocol
 import com.beldex.libbchat.messaging.calls.CallMessageType
 import com.beldex.libbchat.messaging.contacts.Contact
-import com.beldex.libbchat.messaging.jobs.*
+import com.beldex.libbchat.messaging.jobs.AttachmentUploadJob
+import com.beldex.libbchat.messaging.jobs.GroupAvatarDownloadJob
+import com.beldex.libbchat.messaging.jobs.Job
+import com.beldex.libbchat.messaging.jobs.JobQueue
+import com.beldex.libbchat.messaging.jobs.MessageReceiveJob
+import com.beldex.libbchat.messaging.jobs.MessageSendJob
 import com.beldex.libbchat.messaging.messages.control.ConfigurationMessage
 import com.beldex.libbchat.messaging.messages.control.MessageRequestResponse
-import com.beldex.libbchat.messaging.messages.signal.*
+import com.beldex.libbchat.messaging.messages.signal.IncomingEncryptedMessage
+import com.beldex.libbchat.messaging.messages.signal.IncomingGroupMessage
+import com.beldex.libbchat.messaging.messages.signal.IncomingMediaMessage
+import com.beldex.libbchat.messaging.messages.signal.IncomingTextMessage
+import com.beldex.libbchat.messaging.messages.signal.OutgoingGroupMediaMessage
+import com.beldex.libbchat.messaging.messages.signal.OutgoingMediaMessage
+import com.beldex.libbchat.messaging.messages.signal.OutgoingTextMessage
 import com.beldex.libbchat.messaging.messages.visible.Attachment
 import com.beldex.libbchat.messaging.messages.visible.Profile
 import com.beldex.libbchat.messaging.messages.visible.VisibleMessage
@@ -20,8 +31,12 @@ import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview
 import com.beldex.libbchat.messaging.sending_receiving.quotes.QuoteModel
 import com.beldex.libbchat.messaging.utilities.UpdateMessageData
 import com.beldex.libbchat.mnode.OnionRequestAPI
-import com.beldex.libbchat.utilities.*
+import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.Address.Companion.fromSerialized
+import com.beldex.libbchat.utilities.GroupRecord
+import com.beldex.libbchat.utilities.GroupUtil
+import com.beldex.libbchat.utilities.ProfileKeyUtil
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.crypto.ecc.ECKeyPair
 import com.beldex.libsignal.messages.SignalServiceAttachmentPointer
@@ -108,6 +123,19 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
     override fun updateThread(threadId: Long, unarchive: Boolean) {
         val threadDb = DatabaseComponent.get(context).threadDatabase()
         threadDb.update(threadId, unarchive)
+    }
+
+    override fun setIsBnsHolder(senderPublicKey: String, isBnsHolder: Boolean) {
+        val contactDB   = DatabaseComponent.get(context).bchatContactDatabase()
+        var contact = contactDB.getContactWithBchatID(senderPublicKey)
+        if (contact != null) {
+            contactDB.setIsBnsHolder(contact, isBnsHolder,1)
+        }else{
+            contact = Contact(senderPublicKey)
+            contact.threadID = DatabaseComponent.get(context).storage().getThreadId(senderPublicKey)
+            contact.isBnsHolder = isBnsHolder
+            contactDB.setContact(contact)
+        }
     }
 
     override fun persist(message: VisibleMessage, quotes: QuoteModel?, linkPreview: List<LinkPreview?>, groupPublicKey: String?, openGroupID: String?, attachments: List<Attachment>,runIncrement:Boolean,runThreadUpdate:Boolean): Long? {
@@ -839,5 +867,9 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
     override fun blockedContacts(): List<Recipient> {
         val recipientDb = DatabaseComponent.get(context).recipientDatabase()
         return recipientDb.blockedContacts
+    }
+
+    override fun getIsBnsHolder():String? {
+        return TextSecurePreferences.getIsBNSHolder(context)
     }
 }

@@ -10,9 +10,6 @@ import androidx.annotation.Nullable;
 import io.beldex.bchat.crypto.AttachmentSecret;
 import io.beldex.bchat.crypto.ClassicDecryptingPartInputStream;
 import io.beldex.bchat.crypto.ModernDecryptingPartInputStream;
-import io.beldex.bchat.crypto.AttachmentSecret;
-import io.beldex.bchat.crypto.ClassicDecryptingPartInputStream;
-import io.beldex.bchat.crypto.ModernDecryptingPartInputStream;
 import com.beldex.libbchat.utilities.Util;
 
 import java.io.File;

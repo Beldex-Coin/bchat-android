@@ -21,9 +21,9 @@ import javax.inject.Inject
 
 
 class AddressBookAdapter(
-        private val context: Context,
-        private val glide: GlideRequests,
-        val listener: AddressBookActivity
+    private val context: Context,
+    private val glide: GlideRequests,
+    val listener: AddressBookActivity
 ) : RecyclerView.Adapter<AddressBookAdapter.ViewHolder>() {
     var members = listOf<String>()
         set(value) {

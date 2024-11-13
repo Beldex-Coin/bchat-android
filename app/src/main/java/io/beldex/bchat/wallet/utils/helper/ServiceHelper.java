@@ -1,7 +1,5 @@
 package io.beldex.bchat.wallet.utils.helper;
 
-import io.beldex.bchat.wallet.service.exchange.ExchangeApi;
-import io.beldex.bchat.wallet.service.exchange.krakenEcb.ExchangeApiImpl;
 import io.beldex.bchat.model.NetworkType;
 import io.beldex.bchat.model.WalletManager;
 import io.beldex.bchat.util.OkHttpHelper;
@@ -22,6 +20,6 @@ public class ServiceHelper {
     }
 
     static public ExchangeApi getExchangeApi() {
-        return new ExchangeApiImpl(OkHttpHelper.getOkHttpClient());
+        return new io.beldex.bchat.wallet.service.exchange.krakenEcb.ExchangeApiImpl(OkHttpHelper.getOkHttpClient());
     }
 }

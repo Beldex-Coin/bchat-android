@@ -9,6 +9,13 @@
     android:elevation="4dp"
     android:padding="32dp">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_seed_warning"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="@string/dialog_send_seed_explanation" />
+
     <TextView
         android:fontFamily="@font/open_sans_bold"
         android:id="@+id/openURLTitleTextView"
@@ -16,18 +23,17 @@
         android:layout_height="wrap_content"
         android:text="@string/dialog_send_seed_title"
         android:textColor="@color/text"
-        android:textStyle="bold"
-        android:textSize="@dimen/large_font_size" />
+        android:textSize="16sp" />
 
     <TextView
-        android:fontFamily="@font/open_sans_medium"
+        android:fontFamily="@font/open_sans_regular"
         android:id="@+id/openURLExplanationTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/large_spacing"
+        android:layout_marginTop="@dimen/medium_spacing"
         android:text="@string/dialog_send_seed_explanation"
         android:paddingHorizontal="@dimen/medium_spacing"
-        android:textColor="@color/text"
+        android:textColor="@color/edit_text_title"
         android:textSize="@dimen/small_font_size"
         android:textAlignment="center" />
 
@@ -38,20 +44,26 @@
         android:orientation="horizontal">
 
         <Button
-            style="@style/Widget.Bchat.Button.Dialog.Unimportant"
+            style="@style/Widget.Bchat.Button.Dialog.Cancel"
             android:id="@+id/cancelButton"
             android:layout_width="0dp"
-            android:layout_height="@dimen/small_button_height"
+            android:layout_height="@dimen/medium_button_height"
+            android:textSize="14sp"
             android:layout_weight="1"
+            android:layout_marginBottom="3dp"
             android:text="@string/cancel" />
 
         <Button
-            style="@style/Widget.Bchat.Button.Dialog.Destructive"
+            style="@style/Widget.Bchat.Button.Dialog.Enable"
             android:id="@+id/sendSeedButton"
             android:layout_width="0dp"
-            android:layout_height="@dimen/small_button_height"
+            android:layout_height="@dimen/medium_button_height"
             android:layout_weight="1"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:elevation="4dp"
             android:layout_marginStart="@dimen/medium_spacing"
+            android:layout_marginBottom="3dp"
             android:text="@string/dialog_send_seed_send_button_title" />
 
     </LinearLayout>

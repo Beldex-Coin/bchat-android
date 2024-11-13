@@ -13,10 +13,6 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import io.beldex.bchat.home.HomeActivity;
-import io.beldex.bchat.notifications.NotificationChannels;
-import io.beldex.bchat.home.HomeActivity;
-import io.beldex.bchat.notifications.NotificationChannels;
-import io.beldex.bchat.home.HomeActivity;
 import com.beldex.libsignal.utilities.Log;
 import io.beldex.bchat.notifications.NotificationChannels;
 import com.beldex.libsignal.utilities.guava.Preconditions;

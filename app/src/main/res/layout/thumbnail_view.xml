@@ -15,7 +15,7 @@
         android:clickable="false"
         android:longClickable="false"
         android:scaleType="fitCenter"
-        android:padding="3dp"
+        app:shapeAppearanceOverlay="@style/roundedCornersImageView"
         android:contentDescription="@string/conversation_item__mms_image_description" />
 
     <ProgressBar
@@ -39,7 +39,6 @@
         android:id="@+id/play_overlay"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:background="@drawable/circle_white"
         android:layout_gravity="center"
         android:longClickable="false"
         android:visibility="gone">

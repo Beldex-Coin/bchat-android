@@ -75,7 +75,7 @@ public class FingerprintUiHelper extends FingerprintManager.AuthenticationCallba
      */
     private final TextView mErrorTextView;
     /**
-     * The {@link FingerprintUiHelper.Callback} used to return success or error.
+     * The {@link io.beldex.bchat.wallet.utils.pincodeview.managers.FingerprintUiHelper.Callback} used to return success or error.
      */
     private final Callback mCallback;
     /**

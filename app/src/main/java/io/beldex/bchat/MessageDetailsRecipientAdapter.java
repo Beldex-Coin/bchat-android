@@ -10,8 +10,6 @@ import androidx.annotation.NonNull;
 
 
 import io.beldex.bchat.database.model.MessageRecord;
-import io.beldex.bchat.mms.GlideRequests;
-import io.beldex.bchat.database.model.MessageRecord;
 import io.beldex.bchat.contacts.UserView;
 import io.beldex.bchat.mms.GlideRequests;
 import com.beldex.libbchat.utilities.recipients.Recipient;
@@ -25,7 +23,7 @@ class MessageDetailsRecipientAdapter extends BaseAdapter implements AbsListView.
 
   private final Context                       context;
   private final GlideRequests glideRequests;
-  private final MessageRecord record;
+  private final MessageRecord                 record;
   private final List<RecipientDeliveryStatus> members;
   private final boolean                       isPushGroup;
 

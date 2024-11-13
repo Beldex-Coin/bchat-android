@@ -3,20 +3,17 @@ package io.beldex.bchat.groups
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.groupSizeLimit
 import com.beldex.libbchat.messaging.sending_receiving.notifications.PushNotificationAPI.context
@@ -33,7 +30,9 @@ import io.beldex.bchat.mms.GlideApp
 import io.beldex.bchat.util.Helper
 import io.beldex.bchat.util.fadeIn
 import io.beldex.bchat.util.fadeOut
+import io.beldex.bchat.wallet.CheckOnline
 import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ActivityEditClosedGroupBinding
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.failUi
@@ -56,6 +55,8 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
     private lateinit var groupID: String
     private lateinit var originalName: String
     private lateinit var name: String
+    private lateinit var groupRecipientID: String
+    private val glide by lazy { GlideApp.with(this) }
 
     private var isEditingName = false
         set(value) {
@@ -71,26 +72,22 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
             EditClosedGroupMembersAdapter(this, GlideApp.with(this), isSelfAdmin)
     }
 
-    private lateinit var mainContentContainer: LinearLayout
-    private lateinit var cntGroupNameEdit: LinearLayout
-    private lateinit var cntGroupNameDisplay: LinearLayout
-    private lateinit var edtGroupName: EditText
-    private lateinit var emptyStateContainer: LinearLayout
-    private lateinit var lblGroupNameDisplay: TextView
-    private lateinit var loaderContainer: View
+    private lateinit var binding: ActivityEditClosedGroupBinding
 
     companion object {
         @JvmStatic val groupIDKey = "groupIDKey"
+        @JvmStatic val recipient = "recipient"
         private val loaderID = 0
         val addUsersRequestCode = 124
         val legacyGroupSizeLimit = 10
     }
+    var applyChangesButtonLastClickTime: Long = 0
 
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
         super.onCreate(savedInstanceState, isReady)
-        setContentView(R.layout.activity_edit_closed_group)
-
+        binding = ActivityEditClosedGroupBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         supportActionBar!!.setHomeAsUpIndicator(
                 ThemeUtil.getThemedDrawableResId(this, R.attr.actionModeCloseDrawable))
 
@@ -101,32 +98,54 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
 
         name = originalName
 
-        mainContentContainer = findViewById(R.id.mainContentContainer)
-        cntGroupNameEdit = findViewById(R.id.cntGroupNameEdit)
-        cntGroupNameDisplay = findViewById(R.id.cntGroupNameDisplay)
-        edtGroupName = findViewById(R.id.edtGroupName)
-        emptyStateContainer = findViewById(R.id.emptyStateContainer)
-        lblGroupNameDisplay = findViewById(R.id.lblGroupNameDisplay)
-        loaderContainer = findViewById(R.id.loaderContainer)
 
-        findViewById<View>(R.id.addMembersClosedGroupButton).setOnClickListener {
+
+
+        binding.addMembersClosedGroupButton.setOnClickListener {
             onAddMembersClick()
         }
-
-        findViewById<RecyclerView>(R.id.rvUserList).apply {
+        binding.rvUserList.apply {
             adapter = memberListAdapter
             layoutManager = LinearLayoutManager(this@EditClosedGroupActivity)
         }
 
-        lblGroupNameDisplay.text = originalName
-        cntGroupNameDisplay.setOnClickListener { isEditingName = true }
-        findViewById<View>(R.id.btnCancelGroupNameEdit).setOnClickListener { isEditingName = false }
-        findViewById<View>(R.id.btnSaveGroupNameEdit).setOnClickListener { saveName() }
-        edtGroupName.setImeActionLabel(getString(R.string.save), EditorInfo.IME_ACTION_DONE)
-        edtGroupName.setOnEditorActionListener { _, actionId, _ ->
+       val recipient =  Recipient.from(
+                context,
+                Address.fromSerialized(groupID), false)
+        binding.profilePictureView.root.glide = glide
+        binding.profilePictureView.root.update(recipient, fromEditGroup = true)
+
+
+        binding.lblGroupNameDisplay.text = originalName
+        binding.lblGroupNameDisplay.setOnClickListener {
+            if (checkIsOnline()) {
+                isEditingName = true
+            }
+        }
+        binding.btnCancelGroupNameEdit.setOnClickListener{
+            isEditingName = false
+        }
+        binding.btnSaveGroupNameEdit.setOnClickListener{
+            if (checkIsOnline()) {
+                saveName()
+            }
+        }
+        binding.applyChangesBtn.setOnClickListener {
+            if (checkIsOnline()) {
+                if (SystemClock.elapsedRealtime() - applyChangesButtonLastClickTime >= 1000) {
+                    applyChangesButtonLastClickTime = SystemClock.elapsedRealtime()
+                    commitChanges()
+                }
+            }
+        }
+
+        binding.edtGroupName.setImeActionLabel(getString(R.string.save), EditorInfo.IME_ACTION_DONE)
+        binding.edtGroupName.setOnEditorActionListener { _, actionId, _ ->
             when (actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
-                    saveName()
+                    if (checkIsOnline()) {
+                        saveName()
+                    }
                     return@setOnEditorActionListener true
                 }
                 else -> return@setOnEditorActionListener false
@@ -159,6 +178,19 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         })
     }
 
+    private fun checkIsOnline():Boolean{
+        return if(CheckOnline.isOnline(this)){
+            true
+        }else{
+            Toast.makeText(
+                this,
+                R.string.please_check_your_internet_connection,
+                Toast.LENGTH_SHORT
+            ).show()
+            false
+        }
+    }
+
     override fun onPause() {
         super.onPause()
         Helper.hideKeyboard(this)
@@ -166,7 +198,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        edtGroupName.isFocusable = false
+        binding.edtGroupName.isFocusable = false
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -191,16 +223,16 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
     }
 
     private fun handleIsEditingNameChanged() {
-        cntGroupNameEdit.visibility = if (isEditingName) View.VISIBLE else View.INVISIBLE
-        cntGroupNameDisplay.visibility = if (isEditingName) View.INVISIBLE else View.VISIBLE
+        binding.cntGroupNameEdit.visibility = if (isEditingName) View.VISIBLE else View.INVISIBLE
+        binding.cntGroupNameDisplay.visibility = if (isEditingName) View.INVISIBLE else View.VISIBLE
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (isEditingName) {
-            edtGroupName.setText(name)
-            edtGroupName.selectAll()
-            edtGroupName.requestFocus()
-            inputMethodManager.showSoftInput(edtGroupName, 0)
+            binding.edtGroupName.setText(name)
+            binding.edtGroupName.selectAll()
+            binding.edtGroupName.requestFocus()
+            inputMethodManager.showSoftInput(binding.edtGroupName, 0)
         } else {
-            inputMethodManager.hideSoftInputFromWindow(edtGroupName.windowToken, 0)
+            inputMethodManager.hideSoftInputFromWindow(binding.edtGroupName.windowToken, 0)
         }
     }
 
@@ -208,8 +240,8 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         memberListAdapter.setMembers(allMembers)
         memberListAdapter.setZombieMembers(zombies)
 
-        mainContentContainer.visibility = if (allMembers.isEmpty()) View.GONE else View.VISIBLE
-        emptyStateContainer.visibility = if (allMembers.isEmpty()) View.VISIBLE else View.GONE
+        binding.mainContentContainer.visibility = if (allMembers.isEmpty()) View.GONE else View.VISIBLE
+        binding.emptyStateContainer.visibility = if (allMembers.isEmpty()) View.VISIBLE else View.GONE
 
         invalidateOptionsMenu()
     }
@@ -218,7 +250,10 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
     // region Interaction
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_apply -> if (!isLoading) { commitChanges() }
+            R.id.action_apply -> if (!isLoading) {
+                onAddMembersClick()
+                //commitChanges()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -237,10 +272,12 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
 //            }.show()
         val bottomSheet = ClosedGroupEditingOptionsBottomSheet()
         bottomSheet.onRemoveTapped = {
-            if (zombies.contains(member)) zombies.remove(member)
-            else members.remove(member)
-            updateMembers()
-            bottomSheet.dismiss()
+            if (checkIsOnline()) {
+                if (zombies.contains(member)) zombies.remove(member)
+                else members.remove(member)
+                updateMembers()
+                bottomSheet.dismiss()
+            }
         }
         bottomSheet.show(supportFragmentManager, "GroupEditingOptionsBottomSheet")
     }
@@ -267,15 +304,18 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
     }
 
     private fun saveName() {
-        val name = edtGroupName.text.toString().trim()
+        val name = binding.edtGroupName.text.toString().trim()
         if (name.isEmpty()) {
             return Toast.makeText(this, R.string.activity_edit_closed_group_group_name_missing_error, Toast.LENGTH_SHORT).show()
         }
-        if (name.length >= 64) {
+        if (name.length >= 26) {
             return Toast.makeText(this, R.string.activity_edit_closed_group_group_name_too_long_error, Toast.LENGTH_SHORT).show()
         }
+        if(name == originalName){
+            return Toast.makeText(this, R.string.activity_edit_closed_group_group_name_same_name_error,Toast.LENGTH_SHORT).show()
+        }
         this.name = name
-        lblGroupNameDisplay.text = name
+        binding.lblGroupNameDisplay.text = name
         hasNameChanged = true
         isEditingName = false
     }
@@ -325,7 +365,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
 
         if (isClosedGroup) {
             isLoading = true
-            loaderContainer.fadeIn()
+            binding.loaderContainer.fadeIn()
             val promise: Promise<Any, Exception> = if (!members.contains(Recipient.from(this, Address.fromSerialized(userPublicKey), false))) {
                 MessageSender.explicitLeave(groupPublicKey!!, true)
             } else {
@@ -342,13 +382,13 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
                 }
             }
             promise.successUi {
-                loaderContainer.fadeOut()
+                binding.loaderContainer.fadeOut()
                 isLoading = false
                 finish()
             }.failUi { exception ->
                 val message = if (exception is MessageSender.Error) exception.description else "An error occurred"
                 Toast.makeText(this@EditClosedGroupActivity, message, Toast.LENGTH_LONG).show()
-                loaderContainer.fadeOut()
+                binding.loaderContainer.fadeOut()
                 isLoading = false
             }
         }

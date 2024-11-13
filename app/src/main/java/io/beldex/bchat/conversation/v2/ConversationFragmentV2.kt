@@ -23,16 +23,18 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.os.Parcel
-import android.os.Parcelable
+import android.telephony.PhoneStateListener
 import android.telephony.TelephonyCallback
 import android.telephony.TelephonyManager
+import android.text.Editable
 import android.text.Html
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.util.Log
 import android.util.Pair
 import android.util.TypedValue
@@ -44,6 +46,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -55,6 +58,7 @@ import androidx.annotation.DimenRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -67,17 +71,6 @@ import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.annimon.stream.Stream
-import io.beldex.bchat.conversation.v2.input_bar.mentions.MentionCandidatesView
-import io.beldex.bchat.wallet.CheckOnline
-import io.beldex.bchat.wallet.send.SendFailedDialog
-import io.beldex.bchat.conversation.v2.ConversationViewModel
-import io.beldex.bchat.conversation.v2.input_bar.InputBarButton
-import io.beldex.bchat.conversation.v2.input_bar.InputBarDelegate
-import io.beldex.bchat.conversation.v2.input_bar.InputBarRecordingViewDelegate
-import io.beldex.bchat.crypto.MnemonicUtilities
-import io.beldex.bchat.util.toPx
-import io.beldex.bchat.webrtc.CallViewModel
-import io.beldex.bchat.webrtc.NetworkChangeReceiver
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.messaging.jobs.AttachmentDownloadJob
 import com.beldex.libbchat.messaging.jobs.JobQueue
@@ -107,14 +100,15 @@ import com.beldex.libsignal.utilities.ListenableFuture
 import com.beldex.libsignal.utilities.guava.Optional
 import com.beldex.libsignal.utilities.hexEncodedPrivateKey
 import io.beldex.bchat.ApplicationContext
-import io.beldex.bchat.ExpirationDialog
 import io.beldex.bchat.audio.AudioRecorder
-import io.beldex.bchat.calls.WebRtcCallActivity
 import io.beldex.bchat.contacts.SelectContactsActivity
 import io.beldex.bchat.contactshare.SimpleTextWatcher
-import io.beldex.bchat.conversation.v2.dialogs.BlockedDialog
 import io.beldex.bchat.conversation.v2.dialogs.LinkPreviewDialog
 import io.beldex.bchat.conversation.v2.dialogs.SendSeedDialog
+import io.beldex.bchat.conversation.v2.input_bar.InputBarButton
+import io.beldex.bchat.conversation.v2.input_bar.InputBarDelegate
+import io.beldex.bchat.conversation.v2.input_bar.InputBarRecordingViewDelegate
+import io.beldex.bchat.conversation.v2.input_bar.mentions.MentionCandidatesView
 import io.beldex.bchat.conversation.v2.menus.ConversationActionModeCallback
 import io.beldex.bchat.conversation.v2.menus.ConversationActionModeCallbackDelegate
 import io.beldex.bchat.conversation.v2.menus.ConversationMenuHelper
@@ -127,6 +121,7 @@ import io.beldex.bchat.conversation.v2.utilities.MentionManagerUtilities
 import io.beldex.bchat.conversation.v2.utilities.MentionUtilities
 import io.beldex.bchat.conversation.v2.utilities.ResendMessageUtilities
 import io.beldex.bchat.crypto.IdentityKeyUtil
+import io.beldex.bchat.crypto.MnemonicUtilities
 import io.beldex.bchat.data.NodeInfo
 import io.beldex.bchat.data.PendingTx
 import io.beldex.bchat.data.TxData
@@ -134,10 +129,14 @@ import io.beldex.bchat.data.UserNotes
 import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.database.model.MmsMessageRecord
+import io.beldex.bchat.database.model.ThreadRecord
 import io.beldex.bchat.delegates.WalletDelegates
 import io.beldex.bchat.delegates.WalletDelegatesImpl
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.giph.ui.GiphyActivity
+import io.beldex.bchat.home.ConversationActionDialog
+import io.beldex.bchat.home.HomeActivity
+import io.beldex.bchat.home.HomeDialogType
 import io.beldex.bchat.home.HomeFragment
 import io.beldex.bchat.linkpreview.LinkPreviewRepository
 import io.beldex.bchat.linkpreview.LinkPreviewUtil
@@ -155,6 +154,8 @@ import io.beldex.bchat.mms.VideoSlide
 import io.beldex.bchat.model.AsyncTaskCoroutine
 import io.beldex.bchat.model.PendingTransaction
 import io.beldex.bchat.model.Wallet
+import io.beldex.bchat.onboarding.ui.EXTRA_PIN_CODE_ACTION
+import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.preferences.PrivacySettingsActivity
 import io.beldex.bchat.service.WebRtcCallService
@@ -170,22 +171,29 @@ import io.beldex.bchat.util.isValidString
 import io.beldex.bchat.util.parcelable
 import io.beldex.bchat.util.slidetoact.SlideToActView
 import io.beldex.bchat.util.slidetoact.SlideToActView.OnSlideCompleteListener
+import io.beldex.bchat.util.toPx
+import io.beldex.bchat.wallet.CheckOnline
 import io.beldex.bchat.wallet.OnBackPressedListener
+import io.beldex.bchat.wallet.send.SendFailedDialog
 import io.beldex.bchat.wallet.send.interfaces.SendConfirm
 import io.beldex.bchat.wallet.utils.pincodeview.CustomPinActivity
-import io.beldex.bchat.wallet.utils.pincodeview.managers.AppLock
 import io.beldex.bchat.wallet.utils.pincodeview.managers.LockManager
+import io.beldex.bchat.webrtc.CallViewModel
+import io.beldex.bchat.webrtc.NetworkChangeReceiver
+import io.beldex.bchat.webrtc.WebRTCComposeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentConversationV2Binding
 import io.beldex.bchat.databinding.ViewVisibleMessageBinding
-import io.beldex.bchat.home.HomeActivity
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import nl.komponents.kovenant.ui.successUi
+import org.apache.commons.lang3.time.DurationFormatUtils
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
@@ -194,6 +202,7 @@ import java.text.NumberFormat
 import java.util.Locale
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executor
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
@@ -212,7 +221,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     ConversationActionModeCallbackDelegate, VisibleMessageContentViewDelegate,
     RecipientModifiedListener,
     SearchBottomBar.EventListener, LoaderManager.LoaderCallbacks<Cursor>,
-    ConversationMenuHelper.ConversationMenuListener, OnBackPressedListener,SendConfirm, WalletDelegates by WalletDelegatesImpl() {
+    ConversationMenuHelper.ConversationMenuListener, OnBackPressedListener,SendConfirm, ConversationActionDialog.ConversationActionDialogListener,
+    WalletDelegates by WalletDelegatesImpl() {
 
     private var param2: String? = null
 
@@ -221,15 +231,17 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private val screenWidth = Resources.getSystem().displayMetrics.widthPixels
     private val linkPreviewViewModel: LinkPreviewViewModel by lazy {
         ViewModelProvider(
-                this, LinkPreviewViewModel.Factory(
+            this, LinkPreviewViewModel.Factory(
                 LinkPreviewRepository(requireActivity())
-        )
+            )
         )[LinkPreviewViewModel::class.java]
     }
 
-    //    var threadId: Long? = -1L
+//    var threadId: Long? = -1L
     @Inject
     lateinit var threadDb: ThreadDatabase
+
+    lateinit var threadRecord : ThreadRecord
 
     private val viewModel: ConversationViewModel by viewModels {
         var threadId = requireArguments().getLong(THREAD_ID,-1L)
@@ -243,7 +255,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun callViewModel():Recipient?{
-        val viewModels: ConversationViewModel by viewModels {
+         val viewModels: ConversationViewModel by viewModels {
             var threadId = requireArguments().getLong(THREAD_ID,-1L)
             if (threadId == -1L) {
                 requireArguments().parcelable<Address>(ADDRESS)?.let { address ->
@@ -277,8 +289,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private val stopVoiceMessageRecordingTask = Runnable { sendVoiceMessage() }
     private val attachmentManager by lazy {
         AttachmentManager(
-                requireActivity(),
-                this
+            requireActivity(),
+            this
         )
     }
     private var isLockViewExpanded = false
@@ -305,17 +317,17 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     private val seed by lazy {
         var hexEncodedSeed =
-                IdentityKeyUtil.retrieve(requireActivity(), IdentityKeyUtil.BELDEX_SEED)
+            IdentityKeyUtil.retrieve(requireActivity(), IdentityKeyUtil.BELDEX_SEED)
         if (hexEncodedSeed == null) {
             hexEncodedSeed =
-                    IdentityKeyUtil.getIdentityKeyPair(requireActivity()).hexEncodedPrivateKey // Legacy account
+                IdentityKeyUtil.getIdentityKeyPair(requireActivity()).hexEncodedPrivateKey // Legacy account
         }
         val loadFileContents: (String) -> String = { fileName ->
             MnemonicUtilities.loadFileContents(requireActivity(), fileName)
         }
         MnemonicCodec(loadFileContents).encode(
-                hexEncodedSeed!!,
-                MnemonicCodec.Language.Configuration.english
+            hexEncodedSeed!!,
+            MnemonicCodec.Language.Configuration.english
         )
     }
 
@@ -323,78 +335,94 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private val adapter by lazy {
         val cursor = viewModel.getConversationsCursor()
         val adapter = ConversationAdapter(
-                requireActivity(),
-                cursor,
-                onItemPress = { message, position, view, event ->
-                    handlePress(message, position, view, event)
-                },
-                onItemSwipeToReply = { message, position ->
+            requireActivity(),
+            cursor,
+            onItemPress = { message, position, view, event ->
+                handlePress(message, position, view, event)
+            },
+            onItemSwipeToReply = { message, position ->
+                if(isSecretGroupIsActive()) {
                     handleSwipeToReply(message, position)
-                },
-                onItemLongPress = { message, position ->
+                }
+            },
+            onItemLongPress = { message, position ->
+                if(isSecretGroupIsActive()){
                     handleLongPress(message, position)
-                },
-                onDeselect = { message, position ->
-                    actionMode?.let {
-                        onDeselect(message, position, it)
-                    }
-                },
-                onAttachmentNeedsDownload = { attachmentId, mmsId ->
-                    // Start download (on IO thread)
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        JobQueue.shared.add(AttachmentDownloadJob(attachmentId, mmsId))
-                    }
-                },
-                glide = glide,
-                lifecycleCoroutineScope = lifecycleScope
+                }
+            },
+            onDeselect = { message, position ->
+                actionMode?.let {
+                    onDeselect(message, position, it)
+                }
+            },
+            onAttachmentNeedsDownload = { attachmentId, mmsId ->
+                // Start download (on IO thread)
+                lifecycleScope.launch(Dispatchers.IO) {
+                    JobQueue.shared.add(AttachmentDownloadJob(attachmentId, mmsId))
+                }
+            },
+            glide = glide,
+            lifecycleCoroutineScope = lifecycleScope
         )
         adapter.visibleMessageContentViewDelegate = this
         adapter
+    }
+
+    fun isSecretGroupIsActive():Boolean {
+        val recipient = viewModel.recipient.value
+        return if (recipient != null && recipient.isClosedGroupRecipient && mContext != null) {
+            val group = viewModel.getGroup(recipient)
+            val isActive = (group?.isActive == true)
+            isActive
+        } else {
+            true
+        }
     }
 
     private val glide by lazy { GlideApp.with(this) }
     private val lockViewHitMargin by lazy { toPx(40, resources) }
     private val gifButton by lazy {
         InputBarButton(
-                requireActivity(),
-                R.drawable.ic_gif,
-                hasOpaqueBackground = false,
-                isGIFButton = true
+            requireActivity(),
+            R.drawable.ic_gif,
+            hasOpaqueBackground = false,
+            isGIFButton = true
         )
     }
     private val documentButton by lazy {
         InputBarButton(
-                requireActivity(),
-                R.drawable.ic_document,
-                hasOpaqueBackground = false
+            requireActivity(),
+            R.drawable.ic_document,
+            hasOpaqueBackground = false
         )
     }
     private val libraryButton by lazy {
         InputBarButton(
-                requireActivity(),
-                R.drawable.ic_gallery,
-                hasOpaqueBackground = false
+            requireActivity(),
+            R.drawable.ic_gallery,
+            hasOpaqueBackground = false
         )
     }
     private val cameraButton by lazy {
         InputBarButton(
-                requireActivity(),
-                R.drawable.ic_camera,
-                hasOpaqueBackground = false
+            requireActivity(),
+            R.drawable.ic_camera,
+            hasOpaqueBackground = false
         )
     }
     private val messageToScrollTimestamp = AtomicLong(-1)
     private val messageToScrollAuthor = AtomicReference<Address?>(null)
+    private var amplitudeJob: Job? = null
 
     companion object {
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-                ConversationFragmentV2().apply {
-                    arguments = Bundle().apply {
-                        putString(ARG_PARAM1, param1)
-                        putString(ARG_PARAM2, param2)
-                    }
+            ConversationFragmentV2().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_PARAM1, param1)
+                    putString(ARG_PARAM2, param2)
                 }
+            }
 
         // Extras
         const val THREAD_ID = "thread_id"
@@ -403,6 +431,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         const val SCROLL_MESSAGE_AUTHOR = "scroll_message_author"
         const val HEX_ENCODED_PUBLIC_KEY="hex_encode_public_key"
         const val BNS_NAME ="bns_name"
+        const val ACTIVITY_TYPE = "activity_type"
         //Shortcut launcher
         const val SHORTCUT_LAUNCHER ="shortcut_launcher"
         //SetDataAndType
@@ -441,7 +470,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private var committedTx: PendingTx? = null
 
     private var syncText: String? = null
-    private var syncProgress = -1
+    private var syncProgress = 4f//-1
     private var firstBlock: Long = 0
     private var balance: Long = 0
     private val formatter = NumberFormat.getInstance()
@@ -459,6 +488,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private var isNetworkAvailable = true
     private var callViewModel : CallViewModel? =null
     private var bns_Name : String? = null
+    private val callDurationFormat = "HH:mm:ss"
+    private var uiJob: Job? = null
 
 
     interface Listener {
@@ -494,8 +525,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentConversationV2Binding.inflate(inflater, container, false)
@@ -509,11 +540,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         audioRecorder = AudioRecorder(requireActivity().applicationContext)
 
 //        val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
+        callViewModel = ViewModelProvider(requireActivity())[CallViewModel::class.java]
         lifecycleScope.launch {
             viewModel.backToHome.collectLatest {
                 if (it) {
                     Toast.makeText(requireActivity(), "This thread has been deleted.", Toast.LENGTH_LONG)
-                            .show()
+                        .show()
                     backToHome()
                 }
             }
@@ -535,7 +567,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             unreadCount = viewModel.getUnreadCount()
             withContext(Dispatchers.Main) {
                 setUpRecyclerView()
-                setUpTypingObserver(viewModel.recipient.value!!)
+                viewModel.recipient.value?.let { recipient ->
+                    setUpTypingObserver(recipient)
+                }
                 setUpRecipientObserver()
                 getLatestOpenGroupInfoIfNeeded()
                 setUpSearchResultObserver()
@@ -579,6 +613,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         showOrHideInputIfNeeded()
         /*Hales63*/
         setUpMessageRequestsBar()
+        setSearchView()
 
 
 //        viewModel.recipient.value?.let { recipient ->
@@ -609,8 +644,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
         if (listenerCallback!!.getNode() == null) {
             setProgress(getString(R.string.failed_to_connect_to_node))
-            setProgress(101)
-            binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,true,valueOfWallet)
+            setProgress(2f)
+            binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,true,valueOfWallet,2f)
         }
 
 
@@ -622,9 +657,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                         when {
                             syncText != getString(R.string.status_synchronized) -> {
                                 Toast.makeText(
-                                        requireActivity(),
-                                        "Blocks are syncing wait until your wallet is fully synchronized",
-                                        Toast.LENGTH_SHORT
+                                    requireActivity(),
+                                    "Blocks are syncing wait until your wallet is fully synchronized",
+                                    Toast.LENGTH_SHORT
                                 ).show()
                             }
                             senderBeldexAddress == null || senderBeldexAddress!!.isEmpty() -> {
@@ -635,23 +670,23 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                                             sendBDX()
                                         } else {
                                             Toast.makeText(
-                                                    requireActivity(),
-                                                    R.string.beldex_amount_valid_error_message,
-                                                    Toast.LENGTH_SHORT
+                                                requireActivity(),
+                                                R.string.beldex_amount_valid_error_message,
+                                                Toast.LENGTH_SHORT
                                             ).show()
                                         }
                                     } else {
                                         Toast.makeText(
-                                                requireActivity(),
-                                                R.string.invalid_destination_address,
-                                                Toast.LENGTH_SHORT
+                                            requireActivity(),
+                                            R.string.invalid_destination_address,
+                                            Toast.LENGTH_SHORT
                                         ).show()
                                     }
                                 } else {
                                     Toast.makeText(
-                                            requireActivity(),
-                                            R.string.invalid_destination_address,
-                                            Toast.LENGTH_SHORT
+                                        requireActivity(),
+                                        R.string.invalid_destination_address,
+                                        Toast.LENGTH_SHORT
                                     ).show()
                                 }
                             }
@@ -660,18 +695,18 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                             }
                             else -> {
                                 Toast.makeText(
-                                        requireActivity(),
-                                        R.string.beldex_amount_valid_error_message,
-                                        Toast.LENGTH_SHORT
+                                    requireActivity(),
+                                    R.string.beldex_amount_valid_error_message,
+                                    Toast.LENGTH_SHORT
                                 ).show()
                             }
                         }
                     }
                 } else {
                     Toast.makeText(
-                            requireActivity(),
-                            R.string.please_check_your_internet_connection,
-                            Toast.LENGTH_SHORT
+                        requireActivity(),
+                        R.string.please_check_your_internet_connection,
+                        Toast.LENGTH_SHORT
                     ).show()
                 }
             }
@@ -681,6 +716,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun onResume() {
         super.onResume()
+        setupCallActionBar()
         ApplicationContext.getInstance(requireActivity()).messageNotifier.setVisibleThread(viewModel.threadId)
         if (!viewModel.markAllRead())
             return
@@ -740,6 +776,48 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
+    private fun setupCallActionBar() {
+        val startTimeNew = callViewModel!!.callStartTime
+        if (startTimeNew == -1L) {
+            binding.callActionBarView.isVisible = false
+        } else {
+            binding.callActionBarView.isVisible = true
+            uiJob = lifecycleScope.launch {
+                launch {
+                    while (isActive) {
+                        val startTime = callViewModel!!.callStartTime
+                        if (startTime == -1L) {
+                            binding.callActionBarView.isVisible = false
+                        } else {
+                            binding.callActionBarView.isVisible = true
+                            binding.callDurationCall.text = DurationFormatUtils.formatDuration(
+                                    System.currentTimeMillis() - startTime,
+                                    callDurationFormat
+                            )
+                        }
+
+                        delay(1_000)
+                    }
+                }
+            }
+        }
+        binding.hanUpCall.setOnClickListener {
+            requireActivity().applicationContext.startService(WebRtcCallService.hangupIntent(requireActivity().applicationContext))
+            binding.callActionBarView.isVisible = false
+            Toast.makeText(requireActivity().applicationContext, "Call ended", Toast.LENGTH_SHORT).show()
+        }
+        binding.callActionBarView.setOnClickListener {
+            callWebRTCCallScreen()
+        }
+    }
+
+    private fun callWebRTCCallScreen(){
+        Intent(requireContext(), WebRTCComposeActivity::class.java).also {
+            startActivity(it)
+        }
+    }
+
+
     private fun networkChange(networkAvailable: Boolean) {
         isNetworkAvailable = networkAvailable
         if (networkAvailable) {
@@ -756,8 +834,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun showPayWithSlide(thread: Recipient?, status: Boolean) {
-        if (thread != null && !thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && HomeActivity.reportIssueBChatID!=thread.address.toString() && !thread.isLocalNumber && status) {
+        if (thread != null && !thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && thread.isApproved && HomeActivity.reportIssueBChatID!=thread.address.toString() && !thread.isLocalNumber && status) {
             binding.slideToPayButton.visibility = View.VISIBLE
+            dispatchTouchEvent()
         }else{
             binding.slideToPayButton.visibility = View.GONE
         }
@@ -773,8 +852,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         try {
             if (thread != null) {
                 blockProgressBarVisible = if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && TextSecurePreferences.isPayAsYouChat(
-                                requireActivity()
-                        ) && thread.isApproved && HomeActivity.reportIssueBChatID != thread.address.toString() && !thread.isLocalNumber
+                        requireActivity()
+                    ) && thread.isApproved && HomeActivity.reportIssueBChatID != thread.address.toString() && !thread.isLocalNumber
                 ) {
                     binding.inputBar.showProgressBar(true)
                     true
@@ -835,8 +914,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             listenerCallback = context
         } else {
             throw ClassCastException(
-                    context.toString()
-                            + " must implement Listener"
+                context.toString()
+                        + " must implement Listener"
             )
         }
     }
@@ -848,10 +927,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     // `position` is the adapter position; not the visual position
     private fun handlePress(
-            message: MessageRecord,
-            position: Int,
-            view: VisibleMessageView,
-            event: MotionEvent
+        message: MessageRecord,
+        position: Int,
+        view: VisibleMessageView,
+        event: MotionEvent
     ) {
         val actionMode = this.actionMode
         selectedEvent = event
@@ -871,7 +950,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun onDeselect(message: MessageRecord, position: Int, actionMode: ActionMode) {
         adapter.toggleSelection(message, position)
         val actionModeCallback =
-                ConversationActionModeCallback(adapter, viewModel.threadId, requireActivity())
+            ConversationActionModeCallback(adapter, viewModel.threadId, requireActivity())
         actionModeCallback.delegate = this
         actionModeCallback.updateActionModeMenu(actionMode.menu)
         if (adapter.selectedItems.isEmpty()) {
@@ -883,22 +962,23 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     // `position` is the adapter position; not the visual position
     private fun handleSwipeToReply(message: MessageRecord, position: Int) {
         //New Line
-        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-        params.bottomMargin = 16
+//        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
+//        params.bottomMargin = 16
         val recipient = viewModel.recipient.value ?: return
+        binding.slideToPayButton.visibility = View.GONE
         binding.inputBar.draftQuote(recipient, message, glide)
     }
 
     private fun handleLongPress(message: MessageRecord, position: Int) {
         val actionMode = this.actionMode
         val actionModeCallback =
-                ConversationActionModeCallback(adapter, viewModel.threadId, requireActivity())
+            ConversationActionModeCallback(adapter, viewModel.threadId, requireActivity())
         actionModeCallback.delegate = this
         searchViewItem?.collapseActionView()
         if (actionMode == null) { // Nothing should be selected if this is the case
             adapter.toggleSelection(message, position)
             this.actionMode =
-                    this.activity?.startActionMode(actionModeCallback, ActionMode.TYPE_PRIMARY)
+                this.activity?.startActionMode(actionModeCallback, ActionMode.TYPE_PRIMARY)
         } else {
             adapter.toggleSelection(message, position)
             actionModeCallback.updateActionModeMenu(actionMode.menu)
@@ -913,6 +993,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun inputBarEditTextContentChanged(newContent: CharSequence) {
+        if (isShowingAttachmentOptions) {
+            binding.attachmentContainer.visibility = View.GONE
+            isShowingAttachmentOptions = !isShowingAttachmentOptions
+        }
         val inputBarText = binding.inputBar.text
         if (listenerCallback!!.gettextSecurePreferences().isLinkPreviewsEnabled()) {
             linkPreviewViewModel.onTextChanged(requireActivity(), inputBarText, 0, 0)
@@ -922,9 +1006,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             showOrHideMentionCandidatesIfNeeded(newContent)
         }
         if (LinkPreviewUtil.findWhitelistedUrls(newContent.toString()).isNotEmpty()
-                && !listenerCallback!!.gettextSecurePreferences()
-                        .isLinkPreviewsEnabled() && !listenerCallback!!.gettextSecurePreferences()
-                        .hasSeenLinkPreviewSuggestionDialog()
+            && !listenerCallback!!.gettextSecurePreferences()
+                .isLinkPreviewsEnabled() && !listenerCallback!!.gettextSecurePreferences()
+                .hasSeenLinkPreviewSuggestionDialog()
         ) {
             LinkPreviewDialog {
                 setUpLinkPreviewObserver()
@@ -935,44 +1019,46 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
-    override fun toggleAttachmentOptions() {
+    private fun checkUnBlock(){
         val recipient = viewModel.recipient.value ?: return
         if (recipient.isBlocked) {
-            BlockedDialog(recipient).show(
-                    requireActivity().supportFragmentManager,
-                    "Blocked Dialog"
-            )
+            unblock()
             return
         }
-        val targetAlpha = if (isShowingAttachmentOptions) 0.0f else 1.0f
-        val allButtonContainers = listOfNotNull(
-                binding.cameraButtonContainer,
-                binding.libraryButtonContainer,
-                binding.documentButtonContainer,
-                binding.gifButtonContainer
-        )
-        val isReversed = isShowingAttachmentOptions // Run the animation in reverse
-        val count = allButtonContainers.size
-        allButtonContainers.indices.forEach { index ->
-            val view = allButtonContainers[index]
-            val animation = ValueAnimator.ofObject(FloatEvaluator(), view.alpha, targetAlpha)
-            animation.duration = 250L
-            animation.startDelay =
-                    if (isReversed) 50L * (count - index.toLong()) else 50L * index.toLong()
-            animation.addUpdateListener { animator ->
-                view.alpha = animator.animatedValue as Float
-            }
-            animation.start()
-        }
+    }
+
+    override fun toggleAttachmentOptions() {
+        checkUnBlock()
+//        val targetAlpha = if (isShowingAttachmentOptions) 0.0f else 1.0f
+//        val allButtonContainers = listOfNotNull(
+//            binding.cameraButtonContainer,
+//            binding.libraryButtonContainer,
+//            binding.documentButtonContainer,
+//            binding.gifButtonContainer
+//        )
+//        val isReversed = isShowingAttachmentOptions // Run the animation in reverse
+//        val count = allButtonContainers.size
+//        allButtonContainers.indices.forEach { index ->
+//            val view = allButtonContainers[index]
+//            val animation = ValueAnimator.ofObject(FloatEvaluator(), view.alpha, targetAlpha)
+//            animation.duration = 250L
+//            animation.startDelay =
+//                if (isReversed) 50L * (count - index.toLong()) else 50L * index.toLong()
+//            animation.addUpdateListener { animator ->
+//                view.alpha = animator.animatedValue as Float
+//            }
+//            animation.start()
+//        }
         isShowingAttachmentOptions = !isShowingAttachmentOptions
-        val allButtons = listOf(cameraButton, libraryButton, documentButton, gifButton)
-        allButtons.forEach { it.snIsEnabled = isShowingAttachmentOptions }
+        binding.attachmentContainer.isVisible = isShowingAttachmentOptions
+//        val allButtons = listOf(cameraButton, libraryButton, documentButton, gifButton)
+//        allButtons.forEach { it.snIsEnabled = isShowingAttachmentOptions }
     }
 
     override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<out String>,
-            grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
@@ -992,9 +1078,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
             override fun onFailure(e: ExecutionException?) {
                 Toast.makeText(
-                        requireActivity(),
-                        R.string.activity_conversation_attachment_prep_failed,
-                        Toast.LENGTH_LONG
+                    requireActivity(),
+                    R.string.activity_conversation_attachment_prep_failed,
+                    Toast.LENGTH_LONG
                 ).show()
             }
         }
@@ -1002,7 +1088,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             PICK_DOCUMENT -> {
                 val uri = intent?.data ?: return
                 prepMediaForSending(uri, AttachmentManager.MediaType.DOCUMENT).addListener(
-                        mediaPreppedListener
+                    mediaPreppedListener
                 )
             }
             PICK_GIF -> {
@@ -1018,48 +1104,48 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 intent ?: return
                 val body = intent.getStringExtra(MediaSendActivity.EXTRA_MESSAGE)
                 val media = intent.getParcelableArrayListExtra<Media>(
-                        MediaSendActivity.EXTRA_MEDIA
+                    MediaSendActivity.EXTRA_MEDIA
                 ) ?: return
                 val slideDeck = SlideDeck()
                 for (item in media) {
                     when {
                         MediaUtil.isVideoType(item.mimeType) -> {
                             slideDeck.addSlide(
-                                    VideoSlide(
-                                            requireActivity(),
-                                            item.uri,
-                                            0,
-                                            item.caption.orNull()
-                                    )
+                                VideoSlide(
+                                    requireActivity(),
+                                    item.uri,
+                                    0,
+                                    item.caption.orNull()
+                                )
                             )
                         }
                         MediaUtil.isGif(item.mimeType) -> {
                             slideDeck.addSlide(
-                                    GifSlide(
-                                            requireActivity(),
-                                            item.uri,
-                                            0,
-                                            item.width,
-                                            item.height,
-                                            item.caption.orNull()
-                                    )
+                                GifSlide(
+                                    requireActivity(),
+                                    item.uri,
+                                    0,
+                                    item.width,
+                                    item.height,
+                                    item.caption.orNull()
+                                )
                             )
                         }
                         MediaUtil.isImageType(item.mimeType) -> {
                             slideDeck.addSlide(
-                                    ImageSlide(
-                                            requireActivity(),
-                                            item.uri,
-                                            0,
-                                            item.width,
-                                            item.height,
-                                            item.caption.orNull()
-                                    )
+                                ImageSlide(
+                                    requireActivity(),
+                                    item.uri,
+                                    0,
+                                    item.width,
+                                    item.height,
+                                    item.caption.orNull()
+                                )
                             )
                         }
                         else -> {
                             Timber.tag("Beldex")
-                                    .d("Asked to send an unexpected media type: '" + item.mimeType + "'. Skipping.")
+                                .d("Asked to send an unexpected media type: '" + item.mimeType + "'. Skipping.")
                         }
                     }
                 }
@@ -1074,7 +1160,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     return
                 }
                 val selectedContacts =
-                        extras.getStringArray(SelectContactsActivity.selectedContactsKey)!!
+                    extras.getStringArray(SelectContactsActivity.selectedContactsKey)!!
                 val recipients = selectedContacts.map { contact ->
                     Recipient.from(requireActivity(), Address.fromSerialized(contact), true)
                 }
@@ -1084,35 +1170,34 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun prepMediaForSending(
-            uri: Uri,
-            type: AttachmentManager.MediaType
+        uri: Uri,
+        type: AttachmentManager.MediaType
     ): ListenableFuture<Boolean> {
         return prepMediaForSending(uri, type, null, null)
     }
 
     private fun prepMediaForSending(
-            uri: Uri,
-            type: AttachmentManager.MediaType,
-            width: Int?,
-            height: Int?
+        uri: Uri,
+        type: AttachmentManager.MediaType,
+        width: Int?,
+        height: Int?
     ): ListenableFuture<Boolean> {
         return attachmentManager.setMedia(
-                glide,
-                uri,
-                type,
-                MediaConstraints.getPushMediaConstraints(),
-                width ?: 0,
-                height ?: 0
+            glide,
+            uri,
+            type,
+            MediaConstraints.getPushMediaConstraints(),
+            width ?: 0,
+            height ?: 0
         )
     }
 
     override fun startRecordingVoiceMessage() {
+        hideAttachmentContainer()
+        checkUnBlock()
         val recipient = viewModel.recipient.value ?: return
         if (recipient.isBlocked) {
-            BlockedDialog(recipient).show(
-                    requireActivity().supportFragmentManager,
-                    "Blocked Dialog"
-            )
+            unblock()
             return
         }
         if(callViewModel?.callStartTime == -1L) {
@@ -1126,13 +1211,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 ) // Limit voice messages to 5 minute each
             } else {
                 Permissions.with(this)
-                        .request(Manifest.permission.RECORD_AUDIO)
-                        .withRationaleDialog(
-                                getString(R.string.ConversationActivity_to_send_audio_messages_allow_signal_access_to_your_microphone),
-                                R.drawable.ic_microphone_permission
-                        )
-                        .withPermanentDenialDialog(getString(R.string.ConversationActivity_signal_requires_the_microphone_permission_in_order_to_send_audio_messages))
-                        .execute()
+                    .request(Manifest.permission.RECORD_AUDIO)
+                    .withRationaleDialog(
+                        getString(R.string.ConversationActivity_to_send_audio_messages_allow_signal_access_to_your_microphone),
+                        getString(R.string.Permissions_record_permission_required),
+                        R.drawable.ic_microphone
+                    )
+                    .withPermanentDenialDialog(getString(R.string.ConversationActivity_signal_requires_the_microphone_permission_in_order_to_send_audio_messages))
+                    .execute()
             }
         }else{
             Toast.makeText(requireActivity(),getString(R.string.record_voice_restriction),Toast.LENGTH_SHORT).show()
@@ -1149,7 +1235,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             val chevronDamping = 4.0f
             val labelDamping = 3.0f
             val chevronX =
-                    (chevronDamping * (sqrt(abs(translationX)) / sqrt(chevronDamping))) * sign
+                (chevronDamping * (sqrt(abs(translationX)) / sqrt(chevronDamping))) * sign
             val labelX = (labelDamping * (sqrt(abs(translationX)) / sqrt(labelDamping))) * sign
             chevronImageView.translationX = chevronX
             slideToCancelTextView.translationX = labelX
@@ -1184,10 +1270,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             val location = IntArray(2) { 0 }
             recordButtonOverlay.getLocationOnScreen(location)
             val hitRect = Rect(
-                    location[0],
-                    location[1],
-                    location[0] + recordButtonOverlay.width,
-                    location[1] + recordButtonOverlay.height
+                location[0],
+                location[1],
+                location[0] + recordButtonOverlay.width,
+                location[1] + recordButtonOverlay.height
             )
             if (hitRect.contains(x, y)) {
                 sendVoiceMessage()
@@ -1198,28 +1284,26 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun sendMessage() {
+        checkUnBlock()
         val recipient = viewModel.recipient.value ?: callViewModel() ?: return
         if (recipient.isContactRecipient && recipient.isBlocked) {
-            BlockedDialog(recipient).show(
-                    requireActivity().supportFragmentManager,
-                    "Blocked Dialog"
-            )
+            unblock()
             return
         }
 
         val binding = binding
         if (binding.inputBar.text.trim().isEmpty()) {
             Toast.makeText(
-                    requireActivity(),
-                    R.string.empty_message_toast,
-                    Toast.LENGTH_SHORT
+                requireActivity(),
+                R.string.empty_message_toast,
+                Toast.LENGTH_SHORT
             ).show()
         }else if (binding.inputBar.linkPreview != null || binding.inputBar.quote != null) {
             sendAttachments(
-                    listOf(),
-                    getMessageBody(),
-                    binding.inputBar.quote,
-                    binding.inputBar.linkPreview
+                listOf(),
+                getMessageBody(),
+                binding.inputBar.quote,
+                binding.inputBar.linkPreview
             )
         }else {
             Timber.tag("SendMessage ").d("5")
@@ -1252,9 +1336,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun callSendTextOnlyMessage() {
         if (binding.inputBar.text.length > 4096) {
             Toast.makeText(
-                    requireActivity(),
-                    "Text limit exceed: Maximum limit of messages is 4096 characters",
-                    Toast.LENGTH_SHORT
+                requireActivity(),
+                "Text limit exceed: Maximum limit of messages is 4096 characters",
+                Toast.LENGTH_SHORT
             ).show()
         } else {
             sendTextOnlyMessage()
@@ -1262,41 +1346,45 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun inChatBDXOptions() {
+        hideAttachmentContainer()
+        checkUnBlock()
         try {
-            val dialog = android.app.AlertDialog.Builder(requireActivity())
-            val inflater = layoutInflater
-            val dialogView = inflater.inflate(R.layout.pay_as_you_chat, null)
-            dialog.setView(dialogView)
+                val dialog = android.app.AlertDialog.Builder(requireActivity())
+                val inflater = layoutInflater
+                val dialogView = inflater.inflate(R.layout.pay_as_you_chat, null)
+                dialog.setView(dialogView)
 
-            val okButton = dialogView.findViewById<Button>(R.id.okButton)
-            val cancelButton = dialogView.findViewById<Button>(R.id.cancelButton)
-            val enableInstruction =
+                val okButton = dialogView.findViewById<Button>(R.id.okButton)
+                val cancelButton = dialogView.findViewById<Button>(R.id.cancelButton)
+                val enableInstruction =
                     dialogView.findViewById<TextView>(R.id.payAsYouChatEnable_Instruction)
-            val alert = dialog.create()
-            alert.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            alert.setCanceledOnTouchOutside(false)
-            alert.show()
-            if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
-                enableInstruction.text =
+                val alert = dialog.create()
+                alert.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                alert.setCanceledOnTouchOutside(false)
+                alert.show()
+                if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
+                    enableInstruction.text =
                         fromHtml("To disable pay as you chat, go to <b>Settings -> Wallet Settings -> Pay As You Chat</b> to use this option")
-            } else {
-                enableInstruction.text =
+                } else {
+                    enableInstruction.text =
                         fromHtml("Enable pay as you chat from <b>Settings -> Wallet Settings -> Pay As You Chat</b> to use this option")
-            }
-            okButton.setOnClickListener {
-                val intent = Intent(requireActivity(), PrivacySettingsActivity::class.java)
-                this.activity?.startActivity(intent)
-                alert.dismiss()
-            }
-            cancelButton.setOnClickListener {
-                alert.dismiss()
-            }
+                }
+                okButton.setOnClickListener {
+                    val intent = Intent(requireActivity(), PrivacySettingsActivity::class.java)
+                    this.activity?.startActivity(intent)
+                    alert.dismiss()
+                }
+                cancelButton.setOnClickListener {
+                    alert.dismiss()
+                }
         } catch (exception: Exception) {
             Timber.tag("Beldex").d("PayAsYouChat exception $exception")
         }
     }
 
     override fun walletDetailsUI() {
+        hideAttachmentContainer()
+        checkUnBlock()
         when {
             binding.tooltip.isVisible -> {
                 binding.tooltip.visibility = View.GONE
@@ -1306,8 +1394,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 dispatchTouched = false
             }
             else -> {
-                binding.tooltip.visibility = View.VISIBLE
-                tooltipIsVisible = true
+                if(!binding.slideToPayButton.isVisible) {
+                    binding.tooltip.visibility = View.VISIBLE
+                    tooltipIsVisible = true
+                }
             }
         }
         toolTip()
@@ -1330,11 +1420,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> {
                         when {
                             valueOfWallet != "100%" -> {
-                                binding.tooltip.text = Html.fromHtml("<p>Wallet Synchronizing <b> $valueOfWallet </b> </p>", Html.FROM_HTML_MODE_COMPACT)
+                                val color = ResourcesCompat.getColor(requireContext().resources, R.color.text_old_green, requireContext().theme)
+                                val valueOfWalletText = SpannableStringBuilder(valueOfWallet)
+                                valueOfWalletText.setSpan(ForegroundColorSpan(color), valueOfWallet.indexOf(valueOfWallet) , valueOfWallet.indexOf(valueOfWallet) + valueOfWallet.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                                binding.tooltip.text = Html.fromHtml("<p>Wallet Synchronizing : <b> <font color='#00BD40'>$valueOfWallet</font> </b> </p>", Html.FROM_HTML_MODE_COMPACT)
                                 tooltipStyle()
                             }
                             else -> {
-                                binding.tooltip.text = Html.fromHtml("<p> <b>Balance : $valueOfBalance </b> </p> <br /> <p><b>Unlocked Balance : $valueOfUnLockedBalance</b> </p> <br /> <p>Wallet :  $valueOfWallet </p>", Html.FROM_HTML_MODE_COMPACT)
+                                binding.tooltip.text = Html.fromHtml("<p> <b>Balance : <font color='#00BD40'> $valueOfBalance </font> BDX</b> </p> <br /> <p><b>Unlocked Balance : <font color='#00BD40'> $valueOfUnLockedBalance </font> </b> BDX</p> <br /> <p>Wallet : <font color='#00BD40'> $valueOfWallet </font> </p>", Html.FROM_HTML_MODE_COMPACT)
                                 tooltipStyle()
                             }
                         }
@@ -1342,11 +1435,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     else -> {
                         when {
                             valueOfWallet != "100%" -> {
-                                binding.tooltip.text = Html.fromHtml("<p> Wallet Synchronizing <b> $valueOfWallet</b> </p>")
+                                binding.tooltip.text = Html.fromHtml("<p> Wallet Synchronizing:  <b> <font color='#00BD40'> $valueOfWallet </font> </b> </p>")
                                 tooltipStyle()
                             }
                             else -> {
-                                binding.tooltip.text = Html.fromHtml("<p> <b>Balance : $valueOfBalance </b> </p> <br /> <p><b>Unlocked Balance : $valueOfUnLockedBalance</b> </p> <br /> <p>Wallet :  $valueOfWallet </p>")
+                                binding.tooltip.text = Html.fromHtml("<p> <b>Balance : <font color='#00BD40'> $valueOfBalance </font> BDX</b> </p> <br /> <p><b>Unlocked Balance : <font color='#00BD40'> $valueOfUnLockedBalance </font> </b> BDX</p> <br /> <p>Wallet : <font color='#00BD40'> $valueOfWallet </font> </p>")
                                 tooltipStyle()
                             }
                         }
@@ -1357,13 +1450,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 val explanation = resources.getString(R.string.hold_to_enable_option)
                 val spannable = SpannableStringBuilder(explanation)
                 val face =
-                        Typeface.createFromAsset(requireContext().assets, "fonts/open_sans_bold.ttf")
+                    Typeface.createFromAsset(requireContext().assets, "fonts/open_sans_bold.ttf")
                 val color = ResourcesCompat.getColor(requireContext().resources,
-                        R.color.node_status, requireContext().theme)
+                    R.color.negative_green_button_border, requireContext().theme)
                 spannable.setSpan(ForegroundColorSpan(color),
-                        14,
-                        30,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    14,
+                    30,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 binding.tooltip.typeface = face
                 binding.tooltip.text = spannable
             }
@@ -1372,22 +1465,22 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     private fun tooltipStyle() {
         val face =
-                Typeface.createFromAsset(requireContext().assets,
-                        "fonts/open_sans_medium.ttf")
+            Typeface.createFromAsset(requireContext().assets,
+                "fonts/open_sans_medium.ttf")
         @ColorInt val color =
-                requireContext().resources.getColorWithID(R.color.text,
-                        requireContext().theme)
+            requireContext().resources.getColorWithID(R.color.text,
+                requireContext().theme)
         binding.tooltip.setTextColor(color)
         binding.tooltip.typeface = face
     }
 
     private fun failedToConnectToolTipStyle() {
         val face =
-                Typeface.createFromAsset(requireContext().assets,
-                        "fonts/open_sans_medium.ttf")
+            Typeface.createFromAsset(requireContext().assets,
+                "fonts/open_sans_medium.ttf")
         @ColorInt val color =
-                requireContext().resources.getColorWithID(R.color.red,
-                        requireContext().theme)
+            requireContext().resources.getColorWithID(R.color.negative_red_button_border,
+                requireContext().theme)
         binding.tooltip.setTextColor(color)
         binding.tooltip.typeface = face
     }
@@ -1403,43 +1496,43 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     override fun commitInputContent(contentUri: Uri) {
         val recipient = viewModel.recipient.value ?: return
         val media = Media(
-                contentUri,
-                MediaUtil.getMimeType(
-                        requireActivity(),
-                        contentUri
-                )!!,
-                0,
-                0,
-                0,
-                0,
-                Optional.absent(),
-                Optional.absent()
+            contentUri,
+            MediaUtil.getMimeType(
+                requireActivity(),
+                contentUri
+            )!!,
+            0,
+            0,
+            0,
+            0,
+            Optional.absent(),
+            Optional.absent()
         )
         startActivityForResult(
-                MediaSendActivity.buildEditorIntent(
-                        requireActivity(),
-                        listOf(media),
-                        recipient,
-                        getMessageBody()
-                ),
-                PICK_FROM_LIBRARY
+            MediaSendActivity.buildEditorIntent(
+                requireActivity(),
+                listOf(media),
+                recipient,
+                getMessageBody()
+            ),
+            PICK_FROM_LIBRARY
         )
 
     }
 
     override fun handleVoiceMessageUIHidden() {
         val inputBar = binding.inputBar
-        val inputBarCard = binding.inputBarCard
+//        val inputBarCard = binding.inputBarCard
         //New Line
         inputBar.visibility = View.VISIBLE
 
         inputBar.alpha = 1.0f
-        inputBarCard.alpha = 1.0f
+//        inputBarCard.alpha = 1.0f
         val animation = ValueAnimator.ofObject(FloatEvaluator(), 0.0f, 1.0f)
         animation.duration = 250L
         animation.addUpdateListener { animator ->
             inputBar.alpha = animator.animatedValue as Float
-            inputBarCard.alpha = animator.animatedValue as Float
+//            inputBarCard.alpha = animator.animatedValue as Float
         }
         animation.start()
     }
@@ -1448,16 +1541,17 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         hideVoiceMessageUI()
         this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         val future = audioRecorder.stopRecording()
+//        amplitudeJob?.cancel()
         stopAudioHandler.removeCallbacks(stopVoiceMessageRecordingTask)
         future.addListener(object : ListenableFuture.Listener<Pair<Uri, Long>> {
 
             override fun onSuccess(result: Pair<Uri, Long>) {
                 val audioSlide = AudioSlide(
-                        requireActivity(),
-                        result.first,
-                        result.second,
-                        MediaTypes.AUDIO_AAC,
-                        true
+                    requireActivity(),
+                    result.first,
+                    result.second,
+                    MediaTypes.AUDIO_AAC,
+                    true
                 )
                 val slideDeck = SlideDeck()
                 slideDeck.addSlide(audioSlide)
@@ -1466,9 +1560,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
             override fun onFailure(e: ExecutionException) {
                 Toast.makeText(
-                        requireActivity(),
-                        R.string.ConversationActivity_unable_to_record_audio,
-                        Toast.LENGTH_LONG
+                    requireActivity(),
+                    R.string.ConversationActivity_unable_to_record_audio,
+                    Toast.LENGTH_LONG
                 ).show()
             }
         })
@@ -1477,7 +1571,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     override fun cancelVoiceMessage() {
         hideVoiceMessageUI()
         this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        audioRecorder.stopRecording()
+        try {
+            if(::audioRecorder.isInitialized) {
+                audioRecorder.stopRecording()
+            }
+        }catch(ex: UninitializedPropertyAccessException){
+            Log.d("Audio Recorder ",ex.message.toString())
+        }
+//        amplitudeJob?.cancel()
         stopAudioHandler.removeCallbacks(stopVoiceMessageRecordingTask)
     }
 
@@ -1489,23 +1590,23 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
         val allSentByCurrentUser = messages.all { it.isOutgoing }
         val allHasHash =
-                messages.all { viewModel.getMessageServerHash(it.id) != null }
+            messages.all { viewModel.getMessageServerHash(it.id) != null }
         if (recipient.isOpenGroupRecipient) {
             val messageCount = messages.size
             val builder = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
             builder.setTitle(
-                    resources.getQuantityString(
-                            R.plurals.ConversationFragment_delete_selected_messages,
-                            messageCount,
-                            messageCount
-                    )
+                resources.getQuantityString(
+                    R.plurals.ConversationFragment_delete_selected_messages,
+                    messageCount,
+                    messageCount
+                )
             )
             builder.setMessage(
-                    resources.getQuantityString(
-                            R.plurals.ConversationFragment_this_will_permanently_delete_all_n_selected_messages,
-                            messageCount,
-                            messageCount
-                    )
+                resources.getQuantityString(
+                    R.plurals.ConversationFragment_this_will_permanently_delete_all_n_selected_messages,
+                    messageCount,
+                    messageCount
+                )
             )
             builder.setCancelable(true)
             builder.setPositiveButton(R.string.delete) { _, _ ->
@@ -1542,21 +1643,32 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
             bottomSheet.show(requireActivity().supportFragmentManager, bottomSheet.tag)
         } else {
-            val messageCount = messages.size
+            viewModel.setMessagesToDelete(messages)
+            val selectedMessageDialog = ConversationActionDialog()
+            selectedMessageDialog.apply {
+                arguments = Bundle().apply {
+                    putInt(ConversationActionDialog.EXTRA_ARGUMENT_1,messages.size)
+                    putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.SelectedMessageDelete)
+                }
+                setListener(this@ConversationFragmentV2)
+            }
+            selectedMessageDialog.show(childFragmentManager, ConversationActionDialog.TAG)
+
+         /* val messageCount = messages.size
             val builder = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
             builder.setTitle(
-                    resources.getQuantityString(
-                            R.plurals.ConversationFragment_delete_selected_messages,
-                            messageCount,
-                            messageCount
-                    )
+                resources.getQuantityString(
+                    R.plurals.ConversationFragment_delete_selected_messages,
+                    messageCount,
+                    messageCount
+                )
             )
             builder.setMessage(
-                    resources.getQuantityString(
-                            R.plurals.ConversationFragment_this_will_permanently_delete_all_n_selected_messages,
-                            messageCount,
-                            messageCount
-                    )
+                resources.getQuantityString(
+                    R.plurals.ConversationFragment_this_will_permanently_delete_all_n_selected_messages,
+                    messageCount,
+                    messageCount
+                )
             )
             builder.setCancelable(true)
             builder.setPositiveButton(R.string.delete) { _, _ ->
@@ -1569,7 +1681,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 dialog.dismiss()
                 endActionMode()
             }
-            builder.show()
+            builder.show()*/
         }
     }
 
@@ -1613,9 +1725,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         while (messageIterator.hasNext()) {
             val message = messageIterator.next()
             var body = MentionUtilities.highlightMentions(
-                    message.body,
-                    viewModel.threadId,
-                    requireActivity()
+                message.body,
+                viewModel.threadId,
+                requireActivity()
             )
             if (message.isPayment) {
                 //Payment Tag
@@ -1635,7 +1747,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 }
                 body = resources.getString(R.string.reply_payment_card_message, direction, amount)
             } else if (message.isOpenGroupInvitation) {
-                body = resources.getString(R.string.ThreadRecord_open_group_invitation)
+                val mainObject = JSONObject(message.body)
+                val uniObject = mainObject.getJSONObject("kind")
+                val groupLink = uniObject.getString("groupUrl")
+                body = groupLink
             }
 
             if (TextUtils.isEmpty(body)) {
@@ -1643,9 +1758,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
             if (messageSize > 1) {
                 val formattedTimestamp = DateUtils.getDisplayFormattedTimeSpanString(
-                        requireActivity(),
-                        Locale.getDefault(),
-                        message.timestamp
+                    requireActivity(),
+                    Locale.getDefault(),
+                    message.timestamp
                 )
                 builder.append("$formattedTimestamp: ")
             }
@@ -1700,63 +1815,50 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun saveAttachment(messages: Set<MessageRecord>) {
         val message = messages.first() as MmsMessageRecord
-        SaveAttachmentTask.showWarningDialog(requireActivity(), { _, _ ->
+        // Do not allow the user to download a file attachment before it has finished downloading
+        if (message.isMediaPending) {
+            Toast.makeText(requireActivity(), resources.getString(R.string.conversation_activity__wait_until_attachment_has_finished_downloading), Toast.LENGTH_LONG).show()
+            return
+        }
+
+        SaveAttachmentTask.showWarningDialog(requireActivity()) {
             Permissions.with(this)
                     .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     .maxSdkVersion(Build.VERSION_CODES.P)
                     .withPermanentDenialDialog(getString(R.string.MediaPreviewActivity_signal_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied))
                     .onAnyDenied {
                         endActionMode()
-                        Toast.makeText(
-                                requireActivity(),
-                                R.string.MediaPreviewActivity_unable_to_write_to_external_storage_without_permission,
-                                Toast.LENGTH_LONG
-                        ).show()
+                        Toast.makeText(requireActivity(), R.string.MediaPreviewActivity_unable_to_write_to_external_storage_without_permission, Toast.LENGTH_LONG).show()
                     }
                     .onAllGranted {
                         endActionMode()
-                        val attachments: List<SaveAttachmentTask.Attachment?> =
-                                Stream.of(message.slideDeck.slides)
-                                        .filter { s: Slide -> s.uri != null && (s.hasImage() || s.hasVideo() || s.hasAudio() || s.hasDocument()) }
-                                        .map { s: Slide ->
-                                            SaveAttachmentTask.Attachment(
-                                                    s.uri!!,
-                                                    s.contentType,
-                                                    message.dateReceived,
-                                                    s.fileName.orNull()
-                                            )
-                                        }
-                                        .toList()
+                        val attachments: List<SaveAttachmentTask.Attachment?> = Stream.of(message.slideDeck.slides)
+                                .filter { s: Slide -> s.uri != null && (s.hasImage() || s.hasVideo() || s.hasAudio() || s.hasDocument()) }
+                                .map { s: Slide -> SaveAttachmentTask.Attachment(s.uri!!, s.contentType, message.dateReceived, s.fileName.orNull()) }
+                                .toList()
                         if (attachments.isNotEmpty()) {
                             val saveTask = SaveAttachmentTask(requireActivity())
-                            saveTask.executeOnExecutor(
-                                    AsyncTask.THREAD_POOL_EXECUTOR,
-                                    *attachments.toTypedArray()
-                            )
+                            saveTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, *attachments.toTypedArray())
                             if (!message.isOutgoing) {
                                 sendMediaSavedNotification()
                             }
                             return@onAllGranted
                         }
-                        Toast.makeText(
-                                requireActivity(),
-                                resources.getQuantityString(
-                                        R.plurals.ConversationFragment_error_while_saving_attachments_to_sd_card,
-                                        1
-                                ),
-                                Toast.LENGTH_LONG
-                        ).show()
+                        Toast.makeText(requireActivity(),
+                                resources.getQuantityString(R.plurals.ConversationFragment_error_while_saving_attachments_to_sd_card, 1),
+                                Toast.LENGTH_LONG).show()
                     }
                     .execute()
-        })
+        }
     }
 
     override fun reply(messages: Set<MessageRecord>) {
         val recipient = viewModel.recipient.value ?: return
         //New Line
-        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-        params.bottomMargin = 16
+//        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
+//        params.bottomMargin = 16
         if(messages.isNotEmpty()) {
+            binding.slideToPayButton.visibility = View.GONE
             binding.inputBar.draftQuote(recipient, messages.first(), glide)
         }
         endActionMode()
@@ -1768,49 +1870,68 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     //SteveJosephh21 - 08
     override fun block(deleteThread: Boolean) {
-        val title = R.string.RecipientPreferenceActivity_block_this_contact_question
-        val message =
-                R.string.RecipientPreferenceActivity_you_will_no_longer_receive_messages_and_calls_from_this_contact
-        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog_Clear_All)
-                .setTitle(title)
-                .setMessage(message)
-                .setNegativeButton(android.R.string.cancel, null)
-                .setPositiveButton(R.string.RecipientPreferenceActivity_block) { _, _ ->
-                    viewModel.block()
-                    viewModel.recipient.value?.let { thread ->
-                        showBlockProgressBar(thread)
-                    }
-                    if (deleteThread) {
-                        viewModel.deleteThread()
-                    }
-                }.show()
-        //New Line
-        val textView: TextView? = dialog.findViewById(android.R.id.message)
-        val face: Typeface =
-                Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
-        textView!!.typeface = face
+//        val title = R.string.RecipientPreferenceActivity_block_this_contact_question
+//        val message =
+//            R.string.RecipientPreferenceActivity_you_will_no_longer_receive_messages_and_calls_from_this_contact
+//        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog_Clear_All)
+//            .setTitle(title)
+//            .setMessage(message)
+//            .setNegativeButton(android.R.string.cancel, null)
+//            .setPositiveButton(R.string.RecipientPreferenceActivity_block) { _, _ ->
+//                viewModel.block()
+//                viewModel.recipient.value?.let { thread ->
+//                    showBlockProgressBar(thread)
+//                }
+//                if (deleteThread) {
+//                    viewModel.deleteThread()
+//                }
+//            }.show()
+//        //New Line
+//        val textView: TextView? = dialog.findViewById(android.R.id.message)
+//        val face: Typeface =
+//            Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
+//        textView!!.typeface = face
+
+        val blockDialog = ConversationActionDialog()
+        blockDialog.apply {
+            arguments = Bundle().apply {
+                putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.BlockUser)
+                putInt(ConversationActionDialog.EXTRA_ARGUMENT_1, if (deleteThread) 1 else 0)
+            }
+            setListener(this@ConversationFragmentV2)
+        }
+        blockDialog.show(childFragmentManager, ConversationActionDialog.TAG)
     }
 
     override fun unblock() {
-        val title = R.string.ConversationActivity_unblock_this_contact_question
-        val message =
-                R.string.ConversationActivity_you_will_once_again_be_able_to_receive_messages_and_calls_from_this_contact
-        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog_Clear_All)
-                .setTitle(title)
-                .setMessage(message)
-                .setNegativeButton(android.R.string.cancel, null)
-                .setPositiveButton(R.string.ConversationActivity_unblock) { _, _ ->
-                    viewModel.unblock()
-                    viewModel.recipient.value?.let { thread ->
-                        showBlockProgressBar(thread)
-                    }
-                }.show()
+//        val title = R.string.ConversationActivity_unblock_this_contact_question
+//        val message =
+//            R.string.ConversationActivity_you_will_once_again_be_able_to_receive_messages_and_calls_from_this_contact
+//        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog_Clear_All)
+//            .setTitle(title)
+//            .setMessage(message)
+//            .setNegativeButton(android.R.string.cancel, null)
+//            .setPositiveButton(R.string.ConversationActivity_unblock) { _, _ ->
+//                viewModel.unblock()
+//                viewModel.recipient.value?.let { thread ->
+//                    showBlockProgressBar(thread)
+//                }
+//            }.show()
+//
+//        //New Line
+//        val textView: TextView? = dialog.findViewById(android.R.id.message)
+//        val face: Typeface =
+//            Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
+//        textView!!.typeface = face
 
-        //New Line
-        val textView: TextView? = dialog.findViewById(android.R.id.message)
-        val face: Typeface =
-                Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
-        textView!!.typeface = face
+        val blockDialog = ConversationActionDialog()
+        blockDialog.apply {
+            arguments = Bundle().apply {
+                putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.UnblockUser)
+            }
+            setListener(this@ConversationFragmentV2)
+        }
+        blockDialog.show(childFragmentManager, ConversationActionDialog.TAG)
     }
 
     fun getSystemService(name: String): Any? {
@@ -1834,17 +1955,27 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 return
             }
         }
-        ExpirationDialog.show(requireActivity(), thread.expireMessages) { expirationTime: Int ->
-            viewModel.setExpireMessages(thread, expirationTime)
-            val message = ExpirationTimerUpdate(expirationTime)
-            message.recipient = thread.address.serialize()
-            message.sentTimestamp = MnodeAPI.nowWithOffset
-            val expiringMessageManager =
-                    ApplicationContext.getInstance(requireActivity()).expiringMessageManager
-            expiringMessageManager.setExpirationTimer(message)
-            MessageSender.send(message, thread.address)
-            this.activity?.invalidateOptionsMenu()
+        val dialog = ConversationActionDialog()
+        dialog.apply {
+            arguments = Bundle().apply {
+                putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.DisappearingTimer)
+                putInt(ConversationActionDialog.EXTRA_ARGUMENT_1, thread.expireMessages)
+            }
+            setListener(this@ConversationFragmentV2)
         }
+        dialog.show(childFragmentManager, ConversationActionDialog.TAG)
+
+//        ExpirationDialog.show(requireActivity(), thread.expireMessages) { expirationTime: Int ->
+//            viewModel.setExpireMessages(thread, expirationTime)
+//            val message = ExpirationTimerUpdate(expirationTime)
+//            message.recipient = thread.address.serialize()
+//            message.sentTimestamp = MnodeAPI.nowWithOffset
+//            val expiringMessageManager =
+//                ApplicationContext.getInstance(requireActivity()).expiringMessageManager
+//            expiringMessageManager.setExpirationTimer(message)
+//            MessageSender.send(message, thread.address)
+//            this.activity?.invalidateOptionsMenu()
+//        }
     }
 
     override fun scrollToMessageIfPossible(timestamp: Long) {
@@ -1857,30 +1988,40 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             return
         }
         val viewHolder =
-                binding.conversationRecyclerView.findViewHolderForAdapterPosition(indexInAdapter) as? ConversationAdapter.VisibleMessageViewHolder ?: return
+            binding.conversationRecyclerView.findViewHolderForAdapterPosition(indexInAdapter) as? ConversationAdapter.VisibleMessageViewHolder ?: return
         val visibleMessageView = ViewVisibleMessageBinding.bind(viewHolder.view).visibleMessageView
         visibleMessageView.playVoiceMessage()
     }
 
     fun onSearchOpened() {
         searchViewModel!!.onSearchOpened()
-        binding.searchBottomBar.visibility = View.VISIBLE
-        binding.searchBottomBar.setData(0, 0)
-        binding.inputBar.visibility = View.GONE
+//        binding.searchBottomBar.visibility = View.VISIBLE
+//        binding.searchBottomBar.setData(0, 0)
+//        binding.inputBar.visibility = View.GONE
+        binding.searchBar.visibility = View.VISIBLE
+        binding.noMatchesFoundTextview.visibility = View.GONE
+        binding.searchQuery.setText("")
+        binding.searchQuery.requestFocus()
     }
 
     fun onSearchClosed() {
         searchViewModel!!.onSearchClosed()
-        binding.searchBottomBar.visibility = View.GONE
-        binding.inputBar.visibility = View.VISIBLE
+//        binding.searchBottomBar.visibility = View.GONE
+//        binding.inputBar.visibility = View.VISIBLE
+        binding.searchBar.visibility = View.GONE
+        binding.noMatchesFoundTextview.visibility = View.GONE
         adapter.onSearchQueryUpdated(null)
+        binding.searchQuery.clearFocus()
         this.activity?.invalidateOptionsMenu()
+        hideKeyboard()
     }
 
     fun onSearchQueryUpdated(query: String) {
-        searchViewModel!!.onQueryUpdated(query, viewModel.threadId)
-        binding.searchBottomBar.showLoading()
-        adapter.onSearchQueryUpdated(query)
+        if(query.trim().isNotEmpty()) {
+            searchViewModel!!.onQueryUpdated(query, viewModel.threadId)
+            binding.searchProgress.visibility = View.VISIBLE
+            adapter.onSearchQueryUpdated(query)
+        }
     }
 
     override fun onSearchMoveUpPressed() {
@@ -1920,9 +2061,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
         return ConversationLoader(
-                viewModel.threadId,
-                !viewModel.isIncomingMessageRequestThread(),
-                requireActivity()
+            viewModel.threadId,
+            !viewModel.isIncomingMessageRequestThread(),
+            requireActivity()
         )
     }
 
@@ -1945,15 +2086,15 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun setUpRecyclerView() {
         binding.conversationRecyclerView.adapter = adapter
         val layoutManager = LinearLayoutManager(
-                requireActivity(),
-                LinearLayoutManager.VERTICAL,
-                !viewModel.isIncomingMessageRequestThread()
+            requireActivity(),
+            LinearLayoutManager.VERTICAL,
+            !viewModel.isIncomingMessageRequestThread()
         )
         binding.conversationRecyclerView.layoutManager = layoutManager
         // Workaround for the fact that CursorRecyclerViewAdapter doesn't auto-update automatically (even though it says it will)
         LoaderManager.getInstance(this).restartLoader(0, null, this)
         binding.conversationRecyclerView.addOnScrollListener(object :
-                RecyclerView.OnScrollListener() {
+            RecyclerView.OnScrollListener() {
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 handleRecyclerViewScrolled()
@@ -1972,9 +2113,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (bnsName != null && adapter.cursor?.count == 0) {
             profileManager.setName(requireContext(), recipient, bnsName)
         }
+        val recipientName : String=recipient.toShortString().substring(0, 1).uppercase(Locale.ROOT) + recipient.toShortString().substring(1).lowercase(Locale.ROOT)
+
         binding.conversationTitleView.text = when {
             recipient.isLocalNumber -> getString(R.string.note_to_self)
-            else -> recipient.toShortString()
+            else -> recipientName
         }
         @DimenRes val sizeID: Int = if (recipient.isClosedGroupRecipient) {
             R.dimen.medium_profile_picture_size
@@ -1985,12 +2128,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.profilePictureView.root.layoutParams = LinearLayout.LayoutParams(size, size)
         binding.profilePictureView.root.glide = glide
         MentionManagerUtilities.populateUserPublicKeyCacheIfNeeded(
-                viewModel.threadId,
-                requireActivity()
+            viewModel.threadId,
+            requireActivity()
         )
         binding.profilePictureView.root.update(recipient)
         binding.layoutConversation.setOnClickListener()
         {
+            hideAttachmentContainer()
             ConversationMenuHelper.showAllMedia(recipient, listenerCallback)
         }
         binding.backToHomeBtn.setOnClickListener {
@@ -1999,51 +2143,63 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     }
 
-    private fun backToHome() {
+    fun backToHome() {
         val homeFragment: Fragment = HomeFragment()
         requireActivity().supportFragmentManager.beginTransaction()
-                .replace(
-                        R.id.activity_home_frame_layout_container,
-                        homeFragment,
-                        HomeFragment::class.java.name
-                ).commit()
+            .replace(
+                R.id.activity_home_frame_layout_container,
+                homeFragment,
+                HomeFragment::class.java.name
+            ).commit()
     }
 
     private fun setUpInputBar() {
         binding.inputBar.delegate = this
         binding.inputBarRecordingView.delegate = this
         // GIF button
-        binding.gifButtonContainer.addView(gifButton)
-        gifButton.layoutParams = RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.MATCH_PARENT
-        )
-        gifButton.onUp = { showGIFPicker() }
-        gifButton.snIsEnabled = false
-        // Document button
-        binding.documentButtonContainer.addView(documentButton)
-        documentButton.layoutParams = RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.MATCH_PARENT
-        )
-        documentButton.onUp = { showDocumentPicker() }
-        documentButton.snIsEnabled = false
-        // Library button
-        binding.libraryButtonContainer.addView(libraryButton)
-        libraryButton.layoutParams = RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.MATCH_PARENT
-        )
-        libraryButton.onUp = { pickFromLibrary() }
-        libraryButton.snIsEnabled = false
-        // Camera button
-        binding.cameraButtonContainer.addView(cameraButton)
-        cameraButton.layoutParams = RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.MATCH_PARENT
-        )
-        cameraButton.onUp = { showCamera() }
-        cameraButton.snIsEnabled = false
+//        binding.gifButtonContainer.addView(gifButton)
+//        gifButton.layoutParams = RelativeLayout.LayoutParams(
+//            RelativeLayout.LayoutParams.MATCH_PARENT,
+//            RelativeLayout.LayoutParams.MATCH_PARENT
+//        )
+//        gifButton.onUp = { showGIFPicker() }
+//        gifButton.snIsEnabled = false
+//        // Document button
+//        binding.documentButtonContainer.addView(documentButton)
+//        documentButton.layoutParams = RelativeLayout.LayoutParams(
+//            RelativeLayout.LayoutParams.MATCH_PARENT,
+//            RelativeLayout.LayoutParams.MATCH_PARENT
+//        )
+//        documentButton.onUp = { showDocumentPicker() }
+//        documentButton.snIsEnabled = false
+//        // Library button
+//        binding.libraryButtonContainer.addView(libraryButton)
+//        libraryButton.layoutParams = RelativeLayout.LayoutParams(
+//            RelativeLayout.LayoutParams.MATCH_PARENT,
+//            RelativeLayout.LayoutParams.MATCH_PARENT
+//        )
+//        libraryButton.onUp = { pickFromLibrary() }
+//        libraryButton.snIsEnabled = false
+//        // Camera button
+//        binding.cameraButtonContainer.addView(cameraButton)
+//        cameraButton.layoutParams = RelativeLayout.LayoutParams(
+//            RelativeLayout.LayoutParams.MATCH_PARENT,
+//            RelativeLayout.LayoutParams.MATCH_PARENT
+//        )
+//        cameraButton.onUp = { showCamera() }
+//        cameraButton.snIsEnabled = false
+        binding.cameraButton.setOnClickListener {
+            showCamera()
+            toggleAttachmentOptions()
+        }
+        binding.imageButton.setOnClickListener {
+            pickFromLibrary()
+            toggleAttachmentOptions()
+        }
+        binding.documentButton.setOnClickListener {
+            showDocumentPicker()
+            toggleAttachmentOptions()
+        }
     }
 
     private fun setUpLinkPreviewObserver() {
@@ -2055,25 +2211,25 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             when {
                 previewState.isLoading -> {
                     //New Line
-                    val params =
-                            binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-                    params.bottomMargin = 20
+//                    val params =
+//                        binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
+//                    params.bottomMargin = 20
 
                     binding.inputBar.draftLinkPreview()
                 }
                 previewState.linkPreview.isPresent -> {
                     //New Line
-                    val params =
-                            binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-                    params.bottomMargin = 20
+//                    val params =
+//                        binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
+//                    params.bottomMargin = 20
 
                     binding.inputBar.updateLinkPreviewDraft(glide, previewState.linkPreview.get())
                 }
                 else -> {
                     //New Line
-                    val params =
-                            binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-                    params.bottomMargin = 16
+//                    val params =
+//                        binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
+//                    params.bottomMargin = 16
 
                     binding.inputBar.cancelLinkPreviewDraft(2)
                 }
@@ -2088,30 +2244,30 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (mediaURI != null && mediaType != null) {
             if (AttachmentManager.MediaType.IMAGE == mediaType || AttachmentManager.MediaType.GIF == mediaType || AttachmentManager.MediaType.VIDEO == mediaType) {
                 val media = Media(
-                        mediaURI,
-                        MediaUtil.getMimeType(
-                                requireActivity(),
-                                mediaURI
-                        )!!,
-                        0,
-                        0,
-                        0,
-                        0,
-                        Optional.absent(),
-                        Optional.absent()
+                    mediaURI,
+                    MediaUtil.getMimeType(
+                        requireActivity(),
+                        mediaURI
+                    )!!,
+                    0,
+                    0,
+                    0,
+                    0,
+                    Optional.absent(),
+                    Optional.absent()
                 )
                 startActivityForResult(
-                        MediaSendActivity.buildEditorIntent(
-                                requireActivity(),
-                                listOf(media),
-                                viewModel.recipient.value!!,
-                                ""
-                        ), PICK_FROM_LIBRARY
+                    MediaSendActivity.buildEditorIntent(
+                        requireActivity(),
+                        listOf(media),
+                        viewModel.recipient.value!!,
+                        ""
+                    ), PICK_FROM_LIBRARY
                 )
                 return
             } else {
                 prepMediaForSending(mediaURI, mediaType).addListener(object :
-                        ListenableFuture.Listener<Boolean> {
+                    ListenableFuture.Listener<Boolean> {
 
                     override fun onSuccess(result: Boolean?) {
                         sendAttachments(attachmentManager.buildSlideDeck().asAttachments(), null)
@@ -2119,9 +2275,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
                     override fun onFailure(e: ExecutionException?) {
                         Toast.makeText(
-                                requireActivity(),
-                                R.string.activity_conversation_attachment_prep_failed,
-                                Toast.LENGTH_LONG
+                            requireActivity(),
+                            R.string.activity_conversation_attachment_prep_failed,
+                            Toast.LENGTH_LONG
                         ).show()
                     }
                 })
@@ -2129,7 +2285,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
         } else if (!requireArguments().getCharSequence(Intent.EXTRA_TEXT).isNullOrEmpty()) {
             val dataTextExtra =
-                    requireArguments().getCharSequence(Intent.EXTRA_TEXT) ?: ""
+                requireArguments().getCharSequence(Intent.EXTRA_TEXT) ?: ""
             binding.inputBar.text = dataTextExtra.toString()
         } else {
             viewModel.getDraft()?.let { text ->
@@ -2166,15 +2322,15 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val textSize = if (unreadCount < 10000) 12.0f else 9.0f
         binding.unreadCountTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize)
         binding.unreadCountTextView.setTypeface(
-                Typeface.DEFAULT,
-                if (unreadCount < 100) Typeface.BOLD else Typeface.NORMAL
+            Typeface.DEFAULT,
+            if (unreadCount < 100) Typeface.BOLD else Typeface.NORMAL
         )
         binding.unreadCountIndicator.isVisible = (unreadCount != 0)
     }
 
     private fun setUpTypingObserver(thread: Recipient) {
         ApplicationContext.getInstance(requireActivity()).typingStatusRepository.getTypists(
-                viewModel.threadId
+            viewModel.threadId
         ).observe(requireActivity()) { state ->
             val recipients = if (state != null) state.typists else listOf()
             val viewContainer = binding.typingIndicatorViewContainer
@@ -2187,17 +2343,39 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
                 override fun onTextChanged(text: String?) {
                     ApplicationContext.getInstance(requireActivity()).typingStatusSender.onTypingStarted(
-                            viewModel.threadId
+                        viewModel.threadId
                     )
                     checkInputBarTextOnTextChanged(text,thread)
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                    super.afterTextChanged(s)   
+                    formatBoldText(s)
                 }
             })
         } else {
             binding.inputBar.addTextChangedListener(object : SimpleTextWatcher() {
                 override fun onTextChanged(text: String?) {
-                    checkInputBarTextOnTextChanged(text,thread)
+                   checkInputBarTextOnTextChanged(text,thread)
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                    super.afterTextChanged(s)
+                    formatBoldText(s)
                 }
             })
+        }
+    }
+
+    private fun formatBoldText(s: Editable?) {
+        val text = s.toString()
+        val start = text.indexOf("*")
+        val end = text.lastIndexOf("*")
+
+        if (start != -1 && end != -1 && start != end) {
+            s?.setSpan(StyleSpan(Typeface.BOLD), start+1, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            s?.delete(start, start + 1)
+            s?.delete(end-1, end)
         }
     }
 
@@ -2224,16 +2402,16 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (recipient.isMuted) {
             if (recipient.mutedUntil != Long.MAX_VALUE) {
                 binding.conversationSubtitleView.text = getString(
-                        R.string.ConversationActivity_muted_until_date,
-                        DateUtils.getFormattedDateTime(
-                                recipient.mutedUntil,
-                                "EEE, MMM d, yyyy HH:mm",
-                                Locale.getDefault()
-                        )
+                    R.string.ConversationActivity_muted_until_date,
+                    DateUtils.getFormattedDateTime(
+                        recipient.mutedUntil,
+                        "EEE, MMM d, yyyy HH:mm",
+                        Locale.getDefault()
+                    )
                 )
             } else {
                 binding.conversationSubtitleView.text =
-                        getString(R.string.ConversationActivity_muted_forever)
+                    getString(R.string.ConversationActivity_muted_forever)
             }
         } else if (recipient.isGroupRecipient) {
             try {
@@ -2261,52 +2439,61 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
+    private fun hideAttachmentContainer(){
+        isShowingAttachmentOptions = false
+        binding.attachmentContainer.isVisible = isShowingAttachmentOptions
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            return false
-        } else if (item.itemId == R.id.menu_call) {
-            val recipient = viewModel.recipient.value ?: return false
-            if (recipient.isContactRecipient && recipient.isBlocked) {
-                BlockedDialog(recipient).show(
-                        requireActivity().supportFragmentManager,
-                        "Blocked Dialog"
-                )
-            } else {
-                viewModel.recipient.value?.let { recipients ->
-                    call(requireActivity(), recipients)
+        if(!binding.inputBarRecordingView.isTimerRunning) {
+            if (item.itemId == android.R.id.home) {
+                hideAttachmentContainer()
+                return false
+            } else if (item.itemId == R.id.menu_call) {
+                hideAttachmentContainer()
+                val recipient = viewModel.recipient.value ?: return false
+                if (recipient.isContactRecipient && recipient.isBlocked) {
+                    unblock()
+                } else {
+                    viewModel.recipient.value?.let { recipients ->
+                        call(requireActivity(), recipients)
+                    }
                 }
             }
-        }
-        return viewModel.recipient.value?.let { recipient ->
-            ConversationMenuHelper.onOptionItemSelected(
+            return viewModel.recipient.value?.let { recipient ->
+                ConversationMenuHelper.onOptionItemSelected(
                     requireActivity(),
                     this,
                     item,
                     recipient,
-                    listenerCallback
-            )
-        } ?: false
+                    listenerCallback,
+                    childFragmentManager
+                )
+            } ?: false
+        }else{
+            return false
+        }
     }
 
     private fun call(context: Context, thread: Recipient) {
 
         if (!TextSecurePreferences.isCallNotificationsEnabled(context)) {
             //SteveJosephh22
-            val factory = LayoutInflater.from(context)
+            val factory = LayoutInflater.from(requireActivity())
             val callPermissionDialogView: View =
-                    factory.inflate(R.layout.call_permissions_dialog_box, null)
+                factory.inflate(R.layout.call_permissions_dialog_box, null)
             val callPermissionDialog = AlertDialog.Builder(requireActivity()).create()
             callPermissionDialog.setView(callPermissionDialogView)
-            callPermissionDialogView.findViewById<TextView>(R.id.settingsDialogBoxButton)
-                    .setOnClickListener {
-                        val intent = Intent(requireActivity(), PrivacySettingsActivity::class.java)
-                        this.activity?.startActivity(intent)
-                        callPermissionDialog.dismiss()
-                    }
-            callPermissionDialogView.findViewById<TextView>(R.id.cancelDialogBoxButton)
-                    .setOnClickListener {
-                        callPermissionDialog.dismiss()
-                    }
+            callPermissionDialogView.findViewById<Button>(R.id.settingsDialogBoxButton)
+                .setOnClickListener {
+                    val intent = Intent(requireActivity(), PrivacySettingsActivity::class.java)
+                    this.activity?.startActivity(intent)
+                    callPermissionDialog.dismiss()
+                }
+            callPermissionDialogView.findViewById<Button>(R.id.cancelDialogBoxButton)
+                .setOnClickListener {
+                    callPermissionDialog.dismiss()
+                }
             callPermissionDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
             callPermissionDialog.show()
             return
@@ -2314,8 +2501,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
         val service = WebRtcCallService.createCall(context, thread)
         context.startService(service)
-
-        val activity = Intent(context, WebRtcCallActivity::class.java).apply {
+        val activity = Intent(context, WebRTCComposeActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
         context.startActivity(activity)
@@ -2327,7 +2513,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             val openGroup = viewModel.getOpenGroupChat()
                     ?: return
             OpenGroupAPIV2.getMemberCount(openGroup.room, openGroup.server)
-                    .successUi { updateSubtitle() }
+                .successUi { updateSubtitle() }
         } catch (ex: NullPointerException) {
             Timber.tag("Exception ").d(ex.message.toString())
         }
@@ -2340,35 +2526,110 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
         val contact = viewModel.getContactWithBChatId()
         val name = contact?.displayName(Contact.ContactContext.REGULAR) ?: recipient.address.toString()
-        binding.blockedBannerTextView.text =
-                resources.getString(R.string.activity_conversation_blocked_banner_text, name)
+//        binding.blockedBannerTextView.text =
+//            resources.getString(R.string.activity_conversation_blocked_banner_text, name)
         binding.blockedBanner.isVisible = recipient.isBlocked
         callShowPayAsYouChatBDXIcon(recipient)
         showBlockProgressBar(recipient)
-        binding.unblockButton.setOnClickListener {
-            viewModel.unblock()
-            viewModel.recipient.value?.let { thread ->
-                showBlockProgressBar(thread)
-            }
+        /*setting click listener on banner to avoid background click gesture - DO NOT REMOVE This line*/
+        binding.blockedBanner.setOnClickListener {  }
+        binding.clearChat.setOnClickListener {
+            clearChatDialog()
         }
+        binding.unblockButton.setOnClickListener {
+            unblockContactDialog()
+        }
+    }
+
+    private fun clearChatDialog() {
+        val dialog = ConversationActionDialog()
+        dialog.apply {
+            arguments = Bundle().apply {
+                putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.ClearChat)
+            }
+            setListener(this@ConversationFragmentV2)
+        }
+        dialog.show(childFragmentManager, ConversationActionDialog.TAG)
+    }
+
+    private fun deleteBlockedConversation() {
+        lifecycleScope.launch(Dispatchers.Main) {
+            val context=requireActivity() as Context
+            // Cancel any outstanding jobs
+            DatabaseComponent.get(context).bchatJobDatabase()
+                    .cancelPendingMessageSendJobs(viewModel.threadId)
+            // Delete the conversation
+            lifecycleScope.launch(Dispatchers.IO) {
+                threadDb.deleteConversation(viewModel.threadId)
+            }
+            // Update the badge count
+            ApplicationContext.getInstance(context).messageNotifier.updateNotification(
+                    context
+            )
+            // Notify the user
+            val toastMessage=R.string.activity_home_conversation_deleted_message
+            Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
+            listenerCallback?.walletOnBackPressed()
+        }
+    }
+
+
+    private fun unblockContactDialog() {
+        val dialog = ConversationActionDialog()
+        dialog.apply {
+            arguments = Bundle().apply {
+                putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.UnblockUser)
+            }
+            setListener(this@ConversationFragmentV2)
+        }
+        dialog.show(childFragmentManager, ConversationActionDialog.TAG)
     }
 
     // region Search
     private fun setUpSearchResultObserver() {
-        searchViewModel!!.searchResults.observe(
+        try {
+            searchViewModel!!.searchResults.observe(
                 requireActivity(),
                 Observer { result: SearchViewModel.SearchResult? ->
                     if (result == null) return@Observer
                     if (result.getResults().isNotEmpty()) {
                         result.getResults()[result.position]?.let {
                             jumpToMessage(
-                                    it.messageRecipient.address,
-                                    it.sentTimestampMs,
-                                    Runnable { searchViewModel!!.onMissingResult() })
+                                it.messageRecipient.address,
+                                it.sentTimestampMs,
+                                Runnable { searchViewModel!!.onMissingResult() })
                         }
+                        binding.searchUp.visibility = View.VISIBLE
+                        binding.searchDown.visibility = View.VISIBLE
+                        binding.searchProgress.visibility = View.GONE
+                        binding.closeSearch.visibility = View.VISIBLE
+                        binding.search.visibility = View.GONE
+                        binding.noMatchesFoundTextview.visibility = View.GONE
+                        if(binding.searchQuery.text?.isEmpty() == true){
+                            binding.noMatchesFoundTextview.visibility = View.GONE
+                            binding.closeSearch.visibility = View.GONE
+                            binding.searchDown.visibility = View.GONE
+                            binding.searchUp.visibility = View.GONE
+                            binding.searchClose.visibility = View.VISIBLE
+                        }
+                    } else {
+                        if(binding.searchQuery.text?.isEmpty() == true){
+                            binding.noMatchesFoundTextview.visibility = View.GONE
+                            binding.closeSearch.visibility = View.GONE
+                            binding.searchClose.visibility = View.VISIBLE
+                        }
+                        binding.searchUp.visibility = View.GONE
+                        binding.searchDown.visibility = View.GONE
+                        binding.searchProgress.visibility = View.GONE
+                        binding.closeSearch.visibility = View.VISIBLE
+                        binding.search.visibility = View.GONE
+                        binding.noMatchesFoundTextview.visibility = View.VISIBLE
                     }
-                    binding.searchBottomBar.setData(result.position, result.getResults().size)
+//                binding.searchBottomBar.setData(result.position, result.getResults().size)
                 })
+        }catch(ex:Exception){
+            Log.e("Search result Exception -> ",ex.message.toString())
+        }
     }
 
 
@@ -2385,27 +2646,29 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val recipient = viewModel.recipient.value ?: return
         //New Line
         if (!isMessageRequestThread()) {
-            ConversationMenuHelper.onPrepareOptionsMenu(
-                    menu,
-                    requireActivity().menuInflater,
-                    recipient,
-                    viewModel.threadId,
-                    requireActivity().applicationContext,
-                    this
-            ) { onOptionsItemSelected(it) }
+            callOnPrepareOptionsMenu(menu, recipient)
+        } else if (recipient.isLocalNumber) {
+            callOnPrepareOptionsMenu(menu, recipient)
         }
         super.onPrepareOptionsMenu(menu)
     }
 
-    private fun showOrHideInputIfNeeded() {
-        val recipient = viewModel.recipient.value
-        if (recipient != null && recipient.isClosedGroupRecipient && mContext != null) {
-            val group = viewModel.getGroup(recipient)
-            val isActive = (group?.isActive == true)
-            binding.inputBar.showInput = isActive
-        } else {
-            binding.inputBar.showInput = true
+    private fun callOnPrepareOptionsMenu(menu: Menu, recipient: Recipient) {
+        hideAttachmentContainer()
+        ConversationMenuHelper.onPrepareOptionsMenu(
+            menu,
+            requireActivity().menuInflater,
+            recipient,
+            viewModel.threadId,
+            requireActivity().applicationContext,
+            this
+        ) {
+            onOptionsItemSelected(it)
         }
+    }
+
+    private fun showOrHideInputIfNeeded() {
+        binding.inputBar.showInput = isSecretGroupIsActive()
     }
 
     private fun isIncomingMessageRequestThread(): Boolean {
@@ -2484,7 +2747,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 hideMentionCandidates()
             } else if (currentMentionStartIndex != -1) {
                 val query =
-                        text.substring(currentMentionStartIndex + 1) // + 1 to get rid of the "@"
+                    text.substring(currentMentionStartIndex + 1) // + 1 to get rid of the "@"
                 showOrUpdateMentionCandidatesIfNeeded(query)
             }
         } else {
@@ -2501,10 +2764,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val lockViewLocation = IntArray(2) { 0 }
         binding.inputBarRecordingView.lockView.getLocationOnScreen(lockViewLocation)
         val hitRect = Rect(
-                lockViewLocation[0] - lockViewHitMargin,
-                0,
-                lockViewLocation[0] + binding.inputBarRecordingView.lockView.width + lockViewHitMargin,
-                lockViewLocation[1] + binding.inputBarRecordingView.lockView.height
+            lockViewLocation[0] - lockViewHitMargin,
+            0,
+            lockViewLocation[0] + binding.inputBarRecordingView.lockView.width + lockViewHitMargin,
+            lockViewLocation[1] + binding.inputBarRecordingView.lockView.height
         )
         return hitRect.contains(x, y)
     }
@@ -2515,7 +2778,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.inputBar.visibility = View.INVISIBLE
 
         binding.inputBarRecordingView.show()
-        binding.inputBarCard.alpha = 0.0f
+//        binding.inputBarCard.alpha = 0.0f
         binding.inputBar.alpha = 0.0f
         val animation = ValueAnimator.ofObject(FloatEvaluator(), 1.0f, 0.0f)
         animation.duration = 250L
@@ -2548,10 +2811,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun sendAttachments(
-            attachments: List<Attachment>,
-            body: String?,
-            quotedMessage: MessageRecord? = null,
-            linkPreview: LinkPreview? = null
+        attachments: List<Attachment>,
+        body: String?,
+        quotedMessage: MessageRecord? = null,
+        linkPreview: LinkPreview? = null
     ) {
         val recipient = viewModel.recipient.value ?: return
         //New Line v32
@@ -2563,11 +2826,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         message.text = body
         val quote = quotedMessage?.let {
             val quotedAttachments =
-                    (it as? MmsMessageRecord)?.slideDeck?.asAttachments() ?: listOf()
+                (it as? MmsMessageRecord)?.slideDeck?.asAttachments() ?: listOf()
             val sender =
-                    if (it.isOutgoing) Address.fromSerialized(
-                            listenerCallback!!.gettextSecurePreferences().getLocalNumber()!!
-                    ) else it.individualRecipient.address
+                if (it.isOutgoing) Address.fromSerialized(
+                    listenerCallback!!.gettextSecurePreferences().getLocalNumber()!!
+                ) else it.individualRecipient.address
             //Payment Tag
             var quoteBody = it.body
             if (it.isPayment) {
@@ -2586,19 +2849,19 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     resources.getString(R.string.payment_received)
                 }
                 quoteBody =
-                        resources.getString(R.string.reply_payment_card_message, direction, amount)
+                    resources.getString(R.string.reply_payment_card_message, direction, amount)
             } else if (it.isOpenGroupInvitation) {
                 quoteBody = resources.getString(R.string.ThreadRecord_open_group_invitation)
             }
             QuoteModel(it.dateSent, sender, quoteBody, false, quotedAttachments)
         }
         val outgoingTextMessage =
-                OutgoingMediaMessage.from(message, recipient, attachments, quote, linkPreview)
+            OutgoingMediaMessage.from(message, recipient, attachments, quote, linkPreview)
         // Clear the input bar
         binding.inputBar.text = ""
         //New Line
-        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-        params.bottomMargin = 16
+//        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
+//        params.bottomMargin = 16
 
         binding.inputBar.cancelQuoteDraft(2)
         binding.inputBar.cancelLinkPreviewDraft(2)
@@ -2618,7 +2881,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         MessageSender.send(message, recipient.address, attachments, quote, linkPreview)
         // Send a typing stopped message
         ApplicationContext.getInstance(requireActivity()).typingStatusSender.onTypingStopped(
-                viewModel.threadId
+            viewModel.threadId
         )
     }
 
@@ -2630,7 +2893,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val text = getMessageBody()
         val userPublicKey = listenerCallback!!.gettextSecurePreferences().getLocalNumber()
         val isNoteToSelf =
-                (recipient.isContactRecipient && recipient.address.toString() == userPublicKey)
+            (recipient.isContactRecipient && recipient.address.toString() == userPublicKey)
         if (text.contains(seed) && !isNoteToSelf && !hasPermissionToSendSeed) {
             val dialog = SendSeedDialog { sendTextOnlyMessage(true) }
             return dialog.show(requireActivity().supportFragmentManager, "Send Seed Dialog")
@@ -2643,8 +2906,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         // Clear the input bar
         binding.inputBar.text = ""
         //New Line
-        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-        params.bottomMargin = 16
+//        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
+//        params.bottomMargin = 16
 
         binding.inputBar.cancelQuoteDraft(2)
         binding.inputBar.cancelLinkPreviewDraft(2)
@@ -2659,7 +2922,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         MessageSender.send(message, recipient.address)
         // Send a typing stopped message
         ApplicationContext.getInstance(requireActivity()).typingStatusSender.onTypingStopped(
-                viewModel.threadId
+            viewModel.threadId
         )
     }
 
@@ -2680,11 +2943,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             try {
                 val startIndex = result.indexOf("@" + mention.displayName)
                 val endIndex =
-                        startIndex + mention.displayName.count() + 1 // + 1 to include the "@"
+                    startIndex + mention.displayName.count() + 1 // + 1 to include the "@"
                 result =
-                        result.substring(0, startIndex) + "@" + mention.publicKey + result.substring(
-                                endIndex
-                        )
+                    result.substring(0, startIndex) + "@" + mention.publicKey + result.substring(
+                        endIndex
+                    )
             } catch (exception: Exception) {
                 Timber.tag("Beldex").d("Failed to process mention due to error: $exception")
             }
@@ -2695,7 +2958,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun acceptMessageRequest() {
         binding.messageRequestBar.isVisible = false
         binding.conversationRecyclerView.layoutManager =
-                LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, true)
+            LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, true)
         //New Line 1
         adapter.notifyDataSetChanged()
         viewModel.acceptMessageRequest()
@@ -2711,18 +2974,18 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val messageCount = messages.size
         val builder = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
         builder.setTitle(
-                resources.getQuantityString(
-                        R.plurals.ConversationFragment_delete_selected_messages,
-                        messageCount,
-                        messageCount
-                )
+            resources.getQuantityString(
+                R.plurals.ConversationFragment_delete_selected_messages,
+                messageCount,
+                messageCount
+            )
         )
         builder.setMessage(
-                resources.getQuantityString(
-                        R.plurals.ConversationFragment_this_will_permanently_delete_all_n_selected_messages,
-                        messageCount,
-                        messageCount
-                )
+            resources.getQuantityString(
+                R.plurals.ConversationFragment_this_will_permanently_delete_all_n_selected_messages,
+                messageCount,
+                messageCount
+            )
         )
         builder.setCancelable(true)
         builder.setPositiveButton(R.string.delete) { _, _ ->
@@ -2737,8 +3000,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun endActionMode() {
-        actionMode?.finish()
-        actionMode = null
+        this.actionMode?.finish()
+        this.actionMode = null
     }
 
     private fun jumpToMessage(author: Address, timestamp: Long, onMessageNotFound: Runnable?) {
@@ -2751,7 +3014,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val binding = binding
         val wasTypingIndicatorVisibleBefore = binding.typingIndicatorViewContainer.isVisible
         binding.typingIndicatorViewContainer.isVisible =
-                wasTypingIndicatorVisibleBefore && isScrolledToBottom
+            wasTypingIndicatorVisibleBefore && isScrolledToBottom
         val isTypingIndicatorVisibleAfter = binding.typingIndicatorViewContainer.isVisible
         if (isTypingIndicatorVisibleAfter != wasTypingIndicatorVisibleBefore) {
             inputBarHeightChanged(binding.inputBar.height)
@@ -2787,7 +3050,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     private fun showGIFPicker() {
         val hasSeenGIFMetaDataWarning: Boolean =
-                listenerCallback!!.gettextSecurePreferences().hasSeenGIFMetaDataWarning()
+            listenerCallback!!.gettextSecurePreferences().hasSeenGIFMetaDataWarning()
         if (!hasSeenGIFMetaDataWarning) {
             val builder = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
             builder.setTitle("Search GIFs?")
@@ -2798,7 +3061,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 dialog.dismiss()
             }
             builder.setNegativeButton(
-                    "Cancel"
+                "Cancel"
             ) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
             builder.create().show()
         } else {
@@ -2814,8 +3077,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val recipient = viewModel.recipient.value ?: return
         binding.inputBar.text.trim().let { text ->
             AttachmentManager.selectGallery(
-                    requireActivity(),
-                    PICK_FROM_LIBRARY, recipient, text
+                requireActivity(),
+                PICK_FROM_LIBRARY, recipient, text
             )
         }
     }
@@ -2828,7 +3091,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (isShowingMentionCandidatesView) {
             val mentionCandidatesView = mentionCandidatesView ?: return
             val animation =
-                    ValueAnimator.ofObject(FloatEvaluator(), mentionCandidatesView.alpha, 0.0f)
+                ValueAnimator.ofObject(FloatEvaluator(), mentionCandidatesView.alpha, 0.0f)
             animation.duration = 250L
             animation.addUpdateListener { animator ->
                 mentionCandidatesView.alpha = animator.animatedValue as Float
@@ -2851,17 +3114,17 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             view.onCandidateSelected = { handleMentionSelected(it) }
             additionalContentContainer.addView(view)
             val candidates = MentionsManager.getMentionCandidates(
-                    query,
-                    viewModel.threadId,
-                    recipient.isOpenGroupRecipient
+                query,
+                viewModel.threadId,
+                recipient.isOpenGroupRecipient
             )
             this.mentionCandidatesView = view
             view.show(candidates, viewModel.threadId)
         } else {
             val candidates = MentionsManager.getMentionCandidates(
-                    query,
-                    viewModel.threadId,
-                    recipient.isOpenGroupRecipient
+                query,
+                viewModel.threadId,
+                recipient.isOpenGroupRecipient
             )
             this.mentionCandidatesView!!.setMentionCandidates(candidates)
         }
@@ -2870,44 +3133,25 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     /*Hales63*/
     private fun acceptAlertDialog() {
-        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
-                .setMessage(resources.getString(R.string.message_requests_accept_message))
-                .setPositiveButton(R.string.accept) { _, _ ->
-                    acceptMessageRequest()
-                    viewModel.recipient.value?.let {
-                        showBlockProgressBar(it)
-                    }
-                }
-                .setNegativeButton(R.string.cancel) { _, _ ->
-                    // Do nothing
-                }.show()
-
-        //SteveJosephh21
-        val textView: TextView? = dialog.findViewById(android.R.id.message)
-        val face: Typeface =
-                Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
-        textView!!.typeface = face
+        val acceptRequest = ConversationActionDialog()
+        acceptRequest.apply {
+            arguments = Bundle().apply {
+                putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.AcceptRequest)
+            }
+            setListener(this@ConversationFragmentV2)
+        }
+        acceptRequest.show(childFragmentManager, ConversationActionDialog.TAG)
     }
 
     private fun declineAlertDialog() {
-        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog_Clear_All)
-                .setMessage(resources.getString(R.string.message_requests_decline_message))
-                .setPositiveButton(R.string.decline) { _, _ ->
-                    viewModel.declineMessageRequest()
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(requireActivity())
-                    }
-                    backToHome()
-                }
-                .setNegativeButton(R.string.cancel) { _, _ ->
-                    // Do nothing
-                }.show()
-
-        //SteveJosephh21
-        val textView: TextView? = dialog.findViewById(android.R.id.message)
-        val face: Typeface =
-                Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
-        textView!!.typeface = face
+        val declineRequest = ConversationActionDialog()
+        declineRequest.apply {
+            arguments = Bundle().apply {
+                putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.DeclineRequest)
+            }
+            setListener(this@ConversationFragmentV2)
+        }
+        declineRequest.show(childFragmentManager, ConversationActionDialog.TAG)
     }
 
     private fun handleMentionSelected(mention: Mention) {
@@ -2918,7 +3162,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         mentions.add(mention)
         val previousText = binding.inputBar.text
         val newText =
-                previousText.substring(0, currentMentionStartIndex) + "@" + mention.displayName + " "
+            previousText.substring(0, currentMentionStartIndex) + "@" + mention.displayName + " "
         binding.inputBar.text = newText
         binding.inputBar.setSelection(newText.length)
         currentMentionStartIndex = -1
@@ -2932,10 +3176,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
         binding.openGroupGuidelinesView.visibility = View.VISIBLE
         val recyclerViewLayoutParams =
-                binding.conversationRecyclerView.layoutParams as RelativeLayout.LayoutParams
+            binding.conversationRecyclerView.layoutParams as RelativeLayout.LayoutParams
         recyclerViewLayoutParams.topMargin = toPx(
-                5,
-                resources
+            5,
+            resources
         ) // The height of the social group guidelines view is hardcoded to this
         binding.conversationRecyclerView.layoutParams = recyclerViewLayoutParams
     }
@@ -2956,8 +3200,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         txData.destinationAddress = senderBeldexAddress
         txData.destinationAddress?.let { Timber.tag("SenderBeldexAddress txData->").d(it) }
         if (getCleanAmountString(getBDXAmount()).equals(
-                        Wallet.getDisplayAmount(totalFunds)
-                )
+                Wallet.getDisplayAmount(totalFunds)
+            )
         ) {
             val amount = (totalFunds - 10485760)// 10485760 == 050000000
             val bdx = getCleanAmountString(getBDXAmount())
@@ -2969,7 +3213,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
         } else {
             val bdx =
-                    getCleanAmountString(getBDXAmount())
+                getCleanAmountString(getBDXAmount())
             if (bdx != null) {
                 txData.amount = Wallet.getAmountFromString(bdx)
             } else {
@@ -2985,10 +3229,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         txData.mixin = mixin
         //Important
         val lockManager: LockManager<CustomPinActivity> =
-                LockManager.getInstance() as LockManager<CustomPinActivity>
+            LockManager.getInstance() as LockManager<CustomPinActivity>
         lockManager.enableAppLock(requireActivity(), CustomPinActivity::class.java)
         val intent = Intent(requireActivity(), CustomPinActivity::class.java)
-        intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
+        intent.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.VerifyWalletPin.action)
         intent.putExtra("change_pin", false)
         intent.putExtra("send_authentication", true)
         resultLaunchers.launch(intent)
@@ -2998,7 +3242,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun sendFailed(errorText: String?) {
         val transactionLoadingBar: Fragment? =
-                requireActivity().supportFragmentManager.findFragmentByTag("transaction_progressbar_tag")
+            requireActivity().supportFragmentManager.findFragmentByTag("transaction_progressbar_tag")
         if (transactionLoadingBar != null) {
             val df: DialogFragment = transactionLoadingBar as DialogFragment
             try {
@@ -3016,7 +3260,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     override fun createTransactionFailed(errorText: String?) {
         hideProgress()
         if(getString(R.string.invalid_destination_address) == errorText!!){
-            //showAlert(getString(R.string.send_create_tx_error_title), getString(R.string.receiver_address_is_not_available))
+           //showAlert(getString(R.string.send_create_tx_error_title), getString(R.string.receiver_address_is_not_available))
             SendFailedDialog(getString(R.string.receiver_address_is_not_available)).show(requireActivity().supportFragmentManager,"")
             transactionInProgress = false
         }else{
@@ -3049,7 +3293,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     private fun showAlert(title: String, message: String) {
         val builder = AlertDialog.Builder(
-                requireActivity(), R.style.backgroundColor
+            requireActivity(), R.style.backgroundColor
         )
         builder.setCancelable(true).setTitle(title).setMessage(message).create().show()
         transactionInProgress = false
@@ -3067,7 +3311,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     private fun hideProgress() {
         val transactionLoadingBar: Fragment? =
-                requireActivity().supportFragmentManager.findFragmentByTag("transaction_progressbar_tag")
+            requireActivity().supportFragmentManager.findFragmentByTag("transaction_progressbar_tag")
         if (transactionLoadingBar != null) {
             val df: DialogFragment = transactionLoadingBar as DialogFragment
             try {
@@ -3083,8 +3327,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     private fun showProgress() {
         TransactionLoadingBar().show(
-                requireActivity().supportFragmentManager,
-                "transaction_progressbar_tag"
+            requireActivity().supportFragmentManager,
+            "transaction_progressbar_tag"
         )
         inProgress = true
     }
@@ -3095,9 +3339,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             try {
                 if (pendingTransaction!!.firstTxId != null) {
                     InChatSend(
-                            pendingTransaction!!,
-                            txData,
-                            this
+                        pendingTransaction!!,
+                        txData,
+                        this
                     ).show(requireActivity().supportFragmentManager, "")
                 }
             } catch (e: IllegalStateException) {
@@ -3108,9 +3352,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 //Minimized app
                 hideProgress()
                 Toast.makeText(
-                        requireContext(),
-                        getString(R.string.please_try_again_later),
-                        Toast.LENGTH_SHORT
+                    requireContext(),
+                    getString(R.string.please_try_again_later),
+                    Toast.LENGTH_SHORT
                 ).show()
             }
         }
@@ -3130,11 +3374,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private val resultLaunchers =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    onResumeFragment()
-                }
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                onResumeFragment()
             }
+        }
 
     private fun onResumeFragment() {
         Helper.hideKeyboard(activity)
@@ -3160,12 +3404,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         //Insert Recipient Address
         if (TextSecurePreferences.getSaveRecipientAddress(requireActivity())) {
             val insertRecipientAddress =
-                    DatabaseComponent.get(requireActivity()).bchatRecipientAddressDatabase()
+                DatabaseComponent.get(requireActivity()).bchatRecipientAddressDatabase()
             try {
                 if (pendingTransaction!!.firstTxId != null) {
                     insertRecipientAddress.insertRecipientAddress(
-                            pendingTransaction!!.firstTxId,
-                            txData.destinationAddress
+                        pendingTransaction!!.firstTxId,
+                        txData.destinationAddress
                     )
                 }
             } catch (e: IndexOutOfBoundsException) {
@@ -3203,10 +3447,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         //WalletFragment Functionality
         try {
             if (text == getString(R.string.reconnecting) || text == getString(R.string.status_wallet_loading) || text == getString(
-                            R.string.status_wallet_connecting
-                    )
+                    R.string.status_wallet_connecting
+                )
             ) {
-                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet)
+                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet,4f)
             }
             syncText = text
         } catch (ex: IllegalStateException) {
@@ -3214,24 +3458,51 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
-    fun setProgress(n: Int) {
+    fun setProgress(n: Float) {
         syncProgress = n
         when {
-            n > 100 -> {
-                //binding.blockProgressBar.isIndeterminate = true
+            n==4f -> {
                 binding.inputBar.showProgressBar(blockProgressBarVisible)
             }
-            n >= 0 -> {
-                //binding.blockProgressBar.isIndeterminate = false
-                binding.inputBar.setProgress(n)//binding.blockProgressBar.progress = n
+            n==2f -> {
                 binding.inputBar.showProgressBar(blockProgressBarVisible)
             }
-            n == -2 -> {
+            n==3f -> {
                 binding.inputBar.showProgressBar(blockProgressBarVisible)
-                //binding.blockProgressBar.isIndeterminate = false
                 binding.inputBar.setProgress(100)
+                //viewModels.setProgress(1f)
+            }
+            n<1f && n >= 0f -> {
+                //viewModels.setProgress(n)
+                if(n>=0.01f && n<0.1f){
+                    binding.inputBar.setProgress(5)
+                }else if(n>=0.1f && n<0.2f){
+                    binding.inputBar.setProgress(10)
+                }else if(n>=0.2f && n<0.3f){
+                    binding.inputBar.setProgress(20)
+                }else if(n>=0.3f && n<0.4f){
+                    binding.inputBar.setProgress(30)
+                }else if(n>=0.4f && n<0.5f){
+                    binding.inputBar.setProgress(40)
+                }else if(n>=0.55f && n<0.6f){
+                    binding.inputBar.setProgress(55)
+                }else if(n>=0.6f && n<0.7f){
+                    binding.inputBar.setProgress(60)
+                }else if(n>=0.7f && n<0.8f){
+                    binding.inputBar.setProgress(70)
+                }else if(n>=0.8f && n<0.9f){
+                    binding.inputBar.setProgress(80)
+                }else if(n>=0.9f && n<0.95f){
+                    binding.inputBar.setProgress(90)
+                }else if(n>=0.95f && n<0.99f){
+                    binding.inputBar.setProgress(95)
+                }else{
+                    binding.inputBar.setProgress(100)
+                }
+                binding.inputBar.showProgressBar(blockProgressBarVisible)
             }
             else -> { // <0
+                //viewModels.setProgress(n)
                 binding.inputBar.showProgressBar(false)
             }
         }
@@ -3267,7 +3538,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
                 if (!wallet.isSynchronized) {
                     ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
-                            true
+                        true
                     )
                     val n = daemonHeight - walletHeight
                     sync = formatter.format(n) + " " + getString(R.string.status_remaining)
@@ -3276,60 +3547,66 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     }
                     var x = (100 - Math.round(100f * n / (1f * daemonHeight - firstBlock))).toInt()
                     if (x == 0) x = 1 // indeterminate
-                    setProgress(x)
                     valueOfWallet = "${df.format(walletSyncPercentage)}%"
-                    binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet)
+                    if(x>=0){
+                        val progress = (x/100.0).toFloat()
+                        setProgress(progress)
+                        binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet, progress)
+                    }else{
+                        setProgress(x.toFloat())
+                        binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet, x.toFloat())
+                    }
                 } else {
                     ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
-                            false
+                        false
                     )
                     sync =
-                            getString(R.string.status_synchronized)
+                    getString(R.string.status_synchronized)
                     valueOfWallet = "${df.format(walletSyncPercentage)}%"
-                    binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet)
+                    binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet,3f)
                     //SteveJosephh21
-                    setProgress(-2)
+                    setProgress(3f)
                 }
             } else if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connecting) {
                 sync = getString(R.string.status_wallet_connecting)
-                setProgress(-1)
+                setProgress(4f)
                 valueOfWallet = "--"
-                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true, valueOfWallet)
+                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true, valueOfWallet,4f)
             } else {
                 sync = getString(R.string.failed_connected_to_the_node)
-                setProgress(-1)
+                setProgress(4f)
                 valueOfWallet = "--"
-                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true, valueOfWallet)
+                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true, valueOfWallet,4f)
             }
             setProgress(sync)
         } else {
             setProgress(getString(R.string.no_node_connection))
             valueOfWallet ="--"
-            binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true,valueOfWallet)
+            binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true,valueOfWallet,4f)
         }
         toolTip()
     }
 
     private fun refreshBalance(synchronized: Boolean) {
         refreshBalance(
-                synchronized = synchronized,
-                unlockedBalance = unlockedBalance,
-                balance = balance,
+            synchronized = synchronized,
+            unlockedBalance = unlockedBalance,
+            balance = balance,
         ) { bal, unlockedBal, sync ->
             showBalance(bal, unlockedBal, sync)
         }
     }
 
     private fun showBalance(
-            walletBalance: String?,
-            walletUnlockedBalance: String?,
-            synchronized: Boolean
+        walletBalance: String?,
+        walletUnlockedBalance: String?,
+        synchronized: Boolean
     ) {
         showBalance(
-                walletBalance = walletBalance,
-                walletUnlockedBalance = walletUnlockedBalance,
-                synchronized = synchronized,
-                mContext = mContext,
+            walletBalance = walletBalance,
+            walletUnlockedBalance = walletUnlockedBalance,
+            synchronized = synchronized,
+            mContext = mContext,
         ) { bal, unlockedBal ->
             valueOfBalance = bal
             unlockedBal?.let {
@@ -3359,7 +3636,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     inner class AsyncGetUnlockedBalance(val wallet: Wallet) :
-            AsyncTaskCoroutine<Executor?, Boolean?>() {
+        AsyncTaskCoroutine<Executor?, Boolean?>() {
         override fun onPreExecute() {
             super.onPreExecute()
             if (mContext != null && walletAvailableBalance != null) {
@@ -3406,6 +3683,160 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
             return true
         }
+    }
+
+    override fun showMuteOptionDialog(thread: Recipient) {
+        val dialog = ConversationActionDialog()
+        dialog.apply {
+            arguments = Bundle().apply {
+                putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.MuteChat)
+                putSerializable(ConversationActionDialog.EXTRA_ARGUMENT_1, thread.mutedUntil)
+            }
+            setListener(this@ConversationFragmentV2)
+        }
+        dialog.show(childFragmentManager, ConversationActionDialog.TAG)
+    }
+
+    override fun openSearch() {
+        onSearchOpened()
+    }
+
+    fun setSearchView() {
+        binding.searchUp.setOnClickListener {
+            onSearchMoveUpPressed()
+        }
+        binding.searchDown.setOnClickListener {
+            onSearchMoveDownPressed()
+        }
+        binding.closeSearch.setOnClickListener {
+            onSearchClosed()
+        }
+        binding.searchClose.setOnClickListener{
+            onSearchClosed()
+        }
+        binding.searchQuery.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if(p0 != null && p0.trim().isNotEmpty()) {
+                    onSearchQueryUpdated(p0.toString())
+                    binding.searchProgress.visibility = View.VISIBLE
+                    binding.closeSearch.visibility = View.VISIBLE
+                    binding.search.visibility = View.GONE
+                    binding.searchClose.visibility = View.GONE
+                }else{
+                    binding.closeSearch.visibility = View.GONE
+                    binding.search.visibility = View.VISIBLE
+                    binding.searchUp.visibility = View.GONE
+                    binding.searchDown.visibility = View.GONE
+                    binding.searchClose.visibility = View.VISIBLE
+                    binding.noMatchesFoundTextview.visibility = View.GONE
+                    adapter.onSearchQueryUpdated(p0.toString())
+                }
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+        })
+    }
+
+    override fun onConfirm(dialogType: HomeDialogType, threadRecord: ThreadRecord?) {
+        when (dialogType) {
+            HomeDialogType.UnblockUser -> {
+                viewModel.unblock()
+                viewModel.recipient.value?.let { thread ->
+                    showBlockProgressBar(thread)
+                }
+            }
+            HomeDialogType.ClearChat -> {
+                deleteBlockedConversation()
+            }
+            HomeDialogType.AcceptRequest -> {
+                acceptMessageRequest()
+                viewModel.recipient.value?.let {
+                    showBlockProgressBar(it)
+                }
+            }
+            HomeDialogType.DeclineRequest -> {
+                viewModel.declineMessageRequest()
+                lifecycleScope.launch(Dispatchers.IO) {
+                    ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(requireActivity())
+                }
+                backToHome()
+            }
+            HomeDialogType.SelectedMessageDelete -> {
+                for (message in viewModel.deleteMessages ?: setOf()) {
+                    viewModel.deleteLocally(message)
+                }
+                viewModel.setMessagesToDelete(null)
+                endActionMode()
+            }
+            else -> Unit
+        }
+    }
+
+    override fun onCancel(dialogType: HomeDialogType, threadRecord: ThreadRecord?) {
+        when (dialogType) {
+            HomeDialogType.SelectedMessageDelete -> {
+                endActionMode()
+            }
+            else -> Unit
+        }
+    }
+
+    override fun onConfirmationWithData(
+        dialogType: HomeDialogType,
+        data: Any?,
+        threadRecord: ThreadRecord?
+    ) {
+        when (dialogType) {
+            HomeDialogType.MuteChat -> {
+                val muteUntil = when (data as Int) {
+                    1 -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(2)
+                    2 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)
+                    3 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7)
+                    4 -> Long.MAX_VALUE
+                    else -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)
+                }
+                viewModel.recipient.value?.let {
+                    DatabaseComponent.get(requireContext()).recipientDatabase().setMuted(it, muteUntil)
+                }
+            }
+            HomeDialogType.BlockUser -> {
+                val deleteThread = (data as Int) == 1
+                viewModel.block()
+                viewModel.recipient.value?.let { thread ->
+                    showBlockProgressBar(thread)
+                }
+                if (deleteThread) {
+                    viewModel.deleteThread()
+                }
+                cancelVoiceMessage()
+            }
+            HomeDialogType.DisappearingTimer -> {
+                val expirationTime = data as Int
+                viewModel.recipient.value?.let { thread ->
+                    viewModel.setExpireMessages(thread, expirationTime)
+                    val message = ExpirationTimerUpdate(expirationTime)
+                    message.recipient = thread.address.serialize()
+                    message.sentTimestamp = MnodeAPI.nowWithOffset
+                    val expiringMessageManager =
+                        ApplicationContext.getInstance(requireActivity()).expiringMessageManager
+                    expiringMessageManager.setExpirationTimer(message)
+                    MessageSender.send(message, thread.address)
+                    this.activity?.invalidateOptionsMenu()
+                }
+            }
+            else -> Unit
+        }
+    }
+
+    fun hideKeyboard() {
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 }
 //endregion

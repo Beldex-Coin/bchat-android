@@ -3,25 +3,28 @@ package io.beldex.bchat.contacts
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.View
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import com.beldex.libbchat.messaging.contacts.Contact
+import io.beldex.bchat.PassphraseRequiredActionBarActivity
+import io.beldex.bchat.dependencies.DatabaseComponent
+import io.beldex.bchat.mms.GlideApp
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivitySelectContactsBinding
-import io.beldex.bchat.PassphraseRequiredActionBarActivity
-import io.beldex.bchat.mms.GlideApp
 
-class SelectContactsActivity : io.beldex.bchat.PassphraseRequiredActionBarActivity(), LoaderManager.LoaderCallbacks<List<String>> {
+
+class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderManager.LoaderCallbacks<List<String>> {
     private lateinit var binding: ActivitySelectContactsBinding
     private var members = listOf<String>()
         set(value) { field = value; selectContactsAdapter.members = value }
     private lateinit var usersToExclude: Set<String>
 
     private val selectContactsAdapter by lazy {
-        SelectContactsAdapter(this, io.beldex.bchat.mms.GlideApp.with(this))
+        SelectContactsAdapter(this, GlideApp.with(this))
     }
 
     companion object {
@@ -33,26 +36,77 @@ class SelectContactsActivity : io.beldex.bchat.PassphraseRequiredActionBarActivi
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
         super.onCreate(savedInstanceState, isReady)
-        binding = ActivitySelectContactsBinding.inflate(layoutInflater)
+        binding=ActivitySelectContactsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        supportActionBar!!.title = resources.getString(R.string.activity_select_contacts_title)
+        supportActionBar!!.title=resources.getString(R.string.activity_select_contacts_title)
 
-        usersToExclude = intent.getStringArrayExtra(usersToExcludeKey)?.toSet() ?: setOf()
-        val emptyStateText = intent.getStringExtra(emptyStateTextKey)
+        usersToExclude=intent.getStringArrayExtra(usersToExcludeKey)?.toSet() ?: setOf()
+        val emptyStateText=intent.getStringExtra(emptyStateTextKey)
         if (emptyStateText != null) {
-            binding.emptyStateMessageTextView.text = emptyStateText
+            binding.emptyStateMessageTextView.text=emptyStateText
         }
 
-        binding.recyclerView.adapter = selectContactsAdapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.adapter=selectContactsAdapter
+        binding.recyclerView.layoutManager=LinearLayoutManager(this)
 
         LoaderManager.getInstance(this).initLoader(0, null, this)
+
+        binding.addButton.setOnClickListener {
+            closeAndReturnSelected()
+        }
+
+        binding.searchContact.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s : Editable) {
+                filter(s.toString().lowercase(), members as ArrayList<String>)
+            }
+
+            override fun beforeTextChanged(
+                    s : CharSequence, start : Int,
+                    count : Int, after : Int
+            ) {
+            }
+
+            override fun onTextChanged(
+                    s : CharSequence, start : Int,
+                    before : Int, count : Int
+            ) {
+                if(s.toString().isNotEmpty()){
+                    binding.searchAndClearImageview.setImageResource(R.drawable.ic_close)
+                }else{
+                    binding.searchAndClearImageview.setImageResource(R.drawable.ic_baseline_search_24)
+                }
+            }
+        })
+
+        binding.searchAndClearImageview.setOnClickListener {
+            if(binding.searchContact.text.isNotEmpty()){
+                binding.searchContact.text.clear()
+            }
+        }
+    }
+    fun filter(text: String?, arrayList: ArrayList<String>) {
+        val temp: MutableList<String> = ArrayList()
+
+        for (d in arrayList) {
+            if (getUserDisplayName(d).lowercase().contains(text!!)) {
+                temp.add(d)
+            }
+
+        }
+        //update recyclerview
+        selectContactsAdapter.updateList(temp)
+    }
+    private fun getUserDisplayName(publicKey: String): String {
+        val contact = DatabaseComponent.get(this).bchatContactDatabase()
+                .getContactWithBchatID(publicKey)
+        return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+
+   /* override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_done_open_group, menu)
         return members.isNotEmpty()
-    }
+    }*/
     // endregion
 
     // region Updating
@@ -69,6 +123,7 @@ class SelectContactsActivity : io.beldex.bchat.PassphraseRequiredActionBarActivi
     }
 
     private fun update(members: List<String>) {
+        println("filter function called 5 $members")
         this.members = members
         binding.recyclerView.visibility = if (members.isEmpty()) View.GONE else View.VISIBLE
         binding.emptyStateContainer.visibility = if (members.isEmpty()) View.VISIBLE else View.GONE
@@ -77,13 +132,13 @@ class SelectContactsActivity : io.beldex.bchat.PassphraseRequiredActionBarActivi
     // endregion
 
     // region Interaction
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    /*override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             R.id.doneButton -> closeAndReturnSelected()
         }
         return super.onOptionsItemSelected(item)
     }
-
+*/
     private fun closeAndReturnSelected() {
         val selectedMembers = selectContactsAdapter.selectedMembers
         val selectedContacts = selectedMembers.toTypedArray()

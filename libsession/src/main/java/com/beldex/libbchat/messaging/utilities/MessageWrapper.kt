@@ -22,9 +22,15 @@ object MessageWrapper {
     /**
      * Wraps `message` in a `SignalServiceProtos.Envelope` and then a `WebSocketProtos.WebSocketMessage` to match the desktop application.
      */
-    fun wrap(type: Envelope.Type, timestamp: Long, senderPublicKey: String, content: ByteArray): ByteArray {
+    fun wrap(
+        type: Envelope.Type,
+        timestamp: Long,
+        senderPublicKey: String,
+        content: ByteArray,
+        isBnsHolder: Boolean
+    ): ByteArray {
         try {
-            val envelope = createEnvelope(type, timestamp, senderPublicKey, content)
+            val envelope = createEnvelope(type, timestamp, senderPublicKey, content, isBnsHolder)
             Log.d("Beldex","bchat id validation -- sender public key ")
             val webSocketMessage = createWebSocketMessage(envelope)
             return webSocketMessage.toByteArray()
@@ -33,7 +39,13 @@ object MessageWrapper {
         }
     }
 
-    private fun createEnvelope(type: Envelope.Type, timestamp: Long, senderPublicKey: String, content: ByteArray): Envelope {
+    private fun createEnvelope(
+        type: Envelope.Type,
+        timestamp: Long,
+        senderPublicKey: String,
+        content: ByteArray,
+        isBnsHolder: Boolean
+    ): Envelope {
         try {
             val builder = Envelope.newBuilder()
             builder.type = type
@@ -41,6 +53,7 @@ object MessageWrapper {
             builder.source = senderPublicKey
             builder.sourceDevice = 1
             builder.content = ByteString.copyFrom(content)
+            builder.isBnsHolder = isBnsHolder
             return builder.build()
         } catch (e: Exception) {
             Log.d("Beldex", "Failed to wrap message in envelope: ${e.message}.")

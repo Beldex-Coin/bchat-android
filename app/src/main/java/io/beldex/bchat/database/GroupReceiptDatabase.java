@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
-import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
 
 import com.beldex.libbchat.utilities.Address;
 

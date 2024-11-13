@@ -19,12 +19,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.annimon.stream.Stream;
-import io.beldex.bchat.dependencies.DatabaseComponent;
-import io.beldex.bchat.mms.DecryptableStreamUriLoader;
-import io.beldex.bchat.mms.GlideRequests;
-import io.beldex.bchat.mms.Slide;
-import io.beldex.bchat.mms.SlideDeck;
-import io.beldex.bchat.util.UiModeUtilities;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
@@ -34,8 +28,6 @@ import com.beldex.libbchat.utilities.ThemeUtil;
 import com.beldex.libbchat.utilities.Util;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.utilities.recipients.RecipientModifiedListener;
-import io.beldex.bchat.dependencies.DatabaseComponent;
-import io.beldex.bchat.util.UiModeUtilities;
 import io.beldex.bchat.database.BchatContactDatabase;
 import io.beldex.bchat.dependencies.DatabaseComponent;
 import io.beldex.bchat.mms.DecryptableStreamUriLoader;

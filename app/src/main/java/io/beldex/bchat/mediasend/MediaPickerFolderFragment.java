@@ -20,7 +20,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import io.beldex.bchat.mms.GlideApp;
-import io.beldex.bchat.mms.GlideApp;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libsignal.utilities.guava.Optional;
 

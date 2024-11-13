@@ -465,18 +465,19 @@
 
                 <RelativeLayout
                     android:id="@+id/pathButton"
-                    android:background="@drawable/setting_button_background"
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
+                    android:orientation="horizontal"
                     android:gravity="center"
                     android:paddingHorizontal="@dimen/large_spacing"
                     android:layout_height="@dimen/setting_button_height">
+
                     <FrameLayout
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:id="@+id/pathContainer"
                         android:layout_width="@dimen/small_profile_picture_size"
                         android:layout_height="@dimen/small_profile_picture_size">
+
                         <io.beldex.bchat.home.PathStatusView
                             android:layout_gravity="center"
                             android:layout_width="@dimen/path_status_view_size"

@@ -4,8 +4,6 @@ package io.beldex.bchat.util;
 
 import io.beldex.bchat.model.NetworkType;
 import io.beldex.bchat.model.WalletManager;
-import io.beldex.bchat.model.NetworkType;
-import io.beldex.bchat.model.WalletManager;
 
 import okhttp3.HttpUrl;
 

@@ -2,10 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:paddingStart="8dip"
-    android:paddingEnd="?android:attr/scrollbarSize" >
+    android:paddingEnd="?android:attr/scrollbarSize">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -13,7 +14,7 @@
         android:gravity="center"
         android:minWidth="0dp"
         android:orientation="horizontal"
-        android:visibility="gone" >
+        android:visibility="visible" >
 
         <ImageView
             android:id="@android:id/icon"
@@ -21,7 +22,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:minWidth="48dp"
-            android:paddingEnd="8dip" />
+            android:paddingEnd="8dip"
+            app:tint="@color/setting_icon_tint"/>
     </LinearLayout>
 
     <RelativeLayout
@@ -32,18 +34,20 @@
         android:paddingEnd="8dip"
         android:paddingTop="6dip" >
 
-        <TextView
-            android:fontFamily="@font/open_sans_medium"
+        <com.google.android.material.textview.MaterialTextView
+            android:fontFamily="@font/open_sans_regular"
             android:id="@android:id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
             android:singleLine="true"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/setting_icon_tint"
+            android:textSize="14sp"/>
 
-        <TextView
-            android:fontFamily="@font/open_sans_medium"
+        <com.google.android.material.textview.MaterialTextView
+            android:fontFamily="@font/open_sans_semi_bold"
             android:id="@android:id/summary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,7 +55,9 @@
             android:layout_below="@android:id/title"
             android:maxLines="4"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="?android:attr/textColorSecondary" />
+            android:textColor="#ACACAC"
+            android:textSize="12sp"
+            android:layout_marginTop="5dp"/>
     </RelativeLayout>
 
     <!-- Preference should place its actual preference widget here. -->

@@ -7,8 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import io.beldex.bchat.wallet.utils.keyboardview.enums.KeyboardButtonEnum;
-import io.beldex.bchat.wallet.utils.keyboardview.interfaces.KeyboardButtonClickedListener;
 import io.beldex.bchat.wallet.utils.keyboardview.interfaces.KeyboardButtonClickedListener;
 import io.beldex.bchat.wallet.utils.keyboardview.enums.KeyboardButtonEnum;
 

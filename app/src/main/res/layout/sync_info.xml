@@ -36,40 +36,41 @@
                 android:text="@string/sync_info"
                 android:textAlignment="viewStart"
                 android:textColor="@color/text"
-                android:textSize="15sp"
+                android:textSize="16sp"
                 android:layout_marginStart="2dp"
-                android:fontFamily="@font/open_sans_semi_bold"
+                android:fontFamily="@font/open_sans_bold"
 
                 />
         </LinearLayout>
 
 
         <TextView
-            android:fontFamily="@font/open_sans_medium"
+            android:fontFamily="@font/open_sans_regular"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:gravity="center"
-            android:textColor="@color/text"
+            android:textColor="@color/edit_text_title"
             android:justificationMode="inter_word"
             android:text="You have scanned from the block height"
             android:textAlignment="center" />
         <TextView
             android:id="@+id/restoreFromHeight"
-            android:fontFamily="@font/open_sans_semi_bold"
+            android:fontFamily="@font/open_sans_bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/button_green"
             android:text="17890."
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textSize="14sp"/>
         <TextView
             android:id="@+id/syncInfoDescription"
-            android:fontFamily="@font/open_sans_medium"
+            android:fontFamily="@font/open_sans_regular"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:textColor="@color/text"
+            android:textColor="@color/edit_text_title"
             android:justificationMode="inter_word"
             android:textAlignment="center"
             android:text="@string/sync_info_description"/>

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/page_background"
+    android:background="@color/action_bar_background"
     android:fillViewport="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
@@ -11,76 +11,117 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/page_background"
         android:orientation="vertical">
         <View
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_weight="0"/>
 
-        <TextView
+        <ImageView
+            android:id="@+id/restore_seed_hint_icon"
             android:fontFamily="@font/open_sans_medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/very_large_spacing"
             android:layout_marginRight="@dimen/very_large_spacing"
-            android:textSize="@dimen/small_font_size"
+            android:layout_marginTop="@dimen/medium_spacing"
+            android:layout_marginBottom="@dimen/medium_spacing"
+            android:src="@drawable/ic_restore_seed_dark" />
+
+        <TextView
+            android:fontFamily="@font/open_sans_medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/massive_spacing"
+            android:layout_marginRight="@dimen/massive_spacing"
+            android:layout_marginTop="@dimen/medium_spacing"
+            android:layout_marginBottom="@dimen/medium_spacing"
+            android:textSize="18sp"
             android:textStyle="normal"
-            android:justificationMode="inter_word"
-            android:textColor="@color/text"
-            android:text="@string/recovery_phrase_screen_description_content" />
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="@color/recovery_seed_content"
+            android:text="@string/copy_your_recovery_seed" />
+
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="35dp"
+            android:layout_marginLeft="@dimen/medium_spacing"
             android:layout_marginTop="20dp"
             app:cardBackgroundColor="@color/card_color"
-            android:layout_marginRight="35dp"
+            android:layout_marginRight="@dimen/medium_spacing"
             app:cardElevation="5dp"
-            app:cardCornerRadius="10dp">
-
-            <ImageView
-                android:id="@+id/recoveryPhraseCopyIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top|right"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/ic_baseline_copy" />
+            app:cardCornerRadius="16dp">
 
             <TextView
                 android:id="@+id/bChatSeedTextView"
                 style="@style/BchatIDTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="35dp"
-                android:layout_marginBottom="35dp"
-                android:layout_marginEnd="30dp"
+                android:layout_marginStart="@dimen/large_spacing"
+                android:layout_marginTop="@dimen/medium_spacing"
+                android:layout_marginBottom="@dimen/medium_spacing"
+                android:layout_marginEnd="@dimen/large_spacing"
                 android:textSize="@dimen/small_font_size"
-                android:textColor="@color/button_green"
+                android:textAlignment="center"
+                android:textColor="@color/text"
                 android:visibility="visible"
                 android:hint="Seed" />
 
         </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium_spacing"
+            android:layout_marginTop="@dimen/large_spacing"
+            android:layout_marginEnd="@dimen/medium_spacing"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/copyButton"
+                style="@style/PrimaryContainedIconButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/small_font_size"
+                android:layout_marginEnd="8dp"
+                android:text="@string/copy_seed"
+                app:icon="@drawable/ic_restore_copy"
+                app:iconGravity="textEnd"
+                app:iconTint="@color/icon_tint"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/shareButton"
+                style="@style/PrimaryContainedPositiveButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:textSize="@dimen/small_font_size"
+                android:text="@string/save" />
+
+        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:visibility="gone"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <Button
-                style="@style/Widget.Bchat.Button.Common.Copy"
                 android:id="@+id/copyBtn"
+                style="@style/Widget.Bchat.Button.Common.Copy"
                 android:layout_width="150dp"
                 android:layout_height="45dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="30dp"
+                android:drawableStart="@drawable/ic_baseline_content_copy_24"
                 android:paddingLeft="30dp"
                 android:paddingRight="30dp"
-                android:drawableStart="@drawable/ic_baseline_content_copy_24"
                 android:text="Copy" />
 
             <Button
@@ -90,21 +131,20 @@
                 android:layout_height="45dp"
                 android:layout_gravity="right"
                 android:layout_marginLeft="40dp"
+                android:drawableStart="@drawable/ic_baseline_share_24"
                 android:gravity="center"
                 android:paddingLeft="30dp"
                 android:paddingRight="30dp"
-                android:drawableStart="@drawable/ic_baseline_share_24"
                 android:text="@string/share"
                 tools:ignore="RtlHardcoded" />
-
-
 
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
+
         <TextView
             android:fontFamily="@font/open_sans_regular"
             android:id="@+id/hint"
@@ -114,7 +154,7 @@
             android:layout_marginRight="@dimen/very_large_spacing"
             android:textSize="@dimen/small_font_size"
             android:textStyle="normal"
-            android:textColor="@color/disable_button_text_color"
+            android:textColor="@color/text_hint"
             android:textAlignment="center"
             android:layout_marginBottom="20dp"
             android:visibility="visible"
@@ -125,8 +165,8 @@
             android:id="@+id/registerButton"
             android:layout_width="match_parent"
             android:layout_height="@dimen/medium_button_height"
-            android:layout_marginLeft="@dimen/massive_spacing"
-            android:layout_marginRight="@dimen/massive_spacing"
+            android:layout_marginLeft="@dimen/medium_spacing"
+            android:layout_marginRight="@dimen/medium_spacing"
             android:layout_marginBottom="30dp"
             android:text="@string/continue_2"
             android:enabled="false" />

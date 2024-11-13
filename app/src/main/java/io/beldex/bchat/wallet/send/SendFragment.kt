@@ -13,22 +13,22 @@ import io.beldex.bchat.R
 import io.beldex.bchat.wallet.addressbook.AddressBookActivity
 
 import android.content.Intent
-import android.text.Editable
-import android.text.InputType
-import android.text.TextWatcher
 import android.util.Log
 import android.util.Patterns
 import android.view.*
-import android.view.View.OnFocusChangeListener
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.conversation.v2.TransactionLoadingBar
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.home.HomeActivity
@@ -38,6 +38,8 @@ import io.beldex.bchat.model.WalletManager
 import io.beldex.bchat.util.BChatThreadPoolExecutor
 import io.beldex.bchat.util.Helper
 import io.beldex.bchat.wallet.*
+import io.beldex.bchat.wallet.jetpackcomposeUI.SendScreen
+import io.beldex.bchat.wallet.jetpackcomposeUI.WalletViewModels
 import io.beldex.bchat.wallet.utils.OpenAliasHelper
 import io.beldex.bchat.wallet.utils.helper.ServiceHelper
 import io.beldex.bchat.wallet.utils.pincodeview.CustomPinActivity
@@ -49,11 +51,14 @@ import java.lang.NumberFormatException
 import java.util.*
 import timber.log.Timber
 import java.lang.Exception
-import java.math.BigDecimal
 import java.util.concurrent.Executor
+import androidx.compose.material3.Surface
+import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.onboarding.ui.EXTRA_PIN_CODE_ACTION
+import io.beldex.bchat.onboarding.ui.PinCodeAction
 
 
-class SendFragment : Fragment(), OnUriScannedListener,SendConfirm, OnUriWalletScannedListener, OnBackPressedListener {
+class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletScannedListener, OnBackPressedListener {
 
     val MIXIN = 0
 
@@ -65,7 +70,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm, OnUriWalletSc
     private val possibleCryptos: MutableSet<Crypto> = HashSet()
     private var selectedCrypto: Crypto? = null
     val INTEGRATED_ADDRESS_LENGTH = 106
-    private var resolvingOA = false
     private var totalFunds: Long = 0
     private var calledUnlockedBalance: Boolean = false
 
@@ -106,14 +110,17 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm, OnUriWalletSc
         fun onBackPressedFun()
 
         fun walletOnBackPressed() //-
+
+        fun onScan()
     }
     var onScanListener: OnScanListener? = null
     interface OnScanListener {
-        fun onScan(view: View?)
+        fun onScan()
     }
 
     fun onCreateTransactionFailed(errorText: String?) {
-        createTransactionFailed(errorText)
+        //Important wallet service
+        //createTransactionFailed(errorText)
     }
 
    private fun openSomeActivityForResult() {
@@ -138,8 +145,9 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm, OnUriWalletSc
 
     // callbacks from send service
     fun onTransactionCreated(txTag: String?, pendingTransaction: PendingTransaction?) {
-        pendingTx = PendingTx(pendingTransaction)
-        transactionCreated(txTag, pendingTransaction)
+        //Important wallet service
+        //pendingTx = PendingTx(pendingTransaction)
+        //transactionCreated(txTag, pendingTransaction)
     }
 
     fun disposeTransaction() {
@@ -149,12 +157,13 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm, OnUriWalletSc
 
     //If Transaction successfully completed after call this function
     fun onTransactionSent(txId: String?) {
-        hideProgress()
+        //Important wallet service
+        /*hideProgress()
         val activity = activity
         if(isAdded && activity != null) {
             this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
-        SendSuccessDialog(this).show(requireActivity().supportFragmentManager,"")
+        SendSuccessDialog(this).show(requireActivity().supportFragmentManager,"")*/
     }
 
     var committedTx: PendingTx? = null
@@ -178,7 +187,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm, OnUriWalletSc
             f.arguments = args
             return f
         }
-        var scanFromGallery: Boolean = false
+        private var scanFromGallery:MutableState<Boolean> = mutableStateOf(false)
     }
 
     private val resultLaunchers = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -189,11 +198,56 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm, OnUriWalletSc
 
     var price =0.00
 
+    private val viewModels: WalletViewModels by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSendBinding.inflate(inflater, container, false)
+
+      /*  val view = inflater.inflate(R.layout.fragment_home, container, false)
+        val composeContainer = view.findViewById<FrameLayout>(R.id.activity_home_frame_layout_container)
+        // Inflate Compose view inside composeContainer
+        val composeView = ComposeView(requireContext()).apply {
+            setContent {
+                SendScreen()
+            }
+        }
+        composeContainer.addView(composeView)
+        return view*/
+        calledUnlockedBalance = true
+        if(TextSecurePreferences.getFeePriority(requireActivity())==0){
+            AsyncCalculateEstimatedFee(5).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+        }else{
+            AsyncCalculateEstimatedFee(1).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+        }
+
+        return ComposeView(requireContext()).apply {
+            setContent {
+                BChatTheme() {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.appColors.cardBackground
+                    ){
+                        SendScreen(
+                            listener = activityCallback!!,
+                            viewModels,
+                            beldexAddress,
+                            beldexAmount,
+                            beldexAddressErrorAction,
+                            beldexAddressErrorText,
+                            beldexAddressErrorTextColorChanged,
+                            resolvingOA,
+                            scanFromGallery,
+                            feePriorityOnClick = {selectedFeePriority ->
+                                AsyncCalculateEstimatedFee(selectedFeePriority).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
+       /* binding = FragmentSendBinding.inflate(inflater, container, false)
         (activity as HomeActivity).setSupportActionBar(binding.toolbar)
         calledUnlockedBalance = true
         binding.currencyTextView.text = TextSecurePreferences.getCurrency(requireActivity()).toString()
@@ -205,7 +259,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm, OnUriWalletSc
                 Toast.makeText(requireActivity(), R.string.please_check_your_internet_connection, Toast.LENGTH_SHORT).show()
             }else{
                 Helper.hideKeyboard(activity)
-                onScanListener?.onScan(requireView())
+                onScanListener?.onScan()
             }
         }
         binding.addressBook.setOnClickListener {
@@ -217,7 +271,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm, OnUriWalletSc
         binding.beldexAddressEditTxtLayout.editText?.setOnEditorActionListener(OnEditorActionListener { v, actionId, event -> // ignore ENTER
                 event != null && event.keyCode == KeyEvent.KEYCODE_ENTER
             })
-       /*binding.beldexAddressEditTxtLayout.editText?.onFocusChangeListener =
+       *//*binding.beldexAddressEditTxtLayout.editText?.onFocusChangeListener =
             OnFocusChangeListener { v: View?, hasFocus: Boolean ->
                 if (!hasFocus) {
                     val enteredAddress: String = binding.beldexAddressEditTxtLayout.editText?.text.toString().trim()
@@ -227,7 +281,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm, OnUriWalletSc
                         processOpenAlias(dnsOA)
                     }
                 }
-            }*/
+            }*//*
         binding.beldexAddressEditTxtLayout.editText?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable) {
                 binding.beldexAddressLayout.setBackgroundResource(R.drawable.bchat_id_text_view_background)
@@ -337,22 +391,20 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm, OnUriWalletSc
 
         binding.exitButton.setOnClickListener {
             activityCallback?.walletOnBackPressed()
-        }
+        }*/
 
-        return binding.root
-
-    }
 
     inner class AsyncCalculateEstimatedFee(val priority: Int) :
         AsyncTaskCoroutine<Executor?, Double>() {
         override fun onPreExecute() {
             super.onPreExecute()
-            binding.estimatedFeeTextView.text = getString(R.string.estimated_fee,"0.00")
+            viewModels.updateEstimatedFee("0.00")
+
         }
         override fun doInBackground(vararg params: Executor?): Double {
             return try {
                 if(WalletManager.getInstance().wallet!=null) {
-                    val wallet: Wallet= WalletManager.getInstance().wallet
+                    val wallet: Wallet = WalletManager.getInstance().wallet
                     wallet.estimateTransactionFee(priority)
                 }else{
                     0.00
@@ -363,10 +415,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm, OnUriWalletSc
             }
         }
         override fun onPostExecute(result: Double?) {
-            val activity = activity
-            if (isAdded && activity != null) {
-                binding.estimatedFeeTextView.text = getString(R.string.estimated_fee,result.toString())
-            }
+            viewModels.updateEstimatedFee(result.toString())
         }
     }
 
@@ -388,7 +437,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm, OnUriWalletSc
                 if (binding.beldexAddressEditTxtLayout.editText?.text!!.isNotEmpty() && binding.beldexAmountEditTxtLayout.editText?.text!!.isNotEmpty() && validateBELDEXAmount(binding.beldexAmountEditTxtLayout.editText!!.text.toString()) && binding.beldexAmountEditTxtLayout.editText!!.text.toString()
                         .toDouble() > 0.00
                 ) {
-                    val txData: TxData= getTxData()
+                    val txData: TxData = getTxData()
                     txData.destinationAddress =
                         binding.beldexAddressEditTxtLayout.editText?.text.toString().trim()
                     ServiceHelper.ASSET = null
@@ -432,7 +481,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm, OnUriWalletSc
                         LockManager.getInstance() as LockManager<CustomPinActivity>
                     lockManager.enableAppLock(requireActivity(), CustomPinActivity::class.java)
                     val intent = Intent(requireActivity(), CustomPinActivity::class.java)
-                    intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
+                    intent.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.VerifyWalletPin.action)
                     intent.putExtra("change_pin", false)
                     intent.putExtra("send_authentication", true)
                     resultLaunchers.launch(intent)
@@ -476,6 +525,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm, OnUriWalletSc
 
         override fun doInBackground(vararg params: Executor?): Boolean {
             totalFunds = listener!!.getUnLockedBalance
+            viewModels.updateUnlockedBalance(totalFunds)
             return true
         }
 
@@ -509,7 +559,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm, OnUriWalletSc
 
     private fun calculateEstimatedFee(priority:Int): Double {
         return if(WalletManager.getInstance().wallet!=null) {
-            val wallet: Wallet= WalletManager.getInstance().wallet
+            val wallet: Wallet = WalletManager.getInstance().wallet
             wallet.estimateTransactionFee(priority)
         }else{
             0.00
@@ -538,13 +588,11 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm, OnUriWalletSc
     private fun checkAddress(): Boolean {
         val ok = checkAddressNoError()
         if (possibleCryptos.isEmpty()) {
-            binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
-            binding.beldexAddressErrorMessage.visibility = View.VISIBLE
-            binding.beldexAddressErrorMessage.text=getString(R.string.send_address_invalid)
+            beldexAddressErrorAction.value = true
+            beldexAddressErrorText.value = getString(R.string.send_address_invalid)
+            beldexAddressErrorTextColorChanged.value = false
         } else {
-            binding.beldexAddressLayout.setBackgroundResource(R.drawable.bchat_id_text_view_background)
-            binding.beldexAddressErrorMessage.visibility = View.GONE
-            binding.beldexAddressErrorMessage.text=""
+            beldexAddressErrorAction.value = false
         }
         return ok
     }
@@ -565,16 +613,16 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm, OnUriWalletSc
     }
 
     private fun processOpenAlias(dnsOA: String?) {
-        if (resolvingOA) return  // already resolving - just wait
+        if (resolvingOA.value) return  // already resolving - just wait
         activityCallback!!.popBarcodeData()
         if (dnsOA != null) {
-            resolvingOA = true
-            binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
-            binding.beldexAddressErrorMessage.visibility = View.VISIBLE
-            binding.beldexAddressErrorMessage.text=getString(R.string.send_address_resolve_openalias)
+            resolvingOA.value = true
+            beldexAddressErrorAction.value = true
+            beldexAddressErrorTextColorChanged.value = false
+            beldexAddressErrorText.value = getString(R.string.send_address_resolve_openalias)
             OpenAliasHelper.resolve(dnsOA, object : OpenAliasHelper.OnResolvedListener {
                 override fun onResolved(dataMap: Map<Crypto?, BarcodeData?>) {
-                    resolvingOA = false
+                    resolvingOA.value = false
                     var barcodeData = dataMap[Crypto.BDX]
                     if (barcodeData == null) barcodeData = dataMap[Crypto.BTC]
                     if (barcodeData != null) {
@@ -583,14 +631,21 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm, OnUriWalletSc
                         binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
                         binding.beldexAddressErrorMessage.visibility = View.VISIBLE
                         binding.beldexAddressErrorMessage.text=getString(R.string.send_address_not_openalias)
+
+                        beldexAddressErrorAction.value = true
+                        beldexAddressErrorTextColorChanged.value = false
+                        beldexAddressErrorText.value = getString(R.string.send_address_not_openalias)
                     }
                 }
 
                 override fun onFailure() {
-                    resolvingOA = false
+                    resolvingOA.value = false
                     binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
                     binding.beldexAddressErrorMessage.visibility = View.VISIBLE
                     binding.beldexAddressErrorMessage.text=getString(R.string.send_address_not_openalias)
+                    beldexAddressErrorAction.value = true
+                    beldexAddressErrorTextColorChanged.value= false
+                    beldexAddressErrorText.value = getString(R.string.send_address_not_openalias)
                 }
             })
         }
@@ -686,10 +741,18 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm, OnUriWalletSc
     }
     // QR Scan Stuff
     fun processScannedData(barcodeData: BarcodeData?) {
-        scanFromGallery = true
+        scanFromGallery.value = true
         activityCallback?.setBarcodeData(barcodeData)
         processScannedData()
     }
+
+    private var beldexAddress: MutableState<String> = mutableStateOf("")
+    private var beldexAmount: MutableState<String> = mutableStateOf("")
+    private var beldexAddressErrorText: MutableState<String> = mutableStateOf("")
+    private var beldexAddressErrorAction: MutableState<Boolean> = mutableStateOf(false)
+    private var beldexAddressErrorTextColorChanged: MutableState<Boolean> = mutableStateOf(false)
+    private var resolvingOA: MutableState<Boolean> = mutableStateOf(false)
+
 
     private fun processScannedData() {
         var barcodeData: BarcodeData? = activityCallback?.getBarcodeData()
@@ -700,8 +763,12 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm, OnUriWalletSc
             }
             if (barcodeData!!.address != null) {
                 activityCallback?.setBarcodeData(null)
-                binding.beldexAddressEditTxtLayout.editText?.setText(barcodeData.address)
-                binding.beldexAmountEditTxtLayout.editText?.setText(barcodeData.amount)
+                barcodeData.address.also { beldexAddress.value = it }
+                if(barcodeData.amount != null) {
+                    barcodeData.amount.also { beldexAmount.value = it }
+                }else{
+                    beldexAmount.value = ""
+                }
                 possibleCryptos.clear()
                 selectedCrypto = null
                 if (barcodeData.isAmbiguous) {
@@ -711,18 +778,17 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm, OnUriWalletSc
                     selectedCrypto = barcodeData.asset
                 }
                 if (checkAddress()) {
-                    if (barcodeData.security === BarcodeData.Security.OA_NO_DNSSEC) binding.beldexAddressEditTxtLayout.error =
-                        getString(R.string.send_address_no_dnssec) else if (barcodeData.security === BarcodeData.Security.OA_DNSSEC) binding.beldexAddressEditTxtLayout.error =
-                        getString(R.string.send_address_openalias)
+                    if (barcodeData.security === BarcodeData.Security.OA_NO_DNSSEC) beldexAddressErrorText.value =
+                        getString(R.string.send_address_no_dnssec) else if (barcodeData.security === BarcodeData.Security.OA_DNSSEC) beldexAddressErrorText.value =                        getString(R.string.send_address_openalias)
                 }
                 if (isIntegratedAddress(barcodeData.address)) {
-                    binding.beldexAddressErrorMessage.visibility = View.VISIBLE
-                    binding.beldexAddressErrorMessage.setTextColor(ContextCompat.getColor(requireContext(), R.color.button_green))
-                    binding.beldexAddressErrorMessage.text=getString(R.string.info_paymentid_integrated)
+                    beldexAddressErrorAction.value = true
+                    beldexAddressErrorTextColorChanged.value = true
+                    beldexAddressErrorText.value = getString(R.string.info_paymentid_integrated)
                 }
             } else {
-                binding.beldexAddressEditTxtLayout.editText?.text?.clear()
-                binding.beldexAmountEditTxtLayout.editText?.text?.clear()
+                beldexAddress.value = ""
+                beldexAmount.value = ""
             }
         } else Timber.d("barcodeData=null")
     }
@@ -809,7 +875,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm, OnUriWalletSc
 
     private fun refreshTransactionDetails() {
         if (pendingTransaction != null) {
-            val txData: TxData= getTxData()
+            val txData: TxData = getTxData()
             try {
                 if(pendingTransaction!!.firstTxId !=null) {
                     SendConfirmDialog(pendingTransaction!!,txData, this).show(requireActivity().supportFragmentManager,"")

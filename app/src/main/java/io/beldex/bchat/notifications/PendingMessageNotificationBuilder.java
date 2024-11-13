@@ -7,8 +7,6 @@ import android.content.Intent;
 import androidx.core.app.NotificationCompat;
 
 import io.beldex.bchat.home.HomeActivity;
-import io.beldex.bchat.home.HomeActivity;
-import io.beldex.bchat.home.HomeActivity;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.utilities.NotificationPrivacyPreference;
 import com.beldex.libbchat.utilities.TextSecurePreferences;

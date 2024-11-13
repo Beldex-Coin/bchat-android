@@ -5,7 +5,6 @@ import android.graphics.PointF;
 import androidx.annotation.NonNull;
 
 import io.beldex.bchat.imageeditor.model.EditorElement;
-import io.beldex.bchat.imageeditor.model.EditorElement;
 
 /**
  * Represents an underway edit of the image.

@@ -52,7 +52,7 @@ class WalletDelegatesImpl: WalletDelegates {
                             "-.---"
                         )
                     }
-                    TextSecurePreferences.getDecimals(mContext) == "0 - Zero (000)" -> {
+                    TextSecurePreferences.getDecimals(mContext) == "0 - Zero (0)" -> {
                         setBalance(
                             "-",
                             "-"
@@ -85,7 +85,7 @@ class WalletDelegatesImpl: WalletDelegates {
                             )
                         )
                     }
-                    TextSecurePreferences.getDecimals(mContext) == "0 - Zero (000)" -> {
+                    TextSecurePreferences.getDecimals(mContext) == "0 - Zero (0)" -> {
                         setBalance(
                             String.format("%.0f", walletBalance!!.replace(",", "").toDouble()),
                             String.format(
@@ -97,7 +97,7 @@ class WalletDelegatesImpl: WalletDelegates {
                     else -> {
                         setBalance(
                             walletBalance!!,
-                            null
+                            walletUnlockedBalance ?: ""
                         )
                     }
                 }

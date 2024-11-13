@@ -4,4 +4,5 @@
     <item type="id" name="contact_info_tag"/>
     <item type="id" name="motion_view_edittext"/>
     <item type="id" name="icon_frame"/>
+    <item name="linkPreviewCard" type="id" />
 </resources>

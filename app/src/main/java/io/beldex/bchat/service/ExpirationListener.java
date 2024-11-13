@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import io.beldex.bchat.ApplicationContext;
-import io.beldex.bchat.ApplicationContext;
 
 public class ExpirationListener extends BroadcastReceiver {
 

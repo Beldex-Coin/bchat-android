@@ -3,17 +3,11 @@ package io.beldex.bchat.onboarding
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
-import android.text.Spannable
-import android.text.SpannableStringBuilder
 import android.text.TextWatcher
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.text.style.StyleSpan
 import android.view.View
 import android.widget.Toast
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -39,7 +33,7 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setUpActionBarBchatLogo("Restore from Seed",true)
+        setUpActionBarBchatLogo("Restore Seed",false)
         TextSecurePreferences.apply {
             setHasViewedSeed(this@RecoveryPhraseRestoreActivity, true)
             setConfigurationMessageSynced(this@RecoveryPhraseRestoreActivity, false)
@@ -57,23 +51,6 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
                 Toast.makeText(this,"Please enter valid seed",Toast.LENGTH_SHORT).show()
             }
         }
-        val termsExplanation = SpannableStringBuilder("By using this service, you agree to our Terms of Service and Privacy Policy")
-        termsExplanation.setSpan(StyleSpan(Typeface.BOLD), 40, 56, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        termsExplanation.setSpan(object : ClickableSpan() {
-
-            override fun onClick(widget: View) {
-                openURL("https://www.beldex.io/")
-            }
-        }, 40, 56, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        termsExplanation.setSpan(StyleSpan(Typeface.BOLD), 61, 75, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        termsExplanation.setSpan(object : ClickableSpan() {
-
-            override fun onClick(widget: View) {
-                openURL("https://www.beldex.io/")
-            }
-        }, 61, 75, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        binding.termsTextView.movementMethod = LinkMovementMethod.getInstance()
-        binding.termsTextView.text = termsExplanation
 
         binding.mnemonicEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -81,6 +58,13 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
             override fun afterTextChanged(s: Editable) {
                 var numberOfInputWords = 0
 
+                if(s.toString().isNotEmpty()){
+                    binding.restoreButton.isEnabled = true
+                    binding.pasteText.visibility = View.GONE
+                }else{
+                    binding.restoreButton.isEnabled = false
+                    binding.pasteText.visibility = View.VISIBLE
+                }
                 if(s.toString().isNotEmpty())
                     numberOfInputWords = s.toString().trim().split("\\s+".toRegex()).size
                 binding.recoveryPhraseCountWord.text = "$numberOfInputWords/25"
@@ -99,12 +83,8 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
         binding.clearButton.setOnClickListener {
             binding.mnemonicEditText.text.clear()
             binding.recoveryPhraseCountWord.text = "0/25"
+            binding.pasteText.visibility = View.VISIBLE
         }
-
-       /* binding.recoveryPhrasePasteIcon?.setOnClickListener {
-            val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-            binding.mnemonicEditText.setText(clipboard.text.toString())
-        }*/
 
         binding.recoveryPhrasePasteIcon.setOnClickListener {
             val clipboard = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -113,6 +93,7 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
                 val item = clipboard.primaryClip!!.getItemAt(0)
                 // Gets the clipboard as text.
                 binding.mnemonicEditText.setText(item.text.toString())
+                binding.pasteText.visibility = View.GONE
             } else {
                 Toast.makeText(this, R.string.no_copied_seed, Toast.LENGTH_SHORT)
                     .show()

@@ -3,10 +3,13 @@ package io.beldex.bchat.conversation.v2.messages
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
-import android.text.*
+import android.os.SystemClock
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.BackgroundColorSpan
 import android.text.style.ClickableSpan
@@ -14,7 +17,9 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.URLSpan
 import android.text.util.Linkify
 import android.util.AttributeSet
-import android.view.*
+import android.view.MotionEvent
+import android.view.View
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
@@ -30,34 +35,41 @@ import androidx.core.view.isVisible
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentTransferProgress
 import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachment
+import com.beldex.libbchat.messaging.utilities.UpdateMessageData
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.ThemeUtil
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.codewaves.stickyheadergrid.StickyHeaderGridLayoutManager
-import io.beldex.bchat.database.model.MessageRecord
-import io.beldex.bchat.database.model.SmsMessageRecord
-import io.beldex.bchat.mms.GlideRequests
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import com.google.android.material.card.MaterialCardView
 import io.beldex.bchat.conversation.v2.ModalUrlBottomSheet
 import io.beldex.bchat.conversation.v2.utilities.MentionUtilities
 import io.beldex.bchat.conversation.v2.utilities.ModalURLSpan
 import io.beldex.bchat.conversation.v2.utilities.TextUtilities.getIntersectedModalSpans
+import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.database.model.MmsMessageRecord
+import io.beldex.bchat.database.model.SmsMessageRecord
 import io.beldex.bchat.home.HomeActivity
+import io.beldex.bchat.mms.GlideRequests
 import io.beldex.bchat.mms.PartAuthority
-import io.beldex.bchat.util.*
+import io.beldex.bchat.util.ActivityDispatcher
+import io.beldex.bchat.util.DateUtils
+import io.beldex.bchat.util.SearchUtil
+import io.beldex.bchat.util.UiModeUtilities
+import io.beldex.bchat.util.getColorWithID
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewVisibleMessageContentBinding
-import java.util.*
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import java.util.Locale
 import kotlin.math.roundToInt
 
-class VisibleMessageContentView : ConstraintLayout {
+class VisibleMessageContentView : MaterialCardView {
     private val binding: ViewVisibleMessageContentBinding by lazy { ViewVisibleMessageContentBinding.bind(this) }
     var onContentClick: MutableList<((event: MotionEvent) -> Unit)> = mutableListOf()
     var onContentDoubleTap: (() -> Unit)? = null
     var delegate: VisibleMessageContentViewDelegate? = null
     var indexInAdapter: Int = -1
+    private var data: UpdateMessageData.Kind.OpenGroupInvitation? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -66,14 +78,15 @@ class VisibleMessageContentView : ConstraintLayout {
 
     // region Updating
     fun bind(
-            message: MessageRecord,
-            isStartOfMessageCluster: Boolean,
-            isEndOfMessageCluster: Boolean,
-            glide: GlideRequests,
-            thread: Recipient,
-            searchQuery: String?,
-            contactIsTrusted: Boolean,
-            onAttachmentNeedsDownload: (Long, Long) -> Unit
+        message : MessageRecord,
+        isStartOfMessageCluster : Boolean,
+        isEndOfMessageCluster : Boolean,
+        glide : GlideRequests,
+        thread : Recipient,
+        searchQuery : String?,
+        contactIsTrusted : Boolean,
+        onAttachmentNeedsDownload : (Long, Long) -> Unit,
+        isSocialGroupRecipient : Boolean
     ) {
         // Background
         val background = getBackground(message.isOutgoing, isStartOfMessageCluster, isEndOfMessageCluster)
@@ -85,17 +98,20 @@ class VisibleMessageContentView : ConstraintLayout {
             }*/
             R.attr.message_sent_background_color
         } else {
-            if(message.isPayment){
+            /*if(message.isPayment){
                 R.attr.payment_message_received_background_color
             }else {
                 R.attr.message_received_background_color
-            }
+            }*/
+            R.attr.message_received_background_color
         }
         val color = ThemeUtil.getThemedColor(context, colorID)
         val filter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
             color,
             BlendModeCompat.SRC_IN
         )
+        binding.tailSendView.colorFilter = filter
+        binding.tailReceiveView.colorFilter = filter
         background.colorFilter = filter
         setBackground(background)
 
@@ -115,6 +131,7 @@ class VisibleMessageContentView : ConstraintLayout {
                 VisibleMessageContentView.getTextColor(context, message)
             )
             binding.bodyTextView.isVisible = false
+            binding.bodyTextViewLayout.isVisible = false
             binding.quoteView.root.isVisible = false
             binding.linkPreviewView.root.isVisible = false
             binding.untrustedView.root.isVisible = false
@@ -137,9 +154,9 @@ class VisibleMessageContentView : ConstraintLayout {
         binding.linkPreviewView.root.bodyTextView = binding.bodyTextView
 
         val linkPreviewLayout = binding.linkPreviewView.root.layoutParams
-        linkPreviewLayout.width =
-            if (mediaThumbnailMessage) 0 else ViewGroup.LayoutParams.WRAP_CONTENT
-        binding.linkPreviewView.root.layoutParams = linkPreviewLayout
+//        linkPreviewLayout.width =
+//            if (mediaThumbnailMessage) 0 else ViewGroup.LayoutParams.WRAP_CONTENT
+//        binding.linkPreviewView.root.layoutParams = linkPreviewLayout
 
 
         binding.untrustedView.root.isVisible =
@@ -156,6 +173,7 @@ class VisibleMessageContentView : ConstraintLayout {
         var hideBody = false
 
         if (message is MmsMessageRecord && message.quote != null) {
+
             binding.quoteView.root.isVisible = true
             val quote = message.quote!!
             val quoteText = if (quote.isOriginalMissing) {
@@ -175,9 +193,10 @@ class VisibleMessageContentView : ConstraintLayout {
                     delegate?.scrollToMessageIfPossible(quote.id)
                 }
             }
-            val layoutParams = binding.quoteView.root.layoutParams as MarginLayoutParams
+            // cmd for forward message alignment issue.
+            /*val layoutParams = binding.quoteView.root.layoutParams as MarginLayoutParams
             val hasMedia = message.slideDeck.asAttachments().isNotEmpty()
-            binding.quoteView.root.minWidth = if (hasMedia) 0 else toPx(300,context.resources)
+            binding.quoteView.root.minimumWidth = if (hasMedia) 0 else toPx(300,context.resources)*/
         }
 
         if (message is MmsMessageRecord) {
@@ -207,11 +226,14 @@ class VisibleMessageContentView : ConstraintLayout {
                     isStartOfMessageCluster,
                     isEndOfMessageCluster
                 )
-                onContentClick.add { event -> binding.linkPreviewView.root.calculateHit(event) }
+                onContentClick.add { event ->
+                    binding.linkPreviewView.root.calculateHit(event)
+                }
                 // Body text view is inside the link preview for layout convenience
             }
             message is MmsMessageRecord && message.slideDeck.audioSlide != null -> {
                 hideBody = true
+
                 // Audio attachment
                 if (contactIsTrusted || message.isOutgoing) {
                     binding.voiceMessageView.root.indexInAdapter = indexInAdapter
@@ -228,7 +250,9 @@ class VisibleMessageContentView : ConstraintLayout {
                     onContentDoubleTap = { binding.voiceMessageView.root.handleDoubleTap() }
                 } else {
                     // TODO: move this out to its own area
+
                     binding.untrustedView.root.bind(
+                        message,
                         UntrustedAttachmentView.AttachmentType.AUDIO,
                         VisibleMessageContentView.getTextColor(context, message)
                     )
@@ -275,6 +299,7 @@ class VisibleMessageContentView : ConstraintLayout {
                     }
                 } else {
                     binding.untrustedView.root.bind(
+                        message,
                         UntrustedAttachmentView.AttachmentType.DOCUMENT,
                         VisibleMessageContentView.getTextColor(context, message)
                     )
@@ -288,6 +313,16 @@ class VisibleMessageContentView : ConstraintLayout {
                 if (contactIsTrusted || message.isOutgoing) {
                     // isStart and isEnd of cluster needed for calculating the mask for full bubble image groups
                     // bind after add view because views are inflated and calculated during bind
+                    binding.albumMessageTime.isVisible = message.body.isEmpty()
+                    binding.albumMessageTime.text=
+                        DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+                    binding.albumMessageTime.setTextColor(
+                        getTimeTextColor(
+                            context,
+                            message.isOutgoing
+                        )
+                    )
+
                     binding.albumThumbnailView.root.bind(
                         glideRequests = glide,
                         message = message,
@@ -295,11 +330,13 @@ class VisibleMessageContentView : ConstraintLayout {
                         isEnd = isEndOfMessageCluster
                     )
                     onContentClick.add { event ->
-                        binding.albumThumbnailView.root.calculateHitObject(event, message, thread, onAttachmentNeedsDownload)                    }
+                        binding.albumThumbnailView.root.calculateHitObject(event, message, thread, onAttachmentNeedsDownload)
+                    }
                 } else {
                     hideBody = true
                     binding.albumThumbnailView.root.clearViews()
                     binding.untrustedView.root.bind(
+                        message,
                         UntrustedAttachmentView.AttachmentType.MEDIA,
                         VisibleMessageContentView.getTextColor(context, message)
                     )
@@ -308,6 +345,11 @@ class VisibleMessageContentView : ConstraintLayout {
             }
             message.isOpenGroupInvitation -> {
                 hideBody = true
+               /* binding.bodyTextView.isVisible = true*/
+                val umd = UpdateMessageData.fromJSON(message.body)!!
+                val data = umd.kind as UpdateMessageData.Kind.OpenGroupInvitation
+                this.data = data
+                //binding.bodyTextView.text = OpenGroupUrlParser.trimQueryParameter(data.groupUrl)
                 binding.openGroupInvitationView.root.bind(
                     message,
                     VisibleMessageContentView.getTextColor(context, message)
@@ -324,12 +366,41 @@ class VisibleMessageContentView : ConstraintLayout {
             }
         }
 
+
+
         binding.bodyTextView.isVisible = message.body.isNotEmpty() && !hideBody
+        binding.bodyTextViewLayout.isVisible = message.body.isNotEmpty() && !hideBody
+        binding.shortMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+        binding.shortMessageTime.setTextColor(getTimeTextColor(context, message.isOutgoing))
+
+
+        if(binding.quoteView.root.isVisible){
+         val params: ConstraintLayout.LayoutParams = binding.bodyTextViewLayout.layoutParams as ConstraintLayout.LayoutParams
+            params.width = binding.quoteView.root.width
+            params.topMargin = 4
+            val params1: ConstraintLayout.LayoutParams = binding.bodyTextView.layoutParams as ConstraintLayout.LayoutParams
+            params1.width = ConstraintLayout.LayoutParams.MATCH_PARENT
+        }else if(binding.albumThumbnailView.root.isVisible){
+            val params: ConstraintLayout.LayoutParams = binding.bodyTextViewLayout.layoutParams as ConstraintLayout.LayoutParams
+            params.width = binding.albumContainer.width
+            params.topMargin = 4
+            val params1: ConstraintLayout.LayoutParams = binding.bodyTextView.layoutParams as ConstraintLayout.LayoutParams
+            params1.width = ConstraintLayout.LayoutParams.MATCH_PARENT
+        } else if(binding.linkPreviewView.root.isVisible){
+            val params = binding.bodyTextViewLayout.layoutParams
+            params.width = binding.albumContainer.width
+            val params1: ConstraintLayout.LayoutParams = binding.bodyTextView.layoutParams as ConstraintLayout.LayoutParams
+            params1.width = ConstraintLayout.LayoutParams.MATCH_PARENT
+        }else{
+            val params: ConstraintLayout.LayoutParams = binding.bodyTextViewLayout.layoutParams as ConstraintLayout.LayoutParams
+            params.width = ConstraintLayout.LayoutParams.WRAP_CONTENT
+            val params1: ConstraintLayout.LayoutParams = binding.bodyTextView.layoutParams as ConstraintLayout.LayoutParams
+            params1.width = ConstraintLayout.LayoutParams.WRAP_CONTENT
+        }
 
         // set it to use constraints if not only a text message, otherwise wrap content to whatever width it wants
         val params = binding.bodyTextView.layoutParams
-        params.width =
-            if (onlyBodyMessage || binding.barrierViewsGone()) ViewGroup.LayoutParams.MATCH_PARENT else 0
+       // params.width =if (onlyBodyMessage || binding.barrierViewsGone()) ViewGroup.LayoutParams.MATCH_PARENT else 0
         val fontSize = TextSecurePreferences.getChatFontSize(context)
         binding.bodyTextView.textSize = fontSize!!.toFloat()
 
@@ -338,11 +409,10 @@ class VisibleMessageContentView : ConstraintLayout {
             binding.bodyTextView.setTextColor(color)
             binding.bodyTextView.setLinkTextColor(color)
             val body = getBodySpans(context, message, searchQuery)
-
             binding.bodyTextView.text = body
             //New Line
-            if (binding.bodyTextView.length() > 705) {
-                addReadMore(binding.bodyTextView.text.toString(), binding.bodyTextView, message)
+            if (binding.bodyTextView.text.trim().length > 705) {
+                addReadMore(binding.bodyTextView.text.trim().toString(), binding.bodyTextView, message)
             }
             //makeTextViewResizable(binding.bodyTextView, 3, "View More", true);
             onContentClick.add { e: MotionEvent ->
@@ -370,16 +440,48 @@ class VisibleMessageContentView : ConstraintLayout {
         val isSingleMessage = (isStartOfMessageCluster && isEndOfMessageCluster)
         @DrawableRes val backgroundID = when {
             isSingleMessage -> {
-                if (isOutgoing) R.drawable.message_bubble_background_sent_alone else R.drawable.message_bubble_background_sent_alone
+                if (isOutgoing) {
+                    binding.tailSendView.visibility = View.VISIBLE
+                    binding.tailReceiveView.visibility = View.GONE
+                    R.drawable.message_bubble_background_sent_end
+                } else {
+                    binding.tailSendView.visibility = View.GONE
+                    binding.tailReceiveView.visibility = View.VISIBLE
+                    R.drawable.message_bubble_background_received_end
+                }
             }
             isStartOfMessageCluster -> {
-                if (isOutgoing) R.drawable.message_bubble_background_sent_alone else R.drawable.message_bubble_background_sent_alone
+                if (isOutgoing) {
+                    binding.tailSendView.visibility = View.GONE
+                    binding.tailReceiveView.visibility = View.GONE
+                    R.drawable.message_bubble_background_sent_alone
+                } else {
+                    binding.tailSendView.visibility = View.GONE
+                    binding.tailReceiveView.visibility = View.GONE
+                    R.drawable.message_bubble_background_sent_alone
+                }
             }
             isEndOfMessageCluster -> {
-                if (isOutgoing) R.drawable.message_bubble_background_sent_alone else R.drawable.message_bubble_background_sent_alone
+                if (isOutgoing) {
+                    binding.tailSendView.visibility = View.VISIBLE
+                    binding.tailReceiveView.visibility = View.GONE
+                    R.drawable.message_bubble_background_sent_end
+                } else {
+                    binding.tailSendView.visibility = View.GONE
+                    binding.tailReceiveView.visibility = View.VISIBLE
+                    R.drawable.message_bubble_background_received_end
+                }
             }
             else -> {
-                if (isOutgoing) R.drawable.message_bubble_background_sent_alone else R.drawable.message_bubble_background_sent_alone
+                if (isOutgoing) {
+                    binding.tailSendView.visibility = View.GONE
+                    binding.tailReceiveView.visibility = View.GONE
+                    R.drawable.message_bubble_background_sent_alone
+                } else {
+                    binding.tailSendView.visibility = View.GONE
+                    binding.tailReceiveView.visibility = View.GONE
+                    R.drawable.message_bubble_background_sent_alone
+                }
             }
         }
         return ResourcesCompat.getDrawable(resources, backgroundID, context.theme)!!
@@ -416,7 +518,9 @@ class VisibleMessageContentView : ConstraintLayout {
             binding.quoteView.root,
             binding.linkPreviewView.root,
             binding.albumThumbnailView.root,
-            binding.bodyTextView
+            binding.albumMessageTime,
+            binding.bodyTextView,
+            binding.bodyTextViewLayout
         ).forEach { view:View -> view.isVisible = false }
     }
 
@@ -427,13 +531,13 @@ class VisibleMessageContentView : ConstraintLayout {
 
     // region Convenience
     companion object {
-
         fun getBodySpans(
-                context: Context,
-                message: MessageRecord,
-                searchQuery: String?
+            context: Context,
+            message: MessageRecord,
+            searchQuery: String?
         ): Spannable {
             var body = message.body.toSpannable()
+            var linkLastClickTime: Long = 0
 
             body = MentionUtilities.highlightMentions(
                 body,
@@ -442,10 +546,10 @@ class VisibleMessageContentView : ConstraintLayout {
                 context
             )
             body = SearchUtil.getHighlightedSpan(Locale.getDefault(),
-                { BackgroundColorSpan(Color.WHITE) }, body, searchQuery
+                { BackgroundColorSpan(if(message.isOutgoing) context.getColor(R.color.black) else context.getColor(R.color.incoming_message_search_query)) }, body, searchQuery
             )
             body = SearchUtil.getHighlightedSpan(Locale.getDefault(),
-                { ForegroundColorSpan(Color.BLACK) }, body, searchQuery
+                { ForegroundColorSpan(if(message.isOutgoing) context.getColor(R.color.white) else context.getColor(R.color.received_message_text_color)) }, body, searchQuery
             )
 
             Linkify.addLinks(body, Linkify.WEB_URLS)
@@ -478,7 +582,17 @@ class VisibleMessageContentView : ConstraintLayout {
                 } else R.color.white*/
                 R.color.white
             } else {
-                if (isDayUiMode) R.color.black else R.color.white
+                R.color.received_message_text_color
+            }
+            return context.resources.getColorWithID(colorID, context.theme)
+        }
+
+        @ColorInt
+        fun getTimeTextColor(context: Context, isOutGoing: Boolean): Int {
+            val colorID = if (isOutGoing) {
+                R.color.sent_message_time_color
+            } else {
+                R.color.received_message_time_color
             }
             return context.resources.getColorWithID(colorID, context.theme)
         }

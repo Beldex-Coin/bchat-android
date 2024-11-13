@@ -19,22 +19,23 @@ import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.NoExternalStorageException
 import io.beldex.bchat.util.FileProviderUtil
 import io.beldex.bchat.util.IntentUtils
+import io.beldex.bchat.util.UiMode
+import io.beldex.bchat.util.UiModeUtilities
 import java.io.File
 import java.io.IOException
 import java.util.LinkedList
-
 class AvatarSelection(
     private val activity: Activity,
     private val onAvatarCropped: ActivityResultLauncher<CropImageContractOptions>,
     private val onPickImage: ActivityResultLauncher<Intent>
 ) {
     private val TAG: String = AvatarSelection::class.java.simpleName
-
-    private val bgColor by lazy { activity.getColorFromAttr(android.R.attr.colorPrimary) }
-    private val txtColor by lazy { activity.getColorFromAttr(android.R.attr.textColorPrimary) }
+    private val bgDarkColor by lazy { ContextCompat.getColor(activity, R.color.black) }
+    private val bgLightColor by lazy { ContextCompat.getColor(activity, R.color.white) }
+    private val txtDarkColor by lazy {ContextCompat.getColor(activity, R.color.white) }
+    private val txtLightColor by lazy {ContextCompat.getColor(activity, R.color.black) }
     private val imageScrim by lazy { ContextCompat.getColor(activity, R.color.avatar_background) }
     private val activityTitle by lazy { activity.getString(R.string.CropImageActivity_profile_avatar) }
-
     /**
      * Returns result on [.REQUEST_CODE_CROP_IMAGE]
      */
@@ -42,6 +43,7 @@ class AvatarSelection(
         inputFile: Uri?,
         outputFile: Uri?
     ) {
+        val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(activity.applicationContext) == UiMode.NIGHT
         onAvatarCropped.launch(
             CropImageContractOptions(
                 uri = inputFile,
@@ -55,19 +57,18 @@ class AvatarSelection(
                     allowRotation = true,
                     allowFlipping = true,
                     backgroundColor = imageScrim,
-                    toolbarColor = bgColor,
-                    activityBackgroundColor = bgColor,
-                    toolbarTintColor = txtColor,
-                    toolbarBackButtonColor = txtColor,
-                    toolbarTitleColor = txtColor,
-                    activityMenuIconColor = txtColor,
-                    activityMenuTextColor = txtColor,
+                    toolbarColor = if(isDarkTheme) bgDarkColor else bgLightColor,
+                    activityBackgroundColor = if(isDarkTheme) bgDarkColor else bgLightColor,
+                    toolbarTintColor = if(isDarkTheme) txtDarkColor else txtLightColor,
+                    toolbarBackButtonColor = if(isDarkTheme) txtDarkColor else txtLightColor,
+                    toolbarTitleColor = if(isDarkTheme) txtDarkColor else txtLightColor,
+                    activityMenuIconColor = if(isDarkTheme) txtDarkColor else txtLightColor,
+                    activityMenuTextColor = if(isDarkTheme) txtDarkColor else txtLightColor,
                     activityTitle = activityTitle
                 )
             )
         )
     }
-
     /**
      * Returns result on [.REQUEST_CODE_AVATAR]
      *
@@ -92,12 +93,10 @@ class AvatarSelection(
                 Log.e("Cannot reserve a temporary avatar capture file.", e)
             }
         }
-
         val chooserIntent = createAvatarSelectionIntent(activity, captureFile, includeClear)
         onPickImage.launch(chooserIntent)
         return captureFile
     }
-
     private fun createAvatarSelectionIntent(
         context: Context,
         tempCaptureFile: File?,
@@ -106,12 +105,10 @@ class AvatarSelection(
         val extraIntents: MutableList<Intent> = LinkedList()
         var galleryIntent = Intent(Intent.ACTION_PICK)
         galleryIntent.setDataAndType(MediaStore.Images.Media.INTERNAL_CONTENT_URI, "image/*")
-
         if (!IntentUtils.isResolvable(context, galleryIntent)) {
             galleryIntent = Intent(Intent.ACTION_GET_CONTENT)
             galleryIntent.setType("image/*")
         }
-
         if (tempCaptureFile != null) {
             val uri = FileProviderUtil.getUriFor(context, tempCaptureFile)
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -119,23 +116,19 @@ class AvatarSelection(
             cameraIntent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             extraIntents.add(cameraIntent)
         }
-
         if (includeClear) {
-            extraIntents.add(Intent("network.loki.securesms.action.CLEAR_PROFILE_PHOTO"))
+            extraIntents.add(Intent("io.beldex.securesms.action.CLEAR_PROFILE_PHOTO"))
         }
-
         val chooserIntent = Intent.createChooser(
             galleryIntent,
             context.getString(R.string.CreateProfileActivity_profile_photo)
         )
-
         if (!extraIntents.isEmpty()) {
             chooserIntent.putExtra(
                 Intent.EXTRA_INITIAL_INTENTS,
                 extraIntents.toTypedArray<Intent>()
             )
         }
-
         return chooserIntent
     }
 }

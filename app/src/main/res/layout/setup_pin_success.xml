@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/transparent"
-    app:cardBackgroundColor="@color/page_background"
-    app:cardCornerRadius="10dp">
+    android:background="@drawable/default_dialog_background_inset"
+    android:elevation="0dp"
+    android:orientation="vertical"
+    app:cardCornerRadius="20dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="5dp"
-        android:orientation="vertical"
-        tools:ignore="MissingConstraints">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/success_animation"
+            android:layout_width="118dp"
+            android:layout_height="118dp"
+            android:layout_marginTop="16dp"
+            android:adjustViewBounds="true"
+            app:layout_constraintDimensionRatio="1:1"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="false"
+            android:layout_gravity="center"
+            app:lottie_enableMergePathsForKitKatAndAbove="true"
+            app:lottie_fileName="sent.json"
+            app:lottie_speed="1"
+            tools:ignore="ContentDescription" />
+
 
 
         <TextView
@@ -26,10 +33,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
+            android:textColor="@color/text_green"
             android:gravity="center"
+            android:textSize="16sp"
             android:textAlignment="center" />
 
         <Button
@@ -43,6 +52,4 @@
             android:layout_gravity="center"
             android:text="@string/ok" />
 
-    </LinearLayout>
-
-</androidx.cardview.widget.CardView>
+</LinearLayout>

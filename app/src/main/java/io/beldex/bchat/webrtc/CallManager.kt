@@ -2,13 +2,8 @@ package io.beldex.bchat.webrtc
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
-import android.telephony.PhoneStateListener
-import android.telephony.TelephonyCallback
 import android.telephony.TelephonyManager
 import androidx.core.content.ContextCompat
-import io.beldex.bchat.webrtc.audio.SignalAudioManager
-import io.beldex.bchat.webrtc.video.CameraState
 import com.beldex.libbchat.database.StorageProtocol
 import com.beldex.libbchat.messaging.calls.CallMessageType
 import com.beldex.libbchat.messaging.messages.control.CallMessage
@@ -21,9 +16,12 @@ import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import io.beldex.bchat.webrtc.audio.AudioManagerCompat
 import io.beldex.bchat.webrtc.audio.OutgoingRinger
+import io.beldex.bchat.webrtc.audio.SignalAudioManager
+import io.beldex.bchat.webrtc.data.Event
 import io.beldex.bchat.webrtc.data.StateProcessor
 import io.beldex.bchat.webrtc.locks.LockManager
 import io.beldex.bchat.webrtc.video.CameraEventListener
+import io.beldex.bchat.webrtc.video.CameraState
 import io.beldex.bchat.webrtc.video.RemoteRotationVideoProxySink
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -35,7 +33,6 @@ import java.util.*
 import io.beldex.bchat.webrtc.data.State as CallState
 import com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.ICE_CANDIDATES
 import io.beldex.bchat.service.WebRtcCallService
-import io.beldex.bchat.webrtc.data.Event
 import nl.komponents.kovenant.functional.bind
 
 class CallManager(context: Context, audioManager: AudioManagerCompat, private val storage: StorageProtocol): PeerConnection.Observer,
@@ -81,6 +78,9 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
 
     fun shutDownAudioManager() {
         signalAudioManager.shutdown()
+    }
+    fun getBluetoothConnectionStatus(): Boolean {
+        return signalAudioManager.isBluetoothConnected()
     }
 
     private val _audioEvents = MutableStateFlow(StateEvent.AudioEnabled(false))

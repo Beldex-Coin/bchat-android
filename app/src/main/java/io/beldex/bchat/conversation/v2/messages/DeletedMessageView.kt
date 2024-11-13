@@ -8,6 +8,8 @@ import androidx.annotation.ColorInt
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewDeletedMessageBinding
 import io.beldex.bchat.database.model.MessageRecord
+import io.beldex.bchat.util.DateUtils
+import java.util.Locale
 
 class DeletedMessageView : LinearLayout {
     private val binding: ViewDeletedMessageBinding by lazy { ViewDeletedMessageBinding.bind(this) }
@@ -23,6 +25,14 @@ class DeletedMessageView : LinearLayout {
         binding.deleteTitleTextView.text = context.getString(R.string.deleted_message)
         binding.deleteTitleTextView.setTextColor(textColor)
         binding.deletedMessageViewIconImageView.imageTintList = ColorStateList.valueOf(textColor)
+
+        binding.deleteMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+        binding.deleteMessageTime.setTextColor(
+            VisibleMessageContentView.getTimeTextColor(
+                context,
+                message.isOutgoing
+            )
+        )
     }
     // endregion
 }

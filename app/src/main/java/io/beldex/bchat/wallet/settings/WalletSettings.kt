@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -14,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.BaseActionBarActivity
 import io.beldex.bchat.data.NodeInfo
+import io.beldex.bchat.onboarding.ui.EXTRA_PIN_CODE_ACTION
+import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
 import io.beldex.bchat.wallet.CheckOnline
@@ -61,7 +64,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         decimalsList.add("4 - Four (0.0000)")
         decimalsList.add("3 - Three (0.000)")
         decimalsList.add("2 - Two (0.00)")
-        decimalsList.add("0 - Zero (000)")
+        decimalsList.add("0 - Zero (0)")
 
         currencyList.add("AUD")
         currencyList.add("BRL")
@@ -124,7 +127,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
                 val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
                 lockManager.enableAppLock(this@WalletSettings, CustomPinActivity::class.java)
                 val intent = Intent(this@WalletSettings, CustomPinActivity::class.java)
-                intent.putExtra(AppLock.EXTRA_TYPE, AppLock.CHANGE_PIN)
+                intent.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.ChangeWalletPin.action)
                 intent.putExtra("change_pin",true)
                 intent.putExtra("send_authentication",false)
                 push(intent)

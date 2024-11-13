@@ -41,6 +41,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -94,9 +95,11 @@ import io.beldex.bchat.util.SaveAttachmentTask.Attachment;
 
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.WeakHashMap;
 
 import io.beldex.bchat.R;
+import kotlin.Unit;
 
 /**
  * Activity for displaying media attachments in-app
@@ -460,7 +463,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     MediaItem mediaItem = getCurrentMediaItem();
     if (mediaItem == null) return;
 
-    SaveAttachmentTask.showWarningDialog(this, (dialogInterface, i) -> {
+    SaveAttachmentTask.showWarningDialog(this, 1, () -> {
       Permissions.with(this)
               .request(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
               .maxSdkVersion(Build.VERSION_CODES.P)
@@ -477,6 +480,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
                 }
               })
               .execute();
+      return Unit.INSTANCE;
     });
   }
 
@@ -493,29 +497,36 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
       return;
     }
 
-    AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.BChatAlertDialog);
-    builder.setIconAttribute(R.attr.dialog_alert_icon);
-    builder.setTitle(R.string.MediaPreviewActivity_media_delete_confirmation_title);
-    builder.setMessage(R.string.MediaPreviewActivity_media_delete_confirmation_message);
-    builder.setCancelable(true);
-
-    builder.setPositiveButton(R.string.delete, (dialogInterface, which) -> {
-      new AsyncTask<Void, Void, Void>() {
-        @Override
-        protected Void doInBackground(Void... voids) {
-          if (mediaItem.attachment == null) {
+    LayoutInflater factory = LayoutInflater.from(this);
+    View deleteMediaPermissionDialogView = factory.inflate(R.layout.delete_media_dialog_box, null);
+    AlertDialog deleteMediaPermissionDialog = new AlertDialog.Builder(this).create();
+    deleteMediaPermissionDialog.setView(deleteMediaPermissionDialogView);
+    deleteMediaPermissionDialogView.<Button>findViewById(R.id.deleteMediaDialogBoxButton).setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        new AsyncTask<Void, Void, Void>() {
+          @Override
+          protected Void doInBackground(Void... voids) {
+            if (mediaItem.attachment == null) {
+              return null;
+            }
+            AttachmentUtil.deleteAttachment(MediaPreviewActivity.this.getApplicationContext(),
+                    mediaItem.attachment);
             return null;
           }
-          AttachmentUtil.deleteAttachment(MediaPreviewActivity.this.getApplicationContext(),
-                                          mediaItem.attachment);
-          return null;
-        }
-      }.execute();
-
-      finish();
+        }.execute();
+        deleteMediaPermissionDialog.dismiss();
+        finish();
+      }
     });
-    builder.setNegativeButton(android.R.string.cancel, null);
-    builder.show();
+    deleteMediaPermissionDialogView.<Button>findViewById(R.id.cancelMediaDialogBoxButton).setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        deleteMediaPermissionDialog.dismiss();
+      }
+    });
+    Objects.requireNonNull(deleteMediaPermissionDialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
+    deleteMediaPermissionDialog.show();
   }
 
   @Override

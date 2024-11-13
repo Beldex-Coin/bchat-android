@@ -50,7 +50,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved) {
     class_WalletListener = static_cast<jclass>(jenv->NewGlobalRef(
             jenv->FindClass("io/beldex/bchat/model/WalletListener")));
     /*class_Ledger = static_cast<jclass>(jenv->NewGlobalRef(
-            jenv->FindClass("io.beldex.bchat/ledger/Ledger")));*/
+            jenv->FindClass("io/beldex/bchat/ledger/Ledger")));*/
     class_WalletStatus = static_cast<jclass>(jenv->NewGlobalRef(
             jenv->FindClass("io/beldex/bchat/model/Wallet$Status")));
     return JNI_VERSION_1_6;

@@ -1,119 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/inputBarLinearLayout"
-    android:layout_width="match_parent"
+<LinearLayout android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@color/input_bar_background">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"/>
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/containerCardView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="48dp"
+        android:layout_weight="1"
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/input_bar_background"
+        app:cardElevation="0dp">
 
-    <FrameLayout
-        android:id="@+id/inputBarAdditionalContentContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <RelativeLayout
-            android:id="@+id/attachmentsButtonContainer"
-            android:layout_width="@dimen/input_bar_button_expanded_size"
-            android:layout_height="@dimen/input_bar_button_expanded_size"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/small_spacing" />
-
-        <io.beldex.bchat.conversation.v2.input_bar.InputBarEditText
-            android:id="@+id/inputBarEditText"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_centerInParent="true"
-            android:layout_marginStart="64dp"
-            android:layout_toStartOf="@id/payAsYouChatLayout"
-            android:background="@null"
-            android:gravity="center_vertical"
-            android:fontFamily="@font/open_sans_medium"
-            android:hint="@string/ConversationActivity_message"
-            android:textColor="@color/text"
-            android:textSize="@dimen/small_font_size" />
-
-        <RelativeLayout
-            android:id="@+id/payAsYouChatLayout"
-            android:layout_width="@dimen/input_bar_button_expanded_size"
-            android:layout_height="@dimen/input_bar_button_expanded_size"
-            android:layout_toStartOf="@id/microphoneOrSendButtonContainer"
-            android:gravity="center"
-            android:layout_centerVertical="true">
-
-            <ImageView
-                android:id="@+id/inChatBDX"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentStart="true"
-                android:layout_margin="10dp"
-                android:src="@drawable/ic_in_chat_bdx" />
-            <ProgressBar
-                android:id="@+id/blockProgressBar"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:progressDrawable="@drawable/green_circular_progress_bar"
-                android:background="@drawable/circle_shape"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:indeterminate="false"
-                android:visibility="gone"
-                android:layout_margin="5dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentStart="true"
-                android:max="100"/>
-            <ProgressBar
-                android:id="@+id/failedBlockProgressBar"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:progressDrawable="@drawable/red_circular_progress_bar"
-                android:background="@drawable/circle_shape"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:indeterminate="false"
-                android:visibility="gone"
-                android:layout_margin="5dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentStart="true"
-                android:max="100"/>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/microphoneOrSendButtonContainer"
-            android:layout_width="@dimen/input_bar_button_expanded_size"
-            android:layout_height="@dimen/input_bar_button_expanded_size"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/small_spacing" />
-        <TextView
-            android:fontFamily="@font/open_sans_medium"
-            android:id="@+id/noLongerParticipantTextView"
+        <LinearLayout android:id="@+id/inputBarLinearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/text"
-            android:textAlignment="center"
-            android:layout_margin="5dp"
-            android:visibility="gone"
-            android:text="@string/you_can_t_send_messages_to_this_group_because_you_re_no_longer_a_participant"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"/>
+            android:orientation="vertical"
+            android:background="@color/input_bar_background">
 
-    </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"/>
+
+            <FrameLayout
+                android:id="@+id/inputBarAdditionalContentContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:id="@+id/attachmentsButtonContainer"
+                    android:layout_width="@dimen/input_bar_button_expanded_size"
+                    android:layout_height="@dimen/input_bar_button_expanded_size"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:background="@color/input_bar_background"
+                    android:layout_marginStart="@dimen/small_spacing" />
+
+                <io.beldex.bchat.conversation.v2.input_bar.InputBarEditText
+                    android:id="@+id/inputBarEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_centerInParent="true"
+                    android:layout_toStartOf="@id/payAsYouChatLayout"
+                    android:layout_toEndOf="@id/attachmentsButtonContainer"
+                    android:background="@null"
+                    android:gravity="center_vertical"
+                    android:fontFamily="@font/open_sans_medium"
+                    android:hint="@string/ConversationActivity_message"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/small_font_size" />
+
+                <RelativeLayout
+                    android:id="@+id/payAsYouChatLayout"
+                    android:layout_width="@dimen/input_bar_button_expanded_size"
+                    android:layout_height="@dimen/input_bar_button_expanded_size"
+                    android:layout_alignParentEnd="true"
+                    android:gravity="center"
+                    android:layout_centerVertical="true"
+                    android:visibility="visible">
+
+                    <ImageView
+                        android:id="@+id/inChatBDX"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:src="@drawable/ic_in_chat_bdx" />
+
+                    <ProgressBar
+                        android:id="@+id/blockProgressBar"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:progressDrawable="@drawable/green_circular_progress_bar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="false"
+                        android:visibility="gone"
+                        android:layout_margin="7dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentStart="true"
+                        android:max="100"/>
+
+                    <ProgressBar
+                        android:id="@+id/failedBlockProgressBar"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:progressDrawable="@drawable/red_circular_progress_bar"
+                        android:background="@drawable/circle_shape"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="false"
+                        android:visibility="gone"
+                        android:layout_margin="5dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentStart="true"
+                        android:max="100"/>
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:fontFamily="@font/open_sans_medium"
+        android:id="@+id/noLongerParticipantTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text"
+        android:textAlignment="center"
+        android:layout_margin="5dp"
+        android:visibility="gone"
+        android:text="@string/you_can_t_send_messages_to_this_group_because_you_re_no_longer_a_participant"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"/>
+
+    <RelativeLayout
+        android:id="@+id/microphoneOrSendButtonContainer"
+        android:layout_width="@dimen/input_bar_button_expanded_size"
+        android:layout_height="@dimen/input_bar_button_expanded_size"
+        android:layout_gravity="bottom"/>
 
 </LinearLayout>

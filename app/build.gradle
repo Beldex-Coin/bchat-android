@@ -6,13 +6,28 @@ apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlinx-serialization'
 apply plugin: 'dagger.hilt.android.plugin'
+apply plugin: 'com.google.firebase.crashlytics'
 apply from: 'buildGradle/dependencies.gradle'
+
+dependencies {
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
+    implementation 'androidx.activity:activity-compose:1.5.1'
+    implementation platform('androidx.compose:compose-bom:2022.10.00')
+    implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.ui:ui-graphics'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.compose.ui:ui-text-android:1.6.6'
+    androidTestImplementation platform('androidx.compose:compose-bom:2022.10.00')
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
+    debugImplementation 'androidx.compose.ui:ui-test-manifest'
+}
 
 configurations.all {
     exclude module: "commons-logging"
 }
-def canonicalVersionCode = 67
-def canonicalVersionName = "2.5.3"
+def canonicalVersionCode = 70
+def canonicalVersionName = "2.6.0"
 
 def postFixSize = 10
 def abiPostFix = ['armeabi-v7a' : 1,
@@ -100,9 +115,29 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            buildConfigField "boolean", "CRASHLYTICS_ENABLED", "true"
+            firebaseCrashlytics {
+                // Enable processing and uploading of native symbols to Firebase servers.
+                // By default, this is disabled to improve build speeds.
+                // This flag must be enabled to see properly-symbolicated native
+                // stack traces in the Crashlytics dashboard.
+                nativeSymbolUploadEnabled true
+            }
+            manifestPlaceholders = [
+                    providerId: "io.beldex",
+                    appName: "BChat Messenger"
+            ]
+            buildConfigField "String", "providerId", "\"io.beldex\""
         }
         debug {
             minifyEnabled false
+            applicationIdSuffix '.debug'
+            buildConfigField "boolean", "CRASHLYTICS_ENABLED", "true"
+            manifestPlaceholders = [
+                    providerId: "io.beldex.debug",
+                    appName: "BChat Debug"
+            ]
+            buildConfigField "String", "providerId", "\"io.beldex.debug\""
         }
     }
 
@@ -165,7 +200,7 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.7"
+        kotlinCompilerExtensionVersion = "1.5.4"
     }
     externalNativeBuild {
         cmake {

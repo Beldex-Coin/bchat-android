@@ -5,7 +5,7 @@
 
     <solid  android:color="@color/button_green" />
 
-    <corners android:radius="@dimen/medium_button_corner_radius" />
+    <corners android:radius="12dp" />
 
     <stroke android:width="@dimen/border_thickness" android:color="@color/button_green" />
 </shape>

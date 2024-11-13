@@ -1,43 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/page_background"
-    android:fillViewport="true">
+    android:background="@color/action_bar_background"
+    android:fillViewport="true"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/page_background"
         android:orientation="vertical">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:layout_weight="0"/>
+            android:layout_weight="0" />
 
         <TextView
-            android:fontFamily="@font/open_sans_bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
-            android:textSize="18sp"
-            android:textStyle="bold"
+            android:fontFamily="@font/open_sans_semi_bold"
+            android:text="@string/display_name_screen_title_content"
             android:textColor="@color/text"
-            android:text="@string/display_name_screen_title_content" />
-
-        <TextView
-            android:fontFamily="@font/open_sans_medium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="textStart"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:text="@string/display_name_screen_description_content"
-            android:textSize="@dimen/very_small_font_size"
-            android:layout_marginTop="@dimen/medium_spacing"
-            android:textStyle="normal"  />
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -53,35 +43,49 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    style="@style/SmallBchatEditText"
                     android:id="@+id/displayNameEditText"
+                    style="@style/SeedBchatEditText"
                     android:layout_width="match_parent"
                     android:layout_height="54dp"
+                    android:gravity="center_vertical"
+                    android:hint="@string/activity_display_name_edit_text_hint"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:maxLines="1"
                     android:paddingTop="0dp"
                     android:paddingBottom="0dp"
-                    android:gravity="center_vertical"
-                    android:inputType="textCapWords"
-                    android:hint="@string/activity_display_name_edit_text_hint" />
+                    android:singleLine="true" />
 
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="@dimen/medium_spacing"
+            android:layout_marginRight="30dp"
+            android:fontFamily="@font/open_sans_medium"
+            android:text="You can change it anytime :)"
+            android:textColor="@color/text_hint"
+            android:textAlignment="textStart"
+            android:textSize="@dimen/small_font_size"
+            android:textStyle="normal" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <Button
-            style="@style/Widget.Bchat.Button.Common.ProminentFilled"
             android:id="@+id/registerButton"
+            style="@style/Widget.Bchat.Button.Common.Disabled"
             android:layout_width="match_parent"
             android:layout_height="@dimen/medium_button_height"
-            android:layout_marginLeft="@dimen/massive_spacing"
-            android:layout_marginRight="@dimen/massive_spacing"
+            android:layout_marginLeft="@dimen/medium_spacing"
+            android:layout_marginRight="@dimen/medium_spacing"
             android:layout_marginBottom="30dp"
             android:text="@string/continue_2" />
-
     </LinearLayout>
-
 </ScrollView>

@@ -12,20 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import io.beldex.bchat.R;
-
-import io.beldex.bchat.imageeditor.ColorableRenderer;
-import io.beldex.bchat.imageeditor.ImageEditorView;
-import io.beldex.bchat.imageeditor.Renderer;
-import io.beldex.bchat.imageeditor.model.EditorElement;
-import io.beldex.bchat.imageeditor.model.EditorModel;
-import io.beldex.bchat.imageeditor.renderers.TextRenderer;
-import io.beldex.bchat.mms.MediaConstraints;
-import io.beldex.bchat.mms.PushMediaConstraints;
-import io.beldex.bchat.scribbles.widget.VerticalSlideColorPicker;
-import io.beldex.bchat.util.ParcelUtil;
-import io.beldex.bchat.imageeditor.ColorableRenderer;
-import io.beldex.bchat.imageeditor.ImageEditorView;
-import io.beldex.bchat.imageeditor.Renderer;
 import io.beldex.bchat.imageeditor.ColorableRenderer;
 import io.beldex.bchat.imageeditor.ImageEditorView;
 import io.beldex.bchat.imageeditor.Renderer;
@@ -229,7 +215,7 @@ public final class ImageEditorFragment extends Fragment implements ImageEditorHu
   protected void addText() {
     String        initialText = "";
     int           color       = imageEditorHud.getActiveColor();
-    TextRenderer renderer    = new TextRenderer(initialText, color);
+    TextRenderer  renderer    = new TextRenderer(initialText, color);
     EditorElement element     = new EditorElement(renderer);
 
     imageEditorView.getModel().addElementCentered(element, 1);

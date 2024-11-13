@@ -40,7 +40,6 @@ import androidx.core.hardware.fingerprint.FingerprintManagerCompat;
 import androidx.core.os.CancellationSignal;
 
 import io.beldex.bchat.util.AnimationCompleteListener;
-import io.beldex.bchat.util.AnimationCompleteListener;
 import io.beldex.bchat.components.AnimatingToggle;
 import com.beldex.libsignal.utilities.Log;
 import io.beldex.bchat.service.KeyCachingService;
@@ -88,7 +87,7 @@ public class PassphrasePromptActivity extends BaseActionBarActivity {
         keyCachingService.setMasterSecret(new Object());
         keyCachingService = null;
       }
-    }, BIND_AUTO_CREATE);
+    }, Context.BIND_AUTO_CREATE);
   }
 
   @Override
@@ -191,7 +190,7 @@ public class PassphrasePromptActivity extends BaseActionBarActivity {
   }
 
   private void resumeScreenLock() {
-    KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+    KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
 
     assert keyguardManager != null;
 

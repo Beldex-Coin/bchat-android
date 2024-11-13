@@ -13,9 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
 
 import io.beldex.bchat.PassphraseRequiredActionBarActivity;
-import io.beldex.bchat.conversation.v2.messages.VisibleMessageContentView;
-import io.beldex.bchat.conversation.v2.messages.VisibleMessageContentView;
-import io.beldex.bchat.PassphraseRequiredActionBarActivity;
 
 import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.Util;

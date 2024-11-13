@@ -11,8 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.annimon.stream.Stream;
-import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
-import io.beldex.bchat.util.BitmapUtil;
 import io.beldex.bchat.util.BitmapUtil;
 
 import net.zetetic.database.sqlcipher.SQLiteDatabase;

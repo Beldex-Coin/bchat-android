@@ -3,28 +3,45 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:gravity="center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/header_container"
-        android:background="@color/accent"
-        android:layout_width="match_parent"
+        android:background="@drawable/circle_background"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center"
-        android:padding="40dp">
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:padding="20dp">
 
     </LinearLayout>
 
     <TextView
         android:fontFamily="@font/open_sans_medium"
-        android:id="@+id/message"
+        android:id="@+id/downloadTitleTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/large_spacing"
-        android:textSize="@dimen/medium_font_size"
-        android:lineSpacingMultiplier="1.3"
-        tools:text="Signal needs access to your contacts and media in order to connect with friends, exchange messages, and make secure calls."/>
+        android:text="@string/Permissions_permission_required"
+        android:textColor="@color/text"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:textSize="16sp" />
 
+    <TextView
+        android:id="@+id/message"
+        android:fontFamily="@font/open_sans_medium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/call_permission_required_description"
+        android:paddingHorizontal="@dimen/medium_spacing"
+        android:textColor="@color/download_icon"
+        android:textSize="@dimen/small_font_size"
+        android:textAlignment="center"
+        tools:text="Signal needs access to your contacts and media in order to connect with friends, exchange messages, and make secure calls."/>
 </LinearLayout>

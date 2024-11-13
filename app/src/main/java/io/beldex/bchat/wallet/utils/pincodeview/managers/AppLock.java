@@ -2,9 +2,6 @@ package io.beldex.bchat.wallet.utils.pincodeview.managers;
 
 import android.app.Activity;
 
-import io.beldex.bchat.wallet.utils.keyboardview.interfaces.LifeCycleInterface;
-import io.beldex.bchat.wallet.utils.pincodeview.PinActivity;
-
 import java.util.HashSet;
 
 public abstract class AppLock {
@@ -35,7 +32,7 @@ public abstract class AppLock {
     public static final int LOGO_ID_NONE = -1;
 
     /**
-     * EXTRA_TYPE, uses to pass to the {@link AppLockActivity}
+     * EXTRA_TYPE, uses to pass to the {@link io.beldex.bchat.wallet.utils.pincodeview.managers.AppLockActivity}
      * to determine in which type it musts be started.
      */
     public static final String EXTRA_TYPE = "type";
@@ -49,9 +46,9 @@ public abstract class AppLock {
 
     /**
      * A {@link java.util.HashSet} of {@link java.lang.String} which are the classes we don't want to
-     * take into account for the {@link PinActivity}. These activities
+     * take into account for the {@link io.beldex.bchat.wallet.utils.pincodeview.PinActivity}. These activities
      * will not log the last opened time, will not launch the
-     * {@link AppLockActivity} etc...
+     * {@link io.beldex.bchat.wallet.utils.pincodeview.managers.AppLockActivity} etc...
      */
     protected HashSet<String> mIgnoredActivities;
 
@@ -86,22 +83,22 @@ public abstract class AppLock {
     public abstract void setTimeout(long timeout);
 
     /**
-     * Get logo resource id used by {@link AppLockActivity}
+     * Get logo resource id used by {@link io.beldex.bchat.wallet.utils.pincodeview.managers.AppLockActivity}
      */
     public abstract int getLogoId();
 
     /**
-     * Set logo resource id used by {@link AppLockActivity}
+     * Set logo resource id used by {@link io.beldex.bchat.wallet.utils.pincodeview.managers.AppLockActivity}
      */
     public abstract void setLogoId(int logoId);
 
     /**
-     * Get the forgot option used by {@link AppLockActivity}
+     * Get the forgot option used by {@link io.beldex.bchat.wallet.utils.pincodeview.managers.AppLockActivity}
      */
     public abstract boolean shouldShowForgot();
 
     /**
-     * Set the forgot option used by {@link AppLockActivity}
+     * Set the forgot option used by {@link io.beldex.bchat.wallet.utils.pincodeview.managers.AppLockActivity}
      */
     public abstract void setShouldShowForgot(boolean showForgot);
 
@@ -116,21 +113,21 @@ public abstract class AppLock {
     public abstract void setPinChallengeCancelled(boolean cancelled);
 
     /**
-     * Enable the {@link AppLock} by setting
-     * {@link AppLockImpl} as the
-     * {@link LifeCycleInterface}
+     * Enable the {@link io.beldex.bchat.wallet.utils.pincodeview.managers.AppLock} by setting
+     * {@link io.beldex.bchat.wallet.utils.pincodeview.managers.AppLockImpl} as the
+     * {@link io.beldex.bchat.wallet.utils.keyboardview.interfaces.LifeCycleInterface}
      */
     public abstract void enable();
 
     /**
-     * Disable the {@link AppLock} by removing any
-     * {@link LifeCycleInterface}
+     * Disable the {@link io.beldex.bchat.wallet.utils.pincodeview.managers.AppLock} by removing any
+     * {@link io.beldex.bchat.wallet.utils.keyboardview.interfaces.LifeCycleInterface}
      */
     public abstract void disable();
 
     /**
-     * Disable the {@link AppLock} by removing any
-     * {@link LifeCycleInterface} and also delete
+     * Disable the {@link io.beldex.bchat.wallet.utils.pincodeview.managers.AppLock} by removing any
+     * {@link io.beldex.bchat.wallet.utils.keyboardview.interfaces.LifeCycleInterface} and also delete
      * all the previous saved configurations into {@link android.content.SharedPreferences}
      */
     public abstract void disableAndRemoveConfiguration();
@@ -142,8 +139,8 @@ public abstract class AppLock {
 
     /**
      * Set the last active time of the app used by {@link #shouldLockSceen(android.app.Activity)}.
-     * Set in {@link LifeCycleInterface#onActivityPaused(android.app.Activity)}
-     * and {@link LifeCycleInterface#onActivityResumed(android.app.Activity)}
+     * Set in {@link io.beldex.bchat.wallet.utils.keyboardview.interfaces.LifeCycleInterface#onActivityPaused(android.app.Activity)}
+     * and {@link io.beldex.bchat.wallet.utils.keyboardview.interfaces.LifeCycleInterface#onActivityResumed(android.app.Activity)}
      */
     public abstract void setLastActiveMillis();
 
@@ -166,17 +163,17 @@ public abstract class AppLock {
 
     /**
      * Check if an activity must be ignored and then don't call the
-     * {@link LifeCycleInterface}
+     * {@link io.beldex.bchat.wallet.utils.keyboardview.interfaces.LifeCycleInterface}
      */
     public abstract boolean isIgnoredActivity(Activity activity);
 
     /**
      * Evaluates if:
-     * - we are already into the {@link AppLockActivity}
+     * - we are already into the {@link io.beldex.bchat.wallet.utils.pincodeview.managers.AppLockActivity}
      * - the passcode is not set
      * - the timeout didn't reached
      * If any of this is true, then we don't need to start the
-     * {@link AppLockActivity} (it returns false)
+     * {@link io.beldex.bchat.wallet.utils.pincodeview.managers.AppLockActivity} (it returns false)
      * Otherwise returns true
      */
     public abstract boolean shouldLockSceen(Activity activity);

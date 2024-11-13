@@ -8,10 +8,6 @@ import io.beldex.bchat.model.Wallet;
 import io.beldex.bchat.util.validator.BitcoinAddressType;
 import io.beldex.bchat.util.validator.BitcoinAddressValidator;
 import io.beldex.bchat.util.validator.EthAddressValidator;
-import io.beldex.bchat.model.Wallet;
-import io.beldex.bchat.util.validator.BitcoinAddressType;
-import io.beldex.bchat.util.validator.BitcoinAddressValidator;
-import io.beldex.bchat.util.validator.EthAddressValidator;
 
 
 import io.beldex.bchat.R;

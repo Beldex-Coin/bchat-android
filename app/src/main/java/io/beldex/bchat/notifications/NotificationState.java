@@ -8,14 +8,9 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2;
-import io.beldex.bchat.home.HomeActivity;
 import com.beldex.libsignal.utilities.Log;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.utilities.recipients.Recipient.*;
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2;
-import io.beldex.bchat.home.HomeActivity;
 import io.beldex.bchat.conversation.v2.ConversationFragmentV2;
 import io.beldex.bchat.home.HomeActivity;
 

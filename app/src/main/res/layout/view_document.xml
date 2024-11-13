@@ -4,56 +4,90 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:gravity="center"
-    android:orientation="horizontal"
-    android:padding="@dimen/medium_spacing">
-
-    <RelativeLayout
-        android:layout_width="35dp"
-        android:layout_height="30dp">
-
-        <ImageView
-            android:id="@+id/documentViewIconImageView"
-            android:layout_width="35dp"
-            android:layout_height="30dp"
-            android:src="@drawable/ic_document_large_light"
-            app:tint="@color/text" />
-
-        <TextView
-            android:fontFamily="@font/open_sans_regular"
-            android:id="@+id/documentViewIconTextView"
-            android:layout_width="5dp"
-            android:layout_height="5dp"
-            android:text="TXT"
-            android:gravity="center"
-            android:textSize="6sp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:textColor="@color/document_text"/>
-        <ProgressBar android:id="@+id/gif_progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:indeterminateTint="@color/accent"
-            android:indeterminateTintMode="src_in"
-            android:visibility="gone"
-            tools:visibility="visible"
-            android:layout_gravity="center"
-            android:gravity="center"/>
-    </RelativeLayout>
-
-    <TextView
-        android:fontFamily="@font/open_sans_regular"
-        android:id="@+id/documentTitleTextView"
+    android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/documentViewContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:ellipsize="end"
-        android:maxLines="2"
-        android:textColor="@color/text"
-        android:textSize="@dimen/small_font_size"
-        tools:text="I'm a very long document title. Did you know that?" />
+        android:background="@drawable/document_view_background"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/small_spacing">
+        <RelativeLayout
+            android:id="@+id/documentTypePreviewContainer"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/view_quote_attachment_preview_background"
+            android:gravity="center"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@tools:sample/full_names"
+            tools:visibility="visible">
+
+            <ImageView
+                android:id="@+id/documentViewIconImageView"
+                android:layout_width="35dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_document_large_light"
+                app:tint="@color/text" />
+
+            <TextView
+                android:id="@+id/documentViewIconTextView"
+                android:layout_width="5dp"
+                android:layout_height="5dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_centerVertical="true"
+                android:fontFamily="@font/open_sans_regular"
+                android:gravity="center"
+                android:text="TXT"
+                android:textColor="@color/document_text"
+                android:textSize="6sp" />
+
+            <ProgressBar
+                android:id="@+id/gif_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/accent"
+                android:indeterminateTintMode="src_in"
+                android:visibility="gone"
+                tools:visibility="visible" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/documentTitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/open_sans_regular"
+            android:maxLines="1"
+            android:textColor="@color/text"
+            android:textSize="@dimen/small_font_size"
+            tools:text="I'm a very long document title. Did you know that?" />
+    </LinearLayout>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/document_view_message_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
+        android:fontFamily="@font/open_sans_regular"
+        android:textSize="11sp"
+        android:visibility="visible"
+        tools:text="12:00 pm" />
 
 </io.beldex.bchat.conversation.v2.messages.DocumentView>

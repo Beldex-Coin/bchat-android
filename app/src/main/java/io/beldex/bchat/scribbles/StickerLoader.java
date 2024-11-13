@@ -21,7 +21,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import io.beldex.bchat.util.AsyncLoader;
-import io.beldex.bchat.util.AsyncLoader;
 import com.beldex.libsignal.utilities.Log;
 
 import java.io.IOException;

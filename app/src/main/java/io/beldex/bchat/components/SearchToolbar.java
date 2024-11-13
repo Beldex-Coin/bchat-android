@@ -20,7 +20,6 @@ import androidx.appcompat.widget.Toolbar;
 
 import io.beldex.bchat.util.AnimationCompleteListener;
 import io.beldex.bchat.util.AnimationCompleteListener;
-import io.beldex.bchat.util.AnimationCompleteListener;
 
 import io.beldex.bchat.R;
 

@@ -16,11 +16,6 @@ import androidx.core.app.TaskStackBuilder;
 import io.beldex.bchat.conversation.v2.ConversationFragmentV2;
 import io.beldex.bchat.home.HomeActivity;
 import io.beldex.bchat.mms.SlideDeck;
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2;
-import io.beldex.bchat.home.HomeActivity;
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2;
-import io.beldex.bchat.home.HomeActivity;
-import io.beldex.bchat.mms.SlideDeck;
 
 import com.beldex.libbchat.utilities.recipients.Recipient;
 

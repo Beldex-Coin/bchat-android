@@ -6,12 +6,11 @@ import io.beldex.bchat.conversation.v2.utilities.BaseDialog
 import io.beldex.bchat.data.TxData
 import io.beldex.bchat.model.PendingTransaction
 import io.beldex.bchat.databinding.ActivityInChatSendBinding
-import io.beldex.bchat.model.Wallet
 
 class InChatSend(
-        private val pendingTransaction: PendingTransaction,
-        private val txData: TxData?,
-        private val context: ConversationFragmentV2
+    private val pendingTransaction: PendingTransaction,
+    private val txData: TxData?,
+    private val context: ConversationFragmentV2
 ) : BaseDialog() {
 
     private lateinit var binding: ActivityInChatSendBinding
@@ -23,9 +22,9 @@ class InChatSend(
                 dialogReceiverAddress.text = txData.destinationAddress
             }
             dialogTransactionFee.text =
-                Wallet.getDisplayAmount(pendingTransaction.fee)
+                io.beldex.bchat.model.Wallet.getDisplayAmount(pendingTransaction.fee)
             dialogTransactionAmount.text =
-                Wallet.getDisplayAmount(pendingTransaction.amount)
+                io.beldex.bchat.model.Wallet.getDisplayAmount(pendingTransaction.amount)
 
             cancelButton.setOnClickListener {
                 context.pendingTransaction = null

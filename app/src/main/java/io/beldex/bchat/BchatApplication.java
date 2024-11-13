@@ -7,8 +7,6 @@ import android.os.Build;
 
 import io.beldex.bchat.model.NetworkType;
 import io.beldex.bchat.util.LocalHelper;
-import io.beldex.bchat.model.NetworkType;
-import io.beldex.bchat.util.LocalHelper;
 
 import io.beldex.bchat.BuildConfig;
 import timber.log.Timber;

@@ -15,6 +15,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
     buildFeatures {
         buildConfig = true
     }
@@ -35,8 +39,8 @@ android {
             dimension "targetNet"
 
             buildConfigField "boolean", "USE_TESTNET", "true"
-            buildConfigField "String", "SERVER_KEY", "\"decc13c0a80cdd44926226f20b86c85525b001d9ab9850c95b281aa67ffebf6a\""
-            buildConfigField "String", "SERVER", "\"http://fileserver.rpcnode.stream\""
+            buildConfigField "String", "SERVER_KEY", "\"f3024b309be838eff764c6804c417b667096d6c5301184f90fb66e9e4515444c\""
+            buildConfigField "String", "SERVER", "\"http://fs1.rpcnode.stream\""
             buildConfigField "String", "DEFAULT_SERVER_KEY", "\"7c4dc4a0d6eddcdbbed85487f6ccc3425284ad03bbcd33de2c4ce8cbb303a946\""
             buildConfigField "String", "DEFAULT_SERVER", "\"http://social.rpcnode.stream:8080\""
             buildConfigField "String", "REPORT_ISSUE_ID", "\"bd27b58b7cfc65df45d1632c37609cdf3414040e2330b1814ec8fff2087d863952\""
@@ -64,7 +68,7 @@ dependencies {
     implementation 'com.makeramen:roundedimageview:2.1.0'
     implementation 'com.esotericsoftware:kryo:5.1.1'
     implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonDatabindVersion"
-    implementation "org.whispersystems:curve25519-java:$curve25519Version"
+    implementation "com.github.oxen-io.session-android-curve-25519:curve25519-java:$curve25519Version"
     implementation "com.squareup.okhttp3:okhttp:$okhttpVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"

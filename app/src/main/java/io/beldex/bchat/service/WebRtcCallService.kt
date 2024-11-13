@@ -20,7 +20,7 @@ import com.beldex.libbchat.utilities.FutureTaskListener
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
-import io.beldex.bchat.calls.WebRtcCallActivity
+import io.beldex.bchat.webrtc.WebRTCComposeActivity
 import io.beldex.bchat.util.CallNotificationBuilder
 import io.beldex.bchat.util.CallNotificationBuilder.Companion.TYPE_ESTABLISHED
 import io.beldex.bchat.util.CallNotificationBuilder.Companion.TYPE_INCOMING_CONNECTING
@@ -185,8 +185,8 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
     private val lockManager by lazy { LockManager(this) }
     private val serviceExecutor = Executors.newSingleThreadExecutor()
     private val timeoutExecutor = Executors.newScheduledThreadPool(1)
-    /*  private val hangupOnCallAnswered = HangUpRtcOnPstnCallAnsweredListener {
-          *//*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+  /*  private val hangupOnCallAnswered = HangUpRtcOnPstnCallAnsweredListener {
+        *//*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Log.d("Beldex","Build version is height of 26 ${Build.VERSION.SDK_INT}")
             this.startForegroundService(hangupIntent(this))
         }else {
@@ -194,8 +194,8 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
             this.startService(hangupIntent(this))
         }*//*
         this.startService(hangupIntent(this))
-    }*/
-    /*private val hangupOnCallAnswered by lazy {
+    }
+    private val hangupOnCallAnswered by lazy {
         HangUpRtcOnPstnCallAnsweredListener {
             ContextCompat.startForegroundService(this, hangupIntent(this))
         }
@@ -215,7 +215,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
 
     @Synchronized
     private fun terminate() {
-        LocalBroadcastManager.getInstance(this).sendBroadcast(Intent(WebRtcCallActivity.ACTION_END))
+        LocalBroadcastManager.getInstance(this).sendBroadcast(Intent(WebRTCComposeActivity.ACTION_END))
         lockManager.updatePhoneState(LockManager.PhoneState.IDLE)
         callManager.stop()
         wantsToAnswer = false
@@ -324,7 +324,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
     }
 
     private fun registerIncomingPstnCallReceiver() {
-        callReceiver =IncomingPstnCallReceiver()
+        callReceiver = IncomingPstnCallReceiver()
         registerReceiver(callReceiver, IntentFilter("android.intent.action.PHONE_STATE"))
     }
 
@@ -693,9 +693,9 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
         }
         if (!CallNotificationBuilder.areNotificationsEnabled(this) && type == TYPE_INCOMING_PRE_OFFER) {
             // start an intent for the fullscreen
-            val foregroundIntent = Intent(this, WebRtcCallActivity::class.java)
+            val foregroundIntent = Intent(this, WebRTCComposeActivity::class.java)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
-                .setAction(WebRtcCallActivity.ACTION_FULL_SCREEN_INTENT)
+                .setAction(WebRTCComposeActivity.ACTION_FULL_SCREEN_INTENT)
             startActivity(foregroundIntent)
         }
     }

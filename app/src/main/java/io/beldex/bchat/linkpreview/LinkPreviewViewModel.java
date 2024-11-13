@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
 import io.beldex.bchat.net.RequestController;
-import io.beldex.bchat.net.RequestController;
 import com.beldex.libbchat.utilities.Debouncer;
 import com.beldex.libbchat.utilities.Util;
 import com.beldex.libsignal.utilities.guava.Optional;

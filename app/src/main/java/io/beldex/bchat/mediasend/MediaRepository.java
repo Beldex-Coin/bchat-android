@@ -17,8 +17,6 @@ import androidx.annotation.WorkerThread;
 import com.annimon.stream.Stream;
 import io.beldex.bchat.mms.PartAuthority;
 import io.beldex.bchat.util.MediaUtil;
-import io.beldex.bchat.mms.PartAuthority;
-import io.beldex.bchat.util.MediaUtil;
 
 import com.beldex.libbchat.utilities.Util;
 import com.beldex.libsignal.utilities.guava.Optional;

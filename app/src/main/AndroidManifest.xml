@@ -5,7 +5,7 @@
     <uses-sdk tools:overrideLibrary="com.astuetz.pagerslidingtabstrip,pl.tajchert.waitingdots,com.h6ah4i.android.multiselectlistpreferencecompat,android.support.v13,com.davemorrissey.labs.subscaleview,com.tomergoldst.tooltips,com.klinker.android.send_message,com.takisoft.colorpicker,android.support.v14.preference" />
 
     <permission
-        android:name="io.beldex.bchat.ACCESS_BCHAT_SECRETS"
+        android:name="${applicationId}.ACCESS_BCHAT_SECRETS"
         android:label="Access to BChat secrets"
         android:protectionLevel="signature" />
 
@@ -28,14 +28,17 @@
         android:name="android.hardware.touchscreen"
         android:required="false" />
 
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:usesPermissionFlags="neverForLocation"
+        tools:targetApi="s" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"/>
-    <uses-permission android:name="io.beldex.bchat.ACCESS_BCHAT_SECRETS" />
+    <uses-permission android:name="${applicationId}.ACCESS_BCHAT_SECRETS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -59,8 +62,8 @@
         android:name="android.permission.CHANGE_NETWORK_STATE"
         tools:node="remove" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
-    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
 
     <queries>
         <intent>
@@ -72,17 +75,17 @@
         android:name="io.beldex.bchat.ApplicationContext"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="${appName}"
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.Bchat.DayNight"
         android:usesCleartextTraffic="true"
-        tools:replace="android:allowBackup">
+        tools:replace="android:allowBackup, android:label">
         <activity
             android:name="io.beldex.bchat.contacts.blocked.BlockedContactsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name="io.beldex.bchat.wallet.TransactionDetails"
             android:exported="false"
@@ -113,7 +116,7 @@
             android:name="io.beldex.bchat.wallet.utils.pincodeview.CustomPinActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name="io.beldex.bchat.wallet.password.CreateWalletPassword"
             android:exported="false"
@@ -129,6 +132,18 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="io.beldex.bchat.calls.WebRtcCallActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:parentActivityName="io.beldex.bchat.home.HomeActivity"
+            android:screenOrientation="portrait"
+            android:showForAllUsers="true"
+            android:theme="@style/Theme.Bchat.CallActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.beldex.bchat.home.HomeActivity" />
+        </activity>
+        <activity
+            android:name="io.beldex.bchat.webrtc.WebRTCComposeActivity"
             android:exported="false"
             android:launchMode="singleTop"
             android:parentActivityName="io.beldex.bchat.home.HomeActivity"
@@ -210,7 +225,7 @@
             android:name="io.beldex.bchat.onboarding.PasswordActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name="io.beldex.bchat.applock.AppLockDetailsActivity"
@@ -236,6 +251,7 @@
             android:name="io.beldex.bchat.seed.RecoveryGetSeedDetailsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="io.beldex.bchat.seedorkeysrestore.SeedOrKeysRestoreActivity"
@@ -244,14 +260,15 @@
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" /> <!-- Disable all analytics -->
         <activity
             android:name="io.beldex.bchat.wallet.startwallet.StartWalletInfo"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <meta-data
             android:name="firebase_analytics_collection_deactivated"
-            android:value="true" />
-        <meta-data
-            android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />
+<!--        <meta-data-->
+<!--            android:name="firebase_crashlytics_collection_enabled"-->
+<!--            android:value="true" />-->
         <meta-data
             android:name="google_analytics_ssaid_collection_enabled"
             android:value="false" />
@@ -279,12 +296,6 @@
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="io.beldex.bchat.onboarding.LinkDeviceActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name="io.beldex.bchat.onboarding.DisplayNameActivity"
             android:exported="false"
             android:screenOrientation="portrait"
@@ -299,7 +310,7 @@
             android:name="io.beldex.bchat.onboarding.AppLockActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name="io.beldex.bchat.onboarding.CreatePasswordActivity"
             android:exported="false"
@@ -313,11 +324,11 @@
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="io.beldex.bchat.home.HomeActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
-            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"/>
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
 
         <activity-alias
             android:name=".RoutingActivity"
@@ -389,15 +400,18 @@
         <activity
             android:name="io.beldex.bchat.preferences.PrivacySettingsActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
         <activity
             android:name="io.beldex.bchat.preferences.NotificationSettingsActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
         <activity
             android:name="io.beldex.bchat.preferences.ChatSettingsActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
         <activity
             android:name="io.beldex.bchat.ShareActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
@@ -512,6 +526,69 @@
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
+        <activity
+            android:name="io.beldex.bchat.onboarding.LandingScreenActivity"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="io.beldex.bchat.onboarding.ui.OnBoardingActivity"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="manage_pin"
+                    android:scheme="onboarding" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="io.beldex.bchat.my_account.ui.MyAccountActivity"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
+            android:exported="true"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
+
+        <activity
+            android:name="io.beldex.bchat.wallet.jetpackcomposeUI.settings.WalletSettingComposeActivity"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
+            android:exported="true"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
+        <activity
+            android:name="io.beldex.bchat.wallet.jetpackcomposeUI.node.NodeComposeActivity"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
+            android:exported="true"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
+
+        <activity
+            android:name="io.beldex.bchat.my_account.ui.MyProfileActivity"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
+            android:exported="true"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
+
+        <activity
+            android:name="io.beldex.bchat.home.SearchActivity"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
+            android:exported="true"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
+        <activity
+            android:name="io.beldex.bchat.conversation_v2.NewGroupConversationActivity"
+            android:exported="false"
+            android:label="@string/title_activity_create_secret_group_screen"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
+
+        <activity
+            android:name="io.beldex.bchat.conversation_v2.NewChatConversationActivity"
+            android:exported="false"
+            android:label="@string/new_chat_screen_title"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
 
         <service
             android:name="io.beldex.bchat.notifications.PushNotificationService"
@@ -548,7 +625,7 @@
             android:enabled="true"
             android:exported="false">
             <intent-filter>
-                <action android:name="io. beldex.securesms.notifications.CLEAR" />
+                <action android:name="io.beldex.securesms.notifications.CLEAR" />
             </intent-filter>
         </receiver>
         <receiver
@@ -579,12 +656,12 @@
 
         <provider
             android:name="io.beldex.bchat.providers.PartProvider"
-            android:authorities="io.beldex.provider.securesms"
+            android:authorities="${providerId}.provider.securesms"
             android:exported="false"
             android:grantUriPermissions="true" />
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="io.beldex.securesms.fileprovider"
+            android:authorities="${providerId}.securesms.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -593,27 +670,27 @@
         </provider>
         <provider
             android:name="io.beldex.bchat.database.DatabaseContentProviders$Conversation"
-            android:authorities="io.beldex.securesms.database.conversation"
+            android:authorities="${providerId}.securesms.database.conversation"
             android:exported="false" />
         <provider
             android:name="io.beldex.bchat.database.DatabaseContentProviders$ConversationList"
-            android:authorities="io.beldex.securesms.database.conversationlist"
+            android:authorities="${providerId}.securesms.database.conversationlist"
             android:exported="false" />
         <provider
             android:name="io.beldex.bchat.database.DatabaseContentProviders$Attachment"
-            android:authorities="io.beldex.securesms.database.attachment"
+            android:authorities="${providerId}.securesms.database.attachment"
             android:exported="false" />
         <provider
             android:name="io.beldex.bchat.database.DatabaseContentProviders$Sticker"
-            android:authorities="io.beldex.securesms.database.sticker"
+            android:authorities="${providerId}.securesms.database.sticker"
             android:exported="false" />
         <provider
             android:name="io.beldex.bchat.database.DatabaseContentProviders$StickerPack"
-            android:authorities="io.beldex.securesms.database.stickerpack"
+            android:authorities="${providerId}.securesms.database.stickerpack"
             android:exported="false" />
         <provider
             android:name="io.beldex.bchat.database.DatabaseContentProviders$Recipient"
-            android:authorities="io.beldex.securesms.database.recipient"
+            android:authorities="${providerId}.securesms.database.recipient"
             android:exported="false" />
 
         <receiver
@@ -674,7 +751,6 @@
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"
             tools:targetApi="26" />
-
         <service
             android:name="io.beldex.bchat.jobmanager.KeepAliveService"
             android:enabled="@bool/enable_alarm_manager"
@@ -684,7 +760,6 @@
             android:name="io.beldex.bchat.jobmanager.AlarmManagerScheduler$RetryReceiver"
             android:enabled="@bool/enable_alarm_manager"
             android:exported="false" /> <!-- Probably don't need this one -->
-
         <uses-library
             android:name="com.sec.android.app.multiwindow"
             android:required="false" />
@@ -711,6 +786,12 @@
             android:exported="false"
             android:foregroundServiceType="specialUse"
             android:label="BChat Wallet Service" />
+        <receiver android:name="io.beldex.bchat.wallet.ui.WalletReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="io.beldex.WALLET_ACTION"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

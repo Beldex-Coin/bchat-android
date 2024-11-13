@@ -62,6 +62,7 @@ class ConversationViewModel (
     private lateinit var conversationsCursor: Cursor
 
     var senderBeldexAddress: String? = null
+    var deleteMessages: Set<MessageRecord>? = null
 
     /*Hales63*/
 //    val recipient: Recipient?
@@ -301,6 +302,10 @@ class ConversationViewModel (
     fun getUnreadCount() = mmsSmsDatabase.getUnreadCount(threadId)
 
     fun getMessageServerHash(id: Long): String? = beldexMessageDb.getMessageServerHash(id)
+
+    fun setMessagesToDelete(messages: Set<MessageRecord>?) {
+        this.deleteMessages = messages
+    }
 
     @dagger.assisted.AssistedFactory
     interface AssistedFactory {

@@ -1,6 +1,10 @@
 package io.beldex.bchat.hilt
 
 import android.app.Application
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
+import io.beldex.bchat.ApplicationContext
+import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.model.WalletManager
 import io.beldex.bchat.util.FirebaseRemoteConfigUtil
 import io.beldex.bchat.util.SharedPreferenceUtil
@@ -32,6 +36,18 @@ object AppModule {
         val remoteConfigUtil = FirebaseRemoteConfigUtil()
         remoteConfigUtil.init()
         return remoteConfigUtil
+    }
+
+    @Singleton
+    @Provides
+    fun providesDatabaseComponent(application: Application): DatabaseComponent {
+        return ApplicationContext.getInstance(application.applicationContext).databaseComponent
+    }
+
+    @Singleton
+    @Provides
+    fun providesGlide(application: Application): RequestManager {
+        return Glide.with(application.baseContext)
     }
 
 }

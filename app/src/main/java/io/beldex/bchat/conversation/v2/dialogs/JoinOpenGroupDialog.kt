@@ -29,11 +29,11 @@ class JoinOpenGroupDialog(private val name: String, private val url: String) : B
         spannable.setSpan(StyleSpan(Typeface.BOLD), startIndex, startIndex + name.count(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         binding.joinOpenGroupExplanationTextView.text = spannable
         binding.cancelButton.setOnClickListener { dismiss() }
-        binding.joinButton.setOnClickListener { join() }
+        binding.joinButton.setOnClickListener { join(name) }
         builder.setView(binding.root)
     }
 
-    private fun join() {
+    private fun join(name: String) {
         val openGroup = OpenGroupUrlParser.parseUrl(url)
         ThreadUtils.queue {
             val activity = activity
@@ -41,7 +41,9 @@ class JoinOpenGroupDialog(private val name: String, private val url: String) : B
                 try {
                     OpenGroupManager.add(openGroup.server, openGroup.room, openGroup.serverPublicKey,activity)
                     MessagingModuleConfiguration.shared.storage.onOpenGroupAdded(openGroup.server)
-                    ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(activity)
+                    if(ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(activity).isSuccess()){
+                        Toast.makeText(activity, resources.getString(R.string.activity_public_chat_success_message, name), Toast.LENGTH_SHORT).show()
+                    }
                 } catch (e: Exception) {
                     activity.runOnUiThread(Runnable {
                         Toast.makeText(activity, R.string.activity_join_public_chat_error, Toast.LENGTH_SHORT).show()

@@ -12,7 +12,6 @@ import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -20,11 +19,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.marginBottom
-import androidx.lifecycle.LifecycleCoroutineScope
 import com.beldex.libbchat.messaging.contacts.Contact
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import com.beldex.libbchat.messaging.contacts.Contact.ContactContext
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.mnode.MnodeAPI
@@ -32,13 +27,26 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.ViewUtil
 import com.beldex.libsignal.utilities.ThreadUtils
 import io.beldex.bchat.ApplicationContext
-import io.beldex.bchat.database.*
+import io.beldex.bchat.database.BeldexThreadDatabase
+import io.beldex.bchat.database.MmsDatabase
+import io.beldex.bchat.database.MmsSmsDatabase
+import io.beldex.bchat.database.SmsDatabase
+import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.database.model.MessageRecord
-import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.home.UserDetailsBottomSheet
 import io.beldex.bchat.mms.GlideRequests
-import io.beldex.bchat.util.*
-import java.util.*
+import io.beldex.bchat.util.ActivityDispatcher
+import io.beldex.bchat.util.DateUtils
+import io.beldex.bchat.util.disableClipping
+import io.beldex.bchat.util.getColorWithID
+import io.beldex.bchat.util.isSameDayMessage
+import io.beldex.bchat.util.toDp
+import io.beldex.bchat.util.toPx
+import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ViewVisibleMessageBinding
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.min
@@ -135,7 +143,7 @@ class VisibleMessageView : LinearLayout {
             if (isEndOfMessageCluster) {
                 binding.profilePictureView.root.publicKey = senderBChatID
                 binding.profilePictureView.root.glide = glide
-                binding.profilePictureView.root.update(message.individualRecipient)
+                binding.profilePictureView.root.update(message.individualRecipient,groupImage = true)
                 binding.profilePictureView.root.setOnClickListener {
                     showUserDetails(senderBChatID, threadID)
                 }
@@ -156,11 +164,15 @@ class VisibleMessageView : LinearLayout {
             binding.senderNameTextView.visibility = View.GONE
         }
         // Date break
-        val showDateBreak = isStartOfMessageCluster || snIsSelected
-        binding.dateBreakTextView.text = if (showDateBreak) DateUtils.getDisplayFormattedTimeSpanString(context, Locale.getDefault(), message.timestamp) else null
-        binding.dateBreakTextView.isVisible = showDateBreak
-        binding.dateBreakTextView.textSize = fontSize.toFloat()
-        val (iconID, iconColor) = getMessageStatusImage(message)
+        val showDateBreak =  (isStartOfMessageCluster || snIsSelected) && !isSameDayMessage(message, previous)
+        if (showDateBreak) {
+            binding.dateBreakTextView.text = DateUtils.getCoversationDisplayFormattedTimeSpanString(context, Locale.getDefault(), message.timestamp)
+            binding.dateBreakTextView.isVisible = true
+            binding.dateBreakTextView.textSize = fontSize.toFloat()
+        } else {
+            binding.dateBreakTextView.isVisible = false
+        }
+       /* val (iconID, iconColor) = getMessageStatusImage(message)
         if (iconID != null) {
             val drawable = ContextCompat.getDrawable(context, iconID)?.mutate()
             if (iconColor != null) {
@@ -173,13 +185,13 @@ class VisibleMessageView : LinearLayout {
             binding.messageStatusImageView.isVisible = (iconID != null && (!message.isSent || message.id == lastMessageID))
         } else {
             binding.messageStatusImageView.isVisible = false
-        }
+        }*/
         // Expiration timer
         updateExpirationTimer(message)
         // Populate content view
         binding.messageContentView.root.indexInAdapter = indexInAdapter
         binding.messageContentView.root.bind(message, isStartOfMessageCluster, isEndOfMessageCluster, glide, thread, searchQuery, message.isOutgoing || isGroupThread || (contact?.isTrusted ?: false),
-            onAttachmentNeedsDownload)
+            onAttachmentNeedsDownload, thread.isOpenGroupRecipient)
         binding.messageContentView.root.delegate = contentViewDelegate
         onDoubleTap = { binding.messageContentView.root.onContentDoubleTap?.invoke() }
     }
@@ -208,10 +220,10 @@ class VisibleMessageView : LinearLayout {
         return when {
             !message.isOutgoing -> null to null
             message.isPending -> R.drawable.ic_circle_dot_dot_dot to null
-            message.isRead -> R.drawable.ic_filled_circle_check to null
-            message.isSent -> R.drawable.ic_circle_check to null
-            message.isFailed -> R.drawable.ic_error to resources.getColor(R.color.destructive, context.theme)
-            else -> R.drawable.ic_circle_check to null
+            message.isRead -> R.drawable.ic_message_seen to null
+            message.isSent -> R.drawable.ic_message_sent to null
+            message.isFailed -> R.drawable.ic_message_failed to null
+            else -> R.drawable.ic_message_sent to null
         }
     }
 
@@ -220,8 +232,10 @@ class VisibleMessageView : LinearLayout {
         val content = binding.messageContentView.root
         val expiration = binding.expirationTimerView
         val spacing = binding.messageContentSpacing
+        val statusView = binding.messageStatusImageView
         container.removeAllViewsInLayout()
         container.addView(if (message.isOutgoing) expiration else content)
+        container.addView(statusView)
         container.addView(if (message.isOutgoing) content else expiration)
        /* val expirationTimerViewSize = toPx(12, resources)
         val smallSpacing = resources.getDimension(R.dimen.small_spacing).roundToInt()
@@ -232,6 +246,22 @@ class VisibleMessageView : LinearLayout {
         val containerParams = container.layoutParams as ConstraintLayout.LayoutParams
         containerParams.horizontalBias = if (message.isOutgoing) 1f else 0f
         container.layoutParams = containerParams
+
+        val (iconID, iconColor) = getMessageStatusImage(message)
+        if (iconID != null) {
+            val drawable = ContextCompat.getDrawable(context, iconID)?.mutate()
+            if (iconColor != null) {
+                drawable?.setTint(iconColor)
+            }
+            binding.messageStatusImageView.setImageDrawable(drawable)
+        }
+        if (message.isOutgoing) {
+            val lastMessageID = mmsSmsDb.getLastMessageID(message.threadId)
+            binding.messageStatusImageView.isVisible = (iconID != null && (!message.isSent || message.id == lastMessageID))
+        } else {
+            binding.messageStatusImageView.isVisible = false
+        }
+
         if (message.expiresIn > 0 && !message.isPending) {
             binding.expirationTimerView.setColorFilter(ResourcesCompat.getColor(resources, R.color.text, context.theme))
             binding.expirationTimerView.isInvisible = false
@@ -273,16 +303,14 @@ class VisibleMessageView : LinearLayout {
     override fun onDraw(canvas: Canvas) {
         val spacing = context.resources.getDimensionPixelSize(R.dimen.small_spacing)
         val iconSize = toPx(24, context.resources)
-        val left = binding.expirationTimerViewContainer.left + binding.messageContentView.root.right + spacing
         val top = height - (binding.expirationTimerViewContainer.height / 2) - binding.profilePictureView.root.marginBottom - (iconSize / 2)
-        val right = left + iconSize
         val bottom = top + iconSize
-        swipeToReplyIconRect.left = left
+        swipeToReplyIconRect.left = -(spacing+spacing)
         swipeToReplyIconRect.top = top
-        swipeToReplyIconRect.right = right
+        swipeToReplyIconRect.right = binding.expirationTimerViewContainer.left
         swipeToReplyIconRect.bottom = bottom
 
-        if (translationX < 0 && !binding.expirationTimerView.isVisible) {
+        if (translationX > 0 && !binding.expirationTimerView.isVisible) {
             val threshold = swipeToReplyThreshold
             swipeToReplyIcon.bounds = swipeToReplyIconRect
             swipeToReplyIcon.alpha = (255.0f * (min(abs(translationX), threshold) / threshold)).roundToInt()
@@ -327,15 +355,15 @@ class VisibleMessageView : LinearLayout {
         } else {
             longPressCallback?.let { gestureHandler.removeCallbacks(it) }
         }
-        if (translationX > 0) { return } // Only allow swipes to the left
+        if (translationX < 0) { return } // Only allow swipes to the left
         // The idea here is to asymptotically approach a maximum drag distance
         val damping = 50.0f
-        val sign = -1.0f
+        val sign = 1.0f
         val x = (damping * (sqrt(abs(translationX)) / sqrt(damping))) * sign
         this.translationX = x
         binding.dateBreakTextView.translationX = -x // Bit of a hack to keep the date break text view from moving
         postInvalidate() // Ensure onDraw(canvas:) is called
-        if (abs(x) > swipeToReplyThreshold && abs(previousTranslationX) < swipeToReplyThreshold) {
+        if (abs(x) < swipeToReplyThreshold && abs(previousTranslationX) > swipeToReplyThreshold) {
             performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK)
         }
         previousTranslationX = x

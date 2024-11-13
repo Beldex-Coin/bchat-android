@@ -4,23 +4,31 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
-import android.os.Build
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
+import android.util.Log
 import android.util.SparseArray
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import androidx.annotation.WorkerThread
+import androidx.compose.ui.text.toLowerCase
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.util.getOrDefault
 import androidx.core.util.set
 import androidx.lifecycle.LifecycleCoroutineScope
-
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import io.beldex.bchat.conversation.v2.messages.VisibleMessageContentViewDelegate
-import io.beldex.bchat.conversation.v2.messages.VisibleMessageView
 import com.beldex.libbchat.messaging.contacts.Contact
 import io.beldex.bchat.conversation.v2.messages.ControlMessageView
+import io.beldex.bchat.conversation.v2.messages.VisibleMessageContentViewDelegate
+import io.beldex.bchat.conversation.v2.messages.VisibleMessageView
 import io.beldex.bchat.database.CursorRecyclerViewAdapter
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.dependencies.DatabaseComponent
@@ -33,14 +41,15 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.util.Locale
 
-class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPress: (io.beldex.bchat.database.model.MessageRecord, Int, VisibleMessageView, MotionEvent) -> Unit,
+class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPress: (MessageRecord, Int, VisibleMessageView, MotionEvent) -> Unit,
                           private val onItemSwipeToReply: (MessageRecord, Int) -> Unit, private val onItemLongPress: (MessageRecord, Int) -> Unit,
                           private val glide: GlideRequests, private val onDeselect: (MessageRecord, Int) -> Unit, private val onAttachmentNeedsDownload: (Long, Long) -> Unit, lifecycleCoroutineScope: LifecycleCoroutineScope
 ) : CursorRecyclerViewAdapter<ViewHolder>(context, cursor) {
     private val messageDB by lazy { DatabaseComponent.get(context).mmsSmsDatabase() }
     private val contactDB by lazy { DatabaseComponent.get(context).bchatContactDatabase() }
-    var selectedItems = mutableSetOf<io.beldex.bchat.database.model.MessageRecord>()
+    var selectedItems = mutableSetOf<MessageRecord>()
     private var searchQuery: String? = null
     var visibleMessageContentViewDelegate: VisibleMessageContentViewDelegate? = null
 
@@ -134,17 +143,42 @@ class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPr
                 viewHolder.view.bind(message, messageBefore)
                 if (message.isCallLog && message.isFirstMissedCall) {
                     viewHolder.view.setOnClickListener {
-                        AlertDialog.Builder(context,R.style.BChatAlertDialog_Call_Missed)
-                            .setTitle(R.string.CallNotificationBuilder_first_call_title)
-                            .setMessage(R.string.CallNotificationBuilder_first_call_message)
-                            .setPositiveButton(R.string.activity_settings_title) { _, _ ->
-                                val intent = Intent(context, PrivacySettingsActivity::class.java)
-                                context.startActivity(intent)
+                        val factory = LayoutInflater.from(context)
+                        val callMissedDialogView: View = factory.inflate(R.layout.call_missed_dialog_box, null)
+                        val callMissedDialog = AlertDialog.Builder(context).create()
+                        callMissedDialog.window?.setBackgroundDrawableResource(R.color.transparent)
+                        callMissedDialog.setView(callMissedDialogView)
+                        val color = ResourcesCompat.getColor(context.resources, R.color.text_old_green, context.theme)
+                        val description = callMissedDialogView.findViewById<TextView>(R.id.messageTextView)
+                        description.text = context.getString(R.string.call_missed_description,
+                            if(message.recipient.name != null) "\"${message.recipient.name}\"" else "\"${message.recipient.address}\"")
+
+                        val recipientName = SpannableStringBuilder(description.text)
+                        val startIndex =message.recipient.name?.let { it1 ->
+                            description.text.indexOf(
+                                it1
+                            )
+                        }
+                        var endIndex = 0
+                        if(startIndex != -1){
+                            if (startIndex != null) {
+                                endIndex = startIndex + message.recipient.name!!.length
                             }
-                            .setNeutralButton(R.string.cancel) { d, _ ->
-                                d.dismiss()
-                            }
-                            .show()
+                        }
+                        if (startIndex != null) {
+                            recipientName.setSpan(ForegroundColorSpan(color), startIndex -1, endIndex +1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        }
+                        if (startIndex != null) {
+                            recipientName.setSpan(StyleSpan(Typeface.BOLD), startIndex -1, endIndex +1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        }
+                        description.text = recipientName
+                        val okButton =  callMissedDialogView.findViewById<Button>(R.id.missedCallOkButton)
+                        okButton.setOnClickListener {
+                            val intent = Intent(context, PrivacySettingsActivity::class.java)
+                            context.startActivity(intent)
+                            callMissedDialog.dismiss()
+                        }
+                        callMissedDialog.show()
                     }
                 } else {
                     viewHolder.view.setOnClickListener(null)
@@ -229,6 +263,17 @@ class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPr
 
     fun onSearchQueryUpdated(query: String?) {
         this.searchQuery = query
-        notifyDataSetChanged()
+        val cursor = this.cursor
+        if(!query.isNullOrEmpty() && cursor !=null && isActiveCursor) {
+            for (i in 0 until itemCount) {
+                cursor.moveToPosition(i)
+                val message = messageDB.readerFor(cursor).current
+                if (message.body.lowercase(Locale.US).contains(searchQuery.toString().lowercase(Locale.US))) {
+                    notifyItemChanged(i)
+                }
+            }
+        }else{
+            notifyDataSetChanged()
+        }
     }
 }

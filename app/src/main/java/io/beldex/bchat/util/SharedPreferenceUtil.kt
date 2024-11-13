@@ -2,7 +2,7 @@ package io.beldex.bchat.util
 
 import android.content.Context
 import android.content.SharedPreferences
-import io.beldex.bchat.PassphraseRequiredActionBarActivity
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.data.NodeInfo
 
 class SharedPreferenceUtil(
@@ -17,7 +17,7 @@ class SharedPreferenceUtil(
         const val PREF_DAEMON_MAINNET = "daemon_mainnet"
     }
 
-    private fun getPreference(prefKey: String, mode: Int): SharedPreferences {
+    fun getPreference(prefKey: String, mode: Int): SharedPreferences {
         return context.getSharedPreferences(prefKey, mode)
     }
 
@@ -58,6 +58,26 @@ class SharedPreferenceUtil(
             editor.putString("0", nodeInfo.toNodeString())
         }
         editor.apply()
+    }
+
+    fun getProfileName(): String? {
+        return TextSecurePreferences.getProfileName(context)
+    }
+
+    fun getPublicKey(): String {
+        return TextSecurePreferences.getLocalNumber(context)!!
+    }
+
+    fun getSavedPassword(): String? {
+        return TextSecurePreferences.getMyPassword(context)
+    }
+
+    fun setPassword(pinCode: String) {
+        TextSecurePreferences.setMyPassword(context, pinCode)
+    }
+
+    fun getWalletSavePassword():String? {
+        return TextSecurePreferences.getWalletEntryPassword(context)
     }
 
 }

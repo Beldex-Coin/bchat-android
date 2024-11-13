@@ -28,31 +28,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import io.beldex.bchat.components.ComposeText;
-import io.beldex.bchat.components.ControllableViewPager;
-import io.beldex.bchat.components.InputAwareLayout;
-import io.beldex.bchat.components.KeyboardAwareLinearLayout;
-import io.beldex.bchat.components.emoji.EmojiEditText;
-import io.beldex.bchat.components.emoji.EmojiKeyboardProvider;
-import io.beldex.bchat.components.emoji.EmojiToggle;
-import io.beldex.bchat.components.emoji.MediaKeyboard;
-import io.beldex.bchat.contactshare.SimpleTextWatcher;
-import io.beldex.bchat.imageeditor.model.EditorModel;
-import io.beldex.bchat.mediapreview.MediaRailAdapter;
-import io.beldex.bchat.mms.GlideApp;
-import io.beldex.bchat.providers.BlobProvider;
-import io.beldex.bchat.scribbles.ImageEditorFragment;
-import io.beldex.bchat.util.CharacterCalculator;
-import io.beldex.bchat.util.PushCharacterCalculator;
-import io.beldex.bchat.util.Stopwatch;
-import io.beldex.bchat.components.ComposeText;
-import io.beldex.bchat.components.ControllableViewPager;
-import io.beldex.bchat.components.InputAwareLayout;
-import io.beldex.bchat.components.KeyboardAwareLinearLayout;
-import io.beldex.bchat.contactshare.SimpleTextWatcher;
-import io.beldex.bchat.mediapreview.MediaRailAdapter;
-import io.beldex.bchat.providers.BlobProvider;
-import io.beldex.bchat.scribbles.ImageEditorFragment;
 import io.beldex.bchat.util.CharacterCalculator;
 import io.beldex.bchat.util.PushCharacterCalculator;
 import io.beldex.bchat.util.Stopwatch;
@@ -96,28 +71,28 @@ import io.beldex.bchat.R;
  * Allows the user to edit and caption a set of media items before choosing to send them.
  */
 public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGlobalLayoutListener,
-        MediaRailAdapter.RailItemListener,
-        InputAwareLayout.OnKeyboardShownListener,
-        InputAwareLayout.OnKeyboardHiddenListener
+                                                           MediaRailAdapter.RailItemListener,
+                                                           InputAwareLayout.OnKeyboardShownListener,
+                                                           InputAwareLayout.OnKeyboardHiddenListener
 {
 
   private static final String TAG = MediaSendFragment.class.getSimpleName();
 
   private static final String KEY_ADDRESS   = "address";
 
-  private InputAwareLayout hud;
+  private InputAwareLayout  hud;
   private View              captionAndRail;
   private ImageButton       sendButton;
   private ComposeText composeText;
   private ViewGroup         composeContainer;
-  private EmojiEditText captionText;
-  private EmojiToggle emojiToggle;
+  private EmojiEditText     captionText;
+  private EmojiToggle       emojiToggle;
   private Stub<MediaKeyboard> emojiDrawer;
   private ViewGroup         playbackControlsContainer;
   private TextView          charactersLeft;
   private View              closeButton;
 
-  private ControllableViewPager fragmentPager;
+  private ControllableViewPager         fragmentPager;
   private MediaSendFragmentPagerAdapter fragmentPagerAdapter;
   private RecyclerView                  mediaRail;
   private MediaRailAdapter              mediaRailAdapter;

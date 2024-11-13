@@ -27,8 +27,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 import io.beldex.bchat.permissions.Permissions;
-import io.beldex.bchat.permissions.Permissions;
-import io.beldex.bchat.permissions.Permissions;
 import com.beldex.libbchat.utilities.ViewUtil;
 
 import io.beldex.bchat.R;

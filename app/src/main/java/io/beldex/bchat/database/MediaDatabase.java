@@ -11,11 +11,8 @@ import androidx.annotation.Nullable;
 import net.zetetic.database.sqlcipher.DatabaseObjectNotClosedException;
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
-import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
-import io.beldex.bchat.dependencies.DatabaseComponent;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachment;
 import com.beldex.libbchat.utilities.Address;
-import io.beldex.bchat.dependencies.DatabaseComponent;
 import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
 import io.beldex.bchat.dependencies.DatabaseComponent;
 

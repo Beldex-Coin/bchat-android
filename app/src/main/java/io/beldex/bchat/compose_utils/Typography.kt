@@ -76,3 +76,66 @@ val BChatTypography = Typography(
         color = TextColor
     )
 )
+
+val BChatTypographyLight = Typography(
+    displayLarge = defaultTypography.displayLarge.copy(
+        fontFamily = OpenSans,
+        color = TextColorLight
+    ),
+    displayMedium = defaultTypography.displayMedium.copy(
+        fontFamily = OpenSans,
+        color = TextColorLight
+    ),
+    displaySmall = defaultTypography.displaySmall.copy(
+        fontFamily = OpenSans,
+        color = TextColorLight
+    ),
+    headlineLarge = defaultTypography.headlineLarge.copy(
+        fontFamily = OpenSans,
+        color = TextColorLight
+    ),
+    headlineMedium = defaultTypography.headlineMedium.copy(
+        fontFamily = OpenSans,
+        color = TextColorLight
+    ),
+    headlineSmall = defaultTypography.headlineSmall.copy(
+        fontFamily = OpenSans,
+        color = TextColorLight
+    ),
+    bodyLarge = defaultTypography.bodyLarge.copy(
+        fontFamily = OpenSans,
+        color = TextColorLight
+    ),
+    bodyMedium = defaultTypography.bodyMedium.copy(
+        fontFamily = OpenSans,
+        color = TextColorLight
+    ),
+    bodySmall = defaultTypography.bodySmall.copy(
+        fontFamily = OpenSans,
+        color = TextColorLight
+    ),
+    titleLarge = defaultTypography.titleLarge.copy(
+        fontFamily = OpenSans,
+        color = TextColorLight
+    ),
+    titleMedium = defaultTypography.titleMedium.copy(
+        fontFamily = OpenSans,
+        color = TextColorLight
+    ),
+    titleSmall = defaultTypography.titleSmall.copy(
+        fontFamily = OpenSans,
+        color = TextColorLight
+    ),
+    labelLarge = defaultTypography.labelLarge.copy(
+        fontFamily = OpenSans,
+        color = TextColorLight
+    ),
+    labelMedium = defaultTypography.labelMedium.copy(
+        fontFamily = OpenSans,
+        color = TextColorLight
+    ),
+    labelSmall = defaultTypography.labelSmall.copy(
+        fontFamily = OpenSans,
+        color = TextColorLight
+    )
+)

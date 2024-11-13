@@ -4,7 +4,6 @@ import android.text.TextUtils;
 
 import io.beldex.bchat.database.model.MessageRecord;
 import io.beldex.bchat.database.model.MessageRecord;
-import io.beldex.bchat.database.model.MessageRecord;
 
 /**
  * A wrapper around a {@link MessageRecord} and its extra text attachment expanded into a string

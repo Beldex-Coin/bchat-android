@@ -1,67 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<io.beldex.bchat.conversation.v2.messages.VoiceMessageView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<io.beldex.bchat.conversation.v2.messages.VoiceMessageView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainVoiceMessageViewContainer"
-    android:layout_width="160dp"
-    android:layout_height="36dp">
+    android:layout_width="250dp"
+    android:layout_height="65dp">
 
-    <View
-        android:id="@+id/progressView"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:background="@color/black"
-        android:alpha="0.2" />
-
-    <View
-        android:layout_width="84dp"
-        android:layout_height="1dp"
-        android:layout_marginStart="28dp"
-        android:layout_centerVertical="true"
-        android:background="@color/text" />
-
-    <RelativeLayout
-        android:layout_width="36dp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/viewVoiceMessageCard"
+        android:layout_width="match_parent"
         android:layout_height="36dp"
-        android:layout_alignParentStart="true">
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/dialled_call_detail_background">
 
         <RelativeLayout
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_centerInParent="true"
-            android:background="@drawable/circle_tintable">
+            android:layout_width="match_parent"
+            android:paddingTop="6dp"
+            android:paddingBottom="4dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/voiceMessagePlaybackImageView"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
+            <View
+                android:id="@+id/progressView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:alpha="0.2"
+                android:background="@color/black"
+                android:visibility="gone"/>
+
+            <!--    <View-->
+            <!--        android:layout_width="84dp"-->
+            <!--        android:layout_height="1dp"-->
+            <!--        android:layout_marginStart="28dp"-->
+            <!--        android:layout_centerVertical="true"-->
+            <!--        android:background="@color/text" />-->
+
+            <SeekBar
+                android:id="@+id/seekbar_audio"
+                style="@style/AudioSeekBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:src="@drawable/ic_play" />
+                android:layout_toStartOf="@id/voiceMessageViewDurationTextView"
+                android:layout_toEndOf="@id/action_container"
+                android:layout_weight="1"
+                android:clickable="false"
+                android:focusable="false" />
 
+            <RelativeLayout
+                android:id="@+id/action_container"
+                android:layout_width="36dp"
+                android:layout_height="70dp"
+                android:layout_alignParentStart="true">
+
+                <ImageView
+                    android:id="@+id/voiceMessagePlaybackImageView"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_play_audio"
+                    app:tint="@color/white" />
+
+                <ProgressBar
+                    android:id="@+id/voiceMessageViewLoader"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp"
+                    android:layout_centerInParent="true"
+                    android:indeterminate="true"
+                    android:indeterminateTint="@color/text"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/voiceMessageViewDurationTextView"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:textAlignment="gravity"
+                android:gravity="center_vertical"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:layout_marginEnd="@dimen/small_spacing"
+                android:textColor="@color/sent_message_time_color"
+                android:textSize="@dimen/small_font_size"
+                tools:text="0:00" />
         </RelativeLayout>
+    </androidx.cardview.widget.CardView>
 
-        <ProgressBar
-            android:id="@+id/voiceMessageViewLoader"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_centerInParent="true"
-            android:indeterminate="true"
-            android:indeterminateTint="@color/text" />
-
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/voiceMessageViewDurationTextView"
-        android:layout_width="40dp"
-        android:layout_height="20dp"
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/voice_message_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="@dimen/small_spacing"
-        android:background="@drawable/view_voice_message_duration_text_view_background"
-        android:gravity="center"
-        android:text="0:00"
-        android:textColor="@color/play_button"
-        android:textSize="@dimen/small_font_size" />
+        android:layout_below="@id/viewVoiceMessageCard"
+        android:gravity="end"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/open_sans_regular"
+        android:textSize="11sp"
+        android:visibility="visible"
+        tools:text="12:00 pm" />
 
 </io.beldex.bchat.conversation.v2.messages.VoiceMessageView>

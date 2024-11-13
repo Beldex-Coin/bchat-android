@@ -127,14 +127,14 @@ class PrivateChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
 
     private fun createPrivateChatIfPossible(bnsNameOrPublicKey: String) {
         if (PublicKeyValidation.isValid(bnsNameOrPublicKey)) {
-            createPrivateChat(bnsNameOrPublicKey)
+            createPrivateChat(bnsNameOrPublicKey, bnsNameOrPublicKey)
         } else {
             //Toast.makeText(this, R.string.invalid_bchat_id, Toast.LENGTH_SHORT).show()
             // This could be an BNS name
             showLoader()
             MnodeAPI.getBchatID(bnsNameOrPublicKey).successUi { hexEncodedPublicKey ->
                 hideLoader()
-                this.createPrivateChat(hexEncodedPublicKey)
+                this.createPrivateChat(hexEncodedPublicKey,bnsNameOrPublicKey)
             }.failUi { exception ->
                 hideLoader()
                 var message = resources.getString(R.string.fragment_enter_public_key_error_message)
@@ -146,10 +146,11 @@ class PrivateChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
         }
     }
 
-    private fun createPrivateChat(hexEncodedPublicKey: String) {
+    private fun createPrivateChat(hexEncodedPublicKey: String,bnsName: String ) {
         val bundle = Bundle()
         bundle.putParcelable(ConversationFragmentV2.URI,intent.data)
         bundle.putString(ConversationFragmentV2.TYPE,intent.type)
+        bundle.putString(ConversationFragmentV2.BNS_NAME,bnsName)
         val returnIntent = Intent()
         returnIntent.putExtra(ConversationFragmentV2.HEX_ENCODED_PUBLIC_KEY, hexEncodedPublicKey)
         //returnIntent.setDataAndType(intent.data, intent.type)

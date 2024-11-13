@@ -9,8 +9,6 @@ import androidx.annotation.Nullable;
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import io.beldex.bchat.R;
-
-import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
 import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
 
 import java.util.LinkedList;

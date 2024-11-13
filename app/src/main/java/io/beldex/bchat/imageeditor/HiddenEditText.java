@@ -13,7 +13,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
 import io.beldex.bchat.imageeditor.renderers.TextRenderer;
-import io.beldex.bchat.imageeditor.renderers.TextRenderer;
 
 /**
  * Invisible {@link android.widget.EditText} that is used during in-image text editing.

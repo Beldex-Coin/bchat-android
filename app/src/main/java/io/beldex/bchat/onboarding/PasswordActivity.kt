@@ -4,34 +4,43 @@ import android.app.KeyguardManager
 import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
-import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
-import io.beldex.bchat.databinding.ActivityPasswordBinding
+import android.widget.Toast
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.isScreenLockEnabled
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setScreenLockEnabled
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setScreenLockTimeout
-
-import io.beldex.bchat.home.HomeActivity
-import io.beldex.bchat.keyboard.CustomKeyboardView
-import io.beldex.bchat.service.KeyCachingService.KeySetBinder
-import io.beldex.bchat.util.push
-import io.beldex.bchat.util.setUpActionBarBchatLogo
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.MotionEvent
-import android.view.View
-import android.view.WindowManager
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputConnection
-import android.widget.Toast
 import com.beldex.libsignal.utilities.Log
 import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.compose_utils.ui.ScreenContainer
+import io.beldex.bchat.home.HomeActivity
+import io.beldex.bchat.keyboard.CustomKeyboardView
+import io.beldex.bchat.onboarding.ui.PinCodeScreen
+import io.beldex.bchat.onboarding.ui.PinCodeViewModel
 import io.beldex.bchat.service.KeyCachingService
+import io.beldex.bchat.service.KeyCachingService.KeySetBinder
+import io.beldex.bchat.util.push
+import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ActivityPasswordBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
-
+@AndroidEntryPoint
 class PasswordActivity : BaseActionBarActivity() {
 
     private lateinit var binding: ActivityPasswordBinding
@@ -44,9 +53,50 @@ class PasswordActivity : BaseActionBarActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityPasswordBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        setUpActionBarBchatLogo("Password")
+//        binding = ActivityPasswordBinding.inflate(layoutInflater)
+//        setContentView(binding.root)
+//        setUpActionBarBchatLogo("Password")
+        setContent {
+            BChatTheme {
+                Surface {
+                    Scaffold(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    ) {
+                        val context = LocalContext.current
+                        val viewModel: PinCodeViewModel = hiltViewModel()
+                        val state by viewModel.state.collectAsState()
+                        LaunchedEffect(key1 = true) {
+                            launch {
+                                viewModel.errorMessage.collectLatest { message ->
+                                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                            launch {
+                                viewModel.successEvent.collectLatest { success ->
+                                    if (success) {
+                                        validateSuccess()
+                                    }else{
+                                        validateSuccess()
+                                    }
+                                }
+                            }
+                        }
+                        ScreenContainer(
+                            title = stringResource(R.string.verify_password),
+                            onBackClick = {
+                                onBackPressed()
+                            },
+                            modifier = Modifier.padding(it)
+                        ) {
+                            PinCodeScreen(
+                                state = state,
+                                onEvent = viewModel::onEvent
+                            )
+                        }
+                    }
+                }
+            }
+        }
 
         //  Start and bind to the KeyCachingService instance.
         val bindIntent = Intent(this, KeyCachingService::class.java)
@@ -62,45 +112,45 @@ class PasswordActivity : BaseActionBarActivity() {
             }
         }, BIND_AUTO_CREATE)
 
-        with(binding) {
-            userPinEditTxt.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                }
-
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    validatePassword(s.toString(),false)
-                }
-            })
-
-            binding.userPinEditTxt.requestFocus()
-            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
-            val ic: InputConnection = binding.userPinEditTxt.onCreateInputConnection(EditorInfo())
-            binding.keyboard1?.setInputConnection(ic)
-
-            binding.userPinEditTxt.setOnTouchListener { _: View, event: MotionEvent ->
-                binding.userPinEditTxt.onTouchEvent(event) // call native handler
-
-                true
-            }
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // API 21
-                binding.userPinEditTxt.showSoftInputOnFocus = false
-            } else { // API 11-20
-                binding.userPinEditTxt.setTextIsSelectable(true)
-            }
-
-            binding.keyboard1.buttonEnter!!.setOnClickListener() {
-                validatePassword(userPinEditTxt.text.toString(),true)
-            }
-        }
+//        with(binding) {
+//            userPinEditTxt.addTextChangedListener(object : TextWatcher {
+//                override fun afterTextChanged(s: Editable?) {
+//                }
+//
+//                override fun beforeTextChanged(
+//                    s: CharSequence?,
+//                    start: Int,
+//                    count: Int,
+//                    after: Int
+//                ) {
+//                }
+//
+//                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//                    validatePassword(s.toString(),false)
+//                }
+//            })
+//
+//            binding.userPinEditTxt.requestFocus()
+//            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+//            val ic: InputConnection = binding.userPinEditTxt.onCreateInputConnection(EditorInfo())
+//            binding.keyboard1?.setInputConnection(ic)
+//
+//            binding.userPinEditTxt.setOnTouchListener { _: View, event: MotionEvent ->
+//                binding.userPinEditTxt.onTouchEvent(event) // call native handler
+//
+//                true
+//            }
+//
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // API 21
+//                binding.userPinEditTxt.showSoftInputOnFocus = false
+//            } else { // API 11-20
+//                binding.userPinEditTxt.setTextIsSelectable(true)
+//            }
+//
+//            binding.keyboard1.buttonEnter!!.setOnClickListener() {
+//                validatePassword(userPinEditTxt.text.toString(),true)
+//            }
+//        }
     }
 
     private fun validatePassword(pin: String, validation: Boolean) {

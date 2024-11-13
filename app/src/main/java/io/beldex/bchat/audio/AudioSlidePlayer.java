@@ -14,7 +14,9 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import android.util.Pair;
 import io.beldex.bchat.mms.AudioSlide;
+
 import androidx.annotation.OptIn;
 import androidx.media3.common.AudioAttributes;
 import androidx.media3.common.C;
@@ -24,13 +26,12 @@ import androidx.media3.common.PlaybackParameters;
 import androidx.media3.common.Player;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.ExoPlayer;
-import org.jetbrains.annotations.NotNull;
 
+import org.jetbrains.annotations.NotNull;
 import com.beldex.libbchat.utilities.ServiceUtil;
 import com.beldex.libbchat.utilities.Util;
 import com.beldex.libsignal.utilities.Log;
 
-import android.util.Pair;
 import com.beldex.libsignal.utilities.guava.Optional;
 import io.beldex.bchat.attachments.AttachmentServer;
 import io.beldex.bchat.mms.AudioSlide;
@@ -85,7 +86,6 @@ public class AudioSlidePlayer implements SensorEventListener {
     this.proximitySensor      = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 
     this.wakeLock = ServiceUtil.getPowerManager(context).newWakeLock(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK, TAG);
-
   }
 
   public void play(final double progress) throws IOException {
@@ -328,8 +328,8 @@ public class AudioSlidePlayer implements SensorEventListener {
     int streamType;
 
     if (proximitySensor != null &&
-                    event.values[0] < 5f &&
-                    event.values[0] != proximitySensor.getMaximumRange()
+            event.values[0] < 5f &&
+            event.values[0] != proximitySensor.getMaximumRange()
     ) {
       streamType = C.AUDIO_CONTENT_TYPE_SPEECH;
     } else {
@@ -352,7 +352,7 @@ public class AudioSlidePlayer implements SensorEventListener {
         Log.w(TAG, e);
       }
     } else if (streamType == C.AUDIO_CONTENT_TYPE_MUSIC &&
-          mediaPlayer.getAudioAttributes().contentType != streamType &&
+            mediaPlayer.getAudioAttributes().contentType != streamType &&
                System.currentTimeMillis() - startTime > 500)
     {
       if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();

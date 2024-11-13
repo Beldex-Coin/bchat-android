@@ -9,8 +9,6 @@ import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.util.Log;
 
-import io.beldex.bchat.wallet.utils.keyboardview.interfaces.LifeCycleInterface;
-import io.beldex.bchat.wallet.utils.pincodeview.encryption.Encryptor;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import io.beldex.bchat.wallet.utils.keyboardview.interfaces.LifeCycleInterface;
 import io.beldex.bchat.wallet.utils.pincodeview.PinActivity;
@@ -75,7 +73,7 @@ public class AppLockImpl<T extends AppLockActivity> extends AppLock implements L
     private SharedPreferences mSharedPreferences;
 
     /**
-     * The activity class that extends {@link AppLockActivity}
+     * The activity class that extends {@link io.beldex.bchat.wallet.utils.pincodeview.managers.AppLockActivity}
      */
     private Class<T> mActivityClass;
 

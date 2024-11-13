@@ -62,6 +62,7 @@ class SignalAudioManager(private val context: Context,
     private val outgoingRinger = OutgoingRinger(context)
 
     private var wiredHeadsetReceiver: WiredHeadsetReceiver? = null
+    var bluetoothConnectionStatus: Boolean = false
 
     fun handleCommand(command: AudioManagerCommand) {
         handler.post {
@@ -167,6 +168,8 @@ class SignalAudioManager(private val context: Context,
 
         androidAudioManager.abandonCallAudioFocus()
         Log.d(TAG, "Abandoned audio focus for VOICE_CALL streams")
+
+        bluetoothConnectionStatus = false
 
         Log.d(TAG, "Stopped")
     }
@@ -354,6 +357,8 @@ class SignalAudioManager(private val context: Context,
     fun isSpeakerphoneOn(): Boolean = androidAudioManager.isSpeakerphoneOn
 
     fun isBluetoothScoOn(): Boolean = androidAudioManager.isBluetoothScoOn
+
+    fun isBluetoothConnected(): Boolean = bluetoothConnectionStatus
 
     fun isWiredHeadsetOn(): Boolean = androidAudioManager.isWiredHeadsetOn
 

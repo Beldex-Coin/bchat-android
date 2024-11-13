@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/default_dialog_background_inset"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:elevation="4dp"
+    android:padding="32dp">
+
+    <ImageView
+        android:id="@+id/permissionImageview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:padding="15dp"
+        android:background="@drawable/circle_background"
+        android:contentDescription="Default permission"/>
+
+    <TextView
+        android:fontFamily="@font/open_sans_bold"
+        android:id="@+id/permissionTitleTextview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Permissions_permission_required"
+        android:textColor="@color/text"
+        android:textStyle="bold"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/permissionDescriptionTextview"
+        android:fontFamily="@font/open_sans_regular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/call_permission_required_description"
+        android:paddingHorizontal="@dimen/medium_spacing"
+        android:textColor="@color/download_icon"
+        android:textSize="@dimen/small_font_size"
+        android:textAlignment="center" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+        <Button
+            style="@style/Widget.Bchat.Button.Dialog.Cancel"
+            android:id="@+id/denyDialogBoxButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/Permissions_deny"
+            android:layout_marginEnd="5dp"
+            android:textColor="@color/negative_green_button_text"
+            android:padding="12dp"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:layout_weight="1"/>
+
+        <Button
+            style="@style/Widget.Bchat.Button.Dialog.Enable"
+            android:id="@+id/allowDialogBoxButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/Permissions_allow"
+            android:layout_marginStart="5dp"
+            android:textColor="@color/white"
+            android:padding="12dp"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+</LinearLayout>

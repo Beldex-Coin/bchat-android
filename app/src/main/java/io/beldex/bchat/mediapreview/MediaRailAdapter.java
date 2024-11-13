@@ -7,8 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import io.beldex.bchat.mms.GlideRequests;
-import io.beldex.bchat.util.StableIdGenerator;
 import io.beldex.bchat.conversation.v2.utilities.ThumbnailView;
 import io.beldex.bchat.mediasend.Media;
 import io.beldex.bchat.util.StableIdGenerator;

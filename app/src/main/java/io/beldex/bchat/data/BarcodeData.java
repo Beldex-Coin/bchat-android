@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.util.Log;
 
 import io.beldex.bchat.wallet.utils.OpenAliasHelper;
-import io.beldex.bchat.wallet.utils.OpenAliasHelper;
 
 import java.net.URI;
 import java.net.URISyntaxException;

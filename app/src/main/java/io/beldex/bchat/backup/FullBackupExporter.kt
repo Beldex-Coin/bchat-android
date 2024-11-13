@@ -10,17 +10,23 @@ import com.annimon.stream.function.Predicate
 import com.beldex.libbchat.avatars.AvatarHelper
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentId
 import com.beldex.libbchat.utilities.Conversions
+import com.google.protobuf.ByteString
+import net.zetetic.database.sqlcipher.SQLiteDatabase
+import org.greenrobot.eventbus.EventBus
+
+import io.beldex.bchat.backup.BackupProtos.*
+import io.beldex.bchat.database.*
+import io.beldex.bchat.database.BeldexBackupFilesDatabase
+import io.beldex.bchat.util.BackupUtil
 import com.beldex.libbchat.utilities.Util
 import com.beldex.libsignal.crypto.kdf.HKDFv3
 import com.beldex.libsignal.utilities.ByteUtil
 import com.beldex.libsignal.utilities.Log
-import com.google.protobuf.ByteString
-import io.beldex.bchat.backup.BackupProtos.*
-import io.beldex.bchat.database.*
-import io.beldex.bchat.util.BackupUtil
-import net.zetetic.database.sqlcipher.SQLiteDatabase
-import org.greenrobot.eventbus.EventBus
+import io.beldex.bchat.crypto.AttachmentSecret
+import io.beldex.bchat.crypto.ClassicDecryptingPartInputStream
+import io.beldex.bchat.crypto.ModernDecryptingPartInputStream
 import java.io.*
+import java.lang.Exception
 import java.security.InvalidAlgorithmParameterException
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
@@ -36,7 +42,7 @@ object FullBackupExporter {
     @WorkerThread
     @Throws(IOException::class)
     fun export(context: Context,
-               attachmentSecret: io.beldex.bchat.crypto.AttachmentSecret,
+               attachmentSecret: AttachmentSecret,
                input: SQLiteDatabase,
                fileUri: Uri,
                passphrase: String) {
@@ -51,7 +57,7 @@ object FullBackupExporter {
                 val tables = exportSchema(input, outputStream)
                 for (table in tables) if (shouldExportTable(table)) {
                     count = when (table) {
-                        io.beldex.bchat.database.SmsDatabase.TABLE_NAME, MmsDatabase.TABLE_NAME -> {
+                        SmsDatabase.TABLE_NAME, MmsDatabase.TABLE_NAME -> {
                             exportTable(table, input, outputStream,
                                 { cursor: Cursor ->
                                     cursor.getInt(cursor.getColumnIndexOrThrow(
@@ -73,7 +79,7 @@ object FullBackupExporter {
                             exportTable(table, input, outputStream,
                                 { cursor: Cursor ->
                                     isForNonExpiringMessage(input, cursor.getLong(cursor.getColumnIndexOrThrow(
-                                        io.beldex.bchat.database.AttachmentDatabase.MMS_ID)))
+                                        AttachmentDatabase.MMS_ID)))
                                 },
                                 { cursor: Cursor ->
                                     exportAttachment(attachmentSecret, cursor, outputStream)
@@ -203,7 +209,7 @@ object FullBackupExporter {
         return count
     }
 
-    private fun exportAttachment(attachmentSecret: io.beldex.bchat.crypto.AttachmentSecret, cursor: Cursor, outputStream: BackupFrameOutputStream) {
+    private fun exportAttachment(attachmentSecret: AttachmentSecret, cursor: Cursor, outputStream: BackupFrameOutputStream) {
         try {
             val rowId = cursor.getLong(cursor.getColumnIndexOrThrow(AttachmentDatabase.ROW_ID))
             val uniqueId = cursor.getLong(cursor.getColumnIndexOrThrow(AttachmentDatabase.UNIQUE_ID))
@@ -215,9 +221,9 @@ object FullBackupExporter {
             }
             if (!TextUtils.isEmpty(data) && size > 0) {
                 val inputStream: InputStream = if (random != null && random.size == 32) {
-                    io.beldex.bchat.crypto.ModernDecryptingPartInputStream.createFor(attachmentSecret, random, File(data), 0)
+                    ModernDecryptingPartInputStream.createFor(attachmentSecret, random, File(data), 0)
                 } else {
-                    io.beldex.bchat.crypto.ClassicDecryptingPartInputStream.createFor(attachmentSecret, File(data))
+                    ClassicDecryptingPartInputStream.createFor(attachmentSecret, File(data))
                 }
                 outputStream.writeAttachment(
                     AttachmentId(
@@ -231,12 +237,12 @@ object FullBackupExporter {
     }
 
     @Throws(IOException::class)
-    private fun calculateVeryOldStreamLength(attachmentSecret: io.beldex.bchat.crypto.AttachmentSecret, random: ByteArray?, data: String): Long {
+    private fun calculateVeryOldStreamLength(attachmentSecret: AttachmentSecret, random: ByteArray?, data: String): Long {
         var result: Long = 0
         val inputStream: InputStream = if (random != null && random.size == 32) {
-            io.beldex.bchat.crypto.ModernDecryptingPartInputStream.createFor(attachmentSecret, random, File(data), 0)
+            ModernDecryptingPartInputStream.createFor(attachmentSecret, random, File(data), 0)
         } else {
-            io.beldex.bchat.crypto.ClassicDecryptingPartInputStream.createFor(attachmentSecret, File(data))
+            ClassicDecryptingPartInputStream.createFor(attachmentSecret, File(data))
         }
         var read: Int
         val buffer = ByteArray(8192)
@@ -248,7 +254,7 @@ object FullBackupExporter {
 
     private fun isForNonExpiringMessage(db: SQLiteDatabase, mmsId: Long): Boolean {
         val columns = arrayOf(MmsSmsColumns.EXPIRES_IN)
-        val where = io.beldex.bchat.database.MmsSmsColumns.ID + " = ?"
+        val where = MmsSmsColumns.ID + " = ?"
         val args = arrayOf(mmsId.toString())
         db.query(MmsDatabase.TABLE_NAME, columns, where, args, null, null, null).use { mmsCursor ->
             if (mmsCursor != null && mmsCursor.moveToFirst()) {

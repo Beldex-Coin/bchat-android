@@ -7,8 +7,6 @@ import io.beldex.bchat.ApplicationContext;
 import io.beldex.bchat.jobs.LocalBackupJob;
 import io.beldex.bchat.ApplicationContext;
 import io.beldex.bchat.jobs.LocalBackupJob;
-import io.beldex.bchat.ApplicationContext;
-import io.beldex.bchat.jobs.LocalBackupJob;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 
 import java.util.concurrent.TimeUnit;

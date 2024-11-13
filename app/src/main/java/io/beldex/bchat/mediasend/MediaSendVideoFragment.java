@@ -11,10 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import io.beldex.bchat.R;
 import io.beldex.bchat.mms.VideoSlide;
 import io.beldex.bchat.video.VideoPlayer;
 
-import io.beldex.bchat.R;
 import com.beldex.libsignal.utilities.Log;
 
 import java.io.IOException;

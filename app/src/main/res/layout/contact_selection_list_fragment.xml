@@ -1,7 +1,16 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/screen_background">
+
+    <com.google.android.material.card.MaterialCardView
+        style="@style/CustomCardViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardBackgroundColor="@color/new_card_background">
+
 
     <LinearLayout
         android:id="@+id/emptyStateContainer"
@@ -26,5 +35,6 @@
         android:clipToPadding="false"
         android:scrollbars="vertical"
         tools:listitem="@layout/view_user"/>
+    </com.google.android.material.card.MaterialCardView>
 
 </FrameLayout>

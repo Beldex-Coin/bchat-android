@@ -7,7 +7,7 @@ import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.mms.GlideRequests
 
-class SelectContactsAdapter(private val context: Context, private val glide: io.beldex.bchat.mms.GlideRequests) : RecyclerView.Adapter<SelectContactsAdapter.ViewHolder>() {
+class SelectContactsAdapter(private val context: Context, private val glide: GlideRequests) : RecyclerView.Adapter<SelectContactsAdapter.ViewHolder>() {
     val selectedMembers = mutableSetOf<String>()
     var members = listOf<String>()
         set(value) { field = value; notifyDataSetChanged() }
@@ -65,6 +65,10 @@ class SelectContactsAdapter(private val context: Context, private val glide: io.
         }
         val index = members.indexOf(member)
         notifyItemChanged(index, Payload.MEMBER_CLICKED)
+    }
+    fun updateList(list: List<String>) {
+        members = list
+        notifyDataSetChanged()
     }
 
     // define below the different events used to notify the adapter

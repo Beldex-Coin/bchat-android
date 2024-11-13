@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Bchat -->
-    <dimen name="medium_button_height">48dp</dimen>
+    <dimen name="medium_button_height">57dp</dimen>
     <dimen name="tab_bar_height">60dp</dimen>
     <dimen name="setting_button_height">72dp</dimen>
     <dimen name="path_row_height">72dp</dimen>
@@ -20,4 +20,7 @@
     <dimen name="album_5_cell_size_big">149dp</dimen>
     <dimen name="album_5_cell_size_small">99dp</dimen>
     <dimen name="max_text_width">300dp</dimen>
+    <dimen name="min_text_width">120dp</dimen>
+    <dimen name="max_body_text_width">300dp</dimen>
+    <dimen name="min_body_text_width">120dp</dimen>
 </resources>

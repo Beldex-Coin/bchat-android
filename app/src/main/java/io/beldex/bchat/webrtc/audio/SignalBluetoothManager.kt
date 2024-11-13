@@ -84,7 +84,7 @@ class SignalBluetoothManager(
         context.registerReceiver(bluetoothReceiver, bluetoothHeadsetFilter)
 
         Log.i(TAG, "Bluetooth proxy for headset profile has started")
-        state = State.UNAVAILABLE
+        state = State.AVAILABLE
     }
 
     fun stop() {
@@ -155,7 +155,7 @@ class SignalBluetoothManager(
         cancelTimer()
         androidAudioManager.stopBluetoothSco()
         androidAudioManager.isBluetoothScoOn = false
-        state = State.DISCONNECTING
+        state = State.AVAILABLE
     }
 
     fun updateDevice() {
@@ -275,6 +275,7 @@ class SignalBluetoothManager(
             if (profile == BluetoothProfile.HEADSET) {
                 handler.post {
                     if (state != State.UNINITIALIZED) {
+                        audioManager.bluetoothConnectionStatus = true
                         onServiceConnected(proxy as? BluetoothHeadset)
                     }
                 }
@@ -285,6 +286,7 @@ class SignalBluetoothManager(
             if (profile == BluetoothProfile.HEADSET) {
                 handler.post {
                     if (state != State.UNINITIALIZED) {
+                        audioManager.bluetoothConnectionStatus = false
                         onServiceDisconnected()
                     }
                 }
@@ -298,6 +300,11 @@ class SignalBluetoothManager(
                 val connectionState: Int = intent.getIntExtra(BluetoothHeadset.EXTRA_STATE, BluetoothHeadset.STATE_DISCONNECTED)
                 handler.post {
                     if (state != State.UNINITIALIZED) {
+                        if(connectionState == BluetoothHeadset.STATE_CONNECTED || connectionState == BluetoothHeadset.STATE_AUDIO_CONNECTED ){
+                            state = State.AVAILABLE
+                        } else  if(connectionState == BluetoothHeadset.STATE_DISCONNECTED || connectionState == BluetoothHeadset.STATE_AUDIO_DISCONNECTED) {
+                            state = State.UNAVAILABLE
+                        }
                         onHeadsetConnectionStateChanged(connectionState)
                     }
                 }

@@ -13,7 +13,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import io.beldex.bchat.wallet.utils.keyboardview.interfaces.KeyboardButtonClickedListener;
-import io.beldex.bchat.wallet.utils.keyboardview.interfaces.KeyboardButtonClickedListener;
 
 import io.beldex.bchat.R;
 

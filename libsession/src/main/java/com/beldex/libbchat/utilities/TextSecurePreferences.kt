@@ -13,10 +13,13 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import com.beldex.libbchat.R
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.CALL_NOTIFICATIONS_ENABLED
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_BNS_HOLDER
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_LOCAL_PROFILE
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_MUTE_VIDEO
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.LAST_VACUUM_TIME
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.PREF_DIALOG_CLICKED
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.PREF_DIALOG_IGNORED_COUNT
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.REFRESH_DYNAMIC_NODES
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.SHOWN_CALL_NOTIFICATION
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.SHOWN_CALL_WARNING
 import com.beldex.libsignal.utilities.Log
@@ -126,6 +129,7 @@ interface TextSecurePreferences {
     fun getNotificationLedPatternCustom(): String?
     fun isThreadLengthTrimmingEnabled(): Boolean
     fun getThreadTrimLength(): Int
+    fun setThreadTrimLength(length : String?)
     fun isSystemEmojiPreferred(): Boolean
     fun getMobileMediaDownloadAllowed(): Set<String>?
     fun getWifiMediaDownloadAllowed(): Set<String>?
@@ -257,6 +261,12 @@ interface TextSecurePreferences {
     fun getPromotionDialogClicked(): Boolean
     fun setPromotionDialogIgnoreCount(count: Int)
     fun setPromotionDialogClicked()
+    fun setIsLocalProfile(status : Boolean)
+    fun getIsLocalProfile(): Boolean
+    fun setIsBNSHolder(status : String?)
+    fun getIsBNSHolder(): String?
+    fun setRefreshDynamicNodesStatus(refresh : Boolean)
+    fun getRefreshDynamicNodesStatus():Boolean
 
 
     companion object {
@@ -373,6 +383,9 @@ interface TextSecurePreferences {
         const val IS_MUTE_VIDEO = "is_mute_video"
         const val PREF_DIALOG_CLICKED = "promotion_dialog_clicked"
         const val PREF_DIALOG_IGNORED_COUNT = "promotion_dialog_ignored_count"
+        const val IS_LOCAL_PROFILE = "is_local_profile"
+        const val IS_BNS_HOLDER = "is_bns_holder"
+        const val REFRESH_DYNAMIC_NODES = "refresh_dynamic_nodes"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -897,6 +910,11 @@ interface TextSecurePreferences {
         }
 
         @JvmStatic
+        fun setThreadTrimLength(context: Context, length: String?) {
+            setStringPreference(context, THREAD_TRIM_LENGTH, length)
+        }
+
+        @JvmStatic
         fun isSystemEmojiPreferred(context: Context): Boolean {
             return getBooleanPreference(context, SYSTEM_EMOJI_PREF, false)
         }
@@ -1189,7 +1207,7 @@ interface TextSecurePreferences {
 
         @JvmStatic
         fun getFeePriority(context: Context): Int {
-            return getIntegerPreference(context, FEE_PRIORITY, 1)
+            return getIntegerPreference(context, FEE_PRIORITY, 0)
         }
 
         @JvmStatic
@@ -1387,6 +1405,36 @@ interface TextSecurePreferences {
             return getBooleanPreference(context, IS_MUTE_VIDEO, false)
         }
 
+        @JvmStatic
+        fun setIsLocalProfile(context: Context,status: Boolean) {
+            setBooleanPreference(context, IS_LOCAL_PROFILE, status)
+        }
+
+        @JvmStatic
+        fun getIsLocalProfile(context: Context):Boolean {
+            return getBooleanPreference(context, IS_LOCAL_PROFILE, true)
+        }
+
+        @JvmStatic
+        fun setIsBNSHolder(context: Context,bnsName: String?) {
+            setStringPreference(context, IS_BNS_HOLDER, bnsName)
+        }
+
+        @JvmStatic
+        fun getIsBNSHolder(context: Context):String? {
+            return getStringPreference(context, IS_BNS_HOLDER, null)
+        }
+
+        @JvmStatic
+        fun setRefreshDynamicNodesStatus(context: Context,refresh: Boolean) {
+            setBooleanPreference(context, REFRESH_DYNAMIC_NODES, refresh)
+        }
+        
+        @JvmStatic
+        fun getRefreshDynamicNodesStatus(context: Context):Boolean {
+            return getBooleanPreference(context, REFRESH_DYNAMIC_NODES, false)
+        }
+
     }
 }
 
@@ -1412,7 +1460,7 @@ class AppTextSecurePreferences @Inject constructor(
     }
 
     override fun isUsingFCM(): Boolean {
-        return getBooleanPreference(TextSecurePreferences.IS_USING_FCM, false)
+        return getBooleanPreference(TextSecurePreferences.IS_USING_FCM, true)
     }
 
     override fun setIsUsingFCM(value: Boolean) {
@@ -1844,6 +1892,10 @@ class AppTextSecurePreferences @Inject constructor(
         return getStringPreference(TextSecurePreferences.THREAD_TRIM_LENGTH, "500")!!.toInt()
     }
 
+    override fun setThreadTrimLength(length : String?) {
+        return setStringPreference(TextSecurePreferences.THREAD_TRIM_LENGTH, length)
+    }
+
     override fun isSystemEmojiPreferred(): Boolean {
         return getBooleanPreference(TextSecurePreferences.SYSTEM_EMOJI_PREF, false)
     }
@@ -2092,7 +2144,7 @@ class AppTextSecurePreferences @Inject constructor(
     }
 
     override fun getFeePriority():Int {
-        return getIntegerPreference(TextSecurePreferences.FEE_PRIORITY,1)
+        return getIntegerPreference(TextSecurePreferences.FEE_PRIORITY,0)
     }
 
     override fun setDecimals(position: String?) {
@@ -2266,5 +2318,29 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun setPromotionDialogClicked() {
         setBooleanPreference(PREF_DIALOG_CLICKED, true)
+    }
+
+    override fun setIsLocalProfile(status : Boolean) {
+        setBooleanPreference(IS_LOCAL_PROFILE,status)
+    }
+
+    override fun getIsLocalProfile() : Boolean {
+        return getBooleanPreference(IS_LOCAL_PROFILE,true)
+    }
+
+    override fun setIsBNSHolder(bnsName : String?) {
+        setStringPreference(IS_BNS_HOLDER,bnsName)
+    }
+
+    override fun getIsBNSHolder() : String? {
+        return getStringPreference(IS_BNS_HOLDER,null)
+    }
+
+    override fun setRefreshDynamicNodesStatus(refresh: Boolean) {
+        setBooleanPreference(REFRESH_DYNAMIC_NODES, refresh)
+    }
+
+    override fun getRefreshDynamicNodesStatus(): Boolean {
+        return getBooleanPreference(REFRESH_DYNAMIC_NODES, false)
     }
 }

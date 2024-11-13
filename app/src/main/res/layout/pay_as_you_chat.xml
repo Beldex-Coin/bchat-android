@@ -1,100 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/transparent"
-    app:cardBackgroundColor="@color/page_background"
-    app:cardCornerRadius="10dp">
+    android:layout_height="match_parent"
+    android:background="@drawable/default_dialog_background_inset"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:elevation="4dp"
+    android:padding="32dp">
+
+    <TextView
+        android:fontFamily="@font/open_sans_bold"
+        android:id="@+id/downloadTitleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pay_as_you_chat"
+        android:textColor="@color/text"
+        android:textStyle="bold"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/payAsYouChatEnable_Instruction"
+        android:fontFamily="@font/open_sans_regular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingHorizontal="@dimen/medium_spacing"
+        android:textColor="@color/text"
+        android:textSize="@dimen/small_font_size"
+        android:textAlignment="center" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:layout_marginStart="30dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="10dp"
-        android:orientation="vertical"
-        tools:ignore="MissingConstraints">
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        android:orientation="horizontal">
+        <Button
+            style="@style/Widget.Bchat.Button.Dialog.Cancel"
+            android:id="@+id/cancelButton"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical">
+            android:text="@string/cancel"
+            android:layout_marginEnd="5dp"
+            android:textColor="@color/negative_green_button_text"
+            android:padding="12dp"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:layout_weight="1"/>
 
-            <ImageView
-                android:id="@+id/payAsYouChatLogo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_pay_as_you_chat" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@font/open_sans_medium"
-                android:gravity="center"
-                android:justificationMode="inter_word"
-                android:text="@string/pay_as_you_chat"
-                android:textColor="@color/text"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/payAsYouChatEnable_Instruction"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="3dp"
-                android:layout_marginEnd="3dp"
-                android:fontFamily="@font/open_sans_medium"
-                android:justificationMode="inter_word"
-                android:textColor="@color/text" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            style="@style/Widget.Bchat.Button.Dialog.Enable"
+            android:id="@+id/okButton"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/cancelButton"
-                style="@style/Widget.Bchat.Button.Common.ProminentFilled.Cancel"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/medium_button_height"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="15dp"
-                android:layout_weight="1"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
-                android:text="@string/cancel" />
-
-            <Button
-                android:id="@+id/okButton"
-                style="@style/Widget.Bchat.Button.Common.ProminentFilled"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/medium_button_height"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="15dp"
-                android:layout_weight="1"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
-                android:text="@string/ok" />
-
-        </LinearLayout>
-
+            android:text="@string/ok"
+            android:layout_marginStart="5dp"
+            android:textColor="@color/white"
+            android:padding="12dp"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:layout_weight="1"/>
 
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</LinearLayout>

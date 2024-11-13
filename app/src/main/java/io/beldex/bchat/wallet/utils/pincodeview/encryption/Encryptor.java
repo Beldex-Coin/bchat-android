@@ -2,13 +2,11 @@ package io.beldex.bchat.wallet.utils.pincodeview.encryption;
 
 import android.text.TextUtils;
 
-import io.beldex.bchat.wallet.utils.pincodeview.managers.AppLockImpl;
-
 import java.security.MessageDigest;
 import java.util.Locale;
 
 /**
- * Used by {@link AppLockImpl} to get the SHA1
+ * Used by {@link io.beldex.bchat.wallet.utils.pincodeview.managers.AppLockImpl} to get the SHA1
  * of the 4-digit password.
  */
 public class Encryptor {

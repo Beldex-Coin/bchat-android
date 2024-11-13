@@ -5,13 +5,9 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import io.beldex.bchat.dependencies.DatabaseComponent;
-import io.beldex.bchat.util.BchatMetaProtocol;
 import com.beldex.libbchat.messaging.messages.control.TypingIndicator;
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender;
 import com.beldex.libbchat.utilities.Util;
-import io.beldex.bchat.dependencies.DatabaseComponent;
-import io.beldex.bchat.util.BchatMetaProtocol;
 import io.beldex.bchat.database.ThreadDatabase;
 import io.beldex.bchat.dependencies.DatabaseComponent;
 import io.beldex.bchat.util.BchatMetaProtocol;

@@ -5,7 +5,6 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import io.beldex.bchat.BaseViewModelTest
 import io.beldex.bchat.database.model.ThreadRecord
-import io.beldex.bchat.messagerequests.MessageRequestsViewModel
 import io.beldex.bchat.repository.ConversationRepository
 
 class MessageRequestsViewModelTest : BaseViewModelTest() {

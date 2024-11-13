@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 
 import io.beldex.bchat.ApplicationContext;
-import io.beldex.bchat.ApplicationContext;
 import io.beldex.bchat.dependencies.DatabaseComponent;
 import io.beldex.bchat.ApplicationContext;
 import io.beldex.bchat.dependencies.DatabaseComponent;

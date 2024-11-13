@@ -21,6 +21,7 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -36,13 +37,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import io.beldex.bchat.ApplicationContext;
-import io.beldex.bchat.DatabaseUpgradeActivity;
-import io.beldex.bchat.DummyActivity;
-import io.beldex.bchat.home.HomeActivity;
-import io.beldex.bchat.notifications.NotificationChannels;
-import io.beldex.bchat.home.HomeActivity;
-import io.beldex.bchat.notifications.NotificationChannels;
-import io.beldex.bchat.ApplicationContext;
+import io.beldex.bchat.BuildConfig;
 import io.beldex.bchat.DatabaseUpgradeActivity;
 import io.beldex.bchat.DummyActivity;
 import io.beldex.bchat.home.HomeActivity;
@@ -69,7 +64,7 @@ public class KeyCachingService extends Service {
 
   public static final int SERVICE_RUNNING_ID = 4141;
 
-  public  static final String KEY_PERMISSION           = "io.beldex.bchat.ACCESS_BCHAT_SECRETS";
+  public  static final String KEY_PERMISSION           = BuildConfig.APPLICATION_ID+".ACCESS_BCHAT_SECRETS";
   public  static final String CLEAR_KEY_EVENT          = "io.beldex.bchat.service.action.CLEAR_KEY_EVENT";
   public  static final String LOCK_TOGGLED_EVENT       = "io.beldex.bchat.service.action.LOCK_ENABLED_EVENT";
   private static final String PASSPHRASE_EXPIRED_EVENT = "io.beldex.bchat.service.action.PASSPHRASE_EXPIRED_EVENT";
@@ -181,9 +176,13 @@ public class KeyCachingService extends Service {
    */
   @Override
   public void onTaskRemoved(Intent rootIntent) {
-    Intent intent = new Intent(this, DummyActivity.class);
-    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    startActivity(intent);
+    try {
+      Intent intent = new Intent(this, DummyActivity.class);
+      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      startActivity(intent);
+    } catch(ActivityNotFoundException ex) {
+      Log.d("KeyCachingService", ex.getMessage());
+    }
   }
 
   @SuppressLint("StaticFieldLeak")

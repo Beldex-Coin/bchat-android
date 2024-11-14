@@ -1565,16 +1565,19 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         future.addListener(object : ListenableFuture.Listener<Pair<Uri, Long>> {
 
             override fun onSuccess(result: Pair<Uri, Long>) {
-                val audioSlide = AudioSlide(
-                    requireActivity(),
-                    result.first,
-                    result.second,
-                    MediaTypes.AUDIO_AAC,
-                    true
-                )
-                val slideDeck = SlideDeck()
-                slideDeck.addSlide(audioSlide)
-                sendAttachments(slideDeck.asAttachments(), null)
+                if(isAdded) {
+                    val audioSlide=AudioSlide(
+                        requireActivity(),
+                        result.first,
+                        result.second,
+                        MediaTypes.AUDIO_AAC,
+                        true
+                    )
+
+                    val slideDeck=SlideDeck()
+                    slideDeck.addSlide(audioSlide)
+                    sendAttachments(slideDeck.asAttachments(), null)
+                }
             }
 
             override fun onFailure(e: ExecutionException) {
@@ -2371,7 +2374,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
                 override fun afterTextChanged(s: Editable?) {
                     super.afterTextChanged(s)   
-                    formatBoldText(s)
+                    //formatBoldText(s)
                 }
             })
         } else {
@@ -2382,13 +2385,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
                 override fun afterTextChanged(s: Editable?) {
                     super.afterTextChanged(s)
-                    formatBoldText(s)
+                    //formatBoldText(s)
                 }
             })
         }
     }
 
-    private fun formatBoldText(s: Editable?) {
+   /* private fun formatBoldText(s: Editable?) {
         try {
             val text = s.toString()
             val start = text.indexOf("*")
@@ -2407,7 +2410,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         } catch (ex: IndexOutOfBoundsException) {
             Log.d("ConversationFragment ",ex.message.toString())
         }
-    }
+    }*/
 
     private fun checkInputBarTextOnTextChanged(text: String?,thread: Recipient){
         if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {

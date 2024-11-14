@@ -569,6 +569,7 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
     /**
      * Override [.onBackPressed] to prevent user for finishing the activity
      */
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (backableTypes.contains(type)) {
             if (AppLock.UNLOCK_PIN == type) {

@@ -383,6 +383,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         ).getString("0", null)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (TextSecurePreferences.getDaemon(this)) {
             val returnIntent = Intent()

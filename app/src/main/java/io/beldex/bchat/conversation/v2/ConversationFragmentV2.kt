@@ -1059,6 +1059,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 //        allButtons.forEach { it.snIsEnabled = isShowingAttachmentOptions }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -1068,6 +1069,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
         val mediaPreppedListener = object : ListenableFuture.Listener<Boolean> {
@@ -2472,6 +2474,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.attachmentContainer.isVisible = isShowingAttachmentOptions
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(!binding.inputBarRecordingView.isTimerRunning) {
             if (item.itemId == android.R.id.home) {
@@ -2680,6 +2683,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.conversationRecyclerView.scrollToPosition(lastSeenItemPosition)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onPrepareOptionsMenu(menu: Menu) {
         val recipient = viewModel.recipient.value ?: return
         //New Line

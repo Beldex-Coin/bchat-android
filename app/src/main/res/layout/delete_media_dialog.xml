@@ -16,7 +16,8 @@
         android:gravity="center_horizontal|center_vertical"
         android:paddingHorizontal="@dimen/large_spacing"
         android:textColor="@color/text"
-        android:textSize="@dimen/medium_font_size"
+        android:textStyle="bold"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -48,6 +49,7 @@
         tools:ignore="MissingConstraints">
 
         <Button
+            style="@style/Widget.Bchat.Button.Dialog.Cancel"
             android:id="@+id/cancelButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -56,15 +58,12 @@
             android:layout_marginEnd="@dimen/small_spacing"
             android:layout_marginBottom="@dimen/medium_spacing"
             android:layout_weight="1"
-            android:background="@drawable/rounded_button"
-            android:backgroundTint="@color/notification_content_cancel_button_background"
             android:gravity="center"
             android:padding="12dp"
             android:text="@string/cancel"
             android:textAllCaps="false"
-            android:textColor="@color/cancel_button_text"
+            android:textColor="@color/negative_green_button_text"
             android:textSize="14sp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -78,13 +77,13 @@
             android:layout_marginBottom="@dimen/medium_spacing"
             android:layout_weight="1"
             android:background="@drawable/rounded_button"
-            android:backgroundTint="@color/notification_content_cancel_button_background"
+            android:backgroundTint="@color/negative_red_button_border"
             android:padding="12dp"
             android:text="@string/delete"
             android:textAllCaps="false"
-            android:textColor="@color/clear_red_color"
+            android:textColor="@color/white"
             android:textSize="14sp"
-            android:textStyle="bold"
+            android:fontFamily="@font/open_sans_regular"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 

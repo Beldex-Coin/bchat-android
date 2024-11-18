@@ -271,6 +271,7 @@ fun NodeScreen(test:Boolean = false) {
     }
 
     class AsyncFindNodes : AsyncTask<Int, NodeInfo, Boolean>(), NodePinger.Listener {
+        @Deprecated("Deprecated in Java")
         override fun onPreExecute() {
             super.onPreExecute()
             filterFavourites()
@@ -279,6 +280,7 @@ fun NodeScreen(test:Boolean = false) {
             //tvPull.setText("Scanning networking")
         }
 
+        @Deprecated("Deprecated in Java")
         @SuppressLint("WrongThread")
         override fun doInBackground(vararg params: Int?): Boolean? {
             if (params[0] == restoreDefault) {
@@ -335,6 +337,7 @@ fun NodeScreen(test:Boolean = false) {
             return false
         }
 
+        @Deprecated("Deprecated in Java")
         override fun onProgressUpdate(vararg values: NodeInfo) {
             if (!isCancelled) {
                 if (values != null) {
@@ -345,10 +348,12 @@ fun NodeScreen(test:Boolean = false) {
             }
         }
 
+        @Deprecated("Deprecated in Java")
         override fun onPostExecute(result: Boolean) {
             complete()
         }
 
+        @Deprecated("Deprecated in Java")
         override fun onCancelled(result: Boolean) {
             complete()
         }

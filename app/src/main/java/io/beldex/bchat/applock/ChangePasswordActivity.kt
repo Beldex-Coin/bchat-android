@@ -150,6 +150,7 @@ class ChangePasswordActivity : BaseActionBarActivity() {
             }
         })
     }
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         super.onBackPressed()
     }

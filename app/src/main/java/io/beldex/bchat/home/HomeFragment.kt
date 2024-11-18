@@ -1214,35 +1214,44 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         AsyncTaskCoroutine<Int?, NodeInfo?>() {
 
         override fun doInBackground(vararg params: Int?): NodeInfo? {
-            val favourites: Set<NodeInfo?> = activityCallback!!.getOrPopulateFavouritesRemoteNodeList(requireActivity(),storeNodes)
-            var selectedNode: NodeInfo?
-            if (params[0] == findBest) {
-                selectedNode = autoselect(favourites)
-            } else if (params[0] == pingSelected) {
-                selectedNode = activityCallback!!.getNode()
-                if (selectedNode == null) {
-                    for (node in favourites) {
-                        if (node!!.isSelected) {
-                            selectedNode = node
-                            break
+            if(isAdded) {
+                val favourites: Set<NodeInfo?> =
+                    activityCallback!!.getOrPopulateFavouritesRemoteNodeList(
+                        requireActivity(),
+                        storeNodes
+                    )
+                var selectedNode: NodeInfo?
+                if (params[0] == findBest) {
+                    selectedNode = autoselect(favourites)
+                } else if (params[0] == pingSelected) {
+                    selectedNode = activityCallback!!.getNode()
+                    if (selectedNode == null) {
+                        for (node in favourites) {
+                            if (node!!.isSelected) {
+                                selectedNode = node
+                                break
+                            }
                         }
                     }
-                }
-                if (selectedNode == null) { // autoselect
-                    selectedNode = autoselect(favourites)
-                } else {
-                    //Steve Josephh21
-                    if(selectedNode!=null) {
-                        selectedNode!!.testRpcService()
+                    if (selectedNode == null) { // autoselect
+                        selectedNode = autoselect(favourites)
+                    } else {
+                        //Steve Josephh21
+                        if (selectedNode != null) {
+                            selectedNode!!.testRpcService()
+                        }
                     }
+                } else throw IllegalStateException()
+                return if (selectedNode != null && selectedNode.isValid) {
+                    activityCallback!!.setNode(selectedNode)
+                    selectedNode
+                } else {
+                    activityCallback!!.setNode(null)
+                    null
                 }
-            } else throw IllegalStateException()
-            return if (selectedNode != null && selectedNode.isValid) {
-                activityCallback!!.setNode(selectedNode)
-                selectedNode
             } else {
                 activityCallback!!.setNode(null)
-                null
+                return null
             }
         }
 

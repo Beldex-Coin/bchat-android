@@ -43,7 +43,7 @@
             android:layout_centerInParent="true"
             android:layout_marginTop="8dp"
             app:layout_constraintDimensionRatio="1:1"
-            app:lottie_fileName="load_animation.json"
+            app:lottie_rawRes="@raw/load_animation"
             app:lottie_loop="true"
             app:lottie_speed="1"
             app:lottie_autoPlay="true"

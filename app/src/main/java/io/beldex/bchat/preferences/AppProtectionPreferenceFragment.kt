@@ -137,6 +137,7 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
 
 
     //Hales63
+    @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,

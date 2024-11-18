@@ -184,6 +184,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginTop="-4dp"
+                    android:maxWidth="@dimen/max_text_layout_width"
                     app:layout_constraintEnd_toEndOf="@+id/bodyBarrier"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toStartOf="parent"

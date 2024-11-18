@@ -307,9 +307,8 @@ class VisibleMessageView : LinearLayout {
         val bottom = top + iconSize
         swipeToReplyIconRect.left = -(spacing+spacing)
         swipeToReplyIconRect.top = top
-        swipeToReplyIconRect.right = binding.expirationTimerViewContainer.left
+        swipeToReplyIconRect.right = 16
         swipeToReplyIconRect.bottom = bottom
-
         if (translationX > 0 && !binding.expirationTimerView.isVisible) {
             val threshold = swipeToReplyThreshold
             swipeToReplyIcon.bounds = swipeToReplyIconRect

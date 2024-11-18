@@ -219,6 +219,7 @@ object ConversationMenuHelper {
     private fun addShortcut(context: Context, thread: Recipient) {
         object : AsyncTask<Void?, Void?, IconCompat?>() {
 
+            @Deprecated("Deprecated in Java")
             override fun doInBackground(vararg params: Void?): IconCompat? {
                 var icon: IconCompat? = null
                 val contactPhoto = thread.contactPhoto
@@ -237,6 +238,7 @@ object ConversationMenuHelper {
                 return icon
             }
 
+            @Deprecated("Deprecated in Java")
             override fun onPostExecute(icon: IconCompat?) {
                 val name = Optional.fromNullable<String>(thread.name)
                     .or(Optional.fromNullable<String>(thread.profileName))

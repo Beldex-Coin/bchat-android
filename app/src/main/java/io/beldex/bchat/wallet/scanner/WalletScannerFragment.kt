@@ -240,6 +240,7 @@ class WalletScannerFragment(
         sendFragment.processScannedData(barcodeData)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onPrepareOptionsMenu(menu: Menu) {
         menu.clear()
     }

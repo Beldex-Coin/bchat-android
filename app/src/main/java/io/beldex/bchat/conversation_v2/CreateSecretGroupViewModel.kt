@@ -67,7 +67,7 @@ class CreateSecretGroupViewModel@Inject constructor(
                 }
                 withContext(Dispatchers.Main) {
                     _recipients.value = recipients
-                        .filter { recipient -> !recipient.isGroupRecipient && recipient.hasApprovedMe() && recipient.address.serialize() != textSecurePreferences.getLocalNumber() }
+                        .filter { recipient -> !recipient.isGroupRecipient && recipient.hasApprovedMe() && recipient.address.serialize() != textSecurePreferences.getLocalNumber() && !recipient.isBlocked }
                     kotlinx.coroutines.delay(3000)
                     readUserDisplayName()
                 }

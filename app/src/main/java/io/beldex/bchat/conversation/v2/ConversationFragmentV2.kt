@@ -10,7 +10,6 @@ import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.database.Cursor
 import android.graphics.Color
@@ -23,9 +22,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.telephony.PhoneStateListener
-import android.telephony.TelephonyCallback
-import android.telephony.TelephonyManager
 import android.text.Editable
 import android.text.Html
 import android.text.Spannable
@@ -56,9 +52,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.ColorInt
 import androidx.annotation.DimenRes
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -967,6 +961,16 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val recipient = viewModel.recipient.value ?: return
         binding.slideToPayButton.visibility = View.GONE
         binding.inputBar.draftQuote(recipient, message, glide)
+        setConversationRecyclerViewLayout(true)
+    }
+
+    override fun setConversationRecyclerViewLayout(status: Boolean) {
+        val layoutParams: RelativeLayout.LayoutParams = binding.conversationRecyclerView.layoutParams as RelativeLayout.LayoutParams
+        if(status) {
+            layoutParams.addRule(RelativeLayout.ABOVE, R.id.inputBar)
+        } else {
+            layoutParams.addRule(RelativeLayout.ABOVE, R.id.typingIndicatorViewContainer)
+        }
     }
 
     private fun handleLongPress(message: MessageRecord, position: Int) {
@@ -1055,6 +1059,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 //        allButtons.forEach { it.snIsEnabled = isShowingAttachmentOptions }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -1064,6 +1069,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
         val mediaPreppedListener = object : ListenableFuture.Listener<Boolean> {
@@ -1193,35 +1199,48 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun startRecordingVoiceMessage() {
-        hideAttachmentContainer()
-        checkUnBlock()
-        val recipient = viewModel.recipient.value ?: return
-        if (recipient.isBlocked) {
-            unblock()
-            return
-        }
-        if(callViewModel?.callStartTime == -1L) {
-            if (Permissions.hasAll(requireActivity(), Manifest.permission.RECORD_AUDIO)) {
-                showVoiceMessageUI()
-                this.activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                audioRecorder.startRecording()
-                stopAudioHandler.postDelayed(
+        val startTime = callViewModel!!.callStartTime
+        if (startTime == -1L) {
+            hideAttachmentContainer()
+            checkUnBlock()
+            val recipient = viewModel.recipient.value ?: return
+            if (recipient.isBlocked) {
+                unblock()
+                return
+            }
+            if (callViewModel?.callStartTime == -1L) {
+                if (Permissions.hasAll(requireActivity(), Manifest.permission.RECORD_AUDIO)) {
+                    showVoiceMessageUI()
+                    this.activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                    audioRecorder.startRecording()
+                    stopAudioHandler.postDelayed(
                         stopVoiceMessageRecordingTask,
                         300000
-                ) // Limit voice messages to 5 minute each
+                    ) // Limit voice messages to 5 minute each
+                } else {
+                    Permissions.with(this)
+                        .request(Manifest.permission.RECORD_AUDIO)
+                        .withRationaleDialog(
+                            getString(R.string.ConversationActivity_to_send_audio_messages_allow_signal_access_to_your_microphone),
+                            getString(R.string.Permissions_record_permission_required),
+                            R.drawable.ic_microphone
+                        )
+                        .withPermanentDenialDialog(getString(R.string.ConversationActivity_signal_requires_the_microphone_permission_in_order_to_send_audio_messages))
+                        .execute()
+                }
             } else {
-                Permissions.with(this)
-                    .request(Manifest.permission.RECORD_AUDIO)
-                    .withRationaleDialog(
-                        getString(R.string.ConversationActivity_to_send_audio_messages_allow_signal_access_to_your_microphone),
-                        getString(R.string.Permissions_record_permission_required),
-                        R.drawable.ic_microphone
-                    )
-                    .withPermanentDenialDialog(getString(R.string.ConversationActivity_signal_requires_the_microphone_permission_in_order_to_send_audio_messages))
-                    .execute()
+                Toast.makeText(
+                    requireActivity(),
+                    getString(R.string.record_voice_restriction),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-        }else{
-            Toast.makeText(requireActivity(),getString(R.string.record_voice_restriction),Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(
+                requireActivity(),
+                getString(R.string.warning_message_of_voice_recording),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -1546,16 +1565,19 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         future.addListener(object : ListenableFuture.Listener<Pair<Uri, Long>> {
 
             override fun onSuccess(result: Pair<Uri, Long>) {
-                val audioSlide = AudioSlide(
-                    requireActivity(),
-                    result.first,
-                    result.second,
-                    MediaTypes.AUDIO_AAC,
-                    true
-                )
-                val slideDeck = SlideDeck()
-                slideDeck.addSlide(audioSlide)
-                sendAttachments(slideDeck.asAttachments(), null)
+                if(isAdded) {
+                    val audioSlide=AudioSlide(
+                        requireActivity(),
+                        result.first,
+                        result.second,
+                        MediaTypes.AUDIO_AAC,
+                        true
+                    )
+
+                    val slideDeck=SlideDeck()
+                    slideDeck.addSlide(audioSlide)
+                    sendAttachments(slideDeck.asAttachments(), null)
+                }
             }
 
             override fun onFailure(e: ExecutionException) {
@@ -1860,6 +1882,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if(messages.isNotEmpty()) {
             binding.slideToPayButton.visibility = View.GONE
             binding.inputBar.draftQuote(recipient, messages.first(), glide)
+            setConversationRecyclerViewLayout(true)
         }
         endActionMode()
     }
@@ -2042,6 +2065,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             val threadRecipient = viewModel.recipient.value ?: return@runOnUiThread
             if (threadRecipient.isContactRecipient) {
                 binding.blockedBanner.isVisible = threadRecipient.isBlocked
+                setConversationRecyclerViewLayout(threadRecipient)
                 callShowPayAsYouChatBDXIcon(threadRecipient)
                 showBlockProgressBar(threadRecipient)
             }
@@ -2350,7 +2374,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
                 override fun afterTextChanged(s: Editable?) {
                     super.afterTextChanged(s)   
-                    formatBoldText(s)
+                    //formatBoldText(s)
                 }
             })
         } else {
@@ -2361,23 +2385,32 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
                 override fun afterTextChanged(s: Editable?) {
                     super.afterTextChanged(s)
-                    formatBoldText(s)
+                    //formatBoldText(s)
                 }
             })
         }
     }
 
-    private fun formatBoldText(s: Editable?) {
-        val text = s.toString()
-        val start = text.indexOf("*")
-        val end = text.lastIndexOf("*")
+   /* private fun formatBoldText(s: Editable?) {
+        try {
+            val text = s.toString()
+            val start = text.indexOf("*")
+            val end = text.lastIndexOf("*")
 
-        if (start != -1 && end != -1 && start != end) {
-            s?.setSpan(StyleSpan(Typeface.BOLD), start+1, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            s?.delete(start, start + 1)
-            s?.delete(end-1, end)
+            if (start != -1 && end != -1 && start != end) {
+                s?.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    start + 1,
+                    end,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                s?.delete(start, start + 1)
+                s?.delete(end - 1, end)
+            }
+        } catch (ex: IndexOutOfBoundsException) {
+            Log.d("ConversationFragment ",ex.message.toString())
         }
-    }
+    }*/
 
     private fun checkInputBarTextOnTextChanged(text: String?,thread: Recipient){
         if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
@@ -2444,6 +2477,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.attachmentContainer.isVisible = isShowingAttachmentOptions
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(!binding.inputBarRecordingView.isTimerRunning) {
             if (item.itemId == android.R.id.home) {
@@ -2529,6 +2563,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 //        binding.blockedBannerTextView.text =
 //            resources.getString(R.string.activity_conversation_blocked_banner_text, name)
         binding.blockedBanner.isVisible = recipient.isBlocked
+        setConversationRecyclerViewLayout(recipient)
         callShowPayAsYouChatBDXIcon(recipient)
         showBlockProgressBar(recipient)
         /*setting click listener on banner to avoid background click gesture - DO NOT REMOVE This line*/
@@ -2538,6 +2573,15 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
         binding.unblockButton.setOnClickListener {
             unblockContactDialog()
+        }
+    }
+
+    private fun setConversationRecyclerViewLayout(recipient: Recipient){
+        val layoutParams: RelativeLayout.LayoutParams = binding.conversationRecyclerView.layoutParams as RelativeLayout.LayoutParams
+        if(recipient.isBlocked){
+            layoutParams.addRule(RelativeLayout.ABOVE,R.id.blockedBanner)
+        }else{
+            layoutParams.addRule(RelativeLayout.ABOVE,R.id.typingIndicatorViewContainer)
         }
     }
 
@@ -2642,6 +2686,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.conversationRecyclerView.scrollToPosition(lastSeenItemPosition)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onPrepareOptionsMenu(menu: Menu) {
         val recipient = viewModel.recipient.value ?: return
         //New Line

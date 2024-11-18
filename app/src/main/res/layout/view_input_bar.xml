@@ -3,7 +3,8 @@
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@color/new_card_background">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/containerCardView"
@@ -11,6 +12,8 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="48dp"
         android:layout_weight="1"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="8dp"
         app:strokeWidth="1dp"
         app:strokeColor="@color/input_bar_background"
         app:cardElevation="0dp">
@@ -137,6 +140,7 @@
         android:id="@+id/microphoneOrSendButtonContainer"
         android:layout_width="@dimen/input_bar_button_expanded_size"
         android:layout_height="@dimen/input_bar_button_expanded_size"
-        android:layout_gravity="bottom"/>
+        android:layout_gravity="bottom"
+        android:layout_marginEnd="4dp"/>
 
 </LinearLayout>

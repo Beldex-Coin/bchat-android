@@ -43,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -90,6 +91,7 @@ fun CreateSecretGroup(
         mutableStateOf("")
     }
     val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
     if (TextSecurePreferences.isScreenSecurityEnabled(context))
         activity.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE) else {
         activity.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
@@ -265,6 +267,7 @@ fun CreateSecretGroup(
                 PrimaryButton(
                     onClick = {
                         if(isButtonEnabled) {
+                            keyboardController?.hide()
                             isButtonEnabled = false
                             scope.launch(Dispatchers.Main) {
                                 if(CheckOnline.isOnline(context)) {

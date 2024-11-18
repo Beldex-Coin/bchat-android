@@ -30,12 +30,12 @@ public class DatabaseSecretProvider {
     else                                return createAndStoreDatabaseSecret(context);
   }
 
-  private DatabaseSecret getUnencryptedDatabaseSecret(@NonNull Context context, @NonNull String unencryptedSecret)
+  private @NonNull DatabaseSecret getUnencryptedDatabaseSecret(@NonNull Context context, @NonNull String unencryptedSecret)
   {
     try {
       DatabaseSecret databaseSecret = new DatabaseSecret(unencryptedSecret);
 
-      if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+      if (Build.VERSION.SDK_INT < 23) {
         return databaseSecret;
       } else {
         KeyStoreHelper.SealedData encryptedSecret = KeyStoreHelper.seal(databaseSecret.asBytes());
@@ -50,8 +50,8 @@ public class DatabaseSecretProvider {
     }
   }
 
-  private DatabaseSecret getEncryptedDatabaseSecret(@NonNull String serializedEncryptedSecret) {
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+  private @NonNull DatabaseSecret getEncryptedDatabaseSecret(@NonNull String serializedEncryptedSecret) {
+    if (Build.VERSION.SDK_INT < 23) {
       throw new AssertionError("OS downgrade not supported. KeyStore sealed data exists on platform < M!");
     } else {
       KeyStoreHelper.SealedData encryptedSecret = KeyStoreHelper.SealedData.fromString(serializedEncryptedSecret);
@@ -59,14 +59,14 @@ public class DatabaseSecretProvider {
     }
   }
 
-  private DatabaseSecret createAndStoreDatabaseSecret(@NonNull Context context) {
+  private @NonNull DatabaseSecret createAndStoreDatabaseSecret(@NonNull Context context) {
     SecureRandom random = new SecureRandom();
     byte[]       secret = new byte[32];
     random.nextBytes(secret);
 
     DatabaseSecret databaseSecret = new DatabaseSecret(secret);
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    if (Build.VERSION.SDK_INT >= 23) {
       KeyStoreHelper.SealedData encryptedSecret = KeyStoreHelper.seal(databaseSecret.asBytes());
       TextSecurePreferences.setDatabaseEncryptedSecret(context, encryptedSecret.serialize());
     } else {

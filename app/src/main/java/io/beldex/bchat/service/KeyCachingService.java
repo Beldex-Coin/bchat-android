@@ -35,6 +35,7 @@ import android.os.SystemClock;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 import io.beldex.bchat.ApplicationContext;
 import io.beldex.bchat.BuildConfig;
@@ -42,7 +43,6 @@ import io.beldex.bchat.DatabaseUpgradeActivity;
 import io.beldex.bchat.DummyActivity;
 import io.beldex.bchat.home.HomeActivity;
 import com.beldex.libsignal.utilities.Log;
-import io.beldex.bchat.home.HomeActivity;
 import io.beldex.bchat.notifications.NotificationChannels;
 import com.beldex.libbchat.utilities.ServiceUtil;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
@@ -83,7 +83,13 @@ public class KeyCachingService extends Service {
   public static void setMasterSecret(Context context, Object masterSecret) {
     // Start and bind to the KeyCachingService instance.
     Intent bindIntent = new Intent(context, KeyCachingService.class);
-    context.startService(bindIntent);
+    try { context.startService(bindIntent); }
+    catch(Exception e) {
+      try { ContextCompat.startForegroundService(context, bindIntent); }
+      catch (Exception e2) {
+        Log.d("Beldex", "Unable to start KeyCachingService intent: ",e2);
+      }
+    }
     context.bindService(bindIntent, new ServiceConnection() {
       @Override
       public void onServiceConnected(ComponentName name, IBinder binder) {

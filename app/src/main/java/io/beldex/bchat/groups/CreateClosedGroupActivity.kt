@@ -63,6 +63,7 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
         binding = ActivityCreateClosedGroupBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar!!.title = resources.getString(R.string.activity_create_closed_group_title)
+        device = Device.ANDROID
 
         with(binding){
             recyclerView.adapter = this@CreateClosedGroupActivity.selectContactsAdapter

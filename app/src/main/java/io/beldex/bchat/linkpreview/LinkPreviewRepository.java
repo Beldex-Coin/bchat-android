@@ -12,7 +12,7 @@ import io.beldex.bchat.net.CallRequestController;
 import io.beldex.bchat.net.CompositeRequestController;
 import io.beldex.bchat.net.ContentProxySafetyInterceptor;
 import io.beldex.bchat.net.RequestController;
-import com.google.android.gms.common.util.IOUtils;
+import static com.beldex.libbchat.utilities.Util.readFully;
 import io.beldex.bchat.net.CallRequestController;
 import io.beldex.bchat.net.CompositeRequestController;
 import io.beldex.bchat.net.ContentProxySafetyInterceptor;
@@ -152,7 +152,7 @@ public class LinkPreviewRepository {
         InputStream bodyStream = response.body().byteStream();
         controller.setStream(bodyStream);
 
-        byte[]               data      = IOUtils.readInputStreamFully(bodyStream);
+        byte[]               data      = readFully(bodyStream);
         Bitmap               bitmap    = BitmapFactory.decodeByteArray(data, 0, data.length);
         Optional<Attachment> thumbnail = bitmapToAttachment(bitmap, Bitmap.CompressFormat.JPEG, MediaTypes.IMAGE_JPEG);
 

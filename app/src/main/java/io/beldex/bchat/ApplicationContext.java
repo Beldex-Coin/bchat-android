@@ -39,6 +39,7 @@ import com.beldex.libbchat.messaging.sending_receiving.pollers.Poller;
 import com.beldex.libbchat.messaging.utilities.WindowDebouncer;
 import com.beldex.libbchat.mnode.MnodeModule;
 import com.beldex.libbchat.utilities.Address;
+import com.beldex.libbchat.utilities.Device;
 import com.beldex.libbchat.utilities.ProfilePictureUtilities;
 import com.beldex.libbchat.utilities.SSKEnvironment;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
@@ -70,9 +71,8 @@ import io.beldex.bchat.logging.PersistentLogger;
 import io.beldex.bchat.logging.UncaughtExceptionLogger;
 import io.beldex.bchat.model.NetworkType;
 import io.beldex.bchat.notifications.BackgroundPollWorker;
-import io.beldex.bchat.notifications.BeldexPushNotificationManager;
 import io.beldex.bchat.notifications.DefaultMessageNotifier;
-import io.beldex.bchat.notifications.FcmUtils;
+import io.beldex.bchat.notifications.PushRegistry;
 import io.beldex.bchat.notifications.NotificationChannels;
 import io.beldex.bchat.notifications.OptimizedMessageNotifier;
 import io.beldex.bchat.providers.BlobProvider;
@@ -137,6 +137,8 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
 
     @Inject BeldexAPIDatabase beldexAPIDatabase;
     @Inject Storage storage;
+    @Inject Device device;
+    @Inject PushRegistry pushRegistry;
     @Inject MessageDataProvider messageDataProvider;
     @Inject JobDatabase jobDatabase;
     //New Line
@@ -194,6 +196,7 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
         super.onCreate();
         messagingModuleConfiguration = new MessagingModuleConfiguration(this,
                 storage,
+                device,
                 messageDataProvider,
                 ()-> KeyPairUtilities.INSTANCE.getUserED25519KeyPair(this));
         callMessageProcessor = new CallMessageProcessor(this, textSecurePreferences, ProcessLifecycleOwner.get().getLifecycle(), storage);
@@ -209,10 +212,6 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
         broadcaster = new Broadcaster(this);
         BeldexAPIDatabase apiDB = getDatabaseComponent().beldexAPIDatabase();
         MnodeModule.Companion.configure(apiDB, broadcaster);
-        String userPublicKey = TextSecurePreferences.getLocalNumber(this);
-        if (userPublicKey != null) {
-            registerForFCMIfNeeded(false);
-        }
         UiModeUtilities.setupUiModeToUserSelected(this);
         initializeExpiringMessageManager();
         initializeTypingStatusRepository();
@@ -399,28 +398,6 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
 
     private static class ProviderInitializationException extends RuntimeException { }
 
-    public void registerForFCMIfNeeded(final Boolean force) {
-        if (firebaseInstanceIdJob != null && firebaseInstanceIdJob.isActive() && !force) return;
-        if (force && firebaseInstanceIdJob != null) {
-            firebaseInstanceIdJob.cancel(null);
-        }
-        firebaseInstanceIdJob = FcmUtils.getFcmInstanceId(task->{
-            if (!task.isSuccessful()) {
-                Log.w("Beldex", "FirebaseMessaging.getInstance().token failed." + task.getException());
-                return Unit.INSTANCE;
-            }
-            String token = task.getResult();
-            String userPublicKey = TextSecurePreferences.getLocalNumber(this);
-            if (userPublicKey == null) return Unit.INSTANCE;
-            if (TextSecurePreferences.isUsingFCM(this)) {
-                BeldexPushNotificationManager.register(token, userPublicKey, this, force);
-            } else {
-                BeldexPushNotificationManager.unregister(token, this);
-            }
-            return Unit.INSTANCE;
-        });
-    }
-
     private void setUpPollingIfNeeded() {
         String userPublicKey = TextSecurePreferences.getLocalNumber(this);
         if (userPublicKey == null) return;
@@ -474,18 +451,14 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
     }
 
     public void clearAllData(boolean isMigratingToV2KeyPair) {
-        String token = TextSecurePreferences.getFCMToken(this);
-        if (token != null && !token.isEmpty()) {
-            BeldexPushNotificationManager.unregister(token, this);
-        }
         if (firebaseInstanceIdJob != null && firebaseInstanceIdJob.isActive()) {
             firebaseInstanceIdJob.cancel(null);
         }
         String displayName = TextSecurePreferences.getProfileName(this);
-        boolean isUsingFCM = TextSecurePreferences.isUsingFCM(this);
+        boolean isUsingFCM = TextSecurePreferences.isPushEnabled(this);
         TextSecurePreferences.clearAll(this);
         if (isMigratingToV2KeyPair) {
-            TextSecurePreferences.setIsUsingFCM(this, isUsingFCM);
+            TextSecurePreferences.setPushEnabled(this, isUsingFCM);
             TextSecurePreferences.setProfileName(this, displayName);
         }
         getSharedPreferences(PREFERENCES_NAME, 0).edit().clear().commit();

@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment as SignalAttachment
 import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview as SignalLinkPreview
 import com.beldex.libbchat.messaging.sending_receiving.quotes.QuoteModel as SignalQuote
+import com.beldex.libbchat.utilities.Device
 
 object MessageSender {
 
@@ -173,13 +174,13 @@ object MessageSender {
                 val promiseCount = promises.size
                 var errorCount =  AtomicInteger(0)
                 promises.forEach { promise: RawResponsePromise ->
-                    promise.success {
+                    promise.success { response ->
                         if (isSuccess) { return@success } // Succeed as soon as the first promise succeeds
                         isSuccess = true
                         if (destination is Destination.Contact && message is VisibleMessage && !isSelfSend) {
                             MnodeModule.shared.broadcaster.broadcast("messageSent", message.sentTimestamp!!)
                         }
-                        val hash = it["hash"] as? String
+                        val hash = response.info["hash"] as? String
                         message.serverHash = hash
                         handleSuccessfulMessageSend(message, destination, isSyncMessage)
                         val shouldNotify = ((message is VisibleMessage || message is UnsendRequest || message is CallMessage) && !isSyncMessage)
@@ -352,8 +353,8 @@ object MessageSender {
     }
 
     // Secret groups
-    fun createClosedGroup(name: String, members: Collection<String>): Promise<String, Exception> {
-        return create(name, members)
+    fun createClosedGroup(device: Device, name: String, members: Collection<String>): Promise<String, Exception> {
+        return create(device, name, members)
     }
 
     fun explicitNameChange(groupPublicKey: String, newName: String) {

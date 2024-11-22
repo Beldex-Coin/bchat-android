@@ -1453,6 +1453,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="create_secret_group">Create Secret Group</string>
     <string name="enter_group_name">Enter Secret Group name</string>
     <string name="search_contact">Search Contact</string>
+    <string name="search">Search</string>
     <string name="message_request">Message Request</string>
     <string name="block_or_delete_request">Do you want to block or just delete this user?</string>
     <string name="or_join">Or Join</string>
@@ -1571,4 +1572,61 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="wallet_synced_text" translatable="false">Wallet is fully synchronized</string>
     <string name="change_pin_title" translatable="false">Change PIN</string>
     <string name="warning_message_of_voice_recording" translatable="false">You can\'t send an audio message while you\'re on a call</string>
+
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__this_message" translatable="false">This Message</string>
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__recently_used" translatable="false">Recently Used</string>
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__smileys_and_people" translatable="false">Smileys &amp; People</string>
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__nature" translatable="false">Nature</string>
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__food" translatable="false">Food</string>
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__activities" translatable="false">Activities</string>
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__places" translatable="false">Places</string>
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__objects" translatable="false">Objects</string>
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__symbols" translatable="false">Symbols</string>
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__flags" translatable="false">Flags</string>
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__emoticons" translatable="false">Emoticons</string>
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__no_results_found" translatable="false">No results found</string>
+    <!-- ReactionsBottomSheetDialogFragment -->
+    <string name="ReactionsBottomSheetDialogFragment_all" translatable="false">All &#183; %1$d</string>
+    <!-- ReactionsConversationView -->
+    <string name="ReactionsConversationView_plus" translatable="false">+%1$d</string>
+    <!-- ReactionsRecipientAdapter -->
+    <string name="ReactionsRecipientAdapter_you" translatable="false">You</string>
+    <string name="reaction_notification" translatable="false">%1$s reacted to a message %2$s</string>
+    <string name="ReactionsConversationView_show_less" translatable="false">Show less</string>
+    <string name="KeyboardPagerFragment_search_emoji" translatable="false">Search emoji</string>
+    <string name="KeyboardPagerfragment_back_to_emoji" translatable="false">Back to emoji</string>
+    <string name="KeyboardPagerfragment_clear_search_entry" translatable="false">Clear search entry</string>
+    <plurals name="ReactionsRecipientAdapter_other_reactors" translatable="false">
+        <item quantity="one">And %1$d other has reacted %2$s to this message</item>
+        <item quantity="other">And %1$d others have reacted %2$s to this message</item>
+    </plurals>
+
+    <string name="emojiAndSymbols" translatable="false">Emoji and Symbols</string>
+    <string name="emojiCategoryActivities" translatable="false">Activities</string>
+    <string name="emojiCategoryAnimals" translatable="false">Animals and Nature</string>
+    <string name="emojiCategoryFlags" translatable="false">Flags</string>
+    <string name="emojiCategoryFood" translatable="false">Food and Drink</string>
+    <string name="emojiCategoryObjects" translatable="false">Objects</string>
+    <string name="emojiCategoryRecentlyUsed" translatable="false">Recently Used</string>
+    <string name="emojiCategorySmileys" translatable="false">Smileys and People</string>
+    <string name="emojiCategorySymbols" translatable="false">Symbols</string>
+    <string name="emojiCategoryTravel" translatable="false">Travel and Places</string>
+    <string name="emojiReactsClearAll" translatable="false">Are you sure you want to clear all {emoji}?</string>
+    <string name="emojiReactsCoolDown" translatable="false">Slow down! You\'ve sent too many emoji reacts. Try again soon</string>
+    <plurals name="emojiReactsCountOthers" translatable="false">
+        <item quantity="one">And %1$d other has reacted %2$s to this message.</item>
+        <item quantity="other">And %1$d others have reacted %2$s to this message.</item>
+    </plurals>
+    <string name="emojiReactsHoverNameDesktop" translatable="false">{name} reacted with {emoji_name}</string>
+    <string name="emojiReactsHoverNameTwoDesktop" translatable="false">{name} and {other_name} reacted with {emoji_name}</string>
+    <string name="emojiReactsHoverTwoNameMultipleDesktop" translatable="false">{name} and <span>{count} others</span> reacted with {emoji_name}</string>
+    <string name="emojiReactsHoverYouNameDesktop" translatable="false">You reacted with {emoji_name}</string>
+    <string name="emojiReactsHoverYouNameMultipleDesktop" translatable="false">You and <span>{count} others</span> reacted with {emoji_name}</string>
+    <string name="emojiReactsHoverYouNameTwoDesktop" translatable="false">You and {name} reacted with {emoji_name}</string>
+    <string name="emojiReactsNotification" translatable="false">Reacted to your message {emoji}</string>
+    <string name="showLess" translatable="false">Show Less</string>
+    <string name="AccessibilityId_emojiSearch" translatable="false">Back to emoji</string>
+    <string name="AccessibilityId_emojiSearchClear" translatable="false">Clear search entry</string>
+    <string name="you" translatable="false">You</string>
+    <string name="andMore" translatable="false">+{count}</string>
 </resources>

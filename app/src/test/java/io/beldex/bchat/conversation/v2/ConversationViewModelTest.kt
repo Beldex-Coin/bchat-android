@@ -1,6 +1,7 @@
 package io.beldex.bchat.conversation.v2
 
 import io.beldex.bchat.conversation.v2.ConversationViewModel
+import com.goterl.lazysodium.utils.KeyPair
 import com.beldex.libbchat.utilities.recipients.Recipient
 import kotlinx.coroutines.flow.first
 import org.hamcrest.CoreMatchers.endsWith
@@ -15,6 +16,7 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.kotlin.any
 import io.beldex.bchat.BaseViewModelTest
+import io.beldex.bchat.database.Storage
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.repository.ConversationRepository
 import io.beldex.bchat.repository.ResultOf
@@ -23,12 +25,14 @@ import org.mockito.Mockito.`when` as whenever
 class ConversationViewModelTest: BaseViewModelTest() {
 
     private val repository = mock(ConversationRepository::class.java)
+    private val storage = mock(Storage::class.java)
 
     private val threadId = 123L
+    private val edKeyPair = mock(KeyPair::class.java)
     private lateinit var recipient: Recipient
 
     private val viewModel: ConversationViewModel by lazy {
-        ConversationViewModel(threadId, repository)
+        ConversationViewModel(threadId, edKeyPair, repository, storage)
     }
 
     @Before

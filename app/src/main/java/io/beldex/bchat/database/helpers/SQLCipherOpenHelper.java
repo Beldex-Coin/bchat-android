@@ -18,11 +18,13 @@ import io.beldex.bchat.database.BeldexMessageDatabase;
 import io.beldex.bchat.database.BeldexThreadDatabase;
 import io.beldex.bchat.database.BeldexUserDatabase;
 import io.beldex.bchat.database.DraftDatabase;
+import io.beldex.bchat.database.EmojiSearchDatabase;
 import io.beldex.bchat.database.GroupDatabase;
 import io.beldex.bchat.database.GroupReceiptDatabase;
 import io.beldex.bchat.database.JobDatabase;
 import io.beldex.bchat.database.MmsDatabase;
 import io.beldex.bchat.database.PushDatabase;
+import io.beldex.bchat.database.ReactionDatabase;
 import io.beldex.bchat.database.RecipientDatabase;
 import io.beldex.bchat.database.SearchDatabase;
 import io.beldex.bchat.database.SmsDatabase;
@@ -76,8 +78,10 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
 
   private static final int beldexV34                          = 55;
 
+  private static final int beldexV35                         = 56;
+
   // beldex - onUpgrade(...) must be updated to use beldex version numbers if Signal makes any database changes
-  private static final int    DATABASE_VERSION = beldexV34;
+  private static final int    DATABASE_VERSION = beldexV35;
   private static final int    MIN_DATABASE_VERSION     = beldexV7;
   public static final String DATABASE_NAME    = "bchat_v4.db";
   private static final String CIPHER3_DATABASE_NAME    = "bchat.db";
@@ -241,7 +245,10 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
     db.execSQL(GroupDatabase.getCreateUpdatedTimestampCommand());
     db.execSQL(RecipientDatabase.getCreateApprovedCommand());
     db.execSQL(RecipientDatabase.getCreateApprovedMeCommand());
-    db.execSQL(MmsDatabase.getCreateMessageRequestResponseCommand);
+    db.execSQL(MmsDatabase.CREATE_MESSAGE_REQUEST_RESPONSE_COMMAND);
+    db.execSQL(MmsDatabase.CREATE_REACTIONS_UNREAD_COMMAND);
+    db.execSQL(SmsDatabase.CREATE_REACTIONS_UNREAD_COMMAND);
+    db.execSQL(MmsDatabase.CREATE_REACTIONS_LAST_SEEN_COMMAND);
     //New
     db.execSQL(BchatRecipientAddressDatabase.getCreateBchatRecipientAddressTableCommand());
 
@@ -253,6 +260,9 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
     db.execSQL(BeldexAPIDatabase.UPDATE_RECEIVED_INCLUDE_NAMESPACE_COMMAND);
     db.execSQL(BeldexAPIDatabase.INSERT_RECEIVED_HASHES_DATA);
     db.execSQL(BeldexAPIDatabase.DROP_LEGACY_RECEIVED_HASHES);
+   /* db.execSQL(BeldexAPIDatabase.RESET_SEQ_NO);*/ //Need to check // probably not needed but consistent with all migrations
+    db.execSQL(EmojiSearchDatabase.CREATE_EMOJI_SEARCH_TABLE_COMMAND);
+    db.execSQL(ReactionDatabase.CREATE_REACTION_TABLE_COMMAND);
 
 
     executeStatements(db, SmsDatabase.CREATE_INDEXS);
@@ -262,6 +272,8 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
     executeStatements(db, DraftDatabase.CREATE_INDEXS);
     executeStatements(db, GroupDatabase.CREATE_INDEXS);
     executeStatements(db, GroupReceiptDatabase.CREATE_INDEXES);
+
+    executeStatements(db, ReactionDatabase.CREATE_REACTION_TRIGGERS);
   }
 
   @Override
@@ -438,7 +450,7 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
         db.execSQL(RecipientDatabase.getCreateApprovedMeCommand());
         db.execSQL(RecipientDatabase.getUpdateApprovedCommand());
         db.execSQL(RecipientDatabase.getUpdateApprovedSelectConversations());
-        db.execSQL(MmsDatabase.getCreateMessageRequestResponseCommand);
+        db.execSQL(MmsDatabase.CREATE_MESSAGE_REQUEST_RESPONSE_COMMAND);
       }
 
       if(oldVersion < beldexV32) {
@@ -458,6 +470,17 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
 
       if(oldVersion< beldexV34) {
         db.execSQL(BchatContactDatabase.getCreateIsBnsHolderCommand());
+      }
+
+      if(oldVersion< beldexV35) {
+        //need to check
+        /*db.execSQL(BeldexAPIDatabase.RESET_SEQ_NO);*/
+        db.execSQL(MmsDatabase.CREATE_REACTIONS_UNREAD_COMMAND);
+        db.execSQL(SmsDatabase.CREATE_REACTIONS_UNREAD_COMMAND);
+        db.execSQL(MmsDatabase.CREATE_REACTIONS_LAST_SEEN_COMMAND);
+        db.execSQL(ReactionDatabase.CREATE_REACTION_TABLE_COMMAND);
+        executeStatements(db, ReactionDatabase.CREATE_REACTION_TRIGGERS);
+        db.execSQL(EmojiSearchDatabase.CREATE_EMOJI_SEARCH_TABLE_COMMAND);
       }
 
       db.setTransactionSuccessful();

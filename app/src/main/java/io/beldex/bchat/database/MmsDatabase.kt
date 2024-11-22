@@ -173,6 +173,13 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
         notifyConversationListListeners()
     }
 
+    @Throws(NoSuchMessageException::class)
+    override fun getMessageRecord(messageId: Long): MessageRecord {
+        rawQuery(RAW_ID_WHERE, arrayOf("$messageId")).use { cursor ->
+            return Reader(cursor).next ?: throw NoSuchMessageException("No message for ID: $messageId")
+        }
+    }
+
     fun getThreadIdForMessage(id: Long): Long {
         val sql = "SELECT $THREAD_ID FROM $TABLE_NAME WHERE $ID = ?"
         val sqlArgs = arrayOf(id.toString())
@@ -208,9 +215,9 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
     private fun rawQuery(where: String, arguments: Array<String>?): Cursor {
         val database = databaseHelper.readableDatabase
         return database.rawQuery(
-            "SELECT " + MMS_PROJECTION.joinToString(",")+
-                    " FROM " + TABLE_NAME + " LEFT OUTER JOIN " + AttachmentDatabase.TABLE_NAME +
-                    " ON (" + TABLE_NAME + "." + ID + " = " + AttachmentDatabase.TABLE_NAME + "." + AttachmentDatabase.MMS_ID + ")" +
+            "SELECT " + MMS_PROJECTION.joinToString(",") + " FROM " + TABLE_NAME +
+                    " LEFT OUTER JOIN " + AttachmentDatabase.TABLE_NAME + " ON (" + TABLE_NAME + "." + ID + " = " + AttachmentDatabase.TABLE_NAME + "." + AttachmentDatabase.MMS_ID + ")" +
+                    " LEFT OUTER JOIN " + ReactionDatabase.TABLE_NAME + " ON (" + TABLE_NAME + "." + ID + " = " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.MESSAGE_ID + " AND " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.IS_MMS + " = 1)" +
                     " WHERE " + where + " GROUP BY " + TABLE_NAME + "." + ID, arguments
         )
     }
@@ -314,7 +321,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
 
     fun setMessagesRead(threadId: Long): List<MarkedMessageInfo> {
         return setMessagesRead(
-            THREAD_ID + " = ? AND " + READ + " = 0",
+            THREAD_ID + " = ? AND (" + READ + " = 0 OR " + REACTIONS_UNREAD + " = 1)",
             arrayOf(threadId.toString())
         )
     }
@@ -348,6 +355,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
             }
             val contentValues = ContentValues()
             contentValues.put(READ, 1)
+            contentValues.put(REACTIONS_UNREAD, 0)
             database.update(TABLE_NAME, contentValues, where, arguments)
             database.setTransactionSuccessful()
         } finally {
@@ -1185,7 +1193,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
                                 message.outgoingQuote!!.missing,
                                 SlideDeck(context, message.outgoingQuote!!.attachments!!)
                         ) else null,
-                        message.sharedContacts, message.linkPreviews, false
+                    message.sharedContacts, message.linkPreviews, listOf(), false
                 )
             }
 
@@ -1301,12 +1309,13 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
                     .filterNot { o: DatabaseAttachment? -> o in previewAttachments }
             )
             val quote = getQuote(cursor)
+            val reactions = get(context).reactionDatabase().getReactions(cursor)
             return MediaMmsMessageRecord(
                     id, recipient, recipient,
                     addressDeviceId, dateSent, dateReceived, deliveryReceiptCount,
                     threadId, body, slideDeck!!, partCount, box, mismatches,
                     networkFailures, subscriptionId, expiresIn, expireStarted,
-                    readReceiptCount, quote, contacts, previews, unidentified
+                    readReceiptCount, quote, contacts, previews, reactions, unidentified
             )
         }
 
@@ -1483,11 +1492,25 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
                     "'" + AttachmentDatabase.STICKER_PACK_ID + "', " + AttachmentDatabase.TABLE_NAME + "." + AttachmentDatabase.STICKER_PACK_ID + ", " +
                     "'" + AttachmentDatabase.STICKER_PACK_KEY + "', " + AttachmentDatabase.TABLE_NAME + "." + AttachmentDatabase.STICKER_PACK_KEY + ", " +
                     "'" + AttachmentDatabase.STICKER_ID + "', " + AttachmentDatabase.TABLE_NAME + "." + AttachmentDatabase.STICKER_ID +
-                    ")) AS " + AttachmentDatabase.ATTACHMENT_JSON_ALIAS
+                    ")) AS " + AttachmentDatabase.ATTACHMENT_JSON_ALIAS,
+            "json_group_array(json_object(" +
+                    "'" + ReactionDatabase.ROW_ID + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.ROW_ID + ", " +
+                    "'" + ReactionDatabase.MESSAGE_ID + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.MESSAGE_ID + ", " +
+                    "'" + ReactionDatabase.IS_MMS + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.IS_MMS + ", " +
+                    "'" + ReactionDatabase.AUTHOR_ID + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.AUTHOR_ID + ", " +
+                    "'" + ReactionDatabase.EMOJI + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.EMOJI + ", " +
+                    "'" + ReactionDatabase.SERVER_ID + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.SERVER_ID + ", " +
+                    "'" + ReactionDatabase.COUNT + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.COUNT + ", " +
+                    "'" + ReactionDatabase.SORT_ID + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.SORT_ID + ", " +
+                    "'" + ReactionDatabase.DATE_SENT + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.DATE_SENT + ", " +
+                    "'" + ReactionDatabase.DATE_RECEIVED + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.DATE_RECEIVED +
+                    ")) AS " + ReactionDatabase.REACTION_JSON_ALIAS
         )
         private const val RAW_ID_WHERE: String = "$TABLE_NAME._id = ?"
         /*Hales63*/
-        const val getCreateMessageRequestResponseCommand: String = "ALTER TABLE $TABLE_NAME ADD COLUMN $MESSAGE_REQUEST_RESPONSE INTEGER DEFAULT 0;"
+        const val CREATE_MESSAGE_REQUEST_RESPONSE_COMMAND = "ALTER TABLE $TABLE_NAME ADD COLUMN $MESSAGE_REQUEST_RESPONSE INTEGER DEFAULT 0;"
+        const val CREATE_REACTIONS_UNREAD_COMMAND = "ALTER TABLE $TABLE_NAME ADD COLUMN $REACTIONS_UNREAD INTEGER DEFAULT 0;"
+        const val CREATE_REACTIONS_LAST_SEEN_COMMAND = "ALTER TABLE $TABLE_NAME ADD COLUMN $REACTIONS_LAST_SEEN INTEGER DEFAULT 0;"
     }
 
 }

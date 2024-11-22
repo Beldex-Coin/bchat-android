@@ -48,7 +48,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
     private var progress = 0.0
     private var duration = 0L
     private var player: AudioSlidePlayer? = null
-    var delegate: VoiceMessageViewDelegate? = null
+    var delegate: VisibleMessageViewDelegate? = null
     var indexInAdapter = -1
     private var messageId: Int = 0
     private var seekBarUpdateAmount = 0L
@@ -226,11 +226,6 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
             binding.seekbarAudio.progress = (progress * 100).toInt()
     }
 
-}
-
-interface VoiceMessageViewDelegate {
-
-    fun playVoiceMessageAtIndexIfPossible(indexInAdapter: Int)
 }
 
 

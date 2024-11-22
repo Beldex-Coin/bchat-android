@@ -16,6 +16,7 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.sending_receiving.pollers.OpenGroupPollerV2
+import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.mnode.OnionRequestAPI
 import com.beldex.libbchat.utilities.AESGCM
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -44,6 +45,7 @@ object OpenGroupAPIV2 {
     const val defaultServer = "http://13.233.251.36:8081"*/
     const val defaultServerPublicKey = BuildConfig.DEFAULT_SERVER_KEY
     const val defaultServer = BuildConfig.DEFAULT_SERVER
+    val pendingReactions = mutableListOf<PendingReaction>()
 
     sealed class Error(message: String) : Exception(message) {
         object Generic : Error("An error occurred.")
@@ -58,6 +60,9 @@ object OpenGroupAPIV2 {
 
         val joinURL: String get() = "$defaultServer/$id?public_key=$defaultServerPublicKey"
 
+    }
+    enum class Capability {
+        BLIND, REACTIONS
     }
 
     data class Info(val id: String, val name: String, val imageID: String?)
@@ -92,6 +97,33 @@ object OpenGroupAPIV2 {
          * this when running over Beldex.
          */
         val useOnionRouting: Boolean = true
+    )
+
+    data class Reaction(
+        val count: Long = 0,
+        val reactors: List<String> = emptyList(),
+        val you: Boolean = false,
+        val index: Long = 0
+    )
+    data class AddReactionResponse(
+        val seqNo: Long,
+        val added: Boolean
+    )
+    data class DeleteReactionResponse(
+        val seqNo: Long,
+        val removed: Boolean
+    )
+    data class DeleteAllReactionsResponse(
+        val seqNo: Long,
+        val removed: Boolean
+    )
+    data class PendingReaction(
+        val server: String,
+        val room: String,
+        val messageId: Long,
+        val emoji: String,
+        val add: Boolean,
+        var seqNo: Long? = null
     )
 
     private fun createBody(parameters: Any?): RequestBody? {
@@ -508,6 +540,71 @@ object OpenGroupAPIV2 {
             val storage = MessagingModuleConfiguration.shared.storage
             storage.setUserCount(room, server, memberCount)
             memberCount
+        }
+    }
+
+    private fun getResponseBody(request: Request): Promise<ByteArray, Exception> {
+        return send(request).map { json ->
+            val result = json["result"] as? String ?: throw Error.ParsingFailed
+            decode(result)
+        }
+       /* return send(request).map { response ->
+            response.body ?: throw Error.ParsingFailed
+        }*/
+    }
+
+    fun getReactors(room: String, server: String, messageId: Long, emoji: String): Promise<Map<*, *>, Exception> {
+        val request = Request(
+            verb = GET,
+            room = room,
+            server = server,
+            endpoint = "room/$room/reactors/$messageId/$emoji"
+        )
+
+
+        return getResponseBody(request).map { response ->
+            JsonUtil.fromJson(response, Map::class.java)
+        }
+
+    }
+    fun addReaction(room: String, server: String, messageId: Long, emoji: String): Promise<AddReactionResponse, Exception> {
+        val request = Request(
+            verb = PUT,
+            room = room,
+            server = server,
+            endpoint = "room/$room/reaction/$messageId/$emoji",
+            parameters = emptyMap<String, String>()
+        )
+        val pendingReaction = PendingReaction(server, room, messageId, emoji, true)
+        return getResponseBody(request).map { response ->
+            JsonUtil.fromJson(response, AddReactionResponse::class.java).also {
+                val index = pendingReactions.indexOf(pendingReaction)
+                pendingReactions[index].seqNo = it.seqNo
+            }
+        }
+    }
+    fun deleteReaction(room: String, server: String, messageId: Long, emoji: String): Promise<DeleteReactionResponse, Exception> {
+        val request = Request(
+            verb = DELETE,
+            room = room,
+            server = server,
+            endpoint = "room/$room/reactions/$messageId/$emoji")
+        val pendingReaction = PendingReaction(server, room, messageId, emoji, true)
+        return getResponseBody(request).map { response ->
+            JsonUtil.fromJson(response, DeleteReactionResponse::class.java).also {
+                val index = pendingReactions.indexOf(pendingReaction)
+                pendingReactions[index].seqNo = it.seqNo
+            }
+        }
+    }
+    fun deleteAllReactions(room: String, server: String, messageId: Long, emoji: String): Promise<DeleteAllReactionsResponse, Exception> {
+        val request = Request(
+            verb = DELETE,
+            room = room,
+            server = server,
+            endpoint = "room/$room/reactions/$messageId/$emoji")
+        return getResponseBody(request).map { response ->
+            JsonUtil.fromJson(response, DeleteAllReactionsResponse::class.java)
         }
     }
     // endregion

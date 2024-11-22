@@ -1,4 +1,4 @@
-package com.beldex.libsignal.utilities;
+ package com.beldex.libsignal.utilities;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

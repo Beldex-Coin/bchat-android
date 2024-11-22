@@ -58,6 +58,7 @@ import io.beldex.bchat.util.SearchUtil
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.getColorWithID
 import io.beldex.bchat.R
+import io.beldex.bchat.conversation.v2.ConversationFragmentV2
 import io.beldex.bchat.databinding.ViewVisibleMessageContentBinding
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.util.Locale
@@ -67,7 +68,7 @@ class VisibleMessageContentView : MaterialCardView {
     private val binding: ViewVisibleMessageContentBinding by lazy { ViewVisibleMessageContentBinding.bind(this) }
     var onContentClick: MutableList<((event: MotionEvent) -> Unit)> = mutableListOf()
     var onContentDoubleTap: (() -> Unit)? = null
-    var delegate: VisibleMessageContentViewDelegate? = null
+    var delegate: VisibleMessageViewDelegate? = null
     var indexInAdapter: Int = -1
     private var data: UpdateMessageData.Kind.OpenGroupInvitation? = null
 
@@ -126,10 +127,7 @@ class VisibleMessageContentView : MaterialCardView {
 
         if (message.isDeleted) {
             binding.deletedMessageView.root.isVisible = true
-            binding.deletedMessageView.root.bind(
-                message,
-                VisibleMessageContentView.getTextColor(context, message)
-            )
+            binding.deletedMessageView.root.bind(message, getTextColor(context, message))
             binding.bodyTextView.isVisible = false
             binding.bodyTextViewLayout.isVisible = false
             binding.quoteView.root.isVisible = false
@@ -237,7 +235,7 @@ class VisibleMessageContentView : MaterialCardView {
                 // Audio attachment
                 if (contactIsTrusted || message.isOutgoing) {
                     binding.voiceMessageView.root.indexInAdapter = indexInAdapter
-                    binding.voiceMessageView.root.delegate = context as? HomeActivity
+                    binding.voiceMessageView.root.delegate = context as? ConversationFragmentV2
                     binding.voiceMessageView.root.bind(
                         message,
                         isStartOfMessageCluster,

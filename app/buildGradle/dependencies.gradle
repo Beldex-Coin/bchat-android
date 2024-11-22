@@ -181,4 +181,6 @@ dependencies {
     implementation "androidx.camera:camera-view:1.0.0-alpha31"
 
     implementation 'com.google.zxing:core:3.3.3'
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
+    implementation "com.squareup.phrase:phrase:$phraseVersion"
 }

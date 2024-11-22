@@ -27,6 +27,8 @@ import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.repository.ConversationRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
+import io.beldex.bchat.database.Storage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,6 +36,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
+import javax.inject.Inject
 
 class ConversationViewModel (
         private val repository: ConversationRepository,
@@ -48,6 +51,7 @@ class ConversationViewModel (
         private val mmsSmsDatabase: MmsSmsDatabase,
         private val beldexMessageDb: BeldexMessageDatabase,
         val threadId: Long,
+        private val storage: Storage
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ConversationUiState())
@@ -63,6 +67,12 @@ class ConversationViewModel (
 
     var senderBeldexAddress: String? = null
     var deleteMessages: Set<MessageRecord>? = null
+
+    val openGroup: OpenGroupV2?
+        get() = storage.getV2OpenGroup(threadId)
+
+ /*   val serverCapabilities: List<String>
+        get() = openGroup?.let { storage.getServerCapabilities(it.server) } ?: listOf()*/
 
     /*Hales63*/
 //    val recipient: Recipient?
@@ -326,10 +336,11 @@ class ConversationViewModel (
             private val smsDb: SmsDatabase,
             private val mmsSmsDatabase: MmsSmsDatabase,
             private val beldexMessageDb: BeldexMessageDatabase,
+            private val storage: Storage
     ) : ViewModelProvider.Factory {
 
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return ConversationViewModel(repository,beldexThreadDb, bchatContactDb, threadDb, recipientDatabase, groupDb, beldexApiDb, mmsDb, smsDb, mmsSmsDatabase, beldexMessageDb, threadId) as T
+            return ConversationViewModel(repository,beldexThreadDb, bchatContactDb, threadDb, recipientDatabase, groupDb, beldexApiDb, mmsDb, smsDb, mmsSmsDatabase, beldexMessageDb, threadId, storage) as T
         }
     }
 }

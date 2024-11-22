@@ -33,6 +33,9 @@ import java.security.MessageDigest
 import java.util.*
 import kotlin.collections.ArrayList
 import com.beldex.libbchat.messaging.messages.control.MessageRequestResponse
+import com.beldex.libbchat.messaging.messages.visible.Reaction
+import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
+import kotlin.math.min
 
 
 internal fun MessageReceiver.isBlocked(publicKey: String): Boolean {
@@ -290,21 +293,106 @@ fun MessageReceiver.handleVisibleMessage(message: VisibleMessage, proto: SignalS
             return@mapNotNull attachment
         }
     }
-    // Persist the message
-    message.threadID = threadID
-    val messageID = storage.persist(
-        message, quoteModel, linkPreviews,
-        message.groupPublicKey, openGroupID,
-        attachments, runIncrement, runThreadUpdate
-    ) ?: return null
-    val openGroupServerID = message.openGroupServerMessageID
-    if (openGroupServerID != null) {
-        val isSms = !(message.isMediaMessage() || attachments.isNotEmpty())
-        storage.setOpenGroupServerMessageID(messageID, openGroupServerID, threadID, isSms)
+    // Parse reaction if needed
+    message.reaction?.let { reaction ->
+        if (reaction.react == true) {
+            reaction.serverId = message.openGroupServerMessageID?.toString() ?: message.serverHash.orEmpty()
+            reaction.dateSent = message.sentTimestamp ?: 0
+            reaction.dateReceived = message.receivedTimestamp ?: 0
+            storage.addReaction(reaction)
+        } else {
+            storage.removeReaction(reaction.emoji!!, reaction.timestamp!!, reaction.publicKey!!)
+        }
+    } ?: run {
+        // Persist the message
+        message.threadID = threadID
+        val messageID =
+            storage.persist(message, quoteModel, linkPreviews, message.groupPublicKey, openGroupID,
+                attachments, runIncrement, runThreadUpdate
+            ) ?: return null
+        val openGroupServerID = message.openGroupServerMessageID
+        if (openGroupServerID != null) {
+            val isSms = !(message.isMediaMessage() || attachments.isNotEmpty())
+            storage.setOpenGroupServerMessageID(messageID, openGroupServerID, threadID, isSms)
+        }
+        return messageID
     }
     // Cancel any typing indicators if needed
     cancelTypingIndicatorsIfNeeded(message.sender!!)
-    return messageID
+    return null
+}
+
+fun MessageReceiver.handleOpenGroupReactions(
+    threadId: Long,
+    openGroupMessageServerID: Long,
+    reactions: Map<String, OpenGroupAPIV2.Reaction>?
+) {
+    if (reactions.isNullOrEmpty()) return
+    val storage=MessagingModuleConfiguration.shared.storage
+    val (messageId, isSms)=MessagingModuleConfiguration.shared.messageDataProvider.getMessageID(
+        openGroupMessageServerID,
+        threadId
+    ) ?: return
+    storage.deleteReactions(messageId, !isSms)
+    val userPublicKey=storage.getUserPublicKey()!!
+    val openGroup=storage.getV2OpenGroup(threadId)
+    for ((emoji, reaction) in reactions) {
+        val pendingUserReaction=OpenGroupAPIV2.pendingReactions
+            .filter { it.server == openGroup?.server && it.room == openGroup.room && it.messageId == openGroupMessageServerID && it.add }
+            .sortedByDescending { it.seqNo }
+            .any { it.emoji == emoji }
+        val shouldAddUserReaction=
+            pendingUserReaction || reaction.you || reaction.reactors.contains(userPublicKey)
+        val reactorIds=reaction.reactors.filter { it != userPublicKey }
+        val count=if (reaction.you) reaction.count - 1 else reaction.count
+        // Add the first reaction (with the count)
+        reactorIds.firstOrNull()?.let {
+            storage.addReaction(
+                Reaction(
+                    localId=messageId,
+                    isMms=!isSms,
+                    publicKey=it,
+                    emoji=emoji,
+                    react=true,
+                    serverId="$openGroupMessageServerID",
+                    count=count,
+                    index=reaction.index
+                )
+            )
+        }
+        // Add all other reactions
+        val maxAllowed=if (shouldAddUserReaction) 4 else 5
+        val lastIndex=min(maxAllowed, reactorIds.size)
+        reactorIds.slice(1 until lastIndex).map { reactor ->
+            storage.addReaction(
+                Reaction(
+                    localId=messageId,
+                    isMms=!isSms,
+                    publicKey=reactor,
+                    emoji=emoji,
+                    react=true,
+                    serverId="$openGroupMessageServerID",
+                    count=0,  // Only want this on the first reaction
+                    index=reaction.index
+                )
+            )
+        }
+        // Add the current user reaction (if applicable and not already included)
+        if (shouldAddUserReaction) {
+            storage.addReaction(
+                Reaction(
+                    localId=messageId,
+                    isMms=!isSms,
+                    publicKey=userPublicKey,
+                    emoji=emoji,
+                    react=true,
+                    serverId="$openGroupMessageServerID",
+                    count=1,
+                    index=reaction.index
+                )
+            )
+        }
+    }
 }
 //endregion
 

@@ -131,6 +131,7 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
         // endregion
     }
 
+
     override fun getMnodePool(): Set<Mnode> {
         val database = databaseHelper.readableDatabase
         return database.get(mnodePoolTable, "${Companion.dummyKey} = ?", wrap("dummy_key")) { cursor ->

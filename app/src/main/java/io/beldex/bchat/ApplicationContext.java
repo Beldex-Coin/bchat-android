@@ -46,6 +46,7 @@ import com.beldex.libbchat.utilities.Util;
 import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper;
 import com.beldex.libbchat.utilities.dynamiclanguage.LocaleParser;
 import com.beldex.libsignal.utilities.HTTP;
+import com.beldex.libsignal.utilities.JsonUtil;
 import com.beldex.libsignal.utilities.Log;
 import com.beldex.libsignal.utilities.ThreadUtils;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -53,11 +54,14 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import io.beldex.bchat.components.TypingStatusSender;
 import io.beldex.bchat.crypto.KeyPairUtilities;
 import io.beldex.bchat.database.BeldexAPIDatabase;
+import io.beldex.bchat.database.EmojiSearchDatabase;
 import io.beldex.bchat.database.JobDatabase;
 import io.beldex.bchat.database.Storage;
 import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
+import io.beldex.bchat.database.model.EmojiSearchData;
 import io.beldex.bchat.dependencies.DatabaseComponent;
 import io.beldex.bchat.dependencies.DatabaseModule;
+import io.beldex.bchat.emoji.EmojiSource;
 import io.beldex.bchat.groups.OpenGroupManager;
 import io.beldex.bchat.home.HomeActivity;
 import io.beldex.bchat.jobmanager.JobManager;
@@ -92,10 +96,14 @@ import org.signal.aesgcmprovider.AesGcmProvider;
 import org.webrtc.PeerConnectionFactory;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.security.Security;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Timer;
+import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
@@ -225,6 +233,8 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
         initializeWebRtc();
         initializeBlobProvider();
         resubmitProfilePictureIfNeeded();
+        loadEmojiSearchIndexIfNeeded();
+        EmojiSource.refresh();
 
         NetworkConstraint networkConstraint = new NetworkConstraint.Factory(this).create();
         HTTP.INSTANCE.setConnectedToNetwork(networkConstraint::isMet);
@@ -501,7 +511,21 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
         Runtime.getRuntime().exit(0);
     }
 
-    // endregion
+    private void loadEmojiSearchIndexIfNeeded() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            EmojiSearchDatabase emojiSearchDb = getDatabaseComponent().emojiSearchDatabase();
+            if (emojiSearchDb.query("face", 1).isEmpty()) {
+                try (InputStream inputStream = getAssets().open("emoji/emoji_search_index.json")) {
+                    List<EmojiSearchData> searchIndex = Arrays.asList(JsonUtil.fromJson(inputStream, EmojiSearchData[].class));
+                    emojiSearchDb.setSearchIndex(searchIndex);
+                } catch (IOException e) {
+                    Log.e("Beldex", "Failed to load emoji search index");
+                }
+            }
+        });
+    }
+
+
 
     static public NetworkType getNetworkType() {
         switch (BuildConfig.NETWORK_TYPE) {
@@ -515,4 +539,5 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
                 throw new IllegalStateException("unknown net flavor " + BuildConfig.FLAVOR);
         }
     }
+    // endregion
 }

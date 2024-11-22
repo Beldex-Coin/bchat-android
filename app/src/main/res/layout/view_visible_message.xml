@@ -41,7 +41,7 @@
             android:layout_marginEnd="@dimen/small_spacing"
             android:layout_marginBottom="@dimen/small_spacing"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/expirationTimerViewContainer"
+            app:layout_constraintEnd_toStartOf="@+id/messageInnerContainer"
             app:layout_constraintStart_toEndOf="@+id/startSpacing"
             tools:visibility="visible" />
 
@@ -69,12 +69,12 @@
             android:paddingBottom="4dp"
             android:textColor="@color/chat_user_name_color"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/expirationTimerViewContainer"
+            app:layout_constraintStart_toStartOf="@+id/messageInnerContainer"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@tools:sample/full_names" />
 
         <LinearLayout
-            android:id="@+id/expirationTimerViewContainer"
+            android:id="@+id/messageInnerContainer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -121,6 +121,17 @@
                 android:minWidth="@dimen/very_large_spacing" />
 
         </LinearLayout>
+
+        <io.beldex.bchat.conversation.v2.messages.EmojiReactionsView
+            android:id="@+id/emojiReactionsView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/messageInnerContainer"
+            app:layout_constraintTop_toBottomOf="@id/messageInnerContainer"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

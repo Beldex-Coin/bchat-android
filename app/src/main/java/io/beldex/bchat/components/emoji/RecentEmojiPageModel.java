@@ -2,9 +2,11 @@ package io.beldex.bchat.components.emoji;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.annimon.stream.Stream;
 import com.fasterxml.jackson.databind.type.CollectionType;
@@ -17,7 +19,7 @@ import com.beldex.libsignal.utilities.JsonUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -26,6 +28,10 @@ public class RecentEmojiPageModel implements EmojiPageModel {
   private static final String TAG                  = RecentEmojiPageModel.class.getSimpleName();
   private static final String EMOJI_LRU_PREFERENCE = "pref_recent_emoji2";
   private static final int    EMOJI_LRU_SIZE       = 50;
+  public static final  String KEY                  = "Recents";
+  public static final List<String> DEFAULT_REACTIONS_LIST =
+          Arrays.asList("\ud83d\ude02", "\ud83e\udd70", "\ud83d\ude22", "\ud83d\ude21", "\ud83d\ude2e", "\ud83d\ude08");
+
 
   private final SharedPreferences     prefs;
   private final LinkedHashSet<String> recentlyUsed;
@@ -47,14 +53,27 @@ public class RecentEmojiPageModel implements EmojiPageModel {
     }
   }
 
+  @Override
+  public String getKey() {
+    return KEY;
+  }
+
+
   @Override public int getIconAttr() {
     return R.attr.emoji_category_recent;
   }
 
   @Override public List<String> getEmoji() {
-    List<String> emoji = new ArrayList<>(recentlyUsed);
-    Collections.reverse(emoji);
-    return emoji;
+    List<String> recent = new ArrayList<>(recentlyUsed);
+    List<String> out = new ArrayList<>(DEFAULT_REACTIONS_LIST.size());
+    for (int i = 0; i < DEFAULT_REACTIONS_LIST.size(); i++) {
+      if (recent.size() > i) {
+        out.add(recent.get(i));
+      } else {
+        out.add(DEFAULT_REACTIONS_LIST.get(i));
+      }
+    }
+    return out;
   }
 
   @Override public List<Emoji> getDisplayEmoji() {
@@ -65,7 +84,9 @@ public class RecentEmojiPageModel implements EmojiPageModel {
     return false;
   }
 
-  @Override public String getSprite() {
+  @Nullable
+  @Override
+  public Uri getSpriteUri() {
     return null;
   }
 

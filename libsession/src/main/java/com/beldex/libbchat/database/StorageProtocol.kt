@@ -25,6 +25,9 @@ import com.beldex.libbchat.utilities.recipients.Recipient.RecipientSettings
 import com.beldex.libsignal.crypto.ecc.ECKeyPair
 import com.beldex.libsignal.messages.SignalServiceAttachmentPointer
 import com.beldex.libsignal.messages.SignalServiceGroup
+import com.beldex.libbchat.messaging.messages.visible.Reaction
+import com.beldex.libbchat.messaging.messages.Message
+
 
 interface StorageProtocol {
 
@@ -179,4 +182,9 @@ interface StorageProtocol {
     fun setIsBnsHolder(senderPublicKey: String, isBnsHolder: Boolean)
 
     fun getIsBnsHolder():String?
+
+    fun addReaction(reaction: Reaction)
+    fun removeReaction(emoji: String, messageTimestamp: Long, author: String)
+    fun updateReactionIfNeeded(message: Message, sender: String, openGroupSentTimestamp: Long)
+    fun deleteReactions(messageId: Long, mms: Boolean)
 }

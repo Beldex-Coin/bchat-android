@@ -183,12 +183,12 @@ object MessageSender {
                         val hash = response.info["hash"] as? String
                         message.serverHash = hash
                         handleSuccessfulMessageSend(message, destination, isSyncMessage)
-                        val shouldNotify = ((message is VisibleMessage || message is UnsendRequest || message is CallMessage) && !isSyncMessage)
-                        /*
+                        var shouldNotify = ((message is VisibleMessage || message is UnsendRequest || message is CallMessage) && !isSyncMessage)
+
                         if (message is ClosedGroupControlMessage && message.kind is ClosedGroupControlMessage.Kind.New) {
                             shouldNotify = true
                         }
-                         */
+
                         if (shouldNotify) {
                             val notifyPNServerJob = NotifyPNServerJob(mnodeMessage)
                             JobQueue.shared.add(notifyPNServerJob)

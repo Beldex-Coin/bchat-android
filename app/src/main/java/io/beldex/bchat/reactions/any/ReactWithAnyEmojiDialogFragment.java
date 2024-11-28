@@ -111,8 +111,7 @@ public final class ReactWithAnyEmojiDialogFragment extends BottomSheetDialogFrag
 
     emojiPageView = view.findViewById(R.id.react_with_any_emoji_page_view);
     emojiPageView.initialize(this, this, true);
-//need to check
-//    search = view.findViewById(R.id.react_with_any_emoji_search);
+ //   search = view.findViewById(R.id.react_with_any_emoji_search);
 
     initializeViewModel();
 
@@ -130,8 +129,7 @@ public final class ReactWithAnyEmojiDialogFragment extends BottomSheetDialogFrag
 //        categoriesRecycler.smoothScrollToPosition(index);
 //      }
 //    })));
-//need to check
-//    search.setCallbacks(new SearchCallbacks());
+     //search.setCallbacks(new SearchCallbacks());
   }
 
   @Override

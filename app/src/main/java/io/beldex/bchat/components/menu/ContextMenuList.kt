@@ -1,5 +1,6 @@
 package io.beldex.bchat.components.menu
 
+import android.content.Context
 import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
@@ -15,7 +16,7 @@ import io.beldex.bchat.util.adapter.mapping.MappingViewHolder
 /**
  * Handles the setup and display of actions shown in a context menu.
  */
-class ContextMenuList(recyclerView: RecyclerView, onItemClick: () -> Unit) {
+class ContextMenuList(recyclerView: RecyclerView, onItemClick: () -> Unit, context : Context) {
     private val mappingAdapter = MappingAdapter().apply {
         registerFactory(DisplayItem::class.java, LayoutFactory({ ItemViewHolder(it, onItemClick) }, R.layout.context_menu_item))
     }
@@ -25,6 +26,7 @@ class ContextMenuList(recyclerView: RecyclerView, onItemClick: () -> Unit) {
             layoutManager = LinearLayoutManager(context)
             itemAnimator = null
         }
+        recyclerView.background = ContextCompat.getDrawable(context,R.drawable.conversation_reaction_overlay_menu_background)
     }
     fun setItems(items: List<ActionItem>) {
         mappingAdapter.submitList(items.toAdapterItems())

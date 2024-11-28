@@ -96,6 +96,7 @@ import io.beldex.bchat.model.Wallet
 import io.beldex.bchat.model.WalletManager
 import io.beldex.bchat.onboarding.SeedActivity
 import io.beldex.bchat.onboarding.SeedReminderViewDelegate
+import io.beldex.bchat.reactions.ReactionsDialogFragment
 import io.beldex.bchat.reactions.any.ReactWithAnyEmojiDialogFragment
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.util.FirebaseRemoteConfigUtil
@@ -144,7 +145,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDelegate,HomeFragment.HomeFragmentListener,ConversationFragmentV2.Listener,UserDetailsBottomSheet.UserDetailsBottomSheetListener, ActivityDispatcher,
     WalletFragment.Listener, WalletService.Observer, WalletScannerFragment.OnScannedListener,SendFragment.OnScanListener,SendFragment.Listener,ReceiveFragment.Listener,WalletFragment.OnScanListener,
-    ScannerFragment.OnWalletScannedListener,WalletScannerFragment.Listener,NodeFragment.Listener,ReactWithAnyEmojiDialogFragment.Callback,ConversationReactionOverlay.OnReactionSelectedListener {
+    ScannerFragment.OnWalletScannedListener,WalletScannerFragment.Listener,NodeFragment.Listener,ReactWithAnyEmojiDialogFragment.Callback,ConversationReactionOverlay.OnReactionSelectedListener,
+    ReactionsDialogFragment.Callback {
 
     private lateinit var binding: ActivityHomeBinding
 
@@ -1826,6 +1828,30 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 .createForMessageRecord(messageRecord, reactWithAnyEmojiStartPage)
                 .show(supportFragmentManager, "BOTTOM");
         }
+    }
+
+    override fun onRemoveReaction(emoji : String, messageId : MessageId) {
+        val currentFragment = getCurrentFragment()
+        val message = if (messageId.mms) {
+            mmsDb.getMessageRecord(messageId.id)
+        } else {
+            smsDb.getMessageRecord(messageId.id)
+        }
+        if(currentFragment is ConversationFragmentV2){
+            currentFragment.sendEmojiRemoval(emoji, message)
+        }
+
+    }
+
+    override fun onClearAll(emoji : String, messageId : MessageId) {
+        val currentFragment = getCurrentFragment()
+        reactionDb.deleteEmojiReactions(emoji, messageId)
+        if(currentFragment is ConversationFragmentV2){
+            currentFragment.clearAllReaction(emoji, messageId)
+        }
+
+
+
     }
 }
 //endregion

@@ -4,8 +4,9 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="@dimen/small_spacing"
-    android:gravity="center">
+    android:background="@drawable/bchat_dialog_button_shape"
+    android:padding="2dp"
+    >
     <FrameLayout
         android:id="@+id/layout_flex_container"
         android:layout_width="wrap_content"
@@ -61,4 +62,18 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:constraint_referenced_ids="image_view_show_less, text_view_show_less"/>
+
+    <TextView
+        android:id="@+id/total_emoji_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:layout_marginStart="1dp"
+        android:textSize="11sp"
+        android:textColor="@color/version_color"
+        tools:visibility="visible"
+        android:layout_gravity="center_vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/layout_flex_container"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

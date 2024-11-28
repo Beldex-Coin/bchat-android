@@ -5,20 +5,18 @@
     android:orientation="horizontal"
     android:layout_width="wrap_content"
     android:layout_height="22dp"
-    android:paddingStart="8dp"
-    android:paddingEnd="8dp"
     android:gravity="center">
 
   <io.beldex.bchat.components.emoji.EmojiImageView
-      android:scaleType="centerInside"
+      android:scaleType="fitStart"
       android:id="@+id/reactions_pill_emoji"
-      android:layout_width="13dp"
-      android:layout_height="13dp"
+      android:layout_width="16dp"
+      android:layout_height="16dp"
       android:layout_gravity="center_vertical"/>
 
   <View
       android:id="@+id/reactions_pill_spacer"
-      android:layout_width="6dp"
+      android:layout_width="4dp"
       android:layout_height="wrap_content" />
 
   <TextView

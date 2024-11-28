@@ -192,9 +192,9 @@ class VisibleMessageView : LinearLayout {
         updateExpirationTimer(message)
 
         // Emoji Reactions
-        val emojiLayoutParams = binding.emojiReactionsView.layoutParams as ConstraintLayout.LayoutParams
+        /*val emojiLayoutParams = binding.emojiReactionsView.layoutParams as ConstraintLayout.LayoutParams
         emojiLayoutParams.horizontalBias = if (message.isOutgoing) 1f else 0f
-        binding.emojiReactionsView.layoutParams = emojiLayoutParams
+        binding.emojiReactionsView.layoutParams = emojiLayoutParams*/
         /* val capabilities = beldexThreadDb.getOpenGroupChat(threadID)?.server?.let { beldexApiDb.getServerCapabilities(it) }
           if (message.reactions.isNotEmpty() && (capabilities.isNullOrEmpty() || capabilities.contains(OpenGroupAPIV2.Capability.REACTIONS.name.lowercase()))
           ) {
@@ -204,12 +204,12 @@ class VisibleMessageView : LinearLayout {
               binding.emojiReactionsView.isVisible = false
           }*/
         //need to check
-        if (message.reactions.isNotEmpty()) {
+     /*   if (message.reactions.isNotEmpty()) {
             binding.emojiReactionsView.setReactions(message.id, message.reactions, message.isOutgoing, delegate)
             binding.emojiReactionsView.isVisible = true
         } else {
             binding.emojiReactionsView.isVisible = false
-        }
+        }*/
 
         // Populate content view
         binding.messageContentView.root.indexInAdapter = indexInAdapter

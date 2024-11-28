@@ -8,5 +8,6 @@
     android:orientation="vertical"
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
+    android:background="@drawable/popup_menu_background"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     tools:listitem="@layout/reactions_bottom_sheet_dialog_fragment_recipient_item" />

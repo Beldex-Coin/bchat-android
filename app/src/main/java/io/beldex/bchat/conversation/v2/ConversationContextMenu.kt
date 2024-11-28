@@ -24,6 +24,7 @@ class ConversationContextMenu(private val anchor: View, items: List<ActionItem>)
     private val contextMenuList=ContextMenuList(
         recyclerView=contentView.findViewById(R.id.context_menu_list),
         onItemClick={ dismiss() },
+        context
     )
 
     init {

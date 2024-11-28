@@ -5,6 +5,7 @@
     android:id="@+id/react_with_any_emoji_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/overflow_menu_background"
     android:orientation="vertical">
 
     <ImageView
@@ -16,7 +17,7 @@
         android:src="@drawable/bottom_sheet_handle"
         tools:ignore="ContentDescription" />
 
-    <!--<io.beldex.bchat.keyboard.emoji.KeyboardPageSearchView
+  <!--  <io.beldex.bchat.keyboard.emoji.KeyboardPageSearchView
         android:id="@+id/react_with_any_emoji_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

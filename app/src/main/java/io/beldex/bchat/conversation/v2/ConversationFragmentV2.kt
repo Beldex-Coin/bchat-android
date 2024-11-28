@@ -364,10 +364,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             },
             onItemLongPress = { message, position, view ->
                     if(isSecretGroupIsActive()) {
-                        if (!isMessageRequestThread() && (viewModel.openGroup == null)
+                        if (!isMessageRequestThread())
                             //need to check
                             //(viewModel.openGroup == null || Capability.REACTIONS.name.lowercase() in viewModel.serverCapabilities)
-                        ) {
+                        {
                             showEmojiPicker(message, view)
                         } else {
                             handleLongPress(message, position)
@@ -1030,12 +1030,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 WindowUtil.setLightNavigationBarFromTheme(requireActivity())
             }
         })
-        val contentBounds = Rect()
-        visibleMessageView.messageContentView.rootView.getGlobalVisibleRect(contentBounds)
+        val topLeft = intArrayOf(0, 0).also { visibleMessageView.messageContentView.getLocationInWindow(it) }
         val selectedConversationModel = SelectedConversationModel(
             messageContentBitmap,
-            contentBounds.left.toFloat(),
-            contentBounds.top.toFloat(),
+            topLeft[0].toFloat(),
+            topLeft[1].toFloat(),
             visibleMessageView.messageContentView.width,
             message.isOutgoing,
             visibleMessageView.messageContentView
@@ -1047,15 +1046,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         return reactionDelegate.applyTouchEvent(ev) || super.dispatchTouchEvent(ev)
     }*/
 
-     fun onReactionSelected1(messageRecord : MessageRecord, emoji : String){
-        reactionDelegate.hide()
-        val oldRecord = messageRecord.reactions.find { it.author == textSecurePreferences.getLocalNumber() }
-        if (oldRecord != null && oldRecord.emoji == emoji) {
-            sendEmojiRemoval(emoji, messageRecord)
-        } else {
-            sendEmojiReaction(emoji, messageRecord)
-        }
-    }
     override fun onReactionSelected(messageRecord: MessageRecord, emoji: String) {
         reactionDelegate.hide()
         val oldRecord = messageRecord.reactions.find { it.author == textSecurePreferences.getLocalNumber() }
@@ -1164,6 +1154,15 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         threadDb.notifyThreadUpdated(viewModel.threadId)
     }
 
+    fun clearAllReaction(emoji : String, messageId: MessageId) {
+        viewModel.openGroup?.let { openGroup ->
+            beldexMessageDb.getServerID(messageId.id, !messageId.mms)?.let { serverId ->
+                OpenGroupAPIV2.deleteAllReactions(openGroup.room, openGroup.server, serverId, emoji)
+            }
+        }
+        threadDb.notifyThreadUpdated(viewModel.threadId)
+    }
+
     override fun onReactionClicked(emoji: String, messageId: MessageId, userWasSender: Boolean) {
         val message = if (messageId.mms) {
             mmsDb.getMessageRecord(messageId.id)
@@ -1181,6 +1180,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             val fragment = ReactionsDialogFragment.create(messageId,emoji)
             fragment.show(requireActivity().supportFragmentManager, null)
         }
+        /*if (viewModel.recipient.value?.isGroupRecipient == true) {
+            val fragment = ReactionDialogFragment.create(messageId, emoji, requireContext())
+            fragment.show(requireActivity().supportFragmentManager, null)
+        }*/
     }
 
     inner class ReactionsToolbarListener(val message: MessageRecord) :

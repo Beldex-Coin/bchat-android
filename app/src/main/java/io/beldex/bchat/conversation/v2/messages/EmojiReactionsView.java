@@ -40,6 +40,8 @@ public class EmojiReactionsView extends LinearLayout implements View.OnTouchList
     private long                 messageId;
     private ViewGroup            container;
     private Group                showLess;
+
+    private TextView             totalEmojiCount;
     private VisibleMessageViewDelegate delegate;
     private Handler gestureHandler = new Handler(Looper.getMainLooper());
     private Runnable pressCallback;
@@ -60,6 +62,7 @@ public class EmojiReactionsView extends LinearLayout implements View.OnTouchList
         inflate(getContext(), R.layout.view_emoji_reactions, this);
         this.container = findViewById(R.id.layout_emoji_container);
         this.showLess = findViewById(R.id.group_show_less);
+        this.totalEmojiCount = findViewById(R.id.total_emoji_count);
         records = new ArrayList<>();
         if (attrs != null) {
             TypedArray typedArray = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.EmojiReactionsView, 0, 0);
@@ -83,6 +86,8 @@ public class EmojiReactionsView extends LinearLayout implements View.OnTouchList
             extended = false;
         }
         this.messageId = messageId;
+        String emojiCount = String.valueOf(this.records.size());
+        totalEmojiCount.setText(emojiCount);
         displayReactions(extended ? Integer.MAX_VALUE : DEFAULT_THRESHOLD);
     }
     @Override
@@ -117,8 +122,6 @@ public class EmojiReactionsView extends LinearLayout implements View.OnTouchList
                     extended = true;
                     displayReactions(Integer.MAX_VALUE);
                 });
-                pill.findViewById(R.id.reactions_pill_count).setVisibility(View.GONE);
-                pill.findViewById(R.id.reactions_pill_spacer).setVisibility(View.GONE);
                 overflowContainer.addView(pill);
             } else {
                 View pill = buildPill(getContext(), this, reaction, false);
@@ -185,8 +188,6 @@ public class EmojiReactionsView extends LinearLayout implements View.OnTouchList
     private static View buildPill(@NonNull Context context, @NonNull ViewGroup parent, @NonNull Reaction reaction, boolean isCompact) {
         View           root      = LayoutInflater.from(context).inflate(R.layout.reactions_pill, parent, false);
         EmojiImageView emojiView = root.findViewById(R.id.reactions_pill_emoji);
-        TextView       countView = root.findViewById(R.id.reactions_pill_count);
-        View           spacer    = root.findViewById(R.id.reactions_pill_spacer);
         if (isCompact) {
             root.setPaddingRelative(1,1,1,1);
             ViewGroup.LayoutParams layoutParams = root.getLayoutParams();
@@ -195,24 +196,8 @@ public class EmojiReactionsView extends LinearLayout implements View.OnTouchList
         }
         if (reaction.emoji != null) {
             emojiView.setImageEmoji(reaction.emoji);
-            if (reaction.count >= 1) {
-                countView.setText(NumberUtil.getFormattedNumber(reaction.count));
-            } else {
-                countView.setVisibility(GONE);
-                spacer.setVisibility(GONE);
-            }
         } else {
             emojiView.setVisibility(GONE);
-            spacer.setVisibility(GONE);
-            countView.setText(context.getString(R.string.ReactionsConversationView_plus, reaction.count));
-        }
-        if (reaction.userWasSender && !isCompact) {
-            root.setBackground(ContextCompat.getDrawable(context, R.drawable.reaction_pill_background_selected));
-            countView.setTextColor(ContextCompat.getColor(context, R.color.reactions_pill_selected_text_color));
-        } else {
-            if (!isCompact) {
-                root.setBackground(ContextCompat.getDrawable(context, R.drawable.reaction_pill_background));
-            }
         }
         return root;
     }

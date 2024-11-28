@@ -76,7 +76,7 @@ final class ReactionRecipientsAdapter extends RecyclerView.Adapter<ReactionRecip
   @Override
   public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
     if (holder instanceof RecipientViewHolder) {
-      ((RecipientViewHolder) holder).bind(data.get(position - HEADER_COUNT));
+      ((RecipientViewHolder) holder).bind(EmojiCount.all((List<ReactionDetails>) data),data.get(position - HEADER_COUNT));
     } else if (holder instanceof HeaderViewHolder) {
       ((HeaderViewHolder) holder).bind(emojiData, messageId, isUserModerator);
     } else if (holder instanceof FooterViewHolder) {
@@ -137,21 +137,26 @@ final class ReactionRecipientsAdapter extends RecyclerView.Adapter<ReactionRecip
     private final TextView recipient;
     private final ImageView remove;
 
+    private final EmojiImageView selectedEmoji;
+
     public RecipientViewHolder(ReactionViewPagerAdapter.Listener callback, @NonNull View itemView) {
       super(itemView);
       this.callback = callback;
       avatar = itemView.findViewById(R.id.reactions_bottom_view_avatar);
       recipient = itemView.findViewById(R.id.reactions_bottom_view_recipient_name);
       remove = itemView.findViewById(R.id.reactions_bottom_view_recipient_remove);
+      selectedEmoji = itemView.findViewById(R.id.reactions_bottom_view_selected_emoji);
     }
 
-    void bind(@NonNull ReactionDetails reaction) {
+    void bind(EmojiCount emojiData, @NonNull ReactionDetails reaction) {
       this.remove.setOnClickListener((v) -> {
         MessageId messageId = new MessageId(reaction.getLocalId(), reaction.isMms());
         callback.onRemoveReaction(reaction.getBaseEmoji(), messageId, reaction.getTimestamp());
       });
 
-      this.avatar.update(reaction.getSender(), false,false);
+     // this.avatar.update(reaction.getSender(), false,false);
+      this.selectedEmoji.setImageEmoji(emojiData.getDisplayEmoji());
+
 
       if (reaction.getSender().isLocalNumber()) {
         this.recipient.setText(R.string.you);

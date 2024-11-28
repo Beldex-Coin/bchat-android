@@ -152,6 +152,7 @@ object MessageSender {
                 is Destination.ClosedGroup -> {
                     kind = SignalServiceProtos.Envelope.Type.CLOSED_GROUP_MESSAGE
                     senderPublicKey = destination.groupPublicKey
+                    isBnsHolder = !storage.getIsBnsHolder().isNullOrEmpty()
                 }
                 is Destination.OpenGroupV2 -> throw IllegalStateException("Destination should not be social group.")
             }

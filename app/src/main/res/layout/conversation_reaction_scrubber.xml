@@ -53,6 +53,7 @@
         android:layout_width="@dimen/reaction_scrubber_width"
         android:layout_height="@dimen/conversation_reaction_scrubber_height"
         android:clipToPadding="false"
+        android:backgroundTint="@color/overflow_menu_background"
         android:elevation="4dp">
 
         <io.beldex.bchat.components.emoji.EmojiImageView
@@ -147,8 +148,8 @@
 
         <View
             android:id="@+id/reaction_7_background"
-            android:layout_width="52dp"
-            android:layout_height="52dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:alpha="0.5"
             android:background="@drawable/reactions_old_background"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -158,8 +159,8 @@
 
         <io.beldex.bchat.components.emoji.EmojiImageView
             android:id="@+id/reaction_7"
-            android:layout_width="32dp"
-            android:layout_height="48dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:alpha="0"
             android:translationY="@dimen/reaction_scrubber_anim_start_translation_y"
             app:forceJumbo="true"

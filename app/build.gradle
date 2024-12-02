@@ -26,7 +26,7 @@ dependencies {
 configurations.all {
     exclude module: "commons-logging"
 }
-def canonicalVersionCode = 72
+def canonicalVersionCode = 73
 def canonicalVersionName = "2.6.2"
 
 def postFixSize = 10

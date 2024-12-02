@@ -445,6 +445,14 @@
           "description":"Minor bug fixes"
         }
       ]
+    },
+    {
+      "title": "2.6.2",
+      "descriptions": [
+        {
+          "description":"Minor bug fixes"
+        }
+      ]
     }
   ]
 }

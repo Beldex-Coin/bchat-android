@@ -1,6 +1,8 @@
 package io.beldex.bchat.reactions;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -20,9 +22,20 @@ public class ReactionsViewModel extends ViewModel {
   private final MessageId           messageId;
   private final ReactionsRepository repository;
 
+  private MutableLiveData<Integer> reactionCount;
+
+  public LiveData<Integer> getReactionCount(){
+    return this.reactionCount;
+  }
+
+  public void updateReactionCount(int totalCount){
+    reactionCount.postValue(totalCount);
+  }
+
   public ReactionsViewModel(@NonNull MessageId messageId) {
     this.messageId  = messageId;
     this.repository = new ReactionsRepository();
+    this.reactionCount = new MutableLiveData<>();
   }
 
   public @NonNull

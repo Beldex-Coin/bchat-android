@@ -43,10 +43,8 @@
         android:layout_width="@dimen/reaction_scrubber_width"
         android:layout_height="?attr/actionBarSize"
         android:layout_marginBottom="40dp"
-        android:alpha="0"
         android:background="@drawable/conversation_reaction_overlay_background"
-        android:elevation="4dp"
-        tools:alpha="1" />
+        />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/conversation_reaction_scrubber_foreground"
@@ -58,8 +56,8 @@
 
         <io.beldex.bchat.components.emoji.EmojiImageView
             android:id="@+id/reaction_1"
-            android:layout_width="32dp"
-            android:layout_height="48dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:alpha="0"
             android:translationY="@dimen/reaction_scrubber_anim_start_translation_y"
             app:forceJumbo="true"
@@ -73,8 +71,8 @@
 
         <io.beldex.bchat.components.emoji.EmojiImageView
             android:id="@+id/reaction_2"
-            android:layout_width="32dp"
-            android:layout_height="48dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:alpha="0"
             android:translationY="@dimen/reaction_scrubber_anim_start_translation_y"
             app:forceJumbo="true"
@@ -88,8 +86,8 @@
 
         <io.beldex.bchat.components.emoji.EmojiImageView
             android:id="@+id/reaction_3"
-            android:layout_width="32dp"
-            android:layout_height="48dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:alpha="0"
             android:translationY="@dimen/reaction_scrubber_anim_start_translation_y"
             app:forceJumbo="true"
@@ -103,8 +101,8 @@
 
         <io.beldex.bchat.components.emoji.EmojiImageView
             android:id="@+id/reaction_4"
-            android:layout_width="32dp"
-            android:layout_height="48dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:alpha="0"
             android:translationY="@dimen/reaction_scrubber_anim_start_translation_y"
             app:forceJumbo="true"
@@ -118,8 +116,8 @@
 
         <io.beldex.bchat.components.emoji.EmojiImageView
             android:id="@+id/reaction_5"
-            android:layout_width="32dp"
-            android:layout_height="48dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:alpha="0"
             android:translationY="@dimen/reaction_scrubber_anim_start_translation_y"
             app:forceJumbo="true"
@@ -133,8 +131,8 @@
 
         <io.beldex.bchat.components.emoji.EmojiImageView
             android:id="@+id/reaction_6"
-            android:layout_width="32dp"
-            android:layout_height="48dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:alpha="0"
             android:translationY="@dimen/reaction_scrubber_anim_start_translation_y"
             app:forceJumbo="true"
@@ -148,8 +146,8 @@
 
         <View
             android:id="@+id/reaction_7_background"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:alpha="0.5"
             android:background="@drawable/reactions_old_background"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -159,8 +157,8 @@
 
         <io.beldex.bchat.components.emoji.EmojiImageView
             android:id="@+id/reaction_7"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:alpha="0"
             android:translationY="@dimen/reaction_scrubber_anim_start_translation_y"
             app:forceJumbo="true"

@@ -348,5 +348,6 @@
     <color name="signal_button_secondary_text_disabled">@color/core_grey_45</color>
     <color name="signal_button_secondary_stroke">@color/core_grey_45</color>
     <color name="emoji_plus_background">#A7A7BA</color>
+    <color name="view_emoji_background">#1C1C26</color>
 
 </resources>

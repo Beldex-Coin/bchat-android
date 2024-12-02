@@ -1629,4 +1629,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="AccessibilityId_emojiSearchClear" translatable="false">Clear search entry</string>
     <string name="you" translatable="false">You</string>
     <string name="andMore" translatable="false">+{count}</string>
+    <string name="tap_to_remove" translatable="false">Tap to remove</string>
+    <string name="reaction" translatable="false">Reactions</string>
 </resources>

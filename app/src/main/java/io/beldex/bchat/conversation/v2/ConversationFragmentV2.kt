@@ -1180,10 +1180,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             val fragment = ReactionsDialogFragment.create(messageId,emoji)
             fragment.show(requireActivity().supportFragmentManager, null)
         }
-        /*if (viewModel.recipient.value?.isGroupRecipient == true) {
-            val fragment = ReactionDialogFragment.create(messageId, emoji, requireContext())
-            fragment.show(requireActivity().supportFragmentManager, null)
-        }*/
     }
 
     inner class ReactionsToolbarListener(val message: MessageRecord) :

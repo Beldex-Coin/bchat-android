@@ -27,7 +27,7 @@
         android:adjustViewBounds="true"
         android:layout_gravity="center"
         app:layout_constraintDimensionRatio="1:1"
-        app:lottie_fileName="load_animation.json"
+        app:lottie_rawRes="@raw/load_animation"
         android:layout_marginBottom="8dp"
         app:lottie_loop="true"
         app:lottie_speed="1"

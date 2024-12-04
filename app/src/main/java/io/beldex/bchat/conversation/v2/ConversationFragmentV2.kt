@@ -364,10 +364,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             },
             onItemLongPress = { message, position, view ->
                     if(isSecretGroupIsActive()) {
-                        if (!isMessageRequestThread())
-                            //need to check
-                            //(viewModel.openGroup == null || Capability.REACTIONS.name.lowercase() in viewModel.serverCapabilities)
-                        {
+                        //need to check
+                        //(viewModel.openGroup == null || Capability.REACTIONS.name.lowercase() in viewModel.serverCapabilities)
+                        if (!isMessageRequestThread() && viewModel.openGroup == null) {
                             showEmojiPicker(message, view)
                         } else {
                             handleLongPress(message, position)

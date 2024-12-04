@@ -6,15 +6,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/view_emoji_background_shape"
     android:padding="2dp"
+    app:layout_gravity="center_vertical"
     >
     <FrameLayout
         android:id="@+id/layout_flex_container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintWidth_max="240dp"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="2dp">
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/layout_emoji_container"
             android:layout_width="wrap_content"
@@ -23,7 +25,7 @@
             app:flexDirection="row"
             app:flexWrap="wrap"
             app:alignItems="center"
-            android:layout_gravity="center"
+            android:layout_gravity="center_vertical"
             />
     </FrameLayout>
     <ImageView

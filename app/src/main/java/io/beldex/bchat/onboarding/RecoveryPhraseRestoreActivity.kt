@@ -92,7 +92,9 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
             if (clipboard.hasPrimaryClip()) {
                 val item = clipboard.primaryClip!!.getItemAt(0)
                 // Gets the clipboard as text.
-                binding.mnemonicEditText.setText(item.text.toString())
+                if(item.text != null) {
+                    binding.mnemonicEditText.setText(item.text.toString())
+                }
                 binding.pasteText.visibility = View.GONE
             } else {
                 Toast.makeText(this, R.string.no_copied_seed, Toast.LENGTH_SHORT)

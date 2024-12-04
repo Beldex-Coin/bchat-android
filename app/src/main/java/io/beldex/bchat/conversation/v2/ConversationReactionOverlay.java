@@ -655,43 +655,42 @@ public final class ConversationReactionOverlay extends FrameLayout {
         Recipient recipient = DatabaseComponent.get(getContext()).threadDatabase().getRecipientForThreadId(message.getThreadId());
         String userPublicKey = TextSecurePreferences.getLocalNumber(getContext());
         // Select message
-        items.add(new ActionItem(R.attr.menu_select_icon, getContext().getResources().getString(R.string.activity_select_contacts_title), () -> handleActionItemClicked(Action.SELECT)));
+        items.add(new ActionItem(R.attr.menu_select_icon, getContext().getResources().getString(R.string.activity_select_contacts_title), () -> handleActionItemClicked(Action.SELECT),null));
         // Reply
         if (!message.isPending() && !message.isFailed()) {
-            items.add(new ActionItem(R.attr.menu_reply_icon, getContext().getResources().getString(R.string.conversation_context__menu_reply_to_message), () -> handleActionItemClicked(Action.REPLY)));
+            items.add(new ActionItem(R.attr.menu_reply_icon, getContext().getResources().getString(R.string.conversation_context__menu_reply_to_message), () -> handleActionItemClicked(Action.REPLY), null));
         }
         // Copy message text
         if (!containsControlMessage && hasText) {
-            items.add(new ActionItem(R.attr.menu_copy_icon, getContext().getResources().getString(R.string.copy), () -> handleActionItemClicked(Action.COPY_MESSAGE)));
+            items.add(new ActionItem(R.attr.menu_copy_icon, getContext().getResources().getString(R.string.copy), () -> handleActionItemClicked(Action.COPY_MESSAGE),null));
         }
         // Copy Session ID
         if (recipient.isGroupRecipient() && !recipient.isOpenGroupRecipient() && !message.getRecipient().getAddress().toString().equals(userPublicKey)) {
-            items.add(new ActionItem(R.attr.menu_copy_icon, getContext().getResources().getString(R.string.activity_conversation_menu_copy_bchat_id), () -> handleActionItemClicked(Action.COPY_SESSION_ID)));
+            items.add(new ActionItem(R.attr.menu_copy_icon, getContext().getResources().getString(R.string.activity_conversation_menu_copy_bchat_id), () -> handleActionItemClicked(Action.COPY_SESSION_ID),null));
         }
-        //need to check
-       /* // Delete message
-        if (ConversationMenuItemHelper.userCanDeleteSelectedItems(getContext(), message, openGroup, userPublicKey)) {
-            items.add(new ActionItem(R.attr.menu_trash_icon, getContext().getResources().getString(R.string.delete), () -> handleActionItemClicked(Action.DELETE)));
+        // Delete message
+        if (ConversationMenuItemHelper.userCanDeleteSelectItems(message, openGroup, userPublicKey)) {
+            items.add(new ActionItem(R.attr.menu_trash_icon, getContext().getResources().getString(R.string.delete), () -> handleActionItemClicked(Action.DELETE),ThemeUtil.getThemedColor(getContext(), R.attr.menu_delete_color)));
         }
         // Ban user
-        if (ConversationMenuItemHelper.userCanBanSelectedUsers(getContext(), message, openGroup, userPublicKey)) {
-            items.add(new ActionItem(0, getContext().getResources().getString(R.string.conversation_context__menu_ban_user), () -> handleActionItemClicked(Action.BAN_USER)));
+        if (ConversationMenuItemHelper.userCanBanSelectUsers( message, openGroup, userPublicKey)) {
+            items.add(new ActionItem(0, getContext().getResources().getString(R.string.conversation_context__menu_ban_user), () -> handleActionItemClicked(Action.BAN_USER),null));
         }
         // Ban and delete all
-        if (ConversationMenuItemHelper.userCanBanSelectedUsers(getContext(), message, openGroup, userPublicKey)) {
-            items.add(new ActionItem(0, getContext().getResources().getString(R.string.conversation_context__menu_ban_and_delete_all), () -> handleActionItemClicked(Action.BAN_AND_DELETE_ALL)));
-        }*/
+        if (ConversationMenuItemHelper.userCanBanSelectUsers(message, openGroup, userPublicKey)) {
+            items.add(new ActionItem(0, getContext().getResources().getString(R.string.conversation_context__menu_ban_and_delete_all), () -> handleActionItemClicked(Action.BAN_AND_DELETE_ALL),null));
+        }
         // Message detail
         if (message.isFailed()) {
-            items.add(new ActionItem(R.attr.menu_info_icon, getContext().getResources().getString(R.string.conversation_context__menu_message_details), () -> handleActionItemClicked(Action.VIEW_INFO)));
+            items.add(new ActionItem(R.attr.menu_info_icon, getContext().getResources().getString(R.string.conversation_context__menu_message_details), () -> handleActionItemClicked(Action.VIEW_INFO),null));
         }
         // Resend
         if (message.isFailed()) {
-            items.add(new ActionItem(R.attr.menu_reply_icon, getContext().getResources().getString(R.string.conversation_context__menu_resend_message), () -> handleActionItemClicked(Action.RESEND)));
+            items.add(new ActionItem(R.attr.menu_reply_icon, getContext().getResources().getString(R.string.conversation_context__menu_resend_message), () -> handleActionItemClicked(Action.RESEND),null));
         }
         // Save media
         if (message.isMms() && ((MediaMmsMessageRecord)message).containsMediaSlide()) {
-            items.add(new ActionItem(R.attr.menu_save_icon, getContext().getResources().getString(R.string.conversation_context_image__save_attachment), () -> handleActionItemClicked(Action.DOWNLOAD)));
+            items.add(new ActionItem(R.attr.menu_save_icon, getContext().getResources().getString(R.string.conversation_context_image__save_attachment), () -> handleActionItemClicked(Action.DOWNLOAD),null));
         }
 
         backgroundView.setVisibility(View.VISIBLE);

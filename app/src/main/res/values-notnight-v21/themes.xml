@@ -146,6 +146,7 @@
         <item name="tooltip_default_color">@color/core_white</item>
 
         <item name="pref_icon_tint">@color/textsecure_primary_dark</item>
+        <item name="menu_delete_color">@color/clear_red_color</item>
 
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.Fix</item>
 

@@ -132,6 +132,7 @@
     <attr name="menu_mark_all_as_read" format="reference" />
 
     <attr name="pref_icon_tint" format="color"/>
+    <attr name="menu_delete_color" format="color" />
 
     <attr name="home_gradient_start" format="color|reference" />
     <attr name="home_gradient_end" format="color|reference" />

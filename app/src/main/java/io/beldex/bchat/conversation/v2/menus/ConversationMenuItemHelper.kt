@@ -1,21 +1,27 @@
 package io.beldex.bchat.conversation.v2.menus
 
 import android.content.Context
+import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.messaging.open_groups.OpenGroupV2
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.groups.OpenGroupManager
 object ConversationMenuItemHelper {
-    //need to check
-   /* @JvmStatic
-    fun userCanDeleteSelectedItems(context: Context, message: MessageRecord, openGroup: OpenGroupV2?, userPublicKey: String): Boolean {
-        if (openGroup  == null) return message.isOutgoing || !message.isOutgoing
-        if (message.isOutgoing) return true
-        return OpenGroupManager.isUserModerator(context, openGroup.groupId, userPublicKey)
+
+    @JvmStatic
+    fun userCanDeleteSelectItems(messageRecord: MessageRecord, openGroup: OpenGroupV2?, userPublicKey: String): Boolean {
+        val allSentByCurrentUser = messageRecord.isOutgoing
+        val allReceivedByCurrentUser =  !messageRecord.isOutgoing
+        if (openGroup == null) { return allSentByCurrentUser || allReceivedByCurrentUser }
+        if (allSentByCurrentUser) { return true }
+        return OpenGroupAPIV2.isUserModerator(userPublicKey, openGroup.room, openGroup.server)
     }
     @JvmStatic
-    fun userCanBanSelectedUsers(context: Context, message: MessageRecord, openGroup: OpenGroupV2?, userPublicKey: String): Boolean {
-        if (openGroup == null)  return false
-        if (message.isOutgoing) return false // Users can't ban themselves
-        return OpenGroupManager.isUserModerator(context, openGroup.groupId, userPublicKey)
-    }*/
+    fun userCanBanSelectUsers( message: MessageRecord, openGroup: OpenGroupV2?, userPublicKey: String): Boolean {
+        if (openGroup == null) { return false }
+        val anySentByCurrentUser =   message.isOutgoing
+        if (anySentByCurrentUser) { return false } // Users can't ban themselves
+        val selectedUsers =   message.recipient.address.toString().toSet()
+        if (selectedUsers.size > 1) { return false }
+        return OpenGroupAPIV2.isUserModerator(userPublicKey, openGroup.room, openGroup.server)
+    }
 }

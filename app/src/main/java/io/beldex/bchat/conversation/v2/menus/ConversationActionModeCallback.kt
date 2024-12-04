@@ -36,15 +36,6 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
         val userPublicKey = TextSecurePreferences.getLocalNumber(context)!!
         fun userCanDeleteSelectedItems(): Boolean {
             val allSentByCurrentUser = selectedItems.all { it.isOutgoing }
-
-            //need to check
-          /*  // Remove this after the unsend request is enabled
-            if (!ConversationFragmentV2.IS_UNSEND_REQUESTS_ENABLED) {
-                if (openGroup == null) { return true }
-                if (allSentByCurrentUser) { return true }
-                return OpenGroupAPIV2.isUserModerator(userPublicKey, openGroup.room, openGroup.server)
-            }
-*/
             val allReceivedByCurrentUser = selectedItems.all { !it.isOutgoing }
             if (openGroup == null) { return allSentByCurrentUser || allReceivedByCurrentUser }
             if (allSentByCurrentUser) { return true }

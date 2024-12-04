@@ -68,6 +68,9 @@ class ContextMenuList(recyclerView: RecyclerView, onItemClick: () -> Unit, conte
                 context.theme.resolveAttribute(model.item.iconRes, typedValue, true)
                 icon.setImageDrawable(ContextCompat.getDrawable(context, typedValue.resourceId))
             }
+            model.item.color?.let { title.setTextColor(it) }
+            model.item.color?.let { icon.setColorFilter(it) }
+
             title.text = model.item.title
             itemView.setOnClickListener {
                 model.item.action.run()

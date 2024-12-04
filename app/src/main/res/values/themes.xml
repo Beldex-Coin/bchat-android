@@ -315,6 +315,7 @@
         <item name="tooltip_default_color">@color/core_grey_75</item>
 
         <item name="pref_icon_tint">#FFFFFF</item>
+        <item name="menu_delete_color">@color/clear_red_color</item>
 
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.Fix</item>
 

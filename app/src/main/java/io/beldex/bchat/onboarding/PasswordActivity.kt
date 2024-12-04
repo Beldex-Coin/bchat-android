@@ -100,7 +100,11 @@ class PasswordActivity : BaseActionBarActivity() {
 
         //  Start and bind to the KeyCachingService instance.
         val bindIntent = Intent(this, KeyCachingService::class.java)
-        startService(bindIntent)
+        try {
+            this.startService(bindIntent)
+        } catch (e: Exception) {
+            Log.d("Beldex", "Unable to start KeyCachingService intent: ", e)
+        }
         bindService(bindIntent, object : ServiceConnection {
             override fun onServiceConnected(name: ComponentName, service: IBinder) {
                 keyCachingService = (service as KeySetBinder).service

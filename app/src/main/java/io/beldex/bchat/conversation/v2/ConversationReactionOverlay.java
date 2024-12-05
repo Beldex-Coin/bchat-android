@@ -408,6 +408,10 @@ public final class ConversationReactionOverlay extends FrameLayout {
     private void hideInternal(@Nullable OnHideListener onHideListener) {
         overlayState = OverlayState.HIDDEN;
 
+        if (contextMenu != null) {
+            contextMenu.dismiss();
+        }
+
         AnimatorSet animatorSet = newHideAnimatorSet();
         hideAnimatorSet = animatorSet;
 
@@ -431,10 +435,6 @@ public final class ConversationReactionOverlay extends FrameLayout {
                 }
             }
         });
-
-        if (contextMenu != null) {
-            contextMenu.dismiss();
-        }
     }
 
     public boolean isShowing() {

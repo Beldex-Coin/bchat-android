@@ -636,6 +636,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                         if (!fragment.transactionInProgress) {
                             super.onBackPressed()
                         }
+                        fragment.reactionDelegateDismiss()
                     } else {
                         super.onBackPressed()
                     }
@@ -1709,6 +1710,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         if (fragment is ConversationFragmentV2 || fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment || fragment is WalletFragment) {
             if (!(fragment as OnBackPressedListener).onBackPressed()) {
                 TextSecurePreferences.callFiatCurrencyApi(this,false)
+                if(fragment is ConversationFragmentV2){
+                    fragment.reactionDelegateDismiss()
+                }
                 try {
                     super.onBackPressed()
                 }catch(e : IllegalStateException){

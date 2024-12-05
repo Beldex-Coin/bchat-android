@@ -1025,8 +1025,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
             override fun onHide() {
                 binding.conversationRecyclerView.suppressLayout(false)
-                WindowUtil.setLightStatusBarFromTheme(requireActivity())
-                WindowUtil.setLightNavigationBarFromTheme(requireActivity())
             }
         })
         val topLeft = intArrayOf(0, 0).also { visibleMessageView.messageContentView.getLocationInWindow(it) }
@@ -1119,7 +1117,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     fun reactionDelegateDismiss() {
-        reactionDelegate.hide()
+       if( reactionDelegate.isShowing) {
+           reactionDelegate.hide()
+       }
     }
     override fun onReactWithAnyEmojiSelected(emoji: String, messageId: MessageId) {
         reactionDelegate.hide()

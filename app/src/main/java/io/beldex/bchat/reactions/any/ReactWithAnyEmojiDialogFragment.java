@@ -4,13 +4,17 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,7 +40,7 @@ import io.beldex.bchat.util.LifecycleDisposable;
 import io.beldex.bchat.R;
 
 public final class ReactWithAnyEmojiDialogFragment extends BottomSheetDialogFragment implements EmojiEventListener,
-        EmojiPageViewGridAdapter.VariationSelectorListener
+        EmojiPageViewGridAdapter.VariationSelectorListener,KeyboardPageSearchView.Callbacks
 {
 
   private static final String ARG_MESSAGE_ID = "arg_message_id";
@@ -47,7 +51,12 @@ public final class ReactWithAnyEmojiDialogFragment extends BottomSheetDialogFrag
   private ReactWithAnyEmojiViewModel viewModel;
   private Callback                   callback;
   private EmojiPageView              emojiPageView;
-  private KeyboardPageSearchView search;
+
+  private EditText searchEdit;
+
+  private ImageView backToEmoji;
+
+  private ImageView clearSearch;
 
   private final LifecycleDisposable disposables = new LifecycleDisposable();
 
@@ -111,7 +120,39 @@ public final class ReactWithAnyEmojiDialogFragment extends BottomSheetDialogFrag
 
     emojiPageView = view.findViewById(R.id.react_with_any_emoji_page_view);
     emojiPageView.initialize(this, this, true);
- //   search = view.findViewById(R.id.react_with_any_emoji_search);
+
+    searchEdit = view.findViewById(R.id.searchEditText);
+    backToEmoji = view.findViewById(R.id.back_to_emoji_icon);
+    clearSearch = view.findViewById(R.id.clear_search_icon);
+
+    clearSearch.setOnClickListener(v -> clearQuery());
+
+    searchEdit.addTextChangedListener(new TextWatcher() {
+      @Override
+      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+      }
+      @Override
+      public void onTextChanged(CharSequence s, int start, int before, int count) {
+      }
+      @Override
+      public void afterTextChanged(Editable s) {
+        if (s.toString().isEmpty()) {
+          clearSearch.setImageDrawable(null);
+          clearSearch.setClickable(false);
+          backToEmoji.setImageResource(R.drawable.ic_search_24);
+        } else {
+          clearSearch.setImageResource(R.drawable.ic_close);
+          clearSearch.setClickable(true);
+        }
+        if (s.toString().isEmpty()) {
+          viewModel.onQueryChanged("");
+        } else {
+          boolean hasQuery = !TextUtils.isEmpty(s.toString());
+          enableBackNavigation(hasQuery);
+          viewModel.onQueryChanged(s.toString());
+        }
+      }
+    });
 
     initializeViewModel();
 
@@ -129,7 +170,32 @@ public final class ReactWithAnyEmojiDialogFragment extends BottomSheetDialogFrag
 //        categoriesRecycler.smoothScrollToPosition(index);
 //      }
 //    })));
-     //search.setCallbacks(new SearchCallbacks());
+
+    KeyboardPageSearchView keyboardPageSearchView = new KeyboardPageSearchView(requireContext());
+    SearchCallbacks searchCallbacks = new SearchCallbacks();
+    keyboardPageSearchView.setCallbacks(searchCallbacks);
+  }
+
+
+  public void enableBackNavigation(Boolean enable) {
+    backToEmoji.setImageResource(enable ? R.drawable.ic_arrow_left : R.drawable.ic_search_24);
+    if (enable) {
+      backToEmoji.setImageResource(R.drawable.ic_arrow_left);
+      backToEmoji.setOnClickListener(v -> backToFragment());
+    } else {
+      backToEmoji.setImageResource(R.drawable.ic_search_24);
+      backToEmoji.setOnClickListener(null);
+    }
+  }
+
+  public void clearQuery() {
+    searchEdit.getText().clear();
+  }
+
+  public void backToFragment(){
+    clearQuery();
+    searchEdit.clearFocus();
+    ViewUtil.hideKeyboard(requireContext(), requireView());
   }
 
   @Override
@@ -178,21 +244,15 @@ public final class ReactWithAnyEmojiDialogFragment extends BottomSheetDialogFrag
   private class SearchCallbacks implements KeyboardPageSearchView.Callbacks {
     @Override
     public void onQueryChanged(@NonNull String query) {
-      boolean hasQuery = !TextUtils.isEmpty(query);
-      search.enableBackNavigation(hasQuery);
-      /*if (hasQuery) {
-        ViewUtil.fadeOut(tabBar, 250, View.INVISIBLE);
-      } else {
-        ViewUtil.fadeIn(tabBar, 250);
-      }*/
       viewModel.onQueryChanged(query);
     }
 
     @Override
     public void onNavigationClicked() {
-      search.clearQuery();
-      search.clearFocus();
+      clearQuery();
+      searchEdit.clearFocus();
       ViewUtil.hideKeyboard(requireContext(), requireView());
+      dismiss();
     }
 
     @Override

@@ -17,18 +17,62 @@
         android:src="@drawable/bottom_sheet_handle"
         tools:ignore="ContentDescription" />
 
-  <!--  <io.beldex.bchat.keyboard.emoji.KeyboardPageSearchView
-        android:id="@+id/react_with_any_emoji_search"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:paddingTop="12dp"
-        android:paddingBottom="8dp"
-        app:search_hint="@string/search"
-        app:search_bar_tint="?conversationMenuSearchBackgroundColor"
-        app:search_icon_tint="?searchHintColor"
-        app:show_always="true"
-        />-->
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:padding="@dimen/small_spacing"
+        app:cardBackgroundColor="@color/card_color"
+        app:cardCornerRadius="32dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/card_color"
+            android:padding="@dimen/small_spacing"
+            >
+
+            <ImageView
+                android:id="@+id/back_to_emoji_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_search_24"
+                android:contentDescription="@string/KeyboardPagerFragment_search_emoji"/>
+
+            <ImageView
+                android:id="@+id/clear_search_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_close"
+                android:contentDescription="@string/clear" />
+
+            <EditText
+                android:id="@+id/searchEditText"
+                style="@style/SmallBChatEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans_medium"
+                android:hint="@string/KeyboardPagerFragment_search_emoji"
+                android:imeOptions="actionDone"
+                android:inputType="textNoSuggestions"
+                android:layout_marginStart="@dimen/large_spacing"
+                android:layout_marginEnd="@dimen/large_spacing"
+                android:minLines="1"
+                android:padding="@dimen/small_spacing"
+                android:textColor="@color/text"
+                android:textSize="@dimen/small_font_size" />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
 
     <FrameLayout
         android:layout_width="match_parent"

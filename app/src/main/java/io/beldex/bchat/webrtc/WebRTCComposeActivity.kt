@@ -133,6 +133,7 @@ class WebRTCComposeActivity : ComponentActivity() {
 
     private fun answerCall() {
         val answerIntent = WebRtcCallService.acceptCallIntent(this)
+        answerIntent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
         ContextCompat.startForegroundService(this, answerIntent)
     }
 

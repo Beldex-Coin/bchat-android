@@ -118,7 +118,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
     val currentCallState
         get() = _callStateEvents.value
 
-    var iceState = PeerConnection.IceConnectionState.CLOSED
+    private var iceState = PeerConnection.IceConnectionState.CLOSED
 
     private var eglBase: EglBase? = null
 
@@ -135,7 +135,6 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
             _recipientEvents.value = StateEvent.RecipientUpdate(value)
         }
     var callStartTime: Long = -1
-    var isReestablishing: Boolean = false
 
     private var peerConnection: PeerConnectionWrapper? = null
     private var dataChannel: DataChannel? = null

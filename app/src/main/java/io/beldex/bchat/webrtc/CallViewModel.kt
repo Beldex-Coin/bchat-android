@@ -42,12 +42,9 @@ public class CallViewModel @Inject constructor(private val callManager: CallMana
     val videoEnabled: Boolean
         get() = _videoEnabled
 
-    private var _microphoneEnabled: Boolean = true
+    var microphoneEnabled: Boolean = true
+        private set
 
-    val microphoneEnabled: Boolean
-        get() = _microphoneEnabled
-
-    private var _isSpeaker: Boolean = false
     private var _isBluetooth: Boolean = false
     private var _bluetoothConnectionState = MutableLiveData<Boolean>()
     val bluetoothConnectionState: LiveData<Boolean> = _bluetoothConnectionState
@@ -55,8 +52,8 @@ public class CallViewModel @Inject constructor(private val callManager: CallMana
     fun setBooleanValue(value: Boolean){
         _bluetoothConnectionState.value = value
     }
-    val isSpeaker: Boolean
-        get() = _isSpeaker
+    var isSpeaker: Boolean = false
+        private set
     val isBluetooth: Boolean
         get() = _isBluetooth
 
@@ -64,7 +61,7 @@ public class CallViewModel @Inject constructor(private val callManager: CallMana
     val audioDeviceState
         get() = callManager.audioDeviceEvents
             .onEach {
-                _isSpeaker = it.selectedDevice == SignalAudioManager.AudioDevice.SPEAKER_PHONE
+                isSpeaker = it.selectedDevice == SignalAudioManager.AudioDevice.SPEAKER_PHONE
             }
     val audioBluetoothDeviceState
         get() = callManager.audioDeviceEvents
@@ -77,7 +74,7 @@ public class CallViewModel @Inject constructor(private val callManager: CallMana
 
     val localAudioEnabledState
         get() = callManager.audioEvents.map { it.isEnabled }
-            .onEach { _microphoneEnabled = it }
+            .onEach { microphoneEnabled = it }
 
     val localVideoEnabledState
         get() = callManager.videoEvents

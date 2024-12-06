@@ -170,10 +170,6 @@ public final class ReactWithAnyEmojiDialogFragment extends BottomSheetDialogFrag
 //        categoriesRecycler.smoothScrollToPosition(index);
 //      }
 //    })));
-
-    KeyboardPageSearchView keyboardPageSearchView = new KeyboardPageSearchView(requireContext());
-    SearchCallbacks searchCallbacks = new SearchCallbacks();
-    keyboardPageSearchView.setCallbacks(searchCallbacks);
   }
 
 

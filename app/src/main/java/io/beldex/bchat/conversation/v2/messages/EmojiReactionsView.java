@@ -95,9 +95,8 @@ public class EmojiReactionsView extends LinearLayout implements View.OnTouchList
         if (v.getTag() == null) return false;
         Reaction reaction = (Reaction) v.getTag();
         int action = event.getAction();
-        if (action == MotionEvent.ACTION_DOWN) onDown(new MessageId(reaction.messageId, reaction.isMms), reaction.emoji);
+        if (action == MotionEvent.ACTION_DOWN)  onClickEmoji(new MessageId(reaction.messageId, reaction.isMms), reaction.emoji);
         else if (action == MotionEvent.ACTION_CANCEL) removeLongPressCallback();
-        else if (action == MotionEvent.ACTION_UP) onUp(reaction);
         return true;
     }
     private void displayReactions(int threshold) {
@@ -200,6 +199,12 @@ public class EmojiReactionsView extends LinearLayout implements View.OnTouchList
             emojiView.setVisibility(GONE);
         }
         return root;
+    }
+
+    private void onClickEmoji(MessageId messageId, String emoji){
+        if (delegate != null) {
+            delegate.onReactionLongClicked(messageId, emoji);
+        }
     }
     private void onDown(MessageId messageId, String emoji) {
         removeLongPressCallback();

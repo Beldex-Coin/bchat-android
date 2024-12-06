@@ -366,7 +366,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     if(isSecretGroupIsActive()) {
                         //need to check
                         //(viewModel.openGroup == null || Capability.REACTIONS.name.lowercase() in viewModel.serverCapabilities)
-                        if (!isMessageRequestThread() && viewModel.openGroup == null) {
+                        if (!isMessageRequestThread()) {
                             showEmojiPicker(message, view)
                         } else {
                             handleLongPress(message, position)
@@ -1046,9 +1046,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     override fun onReactionSelected(messageRecord: MessageRecord, emoji: String) {
         reactionDelegate.hide()
         val oldRecord = messageRecord.reactions.find { it.author == textSecurePreferences.getLocalNumber() }
-        if (oldRecord != null && oldRecord.emoji == emoji) {
-            sendEmojiRemoval(emoji, messageRecord)
+        val isAlreadyReacted = messageRecord.reactions.contains(messageRecord.reactions.find { it.author == textSecurePreferences.getLocalNumber() })
+        if (isAlreadyReacted && oldRecord?.emoji == emoji) {
+            sendEmojiRemoval(oldRecord.emoji, messageRecord)
         } else {
+            if (isAlreadyReacted) {
+                oldRecord?.emoji?.let { sendEmojiRemoval(it, messageRecord) }
+            }
             sendEmojiReaction(emoji, messageRecord)
         }
     }
@@ -1175,10 +1179,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
     override fun onReactionLongClicked(messageId: MessageId,emoji: String?) {
-        if (viewModel.recipient.value?.isGroupRecipient == true) {
-            val fragment = ReactionsDialogFragment.create(messageId,emoji)
-            fragment.show(requireActivity().supportFragmentManager, null)
-        }
+        val fragment = ReactionsDialogFragment.create(messageId,emoji)
+        fragment.show(requireActivity().supportFragmentManager, null)
     }
 
     inner class ReactionsToolbarListener(val message: MessageRecord) :

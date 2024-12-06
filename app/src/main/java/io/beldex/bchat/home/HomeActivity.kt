@@ -610,7 +610,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                     currentFragment.dispatchTouchEvent()
                 }
                 is ConversationFragmentV2 -> {
-                    println("touch event in emoji")
                     currentFragment.dispatchTouchEvents(event)
                 }
             }
@@ -1774,6 +1773,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun onReactWithAnyEmojiSelected(emoji : String, messageId : MessageId?) {
+        println("onReaction Selected called in conversation screen 5")
         val currentFragment = getCurrentFragment()
         if(currentFragment is ConversationFragmentV2){
             currentFragment.reactionDelegateDismiss()
@@ -1796,6 +1796,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun onReactionSelected(messageRecord : MessageRecord, emoji : String?) {
+        println("onReaction Selected called in conversation screen 6")
         val currentFragment = getCurrentFragment()
         if(currentFragment is ConversationFragmentV2){
             currentFragment.reactionDelegateDismiss()

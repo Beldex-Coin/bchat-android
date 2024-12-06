@@ -177,7 +177,7 @@ class KeyboardPageSearchView @JvmOverloads constructor(
   }
 
   fun clearQuery() {
-    input.text.clear()
+    input.text?.clear()
   }
 
   interface Callbacks {

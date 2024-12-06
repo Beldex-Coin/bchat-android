@@ -166,10 +166,6 @@ public final class ConversationReactionOverlay extends FrameLayout {
         View conversationBubble = conversationItem.findViewById(R.id.conversation_item_bubble);
         conversationBubble.setLayoutParams(new LinearLayout.LayoutParams(conversationItemSnapshot.getWidth(), conversationItemSnapshot.getHeight()));
         conversationBubble.setBackground(new BitmapDrawable(getResources(), conversationItemSnapshot));
-        TextView conversationTimestamp = conversationItem.findViewById(R.id.conversation_item_timestamp);
-        conversationTimestamp.setText(DateUtils.getDisplayFormattedTimeSpanString(getContext(), Locale.getDefault(), messageRecord.getTimestamp()));
-
-        updateConversationTimestamp(messageRecord);
 
         boolean isMessageOnLeft = selectedConversationModel.isOutgoing() ^ ViewUtil.isLtr(this);
 
@@ -185,15 +181,6 @@ public final class ConversationReactionOverlay extends FrameLayout {
             showAfterLayout(messageRecord, lastSeenDownPoint, isMessageOnLeft);
             return Unit.INSTANCE;
         });
-    }
-
-    private void updateConversationTimestamp(MessageRecord message) {
-        View bubble = conversationItem.findViewById(R.id.conversation_item_bubble);
-        View timestamp = conversationItem.findViewById(R.id.conversation_item_timestamp);
-        conversationItem.removeAllViewsInLayout();
-        conversationItem.addView(message.isOutgoing() ? timestamp : bubble);
-        conversationItem.addView(message.isOutgoing() ? bubble : timestamp);
-        conversationItem.requestLayout();
     }
 
     private void showAfterLayout(@NonNull MessageRecord messageRecord,

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<io.beldex.bchat.conversation.v2.messages.EmojiReactionsView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/view_emoji_background_shape"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:padding="2dp"
     app:layout_gravity="center_vertical"
     >
@@ -16,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintWidth_max="240dp"
         android:layout_marginStart="2dp"
-        android:layout_marginTop="2dp">
+        >
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/layout_emoji_container"
             android:layout_width="wrap_content"
@@ -72,7 +73,7 @@
         android:paddingStart="4dp"
         android:paddingEnd="8dp"
         android:paddingTop="4dp"
-        android:paddingBottom="8dp"
+        android:paddingBottom="4dp"
         android:layout_marginStart="1dp"
         android:textSize="11sp"
         android:textColor="@color/version_color"
@@ -81,4 +82,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/layout_flex_container"
         />
-</androidx.constraintlayout.widget.ConstraintLayout>
+</io.beldex.bchat.conversation.v2.messages.EmojiReactionsView>

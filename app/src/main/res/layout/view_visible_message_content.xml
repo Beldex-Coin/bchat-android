@@ -224,7 +224,8 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <io.beldex.bchat.conversation.v2.messages.EmojiReactionsView
+        <include
+            layout="@layout/view_emoji_reactions"
             android:id="@+id/emojiReactionsView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

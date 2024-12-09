@@ -876,7 +876,7 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         return TextSecurePreferences.getIsBNSHolder(context)
     }
 
-    override fun addReaction(reaction: Reaction) {
+    override fun addReaction(reaction: Reaction, messageSender: String) {
         val timestamp = reaction.timestamp
         val localId = reaction.localId
         val isMms = reaction.isMms
@@ -891,7 +891,7 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
             ReactionRecord(
                 messageId = messageId.id,
                 isMms = messageId.mms,
-                author = reaction.publicKey!!,
+                author = messageSender,
                 emoji = reaction.emoji!!,
                 serverId = reaction.serverId!!,
                 count = reaction.count!!,

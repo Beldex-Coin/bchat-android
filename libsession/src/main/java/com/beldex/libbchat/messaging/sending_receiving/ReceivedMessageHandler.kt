@@ -299,7 +299,7 @@ fun MessageReceiver.handleVisibleMessage(message: VisibleMessage, proto: SignalS
             reaction.serverId = message.openGroupServerMessageID?.toString() ?: message.serverHash.orEmpty()
             reaction.dateSent = message.sentTimestamp ?: 0
             reaction.dateReceived = message.receivedTimestamp ?: 0
-            storage.addReaction(reaction)
+            storage.addReaction(reaction,messageSender)
         } else {
             storage.removeReaction(reaction.emoji!!, reaction.timestamp!!, reaction.publicKey!!)
         }
@@ -346,19 +346,18 @@ fun MessageReceiver.handleOpenGroupReactions(
         val reactorIds=reaction.reactors.filter { it != userPublicKey }
         val count=if (reaction.you) reaction.count - 1 else reaction.count
         // Add the first reaction (with the count)
-        reactorIds.firstOrNull()?.let {
+        reactorIds.firstOrNull()?.let { reactor ->
             storage.addReaction(
                 Reaction(
                     localId=messageId,
                     isMms=!isSms,
-                    publicKey=it,
+                    publicKey=reactor,
                     emoji=emoji,
                     react=true,
                     serverId="$openGroupMessageServerID",
                     count=count,
                     index=reaction.index
-                )
-            )
+                ),reactor)
         }
         // Add all other reactions
         val maxAllowed=if (shouldAddUserReaction) 4 else 5
@@ -374,8 +373,7 @@ fun MessageReceiver.handleOpenGroupReactions(
                     serverId="$openGroupMessageServerID",
                     count=0,  // Only want this on the first reaction
                     index=reaction.index
-                )
-            )
+                ),reactor)
         }
         // Add the current user reaction (if applicable and not already included)
         if (shouldAddUserReaction) {
@@ -389,8 +387,7 @@ fun MessageReceiver.handleOpenGroupReactions(
                     serverId="$openGroupMessageServerID",
                     count=1,
                     index=reaction.index
-                )
-            )
+                ),userPublicKey)
         }
     }
 }

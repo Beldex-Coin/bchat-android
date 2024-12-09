@@ -1074,8 +1074,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             dateReceived = emojiTimestamp
         )
         reactionDb.addReaction(MessageId(originalMessage.id, originalMessage.isMms), reaction)
+         val originalAuthor = if (originalMessage.isOutgoing) {
+             textSecurePreferences.getLocalNumber()!!
+         } else originalMessage.individualRecipient.address.serialize()
         // Send it
-        reactionMessage.reaction = Reaction.from(originalMessage.timestamp, originalMessage.recipient.address.serialize(), emoji, true)
+        reactionMessage.reaction = Reaction.from(originalMessage.timestamp, originalAuthor, emoji, true)
         if (recipient.isOpenGroupRecipient) {
             val messageServerId = beldexMessageDb.getServerID(originalMessage.id, !originalMessage.isMms) ?: return
             viewModel.openGroup?.let {
@@ -1093,7 +1096,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         message.sentTimestamp = emojiTimestamp
         val author = textSecurePreferences.getLocalNumber()!!
         reactionDb.deleteReaction(emoji, MessageId(originalMessage.id, originalMessage.isMms), author)
-        message.reaction = Reaction.from(originalMessage.timestamp, author, emoji, false)
+         val originalAuthor = if (originalMessage.isOutgoing) {
+              textSecurePreferences.getLocalNumber()!!
+         } else originalMessage.individualRecipient.address.serialize()
+         message.reaction = Reaction.from(originalMessage.timestamp,  originalAuthor, emoji, false)
         if (recipient.isOpenGroupRecipient) {
             val messageServerId = beldexMessageDb.getServerID(originalMessage.id, !originalMessage.isMms) ?: return
             viewModel.openGroup?.let {

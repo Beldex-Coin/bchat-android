@@ -27,7 +27,7 @@ class PeerConnectionWrapper(private val context: Context,
     private val mediaStream: MediaStream
     private val videoSource: VideoSource?
     private val videoTrack: VideoTrack?
-    private val rotationVideoSink = RotationVideoSink()
+    public val rotationVideoSink = RotationVideoSink()
 
     val readyForIce
         get() = peerConnection?.localDescription != null && peerConnection?.remoteDescription != null
@@ -36,10 +36,10 @@ class PeerConnectionWrapper(private val context: Context,
 
     private fun initPeerConnection() {
         val random = SecureRandom().asKotlinRandom()
-        val iceServers = listOf("turn.communication","turn.communication1","turn.communication2","turn.communication3").shuffled(random).take(2).map { sub ->
+        val iceServers = listOf("turn.call","turn.call1","turn.call2","turn.call3").shuffled(random).take(2).map { sub ->
             PeerConnection.IceServer.builder("turn:$sub.beldex.io")
-                .setUsername("communication")
-                .setPassword("communication@123")
+                .setUsername("test")
+                .setPassword("test@123")
                 .createIceServer()
         }
 
@@ -91,7 +91,6 @@ class PeerConnectionWrapper(private val context: Context,
                 context,
                 rotationVideoSink
             )
-            rotationVideoSink.mirrored = newCamera.activeDirection == CameraState.Direction.FRONT
             rotationVideoSink.setSink(localRenderer)
             newVideoTrack.setEnabled(false)
             mediaStream.addTrack(newVideoTrack)
@@ -315,7 +314,6 @@ class PeerConnectionWrapper(private val context: Context,
 
     override fun onCameraSwitchCompleted(newCameraState: CameraState) {
         // mirror rotation offset
-        rotationVideoSink.mirrored = newCameraState.activeDirection == CameraState.Direction.FRONT
         cameraEventListener.onCameraSwitchCompleted(newCameraState)
     }
 

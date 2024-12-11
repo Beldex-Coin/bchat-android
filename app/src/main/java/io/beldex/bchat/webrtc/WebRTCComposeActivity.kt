@@ -878,7 +878,9 @@ class WebRTCComposeActivity : ComponentActivity() {
                     }
                 } else {
                     Surface(color=Color.Black,
-                        shape=RoundedCornerShape(12.dp)) {
+                        shape=RoundedCornerShape(12.dp),
+                        modifier=Modifier.fillMaxSize()
+                    ) {
                         isRemoteSurfaceView?.let {
                             VideoCallSurfaceView(
                                 surfaceView=it)

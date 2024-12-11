@@ -983,7 +983,7 @@ class WebRTCComposeActivity : ComponentActivity() {
                                     color = Color.Black,
                                     shape = RoundedCornerShape(12.dp)
                                 ).height(140.dp)
-                                    .width(70.dp)
+                                    .width(110.dp)
                             ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.ic_disable_video_call),
@@ -1004,8 +1004,10 @@ class WebRTCComposeActivity : ComponentActivity() {
                             )
                         } else {
                             Surface(
-                                color = Color.Black,
-                                shape = RoundedCornerShape(12.dp)
+                                modifier = Modifier.height(140.dp).width(110.dp).background(
+                                    color = Color.Black,
+                                    shape = RoundedCornerShape(12.dp)
+                                ),
                             ) {
                                 isLocalSurfaceView?.let {
                                     VideoCallSurfaceView(

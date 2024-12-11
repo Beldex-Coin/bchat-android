@@ -127,6 +127,14 @@ public final class ReactWithAnyEmojiDialogFragment extends BottomSheetDialogFrag
 
     clearSearch.setOnClickListener(v -> clearQuery());
 
+    searchEdit.setOnFocusChangeListener((v, hasFocus) -> {
+      if(hasFocus){
+        expend();
+      }else {
+        this.onFocusLost();
+      }
+    });
+
     searchEdit.addTextChangedListener(new TextWatcher() {
       @Override
       public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -137,10 +145,11 @@ public final class ReactWithAnyEmojiDialogFragment extends BottomSheetDialogFrag
       @Override
       public void afterTextChanged(Editable s) {
         if (s.toString().isEmpty()) {
-          clearSearch.setImageDrawable(null);
+          clearSearch.setVisibility(View.GONE);
           clearSearch.setClickable(false);
           backToEmoji.setImageResource(R.drawable.ic_search_24);
         } else {
+          clearSearch.setVisibility(View.VISIBLE);
           clearSearch.setImageResource(R.drawable.ic_close);
           clearSearch.setClickable(true);
         }
@@ -172,6 +181,9 @@ public final class ReactWithAnyEmojiDialogFragment extends BottomSheetDialogFrag
 //    })));
   }
 
+  public void expend() {
+    ((BottomSheetDialog) requireDialog()).getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
+  }
 
   public void enableBackNavigation(Boolean enable) {
     backToEmoji.setImageResource(enable ? R.drawable.ic_arrow_left : R.drawable.ic_search_24);

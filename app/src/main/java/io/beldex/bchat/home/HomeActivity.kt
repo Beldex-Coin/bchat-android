@@ -1784,11 +1784,19 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             smsDb.getMessageRecord(messageId.id)
         }
         val oldRecord = reactionDb.getReactions(messageId).find { it.author == textSecurePreferences.getLocalNumber() }
-        if (oldRecord?.emoji == emoji) {
+        val isAlreadyReacted = reactionDb.getReactions(messageId).contains(reactionDb.getReactions(messageId).find { it.author == textSecurePreferences.getLocalNumber() })
+        if (isAlreadyReacted && oldRecord?.emoji == emoji) {
             if(currentFragment is ConversationFragmentV2){
                 currentFragment.sendEmojiRemoval(emoji, message)
             }
         } else {
+            if (isAlreadyReacted) {
+                oldRecord?.emoji?.let {
+                    if(currentFragment is ConversationFragmentV2){
+                        currentFragment.sendEmojiRemoval(it, message)
+                    }
+                }
+            }
             if(currentFragment is ConversationFragmentV2){
                 currentFragment.sendEmojiReaction(emoji, message)
             }
@@ -1796,7 +1804,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun onReactionSelected(messageRecord : MessageRecord, emoji : String?) {
-        println("onReaction Selected called in conversation screen 6")
         val currentFragment = getCurrentFragment()
         if(currentFragment is ConversationFragmentV2){
             currentFragment.reactionDelegateDismiss()

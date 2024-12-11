@@ -23,7 +23,7 @@
         android:orientation="vertical"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/reactions_bottom_view_recipient_remove"
+        app:layout_constraintEnd_toStartOf="@id/reactions_bottom_view_selected_emoji"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/reactions_bottom_view_avatar"
         app:layout_constraintTop_toTopOf="parent">
@@ -52,20 +52,6 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/reactions_bottom_view_recipient_remove"
-        android:layout_width="@dimen/large_spacing"
-        android:layout_height="@dimen/large_spacing"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:gravity="center"
-        android:src="@drawable/ic_close_white_48dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:scaleType="centerInside"
-        app:tint="?android:textColorPrimary" />
-
     <io.beldex.bchat.components.emoji.EmojiImageView
         android:id="@+id/reactions_bottom_view_selected_emoji"
         android:layout_width="@dimen/large_spacing"
@@ -73,7 +59,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:gravity="center"
-        android:src="@drawable/ic_close_white_48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

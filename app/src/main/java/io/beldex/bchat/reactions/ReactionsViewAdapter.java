@@ -67,14 +67,12 @@ public class ReactionsViewAdapter extends RecyclerView.Adapter<ReactionsViewAdap
         private final ProfilePictureView avatar;
         private final FromTextView recipientName;
         private final FromTextView tapToRemove;
-        private ImageView recipientRemove;
         private final EmojiImageView selectedEmoji;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             avatar = itemView.findViewById(R.id.reactions_bottom_view_avatar);
             recipientName = itemView.findViewById(R.id.reactions_bottom_view_recipient_name);
-            recipientRemove = itemView.findViewById(R.id.reactions_bottom_view_recipient_remove);
             selectedEmoji = itemView.findViewById(R.id.reactions_bottom_view_selected_emoji);
             tapToRemove = itemView.findViewById(R.id.reactions_bottom_view_tab_to_remove);
         }

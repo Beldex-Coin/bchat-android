@@ -135,7 +135,6 @@ final class ReactionRecipientsAdapter extends RecyclerView.Adapter<ReactionRecip
     private ReactionViewPagerAdapter.Listener callback;
     private final ProfilePictureView avatar;
     private final TextView recipient;
-    private final ImageView remove;
 
     private final EmojiImageView selectedEmoji;
 
@@ -144,15 +143,14 @@ final class ReactionRecipientsAdapter extends RecyclerView.Adapter<ReactionRecip
       this.callback = callback;
       avatar = itemView.findViewById(R.id.reactions_bottom_view_avatar);
       recipient = itemView.findViewById(R.id.reactions_bottom_view_recipient_name);
-      remove = itemView.findViewById(R.id.reactions_bottom_view_recipient_remove);
       selectedEmoji = itemView.findViewById(R.id.reactions_bottom_view_selected_emoji);
     }
 
     void bind(EmojiCount emojiData, @NonNull ReactionDetails reaction) {
-      this.remove.setOnClickListener((v) -> {
+     /* this.remove.setOnClickListener((v) -> {
         MessageId messageId = new MessageId(reaction.getLocalId(), reaction.isMms());
         callback.onRemoveReaction(reaction.getBaseEmoji(), messageId, reaction.getTimestamp());
-      });
+      });*/
 
      // this.avatar.update(reaction.getSender(), false,false);
       this.selectedEmoji.setImageEmoji(emojiData.getDisplayEmoji());
@@ -160,14 +158,12 @@ final class ReactionRecipientsAdapter extends RecyclerView.Adapter<ReactionRecip
 
       if (reaction.getSender().isLocalNumber()) {
         this.recipient.setText(R.string.you);
-        this.remove.setVisibility(View.VISIBLE);
       } else {
         String name = reaction.getSender().getName();
         if (name == null){
           name = truncateIdForDisplay(reaction.getSender().getAddress().serialize());
         }
         this.recipient.setText(name);
-        this.remove.setVisibility(View.GONE);
       }
     }
 

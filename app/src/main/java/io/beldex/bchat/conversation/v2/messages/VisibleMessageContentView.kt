@@ -371,14 +371,6 @@ class VisibleMessageContentView : MaterialCardView {
         binding.shortMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
         binding.shortMessageTime.setTextColor(getTimeTextColor(context, message.isOutgoing))
 
-        if (message.reactions.isNotEmpty()) {
-            binding.emojiReactionsView.setReactions(message.id, message.reactions, message.isOutgoing, delegate)
-            binding.emojiReactionsView.isVisible = true
-            binding.emojiReactionsView.setPadding(0,40,0,0)
-            binding.shortMessageTime.setPadding(20,0,0,0)
-        } else {
-            binding.emojiReactionsView.isVisible = false
-        }
 
 
         if(binding.quoteView.root.isVisible){

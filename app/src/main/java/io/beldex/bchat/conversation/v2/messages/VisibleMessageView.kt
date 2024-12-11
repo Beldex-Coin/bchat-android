@@ -11,6 +11,7 @@ import android.util.AttributeSet
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -210,6 +211,25 @@ class VisibleMessageView : LinearLayout {
         } else {
             binding.emojiReactionsView.isVisible = false
         }*/
+
+        val emojiLayoutParams = binding.emojiReactionsView.root.layoutParams as ConstraintLayout.LayoutParams
+        emojiLayoutParams.horizontalBias = if (message.isOutgoing) 1f else 0f
+        binding.emojiReactionsView.root.layoutParams = emojiLayoutParams
+
+        val containerParams = binding.messageInnerContainer.layoutParams as ConstraintLayout.LayoutParams
+
+
+        if (message.reactions.isNotEmpty()) {
+            binding.emojiReactionsView.root.setReactions(message.id, message.reactions, message.isOutgoing, delegate)
+            binding.emojiReactionsView.root.isVisible = true
+            if(isEndOfMessageCluster) {
+                containerParams.bottomMargin = if(isGroupThread) 10 else 30
+            }else {
+                containerParams.bottomMargin = 50
+            }
+        } else {
+            binding.emojiReactionsView.root.isVisible = false
+        }
 
         // Populate content view
         binding.messageContentView.root.indexInAdapter = indexInAdapter

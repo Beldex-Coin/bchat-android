@@ -20,6 +20,19 @@
       "filters": [
         {
           "filterType": "ABI",
+          "value": "armeabi-v7a"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 73,
+      "versionName": "2.6.2",
+      "outputFile": "Bchat-2.6.2-armeabi-v7a.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
           "value": "x86_64"
         }
       ],
@@ -40,19 +53,6 @@
       "versionCode": 73,
       "versionName": "2.6.2",
       "outputFile": "Bchat-2.6.2-arm64-v8a.apk"
-    },
-    {
-      "type": "ONE_OF_MANY",
-      "filters": [
-        {
-          "filterType": "ABI",
-          "value": "armeabi-v7a"
-        }
-      ],
-      "attributes": [],
-      "versionCode": 73,
-      "versionName": "2.6.2",
-      "outputFile": "Bchat-2.6.2-armeabi-v7a.apk"
     }
   ],
   "elementType": "File"

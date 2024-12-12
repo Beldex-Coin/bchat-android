@@ -275,15 +275,9 @@ class WebRTCComposeActivity : ComponentActivity() {
         var isSelectedVideoOption by remember {
             mutableStateOf(false)
         }
-        /*var isShowDisabledVideoOption by remember {
-            mutableStateOf(false)
-        }*/
         var isShowSwitchCameraOption by remember {
             mutableStateOf(false)
         }
-        /*var isSwitchCameraOptionColorChange by remember {
-            mutableStateOf(false)
-        }*/
         var flipCamera by remember {
             mutableStateOf(true)
         }
@@ -316,9 +310,6 @@ class WebRTCComposeActivity : ComponentActivity() {
         }
         var isStatusReConnectingText by remember {
             mutableStateOf(context.getString(R.string.WebRtcCallActivity_Reconnecting))
-        }
-        var isShowStatus by remember {
-            mutableStateOf(false)
         }
         var isStatusText by remember {
             mutableStateOf("Voice Call")
@@ -364,21 +355,9 @@ class WebRTCComposeActivity : ComponentActivity() {
         var isStatusCallVideoText by remember {
             mutableStateOf("")
         }
-        /*var isShowPersonNameStatus by remember {
-            mutableStateOf(false)
-        }*/
         var isPersonNameText by remember {
             mutableStateOf("")
         }
-        /*var isShowVideoCallLocalView by remember {
-            mutableStateOf(false)
-        }*/
-        var isShowVideoCallRemoteView by remember {
-            mutableStateOf(false)
-        }
-        /*var isShowRemoteRecipientView by remember {
-            mutableStateOf(false)
-        }*/
         var recipientPublicKey by remember {
             mutableStateOf("")
         }
@@ -516,14 +495,8 @@ class WebRTCComposeActivity : ComponentActivity() {
         }
 
         fun switchCamera() {
-            if (flipCamera && isShowVideoOption) {
-                flipCamera=false
-            } else {
-                //isSwitchCameraOptionColorChange=true
-                flipCamera=true
-            }
+            flipCamera = !(flipCamera && isShowVideoOption)
             context.startService(WebRtcCallService.flipCamera(context))
-
         }
 
         fun enableMuteOption() {
@@ -668,35 +641,24 @@ class WebRTCComposeActivity : ComponentActivity() {
                 // handle video state
                 launch {
                     callViewModel.videoState.collect { state ->
-                        //isShowVideoCallLocalView=false
-                        localVideoView= state.userVideoEnabled || state.remoteVideoEnabled//isEnabled
-                        isSwitchCameraFlipEnabled=state.userVideoEnabled//isEnabled
+                        localVideoView= state.userVideoEnabled || state.remoteVideoEnabled
+                        isSwitchCameraFlipEnabled=state.userVideoEnabled
                         isStatusText=if (state.userVideoEnabled) {
                             "Video Call"
                         } else {
                             "Voice Call"
                         }
-                        if (state.showFloatingVideo()) { //isEnabled) {
+                        if (state.showFloatingVideo()) {
                             callViewModel.floatingRenderer?.let { sfView ->
-                                isLocalSurfaceView?.setZOrderOnTop(true)
                                 isLocalSurfaceView=sfView
                             }
                             showVideoCameOff = false
                         } else {
                             showVideoCameOff = true
                         }
-                        //isShowVideoCallLocalView=isEnabled
-                        isSelectedVideoOption=state.userVideoEnabled//isEnabled
-                        if (state.userVideoEnabled) { //isEnabled) {
-                            //isShowDisabledVideoOption=true
-                            flipCamera=true
-                        } else {
-                            //isShowDisabledVideoOption=true
-                            //isSwitchCameraOptionColorChange=true
-                            flipCamera=false
-                        }
+                        isSelectedVideoOption=state.userVideoEnabled
+                        flipCamera = state.userVideoEnabled
 
-                        //New
                         remoteVideoView=state.showFullscreenVideo()
                         if (state.showFullscreenVideo()) {
                             callViewModel.fullscreenRenderer?.let { sfView ->
@@ -705,21 +667,6 @@ class WebRTCComposeActivity : ComponentActivity() {
                         }
                     }
                 }
-
-                /*launch {
-                    callViewModel.videoState.collect { state ->
-                        //isShowVideoCallRemoteView=false
-                        remoteVideoView=state.remoteVideoEnabled//isEnabled
-                        if (state.remoteVideoEnabled) { //isEnabled) {
-                            callViewModel.fullscreenRenderer?.let { sfView ->
-                                isRemoteSurfaceView=sfView
-                            }
-                        }
-                        //isShowVideoCallRemoteView=isEnabled
-                        //isShowRemoteRecipientView=!isEnabled
-                        //isShowPersonNameStatus=!isEnabled
-                    }
-                }*/
             }
         }
         //UI started
@@ -1365,7 +1312,10 @@ class WebRTCComposeActivity : ComponentActivity() {
 
     @Composable
     fun VideoCallSurfaceView(modifier : Modifier=Modifier, surfaceView : SurfaceView) {
-        AndroidView(modifier=modifier, factory={ surfaceView }, update={ view ->
+        AndroidView(modifier=modifier.background(
+            color = Color.Black,
+            shape = RoundedCornerShape(12.dp)
+        ), factory={ surfaceView }, update={ view ->
         })
     }
 

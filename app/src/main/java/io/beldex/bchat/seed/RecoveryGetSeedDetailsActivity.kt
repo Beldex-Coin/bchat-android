@@ -78,7 +78,6 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
 
     private var restoreFromDateHeight = 0
     private val dateFormat = SimpleDateFormat("yyyy-MM", Locale.US)
-    private var dates = ArrayMap<String,Int>()
     private val namePattern = Pattern.compile("[A-Za-z0-9\\s]+")
     private val myFormat = "yyyy-MM-dd" // mention the format you need
     val sdf = SimpleDateFormat(myFormat, Locale.US)
@@ -89,77 +88,6 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         binding = ActivityRecoveryGetSeedDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUpActionBarBchatLogo(getString(R.string.restore_from_seed), false)
-
-        dates["2019-03"] = 21164
-        dates["2019-04"] = 42675
-        dates["2019-05"] = 64918
-        dates["2019-06"] = 87175
-        dates["2019-07"] = 108687
-        dates["2019-08"] = 130935
-        dates["2019-09"] = 152452
-        dates["2019-10"] = 174680
-        dates["2019-11"] = 196906
-        dates["2019-12"] = 217017
-        dates["2020-01"] = 239353
-        dates["2020-02"] = 260946
-        dates["2020-03"] = 283214
-        dates["2020-04"] = 304758
-        dates["2020-05"] = 326679
-        dates["2020-06"] = 348926
-        dates["2020-07"] = 370533
-        dates["2020-08"] = 392807
-        dates["2020-09"] = 414270
-        dates["2020-10"] = 436562
-        dates["2020-11"] = 458817
-        dates["2020-12"] = 479654
-        dates["2021-01"] = 501870
-        dates["2021-02"] = 523356
-        dates["2021-03"] = 545569
-        dates["2021-04"] = 567123
-        dates["2021-05"] = 589402
-        dates["2021-06"] = 611687
-        dates["2021-07"] = 633161
-        dates["2021-08"] = 655438
-        dates["2021-09"] = 677038
-        dates["2021-10"] = 699358
-        dates["2021-11"] = 721678
-        dates["2021-12"] = 741838
-        dates["2022-01"] = 788501
-
-        dates["2022-02"] = 877781
-        dates["2022-03"] = 958421
-        dates["2022-04"] = 1006790
-        dates["2022-05"] = 1093190
-        dates["2022-06"] = 1199750
-        dates["2022-07"] = 1291910
-        dates["2022-08"] = 1361030
-        dates["2022-09"] = 1456070
-        dates["2022-10"] = 1575070
-
-        dates["2022-11"] = 1674950
-        dates["2022-12"] = 1764950
-        dates["2023-01"] = 1853950
-        dates["2023-02"] = 1942950
-        dates["2023-03"] = 2022950
-        dates["2023-04"] = 2112950
-        dates["2023-05"] = 2199950
-        dates["2023-06"] = 2289269
-        dates["2023-07"] = 2363143
-        dates["2023-08"] = 2420443
-        dates["2023-09"] = 2503900
-        dates["2023-10"] = 2585550
-        dates["2023-11"] = 2696980
-        dates["2023-12"] = 2816300
-        dates["2024-01"] = 2894560
-        dates["2024-02"] = 2986700
-        dates["2024-03"] = 3049909
-        dates["2024-04"] = 3130730
-        dates["2024-05"] = 3187670
-        dates["2024-06"] = 3317020
-        dates["2024-07"] = 3429750
-        dates["2024-08"] = 3479700
-        dates["2024-09"] = 3536850
-        dates["2024-10"] = 3668050
 
         getSeed = intent.extras?.getString("seed")
         // create an OnDateSetListener

@@ -453,6 +453,17 @@
           "description":"Minor bug fixes"
         }
       ]
+    },
+    {
+      "title": "2.6.3",
+      "descriptions": [
+        {
+          "description":"Improved push notification service"
+        },
+        {
+          "description":"Minor bug fixes"
+        }
+      ]
     }
   ]
 }

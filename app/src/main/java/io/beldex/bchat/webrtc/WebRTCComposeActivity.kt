@@ -928,11 +928,13 @@ class WebRTCComposeActivity : ComponentActivity() {
                         contentAlignment=Alignment.TopEnd) {
                         if(showVideoCameOff){
                             Box(
-                                modifier = Modifier.background(
+                                modifier = Modifier.height(140.dp)
+                                    .width(110.dp).background(
                                     color = Color.Black,
                                     shape = RoundedCornerShape(12.dp)
-                                ).height(140.dp)
-                                    .width(110.dp)
+                                ).clickable {
+                                        callViewModel.swapVideos()
+                                }
                             ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.ic_disable_video_call),
@@ -947,16 +949,16 @@ class WebRTCComposeActivity : ComponentActivity() {
                                 contentDescription = null,
                                 modifier = Modifier
                                     .align(Alignment.TopEnd)
-                                    .size(15.dp).clickable {
-                                        callViewModel.swapVideos()
-                                    }.padding(top = 5.dp, end = 5.dp)
+                                    .size(15.dp).padding(top = 5.dp, end = 5.dp)
                             )
                         } else {
                             Surface(
                                 modifier = Modifier.height(140.dp).width(110.dp).background(
                                     color = Color.Black,
                                     shape = RoundedCornerShape(12.dp)
-                                ),
+                                ).clickable {
+                                    callViewModel.swapVideos()
+                                },
                             ) {
                                 isLocalSurfaceView?.let {
                                     VideoCallSurfaceView(
@@ -969,9 +971,7 @@ class WebRTCComposeActivity : ComponentActivity() {
                                 contentDescription = null,
                                 modifier = Modifier
                                     .align(Alignment.TopEnd)
-                                    .size(15.dp).clickable {
-                                        callViewModel.swapVideos()
-                                    }.padding(top = 5.dp, end = 5.dp)
+                                    .size(15.dp).padding(top = 5.dp, end = 5.dp)
                             )
                         }
 

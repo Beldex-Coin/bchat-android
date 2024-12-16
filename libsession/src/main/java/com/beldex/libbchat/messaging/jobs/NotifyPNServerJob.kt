@@ -8,15 +8,15 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import com.beldex.libbchat.messaging.jobs.Job.Companion.MAX_BUFFER_SIZE
 
-import com.beldex.libbchat.messaging.sending_receiving.notifications.PushNotificationAPI
+import com.beldex.libbchat.messaging.sending_receiving.notifications.Server
 import com.beldex.libbchat.messaging.utilities.Data
 import com.beldex.libbchat.mnode.MnodeMessage
 import com.beldex.libbchat.mnode.OnionRequestAPI
+import com.beldex.libbchat.mnode.Version
 import com.beldex.libsignal.utilities.JsonUtil
 import com.beldex.libsignal.utilities.Log
 
 import com.beldex.libsignal.utilities.retryIfNeeded
-import nl.komponents.kovenant.functional.map
 
 class NotifyPNServerJob(val message: MnodeMessage) : Job {
     override var delegate: JobDelegate? = null
@@ -32,25 +32,24 @@ class NotifyPNServerJob(val message: MnodeMessage) : Job {
     }
 
     override fun execute() {
-        val server = PushNotificationAPI.server
+        val server = Server.LEGACY
         val parameters = mapOf( "data" to message.data, "send_to" to message.recipient )
-        val url = "${server}/notify"
+        val url = "${server.url}/notify"
         val body = RequestBody.create(MediaType.get("application/json"), JsonUtil.toJson(parameters))
-        val request = Request.Builder().url(url).post(body)
+        val request = Request.Builder().url(url).post(body).build()
         retryIfNeeded(4) {
-            OnionRequestAPI.sendOnionRequest(request.build(), server, PushNotificationAPI.serverPublicKey, "/beldex/v2/lsrpc").map { json ->
-                val code = json["code"] as? Int
-                if (code == null || code == 0) {
-                    Log.d("Beldex", "Couldn't notify PN server due to error: ${json["message"] as? String ?: "null"}.")
+            OnionRequestAPI.sendOnionRequest(request, server.url, server.publicKey, Version.V2) success { response ->
+                when (response.code) {
+                    null, 0 -> Log.d("NotifyPNServerJob", "Couldn't notify PN server due to error: ${response.message}.")
                 }
-            }.fail { exception ->
-                Log.d("Beldex", "_Couldn't notify PN server due to error: $exception.")
+            } fail { exception ->
+                Log.d("NotifyPNServerJob", "_Couldn't notify PN server due to error: $exception.")
                 //New Line
                 handleFailure(exception)
             }
-        }.success {
+        } success {
             handleSuccess()
-        }. fail {
+        } fail {
             handleFailure(it)
         }
     }

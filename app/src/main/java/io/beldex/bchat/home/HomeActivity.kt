@@ -43,8 +43,10 @@ import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.ProfilePictureModifiedEvent
 import com.beldex.libbchat.utilities.Stub
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getIsReactionOverlayVisible
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletName
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletPassword
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setIsReactionOverlayVisible
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.google.android.gms.tasks.Task
@@ -603,7 +605,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     //Important
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        if (event?.action === MotionEvent.ACTION_DOWN) {
+        if (event?.action == MotionEvent.ACTION_DOWN) {
             val touch = PointF(event.x, event.y)
             when (val currentFragment: Fragment? = getCurrentFragment()) {
                 is HomeFragment -> {
@@ -636,6 +638,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                             super.onBackPressed()
                         }
                         fragment.reactionDelegateDismiss()
+                        if(getIsReactionOverlayVisible(this)){
+                            setIsReactionOverlayVisible(this,false)
+                        }
                     } else {
                         super.onBackPressed()
                     }
@@ -1711,6 +1716,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 TextSecurePreferences.callFiatCurrencyApi(this,false)
                 if(fragment is ConversationFragmentV2){
                     fragment.reactionDelegateDismiss()
+                    if(getIsReactionOverlayVisible(this)){
+                        setIsReactionOverlayVisible(this,false)
+                    }
                 }
                 try {
                     super.onBackPressed()

@@ -16,6 +16,7 @@ import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.CALL_NOTIFI
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_BNS_HOLDER
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_LOCAL_PROFILE
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_MUTE_VIDEO
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_REACTION_OVERLAY_VISIBLE
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.LAST_VACUUM_TIME
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.PREF_DIALOG_CLICKED
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.PREF_DIALOG_IGNORED_COUNT
@@ -268,6 +269,9 @@ interface TextSecurePreferences {
     fun setRefreshDynamicNodesStatus(refresh : Boolean)
     fun getRefreshDynamicNodesStatus():Boolean
 
+    fun setIsReactionOverlayVisible(isVisible: Boolean)
+    fun getReactionOverlayVisible(): Boolean
+
 
     companion object {
         val TAG = TextSecurePreferences::class.simpleName
@@ -386,6 +390,7 @@ interface TextSecurePreferences {
         const val IS_LOCAL_PROFILE = "is_local_profile"
         const val IS_BNS_HOLDER = "is_bns_holder"
         const val REFRESH_DYNAMIC_NODES = "refresh_dynamic_nodes"
+        const val IS_REACTION_OVERLAY_VISIBLE = "is_reaction_overlay_visible"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1435,6 +1440,16 @@ interface TextSecurePreferences {
             return getBooleanPreference(context, REFRESH_DYNAMIC_NODES, false)
         }
 
+        @JvmStatic
+        fun setIsReactionOverlayVisible(context: Context,isVisible: Boolean) {
+            setBooleanPreference(context, IS_REACTION_OVERLAY_VISIBLE, isVisible)
+        }
+
+        @JvmStatic
+        fun getIsReactionOverlayVisible(context: Context):Boolean {
+            return getBooleanPreference(context, IS_REACTION_OVERLAY_VISIBLE, false)
+        }
+
     }
 }
 
@@ -2342,5 +2357,13 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun getRefreshDynamicNodesStatus(): Boolean {
         return getBooleanPreference(REFRESH_DYNAMIC_NODES, false)
+    }
+
+    override fun setIsReactionOverlayVisible(isVisible : Boolean) {
+        setBooleanPreference(IS_REACTION_OVERLAY_VISIBLE, isVisible)
+    }
+
+    override fun getReactionOverlayVisible() : Boolean {
+        return getBooleanPreference(IS_REACTION_OVERLAY_VISIBLE, false)
     }
 }

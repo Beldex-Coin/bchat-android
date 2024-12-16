@@ -355,7 +355,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             requireActivity(),
             cursor,
             onItemPress = { message, position, view, event ->
-                handlePress(message, position, view, event)
+                if(!TextSecurePreferences.getIsReactionOverlayVisible(requireContext())) {
+                    handlePress(message, position, view, event)
+                }
             },
             onItemSwipeToReply = { message, _ ->
                 if(isSecretGroupIsActive()) {
@@ -1011,6 +1013,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             Log.e("Beldex", "Failed to show emoji picker", e)
             return
         }
+        TextSecurePreferences.setIsReactionOverlayVisible(requireContext(),true)
         ViewUtil.hideKeyboard(requireContext(), visibleMessageView);
         binding.reactionsShade.isVisible= true
         showOrHidScrollToBottomButton(false)
@@ -1025,6 +1028,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
             override fun onHide() {
                 binding.conversationRecyclerView.suppressLayout(false)
+                TextSecurePreferences.setIsReactionOverlayVisible(requireContext(),false)
             }
         })
         val topLeft = intArrayOf(0, 0).also { visibleMessageView.messageContentView.getLocationInWindow(it) }

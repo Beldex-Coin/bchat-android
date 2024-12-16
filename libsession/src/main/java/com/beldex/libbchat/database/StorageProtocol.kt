@@ -183,8 +183,8 @@ interface StorageProtocol {
 
     fun getIsBnsHolder():String?
 
-    fun addReaction(reaction: Reaction, messageSender: String)
-    fun removeReaction(emoji: String, messageTimestamp: Long, author: String)
+    fun addReaction(reaction: Reaction, messageSender: String, notifyUnread: Boolean)
+    fun removeReaction(emoji: String, messageTimestamp: Long, author: String, notifyUnread: Boolean)
     fun updateReactionIfNeeded(message: Message, sender: String, openGroupSentTimestamp: Long)
     fun deleteReactions(messageId: Long, mms: Boolean)
 }

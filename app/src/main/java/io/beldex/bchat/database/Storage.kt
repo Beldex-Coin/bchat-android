@@ -876,7 +876,7 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         return TextSecurePreferences.getIsBNSHolder(context)
     }
 
-    override fun addReaction(reaction: Reaction, messageSender: String) {
+    override fun addReaction(reaction: Reaction, messageSender: String,notifyUnread: Boolean) {
         val timestamp = reaction.timestamp
         val localId = reaction.localId
         val isMms = reaction.isMms
@@ -898,13 +898,14 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
                 sortId = reaction.index!!,
                 dateSent = reaction.dateSent!!,
                 dateReceived = reaction.dateReceived!!
-            )
+            ),
+            notifyUnread
         )
     }
-    override fun removeReaction(emoji: String, messageTimestamp: Long, author: String) {
+    override fun removeReaction(emoji: String, messageTimestamp: Long, author: String, notifyUnread: Boolean) {
         val messageRecord = DatabaseComponent.get(context).mmsSmsDatabase().getMessageForTimestamp(messageTimestamp) ?: return
         val messageId = MessageId(messageRecord.id, messageRecord.isMms)
-        DatabaseComponent.get(context).reactionDatabase().deleteReaction(emoji, messageId, author)
+        DatabaseComponent.get(context).reactionDatabase().deleteReaction(emoji, messageId, author,notifyUnread)
     }
     override fun updateReactionIfNeeded(message: Message, sender: String, openGroupSentTimestamp: Long) {
         val database = DatabaseComponent.get(context).reactionDatabase()

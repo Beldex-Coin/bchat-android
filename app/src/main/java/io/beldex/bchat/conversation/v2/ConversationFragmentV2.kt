@@ -1077,7 +1077,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             dateSent = emojiTimestamp,
             dateReceived = emojiTimestamp
         )
-        reactionDb.addReaction(MessageId(originalMessage.id, originalMessage.isMms), reaction)
+        reactionDb.addReaction(MessageId(originalMessage.id, originalMessage.isMms), reaction,false)
          val originalAuthor = if (originalMessage.isOutgoing) {
              textSecurePreferences.getLocalNumber()!!
          } else originalMessage.individualRecipient.address.serialize()
@@ -1099,7 +1099,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val emojiTimestamp = System.currentTimeMillis()
         message.sentTimestamp = emojiTimestamp
         val author = textSecurePreferences.getLocalNumber()!!
-        reactionDb.deleteReaction(emoji, MessageId(originalMessage.id, originalMessage.isMms), author)
+        reactionDb.deleteReaction(emoji, MessageId(originalMessage.id, originalMessage.isMms), author,false)
          val originalAuthor = if (originalMessage.isOutgoing) {
               textSecurePreferences.getLocalNumber()!!
          } else originalMessage.individualRecipient.address.serialize()

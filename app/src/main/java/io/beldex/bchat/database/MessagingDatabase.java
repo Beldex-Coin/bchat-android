@@ -58,14 +58,18 @@ public abstract class MessagingDatabase extends Database implements MmsSmsColumn
     }
   }
 
-  void updateReactionsUnread(SQLiteDatabase db, long messageId, boolean hasReactions, boolean isRemoval) {
+  void updateReactionsUnread(SQLiteDatabase db, long messageId, boolean hasReactions, boolean isRemoval, boolean notifyUnread) {
     try {
       MessageRecord message    = getMessageRecord(messageId);
       ContentValues values     = new ContentValues();
-      if (!hasReactions) {
+      if (notifyUnread) {
+        if (!hasReactions) {
+          values.put(REACTIONS_UNREAD, 0);
+        } else if (!isRemoval) {
+          values.put(REACTIONS_UNREAD, 1);
+        }
+      } else {
         values.put(REACTIONS_UNREAD, 0);
-      } else if (!isRemoval) {
-        values.put(REACTIONS_UNREAD, 1);
       }
       if (message.isOutgoing() && hasReactions) {
         values.put(NOTIFIED, 0);

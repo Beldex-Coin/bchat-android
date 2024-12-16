@@ -16,7 +16,6 @@ import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.groupSizeLimit
-import com.beldex.libbchat.messaging.sending_receiving.notifications.PushNotificationAPI.context
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -110,7 +109,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         }
 
        val recipient =  Recipient.from(
-                context,
+                this,
                 Address.fromSerialized(groupID), false)
         binding.profilePictureView.root.glide = glide
         binding.profilePictureView.root.update(recipient, fromEditGroup = true)
@@ -281,20 +280,6 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
             }
         }
         bottomSheet.show(supportFragmentManager, "GroupEditingOptionsBottomSheet")
-    }
-
-    private fun remove(member: String) {
-        val title = R.string.remove_this_contact
-        val message = R.string.remove_message
-        AlertDialog.Builder(context,R.style.BChatAlertDialog)
-            .setTitle(title)
-            .setMessage(message)
-            .setNegativeButton(android.R.string.no, null)
-            .setPositiveButton(R.string.RecipientPreferenceActivity_block) { _, _ ->
-                if (zombies.contains(member)) zombies.remove(member)
-                else members.remove(member)
-                updateMembers()
-            }.show()
     }
 
     private fun onAddMembersClick() {

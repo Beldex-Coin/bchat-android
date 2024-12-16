@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.groupSizeLimit
 import com.beldex.libbchat.utilities.Address
+import com.beldex.libbchat.utilities.Device
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
@@ -32,8 +33,12 @@ import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityCreateClosedGroupBinding
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
+import javax.inject.Inject
 
 class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderManager.LoaderCallbacks<List<String>> {
+    @Inject
+    lateinit var device: Device
+
     private lateinit var binding: ActivityCreateClosedGroupBinding
     private var isLoading = false
         set(newValue) { field = newValue; invalidateOptionsMenu() }
@@ -58,6 +63,7 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
         binding = ActivityCreateClosedGroupBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar!!.title = resources.getString(R.string.activity_create_closed_group_title)
+        device = Device.ANDROID
 
         with(binding){
             recyclerView.adapter = this@CreateClosedGroupActivity.selectContactsAdapter
@@ -163,7 +169,7 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
         hideSoftKeyboard()
         binding.nameEditText.text.clear()
         binding.nameEditText.clearFocus()
-        MessageSender.createClosedGroup(name.toString(), selectedMembers + setOf( userPublicKey )).successUi { groupID ->
+        MessageSender.createClosedGroup(device, name.toString(), selectedMembers + setOf( userPublicKey )).successUi { groupID ->
             binding.nameEditText.isFocusable = true
             binding.loaderContainer.fadeOut()
             isLoading = false

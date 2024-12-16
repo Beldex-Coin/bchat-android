@@ -19,6 +19,7 @@ import com.beldex.libsignal.utilities.Broadcaster
 import com.beldex.libsignal.utilities.HTTP
 import com.beldex.libsignal.database.BeldexAPIDatabaseProtocol
 import com.beldex.libsignal.utilities.Base64
+import nl.komponents.kovenant.Deferred
 import java.util.*
 
 private typealias Path = List<Mnode>
@@ -209,35 +210,37 @@ object OnionRequestAPI {
         }
         OnionRequestAPI.guardMnodes = guardMnodes
         fun getPath(paths: List<Path>): Path {
-            if (mnodeToExclude != null) {
-                return paths.filter { !it.contains(mnodeToExclude) }.getRandomElement()
+            return if (mnodeToExclude != null) {
+                paths.filter { !it.contains(mnodeToExclude) }.getRandomElement()
             } else {
-                return paths.getRandomElement()
+                paths.getRandomElement()
             }
         }
         Log.d("Beldex", "Three onion request path ${paths.count().toString()}, $targetPathCount ")
 
-        if (paths.count() >= targetPathCount) {
-            Log.d("Beldex", "Three onion request path if")
-
-            return Promise.of(getPath(paths))
-        } else if (paths.isNotEmpty()) {
-            Log.d("Beldex", "Three onion request path else")
-
-            if (paths.any { !it.contains(mnodeToExclude) }) {
-                Log.d("Beldex", "Three onion request second if condition ${mnodeToExclude.toString()}")
-                buildPaths(paths) // Re-build paths in the background
+        when {
+            paths.count() >= targetPathCount -> {
+                Log.d("Beldex", "Three onion request path if")
                 return Promise.of(getPath(paths))
-            } else {
-                Log.d("Beldex", "Three onion request second else condition")
-                return buildPaths(paths).map { newPaths ->
-                    getPath(newPaths)
+            }
+            paths.isNotEmpty() -> {
+                Log.d("Beldex", "Three onion request path else")
+                return if (paths.any { !it.contains(mnodeToExclude) }) {
+                    Log.d("Beldex", "Three onion request second if condition ${mnodeToExclude.toString()}")
+                    buildPaths(paths) // Re-build paths in the background
+                    Promise.of(getPath(paths))
+                } else {
+                    Log.d("Beldex", "Three onion request second else condition")
+                    buildPaths(paths).map { newPaths ->
+                        getPath(newPaths)
+                    }
                 }
             }
-        } else {
-            Log.d("Beldex", "Three onion request first else condition")
-            return buildPaths(listOf()).map { newPaths ->
-                getPath(newPaths)
+            else -> {
+                Log.d("Beldex", "Three onion request first else condition")
+                return buildPaths(listOf()).map { newPaths ->
+                    getPath(newPaths)
+                }
             }
         }
     }
@@ -280,7 +283,7 @@ object OnionRequestAPI {
     /**
      * Builds an onion around `payload` and returns the result.
      */
-    private fun buildOnionForDestination(payload: Map<*, *>, destination: Destination): Promise<OnionBuildingResult, Exception> {
+    private fun buildOnionForDestination(payload: ByteArray, destination: Destination, version: Version): Promise<OnionBuildingResult, Exception> {
         lateinit var guardMnode: Mnode
         lateinit var destinationSymmetricKey: ByteArray // Needed by BeldexAPI to decrypt the response sent back by the destination
         lateinit var encryptionResult: EncryptionResult
@@ -293,19 +296,19 @@ object OnionRequestAPI {
             guardMnode = path.first()
             Log.d("Beldex","Path build first  $guardMnode")
             // Encrypt in reverse order, i.e. the destination first
-            OnionRequestEncryption.encryptPayloadForDestination(payload, destination).bind { r ->
+            OnionRequestEncryption.encryptPayloadForDestination(payload, destination, version).bind { r ->
                 destinationSymmetricKey = r.symmetricKey
                 // Recursively encrypt the layers of the onion (again in reverse order)
                 encryptionResult = r
                 @Suppress("NAME_SHADOWING") var path = path
                 var rhs = destination
                 fun addLayer(): Promise<EncryptionResult, Exception> {
-                    if (path.isEmpty()) {
-                        return Promise.of(encryptionResult)
+                    return if (path.isEmpty()) {
+                        Promise.of(encryptionResult)
                     } else {
                         val lhs = Destination.Mnode(path.last())
                         path = path.dropLast(1)
-                        return OnionRequestEncryption.encryptHop(lhs, rhs, encryptionResult).bind { r ->
+                        OnionRequestEncryption.encryptHop(lhs, rhs, encryptionResult).bind { r ->
                             encryptionResult = r
                             rhs = lhs
                             addLayer()
@@ -320,12 +323,12 @@ object OnionRequestAPI {
     /**
      * Sends an onion request to `destination`. Builds new paths as needed.
      */
-    private fun sendOnionRequest(destination: Destination, payload: Map<*, *>): Promise<Map<*, *>, Exception> {
-        val deferred = deferred<Map<*, *>, Exception>()
+    private fun sendOnionRequest(destination: Destination, payload: ByteArray, version: Version): Promise<OnionResponse, Exception> {
+        val deferred = deferred<OnionResponse, Exception>()
         var guardMnode: Mnode? = null
-        Log.d("Beldex --> payload onion req uest ","$payload")
+        Log.d("Beldex --> payload onion request ","$payload")
         Log.d("Beldex --> destination onion request ","$destination")
-        buildOnionForDestination(payload, destination).success { result ->
+        buildOnionForDestination(payload, destination, version).success { result ->
             guardMnode = result.guardMnode
             Log.d("Beldex","guard node-- $guardMnode")
             //Original
@@ -358,72 +361,7 @@ object OnionRequestAPI {
                 try {
                     Log.d("Beldex","am try in Onion req")
                     val response = HTTP.execute(HTTP.Verb.POST, url, body)
-                    val json = try {
-                        JsonUtil.fromJson(response, Map::class.java)
-                    } catch (exception: Exception) {
-                        mapOf( "result" to response.decodeToString())
-                    }
-                    //-Log.d("Beldex","json Onion request $json")
-                    val base64EncodedIVAndCiphertext = json["result"] as? String ?: return@queue deferred.reject(Exception("Invalid JSON"))
-                    val ivAndCiphertext = Base64.decode(base64EncodedIVAndCiphertext)
-
-                    try {
-                        val plaintext = AESGCM.decrypt(ivAndCiphertext, destinationSymmetricKey)
-
-                        try {
-                            @Suppress("NAME_SHADOWING") val json = JsonUtil.fromJson(plaintext.toString(Charsets.UTF_8), Map::class.java)
-                            val statusCode = json["status_code"] as? Int ?: json["status"] as Int
-                            if (statusCode == 406) {
-                                @Suppress("NAME_SHADOWING") val body = mapOf( "result" to "Your clock is out of sync with the master node network." )
-                                val exception = HTTPRequestFailedAtDestinationException(statusCode, body, destination.description)
-                                return@queue deferred.reject(exception)
-                            } else if (json["body"] != null) {
-                                @Suppress("NAME_SHADOWING")
-                                val body: Map<*, *> = if (json["body"] is Map<*, *>) {
-                                    json["body"] as Map<*, *>
-                                } else {
-                                    val bodyAsString = json["body"] as String
-                                    JsonUtil.fromJson(bodyAsString, Map::class.java)
-                                }
-                                if (body["t"] != null) {
-                                    val timestamp = body["t"] as Long
-                                    val offset = timestamp - Date().time
-                                    MnodeAPI.clockOffset = offset
-                                }
-                                if (body.containsKey("hf")) {
-                                    @Suppress("UNCHECKED_CAST")
-                                    val currentHf = body["hf"] as List<Int>
-                                    if (currentHf.size < 2) {
-                                        Log.e("Beldex", "Response contains fork information but doesn't have a hard and soft number")
-                                    } else {
-                                        val hf = currentHf[0]
-                                        val sf = currentHf[1]
-                                        val newForkInfo = ForkInfo(hf, sf)
-                                        if (newForkInfo > MnodeAPI.forkInfo) {
-                                            MnodeAPI.forkInfo = ForkInfo(hf,sf)
-                                        } else if (newForkInfo < MnodeAPI.forkInfo) {
-                                            Log.w("Beldex", "Got a new mnode info fork version that was $newForkInfo, less than current known ${MnodeAPI.forkInfo}")
-                                        }
-                                    }
-                                }
-                                if (statusCode != 200) {
-                                    val exception = HTTPRequestFailedAtDestinationException(statusCode, body, destination.description)
-                                    return@queue deferred.reject(exception)
-                                }
-                                deferred.resolve(body)
-                            } else {
-                                if (statusCode != 200) {
-                                    val exception = HTTPRequestFailedAtDestinationException(statusCode, json, destination.description)
-                                    return@queue deferred.reject(exception)
-                                }
-                                deferred.resolve(json)
-                            }
-                        } catch (exception: Exception) {
-                            deferred.reject(Exception("Invalid JSON: ${plaintext.toString(Charsets.UTF_8)}."))
-                        }
-                    } catch (exception: Exception) {
-                        deferred.reject(exception)
-                    }
+                    handleResponse(response, destinationSymmetricKey, destination, version, deferred)
                 } catch (exception: Exception) {
                     Log.d("Beldex","Am Exception 2 in Onion request")
                     deferred.reject(exception)
@@ -483,6 +421,8 @@ object OnionRequestAPI {
                     Log.d("Beldex","Destination server returned ${exception.statusCode}")
                 } else if (message == "Beldex Server error") {
                     Log.d("Beldex", "message was $message")
+                } else if (exception.statusCode == 404) {
+                    // 404 is probably file server missing a file, don't rebuild path or mark a mnode as bad here
                 } else { // Only drop mnode/path if not receiving above two exception cases
                     handleUnspecificError()
                 }
@@ -496,11 +436,12 @@ object OnionRequestAPI {
     /**
      * Sends an onion request to `mnode`. Builds new paths as needed.
      */
-    internal fun sendOnionRequest(method: Mnode.Method, parameters: Map<*, *>, mnode: Mnode, publicKey: String? = null): Promise<Map<*, *>, Exception> {
+    internal fun sendOnionRequest(method: Mnode.Method, parameters: Map<*, *>, mnode: Mnode, publicKey: String? = null, version: Version): Promise<OnionResponse, Exception> {
         val payload = mapOf( "method" to method.rawValue, "params" to parameters )
         //-Log.d("Beldex","payload in sendOnionRequest $payload ")
         //-Log.d("Beldex","parameters in sendOnionRequest $parameters ")
-        return sendOnionRequest(Destination.Mnode(mnode), payload).recover { exception ->
+        val payloadData = JsonUtil.toJson(payload).toByteArray()
+        return sendOnionRequest(Destination.Mnode(mnode), payloadData, version).recover { exception ->
             val error = when (exception) {
                 is HTTPRequestFailedAtDestinationException -> MnodeAPI.handleMnodeError(exception.statusCode, exception.json, mnode, publicKey)
                 is HTTP.HTTPRequestFailedException -> MnodeAPI.handleMnodeError(exception.statusCode, exception.json, mnode, publicKey)
@@ -516,35 +457,207 @@ object OnionRequestAPI {
      *
      * `publicKey` is the hex encoded public key of the user the call is associated with. This is needed for swarm cache maintenance.
      */
-    fun sendOnionRequest(request: Request, server: String, x25519PublicKey: String, target: String = "/beldex/v3/lsrpc"): Promise<Map<*, *>, Exception> {
-        val headers = request.getHeadersForOnionRequest()
+    fun sendOnionRequest(
+        request: Request,
+        server: String,
+        x25519PublicKey: String,
+        version: Version = Version.V4
+    ): Promise<OnionResponse, Exception> {
+        val url = request.url()
+        val payload = generatePayload(request, server, version)
+        val destination = Destination.Server(url.host(), version.value, x25519PublicKey, url.scheme(), url.port())
+        return sendOnionRequest(destination, payload, version).recover { exception ->
+            Log.d("Beldex", "Couldn't reach server: $url due to error: $exception.")
+            throw exception
+        }
+    }
+    private fun generatePayload(request: Request, server: String, version: Version): ByteArray {
+        val headers = request.getHeadersForOnionRequest().toMutableMap()
         Log.d("Beldex","sendOnionRequest for social group header $headers")
         val url = request.url()
         Log.d("Beldex","sendOnionRequest for social group url $url")
         val urlAsString = url.toString()
         Log.d("Beldex","sendOnionRequest for social group urlAsString $urlAsString")
-        val host = url.host()
-        Log.d("Beldex","sendOnionRequest for social group host $host")
+        val body = request.getBodyForOnionRequest() ?: "null"
+        Log.d("Beldex","sendOnionRequest for social group host $body")
         val endpoint = when {
-            server.count() < urlAsString.count() -> urlAsString.substringAfter(server).removePrefix("/")
+            server.count() < urlAsString.count() -> urlAsString.substringAfter(server)
             else -> ""
         }
         Log.d("Beldex","sendOnionRequest for social group end point  $endpoint")
-        val body = request.getBodyForOnionRequest() ?: "null"
-        //-Log.d("Beldex","sendOnionRequest for social group body  $body")
-        val payload = mapOf(
-            "body" to body,
-            "endpoint" to endpoint,
-            "method" to request.method(),
-            "headers" to headers
-        )
-        //-Log.d("Beldex","sendOnionRequest for social group payload $payload")
-        val destination = Destination.Server(host, target, x25519PublicKey, url.scheme(), url.port())
-        Log.d("Beldex","sendOnionRequest for social group destination $destination")
-        return sendOnionRequest(destination, payload).recover { exception ->
-            Log.d("Beldex", "Couldn't reach server: $urlAsString due to error: $exception.")
-            throw exception
+        return if (version == Version.V4) {
+            if (request.body() != null &&
+                headers.keys.find { it.equals("Content-Type", true) } == null) {
+                headers["Content-Type"] = "application/json"
+            }
+            val requestPayload = mapOf(
+                "endpoint" to endpoint,
+                "method" to request.method(),
+                "headers" to headers
+            )
+            val requestData = JsonUtil.toJson(requestPayload).toByteArray()
+            val prefixData = "l${requestData.size}:".toByteArray(Charsets.US_ASCII)
+            val suffixData = "e".toByteArray(Charsets.US_ASCII)
+            if (request.body() != null) {
+                val bodyData = body.toString().toByteArray()
+                val bodyLengthData = "${bodyData.size}:".toByteArray(Charsets.US_ASCII)
+                prefixData + requestData + bodyLengthData + bodyData + suffixData
+            } else {
+                prefixData + requestData + suffixData
+            }
+        } else {
+            val payload = mapOf(
+                "body" to body,
+                "endpoint" to endpoint.removePrefix("/"),
+                "method" to request.method(),
+                "headers" to headers
+            )
+            JsonUtil.toJson(payload).toByteArray()
         }
     }
+    private fun handleResponse(
+        response: ByteArray,
+        destinationSymmetricKey: ByteArray,
+        destination: Destination,
+        version: Version,
+        deferred: Deferred<OnionResponse, Exception>
+    ) {
+        if (version == Version.V4) {
+            try {
+                if (response.size <= AESGCM.ivSize) return deferred.reject(Exception("Invalid response"))
+                // The data will be in the form of `l123:jsone` or `l123:json456:bodye` so we need to break the data into
+                // parts to properly process it
+                val plaintext = AESGCM.decrypt(response, destinationSymmetricKey)
+                if (!byteArrayOf(plaintext.first()).contentEquals("l".toByteArray())) return deferred.reject(Exception("Invalid response"))
+                val infoSepIdx = plaintext.indexOfFirst { byteArrayOf(it).contentEquals(":".toByteArray()) }
+                val infoLenSlice = plaintext.slice(1 until infoSepIdx)
+                val infoLength = infoLenSlice.toByteArray().toString(Charsets.US_ASCII).toIntOrNull()
+                if (infoLenSlice.size <= 1 || infoLength == null) return deferred.reject(Exception("Invalid response"))
+                val infoStartIndex = "l$infoLength".length + 1
+                val infoEndIndex = infoStartIndex + infoLength
+                val info = plaintext.slice(infoStartIndex until infoEndIndex)
+                val responseInfo = JsonUtil.fromJson(info.toByteArray(), Map::class.java)
+                when (val statusCode = responseInfo["code"].toString().toInt()) {
+                    // Custom handle a clock out of sync error (v4 returns '425' but included the '406' just in case)
+                    406, 425 -> {
+                        @Suppress("NAME_SHADOWING")
+                        val exception = HTTPRequestFailedAtDestinationException(
+                            statusCode,
+                            mapOf("result" to "Your clock is out of sync with the master node network."),
+                            destination.description
+                        )
+                        return deferred.reject(exception)
+                    }
+                    // Handle error status codes
+                    !in 200..299 -> {
+                        val exception = HTTPRequestFailedAtDestinationException(
+                            statusCode,
+                            responseInfo,
+                            destination.description
+                        )
+                        return deferred.reject(exception)
+                    }
+                }
+                val responseBody = plaintext.getBody(infoLength, infoEndIndex)
+                // If there is no data in the response, i.e. only `l123:jsone`, then just return the ResponseInfo
+                if (responseBody.isEmpty()) {
+                    return deferred.resolve(OnionResponse(responseInfo, null))
+                }
+                return deferred.resolve(OnionResponse(responseInfo, responseBody))
+            } catch (exception: Exception) {
+                deferred.reject(exception)
+            }
+        } else {
+            val json = try {
+                JsonUtil.fromJson(response, Map::class.java)
+            } catch (exception: Exception) {
+                mapOf( "result" to response.decodeToString())
+            }
+            //-Log.d("Beldex","json Onion request $json")
+            val base64EncodedIVAndCiphertext = json["result"] as? String ?: return deferred.reject(Exception("Invalid JSON"))
+            val ivAndCiphertext = Base64.decode(base64EncodedIVAndCiphertext)
+            try {
+                val plaintext = AESGCM.decrypt(ivAndCiphertext, destinationSymmetricKey)
+                try {
+                    @Suppress("NAME_SHADOWING") val json = JsonUtil.fromJson(plaintext.toString(Charsets.UTF_8), Map::class.java)
+                    val statusCode = json["status_code"] as? Int ?: json["status"] as Int
+                    if (statusCode == 406) {
+                        @Suppress("NAME_SHADOWING") val body = mapOf( "result" to "Your clock is out of sync with the master node network." )
+                        val exception = HTTPRequestFailedAtDestinationException(statusCode, body, destination.description)
+                        return deferred.reject(exception)
+                    } else if (json["body"] != null) {
+                        @Suppress("NAME_SHADOWING")
+                        val body: Map<*, *> = if (json["body"] is Map<*, *>) {
+                            json["body"] as Map<*, *>
+                        } else {
+                            val bodyAsString = json["body"] as String
+                            JsonUtil.fromJson(bodyAsString, Map::class.java)
+                        }
+                        if (body["t"] != null) {
+                            val timestamp = body["t"] as Long
+                            val offset = timestamp - Date().time
+                            MnodeAPI.clockOffset = offset
+                        }
+                        if (body.containsKey("hf")) {
+                            @Suppress("UNCHECKED_CAST")
+                            val currentHf = body["hf"] as List<Int>
+                            if (currentHf.size < 2) {
+                                Log.e("Beldex", "Response contains fork information but doesn't have a hard and soft number")
+                            } else {
+                                val hf = currentHf[0]
+                                val sf = currentHf[1]
+                                val newForkInfo = ForkInfo(hf, sf)
+                                if (newForkInfo > MnodeAPI.forkInfo) {
+                                    MnodeAPI.forkInfo = ForkInfo(hf,sf)
+                                } else if (newForkInfo < MnodeAPI.forkInfo) {
+                                    Log.w("Beldex", "Got a new mnode info fork version that was $newForkInfo, less than current known ${MnodeAPI.forkInfo}")
+                                }
+                            }
+                        }
+                        if (statusCode != 200) {
+                            val exception = HTTPRequestFailedAtDestinationException(statusCode, body, destination.description)
+                            return deferred.reject(exception)
+                        }
+                        deferred.resolve(OnionResponse(body, JsonUtil.toJson(body).toByteArray()))
+                    } else {
+                        if (statusCode != 200) {
+                            val exception = HTTPRequestFailedAtDestinationException(statusCode, json, destination.description)
+                            return deferred.reject(exception)
+                        }
+                        deferred.resolve(OnionResponse(json, JsonUtil.toJson(json).toByteArray()))
+                    }
+                } catch (exception: Exception) {
+                    deferred.reject(Exception("Invalid JSON: ${plaintext.toString(Charsets.UTF_8)}."))
+                }
+            } catch (exception: Exception) {
+                deferred.reject(exception)
+            }
+        }
+    }
+    private fun ByteArray.getBody(infoLength: Int, infoEndIndex: Int): ByteArray {
+        // If there is no data in the response, i.e. only `l123:jsone`, then just return the ResponseInfo
+        val infoLengthStringLength = infoLength.toString().length
+        if (size <= infoLength + infoLengthStringLength + 2/*l and e bytes*/) {
+            return byteArrayOf()
+        }
+        // Extract the response data as well
+        val dataSlice = slice(infoEndIndex + 1 until size - 1)
+        val dataSepIdx = dataSlice.indexOfFirst { byteArrayOf(it).contentEquals(":".toByteArray()) }
+        val responseBody = dataSlice.slice(dataSepIdx + 1 until dataSlice.size)
+        return responseBody.toByteArray()
+    }
     // endregion
+}
+
+enum class Version(val value: String) {
+    V2("/beldex/v2/lsrpc"),
+    V3("/beldex/v3/lsrpc"),
+    V4("/beldex/v4/lsrpc");
+}
+data class OnionResponse(
+    val info: Map<*, *>,
+    val body: ByteArray? = null
+) {
+    val code: Int? get() = info["code"] as? Int
+    val message: String? get() = info["message"] as? String
 }

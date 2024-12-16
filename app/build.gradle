@@ -26,8 +26,8 @@ dependencies {
 configurations.all {
     exclude module: "commons-logging"
 }
-def canonicalVersionCode = 73
-def canonicalVersionName = "2.6.2"
+def canonicalVersionCode = 74
+def canonicalVersionName = "2.6.3"
 
 def postFixSize = 10
 def abiPostFix = ['armeabi-v7a' : 1,
@@ -146,8 +146,10 @@ android {
         play {
             dimension "distribution"
 
+            apply plugin: 'com.google.gms.google-services'
             ext.websiteUpdateUrl = "null"
             buildConfigField "boolean", "PLAY_STORE_DISABLED", "false"
+            buildConfigField "com.beldex.libbchat.utilities.Device", "DEVICE", "com.beldex.libbchat.utilities.Device.ANDROID"
             buildConfigField "String", "NOPLAY_UPDATE_URL", "$ext.websiteUpdateUrl"
         }
         website {
@@ -155,23 +157,28 @@ android {
 
             ext.websiteUpdateUrl = "https://github.com/Beldex-Coin/bchat-android/releases"
             buildConfigField "boolean", "PLAY_STORE_DISABLED", "true"
+            buildConfigField "com.beldex.libbchat.utilities.Device", "DEVICE", "com.beldex.libbchat.utilities.Device.ANDROID"
             buildConfigField "String", "NOPLAY_UPDATE_URL", "\"$ext.websiteUpdateUrl\""
         }
         mainNet {
             dimension "targetNet"
 
+            apply plugin: 'com.google.gms.google-services'
             buildConfigField "String", "NETWORK_TYPE", "\"mainnet\""
             buildConfigField "String", "REPORT_ISSUE_ID", "\"bd27b58b7cfc65df45d1632c37609cdf3414040e2330b1814ec8fff2087d863952\""
             buildConfigField "boolean", "USE_TESTNET", "false"
             buildConfigField "String", "EXPLORER_URL", "\"https://explorer.beldex.io\""
+            buildConfigField "com.beldex.libbchat.utilities.Device", "DEVICE", "com.beldex.libbchat.utilities.Device.ANDROID"
         }
         devNet {
             dimension "targetNet"
 
+            apply plugin: 'com.google.gms.google-services'
             buildConfigField "String", "NETWORK_TYPE", "\"devnet\""
             buildConfigField "String", "REPORT_ISSUE_ID", "\"bd27b58b7cfc65df45d1632c37609cdf3414040e2330b1814ec8fff2087d863952\""
             buildConfigField "boolean", "USE_TESTNET", "true"
             buildConfigField "String", "EXPLORER_URL", "\"http://154.26.139.105\""
+            buildConfigField "com.beldex.libbchat.utilities.Device", "DEVICE", "com.beldex.libbchat.utilities.Device.ANDROID"
         }
     }
 

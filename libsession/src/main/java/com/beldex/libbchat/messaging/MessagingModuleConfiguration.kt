@@ -4,10 +4,12 @@ import android.content.Context
 import com.goterl.lazysodium.utils.KeyPair
 import com.beldex.libbchat.database.MessageDataProvider
 import com.beldex.libbchat.database.StorageProtocol
+import com.beldex.libbchat.utilities.Device
 
 class MessagingModuleConfiguration(
     val context: Context,
     val storage: StorageProtocol,
+    val device: Device,
     val messageDataProvider: MessageDataProvider,
     val getUserED25519KeyPair: ()-> KeyPair?
 ) {

@@ -121,6 +121,7 @@ import java.io.File
 import java.util.Collections
 import java.util.Random
 import javax.inject.Inject
+import io.beldex.bchat.notifications.PushRegistry
 
 @AndroidEntryPoint
 class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDelegate,HomeFragment.HomeFragmentListener,ConversationFragmentV2.Listener,UserDetailsBottomSheet.UserDetailsBottomSheetListener,VoiceMessageViewDelegate, ActivityDispatcher,
@@ -135,6 +136,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     lateinit var textSecurePreferences: TextSecurePreferences
     @Inject
     lateinit var viewModelFactory: ConversationViewModel.AssistedFactory
+    @Inject lateinit var pushRegistry: PushRegistry
 
     @Inject
     lateinit var walletManager: WalletManager
@@ -439,8 +441,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 (applicationContext as ApplicationContext).startPollingIfNeeded()
                 // update things based on TextSecurePrefs (profile info etc)
                 // Set up remaining components if needed
-                val application = ApplicationContext.getInstance(this@HomeActivity)
-                application.registerForFCMIfNeeded(false)
+                pushRegistry.refresh(false)
                 val userPublicKey = TextSecurePreferences.getLocalNumber(this@HomeActivity)
                 if (userPublicKey != null) {
                     OpenGroupManager.startPolling()

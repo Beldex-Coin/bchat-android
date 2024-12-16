@@ -62,6 +62,7 @@ import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.groupSizeLimit
 import com.beldex.libbchat.utilities.Address
+import com.beldex.libbchat.utilities.Device
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.compose_utils.BChatCheckBox
@@ -91,6 +92,7 @@ fun CreateSecretGroup(
         mutableStateOf("")
     }
     val context = LocalContext.current
+    var device: Device = Device.ANDROID
     val keyboardController = LocalSoftwareKeyboardController.current
     if (TextSecurePreferences.isScreenSecurityEnabled(context))
         activity.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE) else {
@@ -271,7 +273,7 @@ fun CreateSecretGroup(
                             isButtonEnabled = false
                             scope.launch(Dispatchers.Main) {
                                 if(CheckOnline.isOnline(context)) {
-                                    createClosedGroup(groupName.trim(), context, activity, selectedContact, showLoader={
+                                    createClosedGroup(device, groupName.trim(), context, activity, selectedContact, showLoader={
                                         showLoader=it
                                     })
                                 }else {
@@ -409,6 +411,7 @@ fun getUserDisplayName(publicKey: String, context: Context): String {
 }
 
 private fun createClosedGroup(
+    device: Device,
     name: String,
     context: Context,
     activity: Activity?,
@@ -445,7 +448,7 @@ private fun createClosedGroup(
     }else {
         showLoader(true)
         val userPublicKey = TextSecurePreferences.getLocalNumber(context)!!
-        MessageSender.createClosedGroup(name, selected + setOf(userPublicKey))
+        MessageSender.createClosedGroup(device, name, selected + setOf(userPublicKey))
             .successUi { groupID ->
                 val threadID =
                     DatabaseComponent.get(context).threadDatabase().getOrCreateThreadIdFor(

@@ -7,7 +7,7 @@ import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.deferred
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.messages.control.ClosedGroupControlMessage
-import com.beldex.libbchat.messaging.sending_receiving.notifications.PushNotificationAPI
+import com.beldex.libbchat.messaging.sending_receiving.notifications.PushRegistryV1
 import com.beldex.libbchat.messaging.sending_receiving.pollers.ClosedGroupPollerV2
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.Address.Companion.fromSerialized
@@ -25,12 +25,13 @@ import java.util.concurrent.ConcurrentHashMap
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender.Error
 import com.beldex.libbchat.messaging.sending_receiving.notifications.MessageNotifier
 import com.beldex.libbchat.mnode.MnodeAPI
+import com.beldex.libbchat.utilities.Device
 
 const val groupSizeLimit = 100
 
 val pendingKeyPairs = ConcurrentHashMap<String, Optional<ECKeyPair>>()
 
-fun MessageSender.create(name: String, members: Collection<String>): Promise<String, Exception> {
+fun MessageSender.create(device: Device, name: String, members: Collection<String>): Promise<String, Exception> {
     val deferred = deferred<String, Exception>()
     ThreadUtils.queue {
         // Prepare
@@ -80,7 +81,7 @@ fun MessageSender.create(name: String, members: Collection<String>): Promise<Str
         }
 
         // Notify the PN server
-        PushNotificationAPI.performOperation(PushNotificationAPI.ClosedGroupOperation.Subscribe, groupPublicKey, userPublicKey)
+        PushRegistryV1.register(device = device, publicKey = userPublicKey)
         // Start polling
         ClosedGroupPollerV2.shared.startPolling(groupPublicKey)
         // Fulfill the promise

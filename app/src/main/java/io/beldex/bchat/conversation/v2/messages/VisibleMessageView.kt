@@ -372,11 +372,13 @@ class VisibleMessageView : LinearLayout {
     // region Interaction
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (onPress == null || onSwipeToReply == null || onLongPress == null) { return false }
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> onDown(event)
-            MotionEvent.ACTION_MOVE -> onMove(event)
-            MotionEvent.ACTION_CANCEL -> onCancel(event)
-            MotionEvent.ACTION_UP -> onUp(event)
+        if(!TextSecurePreferences.getIsReactionOverlayVisible(context)) {
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> onDown(event)
+                MotionEvent.ACTION_MOVE -> onMove(event)
+                MotionEvent.ACTION_CANCEL -> onCancel(event)
+                MotionEvent.ACTION_UP -> onUp(event)
+            }
         }
         return true
     }

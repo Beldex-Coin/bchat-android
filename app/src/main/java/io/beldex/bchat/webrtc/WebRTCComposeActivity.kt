@@ -868,7 +868,7 @@ class WebRTCComposeActivity : ComponentActivity() {
 
                         Text(
                             text=isPersonNameText,
-                            style=BChatTypography.titleMedium.copy(color=MaterialTheme.appColors.textColor, fontSize=24.sp, fontWeight=FontWeight(700)),
+                            style=BChatTypography.titleMedium.copy(color=MaterialTheme.appColors.textColor, fontSize=20.sp, fontWeight=FontWeight(700)),
                             textAlign=TextAlign.Center,
                             modifier=Modifier.padding(top = 12.dp, start = 12.dp, end = 12.dp).offset(y= (-50).dp),
                         )
@@ -930,27 +930,44 @@ class WebRTCComposeActivity : ComponentActivity() {
                             Box(
                                 modifier = Modifier.height(140.dp)
                                     .width(110.dp).background(
-                                    color = Color.Black,
-                                    shape = RoundedCornerShape(12.dp)
+                                    color = MaterialTheme.appColors.localVideoViewBackground,
+                                    shape = RoundedCornerShape(12.dp),
                                 ).clickable {
                                         callViewModel.swapVideos()
-                                }
+                                },
+                                contentAlignment = Alignment.Center
                             ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.ic_disable_video_call),
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .align(Alignment.Center)
-                                        .size(15.dp)
-                                )
+                                Box(modifier=Modifier
+                                    .padding(4.dp)
+                                    .height(54.dp)
+                                    .width(54.dp)
+                                    .border(
+                                        width=0.45.dp,
+                                        color=MaterialTheme.appColors.localVideoViewImageBorder,
+                                        shape=CircleShape
+                                    )
+                                    .aspectRatio(1f)
+                                    .background(
+                                        color=MaterialTheme.appColors.localVideoViewImageBackground,
+                                        shape=CircleShape
+                                    ), contentAlignment=Alignment.Center) {
+
+                                    Box(
+                                        modifier=Modifier
+                                            .padding(3.dp)
+                                            .height(40.dp)
+                                            .width(40.dp)
+                                            .fillMaxWidth(),
+                                        contentAlignment=Alignment.Center,
+                                    ) {
+                                        ProfilePictureComponent(
+                                            publicKey=recipientPublicKey,
+                                            displayName=getUserDisplayName(recipientPublicKey),
+                                            containerSize=40.dp,
+                                            pictureMode=ProfilePictureMode.SmallPicture)
+                                    }
+                                }
                             }
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_baseline_screen_rotation_alt_24),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                                    .size(15.dp).padding(top = 5.dp, end = 5.dp)
-                            )
                         } else {
                             Surface(
                                 modifier = Modifier.height(140.dp).width(110.dp).background(
@@ -966,13 +983,6 @@ class WebRTCComposeActivity : ComponentActivity() {
                                     )
                                 }
                             }
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_baseline_screen_rotation_alt_24),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                                    .size(15.dp).padding(top = 5.dp, end = 5.dp)
-                            )
                         }
 
                     }

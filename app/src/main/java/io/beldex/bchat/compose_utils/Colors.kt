@@ -142,10 +142,7 @@ class Colors(
     val textOldGreen: Color,
     val disabledLetsBchatButton: Color,
     val disabledLetsBchatContent: Color,
-    val newChatCardBackground: Color,
-    val localVideoViewBackground: Color,
-    val localVideoViewImageBorder: Color,
-    val localVideoViewImageBackground: Color
+    val newChatCardBackground: Color
 )
 
 val lightColors = Colors(
@@ -272,10 +269,7 @@ val lightColors = Colors(
     textOldGreen = Color(0xFF00BD40),
     disabledLetsBchatButton = Color(0xFFF8F8F8),
     disabledLetsBchatContent = Color(0xFF6C6C78),
-    newChatCardBackground = Color(0xFFECECEC),
-    localVideoViewBackground = Color(0xFFFFFFFF),
-    localVideoViewImageBorder = Color(0xFF363645),
-    localVideoViewImageBackground = Color(0xFF1C1C26)
+    newChatCardBackground = Color(0xFFECECEC)
 )
 
 val darkColors = Colors(
@@ -402,10 +396,7 @@ val darkColors = Colors(
     textOldGreen = Color(0xFF00BD40),
     disabledLetsBchatButton = Color(0xFF272733),
     disabledLetsBchatContent = Color(0xFF6C6C78),
-    newChatCardBackground = Color(0xFF111119),
-    localVideoViewBackground = Color(0xFF2C2C3B),
-    localVideoViewImageBorder = Color(0xFF363645),
-    localVideoViewImageBackground = Color(0xFFF6F6F6)
+    newChatCardBackground = Color(0xFF111119)
 )
 
 

@@ -930,7 +930,7 @@ class WebRTCComposeActivity : ComponentActivity() {
                             Box(
                                 modifier = Modifier.height(140.dp)
                                     .width(110.dp).background(
-                                    color = MaterialTheme.appColors.localVideoViewBackground,
+                                    color = MaterialTheme.appColors.actionIconBackground,
                                     shape = RoundedCornerShape(12.dp),
                                 ).clickable {
                                         callViewModel.swapVideos()
@@ -943,12 +943,12 @@ class WebRTCComposeActivity : ComponentActivity() {
                                     .width(54.dp)
                                     .border(
                                         width=0.45.dp,
-                                        color=MaterialTheme.appColors.localVideoViewImageBorder,
+                                        color=Color(0xFF363645),
                                         shape=CircleShape
                                     )
                                     .aspectRatio(1f)
                                     .background(
-                                        color=MaterialTheme.appColors.localVideoViewImageBackground,
+                                        color=MaterialTheme.appColors.editTextBackground,
                                         shape=CircleShape
                                     ), contentAlignment=Alignment.Center) {
 

@@ -1016,6 +1016,7 @@ class WebRTCComposeActivity : ComponentActivity() {
                                 modifier = Modifier
                                     .height(140.dp)
                                     .width(110.dp)
+                                    .clip(RoundedCornerShape(12.dp))
                                     .background(
                                         color = Color.Black,
                                         shape = RoundedCornerShape(12.dp)
@@ -1369,7 +1370,7 @@ class WebRTCComposeActivity : ComponentActivity() {
 
     @Composable
     fun VideoCallSurfaceView(modifier : Modifier=Modifier, surfaceView : SurfaceView) {
-        AndroidView(modifier=modifier.background(
+        AndroidView(modifier=modifier.clip(RoundedCornerShape(12.dp)).background(
             color = Color.Black,
             shape = RoundedCornerShape(12.dp)
         ), factory={ surfaceView }, update={ view ->

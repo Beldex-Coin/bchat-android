@@ -644,12 +644,16 @@ class DisplayNameActivity : BaseActionBarActivity() {
         for (nodeEntry: Map.Entry<String?, *>? in storedNodes!!.entries) {
             if (nodeEntry != null) { // just in case, ignore possible future errors
                 val nodeId = nodeEntry.value as String
-                val addedNode: NodeInfo? = addFavourite(nodeId)!!
-                if (addedNode != null) {
-                    if (nodeId == selectedNodeId) {
-                        //Important
-                        addedNode.isSelected = true
+                try {
+                    val addedNode: NodeInfo? = addFavourite(nodeId)!!
+                    if (addedNode != null) {
+                        if (nodeId == selectedNodeId) {
+                            //Important
+                            addedNode.isSelected = true
+                        }
                     }
+                } catch (ex: NullPointerException) {
+                    Log.d("Add Favourite Node, ", ex.message.toString())
                 }
             }
         }

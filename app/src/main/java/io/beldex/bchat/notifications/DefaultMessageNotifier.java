@@ -316,7 +316,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
         for (long threadId : notificationState.getThreads()) {
           sendSingleThreadNotification(context, new NotificationState(notificationState.getNotificationsForThread(threadId)), false, true);
         }
-      } else if (notificationState.getMessageCount() > 0) {
+      } else if (notificationState.getNotificationCount() > 0) {
         sendSingleThreadNotification(context, notificationState, signal, false);
       } else {
         cancelActiveNotifications(context);
@@ -325,7 +325,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
         Log.e(TAG,"Error creating notification",e);
       }
       cancelOrphanedNotifications(context, notificationState);
-      updateBadge(context, notificationState.getMessageCount());
+      updateBadge(context, notificationState.getNotificationCount());
 
       if (signal) {
         scheduleReminder(context, reminderCount);
@@ -351,7 +351,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
 
     SingleRecipientNotificationBuilder builder        = new SingleRecipientNotificationBuilder(context, TextSecurePreferences.getNotificationPrivacy(context));
     List<NotificationItem>             notifications  = notificationState.getNotifications();
-    Recipient                          recipient      = notifications.get(0).getRecipient();
+    Recipient                          messageOriginator = notifications.get(0).getRecipient();
     int                                notificationId = (int) (SUMMARY_NOTIFICATION_ID + (bundled ? notifications.get(0).getThreadId() : 0));
     String                             messageIdTag   = String.valueOf(notifications.get(0).getTimestamp());
 
@@ -368,19 +368,19 @@ public class DefaultMessageNotifier implements MessageNotifier {
 
     builder.putStringExtra(LATEST_MESSAGE_ID_TAG, messageIdTag);
 
-    CharSequence text = notifications.get(0).getText();
+    CharSequence notificationText = notifications.get(0).getText();
 
     builder.setThread(notifications.get(0).getRecipient());
-    builder.setMessageCount(notificationState.getMessageCount());
+    builder.setMessageCount(notificationState.getNotificationCount());
     MentionManagerUtilities.INSTANCE.populateUserPublicKeyCacheIfNeeded(notifications.get(0).getThreadId(),context);
     // TODO: Removing highlighting mentions in the notification because this context is the libsession one which
     // TODO: doesn't have access to the `R.attr.message_sent_text_color` and `R.attr.message_received_text_color`
     // TODO: attributes to perform the colour lookup. Also, it makes little sense to highlight the mentions using
     // TODO: the app theme as it may result in insufficient contrast with the notification background which will
     // TODO: be using the SYSTEM theme.
-    builder.setPrimaryMessageBody(recipient, notifications.get(0).getIndividualRecipient(),
+    builder.setPrimaryMessageBody(messageOriginator, notifications.get(0).getIndividualRecipient(),
             //MentionUtilities.highlightMentions(text == null ? "" : text, notifications.get(0).getThreadId(), context), // Removing hightlighting mentions -ACL
-            text == null ? "" : text,
+            notificationText == null ? "" : notificationText,
                                   notifications.get(0).getSlideDeck());
     builder.setContentIntent(notifications.get(0).getPendingIntent(context));
     builder.setDeleteIntent(notificationState.getDeleteIntent(context));
@@ -388,12 +388,12 @@ public class DefaultMessageNotifier implements MessageNotifier {
     builder.setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY);
     builder.setAutoCancel(true);
 
-    ReplyMethod replyMethod = ReplyMethod.forRecipient(context, recipient);
+    ReplyMethod replyMethod = ReplyMethod.forRecipient(context, messageOriginator);
 
-    boolean canReply = BchatMetaProtocol.canUserReplyToNotification(recipient);
+    boolean canReply = BchatMetaProtocol.canUserReplyToNotification(messageOriginator);
 
-    PendingIntent quickReplyIntent = canReply ? notificationState.getQuickReplyIntent(context, recipient) :  null;
-    PendingIntent remoteReplyIntent = canReply ? notificationState.getRemoteReplyIntent(context, recipient, replyMethod) : null;
+    PendingIntent quickReplyIntent = canReply ? notificationState.getQuickReplyIntent(context, messageOriginator) :  null;
+    PendingIntent remoteReplyIntent = canReply ? notificationState.getRemoteReplyIntent(context, messageOriginator, replyMethod) : null;
 
     builder.addActions(notificationState.getMarkAsReadIntent(context, notificationId),
                        quickReplyIntent,
@@ -401,7 +401,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
                        replyMethod);
 
     if (canReply) {
-      builder.addAndroidAutoAction(notificationState.getAndroidAutoReplyIntent(context, recipient),
+      builder.addAndroidAutoAction(notificationState.getAndroidAutoReplyIntent(context, messageOriginator),
                                    notificationState.getAndroidAutoHeardIntent(context, notificationId),
                                    notifications.get(0).getTimestamp());
     }
@@ -438,7 +438,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
     MultipleRecipientNotificationBuilder builder       = new MultipleRecipientNotificationBuilder(context, TextSecurePreferences.getNotificationPrivacy(context));
     List<NotificationItem>               notifications = notificationState.getNotifications();
 
-    builder.setMessageCount(notificationState.getMessageCount(), notificationState.getThreadCount());
+    builder.setMessageCount(notificationState.getNotificationCount(), notificationState.getThreadCount());
     builder.setMostRecentSender(notifications.get(0).getIndividualRecipient(), notifications.get(0).getRecipient());
     builder.setGroup(NOTIFICATION_GROUP);
     builder.setDeleteIntent(notificationState.getDeleteIntent(context));

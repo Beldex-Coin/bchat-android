@@ -1065,6 +1065,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
      fun sendEmojiReaction(emoji: String, originalMessage: MessageRecord) {
         // Create the message
         val recipient = viewModel.recipient.value ?: return
+        if(recipient.isBlocked) {
+            unblock()
+            return
+        }
         val reactionMessage = VisibleMessage()
         val emojiTimestamp = System.currentTimeMillis()
         reactionMessage.sentTimestamp = emojiTimestamp
@@ -1097,6 +1101,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
      fun sendEmojiRemoval(emoji: String, originalMessage: MessageRecord) {
         val recipient = viewModel.recipient.value ?: return
+         if(recipient.isBlocked){
+             unblock()
+             return
+         }
         val message = VisibleMessage()
         val emojiTimestamp = System.currentTimeMillis()
         message.sentTimestamp = emojiTimestamp

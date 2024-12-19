@@ -22,6 +22,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.text.Editable
 import android.text.Html
 import android.text.Spannable
@@ -324,6 +325,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     var searchViewModel: SearchViewModel? = null
     var searchViewItem: MenuItem? = null
 
+    private var emojiLastClickTime: Long = 0
 
     private val isScrolledToBottom: Boolean
         get() = binding.conversationRecyclerView.isScrolledToBottom
@@ -1189,8 +1191,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
     override fun onReactionLongClicked(messageId: MessageId,emoji: String?) {
-        val fragment = ReactionsDialogFragment.create(messageId,emoji)
-        fragment.show(requireActivity().supportFragmentManager, null)
+        if (SystemClock.elapsedRealtime() - emojiLastClickTime >= 1000) {
+            emojiLastClickTime = SystemClock.elapsedRealtime()
+            val fragment = ReactionsDialogFragment.create(messageId,emoji)
+            fragment.show(requireActivity().supportFragmentManager, null)
+        }
     }
 
     inner class ReactionsToolbarListener(val message: MessageRecord) :

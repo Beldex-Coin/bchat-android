@@ -16,6 +16,7 @@
  */
 package io.beldex.bchat.notifications;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -24,6 +25,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
@@ -36,6 +38,7 @@ import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -379,7 +382,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
     // TODO: the app theme as it may result in insufficient contrast with the notification background which will
     // TODO: be using the SYSTEM theme.
     builder.setPrimaryMessageBody(messageOriginator, notifications.get(0).getIndividualRecipient(),
-            //MentionUtilities.highlightMentions(text == null ? "" : text, notifications.get(0).getThreadId(), context), // Removing hightlighting mentions -ACL
+            //MentionUtilities.highlightMentions(text == null ? "" : text, notifications.get(0).getThreadId(), context), // Removing highlighting mentions -ACL
             notificationText == null ? "" : notificationText,
                                   notifications.get(0).getSlideDeck());
     builder.setContentIntent(notifications.get(0).getPendingIntent(context));
@@ -424,6 +427,15 @@ public class DefaultMessageNotifier implements MessageNotifier {
       builder.setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY);
     }
 
+    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+      // here to request the missing permissions, and then overriding
+      //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+      //                                          int[] grantResults)
+      // to handle the case where the user grants the permission. See the documentation
+      // for ActivityCompat#requestPermissions for more details.
+      return;
+    }
+
     Notification notification = builder.build();
     NotificationManagerCompat.from(context).notify(notificationId, notification);
     Log.i(TAG, "Posted notification. " + notification.toString());
@@ -465,17 +477,30 @@ public class DefaultMessageNotifier implements MessageNotifier {
 
     while(iterator.hasPrevious()) {
       NotificationItem item = iterator.previous();
+      CharSequence text = "";
+      if(item.getText() != null){ text = item.getText(); }
       builder.addMessageBody(item.getIndividualRecipient(), item.getRecipient(),
-                             MentionUtilities.highlightMentions(item.getText(), item.getThreadId(), context));
+                             MentionUtilities.highlightMentions(text, item.getThreadId(), context));
     }
 
     if (signal) {
+      CharSequence text = "";
+      if(notifications.get(0).getText() != null){ text = notifications.get(0).getText(); }
       builder.setAlarms(notificationState.getRingtone(context), notificationState.getVibrate());
       builder.setTicker(notifications.get(0).getIndividualRecipient(),
-                        MentionUtilities.highlightMentions(notifications.get(0).getText(), notifications.get(0).getThreadId(), context));
+                        MentionUtilities.highlightMentions(text, notifications.get(0).getThreadId(), context));
     }
 
     builder.putStringExtra(LATEST_MESSAGE_ID_TAG, messageIdTag);
+
+    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+      // here to request the missing permissions, and then overriding
+      //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+      //                                          int[] grantResults)
+      // to handle the case where the user grants the permission. See the documentation
+      // for ActivityCompat#requestPermissions for more details.
+      return;
+    }
 
     Notification notification = builder.build();
     NotificationManagerCompat.from(context).notify(SUMMARY_NOTIFICATION_ID, builder.build());

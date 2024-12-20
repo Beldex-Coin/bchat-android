@@ -1220,6 +1220,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 ConversationReactionOverlay.Action.VIEW_INFO -> showMessageDetail(selectedItems)
                 ConversationReactionOverlay.Action.SELECT -> selectMessages(selectedItems, position)
                 ConversationReactionOverlay.Action.DELETE -> deleteMessages(selectedItems)
+                ConversationReactionOverlay.Action.COPY_BCHAT_ID -> copyBchatID(selectedItems)
                 else -> {}
             }
         }

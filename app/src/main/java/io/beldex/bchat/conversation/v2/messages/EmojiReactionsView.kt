@@ -109,8 +109,7 @@ class EmojiReactionsView : ConstraintLayout, OnTouchListener {
                     extended = true
                     displayReactions(Int.MAX_VALUE)
                 }
-                pill.findViewById<View>(R.id.reactions_pill_count).visibility = GONE
-                pill.findViewById<View>(R.id.reactions_pill_spacer).visibility = GONE
+                binding.layoutEmojiContainer.setPadding(16,0,10,0)
                 overflowContainer.addView(pill)
             } else {
                 val pill = buildPill(context, this, reaction, false)
@@ -254,5 +253,10 @@ class EmojiReactionsView : ConstraintLayout, OnTouchListener {
             }
             return this.count.compareTo(other.count)
         }
+    }
+
+    interface VisibleMessageViewAligned {
+        fun showLessClicked(clicked: Boolean)
+        // endregion
     }
 }

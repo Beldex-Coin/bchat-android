@@ -80,6 +80,7 @@
         tools:visibility="visible"
         android:layout_gravity="center_vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/layout_flex_container"
-        />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/layout_flex_container"/>
 </io.beldex.bchat.conversation.v2.messages.EmojiReactionsView>

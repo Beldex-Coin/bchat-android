@@ -199,7 +199,7 @@ class DefaultConversationRepository @Inject constructor(
             }
         } else {
             messageDataProvider.deleteMessage(message.id, !message.isMms)
-            messageDataProvider.getServerHashForMessage(message.id)?.let { serverHash ->
+            messageDataProvider.getServerHashForMessage(message.id,message.isMms)?.let { serverHash ->
                 var publicKey = recipient.address.serialize()
                 if (recipient.isClosedGroupRecipient) {
                     publicKey = GroupUtil.doubleDecodeGroupID(publicKey).toHexString()
@@ -216,7 +216,7 @@ class DefaultConversationRepository @Inject constructor(
 
     override fun buildUnsendRequest(recipient: Recipient, message: MessageRecord): UnsendRequest? {
         if (recipient.isOpenGroupRecipient) return null
-        messageDataProvider.getServerHashForMessage(message.id) ?: return null
+        messageDataProvider.getServerHashForMessage(message.id,message.isMms) ?: return null
         val unsendRequest = UnsendRequest()
         if (message.isOutgoing) {
             unsendRequest.author = textSecurePreferences.getLocalNumber()

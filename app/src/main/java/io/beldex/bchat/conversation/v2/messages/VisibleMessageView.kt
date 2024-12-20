@@ -192,29 +192,10 @@ class VisibleMessageView : LinearLayout {
         // Expiration timer
         updateExpirationTimer(message)
 
-        // Emoji Reactions
-        /*val emojiLayoutParams = binding.emojiReactionsView.layoutParams as ConstraintLayout.LayoutParams
-        emojiLayoutParams.horizontalBias = if (message.isOutgoing) 1f else 0f
-        binding.emojiReactionsView.layoutParams = emojiLayoutParams*/
-        /* val capabilities = beldexThreadDb.getOpenGroupChat(threadID)?.server?.let { beldexApiDb.getServerCapabilities(it) }
-          if (message.reactions.isNotEmpty() && (capabilities.isNullOrEmpty() || capabilities.contains(OpenGroupAPIV2.Capability.REACTIONS.name.lowercase()))
-          ) {
-              binding.emojiReactionsView.setReactions(message.id, message.reactions, message.isOutgoing, delegate)
-              binding.emojiReactionsView.isVisible = true
-          } else {
-              binding.emojiReactionsView.isVisible = false
-          }*/
-        //need to check
-     /*   if (message.reactions.isNotEmpty()) {
-            binding.emojiReactionsView.setReactions(message.id, message.reactions, message.isOutgoing, delegate)
-            binding.emojiReactionsView.isVisible = true
-        } else {
-            binding.emojiReactionsView.isVisible = false
-        }*/
-
-        val emojiLayoutParams = binding.emojiReactionsView.root.layoutParams as ConstraintLayout.LayoutParams
-        emojiLayoutParams.horizontalBias = if (message.isOutgoing) 1f else 0f
-        binding.emojiReactionsView.root.layoutParams = emojiLayoutParams
+        val emojiLayoutParams=
+            binding.emojiReactionsView.root.layoutParams as ConstraintLayout.LayoutParams
+        emojiLayoutParams.horizontalBias=if (message.isOutgoing) 1f else 0f
+        binding.emojiReactionsView.root.layoutParams=emojiLayoutParams
 
         val containerParams = binding.messageInnerContainer.layoutParams as ConstraintLayout.LayoutParams
 
@@ -223,7 +204,7 @@ class VisibleMessageView : LinearLayout {
             binding.emojiReactionsView.root.setReactions(message.id, message.reactions, message.isOutgoing, delegate)
             binding.emojiReactionsView.root.isVisible = true
             if(isEndOfMessageCluster) {
-                containerParams.bottomMargin = if(isGroupThread) 10 else 30
+                containerParams.bottomMargin = if(isGroupThread) 20 else 30
             }else {
                 containerParams.bottomMargin = 50
             }
@@ -370,12 +351,18 @@ class VisibleMessageView : LinearLayout {
     // endregion
 
     // region Interaction
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (onPress == null || onSwipeToReply == null || onLongPress == null) { return false }
-        if(!TextSecurePreferences.getIsReactionOverlayVisible(context)) {
+    override fun onTouchEvent(event : MotionEvent) : Boolean {
+        if (onPress == null && onSwipeToReply == null && onLongPress == null) {
+            return false
+        }
+        if (!TextSecurePreferences.getIsReactionOverlayVisible(context)) {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> onDown(event)
-                MotionEvent.ACTION_MOVE -> onMove(event)
+                MotionEvent.ACTION_MOVE -> {
+                    // only bother with movements if we have swipe to reply
+                    onSwipeToReply?.let { onMove(event) }
+                }
+
                 MotionEvent.ACTION_CANCEL -> onCancel(event)
                 MotionEvent.ACTION_UP -> onUp(event)
             }

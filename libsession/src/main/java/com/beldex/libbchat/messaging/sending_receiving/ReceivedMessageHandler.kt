@@ -1,6 +1,7 @@
 package com.beldex.libbchat.messaging.sending_receiving
 
 import android.text.TextUtils
+import com.beldex.libbchat.R
 import com.beldex.libbchat.avatars.AvatarHelper
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.jobs.BackgroundGroupAddJob
@@ -35,6 +36,11 @@ import kotlin.collections.ArrayList
 import com.beldex.libbchat.messaging.messages.control.MessageRequestResponse
 import com.beldex.libbchat.messaging.messages.visible.Reaction
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
+import com.beldex.libbchat.utilities.GroupUtil.doubleEncodeGroupID
+import com.beldex.libbchat.utilities.recipients.MessageType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlin.math.min
 
 
@@ -192,18 +198,56 @@ private fun handleConfigurationMessage(message: ConfigurationMessage) {
 
 fun MessageReceiver.handleUnsendRequest(message: UnsendRequest) {
     val userPublicKey = MessagingModuleConfiguration.shared.storage.getUserPublicKey()
-    if (message.sender != message.author && (message.sender != userPublicKey && userPublicKey != null)) { return }
-    val context = MessagingModuleConfiguration.shared.context
     val storage = MessagingModuleConfiguration.shared.storage
+
+    val isLegacyGroupAdmin: Boolean = message.groupPublicKey?.let { key ->
+        var admin = false
+        val groupID = doubleEncodeGroupID(key)
+        val group = storage.getGroup(groupID)
+        if(group != null) {
+            admin = group.admins.map { it.toString() }.contains(message.sender)
+        }
+        admin
+    } ?: false
+    // First we need to determine the validity of the UnsendRequest
+    // It is valid if:
+    val requestIsValid = message.sender == message.author || //  the sender is the author of the message
+            message.author == userPublicKey || //  the sender is the current user
+            isLegacyGroupAdmin // sender is an admin of legacy group
+    if (!requestIsValid) { return }
+    val context = MessagingModuleConfiguration.shared.context
     val messageDataProvider = MessagingModuleConfiguration.shared.messageDataProvider
     val timestamp = message.timestamp ?: return
     val author = message.author ?: return
-    val messageIdToDelete = storage.getMessageIdInDatabase(timestamp, author) ?: return
-    messageDataProvider.getServerHashForMessage(messageIdToDelete)?.let { serverHash ->
-        MnodeAPI.deleteMessage(author, listOf(serverHash))
+    val (messageIdToDelete, mms) = storage.getMessageIdInDatabase(timestamp, author) ?: return
+    val messageType = storage.getMessageType(timestamp, author) ?: return
+    // send a /delete request for 1on1 messages
+    if(messageType == MessageType.ONE_ON_ONE) {
+        messageDataProvider.getServerHashForMessage(messageIdToDelete,mms)?.let { serverHash ->
+            GlobalScope.launch(Dispatchers.IO) { // using GlobalScope as we are slowly migrating to coroutines but we can't migrate everything at once
+                try {
+                    MnodeAPI.deleteMessage(author, listOf(serverHash))
+                } catch (e: Exception) {
+                }
+            }
+        }
     }
-    messageDataProvider.updateMessageAsDeleted(timestamp, author)
-    if (!messageDataProvider.isOutgoingMessage(messageIdToDelete)) {
+
+    // the message is marked as deleted locally
+    // except for 'note to self' where the message is completely deleted
+    if(messageType == MessageType.NOTE_TO_SELF){
+        messageDataProvider.deleteMessage(messageIdToDelete, !mms)
+    } else {
+        messageDataProvider.markMessageAsDeleted(
+            timestamp = timestamp,
+            author = author,
+            displayedMessage = context.getString(R.string.deleteMessageDeletedGlobally)
+        )
+    }
+    // delete reactions
+    storage.deleteReactions(messageId = messageIdToDelete, mms = mms)
+    // update notification
+    if (!messageDataProvider.isOutgoingMessage(timestamp)) {
         SSKEnvironment.shared.notificationManager.updateNotification(context)
     }
 }

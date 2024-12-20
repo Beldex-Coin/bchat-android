@@ -13,6 +13,7 @@ import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.messages.SignalServiceAttachment
 import com.beldex.libsignal.messages.SignalServiceAttachmentPointer
 import com.beldex.libsignal.messages.SignalServiceAttachmentStream
+import com.beldex.libbchat.messaging.messages.MarkAsDeletedMessage
 import com.beldex.libsignal.utilities.Base64
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.guava.Optional
@@ -160,6 +161,12 @@ class DatabaseAttachmentProvider(context: Context, helper: io.beldex.bchat.datab
         return smsDatabase.isOutgoingMessage(timestamp) || mmsDatabase.isOutgoingMessage(timestamp)
     }
 
+    override fun isDeletedMessage(timestamp: Long): Boolean {
+        val smsDatabase = DatabaseComponent.get(context).smsDatabase()
+        val mmsDatabase = DatabaseComponent.get(context).mmsDatabase()
+        return smsDatabase.isDeletedMessage(timestamp) || mmsDatabase.isDeletedMessage(timestamp)
+    }
+
     override fun handleSuccessfulAttachmentUpload(attachmentId: Long, attachmentStream: SignalServiceAttachmentStream, attachmentKey: ByteArray, uploadResult: UploadResult) {
         val database = DatabaseComponent.get(context).attachmentDatabase()
         val databaseAttachment = getDatabaseAttachment(attachmentId) ?: return
@@ -214,7 +221,7 @@ class DatabaseAttachmentProvider(context: Context, helper: io.beldex.bchat.datab
                                                    else DatabaseComponent.get(context).mmsDatabase()
         messagingDatabase.deleteMessage(messageID)
         DatabaseComponent.get(context).beldexMessageDatabase().deleteMessage(messageID, isSms)
-        DatabaseComponent.get(context).beldexMessageDatabase().deleteMessageServerHash(messageID)
+        DatabaseComponent.get(context).beldexMessageDatabase().deleteMessageServerHash(messageID, mms = !isSms)
     }
 
     override fun deleteMessages(messageIDs: List<Long>, threadId: Long, isSms: Boolean) {
@@ -223,25 +230,39 @@ class DatabaseAttachmentProvider(context: Context, helper: io.beldex.bchat.datab
 
         messagingDatabase.deleteMessages(messageIDs.toLongArray(), threadId)
         DatabaseComponent.get(context).beldexMessageDatabase().deleteMessages(messageIDs)
-        DatabaseComponent.get(context).beldexMessageDatabase().deleteMessageServerHashes(messageIDs)
+        DatabaseComponent.get(context).beldexMessageDatabase().deleteMessageServerHashes(messageIDs, mms = !isSms)
     }
 
-    override fun updateMessageAsDeleted(timestamp: Long, author: String) {
+    override fun markMessageAsDeleted(timestamp: Long, author: String, displayedMessage: String) {
         val database = DatabaseComponent.get(context).mmsSmsDatabase()
         val address = Address.fromSerialized(author)
-        val message = database.getMessageFor(timestamp, address) ?: return
-        val messagingDatabase: MessagingDatabase= if (message.isMms)  DatabaseComponent.get(context).mmsDatabase()
-                                                   else DatabaseComponent.get(context).smsDatabase()
-        messagingDatabase.markAsDeleted(message.id, message.isRead)
-        if (message.isOutgoing) {
-            messagingDatabase.deleteMessage(message.id)
+        val message = database.getMessageFor(timestamp, address) ?: return Log.w("", "Failed to find message to mark as deleted")
+
+        markMessagesAsDeleted(
+            messages = listOf(MarkAsDeletedMessage(
+                messageId = message.id,
+                isOutgoing = message.isOutgoing
+            )),
+            isSms = !message.isMms,
+            displayedMessage = displayedMessage
+        )
+    }
+
+    override fun markMessagesAsDeleted(
+        messages: List<MarkAsDeletedMessage>,
+        isSms: Boolean,
+        displayedMessage: String
+    ) {
+        val messagingDatabase : MessagingDatabase=
+            if (isSms) DatabaseComponent.get(context).smsDatabase()
+            else DatabaseComponent.get(context).mmsDatabase()
+        messages.forEach { message ->
+            messagingDatabase.markAsDeleted(message.messageId, message.isOutgoing, displayedMessage)
         }
     }
 
-    override fun getServerHashForMessage(messageID: Long): String? {
-        val messageDB = DatabaseComponent.get(context).beldexMessageDatabase()
-        return messageDB.getMessageServerHash(messageID)
-    }
+    override fun getServerHashForMessage(messageID: Long, mms: Boolean): String? =
+        DatabaseComponent.get(context).beldexMessageDatabase().getMessageServerHash(messageID, mms)
 
     override fun getDatabaseAttachment(attachmentId: Long): DatabaseAttachment? {
         val attachmentDatabase = DatabaseComponent.get(context).attachmentDatabase()

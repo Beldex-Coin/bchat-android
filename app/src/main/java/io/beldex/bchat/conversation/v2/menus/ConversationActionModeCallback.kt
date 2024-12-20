@@ -8,7 +8,6 @@ import io.beldex.bchat.R
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.conversation.v2.ConversationAdapter
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2
 import io.beldex.bchat.database.model.MediaMmsMessageRecord
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.dependencies.DatabaseComponent
@@ -34,13 +33,6 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
         val openGroup = DatabaseComponent.get(context).beldexThreadDatabase().getOpenGroupChat(threadID)
         val thread = DatabaseComponent.get(context).threadDatabase().getRecipientForThreadId(threadID)!!
         val userPublicKey = TextSecurePreferences.getLocalNumber(context)!!
-        fun userCanDeleteSelectedItems(): Boolean {
-            val allSentByCurrentUser = selectedItems.all { it.isOutgoing }
-            val allReceivedByCurrentUser = selectedItems.all { !it.isOutgoing }
-            if (openGroup == null) { return allSentByCurrentUser || allReceivedByCurrentUser }
-            if (allSentByCurrentUser) { return true }
-            return OpenGroupAPIV2.isUserModerator(userPublicKey, openGroup.room, openGroup.server)
-        }
         fun userCanBanSelectedUsers(): Boolean {
             if (openGroup == null) { return false }
             val anySentByCurrentUser = selectedItems.any { it.isOutgoing }
@@ -50,7 +42,7 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
             return OpenGroupAPIV2.isUserModerator(userPublicKey, openGroup.room, openGroup.server)
         }
         // Delete message
-        menu.findItem(R.id.menu_context_delete_message).isVisible = userCanDeleteSelectedItems()
+        menu.findItem(R.id.menu_context_delete_message).isVisible = true
         // Ban user
         menu.findItem(R.id.menu_context_ban_user).isVisible = userCanBanSelectedUsers()
         // Ban and delete all
@@ -77,7 +69,7 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
     }
 
     override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-        val selectedItems = adapter.selectedItems
+        val selectedItems = adapter.selectedItems.toSet()
         when (item.itemId) {
             R.id.menu_context_delete_message -> delegate?.deleteMessages(selectedItems)
             R.id.menu_context_ban_user -> delegate?.banUser(selectedItems)
@@ -100,7 +92,7 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
 }
 
 interface ConversationActionModeCallbackDelegate {
-    fun selectMessages(messages: Set<MessageRecord>)
+    fun selectMessages(messages : Set<MessageRecord>, position : Int)
 
     fun deleteMessages(messages: Set<MessageRecord>)
     fun banUser(messages: Set<MessageRecord>)

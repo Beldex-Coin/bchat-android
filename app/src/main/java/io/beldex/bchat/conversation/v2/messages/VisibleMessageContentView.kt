@@ -116,7 +116,6 @@ class VisibleMessageContentView : MaterialCardView {
         background.colorFilter = filter
         setBackground(background)
 
-        val onlyBodyMessage = message is SmsMessageRecord
         val mediaThumbnailMessage =
             contactIsTrusted && message is MmsMessageRecord && message.slideDeck.thumbnailSlide != null
 

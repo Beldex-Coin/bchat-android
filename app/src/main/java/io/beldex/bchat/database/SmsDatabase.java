@@ -89,6 +89,10 @@ public class SmsDatabase extends MessagingDatabase {
   public  static final String SUBJECT            = "subject";
   public  static final String SERVICE_CENTER     = "service_center";
 
+  private static final String IS_DELETED_COLUMN_DEF = IS_DELETED + " GENERATED ALWAYS AS ((" + TYPE +
+          " & " + Types.BASE_TYPE_MASK + ") IN (" + Types.BASE_DELETED_OUTGOING_TYPE + ", " + Types.BASE_DELETED_INCOMING_TYPE +")) VIRTUAL";
+
+
   public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" + ID + " integer PRIMARY KEY, "                +
           THREAD_ID + " INTEGER, " + ADDRESS + " TEXT, " + ADDRESS_DEVICE_ID + " INTEGER DEFAULT 1, " + PERSON + " INTEGER, " +
           DATE_RECEIVED  + " INTEGER, " + DATE_SENT + " INTEGER, " + PROTOCOL + " INTEGER, " + READ + " INTEGER DEFAULT 0, " +
@@ -96,7 +100,7 @@ public class SmsDatabase extends MessagingDatabase {
           DELIVERY_RECEIPT_COUNT + " INTEGER DEFAULT 0," + SUBJECT + " TEXT, " + BODY + " TEXT, " +
           MISMATCHED_IDENTITIES + " TEXT DEFAULT NULL, " + SERVICE_CENTER + " TEXT, " + SUBSCRIPTION_ID + " INTEGER DEFAULT -1, " +
           EXPIRES_IN + " INTEGER DEFAULT 0, " + EXPIRE_STARTED + " INTEGER DEFAULT 0, " + NOTIFIED + " DEFAULT 0, " +
-          READ_RECEIPT_COUNT + " INTEGER DEFAULT 0, " + UNIDENTIFIED + " INTEGER DEFAULT 0);";
+          READ_RECEIPT_COUNT + " INTEGER DEFAULT 0, " + UNIDENTIFIED + " INTEGER DEFAULT 0, " + IS_DELETED_COLUMN_DEF +");";
 
   public static final String[] CREATE_INDEXS = {
           "CREATE INDEX IF NOT EXISTS sms_thread_id_index ON " + TABLE_NAME + " (" + THREAD_ID + ");",
@@ -132,6 +136,7 @@ public class SmsDatabase extends MessagingDatabase {
   public static String CREATE_REACTIONS_UNREAD_COMMAND = "ALTER TABLE "+ TABLE_NAME + " " +
           "ADD COLUMN " + REACTIONS_UNREAD + " INTEGER DEFAULT 0;";
 
+  public static final String ADD_IS_DELETED_COLUMN = "ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + IS_DELETED_COLUMN_DEF;
   private static final EarlyReceiptCache earlyDeliveryReceiptCache = new EarlyReceiptCache();
   private static final EarlyReceiptCache earlyReadReceiptCache     = new EarlyReceiptCache();
 
@@ -216,15 +221,18 @@ public class SmsDatabase extends MessagingDatabase {
   }
 
   @Override
-  public void markAsDeleted(long messageId, boolean read) {
+  public void markAsDeleted(long messageId, boolean isOutgoing, String displayedMessage) {
     SQLiteDatabase database     = databaseHelper.getWritableDatabase();
     ContentValues contentValues = new ContentValues();
     contentValues.put(READ, 1);
-    contentValues.put(BODY, "");
+    contentValues.put(BODY, displayedMessage);
+    contentValues.put(STATUS, Status.STATUS_NONE);
     database.update(TABLE_NAME, contentValues, ID_WHERE, new String[] {String.valueOf(messageId)});
     long threadId = getThreadIdForMessage(messageId);
-    if (!read) { DatabaseComponent.get(context).threadDatabase().decrementUnread(threadId, 1); }
-    updateTypeBitmask(messageId, Types.BASE_TYPE_MASK, Types.BASE_DELETED_TYPE);
+    DatabaseComponent.get(context).threadDatabase().decrementUnread(threadId, 1);
+    updateTypeBitmask(messageId, Types.BASE_TYPE_MASK,
+            isOutgoing? MmsSmsColumns.Types.BASE_DELETED_OUTGOING_TYPE : MmsSmsColumns.Types.BASE_DELETED_INCOMING_TYPE
+    );
   }
 
   @Override
@@ -279,6 +287,25 @@ public class SmsDatabase extends MessagingDatabase {
     }
 
     return isOutgoing;
+  }
+
+  public boolean isDeletedMessage(long timestamp) {
+    SQLiteDatabase database     = databaseHelper.getWritableDatabase();
+    Cursor         cursor       = null;
+    boolean        isDeleted   = false;
+    try {
+      cursor = database.query(TABLE_NAME, new String[] { ID, THREAD_ID, ADDRESS, TYPE },
+              DATE_SENT + " = ?", new String[] { String.valueOf(timestamp) },
+              null, null, null, null);
+      while (cursor.moveToNext()) {
+        if (Types.isDeletedMessage(cursor.getLong(cursor.getColumnIndexOrThrow(TYPE)))) {
+          isDeleted = true;
+        }
+      }
+    } finally {
+      if (cursor != null) cursor.close();
+    }
+    return isDeleted;
   }
 
   public void incrementReceiptCount(SyncMessageId messageId, boolean deliveryReceipt, boolean readReceipt) {

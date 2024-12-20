@@ -71,7 +71,7 @@ class ContextMenuList(recyclerView: RecyclerView, onItemClick: () -> Unit, conte
             model.item.color?.let { title.setTextColor(it) }
             model.item.color?.let { icon.setColorFilter(it) }
 
-            title.text = model.item.title
+            title.text = model.item.title.toString()
             itemView.setOnClickListener {
                 model.item.action.run()
                 onItemClick()

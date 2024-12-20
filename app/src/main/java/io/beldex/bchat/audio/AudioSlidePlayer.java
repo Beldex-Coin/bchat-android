@@ -73,6 +73,11 @@ public class AudioSlidePlayer implements SensorEventListener {
     }
   }
 
+  @Nullable
+  public synchronized static AudioSlidePlayer getInstance() {
+    return playing.orNull();
+  }
+
   private AudioSlidePlayer(@NonNull Context context,
                            @NonNull AudioSlide slide,
                            @NonNull Listener listener)

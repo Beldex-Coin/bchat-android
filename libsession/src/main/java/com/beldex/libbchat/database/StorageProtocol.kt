@@ -22,6 +22,7 @@ import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.GroupRecord
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libbchat.utilities.recipients.Recipient.RecipientSettings
+import com.beldex.libbchat.utilities.recipients.MessageType
 import com.beldex.libsignal.crypto.ecc.ECKeyPair
 import com.beldex.libsignal.messages.SignalServiceAttachmentPointer
 import com.beldex.libsignal.messages.SignalServiceGroup
@@ -95,14 +96,15 @@ interface StorageProtocol {
      */
     fun persistAttachments(messageID: Long, attachments: List<Attachment>): List<Long>
     fun getAttachmentsForMessage(messageID: Long): List<DatabaseAttachment>
-    fun getMessageIdInDatabase(timestamp: Long, author: String): Long? // TODO: This is a weird name
+    fun getMessageIdInDatabase(timestamp: Long, author: String): Pair<Long, Boolean>? // TODO: This is a weird name
+    fun getMessageType(timestamp: Long, author: String): MessageType?
     fun updateSentTimestamp(messageID: Long, isMms: Boolean, openGroupSentTimestamp: Long, threadId: Long)
     fun markAsSending(timestamp: Long, author: String)
     fun markAsSent(timestamp: Long, author: String)
     fun markUnidentified(timestamp: Long, author: String)
     fun setErrorMessage(timestamp: Long, author: String, error: Exception)
     fun clearErrorMessage(messageID: Long)
-    fun setMessageServerHash(messageID: Long, serverHash: String)
+    fun setMessageServerHash(messageID: Long, mms: Boolean, serverHash: String)
 
     // Secret Groups
     fun getGroup(groupID: String): GroupRecord?
@@ -187,4 +189,5 @@ interface StorageProtocol {
     fun removeReaction(emoji: String, messageTimestamp: Long, author: String, notifyUnread: Boolean)
     fun updateReactionIfNeeded(message: Message, sender: String, openGroupSentTimestamp: Long)
     fun deleteReactions(messageId: Long, mms: Boolean)
+    fun deleteReactions(messageIds: List<Long>, mms: Boolean)
 }

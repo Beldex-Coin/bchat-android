@@ -13,6 +13,8 @@ import java.util.List;
 
 public class Util {
 
+  public static SecureRandom SECURE_RANDOM = new SecureRandom();
+
   public static byte[] join(byte[]... input) {
     try {
       ByteArrayOutputStream baos = new ByteArrayOutputStream();

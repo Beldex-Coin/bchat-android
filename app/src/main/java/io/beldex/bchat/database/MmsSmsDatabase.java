@@ -90,6 +90,14 @@ public class MmsSmsDatabase extends Database {
     }
   }
 
+  public @Nullable MessageRecord getNonDeletedMessageForTimestamp(long timestamp) {
+    String selection = MmsSmsColumns.NORMALIZED_DATE_SENT + " = " + timestamp;
+    try (Cursor cursor = queryTables(PROJECTION, selection, null, null)) {
+      MmsSmsDatabase.Reader reader = readerFor(cursor);
+      return reader.getNext();
+    }
+  }
+
   public @Nullable MessageRecord getMessageFor(long timestamp, String serializedAuthor) {
 
     try (Cursor cursor = queryTables(PROJECTION, MmsSmsColumns.NORMALIZED_DATE_SENT + " = " + timestamp, null, null)) {

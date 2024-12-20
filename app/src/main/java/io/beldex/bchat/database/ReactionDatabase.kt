@@ -168,6 +168,46 @@ class ReactionDatabase(context: Context, helper: SQLCipherOpenHelper) : Database
         }
     }
 
+    fun deleteMessageReactions(messageIds: List<MessageId>) {
+        if (messageIds.isEmpty()) return  // Early exit if the list is empty
+        val conditions = mutableListOf<String>()
+        val args = mutableListOf<String>()
+        for (messageId in messageIds) {
+            conditions.add("($MESSAGE_ID = ? AND $IS_MMS = ?)")
+            args.add(messageId.id.toString())
+            args.add(if (messageId.mms) "1" else "0")
+        }
+        val query = conditions.joinToString(" OR ")
+        deleteReactions(
+            messageIds = messageIds,
+            query = query,
+            args = args.toTypedArray(),
+            notifyUnread = false
+        )
+    }
+    private fun deleteReactions(messageIds: List<MessageId>, query: String, args: Array<String>, notifyUnread: Boolean) {
+        databaseHelper.writableDatabase.beginTransaction()
+        try {
+            databaseHelper.writableDatabase.delete(TABLE_NAME, query, args)
+            // Update unread status for each message
+            for (messageId in messageIds) {
+                val hasReaction = hasReactions(messageId)
+                if (messageId.mms) {
+                    DatabaseComponent.get(context).mmsDatabase().updateReactionsUnread(
+                        databaseHelper.writableDatabase, messageId.id, hasReaction, true, notifyUnread
+                    )
+                } else {
+                    DatabaseComponent.get(context).smsDatabase().updateReactionsUnread(
+                        databaseHelper.writableDatabase, messageId.id, hasReaction, true, notifyUnread
+                    )
+                }
+            }
+            databaseHelper.writableDatabase.setTransactionSuccessful()
+        } finally {
+            databaseHelper.writableDatabase.endTransaction()
+        }
+    }
+
     private fun hasReactions(messageId: MessageId): Boolean {
         val query = "$MESSAGE_ID = ? AND $IS_MMS = ?"
         val args = arrayOf("${messageId.id}", "${if (messageId.mms) 1 else 0}")

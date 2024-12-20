@@ -49,10 +49,11 @@ class ConversationAdapter(
     cursor: Cursor,
     private val onItemPress: (MessageRecord, Int, VisibleMessageView, MotionEvent) -> Unit,
     private val onItemSwipeToReply: (MessageRecord, Int) -> Unit,
-    private val onItemLongPress: (MessageRecord, Int, VisibleMessageView) -> Unit,
+    private val onItemLongPress: (MessageRecord, Int, View) -> Unit,
     private val glide: GlideRequests,
     private val onDeselect: (MessageRecord, Int) -> Unit,
-    private val onAttachmentNeedsDownload: (Long, Long) -> Unit, lifecycleCoroutineScope: LifecycleCoroutineScope
+    private val onAttachmentNeedsDownload: (Long, Long) -> Unit, lifecycleCoroutineScope: LifecycleCoroutineScope,
+    var isAdmin: Boolean = false
 
 ) : CursorRecyclerViewAdapter<ViewHolder>(context, cursor) {
     private val messageDB by lazy { DatabaseComponent.get(context).mmsSmsDatabase() }
@@ -142,11 +143,17 @@ class ConversationAdapter(
 
                     visibleMessageView.onPress = null
                     visibleMessageView.onSwipeToReply = null
-                    visibleMessageView.onLongPress = null
+                    // you can long press on "marked as deleted" messages
+                    visibleMessageView.onLongPress =
+                        { onItemLongPress(message, viewHolder.adapterPosition, visibleMessageView) }
                 }
             }
             is ControlMessageViewHolder -> {
-                viewHolder.view.bind(message, messageBefore)
+                viewHolder.view.bind(
+                    message = message,
+                    previous = messageBefore,
+                    longPress = { onItemLongPress(message, viewHolder.adapterPosition, viewHolder.view) }
+                )
                 if (message.isCallLog && message.isFirstMissedCall) {
                     viewHolder.view.setOnClickListener {
                         val factory = LayoutInflater.from(context)

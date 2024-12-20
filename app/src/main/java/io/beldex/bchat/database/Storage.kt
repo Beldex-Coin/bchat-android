@@ -39,7 +39,9 @@ import com.beldex.libbchat.utilities.GroupRecord
 import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libbchat.utilities.ProfileKeyUtil
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.recipients.MessageType
 import com.beldex.libbchat.utilities.recipients.Recipient
+import com.beldex.libbchat.utilities.recipients.getType
 import com.beldex.libsignal.crypto.ecc.ECKeyPair
 import com.beldex.libsignal.messages.SignalServiceAttachmentPointer
 import com.beldex.libsignal.messages.SignalServiceGroup
@@ -247,7 +249,7 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         }
         message.serverHash?.let { serverHash ->
             messageID?.let { id ->
-                DatabaseComponent.get(context).beldexMessageDatabase().setMessageServerHash(id, serverHash)
+                DatabaseComponent.get(context).beldexMessageDatabase().setMessageServerHash(id, message.isMediaMessage(), serverHash)
             }
         }
         return messageID
@@ -383,10 +385,16 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         BchatMetaProtocol.removeTimestamps(timestamps)
     }
 
-    override fun getMessageIdInDatabase(timestamp: Long, author: String): Long? {
+    override fun getMessageIdInDatabase(timestamp: Long, author: String): Pair<Long, Boolean>? {
         val database = DatabaseComponent.get(context).mmsSmsDatabase()
-        val address = Address.fromSerialized(author)
-        return database.getMessageFor(timestamp, address)?.getId()
+        val address = fromSerialized(author)
+        return database.getMessageFor(timestamp, address)?.run { getId() to isMms }
+    }
+
+    override fun getMessageType(timestamp: Long, author: String): MessageType? {
+        val database = DatabaseComponent.get(context).mmsSmsDatabase()
+        val address = fromSerialized(author)
+        return database.getMessageFor(timestamp, address)?.individualRecipient?.getType()
     }
 
     override fun updateSentTimestamp(
@@ -469,8 +477,8 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         db.clearErrorMessage(messageID)
     }
 
-    override fun setMessageServerHash(messageID: Long, serverHash: String) {
-        DatabaseComponent.get(context).beldexMessageDatabase().setMessageServerHash(messageID, serverHash)
+    override fun setMessageServerHash(messageID: Long, mms: Boolean, serverHash: String) {
+        DatabaseComponent.get(context).beldexMessageDatabase().setMessageServerHash(messageID, mms, serverHash)
     }
 
     override fun getGroup(groupID: String): GroupRecord? {
@@ -924,5 +932,11 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
     }
     override fun deleteReactions(messageId: Long, mms: Boolean) {
         DatabaseComponent.get(context).reactionDatabase().deleteMessageReactions(MessageId(messageId, mms))
+    }
+
+    override fun deleteReactions(messageIds: List<Long>, mms: Boolean) {
+        DatabaseComponent.get(context).reactionDatabase().deleteMessageReactions(
+            messageIds.map { MessageId(it, mms) }
+        )
     }
 }

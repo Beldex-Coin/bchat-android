@@ -1811,7 +1811,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
     }
 
-    override fun onReactionSelected(messageRecord : MessageRecord, emoji : String?) {
+    override fun onReactionSelected(messageRecord : MessageRecord, emoji : String) {
         val currentFragment = getCurrentFragment()
         if(currentFragment is ConversationFragmentV2){
             currentFragment.reactionDelegateDismiss()

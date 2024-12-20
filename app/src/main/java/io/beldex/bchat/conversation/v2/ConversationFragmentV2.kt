@@ -111,6 +111,7 @@ import io.beldex.bchat.conversation.v2.input_bar.mentions.MentionCandidatesView
 import io.beldex.bchat.conversation.v2.menus.ConversationActionModeCallback
 import io.beldex.bchat.conversation.v2.menus.ConversationActionModeCallbackDelegate
 import io.beldex.bchat.conversation.v2.menus.ConversationMenuHelper
+import io.beldex.bchat.conversation.v2.messages.ControlMessageView
 import io.beldex.bchat.conversation.v2.messages.VisibleMessageContentViewDelegate
 import io.beldex.bchat.conversation.v2.messages.VisibleMessageView
 import io.beldex.bchat.conversation.v2.messages.VisibleMessageViewDelegate
@@ -368,12 +369,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             },
             onItemLongPress = { message, position, view ->
                     if(isSecretGroupIsActive()) {
-                        //need to check
-                        //(viewModel.openGroup == null || Capability.REACTIONS.name.lowercase() in viewModel.serverCapabilities)
                         if (!isMessageRequestThread()) {
-                            showEmojiPicker(message, view)
+                            showConversationReaction(message, view, position)
                         } else {
-                            handleLongPress(message, position)
+                            selectMessage(message, position)
                         }
                     }
             },
@@ -572,8 +571,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         lifecycleScope.launch {
             viewModel.backToHome.collectLatest {
                 if (it) {
-                    Toast.makeText(requireActivity(), "This thread has been deleted.", Toast.LENGTH_LONG)
-                        .show()
+                    Toast.makeText(requireActivity(), getString(R.string.conversationsDeleted), Toast.LENGTH_LONG).show()
                     backToHome()
                 }
             }
@@ -1008,19 +1006,27 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.scrollToBottomButton.isVisible= show && !isScrolledToBottom && adapter.itemCount > 0
     }
 
-    private fun showEmojiPicker(message: MessageRecord, visibleMessageView: VisibleMessageView) {
+    private fun showConversationReaction(message: MessageRecord, messageView: View, position : Int) {
+        val messageContentView = when(messageView){
+            is VisibleMessageView -> messageView.messageContentView
+            is ControlMessageView -> messageView.controlContentView
+            else -> null
+        } ?: return Timber.tag("Beldex")
+            .w("Failed to show reaction because the messageRecord is not of a known type: " + messageView)
+
+
         val messageContentBitmap = try {
-            visibleMessageView.messageContentView.drawToBitmap()
+            messageContentView.drawToBitmap()
         } catch (e: Exception) {
             Log.e("Beldex", "Failed to show emoji picker", e)
             return
         }
         TextSecurePreferences.setIsReactionOverlayVisible(requireContext(),true)
-        ViewUtil.hideKeyboard(requireContext(), visibleMessageView);
+        ViewUtil.hideKeyboard(requireContext(), messageView)
         binding.reactionsShade.isVisible= true
         showOrHidScrollToBottomButton(false)
         binding.conversationRecyclerView.suppressLayout(true)
-        reactionDelegate.setOnActionSelectedListener(ReactionsToolbarListener(message))
+        reactionDelegate.setOnActionSelectedListener(ReactionsToolbarListener(message, position))
         reactionDelegate.setOnHideListener(object: ConversationReactionOverlay.OnHideListener {
             override fun startHide() {
                 binding.reactionsShade.let {
@@ -1033,21 +1039,17 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 TextSecurePreferences.setIsReactionOverlayVisible(requireContext(),false)
             }
         })
-        val topLeft = intArrayOf(0, 0).also { visibleMessageView.messageContentView.getLocationInWindow(it) }
+        val topLeft = intArrayOf(0, 0).also { messageContentView.getLocationInWindow(it) }
         val selectedConversationModel = SelectedConversationModel(
             messageContentBitmap,
             topLeft[0].toFloat(),
             topLeft[1].toFloat(),
-            visibleMessageView.messageContentView.width,
+            messageContentView.width,
             message.isOutgoing,
-            visibleMessageView.messageContentView
+            messageContentView
         )
         reactionDelegate.show(requireActivity(), message, selectedConversationModel)
     }
-    //need to check
-    /*override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        return reactionDelegate.applyTouchEvent(ev) || super.dispatchTouchEvent(ev)
-    }*/
 
     override fun onReactionSelected(messageRecord: MessageRecord, emoji: String) {
         reactionDelegate.hide()
@@ -1206,7 +1208,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
-    inner class ReactionsToolbarListener(val message: MessageRecord) :
+    inner class ReactionsToolbarListener(val message : MessageRecord,val  position : Int) :
         ConversationReactionOverlay.OnActionSelectedListener {
         override fun onActionSelected(action: ConversationReactionOverlay.Action) {
             val selectedItems = setOf(message)
@@ -1216,7 +1218,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 ConversationReactionOverlay.Action.DOWNLOAD -> saveAttachment(selectedItems)
                 ConversationReactionOverlay.Action.COPY_MESSAGE -> copyMessages(selectedItems)
                 ConversationReactionOverlay.Action.VIEW_INFO -> showMessageDetail(selectedItems)
-                ConversationReactionOverlay.Action.SELECT -> selectMessages(selectedItems)
+                ConversationReactionOverlay.Action.SELECT -> selectMessages(selectedItems, position)
                 ConversationReactionOverlay.Action.DELETE -> deleteMessages(selectedItems)
                 else -> {}
             }
@@ -1232,7 +1234,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
-    private fun handleLongPress(message: MessageRecord, position: Int) {
+    private fun selectMessage(message: MessageRecord, position: Int) {
         val actionMode = this.actionMode
         val actionModeCallback =
             ConversationActionModeCallback(adapter, viewModel.threadId, requireActivity())
@@ -1868,7 +1870,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val recipient = viewModel.recipient.value ?: return
         val allSentByCurrentUser = messages.all { it.isOutgoing }
         val allHasHash =
-            messages.all { viewModel.getMessageServerHash(it.id) != null }
+            messages.all { viewModel.getMessageServerHash(it.id, it.isMms) != null }
         if (recipient.isOpenGroupRecipient) {
             val messageCount = 1
             val builder = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
@@ -3271,9 +3273,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     // Remove this after the unsend request is enabled
-    private fun deleteMessagesWithoutUnsendRequest(messages: Set<MessageRecord>) {
-        val messageCount = messages.size
-        val builder = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
+   /* private fun deleteMessagesWithoutUnsendRequest(messages : Set<MessageRecord>) {
+        *//**//*
+        val messageCount=messages.size
+        val builder=AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
         builder.setTitle(
             resources.getQuantityString(
                 R.plurals.ConversationFragment_delete_selected_messages,
@@ -3298,9 +3301,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             endActionMode()
         }
         builder.show()
-    }
-   override fun selectMessages(messages: Set<MessageRecord>) {
-       handleLongPress(messages.first(), 0) //TODO: begin selection mode
+    }*/
+   override fun selectMessages(messages : Set<MessageRecord>, position : Int) {
+       selectMessage(messages.first(), position) //TODO: begin selection mode
     }
 
     private fun endActionMode() {

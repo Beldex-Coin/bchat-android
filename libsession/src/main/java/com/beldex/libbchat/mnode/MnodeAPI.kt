@@ -18,10 +18,12 @@ import nl.komponents.kovenant.functional.map
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.utilities.MessageWrapper
 import com.beldex.libsignal.crypto.getRandomElement
+import com.beldex.libsignal.crypto.shuffledRandom
 import com.beldex.libsignal.database.BeldexAPIDatabaseProtocol
 import com.beldex.libsignal.protos.SignalServiceProtos
 import com.beldex.libsignal.utilities.*
 import com.beldex.libsignal.utilities.Base64
+import com.goterl.lazysodium.utils.KeyPair
 import java.security.SecureRandom
 import java.util.*
 import kotlin.Pair
@@ -198,7 +200,7 @@ object MnodeAPI {
 
     internal fun getSingleTargetMnode(publicKey: String): Promise<Mnode, Exception> {
         // SecureRandom() should be cryptographically secure
-        return getSwarm(publicKey).map { it.shuffled(SecureRandom()).random() }
+        return getSwarm(publicKey).map { it.shuffledRandom().random() }
     }
 
     // Public API

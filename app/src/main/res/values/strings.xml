@@ -1631,4 +1631,38 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="andMore" translatable="false">+{count}</string>
     <string name="tap_to_remove" translatable="false">Tap to remove</string>
     <string name="reaction" translatable="false">Reactions</string>
+    <string name="title_activity_secret_group_info_compose">SecretGroupInfoComposeActivity</string>
+
+    <plurals name="deleteMessageDeleted">
+        <item quantity="one">Message deleted</item>
+        <item quantity="other">Messages deleted</item>
+    </plurals>
+    <plurals name="deleteMessageConfirm">
+        <item quantity="one">Are you sure you want to delete this message?</item>
+        <item quantity="other">Are you sure you want to delete these messages?</item>
+    </plurals>
+    <string name="deleteMessageDeletedGlobally" translatable="false">This message was deleted</string>
+    <plurals name="deleteMessageNoteToSelfWarning">
+        <item quantity="one">This message cannot be deleted from all your devices</item>
+        <item quantity="other">Some of the messages you have selected cannot be deleted from all your devices</item>
+    </plurals>
+    <plurals name="deleteMessageWarning">
+        <item quantity="one">This message cannot be deleted for everyone</item>
+        <item quantity="other">Some of the messages you have selected cannot be deleted for everyone</item>
+    </plurals>
+    <plurals name="deleteMessageFailed">
+        <item quantity="one">Failed to delete message</item>
+        <item quantity="other">Failed to delete messages</item>
+    </plurals>
+    <string name="displayNameVisible" translatable="false">Your Display Name is visible to users, groups and communities you interact with.</string>
+    <string name="errorUnknown" translatable="false">An unknown error occurred.</string>
+    <string name="banUserBanned" translatable="false">User banned</string>
+    <string name="banErrorFailed" translatable="false">Ban failed</string>
+    <string name="deleteMessageDeletedLocally" translatable="false">This message was deleted on this device</string>
+    <string name="deleteMessageEveryone" translatable="false">Delete for everyone</string>
+    <string name="deleteMessageDevicesAll" translatable="false">Delete on all my devices</string>
+    <string name="accessibilityId_select" translatable="false">Select</string>
+    <string name="accessibilityId_reply" translatable="false">Reply</string>
+    <string name="disappearingMessagesCountdownBigMobile" translatable="false">Auto-deletes in {time_large}</string>
+    <string name="conversationsDeleted" translatable="false">Conversation deleted</string>
 </resources>

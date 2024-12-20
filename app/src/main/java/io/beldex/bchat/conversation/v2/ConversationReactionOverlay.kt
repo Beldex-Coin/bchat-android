@@ -469,14 +469,14 @@ class ConversationReactionOverlay : FrameLayout {
         if(!isDeleteOnly) {
             items += ActionItem(
                 R.attr.menu_select_icon,
-                context.resources.getString(R.string.AccessibilityId_select),
+                context.resources.getString(R.string.accessibilityId_select),
                 { handleActionItemClicked(Action.SELECT) },
-                R.string.AccessibilityId_select
+                R.string.accessibilityId_select
             )
         }
         // Reply
         if (!message.isPending && !message.isFailed && !isDeleteOnly) {
-            items += ActionItem(R.attr.menu_reply_icon, context.resources.getString(R.string.AccessibilityId_reply), { handleActionItemClicked(Action.REPLY) }, R.string.AccessibilityId_reply)
+            items += ActionItem(R.attr.menu_reply_icon, context.resources.getString(R.string.accessibilityId_reply), { handleActionItemClicked(Action.REPLY) }, R.string.AccessibilityId_reply)
         }
         // Copy message text
         if (!containsControlMessage && hasText) {

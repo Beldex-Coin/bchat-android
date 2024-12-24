@@ -476,7 +476,7 @@ class ConversationReactionOverlay : FrameLayout {
         }
         // Reply
         if (!message.isPending && !message.isFailed && !isDeleteOnly) {
-            items += ActionItem(R.attr.menu_reply_icon, context.resources.getString(R.string.accessibilityId_reply), { handleActionItemClicked(Action.REPLY) }, R.string.AccessibilityId_reply)
+            items += ActionItem(R.attr.menu_reply_icon, context.resources.getString(R.string.accessibilityId_reply), { handleActionItemClicked(Action.REPLY) }, R.string.accessibilityId_reply)
         }
         // Copy message text
         if (!containsControlMessage && hasText) {

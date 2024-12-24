@@ -1107,15 +1107,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
              unblock()
              return
          }
-        val message = VisibleMessage()
-        val emojiTimestamp = System.currentTimeMillis()
-        message.sentTimestamp = emojiTimestamp
         val author = textSecurePreferences.getLocalNumber()!!
         reactionDb.deleteReaction(emoji, MessageId(originalMessage.id, originalMessage.isMms), author,false)
-         val originalAuthor = if (originalMessage.isOutgoing) {
-              textSecurePreferences.getLocalNumber()!!
-         } else originalMessage.individualRecipient.address.serialize()
-         message.reaction = Reaction.from(originalMessage.timestamp,  originalAuthor, emoji, false)
+         val message = VisibleMessage()
+         val emojiTimestamp = System.currentTimeMillis()
+         message.sentTimestamp = emojiTimestamp
+         message.reaction = Reaction.from(originalMessage.timestamp,  author, emoji, false)
         if (recipient.isOpenGroupRecipient) {
             val messageServerId = beldexMessageDb.getServerID(originalMessage.id, !originalMessage.isMms) ?: return
             viewModel.openGroup?.let {

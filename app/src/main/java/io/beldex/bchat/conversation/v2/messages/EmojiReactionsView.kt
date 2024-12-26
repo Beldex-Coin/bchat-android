@@ -91,7 +91,7 @@ class EmojiReactionsView : ConstraintLayout, OnTouchListener {
         binding.layoutEmojiContainer.removeAllViews()
         val overflowContainer = LinearLayout(context)
         overflowContainer.orientation = LinearLayout.HORIZONTAL
-        val innerPadding = ViewUtil.dpToPx(4)
+        val innerPadding = ViewUtil.dpToPx(2)
         overflowContainer.setPaddingRelative(innerPadding, innerPadding, innerPadding, innerPadding)
         val pixelSize = ViewUtil.dpToPx(1)
         for (reaction in reactions) {
@@ -99,17 +99,16 @@ class EmojiReactionsView : ConstraintLayout, OnTouchListener {
                 if (overflowContainer.parent == null) {
                     binding.layoutEmojiContainer.addView(overflowContainer)
                     val overflowParams = overflowContainer.layoutParams as MarginLayoutParams
-                    overflowParams.height = ViewUtil.dpToPx(26)
                     overflowParams.setMargins(pixelSize, pixelSize, pixelSize, pixelSize)
                     overflowContainer.layoutParams = overflowParams
-                    overflowContainer.background = ContextCompat.getDrawable(context, R.drawable.reaction_pill_background)
+                    overflowContainer.background = ContextCompat.getDrawable(context, R.drawable.over_flow_container_background)
                 }
                 val pill = buildPill(context, this, reaction, true)
                 pill.setOnClickListener { v: View? ->
                     extended = true
                     displayReactions(Int.MAX_VALUE)
                 }
-                binding.layoutEmojiContainer.setPadding(16,0,10,0)
+                binding.layoutEmojiContainer.setPadding(16,0,0,0)
                 overflowContainer.addView(pill)
             } else {
                 val pill = buildPill(context, this, reaction, false)
@@ -133,15 +132,13 @@ class EmojiReactionsView : ConstraintLayout, OnTouchListener {
             }
         }
         if (threshold == Int.MAX_VALUE) {
-            binding.groupShowLess.visibility = VISIBLE
-            for (id in binding.groupShowLess.referencedIds) {
-                findViewById<View>(id).setOnClickListener { view: View? ->
-                    extended = false
-                    displayReactions(DEFAULT_THRESHOLD)
-                }
+            binding.imageViewShowLess.visibility = VISIBLE
+            binding.imageViewShowLess.setOnClickListener {
+                extended = false
+                displayReactions(DEFAULT_THRESHOLD)
             }
         } else {
-            binding.groupShowLess.visibility = GONE
+            binding.imageViewShowLess.visibility = GONE
         }
     }
     private fun buildSortedReactionsList(records: List<ReactionRecord>, userPublicKey: String?, threshold: Int): List<Reaction> {

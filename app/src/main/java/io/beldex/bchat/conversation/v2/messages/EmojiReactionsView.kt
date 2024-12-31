@@ -69,7 +69,12 @@ class EmojiReactionsView : ConstraintLayout, OnTouchListener {
         }
         this.messageId = messageId
         val emojiCount=this.records!!.size.toString()
-        binding.totalEmojiCount.text=emojiCount
+        if(emojiCount > 1.toString()) {
+            binding.totalEmojiCount.visibility = View.VISIBLE
+            binding.totalEmojiCount.text=emojiCount
+        }else{
+            binding.totalEmojiCount.visibility = View.GONE
+        }
         displayReactions(if (extended) Int.MAX_VALUE else DEFAULT_THRESHOLD)
     }
     override fun onTouch(v: View, event: MotionEvent): Boolean {
@@ -91,8 +96,6 @@ class EmojiReactionsView : ConstraintLayout, OnTouchListener {
         binding.layoutEmojiContainer.removeAllViews()
         val overflowContainer = LinearLayout(context)
         overflowContainer.orientation = LinearLayout.HORIZONTAL
-        val innerPadding = ViewUtil.dpToPx(2)
-        overflowContainer.setPaddingRelative(innerPadding, innerPadding, innerPadding, innerPadding)
         val pixelSize = ViewUtil.dpToPx(1)
         for (reaction in reactions) {
             if (binding.layoutEmojiContainer.childCount + 1 >= DEFAULT_THRESHOLD && threshold != Int.MAX_VALUE && reactions.size > threshold) {
@@ -115,7 +118,6 @@ class EmojiReactionsView : ConstraintLayout, OnTouchListener {
                 pill.tag = reaction
                 pill.setOnTouchListener(this)
                 val params = pill.layoutParams as MarginLayoutParams
-                params.setMargins(pixelSize, pixelSize, pixelSize, pixelSize)
                 pill.layoutParams = params
                 binding.layoutEmojiContainer.addView(pill)
             }

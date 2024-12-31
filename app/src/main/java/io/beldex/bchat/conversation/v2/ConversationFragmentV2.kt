@@ -143,6 +143,7 @@ import io.beldex.bchat.delegates.WalletDelegates
 import io.beldex.bchat.delegates.WalletDelegatesImpl
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.giph.ui.GiphyActivity
+import io.beldex.bchat.groups.SecretGroupInfoComposeActivity
 import io.beldex.bchat.home.ConversationActionDialog
 import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.home.HomeDialogType
@@ -204,6 +205,7 @@ import org.apache.commons.lang3.time.DurationFormatUtils
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
+import java.io.IOException
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Locale
@@ -230,7 +232,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     SearchBottomBar.EventListener, LoaderManager.LoaderCallbacks<Cursor>,
     ConversationMenuHelper.ConversationMenuListener, OnBackPressedListener,SendConfirm, ConversationActionDialog.ConversationActionDialogListener,
     WalletDelegates by WalletDelegatesImpl(), VisibleMessageViewDelegate,
-    ConversationReactionOverlay.OnReactionSelectedListener, ReactWithAnyEmojiDialogFragment.Callback, ReactionsDialogFragment.Callback {
+    ConversationReactionOverlay.OnReactionSelectedListener, ReactWithAnyEmojiDialogFragment.Callback, ReactionsDialogFragment.Callback,SecretGroupInfoComposeActivity.socialGroupInfoInterface {
 
     private var param2: String? = null
 
@@ -849,6 +851,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
+    private fun callSecretGroupInfo(recipient : Recipient, listenerCallback : Listener?) {
+        SecretGroupInfoComposeActivity.setOnActionSelectedListener(this)
+        val intent=Intent(requireContext(), SecretGroupInfoComposeActivity::class.java)
+        val groupID: String = recipient.address.toGroupString()
+        intent.putExtra(SecretGroupInfoComposeActivity.secretGroupID, groupID)
+        startActivity(intent)
+    }
 
     private fun networkChange(networkAvailable: Boolean) {
         isNetworkAvailable = networkAvailable
@@ -2414,8 +2423,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.profilePictureView.root.update(recipient)
         binding.layoutConversation.setOnClickListener()
         {
-            hideAttachmentContainer()
-            ConversationMenuHelper.showAllMedia(recipient, listenerCallback)
+            if (recipient.isClosedGroupRecipient) {
+                callSecretGroupInfo(recipient,listenerCallback)
+            } else {
+                hideAttachmentContainer()
+                ConversationMenuHelper.showAllMedia(recipient, listenerCallback)
+            }
+
         }
         binding.backToHomeBtn.setOnClickListener {
             listenerCallback?.walletOnBackPressed()
@@ -4142,6 +4156,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     fun hideKeyboard() {
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view?.windowToken, 0)
+    }
+
+    override fun showAllMedia(recipient : Recipient) {
+        ConversationMenuHelper.showAllMedia(recipient,listenerCallback)
     }
 }
 //endregion

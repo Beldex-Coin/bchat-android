@@ -1665,4 +1665,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="accessibilityId_reply" translatable="false">Reply</string>
     <string name="disappearingMessagesCountdownBigMobile" translatable="false">Auto-deletes in {time_large}</string>
     <string name="conversationsDeleted" translatable="false">Conversation deleted</string>
+    <string name="group_info" translatable="false">Group Info</string>
+    <string name="notification_info" translatable="false">When enabled, You will only be notified for messages mentioning you.</string>
+    <string name="disappearing_info" translatable="false">When enabled, messages between you and the group will disappear after they have been seen.</string>
+    <string name="search_member" translatable="false">Search members</string>
 </resources>

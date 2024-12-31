@@ -11,6 +11,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.ViewModelProvider
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,15 +25,15 @@ import com.beldex.libbchat.utilities.ThemeUtil
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.toHexString
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
+import io.beldex.bchat.R
 import io.beldex.bchat.contacts.SelectContactsActivity
+import io.beldex.bchat.databinding.ActivityEditClosedGroupBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.mms.GlideApp
 import io.beldex.bchat.util.Helper
 import io.beldex.bchat.util.fadeIn
 import io.beldex.bchat.util.fadeOut
 import io.beldex.bchat.wallet.CheckOnline
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityEditClosedGroupBinding
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.failUi
@@ -83,6 +84,8 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
     }
     var applyChangesButtonLastClickTime: Long = 0
 
+    var secretGroupInfoViewModel: SecretGroupInfoViewModel? =  null
+
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
         super.onCreate(savedInstanceState, isReady)
@@ -98,7 +101,11 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
 
         name = originalName
 
-
+        val secretGroupInfoViewModelFactory=
+            SecretGroupViewModelFactory(groupID, context)
+         secretGroupInfoViewModel= ViewModelProvider(
+            this, secretGroupInfoViewModelFactory
+        )[SecretGroupInfoViewModel::class.java]
 
 
         binding.addMembersClosedGroupButton.setOnClickListener {
@@ -339,6 +346,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
 
         var isClosedGroup: Boolean
         var groupPublicKey: String?
+        val returnIntent=Intent()
         try {
             groupPublicKey = GroupUtil.doubleDecodeGroupID(groupID).toHexString()
             isClosedGroup = DatabaseComponent.get(this).beldexAPIDatabase().isClosedGroup(groupPublicKey)
@@ -380,11 +388,14 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
                     originalMembers.filterNot { it in members }.let { removes ->
                         if (removes.isNotEmpty()) MessageSender.explicitRemoveMembers(groupPublicKey!!, removes.map { it.address.serialize() })
                     }
+                    returnIntent.putExtra("group_name",name)
+                    returnIntent.putExtra("group_members_count",members.size)
                 }
             }
             promise.successUi {
                 binding.loaderContainer.fadeOut()
                 isLoading = false
+                setResult(RESULT_OK, returnIntent)
                 finish()
             }.failUi { exception ->
                 val message = if (exception is MessageSender.Error) exception.description else "An error occurred"

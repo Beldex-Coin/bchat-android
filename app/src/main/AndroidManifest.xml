@@ -82,7 +82,12 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup, android:label">
         <activity
-            android:name="io.beldex.bchat.contacts.blocked.BlockedContactsActivity"
+            android:name=".groups.SecretGroupInfoComposeActivity"
+            android:exported="false"
+            android:label="@string/title_activity_secret_group_info_compose"
+            android:theme="@style/Theme.Bchat.DayNight" />
+        <activity
+            android:name=".contacts.blocked.BlockedContactsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />

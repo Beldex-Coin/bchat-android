@@ -1,0 +1,786 @@
+package io.beldex.bchat.groups
+
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.ArrowBackIos
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
+import com.beldex.libbchat.messaging.contacts.Contact
+import com.beldex.libbchat.messaging.messages.control.ExpirationTimerUpdate
+import com.beldex.libbchat.messaging.sending_receiving.MessageSender
+import com.beldex.libbchat.messaging.sending_receiving.leave
+import com.beldex.libbchat.mnode.MnodeAPI
+import com.beldex.libbchat.utilities.Address
+import com.beldex.libbchat.utilities.ExpirationUtil
+import com.beldex.libbchat.utilities.GroupUtil
+import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.recipients.Recipient
+import com.beldex.libsignal.utilities.toHexString
+import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.ApplicationContext
+import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.compose_utils.ProfilePictureComponent
+import io.beldex.bchat.compose_utils.ProfilePictureMode
+import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.conversation.v2.dialogs.LeaveGroupDialog
+import io.beldex.bchat.dependencies.DatabaseComponent
+import io.beldex.bchat.home.NotificationSettingDialog
+import io.beldex.bchat.my_account.ui.CardContainer
+import io.beldex.bchat.my_account.ui.dialogs.LockOptionsDialog
+import io.beldex.bchat.util.UiMode
+import io.beldex.bchat.util.UiModeUtilities
+import kotlinx.coroutines.flow.MutableStateFlow
+import java.io.IOException
+
+@AndroidEntryPoint
+class SecretGroupInfoComposeActivity : ComponentActivity() {
+
+    companion object {
+        const val secretGroupID="secret_group_id"
+        const val callback="callback"
+        lateinit var listenerCallback : socialGroupInfoInterface
+        fun setOnActionSelectedListener(socialGroupInfoInterface : socialGroupInfoInterface?) {
+            if (socialGroupInfoInterface != null) {
+                listenerCallback=socialGroupInfoInterface
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState : Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            BChatTheme(
+                darkTheme=UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
+            ) {
+                Surface(
+                    modifier=Modifier.fillMaxSize(), color=MaterialTheme.colorScheme.background
+                ) {
+
+                    val context=LocalContext.current
+                    val activity=(context as? Activity)
+
+                    val groupID : String=activity?.intent?.getStringExtra(secretGroupID)!!
+                    val secretGroupInfoViewModelFactory=
+                        SecretGroupViewModelFactory(groupID, context)
+                    val secretGroupInfoViewModel=ViewModelProvider(
+                        this, secretGroupInfoViewModelFactory
+                    )[SecretGroupInfoViewModel::class.java]
+                    val groupMembers by secretGroupInfoViewModel.groupMembers.collectAsState()
+
+                    SecretGroupInfoScreenContainer(
+                        title=stringResource(R.string.group_info),
+                        onBackClick={
+                            (context as ComponentActivity).finish()
+                        }) {
+                        GroupDetailsScreen(
+                            groupMembers,
+                            listenerCallback,
+                            secretGroupInfoViewModel
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    interface socialGroupInfoInterface {
+        fun showAllMedia(recipient : Recipient)
+    }
+}
+
+@SuppressLint("StateFlowValueCalledInComposition")
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun GroupDetailsScreen(
+    groupMembers : GroupMembers?,
+    listenerCallback : SecretGroupInfoComposeActivity.socialGroupInfoInterface?,
+    secretGroupInfoViewModel : SecretGroupInfoViewModel,
+) {
+    lateinit var groupID : String
+    val context=LocalContext.current
+    val activity=(context as? Activity)
+    val lifecycleOwner=LocalLifecycleOwner.current
+    val option=context.resources.getStringArray(R.array.notify_types)
+    val timesOption=context.resources.getIntArray(R.array.expiration_times)
+    val profileSize=30.dp
+    val disAppearOption=remember {
+        timesOption.map {
+            ExpirationUtil.getExpirationDisplayValue(
+                context,
+                it
+            )
+        }
+    }
+
+    val allMembers=mutableListOf<String>()
+    groupID=activity?.intent?.getStringExtra(SecretGroupInfoComposeActivity.secretGroupID)!!
+    val groupInfo by remember {
+        mutableStateOf(DatabaseComponent.get(context).groupDatabase().getGroup(groupID).get())
+    }
+
+    groupMembers?.members?.let { allMembers.addAll(it) }
+    if (groupMembers != null) {
+        allMembers.addAll(groupMembers.zombieMembers)
+    }
+
+    val recipient=Recipient.from(
+        context, Address.fromSerialized(groupID), false
+    )
+    var groupName by remember {
+        mutableStateOf(groupInfo.title)
+    }
+    var groupMembersCount by remember {
+        mutableIntStateOf(
+            groupMembers?.members?.count()?.plus(groupMembers.zombieMembers.count()) ?: 0
+        )
+    }
+
+    val memberCount by remember(groupMembers) {
+        mutableIntStateOf(
+            (groupMembers?.members?.size ?: 0) + (groupMembers?.zombieMembers?.size
+                ?: 0)
+        )
+    }
+    val searchQuery by secretGroupInfoViewModel.searchQuery.collectAsState()
+
+    val resultLauncher=rememberLauncherForActivityResult(
+        contract=ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.let { data ->
+                groupName=data.getStringExtra("group_name") ?: ""
+                groupMembersCount=data.getIntExtra("group_members_count", 0)
+                if (memberCount != groupMembersCount) {
+                    secretGroupInfoViewModel.fetchGroupMembers()
+                }
+            }
+        }
+    }
+
+
+    var showLeaveGroupDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var showNotificationSettingsDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var showExpireMessageDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var showNotificationSettingsItem by remember {
+        mutableStateOf(option[recipient.notifyType])
+    }
+
+    var showSearchEdit by remember {
+        mutableStateOf(false)
+    }
+
+    var showExpirationItem by remember {
+        mutableIntStateOf(timesOption.indexOf(recipient.expireMessages))
+    }
+
+    secretGroupInfoViewModel.isEnableNotification.observe(lifecycleOwner) { item ->
+        showNotificationSettingsItem=item
+    }
+
+    secretGroupInfoViewModel.isExpirationItem.observe(lifecycleOwner) { item ->
+        showExpirationItem=item
+    }
+
+
+    if (showLeaveGroupDialog) {
+        val admins=groupInfo.admins
+        val bchatID=TextSecurePreferences.getLocalNumber(context)
+        val isCurrentUserAdmin=admins.any { it.toString() == bchatID }
+        val message=if (isCurrentUserAdmin) {
+            "Because you are the creator of this group it will be deleted for everyone. This cannot be undone."
+        } else {
+            context.resources.getString(R.string.ConversationActivity_are_you_sure_you_want_to_leave_this_group)
+        }
+        BChatTheme(
+            darkTheme = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
+        ) {
+            LeaveGroupDialog(
+                title=stringResource(id=R.string.ConversationActivity_leave_group),
+                message=message,
+                positiveButtonTitle=stringResource(id=R.string.leave),
+                onLeave={
+                    var groupPublicKey : String?
+                    var isClosedGroup : Boolean
+                    try {
+                        groupPublicKey=
+                            GroupUtil.doubleDecodeGroupID(recipient.address.toString())
+                                .toHexString()
+                        isClosedGroup=DatabaseComponent.get(context).beldexAPIDatabase()
+                            .isClosedGroup(groupPublicKey)
+                    } catch (e : IOException) {
+                        groupPublicKey=null
+                        isClosedGroup=false
+                    }
+                    try {
+                        if (isClosedGroup) {
+                            MessageSender.leave(groupPublicKey!!, true)
+                            activity.finish()
+                        } else {
+                            Toast.makeText(
+                                context,
+                                R.string.ConversationActivity_error_leaving_group,
+                                Toast.LENGTH_LONG
+                            ).show()
+                            showLeaveGroupDialog=false
+                        }
+                    } catch (e : Exception) {
+                        Toast.makeText(
+                            context,
+                            R.string.ConversationActivity_error_leaving_group,
+                            Toast.LENGTH_LONG
+                        ).show()
+                        showLeaveGroupDialog=false
+                    }
+                },
+                onCancel={
+                    showLeaveGroupDialog=false
+                }
+            )
+        }
+    }
+
+    if (showNotificationSettingsDialog) {
+        BChatTheme(
+            darkTheme = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
+        ) {
+            NotificationSettingDialog(
+                onDismiss={
+                    showNotificationSettingsDialog=false
+                },
+                onClick={
+                    showNotificationSettingsDialog=false
+                },
+                options=option.toList(),
+                currentValue=option[recipient.notifyType],
+                onValueChanged={ _, index ->
+                    DatabaseComponent.get(context).recipientDatabase()
+                        .setNotifyType(recipient, index.toString().toInt())
+                    secretGroupInfoViewModel.updateNotificationType(option[index])
+                    showNotificationSettingsDialog=false
+                }
+            )
+        }
+    }
+
+    if (showExpireMessageDialog) {
+        BChatTheme(
+            darkTheme = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
+        ) {
+            LockOptionsDialog(
+                title=stringResource(R.string.disappearing_messages),
+                options=disAppearOption,
+                currentValue=disAppearOption[timesOption.indexOf(recipient.expireMessages)],
+                onDismiss={
+                    showExpireMessageDialog=false
+                },
+                onValueChanged={ _, index ->
+                    showExpireMessageDialog=false
+                    val expirationTime=timesOption[index]
+                    val message=ExpirationTimerUpdate(expirationTime)
+                    message.recipient=recipient.address.serialize()
+                    message.sentTimestamp=MnodeAPI.nowWithOffset
+                    val expiringMessageManager=
+                        ApplicationContext.getInstance(context).expiringMessageManager
+                    expiringMessageManager.setExpirationTimer(message)
+                    MessageSender.send(message, recipient.address)
+                    secretGroupInfoViewModel.updateExpirationItem(expirationTime)
+                }
+            )
+        }
+    }
+
+    fun getUserDisplayName(publicKey : String) : String {
+        val contact=
+            DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
+        return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
+    }
+
+    fun editSecretGroup(context : Context, thread : Recipient) {
+        if (!thread.isClosedGroupRecipient) {
+            return
+        }
+        val intent=Intent(context, EditClosedGroupActivity::class.java)
+        intent.putExtra(EditClosedGroupActivity.groupIDKey, groupID)
+        resultLauncher.launch(intent)
+    }
+
+
+    val groupAdmin by remember {
+        mutableStateOf(groupInfo.admins.toString())
+    }
+
+    val filteredMembers=remember { MutableStateFlow<List<String>>(emptyList()) }
+
+    LaunchedEffect(searchQuery) {
+        if (searchQuery.isNotEmpty()) {
+            val combinedAllMembers=groupMembers!!.members + groupMembers.zombieMembers
+            val filtered=combinedAllMembers.filter { member ->
+                val displayName=getUserDisplayName(member)
+                displayName.contains(searchQuery, ignoreCase=true)
+            }
+            filteredMembers.value=filtered
+        } else {
+            filteredMembers.value=groupMembers!!.members + groupMembers.zombieMembers
+        }
+    }
+    val membersToDisplay by filteredMembers.collectAsState()
+
+    Column() {
+
+        Box(
+            modifier=Modifier
+                .padding(4.dp)
+                .size(120.dp)
+                .align(Alignment.CenterHorizontally),
+            contentAlignment=Alignment.Center
+        ) {
+            val pictureType=ProfilePictureMode.GroupPicture
+            val members=DatabaseComponent.get(context).groupDatabase()
+                .getGroupMemberAddresses(recipient.address.toGroupString(), true)
+                .sorted()
+                .take(2).toMutableList()
+            val additionalPk=members.getOrNull(1)?.serialize() ?: ""
+            val additionalDisplay=getUserDisplayName(additionalPk)
+            ProfilePictureComponent(
+                publicKey=recipient.address.toString(),
+                displayName=recipient.name.toString(),
+                additionalPublicKey=additionalPk,
+                additionalDisplayName=additionalDisplay,
+                containerSize=90.dp,
+                pictureMode=pictureType
+            )
+        }
+
+        Row(
+            modifier=Modifier.fillMaxWidth(),
+            verticalAlignment=Alignment.CenterVertically,
+            horizontalArrangement=Arrangement.Center
+        ) {
+            Column(
+                horizontalAlignment=Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text=groupName,
+                    style=MaterialTheme.typography.titleMedium.copy(
+                        fontSize=18.sp,
+                        fontWeight=FontWeight(800),
+                        color=MaterialTheme.appColors.textColor
+                    )
+                )
+                Text(
+                    text="Group • $groupMembersCount members",
+                    color=Color.Gray,
+                    style=MaterialTheme.typography.bodySmall
+                )
+            }
+        }
+
+        Column(modifier=Modifier.padding(12.dp)) {
+
+            LazyColumn(
+                modifier=Modifier
+                    .background(
+                        color=MaterialTheme.appColors.secretGroupInfoBackground,
+                        shape=RoundedCornerShape(12.dp)
+                    )
+            )
+            {
+                if (!showSearchEdit) {
+                    item() {
+                        Column() {
+                            NavigationItem(
+                                "All Media",
+                                Icons.Default.Notifications,
+                                onItemClick={ listenerCallback?.showAllMedia(recipient) },
+                                checked=false,
+                                showSwitch=false,
+                                null
+                            )
+                            NavigationItem(
+                                "Edit Group",
+                                Icons.Default.Notifications,
+                                onItemClick={ editSecretGroup(context, recipient) },
+                                checked=false,
+                                false,
+                                null
+                            )
+                            NavigationItem(
+                                "Notifications",
+                                Icons.Default.Notifications,
+                                onItemClick={ showNotificationSettingsDialog=true },
+                                checked=showNotificationSettingsItem == "Mentions",
+                                showSwitch=true,
+                                subTitle=context.getString(R.string.notification_info)
+                            )
+                            NavigationItem(
+                                "Disappearing Messages",
+                                Icons.Default.AccessTime,
+                                onItemClick={ showExpireMessageDialog=true },
+                                checked=showExpirationItem != 0,
+                                showSwitch=true,
+                                subTitle=context.getString(R.string.disappearing_info)
+                            )
+                            Row(
+                                verticalAlignment=Alignment.CenterVertically,
+                                modifier=Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp)
+                                    .clickable { showLeaveGroupDialog=true }
+                            ) {
+                                Icon(
+                                    imageVector=Icons.Default.ExitToApp,
+                                    contentDescription="exit group",
+                                    tint=Color.Red,
+                                    modifier=Modifier.size(24.dp)
+                                )
+                                Spacer(modifier=Modifier.width(16.dp))
+                                Text(
+                                    text="Leave group",
+                                    color=Color.Red,
+                                    style=MaterialTheme.typography.titleSmall
+                                )
+                            }
+
+                            Spacer(
+                                modifier=Modifier
+                                    .fillMaxWidth()
+                                    .height(24.dp)
+                            )
+                        }
+                    }
+
+                    item {
+                        Divider(
+                            color=colorResource(id=R.color.contact_list_border),
+                            modifier=Modifier
+                                .fillMaxWidth()
+                                .alpha(0.5f)
+                        )
+                    }
+                }
+
+                item {
+                    Row(
+                        modifier=Modifier.padding(16.dp)
+                    ) {
+                        Text(
+                            text="$memberCount members",
+                            color=Color.Gray,
+                            style=MaterialTheme.typography.titleSmall,
+                            modifier=Modifier.weight(1f)
+                        )
+                        Icon(
+                            imageVector=Icons.Default.Search,
+                            contentDescription="search members",
+                            tint=Color.Gray,
+                            modifier=Modifier
+                                .size(16.dp)
+                                .clickable {
+                                    showSearchEdit=true
+                                }
+                        )
+                    }
+
+                    if (showSearchEdit) {
+                        Column {
+                            TextField(
+                                value=searchQuery,
+                                placeholder={
+                                    Text(
+                                        text=stringResource(R.string.search_member),
+                                        style=MaterialTheme.typography.bodyMedium.copy(
+                                            color=MaterialTheme.appColors.secondaryTextColor,
+                                            fontSize=14.sp,
+                                            fontWeight=FontWeight(400)
+                                        )
+                                    )
+                                },
+                                onValueChange={
+                                    secretGroupInfoViewModel.updateSearchQuery(it)
+                                },
+                                modifier=Modifier
+                                    .fillMaxWidth()
+                                    .padding(start=16.dp, end=16.dp),
+                                shape=RoundedCornerShape(12.dp),
+                                colors=TextFieldDefaults.colors(
+                                    unfocusedContainerColor=MaterialTheme.appColors.backgroundColor,
+                                    focusedContainerColor=MaterialTheme.appColors.backgroundColor,
+                                    focusedIndicatorColor=Color.Transparent,
+                                    unfocusedIndicatorColor=Color.Transparent,
+                                    disabledIndicatorColor=Color.Transparent,
+                                    selectionColors=TextSelectionColors(
+                                        MaterialTheme.appColors.textSelectionColor,
+                                        MaterialTheme.appColors.textSelectionColor
+                                    ),
+                                    cursorColor=colorResource(id=R.color.button_green),
+                                ),
+                                trailingIcon={
+                                    Icon(
+                                        imageVector=Icons.Default.Clear,
+                                        contentDescription="clear search text",
+                                        tint=MaterialTheme.appColors.iconTint,
+                                        modifier=Modifier.clickable {
+                                            showSearchEdit=false
+                                            secretGroupInfoViewModel._searchQuery.value=""
+                                        }
+                                    )
+                                }
+                            )
+                        }
+                    }
+                }
+
+                items(membersToDisplay) { member ->
+                    Row(
+                        modifier=Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        verticalAlignment=Alignment.CenterVertically,
+
+                        ) {
+                        Box(
+                            modifier=Modifier
+                                .padding(4.dp)
+                                .height(30.dp)
+                                .width(30.dp),
+                            contentAlignment=Alignment.Center,
+                        ) {
+                            ProfilePictureComponent(
+                                publicKey=member,
+                                displayName=getUserDisplayName(member),
+                                containerSize=profileSize,
+                                pictureMode=ProfilePictureMode.LargePicture
+                            )
+                        }
+                        Spacer(modifier=Modifier.width(16.dp))
+                        Column(modifier=Modifier.weight(1f)) {
+                            Text(
+                                text=getUserDisplayName(member),
+
+                                style=MaterialTheme.typography.bodyMedium.copy(
+                                    fontSize=14.sp,
+                                    color=MaterialTheme.appColors.textColor
+                                )
+                            )
+                        }
+
+                        if (groupAdmin.contains(member)) {
+                            Image(
+                                painter=painterResource(id=R.drawable.ic_admin_crown),
+                                contentDescription="admin crown",
+                                modifier=Modifier.size(18.dp)
+                            )
+                        }
+                    }
+                }
+                item {
+                    if (membersToDisplay.isEmpty()) {
+                        Text(
+                            text="No records found! ",
+                            style=MaterialTheme.typography.bodyMedium.copy(
+                                fontSize=14.sp,
+                                color=MaterialTheme.appColors.textColor
+                            ),
+                            modifier=Modifier.padding(16.dp)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun NavigationItem(
+    label : String,
+    icon : ImageVector,
+    onItemClick : () -> Unit,
+    checked : Boolean,
+    showSwitch : Boolean,
+    subTitle : String?
+) {
+
+    Row(
+        modifier=Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .clickable {
+                onItemClick()
+            },
+        verticalAlignment=Alignment.CenterVertically,
+
+        ) {
+        Icon(
+            imageVector=icon,
+            contentDescription=label,
+            tint=MaterialTheme.appColors.iconTint,
+            modifier=Modifier.size(24.dp)
+        )
+        Spacer(modifier=Modifier.width(16.dp))
+
+        Column(modifier=Modifier.weight(1f)) {
+            Text(
+                text=label,
+                color=MaterialTheme.appColors.textColor,
+                fontSize=14.sp
+            )
+            if (subTitle != null) {
+                Text(
+                    text=subTitle,
+                    color=Color.Gray,
+                    fontSize=12.sp,
+                    modifier=Modifier.padding(top=4.dp)
+                )
+            }
+        }
+
+        if (!showSwitch) {
+            Icon(
+                imageVector=Icons.Default.ArrowBackIos,
+                contentDescription=label,
+                tint=Color.White,
+                modifier=Modifier.size(16.dp)
+            )
+        } else {
+            Switch(
+                checked=checked,
+                onCheckedChange={ onItemClick() },
+                colors=SwitchDefaults.colors(
+                    checkedThumbColor=MaterialTheme.appColors.primaryButtonColor,
+                    uncheckedThumbColor=MaterialTheme.appColors.unCheckedSwitchThumb,
+                    checkedTrackColor=MaterialTheme.appColors.switchTrackColor,
+                    uncheckedTrackColor=MaterialTheme.appColors.switchTrackColor
+                ),
+                modifier=Modifier.padding(end=4.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun SecretGroupInfoScreenContainer(
+    title : String,
+    wrapInCard : Boolean=true,
+    onBackClick : () -> Unit,
+    actionItems : @Composable () -> Unit={},
+    content : @Composable () -> Unit,
+) {
+    Column(
+        modifier=Modifier
+            .fillMaxSize()
+
+    ) {
+        Row(
+            verticalAlignment=Alignment.CenterVertically,
+            modifier=Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            Icon(painterResource(id=R.drawable.ic_back_arrow),
+                contentDescription=stringResource(R.string.back),
+                tint=MaterialTheme.appColors.editTextColor,
+                modifier=Modifier.clickable {
+                    onBackClick()
+                })
+
+            Spacer(modifier=Modifier.width(16.dp))
+
+            Text(
+                text=title, style=MaterialTheme.typography.titleLarge.copy(
+                    color=MaterialTheme.appColors.editTextColor,
+                    fontWeight=FontWeight.Bold,
+                    fontSize=18.sp
+                ), modifier=Modifier.weight(1f)
+            )
+
+            actionItems()
+        }
+
+        Spacer(modifier=Modifier.height(16.dp))
+
+        if (wrapInCard) {
+            CardContainer(
+                modifier=Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                content()
+            }
+        } else {
+            content()
+        }
+    }
+}

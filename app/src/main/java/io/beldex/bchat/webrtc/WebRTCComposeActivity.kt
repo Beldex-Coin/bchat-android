@@ -679,7 +679,7 @@ class WebRTCComposeActivity : ComponentActivity() {
                         }
                         if (state.showFloatingVideo()) {
                             callViewModel.floatingRenderer?.let { sfView ->
-                                isLocalSurfaceView?.setZOrderOnTop(true)
+                                isLocalSurfaceView?.setZOrderOnTop(false)
                                 isLocalSurfaceView?.setZOrderMediaOverlay(true)
                                 isLocalSurfaceView=sfView
                             }

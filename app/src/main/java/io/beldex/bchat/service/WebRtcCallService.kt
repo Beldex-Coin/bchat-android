@@ -218,8 +218,10 @@ class WebRtcCallService: LifecycleService(), CallManager.WebRtcListener {
             ContextCompat.startForegroundService(this, hangupIntent(this))
         }
     }*/
-    private val telephonyHandler = TelephonyHandler(serviceExecutor) {
-        ContextCompat.startForegroundService(this, hangupIntent(this))
+    private val telephonyHandler by lazy {
+        TelephonyHandler(serviceExecutor) {
+            ContextCompat.startForegroundService(this, hangupIntent(this))
+        }
     }
 
     private var networkChangedReceiver: NetworkChangeReceiver? = null

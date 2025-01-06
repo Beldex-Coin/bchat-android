@@ -30,11 +30,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccessTime
-import androidx.compose.material.icons.filled.ArrowBackIos
+import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -57,14 +54,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
@@ -166,7 +162,7 @@ fun GroupDetailsScreen(
     val lifecycleOwner=LocalLifecycleOwner.current
     val option=context.resources.getStringArray(R.array.notify_types)
     val timesOption=context.resources.getIntArray(R.array.expiration_times)
-    val profileSize=30.dp
+    val profileSize=36.dp
     val disAppearOption=remember {
         timesOption.map {
             ExpirationUtil.getExpirationDisplayValue(
@@ -183,9 +179,6 @@ fun GroupDetailsScreen(
     }
 
     groupMembers?.members?.let { allMembers.addAll(it) }
-    if (groupMembers != null) {
-        allMembers.addAll(groupMembers.zombieMembers)
-    }
 
     val recipient=Recipient.from(
         context, Address.fromSerialized(groupID), false
@@ -195,17 +188,15 @@ fun GroupDetailsScreen(
     }
     var groupMembersCount by remember {
         mutableIntStateOf(
-            groupMembers?.members?.count()?.plus(groupMembers.zombieMembers.count()) ?: 0
+            groupMembers?.members?.count() ?: 0
         )
     }
 
     val memberCount by remember(groupMembers) {
-        mutableIntStateOf(
-            (groupMembers?.members?.size ?: 0) + (groupMembers?.zombieMembers?.size
-                ?: 0)
-        )
+        mutableIntStateOf(groupMembers?.members?.size ?: 0)
     }
     val searchQuery by secretGroupInfoViewModel.searchQuery.collectAsState()
+    val filteredMembers=remember { MutableStateFlow<List<String>>(emptyList()) }
 
     val resultLauncher=rememberLauncherForActivityResult(
         contract=ActivityResultContracts.StartActivityForResult()
@@ -216,6 +207,10 @@ fun GroupDetailsScreen(
                 groupMembersCount=data.getIntExtra("group_members_count", 0)
                 if (memberCount != groupMembersCount) {
                     secretGroupInfoViewModel.fetchGroupMembers()
+                    val newList=secretGroupInfoViewModel.groupMembers.value
+                    if (newList != null) {
+                        filteredMembers.value=newList.members
+                    }
                 }
             }
         }
@@ -265,7 +260,7 @@ fun GroupDetailsScreen(
             context.resources.getString(R.string.ConversationActivity_are_you_sure_you_want_to_leave_this_group)
         }
         BChatTheme(
-            darkTheme = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
+            darkTheme=UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
         ) {
             LeaveGroupDialog(
                 title=stringResource(id=R.string.ConversationActivity_leave_group),
@@ -314,7 +309,7 @@ fun GroupDetailsScreen(
 
     if (showNotificationSettingsDialog) {
         BChatTheme(
-            darkTheme = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
+            darkTheme=UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
         ) {
             NotificationSettingDialog(
                 onDismiss={
@@ -337,7 +332,7 @@ fun GroupDetailsScreen(
 
     if (showExpireMessageDialog) {
         BChatTheme(
-            darkTheme = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
+            darkTheme=UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
         ) {
             LockOptionsDialog(
                 title=stringResource(R.string.disappearing_messages),
@@ -377,33 +372,38 @@ fun GroupDetailsScreen(
         resultLauncher.launch(intent)
     }
 
-
     val groupAdmin by remember {
-        mutableStateOf(groupInfo.admins.toString())
+        mutableStateOf(groupInfo.admins.toString().trim('[', ']'))
     }
-
-    val filteredMembers=remember { MutableStateFlow<List<String>>(emptyList()) }
 
     LaunchedEffect(searchQuery) {
         if (searchQuery.isNotEmpty()) {
-            val combinedAllMembers=groupMembers!!.members + groupMembers.zombieMembers
+            val combinedAllMembers=groupMembers!!.members
             val filtered=combinedAllMembers.filter { member ->
                 val displayName=getUserDisplayName(member)
                 displayName.contains(searchQuery, ignoreCase=true)
             }
             filteredMembers.value=filtered
         } else {
-            filteredMembers.value=groupMembers!!.members + groupMembers.zombieMembers
+            filteredMembers.value=groupMembers!!.members
         }
     }
     val membersToDisplay by filteredMembers.collectAsState()
+
+    var updateProfile by remember {
+        mutableStateOf(true)
+    }
+
+    fun String.capitalizeFirstLetter() : String {
+        return this.replaceFirstChar { it.uppercase() }
+    }
 
     Column() {
 
         Box(
             modifier=Modifier
                 .padding(4.dp)
-                .size(120.dp)
+                .size(90.dp)
                 .align(Alignment.CenterHorizontally),
             contentAlignment=Alignment.Center
         ) {
@@ -419,7 +419,7 @@ fun GroupDetailsScreen(
                 displayName=recipient.name.toString(),
                 additionalPublicKey=additionalPk,
                 additionalDisplayName=additionalDisplay,
-                containerSize=90.dp,
+                containerSize=70.dp,
                 pictureMode=pictureType
             )
         }
@@ -440,13 +440,9 @@ fun GroupDetailsScreen(
                         color=MaterialTheme.appColors.textColor
                     )
                 )
-                Text(
-                    text="Group • $groupMembersCount members",
-                    color=Color.Gray,
-                    style=MaterialTheme.typography.bodySmall
-                )
             }
         }
+        Spacer(modifier=Modifier.height(8.dp))
 
         Column(modifier=Modifier.padding(12.dp)) {
 
@@ -460,39 +456,49 @@ fun GroupDetailsScreen(
             {
                 if (!showSearchEdit) {
                     item() {
-                        Column() {
+                        Column(
+                            modifier=Modifier.padding(
+                                start=8.dp,
+                                top=16.dp,
+                                end=8.dp,
+                                bottom=8.dp
+                            )
+                        ) {
                             NavigationItem(
                                 "All Media",
-                                Icons.Default.Notifications,
+                                painterResource(id=R.drawable.ic_all_media),
                                 onItemClick={ listenerCallback?.showAllMedia(recipient) },
                                 checked=false,
                                 showSwitch=false,
                                 null
                             )
                             NavigationItem(
+                                "Disappearing Messages",
+                                painterResource(id=R.drawable.ic_disappearing_message),
+                                onItemClick={ showExpireMessageDialog=true },
+                                checked=showExpirationItem != 0,
+                                showSwitch=true,
+                                subTitle=context.getString(R.string.disappearing_info)
+                            )
+                            NavigationItem(
                                 "Edit Group",
-                                Icons.Default.Notifications,
+                                painterResource(id=R.drawable.ic_block_request),
                                 onItemClick={ editSecretGroup(context, recipient) },
                                 checked=false,
                                 false,
                                 null
                             )
                             NavigationItem(
-                                "Notifications",
-                                Icons.Default.Notifications,
-                                onItemClick={ showNotificationSettingsDialog=true },
+                                "Notify for Mentions Only",
+                                painterResource(id=R.drawable.ic_mention_only),
+                                onItemClick={
+                                    showNotificationSettingsDialog=true
+                                },
                                 checked=showNotificationSettingsItem == "Mentions",
                                 showSwitch=true,
                                 subTitle=context.getString(R.string.notification_info)
                             )
-                            NavigationItem(
-                                "Disappearing Messages",
-                                Icons.Default.AccessTime,
-                                onItemClick={ showExpireMessageDialog=true },
-                                checked=showExpirationItem != 0,
-                                showSwitch=true,
-                                subTitle=context.getString(R.string.disappearing_info)
-                            )
+
                             Row(
                                 verticalAlignment=Alignment.CenterVertically,
                                 modifier=Modifier
@@ -501,14 +507,14 @@ fun GroupDetailsScreen(
                                     .clickable { showLeaveGroupDialog=true }
                             ) {
                                 Icon(
-                                    imageVector=Icons.Default.ExitToApp,
+                                    painterResource(id=R.drawable.ic_block_request),
                                     contentDescription="exit group",
                                     tint=Color.Red,
                                     modifier=Modifier.size(24.dp)
                                 )
                                 Spacer(modifier=Modifier.width(16.dp))
                                 Text(
-                                    text="Leave group",
+                                    text="Leave Group",
                                     color=Color.Red,
                                     style=MaterialTheme.typography.titleSmall
                                 )
@@ -539,7 +545,11 @@ fun GroupDetailsScreen(
                         Text(
                             text="$memberCount members",
                             color=Color.Gray,
-                            style=MaterialTheme.typography.titleSmall,
+                            style=MaterialTheme.typography.titleSmall.copy(
+                                color=MaterialTheme.appColors.editTextHint,
+                                fontSize=16.sp,
+                                fontWeight=FontWeight(400)
+                            ),
                             modifier=Modifier.weight(1f)
                         )
                         Icon(
@@ -547,8 +557,8 @@ fun GroupDetailsScreen(
                             contentDescription="search members",
                             tint=Color.Gray,
                             modifier=Modifier
-                                .size(16.dp)
-                                .clickable {
+                                .size(20.dp)
+                                .clickable(enabled=!showSearchEdit) {
                                     showSearchEdit=true
                                 }
                         )
@@ -569,8 +579,10 @@ fun GroupDetailsScreen(
                                     )
                                 },
                                 onValueChange={
+                                    updateProfile=!updateProfile
                                     secretGroupInfoViewModel.updateSearchQuery(it)
                                 },
+                                singleLine=true,
                                 modifier=Modifier
                                     .fillMaxWidth()
                                     .padding(start=16.dp, end=16.dp),
@@ -593,8 +605,12 @@ fun GroupDetailsScreen(
                                         contentDescription="clear search text",
                                         tint=MaterialTheme.appColors.iconTint,
                                         modifier=Modifier.clickable {
-                                            showSearchEdit=false
-                                            secretGroupInfoViewModel._searchQuery.value=""
+                                            if (searchQuery.isNotEmpty()) {
+                                                secretGroupInfoViewModel._searchQuery.value=""
+                                            } else {
+                                                showSearchEdit=false
+                                            }
+
                                         }
                                     )
                                 }
@@ -618,25 +634,34 @@ fun GroupDetailsScreen(
                                 .width(30.dp),
                             contentAlignment=Alignment.Center,
                         ) {
-                            ProfilePictureComponent(
-                                publicKey=member,
-                                displayName=getUserDisplayName(member),
-                                containerSize=profileSize,
-                                pictureMode=ProfilePictureMode.LargePicture
-                            )
+                            if (updateProfile) {
+                                ProfilePictureComponent(
+                                    publicKey=member,
+                                    displayName=getUserDisplayName(member),
+                                    containerSize=profileSize,
+                                    pictureMode=ProfilePictureMode.SmallPicture
+                                )
+                            } else {
+                                ProfilePictureComponent(
+                                    publicKey=member,
+                                    displayName=getUserDisplayName(member),
+                                    containerSize=profileSize,
+                                    pictureMode=ProfilePictureMode.SmallPicture
+                                )
+                            }
                         }
                         Spacer(modifier=Modifier.width(16.dp))
                         Column(modifier=Modifier.weight(1f)) {
                             Text(
-                                text=getUserDisplayName(member),
-
+                                text=getUserDisplayName(member).capitalizeFirstLetter(),
                                 style=MaterialTheme.typography.bodyMedium.copy(
                                     fontSize=14.sp,
                                     color=MaterialTheme.appColors.textColor
-                                )
+                                ),
+                                modifier=Modifier.padding(end=8.dp)
                             )
                         }
-
+                        Spacer(modifier=Modifier.width(16.dp))
                         if (groupAdmin.contains(member)) {
                             Image(
                                 painter=painterResource(id=R.drawable.ic_admin_crown),
@@ -644,6 +669,7 @@ fun GroupDetailsScreen(
                                 modifier=Modifier.size(18.dp)
                             )
                         }
+                        Spacer(modifier=Modifier.width(8.dp))
                     }
                 }
                 item {
@@ -666,66 +692,80 @@ fun GroupDetailsScreen(
 @Composable
 fun NavigationItem(
     label : String,
-    icon : ImageVector,
+    icon : Painter,
     onItemClick : () -> Unit,
     checked : Boolean,
     showSwitch : Boolean,
     subTitle : String?
 ) {
 
-    Row(
-        modifier=Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .clickable {
-                onItemClick()
-            },
-        verticalAlignment=Alignment.CenterVertically,
+    Column(modifier=Modifier) {
 
-        ) {
-        Icon(
-            imageVector=icon,
-            contentDescription=label,
-            tint=MaterialTheme.appColors.iconTint,
-            modifier=Modifier.size(24.dp)
-        )
-        Spacer(modifier=Modifier.width(16.dp))
+        Row(
+            modifier=Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .clickable {
+                    onItemClick()
+                },
+            verticalAlignment=Alignment.Top,
 
-        Column(modifier=Modifier.weight(1f)) {
-            Text(
-                text=label,
-                color=MaterialTheme.appColors.textColor,
-                fontSize=14.sp
+            ) {
+            Image(
+                painter=icon,
+                contentDescription=label,
+                modifier=Modifier.size(24.dp)
             )
-            if (subTitle != null) {
+            Spacer(modifier=Modifier.width(16.dp))
+
+            Column(
+                modifier=Modifier.weight(1f)
+            ) {
                 Text(
-                    text=subTitle,
-                    color=Color.Gray,
-                    fontSize=12.sp,
-                    modifier=Modifier.padding(top=4.dp)
+                    text=label,
+                    style=MaterialTheme.typography.titleMedium.copy(
+                        fontSize=14.sp,
+                        fontWeight=FontWeight(400),
+                        color=MaterialTheme.appColors.textColor
+                    )
+                )
+                if (subTitle != null) {
+                    Text(
+                        text=subTitle,
+                        style=MaterialTheme.typography.labelSmall.copy(
+                            color=Color(0xACACACAC),
+                            fontWeight=FontWeight(600),
+                            fontSize=12.sp
+                        ),
+                        modifier=Modifier
+                            .padding(top=8.dp, end=16.dp)
+                    )
+                }
+            }
+            Spacer(modifier=Modifier.width(8.dp))
+
+            if (!showSwitch) {
+                Icon(
+                    imageVector=Icons.Default.ArrowForwardIos,
+                    contentDescription=label,
+                    tint=Color.White,
+                    modifier=Modifier.size(16.dp)
+                )
+            } else {
+                Switch(
+                    checked=checked,
+                    onCheckedChange={ onItemClick() },
+                    colors=SwitchDefaults.colors(
+                        checkedThumbColor=MaterialTheme.appColors.primaryButtonColor,
+                        uncheckedThumbColor=MaterialTheme.appColors.unCheckedSwitchThumb,
+                        checkedTrackColor=MaterialTheme.appColors.switchTrackColor,
+                        uncheckedTrackColor=MaterialTheme.appColors.switchTrackColor
+                    ),
+                    modifier=Modifier
+                        .size(30.dp)
+                        .padding(end=4.dp)
                 )
             }
-        }
-
-        if (!showSwitch) {
-            Icon(
-                imageVector=Icons.Default.ArrowBackIos,
-                contentDescription=label,
-                tint=Color.White,
-                modifier=Modifier.size(16.dp)
-            )
-        } else {
-            Switch(
-                checked=checked,
-                onCheckedChange={ onItemClick() },
-                colors=SwitchDefaults.colors(
-                    checkedThumbColor=MaterialTheme.appColors.primaryButtonColor,
-                    uncheckedThumbColor=MaterialTheme.appColors.unCheckedSwitchThumb,
-                    checkedTrackColor=MaterialTheme.appColors.switchTrackColor,
-                    uncheckedTrackColor=MaterialTheme.appColors.switchTrackColor
-                ),
-                modifier=Modifier.padding(end=4.dp)
-            )
         }
     }
 }

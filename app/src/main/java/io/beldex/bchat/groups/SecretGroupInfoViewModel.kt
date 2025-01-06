@@ -57,8 +57,7 @@ class SecretGroupInfoViewModel @Inject constructor(private val groupID: String,
     }
 }
 data class GroupMembers(
-    val members: List<String>,
-    val zombieMembers: List<String>
+    val members: List<String>
 )
 
 class SecretGroupViewModelFactory(

@@ -79,10 +79,9 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
   private static final int beldexV34                          = 55;
 
   private static final int beldexV35                         = 56;
-  private static final int beldexV36                        = 57;
 
   // beldex - onUpgrade(...) must be updated to use beldex version numbers if Signal makes any database changes
-  private static final int    DATABASE_VERSION = beldexV36;
+  private static final int    DATABASE_VERSION = beldexV35;
   private static final int    MIN_DATABASE_VERSION     = beldexV7;
   public static final String DATABASE_NAME    = "bchat_v4.db";
   private static final String CIPHER3_DATABASE_NAME    = "bchat.db";
@@ -476,16 +475,12 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
       }
 
       if(oldVersion< beldexV35) {
-        //need to check
-        /*db.execSQL(BeldexAPIDatabase.RESET_SEQ_NO);*/
         db.execSQL(MmsDatabase.CREATE_REACTIONS_UNREAD_COMMAND);
         db.execSQL(SmsDatabase.CREATE_REACTIONS_UNREAD_COMMAND);
         db.execSQL(MmsDatabase.CREATE_REACTIONS_LAST_SEEN_COMMAND);
         db.execSQL(ReactionDatabase.CREATE_REACTION_TABLE_COMMAND);
         executeStatements(db, ReactionDatabase.CREATE_REACTION_TRIGGERS);
         db.execSQL(EmojiSearchDatabase.CREATE_EMOJI_SEARCH_TABLE_COMMAND);
-      }
-      if(oldVersion <beldexV36){
         db.execSQL(BeldexMessageDatabase.getCreateSmsHashTableCommand());
         db.execSQL(BeldexMessageDatabase.getCreateMmsHashTableCommand());
         db.execSQL(SmsDatabase.ADD_IS_DELETED_COLUMN);

@@ -280,13 +280,15 @@ class ConversationActionDialog: DialogFragment() {
                             LockOptionsDialog(
                                 title = stringResource(R.string.disappearing_messages),
                                 options = options,
-                                currentValue = options[timesOption.indexOf(argument1?.toInt() ?: 0)],
+                                currentValue = options[timesOption.indexOf(data ?: 0)],
                                 onDismiss = {
                                     dismiss()
                                 },
                                 onValueChanged = { _, index ->
                                     dismiss()
-                                    listener?.onConfirmationWithData(dialogType, timesOption[index], threadRecord)
+                                    if (options[timesOption.indexOf(data ?:0)] != options[index]) {
+                                        listener?.onConfirmationWithData(dialogType, timesOption[index], threadRecord)
+                                    }
                                 }
                             )
                         }

@@ -1869,7 +1869,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }catch(ex: UninitializedPropertyAccessException){
             Log.d("Audio Recorder ",ex.message.toString())
         }
-//        amplitudeJob?.cancel()
         stopAudioHandler.removeCallbacks(stopVoiceMessageRecordingTask)
     }
 
@@ -2395,6 +2394,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
+    private fun String.capitalizeFirstLetter() : String {
+        return this.replaceFirstChar { it.uppercase() }
+    }
+
     private fun setUpToolBar() {
         val profileManager = SSKEnvironment.shared.profileManager
         val recipient = viewModel.recipient.value ?: return
@@ -2402,11 +2405,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (bnsName != null && adapter.cursor?.count == 0) {
             profileManager.setName(requireContext(), recipient, bnsName)
         }
-        val recipientName : String=recipient.toShortString().substring(0, 1).uppercase(Locale.ROOT) + recipient.toShortString().substring(1).lowercase(Locale.ROOT)
+        val recipientName : String=recipient.toShortString()
 
         binding.conversationTitleView.text = when {
-            recipient.isLocalNumber -> getString(R.string.note_to_self)
-            else -> recipientName
+            recipient.isLocalNumber -> getString(R.string.note_to_self).capitalizeFirstLetter()
+            else -> recipientName.capitalizeFirstLetter()
         }
         @DimenRes val sizeID: Int = if (recipient.isClosedGroupRecipient) {
             R.dimen.medium_profile_picture_size
@@ -2423,6 +2426,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.profilePictureView.root.update(recipient)
         binding.layoutConversation.setOnClickListener()
         {
+            cancelVoiceMessage()
             if (recipient.isClosedGroupRecipient) {
                 callSecretGroupInfo(recipient,listenerCallback)
             } else {

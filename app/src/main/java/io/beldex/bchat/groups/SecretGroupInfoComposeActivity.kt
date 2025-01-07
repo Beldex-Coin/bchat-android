@@ -73,6 +73,8 @@ import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.ExpirationUtil
 import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getLocalNumber
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getProfileName
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.toHexString
 import dagger.hilt.android.AndroidEntryPoint
@@ -149,7 +151,6 @@ class SecretGroupInfoComposeActivity : ComponentActivity() {
 }
 
 @SuppressLint("StateFlowValueCalledInComposition")
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GroupDetailsScreen(
     groupMembers : GroupMembers?,
@@ -252,7 +253,7 @@ fun GroupDetailsScreen(
 
     if (showLeaveGroupDialog) {
         val admins=groupInfo.admins
-        val bchatID=TextSecurePreferences.getLocalNumber(context)
+        val bchatID=getLocalNumber(context)
         val isCurrentUserAdmin=admins.any { it.toString() == bchatID }
         val message=if (isCurrentUserAdmin) {
             "Because you are the creator of this group it will be deleted for everyone. This cannot be undone."
@@ -343,24 +344,30 @@ fun GroupDetailsScreen(
                 },
                 onValueChanged={ _, index ->
                     showExpireMessageDialog=false
-                    val expirationTime=timesOption[index]
-                    val message=ExpirationTimerUpdate(expirationTime)
-                    message.recipient=recipient.address.serialize()
-                    message.sentTimestamp=MnodeAPI.nowWithOffset
-                    val expiringMessageManager=
-                        ApplicationContext.getInstance(context).expiringMessageManager
-                    expiringMessageManager.setExpirationTimer(message)
-                    MessageSender.send(message, recipient.address)
-                    secretGroupInfoViewModel.updateExpirationItem(expirationTime)
+                    if (disAppearOption[timesOption.indexOf(recipient.expireMessages)] != disAppearOption[index]) {
+                        val expirationTime=timesOption[index]
+                        val message=ExpirationTimerUpdate(expirationTime)
+                        message.recipient=recipient.address.serialize()
+                        message.sentTimestamp=MnodeAPI.nowWithOffset
+                        val expiringMessageManager=
+                            ApplicationContext.getInstance(context).expiringMessageManager
+                        expiringMessageManager.setExpirationTimer(message)
+                        MessageSender.send(message, recipient.address)
+                        secretGroupInfoViewModel.updateExpirationItem(expirationTime)
+                    }
                 }
             )
         }
     }
 
     fun getUserDisplayName(publicKey : String) : String {
-        val contact=
-            DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
-        return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
+        return if(publicKey == getLocalNumber(context)) {
+            getProfileName(context) ?: publicKey
+        } else {
+            val contact=DatabaseComponent.get(context).bchatContactDatabase()
+                .getContactWithBchatID(publicKey)
+            contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
+        }
     }
 
     fun editSecretGroup(context : Context, thread : Recipient) {
@@ -374,6 +381,15 @@ fun GroupDetailsScreen(
 
     val groupAdmin by remember {
         mutableStateOf(groupInfo.admins.toString().trim('[', ']'))
+    }
+
+    fun isSecretGroupIsActive():Boolean {
+        return if (recipient.isClosedGroupRecipient) {
+            val isActive = (groupInfo?.isActive == true)
+            isActive
+        } else {
+            true
+        }
     }
 
     LaunchedEffect(searchQuery) {
@@ -433,7 +449,7 @@ fun GroupDetailsScreen(
                 horizontalAlignment=Alignment.CenterHorizontally
             ) {
                 Text(
-                    text=groupName,
+                    text=groupName.capitalizeFirstLetter(),
                     style=MaterialTheme.typography.titleMedium.copy(
                         fontSize=18.sp,
                         fontWeight=FontWeight(800),
@@ -475,7 +491,17 @@ fun GroupDetailsScreen(
                             NavigationItem(
                                 "Disappearing Messages",
                                 painterResource(id=R.drawable.ic_disappearing_message),
-                                onItemClick={ showExpireMessageDialog=true },
+                                onItemClick={
+                                    if (isSecretGroupIsActive()) {
+                                        showExpireMessageDialog=true
+                                    } else {
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(R.string.no_participate_content),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                },
                                 checked=showExpirationItem != 0,
                                 showSwitch=true,
                                 subTitle=context.getString(R.string.disappearing_info)
@@ -483,7 +509,17 @@ fun GroupDetailsScreen(
                             NavigationItem(
                                 "Edit Group",
                                 painterResource(id=R.drawable.ic_block_request),
-                                onItemClick={ editSecretGroup(context, recipient) },
+                                onItemClick={
+                                    if (isSecretGroupIsActive()) {
+                                        editSecretGroup(context, recipient)
+                                    } else {
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(R.string.no_participate_content),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                },
                                 checked=false,
                                 false,
                                 null
@@ -492,7 +528,16 @@ fun GroupDetailsScreen(
                                 "Notify for Mentions Only",
                                 painterResource(id=R.drawable.ic_mention_only),
                                 onItemClick={
-                                    showNotificationSettingsDialog=true
+                                    if (isSecretGroupIsActive()) {
+                                        showNotificationSettingsDialog=true
+                                    } else {
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(R.string.no_participate_content),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+
                                 },
                                 checked=showNotificationSettingsItem == "Mentions",
                                 showSwitch=true,
@@ -504,7 +549,19 @@ fun GroupDetailsScreen(
                                 modifier=Modifier
                                     .fillMaxWidth()
                                     .padding(16.dp)
-                                    .clickable { showLeaveGroupDialog=true }
+                                    .clickable {
+                                        if (isSecretGroupIsActive()) {
+                                            showLeaveGroupDialog=true
+                                        } else {
+                                            Toast
+                                                .makeText(
+                                                    context,
+                                                    context.getString(R.string.no_participate_content),
+                                                    Toast.LENGTH_SHORT
+                                                )
+                                                .show()
+                                        }
+                                    }
                             ) {
                                 Icon(
                                     painterResource(id=R.drawable.ic_block_request),

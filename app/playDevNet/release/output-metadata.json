@@ -4,8 +4,8 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "io.beldex.bchat.debug",
-  "variantName": "playMainNetDebug",
+  "applicationId": "io.beldex.bchat",
+  "variantName": "playDevNetRelease",
   "elements": [
     {
       "type": "UNIVERSAL",

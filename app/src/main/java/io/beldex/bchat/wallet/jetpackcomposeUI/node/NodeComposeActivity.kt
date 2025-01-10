@@ -424,12 +424,20 @@ fun NodeScreen(test:Boolean = false) {
                 showRefreshNodePopup=false
             }, onCallRefresh = {
                 showRefreshNodePopup = false
-                isVisible=!isVisible
-                restoreDefaultNodes()
-                //refreshTheNodes()
-                lifecycleOwner.lifecycleScope.launch {
-                    delay(1000)
-                    isVisible=true
+                if(CheckOnline.isOnline(context)) {
+                    isVisible = !isVisible
+                    restoreDefaultNodes()
+                    //refreshTheNodes()
+                    lifecycleOwner.lifecycleScope.launch {
+                        delay(1000)
+                        isVisible = true
+                    }
+                } else {
+                    Toast.makeText(
+                        context,
+                        R.string.please_check_your_internet_connection,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             })
         }else{

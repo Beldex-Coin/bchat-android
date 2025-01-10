@@ -19,8 +19,8 @@
 
         <ImageView
             android:id="@+id/doubleModeImageView2"
-            android:layout_width="@dimen/very_small_profile_picture_size"
-            android:layout_height="@dimen/very_small_profile_picture_size"
+            android:layout_width="21dp"
+            android:layout_height="21dp"
             android:src="@drawable/ic_secret_group_profile"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"

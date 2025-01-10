@@ -556,7 +556,8 @@
         <activity
             android:name="io.beldex.bchat.onboarding.ui.OnBoardingActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -570,34 +571,40 @@
             android:name="io.beldex.bchat.my_account.ui.MyAccountActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
 
         <activity
             android:name="io.beldex.bchat.wallet.jetpackcomposeUI.settings.WalletSettingComposeActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
         <activity
             android:name="io.beldex.bchat.wallet.jetpackcomposeUI.node.NodeComposeActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
 
         <activity
             android:name="io.beldex.bchat.my_account.ui.MyProfileActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
 
         <activity
             android:name="io.beldex.bchat.home.SearchActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
         <activity
             android:name="io.beldex.bchat.conversation_v2.NewGroupConversationActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             android:label="@string/title_activity_create_secret_group_screen"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
@@ -606,6 +613,7 @@
             android:name="io.beldex.bchat.conversation_v2.NewChatConversationActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:label="@string/new_chat_screen_title"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
 

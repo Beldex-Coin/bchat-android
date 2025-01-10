@@ -777,7 +777,6 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="@dimen/medium_spacing"
                         android:orientation="horizontal">
 
                         <Button
@@ -796,7 +795,7 @@
                             style="@style/Widget.Bchat.Button.Dialog.Enable"
                             android:layout_width="0dp"
                             android:layout_height="52dp"
-                            android:layout_marginStart="@dimen/medium_spacing"
+                            android:layout_marginStart="@dimen/small_spacing"
                             android:layout_weight="1"
                             android:fontFamily="@font/open_sans_regular"
                             android:textSize="14sp"

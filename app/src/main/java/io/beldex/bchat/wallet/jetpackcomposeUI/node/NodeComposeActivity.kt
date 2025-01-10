@@ -881,7 +881,8 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                         },
                         onValueChange={
                             nodeAddress=it
-
+                            nodeStatusSuccessAction=false
+                            nodeStatusErrorAction=false
                         },
                         singleLine = true,
                         keyboardOptions = KeyboardOptions.Default.copy(
@@ -933,6 +934,8 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                         onValueChange={
                             if(it.isDigitsOnly()) {
                                 nodePort = it
+                                nodeStatusSuccessAction=false
+                                nodeStatusErrorAction=false
                             }
                         },
                         singleLine = true,

@@ -146,12 +146,12 @@ class ConversationView : LinearLayout {
 
         //binding.snippetTextView.typeface = if (unreadCount > 0 && !thread.isRead) Typeface.DEFAULT else Typeface.DEFAULT
         binding.snippetTextView.visibility = if (isTyping) View.GONE else View.VISIBLE
-//        if (isTyping) {
-//            binding.typingIndicatorView.root.startAnimation()
-//        } else {
-//            binding.typingIndicatorView.root.stopAnimation()
-//        }
-//        binding.typingIndicatorView.root.visibility = if (isTyping) View.VISIBLE else View.GONE
+        if (isTyping) {
+            binding.typingIndicatorView.root.startAnimation()
+        } else {
+            binding.typingIndicatorView.root.stopAnimation()
+        }
+        binding.typingIndicatorView.root.visibility = if (isTyping) View.VISIBLE else View.GONE
 //        binding.statusIndicatorImageView.visibility = View.VISIBLE
 //        when {
 //            !thread.isOutgoing -> binding.statusIndicatorImageView.visibility = View.GONE

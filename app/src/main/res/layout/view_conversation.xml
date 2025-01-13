@@ -39,27 +39,45 @@
             tools:text="I'm a very long display name. What are you going to do about it?"
             app:layout_constraintStart_toEndOf="@id/profilePictureView"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/snippetTextView"
+            app:layout_constraintBottom_toTopOf="@id/snippetTextViewLayout"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="24dp"
             app:layout_constraintEnd_toStartOf="@id/timestampTextView"/>
 
-        <TextView
-            android:fontFamily="@font/open_sans_regular"
-            android:id="@+id/snippetTextView"
+        <LinearLayout
+            android:id="@+id/snippetTextViewLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/text"
-            android:textSize="@dimen/very_small_font_size"
-            tools:text="Sorry, gotta go fight crime again"
+            android:orientation="vertical"
             app:layout_constraintStart_toStartOf="@id/conversationViewDisplayNameTextView"
             app:layout_constraintEnd_toStartOf="@id/timestampTextView"
             app:layout_constraintTop_toBottomOf="@id/conversationViewDisplayNameTextView"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginEnd="16dp"
-            />
+            >
+
+            <TextView
+                android:fontFamily="@font/open_sans_regular"
+                android:id="@+id/snippetTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/text"
+                android:textSize="@dimen/very_small_font_size"
+                tools:text="Sorry, gotta go fight crime again"
+                />
+
+            <include
+                android:id="@+id/typingIndicatorView"
+                layout="@layout/view_typing_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typingIndicator_tint="@color/text"
+                android:visibility="gone"
+                />
+
+        </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/unreadCountIndicator"

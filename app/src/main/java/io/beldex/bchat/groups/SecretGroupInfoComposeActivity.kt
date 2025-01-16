@@ -266,6 +266,14 @@ fun GroupDetailsScreen(
         mutableStateOf(false)
     }
 
+    var showMemberOptionDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var selectedItem by remember {
+        mutableStateOf<String?>(null)
+    }
+
     var showNotificationSettingsItem by remember {
         mutableStateOf(option[recipient.notifyType])
     }
@@ -388,6 +396,20 @@ fun GroupDetailsScreen(
                         secretGroupInfoViewModel.updateExpirationItem(expirationTime)
                     }
                 }
+            )
+        }
+    }
+
+    if(showMemberOptionDialog){
+        BChatTheme(
+            darkTheme=UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
+        ) {
+            MemberDetailsDialog(
+                onDismiss={
+                    showMemberOptionDialog=false
+                },
+                context = context,
+                member = selectedItem ?: ""
             )
         }
     }
@@ -801,7 +823,13 @@ fun GroupDetailsScreen(
                     Row(
                         modifier=Modifier
                             .fillMaxWidth()
-                            .padding(8.dp),
+                            .padding(8.dp)
+                            .clickable {
+                                if (getLocalNumber(context) != member) {
+                                    selectedItem=member
+                                    showMemberOptionDialog=true
+                                }
+                            },
                         verticalAlignment=Alignment.CenterVertically,
 
                         ) {
@@ -1001,4 +1029,155 @@ private fun SecretGroupInfoScreenContainer(
             content()
         }
     }
+}
+
+@Composable
+fun MemberDetailsDialog(
+    onDismiss : () -> Unit,
+    context : Context,
+    member : String
+) {
+    val activity=(context as? Activity)
+
+    val options=context.resources.getStringArray(R.array.members_options)
+
+    fun truncatedPublicKey(text : String) : String {
+        if (text.length <= 8) {
+            return text
+        }
+        return "${text.substring(0, 4)}...${text.substring(text.length - 4, text.length)}"
+    }
+
+    fun copyPublicKey(bchatID : String) {
+        val clipboard=context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip=ClipData.newPlainText("Chat ID", bchatID)
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(context, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+    }
+
+    fun getUserDisplayName(publicKey : String) : String {
+        return if (publicKey == getLocalNumber(context)) {
+            getProfileName(context) ?: truncatedPublicKey(publicKey)
+        } else {
+            val contact=DatabaseComponent.get(context).bchatContactDatabase()
+                .getContactWithBchatID(publicKey)
+            contact?.displayName(Contact.ContactContext.REGULAR) ?: truncatedPublicKey(publicKey)
+        }
+    }
+
+    DialogContainer(
+        dismissOnBackPress=false,
+        dismissOnClickOutside=false,
+        onDismissRequest=onDismiss,
+    ) {
+        OutlinedCard(
+            colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.dialogBackground),
+            elevation=CardDefaults.cardElevation(defaultElevation=4.dp),
+            modifier=Modifier.fillMaxWidth()
+        ) {
+
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(start=20.dp, end=20.dp, top=25.dp, bottom=25.dp),
+                Arrangement.Center,
+                Alignment.CenterHorizontally
+            ) {
+
+                Row(modifier=Modifier.padding(bottom=8.dp)) {
+                    LazyColumn(
+                        verticalArrangement=Arrangement.spacedBy(8.dp),
+                        modifier=Modifier
+                            .weight(1f)
+
+                    ) {
+                        itemsIndexed(options) { index, item ->
+                            Column(
+                                modifier=Modifier
+                                    .fillMaxSize()
+                                    .padding(vertical=4.dp),
+                                verticalArrangement=Arrangement.Center,
+                                horizontalAlignment=Alignment.Start,
+                            ) {
+                                Text(
+                                    text=if (index == 0) {
+                                        item + " " + getUserDisplayName(member)
+                                    } else item,
+                                    style=MaterialTheme.typography.titleMedium.copy(
+                                        color=MaterialTheme.appColors.secondaryTextColor,
+                                        fontSize=16.sp,
+                                        fontWeight=FontWeight(400)
+                                    ),
+                                    modifier=Modifier
+                                        .padding(10.dp)
+                                        .clickable {
+                                            when (index) {
+                                                0 -> {
+                                                    val recipient=Recipient.from(
+                                                        context,
+                                                        Address.fromSerialized(member),
+                                                        false
+                                                    )
+                                                    val existingThread=DatabaseComponent
+                                                        .get(context)
+                                                        .threadDatabase()
+                                                        .getThreadIdIfExistsFor(recipient)
+                                                    if (activity != null) {
+                                                        createConversation(
+                                                            threadId=existingThread,
+                                                            address=recipient.address,
+                                                            activity=activity,
+                                                            context=context
+                                                        )
+                                                    }
+                                                    onDismiss()
+                                                }
+
+                                                1 -> {
+                                                    copyPublicKey(member)
+                                                    onDismiss()
+                                                }
+                                            }
+                                        }
+                                )
+                            }
+                        }
+                    }
+                    Icon(
+                        painter=painterResource(id=R.drawable.ic_close),
+                        contentDescription="",
+                        tint=MaterialTheme.appColors.editTextColor,
+                        modifier=Modifier
+                            .padding(end=8.dp, bottom=16.dp)
+                            .clickable {
+                                onDismiss()
+                            }
+                    )
+                }
+
+            }
+        }
+    }
+}
+
+private fun getBaseShareIntent(target : Class<*>, context : Context) : Intent {
+    val intent=Intent(context, target)
+    val bundle=Bundle()
+    bundle.putParcelable(ConversationFragmentV2.URI, intent.data)
+    bundle.putString(ConversationFragmentV2.TYPE, intent.type)
+    return intent
+}
+
+private fun createConversation(
+    threadId : Long,
+    address : Address,
+    activity : Activity,
+    context : Context
+) {
+    val intent : Intent=getBaseShareIntent(HomeActivity::class.java, context)
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+    intent.putExtra(ConversationFragmentV2.ADDRESS, address)
+    intent.putExtra(ConversationFragmentV2.THREAD_ID, threadId)
+    intent.putExtra(HomeActivity.SHORTCUT_LAUNCHER, true)
+    activity.startActivity(intent)
 }

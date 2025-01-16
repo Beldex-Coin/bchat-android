@@ -2,11 +2,15 @@ package io.beldex.bchat.groups
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Activity.RESULT_OK
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -27,21 +31,24 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -49,11 +56,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -72,7 +83,6 @@ import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.ExpirationUtil
 import com.beldex.libbchat.utilities.GroupUtil
-import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getLocalNumber
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getProfileName
 import com.beldex.libbchat.utilities.recipients.Recipient
@@ -80,18 +90,23 @@ import com.beldex.libsignal.utilities.toHexString
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.BChatOutlinedTextField
 import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.conversation.v2.ConversationFragmentV2
 import io.beldex.bchat.conversation.v2.dialogs.LeaveGroupDialog
 import io.beldex.bchat.dependencies.DatabaseComponent
+import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.home.NotificationSettingDialog
 import io.beldex.bchat.my_account.ui.CardContainer
 import io.beldex.bchat.my_account.ui.dialogs.LockOptionsDialog
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import java.io.IOException
 
 @AndroidEntryPoint
@@ -120,7 +135,7 @@ class SecretGroupInfoComposeActivity : ComponentActivity() {
 
                     val context=LocalContext.current
                     val activity=(context as? Activity)
-
+                    val lifecycleOwner=LocalLifecycleOwner.current
                     val groupID : String=activity?.intent?.getStringExtra(secretGroupID)!!
                     val secretGroupInfoViewModelFactory=
                         SecretGroupViewModelFactory(groupID, context)
@@ -129,15 +144,35 @@ class SecretGroupInfoComposeActivity : ComponentActivity() {
                     )[SecretGroupInfoViewModel::class.java]
                     val groupMembers by secretGroupInfoViewModel.groupMembers.collectAsState()
 
+                    var tileName by remember {
+                        mutableStateOf(context.getString(R.string.group_info))
+                    }
+                    secretGroupInfoViewModel.isShowBottomSheet.observe(lifecycleOwner) { isVisible ->
+                        title=if (isVisible) {
+                            context.getString(R.string.search_member_title)
+                        } else {
+                            context.getString(R.string.group_info)
+                        }
+                    }
+
                     SecretGroupInfoScreenContainer(
-                        title=stringResource(R.string.group_info),
+                        titleChange = {
+                            tileName = context.getString(R.string.group_info)
+                        },
+                        context = context,
+                        secretGroupInfoViewModel = secretGroupInfoViewModel,
+                        title=tileName,
                         onBackClick={
                             (context as ComponentActivity).finish()
-                        }) {
+                        }
+                    ) {
                         GroupDetailsScreen(
                             groupMembers,
                             listenerCallback,
-                            secretGroupInfoViewModel
+                            secretGroupInfoViewModel,
+                            showSearchView = {
+                                tileName = context.getString(R.string.search_member_title)
+                            }
                         )
                     }
                 }
@@ -156,6 +191,7 @@ fun GroupDetailsScreen(
     groupMembers : GroupMembers?,
     listenerCallback : SecretGroupInfoComposeActivity.socialGroupInfoInterface?,
     secretGroupInfoViewModel : SecretGroupInfoViewModel,
+    showSearchView : () -> Unit
 ) {
     lateinit var groupID : String
     val context=LocalContext.current
@@ -173,7 +209,7 @@ fun GroupDetailsScreen(
         }
     }
 
-    val allMembers=mutableListOf<String>()
+    var allMembers=mutableListOf<String>()
     groupID=activity?.intent?.getStringExtra(SecretGroupInfoComposeActivity.secretGroupID)!!
     val groupInfo by remember {
         mutableStateOf(DatabaseComponent.get(context).groupDatabase().getGroup(groupID).get())
@@ -202,7 +238,7 @@ fun GroupDetailsScreen(
     val resultLauncher=rememberLauncherForActivityResult(
         contract=ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
+        if (result.resultCode == RESULT_OK) {
             result.data?.let { data ->
                 groupName=data.getStringExtra("group_name") ?: ""
                 groupMembersCount=data.getIntExtra("group_members_count", 0)
@@ -232,10 +268,6 @@ fun GroupDetailsScreen(
 
     var showNotificationSettingsItem by remember {
         mutableStateOf(option[recipient.notifyType])
-    }
-
-    var showSearchEdit by remember {
-        mutableStateOf(false)
     }
 
     var showExpirationItem by remember {
@@ -391,6 +423,11 @@ fun GroupDetailsScreen(
             true
         }
     }
+    var updateProfile by remember {
+        mutableStateOf(true)
+    }
+    val membersToDisplay by filteredMembers.collectAsState()
+
 
     LaunchedEffect(searchQuery) {
         if (searchQuery.isNotEmpty()) {
@@ -400,19 +437,158 @@ fun GroupDetailsScreen(
                 displayName.contains(searchQuery, ignoreCase=true)
             }
             filteredMembers.value=filtered
+            updateProfile = !updateProfile
         } else {
             filteredMembers.value=groupMembers!!.members
+            updateProfile = !updateProfile
         }
     }
-    val membersToDisplay by filteredMembers.collectAsState()
 
-    var updateProfile by remember {
-        mutableStateOf(true)
-    }
 
     fun String.capitalizeFirstLetter() : String {
         return this.replaceFirstChar { it.uppercase() }
     }
+
+    val modalSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded },
+        skipHalfExpanded = true
+    )
+    var isShowSearchBottomSheet by remember {
+        mutableStateOf(false)
+    }
+    secretGroupInfoViewModel.isShowBottomSheet.observe(lifecycleOwner){ isVisible ->
+        isShowSearchBottomSheet = isVisible
+    }
+
+    if (isShowSearchBottomSheet) {
+        ModalBottomSheetLayout(
+            sheetState=modalSheetState,
+            sheetShape=RoundedCornerShape(topStart=12.dp, topEnd=12.dp),
+            sheetContent={}
+        ) {
+            val focusRequester=remember { FocusRequester() }
+            val coroutineScope=rememberCoroutineScope()
+
+            LaunchedEffect(Unit) {
+                coroutineScope.launch {
+                    focusRequester.requestFocus()
+                }
+            }
+
+            Column(modifier=Modifier.padding(16.dp)) {
+
+                BChatOutlinedTextField(
+                    value=searchQuery,
+                    onValueChange={
+                        secretGroupInfoViewModel.updateSearchQuery(it)
+                    },
+                    placeHolder=stringResource(id=R.string.enter_name),
+                    unFocusedContainerColor=MaterialTheme.appColors.searchBackground,
+                    focusedContainerColor=MaterialTheme.appColors.searchBackground,
+                    focusedBorderColor=Color.Transparent,
+                    unFocusedBorderColor=Color.Transparent,
+                    selectionColors=MaterialTheme.appColors.textSelectionColor,
+                    cursorColor=colorResource(id=R.color.button_green),
+                    shape=RoundedCornerShape(26.dp),
+                    leadingIcon={
+                        Icon(
+                            imageVector=Icons.Default.Search,
+                            contentDescription="clear search text",
+                            tint=MaterialTheme.appColors.iconTint,
+                        )
+                    },
+                    trailingIcon={
+                        if (searchQuery.isNotEmpty()) {
+                            Icon(
+                                imageVector=Icons.Default.Clear,
+                                contentDescription="clear search text",
+                                tint=MaterialTheme.appColors.iconTint,
+                                modifier=Modifier.clickable {
+                                    secretGroupInfoViewModel._searchQuery.value=""
+                                }
+                            )
+                        }
+                    },
+                    modifier=Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester)
+
+                )
+
+                LazyColumn(modifier=Modifier.padding(top=16.dp)) {
+
+                    items(membersToDisplay) { member ->
+
+                        Row(
+                            modifier=Modifier
+                                .fillMaxWidth()
+                                .padding(vertical=8.dp),
+                            verticalAlignment=Alignment.CenterVertically
+                        )
+                        {
+                            Box(
+                                modifier=Modifier
+                                    .padding(4.dp)
+                                    .height(30.dp)
+                                    .width(30.dp),
+                                contentAlignment=Alignment.Center,
+                            ) {
+                                if (updateProfile) {
+                                    ProfilePictureComponent(
+                                        publicKey=member,
+                                        displayName=getUserDisplayName(member),
+                                        containerSize=profileSize,
+                                        pictureMode=ProfilePictureMode.SmallPicture
+                                    )
+                                } else {
+                                    ProfilePictureComponent(
+                                        publicKey=member,
+                                        displayName=getUserDisplayName(member),
+                                        containerSize=profileSize,
+                                        pictureMode=ProfilePictureMode.SmallPicture
+                                    )
+                                }
+                            }
+                            Spacer(modifier=Modifier.width(16.dp))
+                            Column(modifier=Modifier.weight(1f)) {
+                                Text(
+                                    text=getUserDisplayName(member).capitalizeFirstLetter(),
+                                    style=MaterialTheme.typography.bodyMedium.copy(
+                                        fontSize=14.sp,
+                                        color=MaterialTheme.appColors.textColor
+                                    ),
+                                    modifier=Modifier.padding(end=8.dp)
+                                )
+                            }
+                            Spacer(modifier=Modifier.width(16.dp))
+                            if (groupAdmin.contains(member)) {
+                                Image(
+                                    painter=painterResource(id=R.drawable.ic_admin_crown),
+                                    contentDescription="admin crown",
+                                    modifier=Modifier.size(18.dp)
+                                )
+                            }
+                            Spacer(modifier=Modifier.width(8.dp))
+                        }
+                    }
+                    item {
+                        if (membersToDisplay.isEmpty()) {
+                            Text(
+                                text="No records found! ",
+                                style=MaterialTheme.typography.bodyMedium.copy(
+                                    fontSize=14.sp,
+                                    color=MaterialTheme.appColors.textColor
+                                ),
+                                modifier=Modifier.padding(16.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     Column() {
 
@@ -470,129 +646,127 @@ fun GroupDetailsScreen(
                     )
             )
             {
-                if (!showSearchEdit) {
-                    item() {
-                        Column(
-                            modifier=Modifier.padding(
-                                start=8.dp,
-                                top=16.dp,
-                                end=8.dp,
-                                bottom=8.dp
-                            )
-                        ) {
-                            NavigationItem(
-                                "All Media",
-                                painterResource(id=R.drawable.ic_all_media),
-                                onItemClick={ listenerCallback?.showAllMedia(recipient) },
-                                checked=false,
-                                showSwitch=false,
-                                null
-                            )
-                            NavigationItem(
-                                "Disappearing Messages",
-                                painterResource(id=R.drawable.ic_disappearing_message),
-                                onItemClick={
-                                    if (isSecretGroupIsActive()) {
-                                        showExpireMessageDialog=true
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            context.getString(R.string.no_participate_content),
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                },
-                                checked=showExpirationItem != 0,
-                                showSwitch=true,
-                                subTitle=context.getString(R.string.disappearing_info)
-                            )
-                            NavigationItem(
-                                "Edit Group",
-                                painterResource(id=R.drawable.ic_block_request),
-                                onItemClick={
-                                    if (isSecretGroupIsActive()) {
-                                        editSecretGroup(context, recipient)
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            context.getString(R.string.no_participate_content),
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                },
-                                checked=false,
-                                false,
-                                null
-                            )
-                            NavigationItem(
-                                "Notify for Mentions Only",
-                                painterResource(id=R.drawable.ic_mention_only),
-                                onItemClick={
-                                    if (isSecretGroupIsActive()) {
-                                        showNotificationSettingsDialog=true
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            context.getString(R.string.no_participate_content),
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
+                item() {
+                    Column(
+                        modifier=Modifier.padding(
+                            start=8.dp,
+                            top=16.dp,
+                            end=8.dp,
+                            bottom=8.dp
+                        )
+                    ) {
+                        NavigationItem(
+                            "All Media",
+                            painterResource(id=R.drawable.ic_all_media),
+                            onItemClick={ listenerCallback?.showAllMedia(recipient) },
+                            checked=false,
+                            showSwitch=false,
+                            null
+                        )
+                        NavigationItem(
+                            "Disappearing Messages",
+                            painterResource(id=R.drawable.ic_disappearing_message),
+                            onItemClick={
+                                if (isSecretGroupIsActive()) {
+                                    showExpireMessageDialog=true
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        context.getString(R.string.no_participate_content),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            },
+                            checked=showExpirationItem != 0,
+                            showSwitch=true,
+                            subTitle=context.getString(R.string.disappearing_info)
+                        )
+                        NavigationItem(
+                            "Edit Group",
+                            painterResource(id=R.drawable.ic_block_request),
+                            onItemClick={
+                                if (isSecretGroupIsActive()) {
+                                    editSecretGroup(context, recipient)
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        context.getString(R.string.no_participate_content),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            },
+                            checked=false,
+                            false,
+                            null
+                        )
+                        NavigationItem(
+                            "Notify for Mentions Only",
+                            painterResource(id=R.drawable.ic_mention_only),
+                            onItemClick={
+                                if (isSecretGroupIsActive()) {
+                                    showNotificationSettingsDialog=true
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        context.getString(R.string.no_participate_content),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
 
-                                },
-                                checked=showNotificationSettingsItem == "Mentions",
-                                showSwitch=true,
-                                subTitle=context.getString(R.string.notification_info)
-                            )
+                            },
+                            checked=showNotificationSettingsItem == "Mentions",
+                            showSwitch=true,
+                            subTitle=context.getString(R.string.notification_info)
+                        )
 
-                            Row(
-                                verticalAlignment=Alignment.CenterVertically,
-                                modifier=Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp)
-                                    .clickable {
-                                        if (isSecretGroupIsActive()) {
-                                            showLeaveGroupDialog=true
-                                        } else {
-                                            Toast
-                                                .makeText(
-                                                    context,
-                                                    context.getString(R.string.no_participate_content),
-                                                    Toast.LENGTH_SHORT
-                                                )
-                                                .show()
-                                        }
-                                    }
-                            ) {
-                                Icon(
-                                    painterResource(id=R.drawable.ic_block_request),
-                                    contentDescription="exit group",
-                                    tint=Color.Red,
-                                    modifier=Modifier.size(24.dp)
-                                )
-                                Spacer(modifier=Modifier.width(16.dp))
-                                Text(
-                                    text="Leave Group",
-                                    color=Color.Red,
-                                    style=MaterialTheme.typography.titleSmall
-                                )
-                            }
-
-                            Spacer(
-                                modifier=Modifier
-                                    .fillMaxWidth()
-                                    .height(24.dp)
-                            )
-                        }
-                    }
-
-                    item {
-                        Divider(
-                            color=colorResource(id=R.color.contact_list_border),
+                        Row(
+                            verticalAlignment=Alignment.CenterVertically,
                             modifier=Modifier
                                 .fillMaxWidth()
-                                .alpha(0.5f)
+                                .padding(16.dp)
+                                .clickable {
+                                    if (isSecretGroupIsActive()) {
+                                        showLeaveGroupDialog=true
+                                    } else {
+                                        Toast
+                                            .makeText(
+                                                context,
+                                                context.getString(R.string.no_participate_content),
+                                                Toast.LENGTH_SHORT
+                                            )
+                                            .show()
+                                    }
+                                }
+                        ) {
+                            Icon(
+                                painterResource(id=R.drawable.ic_block_request),
+                                contentDescription="exit group",
+                                tint=Color.Red,
+                                modifier=Modifier.size(24.dp)
+                            )
+                            Spacer(modifier=Modifier.width(16.dp))
+                            Text(
+                                text="Leave Group",
+                                color=Color.Red,
+                                style=MaterialTheme.typography.titleSmall
+                            )
+                        }
+
+                        Spacer(
+                            modifier=Modifier
+                                .fillMaxWidth()
+                                .height(24.dp)
                         )
                     }
+                }
+
+                item {
+                    Divider(
+                        color=colorResource(id=R.color.contact_list_border),
+                        modifier=Modifier
+                            .fillMaxWidth()
+                            .alpha(0.5f)
+                    )
                 }
 
                 item {
@@ -615,68 +789,15 @@ fun GroupDetailsScreen(
                             tint=Color.Gray,
                             modifier=Modifier
                                 .size(20.dp)
-                                .clickable(enabled=!showSearchEdit) {
-                                    showSearchEdit=true
+                                .clickable {
+                                    showSearchView()
+                                    secretGroupInfoViewModel.updateVisibleBottomSheet(true)
                                 }
                         )
                     }
-
-                    if (showSearchEdit) {
-                        Column {
-                            TextField(
-                                value=searchQuery,
-                                placeholder={
-                                    Text(
-                                        text=stringResource(R.string.search_member),
-                                        style=MaterialTheme.typography.bodyMedium.copy(
-                                            color=MaterialTheme.appColors.secondaryTextColor,
-                                            fontSize=14.sp,
-                                            fontWeight=FontWeight(400)
-                                        )
-                                    )
-                                },
-                                onValueChange={
-                                    updateProfile=!updateProfile
-                                    secretGroupInfoViewModel.updateSearchQuery(it)
-                                },
-                                singleLine=true,
-                                modifier=Modifier
-                                    .fillMaxWidth()
-                                    .padding(start=16.dp, end=16.dp),
-                                shape=RoundedCornerShape(12.dp),
-                                colors=TextFieldDefaults.colors(
-                                    unfocusedContainerColor=MaterialTheme.appColors.backgroundColor,
-                                    focusedContainerColor=MaterialTheme.appColors.backgroundColor,
-                                    focusedIndicatorColor=Color.Transparent,
-                                    unfocusedIndicatorColor=Color.Transparent,
-                                    disabledIndicatorColor=Color.Transparent,
-                                    selectionColors=TextSelectionColors(
-                                        MaterialTheme.appColors.textSelectionColor,
-                                        MaterialTheme.appColors.textSelectionColor
-                                    ),
-                                    cursorColor=colorResource(id=R.color.button_green),
-                                ),
-                                trailingIcon={
-                                    Icon(
-                                        imageVector=Icons.Default.Clear,
-                                        contentDescription="clear search text",
-                                        tint=MaterialTheme.appColors.iconTint,
-                                        modifier=Modifier.clickable {
-                                            if (searchQuery.isNotEmpty()) {
-                                                secretGroupInfoViewModel._searchQuery.value=""
-                                            } else {
-                                                showSearchEdit=false
-                                            }
-
-                                        }
-                                    )
-                                }
-                            )
-                        }
-                    }
                 }
 
-                items(membersToDisplay) { member ->
+                items(groupMembers!!.members) { member ->
                     Row(
                         modifier=Modifier
                             .fillMaxWidth()
@@ -691,21 +812,12 @@ fun GroupDetailsScreen(
                                 .width(30.dp),
                             contentAlignment=Alignment.Center,
                         ) {
-                            if (updateProfile) {
-                                ProfilePictureComponent(
-                                    publicKey=member,
-                                    displayName=getUserDisplayName(member),
-                                    containerSize=profileSize,
-                                    pictureMode=ProfilePictureMode.SmallPicture
-                                )
-                            } else {
-                                ProfilePictureComponent(
-                                    publicKey=member,
-                                    displayName=getUserDisplayName(member),
-                                    containerSize=profileSize,
-                                    pictureMode=ProfilePictureMode.SmallPicture
-                                )
-                            }
+                            ProfilePictureComponent(
+                                publicKey=member,
+                                displayName=getUserDisplayName(member),
+                                containerSize=profileSize,
+                                pictureMode=ProfilePictureMode.SmallPicture
+                            )
                         }
                         Spacer(modifier=Modifier.width(16.dp))
                         Column(modifier=Modifier.weight(1f)) {
@@ -727,18 +839,6 @@ fun GroupDetailsScreen(
                             )
                         }
                         Spacer(modifier=Modifier.width(8.dp))
-                    }
-                }
-                item {
-                    if (membersToDisplay.isEmpty()) {
-                        Text(
-                            text="No records found! ",
-                            style=MaterialTheme.typography.bodyMedium.copy(
-                                fontSize=14.sp,
-                                color=MaterialTheme.appColors.textColor
-                            ),
-                            modifier=Modifier.padding(16.dp)
-                        )
                     }
                 }
             }
@@ -771,6 +871,9 @@ fun NavigationItem(
             Image(
                 painter=icon,
                 contentDescription=label,
+                colorFilter=ColorFilter.tint(
+                    color=MaterialTheme.appColors.editTextColor
+                ),
                 modifier=Modifier.size(24.dp)
             )
             Spacer(modifier=Modifier.width(16.dp))
@@ -805,7 +908,7 @@ fun NavigationItem(
                 Icon(
                     imageVector=Icons.Default.ArrowForwardIos,
                     contentDescription=label,
-                    tint=Color.White,
+                    tint=MaterialTheme.appColors.editTextColor,
                     modifier=Modifier.size(16.dp)
                 )
             } else {
@@ -829,12 +932,25 @@ fun NavigationItem(
 
 @Composable
 private fun SecretGroupInfoScreenContainer(
+    titleChange : () ->  Unit,
+    context : Context,
+    secretGroupInfoViewModel : SecretGroupInfoViewModel,
     title : String,
     wrapInCard : Boolean=true,
     onBackClick : () -> Unit,
     actionItems : @Composable () -> Unit={},
     content : @Composable () -> Unit,
 ) {
+
+    BackHandler {
+        if (title == context.getString(R.string.search_member_title)) {
+            secretGroupInfoViewModel.updateVisibleBottomSheet(false)
+            titleChange()
+        } else {
+            onBackClick()
+        }
+    }
+
     Column(
         modifier=Modifier
             .fillMaxSize()
@@ -850,7 +966,12 @@ private fun SecretGroupInfoScreenContainer(
                 contentDescription=stringResource(R.string.back),
                 tint=MaterialTheme.appColors.editTextColor,
                 modifier=Modifier.clickable {
-                    onBackClick()
+                    if (title == context.getString(R.string.search_member_title)) {
+                        secretGroupInfoViewModel.updateVisibleBottomSheet(false)
+                        titleChange()
+                    } else {
+                        onBackClick()
+                    }
                 })
 
             Spacer(modifier=Modifier.width(16.dp))

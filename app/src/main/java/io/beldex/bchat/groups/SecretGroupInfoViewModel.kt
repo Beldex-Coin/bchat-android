@@ -28,6 +28,9 @@ class SecretGroupInfoViewModel @Inject constructor(private val groupID: String,
     private val _isExpirationItem = MutableLiveData<Int>()
     val isExpirationItem: LiveData<Int> get () = _isExpirationItem
 
+    private val _isShowBottomSheet = MutableLiveData<Boolean>()
+    val isShowBottomSheet: LiveData<Boolean> get() = _isShowBottomSheet
+
     val _searchQuery = MutableStateFlow("")
     var searchQuery: StateFlow<String> = _searchQuery
     init {
@@ -54,6 +57,9 @@ class SecretGroupInfoViewModel @Inject constructor(private val groupID: String,
     }
     fun updateExpirationItem(selectOption: Int) {
         _isExpirationItem.value = selectOption
+    }
+    fun updateVisibleBottomSheet(isVisible : Boolean){
+        _isShowBottomSheet.value = isVisible
     }
 }
 data class GroupMembers(

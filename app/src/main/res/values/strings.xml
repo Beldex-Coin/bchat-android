@@ -1670,4 +1670,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="disappearing_info" translatable="false">When enabled, messages between you and the group will disappear after they have been seen.</string>
     <string name="search_member" translatable="false">Search members</string>
     <string name="no_participate_content" translatable="false">You’re no longer participant of this group</string>
+    <string name="search_member_title" translatable="false">Search Members</string>
 </resources>

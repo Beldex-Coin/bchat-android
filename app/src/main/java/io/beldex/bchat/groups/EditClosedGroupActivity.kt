@@ -44,9 +44,10 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
     private val originalMembers = HashSet<String>()
     private val zombies = HashSet<String>()
     private val members = HashSet<String>()
+    private var groupAdmin : String?= null
     private val allMembers: Set<String>
         get() {
-            return members
+            return members.sortedWith(compareByDescending { it == groupAdmin }).toSet()
         }
     private var hasNameChanged = false
     private var isSelfAdmin = false
@@ -68,9 +69,11 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
 
     private val memberListAdapter by lazy {
         if (isSelfAdmin)
-            EditClosedGroupMembersAdapter(this, GlideApp.with(this), isSelfAdmin, this::onMemberClick)
+            EditClosedGroupMembersAdapter(this, GlideApp.with(this), isSelfAdmin, this::onMemberClick,
+                groupAdmin = groupAdmin.toString()
+            )
         else
-            EditClosedGroupMembersAdapter(this, GlideApp.with(this), isSelfAdmin)
+            EditClosedGroupMembersAdapter(this, GlideApp.with(this), isSelfAdmin, groupAdmin = groupAdmin.toString())
     }
 
     private lateinit var binding: ActivityEditClosedGroupBinding
@@ -98,6 +101,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         val groupInfo = DatabaseComponent.get(this).groupDatabase().getGroup(groupID).get()
         originalName = groupInfo.title
         isSelfAdmin = groupInfo.admins.any{ it.serialize() == TextSecurePreferences.getLocalNumber(this) }
+        groupAdmin = groupInfo.admins.toList().toString().trim('[',']')
 
         name = originalName
 

@@ -46,7 +46,7 @@ class UserView : LinearLayout {
     // endregion
 
     // region Updating
-    fun bind(user: Recipient, glide: io.beldex.bchat.mms.GlideRequests, actionIndicator: ActionIndicator, isSelected: Boolean = false) {
+    fun bind(user: Recipient, glide: GlideRequests, actionIndicator: ActionIndicator, isSelected: Boolean = false, groupAdmin : String? = null) {
         fun getUserDisplayName(publicKey: String): String {
             val contact = DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
             return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
@@ -74,6 +74,10 @@ class UserView : LinearLayout {
                         if (isSelected) R.drawable.ic_checkedbox else R.drawable.ic_checkbox
                 )
             }
+        }
+        if(groupAdmin == address){
+            binding.actionIndicatorImageView.visibility = View.VISIBLE
+            binding.actionIndicatorImageView.setImageResource(R.drawable.ic_admin_crown)
         }
     }
 

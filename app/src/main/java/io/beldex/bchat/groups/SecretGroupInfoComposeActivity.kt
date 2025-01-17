@@ -974,8 +974,10 @@ private fun SecretGroupInfoScreenContainer(
         if (title == context.getString(R.string.search_member_title)) {
             secretGroupInfoViewModel.updateVisibleBottomSheet(false)
             titleChange()
+            secretGroupInfoViewModel._searchQuery.value = ""
         } else {
             onBackClick()
+            secretGroupInfoViewModel._searchQuery.value = ""
         }
     }
 
@@ -997,8 +999,10 @@ private fun SecretGroupInfoScreenContainer(
                     if (title == context.getString(R.string.search_member_title)) {
                         secretGroupInfoViewModel.updateVisibleBottomSheet(false)
                         titleChange()
+                        secretGroupInfoViewModel._searchQuery.value = ""
                     } else {
                         onBackClick()
+                        secretGroupInfoViewModel._searchQuery.value = ""
                     }
                 })
 

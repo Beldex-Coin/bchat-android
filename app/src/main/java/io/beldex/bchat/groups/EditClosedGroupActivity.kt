@@ -46,7 +46,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
     private val members = HashSet<String>()
     private val allMembers: Set<String>
         get() {
-            return members + zombies
+            return members
         }
     private var hasNameChanged = false
     private var isSelfAdmin = false
@@ -175,7 +175,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
                 zombies.clear()
                 zombies.addAll(groupMembers.zombieMembers.toHashSet())
                 originalMembers.clear()
-                originalMembers.addAll(members + zombies)
+                originalMembers.addAll(members)
                 updateMembers()
             }
 

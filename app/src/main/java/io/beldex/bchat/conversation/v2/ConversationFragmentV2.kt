@@ -144,6 +144,7 @@ import io.beldex.bchat.delegates.WalletDelegatesImpl
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.giph.ui.GiphyActivity
 import io.beldex.bchat.groups.SecretGroupInfoComposeActivity
+import io.beldex.bchat.groups.SecretGroupInfoRepository
 import io.beldex.bchat.home.ConversationActionDialog
 import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.home.HomeDialogType
@@ -519,6 +520,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private var bns_Name : String? = null
     private val callDurationFormat = "HH:mm:ss"
     private var uiJob: Job? = null
+    private var groupRepository : SecretGroupInfoRepository? = null
 
 
     interface Listener {
@@ -578,6 +580,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 }
             }
         }
+
+       groupRepository = SecretGroupInfoRepository(DatabaseComponent.get(requireContext()).groupDatabase())
 
 
         // messageIdToScroll
@@ -2341,8 +2345,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             binding?.profilePictureView?.root?.update(threadRecipient)
             //New Line v32
             binding?.conversationTitleView?.text = when {
-                threadRecipient.isLocalNumber -> getString(R.string.note_to_self)
-                else -> threadRecipient.toShortString()
+                threadRecipient.isLocalNumber -> getString(R.string.note_to_self).capitalizeFirstLetter()
+                else -> threadRecipient.toShortString().capitalizeFirstLetter()
             }
         }
     }
@@ -2735,6 +2739,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     } catch (ex: IllegalStateException) {
                         Timber.w(ex.message)
                     }
+                } else if (recipient.isClosedGroupRecipient) {
+                    val groupID: String = recipient.address.toGroupString()
+                    val members = groupRepository?.getGroupMembers(groupID)
+                    val memberCount =members?.members?.size ?: 0
+                    binding.conversationSubtitleView.isVisible = true
+                    binding.conversationSubtitleView.text =  if(memberCount > 1) "$memberCount members" else "$memberCount member"
                 } else {
                     binding.conversationSubtitleView.isVisible = false
                 }

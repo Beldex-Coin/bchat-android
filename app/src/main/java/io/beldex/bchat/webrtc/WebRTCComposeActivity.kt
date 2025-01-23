@@ -1045,8 +1045,8 @@ class WebRTCComposeActivity : ComponentActivity() {
                         verticalArrangement=Arrangement.SpaceBetween,
                         modifier= Modifier
                             .padding(16.dp)
-                            .align(Alignment.BottomEnd)
-                            .offset(x = (-26).dp, y = (10).dp)
+                            .align(Alignment.BottomStart)
+                            .offset(x = (16).dp, y = (10).dp)
                             .background(
                                 color = MaterialTheme.appColors.callBottomBackground,
                                 shape = RoundedCornerShape(50.dp)
@@ -1166,107 +1166,10 @@ class WebRTCComposeActivity : ComponentActivity() {
                                 .padding(vertical = 20.dp)
                         ) {
                             Row(
-                                //horizontalArrangement=Arrangement.SpaceAround,
-                                modifier=Modifier.wrapContentWidth()
-
-                            ) {
-                                // Options within the second box
-                                if (isShowVideoOption) {
-                                    Box(modifier= Modifier
-                                        .height(42.dp)
-                                        .width(42.dp)
-                                        .background(
-                                            MaterialTheme.appColors.qrCodeBackground,
-                                            shape = CircleShape
-                                        )
-                                        .clickable {
-                                            enableCamera()
-                                        }, contentAlignment=Alignment.Center
-
-                                    ) {
-
-                                        Image(painter=
-                                        if (isSelectedVideoOption) {
-                                            if (isDarkTheme) {
-                                                painterResource(id=R.drawable.ic_video_disabled_call)
-                                            } else {
-                                                painterResource(id=R.drawable.ic_video_disable_call_white)
-                                            }
-                                        } else {
-                                            if (isDarkTheme) {
-                                                painterResource(id=R.drawable.ic_video_call)
-                                            } else {
-                                                painterResource(id=R.drawable.ic_video_call_white)
-                                            }
-                                        },
-                                            contentDescription=enableVideoDescription, modifier=Modifier.padding(10.dp))
-                                    }
-                                }
-
-                                Spacer(modifier=Modifier.width(20.dp))
-
-                                if (isShowSwitchCameraOption) {
-                                    Box(modifier= Modifier
-                                        .height(42.dp)
-                                        .width(42.dp)
-                                        .background(
-                                            MaterialTheme.appColors.qrCodeBackground,
-                                            shape = CircleShape
-                                        )
-                                        .clickable(enabled = isSwitchCameraFlipEnabled) {
-                                            switchCamera()
-                                        }, contentAlignment=Alignment.Center
-
-                                    ) {
-
-                                        Image(
-                                            painter=painterResource(
-                                                id= if (isDarkTheme && isSwitchCameraFlipEnabled) R.drawable.ic_switch_camera_call
-                                                else if(!isDarkTheme && isSwitchCameraFlipEnabled ) R.drawable.ic_switch_camera_call_white
-                                                else   R.drawable.ic_switch_camera_disable_call),
-                                            contentDescription=switchCamDescription,
-                                            modifier=Modifier.padding(10.dp)
-                                        )
-                                    }
-                                }
-                            }
-                            Row(
 
                                 modifier=Modifier.wrapContentWidth()
 
                             ) {
-                                if (isShowMuteOption) {
-
-                                    Box(modifier= Modifier
-                                        .height(42.dp)
-                                        .width(42.dp)
-                                        .background(
-                                            MaterialTheme.appColors.qrCodeBackground,
-                                            shape = CircleShape
-                                        )
-                                        .clickable(isMuteOptionClickable) { enableMuteOption() }, contentAlignment=Alignment.Center
-
-                                    ) {
-                                        Image(painter=
-                                        if (isMuteOptionIconChange) {
-                                            if (isDarkTheme) {
-                                                painterResource(id=R.drawable.ic_unmute_call)
-                                            } else {
-                                                painterResource(id=R.drawable.ic_unmute_call_white)
-                                            }
-                                        } else {
-                                            if (isDarkTheme) {
-                                                painterResource(id=R.drawable.ic_mute_call)
-                                            } else {
-                                                painterResource(id=R.drawable.ic_mute_call_white)
-                                            }
-                                        },
-                                            contentDescription=muteDescription, modifier=Modifier.padding(10.dp))
-                                    }
-                                }
-
-                                Spacer(modifier=Modifier.width(20.dp))
-
                                 if (isShowSpeakerOption) {
                                     Box(modifier= Modifier
                                         .height(42.dp)
@@ -1330,9 +1233,106 @@ class WebRTCComposeActivity : ComponentActivity() {
                                                 contentDescription=speakerDescription,
                                                 modifier= Modifier
                                                     .align(Alignment.BottomEnd)
-                                                    .offset(x = ((5).dp), y = ((5).dp))
+                                                    .offset(x = ((0).dp), y = ((5).dp))
                                             )
                                         }
+                                    }
+                                }
+
+                                Spacer(modifier=Modifier.width(20.dp))
+
+                                if (isShowMuteOption) {
+
+                                    Box(modifier= Modifier
+                                        .height(42.dp)
+                                        .width(42.dp)
+                                        .background(
+                                            MaterialTheme.appColors.qrCodeBackground,
+                                            shape = CircleShape
+                                        )
+                                        .clickable(isMuteOptionClickable) { enableMuteOption() }, contentAlignment=Alignment.Center
+
+                                    ) {
+                                        Image(painter=
+                                        if (isMuteOptionIconChange) {
+                                            if (isDarkTheme) {
+                                                painterResource(id=R.drawable.ic_unmute_call)
+                                            } else {
+                                                painterResource(id=R.drawable.ic_unmute_call_white)
+                                            }
+                                        } else {
+                                            if (isDarkTheme) {
+                                                painterResource(id=R.drawable.ic_mute_call)
+                                            } else {
+                                                painterResource(id=R.drawable.ic_mute_call_white)
+                                            }
+                                        },
+                                            contentDescription=muteDescription, modifier=Modifier.padding(10.dp))
+                                    }
+                                }
+                            }
+                            Row(
+                                //horizontalArrangement=Arrangement.SpaceAround,
+                                modifier=Modifier.wrapContentWidth()
+
+                            ) {
+                                // Options within the second box
+                                if (isShowSwitchCameraOption) {
+                                    Box(modifier= Modifier
+                                        .height(42.dp)
+                                        .width(42.dp)
+                                        .background(
+                                            MaterialTheme.appColors.qrCodeBackground,
+                                            shape = CircleShape
+                                        )
+                                        .clickable(enabled = isSwitchCameraFlipEnabled) {
+                                            switchCamera()
+                                        }, contentAlignment=Alignment.Center
+
+                                    ) {
+
+                                        Image(
+                                            painter=painterResource(
+                                                id= if (isDarkTheme && isSwitchCameraFlipEnabled) R.drawable.ic_switch_camera_call
+                                                else if(!isDarkTheme && isSwitchCameraFlipEnabled ) R.drawable.ic_switch_camera_call_white
+                                                else   R.drawable.ic_switch_camera_disable_call),
+                                            contentDescription=switchCamDescription,
+                                            modifier=Modifier.padding(10.dp)
+                                        )
+                                    }
+                                }
+
+                                Spacer(modifier=Modifier.width(20.dp))
+
+                                if (isShowVideoOption) {
+                                    Box(modifier= Modifier
+                                        .height(42.dp)
+                                        .width(42.dp)
+                                        .background(
+                                            MaterialTheme.appColors.qrCodeBackground,
+                                            shape = CircleShape
+                                        )
+                                        .clickable {
+                                            enableCamera()
+                                        }, contentAlignment=Alignment.Center
+
+                                    ) {
+
+                                        Image(painter=
+                                        if (isSelectedVideoOption) {
+                                            if (isDarkTheme) {
+                                                painterResource(id=R.drawable.ic_video_disabled_call)
+                                            } else {
+                                                painterResource(id=R.drawable.ic_video_disable_call_white)
+                                            }
+                                        } else {
+                                            if (isDarkTheme) {
+                                                painterResource(id=R.drawable.ic_video_call)
+                                            } else {
+                                                painterResource(id=R.drawable.ic_video_call_white)
+                                            }
+                                        },
+                                            contentDescription=enableVideoDescription, modifier=Modifier.padding(10.dp))
                                     }
                                 }
                             }

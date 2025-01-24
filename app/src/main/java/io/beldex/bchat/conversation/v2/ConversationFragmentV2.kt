@@ -2225,8 +2225,16 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             toggleAttachmentOptions()
         }
         binding.gifButton.setOnClickListener {
-            showGIFPicker()
-            toggleAttachmentOptions()
+            if (CheckOnline.isOnline(requireContext())) {
+                showGIFPicker()
+                toggleAttachmentOptions()
+            } else {
+                Toast.makeText(
+                    requireActivity(),
+                    R.string.please_check_your_internet_connection,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 

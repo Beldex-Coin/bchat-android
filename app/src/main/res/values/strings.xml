@@ -1571,4 +1571,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="wallet_synced_text" translatable="false">Wallet is fully synchronized</string>
     <string name="change_pin_title" translatable="false">Change PIN</string>
     <string name="warning_message_of_voice_recording" translatable="false">You can\'t send an audio message while you\'re on a call</string>
+    <string name="camera_option" translatable="false">Camera Option</string>
+    <string name="gallery_option" translatable="false">Gallery Option</string>
+    <string name="document_option" translatable="false">Document Option</string>
+    <string name="gif_option" translatable="false">Gif Option</string>
 </resources>

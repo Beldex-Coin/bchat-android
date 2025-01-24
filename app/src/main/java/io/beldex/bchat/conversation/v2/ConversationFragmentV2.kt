@@ -2224,6 +2224,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             showDocumentPicker()
             toggleAttachmentOptions()
         }
+        binding.gifButton.setOnClickListener {
+            showGIFPicker()
+            toggleAttachmentOptions()
+        }
     }
 
     private fun setUpLinkPreviewObserver() {

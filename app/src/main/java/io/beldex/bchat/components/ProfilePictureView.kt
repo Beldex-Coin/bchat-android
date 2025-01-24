@@ -23,13 +23,13 @@ import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.util.AvatarPlaceholderGenerator.generate
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewProfilePictureBinding
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestManager;
 
 class ProfilePictureView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : RelativeLayout(context, attrs) {
     private val binding: ViewProfilePictureBinding by lazy { ViewProfilePictureBinding.bind(this) }
-    lateinit var glide: GlideRequests
+    lateinit var glide: RequestManager
     var publicKey: String? = null
     var displayName: String? = null
     var additionalPublicKey: String? = null

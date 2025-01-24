@@ -8,13 +8,13 @@ import android.widget.LinearLayout
 import io.beldex.bchat.databinding.ViewMentionCandidateBinding
 import com.beldex.libbchat.messaging.mentions.Mention
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestManager
 
 class MentionCandidateView : LinearLayout {
     private lateinit var binding: ViewMentionCandidateBinding
     var mentionCandidate = Mention("", "")
         set(newValue) { field = newValue; update() }
-    var glide: GlideRequests? = null
+    var glide: RequestManager? = null
     var openGroupServer: String? = null
     var openGroupRoom: String? = null
 

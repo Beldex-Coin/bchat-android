@@ -68,7 +68,7 @@ import io.beldex.bchat.database.MediaDatabase;
 import io.beldex.bchat.database.loaders.BucketedThreadMediaLoader;
 import io.beldex.bchat.database.loaders.BucketedThreadMediaLoader.BucketedThreadMedia;
 import io.beldex.bchat.database.loaders.ThreadMediaLoader;
-import io.beldex.bchat.mms.GlideApp;
+import com.bumptech.glide.Glide;
 import io.beldex.bchat.permissions.Permissions;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import io.beldex.bchat.util.AttachmentUtil;
@@ -240,7 +240,7 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
       this.gridManager  = new StickyHeaderGridLayoutManager(getResources().getInteger(R.integer.media_overview_cols));
 
       this.recyclerView.setAdapter(new MediaGalleryAdapter(getContext(),
-                                                           GlideApp.with(this),
+                                                           Glide.with(this),
                                                            new BucketedThreadMedia(getContext()),
                                                            locale,
                                                            this));

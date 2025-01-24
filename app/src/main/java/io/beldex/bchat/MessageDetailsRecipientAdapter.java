@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 
 import io.beldex.bchat.database.model.MessageRecord;
 import io.beldex.bchat.contacts.UserView;
-import io.beldex.bchat.mms.GlideRequests;
+import com.bumptech.glide.RequestManager;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.utilities.Conversions;
 
@@ -22,12 +22,12 @@ import java.util.List;
 class MessageDetailsRecipientAdapter extends BaseAdapter implements AbsListView.RecyclerListener {
 
   private final Context                       context;
-  private final GlideRequests glideRequests;
+  private final RequestManager glideRequests;
   private final MessageRecord                 record;
   private final List<RecipientDeliveryStatus> members;
   private final boolean                       isPushGroup;
 
-  MessageDetailsRecipientAdapter(@NonNull Context context, @NonNull GlideRequests glideRequests,
+  MessageDetailsRecipientAdapter(@NonNull Context context, @NonNull RequestManager glideRequests,
                                  @NonNull MessageRecord record, @NonNull List<RecipientDeliveryStatus> members,
                                  boolean isPushGroup)
   {

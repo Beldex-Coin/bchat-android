@@ -14,7 +14,8 @@ import io.beldex.bchat.util.StableIdGenerator;
 import io.beldex.bchat.R;
 
 
-import io.beldex.bchat.mms.GlideRequests;
+import com.bumptech.glide.RequestManager;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class MediaRailAdapter extends RecyclerView.Adapter<MediaRailAdapter.Medi
   private static final int TYPE_MEDIA  = 1;
   private static final int TYPE_BUTTON = 2;
 
-  private final GlideRequests glideRequests;
+  private final RequestManager glideRequests;
   private final List<Media>              media;
   private final RailItemListener         listener;
   private final boolean                  editable;
@@ -33,7 +34,7 @@ public class MediaRailAdapter extends RecyclerView.Adapter<MediaRailAdapter.Medi
   private RailItemAddListener addListener;
   private int activePosition;
 
-  public MediaRailAdapter(@NonNull GlideRequests glideRequests, @NonNull RailItemListener listener, boolean editable) {
+  public MediaRailAdapter(@NonNull RequestManager glideRequests, @NonNull RailItemListener listener, boolean editable) {
     this.glideRequests     = glideRequests;
     this.media             = new ArrayList<>();
     this.listener          = listener;
@@ -147,7 +148,7 @@ public class MediaRailAdapter extends RecyclerView.Adapter<MediaRailAdapter.Medi
       captionIndicator = itemView.findViewById(R.id.rail_item_caption);
     }
 
-    void bind(@NonNull Media media, boolean isActive, @NonNull GlideRequests glideRequests,
+    void bind(@NonNull Media media, boolean isActive, @NonNull RequestManager glideRequests,
               @NonNull RailItemListener railItemListener, int distanceFromActive, boolean editable)
     {
       image.setImageResource(glideRequests, media.getUri());

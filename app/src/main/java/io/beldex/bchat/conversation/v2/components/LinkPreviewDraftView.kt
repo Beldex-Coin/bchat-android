@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestManager
 import io.beldex.bchat.mms.ImageSlide
 import io.beldex.bchat.databinding.ViewLinkPreviewDraftBinding
 import io.beldex.bchat.util.toPx
@@ -27,7 +27,7 @@ class LinkPreviewDraftView : LinearLayout {
         binding.linkPreviewDraftCancelButton.setOnClickListener { cancel() }
     }
 
-    fun update(glide: GlideRequests, linkPreview: LinkPreview) {
+    fun update(glide: RequestManager, linkPreview: LinkPreview) {
         // Hide the loader and show the content view
         binding.linkPreviewDraftContainer.isVisible = true
         binding.linkPreviewDraftLoader.isVisible = false

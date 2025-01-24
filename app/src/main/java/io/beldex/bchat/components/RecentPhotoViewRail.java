@@ -22,7 +22,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import io.beldex.bchat.database.loaders.RecentPhotosLoader;
-import io.beldex.bchat.mms.GlideApp;
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.Key;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.signature.MediaStoreSignature;
@@ -31,7 +31,6 @@ import io.beldex.bchat.database.loaders.RecentPhotosLoader;
 
 import io.beldex.bchat.R;
 
-import io.beldex.bchat.mms.GlideApp;
 
 import com.beldex.libbchat.utilities.ViewUtil;
 
@@ -121,7 +120,7 @@ public class RecentPhotoViewRail extends FrameLayout implements LoaderManager.Lo
 
       Key signature = new MediaStoreSignature(mimeType, dateModified, orientation);
 
-      GlideApp.with(getContext().getApplicationContext())
+      Glide.with(getContext().getApplicationContext())
               .load(uri)
               .signature(signature)
               .diskCacheStrategy(DiskCacheStrategy.NONE)

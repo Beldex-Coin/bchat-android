@@ -24,7 +24,7 @@ import io.beldex.bchat.contacts.SelectContactsAdapter
 import io.beldex.bchat.contacts.SelectContactsLoader
 import io.beldex.bchat.conversation.v2.ConversationFragmentV2
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.mms.GlideApp
+import com.bumptech.glide.Glide;
 import io.beldex.bchat.util.Helper
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.fadeIn
@@ -50,7 +50,7 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
         }
 
     private val selectContactsAdapter by lazy {
-        SelectContactsAdapter(this, GlideApp.with(this))
+        SelectContactsAdapter(this, Glide.with(this))
     }
 
     companion object {

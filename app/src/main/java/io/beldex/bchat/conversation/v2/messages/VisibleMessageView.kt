@@ -34,7 +34,7 @@ import io.beldex.bchat.database.SmsDatabase
 import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.home.UserDetailsBottomSheet
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestManager
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.disableClipping
@@ -110,7 +110,7 @@ class VisibleMessageView : LinearLayout {
     // endregion
 
     // region Updating
-    fun bind(message: MessageRecord, previous: MessageRecord?, next: MessageRecord?, glide: GlideRequests, searchQuery: String?, contact: Contact?, senderBChatID: String, onAttachmentNeedsDownload: (Long, Long) -> Unit) {
+    fun bind(message: MessageRecord, previous: MessageRecord?, next: MessageRecord?, glide: RequestManager, searchQuery: String?, contact: Contact?, senderBChatID: String, onAttachmentNeedsDownload: (Long, Long) -> Unit) {
         val threadID = message.threadId
         val thread = threadDb.getRecipientForThreadId(threadID) ?: return
         val isGroupThread = thread.isGroupRecipient

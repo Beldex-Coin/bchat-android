@@ -83,8 +83,8 @@ import io.beldex.bchat.groups.OpenGroupManager
 import io.beldex.bchat.home.search.GlobalSearchAdapter
 import io.beldex.bchat.home.search.GlobalSearchInputLayout
 import io.beldex.bchat.home.search.RecyclerViewDivider
-import io.beldex.bchat.mms.GlideApp
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import io.beldex.bchat.model.AsyncTaskCoroutine
 import io.beldex.bchat.model.Wallet
 import io.beldex.bchat.my_account.ui.MyAccountActivity
@@ -190,7 +190,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     @Inject
     lateinit var beldexMessageDb: BeldexMessageDatabase
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var glide: GlideRequests
+    private lateinit var glide: RequestManager
     private var broadcastReceiver: BroadcastReceiver? = null
     private var uiJob: Job? = null
     private var viewModel : CallViewModel? =null // by viewModels<CallViewModel>()
@@ -392,7 +392,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         archiveChatViewModel = ViewModelProvider(requireActivity())[ArchiveChatViewModel::class.java]
 
         // Set up Glide
-        glide = GlideApp.with(this)
+        glide = Glide.with(this)
         // Set up toolbar buttons
         binding.profileButton.root.glide = glide
         //New Line

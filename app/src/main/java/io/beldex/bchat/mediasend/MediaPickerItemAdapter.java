@@ -8,19 +8,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import io.beldex.bchat.mms.GlideRequests;
+import com.bumptech.glide.RequestManager;
 import io.beldex.bchat.util.MediaUtil;
 import io.beldex.bchat.util.StableIdGenerator;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import io.beldex.bchat.util.MediaUtil;
-import io.beldex.bchat.util.StableIdGenerator;
+
 
 import io.beldex.bchat.R;
-import io.beldex.bchat.mms.GlideRequests;
-
-import io.beldex.bchat.util.MediaUtil;
-import io.beldex.bchat.util.StableIdGenerator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,7 +24,7 @@ import java.util.List;
 
 public class MediaPickerItemAdapter extends RecyclerView.Adapter<MediaPickerItemAdapter.ItemViewHolder> {
 
-  private final GlideRequests glideRequests;
+  private final RequestManager glideRequests;
   private final EventListener            eventListener;
   private final List<Media>              media;
   private final List<Media>              selected;
@@ -38,7 +33,7 @@ public class MediaPickerItemAdapter extends RecyclerView.Adapter<MediaPickerItem
 
   private boolean forcedMultiSelect;
 
-  public MediaPickerItemAdapter(@NonNull GlideRequests glideRequests, @NonNull EventListener eventListener, int maxSelection) {
+  public MediaPickerItemAdapter(@NonNull RequestManager glideRequests, @NonNull EventListener eventListener, int maxSelection) {
     this.glideRequests     = glideRequests;
     this.eventListener     = eventListener;
     this.media             = new ArrayList<>();
@@ -114,7 +109,7 @@ public class MediaPickerItemAdapter extends RecyclerView.Adapter<MediaPickerItem
       selectOrder   = itemView.findViewById(R.id.mediapicker_select_order);
     }
 
-    void bind(@NonNull Media media, boolean multiSelect, List<Media> selected, int maxSelection, @NonNull GlideRequests glideRequests, @NonNull EventListener eventListener) {
+    void bind(@NonNull Media media, boolean multiSelect, List<Media> selected, int maxSelection, @NonNull RequestManager glideRequests, @NonNull EventListener eventListener) {
       glideRequests.load(media.getUri())
                    .diskCacheStrategy(DiskCacheStrategy.NONE)
                    .transition(DrawableTransitionOptions.withCrossFade())

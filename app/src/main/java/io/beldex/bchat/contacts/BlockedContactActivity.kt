@@ -8,7 +8,7 @@ import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
-import io.beldex.bchat.mms.GlideApp
+import com.bumptech.glide.Glide
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityBlockedContactBinding
 
@@ -22,7 +22,7 @@ class BlockedContactActivity : io.beldex.bchat.PassphraseRequiredActionBarActivi
     private lateinit var usersToExclude: Set<String>
 
     private val blockedcontactadapter by lazy {
-        BlockedContactAdapter(this, io.beldex.bchat.mms.GlideApp.with(this), this)
+        BlockedContactAdapter(this, Glide.with(this), this)
     }
 
     companion object {

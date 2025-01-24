@@ -24,7 +24,7 @@ import io.beldex.bchat.conversation.v2.messages.QuoteView
 import io.beldex.bchat.conversation.v2.messages.QuoteViewDelegate
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.database.model.MmsMessageRecord
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestManager
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.getColorWithID
@@ -182,7 +182,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     // Drafting quotes and drafting link previews is mutually exclusive, i.e. you can't draft
     // a quote and a link preview at the same time.
 
-    fun draftQuote(thread: Recipient, message: MessageRecord, glide: GlideRequests) {
+    fun draftQuote(thread: Recipient, message: MessageRecord, glide: RequestManager) {
         quote = message
         linkPreview = null
         linkPreviewDraftView = null
@@ -224,7 +224,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         requestLayout()
     }
 
-    fun updateLinkPreviewDraft(glide: GlideRequests, linkPreview: LinkPreview) {
+    fun updateLinkPreviewDraft(glide: RequestManager, linkPreview: LinkPreview) {
         this.linkPreview = linkPreview
         val linkPreviewDraftView = this.linkPreviewDraftView ?: return
         linkPreviewDraftView.update(glide, linkPreview)

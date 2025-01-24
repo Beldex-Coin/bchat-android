@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.beldex.libbchat.messaging.contacts.Contact
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.mms.GlideApp
+import com.bumptech.glide.Glide
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivitySelectContactsBinding
 
@@ -24,7 +24,7 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
     private lateinit var usersToExclude: Set<String>
 
     private val selectContactsAdapter by lazy {
-        SelectContactsAdapter(this, GlideApp.with(this))
+        SelectContactsAdapter(this, Glide.with(this))
     }
 
     companion object {

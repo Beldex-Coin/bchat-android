@@ -28,7 +28,6 @@ import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
 
-import io.beldex.bchat.mms.GlideApp;
 import io.beldex.bchat.util.Stopwatch;
 import com.bumptech.glide.load.MultiTransformation;
 import com.bumptech.glide.load.Transformation;
@@ -39,7 +38,7 @@ import io.beldex.bchat.util.Stopwatch;
 
 import io.beldex.bchat.R;
 import com.beldex.libsignal.utilities.Log;
-import io.beldex.bchat.mms.GlideApp;
+import com.bumptech.glide.Glide;
 import com.beldex.libbchat.utilities.ServiceUtil;
 
 import com.beldex.libbchat.utilities.TextSecurePreferences;
@@ -239,7 +238,7 @@ public class Camera1Fragment extends Fragment implements TextureView.SurfaceText
       Transformation<Bitmap> transformation = frontFacing ? new MultiTransformation<>(new CenterCrop(), new FlipTransformation())
                                                           : new CenterCrop();
 
-      GlideApp.with(this)
+      Glide.with(this)
               .asBitmap()
               .load(jpegData)
               .transform(transformation)

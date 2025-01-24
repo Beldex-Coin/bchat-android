@@ -139,7 +139,7 @@ import io.beldex.bchat.mediasend.Media
 import io.beldex.bchat.mediasend.MediaSendActivity
 import io.beldex.bchat.mms.AudioSlide
 import io.beldex.bchat.mms.GifSlide
-import io.beldex.bchat.mms.GlideApp
+import com.bumptech.glide.Glide
 import io.beldex.bchat.mms.ImageSlide
 import io.beldex.bchat.mms.MediaConstraints
 import io.beldex.bchat.mms.Slide
@@ -373,7 +373,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
-    private val glide by lazy { GlideApp.with(this) }
+    private val glide by lazy { Glide.with(this) }
     private val lockViewHitMargin by lazy { toPx(40, resources) }
     private val gifButton by lazy {
         InputBarButton(

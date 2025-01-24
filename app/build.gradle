@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'witness'
-apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.devtools.ksp'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlinx-serialization'
@@ -72,6 +72,7 @@ android {
         minSdkVersion androidMinimumSdkVersion
         compileSdk androidCompileSdkVersion
         targetSdkVersion androidTargetSdkVersion
+        compileSdkVersion androidCompileSdkVersion
         buildToolsVersion '34.0.0'
 
         multiDexEnabled = true
@@ -207,7 +208,7 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.4"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
     externalNativeBuild {
         cmake {

@@ -50,8 +50,8 @@ import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.database.model.MmsMessageRecord
 import io.beldex.bchat.database.model.SmsMessageRecord
 import io.beldex.bchat.home.HomeActivity
-import io.beldex.bchat.mms.GlideRequests
 import io.beldex.bchat.mms.PartAuthority
+import com.bumptech.glide.RequestManager
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.SearchUtil
@@ -81,7 +81,7 @@ class VisibleMessageContentView : MaterialCardView {
         message : MessageRecord,
         isStartOfMessageCluster : Boolean,
         isEndOfMessageCluster : Boolean,
-        glide : GlideRequests,
+        glide : RequestManager,
         thread : Recipient,
         searchQuery : String?,
         contactIsTrusted : Boolean,

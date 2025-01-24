@@ -24,7 +24,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import io.beldex.bchat.database.loaders.BucketedThreadMediaLoader;
-import io.beldex.bchat.mms.GlideRequests;
+import com.bumptech.glide.RequestManager;
 import io.beldex.bchat.mms.Slide;
 import io.beldex.bchat.util.MediaUtil;
 import com.codewaves.stickyheadergrid.StickyHeaderGridAdapter;
@@ -32,10 +32,6 @@ import com.codewaves.stickyheadergrid.StickyHeaderGridAdapter;
 
 import io.beldex.bchat.conversation.v2.utilities.ThumbnailView;
 import io.beldex.bchat.database.MediaDatabase.MediaRecord;
-import io.beldex.bchat.database.loaders.BucketedThreadMediaLoader.BucketedThreadMedia;
-import io.beldex.bchat.mms.GlideRequests;
-import io.beldex.bchat.mms.Slide;
-import io.beldex.bchat.util.MediaUtil;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -50,7 +46,7 @@ class MediaGalleryAdapter extends StickyHeaderGridAdapter {
   private static final String TAG = MediaGalleryAdapter.class.getSimpleName();
 
   private final Context             context;
-  private final GlideRequests glideRequests;
+  private final RequestManager glideRequests;
   private final Locale              locale;
   private final ItemClickListener   itemClickListener;
   private final Set<MediaRecord>    selected;
@@ -78,7 +74,7 @@ class MediaGalleryAdapter extends StickyHeaderGridAdapter {
   }
 
   MediaGalleryAdapter(@NonNull Context context,
-                      @NonNull GlideRequests glideRequests,
+                      @NonNull RequestManager glideRequests,
                       BucketedThreadMediaLoader.BucketedThreadMedia media,
                       Locale locale,
                       ItemClickListener clickListener)

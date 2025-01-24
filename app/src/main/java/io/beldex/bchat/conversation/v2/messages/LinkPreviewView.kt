@@ -12,7 +12,7 @@ import androidx.core.view.isVisible
 import io.beldex.bchat.components.CornerMask
 import io.beldex.bchat.conversation.v2.ModalUrlBottomSheet
 import io.beldex.bchat.database.model.MmsMessageRecord
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestManager
 import io.beldex.bchat.mms.ImageSlide
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.util.UiModeUtilities
@@ -38,7 +38,7 @@ class LinkPreviewView : LinearLayout {
     // region Updating
     fun bind(
         message: MmsMessageRecord,
-        glide: GlideRequests,
+        glide: RequestManager,
         isStartOfMessageCluster: Boolean,
         isEndOfMessageCluster: Boolean
     ) {

@@ -14,7 +14,7 @@
                    android:layout_height="wrap_content"
                    android:layout_gravity="center_vertical"
                    android:gravity="center_vertical"
-                   android:clickable="true"
+                   android:clickable="false"
                    android:background="@drawable/circle_touch_highlight_background"
                    android:src="@drawable/ic_baseline_search_24" />
 
@@ -28,10 +28,12 @@
                       android:layout_width="0px"
                       android:layout_weight="1"
                       android:layout_marginStart="6dp"
+                      android:layout_marginEnd="6dp"
                       android:hint="@string/giphy_activity_toolbar__search_gifs_and_stickers"
-                      android:textColor="?android:textColorPrimary"
-                      android:textColorHint="?android:textColorTertiary"
+                      android:textColor="@color/text_hint"
+                      android:textColorHint="@color/text_hint"
                       android:textCursorDrawable="@drawable/bchat_edit_text_cursor"
+                      android:textSize="@dimen/small_font_size"
                       android:maxLines="1"
                       android:singleLine="true"
                       android:ellipsize="end"

@@ -33,7 +33,7 @@
                       android:textColor="@color/text_hint"
                       android:textColorHint="@color/text_hint"
                       android:textCursorDrawable="@drawable/bchat_edit_text_cursor"
-                      android:textSize="@dimen/small_font_size"
+                      android:textSize="@dimen/medium_font_size"
                       android:maxLines="1"
                       android:singleLine="true"
                       android:ellipsize="end"

@@ -443,7 +443,7 @@
     <string name="conversation_fragment__scroll_to_the_bottom_content_description" translatable="false">Scroll to the bottom</string>
 
     <!-- giphy_activity -->
-    <string name="giphy_activity_toolbar__search_gifs_and_stickers" translatable="false">Search GIFs and stickers</string>
+    <string name="giphy_activity_toolbar__search_gifs_and_stickers" translatable="false">Search</string>
 
     <!-- giphy_fragment -->
     <string name="giphy_fragment__nothing_found" translatable="false">Nothing found</string>

@@ -1,10 +1,10 @@
 package io.beldex.bchat.net;
 
-import android.os.AsyncTask;
 import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
 
 import com.beldex.libbchat.utilities.Util;
+import com.beldex.libsignal.utilities.Log;
 import com.beldex.libsignal.utilities.guava.Optional;
 
 import java.io.InputStream;
@@ -24,19 +24,17 @@ public class CallRequestController implements RequestController {
 
   @Override
   public void cancel() {
-    AsyncTask.THREAD_POOL_EXECUTOR.execute(() -> {
-      synchronized (CallRequestController.this) {
-        if (canceled) return;
-        
-        call.cancel();
-
-        if (stream != null) {
-          Util.close(stream);
-        }
-
-        canceled = true;
+    if (canceled) return;
+    try {
+      call.cancel();
+      if (stream != null) {
+        Util.close(stream);
       }
-    });
+    } catch (Exception e) {
+      Log.e("Stream", e.getClass().getName() + " : " + e.getLocalizedMessage());
+    } finally {
+      canceled = true;
+    }
   }
 
   public synchronized void setStream(@NonNull InputStream stream) {

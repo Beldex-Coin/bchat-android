@@ -1575,4 +1575,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="gallery_option" translatable="false">Gallery Option</string>
     <string name="document_option" translatable="false">Document Option</string>
     <string name="gif_option" translatable="false">Gif Option</string>
+    <string name="gif_dialog_title" translatable="false">Search GIFs?</string>
+    <string name="gif_dialog_message" translatable="false">You will not have full metadata protection when sending GIFs.</string>
 </resources>

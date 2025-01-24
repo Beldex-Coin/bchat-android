@@ -3097,22 +3097,22 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         MessageSender.send(message, recipient.address)
     }
 
+    private fun gifInfoDialog() {
+        val gifSettingsDialog = ConversationActionDialog()
+        gifSettingsDialog.apply {
+            arguments = Bundle().apply {
+                putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.GifSetting)
+            }
+            setListener(this@ConversationFragmentV2)
+        }
+        gifSettingsDialog.show(childFragmentManager, ConversationActionDialog.TAG)
+    }
+
     private fun showGIFPicker() {
         val hasSeenGIFMetaDataWarning: Boolean =
             listenerCallback!!.gettextSecurePreferences().hasSeenGIFMetaDataWarning()
         if (!hasSeenGIFMetaDataWarning) {
-            val builder = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
-            builder.setTitle("Search GIFs?")
-            builder.setMessage("You will not have full metadata protection when sending GIFs.")
-            builder.setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
-                listenerCallback!!.gettextSecurePreferences().setHasSeenGIFMetaDataWarning()
-                AttachmentManager.selectGif(requireActivity(), PICK_GIF)
-                dialog.dismiss()
-            }
-            builder.setNegativeButton(
-                "Cancel"
-            ) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
-            builder.create().show()
+           gifInfoDialog()
         } else {
             AttachmentManager.selectGif(requireActivity(), PICK_GIF)
         }
@@ -3822,6 +3822,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 }
                 viewModel.setMessagesToDelete(null)
                 endActionMode()
+            }
+            HomeDialogType.GifSetting -> {
+                listenerCallback!!.gettextSecurePreferences().setHasSeenGIFMetaDataWarning()
+                AttachmentManager.selectGif(requireActivity(), PICK_GIF)
             }
             else -> Unit
         }

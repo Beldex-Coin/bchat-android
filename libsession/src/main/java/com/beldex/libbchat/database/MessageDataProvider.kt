@@ -28,6 +28,7 @@ interface MessageDataProvider {
     fun updateAudioAttachmentDuration(attachmentId: AttachmentId, durationMs: Long, threadId: Long)
     fun isMmsOutgoing(mmsMessageId: Long): Boolean
     fun isOutgoingMessage(mmsId: Long): Boolean
+    fun isDeletedMessage(timestamp: Long): Boolean
     fun handleSuccessfulAttachmentUpload(attachmentId: Long, attachmentStream: SignalServiceAttachmentStream, attachmentKey: ByteArray, uploadResult: UploadResult)
     fun handleFailedAttachmentUpload(attachmentId: Long)
     fun getMessageForQuote(timestamp: Long, author: Address): Pair<Long, Boolean>?

@@ -308,8 +308,13 @@ object MessageSender {
 
     fun handleFailedMessageSend(message: Message, error: Exception) {
         val storage = MessagingModuleConfiguration.shared.storage
+        val timestamp = message.sentTimestamp!!
+        // no need to handle if message is marked as deleted
+        if(MessagingModuleConfiguration.shared.messageDataProvider.isDeletedMessage(message.sentTimestamp!!)){
+            return
+        }
         val userPublicKey = storage.getUserPublicKey()!!
-        storage.setErrorMessage(message.sentTimestamp!!, message.sender?:userPublicKey, error)
+        storage.setErrorMessage(timestamp, message.sender?:userPublicKey, error)
     }
 
     // Convenience

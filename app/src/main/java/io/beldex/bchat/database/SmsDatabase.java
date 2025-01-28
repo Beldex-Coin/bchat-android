@@ -202,6 +202,7 @@ public class SmsDatabase extends MessagingDatabase {
     ContentValues contentValues = new ContentValues();
     contentValues.put(READ, 1);
     contentValues.put(BODY, "");
+    contentValues.put(STATUS, Status.STATUS_NONE);
     database.update(TABLE_NAME, contentValues, ID_WHERE, new String[] {String.valueOf(messageId)});
     long threadId = getThreadIdForMessage(messageId);
     if (!read) { DatabaseComponent.get(context).threadDatabase().decrementUnread(threadId, 1); }
@@ -260,6 +261,25 @@ public class SmsDatabase extends MessagingDatabase {
     }
 
     return isOutgoing;
+  }
+
+  public boolean isDeletedMessage(long timestamp) {
+    SQLiteDatabase database     = databaseHelper.getWritableDatabase();
+    Cursor         cursor       = null;
+    boolean        isDeleted   = false;
+    try {
+      cursor = database.query(TABLE_NAME, new String[] { ID, THREAD_ID, ADDRESS, TYPE },
+              DATE_SENT + " = ?", new String[] { String.valueOf(timestamp) },
+              null, null, null, null);
+      while (cursor.moveToNext()) {
+        if (Types.isDeletedMessage(cursor.getLong(cursor.getColumnIndexOrThrow(TYPE)))) {
+          isDeleted = true;
+        }
+      }
+    } finally {
+      if (cursor != null) cursor.close();
+    }
+    return isDeleted;
   }
 
   public void incrementReceiptCount(SyncMessageId messageId, boolean deliveryReceipt, boolean readReceipt) {

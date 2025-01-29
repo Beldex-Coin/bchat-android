@@ -163,9 +163,11 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:parentActivityName="io.beldex.bchat.home.HomeActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout"
             android:screenOrientation="portrait"
             android:showForAllUsers="true"
-            android:theme="@style/Theme.Bchat.CallActivity">
+            android:theme="@style/Theme.Bchat.CallActivity"
+            android:supportsPictureInPicture="true">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.beldex.bchat.home.HomeActivity" />

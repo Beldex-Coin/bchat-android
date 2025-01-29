@@ -17,6 +17,7 @@ import android.os.Looper
 import android.util.Log
 import android.util.Rational
 import android.view.SurfaceView
+import android.view.ViewGroup
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -1479,10 +1480,13 @@ class WebRTCComposeActivity : ComponentActivity() {
 
     @Composable
     fun VideoCallSurfaceView(modifier : Modifier=Modifier, surfaceView : SurfaceView) {
-        AndroidView(modifier=modifier.clip(RoundedCornerShape(12.dp)).background(
-            color = Color.Black,
-            shape = RoundedCornerShape(12.dp)
-        ), factory={ surfaceView }, update={ view ->
+        AndroidView(modifier= modifier
+            .clip(RoundedCornerShape(12.dp))
+            .background(
+                color = Color.Black,
+                shape = RoundedCornerShape(12.dp)
+            ), factory={ if(surfaceView.parent != null) (surfaceView.parent as ViewGroup).removeView(surfaceView)
+            surfaceView }, update={ view ->
         })
     }
 

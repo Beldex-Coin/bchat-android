@@ -21,6 +21,7 @@ import android.view.ViewGroup
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -76,6 +77,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.app.PictureInPictureModeChangedInfo
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -132,6 +134,18 @@ class WebRTCComposeActivity : ComponentActivity() {
                 Log.w(TAG, "System lied about having PiP available.", e)
             }
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onPictureInPictureModeChanged(
+        isInPictureInPictureMode: Boolean,
+        newConfig: Configuration
+    ) {
+        if (lifecycle.currentState == Lifecycle.State.CREATED) {
+            //user clicked on close button of PiP window
+            finishAndRemoveTask()
+        }
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
     }
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -1418,7 +1432,9 @@ class WebRTCComposeActivity : ComponentActivity() {
                                                     shape = CircleShape
                                                 )
                                                 .clickable {
-                                                    enableCamera()
+                                                    if (isShowCallDurationStatus) {
+                                                        enableCamera()
+                                                    }
                                                 }, contentAlignment = Alignment.Center
 
                                         ) {
@@ -1485,9 +1501,12 @@ class WebRTCComposeActivity : ComponentActivity() {
             .background(
                 color = Color.Black,
                 shape = RoundedCornerShape(12.dp)
-            ), factory={ if(surfaceView.parent != null) (surfaceView.parent as ViewGroup).removeView(surfaceView)
-            surfaceView }, update={ view ->
-        })
+            ), factory={
+                if(surfaceView.parent != null) {
+                    (surfaceView.parent as ViewGroup).removeView(surfaceView)
+                }
+                surfaceView
+            }, update={view -> })
     }
 
     private fun answerCall(context : Context) {

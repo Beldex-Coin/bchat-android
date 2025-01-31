@@ -317,7 +317,10 @@ class VisibleMessageContentView : MaterialCardView {
                     binding.albumMessageTime.text=
                         DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
                     binding.albumMessageTime.setTextColor(
-                        getAlbumTimeTextColor(context)
+                        getTimeTextColor(
+                            context,
+                            message.isOutgoing
+                        )
                     )
 
                     binding.albumThumbnailView.root.bind(
@@ -592,10 +595,6 @@ class VisibleMessageContentView : MaterialCardView {
                 R.color.received_message_time_color
             }
             return context.resources.getColorWithID(colorID, context.theme)
-        }
-        @ColorInt
-        fun getAlbumTimeTextColor(context: Context): Int {
-            return context.resources.getColorWithID(R.color.received_message_time_color, context.theme)
         }
     }
     // endregion

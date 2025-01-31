@@ -142,7 +142,7 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
     setSupportActionBar(this.toolbar);
     ActionBar actionBar = getSupportActionBar();
     actionBar.setTitle(R.string.all_media);
-    actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
+    actionBar.setHomeAsUpIndicator(R.drawable.ic_back_arrow);
     actionBar.setDisplayHomeAsUpEnabled(true);
     this.recipient.addListener(recipient -> {
       Util.runOnMain(() -> actionBar.setTitle(recipient.toShortString()));

@@ -23,7 +23,7 @@
             android:layout_marginEnd="10dp"
             android:background="@android:color/transparent"
             android:padding="1dp"
-            android:src="@drawable/ic_new_back_arrow" />
+            android:src="@drawable/ic_back_arrow" />
 
         <LinearLayout
             android:id="@+id/layout_conversation"

@@ -165,13 +165,20 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end|bottom"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="2dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
+                        android:layout_marginEnd="14dp"
                         android:layout_marginBottom="4dp"
                         android:fontFamily="@font/open_sans_regular"
                         android:textSize="11sp"
                         android:visibility="gone"
-                        tools:text="12:00 pm" />
+                        tools:text="12:00 pm"
+                        android:textColor="@color/white"
+                        android:shadowColor="#000000"
+                        android:shadowRadius="5"
+                        android:shadowDy="2"
+                        android:shadowDx="2" />
 
 
                 </com.google.android.material.card.MaterialCardView>

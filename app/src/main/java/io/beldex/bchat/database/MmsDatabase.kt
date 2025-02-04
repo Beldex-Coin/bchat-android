@@ -780,6 +780,9 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
         with (get(context).threadDatabase()) {
             setLastSeen(threadId)
             setHasSent(threadId, true)
+            if (runThreadUpdate) {
+                update(threadId, true)
+            }
         }
         return messageId
     }

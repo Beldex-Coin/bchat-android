@@ -482,6 +482,10 @@ public class SmsDatabase extends MessagingDatabase {
         DatabaseComponent.get(context).threadDatabase().incrementUnread(threadId, 1);
       }
 
+      if (runThreadUpdate) {
+        DatabaseComponent.get(context).threadDatabase().update(threadId, true);
+      }
+
       if (message.getSubscriptionId() != -1) {
         DatabaseComponent.get(context).recipientDatabase().setDefaultSubscriptionId(recipient, message.getSubscriptionId());
       }

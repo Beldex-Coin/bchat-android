@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
-import android.os.SystemClock
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
@@ -19,7 +18,6 @@ import android.text.util.Linkify
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
@@ -394,6 +392,7 @@ class VisibleMessageContentView : MaterialCardView {
         }else{
             val params: ConstraintLayout.LayoutParams = binding.bodyTextViewLayout.layoutParams as ConstraintLayout.LayoutParams
             params.width = ConstraintLayout.LayoutParams.WRAP_CONTENT
+            params.topMargin = -4
             val params1: ConstraintLayout.LayoutParams = binding.bodyTextView.layoutParams as ConstraintLayout.LayoutParams
             params1.width = ConstraintLayout.LayoutParams.WRAP_CONTENT
         }

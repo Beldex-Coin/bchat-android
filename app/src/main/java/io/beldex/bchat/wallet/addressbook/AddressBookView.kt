@@ -14,7 +14,7 @@ import io.beldex.bchat.conversation.v2.utilities.MentionManagerUtilities
 import io.beldex.bchat.database.RecipientDatabase
 import io.beldex.bchat.database.model.ThreadRecord
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestManager
 import io.beldex.bchat.databinding.ActivityAddressBookViewBinding
 
 class AddressBookView : LinearLayout {
@@ -47,7 +47,7 @@ class AddressBookView : LinearLayout {
     }
 
     // region Updating
-    fun bind(recipient: Recipient, glide: GlideRequests) {
+    fun bind(recipient: Recipient, glide: RequestManager) {
 
         val threadID =
             DatabaseComponent.get(context).threadDatabase().getOrCreateThreadIdFor(recipient)

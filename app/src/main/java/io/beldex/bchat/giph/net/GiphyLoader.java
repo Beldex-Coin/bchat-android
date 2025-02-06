@@ -59,6 +59,7 @@ public abstract class GiphyLoader extends AsyncLoader<List<GiphyImage>> {
         throw new IOException("Unexpected code " + response);
       }
 
+      assert response.body() != null;
       GiphyResponse giphyResponse = JsonUtil.fromJson(response.body().byteStream(), GiphyResponse.class);
       List<GiphyImage> results       = giphyResponse.getData();
 

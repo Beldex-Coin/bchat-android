@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.NO_ID
 import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.database.model.ThreadRecord
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestManager
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
 import java.util.Locale
@@ -67,7 +67,7 @@ class HomeAdapter(private val context: Context, private val listener: Conversati
         return _data[offsetPosition].threadId
     }
 
-    lateinit var glide: GlideRequests
+    lateinit var glide: RequestManager
     var typingThreadIDs = setOf<Long>()
         set(value) {
             if (field == value) { return }

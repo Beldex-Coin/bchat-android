@@ -11,7 +11,7 @@ import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.conversation.v2.utilities.MentionManagerUtilities
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestManager
 
 class UserView : LinearLayout {
     private lateinit var binding: ViewUserBinding
@@ -46,7 +46,7 @@ class UserView : LinearLayout {
     // endregion
 
     // region Updating
-    fun bind(user: Recipient, glide: io.beldex.bchat.mms.GlideRequests, actionIndicator: ActionIndicator, isSelected: Boolean = false) {
+    fun bind(user: Recipient, glide: RequestManager, actionIndicator: ActionIndicator, isSelected: Boolean = false) {
         fun getUserDisplayName(publicKey: String): String {
             val contact = DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
             return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey

@@ -20,7 +20,7 @@ import com.beldex.libsignal.utilities.Log;
 import io.beldex.bchat.database.ThreadDatabase;
 import io.beldex.bchat.database.model.ThreadRecord;
 import io.beldex.bchat.dependencies.DatabaseComponent;
-import io.beldex.bchat.mms.GlideApp;
+import com.bumptech.glide.Glide;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -50,7 +50,7 @@ public class DirectShareService extends ChooserTargetService {
 
               if (recipient.getContactPhoto() != null) {
                   try {
-                      avatar = GlideApp.with(this)
+                      avatar = Glide.with(this)
                               .asBitmap()
                               .load(recipient.getContactPhoto())
                               .circleCrop()

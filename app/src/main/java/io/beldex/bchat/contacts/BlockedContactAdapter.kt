@@ -10,12 +10,12 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.database.RecipientDatabase
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestManager
 import javax.inject.Inject
 
 class BlockedContactAdapter(
         private val context: Context,
-        private val glide: io.beldex.bchat.mms.GlideRequests,
+        private val glide: RequestManager,
         val listener: BlockedContactActivity
 ) : RecyclerView.Adapter<BlockedContactAdapter.ViewHolder>() {
     var members = listOf<String>()

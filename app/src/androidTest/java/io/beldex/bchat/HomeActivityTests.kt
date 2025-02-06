@@ -38,7 +38,7 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.utilities.guava.Optional
 import io.beldex.bchat.conversation.v2.input_bar.InputBar
 import io.beldex.bchat.home.HomeActivity
-import io.beldex.bchat.mms.GlideApp
+import com.bumptech.glide.Glide
 
 
 @RunWith(AndroidJUnit4::class)
@@ -65,7 +65,7 @@ class HomeActivityTests {
         onView(allOf(isDescendantOfA(withId(R.id.inputBar)),withId(R.id.inputBarEditText))).perform(ViewActions.replaceText(messageToSend))
         if (linkPreview != null) {
             val activity = activityMonitor.waitForActivity() as HomeActivity
-            val glide = GlideApp.with(activity)
+            val glide = Glide.with(activity)
             activity.findViewById<InputBar>(R.id.inputBar).updateLinkPreviewDraft(glide, linkPreview)
         }
         onView(allOf(isDescendantOfA(withId(R.id.inputBar)),inputButtonWithDrawable(R.drawable.ic_send))).perform(ViewActions.click())

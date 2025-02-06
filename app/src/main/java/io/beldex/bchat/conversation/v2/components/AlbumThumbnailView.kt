@@ -18,7 +18,7 @@ import io.beldex.bchat.MediaPreviewActivity
 import io.beldex.bchat.components.CornerMask
 import io.beldex.bchat.conversation.v2.utilities.ThumbnailView
 import io.beldex.bchat.database.model.MmsMessageRecord
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestManager
 import io.beldex.bchat.mms.Slide
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.R
@@ -89,7 +89,7 @@ class AlbumThumbnailView : RelativeLayout {
         slideSize = -1
     }
 
-    fun bind(glideRequests: GlideRequests, message: MmsMessageRecord,
+    fun bind(glideRequests: RequestManager, message: MmsMessageRecord,
              isStart: Boolean, isEnd: Boolean) {
         slides = message.slideDeck.thumbnailSlides
         if (slides.isEmpty()) {

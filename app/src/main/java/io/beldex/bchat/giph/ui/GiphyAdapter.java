@@ -29,8 +29,8 @@ import com.bumptech.glide.util.ByteBufferUtil;
 import io.beldex.bchat.R;
 import io.beldex.bchat.giph.model.GiphyImage;
 import io.beldex.bchat.giph.model.ChunkedImageUrl;
-import io.beldex.bchat.mms.GlideApp;
-import io.beldex.bchat.mms.GlideRequests;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 
 import com.beldex.libbchat.utilities.MaterialColor;
 
@@ -46,7 +46,7 @@ class GiphyAdapter extends RecyclerView.Adapter<GiphyAdapter.GiphyViewHolder> {
   private static final String TAG = GiphyAdapter.class.getSimpleName();
 
   private final Context       context;
-  private final GlideRequests glideRequests;
+  private final RequestManager glideRequests;
 
   private List<GiphyImage>     images;
   private OnItemClickListener  listener;
@@ -120,7 +120,7 @@ class GiphyAdapter extends RecyclerView.Adapter<GiphyAdapter.GiphyViewHolder> {
     }
   }
 
-  GiphyAdapter(@NonNull Context context, @NonNull GlideRequests glideRequests, @NonNull List<GiphyImage> images) {
+  GiphyAdapter(@NonNull Context context, @NonNull RequestManager glideRequests, @NonNull List<GiphyImage> images) {
     this.context       = context.getApplicationContext();
     this.glideRequests = glideRequests;
     this.images        = images;
@@ -153,7 +153,7 @@ class GiphyAdapter extends RecyclerView.Adapter<GiphyAdapter.GiphyViewHolder> {
     holder.thumbnail.setAspectRatio(image.getGifAspectRatio());
     holder.gifProgress.setVisibility(View.GONE);
 
-    RequestBuilder<Drawable> thumbnailRequest = GlideApp.with(context)
+    RequestBuilder<Drawable> thumbnailRequest = Glide.with(context)
                                                         .load(new ChunkedImageUrl(image.getStillUrl(), image.getStillSize()))
                                                         .diskCacheStrategy(DiskCacheStrategy.NONE);
 

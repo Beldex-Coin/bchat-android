@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 
 import io.beldex.bchat.database.model.MessageRecord;
 import io.beldex.bchat.database.model.MmsMessageRecord;
-import io.beldex.bchat.mms.GlideRequests;
+import com.bumptech.glide.RequestManager;
 import com.beldex.libsignal.utilities.guava.Optional;
 
 import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview;
@@ -20,7 +20,7 @@ public interface BindableConversationItem extends Unbindable {
   void bind(@NonNull MessageRecord           messageRecord,
             @NonNull Optional<MessageRecord> previousMessageRecord,
             @NonNull Optional<MessageRecord> nextMessageRecord,
-            @NonNull GlideRequests           glideRequests,
+            @NonNull RequestManager           glideRequests,
             @NonNull Locale                  locale,
             @NonNull Set<MessageRecord>      batchSelected,
             @NonNull Recipient               recipients,

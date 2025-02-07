@@ -9,7 +9,7 @@ import android.widget.ListView
 import dagger.hilt.android.AndroidEntryPoint
 import com.beldex.libbchat.messaging.mentions.Mention
 import io.beldex.bchat.database.BeldexThreadDatabase
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestManager
 import io.beldex.bchat.util.toPx
 import javax.inject.Inject
 
@@ -17,7 +17,7 @@ import javax.inject.Inject
 class MentionCandidatesView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : ListView(context, attrs, defStyleAttr) {
     private var candidates = listOf<Mention>()
         set(newValue) { field = newValue; snAdapter.candidates = newValue }
-    var glide: GlideRequests? = null
+    var glide: RequestManager? = null
         set(newValue) { field = newValue; snAdapter.glide = newValue }
     var openGroupServer: String? = null
         set(newValue) { field = newValue; snAdapter.openGroupServer = openGroupServer }
@@ -32,7 +32,7 @@ class MentionCandidatesView(context: Context, attrs: AttributeSet?, defStyleAttr
     private class Adapter(private val context: Context) : BaseAdapter() {
         var candidates = listOf<Mention>()
             set(newValue) { field = newValue; notifyDataSetChanged() }
-        var glide: GlideRequests? = null
+        var glide: RequestManager? = null
         var openGroupServer: String? = null
         var openGroupRoom: String? = null
 

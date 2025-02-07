@@ -14,7 +14,7 @@ import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.mms.GlideApp
+import com.bumptech.glide.Glide;
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityAddressBookBinding
 
@@ -31,7 +31,7 @@ class AddressBookActivity(
         }
     private lateinit var usersToExclude: Set<String>
     private val addressbooktadapter by lazy {
-        AddressBookAdapter(this, GlideApp.with(this), this)
+        AddressBookAdapter(this, Glide.with(this), this)
     }
 
     companion object {

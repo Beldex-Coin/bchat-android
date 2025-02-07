@@ -12,7 +12,6 @@ import android.util.AttributeSet;
 import io.beldex.bchat.components.subsampling.AttachmentBitmapDecoder;
 import io.beldex.bchat.components.subsampling.AttachmentRegionDecoder;
 import io.beldex.bchat.mms.DecryptableStreamUriLoader;
-import io.beldex.bchat.mms.GlideRequests;
 import io.beldex.bchat.mms.PartAuthority;
 import io.beldex.bchat.util.BitmapDecodingException;
 import io.beldex.bchat.util.BitmapUtil;
@@ -27,17 +26,9 @@ import com.bumptech.glide.request.target.Target;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.davemorrissey.labs.subscaleview.decoder.DecoderFactory;
+import com.bumptech.glide.RequestManager;
 import com.github.chrisbanes.photoview.PhotoView;
-import io.beldex.bchat.mms.DecryptableStreamUriLoader;
-import io.beldex.bchat.mms.PartAuthority;
-import io.beldex.bchat.util.BitmapDecodingException;
-import io.beldex.bchat.util.BitmapUtil;
-import io.beldex.bchat.util.MediaUtil;
-
 import io.beldex.bchat.R;
-import io.beldex.bchat.components.subsampling.AttachmentBitmapDecoder;
-import io.beldex.bchat.components.subsampling.AttachmentRegionDecoder;
-import io.beldex.bchat.mms.GlideRequests;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,7 +61,7 @@ public class ZoomingImageView extends FrameLayout {
   }
 
   @SuppressLint("StaticFieldLeak")
-  public void setImageUri(@NonNull GlideRequests glideRequests, @NonNull Uri uri, @NonNull String contentType)
+  public void setImageUri(@NonNull RequestManager glideRequests, @NonNull Uri uri, @NonNull String contentType)
   {
     final Context context        = getContext();
     final int     maxTextureSize = BitmapUtil.getMaxTextureSize();
@@ -105,7 +96,7 @@ public class ZoomingImageView extends FrameLayout {
     }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
   }
 
-  private void setImageViewUri(@NonNull GlideRequests glideRequests, @NonNull Uri uri) {
+  private void setImageViewUri(@NonNull RequestManager glideRequests, @NonNull Uri uri) {
     photoView.setVisibility(View.VISIBLE);
     subsamplingImageView.setVisibility(View.GONE);
 

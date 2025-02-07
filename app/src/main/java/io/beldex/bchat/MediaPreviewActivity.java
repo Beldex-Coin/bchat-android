@@ -63,8 +63,6 @@ import androidx.viewpager.widget.ViewPager;
 
 import io.beldex.bchat.database.loaders.PagingMediaLoader;
 import io.beldex.bchat.database.model.MmsMessageRecord;
-import io.beldex.bchat.mms.GlideApp;
-import io.beldex.bchat.mms.GlideRequests;
 import io.beldex.bchat.mms.Slide;
 import io.beldex.bchat.util.AttachmentUtil;
 import io.beldex.bchat.util.DateUtils;
@@ -84,8 +82,8 @@ import io.beldex.bchat.database.loaders.PagingMediaLoader;
 import io.beldex.bchat.database.model.MmsMessageRecord;
 import io.beldex.bchat.mediapreview.MediaPreviewViewModel;
 import io.beldex.bchat.mediapreview.MediaRailAdapter;
-import io.beldex.bchat.mms.GlideApp;
-import io.beldex.bchat.mms.GlideRequests;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import io.beldex.bchat.mms.Slide;
 import io.beldex.bchat.permissions.Permissions;
 import io.beldex.bchat.util.AttachmentUtil;
@@ -310,7 +308,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     mediaPager.addOnPageChangeListener(viewPagerListener);
 
     albumRail        = findViewById(R.id.media_preview_album_rail);
-    albumRailAdapter = new MediaRailAdapter(GlideApp.with(this), this, false);
+    albumRailAdapter = new MediaRailAdapter(Glide.with(this), this, false);
 
     albumRail.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
     albumRail.setAdapter(albumRailAdapter);
@@ -401,7 +399,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     if (conversationRecipient != null) {
       getSupportLoaderManager().restartLoader(0, null, this);
     } else {
-      mediaPager.setAdapter(new SingleItemPagerAdapter(this, GlideApp.with(this), getWindow(), initialMediaUri, initialMediaType, initialMediaSize));
+      mediaPager.setAdapter(new SingleItemPagerAdapter(this, Glide.with(this), getWindow(), initialMediaUri, initialMediaType, initialMediaSize));
 
       if (initialCaption != null) {
         detailsContainer.setVisibility(View.VISIBLE);
@@ -587,7 +585,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
   public void onLoadFinished(@NonNull Loader<Pair<Cursor, Integer>> loader, @Nullable Pair<Cursor, Integer> data) {
     if (data != null) {
       @SuppressWarnings("ConstantConditions")
-      CursorPagerAdapter adapter = new CursorPagerAdapter(this, GlideApp.with(this), getWindow(), data.first, data.second, leftIsRecent);
+      CursorPagerAdapter adapter = new CursorPagerAdapter(this, Glide.with(this), getWindow(), data.first, data.second, leftIsRecent);
       mediaPager.setAdapter(adapter);
       adapter.setActive(true);
 
@@ -651,7 +649,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
 
   private static class SingleItemPagerAdapter extends PagerAdapter implements MediaItemAdapter {
 
-    private final GlideRequests glideRequests;
+    private final RequestManager glideRequests;
     private final Window        window;
     private final Uri           uri;
     private final String        mediaType;
@@ -659,7 +657,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
 
     private final LayoutInflater inflater;
 
-    SingleItemPagerAdapter(@NonNull Context context, @NonNull GlideRequests glideRequests,
+    SingleItemPagerAdapter(@NonNull Context context, @NonNull RequestManager glideRequests,
                            @NonNull Window window, @NonNull Uri uri, @NonNull String mediaType,
                            long size)
     {
@@ -726,7 +724,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     private final WeakHashMap<Integer, MediaView> mediaViews = new WeakHashMap<>();
 
     private final Context       context;
-    private final GlideRequests glideRequests;
+    private final RequestManager glideRequests;
     private final Window        window;
     private final Cursor        cursor;
     private final boolean       leftIsRecent;
@@ -734,7 +732,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     private boolean active;
     private int     autoPlayPosition;
 
-    CursorPagerAdapter(@NonNull Context context, @NonNull GlideRequests glideRequests,
+    CursorPagerAdapter(@NonNull Context context, @NonNull RequestManager glideRequests,
                        @NonNull Window window, @NonNull Cursor cursor, int autoPlayPosition,
                        boolean leftIsRecent)
     {

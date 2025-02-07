@@ -20,9 +20,8 @@ import io.beldex.bchat.mms.DecryptableStreamUriLoader;
 import io.beldex.bchat.imageeditor.Bounds;
 import io.beldex.bchat.imageeditor.Renderer;
 import io.beldex.bchat.imageeditor.RendererContext;
-import io.beldex.bchat.mms.DecryptableStreamUriLoader;
-import io.beldex.bchat.mms.GlideApp;
-import io.beldex.bchat.mms.GlideRequest;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.Glide;
 
 
 import java.util.concurrent.ExecutionException;
@@ -99,8 +98,8 @@ final class UriGlideRenderer implements Renderer {
     }
   }
 
-  private GlideRequest<Bitmap> getBitmapGlideRequest(@NonNull Context context) {
-    return GlideApp.with(context)
+  private RequestBuilder<Bitmap> getBitmapGlideRequest(@NonNull Context context) {
+    return Glide.with(context)
                    .asBitmap()
                    .diskCacheStrategy(DiskCacheStrategy.NONE)
                    .override(maxWidth, maxHeight)

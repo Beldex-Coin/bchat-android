@@ -32,7 +32,7 @@ import io.beldex.bchat.conversation.v2.messages.VisibleMessageView
 import io.beldex.bchat.database.CursorRecyclerViewAdapter
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestManager
 import io.beldex.bchat.preferences.PrivacySettingsActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewVisibleMessageBinding
@@ -45,7 +45,7 @@ import java.util.Locale
 
 class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPress: (MessageRecord, Int, VisibleMessageView, MotionEvent) -> Unit,
                           private val onItemSwipeToReply: (MessageRecord, Int) -> Unit, private val onItemLongPress: (MessageRecord, Int) -> Unit,
-                          private val glide: GlideRequests, private val onDeselect: (MessageRecord, Int) -> Unit, private val onAttachmentNeedsDownload: (Long, Long) -> Unit, lifecycleCoroutineScope: LifecycleCoroutineScope
+                          private val glide: RequestManager, private val onDeselect: (MessageRecord, Int) -> Unit, private val onAttachmentNeedsDownload: (Long, Long) -> Unit, lifecycleCoroutineScope: LifecycleCoroutineScope
 ) : CursorRecyclerViewAdapter<ViewHolder>(context, cursor) {
     private val messageDB by lazy { DatabaseComponent.get(context).mmsSmsDatabase() }
     private val contactDB by lazy { DatabaseComponent.get(context).bchatContactDatabase() }

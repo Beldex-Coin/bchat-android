@@ -25,6 +25,7 @@ import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
@@ -50,8 +51,8 @@ import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.database.model.MmsMessageRecord
 import io.beldex.bchat.database.model.SmsMessageRecord
 import io.beldex.bchat.home.HomeActivity
-import io.beldex.bchat.mms.GlideRequests
 import io.beldex.bchat.mms.PartAuthority
+import com.bumptech.glide.RequestManager
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.SearchUtil
@@ -81,7 +82,7 @@ class VisibleMessageContentView : MaterialCardView {
         message : MessageRecord,
         isStartOfMessageCluster : Boolean,
         isEndOfMessageCluster : Boolean,
-        glide : GlideRequests,
+        glide : RequestManager,
         thread : Recipient,
         searchQuery : String?,
         contactIsTrusted : Boolean,
@@ -245,8 +246,10 @@ class VisibleMessageContentView : MaterialCardView {
                     )
                     // We have to use onContentClick (rather than a click listener directly on the voice
                     // message view) so as to not interfere with all the other gestures.
-                    onContentClick.add { binding.voiceMessageView.root.togglePlayback()
-                        binding.voiceMessageView.root.getMessageID(message.id)}
+                    onContentClick.add {
+                        binding.voiceMessageView.root.togglePlayback()
+                        /*binding.voiceMessageView.root.getMessageID(message.id)*/
+                    }
                     onContentDoubleTap = { binding.voiceMessageView.root.handleDoubleTap() }
                 } else {
                     // TODO: move this out to its own area
@@ -420,6 +423,10 @@ class VisibleMessageContentView : MaterialCardView {
                     span.onClick(binding.bodyTextView)
                 }
             }
+        }
+        if(isEndOfMessageCluster){
+            val contentContainerParams: LayoutParams = binding.contentContainer.layoutParams as LayoutParams
+            contentContainerParams.bottomMargin = 40
         }
 
     }

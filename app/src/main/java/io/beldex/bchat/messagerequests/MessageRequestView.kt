@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.conversation.v2.utilities.MentionUtilities.highlightMentions
 import io.beldex.bchat.database.model.ThreadRecord
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestManager
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityMessageRequestViewBinding
@@ -32,7 +32,7 @@ class MessageRequestView : LinearLayout {
     // endregion
 
     // region Updating
-    fun bind(thread: ThreadRecord, glide: GlideRequests) {
+    fun bind(thread: ThreadRecord, glide: RequestManager) {
         this.thread = thread
         binding.profilePictureView.root.glide = glide
         val senderDisplayName = getUserDisplayName(thread.recipient)

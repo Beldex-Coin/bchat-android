@@ -19,7 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
-import io.beldex.bchat.mms.GlideApp;
+import com.bumptech.glide.Glide;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libsignal.utilities.guava.Optional;
 
@@ -79,7 +79,7 @@ public class MediaPickerFolderFragment extends Fragment implements MediaPickerFo
     super.onViewCreated(view, savedInstanceState);
 
     RecyclerView             list    = view.findViewById(R.id.mediapicker_folder_list);
-    MediaPickerFolderAdapter adapter = new MediaPickerFolderAdapter(GlideApp.with(this), this);
+    MediaPickerFolderAdapter adapter = new MediaPickerFolderAdapter(Glide.with(this), this);
 
     layoutManager = new GridLayoutManager(requireContext(), 2);
     onScreenWidthChanged(getScreenWidth());

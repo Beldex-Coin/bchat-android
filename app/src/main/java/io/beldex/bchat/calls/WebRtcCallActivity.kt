@@ -27,7 +27,7 @@ import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityWebRtcCallBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.mms.GlideApp
+import com.bumptech.glide.Glide
 import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.service.WebRtcCallService
 import io.beldex.bchat.util.AvatarPlaceholderGenerator
@@ -58,7 +58,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
         }
 
         private val viewModel by viewModels<CallViewModel>()
-        private val glide by lazy { GlideApp.with(this) }
+        private val glide by lazy { Glide.with(this) }
         private lateinit var binding: ActivityWebRtcCallBinding
         private var uiJob: Job? = null
         private var wantsToAnswer = false

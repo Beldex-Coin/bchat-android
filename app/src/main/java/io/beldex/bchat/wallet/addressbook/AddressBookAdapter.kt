@@ -13,7 +13,7 @@ import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.database.RecipientDatabase
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestManager
 import io.beldex.bchat.R
 import javax.inject.Inject
 
@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 class AddressBookAdapter(
     private val context: Context,
-    private val glide: GlideRequests,
+    private val glide: RequestManager,
     val listener: AddressBookActivity
 ) : RecyclerView.Adapter<AddressBookAdapter.ViewHolder>() {
     var members = listOf<String>()

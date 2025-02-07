@@ -290,6 +290,10 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         return DatabaseComponent.get(context).bchatJobDatabase().isJobCanceled(job)
     }
 
+    override fun cancelPendingMessageSendJobs(threadID: Long) {
+        val jobDb = DatabaseComponent.get(context).bchatJobDatabase()
+        jobDb.cancelPendingMessageSendJobs(threadID)
+    }
     override fun getAuthToken(room: String, server: String): String? {
         val id = "$server.$room"
         return DatabaseComponent.get(context).beldexAPIDatabase().getAuthToken(id)

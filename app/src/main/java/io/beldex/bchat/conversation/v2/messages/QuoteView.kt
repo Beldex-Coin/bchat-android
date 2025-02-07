@@ -15,7 +15,7 @@ import com.beldex.libbchat.utilities.recipients.Recipient
 import com.google.android.material.card.MaterialCardView
 import io.beldex.bchat.conversation.v2.utilities.MentionUtilities
 import io.beldex.bchat.database.BchatContactDatabase
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestManager
 import io.beldex.bchat.mms.SlideDeck
 import io.beldex.bchat.util.MediaUtil
 import io.beldex.bchat.util.UiModeUtilities
@@ -73,7 +73,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     fun bind(
         authorPublicKey: String, body: String?, attachments: SlideDeck?, thread: Recipient,
         isOutgoingMessage: Boolean, isOpenGroupInvitation: Boolean, isPayment: Boolean,
-        outgoing: Boolean, threadID: Long, isOriginalMissing: Boolean, glide: GlideRequests
+        outgoing: Boolean, threadID: Long, isOriginalMissing: Boolean, glide: RequestManager
     ) {
         // Author
         val author = contactDb.getContactWithBchatID(authorPublicKey)

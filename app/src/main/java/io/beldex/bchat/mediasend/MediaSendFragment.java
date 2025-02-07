@@ -44,7 +44,7 @@ import io.beldex.bchat.contactshare.SimpleTextWatcher;
 import io.beldex.bchat.imageeditor.model.EditorModel;
 import com.beldex.libsignal.utilities.Log;
 import io.beldex.bchat.mediapreview.MediaRailAdapter;
-import io.beldex.bchat.mms.GlideApp;
+import com.bumptech.glide.Glide;
 import io.beldex.bchat.providers.BlobProvider;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import io.beldex.bchat.scribbles.ImageEditorFragment;
@@ -187,7 +187,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
     fragmentPager.addOnPageChangeListener(pageChangeListener);
     fragmentPager.post(() -> pageChangeListener.onPageSelected(fragmentPager.getCurrentItem()));
 
-    mediaRailAdapter = new MediaRailAdapter(GlideApp.with(this), this, true);
+    mediaRailAdapter = new MediaRailAdapter(Glide.with(this), this, true);
     mediaRail.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
     mediaRail.setAdapter(mediaRailAdapter);
 

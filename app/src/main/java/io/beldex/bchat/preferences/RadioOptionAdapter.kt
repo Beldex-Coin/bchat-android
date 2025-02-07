@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import io.beldex.bchat.mms.GlideApp
+import com.bumptech.glide.Glide
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ItemSelectableBinding
 
@@ -41,7 +41,7 @@ class RadioOptionAdapter(
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        val glide = GlideApp.with(itemView)
+        val glide = Glide.with(itemView)
         val binding = ItemSelectableBinding.bind(itemView)
 
         fun bind(option: RadioOption, isSelected: Boolean, toggleSelection: (RadioOption) -> Unit) {

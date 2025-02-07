@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.mms.GlideApp
+import com.bumptech.glide.Glide
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.BlockedContactLayoutBinding
 
@@ -61,7 +61,7 @@ class BlockedContactsAdapter(private val context: BlockedContactsActivity) : Lis
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
-        val glide = io.beldex.bchat.mms.GlideApp.with(itemView)
+        val glide = Glide.with(itemView)
         val binding = BlockedContactLayoutBinding.bind(itemView)
 
         fun bind(recipient: Recipient, isSelected: Boolean, context: BlockedContactsActivity,toggleSelection: () -> Unit) {

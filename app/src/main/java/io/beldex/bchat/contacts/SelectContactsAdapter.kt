@@ -5,9 +5,10 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestManager
 
-class SelectContactsAdapter(private val context: Context, private val glide: GlideRequests) : RecyclerView.Adapter<SelectContactsAdapter.ViewHolder>() {
+
+class SelectContactsAdapter(private val context: Context, private val glide: RequestManager) : RecyclerView.Adapter<SelectContactsAdapter.ViewHolder>() {
     val selectedMembers = mutableSetOf<String>()
     var members = listOf<String>()
         set(value) { field = value; notifyDataSetChanged() }

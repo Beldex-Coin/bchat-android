@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import io.beldex.bchat.database.CursorRecyclerViewAdapter
 import io.beldex.bchat.database.model.ThreadRecord
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestManager
 import io.beldex.bchat.R
 
 
@@ -24,7 +24,7 @@ class MessageRequestsAdapter(
     val listener: MessageRequestsActivity
 ) : CursorRecyclerViewAdapter<MessageRequestsAdapter.ViewHolder>(context, cursor) {
     private val threadDatabase = DatabaseComponent.get(context).threadDatabase()
-    lateinit var glide: GlideRequests
+    lateinit var glide: RequestManager
 
     class ViewHolder(val view: MessageRequestView) : RecyclerView.ViewHolder(view)
 

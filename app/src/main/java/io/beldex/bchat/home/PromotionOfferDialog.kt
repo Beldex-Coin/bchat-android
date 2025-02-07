@@ -10,7 +10,7 @@ import androidx.core.net.toUri
 import androidx.fragment.app.DialogFragment
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.compose_utils.PromotionDialog
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestManager
 import io.beldex.bchat.util.FirebaseRemoteConfigUtil
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
@@ -26,7 +26,7 @@ class PromotionOfferDialog: DialogFragment() {
     lateinit var remoteConfig: FirebaseRemoteConfigUtil
     @Inject
     lateinit var preferences: TextSecurePreferences
-    lateinit var glide: GlideRequests
+    lateinit var glide: RequestManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

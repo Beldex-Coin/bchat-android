@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.utilities.recipients.Recipient
-import io.beldex.bchat.mms.GlideRequests
 import io.beldex.bchat.databinding.ContactSelectionListDividerBinding
+import com.bumptech.glide.RequestManager
 
 class ContactSelectionListAdapter(private val context: Context, private val multiSelect: Boolean) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    lateinit var glide: io.beldex.bchat.mms.GlideRequests
+    lateinit var glide: RequestManager
     val selectedContacts = mutableSetOf<Recipient>()
     var items = listOf<ContactSelectionListItem>()
         set(value) { field = value; notifyDataSetChanged() }

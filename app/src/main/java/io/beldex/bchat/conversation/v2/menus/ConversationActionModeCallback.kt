@@ -34,21 +34,7 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
         val openGroup = DatabaseComponent.get(context).beldexThreadDatabase().getOpenGroupChat(threadID)
         val thread = DatabaseComponent.get(context).threadDatabase().getRecipientForThreadId(threadID)!!
         val userPublicKey = TextSecurePreferences.getLocalNumber(context)!!
-        fun userCanDeleteSelectedItems(): Boolean {
-            val allSentByCurrentUser = selectedItems.all { it.isOutgoing }
 
-            // Remove this after the unsend request is enabled
-            if (!ConversationFragmentV2.IS_UNSEND_REQUESTS_ENABLED) {
-                if (openGroup == null) { return true }
-                if (allSentByCurrentUser) { return true }
-                return OpenGroupAPIV2.isUserModerator(userPublicKey, openGroup.room, openGroup.server)
-            }
-
-            val allReceivedByCurrentUser = selectedItems.all { !it.isOutgoing }
-            if (openGroup == null) { return allSentByCurrentUser || allReceivedByCurrentUser }
-            if (allSentByCurrentUser) { return true }
-            return OpenGroupAPIV2.isUserModerator(userPublicKey, openGroup.room, openGroup.server)
-        }
         fun userCanBanSelectedUsers(): Boolean {
             if (openGroup == null) { return false }
             val anySentByCurrentUser = selectedItems.any { it.isOutgoing }
@@ -58,7 +44,7 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
             return OpenGroupAPIV2.isUserModerator(userPublicKey, openGroup.room, openGroup.server)
         }
         // Delete message
-        menu.findItem(R.id.menu_context_delete_message).isVisible = userCanDeleteSelectedItems()
+        menu.findItem(R.id.menu_context_delete_message).isVisible = true // can always delete since delete logic will be handled by the VM
         // Ban user
         menu.findItem(R.id.menu_context_ban_user).isVisible = userCanBanSelectedUsers()
         // Ban and delete all

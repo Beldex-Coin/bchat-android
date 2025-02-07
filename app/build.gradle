@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'witness'
-apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.devtools.ksp'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlinx-serialization'
@@ -26,8 +26,8 @@ dependencies {
 configurations.all {
     exclude module: "commons-logging"
 }
-def canonicalVersionCode = 74
-def canonicalVersionName = "2.6.3"
+def canonicalVersionCode = 76
+def canonicalVersionName = "2.6.4"
 
 def postFixSize = 10
 def abiPostFix = ['armeabi-v7a' : 1,
@@ -72,6 +72,7 @@ android {
         minSdkVersion androidMinimumSdkVersion
         compileSdk androidCompileSdkVersion
         targetSdkVersion androidTargetSdkVersion
+        compileSdkVersion androidCompileSdkVersion
         buildToolsVersion '34.0.0'
 
         multiDexEnabled = true
@@ -207,7 +208,7 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.4"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
     externalNativeBuild {
         cmake {

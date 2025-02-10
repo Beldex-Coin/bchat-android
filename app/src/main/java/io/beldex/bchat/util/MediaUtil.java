@@ -12,7 +12,7 @@ import android.text.TextUtils;
 import android.util.Pair;
 import android.webkit.MimeTypeMap;
 
-import io.beldex.bchat.mms.GlideApp;
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import io.beldex.bchat.mms.AudioSlide;
@@ -29,7 +29,6 @@ import io.beldex.bchat.mms.VideoSlide;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment;
 import com.beldex.libbchat.utilities.MediaTypes;
 import com.beldex.libsignal.utilities.Log;
-import io.beldex.bchat.mms.GlideApp;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -116,7 +115,7 @@ public class MediaUtil {
 
     if (MediaUtil.isGif(contentType)) {
       try {
-        GifDrawable drawable = GlideApp.with(context)
+        GifDrawable drawable = Glide.with(context)
                 .asGif()
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)

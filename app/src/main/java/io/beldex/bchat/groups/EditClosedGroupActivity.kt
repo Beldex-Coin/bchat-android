@@ -25,7 +25,7 @@ import com.beldex.libsignal.utilities.toHexString
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.contacts.SelectContactsActivity
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.mms.GlideApp
+import com.bumptech.glide.Glide
 import io.beldex.bchat.util.Helper
 import io.beldex.bchat.util.fadeIn
 import io.beldex.bchat.util.fadeOut
@@ -55,7 +55,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
     private lateinit var originalName: String
     private lateinit var name: String
     private lateinit var groupRecipientID: String
-    private val glide by lazy { GlideApp.with(this) }
+    private val glide by lazy { Glide.with(this) }
 
     private var isEditingName = false
         set(value) {
@@ -66,9 +66,9 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
 
     private val memberListAdapter by lazy {
         if (isSelfAdmin)
-            EditClosedGroupMembersAdapter(this, GlideApp.with(this), isSelfAdmin, this::onMemberClick)
+            EditClosedGroupMembersAdapter(this, Glide.with(this), isSelfAdmin, this::onMemberClick)
         else
-            EditClosedGroupMembersAdapter(this, GlideApp.with(this), isSelfAdmin)
+            EditClosedGroupMembersAdapter(this, Glide.with(this), isSelfAdmin)
     }
 
     private lateinit var binding: ActivityEditClosedGroupBinding

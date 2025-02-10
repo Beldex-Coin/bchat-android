@@ -586,10 +586,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 try {
                     if (fragment is ConversationFragmentV2) {
                         if (!fragment.transactionInProgress) {
-                            super.onBackPressed()
+                            onBackPressedDispatcher.onBackPressed()
                         }
                     } else {
-                        super.onBackPressed()
+                        onBackPressedDispatcher.onBackPressed()
                     }
                 }catch(e : IllegalStateException){
                     replaceHomeFragment()
@@ -1672,9 +1672,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             if (!(fragment as OnBackPressedListener).onBackPressed()) {
                 TextSecurePreferences.callFiatCurrencyApi(this,false)
                 try {
-                    super.onBackPressed()
+                    onBackPressedDispatcher.onBackPressed()
                 }catch(e : IllegalStateException){
                     replaceHomeFragment()
+                    println("clicked back arrow called 4")
                 }
             }
         }

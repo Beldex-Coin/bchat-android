@@ -13,8 +13,8 @@ import android.widget.ImageView;
 import io.beldex.bchat.mms.DecryptableStreamUriLoader;
 
 import io.beldex.bchat.R;
-import io.beldex.bchat.mms.DecryptableStreamUriLoader;
-import io.beldex.bchat.mms.GlideApp;
+import com.bumptech.glide.Glide;
+
 
 public class MediaSendGifFragment extends Fragment implements MediaSendPageFragment {
 
@@ -42,7 +42,7 @@ public class MediaSendGifFragment extends Fragment implements MediaSendPageFragm
     super.onViewCreated(view, savedInstanceState);
 
     uri = getArguments().getParcelable(KEY_URI);
-    GlideApp.with(this).load(new DecryptableStreamUriLoader.DecryptableUri(uri)).into((ImageView) view);
+    Glide.with(this).load(new DecryptableStreamUriLoader.DecryptableUri(uri)).into((ImageView) view);
   }
 
   @Override

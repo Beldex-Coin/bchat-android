@@ -139,7 +139,7 @@ import io.beldex.bchat.mediasend.Media
 import io.beldex.bchat.mediasend.MediaSendActivity
 import io.beldex.bchat.mms.AudioSlide
 import io.beldex.bchat.mms.GifSlide
-import io.beldex.bchat.mms.GlideApp
+import com.bumptech.glide.Glide
 import io.beldex.bchat.mms.ImageSlide
 import io.beldex.bchat.mms.MediaConstraints
 import io.beldex.bchat.mms.Slide
@@ -373,7 +373,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
-    private val glide by lazy { GlideApp.with(this) }
+    private val glide by lazy { Glide.with(this) }
     private val lockViewHitMargin by lazy { toPx(40, resources) }
     private val gifButton by lazy {
         InputBarButton(
@@ -2224,6 +2224,18 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             showDocumentPicker()
             toggleAttachmentOptions()
         }
+        binding.gifButton.setOnClickListener {
+            if (CheckOnline.isOnline(requireContext())) {
+                showGIFPicker()
+                toggleAttachmentOptions()
+            } else {
+                Toast.makeText(
+                    requireActivity(),
+                    R.string.please_check_your_internet_connection,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 
     private fun setUpLinkPreviewObserver() {
@@ -3093,22 +3105,22 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         MessageSender.send(message, recipient.address)
     }
 
+    private fun gifInfoDialog() {
+        val gifSettingsDialog = ConversationActionDialog()
+        gifSettingsDialog.apply {
+            arguments = Bundle().apply {
+                putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.GifSetting)
+            }
+            setListener(this@ConversationFragmentV2)
+        }
+        gifSettingsDialog.show(childFragmentManager, ConversationActionDialog.TAG)
+    }
+
     private fun showGIFPicker() {
         val hasSeenGIFMetaDataWarning: Boolean =
             listenerCallback!!.gettextSecurePreferences().hasSeenGIFMetaDataWarning()
         if (!hasSeenGIFMetaDataWarning) {
-            val builder = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
-            builder.setTitle("Search GIFs?")
-            builder.setMessage("You will not have full metadata protection when sending GIFs.")
-            builder.setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
-                listenerCallback!!.gettextSecurePreferences().setHasSeenGIFMetaDataWarning()
-                AttachmentManager.selectGif(requireActivity(), PICK_GIF)
-                dialog.dismiss()
-            }
-            builder.setNegativeButton(
-                "Cancel"
-            ) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
-            builder.create().show()
+           gifInfoDialog()
         } else {
             AttachmentManager.selectGif(requireActivity(), PICK_GIF)
         }
@@ -3818,6 +3830,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 }
                 viewModel.setMessagesToDelete(null)
                 endActionMode()
+            }
+            HomeDialogType.GifSetting -> {
+                listenerCallback!!.gettextSecurePreferences().setHasSeenGIFMetaDataWarning()
+                AttachmentManager.selectGif(requireActivity(), PICK_GIF)
             }
             else -> Unit
         }

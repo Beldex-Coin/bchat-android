@@ -19,7 +19,7 @@ import android.widget.TextView;
 import io.beldex.bchat.giph.model.GiphyImage;
 import io.beldex.bchat.giph.net.GiphyLoader;
 import io.beldex.bchat.giph.util.InfiniteScrollListener;
-import io.beldex.bchat.mms.GlideApp;
+import com.bumptech.glide.Glide;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libbchat.utilities.ViewUtil;
 
@@ -54,7 +54,7 @@ public abstract class GiphyFragment extends Fragment implements LoaderManager.Lo
   public void onActivityCreated(Bundle bundle) {
     super.onActivityCreated(bundle);
 
-    this.giphyAdapter = new GiphyAdapter(getActivity(), GlideApp.with(this), new LinkedList<>());
+    this.giphyAdapter = new GiphyAdapter(getActivity(), Glide.with(this), new LinkedList<>());
     this.giphyAdapter.setListener(this);
 
     setLayoutManager(TextSecurePreferences.isGifSearchInGridLayout(getContext()));

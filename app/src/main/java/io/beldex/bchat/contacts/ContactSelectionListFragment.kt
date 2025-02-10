@@ -10,7 +10,7 @@ import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
-import io.beldex.bchat.mms.GlideApp
+import com.bumptech.glide.Glide
 import io.beldex.bchat.databinding.ContactSelectionListFragmentBinding
 
 class ContactSelectionListFragment : Fragment(), LoaderManager.LoaderCallbacks<List<ContactSelectionListItem>>, ContactClickListener {
@@ -27,7 +27,7 @@ class ContactSelectionListFragment : Fragment(), LoaderManager.LoaderCallbacks<L
 
     private val listAdapter by lazy {
         val result = ContactSelectionListAdapter(requireActivity(), multiSelect)
-        result.glide = io.beldex.bchat.mms.GlideApp.with(this)
+        result.glide = Glide.with(this)
         result.contactClickListener = this
         result
     }

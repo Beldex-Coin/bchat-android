@@ -82,6 +82,14 @@ public class MmsSmsDatabase extends Database {
     super(context, databaseHelper);
   }
 
+  public @Nullable MessageRecord getNonDeletedMessageForTimestamp(long timestamp) {
+    String selection = MmsSmsColumns.NORMALIZED_DATE_SENT + " = " + timestamp;
+    try (Cursor cursor = queryTables(PROJECTION, selection, null, null)) {
+      MmsSmsDatabase.Reader reader = readerFor(cursor);
+      return reader.getNext();
+    }
+  }
+
   public @Nullable MessageRecord getMessageForTimestamp(long timestamp) {
     try (Cursor cursor = queryTables(PROJECTION, MmsSmsColumns.NORMALIZED_DATE_SENT + " = " + timestamp, null, null)) {
       MmsSmsDatabase.Reader reader = readerFor(cursor);

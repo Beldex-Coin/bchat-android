@@ -17,7 +17,7 @@ import android.widget.FrameLayout;
 import io.beldex.bchat.components.InputAwareLayout;
 import io.beldex.bchat.components.RepeatableImageKey;
 import com.beldex.libsignal.utilities.Log;
-import io.beldex.bchat.mms.GlideApp;
+import com.bumptech.glide.Glide;
 
 import java.util.Arrays;
 
@@ -158,7 +158,7 @@ public class MediaKeyboard extends FrameLayout implements InputAwareLayout.Input
     this.searchButton          = view.findViewById(R.id.media_keyboard_search);
     this.addButton             = view.findViewById(R.id.media_keyboard_add);
 
-    this.categoryTabAdapter = new MediaKeyboardBottomTabAdapter(GlideApp.with(this), this);
+    this.categoryTabAdapter = new MediaKeyboardBottomTabAdapter(Glide.with(this), this);
 
     categoryTabs.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
     categoryTabs.setAdapter(categoryTabAdapter);

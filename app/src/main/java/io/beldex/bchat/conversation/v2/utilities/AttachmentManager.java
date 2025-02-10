@@ -54,7 +54,7 @@ import com.beldex.libsignal.utilities.ListenableFuture;
 import com.beldex.libsignal.utilities.Log;
 import com.beldex.libsignal.utilities.SettableFuture;
 import com.beldex.libsignal.utilities.guava.Optional;
-import io.beldex.bchat.mms.GlideRequests;
+import com.bumptech.glide.RequestManager;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -128,7 +128,7 @@ public class AttachmentManager {
   }
 
   @SuppressLint("StaticFieldLeak")
-  public ListenableFuture<Boolean> setMedia(@NonNull final GlideRequests glideRequests,
+  public ListenableFuture<Boolean> setMedia(@NonNull final RequestManager glideRequests,
                                             @NonNull final Uri uri,
                                             @NonNull final MediaType mediaType,
                                             @NonNull final MediaConstraints constraints,

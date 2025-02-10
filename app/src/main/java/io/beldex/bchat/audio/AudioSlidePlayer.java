@@ -61,6 +61,11 @@ public class AudioSlidePlayer implements SensorEventListener {
   private @Nullable AttachmentServer        audioAttachmentServer;
   private           long                    startTime;
 
+  @Nullable
+  public synchronized static AudioSlidePlayer getInstance() {
+    return playing.orNull();
+  }
+
   public synchronized static AudioSlidePlayer createFor(@NonNull Context context,
                                                         @NonNull AudioSlide slide,
                                                         @NonNull Listener listener)

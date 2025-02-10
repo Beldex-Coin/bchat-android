@@ -464,6 +464,17 @@
           "description":"Minor bug fixes"
         }
       ]
+    },
+    {
+      "title": "2.6.4",
+      "descriptions": [
+        {
+          "description":"Added GIF feature in chat"
+        },
+        {
+          "description":"Minor bug fixes"
+        }
+      ]
     }
   ]
 }

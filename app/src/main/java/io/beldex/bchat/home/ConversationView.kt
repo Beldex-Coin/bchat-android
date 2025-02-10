@@ -19,7 +19,7 @@ import io.beldex.bchat.conversation.v2.utilities.MentionUtilities.highlightMenti
 import io.beldex.bchat.database.RecipientDatabase.NOTIFY_TYPE_ALL
 import io.beldex.bchat.database.RecipientDatabase.NOTIFY_TYPE_NONE
 import io.beldex.bchat.database.model.ThreadRecord
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestManager
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
@@ -45,7 +45,7 @@ class ConversationView : LinearLayout {
     // endregion
 
     // region Updating
-    fun bind(thread: ThreadRecord, isTyping: Boolean, glide: GlideRequests) {
+    fun bind(thread: ThreadRecord, isTyping: Boolean, glide: RequestManager) {
         this.thread = thread
         val recipient = thread.recipient
         val isMuted = recipient.isMuted || recipient.notifyType != NOTIFY_TYPE_ALL

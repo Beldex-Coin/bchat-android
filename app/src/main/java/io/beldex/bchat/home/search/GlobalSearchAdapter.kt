@@ -11,7 +11,7 @@ import io.beldex.bchat.databinding.ViewGlobalSearchHeaderBinding
 import io.beldex.bchat.databinding.ViewGlobalSearchResultBinding
 import com.beldex.libbchat.utilities.GroupRecord
 import com.beldex.libbchat.utilities.recipients.Recipient
-import io.beldex.bchat.mms.GlideApp
+import com.bumptech.glide.Glide;
 import io.beldex.bchat.search.model.MessageResult
 import java.security.InvalidParameterException
 import com.beldex.libbchat.messaging.contacts.Contact as ContactModel
@@ -90,7 +90,7 @@ class GlobalSearchAdapter (private val modelCallback: (Model)->Unit): RecyclerVi
     class ContentView(view: View, private val modelCallback: (Model) -> Unit) : RecyclerView.ViewHolder(view) {
 
         val binding = ViewGlobalSearchResultBinding.bind(view).apply {
-            searchResultProfilePicture.root.glide = GlideApp.with(root)
+            searchResultProfilePicture.root.glide = Glide.with(root)
         }
 
         fun bindPayload(newQuery: String, model: Model) {

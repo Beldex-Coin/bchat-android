@@ -20,6 +20,7 @@ import io.beldex.bchat.database.BeldexThreadDatabase
 import io.beldex.bchat.database.GroupDatabase
 import io.beldex.bchat.database.MmsDatabase
 import io.beldex.bchat.database.MmsSmsDatabase
+import io.beldex.bchat.audio.AudioSlidePlayer
 import io.beldex.bchat.database.RecipientDatabase
 import io.beldex.bchat.database.SmsDatabase
 import io.beldex.bchat.database.ThreadDatabase
@@ -27,6 +28,7 @@ import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.repository.ConversationRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import io.beldex.bchat.database.model.MmsMessageRecord
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -90,6 +92,10 @@ class ConversationViewModel (
                 fetchConversations()
             }
         }
+    }
+    override fun onCleared() {
+        super.onCleared()
+        AudioSlidePlayer.stopAll()
     }
 
     fun getConversationsCursor(): Cursor {
@@ -174,8 +180,22 @@ class ConversationViewModel (
     }
 
     fun deleteLocally(message: MessageRecord) {
+        stopPlayingAudioMessage(message)
         val recipient = recipient.value ?: return Log.w("Beldex", "Recipient was null for delete locally action")
         repository.deleteLocally(recipient, message)
+    }
+
+    /**
+     * Stops audio player if its current playing is the one given in the message.
+     */
+    private fun stopPlayingAudioMessage(message: MessageRecord) {
+        val player = AudioSlidePlayer.getInstance()
+        val audioSlide = player?.audioSlide
+        if (audioSlide != null &&
+            message is MmsMessageRecord &&
+            message.slideDeck.audioSlide == audioSlide) {
+            player.stop()
+        }
     }
 
     //New Line v32
@@ -187,6 +207,10 @@ class ConversationViewModel (
     fun deleteForEveryone(message: MessageRecord) = viewModelScope.launch {
         val recipient = recipient.value ?: return@launch
         repository.deleteForEveryone(threadId, recipient, message)
+            .onSuccess {
+                Log.d("Beldex", "Deleted message ${message.id} ")
+                stopPlayingAudioMessage(message)
+            }
             .onFailure {
                 showMessage("Couldn't delete message due to error: $it")
             }

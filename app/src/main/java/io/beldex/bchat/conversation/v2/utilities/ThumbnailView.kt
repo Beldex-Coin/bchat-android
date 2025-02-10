@@ -23,8 +23,8 @@ import io.beldex.bchat.components.GlideBitmapListeningTarget
 import io.beldex.bchat.components.GlideDrawableListeningTarget
 import io.beldex.bchat.database.model.MmsMessageRecord
 import io.beldex.bchat.mms.DecryptableStreamUriLoader.DecryptableUri
-import io.beldex.bchat.mms.GlideRequest
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.RequestManager
 import io.beldex.bchat.mms.Slide
 import com.beldex.libbchat.utilities.Util.equals
 import kotlin.Boolean
@@ -89,11 +89,11 @@ open class ThumbnailView: FrameLayout {
     // endregion
 
     // region Interaction
-    fun setImageResource(glide: GlideRequests, slide: Slide, isPreview: Boolean, mms: MmsMessageRecord?): ListenableFuture<Boolean> {
+    fun setImageResource(glide: RequestManager, slide: Slide, isPreview: Boolean, mms: MmsMessageRecord?): ListenableFuture<Boolean> {
         return setImageResource(glide, slide, isPreview, 0, 0, mms)
     }
 
-    fun setImageResource(glide: GlideRequests, slide: Slide,
+    fun setImageResource(glide: RequestManager, slide: Slide,
                          isPreview: Boolean, naturalWidth: Int,
                          naturalHeight: Int, mms: MmsMessageRecord?
     ): ListenableFuture<Boolean> {
@@ -149,7 +149,7 @@ open class ThumbnailView: FrameLayout {
         return result
     }
 
-    fun buildThumbnailGlideRequest(glide: GlideRequests, slide: Slide): GlideRequest<Drawable> {
+    fun buildThumbnailGlideRequest(glide: RequestManager, slide: Slide): RequestBuilder<Drawable> {
 
         val dimens = dimensDelegate.resourceSize()
 
@@ -168,7 +168,7 @@ open class ThumbnailView: FrameLayout {
         return if (slide.isInProgress) request else request.apply(RequestOptions.errorOf(R.drawable.ic_missing_thumbnail_picture))
     }
 
-    fun buildPlaceholderGlideRequest(glide: GlideRequests, slide: Slide): GlideRequest<Bitmap> {
+    fun buildPlaceholderGlideRequest(glide: RequestManager, slide: Slide): RequestBuilder<Bitmap> {
 
         val dimens = dimensDelegate.resourceSize()
 
@@ -185,15 +185,15 @@ open class ThumbnailView: FrameLayout {
                 .fitCenter()
     }
 
-    open fun clear(glideRequests: GlideRequests) {
+    open fun clear(glideRequests: RequestManager) {
         glideRequests.clear(binding.thumbnailImage)
         slide = null
     }
 
-    fun setImageResource(glideRequests: GlideRequests, uri: Uri): ListenableFuture<Boolean> {
+    fun setImageResource(glideRequests: RequestManager, uri: Uri): ListenableFuture<Boolean> {
         val future = SettableFuture<Boolean>()
 
-        var request: GlideRequest<Drawable> = glideRequests.load(DecryptableUri(uri))
+        var request: RequestBuilder<Drawable> = glideRequests.load(DecryptableUri(uri))
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .transition(DrawableTransitionOptions.withCrossFade())
 

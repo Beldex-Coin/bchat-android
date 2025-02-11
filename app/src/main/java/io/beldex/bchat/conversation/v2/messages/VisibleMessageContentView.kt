@@ -23,7 +23,6 @@ import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
@@ -423,11 +422,6 @@ class VisibleMessageContentView : MaterialCardView {
                 }
             }
         }
-        if(isEndOfMessageCluster){
-            val contentContainerParams: LayoutParams = binding.contentContainer.layoutParams as LayoutParams
-            contentContainerParams.bottomMargin = 40
-        }
-
     }
 
     private fun ViewVisibleMessageContentBinding.barrierViewsGone(): Boolean =

@@ -384,4 +384,13 @@
     <attr format="reference|color" name="colorError"/>
     <attr name="editTextStyle" format="reference" />
     <attr name="toolbarStyle" format="reference" />
+
+    <declare-styleable name="BodyTextViewLayout">
+        <attr name="viewPartMessage" format="reference"/>
+        <attr name="viewPartTime" format="reference"/>
+    </declare-styleable>
+    <declare-styleable name="QuoteBodyTextViewLayout">
+        <attr name="quoteViewPartMessage" format="reference"/>
+        <attr name="quoteViewPartTime" format="reference"/>
+    </declare-styleable>
 </resources>

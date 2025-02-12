@@ -20,13 +20,13 @@
       "filters": [
         {
           "filterType": "ABI",
-          "value": "x86_64"
+          "value": "arm64-v8a"
         }
       ],
       "attributes": [],
       "versionCode": 76,
       "versionName": "2.6.4",
-      "outputFile": "Bchat-2.6.4-x86_64.apk"
+      "outputFile": "Bchat-2.6.4-arm64-v8a.apk"
     },
     {
       "type": "ONE_OF_MANY",
@@ -46,13 +46,13 @@
       "filters": [
         {
           "filterType": "ABI",
-          "value": "arm64-v8a"
+          "value": "x86_64"
         }
       ],
       "attributes": [],
       "versionCode": 76,
       "versionName": "2.6.4",
-      "outputFile": "Bchat-2.6.4-arm64-v8a.apk"
+      "outputFile": "Bchat-2.6.4-x86_64.apk"
     }
   ],
   "elementType": "File"

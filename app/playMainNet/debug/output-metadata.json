@@ -12,8 +12,8 @@
       "filters": [],
       "attributes": [],
       "versionCode": 74,
-      "versionName": "2.6.3",
-      "outputFile": "Bchat-2.6.3-universal.apk"
+      "versionName": "b15",
+      "outputFile": "Bchat-b15-universal.apk"
     },
     {
       "type": "ONE_OF_MANY",
@@ -25,8 +25,8 @@
       ],
       "attributes": [],
       "versionCode": 74,
-      "versionName": "2.6.3",
-      "outputFile": "Bchat-2.6.3-x86_64.apk"
+      "versionName": "b15",
+      "outputFile": "Bchat-b15-x86_64.apk"
     },
     {
       "type": "ONE_OF_MANY",
@@ -38,8 +38,8 @@
       ],
       "attributes": [],
       "versionCode": 74,
-      "versionName": "2.6.3",
-      "outputFile": "Bchat-2.6.3-armeabi-v7a.apk"
+      "versionName": "b15",
+      "outputFile": "Bchat-b15-armeabi-v7a.apk"
     },
     {
       "type": "ONE_OF_MANY",
@@ -51,8 +51,8 @@
       ],
       "attributes": [],
       "versionCode": 74,
-      "versionName": "2.6.3",
-      "outputFile": "Bchat-2.6.3-arm64-v8a.apk"
+      "versionName": "b15",
+      "outputFile": "Bchat-b15-arm64-v8a.apk"
     }
   ],
   "elementType": "File"

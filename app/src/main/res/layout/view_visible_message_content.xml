@@ -194,17 +194,18 @@
                 app:layout_constraintTop_toBottomOf="@id/album_container"/>
 
             <!--Body Text MessageView-->
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <io.beldex.bchat.util.BodyTextViewLayout
                 android:id="@+id/bodyTextViewLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginTop="-4dp"
                 android:maxWidth="@dimen/max_text_layout_width"
-                app:layout_constraintEnd_toEndOf="@+id/bodyBarrier"
+                app:layout_constraintEnd_toEndOf="@id/bodyBarrier"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/album_container">
+                app:layout_constraintTop_toBottomOf="@id/album_container"
+                app:viewPartMessage="@id/bodyTextView"
+                app:viewPartTime="@id/short_message_time">
 
 
                 <io.beldex.bchat.components.emoji.EmojiTextView
@@ -213,9 +214,9 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/open_sans_regular"
                     android:maxWidth="@dimen/max_text_width"
+                    android:layout_gravity="end|bottom"
+                    android:gravity="start|top"
                     android:paddingStart="12dp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/short_message_time"
                     android:paddingEnd="6dp"
                     android:paddingBottom="5dp"
                     android:visibility="gone"
@@ -226,16 +227,63 @@
                     android:id="@+id/short_message_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="4dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_gravity="end|bottom"
+                    android:paddingBottom="4dp"
                     android:fontFamily="@font/open_sans_regular"
+                    android:gravity="end"
+                    android:maxLines="1"
                     android:textSize="11sp"
                     android:visibility="visible"
                     tools:text="12:00 pm" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </io.beldex.bchat.util.BodyTextViewLayout>
+
+            <io.beldex.bchat.util.QuoteBodyTextViewLayout
+                android:id="@+id/quoteBodyTextViewLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:maxWidth="@dimen/max_text_layout_width"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/album_container"
+                app:quoteViewPartMessage="@id/quoteBodyTextView"
+                app:quoteViewPartTime="@id/quote_short_message_time">
+
+
+                <io.beldex.bchat.components.emoji.EmojiTextView
+                    android:id="@+id/quoteBodyTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans_regular"
+                    android:maxWidth="@dimen/max_text_width"
+                    android:layout_gravity="end|bottom"
+                    android:gravity="start|top"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="6dp"
+                    android:paddingBottom="5dp"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    tools:text="Message"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/quote_short_message_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_gravity="end|bottom"
+                    android:paddingBottom="4dp"
+                    android:fontFamily="@font/open_sans_regular"
+                    android:gravity="end"
+                    android:maxLines="1"
+                    android:textSize="11sp"
+                    android:visibility="visible"
+                    tools:text="12:00 pm" />
+
+            </io.beldex.bchat.util.QuoteBodyTextViewLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -272,6 +272,7 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
     executeStatements(db, DraftDatabase.CREATE_INDEXS);
     executeStatements(db, GroupDatabase.CREATE_INDEXS);
     executeStatements(db, GroupReceiptDatabase.CREATE_INDEXES);
+    executeStatements(db, ReactionDatabase.CREATE_INDEXS);
 
     executeStatements(db, ReactionDatabase.CREATE_REACTION_TRIGGERS);
     db.execSQL(BeldexMessageDatabase.getCreateSmsHashTableCommand());
@@ -485,6 +486,7 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
         db.execSQL(BeldexMessageDatabase.getCreateMmsHashTableCommand());
         db.execSQL(SmsDatabase.ADD_IS_DELETED_COLUMN);
         db.execSQL(MmsDatabase.ADD_IS_DELETED_COLUMN);
+        executeStatements(db, ReactionDatabase.CREATE_INDEXS);
       }
 
       db.setTransactionSuccessful();

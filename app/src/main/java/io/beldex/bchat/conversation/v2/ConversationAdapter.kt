@@ -137,7 +137,10 @@ class ConversationAdapter(
                 if (!message.isDeleted) {
                     visibleMessageView.onPress = { event -> onItemPress(message, viewHolder.adapterPosition, visibleMessageView, event) }
                     visibleMessageView.onSwipeToReply = { onItemSwipeToReply(message, viewHolder.adapterPosition) }
-                    visibleMessageView.onLongPress = { onItemLongPress(message, viewHolder.adapterPosition, visibleMessageView) }
+                    visibleMessageView.onLongPress = {
+                        ViewUtil.hideKeyboard(context,visibleMessageView)
+                        onItemLongPress(message, viewHolder.adapterPosition, visibleMessageView)
+                    }
 
                 } else {
 

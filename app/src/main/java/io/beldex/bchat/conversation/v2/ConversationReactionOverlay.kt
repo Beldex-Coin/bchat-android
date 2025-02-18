@@ -455,7 +455,7 @@ class ConversationReactionOverlay : FrameLayout {
         val items: MutableList<ActionItem> = ArrayList()
         // Prepare
         val containsControlMessage = message.isUpdate
-        val hasText = !message.body.isEmpty()
+        val hasText = message.body.isNotEmpty() && !message.isDeleted
         val openGroup = get(context).beldexThreadDatabase().getOpenGroupChat(message.threadId)
         val recipient = get(context).threadDatabase().getRecipientForThreadId(message.threadId)
             ?: return emptyList()

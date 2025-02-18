@@ -371,13 +371,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 }
             },
             onItemLongPress = { message, position, view ->
-                    if(isSecretGroupIsActive()) {
-                        if (!isMessageRequestThread()) {
-                            showConversationReaction(message, view, position)
-                        } else {
-                            selectMessage(message, position)
-                        }
+                if (isSecretGroupIsActive()) {
+                    if (message.isSent && !isMessageRequestThread()) {
+                        showConversationReaction(message, view, position)
+                    } else {
+                        selectMessage(message, position)
                     }
+                }
             },
             onDeselect = { message, position ->
                 actionMode?.let {
@@ -521,6 +521,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private val callDurationFormat = "HH:mm:ss"
     private var uiJob: Job? = null
     private var groupRepository : SecretGroupInfoRepository? = null
+
+
 
 
     interface Listener {
@@ -3521,6 +3523,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         //New Line v32
         val recipient = viewModel.recipient.value ?: return false
         return !recipient.isGroupRecipient && !recipient.isApproved
+    }
+
+    private fun selectedItem(message : MessageRecord): Boolean{
+        return adapter.selectedItems.contains(message)
     }
 
     override fun onBackPressed(): Boolean {

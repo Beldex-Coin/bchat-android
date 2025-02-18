@@ -15,6 +15,8 @@ import com.beldex.libsignal.utilities.guava.Optional;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Socket;
+import java.net.SocketException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -70,6 +72,7 @@ public class ChunkedDataFetcher {
       public void onFailure(@NonNull Call call, @NonNull IOException e) {
         if (!compositeController.isCanceled()) {
           callback.onFailure(e);
+          Log.d("Beldex","gif scroll crash issue called 3");
           compositeController.cancel();
         }
       }
@@ -81,6 +84,7 @@ public class ChunkedDataFetcher {
         if (!response.isSuccessful()) {
           Log.w(TAG, "Non-successful response code: " + response.code());
           callback.onFailure(new IOException("Non-successful response code: " + response.code()));
+          Log.d("Beldex","gif scroll crash issue called 4");
           compositeController.cancel();
           if (response.body() != null) response.body().close();
           return;
@@ -89,6 +93,7 @@ public class ChunkedDataFetcher {
         if (TextUtils.isEmpty(contentRange)) {
           Log.w(TAG, "Missing Content-Range header.");
           callback.onFailure(new IOException("Missing Content-Length header."));
+          Log.d("Beldex","gif scroll crash issue called 5");
           compositeController.cancel();
           if (response.body() != null) response.body().close();
           return;
@@ -97,6 +102,7 @@ public class ChunkedDataFetcher {
         if (response.body() == null) {
           Log.w(TAG, "Missing body.");
           callback.onFailure(new IOException("Missing body on initial request."));
+          Log.d("Beldex","gif scroll crash issue called 6");
           compositeController.cancel();
           return;
         }
@@ -106,6 +112,7 @@ public class ChunkedDataFetcher {
         if (!contentLength.isPresent()) {
           Log.w(TAG, "Unable to parse length from Content-Range.");
           callback.onFailure(new IOException("Unable to get parse length from Content-Range."));
+          Log.d("Beldex","gif scroll crash issue called 7");
           compositeController.cancel();
           return;
         }
@@ -115,6 +122,7 @@ public class ChunkedDataFetcher {
             callback.onSuccess(response.body().byteStream());
           } catch (IOException e) {
             callback.onFailure(e);
+            Log.d("Beldex","gif scroll crash issue called 8");
             compositeController.cancel();
           }
         } else {
@@ -146,6 +154,7 @@ public class ChunkedDataFetcher {
       }
     } catch (IOException e) {
       callback.onFailure(e);
+      Log.d("Beldex","gif scroll crash issue called 9");
       compositeController.cancel();
       return;
     }
@@ -166,7 +175,8 @@ public class ChunkedDataFetcher {
         if (!stream.isPresent()) {
           Log.w(TAG, "Stream was canceled.");
           callback.onFailure(new IOException("Failure"));
-          compositeController.cancel();
+          Log.d("Beldex","gif scroll crash issue called 10");
+          //compositeController.cancel();
           return;
         }
 
@@ -177,6 +187,7 @@ public class ChunkedDataFetcher {
         callback.onSuccess(new InputStreamList(streams));
       } catch (IOException e) {
         callback.onFailure(e);
+        Log.d("Beldex","gif scroll crash issue called 11");
         compositeController.cancel();
       }
     });
@@ -358,12 +369,24 @@ public class ChunkedDataFetcher {
     @Override
     public int read(@NonNull byte[] buffer, int offset, int length) throws IOException {
       while (currentStreamIndex < inputStreams.size()) {
-        int result = inputStreams.get(currentStreamIndex).read(buffer, offset, length);
-
-        if (result == -1) currentStreamIndex++;
-        else              return result;
+        try {
+          int result = inputStreams.get(currentStreamIndex).read(buffer, offset, length);
+          if (result == -1) {
+            currentStreamIndex++;
+          } else {
+            return result;
+          }
+        } catch (SocketException e) {
+          if (e.getMessage().equals("Socket closed")) {
+            // Handle socket closed error
+            Log.w("SocketException", "Socket closed");
+            currentStreamIndex++;
+          } else {
+            // Re-throw other SocketExceptions
+            throw e;
+          }
+        }
       }
-
       return -1;
     }
 

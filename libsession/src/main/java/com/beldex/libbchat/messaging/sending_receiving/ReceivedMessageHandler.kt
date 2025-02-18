@@ -13,7 +13,7 @@ import com.beldex.libbchat.messaging.messages.visible.VisibleMessage
 import com.beldex.libbchat.messaging.sending_receiving.attachments.PointerAttachment
 import com.beldex.libbchat.messaging.sending_receiving.data_extraction.DataExtractionNotificationInfoMessage
 import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview
-import com.beldex.libbchat.messaging.sending_receiving.notifications.PushNotificationAPI
+import com.beldex.libbchat.messaging.sending_receiving.notifications.PushRegistryV1
 import com.beldex.libbchat.messaging.sending_receiving.pollers.ClosedGroupPollerV2
 import com.beldex.libbchat.messaging.sending_receiving.quotes.QuoteModel
 import com.beldex.libbchat.messaging.utilities.WebRtcUtils
@@ -492,7 +492,7 @@ private fun handleNewClosedGroup(sender: String, sentTimestamp: Long, groupPubli
     // Set expiration timer
     storage.setExpirationTimer(groupID, expireTimer)
     // Notify the PN server
-    PushNotificationAPI.performOperation(PushNotificationAPI.ClosedGroupOperation.Subscribe, groupPublicKey, storage.getUserPublicKey()!!)
+    PushRegistryV1.register(device = MessagingModuleConfiguration.shared.device, publicKey = userPublicKey)
     // Notify the user
     if (userPublicKey == sender && !groupExists) {
         val threadID = storage.getOrCreateThreadIdFor(Address.fromSerialized(groupID))
@@ -696,7 +696,7 @@ private fun MessageReceiver.handleClosedGroupMembersRemoved(message: ClosedGroup
     val wasCurrentUserRemoved = userPublicKey in removedMembers
     // Admin should send a MEMBERS_LEFT message but handled here just in case
     if (didAdminLeave || wasCurrentUserRemoved) {
-        disableLocalGroupAndUnsubscribe(groupPublicKey, groupID, userPublicKey)
+        disableLocalGroupAndUnsubscribe(groupPublicKey, groupID, userPublicKey, true)
     } else {
         storage.updateMembers(groupID, newMembers.map { Address.fromSerialized(it) })
         // Update zombie members
@@ -750,7 +750,7 @@ private fun MessageReceiver.handleClosedGroupMemberLeft(message: ClosedGroupCont
     val updatedMemberList = members - senderPublicKey
     val userLeft = (userPublicKey == senderPublicKey)
     if (didAdminLeave || userLeft) {
-        disableLocalGroupAndUnsubscribe(groupPublicKey, groupID, userPublicKey)
+        disableLocalGroupAndUnsubscribe(groupPublicKey, groupID, userPublicKey, true)
     } else {
         storage.updateMembers(groupID, updatedMemberList.map { Address.fromSerialized(it) })
         // Update zombie members
@@ -781,7 +781,7 @@ private fun isValidGroupUpdate(group: GroupRecord, sentTimestamp: Long, senderPu
     return true
 }
 
-fun MessageReceiver.disableLocalGroupAndUnsubscribe(groupPublicKey: String, groupID: String, userPublicKey: String) {
+fun MessageReceiver.disableLocalGroupAndUnsubscribe(groupPublicKey: String, groupID: String, userPublicKey: String, delete: Boolean) {
     val storage = MessagingModuleConfiguration.shared.storage
     storage.removeClosedGroupPublicKey(groupPublicKey)
     // Remove the key pairs
@@ -790,8 +790,14 @@ fun MessageReceiver.disableLocalGroupAndUnsubscribe(groupPublicKey: String, grou
     storage.setActive(groupID, false)
     storage.removeMember(groupID, Address.fromSerialized(userPublicKey))
     // Notify the PN server
-    PushNotificationAPI.performOperation(PushNotificationAPI.ClosedGroupOperation.Unsubscribe, groupPublicKey, userPublicKey)
+    PushRegistryV1.unsubscribeGroup(groupPublicKey, publicKey = userPublicKey)
     // Stop polling
     ClosedGroupPollerV2.shared.stopPolling(groupPublicKey)
+
+    if (delete) {
+        val threadId = storage.getOrCreateThreadIdFor(Address.fromSerialized(groupID))
+        storage.cancelPendingMessageSendJobs(threadId)
+        storage.deleteConversation(threadId)
+    }
 }
 // endregion

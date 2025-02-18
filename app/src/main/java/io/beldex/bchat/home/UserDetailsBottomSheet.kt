@@ -22,7 +22,7 @@ import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.mms.GlideApp
+import com.bumptech.glide.Glide;
 import io.beldex.bchat.util.UiModeUtilities
 import javax.inject.Inject
 
@@ -73,7 +73,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
         view.layoutParams = layouts
         with(binding) {
             profilePictureView.root.publicKey = publicKey
-            profilePictureView.root.glide = GlideApp.with(this@UserDetailsBottomSheet)
+            profilePictureView.root.glide = Glide.with(this@UserDetailsBottomSheet)
             profilePictureView.root.isLarge = true
             profilePictureView.root.update(recipient)
             nameTextViewContainer.visibility = View.VISIBLE

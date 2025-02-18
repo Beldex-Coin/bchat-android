@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import io.beldex.bchat.mms.GlideApp
+import com.bumptech.glide.Glide;
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.NotificationContentItemSelectableBinding
 
@@ -42,7 +42,7 @@ class NotificationContentRadioOptionAdapter(
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        val glide = GlideApp.with(itemView)
+        val glide = Glide.with(itemView)
         val binding = NotificationContentItemSelectableBinding.bind(itemView)
 
         fun bind(option: NotificationContentRadioOption, isSelected: Boolean, toggleSelection: (NotificationContentRadioOption) -> Unit) {

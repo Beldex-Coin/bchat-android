@@ -119,8 +119,7 @@ object HTTP {
         }
         lateinit var response: Response
         try {
-            val connection: OkHttpClient
-            connection = if (timeout != HTTP.timeout) { // Custom timeout
+            val connection = if (timeout != HTTP.timeout) { // Custom timeout
                 if (useSeedNodeConnection) {
                     Log.d("Beldex","if condition in HTTP execute fun ")
                     throw IllegalStateException("Setting a custom timeout is only allowed for requests to mnodes.")

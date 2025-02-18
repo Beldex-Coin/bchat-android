@@ -10,9 +10,15 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion"
         classpath "com.google.gms:google-services:4.3.12"
-        classpath "com.google.dagger:hilt-android-gradle-plugin:$daggerVersion"
         classpath "com.google.firebase:firebase-crashlytics-gradle:2.9.8"
     }
+}
+
+// List plugins AND their versions here, but don't apply. This allows you to use the plugin
+// in your module without specifying the version.
+plugins {
+    id 'com.google.devtools.ksp' version "$kotlinVersion-1.0.20" apply false
+    id 'com.google.dagger.hilt.android' version "$daggerHiltVersion" apply false
 }
 
 allprojects {

@@ -104,44 +104,30 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
             return
         }
 
-        val player = AudioSlidePlayer.createFor(context, audio, this)
+        val player = AudioSlidePlayer.createFor(context.applicationContext, audio, this)
         this.player = player
 
         (audio.asAttachment() as? DatabaseAttachment)?.let { attachment ->
             attachmentDb.getAttachmentAudioExtras(attachment.attachmentId)?.let { audioExtras ->
                 if (audioExtras.durationMs > 0) {
                     duration = audioExtras.durationMs
-                    seekBarUpdateAmount = duration / 100
                     binding.voiceMessageViewDurationTextView.visibility = View.VISIBLE
-                    binding.voiceMessageViewDurationTextView.text = String.format(Locale.ROOT, "%01d:%02d",
-                            TimeUnit.MILLISECONDS.toMinutes(audioExtras.durationMs),
-                            TimeUnit.MILLISECONDS.toSeconds(audioExtras.durationMs) % 60)
-                    Log.d("Beldex","Voice msg time to mins ${TimeUnit.MICROSECONDS.toMinutes(audioExtras.durationMs)}")
-                    Log.d("Beldex","Voice msg time to seconds ${TimeUnit.MICROSECONDS.toSeconds(audioExtras.durationMs)}")
-                    Log.d("Beldex","Voice msg time text ${binding.voiceMessageViewDurationTextView.text}")
-
+                    binding.voiceMessageViewDurationTextView.text = String.format("%01d:%02d",
+                        TimeUnit.MILLISECONDS.toMinutes(audioExtras.durationMs),
+                        TimeUnit.MILLISECONDS.toSeconds(audioExtras.durationMs) % 60)
                 }
             }
         }
 
         binding.seekbarAudio.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            override fun onProgressChanged(
-                seekBar: SeekBar, progress: Int,
-                fromUser: Boolean
-            ) {}
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {}
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-                val progressValue = if(seekBar.progress in 1..99){
-                    "0.${seekBar.progress}"
-                }else if(seekBar.progress >99){
-                    "1.0"
-                }else{
-                    "0.0"
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                if (fromUser) {
+                    val progressValue = progress / 100.0
+                    player.seekTo(progressValue)
                 }
-                player.seekTo(progressValue.toDouble())
             }
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
     }
 
@@ -150,35 +136,24 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
     }
 
     override fun onPlayerProgress(player: AudioSlidePlayer, progress: Double, unused: Long) {
+        binding.seekbarAudio.progress = (progress * 100).toInt()
         if (progress == 1.0) {
             togglePlayback()
             handleProgressChanged(0.0)
-            binding.seekbarAudio.progress = 0
-            delegate?.playVoiceMessageAtIndexIfPossible(indexInAdapter - 1)
+            delegate?.playVoiceMessageAtIndexIfPossible(indexInAdapter + 1)
         } else {
             handleProgressChanged(progress)
         }
     }
 
-    fun getMessageID(messageRecord: Long){
-        messageId = messageRecord.toInt()
-    }
-
     private fun handleProgressChanged(progress: Double) {
-        if (messageId != 0) {
-            this.progress = progress
-            binding.voiceMessageViewDurationTextView.text = String.format(Locale.ROOT, "%01d:%02d",
-                    TimeUnit.MILLISECONDS.toMinutes(duration - (progress * duration.toDouble()).roundToLong()),
-                    TimeUnit.MILLISECONDS.toSeconds(duration - (progress * duration.toDouble()).roundToLong()) % 60)
-            val layoutParams = binding.progressView.layoutParams as RelativeLayout.LayoutParams
-            layoutParams.width = (width.toFloat() * progress.toFloat()).roundToInt()
-            binding.progressView.layoutParams = layoutParams
-        } else {
-            isPlaying = false
-            if(player != null) {
-                player!!.stop()
-            }
-        }
+        this.progress = progress
+        binding.voiceMessageViewDurationTextView.text = String.format("%01d:%02d",
+            TimeUnit.MILLISECONDS.toMinutes(duration - (progress * duration.toDouble()).roundToLong()),
+            TimeUnit.MILLISECONDS.toSeconds(duration - (progress * duration.toDouble()).roundToLong()) % 60)
+        val layoutParams = binding.progressView.layoutParams as RelativeLayout.LayoutParams
+        layoutParams.width = (width.toFloat() * progress.toFloat()).roundToInt()
+        binding.progressView.layoutParams = layoutParams
     }
 
     override fun onPlayerStop(player: AudioSlidePlayer) {

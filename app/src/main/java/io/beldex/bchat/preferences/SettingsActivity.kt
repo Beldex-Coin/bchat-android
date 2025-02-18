@@ -41,13 +41,13 @@ import io.beldex.bchat.contacts.blocked.BlockedContactsActivity
 import io.beldex.bchat.conversation.v2.ConversationFragmentV2
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.home.PathActivity
-import io.beldex.bchat.mms.GlideApp
+import com.bumptech.glide.Glide;
 import io.beldex.bchat.util.*
 import java.io.File
 import java.io.FileOutputStream
 import java.security.SecureRandom
 import java.util.Date
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestManager
 import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.profiles.ProfileMediaConstraints
 import io.beldex.bchat.showCustomDialog
@@ -66,7 +66,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
         set(value) {
             field = value; handleDisplayNameEditActionModeChanged()
         }
-    private lateinit var glide: GlideRequests
+    private lateinit var glide: RequestManager
     private var tempFile: File? = null
 
     private val hexEncodedPublicKey: String
@@ -134,7 +134,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
         setContentView(binding.root)
         setUpActionBarBchatLogo("My Account")
         val displayName = getDisplayName()
-        glide = GlideApp.with(this)
+        glide = Glide.with(this)
 
         val size = toPx(280, resources)
         val qrCode = QRCodeUtilities.encode(hexEncodedPublicKey, size, false, false)

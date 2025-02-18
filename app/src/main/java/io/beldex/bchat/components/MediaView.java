@@ -16,7 +16,7 @@ import io.beldex.bchat.mms.VideoSlide;
 import io.beldex.bchat.video.VideoPlayer;
 
 import io.beldex.bchat.R;
-import io.beldex.bchat.mms.GlideRequests;
+import com.bumptech.glide.RequestManager;
 
 import com.beldex.libbchat.utilities.Stub;
 
@@ -55,7 +55,7 @@ public class MediaView extends FrameLayout {
     this.videoView = new Stub<>(findViewById(R.id.video_player_stub));
   }
 
-  public void set(@NonNull GlideRequests glideRequests,
+  public void set(@NonNull RequestManager glideRequests,
                   @NonNull Window window,
                   @NonNull Uri source,
                   @NonNull String mediaType,

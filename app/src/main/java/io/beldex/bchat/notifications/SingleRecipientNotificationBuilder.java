@@ -44,7 +44,7 @@ import com.beldex.libsignal.utilities.Log;
 import io.beldex.bchat.database.BchatContactDatabase;
 import io.beldex.bchat.dependencies.DatabaseComponent;
 
-import io.beldex.bchat.mms.GlideApp;
+import com.bumptech.glide.Glide;
 
 import io.beldex.bchat.util.AvatarPlaceholderGenerator;
 
@@ -96,7 +96,7 @@ public class SingleRecipientNotificationBuilder extends AbstractNotificationBuil
         try {
           // AC: For some reason, if not use ".asBitmap()" method, the returned BitmapDrawable
           // wraps a recycled bitmap and leads to a crash.
-          Bitmap iconBitmap = GlideApp.with(context.getApplicationContext())
+          Bitmap iconBitmap = Glide.with(context.getApplicationContext())
                   .asBitmap()
                   .load(contactPhoto)
                   .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -106,7 +106,7 @@ public class SingleRecipientNotificationBuilder extends AbstractNotificationBuil
                   .get();
           setLargeIcon(iconBitmap);
         } catch (InterruptedException | ExecutionException e) {
-          Log.w(TAG, e);
+          Log.w(TAG, "get iconBitmap in getThread failed",e);
           setLargeIcon(getPlaceholderDrawable(context, recipient));
         }
       } else {
@@ -298,14 +298,14 @@ public class SingleRecipientNotificationBuilder extends AbstractNotificationBuil
       @SuppressWarnings("ConstantConditions")
       Uri uri = slideDeck.getThumbnailSlide().getThumbnailUri();
 
-      return GlideApp.with(context.getApplicationContext())
+      return Glide.with(context.getApplicationContext())
                      .asBitmap()
                      .load(new DecryptableStreamUriLoader.DecryptableUri(uri))
                      .diskCacheStrategy(DiskCacheStrategy.NONE)
                      .submit(64, 64)
                      .get();
     } catch (InterruptedException | ExecutionException e) {
-      Log.w(TAG, e);
+      Log.w(TAG, "getBigPicture failed",e);
       return Bitmap.createBitmap(64, 64, Bitmap.Config.RGB_565);
     }
   }

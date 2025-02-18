@@ -13,7 +13,7 @@
         android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/contraint_layout"
+            android:id="@+id/constraint_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp">
@@ -140,8 +140,7 @@
                     android:id="@+id/album_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/small_spacing"
-                    app:cardBackgroundColor="@color/dialled_call_detail_background"
+                    android:layout_marginHorizontal="4dp"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="0dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -167,13 +166,20 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end|bottom"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="2dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
+                        android:layout_marginEnd="14dp"
                         android:layout_marginBottom="4dp"
                         android:fontFamily="@font/open_sans_regular"
                         android:textSize="11sp"
                         android:visibility="gone"
-                        tools:text="12:00 pm" />
+                        tools:text="12:00 pm"
+                        android:textColor="@color/white"
+                        android:shadowColor="#000000"
+                        android:shadowRadius="5"
+                        android:shadowDy="2"
+                        android:shadowDx="2" />
 
 
                 </com.google.android.material.card.MaterialCardView>
@@ -223,7 +229,6 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
 
         <ImageView
             android:id="@+id/tailReceiveView"

@@ -11,22 +11,9 @@
       "type": "UNIVERSAL",
       "filters": [],
       "attributes": [],
-      "versionCode": 71,
-      "versionName": "2.6.1",
-      "outputFile": "Bchat-2.6.1-universal.apk"
-    },
-    {
-      "type": "ONE_OF_MANY",
-      "filters": [
-        {
-          "filterType": "ABI",
-          "value": "armeabi-v7a"
-        }
-      ],
-      "attributes": [],
-      "versionCode": 71,
-      "versionName": "2.6.1",
-      "outputFile": "Bchat-2.6.1-armeabi-v7a.apk"
+      "versionCode": 76,
+      "versionName": "2.6.4",
+      "outputFile": "Bchat-2.6.4-universal.apk"
     },
     {
       "type": "ONE_OF_MANY",
@@ -37,9 +24,22 @@
         }
       ],
       "attributes": [],
-      "versionCode": 71,
-      "versionName": "2.6.1",
-      "outputFile": "Bchat-2.6.1-x86_64.apk"
+      "versionCode": 76,
+      "versionName": "2.6.4",
+      "outputFile": "Bchat-2.6.4-x86_64.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "armeabi-v7a"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 76,
+      "versionName": "2.6.4",
+      "outputFile": "Bchat-2.6.4-armeabi-v7a.apk"
     },
     {
       "type": "ONE_OF_MANY",
@@ -50,9 +50,9 @@
         }
       ],
       "attributes": [],
-      "versionCode": 71,
-      "versionName": "2.6.1",
-      "outputFile": "Bchat-2.6.1-arm64-v8a.apk"
+      "versionCode": 76,
+      "versionName": "2.6.4",
+      "outputFile": "Bchat-2.6.4-arm64-v8a.apk"
     }
   ],
   "elementType": "File"

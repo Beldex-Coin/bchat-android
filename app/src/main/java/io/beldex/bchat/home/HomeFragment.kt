@@ -83,8 +83,8 @@ import io.beldex.bchat.groups.OpenGroupManager
 import io.beldex.bchat.home.search.GlobalSearchAdapter
 import io.beldex.bchat.home.search.GlobalSearchInputLayout
 import io.beldex.bchat.home.search.RecyclerViewDivider
-import io.beldex.bchat.mms.GlideApp
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import io.beldex.bchat.model.AsyncTaskCoroutine
 import io.beldex.bchat.model.Wallet
 import io.beldex.bchat.my_account.ui.MyAccountActivity
@@ -190,7 +190,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     @Inject
     lateinit var beldexMessageDb: BeldexMessageDatabase
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var glide: GlideRequests
+    private lateinit var glide: RequestManager
     private var broadcastReceiver: BroadcastReceiver? = null
     private var uiJob: Job? = null
     private var viewModel : CallViewModel? =null // by viewModels<CallViewModel>()
@@ -392,7 +392,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         archiveChatViewModel = ViewModelProvider(requireActivity())[ArchiveChatViewModel::class.java]
 
         // Set up Glide
-        glide = GlideApp.with(this)
+        glide = Glide.with(this)
         // Set up toolbar buttons
         binding.profileButton.root.glide = glide
         //New Line
@@ -1214,35 +1214,44 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         AsyncTaskCoroutine<Int?, NodeInfo?>() {
 
         override fun doInBackground(vararg params: Int?): NodeInfo? {
-            val favourites: Set<NodeInfo?> = activityCallback!!.getOrPopulateFavouritesRemoteNodeList(requireActivity(),storeNodes)
-            var selectedNode: NodeInfo?
-            if (params[0] == findBest) {
-                selectedNode = autoselect(favourites)
-            } else if (params[0] == pingSelected) {
-                selectedNode = activityCallback!!.getNode()
-                if (selectedNode == null) {
-                    for (node in favourites) {
-                        if (node!!.isSelected) {
-                            selectedNode = node
-                            break
+            if(isAdded) {
+                val favourites: Set<NodeInfo?> =
+                    activityCallback!!.getOrPopulateFavouritesRemoteNodeList(
+                        requireActivity(),
+                        storeNodes
+                    )
+                var selectedNode: NodeInfo?
+                if (params[0] == findBest) {
+                    selectedNode = autoselect(favourites)
+                } else if (params[0] == pingSelected) {
+                    selectedNode = activityCallback!!.getNode()
+                    if (selectedNode == null) {
+                        for (node in favourites) {
+                            if (node!!.isSelected) {
+                                selectedNode = node
+                                break
+                            }
                         }
                     }
-                }
-                if (selectedNode == null) { // autoselect
-                    selectedNode = autoselect(favourites)
-                } else {
-                    //Steve Josephh21
-                    if(selectedNode!=null) {
-                        selectedNode!!.testRpcService()
+                    if (selectedNode == null) { // autoselect
+                        selectedNode = autoselect(favourites)
+                    } else {
+                        //Steve Josephh21
+                        if (selectedNode != null) {
+                            selectedNode!!.testRpcService()
+                        }
                     }
+                } else throw IllegalStateException()
+                return if (selectedNode != null && selectedNode.isValid) {
+                    activityCallback!!.setNode(selectedNode)
+                    selectedNode
+                } else {
+                    activityCallback!!.setNode(null)
+                    null
                 }
-            } else throw IllegalStateException()
-            return if (selectedNode != null && selectedNode.isValid) {
-                activityCallback!!.setNode(selectedNode)
-                selectedNode
             } else {
                 activityCallback!!.setNode(null)
-                null
+                return null
             }
         }
 

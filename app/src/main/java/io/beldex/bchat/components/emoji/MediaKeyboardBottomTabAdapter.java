@@ -9,20 +9,21 @@ import android.widget.ImageView;
 
 
 import io.beldex.bchat.components.emoji.MediaKeyboardProvider.TabIconProvider;
-import io.beldex.bchat.mms.GlideRequests;
+import com.bumptech.glide.RequestManager;
+
 
 import io.beldex.bchat.R;
 
 public class MediaKeyboardBottomTabAdapter extends RecyclerView.Adapter<MediaKeyboardBottomTabAdapter.MediaKeyboardBottomTabViewHolder>  {
 
-  private final GlideRequests glideRequests;
+  private final RequestManager glideRequests;
   private final EventListener eventListener;
 
   private MediaKeyboardProvider.TabIconProvider tabIconProvider;
   private int             activePosition;
   private int             count;
 
-  public MediaKeyboardBottomTabAdapter(@NonNull GlideRequests glideRequests, @NonNull EventListener eventListener) {
+  public MediaKeyboardBottomTabAdapter(@NonNull RequestManager glideRequests, @NonNull EventListener eventListener) {
     this.glideRequests = glideRequests;
     this.eventListener = eventListener;
   }
@@ -71,7 +72,7 @@ public class MediaKeyboardBottomTabAdapter extends RecyclerView.Adapter<MediaKey
       this.indicator = itemView.findViewById(R.id.media_keyboard_bottom_tab_indicator);
     }
 
-    void bind(@NonNull GlideRequests glideRequests,
+    void bind(@NonNull RequestManager glideRequests,
               @NonNull EventListener eventListener,
               @NonNull MediaKeyboardProvider.TabIconProvider tabIconProvider,
               int index,

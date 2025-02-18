@@ -31,7 +31,7 @@ import com.beldex.libbchat.utilities.recipients.RecipientModifiedListener;
 import io.beldex.bchat.database.BchatContactDatabase;
 import io.beldex.bchat.dependencies.DatabaseComponent;
 import io.beldex.bchat.mms.DecryptableStreamUriLoader;
-import io.beldex.bchat.mms.GlideRequests;
+import com.bumptech.glide.RequestManager;
 import io.beldex.bchat.mms.Slide;
 import io.beldex.bchat.mms.SlideDeck;
 import io.beldex.bchat.util.UiModeUtilities;
@@ -145,7 +145,7 @@ public class QuoteView extends FrameLayout implements RecipientModifiedListener 
     cornerMask.mask(canvas);
   }
 
-  public void setQuote(GlideRequests glideRequests,
+  public void setQuote(RequestManager glideRequests,
                        long id,
                        @NonNull Recipient author,
                        @Nullable String body,
@@ -249,7 +249,7 @@ public class QuoteView extends FrameLayout implements RecipientModifiedListener 
     }
   }
 
-  private void setQuoteAttachment(@NonNull GlideRequests glideRequests, @NonNull SlideDeck slideDeck) {
+  private void setQuoteAttachment(@NonNull RequestManager glideRequests, @NonNull SlideDeck slideDeck) {
     List<Slide> imageVideoSlides = Stream.of(slideDeck.getSlides()).filter(s -> s.hasImage() || s.hasVideo()).limit(1).toList();
     List<Slide> documentSlides   = Stream.of(attachments.getSlides()).filter(Slide::hasDocument).limit(1).toList();
 

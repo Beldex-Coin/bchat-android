@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListUpdateCallback
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.NO_ID
 import io.beldex.bchat.database.model.ThreadRecord
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestManager
 
 class NewHomeAdapter(private val context: Context, private val listener: ConversationClickListener):
     RecyclerView.Adapter<RecyclerView.ViewHolder>(),
@@ -60,7 +60,7 @@ class NewHomeAdapter(private val context: Context, private val listener: Convers
         return _data[offsetPosition].threadId
     }
 
-    lateinit var glide: GlideRequests
+    lateinit var glide: RequestManager
     var typingThreadIDs = setOf<Long>()
         set(value) {
             field = value

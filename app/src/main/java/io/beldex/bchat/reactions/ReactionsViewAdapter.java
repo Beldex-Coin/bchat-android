@@ -19,7 +19,7 @@ import io.beldex.bchat.components.FromTextView;
 import io.beldex.bchat.components.ProfilePictureView;
 import io.beldex.bchat.components.emoji.EmojiImageView;
 import io.beldex.bchat.database.model.MessageId;
-import io.beldex.bchat.mms.GlideRequests;
+import com.bumptech.glide.RequestManager;
 
 public class ReactionsViewAdapter extends RecyclerView.Adapter<ReactionsViewAdapter.ViewHolder> {
 
@@ -28,11 +28,11 @@ public class ReactionsViewAdapter extends RecyclerView.Adapter<ReactionsViewAdap
 
     private Callback callback;
 
-    private final GlideRequests glideRequests;
+    private final RequestManager glideRequests;
 
     private final ReactionsViewModel reactionsViewModel;
 
-    public ReactionsViewAdapter(ReactionsViewModel reactionsViewModel, Callback callback, Context context, List<ReactionDetails> reactions, GlideRequests glideRequests) {
+    public ReactionsViewAdapter(ReactionsViewModel reactionsViewModel, Callback callback, Context context, List<ReactionDetails> reactions, RequestManager glideRequests) {
         this.glideRequests = glideRequests;
         this.context = context;
         this.reactions = reactions;
@@ -77,7 +77,7 @@ public class ReactionsViewAdapter extends RecyclerView.Adapter<ReactionsViewAdap
             tapToRemove = itemView.findViewById(R.id.reactions_bottom_view_tab_to_remove);
         }
 
-        public void bind(ReactionsViewModel reactionsViewModel, ReactionDetails reaction, GlideRequests glideRequests) {
+        public void bind(ReactionsViewModel reactionsViewModel, ReactionDetails reaction, RequestManager glideRequests) {
             reactionsViewModel.updateReactionCount(getItemCount());
             this.avatar.glide = glideRequests;
             this.avatar.update(reaction.getSender(), false, false);

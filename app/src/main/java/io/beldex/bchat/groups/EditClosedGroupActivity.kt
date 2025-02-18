@@ -17,19 +17,18 @@ import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.groupSizeLimit
-import com.beldex.libbchat.messaging.sending_receiving.notifications.PushNotificationAPI.context
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.ThemeUtil
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.toHexString
+import com.bumptech.glide.Glide
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.contacts.SelectContactsActivity
 import io.beldex.bchat.databinding.ActivityEditClosedGroupBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.mms.GlideApp
 import io.beldex.bchat.util.Helper
 import io.beldex.bchat.util.fadeIn
 import io.beldex.bchat.util.fadeOut
@@ -58,7 +57,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
     private lateinit var originalName: String
     private lateinit var name: String
     private lateinit var groupRecipientID: String
-    private val glide by lazy { GlideApp.with(this) }
+    private val glide by lazy { Glide.with(this) }
 
     private var isEditingName = false
         set(value) {
@@ -69,11 +68,11 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
 
     private val memberListAdapter by lazy {
         if (isSelfAdmin)
-            EditClosedGroupMembersAdapter(this, GlideApp.with(this), isSelfAdmin, this::onMemberClick,
+            EditClosedGroupMembersAdapter(this, Glide.with(this), isSelfAdmin, this::onMemberClick,
                 groupAdmin = groupAdmin.toString()
             )
         else
-            EditClosedGroupMembersAdapter(this, GlideApp.with(this), isSelfAdmin, groupAdmin = groupAdmin.toString())
+            EditClosedGroupMembersAdapter(this, Glide.with(this), isSelfAdmin, groupAdmin = groupAdmin.toString())
     }
 
     private lateinit var binding: ActivityEditClosedGroupBinding
@@ -106,7 +105,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         name = originalName
 
         val secretGroupInfoViewModelFactory=
-            SecretGroupViewModelFactory(groupID, context)
+            SecretGroupViewModelFactory(groupID, this)
          secretGroupInfoViewModel= ViewModelProvider(
             this, secretGroupInfoViewModelFactory
         )[SecretGroupInfoViewModel::class.java]
@@ -121,7 +120,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         }
 
        val recipient =  Recipient.from(
-                context,
+                this,
                 Address.fromSerialized(groupID), false)
         binding.profilePictureView.root.glide = glide
         binding.profilePictureView.root.update(recipient, fromEditGroup = true)
@@ -297,7 +296,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
     private fun remove(member: String) {
         val title = R.string.remove_this_contact
         val message = R.string.remove_message
-        AlertDialog.Builder(context,R.style.BChatAlertDialog)
+        AlertDialog.Builder(this,R.style.BChatAlertDialog)
             .setTitle(title)
             .setMessage(message)
             .setNegativeButton(android.R.string.no, null)

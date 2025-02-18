@@ -49,8 +49,8 @@ import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.ComposeDialogContainer
 import io.beldex.bchat.compose_utils.DialogType
 import io.beldex.bchat.compose_utils.appColors
-import io.beldex.bchat.mms.GlideApp
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager
 import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.profiles.ProfileMediaConstraints
 import io.beldex.bchat.util.BitmapDecodingException
@@ -79,7 +79,7 @@ import java.util.regex.Pattern
 @AndroidEntryPoint
 class MyProfileActivity: AppCompatActivity() {
 
-    private lateinit var glide: GlideRequests
+    private lateinit var glide: RequestManager
     private var tempFile: File? = null
     private lateinit var binding: ActivityMyProfileBinding
     private val namePattern = Pattern.compile("[A-Za-z0-9\\s]+")
@@ -140,7 +140,7 @@ class MyProfileActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMyProfileBinding.inflate(LayoutInflater.from(this))
-        glide = GlideApp.with(this)
+        glide = Glide.with(this)
         profileEditable = intent.getBooleanExtra("profile_editable",false)
         setContentView(binding.root)
         setupProfilePictureView(binding.profilePictureView.root)

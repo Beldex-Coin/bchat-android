@@ -36,7 +36,8 @@ enum class HomeDialogType {
     DisappearingTimer,
     ClearChat,
     AcceptRequest,
-    DeclineRequest
+    DeclineRequest,
+    GifSetting
 }
 
 class ConversationActionDialog: DialogFragment() {
@@ -336,6 +337,25 @@ class ConversationActionDialog: DialogFragment() {
                                 title = stringResource(id = R.string.decline_request),
                                 message = stringResource(id = R.string.message_requests_decline_message),
                                 positiveButtonTitle = stringResource(id = R.string.decline),
+                                onAccept = {
+                                    dismiss()
+                                    listener?.onConfirm(dialogType, threadRecord)
+                                },
+                                onCancel = {
+                                    dismiss()
+                                    listener?.onCancel(dialogType, threadRecord)
+                                }
+                            )
+                        }
+                    }
+                    HomeDialogType.GifSetting -> {
+                        BChatTheme(
+                            darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
+                        ) {
+                            UnblockUserDialog(
+                                title = stringResource(id = R.string.gif_dialog_title),
+                                message = stringResource(id = R.string.gif_dialog_message),
+                                positiveButtonTitle = stringResource(id = R.string.ok),
                                 onAccept = {
                                     dismiss()
                                     listener?.onConfirm(dialogType, threadRecord)

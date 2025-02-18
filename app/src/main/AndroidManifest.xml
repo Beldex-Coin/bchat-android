@@ -599,7 +599,7 @@
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
 
         <service
-            android:name="io.beldex.bchat.notifications.PushNotificationService"
+            android:name="io.beldex.bchat.notifications.FirebasePushService"
             android:enabled="true"
             android:exported="false">
             <intent-filter>

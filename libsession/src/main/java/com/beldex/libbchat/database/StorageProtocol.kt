@@ -54,6 +54,7 @@ interface StorageProtocol {
     fun resumeMessageSendJobIfNeeded(messageSendJobID: String)
     fun isJobCanceled(job: Job): Boolean
 
+    fun cancelPendingMessageSendJobs(threadID: Long)
     // Authorization
     fun getAuthToken(room: String, server: String): String?
     fun setAuthToken(room: String, server: String, newValue: String)

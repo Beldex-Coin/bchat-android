@@ -16,8 +16,8 @@ import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.conversation.v2.ConversationFragmentV2
 import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.database.model.ThreadRecord
-import io.beldex.bchat.mms.GlideApp
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import io.beldex.bchat.util.ConfigurationMessageUtilities
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityMessageRequestsBinding
@@ -28,7 +28,7 @@ import javax.inject.Inject
 class MessageRequestsActivity : PassphraseRequiredActionBarActivity(), ConversationClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     private lateinit var binding: ActivityMessageRequestsBinding
-    private lateinit var glide: GlideRequests
+    private lateinit var glide: RequestManager
 
     @Inject lateinit var threadDb: ThreadDatabase
 
@@ -43,7 +43,7 @@ class MessageRequestsActivity : PassphraseRequiredActionBarActivity(), Conversat
         binding = ActivityMessageRequestsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        glide = GlideApp.with(this)
+        glide = Glide.with(this)
 
         adapter.setHasStableIds(true)
         adapter.glide = glide

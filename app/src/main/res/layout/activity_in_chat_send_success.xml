@@ -17,7 +17,7 @@
         android:adjustViewBounds="true"
         android:layout_margin="20dp"
         app:layout_constraintDimensionRatio="1:1"
-        app:lottie_fileName="send.json"
+        app:lottie_rawRes="@raw/sent"
         app:lottie_loop="false"
         app:lottie_speed="1"
         app:lottie_autoPlay="true"

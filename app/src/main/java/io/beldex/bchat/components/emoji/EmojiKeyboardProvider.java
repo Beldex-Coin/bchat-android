@@ -13,7 +13,7 @@ import android.widget.ImageView;
 
 import io.beldex.bchat.util.ResUtil;
 import io.beldex.bchat.components.emoji.EmojiPageViewGridAdapter.VariationSelectorListener;
-import io.beldex.bchat.mms.GlideRequests;
+import com.bumptech.glide.RequestManager;
 
 import com.beldex.libbchat.utilities.ThemeUtil;
 
@@ -87,7 +87,7 @@ public class EmojiKeyboardProvider implements MediaKeyboardProvider,
   }
 
   @Override
-  public void loadCategoryTabIcon(@NonNull GlideRequests glideRequests, @NonNull ImageView imageView, int index) {
+  public void loadCategoryTabIcon(@NonNull RequestManager glideRequests, @NonNull ImageView imageView, int index) {
     Drawable drawable = ResUtil.getDrawable(context, models.get(index).getIconAttr());
     imageView.setImageDrawable(drawable);
   }

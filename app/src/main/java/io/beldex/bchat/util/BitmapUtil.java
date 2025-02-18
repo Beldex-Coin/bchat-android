@@ -16,14 +16,12 @@ import androidx.annotation.WorkerThread;
 import androidx.exifinterface.media.ExifInterface;
 import android.util.Pair;
 
-import io.beldex.bchat.mms.GlideApp;
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import io.beldex.bchat.mms.MediaConstraints;
 
 import com.beldex.libbchat.utilities.MediaTypes;
 import com.beldex.libsignal.utilities.Log;
-import io.beldex.bchat.mms.GlideApp;
-
 import com.beldex.libbchat.utilities.Util;
 
 import java.io.BufferedInputStream;
@@ -99,7 +97,7 @@ public class BitmapUtil {
       int    attempts = 0;
       byte[] bytes;
 
-      Bitmap scaledBitmap = GlideApp.with(context.getApplicationContext())
+      Bitmap scaledBitmap = Glide.with(context.getApplicationContext())
                                     .asBitmap()
                                     .load(model)
                                     .skipMemoryCache(true)
@@ -165,7 +163,7 @@ public class BitmapUtil {
       throws BitmapDecodingException
   {
     try {
-      return GlideApp.with(context.getApplicationContext())
+      return Glide.with(context.getApplicationContext())
                      .asBitmap()
                      .load(model)
                      .centerInside()

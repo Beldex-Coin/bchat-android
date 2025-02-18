@@ -92,8 +92,10 @@ object MnodeAPI {
     }
 
     // Internal API
-    internal fun invoke(method: Mnode.Method, mnode: Mnode, publicKey: String? = null, parameters: Map<String, Any>): RawResponsePromise {
+    internal fun invoke(method: Mnode.Method, mnode: Mnode, publicKey: String? = null, parameters: Map<String, Any>, version: Version = Version.V3): RawResponsePromise {
         val url = "${mnode.address}:${mnode.port}/storage_rpc/v1"
+        val deferred = deferred<OnionResponse, Exception>()
+        //val deferred = deferred<Map<*,*>, Exception>()
         if (useOnionRequests) {
             //-Log.d("Beldex","new payload in invoke fun Send url $url")
             //-Log.d("Beldex","new payload in invoke fun Send method $method")
@@ -101,15 +103,19 @@ object MnodeAPI {
             //-Log.d("Beldex","new payload in invoke fun Send mnode $mnode")
             //-Log.d("Beldex","new payload in invoke fun Send publickey $publicKey")
 
-            return OnionRequestAPI.sendOnionRequest(method, parameters, mnode, publicKey)
+            OnionRequestAPI.sendOnionRequest(method, parameters, mnode, publicKey, version).map {
+                val body = it.body ?: throw Error.Generic
+                //deferred.resolve(JsonUtil.fromJson(body, Map::class.java))
+                val json = JsonUtil.fromJson(body, Map::class.java)
+                deferred.resolve(OnionResponse(json, JsonUtil.toJson(json).toByteArray()))
+            }.fail { deferred.reject(it) }
         } else {
-            val deferred = deferred<Map<*, *>, Exception>()
             ThreadUtils.queue {
                 val payload = mapOf( "method" to method.rawValue, "params" to parameters )
                 try {
                     val response = HTTP.execute(HTTP.Verb.POST, url, payload).toString()
                     val json = JsonUtil.fromJson(response, Map::class.java)
-                    deferred.resolve(json)
+                    deferred.resolve(OnionResponse(json, JsonUtil.toJson(json).toByteArray()))
                 } catch (exception: Exception) {
                     val httpRequestFailedException = exception as? HTTP.HTTPRequestFailedException
                     if (httpRequestFailedException != null) {
@@ -120,8 +126,8 @@ object MnodeAPI {
                     deferred.reject(exception)
                 }
             }
-            return deferred.promise
         }
+        return deferred.promise
     }
 
     internal fun getRandomMnode(): Promise<Mnode, Exception> {
@@ -235,7 +241,7 @@ object MnodeAPI {
             Log.d("promises success","Ok")
             val bchatIDs = mutableListOf<String>()
             for (json in results) {
-                val intermediate = json["result"] as? Map<*, *>
+                val intermediate = json.info["result"] as? Map<*, *>
                 val hexEncodedCiphertext = intermediate?.get("encrypted_value") as? String
                 if (hexEncodedCiphertext != null) {
                     val ciphertext = Hex.fromStringCondensed(hexEncodedCiphertext)
@@ -292,13 +298,13 @@ object MnodeAPI {
 
     fun getSwarm(publicKey: String): Promise<Set<Mnode>, Exception> {
         val cachedSwarm = database.getSwarm(publicKey)
-        if (cachedSwarm != null && cachedSwarm.size >= minimumSwarmMnodeCount) {
+        return if (cachedSwarm != null && cachedSwarm.size >= minimumSwarmMnodeCount) {
             val cachedSwarmCopy = mutableSetOf<Mnode>() // Workaround for a Kotlin compiler issue
             cachedSwarmCopy.addAll(cachedSwarm)
-            return task { cachedSwarmCopy }
+            task { cachedSwarmCopy }
         } else {
             val parameters = mapOf( "pubKey" to publicKey )
-            return getRandomMnode().bind {
+            getRandomMnode().bind {
                 Log.d("Beldex", "invoke MnodeAPI.kt 2")
                 invoke(Mnode.Method.GetSwarm, it, publicKey, parameters)
             }.map {
@@ -364,7 +370,7 @@ object MnodeAPI {
     private fun getNetworkTime(mnode: Mnode): Promise<Pair<Mnode,Long>, Exception> {
         Log.d("Beldex", "invoke MnodeAPI.kt 4")
         return invoke(Mnode.Method.Info, mnode, null, emptyMap()).map { rawResponse ->
-            val timestamp = rawResponse["timestamp"] as? Long ?: -1
+            val timestamp = rawResponse.info["timestamp"] as? Long ?: -1
             mnode to timestamp
         }
     }
@@ -422,7 +428,7 @@ object MnodeAPI {
                     )
                     Log.d("Beldex", "invoke MnodeAPI.kt 6")
                     invoke(Mnode.Method.DeleteMessage, mnode, publicKey, deleteMessageParams).map { rawResponse ->
-                        val swarms = rawResponse["swarm"] as? Map<String, Any> ?: return@map mapOf()
+                        val swarms = rawResponse.info["swarm"] as? Map<String, Any> ?: return@map mapOf()
                         val result = swarms.mapNotNull { (hexMnodePublicKey, rawJSON) ->
                             val json = rawJSON as? Map<String, Any> ?: return@mapNotNull null
                             val isFailed = json["failed"] as? Boolean ?: false
@@ -451,8 +457,8 @@ object MnodeAPI {
 
     // Parsing
     private fun parseMnodes(rawResponse: Any): List<Mnode> {
-        val json = rawResponse as? Map<*, *>
-        val rawMnodes = json?.get("mnodes") as? List<*>
+        val json = rawResponse as? OnionResponse
+        val rawMnodes = json?.info?.get("mnodes") as? List<*>
         if (rawMnodes != null) {
             return rawMnodes.mapNotNull { rawMnode ->
                 val rawMnodeAsJSON = rawMnode as? Map<*, *>
@@ -504,7 +510,7 @@ object MnodeAPI {
     }
 
     fun parseRawMessagesResponse(rawResponse: RawResponse, mnode: Mnode, publicKey: String, namespace: Int = 0): List<Pair<SignalServiceProtos.Envelope, String?>> {
-        val messages = rawResponse["messages"] as? List<*>
+        val messages = rawResponse.info["messages"] as? List<*>
         return if (messages != null) {
             updateLastMessageHashValueIfPossible(mnode, publicKey, messages, namespace)
             val newRawMessages = removeDuplicates(publicKey, messages, namespace)
@@ -566,7 +572,7 @@ object MnodeAPI {
 
     @Suppress("UNCHECKED_CAST")
     private fun parseDeletions(userPublicKey: String, timestamp: Long, rawResponse: RawResponse): Map<String, Boolean> {
-        val swarms = rawResponse["swarm"] as? Map<String, Any> ?: return mapOf()
+        val swarms = rawResponse.info["swarm"] as? Map<String, Any> ?: return mapOf()
         val result = swarms.mapNotNull { (hexMnodePublicKey, rawJSON) ->
             val json = rawJSON as? Map<String, Any> ?: return@mapNotNull null
             val isFailed = json["failed"] as? Boolean ?: false
@@ -611,7 +617,7 @@ object MnodeAPI {
                 handleBadMnode()
             }
             406 -> {
-                Log.d("Beldex", "The user's clock is out of sync with the service node network.")
+                Log.d("Beldex", "The user's clock is out of sync with the master node network.")
                 broadcaster.broadcast("clockOutOfSync")
                 return Error.ClockOutOfSync
             }
@@ -623,7 +629,7 @@ object MnodeAPI {
                         dropMnodeFromSwarmIfNeeded(mnode, publicKey)
                     }
                     if (json != null) {
-                        val mnodes = parseMnodes(json)
+                        val mnodes = parseMnodes(OnionResponse(json, JsonUtil.toJson(json).toByteArray()))
                         if (mnodes.isNotEmpty()) {
                             database.setSwarm(publicKey, mnodes.toSet())
                         } else {
@@ -647,6 +653,6 @@ object MnodeAPI {
 }
 
 // Type Aliases
-typealias RawResponse = Map<*, *>
+typealias RawResponse = OnionResponse
 typealias MessageListPromise = Promise<List<Pair<SignalServiceProtos.Envelope, String?>>, Exception>
 typealias RawResponsePromise = Promise<RawResponse, Exception>

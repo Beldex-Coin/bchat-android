@@ -15,11 +15,11 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import io.beldex.bchat.R;
 import io.beldex.bchat.database.model.MessageId;
-import io.beldex.bchat.mms.GlideApp;
 import io.beldex.bchat.util.LifecycleDisposable;
 
 import java.util.ArrayList;
@@ -129,7 +129,7 @@ public final class ReactionsDialogFragment extends BottomSheetDialogFragment imp
       this.allEmojiReactions.clear();
       this.allEmojiReactions.addAll(allEntries);
     }));
-    reactionRecipientsAdapter = new ReactionsViewAdapter(viewModel,this,requireContext(),allEmojiReactions, GlideApp.with(this));
+    reactionRecipientsAdapter = new ReactionsViewAdapter(viewModel,this,requireContext(),allEmojiReactions, Glide.with(this));
     allEmojiReactionList.setAdapter(reactionRecipientsAdapter);
 
   }

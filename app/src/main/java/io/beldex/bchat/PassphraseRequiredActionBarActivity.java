@@ -42,7 +42,7 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
   private PowerButtonReceiver powerButtonReceiver = null;
 
   @Override
-  protected final void onCreate(Bundle savedInstanceState) {
+  protected void onCreate(Bundle savedInstanceState) {
     Log.i(TAG, "onCreate(" + savedInstanceState + ")");
     onPreCreate();
 

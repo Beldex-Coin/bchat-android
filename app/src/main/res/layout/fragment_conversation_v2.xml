@@ -22,8 +22,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:background="@android:color/transparent"
-            android:padding="1dp"
-            android:src="@drawable/ic_new_back_arrow" />
+            android:padding="3dp"
+            android:src="@drawable/ic_back_arrow" />
 
         <LinearLayout
             android:id="@+id/layout_conversation"
@@ -485,6 +485,7 @@
                             android:layout_marginTop="8dp"
                             android:layout_marginBottom="8dp"
                             android:src="@drawable/ic_camera_new"
+                            android:contentDescription="@string/camera_option"
                             android:padding="3dp"/>
 
                         <ImageView
@@ -496,6 +497,7 @@
                             android:layout_marginBottom="8dp"
                             android:layout_marginEnd="5dp"
                             android:src="@drawable/ic_gallery_new"
+                            android:contentDescription="@string/gallery_option"
                             android:padding="3dp"/>
 
 
@@ -505,9 +507,22 @@
                             android:layout_height="40dp"
                             android:layout_marginTop="8dp"
                             android:layout_marginBottom="8dp"
-                            android:layout_marginEnd="8dp"
+                            android:layout_marginEnd="5dp"
                             android:src="@drawable/ic_document_new"
+                            android:contentDescription="@string/document_option"
                             android:padding="3dp"/>
+
+                    <ImageView
+                        android:id="@+id/gifButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:padding="3dp"
+                        android:src="@drawable/ic_gif_new"
+                        android:contentDescription="@string/gif_option"
+                        />
 
                 </LinearLayout>
 

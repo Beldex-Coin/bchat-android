@@ -7,11 +7,11 @@ import com.beldex.libbchat.utilities.Address
 import io.beldex.bchat.contacts.UserView
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
-import io.beldex.bchat.mms.GlideRequests
+import com.bumptech.glide.RequestManager
 
 class EditClosedGroupMembersAdapter(
         private val context: Context,
-        private val glide: GlideRequests,
+        private val glide: RequestManager,
         private val admin: Boolean,
         private val memberClickListener: ((String) -> Unit)? = null,
         private val groupAdmin: String

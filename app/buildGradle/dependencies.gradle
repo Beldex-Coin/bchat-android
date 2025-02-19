@@ -46,7 +46,6 @@ dependencies {
     implementation 'pl.tajchert:waitingdots:0.1.0'
     implementation 'com.vanniktech:android-image-cropper:4.5.0'
     implementation 'com.melnykov:floatingactionbutton:1.3.0'
-    implementation 'com.google.zxing:android-integration:3.1.0'
     implementation("com.google.dagger:hilt-android:$daggerHiltVersion")
     ksp("com.google.dagger:hilt-compiler:$daggerHiltVersion")
     ksp("androidx.hilt:hilt-compiler:$jetpackHiltVersion")
@@ -179,5 +178,5 @@ dependencies {
     implementation "androidx.camera:camera-lifecycle:1.0.2"
     implementation "androidx.camera:camera-view:1.0.0-alpha31"
 
-    implementation 'com.google.zxing:core:3.3.3'
+    implementation "com.google.zxing:core:$zxingVersion"
 }

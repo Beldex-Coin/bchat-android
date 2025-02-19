@@ -49,18 +49,13 @@ class NotificationsPreferenceFragment : ListSummaryPreferenceFragment() {
             true
         }
         val ledBlinkPref = findPreference<Preference>(TextSecurePreferences.LED_BLINK_PREF)
-        if (NotificationChannels.supported()) {
-            ledBlinkPref!!.isVisible = false
-            prefs.setNotificationRingtone(
-                NotificationChannels.getMessageRingtone(requireContext()).toString()
-            )
-            prefs.setNotificationVibrateEnabled(
-                NotificationChannels.getMessageVibrate(requireContext())
-            )
-        }else{
-            ledBlinkPref!!.onPreferenceChangeListener = ListSummaryListener()
-            initializeListSummary(ledBlinkPref as ListPreference?)
-        }
+        ledBlinkPref!!.isVisible = false
+        prefs.setNotificationRingtone(
+            NotificationChannels.getMessageRingtone(requireContext()).toString()
+        )
+        prefs.setNotificationVibrateEnabled(
+            NotificationChannels.getMessageVibrate(requireContext())
+        )
         findPreference<Preference>(TextSecurePreferences.LED_COLOR_PREF)!!.onPreferenceChangeListener = LedColorChangeListener()
         findPreference<Preference>(TextSecurePreferences.RINGTONE_PREF)!!.onPreferenceChangeListener = RingtoneSummaryListener()
         //New Line
@@ -104,20 +99,16 @@ class NotificationsPreferenceFragment : ListSummaryPreferenceFragment() {
                 true
             }
         initializeListSummary(findPreference<Preference>(TextSecurePreferences.NOTIFICATION_PRIVACY_PREF) as ListPreference?)
-        if (NotificationChannels.supported()) {
-            findPreference<Preference>(TextSecurePreferences.NOTIFICATION_PRIORITY_PREF)!!.onPreferenceClickListener =
-                Preference.OnPreferenceClickListener {
-                    val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
-                    intent.putExtra(
-                        Settings.EXTRA_CHANNEL_ID, NotificationChannels.getMessagesChannel(requireContext())
-                    )
-                    intent.putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
-                    startActivity(intent)
-                    true
-                }
-        }else {
-            initializeListSummary(findPreference<Preference>(TextSecurePreferences.NOTIFICATION_PRIORITY_PREF) as ListPreference?)
-        }
+        findPreference<Preference>(TextSecurePreferences.NOTIFICATION_PRIORITY_PREF)!!.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+                intent.putExtra(
+                    Settings.EXTRA_CHANNEL_ID, NotificationChannels.getMessagesChannel(requireContext())
+                )
+                intent.putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
+                startActivity(intent)
+                true
+            }
         initializeRingtoneSummary(findPreference(TextSecurePreferences.RINGTONE_PREF))
         initializeMessageVibrateSummary(findPreference<Preference>(TextSecurePreferences.VIBRATE_PREF) as SwitchPreferenceCompat?)
     }
@@ -174,17 +165,15 @@ class NotificationsPreferenceFragment : ListSummaryPreferenceFragment() {
     @SuppressLint("StaticFieldLeak")
     private inner class LedColorChangeListener : ListSummaryListener() {
         override fun onPreferenceChange(preference: Preference, value: Any): Boolean {
-            if (NotificationChannels.supported()) {
-                object : AsyncTask<Void?, Void?, Void?>() {
-                    override fun doInBackground(vararg params: Void?): Void? {
-                        NotificationChannels.updateMessagesLedColor(
-                            activity!!,
-                            (value as String)
-                        )
-                        return null
-                    }
-                }.execute()
-            }
+            object : AsyncTask<Void?, Void?, Void?>() {
+                override fun doInBackground(vararg params: Void?): Void? {
+                    NotificationChannels.updateMessagesLedColor(
+                        activity!!,
+                        (value as String)
+                    )
+                    return null
+                }
+            }.execute()
             return super.onPreferenceChange(preference, value)
         }
     }

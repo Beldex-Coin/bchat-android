@@ -9,7 +9,6 @@ import androidx.core.app.NotificationCompat;
 import io.beldex.bchat.home.HomeActivity;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.utilities.NotificationPrivacyPreference;
-import com.beldex.libbchat.utilities.TextSecurePreferences;
 
 import io.beldex.bchat.R;
 
@@ -31,9 +30,5 @@ public class PendingMessageNotificationBuilder extends AbstractNotificationBuild
     setContentIntent(PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE));
     setAutoCancel(true);
     setAlarms(null, Recipient.VibrateState.DEFAULT);
-
-    if (!NotificationChannels.supported()) {
-      setPriority(TextSecurePreferences.getNotificationPriority(context));
-    }
   }
 }

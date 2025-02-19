@@ -49,7 +49,7 @@ class LandingActivity : AppCompatActivity() {
         // AC: This is a temporary workaround to trick the old code that the screen is unlocked.
         KeyCachingService.setMasterSecret(applicationContext, Object())
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !(getSystemService(
+        if (!(getSystemService(
                 NOTIFICATION_SERVICE
             ) as NotificationManager).areNotificationsEnabled() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
         ) {
@@ -78,7 +78,7 @@ class LandingActivity : AppCompatActivity() {
         alertDialog.show()
 
         enable.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !(getSystemService(
+            if (!(getSystemService(
                             NOTIFICATION_SERVICE
                     ) as NotificationManager).areNotificationsEnabled() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
             ) {

@@ -23,7 +23,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
-import android.os.Build;
 import android.text.TextUtils;
 import android.util.Pair;
 
@@ -969,10 +968,6 @@ public class AttachmentDatabase extends Database {
 
     @SuppressLint("NewApi")
     private MediaUtil.ThumbnailData generateVideoThumbnail(AttachmentId attachmentId) {
-      if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-        Log.w(TAG, "Video thumbnails not supported...");
-        return null;
-      }
 
       DataInfo dataInfo = getAttachmentDataFileInfo(attachmentId, DATA);
 

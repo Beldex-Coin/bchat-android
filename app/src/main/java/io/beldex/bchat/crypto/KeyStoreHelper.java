@@ -1,13 +1,10 @@
 package io.beldex.bchat.crypto;
 
-
-import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -45,7 +42,6 @@ public final class KeyStoreHelper {
   private static final String ANDROID_KEY_STORE = "AndroidKeyStore";
   private static final String KEY_ALIAS         = "SignalSecret";
 
-  @RequiresApi(Build.VERSION_CODES.M)
   public static SealedData seal(@NonNull byte[] input) {
     SecretKey secretKey = getOrCreateKeyStoreEntry();
 
@@ -63,7 +59,6 @@ public final class KeyStoreHelper {
     }
   }
 
-  @RequiresApi(Build.VERSION_CODES.M)
   public static byte[] unseal(@NonNull SealedData sealedData) {
     SecretKey secretKey = getKeyStoreEntry();
 
@@ -77,12 +72,12 @@ public final class KeyStoreHelper {
       throw new AssertionError(e);
     }
   }
-  @RequiresApi(Build.VERSION_CODES.M)
+
   private static SecretKey getOrCreateKeyStoreEntry() {
     if (hasKeyStoreEntry()) return getKeyStoreEntry();
     else                    return createKeyStoreEntry();
   }
-  @RequiresApi(Build.VERSION_CODES.M)
+
   private static SecretKey createKeyStoreEntry() {
     try {
       KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEY_STORE);
@@ -98,7 +93,7 @@ public final class KeyStoreHelper {
       throw new AssertionError(e);
     }
   }
-  @RequiresApi(Build.VERSION_CODES.M)
+
   private static SecretKey getKeyStoreEntry() {
     KeyStore keyStore = getKeyStore();
 
@@ -136,8 +131,6 @@ public final class KeyStoreHelper {
     }
   }
 
-
-  @RequiresApi(Build.VERSION_CODES.M)
   private static boolean hasKeyStoreEntry() {
     try {
       KeyStore ks = KeyStore.getInstance(ANDROID_KEY_STORE);

@@ -26,7 +26,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -78,16 +77,11 @@ import com.beldex.libsignal.utilities.Log;
 import io.beldex.bchat.components.MediaView;
 import io.beldex.bchat.conversation.v2.ConversationFragmentV2;
 import io.beldex.bchat.database.MediaDatabase.MediaRecord;
-import io.beldex.bchat.database.loaders.PagingMediaLoader;
-import io.beldex.bchat.database.model.MmsMessageRecord;
 import io.beldex.bchat.mediapreview.MediaPreviewViewModel;
 import io.beldex.bchat.mediapreview.MediaRailAdapter;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
-import io.beldex.bchat.mms.Slide;
 import io.beldex.bchat.permissions.Permissions;
-import io.beldex.bchat.util.AttachmentUtil;
-import io.beldex.bchat.util.DateUtils;
 import io.beldex.bchat.util.SaveAttachmentTask;
 import io.beldex.bchat.util.SaveAttachmentTask.Attachment;
 
@@ -95,8 +89,6 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.WeakHashMap;
-
-import io.beldex.bchat.R;
 import kotlin.Unit;
 
 /**
@@ -236,11 +228,8 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
   }
 
-  @TargetApi(VERSION_CODES.JELLY_BEAN)
   private void setFullscreenIfPossible() {
-    if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
-      getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
-    }
+    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
   }
 
   @Override

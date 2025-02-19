@@ -11,8 +11,6 @@ import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageActivityHelper;
 import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper;
 
-import io.beldex.bchat.R;
-
 public abstract class BaseActivity extends FragmentActivity {
   @Override
   protected void onResume() {

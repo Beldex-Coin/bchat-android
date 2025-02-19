@@ -2,7 +2,6 @@
 
 package com.beldex.libbchat.mnode
 
-import android.os.Build
 import com.beldex.libbchat.BuildConfig
 import com.goterl.lazysodium.LazySodiumAndroid
 import com.goterl.lazysodium.SodiumAndroid
@@ -55,13 +54,11 @@ object MnodeAPI {
         get() = System.currentTimeMillis() + clockOffset
 
     // Settings
-    private val maxRetryCount = 6
-    private val minimumMnodePoolCount = 12
-    private val minimumSwarmMnodeCount = 3
-    // Use port 4433 if the API level can handle the network security configuration and enforce pinned certificates
-    private val seedNodePort = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) 443 else 4433
+    private const val maxRetryCount = 6
+    private const val minimumMnodePoolCount = 12
+    private const val minimumSwarmMnodeCount = 3
     //New Line
-    private val nodePort = 443
+    private const val nodePort = 443
     private val seedNodePool by lazy {
         if (useTestnet) {
             Log.d("beldex","here testnet $useTestnet")
@@ -75,7 +72,7 @@ object MnodeAPI {
     private const val mnodeFailureThreshold = 3
     private const val useOnionRequests = true
 
-    const val useTestnet = BuildConfig.USE_TESTNET
+    private const val useTestnet = BuildConfig.USE_TESTNET
 
     // Error
     internal sealed class Error(val description: String) : Exception(description) {

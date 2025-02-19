@@ -535,11 +535,6 @@
             android:exported="false"
             android:theme="@style/Theme.Bchat.ForceDark" />
         <activity
-            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat" />
-        <activity
             android:name="io.beldex.bchat.ShortcutLauncherActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true"
@@ -815,12 +810,6 @@
             android:exported="false"
             android:foregroundServiceType="specialUse"
             android:label="BChat Wallet Service" />
-        <receiver android:name="io.beldex.bchat.wallet.ui.WalletReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="io.beldex.WALLET_ACTION"/>
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

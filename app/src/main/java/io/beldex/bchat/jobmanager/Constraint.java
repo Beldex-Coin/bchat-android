@@ -2,7 +2,6 @@ package io.beldex.bchat.jobmanager;
 
 import android.app.job.JobInfo;
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 public interface Constraint {
 
@@ -10,7 +9,6 @@ public interface Constraint {
 
   @NonNull String getFactoryKey();
 
-  @RequiresApi(26)
   void applyToJobInfo(@NonNull JobInfo.Builder jobInfoBuilder);
 
   interface Factory<T extends Constraint> {

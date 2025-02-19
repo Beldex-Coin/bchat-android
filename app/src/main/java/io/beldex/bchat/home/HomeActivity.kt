@@ -773,12 +773,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                     this.startService(intent)
                 }
                 catch (ex: IllegalStateException) {
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        ContextCompat.startForegroundService(this,intent)
-                    }
-                    else {
-                        this.startService(intent)
-                    }
+                    ContextCompat.startForegroundService(this,intent)
                 }
                 bindService(intent, mConnection, BIND_AUTO_CREATE)
                 mIsBound = true
@@ -1415,15 +1410,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 intent = Intent(this, WalletService::class.java)
                 intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_STORE)
                 try {
-                    when {
-                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
-                            Handler(Looper.getMainLooper()).post {
-                                ContextCompat.startForegroundService(this, intent)
-                            }
-                        }
-                        else -> {
-                            this.startService(intent)
-                        }
+                    Handler(Looper.getMainLooper()).post {
+                        ContextCompat.startForegroundService(this, intent)
                     }
                 }catch(ex: Exception){
                     Log.d("Exception ",ex.message.toString())

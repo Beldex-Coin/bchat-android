@@ -40,20 +40,11 @@ class RecoveryPhraseActivity : BaseActionBarActivity() {
         {
             if(isDarkTheme) restoreSeedHintIcon.setImageResource(R.drawable.ic_restore_seed_dark) else restoreSeedHintIcon.setImageResource(R.drawable.ic_restore_seed_white)
             registerButton.setTextColor(ContextCompat.getColor(this@RecoveryPhraseActivity, R.color.disable_button_text_color))
-            if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                registerButton.setBackgroundDrawable(
-                    ContextCompat.getDrawable(
-                        this@RecoveryPhraseActivity,
-                        R.drawable.prominent_filled_button_medium_background_disable
-                    )
-                );
-            } else {
-                registerButton.background =
-                    ContextCompat.getDrawable(
-                        this@RecoveryPhraseActivity,
-                        R.drawable.prominent_filled_button_medium_background_disable
-                    );
-            }
+            registerButton.background =
+                ContextCompat.getDrawable(
+                    this@RecoveryPhraseActivity,
+                    R.drawable.prominent_filled_button_medium_background_disable
+                )
             registerButton.setOnClickListener() {
                 if (!copiedSeed) {
                     Toast.makeText(
@@ -120,20 +111,11 @@ class RecoveryPhraseActivity : BaseActionBarActivity() {
         binding.registerButton.isEnabled = true
         binding.hint.visibility = View.GONE
         binding.registerButton.setTextColor(ContextCompat.getColor(this, R.color.white))
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            binding.registerButton.setBackgroundDrawable(
-                ContextCompat.getDrawable(
-                    this@RecoveryPhraseActivity,
-                    R.drawable.prominent_filled_button_medium_background
-                )
-            );
-        } else {
-            binding.registerButton.background =
-                ContextCompat.getDrawable(
-                    this@RecoveryPhraseActivity,
-                    R.drawable.prominent_filled_button_medium_background
-                );
-        }
+        binding.registerButton.background =
+            ContextCompat.getDrawable(
+                this@RecoveryPhraseActivity,
+                R.drawable.prominent_filled_button_medium_background
+            )
     }
 
     private fun shareAddress() {

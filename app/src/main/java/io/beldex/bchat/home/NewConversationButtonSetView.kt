@@ -303,11 +303,7 @@ class NewConversationButtonSetView : RelativeLayout {
                 if (isExpanded) {
                     if (mainButton.contains(touch)) { collapse() }
                 }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK)
-                } else {
-                    performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-                }
+                performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK)
             }
            /* MotionEvent.ACTION_MOVE -> {
                 mainButton.x = touch.x - mainButton.expandedSize

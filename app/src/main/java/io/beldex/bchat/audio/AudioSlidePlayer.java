@@ -6,8 +6,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
@@ -34,12 +32,9 @@ import com.beldex.libsignal.utilities.Log;
 
 import com.beldex.libsignal.utilities.guava.Optional;
 import io.beldex.bchat.attachments.AttachmentServer;
-import io.beldex.bchat.mms.AudioSlide;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-
-import io.beldex.bchat.BuildConfig;
 
 public class AudioSlidePlayer implements SensorEventListener {
 
@@ -53,7 +48,7 @@ public class AudioSlidePlayer implements SensorEventListener {
   private final @NonNull  Handler           progressEventHandler;
   private final @NonNull  AudioManager      audioManager;
   private final @NonNull  SensorManager     sensorManager;
-  private final @NonNull  Sensor            proximitySensor;
+  private final Sensor            proximitySensor;
   private final @Nullable WakeLock          wakeLock;
 
   private @NonNull  WeakReference<Listener> listener;
@@ -139,7 +134,9 @@ public class AudioSlidePlayer implements SensorEventListener {
                 mediaPlayer.seekTo((long) (mediaPlayer.getDuration() * progress));
               }
 
-              sensorManager.registerListener(AudioSlidePlayer.this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+              if(proximitySensor != null) {
+                sensorManager.registerListener(AudioSlidePlayer.this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+              }
 
               setPlaying(AudioSlidePlayer.this);
             }

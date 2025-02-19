@@ -4,7 +4,6 @@ package io.beldex.bchat.components;
 import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MenuItem;
@@ -18,7 +17,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 
-import io.beldex.bchat.util.AnimationCompleteListener;
 import io.beldex.bchat.util.AnimationCompleteListener;
 
 import io.beldex.bchat.R;
@@ -104,15 +102,11 @@ public class SearchToolbar extends LinearLayout {
 
       searchItem.expandActionView();
 
-      if (Build.VERSION.SDK_INT >= 21) {
-        Animator animator = ViewAnimationUtils.createCircularReveal(this, (int)x, (int)y, 0, getWidth());
-        animator.setDuration(400);
+      Animator animator = ViewAnimationUtils.createCircularReveal(this, (int)x, (int)y, 0, getWidth());
+      animator.setDuration(400);
 
-        setVisibility(View.VISIBLE);
-        animator.start();
-      } else {
-        setVisibility(View.VISIBLE);
-      }
+      setVisibility(View.VISIBLE);
+      animator.start();
     }
   }
 
@@ -126,19 +120,15 @@ public class SearchToolbar extends LinearLayout {
 
       if (listener != null) listener.onSearchClosed();
 
-      if (Build.VERSION.SDK_INT >= 21) {
-        Animator animator = ViewAnimationUtils.createCircularReveal(this, (int)x, (int)y, getWidth(), 0);
-        animator.setDuration(400);
-        animator.addListener(new AnimationCompleteListener() {
-          @Override
-          public void onAnimationEnd(Animator animation) {
-            setVisibility(View.INVISIBLE);
-          }
-        });
-        animator.start();
-      } else {
-        setVisibility(View.INVISIBLE);
-      }
+      Animator animator = ViewAnimationUtils.createCircularReveal(this, (int)x, (int)y, getWidth(), 0);
+      animator.setDuration(400);
+      animator.addListener(new AnimationCompleteListener() {
+        @Override
+        public void onAnimationEnd(Animator animation) {
+          setVisibility(View.INVISIBLE);
+        }
+      });
+      animator.start();
     }
   }
 

@@ -145,11 +145,7 @@ class PasswordActivity : BaseActionBarActivity() {
 //                true
 //            }
 //
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // API 21
-//                binding.userPinEditTxt.showSoftInputOnFocus = false
-//            } else { // API 11-20
-//                binding.userPinEditTxt.setTextIsSelectable(true)
-//            }
+//            binding.userPinEditTxt.showSoftInputOnFocus = false
 //
 //            binding.keyboard1.buttonEnter!!.setOnClickListener() {
 //                validatePassword(userPinEditTxt.text.toString(),true)

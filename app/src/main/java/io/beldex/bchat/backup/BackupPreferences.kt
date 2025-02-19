@@ -15,11 +15,7 @@ object BackupPreferences {
     fun getBackupRecords(context: Context): List<BackupProtos.SharedPreference> {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         val prefsFileName: String
-        prefsFileName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            getDefaultSharedPreferencesName(context)
-        } else {
-            context.packageName + "_preferences"
-        }
+        prefsFileName = getDefaultSharedPreferencesName(context)
         val prefList: LinkedList<BackupProtos.SharedPreference> = LinkedList<BackupProtos.SharedPreference>()
         addBackupEntryInt(prefList, preferences, prefsFileName, TextSecurePreferences.LOCAL_REGISTRATION_ID_PREF)
         addBackupEntryString(prefList, preferences, prefsFileName, TextSecurePreferences.LOCAL_NUMBER_PREF)

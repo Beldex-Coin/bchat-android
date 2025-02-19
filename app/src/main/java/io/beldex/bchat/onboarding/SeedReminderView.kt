@@ -41,11 +41,7 @@ class SeedReminderView : FrameLayout {
     }
 
     fun setProgress(progress: Int, isAnimated: Boolean) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            binding.progressBar.setProgress(progress, isAnimated)
-        } else {
-            binding.progressBar.progress = progress
-        }
+        binding.progressBar.setProgress(progress, isAnimated)
     }
 
     fun hideContinueButton() {

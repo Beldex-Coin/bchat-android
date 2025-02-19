@@ -1,9 +1,7 @@
 package io.beldex.bchat.audio;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.net.Uri;
-import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import androidx.annotation.NonNull;
 
@@ -22,7 +20,6 @@ import com.beldex.libsignal.utilities.SettableFuture;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 
-@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class AudioRecorder {
 
   private static final String TAG = AudioRecorder.class.getSimpleName();

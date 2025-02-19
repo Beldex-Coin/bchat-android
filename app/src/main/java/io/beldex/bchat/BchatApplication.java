@@ -3,12 +3,9 @@ package io.beldex.bchat;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.os.Build;
 
 import io.beldex.bchat.model.NetworkType;
 import io.beldex.bchat.util.LocalHelper;
-
-import io.beldex.bchat.BuildConfig;
 import timber.log.Timber;
 
 public class BchatApplication extends Application {
@@ -31,11 +28,7 @@ public class BchatApplication extends Application {
     @Override
     public void onConfigurationChanged(Configuration configuration) {
         super.onConfigurationChanged(configuration);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            LocalHelper.updateSystemDefaultLocale(configuration.getLocales().get(0));
-        } else {
-            LocalHelper.updateSystemDefaultLocale(configuration.locale);
-        }
+        LocalHelper.updateSystemDefaultLocale(configuration.getLocales().get(0));
         LocalHelper.setPreferredLocale(this);
     }
 

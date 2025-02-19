@@ -44,7 +44,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.loader.app.LoaderManager;
@@ -78,18 +80,12 @@ import io.beldex.bchat.util.StickyHeaderDecoration;
 import com.beldex.libbchat.utilities.Util;
 import com.beldex.libbchat.utilities.ViewUtil;
 import com.beldex.libbchat.utilities.task.ProgressDialogAsyncTask;
-import io.beldex.bchat.util.UiMode;
-import io.beldex.bchat.util.UiModeUtilities;
-
-import org.w3c.dom.Text;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-
-import io.beldex.bchat.R;
 import kotlin.Unit;
 
 /**
@@ -492,11 +488,12 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
         mode.getMenuInflater().inflate(R.menu.media_overview_context, menu);
         mode.setTitle("1");
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-          Window window = getActivity().getWindow();
-          originalStatusBarColor = window.getStatusBarColor();
-          window.setStatusBarColor(getResources().getColor(R.color.action_mode_status_bar));
-        }
+        FragmentActivity activity = getActivity();
+        if (activity == null) return false;
+        Window window = activity.getWindow();
+        originalStatusBarColor = window.getStatusBarColor();
+        window.setStatusBarColor(ContextCompat.getColor(activity, R.color.action_mode_status_bar));
+
         return true;
       }
 
@@ -546,11 +543,11 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
 
         actionMode = null;
         getListAdapter().clearSelection();
-        ((MediaOverviewActivity) getActivity()).onExitMultiSelect();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-          getActivity().getWindow().setStatusBarColor(originalStatusBarColor);
-        }
+        MediaOverviewActivity activity = ((MediaOverviewActivity) getActivity());
+        if(activity == null) return;
+        activity.onExitMultiSelect();
+        activity.getWindow().setStatusBarColor(originalStatusBarColor);
       }
     }
   }

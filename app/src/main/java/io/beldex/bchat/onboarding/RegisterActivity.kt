@@ -169,12 +169,8 @@ class RegisterActivity : BaseActionBarActivity() {
             registerActivity.binding.beldexAddressTextView.visibility=View.GONE
             registerActivity.binding.registerButton.isEnabled=false
             registerActivity.binding.registerButton.setTextColor(ContextCompat.getColor(registerActivity, R.color.disable_button_text_color))
-            if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                registerActivity.binding.registerButton.setBackgroundDrawable(ContextCompat.getDrawable(registerActivity, R.drawable.prominent_filled_button_medium_background_disable) );
-            } else {
-                registerActivity.binding.registerButton.background =
-                    ContextCompat.getDrawable(registerActivity, R.drawable.prominent_filled_button_medium_background_disable);
-            }
+            registerActivity.binding.registerButton.background =
+                ContextCompat.getDrawable(registerActivity, R.drawable.prominent_filled_button_medium_background_disable)
             /*if (walletPathVal != null
                 && (WalletManager.getInstance()
                     .queryWalletDevice("$walletPathVal.keys", registerActivity.localPassword)
@@ -268,12 +264,8 @@ class RegisterActivity : BaseActionBarActivity() {
             registerActivity.binding.beldexAddressTextView.visibility=View.VISIBLE
             registerActivity.binding.registerButton.isEnabled=true
             registerActivity.binding.registerButton.setTextColor(ContextCompat.getColor(registerActivity, R.color.white))
-            if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                registerActivity.binding.registerButton.setBackgroundDrawable(ContextCompat.getDrawable(registerActivity, R.drawable.prominent_filled_button_medium_background) );
-            } else {
-                registerActivity.binding.registerButton.background =
-                    ContextCompat.getDrawable(registerActivity, R.drawable.prominent_filled_button_medium_background);
-            }
+            registerActivity.binding.registerButton.background =
+                ContextCompat.getDrawable(registerActivity, R.drawable.prominent_filled_button_medium_background)
             registerActivity.walletName = name
             Log.d("onPostExecute--> ", result.toString())
             if (result == true) {

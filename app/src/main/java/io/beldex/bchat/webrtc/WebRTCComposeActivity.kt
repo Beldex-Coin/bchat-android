@@ -121,7 +121,7 @@ class WebRTCComposeActivity : ComponentActivity() {
     private var pipBuilderParams: PictureInPictureParams.Builder? = null
 
     private fun isSystemPipEnabledAndAvailable(): Boolean {
-        return Build.VERSION.SDK_INT >= 26 && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
+        return packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
     }
 
     override fun onUserLeaveHint() {
@@ -136,7 +136,6 @@ class WebRTCComposeActivity : ComponentActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onPictureInPictureModeChanged(
         isInPictureInPictureMode: Boolean,
         newConfig: Configuration

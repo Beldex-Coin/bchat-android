@@ -80,20 +80,11 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
 
         //SteveJosephh21
         binding.joinPublicChatButton.setTextColor(ContextCompat.getColor(this, R.color.disable_button_text_color))
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            binding.joinPublicChatButton.setBackgroundDrawable(
-                ContextCompat.getDrawable(
-                    this,
-                    R.drawable.prominent_filled_button_medium_background_disable
-                )
-            );
-        } else {
-            binding.joinPublicChatButton.background =
-                ContextCompat.getDrawable(
-                    this,
-                    R.drawable.prominent_filled_button_medium_background_disable
-                );
-        }
+        binding.joinPublicChatButton.background =
+            ContextCompat.getDrawable(
+                this,
+                R.drawable.prominent_filled_button_medium_background_disable
+            )
         binding.joinPublicChatButton.isEnabled = binding.chatURLEditText.text.isNotEmpty()
         binding.chatURLEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
@@ -110,38 +101,20 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
                 if (s.length == 0){
                     binding.joinPublicChatButton.isEnabled = false
                     binding.joinPublicChatButton.setTextColor(ContextCompat.getColor(this@JoinPublicChatNewActivity, R.color.disable_button_text_color))
-                    if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                        binding.joinPublicChatButton.setBackgroundDrawable(
-                            ContextCompat.getDrawable(
-                                this@JoinPublicChatNewActivity,
-                                R.drawable.prominent_filled_button_medium_background_disable
-                            )
-                        );
-                    } else {
-                        binding.joinPublicChatButton.background =
-                            ContextCompat.getDrawable(
-                                this@JoinPublicChatNewActivity,
-                                R.drawable.prominent_filled_button_medium_background_disable
-                            );
-                    }
+                    binding.joinPublicChatButton.background =
+                        ContextCompat.getDrawable(
+                            this@JoinPublicChatNewActivity,
+                            R.drawable.prominent_filled_button_medium_background_disable
+                        )
                 }else{
                     binding.joinPublicChatButton.isEnabled = true
                     binding.joinPublicChatButton.setTextColor(ContextCompat.getColor(
                         this@JoinPublicChatNewActivity, R.color.white))
-                    if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                        binding.joinPublicChatButton.setBackgroundDrawable(
-                            ContextCompat.getDrawable(
-                                this@JoinPublicChatNewActivity,
-                                R.drawable.prominent_filled_button_medium_background
-                            )
-                        );
-                    } else {
-                        binding.joinPublicChatButton.background =
-                            ContextCompat.getDrawable(
-                                this@JoinPublicChatNewActivity,
-                                R.drawable.prominent_filled_button_medium_background
-                            );
-                    }
+                    binding.joinPublicChatButton.background =
+                        ContextCompat.getDrawable(
+                            this@JoinPublicChatNewActivity,
+                            R.drawable.prominent_filled_button_medium_background
+                        )
                 }
             }
         })

@@ -1,10 +1,8 @@
 package io.beldex.bchat.util;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.security.KeyPairGeneratorSpec;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
@@ -12,7 +10,6 @@ import android.util.Base64;
 import androidx.annotation.NonNull;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -28,14 +25,11 @@ import java.security.Signature;
 import java.security.SignatureException;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.security.auth.x500.X500Principal;
 
 import timber.log.Timber;
 
@@ -169,11 +163,7 @@ public class KeyStoreHelper {
             throw new IllegalStateException("Could not load KeySotre", ex);
         }
         if (!keyStore.containsAlias(alias)) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                createKeysJBMR2(context, alias);
-            } else {
-                createKeysM(alias);
-            }
+            createKeysM(alias);
         }
     }
 
@@ -199,30 +189,6 @@ public class KeyStoreHelper {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    private static void createKeysJBMR2(Context context, String alias) throws NoSuchProviderException,
-            NoSuchAlgorithmException, InvalidAlgorithmParameterException {
-
-        Calendar start = new GregorianCalendar();
-        Calendar end = new GregorianCalendar();
-        end.add(Calendar.YEAR, 300);
-
-        KeyPairGeneratorSpec spec = new KeyPairGeneratorSpec.Builder(context)
-                .setAlias(alias)
-                .setSubject(new X500Principal("CN=" + alias))
-                .setSerialNumber(BigInteger.valueOf(Math.abs(alias.hashCode())))
-                .setStartDate(start.getTime()).setEndDate(end.getTime())
-                .build();
-        // defaults to 2048 bit modulus
-        KeyPairGenerator kpGenerator = KeyPairGenerator.getInstance(
-                SecurityConstants.TYPE_RSA,
-                SecurityConstants.KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
-        kpGenerator.initialize(spec);
-        KeyPair kp = kpGenerator.generateKeyPair();
-        Timber.d("preM Keys created");
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
     private static void createKeysM(String alias) throws NoSuchProviderException,
             NoSuchAlgorithmException, InvalidAlgorithmParameterException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(

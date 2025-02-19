@@ -27,7 +27,7 @@ dependencies {
     }
     implementation 'androidx.media3:media3-exoplayer:1.4.0'
     implementation 'androidx.media3:media3-ui:1.4.0'
-    implementation 'org.conscrypt:conscrypt-android:2.0.0'
+    implementation 'org.conscrypt:conscrypt-android:2.5.2'
     implementation 'org.signal:aesgcmprovider:0.0.3'
     implementation 'io.github.webrtc-sdk:android:125.6422.06.1'
     implementation "me.leolin:ShortcutBadger:1.1.16"
@@ -50,7 +50,6 @@ dependencies {
     implementation("com.google.dagger:hilt-android:$daggerHiltVersion")
     ksp("com.google.dagger:hilt-compiler:$daggerHiltVersion")
     ksp("androidx.hilt:hilt-compiler:$jetpackHiltVersion")
-    implementation 'com.google.zxing:core:3.2.1'
     implementation ('com.davemorrissey.labs:subsampling-scale-image-view:3.6.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
@@ -65,7 +64,7 @@ dependencies {
     implementation project(':stickyheader')
     implementation 'com.github.dmytrodanylyk:android-morphing-button:1.0'
     implementation 'androidx.sqlite:sqlite-ktx:2.3.1'
-    implementation 'net.zetetic:sqlcipher-android:4.5.4@aar'
+    implementation 'net.zetetic:sqlcipher-android:4.6.1@aar'
     implementation ('com.googlecode.ez-vcard:ez-vcard:0.9.11') {
         exclude group: 'com.fasterxml.jackson.core'
         exclude group: 'org.freemarker'
@@ -101,7 +100,7 @@ dependencies {
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
     // Core library
-    androidTestImplementation 'androidx.test:core:1.5.0'
+    androidTestImplementation "androidx.test:core:$testCoreVersion"
     androidTestImplementation('com.adevinta.android:barista:4.2.0') {
         exclude group: 'org.jetbrains.kotlin'
     }

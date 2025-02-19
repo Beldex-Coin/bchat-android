@@ -3,6 +3,7 @@ package com.beldex.libbchat.messaging.open_groups
 import com.beldex.libsignal.utilities.JsonUtil
 import com.beldex.libsignal.utilities.Log
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.util.Locale
 
 data class OpenGroupV2(
@@ -39,11 +40,11 @@ data class OpenGroupV2(
         }
 
         fun getServer(urlAsString: String): HttpUrl? {
-            val url = HttpUrl.parse(urlAsString) ?: return null
-            val builder = HttpUrl.Builder().scheme(url.scheme()).host(url.host())
-            if (url.port() != 80 || url.port() != 443) {
+            val url = urlAsString.toHttpUrlOrNull() ?: return null
+            val builder = HttpUrl.Builder().scheme(url.scheme).host(url.host)
+            if (url.port != 80 || url.port != 443) {
                 // Non-standard port; add to server
-                builder.port(url.port())
+                builder.port(url.port)
             }
             return builder.build()
         }

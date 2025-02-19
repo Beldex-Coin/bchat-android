@@ -24,6 +24,9 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.utilities.*
 import com.beldex.libsignal.utilities.Base64.*
 import com.beldex.libsignal.utilities.HTTP.Verb.*
+import okhttp3.Headers.Companion.toHeaders
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.MediaType.Companion.toMediaType
 import org.whispersystems.curve25519.Curve25519
 import java.util.*
 
@@ -99,16 +102,16 @@ object OpenGroupAPIV2 {
     private fun createBody(parameters: Any?): RequestBody? {
         if (parameters == null) return null
         val parametersAsJSON = JsonUtil.toJson(parameters)
-        return RequestBody.create(MediaType.get("application/json"), parametersAsJSON)
+        return RequestBody.create("application/json".toMediaType(), parametersAsJSON)
     }
 
     private fun send(request: Request): Promise<OnionResponse, Exception> {
-        val url = HttpUrl.parse(request.server) ?: return Promise.ofFail(Error.InvalidURL)
+        val url = request.server.toHttpUrlOrNull() ?: return Promise.ofFail(Error.InvalidURL)
         //-Log.d("Beldex","Social group api url $url")
         val urlBuilder = HttpUrl.Builder()
-            .scheme(url.scheme())
-            .host(url.host())
-            .port(url.port())
+            .scheme(url.scheme)
+            .host(url.host)
+            .port(url.port)
             .addPathSegments(request.endpoint)
         //-Log.d("Beldex","Social group api url builder $urlBuilder")
         if (request.verb == GET) {
@@ -121,7 +124,7 @@ object OpenGroupAPIV2 {
             val requestBuilder = okhttp3.Request.Builder()
 
                 .url(urlBuilder.build())
-                .headers(Headers.of(request.headers))
+                .headers(request.headers.toHeaders())
             Log.d("Beldex","Social group api request builder $requestBuilder")
             if (request.isAuthRequired) {
                 if (token.isNullOrEmpty()) throw IllegalStateException("No auth token for request.")

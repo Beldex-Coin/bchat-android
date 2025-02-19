@@ -14,6 +14,7 @@ import com.beldex.libbchat.utilities.InputStreamMediaDataSource
 import com.beldex.libsignal.streams.AttachmentCipherInputStream
 import com.beldex.libsignal.utilities.Base64
 import com.beldex.libsignal.utilities.Log
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
@@ -119,8 +120,8 @@ class AttachmentDownloadJob(val attachmentID: Long, val databaseMessageID: Long)
             if (openGroupV2 == null) {
                 DownloadUtilities.downloadFile(tempFile, attachment.url)
             } else {
-                val url = HttpUrl.parse(attachment.url)!!
-                val fileID = url.pathSegments().last()
+                val url = attachment.url.toHttpUrlOrNull()!!
+                val fileID = url.pathSegments.last()
                 OpenGroupAPIV2.download(fileID.toLong(), openGroupV2.room, openGroupV2.server).get().let {
                     tempFile.writeBytes(it)
                 }

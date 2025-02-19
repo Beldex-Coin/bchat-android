@@ -33,6 +33,8 @@ import java.util.*
 import io.beldex.bchat.webrtc.data.State as CallState
 import com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.ICE_CANDIDATES
 import io.beldex.bchat.service.WebRtcCallService
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import nl.komponents.kovenant.functional.bind
 
 class CallManager(context: Context, audioManager: AudioManagerCompat, private val storage: StorageProtocol): PeerConnection.Observer,
@@ -85,10 +87,14 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
 
     private val _audioEvents = MutableStateFlow(StateEvent.AudioEnabled(false))
     val audioEvents = _audioEvents.asSharedFlow()
-    private val _videoEvents = MutableStateFlow(StateEvent.VideoEnabled(false))
-    val videoEvents = _videoEvents.asSharedFlow()
-    private val _remoteVideoEvents = MutableStateFlow(StateEvent.VideoEnabled(false))
-    val remoteVideoEvents = _remoteVideoEvents.asSharedFlow()
+    private val _videoState: MutableStateFlow<VideoState> = MutableStateFlow(
+        VideoState(
+            swapped = false,
+            userVideoEnabled = false,
+            remoteVideoEnabled = false
+        )
+    )
+    val videoState = _videoState.asStateFlow()
 
     //SteveJosephh21 --
     private val _remoteAudioEvents = MutableStateFlow(StateEvent.AudioEnabled(true))
@@ -118,7 +124,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
     val currentCallState
         get() = _callStateEvents.value
 
-    var iceState = PeerConnection.IceConnectionState.CLOSED
+    private var iceState = PeerConnection.IceConnectionState.CLOSED
 
     private var eglBase: EglBase? = null
 
@@ -135,7 +141,6 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
             _recipientEvents.value = StateEvent.RecipientUpdate(value)
         }
     var callStartTime: Long = -1
-    var isReestablishing: Boolean = false
 
     private var peerConnection: PeerConnectionWrapper? = null
     private var dataChannel: DataChannel? = null
@@ -145,9 +150,9 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
 
     private val outgoingIceDebouncer = Debouncer(200L)
 
-    var localRenderer: SurfaceViewRenderer? = null
+    var floatingRenderer: SurfaceViewRenderer? = null
     var remoteRotationSink: RemoteRotationVideoProxySink? = null
-    var remoteRenderer: SurfaceViewRenderer? = null
+    var fullscreenRenderer: SurfaceViewRenderer? = null
     private var peerConnectionFactory: PeerConnectionFactory? = null
 
     fun clearPendingIceUpdates() {
@@ -214,27 +219,24 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         Util.runOnMainSync {
             val base = EglBase.create()
             eglBase = base
-            localRenderer = SurfaceViewRenderer(context).apply {
-//                setScalingType(SCALE_ASPECT_FIT)
-            }
+            floatingRenderer = SurfaceViewRenderer(context)
+            floatingRenderer?.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
+            fullscreenRenderer = SurfaceViewRenderer(context)
+            fullscreenRenderer?.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
 
-            remoteRenderer = SurfaceViewRenderer(context).apply {
-//                setScalingType(SCALE_ASPECT_FIT)
-            }
             remoteRotationSink = RemoteRotationVideoProxySink()
 
 
-            localRenderer?.init(base.eglBaseContext, null)
-
-            if(localCameraState.activeDirection == CameraState.Direction.FRONT)
-            {
-                localRenderer?.setMirror(false)
-            }
-            else{
-                localRenderer?.setMirror(true)
-            }
-            remoteRenderer?.init(base.eglBaseContext, null)
-            remoteRotationSink!!.setSink(remoteRenderer!!)
+            floatingRenderer?.init(base.eglBaseContext, null)
+            /* if(localCameraState.activeDirection == CameraState.Direction.FRONT)
+             {
+                 floatingRenderer?.setMirror(false)
+             }
+             else{
+                 floatingRenderer?.setMirror(true)
+             }*/
+            fullscreenRenderer?.init(base.eglBaseContext, null)
+            remoteRotationSink!!.setSink(fullscreenRenderer!!)
 
             val encoderFactory = DefaultVideoEncoderFactory(base.eglBaseContext, true, true)
             val decoderFactory = DefaultVideoDecoderFactory(base.eglBaseContext)
@@ -369,8 +371,8 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
             val byteArray = ByteArray(buffer.data.remaining()) { buffer.data[it] }
             val json = Json.parseToJsonElement(byteArray.decodeToString()) as JsonObject
             if (json.containsKey("video")) {
-                _remoteVideoEvents.value =
-                    StateEvent.VideoEnabled((json["video"] as JsonPrimitive).boolean)
+                _videoState.update { it.copy(remoteVideoEnabled = json["video"]?.jsonPrimitive?.boolean ?: false) }
+                handleMirroring()
             } else if (json.containsKey("hangup")) {
                 peerConnectionObservers.forEach(WebRtcListener::onHangup)
             }
@@ -400,13 +402,13 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
             peerConnection?.dispose()
             peerConnection = null
 
-            localRenderer?.release()
+            floatingRenderer?.release()
             remoteRotationSink?.release()
-            remoteRenderer?.release()
+            fullscreenRenderer?.release()
             eglBase?.release()
 
-            localRenderer = null
-            remoteRenderer = null
+            floatingRenderer = null
+            fullscreenRenderer = null
             eglBase = null
 
             localCameraState = CameraState.UNKNOWN
@@ -416,8 +418,11 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
             pendingOffer = null
             callStartTime = -1
             _audioEvents.value = StateEvent.AudioEnabled(false)
-            _videoEvents.value = StateEvent.VideoEnabled(false)
-            _remoteVideoEvents.value = StateEvent.VideoEnabled(false)
+            _videoState.value = VideoState(
+                swapped = false,
+                userVideoEnabled = false,
+                remoteVideoEnabled = false
+            )
             //SteveJosephh21
             _remoteAudioEvents.value =StateEvent.AudioEnabled(true)
             _remoteVideoStatusEvents.value = StateEvent.VideoEnabled(false)
@@ -429,6 +434,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
 
     override fun onCameraSwitchCompleted(newCameraState: CameraState) {
         localCameraState = newCameraState
+        handleMirroring()
     }
 
     fun onPreOffer(callId: UUID, recipient: Recipient, onSuccess: () -> Unit) {
@@ -488,7 +494,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         val recipient = recipient ?: return Promise.ofFail(NullPointerException("recipient is null"))
         val offer = pendingOffer ?: return Promise.ofFail(NullPointerException("pendingOffer is null"))
         val factory = peerConnectionFactory ?: return Promise.ofFail(NullPointerException("peerConnectionFactory is null"))
-        val local = localRenderer ?: return Promise.ofFail(NullPointerException("localRenderer is null"))
+        val local = floatingRenderer ?: return Promise.ofFail(NullPointerException("localRenderer is null"))
         val base = eglBase ?: return Promise.ofFail(NullPointerException("eglBase is null"))
         val connection = PeerConnectionWrapper(
             context,
@@ -533,7 +539,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
             ?: return Promise.ofFail(NullPointerException("recipient is null"))
         val factory = peerConnectionFactory
             ?: return Promise.ofFail(NullPointerException("peerConnectionFactory is null"))
-        val local = localRenderer
+        val local = floatingRenderer
             ?: return Promise.ofFail(NullPointerException("localRenderer is null"))
         val base = eglBase ?: return Promise.ofFail(NullPointerException("eglBase is null"))
 
@@ -623,6 +629,19 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         }
     }
 
+    fun swapVideos() {
+        // update the state
+        _videoState.update { it.copy(swapped = !it.swapped) }
+        handleMirroring()
+        if (_videoState.value.swapped) {
+            peerConnection?.rotationVideoSink?.setSink(fullscreenRenderer)
+            floatingRenderer?.let{remoteRotationSink?.setSink(it) }
+        } else {
+            peerConnection?.rotationVideoSink?.setSink(floatingRenderer)
+            fullscreenRenderer?.let { remoteRotationSink?.setSink(it) }
+        }
+    }
+
     fun handleSetMuteAudio(muted: Boolean) {
         _audioEvents.value = StateEvent.AudioEnabled(!muted)
         peerConnection?.setAudioEnabled(!muted)
@@ -634,8 +653,33 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         }
     }
 
+    /**
+     * Returns the renderer currently showing the user's video, not the contact's
+     */
+    private fun getUserRenderer() = if(_videoState.value.swapped) fullscreenRenderer else floatingRenderer
+    /**
+     * Returns the renderer currently showing the contact's video, not the user's
+     */
+    private fun getRemoteRenderer() = if(_videoState.value.swapped) floatingRenderer else fullscreenRenderer
+    /**
+     * Makes sure the user's renderer applies mirroring if necessary
+     */
+    private fun handleMirroring() {
+        val videoState = _videoState.value
+        // if we have user video and the camera is front facing, make sure to mirror stream
+        if(videoState.userVideoEnabled) {
+            getUserRenderer()?.setMirror(isCameraFrontFacing())
+        }
+        // the remote video is never mirrored
+        if(videoState.remoteVideoEnabled){
+            getRemoteRenderer()?.setMirror(false)
+        }
+    }
+
     fun handleSetMuteVideo(muted: Boolean, lockManager: LockManager) {
-        _videoEvents.value = StateEvent.VideoEnabled(!muted)
+        _videoState.update { it.copy(userVideoEnabled = !muted) }
+        handleMirroring()
+
         val connection = peerConnection ?: return
         connection.setVideoEnabled(!muted)
         dataChannel?.let { channel ->
@@ -663,9 +707,9 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         if (!localCameraState.enabled) return
         peerConnection?.let { connection ->
             connection.flipCamera()
-            //localCameraState = connection.getCameraState()
+            localCameraState = connection.getCameraState()
 
-            if(localCameraState.activeDirection == CameraState.Direction.FRONT)
+            /*if(localCameraState.activeDirection == CameraState.Direction.FRONT)
             {
                 localRenderer?.setMirror(false)
                 localCameraState.activeDirection = CameraState.Direction.PENDING
@@ -674,13 +718,21 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
             {
                 localRenderer?.setMirror(true)
                 localCameraState.activeDirection = CameraState.Direction.FRONT
-            }
+            }*/
         }
     }
 
-    fun setDeviceRotation(newRotation: Int) {
-        peerConnection?.setDeviceRotation(newRotation)
-        remoteRotationSink?.rotation = newRotation
+    fun setDeviceOrientation(orientation: Orientation) {
+        // set rotation to the video based on the device's orientation and the camera facing direction
+        val rotation = when (orientation) {
+            Orientation.PORTRAIT -> 0
+            Orientation.LANDSCAPE -> if (isCameraFrontFacing()) 90 else -90
+            Orientation.REVERSED_LANDSCAPE -> 270
+            else -> 0
+        }
+        // apply the rotation to the streams
+        peerConnection?.setDeviceRotation(rotation)
+        remoteRotationSink?.rotation = rotation
     }
 
     fun handleWiredHeadsetChanged(present: Boolean) {
@@ -784,7 +836,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         connection.setCommunicationMode()
         setAudioEnabled(true)
         dataChannel?.let { channel ->
-            val toSend = if (!_videoEvents.value.isEnabled) VIDEO_DISABLED_JSON else VIDEO_ENABLED_JSON
+            val toSend = if (_videoState.value.userVideoEnabled) VIDEO_ENABLED_JSON else VIDEO_DISABLED_JSON
             val buffer = DataChannel.Buffer(ByteBuffer.wrap(toSend.toString().encodeToByteArray()), false)
             channel.send(buffer)
         }
@@ -813,6 +865,8 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
     }
 
     fun isInitiator(): Boolean = peerConnection?.isInitiator() == true
+
+    fun isCameraFrontFacing() = localCameraState.activeDirection != CameraState.Direction.BACK
 
     interface WebRtcListener: PeerConnection.Observer {
         fun onHangup()

@@ -16,6 +16,7 @@
  */
 package io.beldex.bchat.notifications;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -24,6 +25,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
@@ -36,6 +38,7 @@ import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -316,7 +319,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
         for (long threadId : notificationState.getThreads()) {
           sendSingleThreadNotification(context, new NotificationState(notificationState.getNotificationsForThread(threadId)), false, true);
         }
-      } else if (notificationState.getMessageCount() > 0) {
+      } else if (notificationState.getNotificationCount() > 0) {
         sendSingleThreadNotification(context, notificationState, signal, false);
       } else {
         cancelActiveNotifications(context);
@@ -325,7 +328,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
         Log.e(TAG,"Error creating notification",e);
       }
       cancelOrphanedNotifications(context, notificationState);
-      updateBadge(context, notificationState.getMessageCount());
+      updateBadge(context, notificationState.getNotificationCount());
 
       if (signal) {
         scheduleReminder(context, reminderCount);
@@ -351,7 +354,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
 
     SingleRecipientNotificationBuilder builder        = new SingleRecipientNotificationBuilder(context, TextSecurePreferences.getNotificationPrivacy(context));
     List<NotificationItem>             notifications  = notificationState.getNotifications();
-    Recipient                          recipient      = notifications.get(0).getRecipient();
+    Recipient                          messageOriginator = notifications.get(0).getRecipient();
     int                                notificationId = (int) (SUMMARY_NOTIFICATION_ID + (bundled ? notifications.get(0).getThreadId() : 0));
     String                             messageIdTag   = String.valueOf(notifications.get(0).getTimestamp());
 
@@ -368,15 +371,19 @@ public class DefaultMessageNotifier implements MessageNotifier {
 
     builder.putStringExtra(LATEST_MESSAGE_ID_TAG, messageIdTag);
 
-    CharSequence text = notifications.get(0).getText();
+    CharSequence notificationText = notifications.get(0).getText();
 
     builder.setThread(notifications.get(0).getRecipient());
-    builder.setMessageCount(notificationState.getMessageCount());
+    builder.setMessageCount(notificationState.getNotificationCount());
     MentionManagerUtilities.INSTANCE.populateUserPublicKeyCacheIfNeeded(notifications.get(0).getThreadId(),context);
-    builder.setPrimaryMessageBody(recipient, notifications.get(0).getIndividualRecipient(),
-                                          MentionUtilities.highlightMentions(text == null ? "" : text,
-                                          notifications.get(0).getThreadId(),
-                                          context),
+    // TODO: Removing highlighting mentions in the notification because this context is the libsession one which
+    // TODO: doesn't have access to the `R.attr.message_sent_text_color` and `R.attr.message_received_text_color`
+    // TODO: attributes to perform the colour lookup. Also, it makes little sense to highlight the mentions using
+    // TODO: the app theme as it may result in insufficient contrast with the notification background which will
+    // TODO: be using the SYSTEM theme.
+    builder.setPrimaryMessageBody(messageOriginator, notifications.get(0).getIndividualRecipient(),
+            //MentionUtilities.highlightMentions(text == null ? "" : text, notifications.get(0).getThreadId(), context), // Removing highlighting mentions -ACL
+            notificationText == null ? "" : notificationText,
                                   notifications.get(0).getSlideDeck());
     builder.setContentIntent(notifications.get(0).getPendingIntent(context));
     builder.setDeleteIntent(notificationState.getDeleteIntent(context));
@@ -384,12 +391,12 @@ public class DefaultMessageNotifier implements MessageNotifier {
     builder.setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY);
     builder.setAutoCancel(true);
 
-    ReplyMethod replyMethod = ReplyMethod.forRecipient(context, recipient);
+    ReplyMethod replyMethod = ReplyMethod.forRecipient(context, messageOriginator);
 
-    boolean canReply = BchatMetaProtocol.canUserReplyToNotification(recipient);
+    boolean canReply = BchatMetaProtocol.canUserReplyToNotification(messageOriginator);
 
-    PendingIntent quickReplyIntent = canReply ? notificationState.getQuickReplyIntent(context, recipient) :  null;
-    PendingIntent remoteReplyIntent = canReply ? notificationState.getRemoteReplyIntent(context, recipient, replyMethod) : null;
+    PendingIntent quickReplyIntent = canReply ? notificationState.getQuickReplyIntent(context, messageOriginator) :  null;
+    PendingIntent remoteReplyIntent = canReply ? notificationState.getRemoteReplyIntent(context, messageOriginator, replyMethod) : null;
 
     builder.addActions(notificationState.getMarkAsReadIntent(context, notificationId),
                        quickReplyIntent,
@@ -397,7 +404,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
                        replyMethod);
 
     if (canReply) {
-      builder.addAndroidAutoAction(notificationState.getAndroidAutoReplyIntent(context, recipient),
+      builder.addAndroidAutoAction(notificationState.getAndroidAutoReplyIntent(context, messageOriginator),
                                    notificationState.getAndroidAutoHeardIntent(context, notificationId),
                                    notifications.get(0).getTimestamp());
     }
@@ -420,6 +427,15 @@ public class DefaultMessageNotifier implements MessageNotifier {
       builder.setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY);
     }
 
+    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+      // here to request the missing permissions, and then overriding
+      //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+      //                                          int[] grantResults)
+      // to handle the case where the user grants the permission. See the documentation
+      // for ActivityCompat#requestPermissions for more details.
+      return;
+    }
+
     Notification notification = builder.build();
     NotificationManagerCompat.from(context).notify(notificationId, notification);
     Log.i(TAG, "Posted notification. " + notification.toString());
@@ -434,7 +450,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
     MultipleRecipientNotificationBuilder builder       = new MultipleRecipientNotificationBuilder(context, TextSecurePreferences.getNotificationPrivacy(context));
     List<NotificationItem>               notifications = notificationState.getNotifications();
 
-    builder.setMessageCount(notificationState.getMessageCount(), notificationState.getThreadCount());
+    builder.setMessageCount(notificationState.getNotificationCount(), notificationState.getThreadCount());
     builder.setMostRecentSender(notifications.get(0).getIndividualRecipient(), notifications.get(0).getRecipient());
     builder.setGroup(NOTIFICATION_GROUP);
     builder.setDeleteIntent(notificationState.getDeleteIntent(context));
@@ -461,17 +477,30 @@ public class DefaultMessageNotifier implements MessageNotifier {
 
     while(iterator.hasPrevious()) {
       NotificationItem item = iterator.previous();
+      CharSequence text = "";
+      if(item.getText() != null){ text = item.getText(); }
       builder.addMessageBody(item.getIndividualRecipient(), item.getRecipient(),
-                             MentionUtilities.highlightMentions(item.getText(), item.getThreadId(), context));
+                             MentionUtilities.highlightMentions(text, item.getThreadId(), context));
     }
 
     if (signal) {
+      CharSequence text = "";
+      if(notifications.get(0).getText() != null){ text = notifications.get(0).getText(); }
       builder.setAlarms(notificationState.getRingtone(context), notificationState.getVibrate());
       builder.setTicker(notifications.get(0).getIndividualRecipient(),
-                        MentionUtilities.highlightMentions(notifications.get(0).getText(), notifications.get(0).getThreadId(), context));
+                        MentionUtilities.highlightMentions(text, notifications.get(0).getThreadId(), context));
     }
 
     builder.putStringExtra(LATEST_MESSAGE_ID_TAG, messageIdTag);
+
+    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+      // here to request the missing permissions, and then overriding
+      //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+      //                                          int[] grantResults)
+      // to handle the case where the user grants the permission. See the documentation
+      // for ActivityCompat#requestPermissions for more details.
+      return;
+    }
 
     Notification notification = builder.build();
     NotificationManagerCompat.from(context).notify(SUMMARY_NOTIFICATION_ID, builder.build());

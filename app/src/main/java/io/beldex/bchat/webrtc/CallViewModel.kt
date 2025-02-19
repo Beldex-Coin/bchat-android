@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.beldex.bchat.webrtc.audio.SignalAudioManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import org.webrtc.SurfaceViewRenderer
@@ -31,23 +32,15 @@ public class CallViewModel @Inject constructor(private val callManager: CallMana
         UNTRUSTED_IDENTITY,
     }
 
-    val localRenderer: SurfaceViewRenderer?
-        get() = callManager.localRenderer
+    val floatingRenderer: SurfaceViewRenderer?
+        get() = callManager.floatingRenderer
 
-    val remoteRenderer: SurfaceViewRenderer?
-        get() = callManager.remoteRenderer
+    val fullscreenRenderer: SurfaceViewRenderer?
+        get() = callManager.fullscreenRenderer
 
-    private var _videoEnabled: Boolean = false
+    var microphoneEnabled: Boolean = true
+        private set
 
-    val videoEnabled: Boolean
-        get() = _videoEnabled
-
-    private var _microphoneEnabled: Boolean = true
-
-    val microphoneEnabled: Boolean
-        get() = _microphoneEnabled
-
-    private var _isSpeaker: Boolean = false
     private var _isBluetooth: Boolean = false
     private var _bluetoothConnectionState = MutableLiveData<Boolean>()
     val bluetoothConnectionState: LiveData<Boolean> = _bluetoothConnectionState
@@ -55,8 +48,8 @@ public class CallViewModel @Inject constructor(private val callManager: CallMana
     fun setBooleanValue(value: Boolean){
         _bluetoothConnectionState.value = value
     }
-    val isSpeaker: Boolean
-        get() = _isSpeaker
+    var isSpeaker: Boolean = false
+        private set
     val isBluetooth: Boolean
         get() = _isBluetooth
 
@@ -64,28 +57,23 @@ public class CallViewModel @Inject constructor(private val callManager: CallMana
     val audioDeviceState
         get() = callManager.audioDeviceEvents
             .onEach {
-                _isSpeaker = it.selectedDevice == SignalAudioManager.AudioDevice.SPEAKER_PHONE
+                isSpeaker = it.selectedDevice == SignalAudioManager.AudioDevice.SPEAKER_PHONE
             }
     val audioBluetoothDeviceState
         get() = callManager.audioDeviceEvents
-                .onEach {
-                    _isBluetooth = it.selectedDevice == SignalAudioManager.AudioDevice.BLUETOOTH
-                }
+            .onEach {
+                _isBluetooth = it.selectedDevice == SignalAudioManager.AudioDevice.BLUETOOTH
+            }
     val bluetoothConnectionStatus
         get() = callManager.getBluetoothConnectionStatus()
 
 
     val localAudioEnabledState
         get() = callManager.audioEvents.map { it.isEnabled }
-            .onEach { _microphoneEnabled = it }
+            .onEach { microphoneEnabled = it }
 
-    val localVideoEnabledState
-        get() = callManager.videoEvents
-            .map { it.isEnabled }
-            .onEach { _videoEnabled = it }
-
-    val remoteVideoEnabledState
-        get() = callManager.remoteVideoEvents.map { it.isEnabled }
+    val videoState: StateFlow<VideoState>
+        get() = callManager.videoState
 
     //SteveJosephh21 --
     val remoteAudioEnabledState
@@ -94,10 +82,10 @@ public class CallViewModel @Inject constructor(private val callManager: CallMana
     val remoteVideoStatusEnabledState
         get() = callManager.remoteVideoStatusEvents.map { it.isEnabled }
 
-    var deviceRotation: Int = 0
+    var deviceOrientation: Orientation = Orientation.UNKNOWN
         set(value) {
             field = value
-            callManager.setDeviceRotation(value)
+            callManager.setDeviceOrientation(value)
         }
 
     val currentCallState
@@ -112,4 +100,7 @@ public class CallViewModel @Inject constructor(private val callManager: CallMana
     val callStartTime: Long
         get() = callManager.callStartTime
 
+    fun swapVideos() {
+        callManager.swapVideos()
+    }
 }

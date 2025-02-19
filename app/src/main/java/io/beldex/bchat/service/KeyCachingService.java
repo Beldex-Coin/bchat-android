@@ -35,6 +35,7 @@ import android.os.SystemClock;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.ServiceCompat;
 import androidx.core.content.ContextCompat;
 
 import io.beldex.bchat.ApplicationContext;
@@ -264,11 +265,16 @@ public class KeyCachingService extends Service {
     builder.setContentIntent(buildLaunchIntent());
 
     stopForeground(true);
-    if (Build.VERSION.SDK_INT >= 34) {
-      startForeground(SERVICE_RUNNING_ID, builder.build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
-    } else {
-      startForeground(SERVICE_RUNNING_ID, builder.build());
+    int type = 0;
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+      type = ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE;
     }
+    ServiceCompat.startForeground(
+            this,
+            SERVICE_RUNNING_ID,
+            builder.build(),
+            type
+    );
   }
 
   private PendingIntent buildLockIntent() {

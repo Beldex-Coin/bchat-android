@@ -88,7 +88,7 @@
                     tools:maxLines="1"
                     tools:text="@tools:sample/lorem/random"
                     android:maxWidth="240dp"
-                    android:minWidth="100dp"/>
+                    android:minWidth="115dp"/>
 
             </LinearLayout>
 

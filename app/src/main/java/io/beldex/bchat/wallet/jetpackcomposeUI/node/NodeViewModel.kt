@@ -171,13 +171,21 @@ class NodeViewModel @Inject constructor(
                 require(node.networkType == WalletManager.getInstance().networkType) { "network type does not match" }
             }
             nodeInfo=node
-            for (nodeInfo in _favouritesNodes.value!!) {
-                nodeInfo.isSelected=nodeInfo == node
-            }
-            WalletManager.getInstance().setDaemon(node)
 
-            if (save) saveSelectedNode(context)
+            setSelectedNode(node, context, save)
+        }else {
+            if(nodeInfo != null && node != null){
+                setSelectedNode(node, context, save)
+            }
         }
+    }
+    private fun setSelectedNode(node: NodeInfo?, context: Context, save: Boolean) {
+        for (nodeInfo in _favouritesNodes.value!!) {
+            nodeInfo.isSelected=nodeInfo == node
+        }
+        WalletManager.getInstance().setDaemon(node)
+
+        if (save) saveSelectedNode(context)
     }
 
     fun saveSelectedNode(nodeInfo : NodeInfo?, context : Context) {

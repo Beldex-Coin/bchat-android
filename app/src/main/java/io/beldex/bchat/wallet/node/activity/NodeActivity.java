@@ -104,15 +104,18 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
         favouriteNodes.clear();
         final String selectedNodeId = getSelectedNodeId();
         Map<String, ?> storedNodes = getSharedPreferences(NODES_PREFS_NAME, Context.MODE_PRIVATE).getAll();
+        ArrayList<Thread> threadList = new ArrayList<>();
         for (Map.Entry<String, ?> nodeEntry : storedNodes.entrySet()) {
             if (nodeEntry != null) { // just in case, ignore possible future errors
-                final String nodeId = (String) nodeEntry.getValue();
-                final NodeInfo addedNode = addFavourite(nodeId);
-                if (addedNode != null) {
-                    if (nodeId.equals(selectedNodeId)) {
-                        addedNode.setSelected(true);
+                threadList.add(new Thread(() -> {
+                    final String nodeId = (String) nodeEntry.getValue();
+                    final NodeInfo addedNode = addFavourite(nodeId);
+                    if (addedNode != null) {
+                        if (nodeId.equals(selectedNodeId)) {
+                            addedNode.setSelected(true);
+                        }
                     }
-                }
+                }));
             }
         }
         if (storedNodes.isEmpty()) { // try to load legacy list & remove it (i.e. migrate the data once)

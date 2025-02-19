@@ -90,7 +90,7 @@ fun ProfilePictureComponent(
                         painter = painterResource(id = R.drawable.ic_secret_group_profile),
                         contentDescription = null,
                         modifier = modifier
-                            .size(30.dp)
+                            .size(25.dp)
                             .align(Alignment.BottomEnd).padding(end = 5.dp)
                     )
                     /*additionalPublicKey?.let { adnPublicKey ->

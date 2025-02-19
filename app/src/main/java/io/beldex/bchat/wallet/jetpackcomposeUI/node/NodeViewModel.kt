@@ -1,8 +1,8 @@
 package io.beldex.bchat.wallet.jetpackcomposeUI.node
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
-import androidx.activity.ComponentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -189,7 +189,7 @@ class NodeViewModel @Inject constructor(
     }
 
     fun saveSelectedNode(nodeInfo : NodeInfo?, context : Context) {
-        val editor=context.getSharedPreferences(SELECTED_NODE_PREFS_NAME, ComponentActivity.MODE_PRIVATE).edit()
+        val editor=context.getSharedPreferences(SELECTED_NODE_PREFS_NAME, MODE_PRIVATE).edit()
         if (nodeInfo == null) {
             editor.clear()
         } else {
@@ -200,7 +200,7 @@ class NodeViewModel @Inject constructor(
     }
 
     fun getSelectedNodeId(context : Context) : String? {
-        return context.getSharedPreferences(SELECTED_NODE_PREFS_NAME, Context.MODE_PRIVATE)
+        return context.getSharedPreferences(SELECTED_NODE_PREFS_NAME, MODE_PRIVATE)
                 .getString("0", null)
     }
 
@@ -213,7 +213,7 @@ class NodeViewModel @Inject constructor(
     }
 
     fun saveFavourites(favouriteNodes : HashSet<NodeInfo>, context : Context) {
-        val editor=context.getSharedPreferences(NODES_PREFS_NAME, ComponentActivity.MODE_PRIVATE).edit()
+        val editor=context.getSharedPreferences(NODES_PREFS_NAME, Context.MODE_PRIVATE).edit()
         editor.clear()
         var i=1
         for (info in favouriteNodes) {

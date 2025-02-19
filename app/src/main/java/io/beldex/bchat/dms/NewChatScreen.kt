@@ -1,13 +1,13 @@
 package io.beldex.bchat.dms
 
 import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -124,7 +124,7 @@ fun NewChatScreen(
     val privateChatScanQRCodeActivityResultLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
+        if (result.resultCode == RESULT_OK) {
             val hexEncodedPublicKey = result.data!!.getStringExtra(ConversationFragmentV2.HEX_ENCODED_PUBLIC_KEY)
             val bnsName = result.data!!.getStringExtra(ConversationFragmentV2.BNS_NAME)
             if(hexEncodedPublicKey!=null) {
@@ -369,7 +369,7 @@ private fun createPrivateChat(hexEncodedPublicKey: String, context: Context,bnsN
         DatabaseComponent.get(context).threadDatabase().getThreadIdIfExistsFor(recipient)
     returnIntent.putExtra(ConversationFragmentV2.THREAD_ID, existingThread)
     returnIntent.putExtras(bundle)
-    activity?.setResult(ComponentActivity.RESULT_OK, returnIntent)
+    activity?.setResult(RESULT_OK, returnIntent)
     activity?.finish()
 }
 

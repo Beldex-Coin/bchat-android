@@ -197,9 +197,9 @@ class WebRTCComposeActivity : ComponentActivity() {
 
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        if (intent?.action == ACTION_ANSWER) {
+        if (intent.action == ACTION_ANSWER) {
             answerCall()
         }
     }

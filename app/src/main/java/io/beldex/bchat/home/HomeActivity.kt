@@ -1185,7 +1185,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         val bcData = BarcodeData.fromString(qrCode)
         return if (bcData != null) {
             popFragmentStack(null)
-            Timber.d("AAA")
             onUriScanned(bcData)
             true
         } else {

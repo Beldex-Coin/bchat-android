@@ -204,12 +204,13 @@ class VisibleMessageView : LinearLayout {
             binding.emojiReactionsView.root.setReactions(message.id, message.reactions, message.isOutgoing, delegate)
             binding.emojiReactionsView.root.isVisible = true
             if(isEndOfMessageCluster) {
-                containerParams.bottomMargin = if(isGroupThread) 20 else 30
+                containerParams.bottomMargin = if(isGroupThread) 20 else 40
             }else {
                 containerParams.bottomMargin = 50
             }
         } else {
-            binding.emojiReactionsView.root.isVisible = false
+            binding.emojiReactionsView.root.visibility = View.GONE
+            containerParams.bottomMargin = 0
         }
 
         // Populate content view

@@ -34,8 +34,10 @@
         android:layout_width="@dimen/reaction_scrubber_width"
         android:layout_height="?attr/actionBarSize"
         android:layout_marginBottom="40dp"
+        android:alpha="0"
         android:background="@drawable/conversation_reaction_overlay_background"
-        />
+        android:elevation="4dp"
+        tools:alpha="1" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/conversation_reaction_scrubber_foreground"

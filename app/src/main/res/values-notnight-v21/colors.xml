@@ -266,4 +266,6 @@
     <color name="signal_button_secondary_stroke">@color/core_grey_15</color>
     <color name="emoji_plus_background">#8A8A9D</color>
     <color name="view_emoji_background">#F8F8F8</color>
+    <color name="emoji_reaction_border">#A7A7BA</color>
+    <color name="conversation_reaction_background">#E0E0E0CC</color>
 </resources>

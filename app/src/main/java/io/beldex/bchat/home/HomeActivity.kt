@@ -1,5 +1,6 @@
 package io.beldex.bchat.home
 
+import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ComponentName
@@ -18,6 +19,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -27,6 +29,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
@@ -122,6 +125,7 @@ import java.util.Collections
 import java.util.Random
 import javax.inject.Inject
 import io.beldex.bchat.notifications.PushRegistry
+import io.beldex.bchat.permissions.Permissions
 
 @AndroidEntryPoint
 class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDelegate,HomeFragment.HomeFragmentListener,ConversationFragmentV2.Listener,UserDetailsBottomSheet.UserDetailsBottomSheetListener,VoiceMessageViewDelegate, ActivityDispatcher,
@@ -1451,8 +1455,17 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             ) {
                 startScanFragment = true
             } else {
-                val msg = getString(R.string.message_camera_not_permitted)
-                Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+                val permissionDialog = ComposeDialogContainer(
+                    dialogType = DialogType.PermissionDialog,
+                    onConfirm = {
+                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                            data = Uri.fromParts("package", packageName, null)
+                        }.let(::startActivity)
+                    },
+                    onCancel = {}
+                )
+                permissionDialog.arguments = bundleOf(ComposeDialogContainer.EXTRA_ARGUMENT_1 to String.format(getString(R.string.permissionsCameraDenied), getString(R.string.app_name)))
+                permissionDialog.show(this.supportFragmentManager, ComposeDialogContainer.TAG)
             }
         }
     }

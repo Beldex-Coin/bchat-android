@@ -351,5 +351,6 @@
     <color name="view_emoji_background">#1C1C26</color>
     <color name="emoji_reaction_border">#4B4B64</color>
     <color name="conversation_reaction_background">#080812CC</color>
+    <color name="emoji_variation_selector_background">#393647</color>
 
 </resources>

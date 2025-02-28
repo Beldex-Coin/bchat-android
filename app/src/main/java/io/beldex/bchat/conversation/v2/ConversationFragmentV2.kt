@@ -53,7 +53,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.DimenRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.drawToBitmap
+import io.beldex.bchat.util.drawToBitmap
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -206,7 +206,6 @@ import org.apache.commons.lang3.time.DurationFormatUtils
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
-import java.io.IOException
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Locale

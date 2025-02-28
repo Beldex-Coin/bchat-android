@@ -96,6 +96,7 @@ import com.beldex.libsignal.crypto.MnemonicCodec
 import com.beldex.libsignal.utilities.ListenableFuture
 import com.beldex.libsignal.utilities.guava.Optional
 import com.beldex.libsignal.utilities.hexEncodedPrivateKey
+import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.R
@@ -156,7 +157,6 @@ import io.beldex.bchat.mediasend.Media
 import io.beldex.bchat.mediasend.MediaSendActivity
 import io.beldex.bchat.mms.AudioSlide
 import io.beldex.bchat.mms.GifSlide
-import com.bumptech.glide.Glide
 import io.beldex.bchat.mms.ImageSlide
 import io.beldex.bchat.mms.MediaConstraints
 import io.beldex.bchat.mms.Slide
@@ -472,6 +472,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         //SetDataAndType
         const val URI = "uri"
         const val TYPE = "type"
+        const val IN_CHAT_SHARE = "share_into_chat"
 
         // Request codes
         const val PICK_DOCUMENT = 2
@@ -2560,30 +2561,50 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         //SetDataAndType
         val mediaURI = requireArguments().parcelable<Uri>(URI)
         val mediaType = AttachmentManager.MediaType.from(requireArguments().getString(TYPE))
+        val isInChatShare = requireActivity().intent.getBooleanExtra(IN_CHAT_SHARE, false)
         if (mediaURI != null && mediaType != null) {
             if (AttachmentManager.MediaType.IMAGE == mediaType || AttachmentManager.MediaType.GIF == mediaType || AttachmentManager.MediaType.VIDEO == mediaType) {
-                val media = Media(
-                    mediaURI,
-                    MediaUtil.getMimeType(
-                        requireActivity(),
-                        mediaURI
-                    )!!,
-                    0,
-                    0,
-                    0,
-                    0,
-                    Optional.absent(),
-                    Optional.absent()
-                )
-                startActivityForResult(
-                    MediaSendActivity.buildEditorIntent(
-                        requireActivity(),
-                        listOf(media),
-                        viewModel.recipient.value!!,
-                        ""
-                    ), PICK_FROM_LIBRARY
-                )
-                return
+                if(isInChatShare){
+                    prepMediaForSending(mediaURI, mediaType).addListener(object :
+                        ListenableFuture.Listener<Boolean> {
+
+                        override fun onSuccess(result: Boolean?) {
+                            sendAttachments(attachmentManager.buildSlideDeck().asAttachments(), null)
+                        }
+
+                        override fun onFailure(e: ExecutionException?) {
+                            Toast.makeText(
+                                requireActivity(),
+                                R.string.activity_conversation_attachment_prep_failed,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    })
+                    return
+                }else {
+                    val media=Media(
+                        mediaURI,
+                        MediaUtil.getMimeType(
+                            requireActivity(),
+                            mediaURI
+                        )!!,
+                        0,
+                        0,
+                        0,
+                        0,
+                        Optional.absent(),
+                        Optional.absent()
+                    )
+                    startActivityForResult(
+                        MediaSendActivity.buildEditorIntent(
+                            requireActivity(),
+                            listOf(media),
+                            viewModel.recipient.value!!,
+                            ""
+                        ), PICK_FROM_LIBRARY
+                    )
+                    return
+                }
             } else {
                 prepMediaForSending(mediaURI, mediaType).addListener(object :
                     ListenableFuture.Listener<Boolean> {

@@ -113,7 +113,6 @@ import io.beldex.bchat.conversation.v2.menus.ConversationActionModeCallback
 import io.beldex.bchat.conversation.v2.menus.ConversationActionModeCallbackDelegate
 import io.beldex.bchat.conversation.v2.menus.ConversationMenuHelper
 import io.beldex.bchat.conversation.v2.messages.ControlMessageView
-import io.beldex.bchat.conversation.v2.messages.VisibleMessageContentViewDelegate
 import io.beldex.bchat.conversation.v2.messages.VisibleMessageView
 import io.beldex.bchat.conversation.v2.messages.VisibleMessageViewDelegate
 import io.beldex.bchat.conversation.v2.search.SearchBottomBar
@@ -227,7 +226,7 @@ private const val ARG_PARAM2 = "param2"
 @AndroidEntryPoint
 class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     InputBarRecordingViewDelegate, AttachmentManager.AttachmentListener,
-    ConversationActionModeCallbackDelegate, VisibleMessageContentViewDelegate,
+    ConversationActionModeCallbackDelegate,
     RecipientModifiedListener,
     SearchBottomBar.EventListener, LoaderManager.LoaderCallbacks<Cursor>,
     ConversationMenuHelper.ConversationMenuListener, OnBackPressedListener,SendConfirm, ConversationActionDialog.ConversationActionDialogListener,

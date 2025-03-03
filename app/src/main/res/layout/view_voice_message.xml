@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainVoiceMessageViewContainer"
     android:layout_width="250dp"
-    android:layout_height="65dp">
+    android:layout_height="69dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/viewVoiceMessageCard"

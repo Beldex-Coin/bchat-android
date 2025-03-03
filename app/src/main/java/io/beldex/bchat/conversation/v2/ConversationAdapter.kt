@@ -27,7 +27,6 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.beldex.libbchat.messaging.contacts.Contact
 import io.beldex.bchat.conversation.v2.messages.ControlMessageView
-import io.beldex.bchat.conversation.v2.messages.VisibleMessageContentViewDelegate
 import io.beldex.bchat.conversation.v2.messages.VisibleMessageView
 import io.beldex.bchat.database.CursorRecyclerViewAdapter
 import io.beldex.bchat.database.model.MessageRecord

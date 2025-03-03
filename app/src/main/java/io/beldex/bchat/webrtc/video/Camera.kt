@@ -53,7 +53,7 @@ class Camera(context: Context,
             Log.w(TAG, "Tried to flip camera without capturer or less than 2 cameras")
             return
         }
-        activeDirection = CameraState.Direction.PENDING
+        activeDirection = CameraState.Direction.PENDING // Note: The activeDirection will be PENDING until `onCameraSwitchDone`
         capturer.switchCamera(this)
     }
 

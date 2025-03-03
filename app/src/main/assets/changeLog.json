@@ -475,6 +475,20 @@
           "description":"Minor bug fixes"
         }
       ]
+    },
+    {
+      "title": "2.6.5",
+      "descriptions": [
+        {
+          "description":"Improved Call functionality"
+        },
+        {
+          "description":"Users can now swap the view in video call"
+        },
+        {
+          "description":"Minor bug fixes"
+        }
+      ]
     }
   ]
 }

@@ -823,7 +823,17 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 intent.putExtra(WalletService.REQUEST_WALLET, walletName)
                 intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_LOAD)
                 intent.putExtra(WalletService.REQUEST_CMD_LOAD_PW, walletPassword)
-                startService(intent)
+                try {
+                    this.startService(intent)
+                }
+                catch (ex: IllegalStateException) {
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        ContextCompat.startForegroundService(this,intent)
+                    }
+                    else {
+                        this.startService(intent)
+                    }
+                }
                 bindService(intent, mConnection, BIND_AUTO_CREATE)
                 mIsBound = true
                 Timber.d("BOUND")

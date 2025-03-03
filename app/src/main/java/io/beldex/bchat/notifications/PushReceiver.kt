@@ -1,5 +1,8 @@
 package io.beldex.bchat.notifications
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.goterl.lazysodium.LazySodiumAndroid
@@ -42,6 +45,11 @@ class PushReceiver @Inject constructor(@ApplicationContext val context: Context)
         }
     }
     private fun onPush() {
+        // no need to do anything if notification permissions are not granted
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            return
+        }
+
         Log.d(TAG, "Failed to decode data for message.")
         val builder = NotificationCompat.Builder(context, NotificationChannels.OTHER)
             .setSmallIcon(io.beldex.bchat.R.drawable.ic_notification_)

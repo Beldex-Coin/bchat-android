@@ -684,14 +684,17 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         }
 
         //Steve Josephh21 ANRS
-        if(CheckOnline.isOnline(requireActivity())) {
-            check(activityCallback!!.hasBoundService()) { "WalletService not bound." }
-            val daemonConnected: Wallet.ConnectionStatus = activityCallback!!.connectionStatus!!
-            if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
-                if (TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 1) {
-                    AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
-                } else if (TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 0) {
-                    AsyncGetFullBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+        val activity = activity
+        if(isAdded && activity != null) {
+            if (CheckOnline.isOnline(activity)) {
+                check(activityCallback!!.hasBoundService()) { "WalletService not bound." }
+                val daemonConnected: Wallet.ConnectionStatus = activityCallback!!.connectionStatus!!
+                if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
+                    if (TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 1) {
+                        AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+                    } else if (TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 0) {
+                        AsyncGetFullBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+                    }
                 }
             }
         }

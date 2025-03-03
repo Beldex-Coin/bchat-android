@@ -401,6 +401,15 @@
     <attr name="editTextStyle" format="reference" />
     <attr name="toolbarStyle" format="reference" />
 
+    <declare-styleable name="BodyTextViewLayout">
+        <attr name="viewPartMessage" format="reference"/>
+        <attr name="viewPartTime" format="reference"/>
+    </declare-styleable>
+    <declare-styleable name="QuoteBodyTextViewLayout">
+        <attr name="quoteViewPartMessage" format="reference"/>
+        <attr name="quoteViewPartTime" format="reference"/>
+    </declare-styleable>
+
     <declare-styleable name="KeyboardPageSearchView">
         <attr name="show_always" format="boolean" />
         <attr name="search_bar_tint" format="color|reference" />

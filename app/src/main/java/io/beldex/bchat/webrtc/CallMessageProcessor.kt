@@ -1,5 +1,6 @@
 package io.beldex.bchat.webrtc
 
+import android.Manifest
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
@@ -26,23 +27,30 @@ import com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.ICE_CAND
 import com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.OFFER
 import com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.PRE_OFFER
 import com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.PROVISIONAL_ANSWER
+import io.beldex.bchat.ApplicationContext
+import io.beldex.bchat.permissions.Permissions
 
 class CallMessageProcessor (private val context: Context, private val textSecurePreferences: TextSecurePreferences, lifecycle: Lifecycle, private val storage: StorageProtocol) {
 
     companion object {
-
+        private const val TAG = "CallMessageProcessor"
         private const val VERY_EXPIRED_TIME = 15 * 60 * 1000L
 
-        fun safeStartService(context: Context, intent: Intent) {
-            // If the foreground service crashes then it's possible for one of these intents to
-            // be started in the background (in which case 'startService' will throw a
-            // 'BackgroundServiceStartNotAllowedException' exception) so catch that case and try
-            // to re-start the service in the foreground
-            try { context.startService(intent) }
-            catch(e: Exception) {
-                try { ContextCompat.startForegroundService(context, intent) }
-                catch (e2: Exception) {
-                    Log.e("Beldex", "Unable to start CallMessage intent: ${e2.message}")
+        fun safeStartForegroundService(context: Context, intent: Intent) {
+            // Wake up the device (if required) before attempting to start any services - otherwise on Android 12 and above we get
+            // a BackgroundServiceStartNotAllowedException such as:
+            //      Unable to start CallMessage intent: startForegroundService() not allowed due to mAllowStartForeground false:
+            //      service ic.beldex.bchat/io.beldex.bchat.service.WebRtcCallService
+            (context as ApplicationContext).wakeUpDeviceAndDismissKeyguardIfRequired()
+            // Attempt to start the call service..
+            try {
+                context.startService(intent)
+            } catch (e: Exception) {
+                Log.e("Beldex", "Unable to start service: ${e.message}", e)
+                try {
+                    ContextCompat.startForegroundService(context, intent)
+                } catch (e2: Exception) {
+                    Log.e(TAG, "Unable to start CallMessage intent: ${e2.message}", e2)
                 }
             }
         }
@@ -59,7 +67,9 @@ class CallMessageProcessor (private val context: Context, private val textSecure
                 Log.i("Beldex", "Contact is approved?: $approvedContact")
                 if (!approvedContact && storage.getUserPublicKey() != sender) continue*/
 
-                if (!textSecurePreferences.isCallNotificationsEnabled()) {
+                // If the user has not enabled voice/video calls or if the user has not granted audio/microphone permissions
+                if ( !textSecurePreferences.isCallNotificationsEnabled() ||
+                    !Permissions.hasAll(context, Manifest.permission.RECORD_AUDIO)) {
                     Log.d("Beldex","Dropping call message if call notifications disabled")
                     if (nextMessage.type != PRE_OFFER) continue
                     val sentTimestamp = nextMessage.sentTimestamp ?: continue
@@ -109,20 +119,20 @@ class CallMessageProcessor (private val context: Context, private val textSecure
         val callId = callMessage.callId ?: return
         val hangupIntent = WebRtcCallService.remoteHangupIntent(context, callId)
         Log.d("startForegroundService->","3")
-        safeStartService(context, hangupIntent)
+        safeStartForegroundService(context, hangupIntent)
     }
 
     private fun incomingAnswer(callMessage: CallMessage) {
-        val recipientAddress = callMessage.sender ?: return
-        val callId = callMessage.callId ?: return
-        val sdp = callMessage.sdps.firstOrNull() ?: return
+        val recipientAddress = callMessage.sender ?: return //Log.w(TAG, "Cannot answer incoming call without sender")
+        val callId = callMessage.callId ?: return //Log.w(TAG, "Cannot answer incoming call without callId" )
+        val sdp = callMessage.sdps.firstOrNull() ?: return //Log.w(TAG, "Cannot answer incoming call without sdp")
         val answerIntent = WebRtcCallService.incomingAnswer(
             context = context,
             address = Address.fromSerialized(recipientAddress),
             sdp = sdp,
             callId = callId
         )
-        safeStartService(context, answerIntent)
+        safeStartForegroundService(context, answerIntent)
     }
 
     private fun handleIceCandidates(callMessage: CallMessage) {
@@ -138,7 +148,7 @@ class CallMessageProcessor (private val context: Context, private val textSecure
             callId = callId,
             address = Address.fromSerialized(sender)
         )
-        safeStartService(context, iceIntent)
+        safeStartForegroundService(context, iceIntent)
     }
 
     private fun incomingPreOffer(callMessage: CallMessage) {
@@ -151,7 +161,7 @@ class CallMessageProcessor (private val context: Context, private val textSecure
             callId = callId,
             callTime = callMessage.sentTimestamp!!
         )
-        safeStartService(context, incomingIntent)
+        safeStartForegroundService(context, incomingIntent)
     }
 
     private fun incomingCall(callMessage: CallMessage) {
@@ -165,7 +175,7 @@ class CallMessageProcessor (private val context: Context, private val textSecure
             callId = callId,
             callTime = callMessage.sentTimestamp!!
         )
-        safeStartService(context, incomingIntent)
+        safeStartForegroundService(context, incomingIntent)
 
     }
 

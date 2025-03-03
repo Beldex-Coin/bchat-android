@@ -2,6 +2,7 @@ package io.beldex.bchat.notifications;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,53 +30,40 @@ public class NotificationState {
     }
   }
   public void addNotification(NotificationItem item) {
+    // Add this new notification at the beginning of the list
     notifications.addFirst(item);
-    if (threads.contains(item.getThreadId())) {
-      threads.remove(item.getThreadId());
-    }
+    // Put a notification at the front by removing it then re-adding it?
+    threads.remove(item.getThreadId());
     threads.add(item.getThreadId());
+
     notificationCount++;
   }
   public @Nullable Uri getRingtone(@NonNull Context context) {
     if (!notifications.isEmpty()) {
       Recipient recipient = notifications.getFirst().getRecipient();
-      if (recipient != null) {
-        return NotificationChannels.supported() ? NotificationChannels.getMessageRingtone(context, recipient)
-                : recipient.resolve().getMessageRingtone();
-      }
+      return NotificationChannels.supported() ? NotificationChannels.getMessageRingtone(context, recipient)
+              : recipient.resolve().getMessageRingtone();
     }
-    return null;
+    return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
   }
   public VibrateState getVibrate() {
     if (!notifications.isEmpty()) {
       Recipient recipient = notifications.getFirst().getRecipient();
-      if (recipient != null) {
-        return recipient.resolve().getMessageVibrate();
-      }
+      return recipient.resolve().getMessageVibrate();
     }
     return VibrateState.DEFAULT;
   }
-  public boolean hasMultipleThreads() {
-    return threads.size() > 1;
-  }
-  public LinkedHashSet<Long> getThreads() {
-    return threads;
-  }
-  public int getThreadCount() {
-    return threads.size();
-  }
-  public int getMessageCount() {
-    return notificationCount;
-  }
-  public List<NotificationItem> getNotifications() {
-    return notifications;
-  }
+  public boolean hasMultipleThreads()              { return threads.size() > 1; }
+  public LinkedHashSet<Long> getThreads()          { return threads;            }
+  public int getThreadCount()                      { return threads.size();     }
+  public int getNotificationCount()                { return notificationCount;  }
+  public List<NotificationItem> getNotifications() { return notifications;      }
   public List<NotificationItem> getNotificationsForThread(long threadId) {
-    LinkedList<NotificationItem> list = new LinkedList<>();
+    LinkedList<NotificationItem> notificationsInThread = new LinkedList<>();
     for (NotificationItem item : notifications) {
-      if (item.getThreadId() == threadId) list.addFirst(item);
+      if (item.getThreadId() == threadId) notificationsInThread.addFirst(item);
     }
-    return list;
+    return notificationsInThread;
   }
   public PendingIntent getMarkAsReadIntent(Context context, int notificationId) {
     long[] threadArray = new long[threads.size()];

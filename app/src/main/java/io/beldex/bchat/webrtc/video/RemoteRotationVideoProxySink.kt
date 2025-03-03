@@ -1,6 +1,5 @@
 package io.beldex.bchat.webrtc.video
 
-import io.beldex.bchat.webrtc.data.quadrantRotation
 import org.webrtc.VideoFrame
 import org.webrtc.VideoSink
 
@@ -14,8 +13,7 @@ class RemoteRotationVideoProxySink: VideoSink {
         val thisSink = targetSink ?: return
         val thisFrame = frame ?: return
 
-        val quadrantRotation = rotation.quadrantRotation()
-        val modifiedRotation = thisFrame.rotation - quadrantRotation
+        val modifiedRotation = thisFrame.rotation - rotation
 
         val newFrame = VideoFrame(thisFrame.buffer, modifiedRotation, thisFrame.timestampNs)
         thisSink.onFrame(newFrame)

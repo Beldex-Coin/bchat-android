@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.beldex.libbchat.utilities.SSKEnvironment.ProfileManagerProtocol
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.BaseActionBarActivity
@@ -28,6 +29,9 @@ import io.beldex.bchat.util.setUpActionBarBchatLogo
 import io.beldex.bchat.wallet.CheckOnline
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityDisplayNameBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 import java.util.Collections
@@ -642,14 +646,25 @@ class DisplayNameActivity : BaseActionBarActivity() {
         val selectedNodeId = getSelectedNodeId()
         val storedNodes: Map<String?,*>? = getSharedPreferences(NODES_PREFS_NAME, MODE_PRIVATE).all
         for (nodeEntry: Map.Entry<String?, *>? in storedNodes!!.entries) {
-            if (nodeEntry != null) { // just in case, ignore possible future errors
-                val nodeId = nodeEntry.value as String
-                val addedNode: NodeInfo? = addFavourite(nodeId)!!
-                if (addedNode != null) {
-                    if (nodeId == selectedNodeId) {
-                        //Important
-                        addedNode.isSelected = true
-                    }
+            val jobsList = arrayListOf<Job>()
+            lifecycleScope.launch(Dispatchers.IO) {
+                if (nodeEntry != null) { // just in case, ignore possible future errors
+                    jobsList.add(
+                        launch {
+                            val nodeId = nodeEntry.value as String
+                            try {
+                                val addedNode: NodeInfo? = addFavourite(nodeId)!!
+                                if (addedNode != null) {
+                                    if (nodeId == selectedNodeId) {
+                                        //Important
+                                        addedNode.isSelected = true
+                                    }
+                                }
+                            } catch (ex: NullPointerException) {
+                                Log.d("Add Favourite Node, ", ex.message.toString())
+                            }
+                        }
+                    )
                 }
             }
         }

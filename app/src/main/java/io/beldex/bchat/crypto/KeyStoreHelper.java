@@ -121,7 +121,7 @@ public final class KeyStoreHelper {
       return entry.getSecretKey();
     } catch (UnrecoverableKeyException e) {
       throw e;
-    } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableEntryException e) {
+    } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableEntryException | NullPointerException e) {
       throw new AssertionError(e);
     }
   }

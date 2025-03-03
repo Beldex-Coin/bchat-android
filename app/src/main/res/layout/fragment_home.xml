@@ -122,10 +122,9 @@
                             android:layout_centerInParent="true"
                             android:layout_marginStart="16dp"
                             android:layout_toEndOf="@+id/profileButton"
-                            android:fontFamily="@font/open_sans_bold"
+                            android:fontFamily="@font/open_sans_semi_bold"
                             android:text="@string/bchat"
-                            android:textSize="24sp"
-                            android:textStyle="bold" />
+                            android:textSize="24sp"/>
 
                         <!-- <RelativeLayout
                              android:id="@+id/searchViewContainer"

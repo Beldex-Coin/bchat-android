@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -45,6 +47,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -142,7 +145,7 @@ fun CreateSecretGroup(
         ) {
             Box(
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(bottom = 5.dp, start = 16.dp, end = 16.dp)
             ) {
                 TextField(
                     value = groupName,
@@ -180,6 +183,7 @@ fun CreateSecretGroup(
                 color = colorResource(id = R.color.divider_color),
                 modifier = Modifier
                     .fillMaxWidth()
+                    .height(0.5.dp)
             )
 
             TextField(
@@ -232,12 +236,12 @@ fun CreateSecretGroup(
             )
             LazyColumn(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier =Modifier
-                        .fillMaxWidth()
-                        .padding(
-                                horizontal=16.dp
-                        )
-                        .weight(1f)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = 16.dp
+                    )
+                    .weight(1f)
             ) {
                 items(contacts) {
                     GroupContact(
@@ -258,12 +262,12 @@ fun CreateSecretGroup(
                 }
             }
             Box(
-                modifier =Modifier
-                        .fillMaxWidth()
-                        .padding(top=8.dp)
-                        .background(
-                                color=MaterialTheme.appColors.createButtonBackground
-                        ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
+                    .background(
+                        color = MaterialTheme.appColors.createButtonBackground
+                    ),
                 contentAlignment = Alignment.Center,
             ) {
                 PrimaryButton(
@@ -286,9 +290,9 @@ fun CreateSecretGroup(
 
 
                     },
-                    modifier =Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
                     shape = RoundedCornerShape(12.dp),
                     enabled = groupName.isNotEmpty(),
                     disabledContainerColor = MaterialTheme.appColors.disabledCreateButtonContainer,
@@ -312,15 +316,15 @@ fun CreateSecretGroup(
         }
         if (showLoader) {
             Box(
-                modifier =Modifier
-                        .fillMaxSize()
-                        .background(color=MaterialTheme.appColors.loaderBackground.copy(alpha=0.5f))
-                        .clickable(
-                                enabled=true,
-                                onClick={
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = MaterialTheme.appColors.loaderBackground.copy(alpha = 0.5f))
+                    .clickable(
+                        enabled = true,
+                        onClick = {
 
-                                }
-                        ),
+                        }
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 LottieAnimation(
@@ -350,11 +354,11 @@ private fun GroupContact(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.appColors.contactCardBackground
         ),
-            modifier=modifier
-                    .padding(bottom=10.dp)
-                    .clickable {
-                        onSelectionChanged(recipient, !isSelected)
-                    }
+            modifier= modifier
+                .padding(bottom = 10.dp)
+                .clickable {
+                    onSelectionChanged(recipient, !isSelected)
+                }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -393,13 +397,7 @@ private fun GroupContact(
                 overflow = TextOverflow.Ellipsis
             )
 
-            BChatCheckBox(
-                checked = isSelected,
-                onCheckedChange = {
-                    onSelectionChanged(recipient, it)
-                },
-                modifier = Modifier.padding(end = 25.dp)
-            )
+            Image(painter = painterResource(id = if(isSelected) R.drawable.ic_checkedbox else R.drawable.ic_checkbox), contentDescription = "check box", modifier = Modifier.padding(end = 25.dp))
         }
     }
 }

@@ -281,10 +281,10 @@ fun MessageReceiver.handleVisibleMessage(message: VisibleMessage, proto: SignalS
                 profileManager.setName(context, recipient, name)
             }
             val newProfileKey = profile.profileKey
-            val needsProfilePicture = !AvatarHelper.avatarFileExists(context, Address.fromSerialized(messageSender))
+            val avatarFile = AvatarHelper.avatarFileExists(context, Address.fromSerialized(messageSender))
             val profileKeyValid = newProfileKey?.isNotEmpty() == true && (newProfileKey.size == 16 || newProfileKey.size == 32) && profile.profilePictureURL?.isNotEmpty() == true
             val profileKeyChanged = (recipient.profileKey == null || !MessageDigest.isEqual(recipient.profileKey, newProfileKey))
-            if ((profileKeyValid && profileKeyChanged) || (profileKeyValid && needsProfilePicture)) {
+            if ((profileKeyValid && profileKeyChanged) || (profileKeyChanged && avatarFile)) {
                 profileManager.setProfileKey(context, recipient, newProfileKey!!)
                 profileManager.setUnidentifiedAccessMode(
                     context,

@@ -11,7 +11,6 @@ import android.util.AttributeSet
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -195,6 +194,13 @@ class VisibleMessageView : LinearLayout {
         val emojiLayoutParams=
             binding.emojiReactionsView.root.layoutParams as ConstraintLayout.LayoutParams
         emojiLayoutParams.horizontalBias=if (message.isOutgoing) 1f else 0f
+        //Emoji reaction alignment
+        val isSingleMessage = isStartOfMessageCluster && isEndOfMessageCluster
+        if(isEndOfMessageCluster || isSingleMessage) {
+            emojiLayoutParams.topMargin = -40
+        } else {
+            emojiLayoutParams.topMargin = -9
+        }
         binding.emojiReactionsView.root.layoutParams=emojiLayoutParams
 
         val containerParams = binding.messageInnerContainer.layoutParams as ConstraintLayout.LayoutParams

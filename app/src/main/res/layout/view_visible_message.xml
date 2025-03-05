@@ -132,6 +132,8 @@
             android:clickable="false"
             android:visibility="gone"
             android:focusable="false"
+            android:layout_marginBottom="1dp"
+            app:layout_constraintTop_toBottomOf="@id/messageInnerContainer"
             app:layout_constraintStart_toStartOf="@+id/messageInnerContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

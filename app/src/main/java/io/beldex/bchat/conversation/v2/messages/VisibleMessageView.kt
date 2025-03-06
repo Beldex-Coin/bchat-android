@@ -194,13 +194,6 @@ class VisibleMessageView : LinearLayout {
         val emojiLayoutParams=
             binding.emojiReactionsView.root.layoutParams as ConstraintLayout.LayoutParams
         emojiLayoutParams.horizontalBias=if (message.isOutgoing) 1f else 0f
-        //Emoji reaction alignment
-        val isSingleMessage = isStartOfMessageCluster && isEndOfMessageCluster
-        if(isEndOfMessageCluster || isSingleMessage) {
-            emojiLayoutParams.topMargin = -40
-        } else {
-            emojiLayoutParams.topMargin = -9
-        }
         binding.emojiReactionsView.root.layoutParams=emojiLayoutParams
 
         val containerParams = binding.messageInnerContainer.layoutParams as ConstraintLayout.LayoutParams
@@ -210,9 +203,9 @@ class VisibleMessageView : LinearLayout {
             binding.emojiReactionsView.root.setReactions(message.id, message.reactions, message.isOutgoing, delegate)
             binding.emojiReactionsView.root.isVisible = true
             if(isEndOfMessageCluster) {
-                containerParams.bottomMargin = if(isGroupThread) 20 else 40
+                containerParams.bottomMargin = if(isGroupThread) resources.getDimensionPixelSize(R.dimen.react_with_any_emoji_parent_container_bottom_margin_with_tail_group_message) else resources.getDimensionPixelSize(R.dimen.react_with_any_emoji_parent_container_bottom_margin_with_tail)
             }else {
-                containerParams.bottomMargin = 50
+                containerParams.bottomMargin = if(isGroupThread) resources.getDimensionPixelSize(R.dimen.react_with_any_emoji_parent_container_bottom_margin_group_message) else resources.getDimensionPixelSize(R.dimen.react_with_any_emoji_parent_container_bottom_margin)
             }
         } else {
             binding.emojiReactionsView.root.visibility = View.GONE

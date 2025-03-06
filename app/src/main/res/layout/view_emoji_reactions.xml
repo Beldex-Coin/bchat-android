@@ -7,7 +7,9 @@
     android:background="@drawable/view_emoji_background_shape"
     app:layout_constraintWidth_max="240dp"
     android:padding="4dp"
-    app:layout_gravity="center">
+    android:clickable="true"
+    app:layout_gravity="center"
+    android:focusable="true">
 
     <LinearLayout
         android:layout_width="match_parent"

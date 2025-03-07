@@ -193,32 +193,6 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     initializeObservers();
   }
 
-  private void toggleFullscreen() {
-    if (isFullscreen) {
-      exitFullscreen();
-    } else {
-      enterFullscreen();
-    }
-  }
-
-  private void enterFullscreen() {
-    getSupportActionBar().hide();
-    isFullscreen = true;
-    hideHandler.removeCallbacks(showRunnable);
-    hideHandler.postDelayed(hideRunnable, UI_ANIMATION_DELAY);
-  }
-
-  private void exitFullscreen() {
-    if (Build.VERSION.SDK_INT >= 30) {
-      rootContainer.getWindowInsetsController().show(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
-    } else {
-      rootContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-    }
-    isFullscreen = false;
-    hideHandler.removeCallbacks(hideRunnable);
-    hideHandler.postDelayed(showRunnable, UI_ANIMATION_DELAY);
-  }
-
   @Override
   public boolean dispatchTouchEvent(MotionEvent ev) {
     clickDetector.onTouchEvent(ev);
@@ -381,7 +355,6 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
         if (e.getY() < detailsContainer.getTop()) {
           detailsContainer.setVisibility(detailsContainer.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
         }
-        toggleFullscreen();
         return super.onSingleTapUp(e);
       }
     });

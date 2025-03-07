@@ -29,19 +29,30 @@ import com.beldex.libbchat.utilities.LocalisedTimeUtil.toShortTwoPartString
 import io.beldex.bchat.R
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getLocalNumber
 import com.beldex.libbchat.utilities.ThemeUtil
+import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.components.emoji.EmojiImageView
 import io.beldex.bchat.components.emoji.RecentEmojiPageModel
 import io.beldex.bchat.components.menu.ActionItem
 import io.beldex.bchat.conversation.v2.menus.ConversationMenuItemHelper
+import io.beldex.bchat.database.MmsSmsDatabase
 import io.beldex.bchat.database.model.MediaMmsMessageRecord
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.database.model.ReactionRecord
 import io.beldex.bchat.dependencies.DatabaseComponent.Companion.get
+import io.beldex.bchat.repository.ConversationRepository
 import io.beldex.bchat.util.AnimationCompleteListener
 import io.beldex.bchat.util.DateUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
+import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
+@AndroidEntryPoint
 class ConversationReactionOverlay : FrameLayout {
     private val emojiViewGlobalRect = Rect()
     private val emojiStripViewBounds = Rect()
@@ -78,6 +89,14 @@ class ConversationReactionOverlay : FrameLayout {
     private var onHideListener: OnHideListener? = null
     private val revealAnimatorSet = AnimatorSet()
     private var hideAnimatorSet = AnimatorSet()
+
+    @Inject
+    lateinit var mmsSmsDatabase: MmsSmsDatabase
+    @Inject lateinit var repository: ConversationRepository
+    private val scope = CoroutineScope(Dispatchers.Default)
+    private var job: Job? = null
+
+
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     override fun onFinishInflate() {
@@ -101,6 +120,7 @@ class ConversationReactionOverlay : FrameLayout {
              messageRecord: MessageRecord,
              lastSeenDownPoint: PointF,
              selectedConversationModel: SelectedConversationModel) {
+        job?.cancel()
         if (overlayState != OverlayState.HIDDEN) {
             return
         }
@@ -122,6 +142,12 @@ class ConversationReactionOverlay : FrameLayout {
         this.activity = activity
         updateSystemUiOnShow(activity)
         doOnLayout { showAfterLayout(messageRecord, lastSeenDownPoint, isMessageOnLeft) }
+
+        job = scope.launch(Dispatchers.IO) {
+            repository.changes(messageRecord.threadId)
+                .filter { mmsSmsDatabase.getMessageForTimestamp(messageRecord.timestamp) == null }
+                .collect { withContext(Dispatchers.Main) { hide() } }
+        }
     }
     private fun showAfterLayout(messageRecord: MessageRecord,
                                 lastSeenDownPoint: PointF,
@@ -287,6 +313,7 @@ class ConversationReactionOverlay : FrameLayout {
         hideInternal(onHideListener)
     }
     private fun hideInternal(onHideListener: OnHideListener?) {
+        job?.cancel()
         overlayState = OverlayState.HIDDEN
         val animatorSet = newHideAnimatorSet()
         hideAnimatorSet = animatorSet

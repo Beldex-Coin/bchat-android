@@ -2561,8 +2561,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val mediaURI = requireArguments().parcelable<Uri>(URI)
         val mediaType = AttachmentManager.MediaType.from(requireArguments().getString(TYPE))
         val isInChatShare = requireActivity().intent.getBooleanExtra(IN_CHAT_SHARE, false)
+        val mimeType =  MediaUtil.getMimeType(requireActivity(), mediaURI)
         if (mediaURI != null && mediaType != null) {
-            if (AttachmentManager.MediaType.IMAGE == mediaType || AttachmentManager.MediaType.GIF == mediaType || AttachmentManager.MediaType.VIDEO == mediaType) {
+            if (mimeType != null && (AttachmentManager.MediaType.IMAGE == mediaType || AttachmentManager.MediaType.GIF == mediaType || AttachmentManager.MediaType.VIDEO == mediaType)) {
                 if(isInChatShare){
                     prepMediaForSending(mediaURI, mediaType).addListener(object :
                         ListenableFuture.Listener<Boolean> {
@@ -2583,10 +2584,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 }else {
                     val media=Media(
                         mediaURI,
-                        MediaUtil.getMimeType(
-                            requireActivity(),
-                            mediaURI
-                        )!!,
+                        mimeType,
                         0,
                         0,
                         0,
@@ -3179,7 +3177,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun sendAttachments(
         attachments: List<Attachment>,
         body: String?,
-        quotedMessage: MessageRecord? = null,
+        quotedMessage: MessageRecord? = binding?.inputBar?.quote,
         linkPreview: LinkPreview? = null
     ) {
         val recipient = viewModel.recipient.value ?: return

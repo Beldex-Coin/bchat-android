@@ -1679,4 +1679,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="search_member_title" translatable="false">Search Members</string>
     <string name="members_option_message" translatable="false">Message to </string>
     <string name="members_option_copy_bchat_id" translatable="false">Copy BChat ID</string>
+    <string name="zero_time_durationMs" translatable="false">0:00</string>
 </resources>

@@ -62,7 +62,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        binding.voiceMessageViewDurationTextView.text = String.format(Locale.ROOT, "%01d:%02d",
+        binding.voiceMessageViewDurationTextView.text = String.format("%01d:%02d",
             TimeUnit.MILLISECONDS.toMinutes(0),
             TimeUnit.MILLISECONDS.toSeconds(0))
     }
@@ -75,6 +75,10 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         val audio = message.slideDeck.audioSlide!!
         binding.voiceMessageViewLoader.isVisible = audio.isInProgress
         binding.voiceMessagePlaybackImageView.isVisible = !audio.isInProgress
+        //The duration value is displayed only for the voice message loader
+        if(!message.isSent && message.isPending) {
+            binding.voiceMessageViewDurationTextView.text = context.getString(R.string.zero_time_durationMs)
+        }
         val cornerRadii = MessageBubbleUtilities.calculateRadii(context, isStartOfMessageCluster, isEndOfMessageCluster, message.isOutgoing)
         cornerMask.setTopLeftRadius(cornerRadii[0])
         cornerMask.setTopRightRadius(cornerRadii[1])
@@ -129,6 +133,9 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
+        binding.voiceMessagePlaybackImageView.setOnClickListener {
+            togglePlayback()
+        }
     }
 
     override fun onPlayerStart(player: AudioSlidePlayer) {

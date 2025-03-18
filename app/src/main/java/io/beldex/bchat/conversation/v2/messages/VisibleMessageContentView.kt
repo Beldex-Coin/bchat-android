@@ -18,6 +18,7 @@ import android.text.util.Linkify
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -37,6 +38,7 @@ import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttac
 import com.beldex.libbchat.messaging.utilities.UpdateMessageData
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.ThemeUtil
+import com.beldex.libbchat.utilities.modifyLayoutParams
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.codewaves.stickyheadergrid.StickyHeaderGridLayoutManager
@@ -63,7 +65,6 @@ import kotlin.math.roundToInt
 
 class VisibleMessageContentView : MaterialCardView {
     private val binding: ViewVisibleMessageContentBinding by lazy { ViewVisibleMessageContentBinding.bind(this) }
-    var onContentClick: MutableList<((event: MotionEvent) -> Unit)> = mutableListOf()
     var onContentDoubleTap: (() -> Unit)? = null
     var delegate: VisibleMessageViewDelegate? = null
     var indexInAdapter: Int = -1
@@ -155,6 +156,19 @@ class VisibleMessageContentView : MaterialCardView {
         var showQuoteBody = false
 
         if (message is MmsMessageRecord && message.quote != null) {
+            if(message.slideDeck.asAttachments().isNotEmpty() && (contactIsTrusted || message.isOutgoing)) {
+                binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                binding.quoteContainer.layoutParams.width = binding.albumContainer.width
+            } else if(message.slideDeck.documentSlide != null && (contactIsTrusted || message.isOutgoing)) {
+                binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                binding.quoteContainer.layoutParams.width = binding.documentView.root.width
+            } else if(message.slideDeck.audioSlide != null && (contactIsTrusted || message.isOutgoing)) {
+                binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                binding.quoteContainer.layoutParams.width = binding.quoteView.root.width
+            } else {
+                binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                binding.quoteContainer.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+            }
             hideBody = true
             showQuoteBody = true
 
@@ -177,6 +191,9 @@ class VisibleMessageContentView : MaterialCardView {
                     delegate?.scrollToMessageIfPossible(quote.id)
                 }
             }
+        }else {
+            binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+            binding.quoteContainer.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
         }
 
         if (message is MmsMessageRecord) {
@@ -199,6 +216,7 @@ class VisibleMessageContentView : MaterialCardView {
         }
 
         when {
+            //Link Preview
             message is MmsMessageRecord && message.linkPreviews.isNotEmpty() -> {
                 showQuoteBody = false
                 binding.linkPreviewView.root.bind(
@@ -212,6 +230,7 @@ class VisibleMessageContentView : MaterialCardView {
                 }
                 // Body text view is inside the link preview for layout convenience
             }
+            //Audio
             message is MmsMessageRecord && message.slideDeck.audioSlide != null -> {
                 hideBody = true
                 showQuoteBody = false
@@ -228,21 +247,27 @@ class VisibleMessageContentView : MaterialCardView {
                     // We have to use onContentClick (rather than a click listener directly on the voice
                     // message view) so as to not interfere with all the other gestures.
                     onContentClick.add {
-                        binding.voiceMessageView.root.togglePlayback()
-                        /*binding.voiceMessageView.root.getMessageID(message.id)*/
+                        if(message.quote == null) {
+                            binding.voiceMessageView.root.togglePlayback()
+                        }
                     }
                     onContentDoubleTap = { binding.voiceMessageView.root.handleDoubleTap() }
                 } else {
-                    // TODO: move this out to its own area
-
+                    binding.untrustedView.root.visibility = View.VISIBLE
                     binding.untrustedView.root.bind(
                         message,
+                        message.quote,
                         UntrustedAttachmentView.AttachmentType.AUDIO,
-                        VisibleMessageContentView.getTextColor(context, message)
+                        getTextColor(context, message)
                     )
-                    onContentClick.add { binding.untrustedView.root.showTrustDialog(message.individualRecipient) }
+                    onContentClick.add {
+                        if(message.quote == null) {
+                            binding.untrustedView.root.showTrustDialog(message.individualRecipient)
+                        }
+                    }
                 }
             }
+            //Document
             message is MmsMessageRecord && message.slideDeck.documentSlide != null -> {
                 hideBody = true
                 showQuoteBody = false
@@ -250,7 +275,7 @@ class VisibleMessageContentView : MaterialCardView {
                 if (contactIsTrusted || message.isOutgoing) {
                     binding.documentView.root.bind(
                         message,
-                        VisibleMessageContentView.getTextColor(context, message)
+                        getTextColor(context, message)
                     )
                     //New Line
                     binding.documentView.root.setOnClickListener {
@@ -283,14 +308,21 @@ class VisibleMessageContentView : MaterialCardView {
                         }
                     }
                 } else {
+                    binding.untrustedView.root.visibility = View.VISIBLE
                     binding.untrustedView.root.bind(
                         message,
+                        message.quote,
                         UntrustedAttachmentView.AttachmentType.DOCUMENT,
-                        VisibleMessageContentView.getTextColor(context, message)
+                        getTextColor(context, message)
                     )
-                    onContentClick.add { binding.untrustedView.root.showTrustDialog(message.individualRecipient) }
+                    onContentClick.add {
+                        if(message.quote == null) {
+                            binding.untrustedView.root.showTrustDialog(message.individualRecipient)
+                        }
+                    }
                 }
             }
+            //Image / Video
             message is MmsMessageRecord && message.slideDeck.asAttachments().isNotEmpty() -> {
                 /*
              *    Images / Video attachment
@@ -316,6 +348,10 @@ class VisibleMessageContentView : MaterialCardView {
                         isStart = isStartOfMessageCluster,
                         isEnd = isEndOfMessageCluster
                     )
+                    binding.albumContainer.modifyLayoutParams<ConstraintLayout.LayoutParams> {
+                        horizontalBias = if (message.isOutgoing) 1f else 0f
+                        topMargin = if(message.quote != null) 10 else 0
+                    }
                     onContentClick.add { event ->
                         binding.albumThumbnailView.root.calculateHitObject(event, message, thread, onAttachmentNeedsDownload)
                     }
@@ -323,12 +359,17 @@ class VisibleMessageContentView : MaterialCardView {
                     hideBody = true
                     showQuoteBody = false
                     binding.albumThumbnailView.root.clearViews()
+                    binding.untrustedView.root.visibility = View.VISIBLE
                     binding.untrustedView.root.bind(
                         message,
-                        UntrustedAttachmentView.AttachmentType.MEDIA,
-                        VisibleMessageContentView.getTextColor(context, message)
+                        message.quote,
+                        UntrustedAttachmentView.AttachmentType.MEDIA, getTextColor(context, message)
                     )
-                    onContentClick.add { binding.untrustedView.root.showTrustDialog(message.individualRecipient) }
+                    onContentClick.add {
+                        if(message.quote == null) {
+                            binding.untrustedView.root.showTrustDialog(message.individualRecipient)
+                        }
+                    }
                 }
             }
             message.isOpenGroupInvitation -> {
@@ -338,8 +379,7 @@ class VisibleMessageContentView : MaterialCardView {
                 val data = umd.kind as UpdateMessageData.Kind.OpenGroupInvitation
                 this.data = data
                 binding.openGroupInvitationView.root.bind(
-                    message,
-                    VisibleMessageContentView.getTextColor(context, message)
+                    message, getTextColor(context, message)
                 )
                 onContentClick.add { binding.openGroupInvitationView.root.joinOpenGroup() }
             }
@@ -347,8 +387,7 @@ class VisibleMessageContentView : MaterialCardView {
                 hideBody = true
                 showQuoteBody = false
                 binding.paymentCardView.bind(
-                    message,
-                    VisibleMessageContentView.getTextColor(context, message)
+                    message, getTextColor(context, message)
                 )
             }
         }
@@ -422,6 +461,12 @@ class VisibleMessageContentView : MaterialCardView {
             }
         }
 
+    }
+
+    private val onContentClick: MutableList<((event: MotionEvent) -> Unit)> = mutableListOf()
+
+    fun onContentClick(event: MotionEvent) {
+        onContentClick.forEach { clickHandler -> clickHandler.invoke(event) }
     }
 
     private fun ViewVisibleMessageContentBinding.barrierViewsGone(): Boolean =
@@ -570,22 +615,9 @@ class VisibleMessageContentView : MaterialCardView {
         }
 
         @ColorInt
-        fun getTextColor(context: Context, message: MessageRecord): Int {
-            val isDayUiMode = UiModeUtilities.isDayUiMode(context)
-            val colorID = if (message.isOutgoing) {
-                /*if (isDayUiMode) {
-                    if (message.isFailed) {
-                        R.color.black
-                    } else {
-                        R.color.white
-                    }
-                } else R.color.white*/
-                R.color.white
-            } else {
-                R.color.received_message_text_color
-            }
-            return context.resources.getColorWithID(colorID, context.theme)
-        }
+        fun getTextColor(context: Context, message: MessageRecord): Int  = context.resources.getColorWithID(
+            if (message.isOutgoing) R.color.white else R.color.received_message_text_color,context.theme
+        )
 
         @ColorInt
         fun getTimeTextColor(context: Context, isOutGoing: Boolean): Int {

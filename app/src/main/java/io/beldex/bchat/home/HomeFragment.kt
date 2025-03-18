@@ -673,10 +673,10 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     private fun handlePathsBuiltEvent() { update() }
 
     private fun update() {
-        if (OnionRequestAPI.paths.isNotEmpty()) {
-            binding.hopsWarningLayout.visibility = View.GONE
-        } else {
-            binding.hopsWarningLayout.visibility = View.VISIBLE
+        binding.hopsWarningLayout.visibility = when {
+            OnionRequestAPI.paths.isNotEmpty() -> View.GONE
+            OnionRequestAPI.paths.isEmpty() && CheckOnline.isOnline(requireActivity().applicationContext) -> View.GONE
+            else -> View.VISIBLE
         }
     }
 

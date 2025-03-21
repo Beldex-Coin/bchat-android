@@ -8,7 +8,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Resources
 import android.database.Cursor
@@ -524,6 +523,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private val callDurationFormat = "HH:mm:ss"
     private var uiJob: Job? = null
     private var groupRepository : SecretGroupInfoRepository? = null
+    private var isAudioPlaying: Boolean = false
+    private var audioPlayingIndexInAdapter: Int = -1
 
 
 
@@ -930,6 +931,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val recipient = viewModel.recipient.value ?: return super.onPause()
         /*Hales63*/ // New Line
         if (TextSecurePreferences.getPlayerStatus(requireActivity())) {
+            this.stopVoiceMessages(audioPlayingIndexInAdapter)
+        }
+        /*if (TextSecurePreferences.getPlayerStatus(requireActivity())) {
             TextSecurePreferences.setPlayerStatus(requireActivity(), false)
             val contactDB = DatabaseComponent.get(requireActivity()).bchatContactDatabase()
             val contact = contactDB.getContactWithBchatID(recipient.address.toString())
@@ -953,7 +957,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     selectedView?.onContentClick(it)
                 }
             }
-        }
+        }*/
         super.onPause()
     }
 
@@ -1476,6 +1480,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun startRecordingVoiceMessage() {
+        if(isAudioPlaying){
+            this.stopVoiceMessages(audioPlayingIndexInAdapter)
+        }
         val startTime = callViewModel!!.callStartTime
         if (startTime == -1L) {
             hideAttachmentContainer()
@@ -2287,6 +2294,20 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             binding.conversationRecyclerView.findViewHolderForAdapterPosition(indexInAdapter) as? ConversationAdapter.VisibleMessageViewHolder ?: return
         val visibleMessageView = ViewVisibleMessageBinding.bind(viewHolder.view).visibleMessageView
         visibleMessageView.playVoiceMessage()
+    }
+
+    override fun isAudioPlaying(isPlaying : Boolean, audioPlayingIndex : Int) {
+        isAudioPlaying = isPlaying
+        audioPlayingIndexInAdapter = audioPlayingIndex
+    }
+
+    override fun stopVoiceMessages(indexInAdapter : Int) {
+        if (indexInAdapter < 0 || indexInAdapter >= adapter.itemCount) {
+            return
+        }
+        val viewHolder = binding.conversationRecyclerView.findViewHolderForAdapterPosition(indexInAdapter) as? ConversationAdapter.VisibleMessageViewHolder ?: return
+        val visibleMessageView = ViewVisibleMessageBinding.bind(viewHolder.view).visibleMessageView
+        visibleMessageView.stoppedVoiceMessage()
     }
 
     fun onSearchOpened() {

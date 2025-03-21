@@ -60,6 +60,8 @@ public class AudioSlidePlayer implements SensorEventListener {
   private @Nullable ExoPlayer         mediaPlayer;
   private @Nullable AttachmentServer        audioAttachmentServer;
   private           long                    startTime;
+  private           long                    pausedPosition = 0;
+  private           boolean                 isPaused = false;
 
   public synchronized static AudioSlidePlayer createFor(@NonNull Context context,
                                                         @NonNull AudioSlide slide,
@@ -223,6 +225,23 @@ public class AudioSlidePlayer implements SensorEventListener {
 
     this.mediaPlayer           = null;
     this.audioAttachmentServer = null;
+  }
+
+  public synchronized void pause() {
+    if (mediaPlayer != null && mediaPlayer.getPlayWhenReady()) {
+      mediaPlayer.setPlayWhenReady(false);
+      isPaused = true;
+      pausedPosition = mediaPlayer.getCurrentPosition();
+    }
+  }
+
+  public synchronized void resume() throws IOException {
+    if (mediaPlayer != null && isPaused) {
+      mediaPlayer.setPlayWhenReady(true);
+      isPaused = false;
+    } else if (mediaPlayer == null) {
+      play((double) pausedPosition / getDuration());
+    }
   }
 
   public synchronized static void stopAll() {

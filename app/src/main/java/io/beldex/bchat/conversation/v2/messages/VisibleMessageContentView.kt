@@ -85,7 +85,8 @@ class VisibleMessageContentView : MaterialCardView {
         searchQuery : String?,
         contactIsTrusted : Boolean,
         onAttachmentNeedsDownload : (Long, Long) -> Unit,
-        isSocialGroupRecipient : Boolean
+        isSocialGroupRecipient : Boolean,
+        delegate : VisibleMessageViewDelegate
     ) {
         // Background
         val background = getBackground(message.isOutgoing, isStartOfMessageCluster, isEndOfMessageCluster)
@@ -242,7 +243,8 @@ class VisibleMessageContentView : MaterialCardView {
                     binding.voiceMessageView.root.bind(
                         message,
                         isStartOfMessageCluster,
-                        isEndOfMessageCluster
+                        isEndOfMessageCluster,
+                        delegate
                     )
                     // We have to use onContentClick (rather than a click listener directly on the voice
                     // message view) so as to not interfere with all the other gestures.
@@ -572,6 +574,11 @@ class VisibleMessageContentView : MaterialCardView {
     fun playVoiceMessage() {
         binding.voiceMessageView.root.togglePlayback()
     }
+
+    fun stopVoiceMessage(){
+        binding.voiceMessageView.root.stoppedVoiceMessage()
+    }
+
     // endregion
 
     // region Convenience

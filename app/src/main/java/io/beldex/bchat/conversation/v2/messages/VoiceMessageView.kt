@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.RelativeLayout
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
+import android.widget.Toast
 import androidx.core.view.isVisible
 import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachment
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -50,11 +51,10 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
     private var player: AudioSlidePlayer? = null
     var delegate: VisibleMessageViewDelegate? = null
     var indexInAdapter = -1
-    private var messageId: Int = 0
     private var seekBarUpdateAmount = 0L
     private var audioSeekHandler = Handler()
     private var audioSeekBarRunnable: Runnable = Runnable { updateAudioSeekBar() }
-
+    private var onStopVoice = false
     // region Lifecycle
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -66,10 +66,15 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
             TimeUnit.MILLISECONDS.toMinutes(0),
             TimeUnit.MILLISECONDS.toSeconds(0))
     }
-    // endregion
 
     // region Updating
-    fun bind(message: MmsMessageRecord, isStartOfMessageCluster: Boolean, isEndOfMessageCluster: Boolean) {
+    fun bind(
+        message : MmsMessageRecord,
+        isStartOfMessageCluster : Boolean,
+        isEndOfMessageCluster : Boolean,
+        delegate : VisibleMessageViewDelegate
+    ) {
+        this.delegate = delegate
         binding.voiceMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
         binding.voiceMessageTime.setTextColor(getTimeTextColor(context, message.isOutgoing))
         val audio = message.slideDeck.audioSlide!!
@@ -115,6 +120,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
             attachmentDb.getAttachmentAudioExtras(attachment.attachmentId)?.let { audioExtras ->
                 if (audioExtras.durationMs > 0) {
                     duration = audioExtras.durationMs
+                    seekBarUpdateAmount = duration
                     binding.voiceMessageViewDurationTextView.visibility = View.VISIBLE
                     binding.voiceMessageViewDurationTextView.text = String.format("%01d:%02d",
                         TimeUnit.MILLISECONDS.toMinutes(audioExtras.durationMs),
@@ -131,7 +137,16 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
                 }
             }
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                val progressValue = if(seekBar.progress in 1..99){
+                    "0.${seekBar.progress}"
+                }else if(seekBar.progress >99){
+                    "1.0"
+                }else{
+                    "0.0"
+                }
+                player.seekTo(progressValue.toDouble())
+            }
         })
         binding.voiceMessagePlaybackImageView.setOnClickListener {
             togglePlayback()
@@ -140,6 +155,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
 
     override fun onPlayerStart(player: AudioSlidePlayer) {
         isPlaying = true
+        delegate?.isAudioPlaying(true,indexInAdapter)
     }
 
     override fun onPlayerProgress(player: AudioSlidePlayer, progress: Double, unused: Long) {
@@ -147,7 +163,8 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         if (progress == 1.0) {
             togglePlayback()
             handleProgressChanged(0.0)
-            delegate?.playVoiceMessageAtIndexIfPossible(indexInAdapter + 1)
+            binding.seekbarAudio.progress = 0
+            delegate?.playVoiceMessageAtIndexIfPossible(indexInAdapter - 1)
         } else {
             handleProgressChanged(progress)
         }
@@ -158,14 +175,16 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         binding.voiceMessageViewDurationTextView.text = String.format("%01d:%02d",
             TimeUnit.MILLISECONDS.toMinutes(duration - (progress * duration.toDouble()).roundToLong()),
             TimeUnit.MILLISECONDS.toSeconds(duration - (progress * duration.toDouble()).roundToLong()) % 60)
-        val layoutParams = binding.progressView.layoutParams as RelativeLayout.LayoutParams
-        layoutParams.width = (width.toFloat() * progress.toFloat()).roundToInt()
-        binding.progressView.layoutParams = layoutParams
     }
 
     override fun onPlayerStop(player: AudioSlidePlayer) {
         isPlaying = false
         audioSeekHandler.removeCallbacks(audioSeekBarRunnable)
+        binding.seekbarAudio.progress = 0
+        progress = 0.0
+        binding.voiceMessageViewDurationTextView.text = formatDuration(duration)
+        delegate?.isAudioPlaying(false,indexInAdapter)
+        onStopVoice = false
     }
 
     override fun dispatchDraw(canvas: Canvas) {
@@ -178,21 +197,43 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         binding.voiceMessagePlaybackImageView.setImageResource(iconID)
     }
 
-    // endregion
+    private fun updatePauseIcon() {
+        val iconID = R.drawable.ic_play_audio
+        binding.voiceMessagePlaybackImageView.setImageResource(iconID)
+    }
 
-    // region Interaction
     fun togglePlayback() {
         val player = this.player ?: return
+        if(TextSecurePreferences.getRecordingStatus(context)) {
+            Toast.makeText(context, "Unable to play audio while recording", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if(onStopVoice){
+            if(isPlaying){
+                player.pause()
+                updatePauseIcon()
+             }
+            audioSeekHandler.removeCallbacks(audioSeekBarRunnable)
+            onStopVoice = false
+            return
+        }
         isPlaying = !isPlaying
-        Log.d("Beldex","player status,${isPlaying.toString()}")
         if (isPlaying) {
-            TextSecurePreferences.setPlayerStatus(context,true)
-            player.play(progress)
+            TextSecurePreferences.setPlayerStatus(context, true)
+            if (progress == 1.0 || progress == 0.0) {
+                player.play(0.0)
+            } else {
+                player.resume()
+            }
             updateAudioSeekBar()
         } else {
-            TextSecurePreferences.setPlayerStatus(context,false)
-            player.stop()
-            audioSeekHandler.removeCallbacks(audioSeekBarRunnable)
+            TextSecurePreferences.setPlayerStatus(context, false)
+            if(progress == 1.0) {
+                player.stop()
+                audioSeekHandler.removeCallbacks(audioSeekBarRunnable)
+            }else {
+                player.pause()
+            }
         }
     }
 
@@ -200,13 +241,23 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         val player = this.player ?: return
         player.playbackSpeed = if (player.playbackSpeed == 1.0f) 1.5f else 1.0f
     }
-    // endregion
+    fun stoppedVoiceMessage(){
+        onStopVoice = true
+        togglePlayback()
+    }
 
     private fun updateAudioSeekBar() {
-        audioSeekHandler.postDelayed(audioSeekBarRunnable, seekBarUpdateAmount)
-        if (isPlaying)
+        if (isPlaying) {
             binding.seekbarAudio.progress = (progress * 100).toInt()
+            audioSeekHandler.postDelayed(audioSeekBarRunnable, seekBarUpdateAmount)
+        }
     }
+    private fun formatDuration(ms: Long): String {
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(ms)
+        val seconds = TimeUnit.MILLISECONDS.toSeconds(ms) % 60
+        return String.format(Locale.ROOT, "%01d:%02d", minutes, seconds)
+    }
+    // endregion
 
 }
 

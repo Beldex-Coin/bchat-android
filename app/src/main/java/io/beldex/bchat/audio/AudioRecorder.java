@@ -8,6 +8,7 @@ import android.os.ParcelFileDescriptor;
 import androidx.annotation.NonNull;
 
 import com.beldex.libbchat.utilities.MediaTypes;
+import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libsignal.utilities.Log;
 import android.util.Pair;
 
@@ -47,6 +48,7 @@ public class AudioRecorder {
         if (audioCodec != null) {
           throw new AssertionError("We can only record once at a time.");
         }
+        TextSecurePreferences.setRecordingStatus(context,true);
 
         ParcelFileDescriptor fds[] = ParcelFileDescriptor.createPipe();
 
@@ -67,7 +69,7 @@ public class AudioRecorder {
     Log.i(TAG, "stopRecording()");
 
     final SettableFuture<Pair<Uri, Long>> future = new SettableFuture<>();
-
+    TextSecurePreferences.setRecordingStatus(context,false);
     executor.execute(() -> {
       if (audioCodec == null) {
         sendToFuture(future, new IOException("MediaRecorder was never initialized successfully!"));

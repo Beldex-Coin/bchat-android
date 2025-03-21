@@ -214,7 +214,7 @@ class VisibleMessageView : LinearLayout {
         // Populate content view
         binding.messageContentView.root.indexInAdapter = indexInAdapter
         binding.messageContentView.root.bind(message, isStartOfMessageCluster, isEndOfMessageCluster, glide, thread, searchQuery, message.isOutgoing || isGroupThread || (contact?.isTrusted ?: false),
-            onAttachmentNeedsDownload, thread.isOpenGroupRecipient)
+            onAttachmentNeedsDownload, thread.isOpenGroupRecipient,delegate!!)
         binding.messageContentView.root.delegate = delegate
         onDoubleTap = { binding.messageContentView.root.onContentDoubleTap?.invoke() }
     }
@@ -467,6 +467,9 @@ class VisibleMessageView : LinearLayout {
 
     fun playVoiceMessage() {
         binding.messageContentView.root.playVoiceMessage()
+    }
+    fun stoppedVoiceMessage() {
+        binding.messageContentView.root.stopVoiceMessage()
     }
     // endregion
 }

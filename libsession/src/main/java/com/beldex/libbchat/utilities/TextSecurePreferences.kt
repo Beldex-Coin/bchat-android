@@ -17,6 +17,7 @@ import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_BNS_HOLD
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_LOCAL_PROFILE
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_MUTE_VIDEO
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_REACTION_OVERLAY_VISIBLE
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_VOICE_RECORDING
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.LAST_VACUUM_TIME
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.PREF_DIALOG_CLICKED
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.PREF_DIALOG_IGNORED_COUNT
@@ -272,6 +273,10 @@ interface TextSecurePreferences {
     fun setIsReactionOverlayVisible(isVisible: Boolean)
     fun getReactionOverlayVisible(): Boolean
 
+    fun setRecordingStatus(isRecording: Boolean)
+    fun getRecordingStatus(): Boolean
+
+
 
     companion object {
         val TAG = TextSecurePreferences::class.simpleName
@@ -391,6 +396,7 @@ interface TextSecurePreferences {
         const val IS_BNS_HOLDER = "is_bns_holder"
         const val REFRESH_DYNAMIC_NODES = "refresh_dynamic_nodes"
         const val IS_REACTION_OVERLAY_VISIBLE = "is_reaction_overlay_visible"
+        const val IS_VOICE_RECORDING = "is_voice_recording"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -807,7 +813,7 @@ interface TextSecurePreferences {
 
         @JvmStatic
         fun isScreenSecurityEnabled(context: Context): Boolean {
-            return getBooleanPreference(context, SCREEN_SECURITY_PREF, true)
+            return getBooleanPreference(context, SCREEN_SECURITY_PREF, false)
         }
 
         @JvmStatic
@@ -1450,6 +1456,16 @@ interface TextSecurePreferences {
             return getBooleanPreference(context, IS_REACTION_OVERLAY_VISIBLE, false)
         }
 
+        @JvmStatic
+        fun setRecordingStatus(context: Context,isRecording: Boolean) {
+            setBooleanPreference(context, IS_VOICE_RECORDING, isRecording)
+        }
+
+        @JvmStatic
+        fun getRecordingStatus(context: Context):Boolean {
+            return getBooleanPreference(context, IS_VOICE_RECORDING, false)
+        }
+
     }
 }
 
@@ -1817,7 +1833,7 @@ class AppTextSecurePreferences @Inject constructor(
     }
 
     override fun isScreenSecurityEnabled(): Boolean {
-        return getBooleanPreference(TextSecurePreferences.SCREEN_SECURITY_PREF, true)
+        return getBooleanPreference(TextSecurePreferences.SCREEN_SECURITY_PREF, false)
     }
 
     override fun setScreenSecurityPreference(status:Boolean) {
@@ -2365,5 +2381,13 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun getReactionOverlayVisible() : Boolean {
         return getBooleanPreference(IS_REACTION_OVERLAY_VISIBLE, false)
+    }
+
+    override fun setRecordingStatus(isVisible : Boolean) {
+        setBooleanPreference(IS_VOICE_RECORDING, isVisible)
+    }
+
+    override fun getRecordingStatus() : Boolean {
+        return getBooleanPreference(IS_VOICE_RECORDING, false)
     }
 }

@@ -930,7 +930,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         viewModel.saveDraft(binding.inputBar.text.trim())
         val recipient = viewModel.recipient.value ?: return super.onPause()
         /*Hales63*/ // New Line
-        if (TextSecurePreferences.getPlayerStatus(requireActivity())) {
+        if (isAudioPlaying) {
             this.stopVoiceMessages(audioPlayingIndexInAdapter)
         }
         /*if (TextSecurePreferences.getPlayerStatus(requireActivity())) {

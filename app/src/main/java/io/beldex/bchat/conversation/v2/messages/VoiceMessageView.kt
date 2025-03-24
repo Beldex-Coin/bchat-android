@@ -219,7 +219,6 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         }
         isPlaying = !isPlaying
         if (isPlaying) {
-            TextSecurePreferences.setPlayerStatus(context, true)
             if (progress == 1.0 || progress == 0.0) {
                 player.play(0.0)
             } else {
@@ -227,7 +226,6 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
             }
             updateAudioSeekBar()
         } else {
-            TextSecurePreferences.setPlayerStatus(context, false)
             if(progress == 1.0) {
                 player.stop()
                 audioSeekHandler.removeCallbacks(audioSeekBarRunnable)

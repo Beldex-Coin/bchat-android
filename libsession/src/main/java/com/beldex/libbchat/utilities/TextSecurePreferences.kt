@@ -177,8 +177,6 @@ interface TextSecurePreferences {
     fun getWalletPassword(): String?
     fun setAirdropAnimationStatus(status:Boolean)
     fun getAirdropAnimationStatus(): Boolean
-    fun setPlayerStatus(status:Boolean)
-    fun getPlayerStatus(): Boolean
     fun isCallNotificationsEnabled(): Boolean
     fun setShownCallWarning(): Boolean
     fun setShownCallNotification(): Boolean
@@ -358,7 +356,6 @@ interface TextSecurePreferences {
         const val MY_PASSWORD = "my_password"
         const val MY_ADDRESS = "my_address"
         const val AIRDROP_STATUS = "airdrop_status"
-        const val PLAYER_STATUS = "player_status"
         const val CALL_NOTIFICATIONS_ENABLED = "pref_call_notifications_enabled"
         const val SHOWN_CALL_WARNING = "pref_shown_call_warning" // call warning is user-facing warning of enabling calls
         const val SHOWN_CALL_NOTIFICATION = "pref_shown_call_notification" // call notification is a promp to check privacy settings
@@ -813,7 +810,7 @@ interface TextSecurePreferences {
 
         @JvmStatic
         fun isScreenSecurityEnabled(context: Context): Boolean {
-            return getBooleanPreference(context, SCREEN_SECURITY_PREF, false)
+            return getBooleanPreference(context, SCREEN_SECURITY_PREF, true)
         }
 
         @JvmStatic
@@ -1110,16 +1107,6 @@ interface TextSecurePreferences {
         @JvmStatic
         fun getAirdropAnimationStatus(context: Context): Boolean {
             return getBooleanPreference(context, AIRDROP_STATUS, false)
-        }
-
-        @JvmStatic
-        fun setPlayerStatus(context: Context, status: Boolean) {
-            setBooleanPreference(context, PLAYER_STATUS, status)
-        }
-
-        @JvmStatic
-        fun getPlayerStatus(context: Context): Boolean {
-            return getBooleanPreference(context, PLAYER_STATUS, false)
         }
 
         @JvmStatic
@@ -1693,14 +1680,6 @@ class AppTextSecurePreferences @Inject constructor(
         return getBooleanPreference(TextSecurePreferences.AIRDROP_STATUS, false)
     }
 
-    override fun setPlayerStatus(status: Boolean) {
-        setBooleanPreference(TextSecurePreferences.PLAYER_STATUS,status)
-    }
-
-    override fun getPlayerStatus(): Boolean {
-        return getBooleanPreference(TextSecurePreferences.PLAYER_STATUS, false)
-    }
-
     override fun setProfileAvatarId(id: Int) {
         setIntegerPreference(TextSecurePreferences.PROFILE_AVATAR_ID_PREF, id)
     }
@@ -1833,7 +1812,7 @@ class AppTextSecurePreferences @Inject constructor(
     }
 
     override fun isScreenSecurityEnabled(): Boolean {
-        return getBooleanPreference(TextSecurePreferences.SCREEN_SECURITY_PREF, false)
+        return getBooleanPreference(TextSecurePreferences.SCREEN_SECURITY_PREF, true)
     }
 
     override fun setScreenSecurityPreference(status:Boolean) {

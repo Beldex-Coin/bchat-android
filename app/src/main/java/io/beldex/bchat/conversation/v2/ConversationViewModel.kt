@@ -220,6 +220,7 @@ class ConversationViewModel (
 
     fun deleteForEveryone(message: MessageRecord) = viewModelScope.launch {
         val recipient = recipient.value ?: return@launch
+        stopPlayingAudioMessage(message)
         repository.deleteForEveryone(threadId, recipient, message)
             .onSuccess {
                 Log.d("Beldex", "Deleted message ${message.id} ")

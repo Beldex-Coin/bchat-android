@@ -157,18 +157,23 @@ class VisibleMessageContentView : MaterialCardView {
         var showQuoteBody = false
 
         if (message is MmsMessageRecord && message.quote != null) {
-            if(message.slideDeck.asAttachments().isNotEmpty() && (contactIsTrusted || message.isOutgoing)) {
-                binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-                binding.quoteContainer.layoutParams.width = binding.albumContainer.width
-            } else if(message.slideDeck.documentSlide != null && (contactIsTrusted || message.isOutgoing)) {
-                binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-                binding.quoteContainer.layoutParams.width = binding.documentView.root.width
-            } else if(message.slideDeck.audioSlide != null && (contactIsTrusted || message.isOutgoing)) {
-                binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-                binding.quoteContainer.layoutParams.width = binding.quoteView.root.width
+            if(contactIsTrusted || message.isOutgoing) {
+                if(message.slideDeck.asAttachments().isNotEmpty()) {
+                    binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                    binding.quoteContainer.layoutParams.width = binding.albumContainer.width
+                } else if(message.slideDeck.documentSlide != null) {
+                    binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                    binding.quoteContainer.layoutParams.width = binding.documentView.root.width
+                } else if(message.slideDeck.audioSlide != null) {
+                    binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                    binding.quoteContainer.layoutParams.width = binding.quoteView.root.width
+                } else {
+                    binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                    binding.quoteContainer.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                }
             } else {
-                binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                binding.quoteContainer.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                binding.quoteContainer.layoutParams.width = binding.untrustedView.root.width
             }
             hideBody = true
             showQuoteBody = true

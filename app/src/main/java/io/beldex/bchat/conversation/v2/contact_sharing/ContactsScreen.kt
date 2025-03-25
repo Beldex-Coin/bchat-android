@@ -32,16 +32,24 @@ import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.ui.SearchView
+import io.beldex.bchat.database.model.ThreadRecord
 
 @Composable
 fun ContactsScreen(
     searchQuery: String,
+    contacts: List<ThreadRecord>,
     onQueryChanged: (String) -> Unit,
+    onSend: (List<ThreadRecord>) -> Unit,
+    contactChanged: (ThreadRecord, Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
         topBar = {
-            Row {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
                 Icon(
                     Icons.Default.ArrowBack,
                     contentDescription = ""
@@ -57,14 +65,15 @@ fun ContactsScreen(
         },
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp)
     ) {
         Column(
             modifier = Modifier
                 .padding(it)
+                .padding(
+                    16.dp
+                )
                 .fillMaxSize()
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
 
             SearchView(
                 hint = stringResource(id = R.string.search_contact),
@@ -99,66 +108,17 @@ fun ContactsScreen(
                 modifier = Modifier
                     .weight(1f)
             ) {
-                item {
+                items(contacts.size, key = {index ->
+                    contacts[index].recipient.address}
+                ) { index ->
                     ContactItem(
-                        isSelected = true,
-                        isSharing = false
-                    )
-                }
-                item {
-                    ContactItem(
-                        isSelected = false,
-                        isSharing = false
-                    )
-                }
-                item {
-                    ContactItem(
-                        isSelected = true
-                    )
-                }
-                item {
-                    ContactItem(
-                        isSelected = false
-                    )
-                }
-                item {
-                    ContactItem(
-                        isSelected = false
-                    )
-                }
-                item {
-                    ContactItem(
-                        isSelected = false
-                    )
-                }
-                item {
-                    ContactItem(
-                        isSelected = false
-                    )
-                }
-                item {
-                    ContactItem(
-                        isSelected = false
-                    )
-                }
-                item {
-                    ContactItem(
-                        isSelected = false
-                    )
-                }
-                item {
-                    ContactItem(
-                        isSelected = false
-                    )
-                }
-                item {
-                    ContactItem(
-                        isSelected = false
-                    )
-                }
-                item {
-                    ContactItem(
-                        isSelected = false
+                        isSharing = true,
+                        contact = contacts[index],
+                        contactChanged = { contact, isSelected ->
+                            contact?.let {
+                                contactChanged(contact, isSelected)
+                            }
+                        }
                     )
                 }
             }
@@ -167,7 +127,7 @@ fun ContactsScreen(
 
             PrimaryButton(
                 onClick = {
-
+                    onSend(listOf())
                 },
                 containerColor = MaterialTheme.appColors.primaryButtonColor,
                 modifier = Modifier
@@ -194,7 +154,10 @@ private fun ContactsScreenPreview() {
     BChatTheme {
         ContactsScreen(
             searchQuery = "",
-            onQueryChanged = {}
+            contacts = emptyList(),
+            onQueryChanged = {},
+            contactChanged = {contact, isSelected -> },
+            onSend = {}
         )
     }
 }

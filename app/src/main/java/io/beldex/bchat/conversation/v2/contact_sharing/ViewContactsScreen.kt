@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -51,73 +50,7 @@ fun ViewContactScreen(
             modifier = Modifier
                 .padding(it)
         ) {
-            item {
-                Spacer(
-                    modifier = Modifier.height(16.dp)
-                )
-            }
-            item {
-                ContactItem(
-                    isSelected = true,
-                    isSharing = false
-                )
-            }
-            item {
-                ContactItem(
-                    isSelected = false,
-                    isSharing = false
-                )
-            }
-            item {
-                ContactItem(
-                    isSelected = true
-                )
-            }
-            item {
-                ContactItem(
-                    isSelected = false
-                )
-            }
-            item {
-                ContactItem(
-                    isSelected = false
-                )
-            }
-            item {
-                ContactItem(
-                    isSelected = false
-                )
-            }
-            item {
-                ContactItem(
-                    isSelected = false
-                )
-            }
-            item {
-                ContactItem(
-                    isSelected = false
-                )
-            }
-            item {
-                ContactItem(
-                    isSelected = false
-                )
-            }
-            item {
-                ContactItem(
-                    isSelected = false
-                )
-            }
-            item {
-                ContactItem(
-                    isSelected = false
-                )
-            }
-            item {
-                ContactItem(
-                    isSelected = false
-                )
-            }
+
         }
     }
 }

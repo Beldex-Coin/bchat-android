@@ -74,6 +74,7 @@ import com.beldex.libbchat.messaging.messages.control.DataExtractionNotification
 import com.beldex.libbchat.messaging.messages.control.ExpirationTimerUpdate
 import com.beldex.libbchat.messaging.messages.signal.OutgoingMediaMessage
 import com.beldex.libbchat.messaging.messages.signal.OutgoingTextMessage
+import com.beldex.libbchat.messaging.messages.visible.SharedContact
 import com.beldex.libbchat.messaging.messages.visible.VisibleMessage
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
@@ -177,8 +178,11 @@ import io.beldex.bchat.webrtc.NetworkChangeReceiver
 import io.beldex.bchat.webrtc.WebRTCComposeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
+import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
+import io.beldex.bchat.conversation.v2.contact_sharing.ContactSharingActivity
 import io.beldex.bchat.databinding.FragmentConversationV2Binding
 import io.beldex.bchat.databinding.ViewVisibleMessageBinding
+import io.beldex.bchat.util.serializable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -2215,6 +2219,16 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 ).show()
             }
         }
+        binding.contactButton.setOnClickListener {
+            toggleAttachmentOptions()
+            val intent = Intent(requireContext(), ContactSharingActivity::class.java)
+            contactActivityLauncher.launch(intent)
+        }
+    }
+
+    private val contactActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val contactsList = result.data?.serializable<ArrayList<String>>(ContactSharingActivity.RESULT_CONTACT_TO_SHARE)
+        println(">>>>>${contactsList}")
     }
 
     private fun setUpLinkPreviewObserver() {
@@ -2850,7 +2864,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         attachments: List<Attachment>,
         body: String?,
         quotedMessage: MessageRecord? = null,
-        linkPreview: LinkPreview? = null
+        linkPreview: LinkPreview? = null,
+        contacts: List<ContactModel> = emptyList()
     ) {
         val recipient = viewModel.recipient.value ?: return
         //New Line v32
@@ -2860,6 +2875,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val message = VisibleMessage()
         message.sentTimestamp = MnodeAPI.nowWithOffset
         message.text = body
+        if (contacts.isNotEmpty()) {
+            message.sharedContact = SharedContact(contacts[0].threadId, contacts[0].address.toString(), contacts[0].name)
+        }
         val quote = quotedMessage?.let {
             val quotedAttachments =
                 (it as? MmsMessageRecord)?.slideDeck?.asAttachments() ?: listOf()

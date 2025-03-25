@@ -157,6 +157,12 @@ message DataMessage {
     optional uint32         expirationTimer   = 8;
   }
 
+  message SharedContact {
+    required double         threadId          = 1;
+    required string         address           = 2;
+    required string         name              = 3;
+  }
+
   optional string                    body                      = 1;
   repeated AttachmentPointer         attachments               = 2;
   optional GroupContext              group                     = 3;
@@ -166,11 +172,12 @@ message DataMessage {
   optional uint64                    timestamp                 = 7;
   optional Quote                     quote                     = 8;
   repeated Preview                   preview                   = 10;
-  optional BeldexProfile               profile                 = 101;
+  optional BeldexProfile             profile                 = 101;
   optional OpenGroupInvitation       openGroupInvitation       = 102;
   optional ClosedGroupControlMessage closedGroupControlMessage = 104;
   optional string                    syncTarget                = 105;
   optional Payment                   payment                   = 106;
+  optional SharedContact             sharedContact            = 107;
 }
 
 message CallMessage {

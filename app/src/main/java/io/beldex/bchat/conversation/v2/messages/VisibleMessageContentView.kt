@@ -35,28 +35,32 @@ import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentTransferProgress
 import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachment
 import com.beldex.libbchat.messaging.utilities.UpdateMessageData
+import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.ThemeUtil
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
+import com.bumptech.glide.RequestManager
 import com.codewaves.stickyheadergrid.StickyHeaderGridLayoutManager
 import com.google.android.material.card.MaterialCardView
+import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.conversation.v2.ModalUrlBottomSheet
+import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
+import io.beldex.bchat.conversation.v2.contact_sharing.SharedContactView
 import io.beldex.bchat.conversation.v2.utilities.MentionUtilities
 import io.beldex.bchat.conversation.v2.utilities.ModalURLSpan
 import io.beldex.bchat.conversation.v2.utilities.TextUtilities.getIntersectedModalSpans
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.database.model.MmsMessageRecord
+import io.beldex.bchat.databinding.ViewVisibleMessageContentBinding
 import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.mms.PartAuthority
-import com.bumptech.glide.RequestManager
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.SearchUtil
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.getColorWithID
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ViewVisibleMessageContentBinding
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.util.Locale
 import kotlin.math.roundToInt
@@ -128,6 +132,7 @@ class VisibleMessageContentView : MaterialCardView {
             binding.documentView.root.isVisible = false
             binding.albumThumbnailView.root.isVisible = false
             binding.openGroupInvitationView.root.isVisible = false
+            binding.sharedContactView.isVisible = false
             return
         } else {
             binding.deletedMessageView.root.isVisible = false
@@ -153,11 +158,26 @@ class VisibleMessageContentView : MaterialCardView {
         binding.openGroupInvitationView.root.isVisible = message.isOpenGroupInvitation
         //Payment Tag
         binding.paymentCardView.isVisible = message.isPayment
+        binding.sharedContactView.setContent {
+            BChatTheme {
+                SharedContactView(
+                    contacts = listOf(
+                        ContactModel(
+                            threadId = 1L,
+                            address = Address.fromSerialized("wqertyui313245678iuyjhgnbv"),
+                            name = "vijay1"
+                        )
+                    )
+                )
+            }
+        }
 
         var hideBody = false
         var showQuoteBody = false
 
+        println(">>>>>>>1")
         if (message is MmsMessageRecord && message.quote != null) {
+            println(">>>>>>>12")
             hideBody = true
             showQuoteBody = true
 
@@ -183,6 +203,7 @@ class VisibleMessageContentView : MaterialCardView {
         }
 
         if (message is MmsMessageRecord) {
+            println(">>>>>>>13")
             message.slideDeck.asAttachments().forEach { attach ->
                 val dbAttachment = attach as? DatabaseAttachment ?: return@forEach
                 val attachmentId = dbAttachment.attachmentId.rowId
@@ -203,6 +224,7 @@ class VisibleMessageContentView : MaterialCardView {
 
         when {
             message is MmsMessageRecord && message.linkPreviews.isNotEmpty() -> {
+                println(">>>>>>>14")
                 showQuoteBody = false
                 binding.linkPreviewView.root.bind(
                     message,
@@ -216,6 +238,7 @@ class VisibleMessageContentView : MaterialCardView {
                 // Body text view is inside the link preview for layout convenience
             }
             message is MmsMessageRecord && message.slideDeck.audioSlide != null -> {
+                println(">>>>>>>15")
                 hideBody = true
                 showQuoteBody = false
 
@@ -247,6 +270,7 @@ class VisibleMessageContentView : MaterialCardView {
                 }
             }
             message is MmsMessageRecord && message.slideDeck.documentSlide != null -> {
+                println(">>>>>>>16")
                 hideBody = true
                 showQuoteBody = false
                 // Document attachment
@@ -295,6 +319,7 @@ class VisibleMessageContentView : MaterialCardView {
                 }
             }
             message is MmsMessageRecord && message.slideDeck.asAttachments().isNotEmpty() -> {
+                println(">>>>>>>17")
                 /*
              *    Images / Video attachment
              */
@@ -335,6 +360,7 @@ class VisibleMessageContentView : MaterialCardView {
                 }
             }
             message.isOpenGroupInvitation -> {
+                println(">>>>>>>18")
                 hideBody = true
                 showQuoteBody = false
                 val umd = UpdateMessageData.fromJSON(message.body)!!
@@ -347,6 +373,7 @@ class VisibleMessageContentView : MaterialCardView {
                 onContentClick.add { binding.openGroupInvitationView.root.joinOpenGroup() }
             }
             message.isPayment -> { //Payment Tag
+                println(">>>>>>>19")
                 hideBody = true
                 showQuoteBody = false
                 binding.paymentCardView.bind(

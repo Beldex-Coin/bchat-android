@@ -90,6 +90,15 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:visibility="gone" />
 
+            <!--shared contacts view-->
+            <androidx.compose.ui.platform.ComposeView
+                android:id="@+id/shared_contact_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
             <!--Quote MessageView without TimeView-->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/quote_container"

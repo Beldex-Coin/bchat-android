@@ -462,40 +462,40 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
-                        <ImageView
-                            android:id="@+id/cameraButton"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:src="@drawable/ic_camera_new"
-                            android:contentDescription="@string/camera_option"
-                            android:padding="3dp"/>
+                    <ImageView
+                        android:id="@+id/cameraButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:src="@drawable/ic_camera_new"
+                        android:contentDescription="@string/camera_option"
+                        android:padding="3dp"/>
 
-                        <ImageView
-                            android:id="@+id/imageButton"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginEnd="5dp"
-                            android:src="@drawable/ic_gallery_new"
-                            android:contentDescription="@string/gallery_option"
-                            android:padding="3dp"/>
+                    <ImageView
+                        android:id="@+id/imageButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="5dp"
+                        android:src="@drawable/ic_gallery_new"
+                        android:contentDescription="@string/gallery_option"
+                        android:padding="3dp"/>
 
 
-                        <ImageView
-                            android:id="@+id/documentButton"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginEnd="5dp"
-                            android:src="@drawable/ic_document_new"
-                            android:contentDescription="@string/document_option"
-                            android:padding="3dp"/>
+                    <ImageView
+                        android:id="@+id/documentButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="5dp"
+                        android:src="@drawable/ic_document_new"
+                        android:contentDescription="@string/document_option"
+                        android:padding="3dp"/>
 
                     <ImageView
                         android:id="@+id/gifButton"
@@ -506,8 +506,18 @@
                         android:layout_marginBottom="8dp"
                         android:padding="3dp"
                         android:src="@drawable/ic_gif_new"
-                        android:contentDescription="@string/gif_option"
-                        />
+                        android:contentDescription="@string/gif_option" />
+
+                    <ImageView
+                        android:id="@+id/contactButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:padding="3dp"
+                        android:src="@drawable/ic_contact_picture"
+                        android:contentDescription="@string/gif_option" />
 
                 </LinearLayout>
 

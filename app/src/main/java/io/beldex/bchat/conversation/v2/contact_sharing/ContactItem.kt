@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -19,19 +20,30 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.beldex.bchat.compose_utils.BChatCheckBox
+import io.beldex.bchat.compose_utils.ProfilePictureComponent
+import io.beldex.bchat.compose_utils.ProfilePictureMode
+import io.beldex.bchat.database.model.ThreadRecord
 
 @Composable
 fun ContactItem(
-    isSelected: Boolean,
+    contact: ThreadRecord?,
+    contactChanged: (ThreadRecord?, Boolean) -> Unit,
     modifier: Modifier = Modifier,
     isSharing: Boolean = true
 ) {
+    var checked by remember {
+        mutableStateOf(false)
+    }
     OutlinedCard(
         shape = RoundedCornerShape(50),
         modifier = modifier
@@ -44,21 +56,25 @@ fun ContactItem(
                     8.dp
                 )
         ) {
-//            ProfilePictureComponent(
-//                publicKey = "",
-//                displayName = "",
-//                containerSize = 36.dp,
-//                pictureMode = ProfilePictureMode.SmallPicture
-//            )
-            Box(
-                modifier = Modifier
-                    .weight(0.1f)
-                    .size(36.dp)
-                    .background(
-                        color = Color.Green,
-                        shape = RoundedCornerShape(100)
-                    )
-            )
+            if (contact == null) {
+                Box(
+                    modifier = Modifier
+                        .weight(0.1f)
+                        .size(36.dp)
+                        .background(
+                            color = Color.Green,
+                            shape = RoundedCornerShape(100)
+                        )
+                )
+            }
+            if (contact != null) {
+                ProfilePictureComponent(
+                    publicKey = contact.recipient.address.toString(),
+                    displayName = contact.recipient.name.toString(),
+                    containerSize = 36.dp,
+                    pictureMode = ProfilePictureMode.SmallPicture
+                )
+            }
 
             Spacer(modifier = Modifier.width(16.dp))
 
@@ -67,14 +83,14 @@ fun ContactItem(
                     .weight(if (isSharing) 0.8f else 0.7f)
             ) {
                 Text(
-                    "Name",
+                    contact?.recipient?.name ?: "",
                     style = MaterialTheme.typography.titleMedium
                 )
 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    "asdfghjklqwertyuiozxcvbn3456789dfghj56789",
+                    contact?.recipient?.address?.toString() ?: "",
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.bodySmall
@@ -90,9 +106,10 @@ fun ContactItem(
                         .weight(0.1f)
                 ) {
                     BChatCheckBox(
-                        checked = isSelected,
+                        checked = checked,
                         onCheckedChange = {
-
+                            checked = !checked
+                            contactChanged(contact, checked)
                         }
                     )
                 }

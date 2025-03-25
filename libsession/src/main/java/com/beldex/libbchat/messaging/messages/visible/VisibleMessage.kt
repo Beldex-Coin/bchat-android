@@ -1,6 +1,5 @@
 package com.beldex.libbchat.messaging.messages.visible
 
-import com.goterl.lazysodium.BuildConfig
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.messages.Message
 import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachment
@@ -9,8 +8,7 @@ import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.protos.SignalServiceProtos
 import com.beldex.libsignal.utilities.Log
-import com.fasterxml.jackson.annotation.JsonFormat
-import com.google.protobuf.TextFormat.printToString
+import com.goterl.lazysodium.BuildConfig
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment as SignalAttachment
 
 class VisibleMessage : Message()  {
@@ -28,6 +26,7 @@ class VisibleMessage : Message()  {
     var beldexAddress:String?= null
     //Payment Tag
     var payment: Payment? = null
+    var sharedContact: SharedContact? = null
 
     override val isSelfSendValid: Boolean = true
 
@@ -38,6 +37,7 @@ class VisibleMessage : Message()  {
         if (attachmentIDs.isNotEmpty()) return true
         if (openGroupInvitation != null) return true
         if (payment !=null) return true //Payment Tag
+        if (sharedContact != null) return true
         val text = text?.trim() ?: return false
         if (text.isNotEmpty()) return true
         return false
@@ -80,6 +80,12 @@ class VisibleMessage : Message()  {
                 val payment = Payment.fromProto(paymentProto)
                 result.payment = payment
             }
+            //contact tag
+            val contactProto = if (dataMessage.hasSharedContact()) dataMessage.sharedContact else null
+            if (contactProto != null) {
+                val sharedContacts = SharedContact.fromProto(contactProto)
+                result.sharedContact = sharedContacts
+            }
             // TODO Contact
             val profile = Profile.fromProto(dataMessage)
             if (profile != null) { result.profile = profile }
@@ -118,6 +124,11 @@ class VisibleMessage : Message()  {
         val paymentProto = payment?.toProto()
         if (paymentProto != null) {
             dataMessage.payment = paymentProto
+        }
+        //contacts tag
+        val contactsProto = sharedContact?.toProto()
+        if (contactsProto != null) {
+            dataMessage.sharedContact = contactsProto
         }
         // Attachments
         val database = MessagingModuleConfiguration.shared.messageDataProvider
@@ -175,5 +186,9 @@ class VisibleMessage : Message()  {
 
     fun isMediaMessage(): Boolean {
         return attachmentIDs.isNotEmpty() || quote != null || linkPreview != null
+    }
+
+    fun isContact(): Boolean {
+        return sharedContact != null
     }
 }

@@ -592,6 +592,13 @@
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
 
         <activity
+            android:name=".conversation.v2.contact_sharing.ContactSharingActivity"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
+
+        <activity
             android:name="io.beldex.bchat.home.SearchActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true"

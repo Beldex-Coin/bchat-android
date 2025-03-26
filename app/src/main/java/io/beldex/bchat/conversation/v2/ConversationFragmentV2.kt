@@ -810,6 +810,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun onDestroy() {
         super.onDestroy()
+        //Hales63
+        if (isAudioPlaying) {
+            this.stopVoiceMessages(audioPlayingIndexInAdapter)
+        }
         cancelVoiceMessage()
         isNetworkAvailable = false
         networkChangedReceiver?.unregister(requireContext())
@@ -924,40 +928,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (inProgress) {
             hideProgress()
         }
-
         endActionMode()
         ApplicationContext.getInstance(requireActivity()).messageNotifier.setVisibleThread(-1)
         viewModel.saveDraft(binding.inputBar.text.trim())
-        val recipient = viewModel.recipient.value ?: return super.onPause()
-        /*Hales63*/ // New Line
-        if (isAudioPlaying) {
-            this.stopVoiceMessages(audioPlayingIndexInAdapter)
-        }
-        /*if (TextSecurePreferences.getPlayerStatus(requireActivity())) {
-            TextSecurePreferences.setPlayerStatus(requireActivity(), false)
-            val contactDB = DatabaseComponent.get(requireActivity()).bchatContactDatabase()
-            val contact = contactDB.getContactWithBchatID(recipient.address.toString())
-            val actionMode = this.actionMode
-            if (contact?.isTrusted != null && contact.isTrusted && actionMode == null && selectedEvent != null && selectedView != null) {
-                selectedEvent?.let {
-                    selectedView?.onContentClick(it)
-                }
-                if (selectedMessageRecord?.isOutgoing != null) {
-                    if (selectedMessageRecord?.isOutgoing!!) {
-                        selectedEvent?.let { selectedView?.onContentClick(it) }
-                    }
-                }
-            } else if (contact?.isTrusted == null && selectedMessageRecord?.isOutgoing == false && actionMode == null && selectedEvent != null && selectedView != null) {
-                selectedEvent?.let {
-                    selectedView?.onContentClick(it)
-                }
-            }
-            if (selectedMessageRecord?.isOutgoing != null && selectedMessageRecord?.isOutgoing!! && actionMode == null && selectedEvent != null && selectedView != null) {
-                selectedEvent?.let {
-                    selectedView?.onContentClick(it)
-                }
-            }
-        }*/
         super.onPause()
     }
 

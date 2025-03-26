@@ -5,7 +5,6 @@ import android.content.res.ColorStateList
 import android.graphics.Canvas
 import android.os.Handler
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.widget.RelativeLayout
 import android.widget.SeekBar
@@ -27,7 +26,6 @@ import io.beldex.bchat.util.DateUtils
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
 @AndroidEntryPoint

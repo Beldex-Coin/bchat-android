@@ -7,6 +7,8 @@ import androidx.annotation.Nullable;
 
 import com.beldex.libbchat.messaging.calls.CallMessageType;
 import com.beldex.libbchat.messaging.messages.visible.Payment;
+import com.beldex.libbchat.messaging.messages.visible.SharedContact;
+import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libsignal.messages.SignalServiceGroup;
 import com.beldex.libsignal.utilities.guava.Optional;
 
@@ -50,6 +52,8 @@ public class IncomingTextMessage implements Parcelable {
 
   //Payment Tag
   private boolean isPayment = false;
+  //Shared Contact
+  private boolean isContact = false;
 
   //New Line
   public IncomingTextMessage(Address sender, int senderDeviceId, long sentTimestampMillis,
@@ -122,6 +126,7 @@ public class IncomingTextMessage implements Parcelable {
     this.unidentified         = base.isUnidentified();
     this.isOpenGroupInvitation= base.isOpenGroupInvitation();
     this.isPayment            = base.isPayment(); //Payment Tag
+    this.isContact            = base.isContact();
     this.callType              = base.callType;
   }
 
@@ -155,6 +160,18 @@ public class IncomingTextMessage implements Parcelable {
     String body = UpdateMessageData.Companion.buildPayment(amount, txnId).toJSON();
     IncomingTextMessage incomingTextMessage = new IncomingTextMessage(sender, 1, sentTimestamp, body, Optional.absent(), expiresInMillis, false);
     incomingTextMessage.isPayment = true;
+    return incomingTextMessage;
+  }
+
+  public static IncomingTextMessage fromSharedContact(SharedContact contact, Address sender, Long sentTimestamp, long expiresInMillis) {
+    long threadId = contact.getThreadId();
+    String address = contact.getAddress();
+    String name = contact.getName();
+    if (threadId == -1 || address == null || name == null) { return null; }
+    // FIXME: Doing toJSON() to get the body here is weird
+    String body = UpdateMessageData.Companion.buildSharedContact(threadId, address, name).toJSON();
+    IncomingTextMessage incomingTextMessage = new IncomingTextMessage(sender, 1,  sentTimestamp, body, Optional.absent(),  expiresInMillis, false);
+    incomingTextMessage.isContact = true;
     return incomingTextMessage;
   }
 
@@ -231,6 +248,8 @@ public class IncomingTextMessage implements Parcelable {
   //Payment Tag
   public boolean isPayment() { return isPayment; }
 
+  public boolean isContact() { return isContact; }
+
   public boolean isCallInfo() {
     int callMessageTypeLength = CallMessageType.values().length;
     return callType >= 0 && callType < callMessageTypeLength;
@@ -264,6 +283,7 @@ public class IncomingTextMessage implements Parcelable {
     out.writeInt(unidentified ? 1 : 0);
     out.writeInt(isOpenGroupInvitation ? 1 : 0);
     out.writeInt(isPayment ? 1 : 0); //Payment Tag
+    out.writeInt(isContact ? 1 : 0); //Payment Tag
     out.writeInt(callType);
   }
 }

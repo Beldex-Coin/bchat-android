@@ -30,7 +30,7 @@ class ContactSharingActivity: ComponentActivity() {
                             name = contact.recipient.name ?: ""
                         )
                     }))
-                    setResult(Activity.RESULT_OK, resultIntent)
+                    setResult(RESULT_OK, resultIntent)
                     finish()
                 }
 

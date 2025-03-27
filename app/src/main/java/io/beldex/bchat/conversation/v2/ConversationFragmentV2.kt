@@ -8,7 +8,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Resources
 import android.database.Cursor
@@ -30,7 +29,6 @@ import android.text.Spanned
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.util.Log
 import android.util.Pair
 import android.util.TypedValue
@@ -94,10 +92,17 @@ import com.beldex.libsignal.crypto.MnemonicCodec
 import com.beldex.libsignal.utilities.ListenableFuture
 import com.beldex.libsignal.utilities.guava.Optional
 import com.beldex.libsignal.utilities.hexEncodedPrivateKey
+import com.bumptech.glide.Glide
+import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.ApplicationContext
+import io.beldex.bchat.R
 import io.beldex.bchat.audio.AudioRecorder
+import io.beldex.bchat.compose_utils.ComposeDialogContainer
+import io.beldex.bchat.compose_utils.DialogType
 import io.beldex.bchat.contacts.SelectContactsActivity
 import io.beldex.bchat.contactshare.SimpleTextWatcher
+import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
+import io.beldex.bchat.conversation.v2.contact_sharing.ContactSharingActivity
 import io.beldex.bchat.conversation.v2.dialogs.LinkPreviewDialog
 import io.beldex.bchat.conversation.v2.dialogs.SendSeedDialog
 import io.beldex.bchat.conversation.v2.input_bar.InputBarButton
@@ -125,6 +130,8 @@ import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.database.model.MmsMessageRecord
 import io.beldex.bchat.database.model.ThreadRecord
+import io.beldex.bchat.databinding.FragmentConversationV2Binding
+import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import io.beldex.bchat.delegates.WalletDelegates
 import io.beldex.bchat.delegates.WalletDelegatesImpl
 import io.beldex.bchat.dependencies.DatabaseComponent
@@ -140,7 +147,6 @@ import io.beldex.bchat.mediasend.Media
 import io.beldex.bchat.mediasend.MediaSendActivity
 import io.beldex.bchat.mms.AudioSlide
 import io.beldex.bchat.mms.GifSlide
-import com.bumptech.glide.Glide
 import io.beldex.bchat.mms.ImageSlide
 import io.beldex.bchat.mms.MediaConstraints
 import io.beldex.bchat.mms.Slide
@@ -164,6 +170,7 @@ import io.beldex.bchat.util.SaveAttachmentTask
 import io.beldex.bchat.util.getColorWithID
 import io.beldex.bchat.util.isValidString
 import io.beldex.bchat.util.parcelable
+import io.beldex.bchat.util.serializable
 import io.beldex.bchat.util.slidetoact.SlideToActView
 import io.beldex.bchat.util.slidetoact.SlideToActView.OnSlideCompleteListener
 import io.beldex.bchat.util.toPx
@@ -176,13 +183,6 @@ import io.beldex.bchat.wallet.utils.pincodeview.managers.LockManager
 import io.beldex.bchat.webrtc.CallViewModel
 import io.beldex.bchat.webrtc.NetworkChangeReceiver
 import io.beldex.bchat.webrtc.WebRTCComposeActivity
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.R
-import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
-import io.beldex.bchat.conversation.v2.contact_sharing.ContactSharingActivity
-import io.beldex.bchat.databinding.FragmentConversationV2Binding
-import io.beldex.bchat.databinding.ViewVisibleMessageBinding
-import io.beldex.bchat.util.serializable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -1989,6 +1989,22 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.conversationRecyclerView.scrollToPosition(lastSeenItemPosition)
     }
 
+    override fun chatWithContact(contact: ContactModel) {
+        val chatConfirmationDialog = ComposeDialogContainer(
+            dialogType = DialogType.ChatWithContactConfirmation,
+            onConfirm = {
+                Toast.makeText(requireContext(), "Opening New chat", Toast.LENGTH_SHORT).show()
+            },
+            onCancel = {}
+        )
+        chatConfirmationDialog.apply {
+            arguments = Bundle().apply {
+                putString(ConversationActionDialog.EXTRA_ARGUMENT_1, contact.name)
+            }
+        }
+        chatConfirmationDialog.show(childFragmentManager, ComposeDialogContainer.TAG)
+    }
+
     fun playVoiceMessageAtIndexIfPossible(indexInAdapter: Int) {
         if (indexInAdapter < 0 || indexInAdapter >= adapter.itemCount) {
             return
@@ -2227,8 +2243,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private val contactActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        val contactsList = result.data?.serializable<ArrayList<String>>(ContactSharingActivity.RESULT_CONTACT_TO_SHARE)
-        println(">>>>>${contactsList}")
+        if (result.resultCode == Activity.RESULT_OK) {
+            val contactsList =
+                result.data?.serializable<ArrayList<ContactModel>>(ContactSharingActivity.RESULT_CONTACT_TO_SHARE)
+            shareContact(contactsList?.toList() ?: listOf())
+        }
     }
 
     private fun setUpLinkPreviewObserver() {
@@ -2972,6 +2991,27 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         // Put the message in the database
         message.id = viewModel.insertMessageOutBoxSMS(outgoingTextMessage, message.sentTimestamp)
 
+        // Send it
+        MessageSender.send(message, recipient.address)
+        // Send a typing stopped message
+        ApplicationContext.getInstance(requireActivity()).typingStatusSender.onTypingStopped(
+            viewModel.threadId
+        )
+    }
+
+    private fun shareContact(contacts: List<ContactModel>) {
+        val recipient = viewModel.recipient.value ?: return
+        //New Line v32
+        processMessageRequestApproval()
+
+        // Create the message
+        val message = VisibleMessage()
+        message.sentTimestamp = MnodeAPI.nowWithOffset
+        val contact = SharedContact(contacts[0].threadId, contacts[0].address.serialize(), contacts[0].name)
+        message.sharedContact = contact
+        val outgoingTextMessage = OutgoingTextMessage.fromSharedContact(contact, viewModel.recipient.value, message.sentTimestamp)
+        // Put the message in the database
+        message.id = viewModel.insertMessageOutBoxSMS(outgoingTextMessage, message.sentTimestamp)
         // Send it
         MessageSender.send(message, recipient.address)
         // Send a typing stopped message

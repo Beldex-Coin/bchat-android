@@ -87,6 +87,8 @@ public interface MmsSmsColumns {
 
     //Payment Tag
     protected static final long PAYMENT_BIT = 0x0500000;
+    protected static final long CONTACTS_BIT = 0x1000000;
+
 
     // Encrypted Storage Information XXX
     public    static final long ENCRYPTION_MASK                  = 0xFF000000;
@@ -237,6 +239,10 @@ public interface MmsSmsColumns {
     //Payment Tag
     public static boolean isPayment(long type) {
       return (type & PAYMENT_BIT) != 0;
+    }
+
+    public static boolean isContact(long type) {
+      return (type & CONTACTS_BIT) == 0x1000000;
     }
 
     public static boolean isIncomingCall(long type) {

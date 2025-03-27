@@ -1,23 +1,29 @@
 package com.beldex.libbchat.messaging.sending_receiving
 
-import nl.komponents.kovenant.Promise
-import nl.komponents.kovenant.deferred
-import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.jobs.JobQueue
 import com.beldex.libbchat.messaging.jobs.MessageSendJob
 import com.beldex.libbchat.messaging.jobs.NotifyPNServerJob
 import com.beldex.libbchat.messaging.messages.Destination
 import com.beldex.libbchat.messaging.messages.Message
-import com.beldex.libbchat.messaging.messages.control.*
-import com.beldex.libbchat.messaging.messages.visible.*
-import com.beldex.libbchat.messaging.open_groups.*
+import com.beldex.libbchat.messaging.messages.control.CallMessage
+import com.beldex.libbchat.messaging.messages.control.ClosedGroupControlMessage
+import com.beldex.libbchat.messaging.messages.control.ConfigurationMessage
+import com.beldex.libbchat.messaging.messages.control.ExpirationTimerUpdate
+import com.beldex.libbchat.messaging.messages.control.UnsendRequest
+import com.beldex.libbchat.messaging.messages.visible.LinkPreview
+import com.beldex.libbchat.messaging.messages.visible.Quote
+import com.beldex.libbchat.messaging.messages.visible.VisibleMessage
+import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
+import com.beldex.libbchat.messaging.open_groups.OpenGroupMessageV2
 import com.beldex.libbchat.messaging.utilities.MessageWrapper
-import com.beldex.libbchat.mnode.RawResponsePromise
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.mnode.MnodeMessage
 import com.beldex.libbchat.mnode.MnodeModule
+import com.beldex.libbchat.mnode.RawResponsePromise
 import com.beldex.libbchat.utilities.Address
+import com.beldex.libbchat.utilities.Device
+import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libbchat.utilities.SSKEnvironment
 import com.beldex.libsignal.crypto.PushTransportDetails
 import com.beldex.libsignal.protos.SignalServiceProtos
@@ -27,11 +33,12 @@ import com.beldex.libsignal.utilities.Namespace
 import com.beldex.libsignal.utilities.defaultRequiresAuth
 import com.beldex.libsignal.utilities.hasNamespaces
 import com.beldex.libsignal.utilities.hexEncodedPublicKey
+import nl.komponents.kovenant.Promise
+import nl.komponents.kovenant.deferred
 import java.util.concurrent.atomic.AtomicInteger
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment as SignalAttachment
 import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview as SignalLinkPreview
 import com.beldex.libbchat.messaging.sending_receiving.quotes.QuoteModel as SignalQuote
-import com.beldex.libbchat.utilities.Device
 
 object MessageSender {
 

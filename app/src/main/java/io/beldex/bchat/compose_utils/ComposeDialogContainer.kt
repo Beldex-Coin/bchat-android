@@ -8,7 +8,9 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.DialogFragment
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import io.beldex.bchat.R
 import io.beldex.bchat.conversation.v2.dialogs.LeaveGroupDialog
+import io.beldex.bchat.conversation.v2.dialogs.UnblockUserDialog
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.home.NotificationSettingDialog
 import io.beldex.bchat.my_account.ui.dialogs.DeleteChatConfirmationDialog
@@ -17,7 +19,6 @@ import io.beldex.bchat.my_account.ui.dialogs.ProfilePicturePopup
 import io.beldex.bchat.my_account.ui.dialogs.WalletSyncingDialog
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
-import io.beldex.bchat.R
 
 enum class DialogType {
     PermissionDialog,
@@ -26,7 +27,8 @@ enum class DialogType {
     DeleteChat,
     LeaveGroup,
     NotificationSettings,
-    Settings
+    Settings,
+    ChatWithContactConfirmation
 }
 
 class ComposeDialogContainer(
@@ -185,6 +187,24 @@ class ComposeDialogContainer(
                                 currentValue = option[data ?: 0],
                                 onValueChanged = { _, index ->
                                     onConfirmWithData(index)
+                                    dismiss()
+                                }
+                            )
+                        }
+                    }
+                    DialogType.ChatWithContactConfirmation -> {
+                        BChatTheme(
+                            darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
+                        ) {
+                            UnblockUserDialog(
+                                title = argument1 ?: "",
+                                message = stringResource(id = R.string.chat_with_contact_confirmation),
+                                positiveButtonTitle = stringResource(id = R.string.chat),
+                                onAccept = {
+                                    dismiss()
+                                    onConfirm()
+                                },
+                                onCancel = {
                                     dismiss()
                                 }
                             )

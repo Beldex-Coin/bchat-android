@@ -23,6 +23,15 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -45,6 +54,8 @@ import com.codewaves.stickyheadergrid.StickyHeaderGridLayoutManager
 import com.google.android.material.card.MaterialCardView
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.compose_utils.TextColor
+import io.beldex.bchat.compose_utils.noRippleCallback
 import io.beldex.bchat.conversation.v2.ModalUrlBottomSheet
 import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
 import io.beldex.bchat.conversation.v2.contact_sharing.SharedContactView
@@ -132,7 +143,7 @@ class VisibleMessageContentView : MaterialCardView {
             binding.documentView.root.isVisible = false
             binding.albumThumbnailView.root.isVisible = false
             binding.openGroupInvitationView.root.isVisible = false
-            binding.sharedContactView.isVisible = false
+            binding.contactView.isVisible = false
             return
         } else {
             binding.deletedMessageView.root.isVisible = false
@@ -158,26 +169,13 @@ class VisibleMessageContentView : MaterialCardView {
         binding.openGroupInvitationView.root.isVisible = message.isOpenGroupInvitation
         //Payment Tag
         binding.paymentCardView.isVisible = message.isPayment
-        binding.sharedContactView.setContent {
-            BChatTheme {
-                SharedContactView(
-                    contacts = listOf(
-                        ContactModel(
-                            threadId = 1L,
-                            address = Address.fromSerialized("wqertyui313245678iuyjhgnbv"),
-                            name = "vijay1"
-                        )
-                    )
-                )
-            }
-        }
+        //shared contact
+        binding.contactView.isVisible = message.isSharedContact
 
         var hideBody = false
         var showQuoteBody = false
 
-        println(">>>>>>>1")
         if (message is MmsMessageRecord && message.quote != null) {
-            println(">>>>>>>12")
             hideBody = true
             showQuoteBody = true
 
@@ -203,7 +201,6 @@ class VisibleMessageContentView : MaterialCardView {
         }
 
         if (message is MmsMessageRecord) {
-            println(">>>>>>>13")
             message.slideDeck.asAttachments().forEach { attach ->
                 val dbAttachment = attach as? DatabaseAttachment ?: return@forEach
                 val attachmentId = dbAttachment.attachmentId.rowId
@@ -224,7 +221,6 @@ class VisibleMessageContentView : MaterialCardView {
 
         when {
             message is MmsMessageRecord && message.linkPreviews.isNotEmpty() -> {
-                println(">>>>>>>14")
                 showQuoteBody = false
                 binding.linkPreviewView.root.bind(
                     message,
@@ -238,7 +234,6 @@ class VisibleMessageContentView : MaterialCardView {
                 // Body text view is inside the link preview for layout convenience
             }
             message is MmsMessageRecord && message.slideDeck.audioSlide != null -> {
-                println(">>>>>>>15")
                 hideBody = true
                 showQuoteBody = false
 
@@ -270,7 +265,6 @@ class VisibleMessageContentView : MaterialCardView {
                 }
             }
             message is MmsMessageRecord && message.slideDeck.documentSlide != null -> {
-                println(">>>>>>>16")
                 hideBody = true
                 showQuoteBody = false
                 // Document attachment
@@ -319,7 +313,6 @@ class VisibleMessageContentView : MaterialCardView {
                 }
             }
             message is MmsMessageRecord && message.slideDeck.asAttachments().isNotEmpty() -> {
-                println(">>>>>>>17")
                 /*
              *    Images / Video attachment
              */
@@ -360,7 +353,6 @@ class VisibleMessageContentView : MaterialCardView {
                 }
             }
             message.isOpenGroupInvitation -> {
-                println(">>>>>>>18")
                 hideBody = true
                 showQuoteBody = false
                 val umd = UpdateMessageData.fromJSON(message.body)!!
@@ -373,7 +365,7 @@ class VisibleMessageContentView : MaterialCardView {
                 onContentClick.add { binding.openGroupInvitationView.root.joinOpenGroup() }
             }
             message.isPayment -> { //Payment Tag
-                println(">>>>>>>19")
+                val umd = UpdateMessageData.fromJSON(message.body)!!
                 hideBody = true
                 showQuoteBody = false
                 binding.paymentCardView.bind(
@@ -381,9 +373,64 @@ class VisibleMessageContentView : MaterialCardView {
                     VisibleMessageContentView.getTextColor(context, message)
                 )
             }
+            message.isSharedContact -> {
+                hideBody = true
+                showQuoteBody = false
+                val umd = UpdateMessageData.fromJSON(message.body)!!
+                val data = umd.kind as UpdateMessageData.Kind.SharedContact
+//                binding.contactView.bind(
+//                    message
+//                )
+                binding.contactView.setContent {
+                    BChatTheme {
+                        val contact = ContactModel(
+                            threadId = data.threadId,
+                            address = Address.fromSerialized(data.address),
+                            name = data.name
+                        )
+                        val configuration = LocalConfiguration.current
+                        val screenWidth = configuration.screenWidthDp.dp
+                        val cardBackgroundColor by remember(message) {
+                            val backgroundColor = if (message.isOutgoing) {
+                                R.color.outgoing_call_background
+                            } else {
+                                R.color.received_call_card_background
+                            }
+                            mutableIntStateOf(
+                                backgroundColor
+                            )
+                        }
+                        val onContactClicked: (ContactModel) -> Unit = { model ->
+                            delegate?.chatWithContact(model)
+                        }
+                        SharedContactView(
+                            contacts = listOf(
+                                contact
+                            ),
+                            backgroundColor = colorResource(cardBackgroundColor),
+                            titleColor = colorResource(
+                                if (message.isOutgoing) {
+                                    R.color.white
+                                } else {
+                                    R.color.received_message_text_color
+                                }
+                            ),
+                            subtitleColor = if (message.isOutgoing) {
+                                TextColor
+                            } else {
+                                colorResource(R.color.received_message_text_color)
+                            },
+                            modifier = Modifier
+                                .width(screenWidth * 0.7f)
+                                .padding(8.dp)
+                                .noRippleCallback {
+                                    onContactClicked(contact)
+                                }
+                        )
+                    }
+                }
+            }
         }
-
-
 
         binding.bodyTextView.isVisible = message.body.isNotEmpty() && !hideBody
         binding.bodyTextViewLayout.isVisible = message.body.isNotEmpty() && !hideBody
@@ -393,7 +440,6 @@ class VisibleMessageContentView : MaterialCardView {
         binding.quoteBodyTextViewLayout.isVisible = message.body.isNotEmpty() && showQuoteBody
         binding.quoteShortMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
         binding.quoteShortMessageTime.setTextColor(getTimeTextColor(context, message.isOutgoing))
-
 
         if(binding.albumThumbnailView.root.isVisible){
             val params: ConstraintLayout.LayoutParams = binding.bodyTextViewLayout.layoutParams as ConstraintLayout.LayoutParams
@@ -659,4 +705,5 @@ class VisibleMessageContentView : MaterialCardView {
 interface VisibleMessageContentViewDelegate {
 
     fun scrollToMessageIfPossible(timestamp: Long)
+    fun chatWithContact(contact: ContactModel)
 }

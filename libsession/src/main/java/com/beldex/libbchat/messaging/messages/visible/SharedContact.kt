@@ -5,12 +5,12 @@ import com.beldex.libsignal.utilities.Log
 
 class SharedContact() {
 
-    var threadId: Long? = null
+    var threadId: Long = -1
     var address: String? = null
     var name: String? = null
 
     fun isValid(): Boolean {
-        return (threadId != null && address != null && name != null)
+        return (threadId != -1L && address != null && name != null)
     }
 
     companion object {
@@ -22,14 +22,14 @@ class SharedContact() {
     }
 
     constructor(threadId: Long?, address: String?, name: String?): this() {
-        this.threadId = threadId
+        this.threadId = threadId ?: -1
         this.address = address
         this.name = name
     }
 
     fun toProto(): SignalServiceProtos.DataMessage.SharedContact? {
         val contactProto = SignalServiceProtos.DataMessage.SharedContact.newBuilder()
-        contactProto.threadId = threadId?.toDouble() ?: 0.0
+        contactProto.threadId = threadId.toDouble()
         contactProto.address = address
         contactProto.name = name
         return try {

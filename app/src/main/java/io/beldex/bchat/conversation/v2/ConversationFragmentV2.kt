@@ -810,10 +810,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun onDestroy() {
         super.onDestroy()
-        //Hales63
-        if (isAudioPlaying) {
-            this.stopVoiceMessages(audioPlayingIndexInAdapter)
-        }
         cancelVoiceMessage()
         isNetworkAvailable = false
         networkChangedReceiver?.unregister(requireContext())
@@ -931,6 +927,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         endActionMode()
         ApplicationContext.getInstance(requireActivity()).messageNotifier.setVisibleThread(-1)
         viewModel.saveDraft(binding.inputBar.text.trim())
+        //Hales63
+        if (isAudioPlaying) {
+            this.stopVoiceMessages(audioPlayingIndexInAdapter)
+        }
         super.onPause()
     }
 

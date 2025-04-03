@@ -310,6 +310,9 @@ class VisibleMessageView : LinearLayout {
                 binding.expirationTimerView.setPercentComplete(0.0f)
             }
         } else {
+            if(message.isSent) {
+                binding.visibleMessageView.onPlayerStop()
+            }
             binding.expirationTimerView.isInvisible = true
         }
         container.requestLayout()
@@ -470,6 +473,9 @@ class VisibleMessageView : LinearLayout {
     }
     fun stoppedVoiceMessage() {
         binding.messageContentView.root.stopVoiceMessage()
+    }
+    private fun onPlayerStop(){
+        binding.messageContentView.root.onPlayerStop()
     }
     // endregion
 }

@@ -51,7 +51,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
     var indexInAdapter = -1
     private var seekBarUpdateAmount = 0L
     private var audioSeekHandler = Handler()
-    private var audioSeekBarRunnable: Runnable = Runnable { updateAudioSeekBar() }
+    private var audioSeekBarRunnable: Runnable = Runnable { updateAudioSeekBar(false) }
     private var onStopVoice = false
     // region Lifecycle
     constructor(context: Context) : super(context)
@@ -156,8 +156,16 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         delegate?.isAudioPlaying(true,indexInAdapter)
     }
 
+    override fun onPlayerPause(player: AudioSlidePlayer) {
+        isPlaying = false
+        delegate?.isAudioPlaying(false,indexInAdapter)
+        binding.seekbarAudio.progress = (player.progress * 100).toInt()
+    }
+
     override fun onPlayerProgress(player: AudioSlidePlayer, progress: Double, unused: Long) {
-        binding.seekbarAudio.progress = (progress * 100).toInt()
+        if (this.player != null) {
+            binding.seekbarAudio.progress = (progress * 100).toInt()
+        }
         if (progress == 1.0) {
             togglePlayback()
             handleProgressChanged(0.0)
@@ -222,7 +230,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
             } else {
                 player.resume()
             }
-            updateAudioSeekBar()
+            updateAudioSeekBar(isPlaying)
         } else {
             if(progress == 1.0) {
                 player.stop()
@@ -242,7 +250,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         togglePlayback()
     }
 
-    private fun updateAudioSeekBar() {
+    private fun updateAudioSeekBar(isPlaying : Boolean) {
         if (isPlaying) {
             binding.seekbarAudio.progress = (progress * 100).toInt()
             audioSeekHandler.postDelayed(audioSeekBarRunnable, seekBarUpdateAmount)

@@ -286,13 +286,15 @@ class VisibleMessageContentView : MaterialCardView {
                     )
                     //New Line
                     binding.documentView.root.setOnClickListener {
-                        if (message.slideDeck.documentSlide!!.uri != null) {
-                            val intent = Intent(Intent.ACTION_VIEW)
-                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                            intent.setDataAndType(
-                                PartAuthority.getAttachmentPublicUri(message.slideDeck.documentSlide!!.uri),
-                                message.slideDeck.documentSlide!!.contentType
-                            )
+                        val documentSlide = message.slideDeck.documentSlide
+                        if (documentSlide != null && documentSlide.uri != null) {
+                            val intent = Intent(Intent.ACTION_VIEW).apply {
+                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                setDataAndType(
+                                    PartAuthority.getAttachmentPublicUri(documentSlide.uri),
+                                    documentSlide.contentType
+                                )
+                            }
                             try {
                                 context.startActivity(intent)
                             } catch (anfe: ActivityNotFoundException) {

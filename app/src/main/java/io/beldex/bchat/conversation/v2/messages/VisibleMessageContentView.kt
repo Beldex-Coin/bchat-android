@@ -586,10 +586,6 @@ class VisibleMessageContentView : MaterialCardView {
         binding.voiceMessageView.root.stoppedVoiceMessage()
     }
 
-    fun onPlayerStop(){
-        binding.voiceMessageView.root.onPlayerStop()
-    }
-
     // endregion
 
     // region Convenience

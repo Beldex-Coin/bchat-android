@@ -156,12 +156,6 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         delegate?.isAudioPlaying(true,indexInAdapter)
     }
 
-    override fun onPlayerPause(player: AudioSlidePlayer) {
-        isPlaying = false
-        delegate?.isAudioPlaying(false,indexInAdapter)
-        binding.seekbarAudio.progress = (player.progress * 100).toInt()
-    }
-
     override fun onPlayerProgress(player: AudioSlidePlayer, progress: Double, unused: Long) {
         if (this.player != null) {
             binding.seekbarAudio.progress = (progress * 100).toInt()
@@ -185,7 +179,12 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
 
     override fun onPlayerStop(player: AudioSlidePlayer) {
         isPlaying = false
-        onStop()
+        audioSeekHandler.removeCallbacks(audioSeekBarRunnable)
+        binding.seekbarAudio.progress = 0
+        progress = 0.0
+        binding.voiceMessageViewDurationTextView.text = formatDuration(duration)
+        delegate?.isAudioPlaying(false,indexInAdapter)
+        onStopVoice = false
     }
 
     override fun dispatchDraw(canvas: Canvas) {
@@ -234,24 +233,6 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
                 player.pause()
             }
         }
-    }
-
-    fun onPlayerStop(){
-        val player = this.player ?: return
-        if(isPlaying) {
-            isPlaying = !isPlaying
-            player.stop()
-            onStop()
-        }
-    }
-
-    private fun onStop() {
-        audioSeekHandler.removeCallbacks(audioSeekBarRunnable)
-        binding.seekbarAudio.progress = 0
-        progress = 0.0
-        binding.voiceMessageViewDurationTextView.text = formatDuration(duration)
-        delegate?.isAudioPlaying(false,indexInAdapter)
-        onStopVoice = false
     }
 
     fun handleDoubleTap() {

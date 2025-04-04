@@ -268,7 +268,7 @@ public class AudioSlidePlayer implements SensorEventListener {
     this.listener = new WeakReference<>(listener);
 
     if (this.mediaPlayer != null && this.mediaPlayer.getPlaybackState() == Player.STATE_READY) {
-      notifyOnPause();
+      notifyOnStart();
     }
   }
 
@@ -309,10 +309,6 @@ public class AudioSlidePlayer implements SensorEventListener {
     Util.runOnMain(() -> getListener().onPlayerStart(AudioSlidePlayer.this));
   }
 
-  private void notifyOnPause() {
-    Util.runOnMain(() -> getListener().onPlayerPause(AudioSlidePlayer.this));
-  }
-
   private void notifyOnStop() {
     Util.runOnMain(() -> getListener().onPlayerStop(AudioSlidePlayer.this));
   }
@@ -328,8 +324,6 @@ public class AudioSlidePlayer implements SensorEventListener {
     else                  return new Listener() {
       @Override
       public void onPlayerStart(@NotNull AudioSlidePlayer player) { }
-      @Override
-      public void onPlayerPause(@NotNull AudioSlidePlayer player) { }
       @Override
       public void onPlayerStop(@NotNull AudioSlidePlayer player) { }
       @Override
@@ -400,7 +394,6 @@ public class AudioSlidePlayer implements SensorEventListener {
 
   public interface Listener {
     void onPlayerStart(@NonNull AudioSlidePlayer player);
-    void onPlayerPause(@NonNull AudioSlidePlayer player);
     void onPlayerStop(@NonNull AudioSlidePlayer player);
     void onPlayerProgress(@NonNull AudioSlidePlayer player, double progress, long millis);
   }

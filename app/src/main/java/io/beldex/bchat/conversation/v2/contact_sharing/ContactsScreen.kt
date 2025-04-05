@@ -31,6 +31,7 @@ import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.noRippleCallback
 import io.beldex.bchat.compose_utils.ui.SearchView
 import io.beldex.bchat.database.model.ThreadRecord
 
@@ -41,6 +42,7 @@ fun ContactsScreen(
     onQueryChanged: (String) -> Unit,
     onSend: (List<ThreadRecord>) -> Unit,
     contactChanged: (ThreadRecord, Boolean) -> Unit,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -52,7 +54,11 @@ fun ContactsScreen(
             ) {
                 Icon(
                     Icons.Default.ArrowBack,
-                    contentDescription = ""
+                    contentDescription = "",
+                    modifier = Modifier
+                        .noRippleCallback {
+                            onBack()
+                        }
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))
@@ -157,6 +163,7 @@ private fun ContactsScreenPreview() {
             contacts = emptyList(),
             onQueryChanged = {},
             contactChanged = {contact, isSelected -> },
+            onBack = {},
             onSend = {}
         )
     }

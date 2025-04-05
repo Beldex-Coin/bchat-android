@@ -1,6 +1,5 @@
 package io.beldex.bchat.conversation.v2.contact_sharing
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -40,6 +39,9 @@ class ContactSharingActivity: ComponentActivity() {
                     onQueryChanged = viewModel::postQuery,
                     onSend = { records ->
                         sendResult()
+                    },
+                    onBack = {
+                        finish()
                     },
                     contactChanged = viewModel::onContactSelected
                 )

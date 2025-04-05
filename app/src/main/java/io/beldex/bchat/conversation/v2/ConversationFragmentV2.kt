@@ -422,6 +422,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 }
             }
 
+        fun newInstance(threadId: Long) =
+            ConversationFragmentV2().apply {
+                arguments = Bundle().apply {
+                    putLong(THREAD_ID, threadId)
+                }
+            }
+
         // Extras
         const val THREAD_ID = "thread_id"
         const val ADDRESS = "address"
@@ -1993,7 +2000,16 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val chatConfirmationDialog = ComposeDialogContainer(
             dialogType = DialogType.ChatWithContactConfirmation,
             onConfirm = {
-                Toast.makeText(requireContext(), "Opening New chat", Toast.LENGTH_SHORT).show()
+                val recipient = Recipient.from(requireContext(), contact.address, true)
+                val threadId = viewModel.getOrCreateThreadIdForContact(recipient)
+                val conversationFragment = newInstance(threadId)
+
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(
+                        R.id.activity_home_frame_layout_container,
+                        conversationFragment,
+                        ConversationFragmentV2::class.java.name
+                    ).commit()
             },
             onCancel = {}
         )

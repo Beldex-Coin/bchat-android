@@ -331,6 +331,10 @@ class ConversationViewModel (
         this.deleteMessages = messages
     }
 
+    fun getOrCreateThreadIdForContact(recipient: Recipient): Long {
+        return threadDb.getOrCreateThreadIdFor(recipient)
+    }
+
     @dagger.assisted.AssistedFactory
     interface AssistedFactory {
         fun create(threadId: Long): Factory

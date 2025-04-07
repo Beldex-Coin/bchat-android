@@ -443,7 +443,7 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
             String encodedProfileKey = TextSecurePreferences.getProfileKey(ApplicationContext.this);
             try {
                 // Read the file into a byte array
-                InputStream inputStream = AvatarHelper.getInputStreamFor(ApplicationContext.this, Address.fromSerialized(userPublicKey));
+                InputStream inputStream = AvatarHelper.getInputStreamFor(ApplicationContext.this, Address.fromSerialized(userPublicKey), false);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 int count;
                 byte[] buffer = new byte[1024];

@@ -90,7 +90,7 @@ class CallNotificationBuilder {
                     recipient?.name.toString()
             )
             if (signalProfilePicture != null) {
-                val bitmap=decodeStream(signalProfilePicture.openInputStream(context))
+                val bitmap=decodeStream(signalProfilePicture.openInputStream(context,true))
                 val output = Bitmap.createBitmap(
                     bitmap.width,
                     bitmap.height, Bitmap.Config.ARGB_8888

@@ -9,7 +9,6 @@ buildscript {
         classpath files('libs/gradle-witness.jar')
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion"
-        classpath "com.google.gms:google-services:4.3.12"
         classpath "com.google.firebase:firebase-crashlytics-gradle:2.9.8"
     }
 }

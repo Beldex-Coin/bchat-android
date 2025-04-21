@@ -7,7 +7,7 @@ import io.beldex.bchat.ApplicationContext
 
 class ConversationNotificationDebouncer(private val context: Context) {
     private val threadIDs = mutableSetOf<Long>()
-    private val handler = (context.applicationContext as ApplicationContext).conversationListNotificationHandler
+    private val handler = (context.applicationContext as ApplicationContext).conversationListNotificationHandler()
     private val debouncer = Debouncer(handler, 100)
 
     companion object {

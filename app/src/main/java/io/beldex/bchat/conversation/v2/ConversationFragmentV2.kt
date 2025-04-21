@@ -3903,7 +3903,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             val daemonConnected: Wallet.ConnectionStatus = listenerCallback!!.connectionStatus!!
             if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
                 if (!wallet.isSynchronized) {
-                    ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
+                    ApplicationContext.getInstance(requireContext()).messageNotifier.setHomeScreenVisible(
                         true
                     )
                     val n = daemonHeight - walletHeight
@@ -3923,7 +3923,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                         binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet, x.toFloat())
                     }
                 } else {
-                    ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
+                    ApplicationContext.getInstance(requireContext()).messageNotifier.setHomeScreenVisible(
                         false
                     )
                     sync =

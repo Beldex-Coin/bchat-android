@@ -1048,13 +1048,19 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun onReactionSelected(messageRecord: MessageRecord, emoji: String) {
         reactionDelegate.hide()
-        val oldRecord = messageRecord.reactions.find { it.author == textSecurePreferences.getLocalNumber() }
-        val isAlreadyReacted = messageRecord.reactions.contains(messageRecord.reactions.find { it.author == textSecurePreferences.getLocalNumber() })
-        if (isAlreadyReacted && oldRecord?.emoji == emoji) {
-            sendEmojiRemoval(oldRecord.emoji, messageRecord)
+        val localUser = textSecurePreferences.getLocalNumber()
+        val userReactions = messageRecord.reactions.filter { it.author == localUser }
+        val isAlreadyReacted = userReactions.isNotEmpty()
+
+        if (isAlreadyReacted && userReactions.any { it.emoji == emoji }) {
+            userReactions.forEach {
+                sendEmojiRemoval(it.emoji, messageRecord)
+            }
         } else {
             if (isAlreadyReacted) {
-                oldRecord?.emoji?.let { sendEmojiRemoval(it, messageRecord) }
+                userReactions.forEach {
+                    sendEmojiRemoval(it.emoji, messageRecord)
+                }
             }
             sendEmojiReaction(emoji, messageRecord)
         }

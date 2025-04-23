@@ -93,6 +93,7 @@ class EmojiReactionsView : ConstraintLayout, OnTouchListener {
     private fun displayReactions(threshold: Int) {
         val userPublicKey = getLocalNumber(context)
         val reactions = buildSortedReactionsList(records!!, userPublicKey, threshold)
+        val shouldLimitWidth = reactions.size > 18
         binding.layoutEmojiContainer.removeAllViews()
         val overflowContainer = LinearLayout(context)
         overflowContainer.orientation = LinearLayout.HORIZONTAL
@@ -111,7 +112,6 @@ class EmojiReactionsView : ConstraintLayout, OnTouchListener {
                     extended = true
                     displayReactions(Int.MAX_VALUE)
                 }
-                binding.layoutEmojiContainer.setPadding(16,0,0,0)
                 overflowContainer.addView(pill)
             } else {
                 val pill = buildPill(context, this, reaction, false)
@@ -120,6 +120,12 @@ class EmojiReactionsView : ConstraintLayout, OnTouchListener {
                 val params = pill.layoutParams as MarginLayoutParams
                 pill.layoutParams = params
                 binding.layoutEmojiContainer.addView(pill)
+                if (shouldLimitWidth && extended) {
+                    val maxWidth = context.dpToPx(240)
+                    binding.layoutEmojiContainer.layoutParams.width = maxWidth
+                } else {
+                    binding.layoutEmojiContainer.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                }
             }
         }
         val overflowChildren = overflowContainer.childCount
@@ -143,6 +149,10 @@ class EmojiReactionsView : ConstraintLayout, OnTouchListener {
             binding.imageViewShowLess.visibility = GONE
         }
     }
+
+    fun Context.dpToPx(dp: Int): Int =
+        (dp * resources.displayMetrics.density).toInt()
+
     private fun buildSortedReactionsList(records: List<ReactionRecord>, userPublicKey: String?, threshold: Int): List<Reaction> {
         val counters: MutableMap<String, Reaction> = LinkedHashMap()
         records.forEach {

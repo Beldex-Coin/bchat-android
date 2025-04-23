@@ -1793,7 +1793,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun onReactWithAnyEmojiSelected(emoji : String, messageId : MessageId?) {
-        println("onReaction Selected called in conversation screen 5")
         val currentFragment = getCurrentFragment()
         if(currentFragment is ConversationFragmentV2){
             currentFragment.reactionDelegateDismiss()
@@ -1803,17 +1802,20 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         } else {
             smsDb.getMessageRecord(messageId.id)
         }
-        val oldRecord = reactionDb.getReactions(messageId).find { it.author == textSecurePreferences.getLocalNumber() }
-        val isAlreadyReacted = reactionDb.getReactions(messageId).contains(reactionDb.getReactions(messageId).find { it.author == textSecurePreferences.getLocalNumber() })
-        if (isAlreadyReacted && oldRecord?.emoji == emoji) {
+        val localUser = textSecurePreferences.getLocalNumber()
+        val userReactions = reactionDb.getReactions(messageId).filter { it.author == localUser }
+        val isAlreadyReacted = userReactions.isNotEmpty()
+        if (isAlreadyReacted && userReactions.any { it.emoji == emoji }) {
             if(currentFragment is ConversationFragmentV2){
-                currentFragment.sendEmojiRemoval(emoji, message)
+                userReactions.forEach {
+                    currentFragment.sendEmojiRemoval(it.emoji, message)
+                }
             }
         } else {
             if (isAlreadyReacted) {
-                oldRecord?.emoji?.let {
-                    if(currentFragment is ConversationFragmentV2){
-                        currentFragment.sendEmojiRemoval(it, message)
+                if(currentFragment is ConversationFragmentV2) {
+                    userReactions.forEach {
+                        currentFragment.sendEmojiRemoval(it.emoji, message)
                     }
                 }
             }

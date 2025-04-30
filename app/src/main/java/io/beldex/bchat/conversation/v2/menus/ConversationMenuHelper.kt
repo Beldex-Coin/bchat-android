@@ -227,7 +227,7 @@ object ConversationMenuHelper {
                     try {
                         var bitmap = BitmapFactory.decodeStream(contactPhoto.openInputStream(
                             context,
-                            false
+                            true
                         ))
                         bitmap = BitmapUtil.createScaledBitmap(bitmap, 300, 300)
                         icon = IconCompat.createWithAdaptiveBitmap(bitmap)

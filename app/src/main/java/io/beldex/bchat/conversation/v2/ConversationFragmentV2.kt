@@ -1161,11 +1161,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
     override fun onRemoveReaction(emoji: String, messageId: MessageId) {
         val message = if (messageId.mms) {
-            mmsDb.getMessageRecord(messageId.id)
+            mmsDb.getMessageRecords(messageId.id)
         } else {
-            smsDb.getMessageRecord(messageId.id)
+            smsDb.getMessageRecords(messageId.id)
         }
-        sendEmojiRemoval(emoji, message)
+        if (message != null) {
+            sendEmojiRemoval(emoji, message)
+        }
     }
     override fun onClearAll(emoji: String, messageId: MessageId) {
         reactionDb.deleteEmojiReactions(emoji, messageId)

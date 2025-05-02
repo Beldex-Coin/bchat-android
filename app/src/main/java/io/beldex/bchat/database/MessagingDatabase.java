@@ -47,6 +47,8 @@ public abstract class MessagingDatabase extends Database implements MmsSmsColumn
 
   public abstract MessageRecord getMessageRecord(long messageId) throws NoSuchMessageException;
 
+  public abstract MessageRecord getMessageRecords(long messageId);
+
   public void addMismatchedIdentity(long messageId, Address address, IdentityKey identityKey) {
     try {
       addToDocument(messageId, MISMATCHED_IDENTITIES,

@@ -78,6 +78,7 @@ import io.beldex.bchat.data.UserNotes
 import io.beldex.bchat.database.BeldexMessageDatabase
 import io.beldex.bchat.database.MmsDatabase
 import io.beldex.bchat.database.MmsSmsDatabase
+import io.beldex.bchat.database.NoSuchMessageException
 import io.beldex.bchat.database.ReactionDatabase
 import io.beldex.bchat.database.SmsDatabase
 import io.beldex.bchat.database.ThreadDatabase
@@ -1793,35 +1794,43 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun onReactWithAnyEmojiSelected(emoji : String, messageId : MessageId?) {
-        val currentFragment = getCurrentFragment()
-        if(currentFragment is ConversationFragmentV2){
-            currentFragment.reactionDelegateDismiss()
-        }
-        val message = if (messageId!!.mms) {
-            mmsDb.getMessageRecord(messageId.id)
-        } else {
-            smsDb.getMessageRecord(messageId.id)
-        }
-        val localUser = textSecurePreferences.getLocalNumber()
-        val userReactions = reactionDb.getReactions(messageId).filter { it.author == localUser }
-        val isAlreadyReacted = userReactions.isNotEmpty()
-        if (isAlreadyReacted && userReactions.any { it.emoji == emoji }) {
-            if(currentFragment is ConversationFragmentV2){
-                userReactions.forEach {
-                    currentFragment.sendEmojiRemoval(it.emoji, message)
-                }
+        try {
+            val currentFragment=getCurrentFragment()
+            if (currentFragment is ConversationFragmentV2) {
+                currentFragment.reactionDelegateDismiss()
             }
-        } else {
-            if (isAlreadyReacted) {
-                if(currentFragment is ConversationFragmentV2) {
-                    userReactions.forEach {
-                        currentFragment.sendEmojiRemoval(it.emoji, message)
+            val message=if (messageId!!.mms) {
+                mmsDb.getMessageRecords(messageId.id)
+            } else {
+                smsDb.getMessageRecords(messageId.id)
+            }
+            val localUser=textSecurePreferences.getLocalNumber()
+            val userReactions=reactionDb.getReactions(messageId).filter { it.author == localUser }
+            val isAlreadyReacted=userReactions.isNotEmpty()
+            if (message != null) {
+                if (isAlreadyReacted && userReactions.any { it.emoji == emoji }) {
+                    if (currentFragment is ConversationFragmentV2) {
+                        userReactions.forEach {
+                            currentFragment.sendEmojiRemoval(it.emoji, message)
+                        }
+                    }
+                } else {
+                    if (isAlreadyReacted) {
+                        if (currentFragment is ConversationFragmentV2) {
+                            userReactions.forEach {
+                                currentFragment.sendEmojiRemoval(it.emoji, message)
+                            }
+                        }
+                    }
+                    if (currentFragment is ConversationFragmentV2) {
+                        currentFragment.sendEmojiReaction(emoji, message)
                     }
                 }
             }
-            if(currentFragment is ConversationFragmentV2){
-                currentFragment.sendEmojiReaction(emoji, message)
-            }
+        } catch (e : NoSuchMessageException) {
+            Log.e("onRemoveReaction", "Message not found: ${messageId?.id}", e)
+        } catch (e : Exception) {
+            Log.e("onRemoveReaction", "Unexpected error while removing reaction", e)
         }
     }
 
@@ -1866,15 +1875,22 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun onRemoveReaction(emoji : String, messageId : MessageId) {
         val currentFragment = getCurrentFragment()
-        val message = if (messageId.mms) {
-            mmsDb.getMessageRecord(messageId.id)
-        } else {
-            smsDb.getMessageRecord(messageId.id)
+        try {
+            val message = if (messageId.mms) {
+                mmsDb.getMessageRecords(messageId.id)
+            } else {
+                smsDb.getMessageRecords(messageId.id)
+            }
+            if (currentFragment is ConversationFragmentV2) {
+                if (message != null) {
+                    currentFragment.sendEmojiRemoval(emoji, message)
+                }
+            }
+        } catch (e: NoSuchMessageException) {
+            Log.e("onRemoveReaction", "Message not found: ${messageId.id}", e)
+        } catch (e: Exception) {
+            Log.e("onRemoveReaction", "Unexpected error while removing reaction", e)
         }
-        if(currentFragment is ConversationFragmentV2){
-            currentFragment.sendEmojiRemoval(emoji, message)
-        }
-
     }
 
     override fun onClearAll(emoji : String, messageId : MessageId) {

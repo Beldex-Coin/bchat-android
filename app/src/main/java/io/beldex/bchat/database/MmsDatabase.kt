@@ -197,6 +197,12 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
         }
     }
 
+    override fun getMessageRecords(messageId : Long) : MessageRecord? {
+        return rawQuery(RAW_ID_WHERE, arrayOf("$messageId")).use { cursor ->
+            Reader(cursor).next
+        }
+    }
+
     fun getThreadIdForMessage(id: Long): Long {
         val sql = "SELECT $THREAD_ID FROM $TABLE_NAME WHERE $ID = ?"
         val sqlArgs = arrayOf(id.toString())

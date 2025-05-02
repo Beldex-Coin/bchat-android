@@ -33,12 +33,10 @@ import net.zetetic.database.sqlcipher.SQLiteStatement;
 import io.beldex.bchat.database.model.ReactionRecord;
 
 
-import com.beldex.libbchat.messaging.MessagingModuleConfiguration;
 import com.beldex.libbchat.messaging.calls.CallMessageType;
 import com.beldex.libbchat.messaging.messages.signal.IncomingGroupMessage;
 import com.beldex.libbchat.messaging.messages.signal.IncomingTextMessage;
 import com.beldex.libbchat.messaging.messages.signal.OutgoingTextMessage;
-import com.beldex.libbchat.messaging.sending_receiving.MessageDecrypter;
 
 import com.beldex.libbchat.mnode.MnodeAPI;
 import com.beldex.libbchat.utilities.Address;
@@ -628,6 +626,26 @@ public class SmsDatabase extends MessagingDatabase {
     else                return record;
   }
 
+  public SmsMessageRecord getMessages(long messageId) {
+    Cursor cursor = null;
+    SmsMessageRecord record = null;
+
+    try {
+      cursor = rawQuery(ID_WHERE, new String[]{String.valueOf(messageId)});
+      Reader reader = new Reader(cursor);
+      record = reader.getNext();
+      reader.close();
+    } catch (Exception e) {
+      Log.e("MessageService", "Error fetching message for ID: " + messageId, e);
+    } finally {
+      if (cursor != null) {
+        cursor.close();
+      }
+    }
+    return record;
+  }
+
+
   public Cursor getMessageCursor(long messageId) {
     SQLiteDatabase db = databaseHelper.getReadableDatabase();
     Cursor cursor = db.query(TABLE_NAME, MESSAGE_PROJECTION, ID_WHERE, new String[] {messageId + ""}, null, null, null);
@@ -674,6 +692,12 @@ public class SmsDatabase extends MessagingDatabase {
   public MessageRecord getMessageRecord(long messageId) throws NoSuchMessageException {
     return getMessage(messageId);
   }
+
+  @Override
+  public MessageRecord getMessageRecords(long messageId) {
+    return getMessages(messageId);
+  }
+
 
   private boolean isDuplicate(IncomingTextMessage message, long threadId) {
     SQLiteDatabase database = databaseHelper.getReadableDatabase();

@@ -22,6 +22,7 @@ data class ContactSharingState(
     val searchQuery: String = "",
     val contacts: List<ThreadRecord> = emptyList(),
     val filteredContacts: List<ThreadRecord> = emptyList(),
+    val selectedContactsCount: Int = 0
 )
 
 @HiltViewModel
@@ -89,6 +90,11 @@ class ContactsViewModel @Inject constructor(
             selectedContacts.add(contact)
         } else {
             selectedContacts.remove(contact)
+        }
+        _state.update {
+            it.copy(
+                selectedContactsCount = selectedContacts.size
+            )
         }
     }
 }

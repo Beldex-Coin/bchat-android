@@ -36,6 +36,7 @@ class ContactSharingActivity: ComponentActivity() {
                 ContactsScreen(
                     searchQuery = state.searchQuery,
                     contacts = state.filteredContacts,
+                    selectedContacts = state.selectedContactsCount,
                     onQueryChanged = viewModel::postQuery,
                     onSend = { records ->
                         sendResult()

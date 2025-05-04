@@ -39,6 +39,7 @@ import io.beldex.bchat.database.model.ThreadRecord
 fun ContactsScreen(
     searchQuery: String,
     contacts: List<ThreadRecord>,
+    selectedContacts: Int,
     onQueryChanged: (String) -> Unit,
     onSend: (List<ThreadRecord>) -> Unit,
     contactChanged: (ThreadRecord, Boolean) -> Unit,
@@ -135,6 +136,7 @@ fun ContactsScreen(
                 onClick = {
                     onSend(listOf())
                 },
+                enabled = selectedContacts != 0,
                 containerColor = MaterialTheme.appColors.primaryButtonColor,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -161,6 +163,7 @@ private fun ContactsScreenPreview() {
         ContactsScreen(
             searchQuery = "",
             contacts = emptyList(),
+            selectedContacts = 0,
             onQueryChanged = {},
             contactChanged = {contact, isSelected -> },
             onBack = {},

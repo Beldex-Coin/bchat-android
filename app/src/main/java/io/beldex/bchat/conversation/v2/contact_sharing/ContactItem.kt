@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import io.beldex.bchat.compose_utils.BChatCheckBox
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
+import io.beldex.bchat.compose_utils.noRippleCallback
 import io.beldex.bchat.database.model.ThreadRecord
 
 @Composable
@@ -55,6 +56,10 @@ fun ContactItem(
                 .padding(
                     8.dp
                 )
+                .noRippleCallback {
+                    checked = !checked
+                    contactChanged(contact, checked)
+                }
         ) {
             if (contact == null) {
                 Box(

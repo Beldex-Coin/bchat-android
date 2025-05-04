@@ -1,6 +1,9 @@
 package io.beldex.bchat.util
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -31,7 +34,7 @@ fun CustomCheckBox(
     checkBoxCheckedIconColor: Color = MaterialTheme.appColors.primaryButtonColor,
 ) {
 // state is used to hold the checkbox click or not by default is false
-    val checkBoxState = remember { mutableStateOf(checked) }
+    val checkBoxState = remember(checked) { mutableStateOf(checked) }
 // Ui for checkbox
     Box(
         modifier = modifier

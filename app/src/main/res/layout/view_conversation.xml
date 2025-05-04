@@ -39,10 +39,50 @@
             tools:text="I'm a very long display name. What are you going to do about it?"
             app:layout_constraintStart_toEndOf="@id/profilePictureView"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/snippetTextViewLayout"
+            app:layout_constraintBottom_toTopOf="@id/contactView"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="24dp"
             app:layout_constraintEnd_toStartOf="@id/timestampTextView"/>
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="conversationViewDisplayNameTextView"/>
+
+        <LinearLayout
+            android:id="@+id/contactView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            app:layout_constraintStart_toStartOf="@id/conversationViewDisplayNameTextView"
+            app:layout_constraintEnd_toStartOf="@id/timestampTextView"
+            app:layout_constraintTop_toBottomOf="@id/barrier"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="16dp"
+            tools:visibility="visible">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_profile_default"
+                app:tint="@color/text" />
+
+            <TextView
+                android:fontFamily="@font/open_sans_regular"
+                android:id="@+id/contactName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/text"
+                android:textSize="@dimen/very_small_font_size"
+                tools:text="Sorry, gotta go fight crime again"
+                android:layout_marginStart="4dp"/>
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/snippetTextViewLayout"
@@ -51,10 +91,10 @@
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="@id/conversationViewDisplayNameTextView"
             app:layout_constraintEnd_toStartOf="@id/timestampTextView"
-            app:layout_constraintTop_toBottomOf="@id/conversationViewDisplayNameTextView"
+            app:layout_constraintTop_toBottomOf="@id/barrier"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginEnd="16dp"
-            >
+            tools:visibility="gone">
 
             <TextView
                 android:fontFamily="@font/open_sans_regular"

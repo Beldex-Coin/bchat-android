@@ -378,9 +378,7 @@ class VisibleMessageContentView : MaterialCardView {
                 showQuoteBody = false
                 val umd = UpdateMessageData.fromJSON(message.body)!!
                 val data = umd.kind as UpdateMessageData.Kind.SharedContact
-//                binding.contactView.bind(
-//                    message
-//                )
+
                 binding.contactView.setContent {
                     BChatTheme {
                         val contact = ContactModel(

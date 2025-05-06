@@ -1795,7 +1795,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun onReactWithAnyEmojiSelected(emoji : String, messageId : MessageId?) {
         try {
-            val currentFragment=getCurrentFragment()
+            val currentFragment = getCurrentFragment()
             if (currentFragment is ConversationFragmentV2) {
                 currentFragment.reactionDelegateDismiss()
             }
@@ -1804,10 +1804,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             } else {
                 smsDb.getMessageRecords(messageId.id)
             }
-            val localUser=textSecurePreferences.getLocalNumber()
-            val userReactions=reactionDb.getReactions(messageId).filter { it.author == localUser }
-            val isAlreadyReacted=userReactions.isNotEmpty()
             if (message != null) {
+                val localUser = textSecurePreferences.getLocalNumber()
+                val userReactions = reactionDb.getReactions(messageId).filter { it.author == localUser }
+                val isAlreadyReacted = userReactions.isNotEmpty()
                 if (isAlreadyReacted && userReactions.any { it.emoji == emoji }) {
                     if (currentFragment is ConversationFragmentV2) {
                         userReactions.forEach {
@@ -1881,10 +1881,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             } else {
                 smsDb.getMessageRecords(messageId.id)
             }
-            if (currentFragment is ConversationFragmentV2) {
-                if (message != null) {
-                    currentFragment.sendEmojiRemoval(emoji, message)
-                }
+            if (message != null && currentFragment is ConversationFragmentV2) {
+                currentFragment.sendEmojiRemoval(emoji, message)
             }
         } catch (e: NoSuchMessageException) {
             Log.e("onRemoveReaction", "Message not found: ${messageId.id}", e)

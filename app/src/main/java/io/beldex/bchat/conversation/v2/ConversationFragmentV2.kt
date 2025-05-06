@@ -369,7 +369,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             },
             onItemLongPress = { message, position, view ->
                 if (isSecretGroupIsActive()) {
-                    if (message.isSent && !isMessageRequestThread()) {
+                    if (message.isSent && !isMessageRequestThread() && !viewModel.recipient.value?.isOpenGroupRecipient!!) {
                         if (selectedItem(message)) {
                             actionMode?.let { onDeselect(message, position, it) }
                         } else {

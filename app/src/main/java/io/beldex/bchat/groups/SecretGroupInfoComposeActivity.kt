@@ -634,7 +634,8 @@ fun GroupDetailsScreen(
                 additionalPublicKey=additionalPk,
                 additionalDisplayName=additionalDisplay,
                 containerSize=70.dp,
-                pictureMode=pictureType
+                pictureMode=pictureType,
+                isGroupInfo = true
             )
         }
 

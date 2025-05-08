@@ -66,11 +66,8 @@
             android:fontFamily="@font/open_sans_medium"
             android:maxLines="1"
             android:textColor="@color/chat_user_name_color"
-            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/messageInnerContainer"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginBottom="-5dp"
-            app:layout_constraintBottom_toTopOf="@id/messageInnerContainer"
             tools:text="@tools:sample/full_names" />
 
         <LinearLayout

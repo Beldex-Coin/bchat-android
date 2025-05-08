@@ -127,7 +127,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
             true
         }
 
-
+        binding.inputBarEditText.requestFocus()
 
         /* Hales63 */
         val incognitoFlag = if (TextSecurePreferences.isIncognitoKeyboardEnabled(context)) 16777216 else 0

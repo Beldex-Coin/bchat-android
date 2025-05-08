@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.os.SystemClock
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
@@ -69,6 +70,7 @@ class VisibleMessageContentView : MaterialCardView {
     var delegate: VisibleMessageViewDelegate? = null
     var indexInAdapter: Int = -1
     private var data: UpdateMessageData.Kind.OpenGroupInvitation? = null
+    private var documentViewLastClickTime: Long = 0
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -286,34 +288,37 @@ class VisibleMessageContentView : MaterialCardView {
                     )
                     //New Line
                     binding.documentView.root.setOnClickListener {
-                        val documentSlide = message.slideDeck.documentSlide
-                        if (documentSlide != null && documentSlide.uri != null) {
-                            val intent = Intent(Intent.ACTION_VIEW).apply {
-                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                                setDataAndType(
-                                    PartAuthority.getAttachmentPublicUri(documentSlide.uri),
-                                    documentSlide.contentType
-                                )
-                            }
-                            try {
-                                context.startActivity(intent)
-                            } catch (anfe: ActivityNotFoundException) {
-                                Log.w(
-                                    StickyHeaderGridLayoutManager.TAG,
-                                    "No activity existed to view the media."
-                                )
+                        if (SystemClock.elapsedRealtime() - documentViewLastClickTime >= 500) {
+                            documentViewLastClickTime = SystemClock.elapsedRealtime()
+                            val documentSlide = message.slideDeck.documentSlide
+                            if (documentSlide != null && documentSlide.uri != null) {
+                                val intent = Intent(Intent.ACTION_VIEW).apply {
+                                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                    setDataAndType(
+                                        PartAuthority.getAttachmentPublicUri(documentSlide.uri),
+                                        documentSlide.contentType
+                                    )
+                                }
+                                try {
+                                    context.startActivity(intent)
+                                } catch (anfe: ActivityNotFoundException) {
+                                    Log.w(
+                                        StickyHeaderGridLayoutManager.TAG,
+                                        "No activity existed to view the media."
+                                    )
+                                    Toast.makeText(
+                                        context,
+                                        R.string.ConversationItem_unable_to_open_media,
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            } else {
                                 Toast.makeText(
                                     context,
-                                    R.string.ConversationItem_unable_to_open_media,
-                                    Toast.LENGTH_LONG
+                                    "Please wait until file downloaded",
+                                    Toast.LENGTH_SHORT
                                 ).show()
                             }
-                        } else {
-                            Toast.makeText(
-                                context,
-                                "Please wait until file downloaded",
-                                Toast.LENGTH_SHORT
-                            ).show()
                         }
                     }
                 } else {

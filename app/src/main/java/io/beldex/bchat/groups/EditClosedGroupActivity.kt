@@ -11,6 +11,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
@@ -134,6 +135,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         }
         binding.btnCancelGroupNameEdit.setOnClickListener{
             isEditingName = false
+            showApplyChangesButton(false)
         }
         binding.btnSaveGroupNameEdit.setOnClickListener{
             if (checkIsOnline()) {
@@ -188,6 +190,10 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         })
     }
 
+    private fun showApplyChangesButton(isVisible: Boolean) {
+        binding.applyChangesBtn.isVisible = isVisible
+    }
+
     private fun checkIsOnline():Boolean{
         return if(CheckOnline.isOnline(this)){
             true
@@ -229,6 +235,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
                 val selectedContacts = data.extras!!.getStringArray(SelectContactsActivity.selectedContactsKey)!!.toSet()
                 members.addAll(selectedContacts)
                 updateMembers()
+                showApplyChangesButton(true)
             }
         }
     }
@@ -287,6 +294,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
                 if (zombies.contains(member)) zombies.remove(member)
                 else members.remove(member)
                 updateMembers()
+                showApplyChangesButton(true)
                 bottomSheet.dismiss()
             }
         }
@@ -304,6 +312,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
                 if (zombies.contains(member)) zombies.remove(member)
                 else members.remove(member)
                 updateMembers()
+                showApplyChangesButton(true)
             }.show()
     }
 
@@ -329,6 +338,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         binding.lblGroupNameDisplay.text = name
         hasNameChanged = true
         isEditingName = false
+        showApplyChangesButton(true)
     }
 
     private fun commitChanges() {

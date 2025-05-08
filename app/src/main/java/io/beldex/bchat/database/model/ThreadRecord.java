@@ -30,6 +30,9 @@ import androidx.annotation.Nullable;
 
 import io.beldex.bchat.database.MmsSmsColumns;
 import io.beldex.bchat.database.SmsDatabase;
+
+import com.beldex.libbchat.messaging.utilities.UpdateMessageBuilder;
+import com.beldex.libbchat.messaging.utilities.UpdateMessageData;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.utilities.ExpirationUtil;
 import org.json.JSONException;
@@ -87,7 +90,12 @@ public class ThreadRecord extends DisplayRecord implements Serializable {
   @Override
   public SpannableString getDisplayBody(@NonNull Context context) {
     if (isGroupUpdateMessage()) {
-      return emphasisAdded(context.getString(R.string.ThreadRecord_group_updated));
+      UpdateMessageData updateMessageData = UpdateMessageData.Companion.fromJSON(getBody());
+      if(updateMessageData != null) {
+        return emphasisAdded(UpdateMessageBuilder.INSTANCE.buildGroupUpdateMessage(context, updateMessageData, getRecipient().toShortString(), isOutgoing()));
+      } else {
+        return emphasisAdded(context.getString(R.string.ThreadRecord_group_updated));
+      }
     } else if (isOpenGroupInvitation()) {
       return emphasisAdded(context.getString(R.string.ThreadRecord_open_group_invitation));
     } else if (isPayment()) { //Payment Tag

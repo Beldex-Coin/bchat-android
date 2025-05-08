@@ -175,7 +175,11 @@ class VisibleMessageContentView : MaterialCardView {
                 }
             } else {
                 binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-                binding.quoteContainer.layoutParams.width = binding.untrustedView.root.width
+                if(message.slideDeck.audioSlide != null || message.slideDeck.documentSlide != null || message.slideDeck.asAttachments().isNotEmpty()) {
+                    binding.quoteContainer.layoutParams.width = binding.untrustedView.root.width
+                } else {
+                    binding.quoteContainer.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                }
             }
             hideBody = true
             showQuoteBody = true

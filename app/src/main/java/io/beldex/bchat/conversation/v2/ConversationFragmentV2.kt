@@ -1208,6 +1208,24 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
+    override fun  onItemLongPress(
+        messageRecord : MessageRecord,
+        visibleMessageView : VisibleMessageView,
+        position : Int
+    ) {
+        if (isSecretGroupIsActive()) {
+            if (messageRecord.isSent && !isMessageRequestThread() && !viewModel.recipient.value?.isOpenGroupRecipient!!) {
+                if (selectedItem(messageRecord)) {
+                    actionMode?.let { onDeselect(messageRecord, position, it) }
+                } else {
+                    showConversationReaction(messageRecord, visibleMessageView, position)
+                }
+            } else {
+                selectMessage(messageRecord, position)
+            }
+        }
+    }
+
     inner class ReactionsToolbarListener(val message : MessageRecord,val  position : Int) :
         ConversationReactionOverlay.OnActionSelectedListener {
         override fun onActionSelected(action: ConversationReactionOverlay.Action) {

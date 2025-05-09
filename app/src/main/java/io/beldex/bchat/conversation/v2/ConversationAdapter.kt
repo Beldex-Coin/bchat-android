@@ -130,7 +130,7 @@ class ConversationAdapter(
                 }
                 val contact = contactCache[senderIdHash]
 
-                visibleMessageView.bind(message, messageBefore, getMessageAfter(position, cursor), glide, searchQuery, contact, senderId,onAttachmentNeedsDownload,visibleMessageViewDelegate)
+                visibleMessageView.bind(message, messageBefore, getMessageAfter(position, cursor), glide, searchQuery, contact, senderId, onAttachmentNeedsDownload, visibleMessageViewDelegate, position)
                 if (!message.isDeleted) {
                     visibleMessageView.onPress = { event -> onItemPress(message, viewHolder.adapterPosition, visibleMessageView, event) }
                     visibleMessageView.onSwipeToReply = { onItemSwipeToReply(message, viewHolder.adapterPosition) }

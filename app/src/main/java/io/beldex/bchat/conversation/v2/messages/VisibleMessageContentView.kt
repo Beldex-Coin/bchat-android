@@ -88,7 +88,9 @@ class VisibleMessageContentView : MaterialCardView {
         contactIsTrusted : Boolean,
         onAttachmentNeedsDownload : (Long, Long) -> Unit,
         isSocialGroupRecipient : Boolean,
-        delegate : VisibleMessageViewDelegate
+        delegate : VisibleMessageViewDelegate,
+        visibleMessageView : VisibleMessageView,
+        position : Int
     ) {
         // Background
         val background = getBackground(message.isOutgoing, isStartOfMessageCluster, isEndOfMessageCluster)
@@ -454,7 +456,7 @@ class VisibleMessageContentView : MaterialCardView {
             binding.bodyTextView.text = body
             //New Line
             if (binding.bodyTextView.text.trim().length > 705) {
-                addReadMore(binding.bodyTextView.text.trim().toString(), binding.bodyTextView, message)
+                addReadMore(binding.bodyTextView.text.trim().toString(), binding.bodyTextView, message, delegate, visibleMessageView, position)
             }
             onContentClick.add { e: MotionEvent ->
                 binding.bodyTextView.getIntersectedModalSpans(e).iterator().forEach { span ->
@@ -470,7 +472,14 @@ class VisibleMessageContentView : MaterialCardView {
             //New Line
             binding.quoteBodyTextView.text = body
             if (binding.quoteBodyTextView.text.trim().length > 705) {
-                addReadMore(binding.quoteBodyTextView.text.trim().toString(), binding.quoteBodyTextView, message)
+                addReadMore(
+                    binding.quoteBodyTextView.text.trim().toString(),
+                    binding.quoteBodyTextView,
+                    message,
+                    delegate,
+                    visibleMessageView,
+                    position
+                )
             }
             onContentClick.add { e: MotionEvent ->
                 binding.quoteBodyTextView.getIntersectedModalSpans(e).iterator().forEach { span ->
@@ -655,11 +664,18 @@ class VisibleMessageContentView : MaterialCardView {
     // endregion
 
     //New Line
-    private fun addReadMore(text: String, textView: TextView, message: MessageRecord) {
+    private fun addReadMore(
+        text : String,
+        textView : TextView,
+        message : MessageRecord,
+        delegate : VisibleMessageViewDelegate,
+        visibleMessageView : VisibleMessageView,
+        position : Int
+    ) {
         val ss = SpannableString(text.substring(0, 705) + "... Read more")
         val clickableSpan: ClickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
-                addReadLess(text, textView, message)
+                addReadLess(text, textView, message, delegate, visibleMessageView,position)
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -669,63 +685,27 @@ class VisibleMessageContentView : MaterialCardView {
                 val isDayUiMode = UiModeUtilities.isDayUiMode(context)
                 ds.color = if (message.isOutgoing) {
                         if (isDayUiMode) {
-                           /* if (message.isFailed) {
-                                ContextCompat.getColor(context, R.color.black)
-                            } else {
-                                ContextCompat.getColor(context, R.color.black)
-                            }*/
                             ContextCompat.getColor(context, R.color.black)
                         } else ContextCompat.getColor(context, R.color.chat_id_card_background)
                     } else {
-                        /*if (isDayUiMode) ContextCompat.getColor(
-                            context,
-                            R.color.send_message_background
-                        ) else ContextCompat.getColor(context, R.color.send_message_background)*/
                         ContextCompat.getColor(context, R.color.send_message_background)
                     }
-               /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    ds.color = if (message.isOutgoing) {
-                        if (isDayUiMode) {
-                            if (message.isFailed) {
-                                ContextCompat.getColor(context, R.color.black)
-                            } else {
-                                ContextCompat.getColor(context, R.color.black)
-                            }
-                        } else ContextCompat.getColor(context, R.color.chat_id_card_background)
-                    } else {
-                        if (isDayUiMode) ContextCompat.getColor(
-                            context,
-                            R.color.send_message_background
-                        ) else ContextCompat.getColor(context, R.color.send_message_background)
-                    }
-                } else {
-                    ds.color = if (message.isOutgoing) {
-                        if (isDayUiMode) {
-                            if (message.isFailed) {
-                                ContextCompat.getColor(context, R.color.black)
-                            } else {
-                                ContextCompat.getColor(context, R.color.black)
-                            }
-                        } else ContextCompat.getColor(context, R.color.chat_id_card_background)
-                    } else {
-                        if (isDayUiMode) ContextCompat.getColor(
-                            context,
-                            R.color.send_message_background
-                        ) else ContextCompat.getColor(context, R.color.send_message_background)
-                    }
-                }*/
             }
         }
         ss.setSpan(clickableSpan, ss.length - 10, ss.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         textView.text = ss
         textView.movementMethod = LinkMovementMethod.getInstance()
+        textView.setOnLongClickListener {
+            delegate.onItemLongPress(message, visibleMessageView, position)
+            true
+        }
     }
 
-    private fun addReadLess(text: String, textView: TextView, message: MessageRecord) {
+    private fun addReadLess(text: String, textView: TextView, message: MessageRecord, delegate : VisibleMessageViewDelegate, visibleMessageView: VisibleMessageView, position:Int) {
         val ss = SpannableString("$text Read less")
         val clickableSpan: ClickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
-                addReadMore(text, textView, message)
+                addReadMore(text, textView, message, delegate, visibleMessageView, position)
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -735,46 +715,19 @@ class VisibleMessageContentView : MaterialCardView {
                 val isDayUiMode = UiModeUtilities.isDayUiMode(context)
                 ds.color = if (message.isOutgoing) {
                     if (isDayUiMode){
-                        /*if(message.isFailed) {
-                            ContextCompat.getColor(context,R.color.black)
-                        }else{
-                            ContextCompat.getColor(context,R.color.black)
-                        }*/
                         ContextCompat.getColor(context,R.color.black)
                     }else ContextCompat.getColor(context,R.color.chat_id_card_background)
                 } else {
-                    /*if (isDayUiMode) ContextCompat.getColor(context,R.color.send_message_background) else ContextCompat.getColor(context,R.color.send_message_background)*/
                     ContextCompat.getColor(context,R.color.send_message_background)
                 }
-                /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    ds.color = if (message.isOutgoing) {
-                        if (isDayUiMode){
-                            if(message.isFailed) {
-                                ContextCompat.getColor(context,R.color.black)
-                            }else{
-                                ContextCompat.getColor(context,R.color.black)
-                            }
-                        }else ContextCompat.getColor(context,R.color.chat_id_card_background)
-                    } else {
-                        if (isDayUiMode) ContextCompat.getColor(context,R.color.send_message_background) else ContextCompat.getColor(context,R.color.send_message_background)
-                    }
-                } else {
-                    ds.color = if (message.isOutgoing) {
-                        if (isDayUiMode){
-                            if(message.isFailed) {
-                                ContextCompat.getColor(context,R.color.black)
-                            }else{
-                                ContextCompat.getColor(context,R.color.black)
-                            }
-                        }else ContextCompat.getColor(context,R.color.chat_id_card_background)
-                    } else {
-                        if (isDayUiMode) ContextCompat.getColor(context,R.color.send_message_background) else ContextCompat.getColor(context,R.color.send_message_background)
-                    }
-                }*/
             }
         }
         ss.setSpan(clickableSpan, ss.length - 10, ss.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         textView.text = ss
         textView.movementMethod = LinkMovementMethod.getInstance()
+        textView.setOnLongClickListener {
+           delegate.onItemLongPress(message, visibleMessageView, position)
+           true
+        }
     }
 }

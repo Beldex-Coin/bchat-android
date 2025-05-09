@@ -112,7 +112,18 @@ class VisibleMessageView : LinearLayout {
     // endregion
 
     // region Updating
-    fun bind(message: MessageRecord, previous: MessageRecord?, next: MessageRecord?, glide: RequestManager, searchQuery: String?, contact: Contact?, senderBChatID: String, onAttachmentNeedsDownload: (Long, Long) -> Unit, delegate: VisibleMessageViewDelegate?) {
+    fun bind(
+        message : MessageRecord,
+        previous : MessageRecord?,
+        next : MessageRecord?,
+        glide : RequestManager,
+        searchQuery : String?,
+        contact : Contact?,
+        senderBChatID : String,
+        onAttachmentNeedsDownload : (Long, Long) -> Unit,
+        delegate : VisibleMessageViewDelegate?,
+        position : Int
+    ) {
         val threadID = message.threadId
         val thread = threadDb.getRecipientForThreadId(threadID) ?: return
         val isGroupThread = thread.isGroupRecipient
@@ -214,7 +225,7 @@ class VisibleMessageView : LinearLayout {
         // Populate content view
         binding.messageContentView.root.indexInAdapter = indexInAdapter
         binding.messageContentView.root.bind(message, isStartOfMessageCluster, isEndOfMessageCluster, glide, thread, searchQuery, message.isOutgoing || isGroupThread || (contact?.isTrusted ?: false),
-            onAttachmentNeedsDownload, thread.isOpenGroupRecipient,delegate!!)
+            onAttachmentNeedsDownload, thread.isOpenGroupRecipient,delegate!!, this, position)
         binding.messageContentView.root.delegate = delegate
         onDoubleTap = { binding.messageContentView.root.onContentDoubleTap?.invoke() }
     }

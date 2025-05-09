@@ -90,12 +90,7 @@ public class ThreadRecord extends DisplayRecord implements Serializable {
   @Override
   public SpannableString getDisplayBody(@NonNull Context context) {
     if (isGroupUpdateMessage()) {
-      UpdateMessageData updateMessageData = UpdateMessageData.Companion.fromJSON(getBody());
-      if(updateMessageData != null) {
-        return emphasisAdded(UpdateMessageBuilder.INSTANCE.buildGroupUpdateMessage(context, updateMessageData, getRecipient().toShortString(), isOutgoing()));
-      } else {
-        return emphasisAdded(context.getString(R.string.ThreadRecord_group_updated));
-      }
+      return emphasisAdded(context.getString(R.string.ThreadRecord_group_updated));
     } else if (isOpenGroupInvitation()) {
       return emphasisAdded(context.getString(R.string.ThreadRecord_open_group_invitation));
     } else if (isPayment()) { //Payment Tag

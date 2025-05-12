@@ -28,7 +28,7 @@ public class SystemContactPhoto implements ContactPhoto {
   }
 
   @Override
-  public InputStream openInputStream(Context context) throws FileNotFoundException {
+  public InputStream openInputStream(Context context, Boolean isNotification) throws FileNotFoundException {
     return context.getContentResolver().openInputStream(contactPhotoUri);
   }
 

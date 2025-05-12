@@ -8,7 +8,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Resources
 import android.database.Cursor
@@ -22,6 +21,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.text.Editable
 import android.text.Html
 import android.text.Spannable
@@ -30,7 +30,6 @@ import android.text.Spanned
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.util.Log
 import android.util.Pair
 import android.util.TypedValue
@@ -53,6 +52,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.DimenRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
+import io.beldex.bchat.util.drawToBitmap
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -74,6 +74,7 @@ import com.beldex.libbchat.messaging.messages.control.DataExtractionNotification
 import com.beldex.libbchat.messaging.messages.control.ExpirationTimerUpdate
 import com.beldex.libbchat.messaging.messages.signal.OutgoingMediaMessage
 import com.beldex.libbchat.messaging.messages.signal.OutgoingTextMessage
+import com.beldex.libbchat.messaging.messages.visible.Reaction
 import com.beldex.libbchat.messaging.messages.visible.VisibleMessage
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
@@ -84,6 +85,7 @@ import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.MediaTypes
 import com.beldex.libbchat.utilities.SSKEnvironment
+import com.beldex.libbchat.utilities.Stub
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.concurrent.SimpleTask
 import com.beldex.libbchat.utilities.isScrolledToBottom
@@ -93,7 +95,10 @@ import com.beldex.libsignal.crypto.MnemonicCodec
 import com.beldex.libsignal.utilities.ListenableFuture
 import com.beldex.libsignal.utilities.guava.Optional
 import com.beldex.libsignal.utilities.hexEncodedPrivateKey
+import com.bumptech.glide.Glide
+import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.ApplicationContext
+import io.beldex.bchat.R
 import io.beldex.bchat.audio.AudioRecorder
 import io.beldex.bchat.contacts.SelectContactsActivity
 import io.beldex.bchat.contactshare.SimpleTextWatcher
@@ -106,8 +111,9 @@ import io.beldex.bchat.conversation.v2.input_bar.mentions.MentionCandidatesView
 import io.beldex.bchat.conversation.v2.menus.ConversationActionModeCallback
 import io.beldex.bchat.conversation.v2.menus.ConversationActionModeCallbackDelegate
 import io.beldex.bchat.conversation.v2.menus.ConversationMenuHelper
-import io.beldex.bchat.conversation.v2.messages.VisibleMessageContentViewDelegate
+import io.beldex.bchat.conversation.v2.messages.ControlMessageView
 import io.beldex.bchat.conversation.v2.messages.VisibleMessageView
+import io.beldex.bchat.conversation.v2.messages.VisibleMessageViewDelegate
 import io.beldex.bchat.conversation.v2.search.SearchBottomBar
 import io.beldex.bchat.conversation.v2.search.SearchViewModel
 import io.beldex.bchat.conversation.v2.utilities.AttachmentManager
@@ -120,14 +126,24 @@ import io.beldex.bchat.data.NodeInfo
 import io.beldex.bchat.data.PendingTx
 import io.beldex.bchat.data.TxData
 import io.beldex.bchat.data.UserNotes
+import io.beldex.bchat.database.BeldexMessageDatabase
+import io.beldex.bchat.database.MmsDatabase
+import io.beldex.bchat.database.ReactionDatabase
+import io.beldex.bchat.database.SmsDatabase
 import io.beldex.bchat.database.ThreadDatabase
+import io.beldex.bchat.database.model.MessageId
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.database.model.MmsMessageRecord
+import io.beldex.bchat.database.model.ReactionRecord
 import io.beldex.bchat.database.model.ThreadRecord
+import io.beldex.bchat.databinding.FragmentConversationV2Binding
+import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import io.beldex.bchat.delegates.WalletDelegates
 import io.beldex.bchat.delegates.WalletDelegatesImpl
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.giph.ui.GiphyActivity
+import io.beldex.bchat.groups.SecretGroupInfoComposeActivity
+import io.beldex.bchat.groups.SecretGroupInfoRepository
 import io.beldex.bchat.home.ConversationActionDialog
 import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.home.HomeDialogType
@@ -139,7 +155,6 @@ import io.beldex.bchat.mediasend.Media
 import io.beldex.bchat.mediasend.MediaSendActivity
 import io.beldex.bchat.mms.AudioSlide
 import io.beldex.bchat.mms.GifSlide
-import com.bumptech.glide.Glide
 import io.beldex.bchat.mms.ImageSlide
 import io.beldex.bchat.mms.MediaConstraints
 import io.beldex.bchat.mms.Slide
@@ -152,6 +167,8 @@ import io.beldex.bchat.onboarding.ui.EXTRA_PIN_CODE_ACTION
 import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.preferences.PrivacySettingsActivity
+import io.beldex.bchat.reactions.ReactionsDialogFragment
+import io.beldex.bchat.reactions.any.ReactWithAnyEmojiDialogFragment
 import io.beldex.bchat.service.WebRtcCallService
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.util.BChatThreadPoolExecutor
@@ -175,10 +192,6 @@ import io.beldex.bchat.wallet.utils.pincodeview.managers.LockManager
 import io.beldex.bchat.webrtc.CallViewModel
 import io.beldex.bchat.webrtc.NetworkChangeReceiver
 import io.beldex.bchat.webrtc.WebRTCComposeActivity
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.FragmentConversationV2Binding
-import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -212,11 +225,12 @@ private const val ARG_PARAM2 = "param2"
 @AndroidEntryPoint
 class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     InputBarRecordingViewDelegate, AttachmentManager.AttachmentListener,
-    ConversationActionModeCallbackDelegate, VisibleMessageContentViewDelegate,
+    ConversationActionModeCallbackDelegate,
     RecipientModifiedListener,
     SearchBottomBar.EventListener, LoaderManager.LoaderCallbacks<Cursor>,
     ConversationMenuHelper.ConversationMenuListener, OnBackPressedListener,SendConfirm, ConversationActionDialog.ConversationActionDialogListener,
-    WalletDelegates by WalletDelegatesImpl() {
+    WalletDelegates by WalletDelegatesImpl(), VisibleMessageViewDelegate,
+    ConversationReactionOverlay.OnReactionSelectedListener, ReactWithAnyEmojiDialogFragment.Callback, ReactionsDialogFragment.Callback,SecretGroupInfoComposeActivity.socialGroupInfoInterface {
 
     private var param2: String? = null
 
@@ -236,6 +250,17 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     lateinit var threadDb: ThreadDatabase
 
     lateinit var threadRecord : ThreadRecord
+
+    @Inject
+    lateinit var reactionDb: ReactionDatabase
+    @Inject
+    lateinit var textSecurePreferences: TextSecurePreferences
+    @Inject
+    lateinit var beldexMessageDb: BeldexMessageDatabase
+    @Inject
+    lateinit var smsDb: SmsDatabase
+    @Inject
+    lateinit var mmsDb: MmsDatabase
 
     private val viewModel: ConversationViewModel by viewModels {
         var threadId = requireArguments().getLong(THREAD_ID,-1L)
@@ -301,6 +326,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     var searchViewModel: SearchViewModel? = null
     var searchViewItem: MenuItem? = null
 
+    private var emojiLastClickTime: Long = 0
 
     private val isScrolledToBottom: Boolean
         get() = binding.conversationRecyclerView.isScrolledToBottom
@@ -332,16 +358,26 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             requireActivity(),
             cursor,
             onItemPress = { message, position, view, event ->
-                handlePress(message, position, view, event)
-            },
-            onItemSwipeToReply = { message, position ->
-                if(isSecretGroupIsActive()) {
-                    handleSwipeToReply(message, position)
+                if(!TextSecurePreferences.getIsReactionOverlayVisible(requireContext())) {
+                    handlePress(message, position, view, event)
                 }
             },
-            onItemLongPress = { message, position ->
-                if(isSecretGroupIsActive()){
-                    handleLongPress(message, position)
+            onItemSwipeToReply = { message, _ ->
+                if(isSecretGroupIsActive()) {
+                    handleSwipeToReply(message)
+                }
+            },
+            onItemLongPress = { message, position, view ->
+                if (isSecretGroupIsActive()) {
+                    if (message.isSent && !isMessageRequestThread() && !viewModel.recipient.value?.isOpenGroupRecipient!!) {
+                        if (selectedItem(message)) {
+                            actionMode?.let { onDeselect(message, position, it) }
+                        } else {
+                            showConversationReaction(message, view, position)
+                        }
+                    } else {
+                        selectMessage(message, position)
+                    }
                 }
             },
             onDeselect = { message, position ->
@@ -358,7 +394,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             glide = glide,
             lifecycleCoroutineScope = lifecycleScope
         )
-        adapter.visibleMessageContentViewDelegate = this
+        adapter.visibleMessageViewDelegate = this
         adapter
     }
 
@@ -408,6 +444,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private val messageToScrollAuthor = AtomicReference<Address?>(null)
     private var amplitudeJob: Job? = null
 
+    private lateinit var reactionDelegate: ConversationReactionDelegate
+    private val reactWithAnyEmojiStartPage = -1
+
     companion object {
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
@@ -431,6 +470,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         //SetDataAndType
         const val URI = "uri"
         const val TYPE = "type"
+        const val IN_CHAT_SHARE = "share_into_chat"
 
         // Request codes
         const val PICK_DOCUMENT = 2
@@ -439,8 +479,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         const val PICK_FROM_LIBRARY = 12
         const val INVITE_CONTACTS = 124
 
-        //flag
-        const val IS_UNSEND_REQUESTS_ENABLED = true
     }
 
     private var listenerCallback: Listener? = null
@@ -484,6 +522,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private var bns_Name : String? = null
     private val callDurationFormat = "HH:mm:ss"
     private var uiJob: Job? = null
+    private var groupRepository : SecretGroupInfoRepository? = null
+    private var isAudioPlaying: Boolean = false
+    private var audioPlayingIndexInAdapter: Int = -1
+
+
 
 
     interface Listener {
@@ -538,12 +581,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         lifecycleScope.launch {
             viewModel.backToHome.collectLatest {
                 if (it) {
-                    Toast.makeText(requireActivity(), "This thread has been deleted.", Toast.LENGTH_LONG)
-                        .show()
+                    Toast.makeText(requireActivity(), getString(R.string.conversationsDeleted), Toast.LENGTH_LONG).show()
                     backToHome()
                 }
             }
         }
+
+       groupRepository = SecretGroupInfoRepository(DatabaseComponent.get(requireContext()).groupDatabase())
 
 
         // messageIdToScroll
@@ -627,6 +671,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 //                }
 //            }
 //        }
+
+        val reactionOverlayStub: Stub<ConversationReactionOverlay> =
+            ViewUtil.findStubById(requireActivity(), R.id.conversation_reaction_scrubber_stub)
+        reactionDelegate = ConversationReactionDelegate(reactionOverlayStub)
+        reactionDelegate.setOnReactionSelectedListener(this)
+
         AsyncStartWallet().execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
         if (TextSecurePreferences.isWalletActive(requireContext())) {
             showBlockProgressBar(viewModel.recipient.value)
@@ -811,6 +861,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
+    private fun callSecretGroupInfo(recipient : Recipient, listenerCallback : Listener?) {
+        SecretGroupInfoComposeActivity.setOnActionSelectedListener(this)
+        val intent=Intent(requireContext(), SecretGroupInfoComposeActivity::class.java)
+        val groupID: String = recipient.address.toGroupString()
+        intent.putExtra(SecretGroupInfoComposeActivity.secretGroupID, groupID)
+        startActivity(intent)
+    }
 
     private fun networkChange(networkAvailable: Boolean) {
         isNetworkAvailable = networkAvailable
@@ -830,7 +887,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun showPayWithSlide(thread: Recipient?, status: Boolean) {
         if (thread != null && !thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && thread.isApproved && HomeActivity.reportIssueBChatID!=thread.address.toString() && !thread.isLocalNumber && status) {
             binding.slideToPayButton.visibility = View.VISIBLE
-            dispatchTouchEvent()
+            selectedEvent?.let { dispatchTouchEvents(it) }
         }else{
             binding.slideToPayButton.visibility = View.GONE
         }
@@ -867,36 +924,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (inProgress) {
             hideProgress()
         }
-
         endActionMode()
         ApplicationContext.getInstance(requireActivity()).messageNotifier.setVisibleThread(-1)
         viewModel.saveDraft(binding.inputBar.text.trim())
-        val recipient = viewModel.recipient.value ?: return super.onPause()
-        /*Hales63*/ // New Line
-        if (TextSecurePreferences.getPlayerStatus(requireActivity())) {
-            TextSecurePreferences.setPlayerStatus(requireActivity(), false)
-            val contactDB = DatabaseComponent.get(requireActivity()).bchatContactDatabase()
-            val contact = contactDB.getContactWithBchatID(recipient.address.toString())
-            val actionMode = this.actionMode
-            if (contact?.isTrusted != null && contact.isTrusted && actionMode == null && selectedEvent != null && selectedView != null) {
-                selectedEvent?.let {
-                    selectedView?.onContentClick(it)
-                }
-                if (selectedMessageRecord?.isOutgoing != null) {
-                    if (selectedMessageRecord?.isOutgoing!!) {
-                        selectedEvent?.let { selectedView?.onContentClick(it) }
-                    }
-                }
-            } else if (contact?.isTrusted == null && selectedMessageRecord?.isOutgoing == false && actionMode == null && selectedEvent != null && selectedView != null) {
-                selectedEvent?.let {
-                    selectedView?.onContentClick(it)
-                }
-            }
-            if (selectedMessageRecord?.isOutgoing != null && selectedMessageRecord?.isOutgoing!! && actionMode == null && selectedEvent != null && selectedView != null) {
-                selectedEvent?.let {
-                    selectedView?.onContentClick(it)
-                }
-            }
+        //Hales63
+        if (isAudioPlaying) {
+            this.stopVoiceMessages(audioPlayingIndexInAdapter)
         }
         super.onPause()
     }
@@ -954,7 +987,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     // `position` is the adapter position; not the visual position
-    private fun handleSwipeToReply(message: MessageRecord, position: Int) {
+    private fun handleSwipeToReply(message: MessageRecord) {
         //New Line
 //        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
 //        params.bottomMargin = 16
@@ -962,6 +995,253 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.slideToPayButton.visibility = View.GONE
         binding.inputBar.draftQuote(recipient, message, glide)
         setConversationRecyclerViewLayout(true)
+    }
+
+    private fun showOrHidScrollToBottomButton(show: Boolean = true) {
+        binding.scrollToBottomButton.isVisible= show && !isScrolledToBottom && adapter.itemCount > 0
+    }
+
+    private fun showConversationReaction(message: MessageRecord, messageView: View, position : Int) {
+        val messageContentView = when(messageView){
+            is VisibleMessageView -> messageView.messageContentView
+            is ControlMessageView -> messageView.controlContentView
+            else -> null
+        } ?: return Timber.tag("Beldex")
+            .w("Failed to show reaction because the messageRecord is not of a known type: " + messageView)
+
+
+        val messageContentBitmap = try {
+            messageContentView.drawToBitmap()
+        } catch (e: Exception) {
+            Log.e("Beldex", "Failed to show emoji picker", e)
+            return
+        }
+        TextSecurePreferences.setIsReactionOverlayVisible(requireContext(),true)
+        ViewUtil.hideKeyboard(requireContext(), messageView)
+        binding.reactionsShade.isVisible= true
+        showOrHidScrollToBottomButton(false)
+        binding.conversationRecyclerView.suppressLayout(true)
+        reactionDelegate.setOnActionSelectedListener(ReactionsToolbarListener(message, position))
+        reactionDelegate.setOnHideListener(object: ConversationReactionOverlay.OnHideListener {
+            override fun startHide() {
+                binding.reactionsShade.let {
+                    ViewUtil.fadeOut(it, resources.getInteger(R.integer.reaction_scrubber_hide_duration), View.GONE)
+                }
+                showOrHidScrollToBottomButton(true)
+            }
+            override fun onHide() {
+                binding.conversationRecyclerView.suppressLayout(false)
+                TextSecurePreferences.setIsReactionOverlayVisible(requireContext(),false)
+            }
+        })
+        val topLeft = intArrayOf(0, 0).also { messageContentView.getLocationInWindow(it) }
+        val selectedConversationModel = SelectedConversationModel(
+            messageContentBitmap,
+            topLeft[0].toFloat(),
+            topLeft[1].toFloat(),
+            messageContentView.width,
+            message.isOutgoing,
+            messageContentView
+        )
+        reactionDelegate.show(requireActivity(), message, selectedConversationModel)
+    }
+
+    override fun onReactionSelected(messageRecord: MessageRecord, emoji: String) {
+        reactionDelegate.hide()
+        val localUser = textSecurePreferences.getLocalNumber()
+        val userReactions = messageRecord.reactions.filter { it.author == localUser }
+        val isAlreadyReacted = userReactions.isNotEmpty()
+
+        if (isAlreadyReacted && userReactions.any { it.emoji == emoji }) {
+            userReactions.forEach {
+                sendEmojiRemoval(it.emoji, messageRecord)
+            }
+        } else {
+            if (isAlreadyReacted) {
+                userReactions.forEach {
+                    sendEmojiRemoval(it.emoji, messageRecord)
+                }
+            }
+            sendEmojiReaction(emoji, messageRecord)
+        }
+    }
+     fun sendEmojiReaction(emoji: String, originalMessage: MessageRecord) {
+        // Create the message
+        val recipient = viewModel.recipient.value ?: return
+        if(recipient.isBlocked) {
+            unblock()
+            return
+        }
+        val reactionMessage = VisibleMessage()
+        val emojiTimestamp = System.currentTimeMillis()
+        reactionMessage.sentTimestamp = emojiTimestamp
+        val author = textSecurePreferences.getLocalNumber()!!
+        // Put the message in the database
+        val reaction = ReactionRecord(
+            messageId = originalMessage.id,
+            isMms = originalMessage.isMms,
+            author = author,
+            emoji = emoji,
+            count = 1,
+            dateSent = emojiTimestamp,
+            dateReceived = emojiTimestamp
+        )
+        reactionDb.addReaction(MessageId(originalMessage.id, originalMessage.isMms), reaction,false)
+         val originalAuthor = if (originalMessage.isOutgoing) {
+             textSecurePreferences.getLocalNumber()!!
+         } else originalMessage.individualRecipient.address.serialize()
+        // Send it
+        reactionMessage.reaction = Reaction.from(originalMessage.timestamp, originalAuthor, emoji, true)
+        if (recipient.isOpenGroupRecipient) {
+            val messageServerId = beldexMessageDb.getServerID(originalMessage.id, !originalMessage.isMms) ?: return
+            viewModel.openGroup?.let {
+                OpenGroupAPIV2.addReaction(it.room, it.server, messageServerId, emoji)
+            }
+        } else {
+            MessageSender.send(reactionMessage, recipient.address)
+        }
+        LoaderManager.getInstance(this).restartLoader(0, null, this)
+    }
+     fun sendEmojiRemoval(emoji: String, originalMessage: MessageRecord) {
+        val recipient = viewModel.recipient.value ?: return
+         if(recipient.isBlocked){
+             unblock()
+             return
+         }
+        val author = textSecurePreferences.getLocalNumber()!!
+        reactionDb.deleteReaction(emoji, MessageId(originalMessage.id, originalMessage.isMms), author,false)
+         val message = VisibleMessage()
+         val emojiTimestamp = System.currentTimeMillis()
+         message.sentTimestamp = emojiTimestamp
+         message.reaction = Reaction.from(originalMessage.timestamp,  author, emoji, false)
+        if (recipient.isOpenGroupRecipient) {
+            val messageServerId = beldexMessageDb.getServerID(originalMessage.id, !originalMessage.isMms) ?: return
+            viewModel.openGroup?.let {
+                OpenGroupAPIV2.deleteReaction(it.room, it.server, messageServerId, emoji)
+            }
+        } else {
+            MessageSender.send(message, recipient.address)
+        }
+        LoaderManager.getInstance(this).restartLoader(0, null, this)
+    }
+    override fun onCustomReactionSelected(messageRecord: MessageRecord, hasAddedCustomEmoji: Boolean) {
+        val oldRecord = messageRecord.reactions.find { record -> record.author == textSecurePreferences.getLocalNumber() }
+        if (oldRecord != null && hasAddedCustomEmoji) {
+            reactionDelegate.hide()
+            sendEmojiRemoval(oldRecord.emoji, messageRecord)
+        } else {
+            reactionDelegate.hideForReactWithAny()
+            ReactWithAnyEmojiDialogFragment
+                .createForMessageRecord(messageRecord, reactWithAnyEmojiStartPage)
+                .show(requireActivity().supportFragmentManager, "BOTTOM");
+        }
+    }
+    override fun onReactWithAnyEmojiDialogDismissed() {
+        reactionDelegate.hide()
+    }
+
+    fun reactionDelegateDismiss() {
+       if( reactionDelegate.isShowing) {
+           reactionDelegate.hide()
+       }
+    }
+    override fun onReactWithAnyEmojiSelected(emoji: String, messageId: MessageId) {
+        reactionDelegate.hide()
+        val message = if (messageId.mms) {
+            mmsDb.getMessageRecord(messageId.id)
+        } else {
+            smsDb.getMessageRecord(messageId.id)
+        }
+        val oldRecord = reactionDb.getReactions(messageId).find { it.author == textSecurePreferences.getLocalNumber() }
+        if (oldRecord?.emoji == emoji) {
+            sendEmojiRemoval(emoji, message)
+        } else {
+            sendEmojiReaction(emoji, message)
+        }
+    }
+    override fun onRemoveReaction(emoji: String, messageId: MessageId) {
+        val message = if (messageId.mms) {
+            mmsDb.getMessageRecords(messageId.id)
+        } else {
+            smsDb.getMessageRecords(messageId.id)
+        }
+        if (message != null) {
+            sendEmojiRemoval(emoji, message)
+        }
+    }
+    override fun onClearAll(emoji: String, messageId: MessageId) {
+        reactionDb.deleteEmojiReactions(emoji, messageId)
+        viewModel.openGroup?.let { openGroup ->
+            beldexMessageDb.getServerID(messageId.id, !messageId.mms)?.let { serverId ->
+                OpenGroupAPIV2.deleteAllReactions(openGroup.room, openGroup.server, serverId, emoji)
+            }
+        }
+        threadDb.notifyThreadUpdated(viewModel.threadId)
+    }
+
+    fun clearAllReaction(emoji : String, messageId: MessageId) {
+        viewModel.openGroup?.let { openGroup ->
+            beldexMessageDb.getServerID(messageId.id, !messageId.mms)?.let { serverId ->
+                OpenGroupAPIV2.deleteAllReactions(openGroup.room, openGroup.server, serverId, emoji)
+            }
+        }
+        threadDb.notifyThreadUpdated(viewModel.threadId)
+    }
+
+    override fun onReactionClicked(emoji: String, messageId: MessageId, userWasSender: Boolean) {
+        val message = if (messageId.mms) {
+            mmsDb.getMessageRecord(messageId.id)
+        } else {
+            smsDb.getMessageRecord(messageId.id)
+        }
+        if (userWasSender) {
+            sendEmojiRemoval(emoji, message)
+        } else {
+            sendEmojiReaction(emoji, message)
+        }
+    }
+    override fun onReactionLongClicked(messageId: MessageId,emoji: String?) {
+        if (SystemClock.elapsedRealtime() - emojiLastClickTime >= 1000) {
+            emojiLastClickTime = SystemClock.elapsedRealtime()
+            val fragment = ReactionsDialogFragment.create(messageId,emoji)
+            fragment.show(requireActivity().supportFragmentManager, null)
+        }
+    }
+
+    override fun  onItemLongPress(
+        messageRecord : MessageRecord,
+        visibleMessageView : VisibleMessageView,
+        position : Int
+    ) {
+        if (isSecretGroupIsActive()) {
+            if (messageRecord.isSent && !isMessageRequestThread() && !viewModel.recipient.value?.isOpenGroupRecipient!!) {
+                if (selectedItem(messageRecord)) {
+                    actionMode?.let { onDeselect(messageRecord, position, it) }
+                } else {
+                    showConversationReaction(messageRecord, visibleMessageView, position)
+                }
+            } else {
+                selectMessage(messageRecord, position)
+            }
+        }
+    }
+
+    inner class ReactionsToolbarListener(val message : MessageRecord,val  position : Int) :
+        ConversationReactionOverlay.OnActionSelectedListener {
+        override fun onActionSelected(action: ConversationReactionOverlay.Action) {
+            val selectedItems = setOf(message)
+            when (action) {
+                ConversationReactionOverlay.Action.REPLY -> reply(selectedItems)
+                ConversationReactionOverlay.Action.RESEND -> resendMessage(selectedItems)
+                ConversationReactionOverlay.Action.DOWNLOAD -> saveAttachment(selectedItems)
+                ConversationReactionOverlay.Action.COPY_MESSAGE -> copyMessages(selectedItems)
+                ConversationReactionOverlay.Action.VIEW_INFO -> showMessageDetail(selectedItems)
+                ConversationReactionOverlay.Action.SELECT -> selectMessages(selectedItems, position)
+                ConversationReactionOverlay.Action.DELETE -> deleteMessages(selectedItems)
+                ConversationReactionOverlay.Action.COPY_BCHAT_ID -> copyBchatID(selectedItems)
+                else -> {}
+            }
+        }
     }
 
     override fun setConversationRecyclerViewLayout(status: Boolean) {
@@ -973,7 +1253,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
-    private fun handleLongPress(message: MessageRecord, position: Int) {
+    private fun selectMessage(message: MessageRecord, position: Int) {
         val actionMode = this.actionMode
         val actionModeCallback =
             ConversationActionModeCallback(adapter, viewModel.threadId, requireActivity())
@@ -1199,6 +1479,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun startRecordingVoiceMessage() {
+        if(isAudioPlaying){
+            this.stopVoiceMessages(audioPlayingIndexInAdapter)
+        }
         val startTime = callViewModel!!.callStartTime
         if (startTime == -1L) {
             hideAttachmentContainer()
@@ -1422,7 +1705,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         toolTip()
     }
 
-    fun dispatchTouchEvent() {
+    fun dispatchTouchEvents(event : MotionEvent) {
         if (tooltipIsVisible) {
             binding.tooltip.visibility = View.GONE
             tooltipIsVisible = false
@@ -1430,6 +1713,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         } else {
             dispatchTouched = false
         }
+        reactionDelegate.applyTouchEvent(event)
     }
 
     private fun toolTip() {
@@ -1600,21 +1884,16 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }catch(ex: UninitializedPropertyAccessException){
             Log.d("Audio Recorder ",ex.message.toString())
         }
-//        amplitudeJob?.cancel()
         stopAudioHandler.removeCallbacks(stopVoiceMessageRecordingTask)
     }
 
     override fun deleteMessages(messages: Set<MessageRecord>) {
         val recipient = viewModel.recipient.value ?: return
-        if (!IS_UNSEND_REQUESTS_ENABLED) {
-            deleteMessagesWithoutUnsendRequest(messages)
-            return
-        }
         val allSentByCurrentUser = messages.all { it.isOutgoing }
         val allHasHash =
-            messages.all { viewModel.getMessageServerHash(it.id) != null }
+            messages.all { viewModel.getMessageServerHash(it.id, it.isMms) != null }
         if (recipient.isOpenGroupRecipient) {
-            val messageCount = messages.size
+            val messageCount = 1
             val builder = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
             builder.setTitle(
                 resources.getQuantityString(
@@ -1829,7 +2108,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if(messages.isNotEmpty()) {
             val message = messages.first()
             val intent = Intent(requireActivity(), MessageDetailActivity::class.java)
-            intent.putExtra(MessageDetailActivity.MESSAGE_TIMESTAMP, message.timestamp)
+            intent.putExtra(MessageDetailActivity.MESSAGE_TIMESTAMP, messages.first().timestamp)
             startActivity(intent)
             endActionMode()
         }
@@ -2006,7 +2285,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.conversationRecyclerView.scrollToPosition(lastSeenItemPosition)
     }
 
-    fun playVoiceMessageAtIndexIfPossible(indexInAdapter: Int) {
+    override fun playVoiceMessageAtIndexIfPossible(indexInAdapter: Int) {
         if (indexInAdapter < 0 || indexInAdapter >= adapter.itemCount) {
             return
         }
@@ -2014,6 +2293,20 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             binding.conversationRecyclerView.findViewHolderForAdapterPosition(indexInAdapter) as? ConversationAdapter.VisibleMessageViewHolder ?: return
         val visibleMessageView = ViewVisibleMessageBinding.bind(viewHolder.view).visibleMessageView
         visibleMessageView.playVoiceMessage()
+    }
+
+    override fun isAudioPlaying(isPlaying : Boolean, audioPlayingIndex : Int) {
+        isAudioPlaying = isPlaying
+        audioPlayingIndexInAdapter = audioPlayingIndex
+    }
+
+    override fun stopVoiceMessages(indexInAdapter : Int) {
+        if (indexInAdapter < 0 || indexInAdapter >= adapter.itemCount) {
+            return
+        }
+        val viewHolder = binding.conversationRecyclerView.findViewHolderForAdapterPosition(indexInAdapter) as? ConversationAdapter.VisibleMessageViewHolder ?: return
+        val visibleMessageView = ViewVisibleMessageBinding.bind(viewHolder.view).visibleMessageView
+        visibleMessageView.stoppedVoiceMessage()
     }
 
     fun onSearchOpened() {
@@ -2077,8 +2370,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             binding?.profilePictureView?.root?.update(threadRecipient)
             //New Line v32
             binding?.conversationTitleView?.text = when {
-                threadRecipient.isLocalNumber -> getString(R.string.note_to_self)
-                else -> threadRecipient.toShortString()
+                threadRecipient.isLocalNumber -> getString(R.string.note_to_self).capitalizeFirstLetter()
+                else -> threadRecipient.toShortString().capitalizeFirstLetter()
             }
         }
     }
@@ -2130,6 +2423,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
+    private fun String.capitalizeFirstLetter() : String {
+        return this.replaceFirstChar { it.uppercase() }
+    }
+
     private fun setUpToolBar() {
         val profileManager = SSKEnvironment.shared.profileManager
         val recipient = viewModel.recipient.value ?: return
@@ -2137,11 +2434,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (bnsName != null && adapter.cursor?.count == 0) {
             profileManager.setName(requireContext(), recipient, bnsName)
         }
-        val recipientName : String=recipient.toShortString().substring(0, 1).uppercase(Locale.ROOT) + recipient.toShortString().substring(1).lowercase(Locale.ROOT)
+        val recipientName : String=recipient.toShortString()
 
         binding.conversationTitleView.text = when {
-            recipient.isLocalNumber -> getString(R.string.note_to_self)
-            else -> recipientName
+            recipient.isLocalNumber -> getString(R.string.note_to_self).capitalizeFirstLetter()
+            else -> recipientName.capitalizeFirstLetter()
         }
         @DimenRes val sizeID: Int = if (recipient.isClosedGroupRecipient) {
             R.dimen.medium_profile_picture_size
@@ -2158,8 +2455,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.profilePictureView.root.update(recipient)
         binding.layoutConversation.setOnClickListener()
         {
-            hideAttachmentContainer()
-            ConversationMenuHelper.showAllMedia(recipient, listenerCallback)
+            cancelVoiceMessage()
+            if (recipient.isClosedGroupRecipient) {
+                callSecretGroupInfo(recipient,listenerCallback)
+            } else {
+                hideAttachmentContainer()
+                ConversationMenuHelper.showAllMedia(recipient, listenerCallback)
+            }
+
         }
         binding.backToHomeBtn.setOnClickListener {
             listenerCallback?.walletOnBackPressed()
@@ -2277,30 +2580,48 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         //SetDataAndType
         val mediaURI = requireArguments().parcelable<Uri>(URI)
         val mediaType = AttachmentManager.MediaType.from(requireArguments().getString(TYPE))
+        val isInChatShare = requireActivity().intent.getBooleanExtra(IN_CHAT_SHARE, false)
+        val mimeType =  MediaUtil.getMimeType(requireActivity(), mediaURI)
         if (mediaURI != null && mediaType != null) {
-            if (AttachmentManager.MediaType.IMAGE == mediaType || AttachmentManager.MediaType.GIF == mediaType || AttachmentManager.MediaType.VIDEO == mediaType) {
-                val media = Media(
-                    mediaURI,
-                    MediaUtil.getMimeType(
-                        requireActivity(),
-                        mediaURI
-                    )!!,
-                    0,
-                    0,
-                    0,
-                    0,
-                    Optional.absent(),
-                    Optional.absent()
-                )
-                startActivityForResult(
-                    MediaSendActivity.buildEditorIntent(
-                        requireActivity(),
-                        listOf(media),
-                        viewModel.recipient.value!!,
-                        ""
-                    ), PICK_FROM_LIBRARY
-                )
-                return
+            if (mimeType != null && (AttachmentManager.MediaType.IMAGE == mediaType || AttachmentManager.MediaType.GIF == mediaType || AttachmentManager.MediaType.VIDEO == mediaType)) {
+                if(isInChatShare){
+                    prepMediaForSending(mediaURI, mediaType).addListener(object :
+                        ListenableFuture.Listener<Boolean> {
+
+                        override fun onSuccess(result: Boolean?) {
+                            sendAttachments(attachmentManager.buildSlideDeck().asAttachments(), null)
+                        }
+
+                        override fun onFailure(e: ExecutionException?) {
+                            Toast.makeText(
+                                requireActivity(),
+                                R.string.activity_conversation_attachment_prep_failed,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    })
+                    return
+                }else {
+                    val media=Media(
+                        mediaURI,
+                        mimeType,
+                        0,
+                        0,
+                        0,
+                        0,
+                        Optional.absent(),
+                        Optional.absent()
+                    )
+                    startActivityForResult(
+                        MediaSendActivity.buildEditorIntent(
+                            requireActivity(),
+                            listOf(media),
+                            viewModel.recipient.value!!,
+                            ""
+                        ), PICK_FROM_LIBRARY
+                    )
+                    return
+                }
             } else {
                 prepMediaForSending(mediaURI, mediaType).addListener(object :
                     ListenableFuture.Listener<Boolean> {
@@ -2473,6 +2794,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     } catch (ex: IllegalStateException) {
                         Timber.w(ex.message)
                     }
+                } else if (recipient.isClosedGroupRecipient) {
+                    val groupID: String = recipient.address.toGroupString()
+                    val members = groupRepository?.getGroupMembers(groupID)
+                    val memberCount =members?.members?.size ?: 0
+                    binding.conversationSubtitleView.isVisible = true
+                    binding.conversationSubtitleView.text =  if(memberCount > 1) "$memberCount members" else "$memberCount member"
                 } else {
                     binding.conversationSubtitleView.isVisible = false
                 }
@@ -2870,7 +3197,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun sendAttachments(
         attachments: List<Attachment>,
         body: String?,
-        quotedMessage: MessageRecord? = null,
+        quotedMessage: MessageRecord? = binding?.inputBar?.quote,
         linkPreview: LinkPreview? = null
     ) {
         val recipient = viewModel.recipient.value ?: return
@@ -3027,9 +3354,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     // Remove this after the unsend request is enabled
-    private fun deleteMessagesWithoutUnsendRequest(messages: Set<MessageRecord>) {
-        val messageCount = messages.size
-        val builder = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
+   /* private fun deleteMessagesWithoutUnsendRequest(messages : Set<MessageRecord>) {
+        *//**//*
+        val messageCount=messages.size
+        val builder=AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
         builder.setTitle(
             resources.getQuantityString(
                 R.plurals.ConversationFragment_delete_selected_messages,
@@ -3054,6 +3382,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             endActionMode()
         }
         builder.show()
+    }*/
+   override fun selectMessages(messages : Set<MessageRecord>, position : Int) {
+       selectMessage(messages.first(), position) //TODO: begin selection mode
     }
 
     private fun endActionMode() {
@@ -3245,6 +3576,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         //New Line v32
         val recipient = viewModel.recipient.value ?: return false
         return !recipient.isGroupRecipient && !recipient.isApproved
+    }
+
+    private fun selectedItem(message : MessageRecord): Boolean{
+        return adapter.selectedItems.contains(message)
     }
 
     override fun onBackPressed(): Boolean {
@@ -3594,7 +3929,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             val daemonConnected: Wallet.ConnectionStatus = listenerCallback!!.connectionStatus!!
             if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
                 if (!wallet.isSynchronized) {
-                    ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
+                    ApplicationContext.getInstance(requireContext()).messageNotifier.setHomeScreenVisible(
                         true
                     )
                     val n = daemonHeight - walletHeight
@@ -3614,7 +3949,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                         binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet, x.toFloat())
                     }
                 } else {
-                    ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
+                    ApplicationContext.getInstance(requireContext()).messageNotifier.setHomeScreenVisible(
                         false
                     )
                     sync =
@@ -3898,6 +4233,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     fun hideKeyboard() {
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view?.windowToken, 0)
+    }
+
+    override fun showAllMedia(recipient : Recipient) {
+        ConversationMenuHelper.showAllMedia(recipient,listenerCallback)
     }
 }
 //endregion

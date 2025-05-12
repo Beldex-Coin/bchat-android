@@ -62,6 +62,7 @@ fun ProfilePictureComponent(
     additionalDisplayName: String? = null,
     pictureMode: ProfilePictureMode = ProfilePictureMode.SmallPicture,
     isRefresh: Boolean = false,
+    isGroupInfo: Boolean = false
 ) {
     val context = LocalContext.current
     fun getUserIsBNSHolderStatus(publicKey: String): Boolean? {
@@ -86,13 +87,13 @@ fun ProfilePictureComponent(
                         modifier = Modifier
                             .align(Alignment.TopStart)
                     )
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_secret_group_profile),
-                        contentDescription = null,
-                        modifier = modifier
-                            .size(25.dp)
-                            .align(Alignment.BottomEnd).padding(end = 5.dp)
-                    )
+                        Image(
+                            painter=painterResource(id=R.drawable.ic_secret_group_profile),
+                            contentDescription=null,
+                            modifier=modifier
+                                .size(if(isGroupInfo)35.dp else 25.dp)
+                                .align(Alignment.BottomEnd).padding(end=5.dp)
+                        )
                     /*additionalPublicKey?.let { adnPublicKey ->
                         additionalDisplayName?.let { addDisplayName ->
                             ProfilePicture(

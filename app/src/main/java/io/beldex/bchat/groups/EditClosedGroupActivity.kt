@@ -11,6 +11,8 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,16 +24,16 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.ThemeUtil
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.toHexString
-import io.beldex.bchat.PassphraseRequiredActionBarActivity
-import io.beldex.bchat.contacts.SelectContactsActivity
-import io.beldex.bchat.dependencies.DatabaseComponent
 import com.bumptech.glide.Glide
+import io.beldex.bchat.PassphraseRequiredActionBarActivity
+import io.beldex.bchat.R
+import io.beldex.bchat.contacts.SelectContactsActivity
+import io.beldex.bchat.databinding.ActivityEditClosedGroupBinding
+import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.util.Helper
 import io.beldex.bchat.util.fadeIn
 import io.beldex.bchat.util.fadeOut
 import io.beldex.bchat.wallet.CheckOnline
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityEditClosedGroupBinding
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.failUi
@@ -42,9 +44,10 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
     private val originalMembers = HashSet<String>()
     private val zombies = HashSet<String>()
     private val members = HashSet<String>()
+    private var groupAdmin : String?= null
     private val allMembers: Set<String>
         get() {
-            return members + zombies
+            return members.sortedWith(compareByDescending { it == groupAdmin }).toSet()
         }
     private var hasNameChanged = false
     private var isSelfAdmin = false
@@ -66,9 +69,11 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
 
     private val memberListAdapter by lazy {
         if (isSelfAdmin)
-            EditClosedGroupMembersAdapter(this, Glide.with(this), isSelfAdmin, this::onMemberClick)
+            EditClosedGroupMembersAdapter(this, Glide.with(this), isSelfAdmin, this::onMemberClick,
+                groupAdmin = groupAdmin.toString()
+            )
         else
-            EditClosedGroupMembersAdapter(this, Glide.with(this), isSelfAdmin)
+            EditClosedGroupMembersAdapter(this, Glide.with(this), isSelfAdmin, groupAdmin = groupAdmin.toString())
     }
 
     private lateinit var binding: ActivityEditClosedGroupBinding
@@ -82,6 +87,8 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
     }
     var applyChangesButtonLastClickTime: Long = 0
 
+    var secretGroupInfoViewModel: SecretGroupInfoViewModel? =  null
+
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
         super.onCreate(savedInstanceState, isReady)
@@ -94,10 +101,15 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         val groupInfo = DatabaseComponent.get(this).groupDatabase().getGroup(groupID).get()
         originalName = groupInfo.title
         isSelfAdmin = groupInfo.admins.any{ it.serialize() == TextSecurePreferences.getLocalNumber(this) }
+        groupAdmin = groupInfo.admins.toList().toString().trim('[',']')
 
         name = originalName
 
-
+        val secretGroupInfoViewModelFactory=
+            SecretGroupViewModelFactory(groupID, this)
+         secretGroupInfoViewModel= ViewModelProvider(
+            this, secretGroupInfoViewModelFactory
+        )[SecretGroupInfoViewModel::class.java]
 
 
         binding.addMembersClosedGroupButton.setOnClickListener {
@@ -123,6 +135,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         }
         binding.btnCancelGroupNameEdit.setOnClickListener{
             isEditingName = false
+            showApplyChangesButton(false)
         }
         binding.btnSaveGroupNameEdit.setOnClickListener{
             if (checkIsOnline()) {
@@ -167,7 +180,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
                 zombies.clear()
                 zombies.addAll(groupMembers.zombieMembers.toHashSet())
                 originalMembers.clear()
-                originalMembers.addAll(members + zombies)
+                originalMembers.addAll(members)
                 updateMembers()
             }
 
@@ -175,6 +188,10 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
                 updateMembers()
             }
         })
+    }
+
+    private fun showApplyChangesButton(isVisible: Boolean) {
+        binding.applyChangesBtn.isVisible = isVisible
     }
 
     private fun checkIsOnline():Boolean{
@@ -218,6 +235,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
                 val selectedContacts = data.extras!!.getStringArray(SelectContactsActivity.selectedContactsKey)!!.toSet()
                 members.addAll(selectedContacts)
                 updateMembers()
+                showApplyChangesButton(true)
             }
         }
     }
@@ -276,10 +294,26 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
                 if (zombies.contains(member)) zombies.remove(member)
                 else members.remove(member)
                 updateMembers()
+                showApplyChangesButton(true)
                 bottomSheet.dismiss()
             }
         }
         bottomSheet.show(supportFragmentManager, "GroupEditingOptionsBottomSheet")
+    }
+
+    private fun remove(member: String) {
+        val title = R.string.remove_this_contact
+        val message = R.string.remove_message
+        AlertDialog.Builder(this,R.style.BChatAlertDialog)
+            .setTitle(title)
+            .setMessage(message)
+            .setNegativeButton(android.R.string.no, null)
+            .setPositiveButton(R.string.RecipientPreferenceActivity_block) { _, _ ->
+                if (zombies.contains(member)) zombies.remove(member)
+                else members.remove(member)
+                updateMembers()
+                showApplyChangesButton(true)
+            }.show()
     }
 
     private fun onAddMembersClick() {
@@ -304,6 +338,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         binding.lblGroupNameDisplay.text = name
         hasNameChanged = true
         isEditingName = false
+        showApplyChangesButton(true)
     }
 
     private fun commitChanges() {
@@ -324,6 +359,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
 
         var isClosedGroup: Boolean
         var groupPublicKey: String?
+        val returnIntent=Intent()
         try {
             groupPublicKey = GroupUtil.doubleDecodeGroupID(groupID).toHexString()
             isClosedGroup = DatabaseComponent.get(this).beldexAPIDatabase().isClosedGroup(groupPublicKey)
@@ -365,11 +401,14 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
                     originalMembers.filterNot { it in members }.let { removes ->
                         if (removes.isNotEmpty()) MessageSender.explicitRemoveMembers(groupPublicKey!!, removes.map { it.address.serialize() })
                     }
+                    returnIntent.putExtra("group_name",name)
+                    returnIntent.putExtra("group_members_count",members.size)
                 }
             }
             promise.successUi {
                 binding.loaderContainer.fadeOut()
                 isLoading = false
+                setResult(RESULT_OK, returnIntent)
                 finish()
             }.failUi { exception ->
                 val message = if (exception is MessageSender.Error) exception.description else "An error occurred"

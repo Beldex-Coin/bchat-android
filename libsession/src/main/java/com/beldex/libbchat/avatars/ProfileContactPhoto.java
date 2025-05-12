@@ -24,8 +24,8 @@ public class ProfileContactPhoto implements ContactPhoto {
   }
 
   @Override
-  public InputStream openInputStream(Context context) throws IOException {
-    return AvatarHelper.getInputStreamFor(context, address);
+  public InputStream openInputStream(Context context, Boolean isNotification) throws IOException {
+    return AvatarHelper.getInputStreamFor(context, address,isNotification);
   }
 
   @Override

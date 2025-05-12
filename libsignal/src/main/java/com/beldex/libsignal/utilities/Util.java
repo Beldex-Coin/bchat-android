@@ -1,4 +1,4 @@
-package com.beldex.libsignal.utilities;
+ package com.beldex.libsignal.utilities;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class Util {
+
+  public static SecureRandom SECURE_RANDOM = new SecureRandom();
 
   public static byte[] join(byte[]... input) {
     try {

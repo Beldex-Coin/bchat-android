@@ -142,7 +142,8 @@ class Colors(
     val textOldGreen: Color,
     val disabledLetsBchatButton: Color,
     val disabledLetsBchatContent: Color,
-    val newChatCardBackground: Color
+    val newChatCardBackground: Color,
+    val secretGroupInfoBackground: Color
 )
 
 val lightColors = Colors(
@@ -269,7 +270,8 @@ val lightColors = Colors(
     textOldGreen = Color(0xFF00BD40),
     disabledLetsBchatButton = Color(0xFFF8F8F8),
     disabledLetsBchatContent = Color(0xFF6C6C78),
-    newChatCardBackground = Color(0xFFECECEC)
+    newChatCardBackground = Color(0xFFECECEC),
+    secretGroupInfoBackground = Color(0xFFF8F8F8)
 )
 
 val darkColors = Colors(
@@ -396,7 +398,8 @@ val darkColors = Colors(
     textOldGreen = Color(0xFF00BD40),
     disabledLetsBchatButton = Color(0xFF272733),
     disabledLetsBchatContent = Color(0xFF6C6C78),
-    newChatCardBackground = Color(0xFF111119)
+    newChatCardBackground = Color(0xFF111119),
+    secretGroupInfoBackground = Color(0xFF1C1C26)
 )
 
 

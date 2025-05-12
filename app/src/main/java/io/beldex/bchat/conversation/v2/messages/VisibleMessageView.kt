@@ -44,6 +44,7 @@ import io.beldex.bchat.util.toDp
 import io.beldex.bchat.util.toPx
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
+import io.beldex.bchat.database.BeldexAPIDatabase
 import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import java.util.Date
 import java.util.Locale
@@ -61,6 +62,7 @@ class VisibleMessageView : LinearLayout {
     @Inject lateinit var mmsSmsDb: MmsSmsDatabase
     @Inject lateinit var smsDb: SmsDatabase
     @Inject lateinit var mmsDb: MmsDatabase
+    @Inject lateinit var beldexApiDb: BeldexAPIDatabase
 
     private val binding by lazy { ViewVisibleMessageBinding.bind(this) }
     private val screenWidth = Resources.getSystem().displayMetrics.widthPixels
@@ -82,7 +84,7 @@ class VisibleMessageView : LinearLayout {
     var onPress: ((event: MotionEvent) -> Unit)? = null
     var onSwipeToReply: (() -> Unit)? = null
     var onLongPress: (() -> Unit)? = null
-    var contentViewDelegate: VisibleMessageContentViewDelegate? = null
+    val messageContentView: VisibleMessageContentView by lazy { binding.messageContentView.root }
 
     companion object {
         const val swipeToReplyThreshold = 64.0f // dp
@@ -104,13 +106,24 @@ class VisibleMessageView : LinearLayout {
     private fun initialize() {
         isHapticFeedbackEnabled = true
         setWillNotDraw(false)
-        binding.expirationTimerViewContainer.disableClipping()
+        binding.messageInnerContainer.disableClipping()
         binding.messageContentView.root.disableClipping()
     }
     // endregion
 
     // region Updating
-    fun bind(message: MessageRecord, previous: MessageRecord?, next: MessageRecord?, glide: RequestManager, searchQuery: String?, contact: Contact?, senderBChatID: String, onAttachmentNeedsDownload: (Long, Long) -> Unit) {
+    fun bind(
+        message : MessageRecord,
+        previous : MessageRecord?,
+        next : MessageRecord?,
+        glide : RequestManager,
+        searchQuery : String?,
+        contact : Contact?,
+        senderBChatID : String,
+        onAttachmentNeedsDownload : (Long, Long) -> Unit,
+        delegate : VisibleMessageViewDelegate?,
+        position : Int
+    ) {
         val threadID = message.threadId
         val thread = threadDb.getRecipientForThreadId(threadID) ?: return
         val isGroupThread = thread.isGroupRecipient
@@ -131,9 +144,9 @@ class VisibleMessageView : LinearLayout {
         else ViewUtil.dpToPx(context,2)
 
         if (binding.profilePictureView.root.visibility == View.GONE) {
-            val expirationParams = binding.expirationTimerViewContainer.layoutParams as MarginLayoutParams
+            val expirationParams = binding.messageInnerContainer.layoutParams as MarginLayoutParams
             expirationParams.bottomMargin = bottomMargin
-            binding.expirationTimerViewContainer.layoutParams = expirationParams
+            binding.messageInnerContainer.layoutParams = expirationParams
         } else {
             val avatarLayoutParams = binding.profilePictureView.root.layoutParams as MarginLayoutParams
             avatarLayoutParams.bottomMargin = bottomMargin
@@ -157,12 +170,11 @@ class VisibleMessageView : LinearLayout {
                     binding.moderatorIconImageView.isVisible = !message.isOutgoing && isModerator
                 }
             }
-            binding.senderNameTextView.isVisible = isStartOfMessageCluster
-            val context = if (thread.isOpenGroupRecipient) ContactContext.OPEN_GROUP else ContactContext.REGULAR
-            binding.senderNameTextView.text = contact?.displayName(context) ?: senderBChatID
-        } else {
-            binding.senderNameTextView.visibility = View.GONE
         }
+        binding.senderNameTextView.isVisible = !message.isOutgoing && (isStartOfMessageCluster && (isGroupThread || snIsSelected))
+        val contactContext =
+            if (thread.isOpenGroupRecipient) ContactContext.OPEN_GROUP else ContactContext.REGULAR
+        binding.senderNameTextView.text = contact?.displayName(contactContext) ?: senderBChatID
         // Date break
         val showDateBreak =  (isStartOfMessageCluster || snIsSelected) && !isSameDayMessage(message, previous)
         if (showDateBreak) {
@@ -188,11 +200,33 @@ class VisibleMessageView : LinearLayout {
         }*/
         // Expiration timer
         updateExpirationTimer(message)
+
+        val emojiLayoutParams=
+            binding.emojiReactionsView.root.layoutParams as ConstraintLayout.LayoutParams
+        emojiLayoutParams.horizontalBias=if (message.isOutgoing) 1f else 0f
+        binding.emojiReactionsView.root.layoutParams=emojiLayoutParams
+
+        val containerParams = binding.messageInnerContainer.layoutParams as ConstraintLayout.LayoutParams
+
+
+        if (message.reactions.isNotEmpty()) {
+            binding.emojiReactionsView.root.setReactions(message.id, message.reactions, message.isOutgoing, delegate)
+            binding.emojiReactionsView.root.isVisible = true
+            if(isEndOfMessageCluster) {
+                containerParams.bottomMargin = if(isGroupThread) resources.getDimensionPixelSize(R.dimen.react_with_any_emoji_parent_container_bottom_margin_with_tail_group_message) else resources.getDimensionPixelSize(R.dimen.react_with_any_emoji_parent_container_bottom_margin_with_tail)
+            }else {
+                containerParams.bottomMargin = if(isGroupThread) resources.getDimensionPixelSize(R.dimen.react_with_any_emoji_parent_container_bottom_margin_group_message) else resources.getDimensionPixelSize(R.dimen.react_with_any_emoji_parent_container_bottom_margin)
+            }
+        } else {
+            binding.emojiReactionsView.root.visibility = View.GONE
+            containerParams.bottomMargin = 0
+        }
+
         // Populate content view
         binding.messageContentView.root.indexInAdapter = indexInAdapter
         binding.messageContentView.root.bind(message, isStartOfMessageCluster, isEndOfMessageCluster, glide, thread, searchQuery, message.isOutgoing || isGroupThread || (contact?.isTrusted ?: false),
-            onAttachmentNeedsDownload, thread.isOpenGroupRecipient)
-        binding.messageContentView.root.delegate = contentViewDelegate
+            onAttachmentNeedsDownload, thread.isOpenGroupRecipient,delegate!!, this, position)
+        binding.messageContentView.root.delegate = delegate
         onDoubleTap = { binding.messageContentView.root.onContentDoubleTap?.invoke() }
     }
 
@@ -228,7 +262,7 @@ class VisibleMessageView : LinearLayout {
     }
 
     private fun updateExpirationTimer(message: MessageRecord) {
-        val container = binding.expirationTimerViewContainer
+        val container = binding.messageInnerContainer
         val content = binding.messageContentView.root
         val expiration = binding.expirationTimerView
         val spacing = binding.messageContentSpacing
@@ -303,7 +337,7 @@ class VisibleMessageView : LinearLayout {
     override fun onDraw(canvas: Canvas) {
         val spacing = context.resources.getDimensionPixelSize(R.dimen.small_spacing)
         val iconSize = toPx(24, context.resources)
-        val top = height - (binding.expirationTimerViewContainer.height / 2) - binding.profilePictureView.root.marginBottom - (iconSize / 2)
+        val top = height - (binding.messageInnerContainer.height / 2) - binding.profilePictureView.root.marginBottom - (iconSize / 2)
         val bottom = top + iconSize
         swipeToReplyIconRect.left = -(spacing+spacing)
         swipeToReplyIconRect.top = top
@@ -327,13 +361,21 @@ class VisibleMessageView : LinearLayout {
     // endregion
 
     // region Interaction
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (onPress == null || onSwipeToReply == null || onLongPress == null) { return false }
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> onDown(event)
-            MotionEvent.ACTION_MOVE -> onMove(event)
-            MotionEvent.ACTION_CANCEL -> onCancel(event)
-            MotionEvent.ACTION_UP -> onUp(event)
+    override fun onTouchEvent(event : MotionEvent) : Boolean {
+        if (onPress == null && onSwipeToReply == null && onLongPress == null) {
+            return false
+        }
+        if (!TextSecurePreferences.getIsReactionOverlayVisible(context)) {
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> onDown(event)
+                MotionEvent.ACTION_MOVE -> {
+                    // only bother with movements if we have swipe to reply
+                    onSwipeToReply?.let { onMove(event) }
+                }
+
+                MotionEvent.ACTION_CANCEL -> onCancel(event)
+                MotionEvent.ACTION_UP -> onUp(event)
+            }
         }
         return true
     }
@@ -391,7 +433,7 @@ class VisibleMessageView : LinearLayout {
             } else {
                 val newPressCallback = Runnable { onPress(event) }
                 this.pressCallback = newPressCallback
-                gestureHandler.postDelayed(newPressCallback, VisibleMessageView.maxDoubleTapInterval)
+                gestureHandler.postDelayed(newPressCallback, maxDoubleTapInterval)
             }
         }
         resetPosition()
@@ -418,8 +460,7 @@ class VisibleMessageView : LinearLayout {
     }
 
     fun onContentClick(event: MotionEvent) {
-        binding.messageContentView.root.onContentClick.iterator().forEach { clickHandler -> clickHandler.invoke(event) }
-    }
+        binding.messageContentView.root.onContentClick(event) }
 
     private fun onPress(event: MotionEvent) {
         onPress?.invoke(event)
@@ -437,6 +478,9 @@ class VisibleMessageView : LinearLayout {
 
     fun playVoiceMessage() {
         binding.messageContentView.root.playVoiceMessage()
+    }
+    fun stoppedVoiceMessage() {
+        binding.messageContentView.root.stopVoiceMessage()
     }
     // endregion
 }

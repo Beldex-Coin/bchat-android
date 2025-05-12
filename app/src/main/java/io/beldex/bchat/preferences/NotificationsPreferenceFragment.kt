@@ -164,7 +164,7 @@ class NotificationsPreferenceFragment : ListSummaryPreferenceFragment() {
         override fun onPreferenceChange(preference: Preference, value: Any): Boolean {
             object : AsyncTask<Void?, Void?, Void?>() {
                 override fun doInBackground(vararg params: Void?): Void? {
-                    ApplicationContext.getInstance(activity).messageNotifier.updateNotification(activity!!)
+                    ApplicationContext.getInstance(requireContext()).messageNotifier.updateNotification(activity!!)
                     return null
                 }
             }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)

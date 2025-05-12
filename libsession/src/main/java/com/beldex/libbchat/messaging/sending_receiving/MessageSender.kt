@@ -263,9 +263,10 @@ object MessageSender {
     fun handleSuccessfulMessageSend(message: Message, destination: Destination, isSyncMessage: Boolean = false, openGroupSentTimestamp: Long = -1) {
         val storage = MessagingModuleConfiguration.shared.storage
         val userPublicKey = storage.getUserPublicKey()!!
+        val timestamp = message.sentTimestamp!!
         // Ignore future self-sends
-        storage.addReceivedMessageTimestamp(message.sentTimestamp!!)
-        storage.getMessageIdInDatabase(message.sentTimestamp!!, message.sender?:userPublicKey)?.let { messageID ->
+        storage.addReceivedMessageTimestamp(timestamp)
+        storage.getMessageIdInDatabase(timestamp, userPublicKey)?.let { (messageID, mms) ->
             if (openGroupSentTimestamp != -1L && message is VisibleMessage) {
                 storage.addReceivedMessageTimestamp(openGroupSentTimestamp)
                 storage.updateSentTimestamp(messageID, message.isMediaMessage(), openGroupSentTimestamp, message.threadID!!)
@@ -275,7 +276,7 @@ object MessageSender {
             // will be replaced by the hash value of the sync message. Since the hash value of the
             // real message has no use when we delete a message. It is OK to let it be.
             message.serverHash?.let {
-                storage.setMessageServerHash(messageID, it)
+                storage.setMessageServerHash(messageID, mms, it)
             }
             // in case any errors from previous sends
             storage.clearErrorMessage(messageID)
@@ -288,12 +289,14 @@ object MessageSender {
                 }
             }
             // Mark the message as sent
-            storage.markAsSent(message.sentTimestamp!!, message.sender?:userPublicKey)
-            storage.markUnidentified(message.sentTimestamp!!, message.sender?:userPublicKey)
+            storage.markAsSent(timestamp, userPublicKey)
+            storage.markUnidentified(timestamp, userPublicKey)
             // Start the disappearing messages timer if needed
             if (message is VisibleMessage && !isSyncMessage) {
-                SSKEnvironment.shared.messageExpirationManager.startAnyExpiration(message.sentTimestamp!!, message.sender?:userPublicKey)
+                SSKEnvironment.shared.messageExpirationManager.startAnyExpiration(timestamp, userPublicKey)
             }
+        } ?: run {
+            storage.updateReactionIfNeeded(message, message.sender?:userPublicKey, openGroupSentTimestamp)
         }
         // Sync the message if:
         // • it's a visible message
@@ -328,7 +331,7 @@ object MessageSender {
         message.linkPreview?.let { linkPreview ->
             if (linkPreview.attachmentID == null) {
                 messageDataProvider.getLinkPreviewAttachmentIDFor(message.id!!)?.let { attachmentID ->
-                    message.linkPreview!!.attachmentID = attachmentID
+                    linkPreview.attachmentID = attachmentID
                     message.attachmentIDs.remove(attachmentID)
                 }
             }

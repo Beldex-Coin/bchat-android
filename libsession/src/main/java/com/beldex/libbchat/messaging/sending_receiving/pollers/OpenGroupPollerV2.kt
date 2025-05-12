@@ -6,6 +6,8 @@ import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.jobs.*
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.messaging.open_groups.OpenGroupMessageV2
+import com.beldex.libbchat.messaging.sending_receiving.MessageReceiver
+import com.beldex.libbchat.messaging.sending_receiving.handleOpenGroupReactions
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libsignal.protos.SignalServiceProtos
 import com.beldex.libsignal.utilities.successBackground
@@ -62,20 +64,27 @@ class OpenGroupPollerV2(private val server: String, private val executorService:
         val threadId = storage.getThreadId(Address.fromSerialized(groupID)) ?: -1
         val threadExists = threadId >= 0
         if (!hasStarted || !threadExists) { return }
-        val envelopes = messages.sortedBy { it.serverID!! }.map { message ->
-            val senderPublicKey = message.sender!!
-            val builder = SignalServiceProtos.Envelope.newBuilder()
-            builder.type = SignalServiceProtos.Envelope.Type.BCHAT_MESSAGE
-            builder.source = senderPublicKey
-            builder.sourceDevice = 1
-            builder.content = message.toProto().toByteString()
-            builder.timestamp = message.sentTimestamp
-            builder.build() to message.serverID
+        val envelopes =  mutableListOf<Triple<Long?, SignalServiceProtos.Envelope, Map<String, OpenGroupAPIV2.Reaction>?>>()
+        messages.sortedBy { it.serverID!! }.forEach { message ->
+            if (!message.base64EncodedData.isNullOrEmpty()) {
+                val envelope = SignalServiceProtos.Envelope.newBuilder()
+                    .setType(SignalServiceProtos.Envelope.Type.BCHAT_MESSAGE)
+                    .setSource(message.sender!!)
+                    .setSourceDevice(1)
+                    .setContent(message.toProto().toByteString())
+                    .setTimestamp(message.sentTimestamp)
+                    .build()
+                envelopes.add(Triple( message.serverID, envelope, message.reactions))
+            } else if (!message.reactions.isNullOrEmpty()) {
+                message.serverID?.let {
+                    MessageReceiver.handleOpenGroupReactions(threadId, it, message.reactions)
+                }
+            }
         }
 
         envelopes.chunked(256).forEach { list ->
-            val parameters = list.map { (message, serverId) ->
-                MessageReceiveParameters(message.toByteArray(), openGroupMessageServerID = serverId)
+            val parameters = list.map { (serverId, message, reactions) ->
+                MessageReceiveParameters(message.toByteArray(), openGroupMessageServerID = serverId, reactions = reactions)
             }
             JobQueue.shared.add(BatchMessageReceiveJob(parameters, openGroupID))
         }

@@ -1,5 +1,6 @@
 package io.beldex.bchat.conversation.v2
 
+import android.app.Application
 import android.database.Cursor
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -10,6 +11,7 @@ import com.beldex.libbchat.messaging.messages.signal.OutgoingTextMessage
 import com.beldex.libbchat.messaging.open_groups.OpenGroupV2
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.GroupRecord
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.Pair
@@ -18,9 +20,9 @@ import io.beldex.bchat.database.BeldexAPIDatabase
 import io.beldex.bchat.database.BeldexMessageDatabase
 import io.beldex.bchat.database.BeldexThreadDatabase
 import io.beldex.bchat.database.GroupDatabase
+import io.beldex.bchat.audio.AudioSlidePlayer
 import io.beldex.bchat.database.MmsDatabase
 import io.beldex.bchat.database.MmsSmsDatabase
-import io.beldex.bchat.audio.AudioSlidePlayer
 import io.beldex.bchat.database.RecipientDatabase
 import io.beldex.bchat.database.SmsDatabase
 import io.beldex.bchat.database.ThreadDatabase
@@ -28,6 +30,8 @@ import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.repository.ConversationRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import io.beldex.bchat.R
+import io.beldex.bchat.database.Storage
 import io.beldex.bchat.database.model.MmsMessageRecord
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -50,6 +54,9 @@ class ConversationViewModel (
         private val mmsSmsDatabase: MmsSmsDatabase,
         private val beldexMessageDb: BeldexMessageDatabase,
         val threadId: Long,
+        private val storage: Storage,
+        private val application: Application,
+        private val textSecurePreferences : TextSecurePreferences
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ConversationUiState())
@@ -65,6 +72,12 @@ class ConversationViewModel (
 
     var senderBeldexAddress: String? = null
     var deleteMessages: Set<MessageRecord>? = null
+
+    val openGroup: OpenGroupV2?
+        get() = storage.getV2OpenGroup(threadId)
+
+ /*   val serverCapabilities: List<String>
+        get() = openGroup?.let { storage.getServerCapabilities(it.server) } ?: listOf()*/
 
     /*Hales63*/
 //    val recipient: Recipient?
@@ -130,7 +143,7 @@ class ConversationViewModel (
                 }
             }
             .onFailure {
-                showMessage("Couldn't accept message request due to error: $it")
+                Log.w("", "Failed to accept message request: $it")
             }
     }
 
@@ -198,6 +211,7 @@ class ConversationViewModel (
         }
     }
 
+
     //New Line v32
     fun setRecipientApproved() {
         val recipient = recipient.value ?: return Log.w("Beldex", "Recipient was null for set approved action")
@@ -206,6 +220,7 @@ class ConversationViewModel (
 
     fun deleteForEveryone(message: MessageRecord) = viewModelScope.launch {
         val recipient = recipient.value ?: return@launch
+        stopPlayingAudioMessage(message)
         repository.deleteForEveryone(threadId, recipient, message)
             .onSuccess {
                 Log.d("Beldex", "Deleted message ${message.id} ")
@@ -215,6 +230,7 @@ class ConversationViewModel (
                 showMessage("Couldn't delete message due to error: $it")
             }
     }
+
 
     fun deleteMessagesWithoutUnsendRequest(messages: Set<MessageRecord>) = viewModelScope.launch {
         repository.deleteMessageWithoutUnsendRequest(threadId, messages)
@@ -226,20 +242,20 @@ class ConversationViewModel (
     fun banUser(recipient: Recipient) = viewModelScope.launch {
         repository.banUser(threadId, recipient)
             .onSuccess {
-                showMessage("Successfully banned user")
+                showMessage(application.getString(R.string.banUserBanned))
             }
             .onFailure {
-                showMessage("Couldn't ban user due to error: $it")
+                showMessage(application.getString(R.string.banErrorFailed))
             }
     }
 
     fun banAndDeleteAll(recipient: Recipient) = viewModelScope.launch {
         repository.banAndDeleteAll(threadId, recipient)
             .onSuccess {
-                showMessage("Successfully banned user and deleted all their messages")
+                showMessage(application.getString(R.string.banUserBanned))
             }
             .onFailure {
-                showMessage("Couldn't execute request due to error: $it")
+                showMessage(application.getString(R.string.banErrorFailed))
             }
     }
 
@@ -324,8 +340,7 @@ class ConversationViewModel (
 //    fun getConversations(isIncomingRequestThread: Boolean): Cursor = mmsSmsDatabase.getConversation(threadId, isIncomingRequestThread)
 
     fun getUnreadCount() = mmsSmsDatabase.getUnreadCount(threadId)
-
-    fun getMessageServerHash(id: Long): String? = beldexMessageDb.getMessageServerHash(id)
+    fun getMessageServerHash(id : Long, mms : Boolean): String? = beldexMessageDb.getMessageServerHash(id,mms)
 
     fun setMessagesToDelete(messages: Set<MessageRecord>?) {
         this.deleteMessages = messages
@@ -338,22 +353,25 @@ class ConversationViewModel (
 
     @Suppress("UNCHECKED_CAST")
     class Factory @AssistedInject constructor(
-            @Assisted private val threadId: Long,
-            private val repository: ConversationRepository,
-            private val beldexThreadDb: BeldexThreadDatabase,
-            private val bchatContactDb: BchatContactDatabase,
-            private val threadDb: ThreadDatabase,
-            private val recipientDatabase: RecipientDatabase,
-            private val groupDb: GroupDatabase,
-            private val beldexApiDb: BeldexAPIDatabase,
-            private val mmsDb: MmsDatabase,
-            private val smsDb: SmsDatabase,
-            private val mmsSmsDatabase: MmsSmsDatabase,
-            private val beldexMessageDb: BeldexMessageDatabase,
+        @Assisted private val threadId: Long,
+        private val repository: ConversationRepository,
+        private val beldexThreadDb: BeldexThreadDatabase,
+        private val bchatContactDb: BchatContactDatabase,
+        private val threadDb: ThreadDatabase,
+        private val recipientDatabase: RecipientDatabase,
+        private val groupDb: GroupDatabase,
+        private val beldexApiDb: BeldexAPIDatabase,
+        private val mmsDb: MmsDatabase,
+        private val smsDb: SmsDatabase,
+        private val mmsSmsDatabase: MmsSmsDatabase,
+        private val beldexMessageDb: BeldexMessageDatabase,
+        private val storage: Storage,
+        private val application: Application,
+        private val textSecurePreferences: TextSecurePreferences
     ) : ViewModelProvider.Factory {
 
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return ConversationViewModel(repository,beldexThreadDb, bchatContactDb, threadDb, recipientDatabase, groupDb, beldexApiDb, mmsDb, smsDb, mmsSmsDatabase, beldexMessageDb, threadId) as T
+            return ConversationViewModel(repository,beldexThreadDb, bchatContactDb, threadDb, recipientDatabase, groupDb, beldexApiDb, mmsDb, smsDb, mmsSmsDatabase, beldexMessageDb, threadId, storage, application,textSecurePreferences) as T
         }
     }
 }
@@ -363,5 +381,6 @@ data class UiMessage(val id: Long, val message: String)
 data class ConversationUiState(
     val isBeldexHostedOpenGroup: Boolean = false,
     val uiMessages: List<UiMessage> = emptyList(),
-    val isMessageRequestAccepted: Boolean? = null
+    val isMessageRequestAccepted: Boolean? = null,
+    val showLoader: Boolean = false
 )

@@ -86,4 +86,5 @@
     <string name="thirty_minutes" translatable="false">30 Minutes</string>
 
     <string name="MessageRecord_is_blocked">You Blocked %s! Click here to Unblock</string>
+    <string name="deleteMessageDeletedGlobally">This message was deleted</string>
 </resources>

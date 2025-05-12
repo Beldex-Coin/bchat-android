@@ -30,6 +30,9 @@ import androidx.annotation.Nullable;
 
 import io.beldex.bchat.database.MmsSmsColumns;
 import io.beldex.bchat.database.SmsDatabase;
+
+import com.beldex.libbchat.messaging.utilities.UpdateMessageBuilder;
+import com.beldex.libbchat.messaging.utilities.UpdateMessageData;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.utilities.ExpirationUtil;
 import org.json.JSONException;

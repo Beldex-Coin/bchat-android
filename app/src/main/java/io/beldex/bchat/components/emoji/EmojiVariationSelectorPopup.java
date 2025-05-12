@@ -8,8 +8,6 @@ import android.widget.PopupWindow;
 
 import androidx.annotation.NonNull;
 
-import io.beldex.bchat.components.emoji.EmojiKeyboardProvider.EmojiEventListener;
-
 import java.util.List;
 
 import io.beldex.bchat.R;
@@ -18,9 +16,9 @@ public class EmojiVariationSelectorPopup extends PopupWindow {
 
   private final Context            context;
   private final ViewGroup          list;
-  private final EmojiKeyboardProvider.EmojiEventListener listener;
+  private final EmojiEventListener listener;
 
-  public EmojiVariationSelectorPopup(@NonNull Context context, @NonNull EmojiKeyboardProvider.EmojiEventListener listener) {
+  public EmojiVariationSelectorPopup(@NonNull Context context, @NonNull EmojiEventListener listener) {
     super(LayoutInflater.from(context).inflate(R.layout.emoji_variation_selector, null),
           ViewGroup.LayoutParams.WRAP_CONTENT,
           ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -37,7 +35,7 @@ public class EmojiVariationSelectorPopup extends PopupWindow {
 
     for (String variation : variations) {
       ImageView imageView = (ImageView) LayoutInflater.from(context).inflate(R.layout.emoji_variation_selector_item, list, false);
-      imageView.setImageDrawable(EmojiProvider.getInstance(context).getEmojiDrawable(variation));
+      imageView.setImageDrawable(EmojiProvider.getEmojiDrawable(context, variation));
       imageView.setOnClickListener(v -> {
         listener.onEmojiSelected(variation);
         dismiss();

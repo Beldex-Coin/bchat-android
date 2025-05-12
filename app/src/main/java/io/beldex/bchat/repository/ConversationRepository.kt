@@ -1,5 +1,6 @@
 package io.beldex.bchat.repository
 
+import android.content.ContentResolver
 import com.beldex.libbchat.database.MessageDataProvider
 import com.beldex.libbchat.messaging.messages.Destination
 import com.beldex.libbchat.messaging.messages.control.MessageRequestResponse
@@ -20,6 +21,9 @@ import com.beldex.libsignal.utilities.toHexString
 import io.beldex.bchat.database.*
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.database.model.ThreadRecord
+import kotlinx.coroutines.flow.Flow
+import app.cash.copper.Query
+import app.cash.copper.flow.observeQuery
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -28,6 +32,7 @@ import kotlin.coroutines.suspendCoroutine
 interface ConversationRepository {
     fun isBeldexHostedOpenGroup(threadId: Long): Boolean
     fun getRecipientForThreadId(threadId: Long): Recipient?
+    fun changes(threadId: Long): Flow<Query>
     fun saveDraft(threadId: Long, text: String)
     fun getDraft(threadId: Long): String?
     fun clearDrafts(threadId: Long)
@@ -79,17 +84,18 @@ interface ConversationRepository {
 }
 
 class DefaultConversationRepository @Inject constructor(
-        private val textSecurePreferences: TextSecurePreferences,
-        private val messageDataProvider: MessageDataProvider,
-        private val threadDb: ThreadDatabase,
-        private val draftDb: DraftDatabase,
-        private val beldexThreadDb: BeldexThreadDatabase,
-        private val smsDb: SmsDatabase,
-        private val mmsDb: MmsDatabase,
-        private val mmsSmsDb: MmsSmsDatabase,
-        private val recipientDb: RecipientDatabase,
-        private val beldexMessageDb: BeldexMessageDatabase,
-        private val bchatjobdatabase: BchatJobDatabase
+    private val textSecurePreferences: TextSecurePreferences,
+    private val messageDataProvider: MessageDataProvider,
+    private val threadDb: ThreadDatabase,
+    private val draftDb: DraftDatabase,
+    private val beldexThreadDb: BeldexThreadDatabase,
+    private val smsDb: SmsDatabase,
+    private val mmsDb: MmsDatabase,
+    private val mmsSmsDb: MmsSmsDatabase,
+    private val recipientDb: RecipientDatabase,
+    private val beldexMessageDb: BeldexMessageDatabase,
+    private val bchatjobdatabase: BchatJobDatabase,
+    private val contentResolver: ContentResolver,
 ) : ConversationRepository {
 
     override fun isBeldexHostedOpenGroup(threadId: Long): Boolean {
@@ -103,6 +109,9 @@ class DefaultConversationRepository @Inject constructor(
     override fun getRecipientForThreadId(threadId: Long): Recipient? {
         return threadDb.getRecipientForThreadId(threadId)
     }
+
+    override fun changes(threadId: Long): Flow<Query> =
+        contentResolver.observeQuery(DatabaseContentProviders.Conversation.getUriForThread(threadId))
 
     override fun saveDraft(threadId: Long, text: String) {
         if (text.isEmpty()) return
@@ -199,7 +208,7 @@ class DefaultConversationRepository @Inject constructor(
             }
         } else {
             messageDataProvider.deleteMessage(message.id, !message.isMms)
-            messageDataProvider.getServerHashForMessage(message.id)?.let { serverHash ->
+            messageDataProvider.getServerHashForMessage(message.id,message.isMms)?.let { serverHash ->
                 var publicKey = recipient.address.serialize()
                 if (recipient.isClosedGroupRecipient) {
                     publicKey = GroupUtil.doubleDecodeGroupID(publicKey).toHexString()
@@ -216,7 +225,7 @@ class DefaultConversationRepository @Inject constructor(
 
     override fun buildUnsendRequest(recipient: Recipient, message: MessageRecord): UnsendRequest? {
         if (recipient.isOpenGroupRecipient) return null
-        messageDataProvider.getServerHashForMessage(message.id) ?: return null
+        messageDataProvider.getServerHashForMessage(message.id,message.isMms) ?: return null
         val unsendRequest = UnsendRequest()
         if (message.isOutgoing) {
             unsendRequest.author = textSecurePreferences.getLocalNumber()

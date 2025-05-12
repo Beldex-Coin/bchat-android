@@ -546,11 +546,11 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
 
         actionMode = null;
         getListAdapter().clearSelection();
-        ((MediaOverviewActivity) getActivity()).onExitMultiSelect();
+        MediaOverviewActivity activity = ((MediaOverviewActivity) getActivity());
+        if(activity == null) return;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-          getActivity().getWindow().setStatusBarColor(originalStatusBarColor);
-        }
+        activity.onExitMultiSelect();
+        activity.getWindow().setStatusBarColor(originalStatusBarColor);
       }
     }
   }

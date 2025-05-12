@@ -90,25 +90,29 @@ class CallNotificationBuilder {
                     recipient?.name.toString()
             )
             if (signalProfilePicture != null) {
-                val bitmap=decodeStream(signalProfilePicture.openInputStream(context))
-                val output = Bitmap.createBitmap(
-                    bitmap.width,
-                    bitmap.height, Bitmap.Config.ARGB_8888
-                )
-                val canvas = android.graphics.Canvas(output)
+                val bitmap=decodeStream(signalProfilePicture.openInputStream(context,true))
+                if(bitmap != null) {
+                    val output = Bitmap.createBitmap(
+                        bitmap.width,
+                        bitmap.height, Bitmap.Config.ARGB_8888
+                    )
+                    val canvas = android.graphics.Canvas(output)
 
-                val paint = Paint()
-                val rect = Rect(0, 0, bitmap.width, bitmap.height)
+                    val paint = Paint()
+                    val rect = Rect(0, 0, bitmap.width, bitmap.height)
 
-                paint.isAntiAlias = true
-                canvas.drawARGB(0, 0, 0, 0)
-                canvas.drawCircle(
-                    (bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat(),
-                    (bitmap.width / 2).toFloat(), paint
-                )
-                paint.setXfermode(PorterDuffXfermode(PorterDuff.Mode.SRC_IN))
-                canvas.drawBitmap(bitmap, rect, rect, paint)
-                contentView.setImageViewBitmap(R.id.image, output)
+                    paint.isAntiAlias = true
+                    canvas.drawARGB(0, 0, 0, 0)
+                    canvas.drawCircle(
+                        (bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat(),
+                        (bitmap.width / 2).toFloat(), paint
+                    )
+                    paint.setXfermode(PorterDuffXfermode(PorterDuff.Mode.SRC_IN))
+                    canvas.drawBitmap(bitmap, rect, rect, paint)
+                    contentView.setImageViewBitmap(R.id.image, output)
+                } else {
+                    contentView.setImageViewResource(R.id.image, R.drawable.defualt_profile_pic)
+                }
             } else {
                 val output = Bitmap.createBitmap(
                     bit.bitmap.width,

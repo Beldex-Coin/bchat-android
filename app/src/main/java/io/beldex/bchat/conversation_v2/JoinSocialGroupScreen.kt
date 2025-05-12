@@ -263,8 +263,6 @@ fun JoinSocialGroupScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(space = 16.dp),
                 contentPadding = PaddingValues(all = 8.dp),
-                modifier = Modifier.clickable {
-                },
                 content = {
                     items(groups.size) { i ->
                         Column(

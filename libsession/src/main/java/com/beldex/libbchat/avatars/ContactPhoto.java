@@ -13,7 +13,7 @@ import java.io.InputStream;
 
 public interface ContactPhoto extends Key {
 
-  InputStream openInputStream(Context context) throws IOException;
+  InputStream openInputStream(Context context, Boolean isNotification) throws IOException;
 
   @Nullable Uri getUri(@NonNull Context context);
 

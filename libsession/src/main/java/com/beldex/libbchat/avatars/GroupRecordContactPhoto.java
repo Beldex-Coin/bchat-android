@@ -10,7 +10,6 @@ import com.beldex.libbchat.database.StorageProtocol;
 import com.beldex.libsignal.utilities.guava.Optional;
 
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration;
-import com.beldex.libbchat.database.StorageProtocol;
 import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.GroupRecord;
 import com.beldex.libbchat.utilities.Conversions;
@@ -32,7 +31,7 @@ public class GroupRecordContactPhoto implements ContactPhoto {
   }
 
   @Override
-  public InputStream openInputStream(Context context) throws IOException {
+  public InputStream openInputStream(Context context, Boolean isNotification) throws IOException {
     StorageProtocol groupDatabase = MessagingModuleConfiguration.getShared().getStorage();
     Optional<GroupRecord> groupRecord   = Optional.of(groupDatabase.getGroup(address.toGroupString()));
 

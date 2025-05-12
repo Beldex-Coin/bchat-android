@@ -523,13 +523,13 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         // Set up empty state view
         binding.createNewPrivateChatButton.setOnClickListener { openNewConversationChat() }
         homeViewModel.getObservable(requireActivity().applicationContext).observe(requireActivity()) { newData ->
-//            val manager = binding.recyclerView.layoutManager as LinearLayoutManager
-//            val firstPos = manager.findFirstCompletelyVisibleItemPosition()
-//            val offsetTop = if(firstPos >= 0) {
-//                manager.findViewByPosition(firstPos)?.let { view ->
-//                    manager.getDecoratedTop(view) - manager.getTopDecorationHeight(view)
-//                } ?: 0
-//            } else 0
+            val manager = binding.recyclerView.layoutManager as LinearLayoutManager
+            val firstPos = manager.findFirstCompletelyVisibleItemPosition()
+            val offsetTop = if(firstPos >= 0) {
+                manager.findViewByPosition(firstPos)?.let { view ->
+                    manager.getDecoratedTop(view) - manager.getTopDecorationHeight(view)
+                } ?: 0
+            } else 0
             val messageRequestCount = threadDb.unapprovedConversationCount
             var request = emptyList<ThreadRecord>()
             if (messageRequestCount > 0 && !TextSecurePreferences.hasHiddenMessageRequests(requireContext())) {
@@ -594,8 +594,8 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                binding.archiveChatDivider.visibility = View.GONE
            }
             homeAdapter.data = newData
-//            if(firstPos >= 0) { manager.scrollToPositionWithOffset(firstPos, offsetTop) }
-//            setupMessageRequestsBanner()
+            if(firstPos >= 0) { manager.scrollToPositionWithOffset(firstPos, offsetTop) }
+            //setupMessageRequestsBanner()
             updateEmptyState()
         }
         ApplicationContext.getInstance(requireActivity()).typingStatusRepository.typingThreads.observe(requireActivity()) { threadIds ->
@@ -673,10 +673,10 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     private fun handlePathsBuiltEvent() { update() }
 
     private fun update() {
-        if (OnionRequestAPI.paths.isNotEmpty()) {
-            binding.hopsWarningLayout.visibility = View.GONE
-        } else {
-            binding.hopsWarningLayout.visibility = View.VISIBLE
+        binding.hopsWarningLayout.visibility = when {
+            OnionRequestAPI.paths.isNotEmpty() -> View.GONE
+            OnionRequestAPI.paths.isEmpty() && CheckOnline.isOnline(requireActivity().applicationContext) -> View.GONE
+            else -> View.VISIBLE
         }
     }
 

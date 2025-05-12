@@ -52,7 +52,7 @@ class ShareLogsDialog : BaseDialog() {
     private fun shareLogs() {
         shareJob?.cancel()
         shareJob = lifecycleScope.launch(Dispatchers.IO) {
-            val persistentLogger = ApplicationContext.getInstance(context).persistentLogger
+            val persistentLogger = ApplicationContext.getInstance(requireContext()).persistentLogger
             try {
                 val context = requireContext()
                 val outputUri: Uri = ExternalStorageUtil.getDownloadUri()
@@ -63,7 +63,7 @@ class ShareLogsDialog : BaseDialog() {
                     return@launch
                 }
 
-                val inputStream = persistentLogger.logs.get().byteInputStream()
+                val inputStream = persistentLogger!!.logs.get().byteInputStream()
                 val updateValues = ContentValues()
                 if (outputUri.scheme == ContentResolver.SCHEME_FILE) {
                     FileOutputStream(mediaUri.path).use { outputStream ->

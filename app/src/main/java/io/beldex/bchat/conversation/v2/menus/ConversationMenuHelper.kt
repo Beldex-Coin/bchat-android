@@ -225,7 +225,10 @@ object ConversationMenuHelper {
                 val contactPhoto = thread.contactPhoto
                 if (contactPhoto != null) {
                     try {
-                        var bitmap = BitmapFactory.decodeStream(contactPhoto.openInputStream(context))
+                        var bitmap = BitmapFactory.decodeStream(contactPhoto.openInputStream(
+                            context,
+                            true
+                        ))
                         bitmap = BitmapUtil.createScaledBitmap(bitmap, 300, 300)
                         icon = IconCompat.createWithAdaptiveBitmap(bitmap)
                     } catch (e: IOException) {

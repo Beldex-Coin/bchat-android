@@ -10,6 +10,7 @@ import io.beldex.bchat.conversation.v2.dialogs.DownloadDialog
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.R
 import io.beldex.bchat.database.model.MessageRecord
+import io.beldex.bchat.database.model.Quote
 import io.beldex.bchat.databinding.ViewUntrustedAttachmentBinding
 import io.beldex.bchat.util.DateUtils
 import java.util.Locale
@@ -29,7 +30,12 @@ class UntrustedAttachmentView: LinearLayout {
     // endregion
 
     // region Updating
-    fun bind(message: MessageRecord, attachmentType: AttachmentType, @ColorInt textColor: Int) {
+    fun bind(
+        message: MessageRecord,
+        quote: Quote?,
+        attachmentType: AttachmentType,
+        @ColorInt textColor: Int
+    ) {
         val (iconRes, stringRes) = when (attachmentType) {
             AttachmentType.AUDIO -> R.drawable.ic_microphone to R.string.Slide_audio
             AttachmentType.DOCUMENT -> R.drawable.ic_document_large_light to R.string.document
@@ -50,6 +56,11 @@ class UntrustedAttachmentView: LinearLayout {
                 message.isOutgoing
             )
         )
+        if(quote != null) {
+            binding.untrustedCardView.setOnClickListener {
+                showTrustDialog(message.individualRecipient)
+            }
+        }
     }
     // endregion
 

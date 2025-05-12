@@ -62,7 +62,7 @@ class MessageDetailsRecipientAdapter extends BaseAdapter implements AbsListView.
     UserView result = new UserView(context);
     Recipient recipient = members.get(position).getRecipient();
     result.setOpenGroupThreadID(record.getThreadId());
-    result.bind(recipient, glideRequests, UserView.ActionIndicator.None, false);
+    result.bind(recipient, glideRequests, UserView.ActionIndicator.None, false, "");
     return result;
   }
 

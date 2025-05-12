@@ -1,5 +1,6 @@
 package com.beldex.libbchat.database
 
+import com.beldex.libbchat.messaging.messages.MarkAsDeletedMessage
 import com.beldex.libbchat.messaging.sending_receiving.attachments.*
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.UploadResult
@@ -15,8 +16,9 @@ interface MessageDataProvider {
     fun getMessageIDs(serverIDs: List<Long>, threadID: Long): Pair<List<Long>, List<Long>>
     fun deleteMessage(messageID: Long, isSms: Boolean)
     fun deleteMessages(messageIDs: List<Long>, threadId: Long, isSms: Boolean)
-    fun updateMessageAsDeleted(timestamp: Long, author: String)
-    fun getServerHashForMessage(messageID: Long): String?
+    fun markMessageAsDeleted(timestamp: Long, author: String, displayedMessage: String)
+    fun markMessagesAsDeleted(messages: List<MarkAsDeletedMessage>, isSms: Boolean, displayedMessage: String)
+    fun getServerHashForMessage(messageID: Long,mms: Boolean): String?
     fun getDatabaseAttachment(attachmentId: Long): DatabaseAttachment?
     fun getAttachmentStream(attachmentId: Long): BchatServiceAttachmentStream?
     fun getAttachmentPointer(attachmentId: Long): BchatServiceAttachmentPointer?

@@ -41,7 +41,7 @@
             android:layout_marginEnd="@dimen/small_spacing"
             android:layout_marginBottom="@dimen/small_spacing"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/expirationTimerViewContainer"
+            app:layout_constraintEnd_toStartOf="@+id/messageInnerContainer"
             app:layout_constraintStart_toEndOf="@+id/startSpacing"
             tools:visibility="visible" />
 
@@ -61,20 +61,17 @@
             android:id="@+id/senderNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
             android:layout_marginEnd="12dp"
             android:ellipsize="end"
             android:fontFamily="@font/open_sans_medium"
             android:maxLines="1"
-            android:paddingBottom="4dp"
             android:textColor="@color/chat_user_name_color"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/expirationTimerViewContainer"
+            app:layout_constraintStart_toStartOf="@+id/messageInnerContainer"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@tools:sample/full_names" />
 
         <LinearLayout
-            android:id="@+id/expirationTimerViewContainer"
+            android:id="@+id/messageInnerContainer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -108,7 +105,7 @@
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:layout_gravity="center_vertical"
-                android:visibility="gone"
+                android:visibility="invisible"
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp"
                 tools:visibility="gone" />
@@ -122,6 +119,20 @@
 
         </LinearLayout>
 
+        <include
+            layout="@layout/view_emoji_reactions"
+            android:id="@+id/emojiReactionsView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium_spacing"
+            android:layout_marginEnd="@dimen/large_spacing"
+            android:clickable="false"
+            android:visibility="gone"
+            android:focusable="false"
+            app:layout_constraintStart_toStartOf="@+id/messageInnerContainer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </io.beldex.bchat.conversation.v2.messages.VisibleMessageView>

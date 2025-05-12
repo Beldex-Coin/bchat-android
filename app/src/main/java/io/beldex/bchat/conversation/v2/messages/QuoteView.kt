@@ -170,6 +170,10 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 }else{
                    bodyText = MentionUtilities.highlightMentions((body ?: "").toSpannable(), threadID, context)
                 }
+                bodyText = when {
+                    bodyText.length > 35 -> "${bodyText.subSequence(0, 35)}... "
+                    else -> bodyText
+                }
                 bodyText
             }
         }

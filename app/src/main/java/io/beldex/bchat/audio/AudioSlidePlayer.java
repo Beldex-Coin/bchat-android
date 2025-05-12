@@ -53,18 +53,15 @@ public class AudioSlidePlayer implements SensorEventListener {
   private final @NonNull  Handler           progressEventHandler;
   private final @NonNull  AudioManager      audioManager;
   private final @NonNull  SensorManager     sensorManager;
-  private final @NonNull  Sensor            proximitySensor;
+  private final Sensor                      proximitySensor;
   private final @Nullable WakeLock          wakeLock;
 
   private @NonNull  WeakReference<Listener> listener;
   private @Nullable ExoPlayer         mediaPlayer;
   private @Nullable AttachmentServer        audioAttachmentServer;
   private           long                    startTime;
-
-  @Nullable
-  public synchronized static AudioSlidePlayer getInstance() {
-    return playing.orNull();
-  }
+  private           long                    pausedPosition = 0;
+  private           boolean                 isPaused = false;
 
   public synchronized static AudioSlidePlayer createFor(@NonNull Context context,
                                                         @NonNull AudioSlide slide,
@@ -76,6 +73,11 @@ public class AudioSlidePlayer implements SensorEventListener {
     } else {
       return new AudioSlidePlayer(context, slide, listener);
     }
+  }
+
+  @Nullable
+  public synchronized static AudioSlidePlayer getInstance() {
+    return playing.orNull();
   }
 
   private AudioSlidePlayer(@NonNull Context context,
@@ -139,7 +141,9 @@ public class AudioSlidePlayer implements SensorEventListener {
                 mediaPlayer.seekTo((long) (mediaPlayer.getDuration() * progress));
               }
 
-              sensorManager.registerListener(AudioSlidePlayer.this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+              if(proximitySensor != null) {
+                sensorManager.registerListener(AudioSlidePlayer.this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+              }
 
               setPlaying(AudioSlidePlayer.this);
             }
@@ -221,6 +225,23 @@ public class AudioSlidePlayer implements SensorEventListener {
 
     this.mediaPlayer           = null;
     this.audioAttachmentServer = null;
+  }
+
+  public synchronized void pause() {
+    if (mediaPlayer != null && mediaPlayer.getPlayWhenReady()) {
+      mediaPlayer.setPlayWhenReady(false);
+      isPaused = true;
+      pausedPosition = mediaPlayer.getCurrentPosition();
+    }
+  }
+
+  public synchronized void resume() throws IOException {
+    if (mediaPlayer != null && isPaused) {
+      mediaPlayer.setPlayWhenReady(true);
+      isPaused = false;
+    } else if (mediaPlayer == null) {
+      play((double) pausedPosition / getDuration());
+    }
   }
 
   public synchronized static void stopAll() {

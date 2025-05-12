@@ -72,6 +72,7 @@ public class DirectShareService extends ChooserTargetService {
               bundle.putLong(ShareActivity.EXTRA_THREAD_ID, record.getThreadId());
               bundle.putByteArray(ShareActivity.EXTRA_ADDRESS_MARSHALLED, parcel.marshall());
               bundle.putInt(ShareActivity.EXTRA_DISTRIBUTION_TYPE, record.getDistributionType());
+              bundle.putBoolean(ShareActivity.IN_CHAT_SHARE,false);
               bundle.setClassLoader(getClassLoader());
 
               results.add(new ChooserTarget(name, Icon.createWithBitmap(avatar), 1.0f, componentName, bundle));

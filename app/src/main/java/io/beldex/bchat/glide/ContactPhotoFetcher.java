@@ -28,7 +28,7 @@ class ContactPhotoFetcher implements DataFetcher<InputStream> {
   @Override
   public void loadData(@NonNull Priority priority, @NonNull DataCallback<? super InputStream> callback) {
     try {
-      inputStream = contactPhoto.openInputStream(context);
+      inputStream = contactPhoto.openInputStream(context, false);
       callback.onDataReady(inputStream);
     } catch (IOException e) {
       callback.onLoadFailed(e);

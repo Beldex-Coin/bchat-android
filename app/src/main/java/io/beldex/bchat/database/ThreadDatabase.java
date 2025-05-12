@@ -39,6 +39,7 @@ import io.beldex.bchat.util.BchatMetaProtocol;
 
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
+import org.jetbrains.annotations.NotNull;
 import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.Contact;
 import com.beldex.libbchat.utilities.DelimiterUtil;
@@ -58,11 +59,12 @@ import io.beldex.bchat.database.model.MessageRecord;
 import io.beldex.bchat.database.model.MmsMessageRecord;
 import io.beldex.bchat.database.model.ThreadRecord;
 import io.beldex.bchat.dependencies.DatabaseComponent;
-
 import io.beldex.bchat.notifications.MarkReadReceiver;
 import io.beldex.bchat.util.BchatMetaProtocol;
 
 import java.io.Closeable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -838,6 +840,10 @@ public class ThreadDatabase extends Database {
     }
 
     return query;
+  }
+
+  public void notifyThreadUpdated(long threadId) {
+    notifyConversationListeners(threadId);
   }
 
   public interface ProgressListener {

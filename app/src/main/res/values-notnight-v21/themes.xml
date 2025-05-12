@@ -2,6 +2,7 @@
 <resources>
 
     <style name="Theme.Bchat.Light" parent="Base.Theme.Bchat">
+        <item name="theme_type">light</item>
         <item name="android:navigationBarColor">?android:navigationBarColor</item>
         <item name="android:textColorHint">@color/gray50</item>
 
@@ -36,6 +37,7 @@
 
         <item name="conversation_item_audio_seek_bar_color_incoming">@color/accent</item>
         <item name="conversation_item_audio_seek_bar_color_outgoing">@color/white</item>
+        <item name="emoji_show_less_icon">@drawable/ic_chevron_up</item>
     </style>
 
     <style name="Theme.Bchat.DayNight" parent="Theme.Bchat.Light">
@@ -144,6 +146,7 @@
         <item name="tooltip_default_color">@color/core_white</item>
 
         <item name="pref_icon_tint">@color/textsecure_primary_dark</item>
+        <item name="menu_delete_color">@color/clear_red_color</item>
 
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.Fix</item>
 

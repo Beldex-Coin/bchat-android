@@ -17,6 +17,7 @@ import androidx.annotation.MainThread;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import io.beldex.bchat.util.AnimationCompleteListener;
 import io.beldex.bchat.util.AnimationCompleteListener;
@@ -53,7 +54,7 @@ public class SearchToolbar extends LinearLayout {
 
     //supportActionBar?.setHomeAsUpIndicator(R.drawable.homeNavigationIcon);
 
-    toolbar.setNavigationIcon(getContext().getResources().getDrawable(R.drawable.ic_baseline_clear_24));
+    toolbar.setNavigationIcon(ContextCompat.getDrawable(getContext(),R.drawable.ic_baseline_clear_24));
     toolbar.inflateMenu(R.menu.conversation_list_search);
 
     this.searchItem = toolbar.getMenu().findItem(R.id.action_filter_search);

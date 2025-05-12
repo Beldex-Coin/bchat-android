@@ -77,6 +77,8 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
   //SetDataAndType
   public static final String MEDIA_PREVIEW_PAGE ="media_preview_page";
 
+  public static final String IN_CHAT_SHARE ="in_chat_share";
+
 
   private ContactSelectionListFragment contactsFragment;
   private SearchToolbar                searchToolbar;
@@ -92,6 +94,8 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
   private EditText                     searchField;
 
   private ImageView                    searchAndClearImageview;
+
+  private Boolean shareIntoChat;
 
   @Override
   protected void onCreate(Bundle icicle, boolean ready) {
@@ -225,6 +229,7 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
 
     Uri streamExtra = getIntent().getParcelableExtra(Intent.EXTRA_STREAM);
     CharSequence charSequenceExtra = getIntent().getCharSequenceExtra(Intent.EXTRA_TEXT);
+    shareIntoChat = getIntent().getBooleanExtra(IN_CHAT_SHARE, false);
     mimeType = getMimeType(streamExtra);
     /*Hales63*/
     resolvedExtra       = streamExtra;
@@ -275,6 +280,8 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
     intent.putExtra(ConversationFragmentV2.ADDRESS, address);
     intent.putExtra(ConversationFragmentV2.THREAD_ID, threadId);
+    intent.putExtra(ConversationFragmentV2.IN_CHAT_SHARE, shareIntoChat);
+
 
     isPassingAlongMedia = true;
     if(!mediaPreviewPage){

@@ -387,7 +387,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
             val daemonConnected: Wallet.ConnectionStatus = activityCallback!!.connectionStatus!!
             if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
                 if (!wallet.isSynchronized) {
-                    ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(true)
+                    ApplicationContext.getInstance(requireContext()).messageNotifier.setHomeScreenVisible(true)
                     val daemonHeight: Long = wallet.daemonBlockChainHeight
                     val walletHeight = wallet.blockChainHeight
                     val n = daemonHeight - walletHeight
@@ -410,7 +410,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                     viewModels.setProgressBarColor(R.color.green_color)
                 } else {
                     syncingBlocks = 0
-                    ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(false)
+                    ApplicationContext.getInstance(requireContext()).messageNotifier.setHomeScreenVisible(false)
                     sync = getString(R.string.status_synchronized)
                     viewModels.setSyncStatusTextColor(R.color.green_color)
                     viewModels.setProgressBarColor(R.color.green_color)

@@ -1453,6 +1453,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="create_secret_group">Create Secret Group</string>
     <string name="enter_group_name">Enter Secret Group name</string>
     <string name="search_contact">Search Contact</string>
+    <string name="search">Search</string>
     <string name="message_request">Message Request</string>
     <string name="block_or_delete_request">Do you want to block or just delete this user?</string>
     <string name="or_join">Or Join</string>
@@ -1577,4 +1578,107 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="gif_option" translatable="false">Gif Option</string>
     <string name="gif_dialog_title" translatable="false">Search GIFs?</string>
     <string name="gif_dialog_message" translatable="false">You will not have full metadata protection when sending GIFs.</string>
+
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__this_message" translatable="false">This Message</string>
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__recently_used" translatable="false">Recently Used</string>
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__smileys_and_people" translatable="false">Smileys &amp; People</string>
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__nature" translatable="false">Nature</string>
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__food" translatable="false">Food</string>
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__activities" translatable="false">Activities</string>
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__places" translatable="false">Places</string>
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__objects" translatable="false">Objects</string>
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__symbols" translatable="false">Symbols</string>
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__flags" translatable="false">Flags</string>
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__emoticons" translatable="false">Emoticons</string>
+    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__no_results_found" translatable="false">No results found</string>
+    <!-- ReactionsBottomSheetDialogFragment -->
+    <string name="ReactionsBottomSheetDialogFragment_all" translatable="false">All &#183; %1$d</string>
+    <!-- ReactionsConversationView -->
+    <string name="ReactionsConversationView_plus" translatable="false">+%1$d</string>
+    <!-- ReactionsRecipientAdapter -->
+    <string name="ReactionsRecipientAdapter_you" translatable="false">You</string>
+    <string name="reaction_notification" translatable="false">%1$s reacted to a message %2$s</string>
+    <string name="ReactionsConversationView_show_less" translatable="false">Show less</string>
+    <string name="KeyboardPagerFragment_search_emoji" translatable="false">Search emoji</string>
+    <string name="KeyboardPagerfragment_back_to_emoji" translatable="false">Back to emoji</string>
+    <string name="KeyboardPagerfragment_clear_search_entry" translatable="false">Clear search entry</string>
+    <plurals name="ReactionsRecipientAdapter_other_reactors" translatable="false">
+        <item quantity="one">And %1$d other has reacted %2$s to this message</item>
+        <item quantity="other">And %1$d others have reacted %2$s to this message</item>
+    </plurals>
+
+    <string name="emojiAndSymbols" translatable="false">Emoji and Symbols</string>
+    <string name="emojiCategoryActivities" translatable="false">Activities</string>
+    <string name="emojiCategoryAnimals" translatable="false">Animals and Nature</string>
+    <string name="emojiCategoryFlags" translatable="false">Flags</string>
+    <string name="emojiCategoryFood" translatable="false">Food and Drink</string>
+    <string name="emojiCategoryObjects" translatable="false">Objects</string>
+    <string name="emojiCategoryRecentlyUsed" translatable="false">Recently Used</string>
+    <string name="emojiCategorySmileys" translatable="false">Smileys and People</string>
+    <string name="emojiCategorySymbols" translatable="false">Symbols</string>
+    <string name="emojiCategoryTravel" translatable="false">Travel and Places</string>
+    <string name="emojiReactsClearAll" translatable="false">Are you sure you want to clear all {emoji}?</string>
+    <string name="emojiReactsCoolDown" translatable="false">Slow down! You\'ve sent too many emoji reacts. Try again soon</string>
+    <plurals name="emojiReactsCountOthers" translatable="false">
+        <item quantity="one">And %1$d other has reacted %2$s to this message.</item>
+        <item quantity="other">And %1$d others have reacted %2$s to this message.</item>
+    </plurals>
+    <string name="emojiReactsHoverNameDesktop" translatable="false">{name} reacted with {emoji_name}</string>
+    <string name="emojiReactsHoverNameTwoDesktop" translatable="false">{name} and {other_name} reacted with {emoji_name}</string>
+    <string name="emojiReactsHoverTwoNameMultipleDesktop" translatable="false">{name} and <span>{count} others</span> reacted with {emoji_name}</string>
+    <string name="emojiReactsHoverYouNameDesktop" translatable="false">You reacted with {emoji_name}</string>
+    <string name="emojiReactsHoverYouNameMultipleDesktop" translatable="false">You and <span>{count} others</span> reacted with {emoji_name}</string>
+    <string name="emojiReactsHoverYouNameTwoDesktop" translatable="false">You and {name} reacted with {emoji_name}</string>
+    <string name="emojiReactsNotification" translatable="false">Reacted to your message {emoji}</string>
+    <string name="showLess" translatable="false">Show Less</string>
+    <string name="AccessibilityId_emojiSearch" translatable="false">Back to emoji</string>
+    <string name="AccessibilityId_emojiSearchClear" translatable="false">Clear search entry</string>
+    <string name="you" translatable="false">You</string>
+    <string name="andMore" translatable="false">+{count}</string>
+    <string name="tap_to_remove" translatable="false">Tap to remove</string>
+    <string name="reaction" translatable="false">Reactions</string>
+    <string name="title_activity_secret_group_info_compose">SecretGroupInfoComposeActivity</string>
+
+    <plurals name="deleteMessageDeleted">
+        <item quantity="one">Message deleted</item>
+        <item quantity="other">Messages deleted</item>
+    </plurals>
+    <plurals name="deleteMessageConfirm">
+        <item quantity="one">Are you sure you want to delete this message?</item>
+        <item quantity="other">Are you sure you want to delete these messages?</item>
+    </plurals>
+    <string name="deleteMessageDeletedGlobally" translatable="false">This message was deleted</string>
+    <plurals name="deleteMessageNoteToSelfWarning">
+        <item quantity="one">This message cannot be deleted from all your devices</item>
+        <item quantity="other">Some of the messages you have selected cannot be deleted from all your devices</item>
+    </plurals>
+    <plurals name="deleteMessageWarning">
+        <item quantity="one">This message cannot be deleted for everyone</item>
+        <item quantity="other">Some of the messages you have selected cannot be deleted for everyone</item>
+    </plurals>
+    <plurals name="deleteMessageFailed">
+        <item quantity="one">Failed to delete message</item>
+        <item quantity="other">Failed to delete messages</item>
+    </plurals>
+    <string name="displayNameVisible" translatable="false">Your Display Name is visible to users, groups and communities you interact with.</string>
+    <string name="errorUnknown" translatable="false">An unknown error occurred.</string>
+    <string name="banUserBanned" translatable="false">User banned</string>
+    <string name="banErrorFailed" translatable="false">Ban failed</string>
+    <string name="deleteMessageDeletedLocally" translatable="false">This message was deleted on this device</string>
+    <string name="deleteMessageEveryone" translatable="false">Delete for everyone</string>
+    <string name="deleteMessageDevicesAll" translatable="false">Delete on all my devices</string>
+    <string name="accessibilityId_select" translatable="false">Select</string>
+    <string name="accessibilityId_reply" translatable="false">Reply</string>
+    <string name="disappearingMessagesCountdownBigMobile" translatable="false">Auto-deletes in {time_large}</string>
+    <string name="conversationsDeleted" translatable="false">Conversation deleted</string>
+    <string name="group_info" translatable="false">Group Info</string>
+    <string name="notification_info" translatable="false">When enabled, You will only be notified for messages mentioning you.</string>
+    <string name="disappearing_info" translatable="false">When enabled, messages between you and the group will disappear after they have been seen.</string>
+    <string name="search_member" translatable="false">Search members</string>
+    <string name="no_participate_content" translatable="false">You’re no longer participant of this group</string>
+    <string name="search_member_title" translatable="false">Search Members</string>
+    <string name="members_option_message" translatable="false">Message to </string>
+    <string name="members_option_copy_bchat_id" translatable="false">Copy BChat ID</string>
+    <string name="zero_time_durationMs" translatable="false">0:00</string>
+    <string name="attachmentsErrorSize" translatable="false" >Files must be less than 10MB</string>
 </resources>

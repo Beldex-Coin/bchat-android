@@ -11,7 +11,7 @@
     <style name="Signal.Text.Preview" parent="Base.TextAppearance.AppCompat.Body2">
         <item name="android:textSize">14sp</item>
         <item name="android:lineSpacingExtra">3sp</item>
-        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
         <item name="android:letterSpacing" tools:ignore="NewApi">0.01</item>
     </style>
 

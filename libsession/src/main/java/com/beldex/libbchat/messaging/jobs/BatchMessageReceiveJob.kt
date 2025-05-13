@@ -6,11 +6,13 @@ import com.beldex.libbchat.messaging.messages.Message
 import com.beldex.libbchat.messaging.messages.control.ExpirationTimerUpdate
 import com.beldex.libbchat.messaging.messages.visible.ParsedMessage
 import com.beldex.libbchat.messaging.messages.visible.VisibleMessage
+import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.google.protobuf.ByteString
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.task
 import com.beldex.libbchat.messaging.sending_receiving.MessageReceiver
 import com.beldex.libbchat.messaging.sending_receiving.handle
+import com.beldex.libbchat.messaging.sending_receiving.handleOpenGroupReactions
 import com.beldex.libbchat.messaging.sending_receiving.handleVisibleMessage
 import com.beldex.libbchat.messaging.utilities.Data
 import com.beldex.libbchat.utilities.SSKEnvironment
@@ -24,7 +26,8 @@ import kotlinx.coroutines.runBlocking
 data class MessageReceiveParameters(
     val data: ByteArray,
     val serverHash: String? = null,
-    val openGroupMessageServerID: Long? = null
+    val openGroupMessageServerID: Long? = null,
+    val reactions: Map<String, OpenGroupAPIV2.Reaction>? = null
 )
 
 class BatchMessageReceiveJob(
@@ -121,8 +124,11 @@ class BatchMessageReceiveJob(
                                         runThreadUpdate = false,
                                         runProfileUpdate = true
                                     )
-                                    if (messageId != null) {
+                                    if (messageId != null && message.reaction == null) {
                                         messageIds += messageId to (message.sender == localUserPublicKey)
+                                    }
+                                    parameters.openGroupMessageServerID?.let {
+                                        MessageReceiver.handleOpenGroupReactions(threadId, it, parameters.reactions)
                                     }
                                 } else {
                                     MessageReceiver.handle(message, proto, openGroupID)

@@ -9,7 +9,6 @@ buildscript {
         classpath files('libs/gradle-witness.jar')
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion"
-        classpath "com.google.gms:google-services:4.3.12"
         classpath "com.google.firebase:firebase-crashlytics-gradle:2.9.8"
     }
 }
@@ -49,6 +48,9 @@ allprojects {
                 includeGroupByRegex "org\\.signal.*"
             }
         }*/
+        maven {
+            url "https://google.bintray.com/flexbox-layout"
+        }
         maven {
             url "https://repo1.maven.org/maven2/com/goterl/lazysodium-android"
             content {

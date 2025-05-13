@@ -27,6 +27,8 @@ import com.beldex.libsignal.utilities.guava.Optional;
 import com.beldex.libsignal.messages.SignalServiceAttachmentPointer;
 import com.beldex.libsignal.database.BeldexOpenGroupDatabaseProtocol;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Closeable;
 import java.security.SecureRandom;
 import java.util.Collections;
@@ -443,6 +445,13 @@ public class GroupDatabase extends Database implements BeldexOpenGroupDatabasePr
     }
   }
 
+  public void migrateEncodedGroup(@NotNull String legacyEncodedGroupId, @NotNull String newEncodedGroupId) {
+    String query = GROUP_ID+" = ?";
+    ContentValues contentValues = new ContentValues(1);
+    contentValues.put(GROUP_ID, newEncodedGroupId);
+    SQLiteDatabase db = databaseHelper.getWritableDatabase();
+    db.update(TABLE_NAME, contentValues, query, new String[]{legacyEncodedGroupId});
+  }
   public static class Reader implements Closeable {
 
     private final Cursor cursor;

@@ -1,5 +1,6 @@
 package com.beldex.libsignal.crypto
 
+import com.beldex.libsignal.utilities.Util.SECURE_RANDOM
 import java.security.SecureRandom
 
 /**
@@ -17,3 +18,5 @@ fun <T> Collection<T>.getRandomElementOrNull(): T? {
 fun <T> Collection<T>.getRandomElement(): T {
     return getRandomElementOrNull()!!
 }
+
+fun <T> Collection<T>.shuffledRandom(): List<T> = shuffled(SECURE_RANDOM)

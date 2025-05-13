@@ -20,6 +20,7 @@ import java.util.Locale
 class ControlMessageView : LinearLayout {
 
     private lateinit var binding: ViewControlMessageBinding
+    val controlContentView: View get() = binding.receiverStatusIconCardView
 
     // region Lifecycle
     constructor(context: Context) : super(context) {
@@ -48,7 +49,7 @@ class ControlMessageView : LinearLayout {
     // endregion
 
     // region Updating
-    fun bind(message: MessageRecord, previous: MessageRecord?) {
+    fun bind(message: MessageRecord, previous: MessageRecord?, longPress: (() -> Unit)? = null) {
         binding.dateBreakTextView.showDateBreak(message, previous)
         binding.iconImageView.visibility = View.GONE
 
@@ -175,7 +176,16 @@ class ControlMessageView : LinearLayout {
         }
         binding.textView.isVisible = messageBody.trim().isNotEmpty()
         binding.textView.text = messageBody
+
+        // handle long clicked if it was passed on
+        longPress?.let {
+            binding.receiverStatusIconCardView.setOnLongClickListener {
+                longPress.invoke()
+                true
+            }
+        }
     }
+
 
     fun recycle() {
 

@@ -182,7 +182,7 @@ class ClearAllDataDialog : BaseDialog() {
                 //New Line
                 removeWallet()
 
-                ApplicationContext.getInstance(context).clearAllData(false)
+                ApplicationContext.getInstance(requireContext()).clearAllData(false)
                 withContext(Dispatchers.Main) {
                     dismiss()
                 }
@@ -203,7 +203,7 @@ class ClearAllDataDialog : BaseDialog() {
                     //New Line
                     removeWallet()
                     // don't force sync because all the messages are deleted?
-                    ApplicationContext.getInstance(context).clearAllData(false)
+                    ApplicationContext.getInstance(requireContext()).clearAllData(false)
                         withContext(Dispatchers.Main) {
                         dismiss()
                     }

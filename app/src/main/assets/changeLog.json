@@ -489,6 +489,26 @@
           "description":"Minor bug fixes"
         }
       ]
+    },
+    {
+      "title": "2.7.0",
+      "descriptions": [
+        {
+          "description":"Introducing emoji reaction feature"
+        },
+        {
+          "description":"Improved audio messages"
+        },
+        {
+          "description":"Fixed issues in update profile"
+        },
+        {
+          "description":"Fixed issues in disappearing messages"
+        },
+        {
+          "description":"Minor bug fixes"
+        }
+      ]
     }
   ]
 }

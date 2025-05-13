@@ -32,44 +32,68 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.jobs.JobQueue
+import com.beldex.libbchat.messaging.messages.visible.Reaction
+import com.beldex.libbchat.messaging.messages.visible.VisibleMessage
+import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
+import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.ProfilePictureModifiedEvent
+import com.beldex.libbchat.utilities.Stub
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getIsReactionOverlayVisible
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletName
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletPassword
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setIsReactionOverlayVisible
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
+import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
-import com.google.android.gms.tasks.Task
+import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.ApplicationContext
+import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.MediaOverviewActivity
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
+import io.beldex.bchat.R
 import io.beldex.bchat.components.ProfilePictureView
 import io.beldex.bchat.compose_utils.ComposeDialogContainer
 import io.beldex.bchat.compose_utils.DialogType
 import io.beldex.bchat.conversation.v2.ConversationFragmentV2
+import io.beldex.bchat.conversation.v2.ConversationReactionDelegate
+import io.beldex.bchat.conversation.v2.ConversationReactionOverlay
 import io.beldex.bchat.conversation.v2.ConversationViewModel
-import io.beldex.bchat.conversation.v2.messages.VoiceMessageViewDelegate
+import io.beldex.bchat.conversation.v2.ViewUtil
 import io.beldex.bchat.conversation.v2.utilities.BaseDialog
 import io.beldex.bchat.data.BarcodeData
 import io.beldex.bchat.data.NodeInfo
 import io.beldex.bchat.data.TxData
 import io.beldex.bchat.data.UserNotes
+import io.beldex.bchat.database.BeldexMessageDatabase
+import io.beldex.bchat.database.MmsDatabase
 import io.beldex.bchat.database.MmsSmsDatabase
+import io.beldex.bchat.database.NoSuchMessageException
+import io.beldex.bchat.database.ReactionDatabase
+import io.beldex.bchat.database.SmsDatabase
+import io.beldex.bchat.database.ThreadDatabase
+import io.beldex.bchat.database.model.MessageId
+import io.beldex.bchat.database.model.MessageRecord
+import io.beldex.bchat.database.model.ReactionRecord
+import io.beldex.bchat.databinding.ActivityHomeBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.groups.OpenGroupManager
 import io.beldex.bchat.home.search.GlobalSearchAdapter
 import io.beldex.bchat.home.search.GlobalSearchViewModel
+import io.beldex.bchat.mediapreview.MediaPreviewViewModel
 import io.beldex.bchat.model.AsyncTaskCoroutine
 import io.beldex.bchat.model.NetworkType
 import io.beldex.bchat.model.PendingTransaction
@@ -78,6 +102,8 @@ import io.beldex.bchat.model.Wallet
 import io.beldex.bchat.model.WalletManager
 import io.beldex.bchat.onboarding.SeedActivity
 import io.beldex.bchat.onboarding.SeedReminderViewDelegate
+import io.beldex.bchat.reactions.ReactionsDialogFragment
+import io.beldex.bchat.reactions.any.ReactWithAnyEmojiDialogFragment
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.util.FirebaseRemoteConfigUtil
 import io.beldex.bchat.util.Helper
@@ -104,10 +130,6 @@ import io.beldex.bchat.wallet.send.SendFragment
 import io.beldex.bchat.wallet.service.WalletService
 import io.beldex.bchat.wallet.utils.LegacyStorageHelper
 import io.beldex.bchat.webrtc.NetworkChangeReceiver
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.BuildConfig
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityHomeBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -127,10 +149,12 @@ import javax.inject.Inject
 import io.beldex.bchat.notifications.PushRegistry
 import io.beldex.bchat.permissions.Permissions
 
+
 @AndroidEntryPoint
-class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDelegate,HomeFragment.HomeFragmentListener,ConversationFragmentV2.Listener,UserDetailsBottomSheet.UserDetailsBottomSheetListener,VoiceMessageViewDelegate, ActivityDispatcher,
+class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDelegate,HomeFragment.HomeFragmentListener,ConversationFragmentV2.Listener,UserDetailsBottomSheet.UserDetailsBottomSheetListener, ActivityDispatcher,
     WalletFragment.Listener, WalletService.Observer, WalletScannerFragment.OnScannedListener,SendFragment.OnScanListener,SendFragment.Listener,ReceiveFragment.Listener,WalletFragment.OnScanListener,
-    ScannerFragment.OnWalletScannedListener,WalletScannerFragment.Listener,NodeFragment.Listener {
+    ScannerFragment.OnWalletScannedListener,WalletScannerFragment.Listener,NodeFragment.Listener,ReactWithAnyEmojiDialogFragment.Callback,ConversationReactionOverlay.OnReactionSelectedListener,
+    ReactionsDialogFragment.Callback {
 
     private lateinit var binding: ActivityHomeBinding
 
@@ -175,6 +199,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     private val isLightWallet:  Boolean = false
 
     private val viewModel: HomeViewModel by viewModels()
+    private val conversationViewModel: ConversationViewModel by viewModels()
+    /*private var conversationViewModel : ConversationViewModel?=null*/
 
     @Inject
     lateinit var sharedPreferenceUtil: SharedPreferenceUtil
@@ -183,6 +209,19 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     private var favouriteNodes: Set<NodeInfo> = setOf()
     val list: MutableList<TransactionInfo> = ArrayList()
     private var networkChangedReceiver: NetworkChangeReceiver? = null
+    private lateinit var reactionDelegate: ConversationReactionDelegate
+
+    @Inject
+    lateinit var reactionDb: ReactionDatabase
+    @Inject
+    lateinit var beldexMessageDb: BeldexMessageDatabase
+    @Inject
+    lateinit var smsDb: SmsDatabase
+    @Inject
+    lateinit var mmsDb: MmsDatabase
+    @Inject
+    lateinit var threadDb: ThreadDatabase
+    private val reactWithAnyEmojiStartPage = -1
 
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
@@ -273,6 +312,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             TextSecurePreferences.setAirdropAnimationStatus(this,false)
             launchSuccessLottieDialog()
         }*/
+
+        val reactionOverlayStub: Stub<ConversationReactionOverlay> =
+            ViewUtil.findStubById(this, R.id.conversation_reaction_scrubber_stub)
+        reactionDelegate = ConversationReactionDelegate(reactionOverlayStub)
+        reactionDelegate.setOnReactionSelectedListener(this)
     }
 
     private fun networkChange(networkAvailable: Boolean) {
@@ -567,14 +611,21 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     //Important
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        if (event?.action === MotionEvent.ACTION_DOWN) {
+        if (event?.action == MotionEvent.ACTION_DOWN) {
             val touch = PointF(event.x, event.y)
             when (val currentFragment: Fragment? = getCurrentFragment()) {
                 is HomeFragment -> {
                     currentFragment.dispatchTouchEvent()
                 }
                 is ConversationFragmentV2 -> {
-                    currentFragment.dispatchTouchEvent()
+                    currentFragment.dispatchTouchEvents(event)
+                }
+            }
+        }
+        when (val currentFragment: Fragment? = getCurrentFragment()) {
+            is ConversationFragmentV2 -> {
+                if (event != null) {
+                    currentFragment.dispatchTouchEvents(event)
                 }
             }
         }
@@ -591,6 +642,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                     if (fragment is ConversationFragmentV2) {
                         if (!fragment.transactionInProgress) {
                             onBackPressedDispatcher.onBackPressed()
+                        }
+                        fragment.reactionDelegateDismiss()
+                        if(getIsReactionOverlayVisible(this)){
+                            setIsReactionOverlayVisible(this,false)
                         }
                     } else {
                         onBackPressedDispatcher.onBackPressed()
@@ -700,7 +755,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         replaceFragment(ConversationFragmentV2(),null,extras)
     }
 
-    override fun playVoiceMessageAtIndexIfPossible(indexInAdapter: Int) {
+    fun playVoiceMessageAtIndexIfPossible(indexInAdapter: Int) {
         val fragment = supportFragmentManager.findFragmentById(R.id.activity_home_frame_layout_container)
         if(fragment is ConversationFragmentV2) {
             fragment.playVoiceMessageAtIndexIfPossible(indexInAdapter)
@@ -1671,6 +1726,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         if (fragment is ConversationFragmentV2 || fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment || fragment is WalletFragment) {
             if (!(fragment as OnBackPressedListener).onBackPressed()) {
                 TextSecurePreferences.callFiatCurrencyApi(this,false)
+                if(fragment is ConversationFragmentV2){
+                    fragment.reactionDelegateDismiss()
+                    if(getIsReactionOverlayVisible(this)){
+                        setIsReactionOverlayVisible(this,false)
+                    }
+                }
                 try {
                     onBackPressedDispatcher.onBackPressed()
                 }catch(e : IllegalStateException){
@@ -1723,6 +1784,122 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             }
             else -> throw java.lang.IllegalStateException("unsupported net " + walletManager.networkType)
         }
+    }
+
+    override fun onReactWithAnyEmojiDialogDismissed() {
+        val currentFragment = getCurrentFragment()
+        if(currentFragment is ConversationFragmentV2){
+            currentFragment.reactionDelegateDismiss()
+        }
+    }
+
+    override fun onReactWithAnyEmojiSelected(emoji : String, messageId : MessageId?) {
+        try {
+            val currentFragment = getCurrentFragment()
+            if (currentFragment is ConversationFragmentV2) {
+                currentFragment.reactionDelegateDismiss()
+            }
+            val message=if (messageId!!.mms) {
+                mmsDb.getMessageRecords(messageId.id)
+            } else {
+                smsDb.getMessageRecords(messageId.id)
+            }
+            if (message != null) {
+                val localUser = textSecurePreferences.getLocalNumber()
+                val userReactions = reactionDb.getReactions(messageId).filter { it.author == localUser }
+                val isAlreadyReacted = userReactions.isNotEmpty()
+                if (isAlreadyReacted && userReactions.any { it.emoji == emoji }) {
+                    if (currentFragment is ConversationFragmentV2) {
+                        userReactions.forEach {
+                            currentFragment.sendEmojiRemoval(it.emoji, message)
+                        }
+                    }
+                } else {
+                    if (isAlreadyReacted) {
+                        if (currentFragment is ConversationFragmentV2) {
+                            userReactions.forEach {
+                                currentFragment.sendEmojiRemoval(it.emoji, message)
+                            }
+                        }
+                    }
+                    if (currentFragment is ConversationFragmentV2) {
+                        currentFragment.sendEmojiReaction(emoji, message)
+                    }
+                }
+            }
+        } catch (e : NoSuchMessageException) {
+            Log.e("onRemoveReaction", "Message not found: ${messageId?.id}", e)
+        } catch (e : Exception) {
+            Log.e("onRemoveReaction", "Unexpected error while removing reaction", e)
+        }
+    }
+
+    override fun onReactionSelected(messageRecord : MessageRecord, emoji : String) {
+        val currentFragment = getCurrentFragment()
+        if(currentFragment is ConversationFragmentV2){
+            currentFragment.reactionDelegateDismiss()
+        }
+        val oldRecord = messageRecord.reactions.find { it.author == textSecurePreferences.getLocalNumber() }
+        if (oldRecord != null && oldRecord.emoji == emoji) {
+            if(currentFragment is ConversationFragmentV2){
+                currentFragment.sendEmojiRemoval(emoji, messageRecord)
+            }
+        } else {
+            if (emoji != null) {
+                if(currentFragment is ConversationFragmentV2){
+                    currentFragment.sendEmojiReaction(emoji, messageRecord)
+                }
+            }
+        }
+    }
+
+    override fun onCustomReactionSelected(
+        messageRecord : MessageRecord,
+        hasAddedCustomEmoji : Boolean
+    ) {
+        val currentFragment = getCurrentFragment()
+        val oldRecord = messageRecord.reactions.find { record -> record.author == textSecurePreferences.getLocalNumber() }
+        if (oldRecord != null && hasAddedCustomEmoji) {
+            if(currentFragment is ConversationFragmentV2){
+                currentFragment.reactionDelegateDismiss()
+                currentFragment.sendEmojiRemoval(oldRecord.emoji, messageRecord)
+            }
+
+        } else {
+            reactionDelegate.hideForReactWithAny()
+            ReactWithAnyEmojiDialogFragment
+                .createForMessageRecord(messageRecord, reactWithAnyEmojiStartPage)
+                .show(supportFragmentManager, "BOTTOM");
+        }
+    }
+
+    override fun onRemoveReaction(emoji : String, messageId : MessageId) {
+        val currentFragment = getCurrentFragment()
+        try {
+            val message = if (messageId.mms) {
+                mmsDb.getMessageRecords(messageId.id)
+            } else {
+                smsDb.getMessageRecords(messageId.id)
+            }
+            if (message != null && currentFragment is ConversationFragmentV2) {
+                currentFragment.sendEmojiRemoval(emoji, message)
+            }
+        } catch (e: NoSuchMessageException) {
+            Log.e("onRemoveReaction", "Message not found: ${messageId.id}", e)
+        } catch (e: Exception) {
+            Log.e("onRemoveReaction", "Unexpected error while removing reaction", e)
+        }
+    }
+
+    override fun onClearAll(emoji : String, messageId : MessageId) {
+        val currentFragment = getCurrentFragment()
+        reactionDb.deleteEmojiReactions(emoji, messageId)
+        if(currentFragment is ConversationFragmentV2){
+            currentFragment.clearAllReaction(emoji, messageId)
+        }
+
+
+
     }
 }
 //endregion

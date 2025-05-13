@@ -17,6 +17,8 @@
 package io.beldex.bchat.notifications;
 
 import android.Manifest;
+import static com.beldex.libbchat.utilities.Address.fromSerialized;
+
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -48,6 +50,7 @@ import io.beldex.bchat.database.model.MediaMmsMessageRecord;
 import io.beldex.bchat.database.model.MessageRecord;
 import io.beldex.bchat.database.model.MmsMessageRecord;
 import io.beldex.bchat.database.model.Quote;
+import io.beldex.bchat.database.model.ReactionRecord;
 import io.beldex.bchat.home.HomeActivity;
 import io.beldex.bchat.mms.SlideDeck;
 import io.beldex.bchat.util.BchatMetaProtocol;
@@ -81,6 +84,7 @@ import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libsignal.utilities.Log;
 import com.beldex.libsignal.utilities.Util;
+import com.squareup.phrase.Phrase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -629,6 +633,36 @@ public class DefaultMessageNotifier implements MessageNotifier {
           // do nothing, no notifications
         } else {
           notificationState.addNotification(new NotificationItem(id, mms, recipient, conversationRecipient, threadRecipients, threadId, body, timestamp, slideDeck));
+        }
+
+        ReactionRecord lastReact = null;
+        for (ReactionRecord reaction : record.getReactions()) {
+          if (!reaction.getAuthor().equals(TextSecurePreferences.getLocalNumber(context))) {
+            lastReact = reaction;
+          }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+          if (lastReact != null) {
+            Recipient reactor = Recipient.from(context, fromSerialized(lastReact.getAuthor()), false);
+            String emoji = Phrase.from(context, R.string.emojiReactsNotification)
+                    .put("emoji", lastReact.getEmoji())
+                    .format()
+                    .toString();
+            if (threadRecipients != null && !threadRecipients.isGroupRecipient()) {
+              notificationState.addNotification(new NotificationItem(
+                      id,
+                      mms,
+                      reactor,
+                      reactor,
+                      threadRecipients,
+                      threadId,
+                      emoji,
+                      lastReact.getDateSent(),
+                      slideDeck
+              ));
+            }
+          }
         }
       }
     }

@@ -29,8 +29,8 @@ class DocumentView : LinearLayout {
         val document = message.slideDeck.documentSlide!!
         val fontSize = TextSecurePreferences.getChatFontSize(context)
         val fileName = document.fileName.or("Untitled File").toString()
-        val fileFormat = fileName.substringAfter(".","-")
-        val fileNameWithoutFormat = fileName.substringBefore(".",fileName)
+        val fileFormat = fileName.substringAfterLast(".","-")
+        val fileNameWithoutFormat = fileName.substringBeforeLast(".",fileName)
         val newFileName=if(fileNameWithoutFormat.length >12){
             "${fileNameWithoutFormat.subSequence(0,12)}... "
         }else{

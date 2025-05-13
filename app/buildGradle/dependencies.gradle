@@ -139,6 +139,7 @@ dependencies {
     testImplementation composeBom
     androidTestImplementation composeBom
     implementation 'androidx.compose.material3:material3'
+    implementation "androidx.compose.material:material:1.7.6"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion"
     implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.ui:ui-graphics'
@@ -172,4 +173,8 @@ dependencies {
     implementation "androidx.camera:camera-view:$cameraVersion"
 
     implementation "com.google.zxing:core:$zxingVersion"
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
+    implementation "com.squareup.phrase:phrase:$phraseVersion"
+
+    implementation 'androidx.compose.foundation:foundation:1.7.6'
 }

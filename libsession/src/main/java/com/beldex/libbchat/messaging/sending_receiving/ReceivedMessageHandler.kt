@@ -1,6 +1,7 @@
 package com.beldex.libbchat.messaging.sending_receiving
 
 import android.text.TextUtils
+import com.beldex.libbchat.R
 import com.beldex.libbchat.avatars.AvatarHelper
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.jobs.BackgroundGroupAddJob
@@ -33,6 +34,14 @@ import java.security.MessageDigest
 import java.util.*
 import kotlin.collections.ArrayList
 import com.beldex.libbchat.messaging.messages.control.MessageRequestResponse
+import com.beldex.libbchat.messaging.messages.visible.Reaction
+import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
+import com.beldex.libbchat.utilities.GroupUtil.doubleEncodeGroupID
+import com.beldex.libbchat.utilities.recipients.MessageType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlin.math.min
 
 
 internal fun MessageReceiver.isBlocked(publicKey: String): Boolean {
@@ -189,18 +198,56 @@ private fun handleConfigurationMessage(message: ConfigurationMessage) {
 
 fun MessageReceiver.handleUnsendRequest(message: UnsendRequest) {
     val userPublicKey = MessagingModuleConfiguration.shared.storage.getUserPublicKey()
-    if (message.sender != message.author && (message.sender != userPublicKey && userPublicKey != null)) { return }
-    val context = MessagingModuleConfiguration.shared.context
     val storage = MessagingModuleConfiguration.shared.storage
+
+    val isLegacyGroupAdmin: Boolean = message.groupPublicKey?.let { key ->
+        var admin = false
+        val groupID = doubleEncodeGroupID(key)
+        val group = storage.getGroup(groupID)
+        if(group != null) {
+            admin = group.admins.map { it.toString() }.contains(message.sender)
+        }
+        admin
+    } ?: false
+    // First we need to determine the validity of the UnsendRequest
+    // It is valid if:
+    val requestIsValid = message.sender == message.author || //  the sender is the author of the message
+            message.author == userPublicKey || //  the sender is the current user
+            isLegacyGroupAdmin // sender is an admin of legacy group
+    if (!requestIsValid) { return }
+    val context = MessagingModuleConfiguration.shared.context
     val messageDataProvider = MessagingModuleConfiguration.shared.messageDataProvider
     val timestamp = message.timestamp ?: return
     val author = message.author ?: return
-    val messageIdToDelete = storage.getMessageIdInDatabase(timestamp, author) ?: return
-    messageDataProvider.getServerHashForMessage(messageIdToDelete)?.let { serverHash ->
-        MnodeAPI.deleteMessage(author, listOf(serverHash))
+    val (messageIdToDelete, mms) = storage.getMessageIdInDatabase(timestamp, author) ?: return
+    val messageType = storage.getMessageType(timestamp, author) ?: return
+    // send a /delete request for 1on1 messages
+    if(messageType == MessageType.ONE_ON_ONE) {
+        messageDataProvider.getServerHashForMessage(messageIdToDelete,mms)?.let { serverHash ->
+            GlobalScope.launch(Dispatchers.IO) { // using GlobalScope as we are slowly migrating to coroutines but we can't migrate everything at once
+                try {
+                    MnodeAPI.deleteMessage(author, listOf(serverHash))
+                } catch (e: Exception) {
+                }
+            }
+        }
     }
-    messageDataProvider.updateMessageAsDeleted(timestamp, author)
-    if (!messageDataProvider.isOutgoingMessage(messageIdToDelete)) {
+
+    // the message is marked as deleted locally
+    // except for 'note to self' where the message is completely deleted
+    if(messageType == MessageType.NOTE_TO_SELF){
+        messageDataProvider.deleteMessage(messageIdToDelete, !mms)
+    } else {
+        messageDataProvider.markMessageAsDeleted(
+            timestamp = timestamp,
+            author = author,
+            displayedMessage = context.getString(R.string.deleteMessageDeletedGlobally)
+        )
+    }
+    // delete reactions
+    storage.deleteReactions(messageId = messageIdToDelete, mms = mms)
+    // update notification
+    if (!messageDataProvider.isOutgoingMessage(timestamp)) {
         SSKEnvironment.shared.notificationManager.updateNotification(context)
     }
 }
@@ -221,6 +268,7 @@ fun MessageReceiver.handleVisibleMessage(message: VisibleMessage, proto: SignalS
         // Thread doesn't exist; should only be reached in a case where we are processing social group messages for a no longer existent thread
         throw MessageReceiver.Error.NoThread
     }
+    val threadRecipient = storage.getRecipientForThread(threadID)
     // Update profile if needed
     /*Hales63*/
     val recipient = Recipient.from(context, Address.fromSerialized(messageSender!!), false)
@@ -233,10 +281,10 @@ fun MessageReceiver.handleVisibleMessage(message: VisibleMessage, proto: SignalS
                 profileManager.setName(context, recipient, name)
             }
             val newProfileKey = profile.profileKey
-            val needsProfilePicture = !AvatarHelper.avatarFileExists(context, Address.fromSerialized(messageSender))
+            val avatarFile = AvatarHelper.avatarFileExists(context, Address.fromSerialized(messageSender))
             val profileKeyValid = newProfileKey?.isNotEmpty() == true && (newProfileKey.size == 16 || newProfileKey.size == 32) && profile.profilePictureURL?.isNotEmpty() == true
             val profileKeyChanged = (recipient.profileKey == null || !MessageDigest.isEqual(recipient.profileKey, newProfileKey))
-            if ((profileKeyValid && profileKeyChanged) || (profileKeyValid && needsProfilePicture)) {
+            if ((profileKeyValid && profileKeyChanged) || (profileKeyChanged && avatarFile)) {
                 profileManager.setProfileKey(context, recipient, newProfileKey!!)
                 profileManager.setUnidentifiedAccessMode(
                     context,
@@ -290,21 +338,104 @@ fun MessageReceiver.handleVisibleMessage(message: VisibleMessage, proto: SignalS
             return@mapNotNull attachment
         }
     }
-    // Persist the message
-    message.threadID = threadID
-    val messageID = storage.persist(
-        message, quoteModel, linkPreviews,
-        message.groupPublicKey, openGroupID,
-        attachments, runIncrement, runThreadUpdate
-    ) ?: return null
-    val openGroupServerID = message.openGroupServerMessageID
-    if (openGroupServerID != null) {
-        val isSms = !(message.isMediaMessage() || attachments.isNotEmpty())
-        storage.setOpenGroupServerMessageID(messageID, openGroupServerID, threadID, isSms)
+    // Parse reaction if needed
+    val threadIsGroup = threadRecipient?.isGroupRecipient == true
+    message.reaction?.let { reaction ->
+        if (reaction.react == true) {
+            reaction.serverId = message.openGroupServerMessageID?.toString() ?: message.serverHash.orEmpty()
+            reaction.dateSent = message.sentTimestamp ?: 0
+            reaction.dateReceived = message.receivedTimestamp ?: 0
+            storage.addReaction(reaction,messageSender, !threadIsGroup)
+        } else {
+            storage.removeReaction(reaction.emoji!!, reaction.timestamp!!, reaction.publicKey!!, threadIsGroup)
+        }
+    } ?: run {
+        // Persist the message
+        message.threadID = threadID
+        val messageID =
+            storage.persist(message, quoteModel, linkPreviews, message.groupPublicKey, openGroupID,
+                attachments, runIncrement, runThreadUpdate
+            ) ?: return null
+        val openGroupServerID = message.openGroupServerMessageID
+        if (openGroupServerID != null) {
+            val isSms = !(message.isMediaMessage() || attachments.isNotEmpty())
+            storage.setOpenGroupServerMessageID(messageID, openGroupServerID, threadID, isSms)
+        }
+        return messageID
     }
     // Cancel any typing indicators if needed
     cancelTypingIndicatorsIfNeeded(message.sender!!)
-    return messageID
+    return null
+}
+
+fun MessageReceiver.handleOpenGroupReactions(
+    threadId: Long,
+    openGroupMessageServerID: Long,
+    reactions: Map<String, OpenGroupAPIV2.Reaction>?
+) {
+    if (reactions.isNullOrEmpty()) return
+    val storage=MessagingModuleConfiguration.shared.storage
+    val (messageId, isSms)=MessagingModuleConfiguration.shared.messageDataProvider.getMessageID(
+        openGroupMessageServerID,
+        threadId
+    ) ?: return
+    storage.deleteReactions(messageId, !isSms)
+    val userPublicKey=storage.getUserPublicKey()!!
+    val openGroup=storage.getV2OpenGroup(threadId)
+    for ((emoji, reaction) in reactions) {
+        val pendingUserReaction=OpenGroupAPIV2.pendingReactions
+            .filter { it.server == openGroup?.server && it.room == openGroup.room && it.messageId == openGroupMessageServerID && it.add }
+            .sortedByDescending { it.seqNo }
+            .any { it.emoji == emoji }
+        val shouldAddUserReaction=
+            pendingUserReaction || reaction.you || reaction.reactors.contains(userPublicKey)
+        val reactorIds=reaction.reactors.filter { it != userPublicKey }
+        val count=if (reaction.you) reaction.count - 1 else reaction.count
+        // Add the first reaction (with the count)
+        reactorIds.firstOrNull()?.let { reactor ->
+            storage.addReaction(
+                Reaction(
+                    localId=messageId,
+                    isMms=!isSms,
+                    publicKey=reactor,
+                    emoji=emoji,
+                    react=true,
+                    serverId="$openGroupMessageServerID",
+                    count=count,
+                    index=reaction.index
+                ),reactor,false)
+        }
+        // Add all other reactions
+        val maxAllowed=if (shouldAddUserReaction) 4 else 5
+        val lastIndex=min(maxAllowed, reactorIds.size)
+        reactorIds.slice(1 until lastIndex).map { reactor ->
+            storage.addReaction(
+                Reaction(
+                    localId=messageId,
+                    isMms=!isSms,
+                    publicKey=reactor,
+                    emoji=emoji,
+                    react=true,
+                    serverId="$openGroupMessageServerID",
+                    count=0,  // Only want this on the first reaction
+                    index=reaction.index
+                ),reactor, false)
+        }
+        // Add the current user reaction (if applicable and not already included)
+        if (shouldAddUserReaction) {
+            storage.addReaction(
+                Reaction(
+                    localId=messageId,
+                    isMms=!isSms,
+                    publicKey=userPublicKey,
+                    emoji=emoji,
+                    react=true,
+                    serverId="$openGroupMessageServerID",
+                    count=1,
+                    index=reaction.index
+                ),userPublicKey,false)
+        }
+    }
 }
 //endregion
 

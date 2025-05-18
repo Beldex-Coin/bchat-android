@@ -22,7 +22,7 @@ data class ContactSharingState(
     val searchQuery: String = "",
     val contacts: List<ThreadRecord> = emptyList(),
     val filteredContacts: List<ThreadRecord> = emptyList(),
-    val selectedContactsCount: Int = 0
+    val selectedContacts: List<ThreadRecord> = emptyList()
 )
 
 @HiltViewModel
@@ -33,8 +33,6 @@ class ContactsViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(ContactSharingState())
     val state = _state.asStateFlow()
-
-    val selectedContacts = arrayListOf<ThreadRecord>()
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -86,14 +84,14 @@ class ContactsViewModel @Inject constructor(
     }
 
     fun onContactSelected(contact: ThreadRecord, isSelected: Boolean) {
-        if (isSelected) {
-            selectedContacts.add(contact)
+        val newList = if (isSelected) {
+            listOf(contact)
         } else {
-            selectedContacts.remove(contact)
+            emptyList()
         }
         _state.update {
             it.copy(
-                selectedContactsCount = selectedContacts.size
+                selectedContacts = newList
             )
         }
     }

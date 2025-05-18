@@ -26,15 +26,18 @@ import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.ViewUtil
 import com.beldex.libsignal.utilities.ThreadUtils
+import com.bumptech.glide.RequestManager
+import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.ApplicationContext
+import io.beldex.bchat.R
 import io.beldex.bchat.database.BeldexThreadDatabase
 import io.beldex.bchat.database.MmsDatabase
 import io.beldex.bchat.database.MmsSmsDatabase
 import io.beldex.bchat.database.SmsDatabase
 import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.database.model.MessageRecord
+import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import io.beldex.bchat.home.UserDetailsBottomSheet
-import com.bumptech.glide.RequestManager
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.disableClipping
@@ -42,9 +45,6 @@ import io.beldex.bchat.util.getColorWithID
 import io.beldex.bchat.util.isSameDayMessage
 import io.beldex.bchat.util.toDp
 import io.beldex.bchat.util.toPx
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
@@ -190,6 +190,8 @@ class VisibleMessageView : LinearLayout {
         updateExpirationTimer(message)
         // Populate content view
         binding.messageContentView.root.indexInAdapter = indexInAdapter
+        //added for the long press handling on shared contact
+        binding.messageContentView.root.onLongPress = onLongPress
         binding.messageContentView.root.bind(message, isStartOfMessageCluster, isEndOfMessageCluster, glide, thread, searchQuery, message.isOutgoing || isGroupThread || (contact?.isTrusted ?: false),
             onAttachmentNeedsDownload, thread.isOpenGroupRecipient)
         binding.messageContentView.root.delegate = contentViewDelegate

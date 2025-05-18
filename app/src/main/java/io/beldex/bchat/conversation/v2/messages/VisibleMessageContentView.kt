@@ -23,12 +23,14 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
@@ -55,7 +57,6 @@ import com.google.android.material.card.MaterialCardView
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.TextColor
-import io.beldex.bchat.compose_utils.noRippleCallback
 import io.beldex.bchat.conversation.v2.ModalUrlBottomSheet
 import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
 import io.beldex.bchat.conversation.v2.contact_sharing.SharedContactView
@@ -83,6 +84,7 @@ class VisibleMessageContentView : MaterialCardView {
     var delegate: VisibleMessageContentViewDelegate? = null
     var indexInAdapter: Int = -1
     private var data: UpdateMessageData.Kind.OpenGroupInvitation? = null
+    var onLongPress: (() -> Unit)? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -144,6 +146,7 @@ class VisibleMessageContentView : MaterialCardView {
             binding.albumThumbnailView.root.isVisible = false
             binding.openGroupInvitationView.root.isVisible = false
             binding.contactView.isVisible = false
+//            binding.contactMessageTime.isVisible = false
             return
         } else {
             binding.deletedMessageView.root.isVisible = false
@@ -171,6 +174,7 @@ class VisibleMessageContentView : MaterialCardView {
         binding.paymentCardView.isVisible = message.isPayment
         //shared contact
         binding.contactView.isVisible = message.isSharedContact
+//        binding.contactMessageTime.isVisible = message.isSharedContact
 
         var hideBody = false
         var showQuoteBody = false
@@ -378,6 +382,9 @@ class VisibleMessageContentView : MaterialCardView {
                 showQuoteBody = false
                 val umd = UpdateMessageData.fromJSON(message.body)!!
                 val data = umd.kind as UpdateMessageData.Kind.SharedContact
+//                binding.contactMessageTime.isVisible = message.body.isEmpty()
+//                binding.contactMessageTime.text=
+//                    DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
 
                 binding.contactView.setContent {
                     BChatTheme {
@@ -406,6 +413,14 @@ class VisibleMessageContentView : MaterialCardView {
                                 contact
                             ),
                             backgroundColor = colorResource(cardBackgroundColor),
+                            timeStamp = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp),
+                            timeStampColor = colorResource(
+                                if (message.isOutgoing) {
+                                    R.color.sent_message_time_color
+                                } else {
+                                    R.color.received_message_time_color
+                                }
+                            ),
                             titleColor = colorResource(
                                 if (message.isOutgoing) {
                                     R.color.white
@@ -420,9 +435,17 @@ class VisibleMessageContentView : MaterialCardView {
                             },
                             modifier = Modifier
                                 .width(screenWidth * 0.7f)
-                                .padding(8.dp)
-                                .noRippleCallback {
-                                    onContactClicked(contact)
+                                .padding(8.dp),
+                            columnModifier = Modifier
+                                .pointerInput(Unit) {
+                                    detectTapGestures(
+                                        onLongPress = {
+                                            onLongPress?.let { it1 -> it1() }
+                                        },
+                                        onTap = {
+                                            onContactClicked(contact)
+                                        }
+                                    )
                                 }
                         )
                     }

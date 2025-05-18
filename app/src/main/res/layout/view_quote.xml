@@ -36,7 +36,7 @@
         android:layout_gravity="center">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingTop="4dp"
@@ -64,6 +64,7 @@
                 android:layout_marginBottom="4dp"/>
 
             <LinearLayout
+                android:id="@+id/quoteContentType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical">
@@ -125,6 +126,35 @@
 
         </RelativeLayout>
 
+        <LinearLayout
+            android:id="@+id/contactView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginEnd="16dp"
+            tools:visibility="visible">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_profile_default"
+                app:tint="@color/text" />
+
+            <TextView
+                android:fontFamily="@font/open_sans_regular"
+                android:id="@+id/contactName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/text"
+                android:textSize="@dimen/very_small_font_size"
+                tools:text="Sorry, gotta go fight crime again"
+                android:layout_marginStart="4dp"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 
         <View
@@ -140,5 +170,11 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tint="@color/text" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/quoteGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="contentTypeIcon,quoteViewBodyTextView,quoteViewAttachmentThumbnailImageView,quoteViewAttachmentPreviewImageView,quoteViewCancelButton"/>
 
 </io.beldex.bchat.conversation.v2.messages.QuoteView>

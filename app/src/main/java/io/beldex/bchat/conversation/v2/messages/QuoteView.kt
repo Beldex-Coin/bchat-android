@@ -4,25 +4,27 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.view.View
+import android.widget.LinearLayout
 import androidx.annotation.ColorInt
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.content.res.use
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import com.beldex.libbchat.messaging.contacts.Contact
+import com.beldex.libbchat.messaging.utilities.UpdateMessageData
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
+import com.bumptech.glide.RequestManager
 import com.google.android.material.card.MaterialCardView
+import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.R
 import io.beldex.bchat.conversation.v2.utilities.MentionUtilities
 import io.beldex.bchat.database.BchatContactDatabase
-import com.bumptech.glide.RequestManager
+import io.beldex.bchat.databinding.ViewQuoteBinding
 import io.beldex.bchat.mms.SlideDeck
 import io.beldex.bchat.util.MediaUtil
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.toPx
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ViewQuoteBinding
 import org.json.JSONException
 import org.json.JSONObject
 import javax.inject.Inject
@@ -60,7 +62,11 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     override fun onFinishInflate() {
         super.onFinishInflate()
         when (mode) {
-            Mode.Draft -> binding.quoteViewCancelButton.setOnClickListener { delegate?.cancelQuoteDraft(1)}
+            Mode.Draft -> {
+                binding.quoteViewCancelButton.setOnClickListener {
+                    delegate?.cancelQuoteDraft(1)
+                }
+            }
             Mode.Regular -> {
                 binding.quoteViewCancelButton.isVisible = false
 //                binding.mainQuoteViewContainer.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.transparent, context.theme))
@@ -88,6 +94,55 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         }else {
            getTextColor(isOutgoingMessage)
         })
+
+        /*------code section to handle sent contact inside quote view-------*/
+        try {
+            val mainObject = JSONObject(body)
+            val uniObject = mainObject.getJSONObject("kind")
+            val type = uniObject.getString("@type")
+            if (type.equals("SharedContact")) {
+                binding.contactView.visibility = View.VISIBLE
+                if (mode == Mode.Regular) {
+                    binding.quoteViewAttachmentPreviewContainer.visibility = View.GONE
+                    binding.quoteContentType.visibility = View.GONE
+                    binding.container.orientation = LinearLayout.VERTICAL
+                    binding.mainQuoteViewContainer.setBackgroundColor(resources.getColor(getContainerColor(isOutgoingMessage), null))
+                } else {
+                    binding.quoteGroup.visibility = View.GONE
+                    binding.quoteViewAttachmentPreviewImageView.visibility = View.GONE
+                }
+                body?.let { message ->
+                    UpdateMessageData.fromJSON(message)?.let {
+                        val data = it.kind as UpdateMessageData.Kind.SharedContact
+                        binding.contactName.text = data.name
+                    }
+                }
+                return
+            } else {
+                binding.contactView.visibility = View.GONE
+                if (mode == Mode.Regular) {
+//                    binding.quoteViewAttachmentPreviewContainer.visibility = View.VISIBLE
+                    binding.quoteContentType.visibility = View.VISIBLE
+                    binding.container.orientation = LinearLayout.HORIZONTAL
+                } else {
+                    binding.quoteGroup.visibility = View.VISIBLE
+//                    binding.quoteViewAttachmentPreviewImageView.visibility = View.VISIBLE
+                }
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+            binding.contactView.visibility = View.GONE
+            if (mode == Mode.Regular) {
+//                binding.quoteViewAttachmentPreviewContainer.visibility = View.VISIBLE
+                binding.quoteContentType.visibility = View.VISIBLE
+                binding.container.orientation = LinearLayout.HORIZONTAL
+            } else {
+                binding.quoteGroup.visibility = View.VISIBLE
+//                binding.quoteViewAttachmentPreviewImageView.visibility = View.VISIBLE
+            }
+        }
+        /*--------section ends here----------*/
+
         // Body
         binding.quoteViewBodyTextView.text = when {
             isOpenGroupInvitation -> {

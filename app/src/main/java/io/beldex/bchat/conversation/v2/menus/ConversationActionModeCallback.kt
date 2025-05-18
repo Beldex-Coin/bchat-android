@@ -4,11 +4,10 @@ import android.content.Context
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
-import io.beldex.bchat.R
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import io.beldex.bchat.R
 import io.beldex.bchat.conversation.v2.ConversationAdapter
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2
 import io.beldex.bchat.database.model.MediaMmsMessageRecord
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.dependencies.DatabaseComponent
@@ -28,6 +27,7 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
         // Prepare
         val selectedItems = adapter.selectedItems
         val containsControlMessage = selectedItems.any { it.isUpdate }
+        val containsContacts = selectedItems.any { it.isSharedContact }
         val hasText = selectedItems.any { it.body.isNotEmpty() }
         if (selectedItems.isEmpty()) { return }
         val firstMessage = selectedItems.iterator().next()
@@ -50,7 +50,7 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
         // Ban and delete all
         menu.findItem(R.id.menu_context_ban_and_delete_all).isVisible = userCanBanSelectedUsers()
         // Copy message text
-        menu.findItem(R.id.menu_context_copy).isVisible = !containsControlMessage && hasText
+        menu.findItem(R.id.menu_context_copy).isVisible = !containsControlMessage && !containsContacts && hasText
         // Copy Bchat ID
         menu.findItem(R.id.menu_context_copy_public_key).isVisible =
             (thread.isGroupRecipient && !thread.isOpenGroupRecipient && selectedItems.size == 1 && firstMessage.individualRecipient.address.toString() != userPublicKey)

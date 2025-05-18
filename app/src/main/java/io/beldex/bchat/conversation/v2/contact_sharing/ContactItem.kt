@@ -38,12 +38,13 @@ import io.beldex.bchat.database.model.ThreadRecord
 @Composable
 fun ContactItem(
     contact: ThreadRecord?,
+    isSelected: Boolean,
     contactChanged: (ThreadRecord?, Boolean) -> Unit,
     modifier: Modifier = Modifier,
     isSharing: Boolean = true
 ) {
-    var checked by remember {
-        mutableStateOf(false)
+    var checked by remember(isSelected) {
+        mutableStateOf(isSelected)
     }
     OutlinedCard(
         shape = RoundedCornerShape(50),

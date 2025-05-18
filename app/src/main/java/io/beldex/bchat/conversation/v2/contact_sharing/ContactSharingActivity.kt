@@ -22,7 +22,7 @@ class ContactSharingActivity: ComponentActivity() {
 
                 val sendResult: () -> Unit = {
                     val resultIntent = Intent()
-                    resultIntent.putExtra(RESULT_CONTACT_TO_SHARE, ArrayList(viewModel.selectedContacts.map { contact ->
+                    resultIntent.putExtra(RESULT_CONTACT_TO_SHARE, ArrayList(state.selectedContacts.map { contact ->
                         ContactModel(
                             threadId = contact.threadId,
                             address = contact.recipient.address,
@@ -36,9 +36,9 @@ class ContactSharingActivity: ComponentActivity() {
                 ContactsScreen(
                     searchQuery = state.searchQuery,
                     contacts = state.filteredContacts,
-                    selectedContacts = state.selectedContactsCount,
+                    selectedContacts = state.selectedContacts,
                     onQueryChanged = viewModel::postQuery,
-                    onSend = { records ->
+                    onSend = { _ ->
                         sendResult()
                     },
                     onBack = {

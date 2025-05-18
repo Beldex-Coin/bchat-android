@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
@@ -35,10 +36,13 @@ import io.beldex.bchat.compose_utils.TextColor
 @Composable
 fun SharedContactView(
     contacts: List<ContactModel>,
+    timeStamp: String,
+    timeStampColor: Color,
     modifier: Modifier = Modifier,
+    columnModifier: Modifier = Modifier,
     backgroundColor: Color = Color.DarkGray,
     titleColor: Color = Color.White,
-    subtitleColor: Color = TextColor
+    subtitleColor: Color = TextColor,
 ) {
     val addressString by remember(contacts) {
         var address = "aaaaaaaaaaa.........zzzzzzz"
@@ -54,85 +58,102 @@ fun SharedContactView(
         }
         mutableStateOf(address)
     }
-    Card(
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-           containerColor = backgroundColor
-        ),
-        modifier = modifier
+    Column(
+        horizontalAlignment = Alignment.End,
+        modifier = columnModifier
     ) {
-        Row(
-            modifier = Modifier
-                .padding(
-                    8.dp
-                )
+        Card(
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = backgroundColor
+            ),
+            modifier = modifier
         ) {
-            Column(
+            Row(
                 modifier = Modifier
-                    .weight(0.8f)
+                    .padding(
+                        8.dp
+                    )
             ) {
-                var contactName = "BChat Contact"
-                if (contacts.isNotEmpty()) {
-                    contactName = if (contacts.size == 1)
-                        contacts[0].name
-                    else
-                        "${contacts[0].name} and ${contacts.size -1} others"
-                }
-                Text(
-                    contactName,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        color = titleColor
-                    )
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        Icons.Filled.Person,
-                        contentDescription = null,
-                        tint = subtitleColor,
-                        modifier = Modifier
-                            .size(16.dp)
-                    )
-
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    Text(
-                        addressString,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            color = subtitleColor
-                        ),
-                    )
-                }
-
-            }
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            if (contacts.isNotEmpty()) {
-                val contact = contacts[0]
-                ProfilePictureComponent(
-                    publicKey = contact.address.serialize(),
-                    displayName = contact.name.toString(),
-                    containerSize = 36.dp,
-                    pictureMode = ProfilePictureMode.SmallPicture
-                )
-            } else {
-                Box(
+                Column(
                     modifier = Modifier
-                        .size(48.dp)
-                        .background(
-                            color = Color.Green,
-                            shape = RoundedCornerShape(100)
+                        .weight(0.8f)
+                ) {
+                    var contactName = "BChat Contact"
+                    if (contacts.isNotEmpty()) {
+                        contactName = if (contacts.size == 1)
+                            contacts[0].name
+                        else
+                            "${contacts[0].name} and ${contacts.size -1} others"
+                    }
+                    Text(
+                        contactName,
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            color = titleColor
                         )
-                )
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            Icons.Filled.Person,
+                            contentDescription = null,
+                            tint = subtitleColor,
+                            modifier = Modifier
+                                .size(16.dp)
+                        )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Text(
+                            addressString,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                color = subtitleColor
+                            ),
+                        )
+                    }
+
+                }
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                if (contacts.isNotEmpty()) {
+                    val contact = contacts[0]
+                    ProfilePictureComponent(
+                        publicKey = contact.address.serialize(),
+                        displayName = contact.name.toString(),
+                        containerSize = 36.dp,
+                        pictureMode = ProfilePictureMode.SmallPicture
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .background(
+                                color = Color.Green,
+                                shape = RoundedCornerShape(100)
+                            )
+                    )
+                }
             }
         }
+
+        Text(
+            text = timeStamp,
+            style = MaterialTheme.typography.bodySmall.copy(
+                color = timeStampColor,
+                fontSize = 11.sp
+            ),
+            modifier = Modifier
+                .padding(
+                    end = 8.dp
+                )
+        )
     }
 }
 
@@ -141,7 +162,9 @@ fun SharedContactView(
 private fun SharedContactViewPreview() {
     BChatTheme {
         SharedContactView(
-            contacts = listOf()
+            contacts = listOf(),
+            timeStampColor = Color.White,
+            timeStamp = ""
         )
     }
 }

@@ -213,7 +213,7 @@ object MnodeAPI {
         val validationCount = 3
         val bchatIDByteCount = 33
         // Hash the BNS name using BLAKE2b
-        val bnsName = bnsName.toLowerCase(Locale.US)
+        val bnsName =bnsName.lowercase(Locale.US)
         val nameAsData = bnsName.toByteArray()
         val nameHash = ByteArray(GenericHash.BYTES)
         if (!sodium.cryptoGenericHash(nameHash, nameHash.size, nameAsData, nameAsData.size.toLong())) {

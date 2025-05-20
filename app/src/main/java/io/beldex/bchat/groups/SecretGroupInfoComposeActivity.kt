@@ -74,6 +74,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowCompat
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.lifecycle.ViewModelProvider
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.messaging.messages.control.ExpirationTimerUpdate
@@ -125,12 +129,16 @@ class SecretGroupInfoComposeActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState : Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, true)
         setContent {
             BChatTheme(
                 darkTheme=UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
             ) {
                 Surface(
-                    modifier=Modifier.fillMaxSize(), color=MaterialTheme.colorScheme.background
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(WindowInsets.systemBars.asPaddingValues()),
+                    color = MaterialTheme.colorScheme.background
                 ) {
 
                     val context=LocalContext.current

@@ -14,7 +14,6 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -78,6 +77,10 @@ import androidx.core.view.WindowCompat
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.ViewModelProvider
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.messaging.messages.control.ExpirationTimerUpdate
@@ -117,38 +120,41 @@ import java.io.IOException
 class SecretGroupInfoComposeActivity : ComponentActivity() {
 
     companion object {
-        const val secretGroupID="secret_group_id"
-        const val callback="callback"
-        lateinit var listenerCallback : socialGroupInfoInterface
-        fun setOnActionSelectedListener(socialGroupInfoInterface : socialGroupInfoInterface?) {
-            if (socialGroupInfoInterface != null) {
-                listenerCallback=socialGroupInfoInterface
-            }
+        const val secretGroupID = "secret_group_id"
+        lateinit var listenerCallback: SocialGroupInfoInterface
+
+        fun setOnActionSelectedListener(callback: SocialGroupInfoInterface?) {
+            callback?.let { listenerCallback = it }
         }
     }
 
-    override fun onCreate(savedInstanceState : Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, true)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
-            BChatTheme(
-                darkTheme=UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
-            ) {
+            val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
+            val view = LocalView.current
+            val window = (view.context as Activity).window
+            val statusBarColor = if (isDarkTheme) Color.Black else Color.White
+            SideEffect {
+                window.statusBarColor = statusBarColor.toArgb()
+                WindowInsetsControllerCompat(window, view).isAppearanceLightStatusBars = !isDarkTheme
+            }
+
+            BChatTheme(darkTheme = isDarkTheme) {
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(WindowInsets.systemBars.asPaddingValues()),
-                    color = MaterialTheme.colorScheme.background
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(WindowInsets.systemBars.asPaddingValues())
                 ) {
+                    val context = LocalContext.current
+                    val lifecycleOwner = LocalLifecycleOwner.current
 
-                    val context=LocalContext.current
-                    val activity=(context as? Activity)
-                    val lifecycleOwner=LocalLifecycleOwner.current
-                    val groupID : String=activity?.intent?.getStringExtra(secretGroupID)!!
-                    val secretGroupInfoViewModelFactory=
-                        SecretGroupViewModelFactory(groupID, context)
-                    val secretGroupInfoViewModel=ViewModelProvider(
-                        this, secretGroupInfoViewModelFactory
+                    val groupID = intent?.getStringExtra(secretGroupID) ?: ""
+                    val viewModelFactory = SecretGroupViewModelFactory(groupID, context)
+                    val secretGroupInfoViewModel = ViewModelProvider(
+                        this, viewModelFactory
                     )[SecretGroupInfoViewModel::class.java]
                     val groupMembers by secretGroupInfoViewModel.groupMembers.collectAsState()
 
@@ -164,20 +170,16 @@ class SecretGroupInfoComposeActivity : ComponentActivity() {
                     }
 
                     SecretGroupInfoScreenContainer(
-                        titleChange = {
-                            tileName = context.getString(R.string.group_info)
-                        },
+                        titleChange = { tileName = context.getString(R.string.group_info) },
                         context = context,
                         secretGroupInfoViewModel = secretGroupInfoViewModel,
-                        title=tileName,
-                        onBackClick={
-                            (context as ComponentActivity).finish()
-                        }
+                        title = tileName,
+                        onBackClick = { finish() }
                     ) {
                         GroupDetailsScreen(
-                            groupMembers,
-                            listenerCallback,
-                            secretGroupInfoViewModel,
+                            groupMembers = groupMembers,
+                            listenerCallback = listenerCallback,
+                            secretGroupInfoViewModel = secretGroupInfoViewModel,
                             showSearchView = {
                                 tileName = context.getString(R.string.search_member_title)
                             }
@@ -188,7 +190,7 @@ class SecretGroupInfoComposeActivity : ComponentActivity() {
         }
     }
 
-    interface socialGroupInfoInterface {
+    interface SocialGroupInfoInterface {
         fun showAllMedia(recipient : Recipient)
     }
 }
@@ -197,7 +199,7 @@ class SecretGroupInfoComposeActivity : ComponentActivity() {
 @Composable
 fun GroupDetailsScreen(
     groupMembers : GroupMembers?,
-    listenerCallback : SecretGroupInfoComposeActivity.socialGroupInfoInterface?,
+    listenerCallback : SecretGroupInfoComposeActivity.SocialGroupInfoInterface?,
     secretGroupInfoViewModel : SecretGroupInfoViewModel,
     showSearchView : () -> Unit
 ) {
@@ -217,7 +219,7 @@ fun GroupDetailsScreen(
         }
     }
 
-    var allMembers=mutableListOf<String>()
+    val allMembers=mutableListOf<String>()
     groupID=activity?.intent?.getStringExtra(SecretGroupInfoComposeActivity.secretGroupID)!!
     val groupInfo by remember {
         mutableStateOf(DatabaseComponent.get(context).groupDatabase().getGroup(groupID).get())

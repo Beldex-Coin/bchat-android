@@ -16,6 +16,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -51,6 +52,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -60,9 +62,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -74,6 +78,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -125,7 +130,15 @@ class NodeComposeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, true)
         setContent {
-            BChatTheme(darkTheme=UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT) {
+            val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
+            val view = LocalView.current
+            val window = (view.context as Activity).window
+            val statusBarColor = if (isDarkTheme) Color.Black else Color.White
+            SideEffect {
+                window.statusBarColor = statusBarColor.toArgb()
+                WindowInsetsControllerCompat(window, view).isAppearanceLightStatusBars = !isDarkTheme
+            }
+            BChatTheme(darkTheme = isDarkTheme) {
                 val context = LocalContext.current
                 val activity = (context as? Activity)
                 if (TextSecurePreferences.isScreenSecurityEnabled(context))
@@ -133,7 +146,9 @@ class NodeComposeActivity : ComponentActivity() {
                     activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
                 }
                 Surface(
-                    modifier=Modifier.padding(WindowInsets.systemBars.asPaddingValues()),
+                    modifier=Modifier
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(WindowInsets.systemBars.asPaddingValues())
                 ) {
                     Scaffold(
                             containerColor=MaterialTheme.colorScheme.primary,

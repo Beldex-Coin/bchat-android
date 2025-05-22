@@ -98,12 +98,7 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup, android:label">
         <activity
-            android:name=".groups.SecretGroupInfoComposeActivity"
-            android:exported="false"
-            android:label="@string/title_activity_secret_group_info_compose"
-            android:theme="@style/Theme.Bchat.DayNight" />
-        <activity
-            android:name=".contacts.blocked.BlockedContactsActivity"
+            android:name="io.beldex.bchat.contacts.blocked.BlockedContactsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
@@ -583,6 +578,13 @@
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
+        <activity
+            android:name="io.beldex.bchat.groups.SecretGroupInfoComposeActivity"
+            android:exported="true"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
+            />
         <activity
             android:name="io.beldex.bchat.wallet.jetpackcomposeUI.node.NodeComposeActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"

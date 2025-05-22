@@ -129,19 +129,21 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
     Address address = getIntent().getParcelableExtra(ADDRESS_EXTRA);
 
     this.viewPager = ViewUtil.findById(this, R.id.pager);
-    this.toolbar   = ViewUtil.findById(this, R.id.toolbar);
+    this.toolbar   = ViewUtil.findById(this, R.id.overview_toolbar);
     this.tabLayout = ViewUtil.findById(this, R.id.tab_layout);
     this.recipient = Recipient.from(this, address, true);
   }
 
   private void initializeToolbar() {
-    setSupportActionBar(this.toolbar);
+    toolbar.setTitle(R.string.all_media);
+    setSupportActionBar(toolbar);
     ActionBar actionBar = getSupportActionBar();
-    actionBar.setTitle(R.string.all_media);
-    actionBar.setHomeAsUpIndicator(R.drawable.ic_back_arrow);
-    actionBar.setDisplayHomeAsUpEnabled(true);
+    if (actionBar != null) {
+      actionBar.setDisplayHomeAsUpEnabled(true);
+      actionBar.setHomeAsUpIndicator(R.drawable.ic_back_arrow);
+    }
     this.recipient.addListener(recipient -> {
-      Util.runOnMain(() -> actionBar.setTitle(recipient.toShortString()));
+      Util.runOnMain(() -> toolbar.setTitle(recipient.toShortString()));
     });
   }
 

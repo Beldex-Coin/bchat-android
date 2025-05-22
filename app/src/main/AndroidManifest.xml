@@ -419,6 +419,7 @@
         <activity
             android:name="io.beldex.bchat.contacts.SelectContactsActivity"
             android:exported="false"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
         <activity
             android:name="io.beldex.bchat.preferences.PrivacySettingsActivity"
@@ -513,7 +514,7 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="io.beldex.bchat.MediaOverviewActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
@@ -521,7 +522,7 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="io.beldex.bchat.DummyActivity"
             android:allowTaskReparenting="true"

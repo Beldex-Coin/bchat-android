@@ -2,7 +2,9 @@ package io.beldex.bchat.conversation.v2.messages
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
@@ -24,10 +26,13 @@ import io.beldex.bchat.databinding.ViewQuoteBinding
 import io.beldex.bchat.mms.SlideDeck
 import io.beldex.bchat.util.MediaUtil
 import io.beldex.bchat.util.UiModeUtilities
+import io.beldex.bchat.util.getScreenWidth
 import io.beldex.bchat.util.toPx
 import org.json.JSONException
 import org.json.JSONObject
 import javax.inject.Inject
+import kotlin.math.max
+import kotlin.math.min
 
 
 // There's quite some calculation going on here. It's a bit complex so don't make changes
@@ -79,7 +84,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     fun bind(
         authorPublicKey: String, body: String?, attachments: SlideDeck?, thread: Recipient,
         isOutgoingMessage: Boolean, isOpenGroupInvitation: Boolean, isPayment: Boolean,
-        outgoing: Boolean, threadID: Long, isOriginalMissing: Boolean, glide: RequestManager
+        outgoing: Boolean, threadID: Long, isOriginalMissing: Boolean, glide: RequestManager, textWidth: Int = 0
     ) {
         // Author
         val author = contactDb.getContactWithBchatID(authorPublicKey)
@@ -115,6 +120,20 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                     UpdateMessageData.fromJSON(message)?.let {
                         val data = it.kind as UpdateMessageData.Kind.SharedContact
                         binding.contactName.text = data.name
+                        //setting dynamic width to linear layout
+                        val paint = Paint()
+                        paint.textSize = TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_SP,
+                            14f,
+                            context.resources.displayMetrics
+                        )
+                        val nameWidth = paint.measureText(data.name)
+                        val params = binding.contactView.layoutParams
+                        val maxWidth = max(max(350, nameWidth.toInt()), textWidth)
+                        val maxPossibleWidth = min((getScreenWidth() * 0.6).toInt(), maxWidth)
+                        params.width = maxPossibleWidth
+                        binding.contactView.layoutParams = params
+                        /*end*/
                     }
                 }
                 return

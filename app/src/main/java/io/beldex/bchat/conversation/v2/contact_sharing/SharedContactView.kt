@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -48,7 +49,7 @@ fun SharedContactView(
         var address = "aaaaaaaaaaa.........zzzzzzz"
         if (contacts.isNotEmpty()) {
             val address0 = contacts[0].address.serialize()
-            address = address0.substring(0, 12)
+            address = address0.substring(0, 7)
             if (contacts.size > 1) {
                 val lastAddress = contacts.last().address.serialize()
                 address = "$address.........${lastAddress.takeLast(7)}"
@@ -79,7 +80,7 @@ fun SharedContactView(
                     modifier = Modifier
                         .weight(0.8f)
                 ) {
-                    var contactName = "BChat Contact"
+                    var contactName = "No Name"
                     if (contacts.isNotEmpty()) {
                         contactName = if (contacts.size == 1)
                             contacts[0].name
@@ -90,7 +91,9 @@ fun SharedContactView(
                         contactName,
                         style = MaterialTheme.typography.titleMedium.copy(
                             color = titleColor
-                        )
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
 
                     Spacer(modifier = Modifier.height(4.dp))
@@ -124,12 +127,14 @@ fun SharedContactView(
 
                 if (contacts.isNotEmpty()) {
                     val contact = contacts[0]
-                    ProfilePictureComponent(
-                        publicKey = contact.address.serialize(),
-                        displayName = contact.name.toString(),
-                        containerSize = 36.dp,
-                        pictureMode = ProfilePictureMode.SmallPicture
-                    )
+                    key(contact.address.serialize()) {
+                        ProfilePictureComponent(
+                            publicKey = contact.address.serialize(),
+                            displayName = contact.name,
+                            containerSize = 36.dp,
+                            pictureMode = ProfilePictureMode.SmallPicture
+                        )
+                    }
                 } else {
                     Box(
                         modifier = Modifier

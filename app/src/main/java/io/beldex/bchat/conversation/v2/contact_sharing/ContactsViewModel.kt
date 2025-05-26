@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.database.model.ThreadRecord
 import io.beldex.bchat.repository.ConversationRepository
+import io.beldex.bchat.util.SharedPreferenceUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,6 +30,7 @@ data class ContactSharingState(
 class ContactsViewModel @Inject constructor(
     private val threadDb: ThreadDatabase,
     private val repository: ConversationRepository,
+    private val preferenceUtil: SharedPreferenceUtil,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(ContactSharingState())
@@ -36,6 +38,7 @@ class ContactsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
+            val publicKey = preferenceUtil.getPublicKey()
             threadDb.approvedConversationList.use { openCursor ->
                 val reader = threadDb.readerFor(openCursor)
                 val threads = mutableListOf<ThreadRecord>()
@@ -43,7 +46,11 @@ class ContactsViewModel @Inject constructor(
                     threads += reader.next ?: break
                 }
                 withContext(Dispatchers.Main) {
-                    val contacts = threads.filter { records -> records.recipient.isContactRecipient }
+                    val contacts = threads.filter { record ->
+                        record.recipient.isContactRecipient
+                    }.filter { record ->
+                        record.recipient.address.toString() != publicKey
+                    }
                     _state.update {
                         it.copy(
                             contacts = contacts,
@@ -56,7 +63,7 @@ class ContactsViewModel @Inject constructor(
         state.distinctUntilChangedBy { it.searchQuery }
             .debounce(500)
             .onEach { state ->
-                if (state.searchQuery.isNotEmpty() && state.searchQuery.length > 2) {
+                if (state.searchQuery.isNotEmpty()) {
                     _state.update {
                         it.copy(
                             filteredContacts = it.contacts.filter { contact ->  contact.recipient.name?.contains(state.searchQuery, true) ?: false }

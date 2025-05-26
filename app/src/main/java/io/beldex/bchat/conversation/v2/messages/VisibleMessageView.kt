@@ -7,6 +7,7 @@ import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.util.AttributeSet
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
@@ -110,7 +111,17 @@ class VisibleMessageView : LinearLayout {
     // endregion
 
     // region Updating
-    fun bind(message: MessageRecord, previous: MessageRecord?, next: MessageRecord?, glide: RequestManager, searchQuery: String?, contact: Contact?, senderBChatID: String, onAttachmentNeedsDownload: (Long, Long) -> Unit) {
+    fun bind(
+        message: MessageRecord,
+        previous: MessageRecord?,
+        next: MessageRecord?,
+        glide: RequestManager,
+        searchQuery: String?,
+        contact: Contact?,
+        senderBChatID: String,
+        onAttachmentNeedsDownload: (Long, Long) -> Unit,
+        messageSelected: () -> Boolean
+    ) {
         val threadID = message.threadId
         val thread = threadDb.getRecipientForThreadId(threadID) ?: return
         val isGroupThread = thread.isGroupRecipient
@@ -191,10 +202,23 @@ class VisibleMessageView : LinearLayout {
         // Populate content view
         binding.messageContentView.root.indexInAdapter = indexInAdapter
         //added for the long press handling on shared contact
-        binding.messageContentView.root.onLongPress = onLongPress
+        binding.messageContentView.root.onLongPress = {
+            onDown(
+                MotionEvent.obtain(
+                    SystemClock.uptimeMillis(),
+                    SystemClock.uptimeMillis(),
+                    MotionEvent.ACTION_DOWN,
+                    0F,
+                    0F,
+                    0
+                )
+            )
+        }
         binding.messageContentView.root.bind(message, isStartOfMessageCluster, isEndOfMessageCluster, glide, thread, searchQuery, message.isOutgoing || isGroupThread || (contact?.isTrusted ?: false),
-            onAttachmentNeedsDownload, thread.isOpenGroupRecipient)
-        binding.messageContentView.root.delegate = contentViewDelegate
+            onAttachmentNeedsDownload, thread.isOpenGroupRecipient, messageSelected)
+        binding.messageContentView.root.chatWithContact = { ct ->
+            contentViewDelegate?.chatWithContact(ct)
+        }
         onDoubleTap = { binding.messageContentView.root.onContentDoubleTap?.invoke() }
     }
 

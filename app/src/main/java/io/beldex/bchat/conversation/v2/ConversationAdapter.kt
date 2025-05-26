@@ -136,9 +136,6 @@ class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPr
                 val view = viewHolder.view
                 val visibleMessageView = ViewVisibleMessageBinding.bind(viewHolder.view).visibleMessageView
                 val isSelected = selectedItems.contains(message)
-                if (selectedItems.size > 0) {
-                    val msg = selectedItems.toList().get(0)
-                }
                 visibleMessageView.snIsSelected = isSelected
                 visibleMessageView.indexInAdapter = position
                 val senderId = message.individualRecipient.address.serialize()
@@ -151,7 +148,7 @@ class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPr
                 }
                 val contact = contactCache[senderIdHash]
 
-                visibleMessageView.bind(message, messageBefore, getMessageAfter(position, cursor), glide, searchQuery, contact, senderId,onAttachmentNeedsDownload)
+                visibleMessageView.bind(message, messageBefore, getMessageAfter(position, cursor), glide, searchQuery, contact, senderId,onAttachmentNeedsDownload, { selectedItems.size > 0 })
                 if (!message.isDeleted) {
                     visibleMessageView.onPress = { event -> onItemPress(message, viewHolder.adapterPosition, visibleMessageView, event) }
                     visibleMessageView.onSwipeToReply = { onItemSwipeToReply(message, viewHolder.adapterPosition) }

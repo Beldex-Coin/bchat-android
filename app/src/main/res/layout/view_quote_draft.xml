@@ -80,14 +80,15 @@
             <TextView
                 android:fontFamily="@font/open_sans_regular"
                 android:id="@+id/contactName"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/text"
                 android:textSize="@dimen/very_small_font_size"
                 tools:text="Sorry, gotta go fight crime again"
-                android:layout_marginStart="4dp"/>
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"/>
 
         </LinearLayout>
 

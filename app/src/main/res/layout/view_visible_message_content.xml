@@ -91,6 +91,15 @@
                 tools:visibility="gone" />
 
             <!--shared contacts view-->
+<!--            <io.beldex.bchat.conversation.v2.messages.SharedContactView-->
+<!--                android:id="@+id/contactView"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:visibility="gone"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent" />-->
             <androidx.compose.ui.platform.ComposeView
                 android:id="@+id/contactView"
                 android:layout_width="wrap_content"

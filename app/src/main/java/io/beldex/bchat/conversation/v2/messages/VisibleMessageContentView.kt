@@ -3,6 +3,7 @@ package io.beldex.bchat.conversation.v2.messages
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.text.Spannable
@@ -16,6 +17,7 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.URLSpan
 import android.text.util.Linkify
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import android.widget.RelativeLayout
@@ -85,6 +87,7 @@ class VisibleMessageContentView : MaterialCardView {
     var indexInAdapter: Int = -1
     private var data: UpdateMessageData.Kind.OpenGroupInvitation? = null
     var onLongPress: (() -> Unit)? = null
+    var chatWithContact: ((ContactModel) -> Unit)? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -101,7 +104,8 @@ class VisibleMessageContentView : MaterialCardView {
         searchQuery : String?,
         contactIsTrusted : Boolean,
         onAttachmentNeedsDownload : (Long, Long) -> Unit,
-        isSocialGroupRecipient : Boolean
+        isSocialGroupRecipient : Boolean,
+        messageSelected: () -> Boolean
     ) {
         // Background
         val background = getBackground(message.isOutgoing, isStartOfMessageCluster, isEndOfMessageCluster)
@@ -132,7 +136,7 @@ class VisibleMessageContentView : MaterialCardView {
             binding.deletedMessageView.root.isVisible = true
             binding.deletedMessageView.root.bind(
                 message,
-                VisibleMessageContentView.getTextColor(context, message)
+                getTextColor(context, message)
             )
             binding.bodyTextView.isVisible = false
             binding.bodyTextViewLayout.isVisible = false
@@ -183,6 +187,19 @@ class VisibleMessageContentView : MaterialCardView {
             hideBody = true
             showQuoteBody = true
 
+            /*dynamic width calculation of quote message to set the quote content width dynamically*/
+            var textWidth = 0f
+            val text: Spannable?
+            val paint = Paint()
+            paint.textSize = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_SP,
+                14f,
+                context.resources.displayMetrics
+            )
+            text = getBodySpans(context, message, searchQuery)
+            textWidth = paint.measureText(text.toString())
+            /*End*/
+
             binding.quoteView.root.isVisible = true
             val quote = message.quote!!
             val quoteText = if (quote.isOriginalMissing) {
@@ -193,7 +210,7 @@ class VisibleMessageContentView : MaterialCardView {
             binding.quoteView.root.bind(
                 quote.author.toString(), quoteText, quote.attachment, thread,
                 message.isOutgoing, message.isOpenGroupInvitation, message.isPayment,
-                message.isOutgoing, message.threadId, quote.isOriginalMissing, glide
+                message.isOutgoing, message.threadId, quote.isOriginalMissing, glide, textWidth.toInt()
             )
             onContentClick.add { event ->
                 val r = Rect()
@@ -263,7 +280,7 @@ class VisibleMessageContentView : MaterialCardView {
                     binding.untrustedView.root.bind(
                         message,
                         UntrustedAttachmentView.AttachmentType.AUDIO,
-                        VisibleMessageContentView.getTextColor(context, message)
+                        getTextColor(context, message)
                     )
                     onContentClick.add { binding.untrustedView.root.showTrustDialog(message.individualRecipient) }
                 }
@@ -275,7 +292,7 @@ class VisibleMessageContentView : MaterialCardView {
                 if (contactIsTrusted || message.isOutgoing) {
                     binding.documentView.root.bind(
                         message,
-                        VisibleMessageContentView.getTextColor(context, message)
+                        getTextColor(context, message)
                     )
                     //New Line
                     binding.documentView.root.setOnClickListener {
@@ -311,7 +328,7 @@ class VisibleMessageContentView : MaterialCardView {
                     binding.untrustedView.root.bind(
                         message,
                         UntrustedAttachmentView.AttachmentType.DOCUMENT,
-                        VisibleMessageContentView.getTextColor(context, message)
+                        getTextColor(context, message)
                     )
                     onContentClick.add { binding.untrustedView.root.showTrustDialog(message.individualRecipient) }
                 }
@@ -351,7 +368,7 @@ class VisibleMessageContentView : MaterialCardView {
                     binding.untrustedView.root.bind(
                         message,
                         UntrustedAttachmentView.AttachmentType.MEDIA,
-                        VisibleMessageContentView.getTextColor(context, message)
+                        getTextColor(context, message)
                     )
                     onContentClick.add { binding.untrustedView.root.showTrustDialog(message.individualRecipient) }
                 }
@@ -364,7 +381,7 @@ class VisibleMessageContentView : MaterialCardView {
                 this.data = data
                 binding.openGroupInvitationView.root.bind(
                     message,
-                    VisibleMessageContentView.getTextColor(context, message)
+                    getTextColor(context, message)
                 )
                 onContentClick.add { binding.openGroupInvitationView.root.joinOpenGroup() }
             }
@@ -374,7 +391,7 @@ class VisibleMessageContentView : MaterialCardView {
                 showQuoteBody = false
                 binding.paymentCardView.bind(
                     message,
-                    VisibleMessageContentView.getTextColor(context, message)
+                    getTextColor(context, message)
                 )
             }
             message.isSharedContact -> {
@@ -382,10 +399,14 @@ class VisibleMessageContentView : MaterialCardView {
                 showQuoteBody = false
                 val umd = UpdateMessageData.fromJSON(message.body)!!
                 val data = umd.kind as UpdateMessageData.Kind.SharedContact
-//                binding.contactMessageTime.isVisible = message.body.isEmpty()
-//                binding.contactMessageTime.text=
-//                    DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
-
+//                val umd = UpdateMessageData.fromJSON(message.body)!!
+//                hideBody = true
+//                showQuoteBody = false
+//                binding.contactView.bind(
+//                    message,
+//                    glide,
+//                    getTextColor(context, message)
+//                )
                 binding.contactView.setContent {
                     BChatTheme {
                         val contact = ContactModel(
@@ -404,9 +425,6 @@ class VisibleMessageContentView : MaterialCardView {
                             mutableIntStateOf(
                                 backgroundColor
                             )
-                        }
-                        val onContactClicked: (ContactModel) -> Unit = { model ->
-                            delegate?.chatWithContact(model)
                         }
                         SharedContactView(
                             contacts = listOf(
@@ -437,14 +455,19 @@ class VisibleMessageContentView : MaterialCardView {
                                 .width(screenWidth * 0.7f)
                                 .padding(8.dp),
                             columnModifier = Modifier
+                                .padding(bottom = 8.dp)
                                 .pointerInput(Unit) {
                                     detectTapGestures(
                                         onLongPress = {
                                             onLongPress?.let { it1 -> it1() }
                                         },
                                         onTap = {
-                                            onContactClicked(contact)
-                                        }
+                                            if (messageSelected()) {
+                                                onLongPress?.let { it1 -> it1() }
+                                            } else {
+                                                chatWithContact?.let { it1 -> it1(contact) }
+                                            }
+                                        },
                                     )
                                 }
                         )
@@ -520,6 +543,10 @@ class VisibleMessageContentView : MaterialCardView {
         }
     }
 
+    private fun detectTapGestures(onLongPress: () -> Unit?, onTap: () -> Unit?, on: Any) {
+
+    }
+
     private fun ViewVisibleMessageContentBinding.barrierViewsGone(): Boolean =
         listOf<View>(
             albumThumbnailView.root,
@@ -537,45 +564,45 @@ class VisibleMessageContentView : MaterialCardView {
         @DrawableRes val backgroundID = when {
             isSingleMessage -> {
                 if (isOutgoing) {
-                    binding.tailSendView.visibility = View.VISIBLE
-                    binding.tailReceiveView.visibility = View.GONE
+                    binding.tailSendView.visibility = VISIBLE
+                    binding.tailReceiveView.visibility = GONE
                     R.drawable.message_bubble_background_sent_end
                 } else {
-                    binding.tailSendView.visibility = View.GONE
-                    binding.tailReceiveView.visibility = View.VISIBLE
+                    binding.tailSendView.visibility = GONE
+                    binding.tailReceiveView.visibility = VISIBLE
                     R.drawable.message_bubble_background_received_end
                 }
             }
             isStartOfMessageCluster -> {
                 if (isOutgoing) {
-                    binding.tailSendView.visibility = View.GONE
-                    binding.tailReceiveView.visibility = View.GONE
+                    binding.tailSendView.visibility = GONE
+                    binding.tailReceiveView.visibility = GONE
                     R.drawable.message_bubble_background_sent_alone
                 } else {
-                    binding.tailSendView.visibility = View.GONE
-                    binding.tailReceiveView.visibility = View.GONE
+                    binding.tailSendView.visibility = GONE
+                    binding.tailReceiveView.visibility = GONE
                     R.drawable.message_bubble_background_sent_alone
                 }
             }
             isEndOfMessageCluster -> {
                 if (isOutgoing) {
-                    binding.tailSendView.visibility = View.VISIBLE
-                    binding.tailReceiveView.visibility = View.GONE
+                    binding.tailSendView.visibility = VISIBLE
+                    binding.tailReceiveView.visibility = GONE
                     R.drawable.message_bubble_background_sent_end
                 } else {
-                    binding.tailSendView.visibility = View.GONE
-                    binding.tailReceiveView.visibility = View.VISIBLE
+                    binding.tailSendView.visibility = GONE
+                    binding.tailReceiveView.visibility = VISIBLE
                     R.drawable.message_bubble_background_received_end
                 }
             }
             else -> {
                 if (isOutgoing) {
-                    binding.tailSendView.visibility = View.GONE
-                    binding.tailReceiveView.visibility = View.GONE
+                    binding.tailSendView.visibility = GONE
+                    binding.tailReceiveView.visibility = GONE
                     R.drawable.message_bubble_background_sent_alone
                 } else {
-                    binding.tailSendView.visibility = View.GONE
-                    binding.tailReceiveView.visibility = View.GONE
+                    binding.tailSendView.visibility = GONE
+                    binding.tailReceiveView.visibility = GONE
                     R.drawable.message_bubble_background_sent_alone
                 }
             }
@@ -598,7 +625,8 @@ class VisibleMessageContentView : MaterialCardView {
             binding.bodyTextView,
             binding.bodyTextViewLayout,
             binding.quoteBodyTextView,
-            binding.quoteBodyTextViewLayout
+            binding.quoteBodyTextViewLayout,
+            binding.contactView
         ).forEach { view:View -> view.isVisible = false }
     }
 

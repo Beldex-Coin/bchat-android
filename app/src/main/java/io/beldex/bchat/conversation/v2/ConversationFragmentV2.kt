@@ -1997,6 +1997,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun chatWithContact(contact: ContactModel) {
+        //disable popup if audio recording is in progress
+        if (binding.inputBarRecordingView.isTimerRunning)
+            return
+        //disabling popup display on simultaneous touches
+        val dialog = childFragmentManager.findFragmentByTag(ComposeDialogContainer.TAG)
+        if (dialog != null) return
+
         val chatConfirmationDialog = ComposeDialogContainer(
             dialogType = DialogType.ChatWithContactConfirmation,
             onConfirm = {

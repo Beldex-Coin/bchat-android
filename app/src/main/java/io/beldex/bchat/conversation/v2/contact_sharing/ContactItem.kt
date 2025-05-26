@@ -20,10 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,9 +39,6 @@ fun ContactItem(
     modifier: Modifier = Modifier,
     isSharing: Boolean = true
 ) {
-    var checked by remember(isSelected) {
-        mutableStateOf(isSelected)
-    }
     OutlinedCard(
         shape = RoundedCornerShape(50),
         modifier = modifier
@@ -58,8 +51,7 @@ fun ContactItem(
                     8.dp
                 )
                 .noRippleCallback {
-                    checked = !checked
-                    contactChanged(contact, checked)
+                    contactChanged(contact, !isSelected)
                 }
         ) {
             if (contact == null) {
@@ -89,8 +81,10 @@ fun ContactItem(
                     .weight(if (isSharing) 0.8f else 0.7f)
             ) {
                 Text(
-                    contact?.recipient?.name ?: "",
-                    style = MaterialTheme.typography.titleMedium
+                    contact?.recipient?.name ?: "No Name",
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -112,10 +106,9 @@ fun ContactItem(
                         .weight(0.1f)
                 ) {
                     BChatCheckBox(
-                        checked = checked,
+                        checked = isSelected,
                         onCheckedChange = {
-                            checked = !checked
-                            contactChanged(contact, checked)
+                            contactChanged(contact, !isSelected)
                         }
                     )
                 }

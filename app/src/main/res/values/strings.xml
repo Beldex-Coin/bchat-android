@@ -1582,4 +1582,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="send_contact">Send Contact</string>
     <string name="chat_with_contact_confirmation">Do you want to chat with this contact now?</string>
     <string name="no_contact_found">No Contact Found</string>
+    <string name="contact_received">Contact Received: %s</string>
+    <string name="no_name">No Name</string>
 </resources>

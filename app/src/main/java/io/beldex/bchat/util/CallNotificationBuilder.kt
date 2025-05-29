@@ -44,7 +44,7 @@ class CallNotificationBuilder {
             val notificationManager = NotificationManagerCompat.from(context)
             return when {
                 !notificationManager.areNotificationsEnabled() -> false
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+                true -> {
                     notificationManager.notificationChannels.firstOrNull { channel ->
                         channel.importance == NotificationManager.IMPORTANCE_NONE
                     } == null

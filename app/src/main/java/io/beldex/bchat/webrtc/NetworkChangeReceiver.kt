@@ -57,23 +57,15 @@ class NetworkChangeReceiver(private val onNetworkChangedCallback: (Boolean)->Uni
     fun register(context: Context) {
         val intentFilter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
         context.registerReceiver(broadcastDelegate, intentFilter)
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//            val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-//            cm.registerDefaultNetworkCallback(defaultObserver)
-//        } else {
-//
-//        }
+        //val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        //cm.registerDefaultNetworkCallback(defaultObserver)
     }
 
     fun unregister(context: Context) {
         Log.d("Beldex","Unregister called 1")
         context.unregisterReceiver(broadcastDelegate)
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//            val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-//            cm.unregisterNetworkCallback(defaultObserver)
-//        } else {
-//
-//        }
+        //val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        //cm.unregisterNetworkCallback(defaultObserver)
     }
 
 }

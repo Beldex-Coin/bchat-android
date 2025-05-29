@@ -41,8 +41,7 @@ public class NotificationState {
   public @Nullable Uri getRingtone(@NonNull Context context) {
     if (!notifications.isEmpty()) {
       Recipient recipient = notifications.getFirst().getRecipient();
-      return NotificationChannels.supported() ? NotificationChannels.getMessageRingtone(context, recipient)
-              : recipient.resolve().getMessageRingtone();
+      return NotificationChannels.getMessageRingtone(context, recipient);
     }
     return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
   }

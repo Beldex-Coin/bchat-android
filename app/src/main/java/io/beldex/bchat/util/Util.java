@@ -16,11 +16,8 @@
  */
 package io.beldex.bchat.util;
 
-import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Context;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.text.TextUtils;
 
 import io.beldex.bchat.components.ComposeText;

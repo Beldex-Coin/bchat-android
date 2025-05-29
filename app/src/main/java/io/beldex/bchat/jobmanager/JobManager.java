@@ -49,8 +49,7 @@ public class JobManager implements ConstraintObserver.Notifier {
                 configuration.getJobInstantiator(),
                 configuration.getConstraintFactories(),
                 configuration.getDataSerializer(),
-                Build.VERSION.SDK_INT < 26 ? new AlarmManagerScheduler(application)
-                        : new CompositeScheduler(new InAppScheduler(this), new JobSchedulerScheduler(application)),
+                new CompositeScheduler(new InAppScheduler(this), new JobSchedulerScheduler(application)),
                 new Debouncer(500),
                 this::onEmptyQueue);
 
@@ -64,10 +63,6 @@ public class JobManager implements ConstraintObserver.Notifier {
 
             for (ConstraintObserver constraintObserver : configuration.getConstraintObservers()) {
                 constraintObserver.register(this);
-            }
-
-            if (Build.VERSION.SDK_INT < 26) {
-                application.startService(new Intent(application, KeepAliveService.class));
             }
 
             wakeUp();

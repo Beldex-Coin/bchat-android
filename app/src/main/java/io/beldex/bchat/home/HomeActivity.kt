@@ -1,5 +1,6 @@
 package io.beldex.bchat.home
 
+import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ComponentName
@@ -18,6 +19,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -27,6 +29,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -144,6 +147,7 @@ import java.util.Collections
 import java.util.Random
 import javax.inject.Inject
 import io.beldex.bchat.notifications.PushRegistry
+import io.beldex.bchat.permissions.Permissions
 
 
 @AndroidEntryPoint
@@ -828,12 +832,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                     this.startService(intent)
                 }
                 catch (ex: IllegalStateException) {
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        ContextCompat.startForegroundService(this,intent)
-                    }
-                    else {
-                        this.startService(intent)
-                    }
+                    ContextCompat.startForegroundService(this,intent)
                 }
                 bindService(intent, mConnection, BIND_AUTO_CREATE)
                 mIsBound = true
@@ -1245,7 +1244,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         val bcData = BarcodeData.fromString(qrCode)
         return if (bcData != null) {
             popFragmentStack(null)
-            Timber.d("AAA")
             onUriScanned(bcData)
             true
         } else {
@@ -1470,15 +1468,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 intent = Intent(this, WalletService::class.java)
                 intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_STORE)
                 try {
-                    when {
-                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
-                            Handler(Looper.getMainLooper()).post {
-                                ContextCompat.startForegroundService(this, intent)
-                            }
-                        }
-                        else -> {
-                            this.startService(intent)
-                        }
+                    Handler(Looper.getMainLooper()).post {
+                        ContextCompat.startForegroundService(this, intent)
                     }
                 }catch(ex: Exception){
                     Log.d("Exception ",ex.message.toString())
@@ -1509,7 +1500,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
-        permissions: Array<String?>,
+        permissions: Array<String>,
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -1519,8 +1510,17 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             ) {
                 startScanFragment = true
             } else {
-                val msg = getString(R.string.message_camera_not_permitted)
-                Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+                val permissionDialog = ComposeDialogContainer(
+                    dialogType = DialogType.PermissionDialog,
+                    onConfirm = {
+                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                            data = Uri.fromParts("package", packageName, null)
+                        }.let(::startActivity)
+                    },
+                    onCancel = {}
+                )
+                permissionDialog.arguments = bundleOf(ComposeDialogContainer.EXTRA_ARGUMENT_1 to String.format(getString(R.string.permissionsCameraDenied), getString(R.string.app_name)))
+                permissionDialog.show(this.supportFragmentManager, ComposeDialogContainer.TAG)
             }
         }
     }

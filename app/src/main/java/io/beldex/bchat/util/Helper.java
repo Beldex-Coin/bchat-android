@@ -98,16 +98,12 @@ public class Helper {
     static public  final int PERMISSION_REQUEST_BLUETOOTH_STATE = 2;
 
     static public boolean getCameraPermission(Activity context) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            if (context.checkSelfPermission(Manifest.permission.CAMERA)
-                    == PackageManager.PERMISSION_DENIED) {
-                Timber.w("Permission denied for CAMERA - requesting it");
-                String[] permissions = {Manifest.permission.CAMERA};
-                context.requestPermissions(permissions, PERMISSIONS_REQUEST_CAMERA);
-                return false;
-            } else {
-                return true;
-            }
+        if (context.checkSelfPermission(Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED) {
+            Timber.w("Permission denied for CAMERA - requesting it");
+            String[] permissions = {Manifest.permission.CAMERA};
+            context.requestPermissions(permissions, PERMISSIONS_REQUEST_CAMERA);
+            return false;
         } else {
             return true;
         }

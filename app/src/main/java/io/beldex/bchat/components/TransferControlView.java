@@ -8,15 +8,13 @@ import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.annimon.stream.Stream;
 import io.beldex.bchat.events.PartProgressEvent;
 import io.beldex.bchat.mms.Slide;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentTransferProgress;
-import com.pnikosis.materialishprogress.ProgressWheel;
-import io.beldex.bchat.events.PartProgressEvent;
-import io.beldex.bchat.mms.Slide;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -37,7 +35,7 @@ public class TransferControlView extends FrameLayout {
   @Nullable private List<Slide> slides;
   @Nullable private View        current;
 
-  private final ProgressWheel progressWheel;
+  private final ProgressBar progressWheel;
   private final View          downloadDetails;
   private final TextView      downloadDetailsText;
 
@@ -133,9 +131,9 @@ public class TransferControlView extends FrameLayout {
 
   public void showProgressSpinner(float progress) {
     if (progress == 0) {
-      progressWheel.spin();
+      progressWheel.animate();
     } else {
-      progressWheel.setInstantProgress(progress);
+      progressWheel.setProgress((int) progress);
     }
 
     display(progressWheel);
@@ -222,7 +220,7 @@ public class TransferControlView extends FrameLayout {
   public void onEventAsync(final PartProgressEvent event) {
     if (downloadProgress.containsKey(event.attachment)) {
       downloadProgress.put(event.attachment, ((float) event.progress) / event.total);
-      progressWheel.setInstantProgress(calculateProgress(downloadProgress));
+      progressWheel.setProgress((int) calculateProgress(downloadProgress));
     }
   }
 }

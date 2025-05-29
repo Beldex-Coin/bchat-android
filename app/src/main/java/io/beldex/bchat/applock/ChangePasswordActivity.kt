@@ -119,13 +119,8 @@ class ChangePasswordActivity : BaseActionBarActivity() {
             binding.keyboard1!!.visibility = View.VISIBLE
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // API 21
-            binding.oldPasswordEditTxt.showSoftInputOnFocus = false
-            binding.newPasswordEditTxt.showSoftInputOnFocus = false
-        } else { // API 11-20
-            binding.oldPasswordEditTxt.setTextIsSelectable(true)
-            binding.newPasswordEditTxt.setTextIsSelectable(true)
-        }
+        binding.oldPasswordEditTxt.showSoftInputOnFocus = false
+        binding.newPasswordEditTxt.showSoftInputOnFocus = false
 
         //New Line
         binding.oldPasswordEditTxt.addTextChangedListener(object : TextWatcher {

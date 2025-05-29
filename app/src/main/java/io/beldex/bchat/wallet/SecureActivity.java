@@ -43,24 +43,14 @@ public abstract class SecureActivity extends AppCompatActivity {
 
     private Configuration updateConfigurationIfSupported(Configuration config) {
         // Configuration.getLocales is added after 24 and Configuration.locale is deprecated in 24
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            if (!config.getLocales().isEmpty()) {
-                return config;
-            }
-        } else {
-            if (config.locale != null) {
-                return config;
-            }
+        if (!config.getLocales().isEmpty()) {
+            return config;
         }
 
         //Important
        /* Locale locale = LocaleHelper.getPreferredLocale(this);
         if (locale != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                config.setLocale(locale);
-            } else {
-                config.locale = locale;
-            }
+            config.setLocale(locale);
         }*/
         return config;
     }

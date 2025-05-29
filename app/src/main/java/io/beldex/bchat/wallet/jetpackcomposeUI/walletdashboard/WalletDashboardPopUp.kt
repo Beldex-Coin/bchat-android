@@ -26,6 +26,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -322,9 +323,6 @@ fun FromDatePickerView(
             showModeToggle = false,
             title = null,
             headline = null,
-            dateValidator = {
-                it < System.currentTimeMillis()
-            },
             colors = DatePickerDefaults.colors(
                 containerColor = MaterialTheme.appColors.cardBackground,
                 weekdayContentColor = Color(0xff9595Ac),
@@ -343,7 +341,17 @@ fun ToDatePickerView(
     selectedDateValue: (selectedToDate:Long,selectedToDateStr:String) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val datePickerState = rememberDatePickerState(System.currentTimeMillis())
+    val today = System.currentTimeMillis()
+
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = today,
+        selectableDates = object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                // Allow only today and past dates
+                return utcTimeMillis <= today
+            }
+        }
+    )
 
     var selectedToDate by remember {
         mutableLongStateOf(0)
@@ -386,9 +394,6 @@ fun ToDatePickerView(
             showModeToggle = false,
             title = null,
             headline = null,
-            dateValidator = {
-                it>=selectedFromDate && it<System.currentTimeMillis()
-            },
             colors = DatePickerDefaults.colors(
                 containerColor = MaterialTheme.appColors.cardBackground,
                 weekdayContentColor = Color(0xff9595Ac),

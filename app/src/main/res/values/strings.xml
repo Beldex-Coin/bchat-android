@@ -1578,7 +1578,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="gif_option" translatable="false">Gif Option</string>
     <string name="gif_dialog_title" translatable="false">Search GIFs?</string>
     <string name="gif_dialog_message" translatable="false">You will not have full metadata protection when sending GIFs.</string>
-
+    <string name="permissionsCameraDenied">%s needs camera access to take photos and videos, but it has been permanently denied. Tap Settings → Permissions, and turn \"Camera\" on.</string>
     <string name="ReactWithAnyEmojiBottomSheetDialogFragment__this_message" translatable="false">This Message</string>
     <string name="ReactWithAnyEmojiBottomSheetDialogFragment__recently_used" translatable="false">Recently Used</string>
     <string name="ReactWithAnyEmojiBottomSheetDialogFragment__smileys_and_people" translatable="false">Smileys &amp; People</string>

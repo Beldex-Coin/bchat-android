@@ -27,7 +27,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
-import androidx.annotation.RequiresApi
 import androidx.annotation.StyleRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -494,9 +493,7 @@ class SlideToActView @JvmOverloads constructor(
         imageColor = actualImageColor
 
         // This outline provider force removal of shadow
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            outlineProvider = SlideToActOutlineProvider()
-        }
+        outlineProvider = SlideToActOutlineProvider()
         if (mStartBounceAnimation) {
             startBounceAnimation(mBounceAnimationDuration, mBounceAnimationRepeat)
         }
@@ -776,9 +773,7 @@ class SlideToActView @JvmOverloads constructor(
         val areaAnimator = ValueAnimator.ofInt(0, (mAreaWidth - mAreaHeight) / 2)
         areaAnimator.addUpdateListener {
             mActualAreaWidth = it.animatedValue as Int
-            if (Build.VERSION.SDK_INT >= 21) {
-                invalidateOutline()
-            }
+            invalidateOutline()
             invalidate()
         }
 
@@ -873,9 +868,7 @@ class SlideToActView @JvmOverloads constructor(
         mFlagDrawTick = true
         mTickMargin = mIconMargin
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            invalidateOutline()
-        }
+        invalidateOutline()
     }
 
     private fun setCompletedAnimated(state: Boolean) {
@@ -984,9 +977,7 @@ class SlideToActView @JvmOverloads constructor(
             // Now we can hide the tick till the next complete
             mFlagDrawTick = false
             mActualAreaWidth = it.animatedValue as Int
-            if (Build.VERSION.SDK_INT >= 21) {
-                invalidateOutline()
-            }
+            invalidateOutline()
             invalidate()
         }
 
@@ -1083,14 +1074,9 @@ class SlideToActView @JvmOverloads constructor(
             context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(
-                VibrationEffect.createOneShot(bumpVibration, VibrationEffect.DEFAULT_AMPLITUDE)
-            )
-        } else {
-            @Suppress("DEPRECATION")
-            vibrator.vibrate(bumpVibration)
-        }
+        vibrator.vibrate(
+            VibrationEffect.createOneShot(bumpVibration, VibrationEffect.DEFAULT_AMPLITUDE)
+        )
     }
 
     /**
@@ -1182,7 +1168,6 @@ class SlideToActView @JvmOverloads constructor(
      * This outline will suppress the shadow (till the moment when Android will support
      * updatable Outlines).
      */
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private inner class SlideToActOutlineProvider : ViewOutlineProvider() {
 
         override fun getOutline(view: View?, outline: Outline?) {

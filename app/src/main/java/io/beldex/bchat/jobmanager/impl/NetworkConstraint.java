@@ -6,9 +6,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
-import io.beldex.bchat.jobmanager.Constraint;
 import io.beldex.bchat.jobmanager.Constraint;
 
 public class NetworkConstraint implements Constraint {
@@ -34,7 +32,6 @@ public class NetworkConstraint implements Constraint {
     return KEY;
   }
 
-  @RequiresApi(26)
   @Override
   public void applyToJobInfo(@NonNull JobInfo.Builder jobInfoBuilder) {
     jobInfoBuilder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);

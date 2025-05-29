@@ -1,16 +1,11 @@
 package io.beldex.bchat.util
 
 import android.content.res.Resources
-import android.os.Build
 import androidx.annotation.ColorRes
 import kotlin.math.roundToInt
 
 fun Resources.getColorWithID(@ColorRes id: Int, theme: Resources.Theme?): Int {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        getColor(id, theme)
-    } else {
-        @Suppress("DEPRECATION") getColor(id)
-    }
+    return getColor(id, theme)
 }
 
 fun toPx(dp: Int, resources: Resources): Int {

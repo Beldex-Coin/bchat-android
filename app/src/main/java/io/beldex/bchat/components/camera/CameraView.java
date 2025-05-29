@@ -16,7 +16,6 @@
 package io.beldex.bchat.components.camera;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -28,7 +27,6 @@ import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Build.VERSION;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.util.AttributeSet;
@@ -94,7 +92,6 @@ public class CameraView extends ViewGroup {
     addView(surface);
   }
 
-  @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
   public void onResume() {
     if (state != State.PAUSED) return;
     state = State.RESUMED;
@@ -258,33 +255,15 @@ public class CameraView extends ViewGroup {
     return Camera.getNumberOfCameras() > 1;
   }
 
-  public boolean isRearCamera() {
-    return cameraId == CameraInfo.CAMERA_FACING_BACK;
-  }
-
-  public void flipCamera() {
-    if (Camera.getNumberOfCameras() > 1) {
-      cameraId = cameraId == CameraInfo.CAMERA_FACING_BACK
-                 ? CameraInfo.CAMERA_FACING_FRONT
-                 : CameraInfo.CAMERA_FACING_BACK;
-      onPause();
-      onResume();
-      TextSecurePreferences.setDirectCaptureCameraId(getContext(), cameraId);
-    }
-  }
-
-  @TargetApi(14)
   private void onCameraReady(final @NonNull Camera camera) {
     final Parameters parameters = camera.getParameters();
 
-    if (VERSION.SDK_INT >= 14) {
-      parameters.setRecordingHint(true);
-      final List<String> focusModes = parameters.getSupportedFocusModes();
-      if (focusModes.contains(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-        parameters.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-      } else if (focusModes.contains(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
-        parameters.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
-      }
+    parameters.setRecordingHint(true);
+    final List<String> focusModes = parameters.getSupportedFocusModes();
+    if (focusModes.contains(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+      parameters.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+    } else if (focusModes.contains(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
+      parameters.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
     }
 
     displayOrientation = CameraUtils.getCameraDisplayOrientation(getActivity(), getCameraInfo());
@@ -468,7 +447,7 @@ public class CameraView extends ViewGroup {
     }
     final float newWidth  = visibleRect.width()  * scale;
     final float newHeight = visibleRect.height() * scale;
-    final float centerX   = (VERSION.SDK_INT < 14 || isTroublemaker()) ? previewWidth - newWidth / 2 : previewWidth / 2;
+    final float centerX   = (isTroublemaker()) ? previewWidth - newWidth / 2 : previewWidth / 2;
     final float centerY   = previewHeight / 2;
 
     visibleRect.set((int) (centerX - newWidth  / 2),

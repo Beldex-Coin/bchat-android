@@ -9,14 +9,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 import io.beldex.bchat.ApplicationContext;
 import com.beldex.libsignal.utilities.Log;
 
 import java.util.List;
 
-@RequiresApi(26)
 public class JobSchedulerScheduler implements Scheduler {
 
     private static final String TAG = JobSchedulerScheduler.class.getSimpleName();
@@ -32,7 +30,6 @@ public class JobSchedulerScheduler implements Scheduler {
         this.application = application;
     }
 
-    @RequiresApi(26)
     @Override
     public void schedule(long delay, @NonNull List<Constraint> constraints) {
         JobInfo.Builder jobInfoBuilder = new JobInfo.Builder(getNextId(), new ComponentName(application, SystemService.class))
@@ -58,7 +55,6 @@ public class JobSchedulerScheduler implements Scheduler {
         return returnedId;
     }
 
-    @RequiresApi(api = 26)
     public static class SystemService extends JobService {
 
         @Override

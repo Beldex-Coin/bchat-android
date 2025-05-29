@@ -35,28 +35,20 @@ public class DatabaseSecretProvider {
     try {
       DatabaseSecret databaseSecret = new DatabaseSecret(unencryptedSecret);
 
-      if (Build.VERSION.SDK_INT < 23) {
-        return databaseSecret;
-      } else {
-        KeyStoreHelper.SealedData encryptedSecret = KeyStoreHelper.seal(databaseSecret.asBytes());
+      KeyStoreHelper.SealedData encryptedSecret = KeyStoreHelper.seal(databaseSecret.asBytes());
 
-        TextSecurePreferences.setDatabaseEncryptedSecret(context, encryptedSecret.serialize());
-        TextSecurePreferences.setDatabaseUnencryptedSecret(context, null);
+      TextSecurePreferences.setDatabaseEncryptedSecret(context, encryptedSecret.serialize());
+      TextSecurePreferences.setDatabaseUnencryptedSecret(context, null);
 
-        return databaseSecret;
-      }
+      return databaseSecret;
     } catch (IOException e) {
       throw new AssertionError(e);
     }
   }
 
   private @NonNull DatabaseSecret getEncryptedDatabaseSecret(@NonNull String serializedEncryptedSecret) {
-    if (Build.VERSION.SDK_INT < 23) {
-      throw new AssertionError("OS downgrade not supported. KeyStore sealed data exists on platform < M!");
-    } else {
-      KeyStoreHelper.SealedData encryptedSecret = KeyStoreHelper.SealedData.fromString(serializedEncryptedSecret);
-      return new DatabaseSecret(KeyStoreHelper.unseal(encryptedSecret));
-    }
+    KeyStoreHelper.SealedData encryptedSecret = KeyStoreHelper.SealedData.fromString(serializedEncryptedSecret);
+    return new DatabaseSecret(KeyStoreHelper.unseal(encryptedSecret));
   }
 
   private @NonNull DatabaseSecret createAndStoreDatabaseSecret(@NonNull Context context) {
@@ -66,12 +58,8 @@ public class DatabaseSecretProvider {
 
     DatabaseSecret databaseSecret = new DatabaseSecret(secret);
 
-    if (Build.VERSION.SDK_INT >= 23) {
-      KeyStoreHelper.SealedData encryptedSecret = KeyStoreHelper.seal(databaseSecret.asBytes());
-      TextSecurePreferences.setDatabaseEncryptedSecret(context, encryptedSecret.serialize());
-    } else {
-      TextSecurePreferences.setDatabaseUnencryptedSecret(context, databaseSecret.asString());
-    }
+    KeyStoreHelper.SealedData encryptedSecret = KeyStoreHelper.seal(databaseSecret.asBytes());
+    TextSecurePreferences.setDatabaseEncryptedSecret(context, encryptedSecret.serialize());
 
     return databaseSecret;
   }

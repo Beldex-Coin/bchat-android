@@ -149,10 +149,8 @@ public abstract class AppLockActivityDuplicate extends PinActivity implements Ke
      * Init completely the layout, depending of the extra {@link io.beldex.bchat.wallet.utils.pincodeview.managers.AppLock#EXTRA_TYPE}
      */
     private void initLayout(Intent intent) {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1) {
-            //Animate if greater than 2.3.3
-            overridePendingTransition(R.anim.nothing, R.anim.nothing);
-        }
+        //Animate if greater than 2.3.3
+        overridePendingTransition(R.anim.nothing, R.anim.nothing);
 
         Bundle extras = intent.getExtras();
         if (extras != null) {
@@ -203,7 +201,7 @@ public abstract class AppLockActivityDuplicate extends PinActivity implements Ke
     private void initLayoutForFingerprint() {
         mFingerprintImageView = (ImageView) this.findViewById(R.id.pin_code_fingerprint_imageview);
         mFingerprintTextView = (TextView) this.findViewById(R.id.pin_code_fingerprint_textview);
-        if (mType == AppLock.UNLOCK_PIN && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (mType == AppLock.UNLOCK_PIN) {
             mFingerprintManager = (FingerprintManager) getSystemService(Context.FINGERPRINT_SERVICE);
             mFingerprintUiHelper = new FingerprintUiHelper.FingerprintUiHelperBuilder(mFingerprintManager).build(mFingerprintImageView, mFingerprintTextView, this);
             try {
@@ -221,9 +219,6 @@ public abstract class AppLockActivityDuplicate extends PinActivity implements Ke
                 mFingerprintImageView.setVisibility(View.GONE);
                 mFingerprintTextView.setVisibility(View.GONE);
             }
-        } else {
-            mFingerprintImageView.setVisibility(View.GONE);
-            mFingerprintTextView.setVisibility(View.GONE);
         }
     }
 
@@ -293,10 +288,8 @@ public abstract class AppLockActivityDuplicate extends PinActivity implements Ke
                 appLock.setLastActiveMillis();
             }
         }
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1) {
-            //Animate if greater than 2.3.3
-            overridePendingTransition(R.anim.nothing, R.anim.slide_down);
-        }
+        //Animate if greater than 2.3.3
+        overridePendingTransition(R.anim.nothing, R.anim.slide_down);
     }
 
     /**

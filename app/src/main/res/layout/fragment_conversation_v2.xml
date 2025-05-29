@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     android:transitionName="@string/conversation_transition_name"
     tools:context="io.beldex.bchat.conversation.v2.ConversationFragmentV2"
-    android:background="?colorPrimary">
+    android:fitsSystemWindows="true"
+    >
     <LinearLayout
         android:id="@+id/contentView"
         android:layout_width="match_parent"

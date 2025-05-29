@@ -570,7 +570,7 @@ class WalletService : Service() {
         val pendingIntent =
             PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
         val channelId =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) createNotificationChannel() else ""
+            createNotificationChannel()
         val notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle(getString(R.string.service_description))
             .setOngoing(true)
@@ -593,7 +593,6 @@ class WalletService : Service() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel(): String {
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         val channel = NotificationChannel(

@@ -311,10 +311,8 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
      * Init completely the layout, depending of the extra [io.beldex.bchat.wallet.utils.pincodeview.managers.AppLock.EXTRA_TYPE]
      */
     private fun initLayout(intent: Intent) {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1) {
-            //Animate if greater than 2.3.3
-            overridePendingTransition(R.anim.nothing, R.anim.nothing)
-        }
+        //Animate if greater than 2.3.3
+        overridePendingTransition(R.anim.nothing, R.anim.nothing)
 
         val extras = intent.extras
         if (extras != null) {
@@ -365,7 +363,7 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
     private fun initLayoutForFingerprint() {
         mFingerprintImageView = findViewById<View>(R.id.pin_code_fingerprint_imageview) as ImageView
         mFingerprintTextView = findViewById<View>(R.id.pin_code_fingerprint_textview) as TextView
-        if (type == AppLock.UNLOCK_PIN && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (type == AppLock.UNLOCK_PIN) {
             mFingerprintManager = getSystemService(FINGERPRINT_SERVICE) as FingerprintManager
             mFingerprintUiHelper = FingerprintUiHelperBuilder(mFingerprintManager).build(
                 mFingerprintImageView,
@@ -387,9 +385,6 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
                 mFingerprintImageView!!.visibility = View.GONE
                 mFingerprintTextView!!.visibility = View.GONE
             }
-        } else {
-            mFingerprintImageView!!.visibility = View.GONE
-            mFingerprintTextView!!.visibility = View.GONE
         }
     }
 
@@ -452,10 +447,8 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
             val appLock = mLockManager!!.appLock
             appLock?.setLastActiveMillis()
         }
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1) {
-            //Animate if greater than 2.3.3
-            overridePendingTransition(R.anim.nothing, R.anim.slide_down)
-        }
+        //Animate if greater than 2.3.3
+        overridePendingTransition(R.anim.nothing, R.anim.slide_down)
     }
 
     /**

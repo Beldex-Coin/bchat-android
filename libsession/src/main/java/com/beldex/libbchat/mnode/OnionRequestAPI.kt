@@ -463,9 +463,9 @@ object OnionRequestAPI {
         x25519PublicKey: String,
         version: Version = Version.V4
     ): Promise<OnionResponse, Exception> {
-        val url = request.url()
+        val url = request.url
         val payload = generatePayload(request, server, version)
-        val destination = Destination.Server(url.host(), version.value, x25519PublicKey, url.scheme(), url.port())
+        val destination = Destination.Server(url.host, version.value, x25519PublicKey, url.scheme, url.port)
         return sendOnionRequest(destination, payload, version).recover { exception ->
             Log.d("Beldex", "Couldn't reach server: $url due to error: $exception.")
             throw exception
@@ -474,7 +474,7 @@ object OnionRequestAPI {
     private fun generatePayload(request: Request, server: String, version: Version): ByteArray {
         val headers = request.getHeadersForOnionRequest().toMutableMap()
         Log.d("Beldex","sendOnionRequest for social group header $headers")
-        val url = request.url()
+        val url = request.url
         Log.d("Beldex","sendOnionRequest for social group url $url")
         val urlAsString = url.toString()
         Log.d("Beldex","sendOnionRequest for social group urlAsString $urlAsString")
@@ -486,19 +486,19 @@ object OnionRequestAPI {
         }
         Log.d("Beldex","sendOnionRequest for social group end point  $endpoint")
         return if (version == Version.V4) {
-            if (request.body() != null &&
+            if (request.body != null &&
                 headers.keys.find { it.equals("Content-Type", true) } == null) {
                 headers["Content-Type"] = "application/json"
             }
             val requestPayload = mapOf(
                 "endpoint" to endpoint,
-                "method" to request.method(),
+                "method" to request.method,
                 "headers" to headers
             )
             val requestData = JsonUtil.toJson(requestPayload).toByteArray()
             val prefixData = "l${requestData.size}:".toByteArray(Charsets.US_ASCII)
             val suffixData = "e".toByteArray(Charsets.US_ASCII)
-            if (request.body() != null) {
+            if (request.body != null) {
                 val bodyData = body.toString().toByteArray()
                 val bodyLengthData = "${bodyData.size}:".toByteArray(Charsets.US_ASCII)
                 prefixData + requestData + bodyLengthData + bodyData + suffixData
@@ -509,7 +509,7 @@ object OnionRequestAPI {
             val payload = mapOf(
                 "body" to body,
                 "endpoint" to endpoint.removePrefix("/"),
-                "method" to request.method(),
+                "method" to request.method,
                 "headers" to headers
             )
             JsonUtil.toJson(payload).toByteArray()

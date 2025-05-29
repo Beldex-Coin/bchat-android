@@ -7,6 +7,7 @@ import com.beldex.libbchat.messaging.open_groups.OpenGroupV2
 import com.beldex.libbchat.messaging.utilities.Data
 import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libsignal.utilities.Log
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 class BackgroundGroupAddJob(val joinUrl: String): Job {
 
@@ -22,9 +23,9 @@ class BackgroundGroupAddJob(val joinUrl: String): Job {
     override val maxFailureCount: Int = 1
 
     val openGroupId: String? get() {
-        val url = HttpUrl.parse(joinUrl) ?: return null
+        val url = joinUrl.toHttpUrlOrNull() ?: return null
         val server = OpenGroupV2.getServer(joinUrl)?.toString()?.removeSuffix("/") ?: return null
-        val room = url.pathSegments().firstOrNull() ?: return null
+        val room = url.pathSegments.firstOrNull() ?: return null
         return "$server.$room"
     }
 
@@ -38,13 +39,13 @@ class BackgroundGroupAddJob(val joinUrl: String): Job {
                 return
             }
             // get image
-            val url = HttpUrl.parse(joinUrl) ?: throw Exception("Group joinUrl isn't valid")
+            val url = joinUrl.toHttpUrlOrNull() ?: throw Exception("Group joinUrl isn't valid")
             val server = OpenGroupV2.getServer(joinUrl)
             val serverString = server.toString().removeSuffix("/")
             val publicKey = url.queryParameter("public_key") ?: throw Exception("Group public key isn't valid")
-            val room = url.pathSegments().firstOrNull() ?: throw Exception("Group room isn't valid")
+            val room = url.pathSegments.firstOrNull() ?: throw Exception("Group room isn't valid")
             storage.setOpenGroupPublicKey(serverString,publicKey)
-            val bytes = OpenGroupAPIV2.downloadOpenGroupProfilePicture(url.pathSegments().firstOrNull()!!, serverString).get()
+            val bytes = OpenGroupAPIV2.downloadOpenGroupProfilePicture(url.pathSegments.firstOrNull()!!, serverString).get()
             val groupId = GroupUtil.getEncodedOpenGroupID("$server.$room".toByteArray())
             // get info and auth token
             storage.addOpenGroup(joinUrl)

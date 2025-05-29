@@ -509,6 +509,20 @@
           "description":"Minor bug fixes"
         }
       ]
+    },
+    {
+      "title": "2.7.1",
+      "descriptions": [
+        {
+          "description":"UI fixes for latest android versions"
+        },
+        {
+          "description":"Targeted latest version of android"
+        },
+        {
+          "description":"Minor bug fixes"
+        }
+      ]
     }
   ]
 }

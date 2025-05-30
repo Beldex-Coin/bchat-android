@@ -79,6 +79,19 @@ object UpdateMessageBuilder {
         return message
     }
 
+    fun buildScreenShotMessage(
+        context : Context, senderId : String?=null, isOutgoing : Boolean=false
+    ) : String {
+        val storage=MessagingModuleConfiguration.shared.storage
+        val senderName : String=if (!isOutgoing) {
+            storage.getContactWithBchatID(senderId!!)?.displayName(Contact.ContactContext.REGULAR)
+                ?: truncateIdForDisplay(senderId)
+        } else {
+            context.getString(R.string.MessageRecord_you)
+        }
+        return context.getString(R.string.MessageRecord_s_took_a_screenshot, senderName)
+    }
+
     fun buildExpirationTimerMessage(context: Context, duration: Long, senderId: String? = null, isOutgoing: Boolean = false): String {
         if (!isOutgoing && senderId == null) return ""
         val storage = MessagingModuleConfiguration.shared.storage

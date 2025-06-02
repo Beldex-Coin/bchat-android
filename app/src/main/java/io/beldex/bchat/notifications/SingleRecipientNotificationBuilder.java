@@ -13,7 +13,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.text.SpannableStringBuilder;
 
 import androidx.annotation.NonNull;
@@ -32,21 +31,14 @@ import io.beldex.bchat.mms.SlideDeck;
 import io.beldex.bchat.util.AvatarPlaceholderGenerator;
 import io.beldex.bchat.util.BitmapUtil;
 
-import com.beldex.libbchat.avatars.ContactColors;
 import com.beldex.libbchat.avatars.ContactPhoto;
-import com.beldex.libbchat.avatars.ResourceContactPhoto;
 import com.beldex.libbchat.messaging.contacts.Contact;
 import com.beldex.libbchat.utilities.NotificationPrivacyPreference;
-import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libbchat.utilities.Util;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libsignal.utilities.Log;
-import io.beldex.bchat.database.BchatContactDatabase;
-import io.beldex.bchat.dependencies.DatabaseComponent;
 
 import com.bumptech.glide.Glide;
-
-import io.beldex.bchat.util.AvatarPlaceholderGenerator;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -74,10 +66,6 @@ public class SingleRecipientNotificationBuilder extends AbstractNotificationBuil
     setSmallIcon(R.drawable.ic_notification_);
     setColor(context.getResources().getColor(R.color.textsecure_primary));
     setCategory(NotificationCompat.CATEGORY_MESSAGE);
-
-    if (!NotificationChannels.supported()) {
-      setPriority(TextSecurePreferences.getNotificationPriority(context));
-    }
   }
 
   public void setThread(@NonNull Recipient recipient) {
@@ -184,13 +172,11 @@ public class SingleRecipientNotificationBuilder extends AbstractNotificationBuil
 
       Action replyAction = new Action(R.drawable.ic_reply_white_36dp, actionName, quickReplyIntent);
 
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        replyAction = new Action.Builder(R.drawable.ic_reply_white_36dp,
-                actionName,
-                wearableReplyIntent)
-                .addRemoteInput(new RemoteInput.Builder(DefaultMessageNotifier.EXTRA_REMOTE_REPLY).setLabel(label).build())
-                .build();
-      }
+      replyAction = new Action.Builder(R.drawable.ic_reply_white_36dp,
+              actionName,
+              wearableReplyIntent)
+              .addRemoteInput(new RemoteInput.Builder(DefaultMessageNotifier.EXTRA_REMOTE_REPLY).setLabel(label).build())
+              .build();
 
       Action wearableReplyAction = new Action.Builder(R.drawable.ic_reply,
               actionName,

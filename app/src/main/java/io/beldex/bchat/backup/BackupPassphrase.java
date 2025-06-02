@@ -20,7 +20,7 @@ public class BackupPassphrase {
         String passphrase          = TextSecurePreferences.getBackupPassphrase(context);
         String encryptedPassphrase = TextSecurePreferences.getEncryptedBackupPassphrase(context);
 
-        if (Build.VERSION.SDK_INT < 23 || (passphrase == null && encryptedPassphrase == null)) {
+        if (passphrase == null && encryptedPassphrase == null) {
             return passphrase;
         }
 
@@ -35,7 +35,7 @@ public class BackupPassphrase {
     }
 
     public static void set(@NonNull Context context, @Nullable String passphrase) {
-        if (passphrase == null || Build.VERSION.SDK_INT < 23) {
+        if (passphrase == null) {
             TextSecurePreferences.setBackupPassphrase(context, passphrase);
             TextSecurePreferences.setEncryptedBackupPassphrase(context, null);
         } else {

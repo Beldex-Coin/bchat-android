@@ -2,7 +2,9 @@ package io.beldex.bchat.conversation.v2.menus
 
 import android.content.Context
 import android.view.ActionMode
+import android.view.ContextThemeWrapper
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import io.beldex.bchat.R
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
@@ -11,15 +13,29 @@ import io.beldex.bchat.conversation.v2.ConversationAdapter
 import io.beldex.bchat.database.model.MediaMmsMessageRecord
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.dependencies.DatabaseComponent
+import androidx.core.view.size
+import androidx.core.view.get
+import com.beldex.libbchat.utilities.getColorFromAttr
 
 class ConversationActionModeCallback(private val adapter: ConversationAdapter, private val threadID: Long,
     private val context: Context) : ActionMode.Callback {
     var delegate: ConversationActionModeCallbackDelegate? = null
 
     override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-        val inflater = mode.menuInflater
+        val themedContext = ContextThemeWrapper(context, context.theme)
+        val inflater = MenuInflater(themedContext)
         inflater.inflate(R.menu.menu_conversation_item_action, menu)
         updateActionModeMenu(menu)
+
+
+        // tint icons manually as it seems the xml color is ignored, in spite of the context theme wrapper
+        val tintColor = context.getColorFromAttr(android.R.attr.textColorPrimary)
+
+        for (i in 0 until menu.size) {
+            val menuItem = menu[i]
+            menuItem.icon?.setTint(tintColor)
+        }
+
         return true
     }
 

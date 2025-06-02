@@ -129,13 +129,8 @@ class CreatePasswordActivity : BaseActionBarActivity() {
             binding.keyboard!!.visibility = View.GONE
             binding.keyboard1!!.visibility = View.VISIBLE
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // API 21
-            binding.enterPinEditTxt.showSoftInputOnFocus = false
-            binding.reEnterPinEditTxt.showSoftInputOnFocus = false
-        } else { // API 11-20
-            binding.enterPinEditTxt.setTextIsSelectable(true)
-            binding.reEnterPinEditTxt.setTextIsSelectable(true)
-        }
+        binding.enterPinEditTxt.showSoftInputOnFocus = false
+        binding.reEnterPinEditTxt.showSoftInputOnFocus = false
 
         //New Line
         binding.enterPinEditTxt.addTextChangedListener(object : TextWatcher {

@@ -4,7 +4,6 @@ import android.animation.PointFEvaluator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.PointF
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.view.Gravity
@@ -166,11 +165,7 @@ class InputBarButton : RelativeLayout {
 
     private fun onDown(event: MotionEvent) {
         expand()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK)
-        } else {
-            performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-        }
+        performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK)
         longPressCallback?.let { gestureHandler.removeCallbacks(it) }
         val newLongPressCallback = Runnable { onLongPress?.invoke() }
         this.longPressCallback = newLongPressCallback

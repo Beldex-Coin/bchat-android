@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-sdk tools:overrideLibrary="com.astuetz.pagerslidingtabstrip,pl.tajchert.waitingdots,com.h6ah4i.android.multiselectlistpreferencecompat,android.support.v13,com.davemorrissey.labs.subscaleview,com.tomergoldst.tooltips,com.klinker.android.send_message,com.takisoft.colorpicker,android.support.v14.preference" />
+    <uses-sdk tools:overrideLibrary="android.support.v13,com.davemorrissey.labs.subscaleview,com.tomergoldst.tooltips,com.klinker.android.send_message,android.support.v14.preference" />
 
     <permission
         android:name="${applicationId}.ACCESS_BCHAT_SECRETS"
@@ -98,12 +98,7 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup, android:label">
         <activity
-            android:name=".groups.SecretGroupInfoComposeActivity"
-            android:exported="false"
-            android:label="@string/title_activity_secret_group_info_compose"
-            android:theme="@style/Theme.Bchat.DayNight" />
-        <activity
-            android:name=".contacts.blocked.BlockedContactsActivity"
+            android:name="io.beldex.bchat.contacts.blocked.BlockedContactsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
@@ -419,6 +414,7 @@
         <activity
             android:name="io.beldex.bchat.contacts.SelectContactsActivity"
             android:exported="false"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
         <activity
             android:name="io.beldex.bchat.preferences.PrivacySettingsActivity"
@@ -513,7 +509,7 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="io.beldex.bchat.MediaOverviewActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
@@ -521,7 +517,7 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="io.beldex.bchat.DummyActivity"
             android:allowTaskReparenting="true"
@@ -539,11 +535,6 @@
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
             android:theme="@style/Theme.Bchat.ForceDark" />
-        <activity
-            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat" />
         <activity
             android:name="io.beldex.bchat.ShortcutLauncherActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
@@ -587,6 +578,13 @@
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
+        <activity
+            android:name="io.beldex.bchat.groups.SecretGroupInfoComposeActivity"
+            android:exported="true"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
+            />
         <activity
             android:name="io.beldex.bchat.wallet.jetpackcomposeUI.node.NodeComposeActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
@@ -820,12 +818,6 @@
             android:exported="false"
             android:foregroundServiceType="specialUse"
             android:label="BChat Wallet Service" />
-        <receiver android:name="io.beldex.bchat.wallet.ui.WalletReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="io.beldex.WALLET_ACTION"/>
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

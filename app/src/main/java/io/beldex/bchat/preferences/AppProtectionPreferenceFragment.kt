@@ -87,25 +87,15 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
                 .setTitle(R.string.CallNotificationBuilder_system_notification_title)
                 .setMessage(R.string.CallNotificationBuilder_system_notification_message)
                 .setPositiveButton(R.string.activity_notification_settings_title) { d, w ->
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        val settingsIntent =
-                            Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
-                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                .putExtra(
-                                    Settings.EXTRA_APP_PACKAGE,
-                                    BuildConfig.APPLICATION_ID
-                                )
-                        if (IntentUtils.isResolvable(requireContext(), settingsIntent)) {
-                            startActivity(settingsIntent)
-                        }
-                    } else {
-                        val settingsIntent =
-                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                .setData(Uri.parse("package:" + BuildConfig.APPLICATION_ID))
-                        if (IntentUtils.isResolvable(requireContext(), settingsIntent)) {
-                            startActivity(settingsIntent)
-                        }
+                    val settingsIntent =
+                        Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            .putExtra(
+                                Settings.EXTRA_APP_PACKAGE,
+                                BuildConfig.APPLICATION_ID
+                            )
+                    if (IntentUtils.isResolvable(requireContext(), settingsIntent)) {
+                        startActivity(settingsIntent)
                     }
                     d.dismiss()
                 }

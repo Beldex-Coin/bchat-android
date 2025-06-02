@@ -25,7 +25,8 @@ enum class DialogType {
     WalletSyncing,
     DeleteChat,
     LeaveGroup,
-    NotificationSettings
+    NotificationSettings,
+    Settings
 }
 
 class ComposeDialogContainer(
@@ -67,12 +68,13 @@ class ComposeDialogContainer(
                             darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
                         ) {
                             PermissionSettingDialog(
-                                message = "",
+                                message = argument1!!,
                                 onDismissRequest = {
-
+                                    dismiss()
                                 },
                                 gotoSettings = {
-
+                                    dismiss()
+                                    onConfirm()
                                 }
                             )
                         }
@@ -188,6 +190,8 @@ class ComposeDialogContainer(
                             )
                         }
                     }
+
+                    else -> {}
                 }
             }
         }

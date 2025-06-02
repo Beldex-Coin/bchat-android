@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -16,8 +15,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-
 import com.annimon.stream.Stream;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -87,7 +84,6 @@ public class QuoteView extends FrameLayout implements RecipientModifiedListener 
     initialize(attrs);
   }
 
-  @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
   public QuoteView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
     super(context, attrs, defStyleAttr, defStyleRes);
     initialize(attrs);

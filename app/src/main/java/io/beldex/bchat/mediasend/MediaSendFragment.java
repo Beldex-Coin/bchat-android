@@ -192,7 +192,6 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
     mediaRail.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
     mediaRail.setAdapter(mediaRailAdapter);
 
-    hud.getRootView().getViewTreeObserver().addOnGlobalLayoutListener(this);
     hud.addOnKeyboardShownListener(this);
     hud.addOnKeyboardHiddenListener(this);
 
@@ -243,8 +242,6 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
 
     fragmentPagerAdapter.restoreState(viewModel.getDrawState());
     viewModel.onImageEditorStarted();
-
-    requireActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
   }
 

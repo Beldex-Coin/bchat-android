@@ -32,9 +32,9 @@ object MentionsManager {
         candidates.sortedBy { it.displayName }
         if (query.length >= 2) {
             // Filter out any non-matching candidates
-            candidates = candidates.filter { it.displayName.toLowerCase().contains(query.toLowerCase()) }
+            candidates = candidates.filter { it.displayName.lowercase().contains(query.lowercase()) }
             // Sort based on where in the candidate the query occurs
-            candidates.sortedBy { it.displayName.toLowerCase().indexOf(query.toLowerCase()) }
+            candidates.sortedBy { it.displayName.lowercase().indexOf(query.lowercase()) }
         }
         // Return
         return candidates

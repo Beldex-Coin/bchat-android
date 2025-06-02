@@ -230,7 +230,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     SearchBottomBar.EventListener, LoaderManager.LoaderCallbacks<Cursor>,
     ConversationMenuHelper.ConversationMenuListener, OnBackPressedListener,SendConfirm, ConversationActionDialog.ConversationActionDialogListener,
     WalletDelegates by WalletDelegatesImpl(), VisibleMessageViewDelegate,
-    ConversationReactionOverlay.OnReactionSelectedListener, ReactWithAnyEmojiDialogFragment.Callback, ReactionsDialogFragment.Callback,SecretGroupInfoComposeActivity.socialGroupInfoInterface {
+    ConversationReactionOverlay.OnReactionSelectedListener, ReactWithAnyEmojiDialogFragment.Callback, ReactionsDialogFragment.Callback,SecretGroupInfoComposeActivity.SocialGroupInfoInterface {
 
     private var param2: String? = null
 
@@ -861,11 +861,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
-    private fun callSecretGroupInfo(recipient : Recipient, listenerCallback : Listener?) {
+    private fun callSecretGroupInfo(recipient: Recipient) {
         SecretGroupInfoComposeActivity.setOnActionSelectedListener(this)
-        val intent=Intent(requireContext(), SecretGroupInfoComposeActivity::class.java)
-        val groupID: String = recipient.address.toGroupString()
-        intent.putExtra(SecretGroupInfoComposeActivity.secretGroupID, groupID)
+        val intent = Intent(requireContext(), SecretGroupInfoComposeActivity::class.java).apply {
+            putExtra(SecretGroupInfoComposeActivity.secretGroupID, recipient.address.toGroupString())
+        }
         startActivity(intent)
     }
 
@@ -1720,33 +1720,16 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         checkIfFragmentAttached {
             if (TextSecurePreferences.isPayAsYouChat(requireContext())) {
                 when {
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> {
-                        when {
-                            valueOfWallet != "100%" -> {
-                                val color = ResourcesCompat.getColor(requireContext().resources, R.color.text_old_green, requireContext().theme)
-                                val valueOfWalletText = SpannableStringBuilder(valueOfWallet)
-                                valueOfWalletText.setSpan(ForegroundColorSpan(color), valueOfWallet.indexOf(valueOfWallet) , valueOfWallet.indexOf(valueOfWallet) + valueOfWallet.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                                binding.tooltip.text = Html.fromHtml("<p>Wallet Synchronizing : <b> <font color='#00BD40'>$valueOfWallet</font> </b> </p>", Html.FROM_HTML_MODE_COMPACT)
-                                tooltipStyle()
-                            }
-                            else -> {
-                                binding.tooltip.text = Html.fromHtml("<p> <b>Balance : <font color='#00BD40'> $valueOfBalance </font> BDX</b> </p> <br /> <p><b>Unlocked Balance : <font color='#00BD40'> $valueOfUnLockedBalance </font> </b> BDX</p> <br /> <p>Wallet : <font color='#00BD40'> $valueOfWallet </font> </p>", Html.FROM_HTML_MODE_COMPACT)
-                                tooltipStyle()
-                            }
-                        }
+                    valueOfWallet != "100%" -> {
+                        val color = ResourcesCompat.getColor(requireContext().resources, R.color.text_old_green, requireContext().theme)
+                        val valueOfWalletText = SpannableStringBuilder(valueOfWallet)
+                        valueOfWalletText.setSpan(ForegroundColorSpan(color), valueOfWallet.indexOf(valueOfWallet) , valueOfWallet.indexOf(valueOfWallet) + valueOfWallet.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        binding.tooltip.text = Html.fromHtml("<p>Wallet Synchronizing : <b> <font color='#00BD40'>$valueOfWallet</font> </b> </p>", Html.FROM_HTML_MODE_COMPACT)
+                        tooltipStyle()
                     }
                     else -> {
-                        when {
-                            valueOfWallet != "100%" -> {
-                                binding.tooltip.text = Html.fromHtml("<p> Wallet Synchronizing:  <b> <font color='#00BD40'> $valueOfWallet </font> </b> </p>")
-                                tooltipStyle()
-                            }
-                            else -> {
-                                binding.tooltip.text = Html.fromHtml("<p> <b>Balance : <font color='#00BD40'> $valueOfBalance </font> BDX</b> </p> <br /> <p><b>Unlocked Balance : <font color='#00BD40'> $valueOfUnLockedBalance </font> </b> BDX</p> <br /> <p>Wallet : <font color='#00BD40'> $valueOfWallet </font> </p>")
-                                tooltipStyle()
-                            }
-                        }
-
+                        binding.tooltip.text = Html.fromHtml("<p> <b>Balance : <font color='#00BD40'> $valueOfBalance </font> BDX</b> </p> <br /> <p><b>Unlocked Balance : <font color='#00BD40'> $valueOfUnLockedBalance </font> </b> BDX</p> <br /> <p>Wallet : <font color='#00BD40'> $valueOfWallet </font> </p>", Html.FROM_HTML_MODE_COMPACT)
+                        tooltipStyle()
                     }
                 }
             } else {
@@ -1789,11 +1772,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun fromHtml(source: String?): Spanned? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Html.fromHtml(source, Html.FROM_HTML_MODE_LEGACY)
-        } else {
-            Html.fromHtml(source)
-        }
+        return Html.fromHtml(source, Html.FROM_HTML_MODE_LEGACY)
     }
 
     override fun commitInputContent(contentUri: Uri) {
@@ -2457,7 +2436,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         {
             cancelVoiceMessage()
             if (recipient.isClosedGroupRecipient) {
-                callSecretGroupInfo(recipient,listenerCallback)
+                callSecretGroupInfo(recipient)
             } else {
                 hideAttachmentContainer()
                 ConversationMenuHelper.showAllMedia(recipient, listenerCallback)

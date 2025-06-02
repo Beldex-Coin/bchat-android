@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/transparent"
+    android:fitsSystemWindows="true"
     tools:context="io.beldex.bchat.groups.EditClosedGroupActivity">
 
     <com.google.android.material.card.MaterialCardView

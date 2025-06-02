@@ -766,7 +766,7 @@ interface TextSecurePreferences {
         }
 
         fun setLocalNumber(context: Context, localNumber: String) {
-            setStringPreference(context, LOCAL_NUMBER_PREF, localNumber.toLowerCase())
+            setStringPreference(context, LOCAL_NUMBER_PREF, localNumber.lowercase())
         }
         @JvmStatic
         fun getMyPassword(context: Context): String? {
@@ -1775,7 +1775,7 @@ class AppTextSecurePreferences @Inject constructor(
     }
 
     override fun setLocalNumber(localNumber: String) {
-        setStringPreference(TextSecurePreferences.LOCAL_NUMBER_PREF, localNumber.toLowerCase())
+        setStringPreference(TextSecurePreferences.LOCAL_NUMBER_PREF, localNumber.lowercase())
     }
 
     override fun setMyPassword(myPassword: String) {

@@ -352,10 +352,6 @@ public class AppLockImpl<T extends AppLockActivity> extends AppLock implements L
             TextSecurePreferences.setChangePin(activity.getApplicationContext(),false);
         }
 
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1) {
-            return;
-        }
-
         setLastActiveMillis();
     }
 }

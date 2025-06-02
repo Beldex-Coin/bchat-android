@@ -13,7 +13,7 @@ import java.util.regex.Pattern
 import kotlin.collections.HashSet
 
 class Address private constructor(address: String) : Parcelable, Comparable<Address?> {
-    private val address: String = address.toLowerCase()
+    private val address: String = address.lowercase()
 
     constructor(`in`: Parcel) : this(`in`.readString()!!) {}
 

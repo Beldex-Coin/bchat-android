@@ -18,10 +18,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -36,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.Box
 import androidx.fragment.app.DialogFragment
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.appColors
@@ -137,25 +137,30 @@ class RescanDialog(val contextHomeActivity: HomeActivity, private val daemonBloc
 
         return ComposeView(requireContext()).apply {
             setContent {
-                BChatTheme (
+                BChatTheme(
                     //darkTheme = false
-                ){
-                    RescanScreenContainer(title = stringResource(R.string.menu_rescan),
-                        onBackClick = {
-                            keyboardDismiss(requireView())
-                            dismiss()
-                        }){
-                        RescanScreen(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp),
-                            daemonBlockChainHeight,
-                            dates,
-                            onDismissDialog = {restoreFromHeight->
-                                contextHomeActivity.onWalletRescan(restoreFromHeight)
+                ) {
+                    Box(
+                        modifier=Modifier
+                            .fillMaxSize()
+                            .statusBarsPadding()
+                    ) {
+                        RescanScreenContainer(
+                            title=stringResource(R.string.menu_rescan), onBackClick={
+                                keyboardDismiss(requireView())
                                 dismiss()
-                            }
-                        )
+                            }) {
+                            RescanScreen(
+                                modifier=Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp),
+                                daemonBlockChainHeight=daemonBlockChainHeight,
+                                dates=dates,
+                                onDismissDialog={ restoreFromHeight ->
+                                    contextHomeActivity.onWalletRescan(restoreFromHeight)
+                                    dismiss()
+                                })
+                        }
                     }
                 }
             }
@@ -185,13 +190,14 @@ private fun RescanScreenContainer(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.primary)
+            .background(color=MaterialTheme.colorScheme.primary)
+            .statusBarsPadding()
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = MaterialTheme.colorScheme.primary)
+                .background(color=MaterialTheme.colorScheme.primary)
                 .padding(16.dp)
         ) {
             Icon(

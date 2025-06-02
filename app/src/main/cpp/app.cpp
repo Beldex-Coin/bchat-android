@@ -130,7 +130,7 @@ struct MyWalletListener : Wallet::WalletListener {
     void moneySpent(const std::string &txId, uint64_t amount) {
         std::lock_guard<std::mutex> lock(_listenerMutex);
         if (jlistener == nullptr) return;
-        LOGD("moneySpent %", amount);
+        LOGD("moneySpent %lu", amount);
     }
 
     /**
@@ -141,7 +141,7 @@ struct MyWalletListener : Wallet::WalletListener {
     void moneyReceived(const std::string &txId, uint64_t amount) {
         std::lock_guard<std::mutex> lock(_listenerMutex);
         if (jlistener == nullptr) return;
-        LOGD("moneyReceived %",amount);
+        LOGD("moneyReceived %lu",amount);
     }
 
     /**
@@ -152,7 +152,7 @@ struct MyWalletListener : Wallet::WalletListener {
     void unconfirmedMoneyReceived(const std::string &txId, uint64_t amount) {
         std::lock_guard<std::mutex> lock(_listenerMutex);
         if (jlistener == nullptr) return;
-        LOGD("unconfirmedMoneyReceived %", amount);
+        LOGD("unconfirmedMoneyReceived %lu", amount);
     }
 
     /**
@@ -1345,7 +1345,7 @@ JNIEXPORT jlong JNICALL
 Java_io_beldex_bchat_model_PendingTransaction_getAmount(JNIEnv *env, jobject thiz) {
     LOGD("before Java_io_beldex_bchat_model_PendingTransaction_getAmount()");
     auto *tx = getHandle<Wallet::PendingTransaction>(env, thiz);
-    LOGD("PendingTransaction pointer:%d",reinterpret_cast<jlong>(tx));
+    LOGD("PendingTransaction pointer:%ld",reinterpret_cast<jlong>(tx));
     if(!tx){LOGE("No PendingTransaction");}
     LOGD("PendingTransaction getstatus-doublecheck");
     auto stat = tx->status();

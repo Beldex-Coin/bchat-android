@@ -8,29 +8,13 @@ apply plugin: 'kotlinx-serialization'
 apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'com.google.firebase.crashlytics'
 apply from: 'buildGradle/dependencies.gradle'
-
-dependencies {
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
-    implementation 'androidx.activity:activity-compose:1.5.1'
-    implementation platform('androidx.compose:compose-bom:2022.10.00')
-    implementation 'androidx.compose.ui:ui'
-    implementation 'androidx.compose.ui:ui-graphics'
-    implementation 'androidx.compose.ui:ui-tooling-preview'
-    implementation 'androidx.compose.material3:material3'
-    implementation "androidx.compose.material:material:1.7.6"
-    implementation 'androidx.compose.ui:ui-text-android:1.6.6'
-    implementation platform('androidx.compose:compose-bom:2023.08.00')
-    androidTestImplementation platform('androidx.compose:compose-bom:2022.10.00')
-    androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
-    androidTestImplementation platform('androidx.compose:compose-bom:2023.08.00')
-    debugImplementation 'androidx.compose.ui:ui-test-manifest'
-}
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 configurations.all {
     exclude module: "commons-logging"
 }
-def canonicalVersionCode = 80
-def canonicalVersionName = "2.7.0"
+def canonicalVersionCode = 81
+def canonicalVersionName = "2.7.1"
 
 def postFixSize = 10
 def abiPostFix = ['armeabi-v7a' : 1,
@@ -42,12 +26,12 @@ android {
     useLibrary 'org.apache.http.legacy'
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
         freeCompilerArgs += [
                 "-Xjvm-default=all",
         ]
@@ -55,6 +39,9 @@ android {
     packagingOptions {
         resources {
             excludes += ['LICENSE.txt', 'LICENSE', 'NOTICE', 'asm-license.txt', 'META-INF/LICENSE', 'META-INF/NOTICE', 'META-INF/proguard/androidx-annotations.pro']
+            jniLibs {
+                useLegacyPackaging = true
+            }
         }
     }
 
@@ -75,8 +62,6 @@ android {
         minSdkVersion androidMinimumSdkVersion
         compileSdk androidCompileSdkVersion
         targetSdkVersion androidTargetSdkVersion
-        compileSdkVersion androidCompileSdkVersion
-        buildToolsVersion '34.0.0'
 
         multiDexEnabled = true
 
@@ -216,17 +201,16 @@ android {
     externalNativeBuild {
         cmake {
             path file('CMakeLists.txt')
-            version '3.10.2'
+            version '3.22.1'
         }
     }
-    ndkVersion '21.4.7075529'
+    ndkVersion '27.0.12077973'
     lint {
         abortOnError true
         baseline file('lint-baseline.xml')
     }
     namespace 'io.beldex.bchat'
-    buildToolsVersion '34.0.0'
-    compileSdk 34
+    compileSdk androidCompileSdkVersion
 }
 
 static def getLastCommitTimestamp() {

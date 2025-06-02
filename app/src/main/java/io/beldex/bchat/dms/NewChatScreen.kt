@@ -1,13 +1,13 @@
 package io.beldex.bchat.dms
 
 import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -124,7 +124,7 @@ fun NewChatScreen(
     val privateChatScanQRCodeActivityResultLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
+        if (result.resultCode == RESULT_OK) {
             val hexEncodedPublicKey = result.data!!.getStringExtra(ConversationFragmentV2.HEX_ENCODED_PUBLIC_KEY)
             val bnsName = result.data!!.getStringExtra(ConversationFragmentV2.BNS_NAME)
             if(hexEncodedPublicKey!=null) {
@@ -183,7 +183,7 @@ fun NewChatScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = MaterialTheme.colorScheme.primary),
+                    .background(color=MaterialTheme.colorScheme.primary),
                 actions = {
                     IconButton(onClick = {
                         if(showSearchOption){
@@ -228,11 +228,11 @@ fun NewChatScreen(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 7.dp, end = 7.dp)
+                            .padding(start=7.dp, end=7.dp)
                             .border(
-                                width = 1.dp,
-                                color = MaterialTheme.appColors.textFiledBorderColor,
-                                shape = RoundedCornerShape(36.dp)
+                                width=1.dp,
+                                color=MaterialTheme.appColors.textFiledBorderColor,
+                                shape=RoundedCornerShape(36.dp)
                             ),
                         shape = RoundedCornerShape(36.dp),
                         trailingIcon = {
@@ -240,9 +240,11 @@ fun NewChatScreen(
                                 imageVector = Icons.Default.Clear,
                                 contentDescription = "clear search text",
                                 tint = MaterialTheme.appColors.iconTint,
-                                modifier = Modifier.clickable {
+                                modifier=Modifier.clickable {
                                     if (searchQuery.isNotEmpty()) {
                                         onEvent("")
+                                    } else {
+                                        showSearchOption=false
                                     }
                                 }
                             )
@@ -333,7 +335,7 @@ fun NewChatScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(
-                            horizontal = 16.dp
+                            horizontal=16.dp
                         )
                         .weight(1f)
                 ) {
@@ -369,7 +371,7 @@ private fun createPrivateChat(hexEncodedPublicKey: String, context: Context,bnsN
         DatabaseComponent.get(context).threadDatabase().getThreadIdIfExistsFor(recipient)
     returnIntent.putExtra(ConversationFragmentV2.THREAD_ID, existingThread)
     returnIntent.putExtras(bundle)
-    activity?.setResult(ComponentActivity.RESULT_OK, returnIntent)
+    activity?.setResult(RESULT_OK, returnIntent)
     activity?.finish()
 }
 
@@ -414,7 +416,7 @@ fun NewChatItem(
             ),
             modifier = Modifier
                 .weight(1f)
-                .padding(start = 10.dp,end = 5.dp),
+                .padding(start=10.dp, end=5.dp),
         )
 
         if(showQrCode) {
@@ -424,7 +426,9 @@ fun NewChatItem(
                 colorFilter = ColorFilter.tint(
                     color = MaterialTheme.appColors.editTextColor
                 ),
-                modifier = Modifier.size(35.dp).padding(end = 15.dp)
+                modifier = Modifier
+                    .size(35.dp)
+                    .padding(end=15.dp)
                     .clickable {
                         onClickScanQRCode()
                     },
@@ -447,7 +451,7 @@ private fun GroupContact(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp)
+            .padding(vertical=4.dp)
             .clickable {
                 onClick()
             }
@@ -495,7 +499,7 @@ private fun GroupContact(
             fontWeight = FontWeight(400),
             modifier = Modifier
                 .weight(1f)
-                .padding(start = if(recipient.isGroupRecipient) 5.dp else 15.dp , end = 15.dp),
+                .padding(start=if (recipient.isGroupRecipient) 5.dp else 15.dp, end=15.dp),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
@@ -557,7 +561,7 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 14.dp, end = 14.dp),
+                    .padding(start=14.dp, end=14.dp),
                 shape = RoundedCornerShape(16.dp),
                 border = BorderStroke(0.5.dp, if(bchatIdErrorStatus) MaterialTheme.appColors.negativeRedButtonBorder else MaterialTheme.appColors.textFieldUnfocusedColor)
             ) {
@@ -582,7 +586,7 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(115.dp)
-                        .padding(end = 10.dp),
+                        .padding(end=10.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = MaterialTheme.appColors.editTextBackground,
@@ -691,8 +695,8 @@ fun BnsLoadingPopUp(onDismiss: () -> Unit) {
                     modifier = Modifier
                         .size(55.dp)
                         .background(
-                            color = MaterialTheme.appColors.circularProgressBarBackground,
-                            shape = CircleShape
+                            color=MaterialTheme.appColors.circularProgressBarBackground,
+                            shape=CircleShape
                         ),
                 ){
                     CircularProgressIndicator(

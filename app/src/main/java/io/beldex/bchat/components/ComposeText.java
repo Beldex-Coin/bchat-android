@@ -1,7 +1,6 @@
 package io.beldex.bchat.components;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.Spannable;
@@ -16,7 +15,6 @@ import android.view.inputmethod.InputConnection;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.os.BuildCompat;
 import androidx.core.view.inputmethod.EditorInfoCompat;
 import androidx.core.view.inputmethod.InputConnectionCompat;
@@ -24,7 +22,6 @@ import androidx.core.view.inputmethod.InputContentInfoCompat;
 
 import io.beldex.bchat.components.emoji.EmojiEditText;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
-import io.beldex.bchat.components.emoji.EmojiEditText;
 import com.beldex.libsignal.utilities.Log;
 
 public class ComposeText extends EmojiEditText {
@@ -137,7 +134,6 @@ public class ComposeText extends EmojiEditText {
             editorInfo.imeOptions &= ~EditorInfo.IME_FLAG_NO_ENTER_ACTION;
         }
 
-        if (Build.VERSION.SDK_INT < 21) return inputConnection;
         if (mediaListener == null)      return inputConnection;
         if (inputConnection == null)    return null;
 
@@ -155,7 +151,7 @@ public class ComposeText extends EmojiEditText {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR2)
+
     private static class CommitContentListener implements InputConnectionCompat.OnCommitContentListener {
 
         private static final String TAG = CommitContentListener.class.getSimpleName();

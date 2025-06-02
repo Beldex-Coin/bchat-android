@@ -239,7 +239,7 @@ class EnterChatURLFragment : Fragment() {
     private fun joinPublicChatIfPossible() {
         val inputMethodManager = requireContext().getSystemService(BaseActionBarActivity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(binding.chatURLEditText.windowToken, 0)
-        val chatURL = binding.chatURLEditText.text.trim().toString().toLowerCase(Locale.US)
+        val chatURL = binding.chatURLEditText.text.trim().toString().lowercase(Locale.US)
         (requireActivity() as JoinPublicChatActivity).joinPublicChatIfPossible(chatURL)
     }
     // endregion

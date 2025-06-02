@@ -287,9 +287,6 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.settings_general, menu)
-        // Update UI mode menu icon
-        /*val uiMode = UiModeUtilities.getUserSelectedUiMode(this)
-        menu.findItem(R.id.action_change_theme).icon!!.level = uiMode.ordinal*/
         return true
     }
 

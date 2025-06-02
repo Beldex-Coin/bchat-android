@@ -176,6 +176,10 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
   }
 
+  private void setFullscreenIfPossible() {
+    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+  }
+
   @Override
   public void onModified(Recipient recipient) {
     Util.runOnMain(this::updateActionBar);

@@ -3,10 +3,9 @@ package com.beldex.libbchat.messaging.jobs
 import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.io.Input
 import com.esotericsoftware.kryo.io.Output
-import okhttp3.MediaType
 import okhttp3.Request
 import okhttp3.RequestBody
-import com.beldex.libbchat.messaging.jobs.Job.Companion.MAX_BUFFER_SIZE
+import com.beldex.libbchat.messaging.jobs.Job.Companion.MAX_BUFFER_SIZE_BYTES
 
 import com.beldex.libbchat.messaging.sending_receiving.notifications.Server
 import com.beldex.libbchat.messaging.utilities.Data
@@ -17,6 +16,7 @@ import com.beldex.libsignal.utilities.JsonUtil
 import com.beldex.libsignal.utilities.Log
 
 import com.beldex.libsignal.utilities.retryIfNeeded
+import okhttp3.MediaType.Companion.toMediaType
 
 class NotifyPNServerJob(val message: MnodeMessage) : Job {
     override var delegate: JobDelegate? = null
@@ -35,7 +35,7 @@ class NotifyPNServerJob(val message: MnodeMessage) : Job {
         val server = Server.LEGACY
         val parameters = mapOf( "data" to message.data, "send_to" to message.recipient )
         val url = "${server.url}/notify"
-        val body = RequestBody.create(MediaType.get("application/json"), JsonUtil.toJson(parameters))
+        val body = RequestBody.create("application/json".toMediaType(), JsonUtil.toJson(parameters))
         val request = Request.Builder().url(url).post(body).build()
         retryIfNeeded(4) {
             OnionRequestAPI.sendOnionRequest(request, server.url, server.publicKey, Version.V2) success { response ->
@@ -66,7 +66,7 @@ class NotifyPNServerJob(val message: MnodeMessage) : Job {
         val kryo = Kryo()
         kryo.isRegistrationRequired = false
         val serializedMessage = ByteArray(4096)
-        val output = Output(serializedMessage, MAX_BUFFER_SIZE)
+        val output = Output(serializedMessage, MAX_BUFFER_SIZE_BYTES)
         kryo.writeObject(output, message)
         output.close()
         return Data.Builder()

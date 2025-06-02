@@ -276,11 +276,9 @@ class BackupDirSelector(private val contextProvider: ContextProvider) {
                 Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
 
         // Set the default dir.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val dirUri = BackupUtil.getBackupDirUri(context)
-            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, dirUri
-                ?: Uri.fromFile(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)))
-        }
+        val dirUri = BackupUtil.getBackupDirUri(context)
+        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, dirUri
+            ?: Uri.fromFile(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)))
 
         if (onSelectedListener != null) {
             this.listener = onSelectedListener

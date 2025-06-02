@@ -55,20 +55,11 @@ class WalletInfoSeedActivity : BaseActionBarActivity() {
                     R.color.disable_button_text_color
                 )
             )
-            if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                walletInfoSeedContinueButton.setBackgroundDrawable(
-                    ContextCompat.getDrawable(
-                        this@WalletInfoSeedActivity,
-                        R.drawable.prominent_filled_button_medium_background_disable
-                    )
-                );
-            } else {
-                walletInfoSeedContinueButton.background =
-                    ContextCompat.getDrawable(
-                        this@WalletInfoSeedActivity,
-                        R.drawable.prominent_filled_button_medium_background_disable
-                    );
-            }
+            walletInfoSeedContinueButton.background =
+                ContextCompat.getDrawable(
+                    this@WalletInfoSeedActivity,
+                    R.drawable.prominent_filled_button_medium_background_disable
+                )
             walletInfoSeedContinueButton.setOnClickListener() {
                 if (!walletInfoSeedContinueButton.isEnabled) {
                     //walletInfoSeedContinueButton.isEnabled=true
@@ -136,20 +127,11 @@ class WalletInfoSeedActivity : BaseActionBarActivity() {
                 R.color.white
             )
         )
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            binding.walletInfoSeedContinueButton.setBackgroundDrawable(
-                ContextCompat.getDrawable(
-                    this@WalletInfoSeedActivity,
-                    R.drawable.prominent_filled_button_medium_background
-                )
-            );
-        } else {
-            binding.walletInfoSeedContinueButton.background =
-                ContextCompat.getDrawable(
-                    this@WalletInfoSeedActivity,
-                    R.drawable.prominent_filled_button_medium_background
-                );
-        }
+        binding.walletInfoSeedContinueButton.background =
+            ContextCompat.getDrawable(
+                this@WalletInfoSeedActivity,
+                R.drawable.prominent_filled_button_medium_background
+            )
     }
 
     var clearJob: Job? = null

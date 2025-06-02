@@ -29,6 +29,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -366,11 +367,17 @@ fun MyDatePickerDialog(
     dates: ArrayMap<String, Int>,
     dateFormat: SimpleDateFormat
 ) {
+    val today = System.currentTimeMillis()
 
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = System.currentTimeMillis(),
-        initialDisplayedMonthMillis = System.currentTimeMillis(),
-        initialDisplayMode = DisplayMode.Picker
+        initialSelectedDateMillis = today,
+        initialDisplayedMonthMillis = today,
+        initialDisplayMode = DisplayMode.Picker,
+        selectableDates = object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                return utcTimeMillis < today
+            }
+        }
     )
 
     var restoreFromDateHeight by remember {
@@ -412,9 +419,6 @@ fun MyDatePickerDialog(
             title = null,
             headline = null,
             showModeToggle = false,
-            dateValidator = {
-                it<System.currentTimeMillis()
-            },
             colors = DatePickerDefaults.colors(
                 containerColor = Color(0xff1C1C26),
                 weekdayContentColor = Color(0xff9595AC),

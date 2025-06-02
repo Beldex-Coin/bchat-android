@@ -10,6 +10,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
 import io.beldex.bchat.R
 import com.beldex.libbchat.mnode.OnionRequestAPI
 import io.beldex.bchat.util.getColorWithID
@@ -87,12 +88,12 @@ class PathStatusView : View {
     private fun update() {
         if (OnionRequestAPI.paths.isNotEmpty()) {
             setBackgroundResource(R.drawable.accent_dot)
-            mainColor = resources.getColorWithID(R.color.button_green, context.theme)
-            bchatShadowColor = resources.getColorWithID(R.color.button_green, context.theme)
+            mainColor = ContextCompat.getColor(context,R.color.button_green)
+            bchatShadowColor = ContextCompat.getColor(context,R.color.button_green)
         } else {
             setBackgroundResource(R.drawable.paths_building_dot)
-            mainColor = resources.getColorWithID(R.color.clear_red_color, context.theme)
-            bchatShadowColor = resources.getColorWithID(R.color.clear_red_color, context.theme)
+            mainColor = ContextCompat.getColor(context,R.color.clear_red_color)
+            bchatShadowColor = ContextCompat.getColor(context,R.color.clear_red_color)
         }
     }
 

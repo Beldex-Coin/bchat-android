@@ -15,6 +15,9 @@ import com.beldex.libsignal.utilities.Base64
 import com.beldex.libsignal.utilities.HTTP
 import com.beldex.libsignal.utilities.JsonUtil
 import com.beldex.libsignal.utilities.Log
+import okhttp3.Headers.Companion.toHeaders
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.MediaType.Companion.toMediaType
 
 object FileServerAPIV2 {
 
@@ -57,16 +60,16 @@ object FileServerAPIV2 {
     private fun createBody(parameters: Any?): RequestBody? {
         if (parameters == null) return null
         val parametersAsJSON = JsonUtil.toJson(parameters)
-        return RequestBody.create(MediaType.get("application/json"), parametersAsJSON)
+        return RequestBody.create("application/json".toMediaType(), parametersAsJSON)
     }
 
     private fun send(request: Request): Promise<OnionResponse, Exception> {
-        val url = HttpUrl.parse(server) ?: return Promise.ofFail(OpenGroupAPIV2.Error.InvalidURL)
+        val url = server.toHttpUrlOrNull() ?: return Promise.ofFail(OpenGroupAPIV2.Error.InvalidURL)
         //-Log.d("Beldex"," file server send URL $url")
         val urlBuilder = HttpUrl.Builder()
-            .scheme(url.scheme())
-            .host(url.host())
-            .port(url.port())
+            .scheme(url.scheme)
+            .host(url.host)
+            .port(url.port)
             .addPathSegments(request.endpoint)
         //-Log.d("Beldex"," file server send Url builder $urlBuilder")
         if (request.verb == HTTP.Verb.GET) {
@@ -76,7 +79,7 @@ object FileServerAPIV2 {
         }
         val requestBuilder = okhttp3.Request.Builder()
             .url(urlBuilder.build())
-            .headers(Headers.of(request.headers))
+            .headers(request.headers.toHeaders())
         when (request.verb) {
             HTTP.Verb.GET -> requestBuilder.get()
             HTTP.Verb.PUT -> requestBuilder.put(createBody(request.parameters)!!)

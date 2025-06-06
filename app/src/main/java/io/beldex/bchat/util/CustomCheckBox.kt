@@ -34,15 +34,15 @@ fun CustomCheckBox(
     checkBoxCheckedIconColor: Color = MaterialTheme.appColors.primaryButtonColor,
 ) {
 // state is used to hold the checkbox click or not by default is false
-    val checkBoxState = remember(checked) { mutableStateOf(checked) }
+    val checkBoxState = remember { mutableStateOf(checked) }
 // Ui for checkbox
     Box(
         modifier = modifier
             .border(
                 shape = RoundedCornerShape(2.dp),
                 border = BorderStroke(checkBoxBorderWidth,
-                if (checkBoxState.value) checkBoxBorderColorSelected
-                else checkBoxBorderColorUnSelected)
+                    if (checkBoxState.value) checkBoxBorderColorSelected
+                    else checkBoxBorderColorUnSelected)
             )
             .size(checkBoxSize)
             .background(Color.Transparent)

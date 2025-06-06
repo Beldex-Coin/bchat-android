@@ -219,6 +219,7 @@ class VisibleMessageView : LinearLayout {
         binding.messageContentView.root.chatWithContact = { ct ->
             contentViewDelegate?.chatWithContact(ct)
         }
+        binding.messageContentView.root.delegate = contentViewDelegate
         onDoubleTap = { binding.messageContentView.root.onContentDoubleTap?.invoke() }
     }
 

@@ -39,24 +39,35 @@ class ContactsViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             val publicKey = preferenceUtil.getPublicKey()
+            val allContacts = arrayListOf<ThreadRecord>()
             threadDb.approvedConversationList.use { openCursor ->
                 val reader = threadDb.readerFor(openCursor)
                 val threads = mutableListOf<ThreadRecord>()
                 while (true) {
                     threads += reader.next ?: break
                 }
-                withContext(Dispatchers.Main) {
-                    val contacts = threads.filter { record ->
-                        record.recipient.isContactRecipient
-                    }.filter { record ->
-                        record.recipient.address.toString() != publicKey
-                    }
-                    _state.update {
-                        it.copy(
-                            contacts = contacts,
-                            filteredContacts = contacts
-                        )
-                    }
+                allContacts.addAll(threads)
+
+            }
+            threadDb.archivedConversationList.use { openCursor ->
+                val reader=threadDb.readerFor(openCursor)
+                val threads=mutableListOf<ThreadRecord>()
+                while (true) {
+                    threads+=reader.next ?: break
+                }
+                allContacts.addAll(threads)
+            }
+            withContext(Dispatchers.Main) {
+                val contacts = allContacts.filter { record ->
+                    record.recipient.isContactRecipient
+                }.filter { record ->
+                    record.recipient.address.toString() != publicKey
+                }
+                _state.update {
+                    it.copy(
+                        contacts = contacts,
+                        filteredContacts = contacts
+                    )
                 }
             }
         }

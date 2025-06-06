@@ -162,6 +162,7 @@ import io.beldex.bchat.preferences.PrivacySettingsActivity
 import io.beldex.bchat.service.WebRtcCallService
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.util.BChatThreadPoolExecutor
+import io.beldex.bchat.util.BaseFragment
 import io.beldex.bchat.util.ConfigurationMessageUtilities
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.Helper
@@ -214,7 +215,7 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 @AndroidEntryPoint
-class ConversationFragmentV2 : Fragment(), InputBarDelegate,
+class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
     InputBarRecordingViewDelegate, AttachmentManager.AttachmentListener,
     ConversationActionModeCallbackDelegate, VisibleMessageContentViewDelegate,
     RecipientModifiedListener,
@@ -2009,14 +2010,19 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             onConfirm = {
                 val recipient = Recipient.from(requireContext(), contact.address, true)
                 val threadId = viewModel.getOrCreateThreadIdForContact(recipient)
-                val conversationFragment = newInstance(threadId)
+//                val conversationFragment = newInstance(threadId)
 
-                requireActivity().supportFragmentManager.beginTransaction()
-                    .replace(
-                        R.id.activity_home_frame_layout_container,
-                        conversationFragment,
-                        ConversationFragmentV2::class.java.name
-                    ).commit()
+                val extras = Bundle()
+                extras.putLong(ConversationFragmentV2.THREAD_ID, threadId)
+                val manager = requireActivity().supportFragmentManager
+                manager.popBackStack()
+                replaceFragment(ConversationFragmentV2(), null, extras)
+
+//                    .replace(
+//                        R.id.activity_home_frame_layout_container,
+//                        conversationFragment,
+//                        ConversationFragmentV2::class.java.name
+//                    ).commit()
             },
             onCancel = {}
         )
@@ -2269,7 +2275,17 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (result.resultCode == Activity.RESULT_OK) {
             val contactsList =
                 result.data?.serializable<ArrayList<ContactModel>>(ContactSharingActivity.RESULT_CONTACT_TO_SHARE)
-            shareContact(contactsList?.toList() ?: listOf())
+            if (binding.inputBar.quote != null) {
+                sendAttachments(
+                    listOf(),
+                    null,
+                    binding.inputBar.quote,
+                    binding.inputBar.linkPreview,
+                    contactsList?.toList() ?: listOf()
+                )
+            } else {
+                shareContact(contactsList?.toList() ?: listOf())
+            }
         }
     }
 
@@ -2917,9 +2933,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val message = VisibleMessage()
         message.sentTimestamp = MnodeAPI.nowWithOffset
         message.text = body
-        if (contacts.isNotEmpty()) {
-            message.sharedContact = SharedContact(contacts[0].threadId, contacts[0].address.toString(), contacts[0].name)
-        }
         val quote = quotedMessage?.let {
             val quotedAttachments =
                 (it as? MmsMessageRecord)?.slideDeck?.asAttachments() ?: listOf()
@@ -2951,8 +2964,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
             QuoteModel(it.dateSent, sender, quoteBody, false, quotedAttachments)
         }
-        val outgoingTextMessage =
-            OutgoingMediaMessage.from(message, recipient, attachments, quote, linkPreview)
         // Clear the input bar
         binding.inputBar.text = ""
         //New Line
@@ -2971,8 +2982,17 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (isShowingAttachmentOptions) {
             toggleAttachmentOptions()
         }
+        val outgoingMediaMessage: OutgoingMediaMessage
+        /*if contact is shared with quoted msg - if case will handle, rest cases will be handled by else case*/
+        if (contacts.isNotEmpty()) {
+            val contact = SharedContact(contacts[0].threadId, contacts[0].address.toString(), contacts[0].name)
+            message.sharedContact = contact
+            outgoingMediaMessage = OutgoingMediaMessage.fromSharedContact(message, recipient, attachments, quote, linkPreview)
+        } else {
+            outgoingMediaMessage = OutgoingMediaMessage.from(message, recipient, attachments, quote, linkPreview)
+        }
+        message.id = viewModel.insertMessageOutBox(outgoingMediaMessage)
         // Put the message in the database
-        message.id = viewModel.insertMessageOutBox(outgoingTextMessage)
         // Send it
         MessageSender.send(message, recipient.address, attachments, quote, linkPreview)
         // Send a typing stopped message

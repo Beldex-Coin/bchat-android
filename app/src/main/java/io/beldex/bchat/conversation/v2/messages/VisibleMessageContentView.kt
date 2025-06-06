@@ -75,6 +75,7 @@ import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.SearchUtil
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.getColorWithID
+import io.beldex.bchat.util.isSharedContact
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.util.Locale
 import kotlin.math.roundToInt
@@ -397,91 +398,16 @@ class VisibleMessageContentView : MaterialCardView {
             message.isSharedContact -> {
                 hideBody = true
                 showQuoteBody = false
-                val umd = UpdateMessageData.fromJSON(message.body)!!
-                val data = umd.kind as UpdateMessageData.Kind.SharedContact
-//                val umd = UpdateMessageData.fromJSON(message.body)!!
-//                hideBody = true
-//                showQuoteBody = false
-//                binding.contactView.bind(
-//                    message,
-//                    glide,
-//                    getTextColor(context, message)
-//                )
-                binding.contactView.setContent {
-                    BChatTheme {
-                        val contact = ContactModel(
-                            threadId = data.threadId,
-                            address = Address.fromSerialized(data.address),
-                            name = data.name
-                        )
-                        val configuration = LocalConfiguration.current
-                        val screenWidth = configuration.screenWidthDp.dp
-                        val cardBackgroundColor by remember(message) {
-                            val backgroundColor = if (message.isOutgoing) {
-                                R.color.outgoing_call_background
-                            } else {
-                                R.color.received_call_card_background
-                            }
-                            mutableIntStateOf(
-                                backgroundColor
-                            )
-                        }
-                        SharedContactView(
-                            contacts = listOf(
-                                contact
-                            ),
-                            backgroundColor = colorResource(cardBackgroundColor),
-                            timeStamp = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp),
-                            timeStampColor = colorResource(
-                                if (message.isOutgoing) {
-                                    R.color.sent_message_time_color
-                                } else {
-                                    R.color.received_message_time_color
-                                }
-                            ),
-                            titleColor = colorResource(
-                                if (message.isOutgoing) {
-                                    R.color.white
-                                } else {
-                                    R.color.received_message_text_color
-                                }
-                            ),
-                            subtitleColor = if (message.isOutgoing) {
-                                TextColor
-                            } else {
-                                colorResource(R.color.received_message_text_color)
-                            },
-                            modifier = Modifier
-                                .width(screenWidth * 0.7f)
-                                .padding(8.dp),
-                            columnModifier = Modifier
-                                .padding(bottom = 8.dp)
-                                .pointerInput(Unit) {
-                                    detectTapGestures(
-                                        onLongPress = {
-                                            onLongPress?.let { it1 -> it1() }
-                                        },
-                                        onTap = {
-                                            if (messageSelected()) {
-                                                onLongPress?.let { it1 -> it1() }
-                                            } else {
-                                                chatWithContact?.let { it1 -> it1(contact) }
-                                            }
-                                        },
-                                    )
-                                }
-                        )
-                    }
-                }
+                setContactView(message, messageSelected)
             }
         }
 
         binding.bodyTextView.isVisible = message.body.isNotEmpty() && !hideBody
         binding.bodyTextViewLayout.isVisible = message.body.isNotEmpty() && !hideBody
+//        binding.quoteBodyTextView.isVisible = message.body.isNotEmpty() && showQuoteBody
+//        binding.quoteBodyTextViewLayout.isVisible = message.body.isNotEmpty() && showQuoteBody
         binding.shortMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
         binding.shortMessageTime.setTextColor(getTimeTextColor(context, message.isOutgoing))
-        binding.quoteBodyTextView.isVisible = message.body.isNotEmpty() && showQuoteBody
-        binding.quoteBodyTextViewLayout.isVisible = message.body.isNotEmpty() && showQuoteBody
         binding.quoteShortMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
         binding.quoteShortMessageTime.setTextColor(getTimeTextColor(context, message.isOutgoing))
 
@@ -526,19 +452,108 @@ class VisibleMessageContentView : MaterialCardView {
             }
         }
         if (message.body.isNotEmpty() && showQuoteBody) {
-            val color = getTextColor(context, message)
-            binding.quoteBodyTextView.setTextColor(color)
-            binding.quoteBodyTextView.setLinkTextColor(color)
-            val body = getBodySpans(context, message, searchQuery)
-            //New Line
-            binding.quoteBodyTextView.text = body
-            if (binding.quoteBodyTextView.text.trim().length > 705) {
-                addReadMore(binding.quoteBodyTextView.text.trim().toString(), binding.quoteBodyTextView, message)
+            if (isSharedContact(message.body)) {
+                binding.contactView.visibility = View.VISIBLE
+                setContactView(message, messageSelected, true)
+            } else {
+                setBodyForQuotedMessage(message, searchQuery)
             }
-            onContentClick.add { e: MotionEvent ->
-                binding.quoteBodyTextView.getIntersectedModalSpans(e).iterator().forEach { span ->
-                    span.onClick(binding.quoteBodyTextView)
+        }
+    }
+
+    private fun setBodyForQuotedMessage(message: MessageRecord, searchQuery: String?) {
+        binding.quoteBodyTextViewLayout.isVisible = true
+        binding.quoteBodyTextView.isVisible = true
+        val color = getTextColor(context, message)
+        binding.quoteBodyTextView.setTextColor(color)
+        binding.quoteBodyTextView.setLinkTextColor(color)
+        val body = getBodySpans(context, message, searchQuery)
+        //New Line
+        binding.quoteBodyTextView.text = body
+        if (binding.quoteBodyTextView.text.trim().length > 705) {
+            addReadMore(binding.quoteBodyTextView.text.trim().toString(), binding.quoteBodyTextView, message)
+        }
+        onContentClick.add { e: MotionEvent ->
+            binding.quoteBodyTextView.getIntersectedModalSpans(e).iterator().forEach { span ->
+                span.onClick(binding.quoteBodyTextView)
+            }
+        }
+    }
+
+    private fun setContactView(message: MessageRecord, messageSelected: () -> Boolean, isQuoted: Boolean = false) {
+        val umd = UpdateMessageData.fromJSON(message.body)!!
+        val data = umd.kind as UpdateMessageData.Kind.SharedContact
+        binding.contactView.setContent {
+            BChatTheme {
+                val contact = ContactModel(
+                    threadId = data.threadId,
+                    address = Address.fromSerialized(data.address),
+                    name = data.name
+                )
+                val configuration = LocalConfiguration.current
+                val screenWidth = configuration.screenWidthDp.dp
+                val cardBackgroundColor by remember(message) {
+                    val backgroundColor = when {
+                        message.isOutgoing && !isQuoted -> R.color.outgoing_call_background
+                        message.isOutgoing && isQuoted -> R.color.send_message_background
+                        !message.isOutgoing && !isQuoted -> R.color.received_call_card_background
+                        !message.isOutgoing && isQuoted -> R.color.received_message_background
+                        else -> R.color.outgoing_call_background
+                    }
+                    mutableIntStateOf(
+                        backgroundColor
+                    )
                 }
+                SharedContactView(
+                    contacts = listOf(
+                        contact
+                    ),
+                    backgroundColor = colorResource(cardBackgroundColor),
+                    timeStamp = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp),
+                    isQuoted = isQuoted,
+                    timeStampColor = colorResource(
+                        if (message.isOutgoing) {
+                            R.color.sent_message_time_color
+                        } else {
+                            R.color.received_message_time_color
+                        }
+                    ),
+                    titleColor = colorResource(
+                        if (message.isOutgoing) {
+                            R.color.white
+                        } else {
+                            R.color.received_message_text_color
+                        }
+                    ),
+                    subtitleColor = if (message.isOutgoing) {
+                        TextColor
+                    } else {
+                        colorResource(R.color.received_message_text_color)
+                    },
+                    modifier = Modifier
+                        .width(screenWidth * 0.7f)
+                        .padding(
+                            bottom = if (isQuoted) 0.dp else 8.dp,
+                            start = 8.dp,
+                            end = 8.dp
+                        ),
+                    columnModifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .pointerInput(Unit) {
+                            detectTapGestures(
+                                onLongPress = {
+                                    onLongPress?.let { it1 -> it1() }
+                                },
+                                onTap = {
+                                    if (messageSelected()) {
+                                        onLongPress?.let { it1 -> it1() }
+                                    } else {
+                                        chatWithContact?.let { it1 -> it1(contact) }
+                                    }
+                                },
+                            )
+                        }
+                )
             }
         }
     }

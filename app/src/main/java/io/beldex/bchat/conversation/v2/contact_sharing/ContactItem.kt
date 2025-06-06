@@ -1,6 +1,8 @@
 package io.beldex.bchat.conversation.v2.contact_sharing
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Message
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -25,9 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import io.beldex.bchat.compose_utils.BChatCheckBox
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
+import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.noRippleCallback
 import io.beldex.bchat.database.model.ThreadRecord
 
@@ -105,12 +108,10 @@ fun ContactItem(
                     modifier = Modifier
                         .weight(0.1f)
                 ) {
-                    BChatCheckBox(
+                    OutlinedCheckbox(
                         checked = isSelected,
-                        onCheckedChange = {
-                            contactChanged(contact, !isSelected)
-                        }
                     )
+
                 }
             } else {
                 Box(
@@ -140,6 +141,39 @@ fun ContactItem(
                     }
                 }
             }
+        }
+    }
+}
+
+/*created just for use with contact sharing where checked functionality needs to be disabled.*/
+@Composable
+private fun OutlinedCheckbox(
+    checked: Boolean,
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.appColors.primaryButtonColor
+) {
+    Box(
+        modifier = modifier
+            .border(
+                shape = RoundedCornerShape(2.dp),
+                border = BorderStroke(2.dp, if (checked) {
+                        MaterialTheme.appColors.primaryButtonColor
+                    } else {
+                        MaterialTheme.appColors.secondaryContentColor
+                    }
+                )
+            )
+            .size(18.dp)
+            .background(Color.Transparent)
+            .padding(2.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        if (checked) {
+            Icon(
+                Icons.Default.Check,
+                contentDescription = "Checked",
+                tint = color,
+            )
         }
     }
 }

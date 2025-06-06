@@ -3,7 +3,9 @@ package com.beldex.libbchat.messaging.messages.signal;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.beldex.libbchat.messaging.messages.visible.SharedContact;
 import com.beldex.libbchat.messaging.messages.visible.VisibleMessage;
+import com.beldex.libbchat.messaging.utilities.UpdateMessageData;
 import com.beldex.libbchat.utilities.DistributionTypes;
 import com.beldex.libbchat.utilities.IdentityKeyMismatch;
 import com.beldex.libbchat.utilities.NetworkFailure;
@@ -85,6 +87,24 @@ public class OutgoingMediaMessage {
       previews = Collections.singletonList(linkPreview);
     }
     return new OutgoingMediaMessage(recipient, message.getText(), attachments, message.getSentTimestamp(), -1,
+            recipient.getExpireMessages() * 1000, DistributionTypes.DEFAULT, outgoingQuote, Collections.emptyList(),
+            previews, Collections.emptyList(), Collections.emptyList());
+  }
+
+  public static OutgoingMediaMessage fromSharedContact(VisibleMessage message,
+                                          Recipient recipient,
+                                          List<Attachment> attachments,
+                                          @Nullable QuoteModel outgoingQuote,
+                                          @Nullable LinkPreview linkPreview)
+  {
+    List<LinkPreview> previews = Collections.emptyList();
+    if (linkPreview != null) {
+      previews = Collections.singletonList(linkPreview);
+    }
+    SharedContact contact = message.getSharedContact();
+    String body = UpdateMessageData.Companion.buildSharedContact(contact.getThreadId(), contact.getAddress(), contact.getName()).toJSON();
+
+    return new OutgoingMediaMessage(recipient, body, attachments, message.getSentTimestamp(), -1,
             recipient.getExpireMessages() * 1000, DistributionTypes.DEFAULT, outgoingQuote, Collections.emptyList(),
             previews, Collections.emptyList(), Collections.emptyList());
   }

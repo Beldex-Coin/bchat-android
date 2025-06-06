@@ -25,6 +25,7 @@ import io.beldex.bchat.database.RecipientDatabase.NOTIFY_TYPE_NONE
 import io.beldex.bchat.database.model.ThreadRecord
 import io.beldex.bchat.databinding.ViewConversationBinding
 import io.beldex.bchat.util.DateUtils
+import io.beldex.bchat.util.isSharedContact
 import java.util.Locale
 
 class ConversationView : LinearLayout {
@@ -117,7 +118,7 @@ class ConversationView : LinearLayout {
             R.drawable.ic_mention_home
         }
         binding.muteIcon.setImageResource(drawableRes)
-        if (thread.isSharedContact) {
+        if (thread.isSharedContact || isSharedContact(thread.body)) {
             binding.contactView.visibility = View.VISIBLE
             binding.snippetTextViewLayout.visibility = View.GONE
 

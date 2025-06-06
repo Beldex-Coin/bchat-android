@@ -121,18 +121,20 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                         val data = it.kind as UpdateMessageData.Kind.SharedContact
                         binding.contactName.text = data.name
                         //setting dynamic width to linear layout
-                        val paint = Paint()
-                        paint.textSize = TypedValue.applyDimension(
-                            TypedValue.COMPLEX_UNIT_SP,
-                            14f,
-                            context.resources.displayMetrics
-                        )
-                        val nameWidth = paint.measureText(data.name)
-                        val params = binding.contactView.layoutParams
-                        val maxWidth = max(max(350, nameWidth.toInt()), textWidth)
-                        val maxPossibleWidth = min((getScreenWidth() * 0.6).toInt(), maxWidth)
-                        params.width = maxPossibleWidth
-                        binding.contactView.layoutParams = params
+                        if (mode == Mode.Regular) {
+                            val paint = Paint()
+                            paint.textSize = TypedValue.applyDimension(
+                                TypedValue.COMPLEX_UNIT_SP,
+                                14f,
+                                context.resources.displayMetrics
+                            )
+                            val nameWidth = paint.measureText(data.name)
+                            val params = binding.contactView.layoutParams
+                            val maxWidth = max(max(350, nameWidth.toInt()), textWidth)
+                            val maxPossibleWidth = min((getScreenWidth() * 0.6).toInt(), maxWidth)
+                            params.width = maxPossibleWidth
+                            binding.contactView.layoutParams = params
+                        }
                         /*end*/
                     }
                 }

@@ -14,8 +14,9 @@ import android.view.ContextThemeWrapper
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
-import io.beldex.bchat.database.model.MessageRecord
 import dagger.hilt.android.internal.managers.ViewComponentManager
+import io.beldex.bchat.database.model.MessageRecord
+import org.json.JSONObject
 import java.io.Serializable
 
 inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
@@ -74,4 +75,15 @@ fun getScreenWidth(): Int {
 fun isSameDayMessage(current: MessageRecord, previous: MessageRecord?): Boolean {
   previous ?: return false
   return DateUtils.isSameDay(current.timestamp, previous.timestamp)
+}
+
+fun isSharedContact(body: String): Boolean {
+  try {
+    val mainObject = JSONObject(body)
+    val uniObject = mainObject.getJSONObject("kind")
+    val type = uniObject.getString("@type")
+    return type.equals("SharedContact")
+  } catch (e: Exception) {
+    return false
+  }
 }

@@ -36,6 +36,9 @@ class MessageRequestsViewModel @Inject constructor(
             is MessageRequestEvents.DeleteRequest -> {
                 deleteMessageRequest(event.request)
             }
+            is MessageRequestEvents.AcceptRequest -> {
+                acceptMessageRequest(event.request)
+            }
             is MessageRequestEvents.RequestSelected -> {
 
             }
@@ -58,6 +61,10 @@ class MessageRequestsViewModel @Inject constructor(
 
     fun deleteMessageRequest(thread: ThreadRecord) = viewModelScope.launch {
         repository.deleteMessageRequest(thread)
+    }
+
+    private fun acceptMessageRequest(thread: ThreadRecord) = viewModelScope.launch {
+        repository.acceptMessageRequest(thread.threadId, thread.recipient)
     }
 
     fun clearAllMessageRequests() = viewModelScope.launch {

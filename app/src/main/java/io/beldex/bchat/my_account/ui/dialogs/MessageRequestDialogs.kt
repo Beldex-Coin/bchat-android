@@ -101,7 +101,7 @@ fun RequestBlockConfirmationDialog(
                 Button(
                     onClick = onConfirmation,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.negativeRedButtonBorder
+                        containerColor = if(title == stringResource(R.string.accept_request)) MaterialTheme.appColors.negativeGreenButtonBorder else MaterialTheme.appColors.negativeRedButtonBorder
                     ),
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier

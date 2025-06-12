@@ -902,6 +902,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     private fun sendScreenShotTakenNotification() {
         val recipient=viewModel.recipient.value ?: return
+        if(!recipient.hasApprovedMe() || !recipient.isApproved) return
         val userPublicKey=textSecurePreferences.getLocalNumber()
         val isNoteToSelf=recipient.address.toString() == userPublicKey
         if (recipient.isGroupRecipient || recipient.isBlocked || isNoteToSelf) {

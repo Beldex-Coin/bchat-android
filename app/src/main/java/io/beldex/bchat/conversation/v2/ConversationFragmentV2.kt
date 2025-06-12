@@ -90,6 +90,7 @@ import com.beldex.libbchat.utilities.MediaTypes
 import com.beldex.libbchat.utilities.SSKEnvironment
 import com.beldex.libbchat.utilities.Stub
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getLocalNumber
 import com.beldex.libbchat.utilities.concurrent.SimpleTask
 import com.beldex.libbchat.utilities.isScrolledToBottom
 import com.beldex.libbchat.utilities.recipients.Recipient
@@ -300,7 +301,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     private val hexEncodedPublicKey : String
         get() {
-            return TextSecurePreferences.getLocalNumber(requireContext())!!
+            return getLocalNumber(requireContext())!!
         }
 
     private var actionMode : ActionMode?=null
@@ -3548,7 +3549,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     //New Line v32
     private fun processMessageRequestApproval() {
-        if (viewModel.isIncomingMessageRequestThread()) {
+        if (binding.messageRequestBar.isVisible) {
             acceptMessageRequest()
         } else if (viewModel.recipient.value?.isApproved == false) {
             // edge case for new outgoing thread on new recipient without sending approval messages

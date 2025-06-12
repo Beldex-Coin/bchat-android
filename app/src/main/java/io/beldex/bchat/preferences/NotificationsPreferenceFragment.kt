@@ -98,10 +98,9 @@ class NotificationsPreferenceFragment : ListSummaryPreferenceFragment() {
             Preference.OnPreferenceClickListener { preference: Preference ->
                 val listPreference = preference as ListPreference
                 listPreference.setDialogMessage(R.string.preferences_notifications__show)
-                val dialog = ListPreferenceDialog(listPreference) {
+                ListPreferenceDialog(listPreference) {
                     initializeListSummary(findPreference(TextSecurePreferences.NOTIFICATION_PRIVACY_PREF))
                 }
-                dialog.show(parentFragmentManager, "list_preference_dialog")
                 true
             }
         initializeListSummary(findPreference<Preference>(TextSecurePreferences.NOTIFICATION_PRIVACY_PREF) as ListPreference?)

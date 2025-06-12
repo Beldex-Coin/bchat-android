@@ -76,9 +76,9 @@ class MessageRequestsViewModel @Inject constructor(
                     threads += reader.next ?: break
                 }
                 withContext(Dispatchers.Main) {
-                    _uiState.update {
+                    _uiState.update { it ->
                         it.copy(
-                            messageRequests = threads
+                            messageRequests = threads.sortedByDescending { it.dateReceived }
                         )
                     }
                 }

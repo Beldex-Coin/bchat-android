@@ -539,6 +539,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                     while (true) {
                         threads += reader.next ?: break
                     }
+                    threads.sortedByDescending { it.dateReceived }
                     request = threads
                 }
             }

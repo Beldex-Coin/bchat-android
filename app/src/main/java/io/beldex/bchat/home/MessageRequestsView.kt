@@ -33,6 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -76,15 +77,13 @@ fun MessageRequestsView(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    shape = RoundedCornerShape(50),
-                    color = MaterialTheme.appColors.searchBackground
+                    shape=RoundedCornerShape(50), color=MaterialTheme.appColors.searchBackground
                 )
                 .noRippleCallback {
                     openSearch()
                 }
                 .padding(
-                    horizontal = 16.dp,
-                    vertical = 12.dp
+                    horizontal=16.dp, vertical=12.dp
                 )
         ) {
             Icon(
@@ -148,10 +147,10 @@ fun MessageRequestsView(
                     tint = MaterialTheme.appColors.iconTint,
                     modifier = Modifier
                         .clickable {
-                            showRequests = !showRequests
+                            showRequests=!showRequests
                         }
                         .rotate(
-                            degrees = rotationDegree
+                            degrees=rotationDegree
                         )
                 )
             }
@@ -170,12 +169,15 @@ fun MessageRequestsView(
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        items(requests) { record ->
-                            RequestItem(
-                                request = record,
-                                onClick = openChat,
-                                onCancel = ignoreRequest
-                            )
+                        items(
+                            items = requests,
+                            key = { it.recipient.address.toString() }
+                        ) { record ->
+                                RequestItem(
+                                    request = record,
+                                    onClick = openChat,
+                                    onCancel = ignoreRequest
+                                )
                         }
                     }
                 }
@@ -188,70 +190,67 @@ fun MessageRequestsView(
 
 @Composable
 fun RequestItem(
-    request: ThreadRecord,
-    onCancel: (ThreadRecord) -> Unit,
-    onClick: (ThreadRecord) -> Unit,
-    modifier: Modifier = Modifier
+    request : ThreadRecord,
+    onCancel : (ThreadRecord) -> Unit,
+    onClick : (ThreadRecord) -> Unit,
+    modifier : Modifier=Modifier
 ) {
-    val context = LocalContext.current
+    val context=LocalContext.current
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
+        horizontalAlignment=Alignment.CenterHorizontally, modifier=modifier
     ) {
         Box(
-            modifier = Modifier
+            modifier=Modifier
         ) {
-            ProfilePictureComponent(
-                publicKey = request.recipient.address.toString(),
-                displayName = getDisplayName(context, request.recipient.address.toString()),
-                containerSize = ProfilePictureMode.SmallPicture.size,
-                pictureMode = ProfilePictureMode.SmallPicture,
-                modifier = Modifier
-                    .padding(
-                        end = 8.dp,
-                        top = 8.dp
-                    )
-                    .clickable {
-                        onClick(request)
-                    }
-            )
+            key(request.recipient.address.toString()) {
+                ProfilePictureComponent(
+                    publicKey=request.recipient.address.toString(),
+                    displayName=getDisplayName(context, request.recipient.address.toString()),
+                    containerSize=ProfilePictureMode.SmallPicture.size,
+                    pictureMode=ProfilePictureMode.SmallPicture,
+                    modifier=Modifier
+                        .padding(
+                            end=8.dp, top=8.dp
+                        )
+                        .clickable {
+                            onClick(request)
+                        })
 
-            Card(
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 4.dp
-                ),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White
-                ),
-                shape = CircleShape,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .size(24.dp)
-                    .clickable {
-                        onCancel(request)
-                    }
-            ) {
-                Icon(
-                    Icons.Default.Close,
-                    contentDescription = "",
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .size(16.dp)
-                )
+                Card(
+                    elevation=CardDefaults.cardElevation(
+                        defaultElevation=4.dp
+                    ),
+                    colors=CardDefaults.cardColors(
+                        containerColor=Color.White
+                    ),
+                    shape=CircleShape,
+                    modifier=Modifier
+                        .align(Alignment.TopEnd)
+                        .size(24.dp)
+                        .clickable {
+                            onCancel(request)
+                        }) {
+                    Icon(
+                        Icons.Default.Close,
+                        contentDescription="",
+                        modifier=Modifier
+                            .padding(4.dp)
+                            .size(16.dp)
+                    )
+                }
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier=Modifier.height(8.dp))
 
         Text(
-            text = request.recipient.name ?: "",
-            style = MaterialTheme.typography.bodyMedium,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1,
-            modifier = Modifier
-                .width(48.dp),
-            textAlign = TextAlign.Center
+            text=request.recipient.name ?: "",
+            style=MaterialTheme.typography.bodyMedium,
+            overflow=TextOverflow.Ellipsis,
+            maxLines=1,
+            modifier=Modifier.width(48.dp),
+            textAlign=TextAlign.Center
         )
     }
 }

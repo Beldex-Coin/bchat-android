@@ -25,6 +25,7 @@ import io.beldex.bchat.conversation.v2.messages.QuoteViewDelegate
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.database.model.MmsMessageRecord
 import com.bumptech.glide.RequestManager
+import com.google.android.material.card.MaterialCardView
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.getColorWithID
@@ -74,6 +75,9 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     constructor(context: Context) : super(context) { initialize() }
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { initialize() }
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { initialize() }
+
+    val containerCardView : MaterialCardView
+        get() = binding.containerCardView
 
     private fun initialize() {
         binding = ViewInputBarBinding.inflate(LayoutInflater.from(context), this, true)

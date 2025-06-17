@@ -3322,6 +3322,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     private fun hideVoiceMessageUI() {
         try {
+            handleAttachment(false)
             val chevronImageView=binding.inputBarRecordingView.chevronImageView
             val slideToCancelTextView=binding.inputBarRecordingView.slideToCancelTextView
             listOf(chevronImageView, slideToCancelTextView).forEach { view ->
@@ -3395,8 +3396,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         return hitRect.contains(x, y)
     }
 
+    private fun handleAttachment(isHidden: Boolean) {
+        val visibility = if (isHidden) View.GONE else View.VISIBLE
+        binding.inputBar.containerCardView.visibility = visibility
+    }
+
     override fun showVoiceMessageUI() {
         Helper.hideKeyboard(activity)
+        handleAttachment(true)
         //New Line
         binding.inputBar.visibility=View.INVISIBLE
 

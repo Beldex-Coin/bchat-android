@@ -142,7 +142,10 @@ public class ThreadRecord extends DisplayRecord implements Serializable {
     } else if (MmsSmsColumns.Types.isScreenshotExtraction(type)) {
       String name = isOutgoing() ? context.getString(R.string.MessageRecord_you) : getRecipient().toShortString();
       return emphasisAdded(context.getString(R.string.ThreadRecord_s_took_a_screenshot, name));
-    } else if (SmsDatabase.Types.isIdentityUpdate(type)) {
+    } else if (MmsSmsColumns.Types.isMessageRequestResponse(type)) {
+      return emphasisAdded(context.getString(R.string.message_requests_accepted));
+      }
+    else if (SmsDatabase.Types.isIdentityUpdate(type)) {
       if (getRecipient().isGroupRecipient()) return emphasisAdded(context.getString(R.string.ThreadRecord_safety_number_changed));
       else                                   return emphasisAdded(context.getString(R.string.ThreadRecord_your_safety_number_with_s_has_changed, getRecipient().toShortString()));
     } else if (SmsDatabase.Types.isIdentityVerified(type)) {

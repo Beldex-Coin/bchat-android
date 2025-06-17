@@ -2590,9 +2590,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             this.activity?.invalidateOptionsMenu()
             updateSubtitle()
             showOrHideInputIfNeeded()
-            binding?.profilePictureView?.root?.update(threadRecipient)
+            binding.profilePictureView.root.recycle()
+            binding.profilePictureView.root.update(threadRecipient)
             //New Line v32
-            binding?.conversationTitleView?.text=when {
+            binding.conversationTitleView.text=when {
                 threadRecipient.isLocalNumber -> getString(R.string.note_to_self).capitalizeFirstLetter()
                 else -> threadRecipient.toShortString().capitalizeFirstLetter()
             }

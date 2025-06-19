@@ -461,6 +461,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private lateinit var reactionDelegate : ConversationReactionDelegate
     private val reactWithAnyEmojiStartPage=-1
 
+    // The coroutine job that was used to submit a message approval response to the Mnode
+    private var conversationApprovalJob: Job? = null
+
     companion object {
         @JvmStatic
         fun newInstance(param1 : String, param2 : String)=
@@ -3448,7 +3451,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     ) {
         val recipient=viewModel.recipient.value ?: return
         //New Line v32
-        processMessageRequestApproval()
+        processMessageRequestApproval()?.let { conversationApprovalJob = it }
 
         // Create the message
         val message=VisibleMessage()
@@ -3505,20 +3508,33 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (isShowingAttachmentOptions) {
             toggleAttachmentOptions()
         }
-        // Put the message in the database
-        message.id=viewModel.insertMessageOutBox(outgoingTextMessage)
-        // Send it
-        MessageSender.send(message, recipient.address, attachments, quote, linkPreview)
+        lifecycleScope.launch(Dispatchers.Default) {
+            // Put the message in the database
+            message.id=viewModel.insertMessageOutBox(outgoingTextMessage)
+
+            waitForApprovalJobToBeSubmitted()
+            // Send it
+            MessageSender.send(message, recipient.address, attachments, quote, linkPreview)
+        }
         // Send a typing stopped message
         ApplicationContext.getInstance(requireActivity()).typingStatusSender.onTypingStopped(
             viewModel.threadId
         )
     }
 
+    // If we previously approve this recipient, either implicitly or explicitly, we need to wait for
+    // that submission to complete first.
+    private suspend fun waitForApprovalJobToBeSubmitted() {
+        withContext(Dispatchers.Main) {
+            conversationApprovalJob?.join()
+            conversationApprovalJob = null
+        }
+    }
+
     private fun sendTextOnlyMessage(hasPermissionToSendSeed : Boolean=false) {
         val recipient=viewModel.recipient.value ?: return
         //New Line v32
-        processMessageRequestApproval()
+        processMessageRequestApproval().let { conversationApprovalJob = it }
 
         val text=getMessageBody()
         val userPublicKey=listenerCallback!!.gettextSecurePreferences().getLocalNumber()
@@ -3545,11 +3561,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         previousText=""
         currentMentionStartIndex=-1
         mentions.clear()
-        // Put the message in the database
-        message.id=viewModel.insertMessageOutBoxSMS(outgoingTextMessage, message.sentTimestamp)
+        lifecycleScope.launch(Dispatchers.Default) {
+            // Put the message in the database
+            message.id=viewModel.insertMessageOutBoxSMS(outgoingTextMessage, message.sentTimestamp)
 
-        // Send it
-        MessageSender.send(message, recipient.address)
+            waitForApprovalJobToBeSubmitted()
+            // Send it
+            MessageSender.send(message, recipient.address)
+        }
         // Send a typing stopped message
         ApplicationContext.getInstance(requireActivity()).typingStatusSender.onTypingStopped(
             viewModel.threadId
@@ -3557,13 +3576,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     //New Line v32
-    private fun processMessageRequestApproval() {
+    private fun processMessageRequestApproval(): Job? {
         if (binding.messageRequestBar.isVisible) {
-            acceptMessageRequest()
+            return acceptMessageRequest()
         } else if (viewModel.recipient.value?.isApproved == false) {
             // edge case for new outgoing thread on new recipient without sending approval messages
             viewModel.setRecipientApproved()
         }
+        return null
     }
 
     // region General
@@ -3585,16 +3605,16 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         return result
     }
 
-    private fun acceptMessageRequest() {
-        binding.messageRequestBar.isVisible=false
-        binding.conversationRecyclerView.layoutManager=
+    private fun acceptMessageRequest(): Job {
+        binding.messageRequestBar.isVisible = false
+        binding.conversationRecyclerView.layoutManager =
             LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, true)
-        //New Line 1
         adapter.notifyDataSetChanged()
         viewModel.acceptMessageRequest()
-        //New Line 1
         LoaderManager.getInstance(this).restartLoader(0, null, this)
-        lifecycleScope.launch(Dispatchers.IO) {
+
+        // Return the Job from launch
+        return lifecycleScope.launch(Dispatchers.IO) {
             ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(requireActivity())
         }
     }
@@ -4452,7 +4472,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
 
             HomeDialogType.AcceptRequest -> {
-                acceptMessageRequest()
+                conversationApprovalJob = acceptMessageRequest()
                 viewModel.recipient.value?.let {
                     showBlockProgressBar(it)
                 }

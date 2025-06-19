@@ -24,6 +24,7 @@ import io.beldex.bchat.database.model.ThreadRecord
 import kotlinx.coroutines.flow.Flow
 import app.cash.copper.Query
 import app.cash.copper.flow.observeQuery
+import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -337,14 +338,12 @@ class DefaultConversationRepository @Inject constructor(
 
     override suspend fun acceptMessageRequest(threadId: Long, recipient: Recipient): ResultOf<Unit> = suspendCoroutine { continuation ->
         recipientDb.setApproved(recipient, true)
+        val storage = MessagingModuleConfiguration.shared.storage
         val message = MessageRequestResponse(true)
-        MessageSender.send(message, Destination.from(recipient.address))
-            .success {
-                threadDb.setHasSent(threadId, true)
-                continuation.resume(ResultOf.Success(Unit))
-            }.fail { error ->
-                continuation.resumeWithException(error)
-            }
+        MessageSender.send(message=message, address=recipient.address)
+        // add a control message for our user
+        storage.insertMessageRequestResponseFromYou(threadId)
+        threadDb.setHasSent(threadId, true)
     }
 
     override fun declineMessageRequest(threadId: Long) {

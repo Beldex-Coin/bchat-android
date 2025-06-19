@@ -12,12 +12,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
@@ -104,7 +106,6 @@ fun ReceiveScreen(listenerCallback: ReceiveFragment.Listener?, modifier: Modifie
     var bcData: BarcodeData?
     var logo: Bitmap? = null
     val resources = LocalContext.current.resources
-    var qrValid = false
     var qrCodeAsBitmap: Bitmap? = null
 
 
@@ -166,12 +167,6 @@ fun ReceiveScreen(listenerCallback: ReceiveFragment.Listener?, modifier: Modifie
             return qr
         }
         return null
-    }
-
-    fun clearQR() {
-        if (qrValid) {/*binding.qrCodeReceive.setImageBitmap(null)*/
-            qrValid = false/* if (isLoaded) binding.qrCodeReceive.visibility = View.VISIBLE*/
-        }
     }
 
 
@@ -379,50 +374,45 @@ fun ReceiveScreen(listenerCallback: ReceiveFragment.Listener?, modifier: Modifie
 
                 }
 
-
-                PrimaryButton(onClick = {
-                    if(isButtonEnabled) {
-                        isButtonEnabled = false
-                        scope.launch(Dispatchers.Main) {
-                            shareQrCode()
-                            delay(2000)
-                            isButtonEnabled = true
+                PrimaryButton(
+                    onClick = {
+                        if (isButtonEnabled) {
+                            isButtonEnabled = false
+                            scope.launch(Dispatchers.Main) {
+                                shareQrCode()
+                                delay(2000)
+                                isButtonEnabled = true
+                            }
                         }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.share),
+                            contentDescription = "share QR button"
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = stringResource(id = R.string.share),
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight(400),
+                                color = Color.White
+                            )
+                        )
                     }
-
-                }, modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp), shape = RoundedCornerShape(12.dp)) {
-                    Image(painter = painterResource(id = R.drawable.share), contentDescription = "")
-                    Text(text = stringResource(id = R.string.share), modifier = Modifier.padding(8.dp), style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, fontWeight = FontWeight(400), color = Color.White))
                 }
+
             }
         }
     )
 }
-
-
-/*
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun ReceiveScreenPreview() {
-    BChatTheme() {
-        ReceiveScreen(
-            listenerCallback = listenerCallback, modifier = Modifier
-                .fillMaxSize()
-                .padding(10.dp)
-        )
-    }
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Composable
-fun ReceiveScreenLightPreview() {
-    BChatTheme() {
-        ReceiveScreen(
-            listenerCallback = listenerCallback, modifier = Modifier
-                .fillMaxSize()
-                .padding(10.dp)
-        )
-    }
-}*/

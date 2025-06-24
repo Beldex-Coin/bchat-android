@@ -2535,21 +2535,18 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         visibleMessageView.stoppedVoiceMessage()
     }
 
-    fun onSearchOpened() {
+    private fun onSearchOpened() {
         searchViewModel!!.onSearchOpened()
-//        binding.searchBottomBar.visibility = View.VISIBLE
-//        binding.searchBottomBar.setData(0, 0)
-//        binding.inputBar.visibility = View.GONE
         binding.searchBar.visibility=View.VISIBLE
         binding.noMatchesFoundTextview.visibility=View.GONE
+        binding.searchProgress.visibility = View.GONE
         binding.searchQuery.setText("")
         binding.searchQuery.requestFocus()
     }
 
-    fun onSearchClosed() {
+    private fun onSearchClosed() {
         searchViewModel!!.onSearchClosed()
-//        binding.searchBottomBar.visibility = View.GONE
-//        binding.inputBar.visibility = View.VISIBLE
+        binding.searchProgress.visibility = View.GONE
         binding.searchBar.visibility=View.GONE
         binding.noMatchesFoundTextview.visibility=View.GONE
         adapter.onSearchQueryUpdated(null)

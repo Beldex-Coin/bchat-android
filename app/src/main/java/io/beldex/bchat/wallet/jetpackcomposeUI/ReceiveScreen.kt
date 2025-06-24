@@ -20,8 +20,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
@@ -212,160 +213,218 @@ fun ReceiveScreen(listenerCallback: ReceiveFragment.Listener?, modifier: Modifie
     }
 
     Scaffold(
-        topBar = {
+        topBar={
             TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.appColors.cardBackground
+                colors=TopAppBarDefaults.topAppBarColors(
+                    containerColor=MaterialTheme.appColors.cardBackground
                 ),
-                title = {
+                title={
                     Text(
-                        text = context.getString(R.string.activity_receive_page_title), style = MaterialTheme.typography.titleLarge.copy(
-                            color = MaterialTheme.appColors.editTextColor,
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = 22.sp,
-                        ), textAlign = TextAlign.Start, modifier = Modifier.fillMaxWidth()
+                        text=context.getString(R.string.activity_receive_page_title),
+                        style=MaterialTheme.typography.titleLarge.copy(
+                            color=MaterialTheme.appColors.editTextColor,
+                            fontWeight=FontWeight.ExtraBold,
+                            fontSize=22.sp,
+                        ),
+                        textAlign=TextAlign.Start,
+                        modifier=Modifier.fillMaxWidth()
                     )
                 },
-                navigationIcon = {
-                    IconButton(onClick = {
+                navigationIcon={
+                    IconButton(onClick={
                         listenerCallback!!.walletOnBackPressed()
                     }) {
                         Icon(
-                            painterResource(id = R.drawable.ic_back_arrow),
-                            contentDescription = stringResource(
-                                id = R.string.back
+                            painterResource(id=R.drawable.ic_back_arrow),
+                            contentDescription=stringResource(
+                                id=R.string.back
                             ),
-                            tint = MaterialTheme.appColors.editTextColor,
+                            tint=MaterialTheme.appColors.editTextColor,
                         )
                     }
                 },
-                modifier = Modifier
+                modifier=Modifier
                     .fillMaxWidth()
-                    .background(color = MaterialTheme.appColors.cardBackground),
-                actions = {
-                    IconButton(enabled = false,onClick = {
+                    .background(color=MaterialTheme.appColors.cardBackground),
+                actions={
+                    IconButton(enabled=false, onClick={
                     }) {
-                        Icon(Icons.Filled.ArrowBack, "Hide", tint = MaterialTheme.appColors.cardBackground)
+                        Icon(
+                            Icons.Filled.ArrowBack,
+                            "Hide",
+                            tint=MaterialTheme.appColors.cardBackground
+                        )
                     }
                 }
             )
         },
-        content = {
-            Column(modifier = modifier
-                .fillMaxSize()
-                .background(color = MaterialTheme.appColors.cardBackground)
-                .padding(it)
+        content={
+            Column(
+                modifier=modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .background(color=MaterialTheme.appColors.cardBackground)
+                    .padding(it)
             ) {
 
-                Box(modifier = Modifier.padding(10.dp)) {
-                    Box(modifier = Modifier.padding(top = 80.dp, bottom = 20.dp)) {
+                Box(modifier=Modifier.padding(10.dp)) {
+                    Box(modifier=Modifier.padding(top=80.dp, bottom=20.dp)) {
 
-                        Column(modifier = Modifier
-                            .fillMaxWidth()
-                            .background(
-                                color = MaterialTheme.appColors.receiveCardBackground,
-                                shape = RoundedCornerShape(18.dp)
-                            )
+                        Column(
+                            modifier=Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    color=MaterialTheme.appColors.receiveCardBackground,
+                                    shape=RoundedCornerShape(18.dp)
+                                )
 
                         ) {
 
-                            Text(text = context.getString(R.string.enter_bdx_amount), modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 150.dp, bottom = 5.dp, start = 20.dp), style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp, fontWeight = FontWeight(600), color = MaterialTheme.appColors.textColor))
+                            Text(
+                                text=context.getString(R.string.enter_bdx_amount),
+                                modifier=Modifier
+                                    .fillMaxWidth()
+                                    .padding(top=150.dp, bottom=5.dp, start=20.dp),
+                                style=MaterialTheme.typography.bodyLarge.copy(
+                                    fontSize=16.sp,
+                                    fontWeight=FontWeight(600),
+                                    color=MaterialTheme.appColors.textColor
+                                )
+                            )
 
                             BChatOutlinedTextField(
-                                value = beldexAmount,
-                                placeHolder = stringResource(id = R.string.hint),
-                                keyboardType = KeyboardType.Decimal,
-                                imeAction = ImeAction.Done,
-                                onValueChange = {
-                                    if(numberRegex.matches(it)) {
-                                        beldexAmount = it
+                                value=beldexAmount,
+                                placeHolder=stringResource(id=R.string.hint),
+                                keyboardType=KeyboardType.Decimal,
+                                imeAction=ImeAction.Done,
+                                onValueChange={
+                                    if (numberRegex.matches(it)) {
+                                        beldexAmount=it
                                         if (beldexAmount.isNotEmpty()) {
                                             if (validateBELDEXAmount(it)) {
-                                                errorAction = false
+                                                errorAction=false
                                                 generateQr(beldexAddress, beldexAmount, "")
                                             } else {
-                                                errorAction = true
+                                                errorAction=true
                                             }
                                         } else {
-                                            errorAction = false
+                                            errorAction=false
                                             generateQr(beldexAddress, beldexAmount, "")
                                         }
                                     }
                                 },
-                                focusedBorderColor = MaterialTheme.appColors.textFiledBorderColor,
-                                focusedLabelColor = MaterialTheme.appColors.textColor,
-                                textColor = MaterialTheme.appColors.textColor,
-                                maxLen = 16,
-                                modifier = Modifier
+                                focusedBorderColor=MaterialTheme.appColors.textFiledBorderColor,
+                                focusedLabelColor=MaterialTheme.appColors.textColor,
+                                textColor=MaterialTheme.appColors.textColor,
+                                maxLen=16,
+                                modifier=Modifier
                                     .fillMaxWidth()
                                     .padding(
-                                        start = 20.dp,
-                                        top = 10.dp,
-                                        end = 20.dp,
-                                        bottom = 20.dp
+                                        start=20.dp,
+                                        top=10.dp,
+                                        end=20.dp,
+                                        bottom=20.dp
                                     ),
-                                shape = RoundedCornerShape(8.dp),
+                                shape=RoundedCornerShape(8.dp),
                             )
 
                             if (errorAction) {
-                                Text(text = stringResource(id = R.string.beldex_amount_valid_error_message), modifier = Modifier.padding(start = 20.dp, bottom = 20.dp), style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.errorMessageColor, fontSize = 13.sp, fontWeight = FontWeight(400)))
+                                Text(
+                                    text=stringResource(id=R.string.beldex_amount_valid_error_message),
+                                    modifier=Modifier.padding(start=20.dp, bottom=20.dp),
+                                    style=MaterialTheme.typography.bodyLarge.copy(
+                                        color=MaterialTheme.appColors.errorMessageColor,
+                                        fontSize=13.sp,
+                                        fontWeight=FontWeight(400)
+                                    )
+                                )
                             }
 
-                            Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 20.dp, end = 20.dp)
+                            Row(
+                                horizontalArrangement=Arrangement.SpaceBetween,
+                                verticalAlignment=Alignment.CenterVertically,
+                                modifier=Modifier
+                                    .fillMaxWidth()
+                                    .padding(start=20.dp, end=20.dp)
 
                             ) {
-                                Text(text = "Beldex Address", style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp, fontWeight = FontWeight(600), color = MaterialTheme.appColors.textColor))
-
-                                Box(modifier = Modifier
-                                    .width(32.dp)
-                                    .height(32.dp)
-                                    .background(
-                                        color = MaterialTheme.appColors.primaryButtonColor,
-                                        shape = RoundedCornerShape(10.dp)
+                                Text(
+                                    text="Beldex Address",
+                                    style=MaterialTheme.typography.bodyLarge.copy(
+                                        fontSize=16.sp,
+                                        fontWeight=FontWeight(600),
+                                        color=MaterialTheme.appColors.textColor
                                     )
-                                    .clickable {
-                                        context.copyToClipBoard("Beldex Address", beldexAddress)
-                                    }, contentAlignment = Alignment.Center) {
-                                    Image(painter = painterResource(id = R.drawable.copy_icon_small), contentDescription = "")
+                                )
+
+                                Box(
+                                    modifier=Modifier
+                                        .width(32.dp)
+                                        .height(32.dp)
+                                        .background(
+                                            color=MaterialTheme.appColors.primaryButtonColor,
+                                            shape=RoundedCornerShape(10.dp)
+                                        )
+                                        .clickable {
+                                            context.copyToClipBoard("Beldex Address", beldexAddress)
+                                        }, contentAlignment=Alignment.Center
+                                ) {
+                                    Image(
+                                        painter=painterResource(id=R.drawable.copy_icon_small),
+                                        contentDescription=""
+                                    )
                                 }
                             }
 
-                            Card(modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 20.dp, top = 10.dp, end = 20.dp, bottom = 30.dp), colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.appColors.beldexAddressBackground,
-                            )) {
-                                Text(text = beldexAddress, modifier = Modifier.padding(20.dp), style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.primaryButtonColor, fontSize = 13.sp, fontWeight = FontWeight(400)))
+                            Card(
+                                modifier=Modifier
+                                    .fillMaxWidth()
+                                    .padding(start=20.dp, top=10.dp, end=20.dp, bottom=30.dp),
+                                colors=CardDefaults.cardColors(
+                                    containerColor=MaterialTheme.appColors.beldexAddressBackground,
+                                )
+                            ) {
+                                Text(
+                                    text=beldexAddress,
+                                    modifier=Modifier.padding(20.dp),
+                                    style=MaterialTheme.typography.bodyLarge.copy(
+                                        color=MaterialTheme.appColors.primaryButtonColor,
+                                        fontSize=13.sp,
+                                        fontWeight=FontWeight(400)
+                                    )
+                                )
                             }
 
                         }
                     }
-                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    Box(modifier=Modifier.fillMaxWidth(), contentAlignment=Alignment.Center) {
 
-                        Column(modifier = Modifier
-                            .size(190.dp)
-                            .clip(RectangleShape)
-                            .background(
-                                color = MaterialTheme.appColors.qrCodeBackground,
-                                shape = RoundedCornerShape(16.dp)
-                            )
+                        Column(
+                            modifier=Modifier
+                                .size(190.dp)
+                                .clip(RectangleShape)
+                                .background(
+                                    color=MaterialTheme.appColors.qrCodeBackground,
+                                    shape=RoundedCornerShape(16.dp)
+                                )
 
                         ) {
-                            Card(modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(20.dp), colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.appColors.beldexAddressBackground,
-                            )) {
+                            Card(
+                                modifier=Modifier
+                                    .fillMaxWidth()
+                                    .padding(20.dp), colors=CardDefaults.cardColors(
+                                    containerColor=MaterialTheme.appColors.beldexAddressBackground,
+                                )
+                            ) {
 
                                 generateQr(beldexAddress, beldexAmount, "")?.let {
-                                    Image(bitmap = it.asImageBitmap(), contentDescription = "", modifier = Modifier.fillMaxSize()
+                                    Image(
+                                        bitmap=it.asImageBitmap(),
+                                        contentDescription="",
+                                        modifier=Modifier.fillMaxSize()
 
                                     )
-                                    qrCodeAsBitmap = it
+                                    qrCodeAsBitmap=it
                                 }
 
                             }
@@ -375,43 +434,44 @@ fun ReceiveScreen(listenerCallback: ReceiveFragment.Listener?, modifier: Modifie
                 }
 
                 PrimaryButton(
-                    onClick = {
+                    onClick={
                         if (isButtonEnabled) {
-                            isButtonEnabled = false
+                            isButtonEnabled=false
                             scope.launch(Dispatchers.Main) {
                                 shareQrCode()
                                 delay(2000)
-                                isButtonEnabled = true
+                                isButtonEnabled=true
                             }
                         }
                     },
-                    modifier = Modifier
+                    modifier=Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    shape = RoundedCornerShape(12.dp)
+                        .padding(horizontal=16.dp, vertical=8.dp),
+                    shape=RoundedCornerShape(12.dp)
                 ) {
                     Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxWidth()
+                        verticalAlignment=Alignment.CenterVertically,
+                        horizontalArrangement=Arrangement.Center,
+                        modifier=Modifier.fillMaxWidth()
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.share),
-                            contentDescription = "share QR button"
+                            painter=painterResource(id=R.drawable.share),
+                            contentDescription="share QR button"
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier=Modifier.width(8.dp))
                         Text(
-                            text = stringResource(id = R.string.share),
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight(400),
-                                color = Color.White
+                            text=stringResource(id=R.string.share),
+                            style=MaterialTheme.typography.titleMedium.copy(
+                                fontSize=16.sp,
+                                fontWeight=FontWeight(400),
+                                color=Color.White
                             )
                         )
                     }
                 }
 
+                Spacer(modifier=Modifier.height(16.dp))
             }
         }
     )

@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical">
-    <!--android:paddingHorizontal="@dimen/massive_spacing"-->
 
     <TextView
         android:id="@+id/dateBreakTextView"
@@ -21,10 +20,9 @@
 
     <ImageView
         android:id="@+id/iconImageView"
-        android:layout_width="12dp"
-        android:layout_height="12dp"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
         app:tint="@color/text"
         tools:src="@drawable/ic_timer" />
 
@@ -32,18 +30,16 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/control_message_background_shape"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         android:fontFamily="@font/open_sans_regular"
         android:gravity="center"
-        android:paddingStart="20dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="20dp"
-        android:paddingBottom="8dp"
-        android:textColor="@color/icon_tint"
-        android:textSize="10sp"
-        tools:ignore="SmallSp"
+        android:paddingStart="16dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="4dp"
+        android:textColor="@color/control_message_text"
+        android:textSize="11sp"
         tools:text="@string/MessageRecord_you_disabled_disappearing_messages" />
 
     <androidx.cardview.widget.CardView
@@ -153,8 +149,8 @@
         android:layout_gravity="start"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
-        android:padding="6dp"
-        android:background="@drawable/call_message_bubble_background_received_end">
+        android:background="@drawable/call_message_bubble_background_received_end"
+        android:padding="6dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -228,8 +224,8 @@
         android:layout_gravity="end"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:padding="6dp"
-        android:background="@drawable/call_message_bubble_background_sent_end">
+        android:background="@drawable/call_message_bubble_background_sent_end"
+        android:padding="6dp">
 
         <LinearLayout
             android:layout_width="wrap_content"

@@ -147,8 +147,9 @@ public class ThreadRecord extends DisplayRecord implements Serializable {
       if (lastMessage != null && lastMessage.getRecipient().getAddress().serialize().equals(
               TextSecurePreferences.getLocalNumber(context))) {
         return emphasisAdded(context.getString(R.string.message_request_you_have_accepted, getRecipient().toShortString()));
+      } else {
+        return emphasisAdded(context.getString(R.string.message_requests_accepted));
       }
-      return emphasisAdded(context.getString(R.string.message_requests_accepted));
     }
     else if (SmsDatabase.Types.isIdentityUpdate(type)) {
       if (getRecipient().isGroupRecipient()) return emphasisAdded(context.getString(R.string.ThreadRecord_safety_number_changed));

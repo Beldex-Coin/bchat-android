@@ -431,10 +431,10 @@ fun MyAccountNavHost(
             return false
         }
 
-        val checkGalleryProfile = TextSecurePreferences.getIsLocalProfile(context)
-        updateProfile(checkGalleryProfile,null, displayName = displayName, context)
-         //viewModel.refreshProfileName()
-        return true
+         val checkGalleryProfile=TextSecurePreferences.getIsLocalProfile(context)
+         updateProfile(checkGalleryProfile, null, displayName=displayName, context)
+         viewModel.updateProfile(true)
+         return true
     }
 
     var showLoader by remember {
@@ -749,20 +749,24 @@ fun MyAccountNavHost(
                     ) {
                         Box(
                             modifier = Modifier
-                                .padding(start = 24.dp, top = 16.dp, end = 0.dp, bottom = 16.dp)
+                                .padding(start=24.dp, top=16.dp, end=0.dp, bottom=16.dp)
                                 .background(
-                                    color = if (showEditNameTextField) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.listItemBackground,
-                                    shape = RoundedCornerShape(16.dp)
+                                    color=if (showEditNameTextField) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.listItemBackground,
+                                    shape=RoundedCornerShape(16.dp)
                                 )
                                 .align(Alignment.TopEnd)
                                 .clickable {
                                     if (!showEditNameTextField) {
-                                        showNameOnly = false
-                                        showEditNameTextField = true
+                                        showNameOnly=false
+                                        showEditNameTextField=true
                                     } else {
-                                        showNameOnly = true
-                                        showEditNameTextField = false
-                                        saveEditName?.let { it1 -> saveDisplayName(it1.trim(), context) }
+                                        showNameOnly=true
+                                        showEditNameTextField=false
+                                        saveEditName?.let { it1 ->
+                                            saveDisplayName(
+                                                it1.trim(), context
+                                            )
+                                        }
                                     }
                                 }
                             ,
@@ -784,23 +788,21 @@ fun MyAccountNavHost(
                         Box(
                             modifier = if(!isBnsHolder.isNullOrEmpty()) Modifier
                                 .fillMaxWidth()
-                                .padding(top = 50.dp, bottom = 10.dp)
+                                .padding(top=50.dp, bottom=10.dp)
                                 .paint(
-                                    painterResource(id = if (isDarkMode) R.drawable.ic_bns_card_dark else R.drawable.ic_bns_card_light),
-                                    contentScale = ContentScale.FillBounds
+                                    painterResource(id=if (isDarkMode) R.drawable.ic_bns_card_dark else R.drawable.ic_bns_card_light),
+                                    contentScale=ContentScale.FillBounds
                                 )
                                 .innerShadow(
-                                    color = if (isDarkMode) MaterialTheme.appColors.primaryButtonColor else Color(
+                                    color=if (isDarkMode) MaterialTheme.appColors.primaryButtonColor else Color(
                                         0x8000BD40
-                                    ),
-                                    blur = if (isDarkMode) 20.dp else 10.dp,
-                                    cornersRadius = 16.dp
+                                    ), blur=if (isDarkMode) 20.dp else 10.dp, cornersRadius=16.dp
                                 ) else Modifier
                                 .fillMaxWidth()
-                                .padding(top = 50.dp, bottom = 10.dp)
+                                .padding(top=50.dp, bottom=10.dp)
                                 .background(
-                                    color = MaterialTheme.appColors.listItemBackground,
-                                    shape = RoundedCornerShape(16.dp)
+                                    color=MaterialTheme.appColors.listItemBackground,
+                                    shape=RoundedCornerShape(16.dp)
                                 )
                         ) {
                             ProfileCard(
@@ -810,7 +812,7 @@ fun MyAccountNavHost(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(
-                                        top = 40.dp
+                                        top=40.dp
                                     ),
                                 onShowDialog = {
                                     when (it) {
@@ -857,14 +859,14 @@ fun MyAccountNavHost(
                                 Box(
                                     contentAlignment=Alignment.Center,
                                     modifier= Modifier
-                                        .padding(start = 150.dp)
+                                        .padding(start=150.dp)
                                         .size(32.dp)
                                         .clip(CircleShape)
                                         .background(
-                                            color = MaterialTheme.appColors.backgroundColor
+                                            color=MaterialTheme.appColors.backgroundColor
                                         )
                                         .clickable {
-                                            showPictureDialog = true
+                                            showPictureDialog=true
 
                                         }
                                 ) {
@@ -887,7 +889,7 @@ fun MyAccountNavHost(
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(bottom = 10.dp),
+                                .padding(bottom=10.dp),
                             shape = RoundedCornerShape(12.dp),
                             disabledContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
                         ) {
@@ -913,7 +915,7 @@ fun MyAccountNavHost(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(bottom = 10.dp),
+                                .padding(bottom=10.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center
                         ) {
@@ -925,8 +927,8 @@ fun MyAccountNavHost(
                                     fontSize = 12.sp
                                 ),
                                 modifier = Modifier
-                                    .padding(end = 5.dp)
-                                    .clickable(onClick = {
+                                    .padding(end=5.dp)
+                                    .clickable(onClick={
                                         callAboutBns()
                                     })
                             )
@@ -936,7 +938,7 @@ fun MyAccountNavHost(
                                 tint = MaterialTheme.appColors.secondaryTextColor,
                                 modifier = Modifier
                                     .size(12.dp)
-                                    .clickable(onClick = {
+                                    .clickable(onClick={
                                         callAboutBns()
                                     })
                             )
@@ -1467,7 +1469,7 @@ fun ProfileCard(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 5.dp, bottom = 15.dp),
+                    .padding(top=5.dp, bottom=15.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
@@ -1583,7 +1585,7 @@ fun ProfileCardKeyContainer(
                     ),
                     textAlign = TextAlign.Center,
                     modifier = Modifier
-                        .padding(top = 8.dp)
+                        .padding(top=8.dp)
                         .align(Alignment.CenterHorizontally)
                 )
             }
@@ -1594,7 +1596,7 @@ fun ProfileCardKeyContainer(
                     tint = MaterialTheme.appColors.editTextHint,
                     modifier = Modifier
                         .size(16.dp)
-                        .align(alignment = Alignment.TopEnd)
+                        .align(alignment=Alignment.TopEnd)
                         .clickable {
                             onCopy()
                         }

@@ -180,14 +180,13 @@ object UpdateMessageBuilder {
         val storage=MessagingModuleConfiguration.shared.storage
         val senderName=
             storage.getContactWithBchatID(senderId!!)?.displayName(Contact.ContactContext.REGULAR)
-                ?: truncateIdForDisplay(senderId)
+                ?: ""
         val boldSenderName="<b>$senderName</b>"
         val me=TextSecurePreferences.getLocalNumber(context)
         val rawMessage=if (me == senderId) { // you accepted the user's request
-            context.getString(
-                R.string.MessageRecord_message_request_you_have_accepted,
-                boldSenderName
-            )
+            if (senderName.isNotEmpty()) context.getString(
+                R.string.MessageRecord_message_request_you_have_accepted, boldSenderName
+            ) else context.getString(R.string.MessageRecord_message_request_has_been_accepted)
         } else { // they accepted your request
             context.getString(R.string.MessageRecord_message_requests_accepted)
         }

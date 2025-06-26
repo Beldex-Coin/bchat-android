@@ -60,7 +60,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     override fun onFinishInflate() {
         super.onFinishInflate()
         when (mode) {
-            Mode.Draft -> binding.quoteViewCancelButton.setOnClickListener { delegate?.cancelQuoteDraft(1)}
+            Mode.Draft -> binding.quoteViewCancelButton.setOnClickListener { delegate?.cancelQuoteDraft(2)}
             Mode.Regular -> {
                 binding.quoteViewCancelButton.isVisible = false
 //                binding.mainQuoteViewContainer.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.transparent, context.theme))

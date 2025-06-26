@@ -1033,10 +1033,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (inProgress) {
             hideProgress()
         }
-        endActionMode()
         ApplicationContext.getInstance(requireActivity()).messageNotifier.setVisibleThread(-1)
         viewModel.saveDraft(binding.inputBar.text.trim())
-        //Hales63
         if (isAudioPlaying) {
             this.stopVoiceMessages(audioPlayingIndexInAdapter)
         }

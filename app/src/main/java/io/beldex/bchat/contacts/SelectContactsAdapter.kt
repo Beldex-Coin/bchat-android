@@ -15,6 +15,8 @@ class SelectContactsAdapter(private val context: Context, private val glide: Req
 
     class ViewHolder(val view: UserView) : RecyclerView.ViewHolder(view)
 
+    var selectionChangedListener: OnSelectionChangedListener? = null
+
     override fun getItemCount(): Int {
         return members.size
     }
@@ -66,6 +68,8 @@ class SelectContactsAdapter(private val context: Context, private val glide: Req
         }
         val index = members.indexOf(member)
         notifyItemChanged(index, Payload.MEMBER_CLICKED)
+
+        selectionChangedListener?.onSelectionChanged(selectedMembers.size)
     }
     fun updateList(list: List<String>) {
         members = list
@@ -75,5 +79,9 @@ class SelectContactsAdapter(private val context: Context, private val glide: Req
     // define below the different events used to notify the adapter
     enum class Payload {
         MEMBER_CLICKED
+    }
+
+    interface OnSelectionChangedListener {
+        fun onSelectionChanged(selectedCount: Int)
     }
 }

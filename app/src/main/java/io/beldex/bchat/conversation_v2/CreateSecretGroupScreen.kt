@@ -44,6 +44,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
@@ -95,7 +96,7 @@ fun CreateSecretGroup(
         mutableStateOf("")
     }
     val context = LocalContext.current
-    var device: Device = Device.ANDROID
+    val device: Device = Device.ANDROID
     val keyboardController = LocalSoftwareKeyboardController.current
     if (TextSecurePreferences.isScreenSecurityEnabled(context))
         activity.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE) else {
@@ -165,7 +166,7 @@ fun CreateSecretGroup(
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp),
+                        .padding(vertical=8.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
@@ -207,9 +208,9 @@ fun CreateSecretGroup(
                     .fillMaxWidth()
                     .padding(16.dp)
                     .border(
-                        width = 1.dp,
-                        color = MaterialTheme.appColors.textFiledBorderColor,
-                        shape = RoundedCornerShape(36.dp)
+                        width=1.dp,
+                        color=MaterialTheme.appColors.textFiledBorderColor,
+                        shape=RoundedCornerShape(36.dp)
                     ),
                 shape = RoundedCornerShape(36.dp),
                 trailingIcon = {
@@ -239,7 +240,7 @@ fun CreateSecretGroup(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
-                        horizontal = 16.dp
+                        horizontal=16.dp
                     )
                     .weight(1f)
             ) {
@@ -264,9 +265,9 @@ fun CreateSecretGroup(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp)
+                    .padding(top=8.dp)
                     .background(
-                        color = MaterialTheme.appColors.createButtonBackground
+                        color=MaterialTheme.appColors.createButtonBackground
                     ),
                 contentAlignment = Alignment.Center,
             ) {
@@ -318,10 +319,10 @@ fun CreateSecretGroup(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = MaterialTheme.appColors.loaderBackground.copy(alpha = 0.5f))
+                    .background(color=MaterialTheme.appColors.loaderBackground.copy(alpha=0.5f))
                     .clickable(
-                        enabled = true,
-                        onClick = {
+                        enabled=true,
+                        onClick={
 
                         }
                     ),
@@ -355,7 +356,7 @@ private fun GroupContact(
             containerColor = MaterialTheme.appColors.contactCardBackground
         ),
             modifier= modifier
-                .padding(bottom = 10.dp)
+                .padding(bottom=10.dp)
                 .clickable {
                     onSelectionChanged(recipient, !isSelected)
                 }
@@ -365,7 +366,7 @@ private fun GroupContact(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                    .padding(vertical = 4.dp)
+                .padding(vertical=4.dp)
         ) {
             Box(modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)) {
                 if(updateProfile) {
@@ -392,12 +393,17 @@ private fun GroupContact(
                 fontWeight = FontWeight(400),
                 modifier = Modifier
                     .weight(1f)
-                    .padding(horizontal = 10.dp),
+                    .padding(horizontal=10.dp),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
 
-            Image(painter = painterResource(id = if(isSelected) R.drawable.ic_checkedbox else R.drawable.ic_checkbox), contentDescription = "check box", modifier = Modifier.padding(end = 25.dp))
+            Image(
+                painter=painterResource(id=if (isSelected) R.drawable.ic_checkedbox else R.drawable.ic_checkbox),
+                contentDescription="check box",
+                modifier=Modifier.padding(end=25.dp),
+                colorFilter = ColorFilter.tint(if(isSelected) MaterialTheme.appColors.textGreen else MaterialTheme.appColors.textColor)
+            )
         }
     }
 }

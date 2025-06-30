@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:title="@string/menu_apply_button"
+        android:title=""
         android:id="@+id/action_apply"
         android:icon="@drawable/ic_add_member"
         app:showAsAction="always|withText"/>

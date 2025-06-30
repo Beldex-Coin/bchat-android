@@ -176,27 +176,6 @@ object UpdateMessageBuilder {
         }
     }
 
-    fun buildMessageRequestMessage(context : Context, senderId : String?=null) : Spanned? {
-        val storage=MessagingModuleConfiguration.shared.storage
-        val senderName=
-            storage.getContactWithBchatID(senderId!!)?.displayName(Contact.ContactContext.REGULAR)
-                ?: ""
-        val boldSenderName="<b>$senderName</b>"
-        val me=TextSecurePreferences.getLocalNumber(context)
-        val rawMessage=if (me == senderId) { // you accepted the user's request
-            if (senderName.isNotEmpty()) context.getString(
-                R.string.MessageRecord_message_request_you_have_accepted, boldSenderName
-            ) else context.getString(R.string.MessageRecord_message_request_has_been_accepted)
-        } else { // they accepted your request
-            context.getString(R.string.MessageRecord_message_requests_accepted)
-        }
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Html.fromHtml(rawMessage, Html.FROM_HTML_MODE_LEGACY)
-        } else {
-            Html.fromHtml(rawMessage)
-        }
-    }
-
     fun buildCallMessage(context: Context, type: CallMessageType, senderId: String): String {
         val storage = MessagingModuleConfiguration.shared.storage
         val senderName = storage.getContactWithBchatID(senderId)?.displayName(Contact.ContactContext.REGULAR) ?: truncateIdForDisplay(senderId)

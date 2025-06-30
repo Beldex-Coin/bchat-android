@@ -145,6 +145,19 @@ class ControlMessageView : LinearLayout {
                     binding.receivedMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
                 }
             }
+            message.isMessageRequestResponse -> {
+                val msgRecipient=message.recipient.address.toString()
+                val me=TextSecurePreferences.getLocalNumber(context)
+                messageBody=if (me == msgRecipient) { // you accepted the user's request
+                    val threadRecipient=DatabaseComponent.get(context).threadDatabase()
+                        .getRecipientForThreadId(message.threadId)
+                    context.getString(
+                        R.string.message_request_you_have_accepted, threadRecipient?.name ?: ""
+                    )
+                } else { // they accepted your request
+                    context.getString(R.string.message_requests_accepted)
+                }
+            }
         }
         binding.textView.isVisible = messageBody.trim().isNotEmpty()
         binding.textView.text = messageBody

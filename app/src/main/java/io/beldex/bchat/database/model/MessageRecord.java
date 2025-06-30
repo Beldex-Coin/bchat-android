@@ -118,9 +118,6 @@ public abstract class MessageRecord extends DisplayRecord {
       if (isScreenshotNotification()) return new SpannableString((UpdateMessageBuilder.INSTANCE.buildScreenShotMessage(context, getIndividualRecipient().getAddress().serialize(),isOutgoing())));
       else if (isMediaSavedNotification()) return new SpannableString((UpdateMessageBuilder.INSTANCE.buildDataExtractionMessage(context, DataExtractionNotificationInfoMessage.Kind.MEDIA_SAVED, getIndividualRecipient().getAddress().serialize())));
     }
-    else if(isMessageRequestResponse()){
-      return new SpannableString((UpdateMessageBuilder.INSTANCE.buildMessageRequestMessage(context, getIndividualRecipient().getAddress().serialize())));
-    }
     //New Line
     else if (isCallLog()) {
       CallMessageType callType;

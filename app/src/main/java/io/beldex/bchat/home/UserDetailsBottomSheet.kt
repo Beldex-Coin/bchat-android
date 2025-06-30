@@ -35,6 +35,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
     companion object {
         const val ARGUMENT_PUBLIC_KEY = "publicKey"
         const val ARGUMENT_THREAD_ID = "threadId"
+        const val TAG = "userDetailsBottomSheet"
     }
 
     interface UserDetailsBottomSheetListener{

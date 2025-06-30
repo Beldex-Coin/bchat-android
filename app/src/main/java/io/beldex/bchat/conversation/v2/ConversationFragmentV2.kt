@@ -544,9 +544,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private var isAudioPlaying : Boolean=false
     private var audioPlayingIndexInAdapter : Int=-1
     private lateinit var screenshotDetector: ScreenshotDetector
-
-
-
+    private var menuItemLastClickTime: Long = 0
+    private var unblockButtonLastClickTime: Long = 0
+    private var clearChatButtonLastClickTiem: Long = 0
 
     interface Listener {
         fun getConversationViewModel(): ConversationViewModel.AssistedFactory
@@ -3046,34 +3046,38 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     @Deprecated("Deprecated in Java")
     override fun onOptionsItemSelected(item : MenuItem) : Boolean {
-        if (!binding.inputBarRecordingView.isTimerRunning) {
-            if (item.itemId == android.R.id.home) {
-                hideAttachmentContainer()
-                return false
-            } else if (item.itemId == R.id.menu_call) {
-                hideAttachmentContainer()
-                val recipient=viewModel.recipient.value ?: return false
-                if (recipient.isContactRecipient && recipient.isBlocked) {
-                    unblock()
-                } else {
-                    viewModel.recipient.value?.let { recipients ->
-                        call(requireActivity(), recipients)
+        if (SystemClock.elapsedRealtime() - menuItemLastClickTime >= 1000) {
+            if (!binding.inputBarRecordingView.isTimerRunning) {
+                menuItemLastClickTime = SystemClock.elapsedRealtime()
+                if (item.itemId == android.R.id.home) {
+                    hideAttachmentContainer()
+                    return false
+                } else if (item.itemId == R.id.menu_call) {
+                    hideAttachmentContainer()
+                    val recipient=viewModel.recipient.value ?: return false
+                    if (recipient.isContactRecipient && recipient.isBlocked) {
+                        unblock()
+                    } else {
+                        viewModel.recipient.value?.let { recipients ->
+                            call(requireActivity(), recipients)
+                        }
                     }
                 }
+                return viewModel.recipient.value?.let { recipient ->
+                    ConversationMenuHelper.onOptionItemSelected(
+                        requireActivity(),
+                        this,
+                        item,
+                        recipient,
+                        listenerCallback,
+                        childFragmentManager
+                    )
+                } ?: false
+            } else {
+                return false
             }
-            return viewModel.recipient.value?.let { recipient ->
-                ConversationMenuHelper.onOptionItemSelected(
-                    requireActivity(),
-                    this,
-                    item,
-                    recipient,
-                    listenerCallback,
-                    childFragmentManager
-                )
-            } ?: false
-        } else {
-            return false
         }
+        return false
     }
 
     private fun call(context : Context, thread : Recipient) {
@@ -3137,10 +3141,16 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         /*setting click listener on banner to avoid background click gesture - DO NOT REMOVE This line*/
         binding.blockedBanner.setOnClickListener { }
         binding.clearChat.setOnClickListener {
-            clearChatDialog()
+            if(SystemClock.elapsedRealtime() - clearChatButtonLastClickTiem >= 1000) {
+                clearChatButtonLastClickTiem = SystemClock.elapsedRealtime()
+                clearChatDialog()
+            }
         }
         binding.unblockButton.setOnClickListener {
-            unblockContactDialog()
+            if(SystemClock.elapsedRealtime() - unblockButtonLastClickTime >= 1000) {
+                unblockButtonLastClickTime = SystemClock.elapsedRealtime()
+                unblockContactDialog()
+            }
         }
     }
 

@@ -1,15 +1,10 @@
 package io.beldex.bchat.components;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
-
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceViewHolder;
 
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 import io.beldex.bchat.R;
 
@@ -22,7 +17,6 @@ public class SwitchPreferenceCompat extends CheckBoxPreference {
         setLayoutRes();
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public SwitchPreferenceCompat(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         setLayoutRes();

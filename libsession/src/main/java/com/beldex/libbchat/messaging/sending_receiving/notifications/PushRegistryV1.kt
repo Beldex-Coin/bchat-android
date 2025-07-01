@@ -15,6 +15,8 @@ import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.emptyPromise
 import com.beldex.libsignal.utilities.retryIfNeeded
 import com.beldex.libsignal.utilities.sideEffect
+import okhttp3.MediaType.Companion.toMediaType
+
 @SuppressLint("StaticFieldLeak")
 object PushRegistryV1 {
     private val TAG = PushRegistryV1::class.java.name
@@ -48,7 +50,7 @@ object PushRegistryV1 {
         )
         val url = "${server.url}/register_legacy_groups_only"
         val body = RequestBody.create(
-            MediaType.get("application/json"),
+            "application/json".toMediaType(),
             JsonUtil.toJson(parameters)
         )
         val request = Request.Builder().url(url).post(body).build()
@@ -69,7 +71,7 @@ object PushRegistryV1 {
         return retryIfNeeded(maxRetryCount) {
             val parameters = mapOf("token" to token)
             val url = "${server.url}/unregister"
-            val body = RequestBody.create(MediaType.get("application/json"), JsonUtil.toJson(parameters))
+            val body = RequestBody.create("application/json".toMediaType(), JsonUtil.toJson(parameters))
             val request = Request.Builder().url(url).post(body).build()
             sendOnionRequest(request) success {
                 when (it.code) {
@@ -101,7 +103,7 @@ object PushRegistryV1 {
     ): Promise<*, Exception> {
         val parameters = mapOf("closedGroupPublicKey" to closedGroupPublicKey, "pubKey" to publicKey)
         val url = "${server.url}/$operation"
-        val body = RequestBody.create(MediaType.get("application/json"), JsonUtil.toJson(parameters))
+        val body = RequestBody.create("application/json".toMediaType(), JsonUtil.toJson(parameters))
         val request = Request.Builder().url(url).post(body).build()
         return retryIfNeeded(maxRetryCount) {
             sendOnionRequest(request) sideEffect {

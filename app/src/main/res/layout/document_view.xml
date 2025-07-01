@@ -21,16 +21,13 @@
                     android:focusable="false"
                     android:gravity="center">
 
-                <com.pnikosis.materialishprogress.ProgressWheel
+                <ProgressBar
                         android:id="@+id/download_progress"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:visibility="gone"
                         android:clickable="false"
                         android:layout_gravity="center"
-                        app:matProg_barColor="?android:textColorPrimary"
-                        app:matProg_linearProgress="true"
-                        app:matProg_spinSpeed="0.333"
                         tools:visibility="gone"/>
 
                 <FrameLayout

@@ -1,10 +1,9 @@
 package io.beldex.bchat.wallet.utils.pincodeview.managers;
 
-import android.annotation.TargetApi;
+
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.hardware.fingerprint.FingerprintManager;
-import android.os.Build;
 import android.os.CancellationSignal;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
@@ -34,7 +33,6 @@ import io.beldex.bchat.R;
  * - cipher keys generation and use
  * - text/icon around fingerprint authentication UI.
  */
-@TargetApi(Build.VERSION_CODES.M)
 public class FingerprintUiHelper extends FingerprintManager.AuthenticationCallback {
 
     /**

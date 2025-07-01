@@ -1,11 +1,8 @@
 package io.beldex.bchat.components;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
-import android.widget.FrameLayout;
 
 import com.google.android.material.card.MaterialCardView;
 
@@ -25,7 +22,7 @@ public class SquareFrameLayout extends MaterialCardView {
     this(context, attrs, 0);
   }
 
-  @TargetApi(VERSION_CODES.HONEYCOMB) @SuppressWarnings("unused")
+  @SuppressWarnings("unused")
   public SquareFrameLayout(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
 

@@ -190,18 +190,16 @@ public class DefaultMessageNotifier implements MessageNotifier {
     NotificationManager notifications = ServiceUtil.getNotificationManager(context);
     notifications.cancel(SUMMARY_NOTIFICATION_ID);
 
-    if (Build.VERSION.SDK_INT >= 23) {
-      try {
-        StatusBarNotification[] activeNotifications = notifications.getActiveNotifications();
+    try {
+      StatusBarNotification[] activeNotifications = notifications.getActiveNotifications();
 
-        for (StatusBarNotification activeNotification : activeNotifications) {
-          notifications.cancel(activeNotification.getId());
-        }
-      } catch (Throwable e) {
-        // XXX Appears to be a ROM bug, see #6043
-        Log.w(TAG, e);
-        notifications.cancelAll();
+      for (StatusBarNotification activeNotification : activeNotifications) {
+        notifications.cancel(activeNotification.getId());
       }
+    } catch (Throwable e) {
+      // XXX Appears to be a ROM bug, see #6043
+      Log.w(TAG, e);
+      notifications.cancelAll();
     }
   }
 
@@ -542,13 +540,9 @@ public class DefaultMessageNotifier implements MessageNotifier {
       return;
     }
 
-    if (Build.VERSION.SDK_INT >= 21) {
-      ringtone.setAudioAttributes(new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_UNKNOWN)
+    ringtone.setAudioAttributes(new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_UNKNOWN)
                                                                .setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT)
                                                                .build());
-    } else {
-      ringtone.setStreamType(AudioManager.STREAM_NOTIFICATION);
-    }
 
     ringtone.play();
   }*/

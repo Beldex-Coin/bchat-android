@@ -20,8 +20,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import android.os.Build;
 import android.text.format.DateFormat;
 
 import com.beldex.libsignal.utilities.Log;
@@ -143,11 +141,7 @@ public class DateUtils extends android.text.format.DateUtils {
   @SuppressLint("ObsoleteSdkInt")
   public static long parseIso8601(@Nullable String date) {
     SimpleDateFormat format;
-    if (Build.VERSION.SDK_INT >= 24) {
-      format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX", Locale.getDefault());
-    } else {
-      format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault());
-    }
+    format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX", Locale.getDefault());
 
     if (date.isEmpty()) {
       return -1;

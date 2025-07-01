@@ -94,21 +94,16 @@ class PrepareAttachmentAudioExtrasJob : BaseJob {
         var rmsValues: ByteArray
         var totalDurationMs: Long = DatabaseAttachmentAudioExtras.DURATION_UNDEFINED
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            // Due to API version incompatibility, we just display some random waveform for older API.
-            rmsValues = generateFakeRms(extractAttachmentRandomSeed(attachment))
-        } else {
-            try {
-                @Suppress("BlockingMethodInNonBlockingContext")
-                val decodedAudio = PartAuthority.getAttachmentStream(context, attachment.dataUri!!).use {
-                    DecodedAudio.create(InputStreamMediaDataSource(it))
-                }
-                rmsValues = decodedAudio.calculateRms(VISUAL_RMS_FRAMES)
-                totalDurationMs = (decodedAudio.totalDuration / 1000.0).toLong()
-            } catch (e: Exception) {
-                Log.w(TAG, "Failed to decode sample values for the audio attachment \"${attachment.fileName}\".", e)
-                rmsValues = generateFakeRms(extractAttachmentRandomSeed(attachment))
+        try {
+            @Suppress("BlockingMethodInNonBlockingContext")
+            val decodedAudio = PartAuthority.getAttachmentStream(context, attachment.dataUri!!).use {
+                DecodedAudio.create(InputStreamMediaDataSource(it))
             }
+            rmsValues = decodedAudio.calculateRms(VISUAL_RMS_FRAMES)
+            totalDurationMs = (decodedAudio.totalDuration / 1000.0).toLong()
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to decode sample values for the audio attachment \"${attachment.fileName}\".", e)
+            rmsValues = generateFakeRms(extractAttachmentRandomSeed(attachment))
         }
 
         attachDb.setAttachmentAudioExtras(DatabaseAttachmentAudioExtras(

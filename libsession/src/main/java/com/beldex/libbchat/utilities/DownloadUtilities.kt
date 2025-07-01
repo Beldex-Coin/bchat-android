@@ -4,6 +4,7 @@ import okhttp3.HttpUrl
 import com.beldex.libbchat.messaging.file_server.FileServerAPIV2
 import com.beldex.libsignal.utilities.HTTP
 import com.beldex.libsignal.utilities.Log
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.io.*
 
 object DownloadUtilities {
@@ -34,8 +35,8 @@ object DownloadUtilities {
      */
     @JvmStatic
     fun downloadFile(outputStream: OutputStream, urlAsString: String) {
-        val url = HttpUrl.parse(urlAsString)!!
-        val fileID = url.pathSegments().last()
+        val url = urlAsString.toHttpUrlOrNull()!!
+        val fileID = url.pathSegments.last()
         try {
             FileServerAPIV2.download(fileID.toLong()).get().let {
                 outputStream.write(it)

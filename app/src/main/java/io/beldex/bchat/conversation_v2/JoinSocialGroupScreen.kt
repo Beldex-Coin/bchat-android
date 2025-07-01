@@ -2,6 +2,7 @@ package io.beldex.bchat.conversation_v2
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -10,7 +11,6 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -129,13 +129,13 @@ fun JoinSocialGroupScreen(
     val joinPublicChatScanQRCodeActivityResultLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
+        if (result.resultCode == RESULT_OK) {
             val extras = Bundle()
             extras.putParcelable(ConversationFragmentV2.ADDRESS, result.data!!.parcelable(ConversationFragmentV2.ADDRESS))
             extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID, -1))
             val returnIntent = Intent()
             returnIntent.putExtras(extras)
-            activity?.setResult(ComponentActivity.RESULT_OK, returnIntent)
+            activity?.setResult(RESULT_OK, returnIntent)
             activity?.finish()
         }
     }

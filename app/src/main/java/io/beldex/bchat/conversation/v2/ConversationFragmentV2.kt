@@ -239,7 +239,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     WalletDelegates by WalletDelegatesImpl(), VisibleMessageViewDelegate,
     ConversationReactionOverlay.OnReactionSelectedListener,
     ReactWithAnyEmojiDialogFragment.Callback, ReactionsDialogFragment.Callback,
-    SecretGroupInfoComposeActivity.socialGroupInfoInterface,
+    SecretGroupInfoComposeActivity.SocialGroupInfoInterface,
     ScreenshotDetector.ScreenshotDetectionListeners {
 
     private var param2 : String?=null
@@ -969,11 +969,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
-    private fun callSecretGroupInfo(recipient : Recipient, listenerCallback : Listener?) {
+    private fun callSecretGroupInfo(recipient: Recipient) {
         SecretGroupInfoComposeActivity.setOnActionSelectedListener(this)
-        val intent=Intent(requireContext(), SecretGroupInfoComposeActivity::class.java)
-        val groupID : String=recipient.address.toGroupString()
-        intent.putExtra(SecretGroupInfoComposeActivity.secretGroupID, groupID)
+        val intent = Intent(requireContext(), SecretGroupInfoComposeActivity::class.java).apply {
+            putExtra(SecretGroupInfoComposeActivity.secretGroupID, recipient.address.toGroupString())
+        }
         startActivity(intent)
     }
 
@@ -2679,7 +2679,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         {
             cancelVoiceMessage()
             if (recipient.isClosedGroupRecipient) {
-                callSecretGroupInfo(recipient, listenerCallback)
+                callSecretGroupInfo(recipient)
             } else {
                 hideAttachmentContainer()
                 ConversationMenuHelper.showAllMedia(recipient, listenerCallback)

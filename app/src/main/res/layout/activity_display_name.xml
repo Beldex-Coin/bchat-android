@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/action_bar_background"
     android:fillViewport="true"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <LinearLayout

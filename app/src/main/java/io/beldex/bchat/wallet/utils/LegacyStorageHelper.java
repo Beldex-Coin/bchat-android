@@ -129,11 +129,7 @@ public class LegacyStorageHelper {
     }
 
     private static boolean hasReadPermission(Context context) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            return context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_DENIED;
-        } else {
-            return true;
-        }
+        return context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_DENIED;
     }
 
     private static final Pattern WALLET_PATTERN = Pattern.compile("^(.+) \\(([0-9]+)\\).keys$");

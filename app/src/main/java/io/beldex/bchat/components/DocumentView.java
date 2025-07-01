@@ -13,20 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import io.beldex.bchat.events.PartProgressEvent;
 import io.beldex.bchat.mms.DocumentSlide;
 import io.beldex.bchat.mms.SlideClickListener;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentTransferProgress;
 import com.beldex.libbchat.utilities.Util;
-import com.pnikosis.materialishprogress.ProgressWheel;
-import io.beldex.bchat.events.PartProgressEvent;
-import io.beldex.bchat.mms.DocumentSlide;
-import io.beldex.bchat.mms.SlideClickListener;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import io.beldex.bchat.R;
 
 import com.beldex.libsignal.utilities.guava.Optional;
@@ -37,7 +30,7 @@ public class DocumentView extends FrameLayout {
 
   private final @NonNull AnimatingToggle controlToggle;
   private final @NonNull ImageView       downloadButton;
-  private final @NonNull ProgressWheel   downloadProgress;
+  private final @NonNull ProgressBar downloadProgress;
   private final @NonNull View            container;
   private final @NonNull ViewGroup       iconContainer;
   private final @NonNull TextView        fileName;
@@ -81,7 +74,7 @@ public class DocumentView extends FrameLayout {
       fileName.setTextColor(titleColor);
       fileSize.setTextColor(captionColor);
       downloadButton.setColorFilter(downloadTint, PorterDuff.Mode.MULTIPLY);
-      downloadProgress.setBarColor(downloadTint);
+      downloadProgress.setBackgroundColor(downloadTint);
     }
   }
 
@@ -99,13 +92,13 @@ public class DocumentView extends FrameLayout {
     if (showControls && documentSlide.isPendingDownload()) {
       controlToggle.displayQuick(downloadButton);
       downloadButton.setOnClickListener(new DownloadClickedListener(documentSlide));
-      if (downloadProgress.isSpinning()) downloadProgress.stopSpinning();
+      if (downloadProgress.isAnimating()) downloadProgress.clearAnimation();
     } else if (showControls && documentSlide.getTransferState() == AttachmentTransferProgress.TRANSFER_PROGRESS_STARTED) {
       controlToggle.displayQuick(downloadProgress);
-      downloadProgress.spin();
+      downloadProgress.animate();
     } else {
       controlToggle.displayQuick(iconContainer);
-      if (downloadProgress.isSpinning()) downloadProgress.stopSpinning();
+      if (downloadProgress.isAnimating()) downloadProgress.clearAnimation();
     }
 
     this.documentSlide = documentSlide;
@@ -152,12 +145,12 @@ public class DocumentView extends FrameLayout {
     return "";
   }
 
-  @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+  /*@Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
   public void onEventAsync(final PartProgressEvent event) {
     if (documentSlide != null && event.attachment.equals(documentSlide.asAttachment())) {
       downloadProgress.setInstantProgress(((float) event.progress) / event.total);
     }
-  }
+  }*/
 
   private class DownloadClickedListener implements View.OnClickListener {
     private final @NonNull DocumentSlide slide;

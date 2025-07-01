@@ -84,20 +84,11 @@ class DisplayNameActivity : BaseActionBarActivity() {
                     R.color.disable_button_text_color
                 )
             )
-            if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                registerButton.setBackgroundDrawable(
-                    ContextCompat.getDrawable(
-                        this@DisplayNameActivity,
-                        R.drawable.disabled_button_background
-                    )
-                );
-            } else {
-                registerButton.background =
-                    ContextCompat.getDrawable(
-                        this@DisplayNameActivity,
-                        R.drawable.disabled_button_background
-                    );
-            }
+            registerButton.background =
+                ContextCompat.getDrawable(
+                    this@DisplayNameActivity,
+                    R.drawable.disabled_button_background
+                )
             registerButton.isEnabled = displayNameEditText.text.isNotEmpty()
             displayNameEditText.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable) {}
@@ -119,20 +110,11 @@ class DisplayNameActivity : BaseActionBarActivity() {
                                 R.color.disable_button_text_color
                             )
                         )
-                        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                            registerButton.setBackgroundDrawable(
-                                ContextCompat.getDrawable(
-                                    this@DisplayNameActivity,
-                                    R.drawable.disabled_button_background
-                                )
-                            );
-                        } else {
-                            registerButton.background =
-                                ContextCompat.getDrawable(
-                                    this@DisplayNameActivity,
-                                    R.drawable.disabled_button_background
-                                );
-                        }
+                        registerButton.background =
+                            ContextCompat.getDrawable(
+                                this@DisplayNameActivity,
+                                R.drawable.disabled_button_background
+                            )
                     } else {
                         registerButton.isEnabled = true
                         registerButton.setTextColor(
@@ -140,20 +122,11 @@ class DisplayNameActivity : BaseActionBarActivity() {
                                 this@DisplayNameActivity, R.color.white
                             )
                         )
-                        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                            registerButton.setBackgroundDrawable(
-                                ContextCompat.getDrawable(
-                                    this@DisplayNameActivity,
-                                    R.drawable.prominent_filled_button_medium_background
-                                )
-                            );
-                        } else {
-                            registerButton.background =
-                                ContextCompat.getDrawable(
-                                    this@DisplayNameActivity,
-                                    R.drawable.prominent_filled_button_medium_background
-                                );
-                        }
+                        registerButton.background =
+                            ContextCompat.getDrawable(
+                                this@DisplayNameActivity,
+                                R.drawable.prominent_filled_button_medium_background
+                            )
                     }
                 }
             })

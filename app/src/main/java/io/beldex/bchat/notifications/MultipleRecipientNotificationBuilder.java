@@ -16,12 +16,8 @@ import io.beldex.bchat.home.HomeActivity;
 
 import com.beldex.libbchat.messaging.contacts.Contact;
 import com.beldex.libbchat.utilities.NotificationPrivacyPreference;
-import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libbchat.utilities.Util;
 import com.beldex.libbchat.utilities.recipients.Recipient;
-import io.beldex.bchat.database.BchatContactDatabase;
-import io.beldex.bchat.dependencies.DatabaseComponent;
-import io.beldex.bchat.home.HomeActivity;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -41,10 +37,6 @@ public class MultipleRecipientNotificationBuilder extends AbstractNotificationBu
     setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, HomeActivity.class), PendingIntent.FLAG_IMMUTABLE));
     setCategory(NotificationCompat.CATEGORY_MESSAGE);
     setGroupSummary(true);
-
-    if (!NotificationChannels.supported()) {
-      setPriority(TextSecurePreferences.getNotificationPriority(context));
-    }
   }
 
   public void setMessageCount(int messageCount, int threadCount) {

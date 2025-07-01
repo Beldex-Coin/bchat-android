@@ -261,6 +261,7 @@ object MessageSender {
 
     // Result Handling
     fun handleSuccessfulMessageSend(message: Message, destination: Destination, isSyncMessage: Boolean = false, openGroupSentTimestamp: Long = -1) {
+        try {
         val storage = MessagingModuleConfiguration.shared.storage
         val userPublicKey = storage.getUserPublicKey()!!
         val timestamp = message.sentTimestamp!!
@@ -306,6 +307,9 @@ object MessageSender {
             if (message is VisibleMessage) { message.syncTarget = destination.publicKey }
             if (message is ExpirationTimerUpdate) { message.syncTarget = destination.publicKey }
             sendToMnodeDestination(Destination.Contact(userPublicKey), message, true)
+        }
+        } catch (ex: NullPointerException) {
+            Log.d("MessageSender", ex.message.toString())
         }
     }
 

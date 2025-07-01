@@ -1,19 +1,20 @@
 package io.beldex.bchat.wallet.jetpackcomposeUI.walletscanqr
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
-import android.util.Size
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -35,12 +36,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -49,28 +53,76 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleOwner
-import com.google.common.util.concurrent.ListenableFuture
-import io.beldex.bchat.wallet.jetpackcomposeUI.util.QrCodeAnalyzer
+import com.beldex.libsignal.utilities.Log
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import com.google.zxing.Result
+import com.google.zxing.qrcode.QRCodeReader
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.R
+import io.beldex.bchat.wallet.jetpackcomposeUI.util.QRCodeAnalyzer
+import java.util.concurrent.Executors
+import androidx.lifecycle.compose.LocalLifecycleOwner
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun WalletScannerScreen(
+    onQrCodeScanned: (Result) -> Unit,
+    intent : (Intent) -> Unit,
+    onBackPress : () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize().background(color = MaterialTheme.colorScheme.primary),
+    ) {
+        LocalSoftwareKeyboardController.current?.hide()
+        val permission = Manifest.permission.CAMERA
+        val cameraPermissionState = rememberPermissionState(permission)
+
+        if (cameraPermissionState.status.isGranted) {
+            ScanQRCode(onQrCodeScanned, intent, onBackPress)
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WalletScannerScreen(
-    hasCamPermission: Boolean,
-    cameraProviderFuture: ListenableFuture<ProcessCameraProvider>,
-    lifecycleOwner: LifecycleOwner,
+fun ScanQRCode(
     onQrCodeScanned: (Result) -> Unit,
     intent : (Intent) -> Unit,
-    onBackPress : () -> Unit
+    onBackPress : () -> Unit,
 ) {
     val time = (1 * 1000).toLong()
 
     var uploadFromGalleryButtonIsEnabled by remember {
         mutableStateOf(true)
+    }
+
+    val localContext = LocalContext.current
+    val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(localContext) }
+
+    val preview = Preview.Builder().build()
+    val selector = CameraSelector.Builder()
+        .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+        .build()
+
+    runCatching {
+        cameraProviderFuture.get().unbindAll()
+
+        cameraProviderFuture.get().bindToLifecycle(
+            LocalLifecycleOwner.current,
+            selector,
+            preview,
+            buildAnalysisUseCase(QRCodeReader(), onQrCodeScanned)
+        )
+
+    }.onFailure { Log.e("WalletScannerScreen", "error binding camera", it) }
+
+    DisposableEffect(cameraProviderFuture) {
+        onDispose {
+            cameraProviderFuture.get().unbindAll()
+        }
     }
 
     Scaffold(
@@ -120,48 +172,14 @@ fun WalletScannerScreen(
                     .background(MaterialTheme.colorScheme.primary)
                     .padding(it)
             ) {
-                if (hasCamPermission) {
-                    AndroidView(
-                        factory = { context ->
-                            val previewView = PreviewView(context)
-                            val preview = Preview.Builder().build()
-                            val selector = CameraSelector.Builder()
-                                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
-                                .build()
-                            preview.setSurfaceProvider(previewView.surfaceProvider)
-                            val imageAnalysis = ImageAnalysis.Builder()
-                                .setTargetResolution(
-                                    Size(
-                                        previewView.width,
-                                        previewView.height
-                                    )
-                                )
-                                .setBackpressureStrategy(STRATEGY_KEEP_ONLY_LATEST)
-                                .build()
-                            imageAnalysis.setAnalyzer(
-                                ContextCompat.getMainExecutor(context),
-                                QrCodeAnalyzer { result ->
-                                    onQrCodeScanned(result)
-                                }
-                            )
-                            try {
-                                cameraProviderFuture.get().bindToLifecycle(
-                                    lifecycleOwner,
-                                    selector,
-                                    preview,
-                                    imageAnalysis
-                                )
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
-                            previewView
-                        },
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(start = 20.dp, end = 20.dp, top = 25.dp, bottom = 10.dp)
-                    )
-
-                }
+                AndroidView(
+                    factory = { context ->
+                         PreviewView(context).apply { preview.setSurfaceProvider(surfaceProvider) }
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 20.dp, end = 20.dp, top = 25.dp, bottom = 10.dp)
+                )
                 Column(
                     modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.Center,
@@ -213,3 +231,13 @@ fun WalletScannerScreen(
         }
     )
 }
+
+@SuppressLint("UnsafeOptInUsageError")
+private fun buildAnalysisUseCase(
+    scanner: QRCodeReader,
+    onBarcodeScanned: (Result) -> Unit
+): ImageAnalysis = ImageAnalysis.Builder()
+    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+    .build().apply {
+        setAnalyzer(Executors.newSingleThreadExecutor(), QRCodeAnalyzer(scanner, onBarcodeScanned))
+    }

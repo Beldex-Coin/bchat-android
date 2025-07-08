@@ -9,10 +9,11 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.tbruyelle.rxpermissions2.RxPermissions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -49,6 +50,7 @@ class JoinPublicChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
                 update()
             }
         }
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
 
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
         super.onCreate(savedInstanceState, isReady)
@@ -92,11 +94,16 @@ class JoinPublicChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
 
     override fun requestCameraAccess() {
         @SuppressWarnings("unused")
-        val unused = RxPermissions(this).request(Manifest.permission.CAMERA).subscribe { isGranted ->
+        requestPermissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
             if (isGranted) {
                 update()
+            } else {
+                // Handle denial if needed
             }
         }
+        requestPermissionLauncher.launch(Manifest.permission.CAMERA)
     }
 
     override fun onQrDataFound(string: String) {

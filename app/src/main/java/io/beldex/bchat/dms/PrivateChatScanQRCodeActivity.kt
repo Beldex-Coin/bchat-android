@@ -10,9 +10,10 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libsignal.utilities.PublicKeyValidation
-import com.tbruyelle.rxpermissions2.RxPermissions
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.conversation.v2.ConversationFragmentV2
 import io.beldex.bchat.qr.ScanListener
@@ -40,6 +41,7 @@ class PrivateChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
                 update()
             }
         }
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
 
     /* override fun setUserVisibleHint(isVisibleToUser: Boolean) {
          super.setUserVisibleHint(isVisibleToUser)
@@ -88,11 +90,16 @@ class PrivateChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
 
     override fun requestCameraAccess() {
         @SuppressWarnings("unused")
-        val unused = RxPermissions(this).request(Manifest.permission.CAMERA).subscribe { isGranted ->
+        requestPermissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
             if (isGranted) {
                 update()
+            } else {
+                // Handle denial if needed
             }
         }
+        requestPermissionLauncher.launch(Manifest.permission.CAMERA)
     }
 
     override fun onQrDataFound(string: String) {

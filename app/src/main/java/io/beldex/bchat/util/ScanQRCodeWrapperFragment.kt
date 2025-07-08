@@ -6,9 +6,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.tbruyelle.rxpermissions2.RxPermissions
 import io.beldex.bchat.R
 import io.beldex.bchat.qr.ScanListener
 
@@ -28,6 +29,7 @@ class ScanQRCodeWrapperFragment : Fragment(), ScanQRCodePlaceholderFragmentDeleg
             update()
         }
     }
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
 
     @Deprecated("Deprecated in Java")
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -73,11 +75,16 @@ class ScanQRCodeWrapperFragment : Fragment(), ScanQRCodePlaceholderFragmentDeleg
 
     override fun requestCameraAccess() {
         @SuppressWarnings("unused")
-        val unused = RxPermissions(this).request(Manifest.permission.CAMERA).subscribe { isGranted ->
+        requestPermissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
             if (isGranted) {
                 update()
+            } else {
+                // Handle denial if needed
             }
         }
+        requestPermissionLauncher.launch(Manifest.permission.CAMERA)
     }
 
     override fun onQrDataFound(string: String) {

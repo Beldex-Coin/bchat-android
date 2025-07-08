@@ -527,7 +527,7 @@ object OnionRequestAPI {
                 if (response.size <= AESGCM.ivSize) return deferred.reject(Exception("Invalid response"))
                 // The data will be in the form of `l123:jsone` or `l123:json456:bodye` so we need to break the data into
                 // parts to properly process it
-                val plaintext = AESGCM.decrypt(response, destinationSymmetricKey)
+                val plaintext = AESGCM.decrypt(response, symmetricKey = destinationSymmetricKey)
                 if (!byteArrayOf(plaintext.first()).contentEquals("l".toByteArray())) return deferred.reject(Exception("Invalid response"))
                 val infoSepIdx = plaintext.indexOfFirst { byteArrayOf(it).contentEquals(":".toByteArray()) }
                 val infoLenSlice = plaintext.slice(1 until infoSepIdx)
@@ -577,7 +577,10 @@ object OnionRequestAPI {
             val base64EncodedIVAndCiphertext = json["result"] as? String ?: return deferred.reject(Exception("Invalid JSON"))
             val ivAndCiphertext = Base64.decode(base64EncodedIVAndCiphertext)
             try {
-                val plaintext = AESGCM.decrypt(ivAndCiphertext, destinationSymmetricKey)
+                val plaintext = AESGCM.decrypt(
+                    ivAndCiphertext,
+                    symmetricKey = destinationSymmetricKey
+                )
                 try {
                     @Suppress("NAME_SHADOWING") val json = JsonUtil.fromJson(plaintext.toString(Charsets.UTF_8), Map::class.java)
                     val statusCode = json["status_code"] as? Int ?: json["status"] as Int

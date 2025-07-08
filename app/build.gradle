@@ -204,7 +204,7 @@ android {
             version '3.22.1'
         }
     }
-    ndkVersion '27.0.12077973'
+    ndkVersion '28.1.13356709'
     lint {
         abortOnError true
         baseline file('lint-baseline.xml')

@@ -16,7 +16,6 @@ import com.beldex.libsignal.crypto.kdf.HKDFv3
 import com.beldex.libsignal.utilities.ByteUtil
 import com.beldex.libsignal.utilities.Log
 import io.beldex.bchat.backup.BackupProtos.*
-import io.beldex.bchat.crypto.AttachmentSecret
 import io.beldex.bchat.crypto.ModernEncryptingPartOutputStream
 import io.beldex.bchat.database.*
 import io.beldex.bchat.dependencies.DatabaseComponent

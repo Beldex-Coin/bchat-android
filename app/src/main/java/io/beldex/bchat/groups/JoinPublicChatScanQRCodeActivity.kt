@@ -60,6 +60,15 @@ class JoinPublicChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
         // Set title
         supportActionBar!!.title = resources.getString(R.string.activity_qr_code_view_scan_qr_code_tab_title)
         update()
+        requestPermissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                update()
+            } else {
+                Log.d("Beldex","Camera permission was denied by the user.")
+            }
+        }
     }
 
     private fun update() {
@@ -93,16 +102,6 @@ class JoinPublicChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
     }
 
     override fun requestCameraAccess() {
-        @SuppressWarnings("unused")
-        requestPermissionLauncher = registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            if (isGranted) {
-                update()
-            } else {
-                // Handle denial if needed
-            }
-        }
         requestPermissionLauncher.launch(Manifest.permission.CAMERA)
     }
 

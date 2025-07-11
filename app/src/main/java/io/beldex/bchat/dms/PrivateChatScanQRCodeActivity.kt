@@ -6,6 +6,7 @@ import android.animation.AnimatorListenerAdapter
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -56,6 +57,15 @@ class PrivateChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
         // Set title
         supportActionBar!!.title = resources.getString(R.string.activity_qr_code_view_scan_qr_code_tab_title)
         update()
+        requestPermissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                update()
+            } else {
+                Log.d("Beldex","Camera permission was denied by the user.")
+            }
+        }
     }
 
     private fun update() {
@@ -89,16 +99,6 @@ class PrivateChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
     }
 
     override fun requestCameraAccess() {
-        @SuppressWarnings("unused")
-        requestPermissionLauncher = registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            if (isGranted) {
-                update()
-            } else {
-                // Handle denial if needed
-            }
-        }
         requestPermissionLauncher.launch(Manifest.permission.CAMERA)
     }
 

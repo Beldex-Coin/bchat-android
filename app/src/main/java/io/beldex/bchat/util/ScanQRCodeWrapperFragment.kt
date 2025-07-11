@@ -3,6 +3,7 @@ package io.beldex.bchat.util
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,6 +45,15 @@ class ScanQRCodeWrapperFragment : Fragment(), ScanQRCodePlaceholderFragmentDeleg
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         update()
+        requestPermissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                update()
+            } else {
+                Log.d("Beldex","Camera permission was denied by the user.")
+            }
+        }
     }
 
     private fun update() {
@@ -74,16 +84,6 @@ class ScanQRCodeWrapperFragment : Fragment(), ScanQRCodePlaceholderFragmentDeleg
     }
 
     override fun requestCameraAccess() {
-        @SuppressWarnings("unused")
-        requestPermissionLauncher = registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            if (isGranted) {
-                update()
-            } else {
-                // Handle denial if needed
-            }
-        }
         requestPermissionLauncher.launch(Manifest.permission.CAMERA)
     }
 

@@ -118,7 +118,7 @@ class AttachmentDownloadJob(val attachmentID: Long, val databaseMessageID: Long)
             tempFile = createTempFile()
             val openGroupV2 = storage.getV2OpenGroup(threadID)
             if (openGroupV2 == null) {
-                DownloadUtilities.downloadFile(tempFile.outputStream(), attachment.url)
+                DownloadUtilities.downloadFile(tempFile, attachment.url)
             } else {
                 val url = attachment.url.toHttpUrlOrNull()!!
                 val fileID = url.pathSegments.last()

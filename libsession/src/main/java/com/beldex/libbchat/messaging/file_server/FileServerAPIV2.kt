@@ -40,7 +40,7 @@ object FileServerAPIV2 {
     const val server = BuildConfig.SERVER
     const val maxFileSize = 10_000_000 // 10 MB
 
-    val fileServerUrl: HttpUrl by lazy { serverPublicKey.toHttpUrl() }
+    val fileServerUrl: HttpUrl by lazy { server.toHttpUrl() }
 
     sealed class Error(message: String) : Exception(message) {
         object ParsingFailed : Error("Invalid response.")

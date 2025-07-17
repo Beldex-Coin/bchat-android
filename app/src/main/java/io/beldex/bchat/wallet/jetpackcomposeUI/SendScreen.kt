@@ -26,21 +26,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -62,11 +55,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatOutlinedTextField
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.BChatTypography
@@ -98,9 +91,7 @@ import io.beldex.bchat.wallet.utils.OpenAliasHelper
 import io.beldex.bchat.wallet.utils.WalletCallbackType
 import io.beldex.bchat.wallet.utils.helper.ServiceHelper
 import io.beldex.bchat.wallet.utils.pincodeview.CustomPinActivity
-import io.beldex.bchat.wallet.utils.pincodeview.managers.AppLock
 import io.beldex.bchat.wallet.utils.pincodeview.managers.LockManager
-import io.beldex.bchat.R
 import timber.log.Timber
 import java.math.BigDecimal
 import java.util.Locale
@@ -246,17 +237,17 @@ fun SendScreen(
         }
     }
 
-    var beldexAddress by remember {
+    val beldexAddress by remember {
         mutableStateOf(address)
     }
-    var beldexAmount by remember {
+    val beldexAmount by remember {
         mutableStateOf(amount)
     }
 
-    var addressErrorAction by remember {
+    val addressErrorAction by remember {
         mutableStateOf(beldexAddressErrorAction)
     }
-    var addressErrorText by remember {
+    val addressErrorText by remember {
         mutableStateOf(beldexAddressErrorText)
     }
     var amountErrorAction by remember {
@@ -265,11 +256,11 @@ fun SendScreen(
     var amountErrorText by remember {
         mutableStateOf("")
     }
-    var addressErrorTextColorChanged by remember {
+    val addressErrorTextColorChanged by remember {
         mutableStateOf(beldexAddressErrorTextColorChanged)
     }
 
-    var scanFromGallery by remember {
+    val scanFromGallery by remember {
         mutableStateOf(scanFromGallery)
     }
 
@@ -308,7 +299,7 @@ fun SendScreen(
     var calledUnlockedBalance: Boolean = false
     val MIXIN = 0
     val pendingTransaction: PendingTransaction? = null
-    var inProgress = false
+    val inProgress = false
 
 
     var mode: Mode = Mode.BDX
@@ -627,396 +618,477 @@ fun SendScreen(
         }
     }
 
+    Column(
+        modifier=Modifier.run {
+            fillMaxSize()
+                .verticalScroll(scrollState)
+                .background(color=MaterialTheme.appColors.walletDashboardMainMenuCardBackground)
+        }) {
+        if (showTransactionLoading) {
+            TransactionLoadingPopUp(onDismiss={
+                showTransactionLoading=false
+            })
+        }
+        if (showTransactionConfirmPopup) {
+            showTransactionLoading=false
+            TransactionConfirmPopUp(onDismiss={
+                showTransactionConfirmPopup=false
+            }, pendingTransactions!!, txData, onClick={ send() })
+        }
+        if (showTransactionSentPopup) {
+            showTransactionLoading=false
+            TransactionSuccessPopup(onDismiss={
+                showTransactionSentPopup=false
+                listener.walletOnBackPressed()
+            })
+        }
 
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.appColors.cardBackground
-                ),
-                title = {
-                    Text(
-                        text = context.getString(R.string.send), style = MaterialTheme.typography.titleLarge.copy(
-                            color = MaterialTheme.appColors.editTextColor,
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = 22.sp,
-                        ), textAlign = TextAlign.Start, modifier = Modifier.fillMaxWidth()
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        listener.walletOnBackPressed()
-                    }) {
-                        Icon(
-                            painterResource(id = R.drawable.ic_back_arrow),
-                            contentDescription = stringResource(
-                                id = R.string.back
-                            ),
-                            tint = MaterialTheme.appColors.editTextColor,
-                        )
-                    }
-                },
-                modifier =Modifier
-                        .fillMaxWidth()
-                        .background(color=MaterialTheme.appColors.cardBackground),
-                actions = {
-                    IconButton(enabled = false,onClick = {
-                    }) {
-                        Icon(Icons.Filled.ArrowBack, "Hide", tint = MaterialTheme.appColors.cardBackground)
-                    }
-                }
+        if (showTransactionSentFailedPopup) {
+            TransactionFailedPopUp(
+                onDismiss={
+                    showTransactionSentFailedPopup=false
+                    pendingTransactions=null
+                }, errorString=transactionSentFailedError
             )
-        },
-        content = { it ->
-            Column(modifier =Modifier
-                    .fillMaxSize()
-                    .verticalScroll(scrollState)
-                    .background(color=MaterialTheme.appColors.cardBackground)
-                    .padding(it)) {
+        }
 
-                if (showTransactionLoading) {
-                    TransactionLoadingPopUp(onDismiss = {
-                        showTransactionLoading = false
-
-                    })
-                }
-                if (showTransactionConfirmPopup) {
-                    showTransactionLoading = false
-                    TransactionConfirmPopUp(onDismiss = {
-                        showTransactionConfirmPopup = false
-                    }, pendingTransactions!!, txData, onClick = { send()})
-                }
-                if (showTransactionSentPopup) {
-                    showTransactionLoading = false
-                    TransactionSuccessPopup(onDismiss = {
-                        showTransactionSentPopup = false
-                        listener.walletOnBackPressed()
-                    })
-                }
-
-                if(showTransactionSentFailedPopup){
-                    TransactionFailedPopUp(
-                        onDismiss={
-                            showTransactionSentFailedPopup=false
-                            pendingTransactions=null
-                        },
-                        errorString=transactionSentFailedError
-                    )
-                }
-
-                Box(modifier =Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp, 10.dp)
-                    .border(
-                        width=0.8.dp,
-                        color=MaterialTheme.appColors.primaryButtonColor.copy(alpha=0.5f),
-                        shape=RoundedCornerShape(12.dp)
-                    )) {
-                    Column(verticalArrangement = Arrangement.Center, modifier = Modifier.padding(10.dp)) {
-                        Text(text = "Total Balance", style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.appColors.totalBalanceColor, fontSize = 14.sp, fontWeight = FontWeight(700)), modifier =Modifier
-                            .fillMaxWidth()
-                            .padding(start=10.dp, top=10.dp, end=10.dp))
-                        Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 10.dp, end = 10.dp)
-                        ) {
-                            Image(painter = painterResource(id = R.drawable.ic_beldex), contentDescription = "beldex logo", modifier = Modifier)
-                            Text(text = totalBalance, style = MaterialTheme.typography.titleLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 24.sp, fontWeight = FontWeight(700)), modifier =Modifier
-                                .fillMaxWidth()
-                                .padding(10.dp), fontSize = 24.sp)
-                        }
-                    }
-                }
-                Column(modifier =Modifier
-                    .padding(10.dp)
-                    .background(
-                        color=MaterialTheme.appColors.receiveCardBackground,
-                        shape=RoundedCornerShape(18.dp)
-                    )
-
-                ) {
-                    Column(modifier = Modifier.padding(10.dp)
-
-                    ) {
-
-                        Text(text = context.getString(R.string.enter_bdx_amount), modifier =Modifier
-                            .fillMaxWidth()
-                            .padding(top=10.dp, bottom=5.dp, start=10.dp), style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp, fontWeight = FontWeight(600), color = MaterialTheme.appColors.textColor))
-                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-
-                            BChatOutlinedTextField(
-                                value = beldexAmount.value,
-                                placeHolder = stringResource(id = R.string.hint),
-                                keyboardType = KeyboardType.Decimal,
-                                imeAction = ImeAction.Next,
-                                onValueChange = {
-                                    if(numberRegex.matches(it)){
-                                      beldexAmount.value = it
-                                        if (scanFromGallery.value) {
-                                            if (it.isNotEmpty()) {
-                                                scanFromGallery.value = false
-                                                if (validateBELDEXAmount(it) && totalFunds != 0.0.toLong()) {
-                                                    amountErrorAction = false
-                                                    val bdx = getCleanAmountString(it.toString())
-                                                    val amount: BigDecimal = if (bdx != null) {
-                                                        BigDecimal(bdx.toDouble()).multiply(BigDecimal(price))
-                                                    } else {
-                                                        BigDecimal(0L).multiply(BigDecimal(price))
-                                                    }
-                                                    currencyValue = String.format("%.4f", amount)
-                                                } else {
-                                                    amountErrorAction = true
-                                                    amountErrorText = context.getString(R.string.beldex_amount_valid_error_message)
-                                                }
-                                            } else {
-                                                amountErrorAction = false
-                                                currencyValue = "0.0000"
-                                            }
-                                        } else {
-                                            if (it.isNotEmpty()) {
-                                                if (validateBELDEXAmount(it) && totalFunds != 0.0.toLong()) {
-                                                    amountErrorAction = false
-                                                    val bdx = getCleanAmountString(it)
-                                                    val amount: BigDecimal = if (bdx != null) {
-                                                        BigDecimal(bdx.toDouble()).multiply(BigDecimal(price))
-                                                    } else {
-                                                        BigDecimal(0L).multiply(BigDecimal(price))
-                                                    }
-                                                    currencyValue = String.format("%.4f", amount)
-                                                } else {
-                                                    amountErrorAction = true
-                                                    amountErrorText = context.getString(R.string.beldex_amount_valid_error_message)
-                                                }
-                                            } else {
-                                                amountErrorAction = false
-                                                currencyValue = "0.0000"
-                                            }
-                                        }
-                                    }
-                                },
-                                focusedBorderColor = MaterialTheme.appColors.textFiledBorderColor,
-                                focusedLabelColor = MaterialTheme.appColors.textColor,
-                                textColor = MaterialTheme.appColors.textColor,
-                                focusedContainerColor = MaterialTheme.appColors.beldexAddressBackground,
-                                unFocusedContainerColor = MaterialTheme.appColors.beldexAddressBackground,
-                                maxLen = 16,
-                                modifier =Modifier
-                                    .padding(10.dp)
-                                    .fillMaxWidth()
-                                    .weight(1f),
-                                shape = RoundedCornerShape(12.dp),
-                            )
-                           /* Box(
-                                modifier = Modifier.background(color = MaterialTheme.appColors.maxAmountBackground, shape = RoundedCornerShape(10.dp)),
-                                contentAlignment = Alignment.Center,
-                            ) {
-
-                                Text(text = "Max", style = MaterialTheme.typography.titleMedium.copy(color = colorResource(id = R.color.white), fontSize = 16.sp), modifier = Modifier.padding(15.dp), textAlign = TextAlign.Center)
-                            }*/
-                        }
-                        if (amountErrorAction) {
-                            Text(text = amountErrorText, modifier = Modifier.padding(start = 20.dp, bottom = 10.dp), style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.errorMessageColor, fontSize = 13.sp, fontWeight = FontWeight(400)))
-                        }
-
-                        Text("$currencyValue $fiatCurrency", modifier = Modifier.padding(start = 20.dp, bottom = 20.dp),style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.editTextPlaceholder, fontSize = 16.sp, fontWeight = FontWeight(700)))
-
-                        Row(horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically) {}
-
-                        Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
-
-                        ) {
-                            Text(text = context.getString(R.string.beldex_address), style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 16.sp, fontWeight = FontWeight(700)), modifier =Modifier
-                                .fillMaxWidth()
-                                .weight(1f)
-                                .padding(10.dp))
-
-                            Box(
-                                modifier =Modifier
-                                    .width(32.dp)
-                                    .height(32.dp)
-                                    .background(
-                                        colorResource(id=R.color.your_bchat_id_bg),
-                                        shape=RoundedCornerShape(10.dp)
-                                    ),
-                                contentAlignment = Alignment.Center
-                            ) {
-
-                                Image(painter = painterResource(id = R.drawable.ic_scan_qr_code), contentDescription = "", modifier = Modifier.clickable {
-                                    if (!CheckOnline.isOnline(context)) {
-                                        Toast.makeText(context, R.string.please_check_your_internet_connection, Toast.LENGTH_SHORT).show()
-                                    } else {
-                                        focusManager.clearFocus()
-                                        listener.onScan()
-                                    }
-                                })
-                            }
-                            Spacer(modifier = Modifier.width(10.dp))
-
-                            Box(modifier =Modifier
-                                .width(32.dp)
-                                .height(32.dp)
-                                .background(
-                                    colorResource(id=R.color.button_green),
-                                    shape=RoundedCornerShape(10.dp)
-                                )
-                                .clickable {
-                                    openAddressBookActivity()
-                                }, contentAlignment = Alignment.Center) {
-
-                                Image(painter = painterResource(id = R.drawable.address_book), contentDescription = "")
-                            }
-
-                        }
-                        TextField(value = beldexAddress.value, placeholder = {
-                            Text(text = context.getString(R.string.enter_address), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.appColors.editTextPlaceholder)
-                        }, keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Done
-                        ),onValueChange = {
-                            beldexAddress.value = it
-                            addressErrorAction.value = false
-                            possibleCryptos.clear()
-                            selectedCrypto = null
-                            //val address: String = binding.beldexAddress.EditTxtLayout.editText?.text.toString().trim()
-                            if (isIntegratedAddress(beldexAddress.value)) {
-                                possibleCryptos.add(Crypto.BDX)
-                                selectedCrypto = Crypto.BDX
-                                addressErrorAction.value = true
-                                addressErrorText.value = context.getString(R.string.info_paymentid_integrated)
-                                addressErrorTextColorChanged.value = true
-                                // binding.beldexAddressErrorMessage.setTextColor(ContextCompat.getColor(requireContext(), R.color.button_green))
-                                setMode(Mode.BDX)
-                            } else if (isStandardAddress(beldexAddress.value)) {
-                                possibleCryptos.add(Crypto.BDX)
-                                selectedCrypto = Crypto.BDX
-                                setMode(Mode.BDX)
-                            }
-                            if (possibleCryptos.isEmpty()) {
-                                Timber.d("other")
-                                setMode(Mode.BDX)
-                            }
-                        }, modifier =Modifier
-                            .fillMaxWidth()
-                            .height(120.dp)
-                            .padding(10.dp),
-                                shape = RoundedCornerShape(12.dp),
-                                colors = TextFieldDefaults.colors(
-                                        unfocusedContainerColor = MaterialTheme.appColors.beldexAddressBackground,
-                                        focusedContainerColor = MaterialTheme.appColors.beldexAddressBackground,
-                                        focusedIndicatorColor = Color.Transparent,
-                                        unfocusedIndicatorColor = Color.Transparent,
-                                        disabledIndicatorColor = Color.Transparent,
-                                        selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
-                                        cursorColor = colorResource(id = R.color.button_green)),
-                                textStyle = TextStyle(
-                                        color = MaterialTheme.appColors.primaryButtonColor,
-                                        fontSize = 13.sp,
-                                        fontWeight = FontWeight(400)),
-                                maxLines = 106
-
-                        )
-
-                        if (addressErrorAction.value) {
-                            Text(text = addressErrorText.value,
-                                modifier =Modifier.
-                                padding(start = 20.dp, bottom = 10.dp),
-                                style = MaterialTheme.typography.bodyLarge.copy(
-                                    color =  if(addressErrorTextColorChanged.value) {MaterialTheme.appColors.primaryButtonColor} else MaterialTheme.appColors.errorMessageColor,
-                                    fontSize = 13.sp,
-                                    fontWeight = FontWeight(400)))
-                        }
-
-
-                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center, modifier = Modifier) {
-                            Text(text = "Transaction Priority", style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 16.sp, fontWeight = FontWeight(700)), modifier = Modifier.padding(10.dp))
-                            ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
-                                TextField(
-                                        modifier = Modifier.menuAnchor(),
-                                        shape = RoundedCornerShape(12.dp),
-                                        readOnly = true,
-                                        value = options[selectedFeePriority],
-                                        onValueChange = {},
-                                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                                        colors = ExposedDropdownMenuDefaults.textFieldColors(
-                                                focusedTextColor = colorResource(id = R.color.button_green),
-                                                unfocusedContainerColor = MaterialTheme.appColors.cardBackground,
-                                                focusedContainerColor = MaterialTheme.appColors.cardBackground,
-                                                focusedIndicatorColor = Color.Transparent,
-                                                unfocusedIndicatorColor = Color.Transparent,
-                                                disabledIndicatorColor = Color.Transparent,
-                                        ),
-
-                                        textStyle = TextStyle(color = MaterialTheme.appColors.textColor, fontSize = 14.sp, fontWeight = FontWeight.Bold),
-                                )
-                                ExposedDropdownMenu(
-                                        expanded = expanded,
-                                        onDismissRequest = { expanded = false },
-                                        modifier = Modifier.background(color = MaterialTheme.appColors.cardBackground)
-                                ) {
-                                    options.forEach { selectionOption ->
-                                        DropdownMenuItem(
-                                                text = { Text(selectionOption, style = MaterialTheme.typography.bodyMedium.copy(
-                                                        color = MaterialTheme.appColors.textColor, fontSize = 14.sp, fontWeight = FontWeight.Bold
-                                                ), color = MaterialTheme.appColors.textColor ) },
-                                                modifier =
-                                                Modifier.padding(vertical = 10.dp, horizontal = 10.dp),
-                                                onClick = {
-                                                    selectedOptionText = selectionOption
-                                                    expanded = false
-                                                    if (selectionOption == options[0]) {
-                                                        feePriorityOnClick(5)//Flash value
-                                                        viewModels.updateSelectedOption(options[0])//Flash position
-                                                        selectedFeePriority = 0
-                                                    } else {
-                                                        feePriorityOnClick(1)//Slow value
-                                                        viewModels.updateSelectedOption(options[1])//Slow position
-                                                        selectedFeePriority = 1
-                                                    }
-                                                },
-                                        )
-                                    }
-                                }
-                            }
-                        }
-
-
-                        Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically, modifier =Modifier
-                            .fillMaxWidth()
-                            .padding(20.dp)
-                            .border(
-                                width=0.8.dp,
-                                color=colorResource(id=R.color.divider_color).copy(alpha=0.5f),
-                                shape=RoundedCornerShape(12.dp)
-                            )) {
-                            Text(text = "Estimated Fee : ", style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textHint, fontSize = 14.sp, fontWeight = FontWeight.Bold), modifier = Modifier.padding(top = 20.dp, bottom = 20.dp, start = 20.dp))
-                            Text(text = "$estimatedFee BDX", style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 14.sp, fontWeight = FontWeight.ExtraBold), modifier = Modifier.padding(top = 20.dp, bottom = 20.dp, end = 20.dp))
-                        }
-
-
-                    }
-                }
-                PrimaryButton(
-                    onClick = {
-                        createTransactionIfPossible()
-                        // context.startActivity(Intent(context, OnBoardingActivity::class.java))
-                    },
-                    modifier =Modifier
+        Box(
+            modifier=Modifier
+                .fillMaxWidth()
+                .padding(10.dp, 10.dp)
+                .border(
+                    width=0.8.dp,
+                    color=MaterialTheme.appColors.primaryButtonColor.copy(alpha=0.5f),
+                    shape=RoundedCornerShape(12.dp)
+                )
+        ) {
+            Column(
+                verticalArrangement=Arrangement.Center, modifier=Modifier.padding(10.dp)
+            ) {
+                Text(
+                    text="Total Balance", style=MaterialTheme.typography.titleMedium.copy(
+                        color=MaterialTheme.appColors.totalBalanceColor,
+                        fontSize=14.sp,
+                        fontWeight=FontWeight(700)
+                    ), modifier=Modifier
                         .fillMaxWidth()
-                        .padding(10.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    enabled = beldexAddress.value.isNotEmpty() && beldexAmount.value.isNotEmpty(),
-                    disabledContainerColor = MaterialTheme.appColors.contactCardBackground
+                        .padding(start=10.dp, top=10.dp, end=10.dp)
+                )
+                Row(
+                    horizontalArrangement=Arrangement.Center,
+                    verticalAlignment=Alignment.CenterVertically,
+                    modifier=Modifier.padding(start=10.dp, end=10.dp)
                 ) {
-                    Text(text = stringResource(id = R.string.send), style = BChatTypography.bodyLarge.copy(
-                        color = if (beldexAddress.value.isNotEmpty() && beldexAmount.value.isNotEmpty()) {
-                        Color.White
-                    } else {
-                        MaterialTheme.appColors.linkBnsDisabledButtonContent
-                    }, fontWeight = FontWeight(400),
-                        fontSize = 16.sp), modifier = Modifier.padding(8.dp))
+                    Image(
+                        painter=painterResource(id=R.drawable.ic_beldex),
+                        contentDescription="beldex logo",
+                        modifier=Modifier
+                    )
+                    Text(
+                        text=totalBalance, style=MaterialTheme.typography.titleLarge.copy(
+                            color=MaterialTheme.appColors.textColor,
+                            fontSize=24.sp,
+                            fontWeight=FontWeight(700)
+                        ), modifier=Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp), fontSize=24.sp
+                    )
                 }
             }
         }
-    )
+        Column(
+            modifier=Modifier
+                .padding(10.dp)
+                .background(
+                    color=MaterialTheme.appColors.receiveCardBackground,
+                    shape=RoundedCornerShape(18.dp)
+                )
+
+        ) {
+            Column(
+                modifier=Modifier.padding(10.dp)
+
+            ) {
+
+                Text(
+                    text=context.getString(R.string.enter_bdx_amount),
+                    modifier=Modifier
+                        .fillMaxWidth()
+                        .padding(top=10.dp, bottom=5.dp, start=10.dp),
+                    style=MaterialTheme.typography.bodyLarge.copy(
+                        fontSize=16.sp,
+                        fontWeight=FontWeight(600),
+                        color=MaterialTheme.appColors.textColor
+                    )
+                )
+                Row(
+                    verticalAlignment=Alignment.CenterVertically,
+                    horizontalArrangement=Arrangement.Center,
+                    modifier=Modifier.fillMaxWidth()
+                ) {
+
+                    BChatOutlinedTextField(
+                        value=beldexAmount.value,
+                        placeHolder=stringResource(id=R.string.hint),
+                        keyboardType=KeyboardType.Decimal,
+                        imeAction=ImeAction.Next,
+                        onValueChange={
+                            if (numberRegex.matches(it)) {
+                                beldexAmount.value=it
+                                if (scanFromGallery.value) {
+                                    if (it.isNotEmpty()) {
+                                        scanFromGallery.value=false
+                                        if (validateBELDEXAmount(it) && totalFunds != 0.0.toLong()) {
+                                            amountErrorAction=false
+                                            val bdx=getCleanAmountString(it.toString())
+                                            val amount : BigDecimal=if (bdx != null) {
+                                                BigDecimal(bdx.toDouble()).multiply(
+                                                    BigDecimal(price)
+                                                )
+                                            } else {
+                                                BigDecimal(0L).multiply(BigDecimal(price))
+                                            }
+                                            currencyValue=String.format("%.4f", amount)
+                                        } else {
+                                            amountErrorAction=true
+                                            amountErrorText=
+                                                context.getString(R.string.beldex_amount_valid_error_message)
+                                        }
+                                    } else {
+                                        amountErrorAction=false
+                                        currencyValue="0.0000"
+                                    }
+                                } else {
+                                    if (it.isNotEmpty()) {
+                                        if (validateBELDEXAmount(it) && totalFunds != 0.0.toLong()) {
+                                            amountErrorAction=false
+                                            val bdx=getCleanAmountString(it)
+                                            val amount : BigDecimal=if (bdx != null) {
+                                                BigDecimal(bdx.toDouble()).multiply(
+                                                    BigDecimal(price)
+                                                )
+                                            } else {
+                                                BigDecimal(0L).multiply(BigDecimal(price))
+                                            }
+                                            currencyValue=String.format("%.4f", amount)
+                                        } else {
+                                            amountErrorAction=true
+                                            amountErrorText=
+                                                context.getString(R.string.beldex_amount_valid_error_message)
+                                        }
+                                    } else {
+                                        amountErrorAction=false
+                                        currencyValue="0.0000"
+                                    }
+                                }
+                            }
+                        },
+                        focusedBorderColor=MaterialTheme.appColors.textFiledBorderColor,
+                        focusedLabelColor=MaterialTheme.appColors.textColor,
+                        textColor=MaterialTheme.appColors.textColor,
+                        focusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
+                        unFocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
+                        maxLen=16,
+                        modifier=Modifier
+                            .padding(10.dp)
+                            .fillMaxWidth()
+                            .weight(1f),
+                        shape=RoundedCornerShape(12.dp),
+                    )
+                }
+                if (amountErrorAction) {
+                    Text(
+                        text=amountErrorText,
+                        modifier=Modifier.padding(start=20.dp, bottom=10.dp),
+                        style=MaterialTheme.typography.bodyLarge.copy(
+                            color=MaterialTheme.appColors.errorMessageColor,
+                            fontSize=13.sp,
+                            fontWeight=FontWeight(400)
+                        )
+                    )
+                }
+
+                Text(
+                    "$currencyValue $fiatCurrency",
+                    modifier=Modifier.padding(start=20.dp, bottom=20.dp),
+                    style=MaterialTheme.typography.bodyLarge.copy(
+                        color=MaterialTheme.appColors.editTextPlaceholder,
+                        fontSize=16.sp,
+                        fontWeight=FontWeight(700)
+                    )
+                )
+
+                Row(
+                    horizontalArrangement=Arrangement.Center,
+                    verticalAlignment=Alignment.CenterVertically
+
+                ) {
+                    Text(
+                        text=context.getString(R.string.beldex_address),
+                        style=MaterialTheme.typography.bodyLarge.copy(
+                            color=MaterialTheme.appColors.textColor,
+                            fontSize=16.sp,
+                            fontWeight=FontWeight(700)
+                        ),
+                        modifier=Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .padding(10.dp)
+                    )
+
+                    Box(
+                        modifier=Modifier
+                            .width(32.dp)
+                            .height(32.dp)
+                            .background(
+                                colorResource(id=R.color.your_bchat_id_bg),
+                                shape=RoundedCornerShape(10.dp)
+                            ), contentAlignment=Alignment.Center
+                    ) {
+
+                        Image(
+                            painter=painterResource(id=R.drawable.ic_scan_qr_code),
+                            contentDescription="",
+                            modifier=Modifier.clickable {
+                                if (!CheckOnline.isOnline(context)) {
+                                    Toast.makeText(
+                                        context,
+                                        R.string.please_check_your_internet_connection,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                } else {
+                                    focusManager.clearFocus()
+                                    listener.onScan()
+                                }
+                            })
+                    }
+                    Spacer(modifier=Modifier.width(10.dp))
+
+                    Box(
+                        modifier=Modifier
+                            .width(32.dp)
+                            .height(32.dp)
+                            .background(
+                                colorResource(id=R.color.button_green),
+                                shape=RoundedCornerShape(10.dp)
+                            )
+                            .clickable {
+                                openAddressBookActivity()
+                            }, contentAlignment=Alignment.Center
+                    ) {
+
+                        Image(
+                            painter=painterResource(id=R.drawable.address_book),
+                            contentDescription=""
+                        )
+                    }
+
+                }
+                TextField(
+                    value=beldexAddress.value,
+                    placeholder={
+                        Text(
+                            text=context.getString(R.string.enter_address),
+                            style=MaterialTheme.typography.bodyMedium,
+                            color=MaterialTheme.appColors.editTextPlaceholder
+                        )
+                    },
+                    keyboardOptions=KeyboardOptions.Default.copy(
+                        keyboardType=KeyboardType.Text, imeAction=ImeAction.Done
+                    ),
+                    onValueChange={
+                        beldexAddress.value=it
+                        addressErrorAction.value=false
+                        possibleCryptos.clear()
+                        selectedCrypto=null
+                        //val address: String = binding.beldexAddress.EditTxtLayout.editText?.text.toString().trim()
+                        if (isIntegratedAddress(beldexAddress.value)) {
+                            possibleCryptos.add(Crypto.BDX)
+                            selectedCrypto=Crypto.BDX
+                            addressErrorAction.value=true
+                            addressErrorText.value=
+                                context.getString(R.string.info_paymentid_integrated)
+                            addressErrorTextColorChanged.value=true
+                            // binding.beldexAddressErrorMessage.setTextColor(ContextCompat.getColor(requireContext(), R.color.button_green))
+                            setMode(Mode.BDX)
+                        } else if (isStandardAddress(beldexAddress.value)) {
+                            possibleCryptos.add(Crypto.BDX)
+                            selectedCrypto=Crypto.BDX
+                            setMode(Mode.BDX)
+                        }
+                        if (possibleCryptos.isEmpty()) {
+                            Timber.d("other")
+                            setMode(Mode.BDX)
+                        }
+                    },
+                    modifier=Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    shape=RoundedCornerShape(12.dp),
+                    colors=TextFieldDefaults.colors(
+                        unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
+                        focusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
+                        focusedIndicatorColor=Color.Transparent,
+                        unfocusedIndicatorColor=Color.Transparent,
+                        disabledIndicatorColor=Color.Transparent,
+                        selectionColors=TextSelectionColors(
+                            MaterialTheme.appColors.textSelectionColor,
+                            MaterialTheme.appColors.textSelectionColor
+                        ),
+                        cursorColor=colorResource(id=R.color.button_green)
+                    ),
+                    textStyle=TextStyle(
+                        color=MaterialTheme.appColors.primaryButtonColor,
+                        fontSize=13.sp,
+                        fontWeight=FontWeight(400)
+                    ),
+                    maxLines=5
+                )
+
+                if (addressErrorAction.value) {
+                    Text(
+                        text=addressErrorText.value,
+                        modifier=Modifier.padding(start=20.dp, bottom=10.dp),
+                        style=MaterialTheme.typography.bodyLarge.copy(
+                            color=if (addressErrorTextColorChanged.value) {
+                                MaterialTheme.appColors.primaryButtonColor
+                            } else MaterialTheme.appColors.errorMessageColor,
+                            fontSize=13.sp,
+                            fontWeight=FontWeight(400)
+                        )
+                    )
+                }
+
+
+                Row(
+                    verticalAlignment=Alignment.CenterVertically,
+                    horizontalArrangement=Arrangement.Center,
+                    modifier=Modifier
+                ) {
+                    Text(
+                        text="Transaction Priority", style=MaterialTheme.typography.bodyLarge.copy(
+                            color=MaterialTheme.appColors.textColor,
+                            fontSize=16.sp,
+                            fontWeight=FontWeight(700)
+                        ), modifier=Modifier.padding(10.dp)
+                    )
+                    ExposedDropdownMenuBox(
+                        expanded=expanded, onExpandedChange={ expanded=!expanded }) {
+                        TextField(
+                            modifier=Modifier.menuAnchor(),
+                            shape=RoundedCornerShape(12.dp),
+                            readOnly=true,
+                            value=options[selectedFeePriority],
+                            onValueChange={},
+                            trailingIcon={ ExposedDropdownMenuDefaults.TrailingIcon(expanded=expanded) },
+                            colors=ExposedDropdownMenuDefaults.textFieldColors(
+                                focusedTextColor=colorResource(id=R.color.button_green),
+                                unfocusedContainerColor=MaterialTheme.appColors.cardBackground,
+                                focusedContainerColor=MaterialTheme.appColors.cardBackground,
+                                focusedIndicatorColor=Color.Transparent,
+                                unfocusedIndicatorColor=Color.Transparent,
+                                disabledIndicatorColor=Color.Transparent,
+                            ),
+
+                            textStyle=TextStyle(
+                                color=MaterialTheme.appColors.textColor,
+                                fontSize=14.sp,
+                                fontWeight=FontWeight.Bold
+                            ),
+                        )
+                        ExposedDropdownMenu(
+                            expanded=expanded,
+                            onDismissRequest={ expanded=false },
+                            modifier=Modifier.background(color=MaterialTheme.appColors.cardBackground)
+                        ) {
+                            options.forEach { selectionOption ->
+                                DropdownMenuItem(
+                                    text={
+                                        Text(
+                                            selectionOption,
+                                            style=MaterialTheme.typography.bodyMedium.copy(
+                                                color=MaterialTheme.appColors.textColor,
+                                                fontSize=14.sp,
+                                                fontWeight=FontWeight.Bold
+                                            ),
+                                            color=MaterialTheme.appColors.textColor
+                                        )
+                                    },
+                                    modifier=Modifier.padding(vertical=10.dp, horizontal=10.dp),
+                                    onClick={
+                                        selectedOptionText=selectionOption
+                                        expanded=false
+                                        if (selectionOption == options[0]) {
+                                            feePriorityOnClick(5)//Flash value
+                                            viewModels.updateSelectedOption(options[0])//Flash position
+                                            selectedFeePriority=0
+                                        } else {
+                                            feePriorityOnClick(1)//Slow value
+                                            viewModels.updateSelectedOption(options[1])//Slow position
+                                            selectedFeePriority=1
+                                        }
+                                    },
+                                )
+                            }
+                        }
+                    }
+                }
+
+
+                Row(
+                    horizontalArrangement=Arrangement.Center,
+                    verticalAlignment=Alignment.CenterVertically,
+                    modifier=Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp)
+                        .border(
+                            width=0.8.dp,
+                            color=colorResource(id=R.color.divider_color).copy(alpha=0.5f),
+                            shape=RoundedCornerShape(12.dp)
+                        )
+                ) {
+                    Text(
+                        text="Estimated Fee : ", style=MaterialTheme.typography.bodyLarge.copy(
+                            color=MaterialTheme.appColors.textHint,
+                            fontSize=14.sp,
+                            fontWeight=FontWeight.Bold
+                        ), modifier=Modifier.padding(top=20.dp, bottom=20.dp, start=20.dp)
+                    )
+                    Text(
+                        text="$estimatedFee BDX", style=MaterialTheme.typography.bodyLarge.copy(
+                            color=MaterialTheme.appColors.textColor,
+                            fontSize=14.sp,
+                            fontWeight=FontWeight.ExtraBold
+                        ), modifier=Modifier.padding(top=20.dp, bottom=20.dp, end=20.dp)
+                    )
+                }
+
+
+            }
+        }
+        PrimaryButton(
+            onClick={
+                createTransactionIfPossible()
+                // context.startActivity(Intent(context, OnBoardingActivity::class.java))
+            },
+            modifier=Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            shape=RoundedCornerShape(12.dp),
+            enabled=beldexAddress.value.isNotEmpty() && beldexAmount.value.isNotEmpty(),
+            disabledContainerColor=MaterialTheme.appColors.disabledButtonContainerColor
+        ) {
+            Text(
+                text=stringResource(id=R.string.send), style=BChatTypography.bodyLarge.copy(
+                    color=if (beldexAddress.value.isNotEmpty() && beldexAmount.value.isNotEmpty()) {
+                        Color.White
+                    } else {
+                        MaterialTheme.appColors.linkBnsDisabledButtonContent
+                    }, fontWeight=FontWeight(400), fontSize=16.sp
+                ), modifier=Modifier.padding(8.dp)
+            )
+        }
+    }
 }
 
 

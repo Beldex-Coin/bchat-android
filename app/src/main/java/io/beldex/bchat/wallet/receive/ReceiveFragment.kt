@@ -14,11 +14,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.WriterException
@@ -36,6 +38,7 @@ import io.beldex.bchat.util.toPx
 import io.beldex.bchat.wallet.OnBackPressedListener
 import io.beldex.bchat.wallet.jetpackcomposeUI.ReceiveScreen
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.ui.ScreenContainer
 import io.beldex.bchat.databinding.ActivityReceiveBinding
 import timber.log.Timber
 import java.io.File
@@ -51,12 +54,8 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
     private var qrValid = false
     private var logo: Bitmap? = null
     private val isLoaded = false
-    var listenerCallback: Listener? = null
-    private var shareButtonLastClickTime: Long = 0
+    private var listenerCallback: Listener? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
     interface Listener {
         fun walletOnBackPressed() //-
     }
@@ -76,61 +75,25 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-     /*   binding = ActivityReceiveBinding.inflate(layoutInflater,container,false)
-        (activity as HomeActivity).setSupportActionBar(binding.toolbar)
-        binding.walletAddressReceive.text = IdentityKeyUtil.retrieve(requireActivity(),IdentityKeyUtil.IDENTITY_W_ADDRESS_PREF)
-        generateQr()
-
-        binding.amountEditTextReceive.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {
-                if (binding.amountEditTextReceive.text.isNotEmpty()) {
-                    if(validateBELDEXAmount(s.toString())) {
-                        hideErrorMessage()
-                        reGenerateQr()
-                    }else{
-                        binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
-                        binding.beldexAmountErrorMessage.visibility =View.VISIBLE
-                        binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_valid_error_message)
-                    }
-                } else {
-                    hideErrorMessage()
-                    generateQr()
-                }
-            }
-            override fun beforeTextChanged(
-                s: CharSequence, start: Int,
-                count: Int, after: Int
-            ) {}
-            override fun onTextChanged(
-                s: CharSequence, start: Int,
-                before: Int, count: Int
-            ) {}
-        })
-        binding.shareButton.setOnClickListener {
-            if (SystemClock.elapsedRealtime() - shareButtonLastClickTime >= 1000) {
-                shareButtonLastClickTime = SystemClock.elapsedRealtime()
-                shareQrCode()
-            }
-        }
-
-        binding.addressCopy.setOnClickListener {
-            copyYourBeldexAddress()
-        }
-
-        binding.exitButton.setOnClickListener {
-            listenerCallback?.walletOnBackPressed()
-        }
-
-        return binding.root*/
+    ): View {
         return ComposeView(requireContext()).apply { 
             setContent {
                 BChatTheme {
                     Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.appColors.cardBackground
+                        modifier=Modifier.fillMaxSize(),
+                        color=MaterialTheme.appColors.cardBackground
                     ) {
-                        ReceiveScreen(listenerCallback,modifier = Modifier)
+                        ScreenContainer(
+                            title=stringResource(id=R.string.activity_receive_page_title),
+                            onBackClick={ requireActivity().onBackPressed() },
+                            modifier=Modifier
+                                .fillMaxSize()
+                                .background(
+                                    color=MaterialTheme.appColors.walletDashboardMainMenuCardBackground
+                                )
+                        ) {
+                            ReceiveScreen(modifier=Modifier)
+                        }
                     }
                 }
             }

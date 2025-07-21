@@ -90,6 +90,7 @@ import kotlinx.coroutines.Job
 import nl.komponents.kovenant.android.startKovenant
 import nl.komponents.kovenant.android.stopKovenant
 import org.conscrypt.Conscrypt
+import org.signal.aesgcmprovider.AesGcmProvider
 import org.webrtc.PeerConnectionFactory
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -260,7 +261,22 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
     }
 
     private fun initializeSecurityProvider() {
-        val conscryptPosition = Security.insertProviderAt(Conscrypt.newProvider(), 0)
+        try {
+            Class.forName("org.signal.aesgcmprovider.AesGcmCipher")
+            val aesPosition = Security.insertProviderAt(AesGcmProvider(), 1)
+            Log.i(TAG, "Installed AesGcmProvider: $aesPosition")
+            if (aesPosition < 0) {
+                Log.e(TAG, "Failed to install AesGcmProvider()")
+                // Only throw if you truly can't proceed without it
+                // throw ProviderInitializationException()
+            }
+        } catch (e: ClassNotFoundException) {
+            Log.e(TAG, "AesGcmCipher class not found - skipping AesGcmProvider", e)
+        } catch (e: UnsatisfiedLinkError) {
+            Log.e(TAG, "Native libs not found - skipping AesGcmProvider", e)
+        }
+
+        val conscryptPosition = Security.insertProviderAt(Conscrypt.newProvider(), 2)
         Log.i(TAG, "Installed Conscrypt provider: $conscryptPosition")
         if (conscryptPosition < 0) {
             Log.w(TAG, "Did not install Conscrypt provider. May already be present.")

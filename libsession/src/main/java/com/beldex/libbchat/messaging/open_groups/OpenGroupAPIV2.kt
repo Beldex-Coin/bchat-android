@@ -248,7 +248,7 @@ object OpenGroupAPIV2 {
             val ephemeralPublicKey = decode(base64EncodedEphemeralPublicKey)
             val symmetricKey = AESGCM.generateSymmetricKey(ephemeralPublicKey, privateKey)
             val tokenAsData = try {
-                AESGCM.decrypt(ciphertext, 0,ciphertext.size, symmetricKey)
+                AESGCM.decrypt(ciphertext, symmetricKey)
             } catch (e: Exception) {
                 throw Error.DecryptionFailed
             }

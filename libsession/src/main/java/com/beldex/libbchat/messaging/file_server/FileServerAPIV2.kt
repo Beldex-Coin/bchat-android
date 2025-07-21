@@ -40,8 +40,6 @@ object FileServerAPIV2 {
     const val server = BuildConfig.SERVER
     const val maxFileSize = 10_000_000 // 10 MB
 
-    val fileServerUrl: HttpUrl by lazy { server.toHttpUrl() }
-
     sealed class Error(message: String) : Exception(message) {
         object ParsingFailed : Error("Invalid response.")
         object InvalidURL : Error("Invalid URL.")
@@ -67,10 +65,12 @@ object FileServerAPIV2 {
     }
 
     private fun send(request: Request): Promise<OnionResponse, Exception> {
-        val urlBuilder = fileServerUrl
-            .newBuilder()
+        val url = server.toHttpUrlOrNull() ?: return Promise.ofFail(OpenGroupAPIV2.Error.InvalidURL)
+        val urlBuilder = HttpUrl.Builder()
+            .scheme(url.scheme)
+            .host(url.host)
+            .port(url.port)
             .addPathSegments(request.endpoint)
-        //-Log.d("Beldex"," file server send Url builder $urlBuilder")
         if (request.verb == HTTP.Verb.GET) {
             for ((key, value) in request.queryParameters) {
                 urlBuilder.addQueryParameter(key, value)

@@ -1,6 +1,6 @@
 package com.beldex.libbchat.messaging.messages.visible
 
-import com.goterl.lazysodium.BuildConfig
+import com.beldex.libbchat.BuildConfig
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachment
 import com.beldex.libsignal.protos.SignalServiceProtos

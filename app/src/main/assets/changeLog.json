@@ -523,6 +523,17 @@
           "description":"Minor bug fixes"
         }
       ]
+    },
+    {
+      "title": "2.7.2",
+      "descriptions": [
+        {
+          "description":"Added support for 16 KB page size"
+        },
+        {
+          "description":"Minor bug fixes"
+        }
+      ]
     }
   ]
 }

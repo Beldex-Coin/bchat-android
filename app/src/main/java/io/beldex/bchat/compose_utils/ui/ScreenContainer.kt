@@ -9,8 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.IconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -63,6 +62,62 @@ fun ScreenContainer(
                 ),
                 modifier = Modifier.weight(1f)
             )
+
+            actionItems()
+        }
+
+        content()
+    }
+}
+
+@Composable
+fun WalletScreenContainer(
+    title: String,
+    onBackClick: () -> Unit,
+    onSettingsClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    actionItems: @Composable () -> Unit = {},
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Column(
+        modifier = modifier
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp)
+        ) {
+            Icon(
+                painterResource(id = R.drawable.ic_back_arrow),
+                contentDescription = stringResource(R.string.back),
+                tint = MaterialTheme.appColors.editTextColor,
+                modifier = Modifier
+                    .clickable {
+                        onBackClick()
+                    }
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge.copy(
+                    color = MaterialTheme.appColors.editTextColor,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                ),
+                modifier = Modifier.weight(1f)
+            )
+            IconButton(onClick = {
+                onSettingsClick()
+            }) {
+                Icon(
+                    painterResource(id = R.drawable.ic_wallet_dashboard_setting),
+                    "wallet settings",
+                    tint = MaterialTheme.appColors.editTextColor
+                )
+            }
 
             actionItems()
         }

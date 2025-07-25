@@ -3,59 +3,64 @@ package io.beldex.bchat.wallet.send
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import io.beldex.bchat.data.*
-import io.beldex.bchat.model.PendingTransaction
-import io.beldex.bchat.wallet.send.interfaces.SendConfirm
-import io.beldex.bchat.R
-import io.beldex.bchat.wallet.addressbook.AddressBookActivity
-
-import android.content.Intent
 import android.util.Log
 import android.util.Patterns
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.ui.ScreenContainer
 import io.beldex.bchat.conversation.v2.TransactionLoadingBar
+import io.beldex.bchat.data.*
+import io.beldex.bchat.databinding.FragmentSendBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.model.AsyncTaskCoroutine
+import io.beldex.bchat.model.PendingTransaction
 import io.beldex.bchat.model.Wallet
 import io.beldex.bchat.model.WalletManager
+import io.beldex.bchat.onboarding.ui.EXTRA_PIN_CODE_ACTION
+import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.util.BChatThreadPoolExecutor
 import io.beldex.bchat.util.Helper
-import io.beldex.bchat.wallet.*
+import io.beldex.bchat.wallet.CheckOnline
+import io.beldex.bchat.wallet.OnBackPressedListener
+import io.beldex.bchat.wallet.OnUriScannedListener
+import io.beldex.bchat.wallet.OnUriWalletScannedListener
+import io.beldex.bchat.wallet.addressbook.AddressBookActivity
 import io.beldex.bchat.wallet.jetpackcomposeUI.SendScreen
 import io.beldex.bchat.wallet.jetpackcomposeUI.WalletViewModels
+import io.beldex.bchat.wallet.send.interfaces.SendConfirm
 import io.beldex.bchat.wallet.utils.OpenAliasHelper
 import io.beldex.bchat.wallet.utils.helper.ServiceHelper
 import io.beldex.bchat.wallet.utils.pincodeview.CustomPinActivity
-import io.beldex.bchat.wallet.utils.pincodeview.managers.AppLock
 import io.beldex.bchat.wallet.utils.pincodeview.managers.LockManager
-import io.beldex.bchat.databinding.FragmentSendBinding
-import java.lang.ClassCastException
-import java.lang.NumberFormatException
-import java.util.*
 import timber.log.Timber
-import java.lang.Exception
+import java.util.Locale
 import java.util.concurrent.Executor
-import androidx.compose.material3.Surface
-import io.beldex.bchat.compose_utils.appColors
-import io.beldex.bchat.onboarding.ui.EXTRA_PIN_CODE_ACTION
-import io.beldex.bchat.onboarding.ui.PinCodeAction
 
 
 class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletScannedListener, OnBackPressedListener {
@@ -202,7 +207,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
       /*  val view = inflater.inflate(R.layout.fragment_home, container, false)
         val composeContainer = view.findViewById<FrameLayout>(R.id.activity_home_frame_layout_container)
@@ -222,26 +227,40 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         }
 
         return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                BChatTheme() {
+                BChatTheme {
                     Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.appColors.cardBackground
-                    ){
-                        SendScreen(
-                            listener = activityCallback!!,
-                            viewModels,
-                            beldexAddress,
-                            beldexAmount,
-                            beldexAddressErrorAction,
-                            beldexAddressErrorText,
-                            beldexAddressErrorTextColorChanged,
-                            resolvingOA,
-                            scanFromGallery,
-                            feePriorityOnClick = {selectedFeePriority ->
-                                AsyncCalculateEstimatedFee(selectedFeePriority).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
-                            }
-                        )
+                        modifier=Modifier
+                            .fillMaxSize(),
+                        color=MaterialTheme.appColors.cardBackground
+                    ) {
+                        ScreenContainer(
+                            title=stringResource(id=R.string.send),
+                            onBackClick={ requireActivity().onBackPressed() },
+                            modifier=Modifier
+                                .fillMaxSize()
+                                .background(
+                                    color=MaterialTheme.appColors.walletDashboardMainMenuCardBackground
+                                )
+                        ) {
+                            SendScreen(
+                                listener=activityCallback!!,
+                                viewModels,
+                                beldexAddress,
+                                beldexAmount,
+                                beldexAddressErrorAction,
+                                beldexAddressErrorText,
+                                beldexAddressErrorTextColorChanged,
+                                resolvingOA,
+                                scanFromGallery,
+                                feePriorityOnClick={ selectedFeePriority ->
+                                    AsyncCalculateEstimatedFee(selectedFeePriority).execute<Executor>(
+                                        BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR
+                                    )
+                                }
+                            )
+                        }
                     }
                 }
             }

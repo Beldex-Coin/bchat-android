@@ -28,9 +28,9 @@ dependencies {
     }
     implementation 'androidx.media3:media3-exoplayer:1.4.1'
     implementation 'androidx.media3:media3-ui:1.4.1'
-    implementation 'org.conscrypt:conscrypt-android:2.5.2'
-    implementation 'org.signal:aesgcmprovider:0.0.3'
-    implementation 'io.github.webrtc-sdk:android:125.6422.06.1'
+    implementation 'org.conscrypt:conscrypt-android:2.5.3'
+    implementation 'org.signal:aesgcmprovider:0.0.4'
+    implementation 'io.github.webrtc-sdk:android:125.6422.07'
     implementation "me.leolin:ShortcutBadger:1.1.16"
     implementation 'com.jpardogo.materialtabstrip:library:1.0.9'
     implementation 'org.apache.httpcomponents:httpclient-android:4.3.5'
@@ -66,7 +66,6 @@ dependencies {
     implementation project(":libsignal")
     implementation project(":libsession")
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxJsonVersion"
-    implementation "com.github.session-foundation.session-android-curve-25519:curve25519-java:$curve25519Version"
     implementation 'com.goterl:lazysodium-android:5.0.2@aar'
     implementation "net.java.dev.jna:jna:5.12.1@aar"
     implementation "com.google.protobuf:protobuf-java:$protobufVersion"
@@ -78,7 +77,6 @@ dependencies {
     implementation "nl.komponents.kovenant:kovenant-android:$kovenantVersion"
     implementation "com.github.lelloman:android-identicons:v11"
     implementation "com.jakewharton.rxbinding3:rxbinding:3.1.0"
-    implementation "com.github.tbruyelle:rxpermissions:0.10.2"
     implementation "com.github.ybq:Android-SpinKit:1.4.0"
     implementation "com.opencsv:opencsv:4.6"
     testImplementation "junit:junit:$junitVersion"

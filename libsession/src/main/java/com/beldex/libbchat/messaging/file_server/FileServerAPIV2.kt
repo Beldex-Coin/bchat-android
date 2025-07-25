@@ -16,6 +16,7 @@ import com.beldex.libsignal.utilities.HTTP
 import com.beldex.libsignal.utilities.JsonUtil
 import com.beldex.libsignal.utilities.Log
 import okhttp3.Headers.Companion.toHeaders
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaType
 
@@ -65,13 +66,11 @@ object FileServerAPIV2 {
 
     private fun send(request: Request): Promise<OnionResponse, Exception> {
         val url = server.toHttpUrlOrNull() ?: return Promise.ofFail(OpenGroupAPIV2.Error.InvalidURL)
-        //-Log.d("Beldex"," file server send URL $url")
         val urlBuilder = HttpUrl.Builder()
             .scheme(url.scheme)
             .host(url.host)
             .port(url.port)
             .addPathSegments(request.endpoint)
-        //-Log.d("Beldex"," file server send Url builder $urlBuilder")
         if (request.verb == HTTP.Verb.GET) {
             for ((key, value) in request.queryParameters) {
                 urlBuilder.addQueryParameter(key, value)

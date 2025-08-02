@@ -1,0 +1,10 @@
+BChat gives power to the people. It's a decentralized, confidential messenger built over the Beldex blockchain.
+
+Key Features:
+- Complete Confidentiality: BChat is not just for encrypted messaging. BChat is inherently confidentiality-focused. It does not collect your personal information such as your name, phone number, email ID or location.
+- Own Your Identity: We understand that identities are complex. On BChat, you can assume your real-world identity or any identity that you prefer. Stay truly anonymous.
+- Own Your Data: Our privacy policy is simple. You control your data and we own none of it. The messages and files that you send are stored on your device and can only be accessed by you. And if you want to delete your data forever, you can do it with a single click.
+- Reliable messaging: BChat ensures low latency and high throughput through a global network of Beldex masternodes. Messages are delivered seamlessly, whether the recipient is online or offline.
+- BNS for BChat: Simplify your messaging experience with the Beldex Name System (BNS). Replace complex BChat IDs with easy-to-remember username like BNS names, making communication more intuitive and user-friendly.
+- Open source: BChat's codebase is open source. It is built by community contributors like you. Anyone can contribute to the development of the application.
+- Do More: BChat strives to be not just a messaging application. There's more in store in subsequent releases such as an AI powered content moderation system and emoji reactions to name a few.

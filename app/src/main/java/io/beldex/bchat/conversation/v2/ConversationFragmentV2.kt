@@ -2985,7 +2985,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         val outgoingMediaMessage: OutgoingMediaMessage
         /*if contact is shared with quoted msg - if case will handle, rest cases will be handled by else case*/
         if (contacts.isNotEmpty()) {
-            val contact = SharedContact(contacts[0].threadId, contacts[0].address.toString(), contacts[0].name)
+            val contact = SharedContact(contacts[0].address.toString(), contacts[0].name)
             message.sharedContact = contact
             outgoingMediaMessage = OutgoingMediaMessage.fromSharedContact(message, recipient, attachments, quote, linkPreview)
         } else {
@@ -3050,7 +3050,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         // Create the message
         val message = VisibleMessage()
         message.sentTimestamp = MnodeAPI.nowWithOffset
-        val contact = SharedContact(contacts[0].threadId, contacts[0].address.serialize(), contacts[0].name)
+        val contact = SharedContact(contacts[0].address.serialize(), contacts[0].name)
         message.sharedContact = contact
         val outgoingTextMessage = OutgoingTextMessage.fromSharedContact(contact, viewModel.recipient.value, message.sentTimestamp)
         // Put the message in the database

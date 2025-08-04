@@ -24,7 +24,6 @@ class ContactSharingActivity: ComponentActivity() {
                     val resultIntent = Intent()
                     resultIntent.putExtra(RESULT_CONTACT_TO_SHARE, ArrayList(state.selectedContacts.map { contact ->
                         ContactModel(
-                            threadId = contact.threadId.toString(),
                             address = contact.recipient.address,
                             name = contact.recipient.name ?: ""
                         )

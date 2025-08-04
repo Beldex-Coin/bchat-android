@@ -486,7 +486,6 @@ class VisibleMessageContentView : MaterialCardView {
         binding.contactView.setContent {
             BChatTheme {
                 val contact = ContactModel(
-                    threadId = data.threadId,
                     address = Address.fromSerialized(data.address),
                     name = data.name
                 )

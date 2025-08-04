@@ -46,8 +46,8 @@ class UpdateMessageData () {
             constructor(): this("","")
         }
 
-        class SharedContact(val threadId: String, val address: String, val name: String): Kind() {
-            constructor(): this("", "", "")
+        class SharedContact(val address: String, val name: String): Kind() {
+            constructor(): this("", "")
         }
     }
 
@@ -77,8 +77,8 @@ class UpdateMessageData () {
             return UpdateMessageData(Kind.Payment(amount,txnId))
         }
 
-        fun buildSharedContact(threadId: String, address: String, name: String): UpdateMessageData {
-            return UpdateMessageData(Kind.SharedContact(threadId, address, name))
+        fun buildSharedContact(address: String, name: String): UpdateMessageData {
+            return UpdateMessageData(Kind.SharedContact(address, name))
         }
 
         fun fromJSON(json: String): UpdateMessageData? {

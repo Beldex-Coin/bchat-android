@@ -5,31 +5,31 @@ import com.beldex.libsignal.utilities.Log
 
 class SharedContact() {
 
-    var threadId: String? = null
+    //var threadId: String? = null
     var address: String? = null
     var name: String? = null
 
     fun isValid(): Boolean {
-        return (threadId != null && address != null && name != null)
+        return (address != null && name != null)
     }
 
     companion object {
         const val TAG = "SharedContact"
 
         fun fromProto(proto: SignalServiceProtos.DataMessage.SharedContact): SharedContact {
-            return SharedContact(proto.threadId, proto.address, proto.name)
+//            return SharedContact(proto.threadId, proto.address, proto.name)
+            return SharedContact(proto.address, proto.name)
         }
     }
 
-    constructor(threadId: String?, address: String?, name: String?): this() {
-        this.threadId = threadId
+    constructor(address: String?, name: String?): this() {
         this.address = address
         this.name = name
     }
 
     fun toProto(): SignalServiceProtos.DataMessage.SharedContact? {
         val contactProto = SignalServiceProtos.DataMessage.SharedContact.newBuilder()
-        contactProto.threadId = threadId.toString()
+//        contactProto.threadId = threadId.toString()
         contactProto.address = address
         contactProto.name = name
         return try {

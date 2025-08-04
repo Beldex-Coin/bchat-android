@@ -215,7 +215,6 @@ class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPr
                 viewHolder.binding.contactView.setContent {
                     BChatTheme {
                         val contact = ContactModel(
-                            threadId = data.threadId,
                             address = Address.fromSerialized(data.address),
                             name = data.name
                         )

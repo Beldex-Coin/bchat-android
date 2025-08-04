@@ -260,12 +260,7 @@ class RegisterActivity : BaseActionBarActivity() {
             //if (dialogOpened) registerActivity.dismissProgressDialog()
             //if (!isAdded()) return  // never mind
             //registerActivity.dismissProgressDialog()
-            registerActivity.binding.beldexAddressAnimation!!.visibility=View.GONE
-            registerActivity.binding.beldexAddressTextView.visibility=View.VISIBLE
-            registerActivity.binding.registerButton.isEnabled=true
-            registerActivity.binding.registerButton.setTextColor(ContextCompat.getColor(registerActivity, R.color.white))
-            registerActivity.binding.registerButton.background =
-                ContextCompat.getDrawable(registerActivity, R.drawable.prominent_filled_button_medium_background)
+
             registerActivity.walletName = name
             Log.d("onPostExecute--> ", result.toString())
             if (result == true) {
@@ -326,7 +321,7 @@ class RegisterActivity : BaseActionBarActivity() {
 
     //New Line
     private fun updateKeyPair(seedByteArray: ByteArray, address: String?) {
-        binding.beldexAddressTextView?.text = address
+        binding.beldexAddressTextView.text= address
         val keyPairGenerationResult = KeyPairUtilities.generate(seedByteArray)
         seed = keyPairGenerationResult.seed
         ed25519KeyPair = keyPairGenerationResult.ed25519KeyPair
@@ -337,6 +332,12 @@ class RegisterActivity : BaseActionBarActivity() {
             keyPairGenerationResult.ed25519KeyPair,
             x25519KeyPair!!
         )
+        this.binding.beldexAddressAnimation.visibility=View.GONE
+        this.binding.beldexAddressTextView.visibility=View.VISIBLE
+        this.binding.registerButton.isEnabled=true
+        this.binding.registerButton.setTextColor(ContextCompat.getColor(this, R.color.white))
+        this.binding.registerButton.background =
+        ContextCompat.getDrawable(this, R.drawable.prominent_filled_button_medium_background)
     }
 
     //Main
@@ -407,6 +408,9 @@ class RegisterActivity : BaseActionBarActivity() {
     private fun register() {
         //Important
         //KeyPairUtilities.store(this, seed!!, ed25519KeyPair!!, x25519KeyPair!!)
+        if (seed == null || x25519KeyPair == null || x25519KeyPair?.hexEncodedPublicKey == null) {
+            return
+        }
 
         val userHexEncodedPublicKey = x25519KeyPair!!.hexEncodedPublicKey
         val registrationID = KeyHelper.generateRegistrationId(false)
@@ -414,12 +418,8 @@ class RegisterActivity : BaseActionBarActivity() {
         TextSecurePreferences.setLocalNumber(this, userHexEncodedPublicKey)
         TextSecurePreferences.setRestorationTime(this, 0)
         TextSecurePreferences.setHasViewedSeed(this, false)
-//        val intent = Intent(this, CreatePasswordActivity::class.java)
-//        intent.putExtra("callPage", 1)
-//        push(intent)
         val intent = Intent(Intent.ACTION_VIEW, "onboarding://manage_pin?finish=true&action=${PinCodeAction.CreatePinCode.action}".toUri())
         pinCodeLauncher.launch(intent)
-        //       finish()
     }
 
     private fun copyPublicKey() {

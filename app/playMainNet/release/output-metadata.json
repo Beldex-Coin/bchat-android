@@ -11,9 +11,22 @@
       "type": "UNIVERSAL",
       "filters": [],
       "attributes": [],
-      "versionCode": 82,
+      "versionCode": 84,
       "versionName": "2.7.2",
       "outputFile": "Bchat-2.7.2-universal.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "armeabi-v7a"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 84,
+      "versionName": "2.7.2",
+      "outputFile": "Bchat-2.7.2-armeabi-v7a.apk"
     },
     {
       "type": "ONE_OF_MANY",
@@ -24,7 +37,7 @@
         }
       ],
       "attributes": [],
-      "versionCode": 82,
+      "versionCode": 84,
       "versionName": "2.7.2",
       "outputFile": "Bchat-2.7.2-arm64-v8a.apk"
     },
@@ -37,22 +50,9 @@
         }
       ],
       "attributes": [],
-      "versionCode": 82,
+      "versionCode": 84,
       "versionName": "2.7.2",
       "outputFile": "Bchat-2.7.2-x86_64.apk"
-    },
-    {
-      "type": "ONE_OF_MANY",
-      "filters": [
-        {
-          "filterType": "ABI",
-          "value": "armeabi-v7a"
-        }
-      ],
-      "attributes": [],
-      "versionCode": 82,
-      "versionName": "2.7.2",
-      "outputFile": "Bchat-2.7.2-armeabi-v7a.apk"
     }
   ],
   "elementType": "File",
@@ -62,9 +62,9 @@
       "maxApi": 30,
       "baselineProfiles": [
         "baselineProfiles/1/Bchat-2.7.2-universal.dm",
+        "baselineProfiles/1/Bchat-2.7.2-armeabi-v7a.dm",
         "baselineProfiles/1/Bchat-2.7.2-arm64-v8a.dm",
-        "baselineProfiles/1/Bchat-2.7.2-x86_64.dm",
-        "baselineProfiles/1/Bchat-2.7.2-armeabi-v7a.dm"
+        "baselineProfiles/1/Bchat-2.7.2-x86_64.dm"
       ]
     },
     {
@@ -72,9 +72,9 @@
       "maxApi": 2147483647,
       "baselineProfiles": [
         "baselineProfiles/0/Bchat-2.7.2-universal.dm",
+        "baselineProfiles/0/Bchat-2.7.2-armeabi-v7a.dm",
         "baselineProfiles/0/Bchat-2.7.2-arm64-v8a.dm",
-        "baselineProfiles/0/Bchat-2.7.2-x86_64.dm",
-        "baselineProfiles/0/Bchat-2.7.2-armeabi-v7a.dm"
+        "baselineProfiles/0/Bchat-2.7.2-x86_64.dm"
       ]
     }
   ],

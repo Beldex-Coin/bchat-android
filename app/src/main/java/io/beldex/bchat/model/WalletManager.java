@@ -59,13 +59,17 @@ public class WalletManager {
 
     private void unmanageWallet(Wallet wallet) {
         if (wallet == null) {
-            throw new IllegalArgumentException("Cannot unmanage null!");
+            Log.w("WalletManager", "Cannot unmanage null wallet.");
+            return;
         }
         if (getWallet() == null) {
-            throw new IllegalStateException("No wallet under management!");
+            Log.w("WalletManager", "No wallet under management.");
+            return;
         }
-        if (getWallet() != wallet) {
-            throw new IllegalStateException(wallet.getName() + " not under management!");
+
+        if (!getWallet().equals(wallet)) {
+            Log.w("WalletManager", wallet.getName() + " not under management.");
+            return;
         }
         managedWallet = null;
     }

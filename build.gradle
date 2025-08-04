@@ -50,6 +50,13 @@ allprojects {
             }
         }*/
         maven {
+            url = uri("https://raw.githubusercontent.com/signalapp/maven/master/aesgcmprovider/release/")
+            content {
+                includeGroupByRegex("org\\.signal.*")
+            }
+        }
+
+        maven {
             url "https://google.bintray.com/flexbox-layout"
         }
         maven {

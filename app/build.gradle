@@ -13,8 +13,8 @@ apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 configurations.all {
     exclude module: "commons-logging"
 }
-def canonicalVersionCode = 81
-def canonicalVersionName = "2.7.1"
+def canonicalVersionCode = 84
+def canonicalVersionName = "2.7.2"
 
 def postFixSize = 10
 def abiPostFix = ['armeabi-v7a' : 1,
@@ -204,7 +204,7 @@ android {
             version '3.22.1'
         }
     }
-    ndkVersion '27.0.12077973'
+    ndkVersion '28.1.13356709'
     lint {
         abortOnError true
         baseline file('lint-baseline.xml')

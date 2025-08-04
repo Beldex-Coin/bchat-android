@@ -470,6 +470,9 @@ fun NodeScreen(test:Boolean = false) {
             ).show()
         }
     }
+    fun getNodeBaseUrl(fullUrl: String): String {
+        return fullUrl.substringBefore("?")
+    }
 
         Column(modifier=Modifier
             .fillMaxSize()
@@ -489,33 +492,54 @@ fun NodeScreen(test:Boolean = false) {
 
                     ) {
                         itemsIndexed(data!!.toMutableList()) { index, item ->
-                            Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.editTextBackground), border=BorderStroke(width=2.dp, color=if (item.isSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.editTextBackground), shape=RoundedCornerShape(12.dp), elevation=CardDefaults.cardElevation(defaultElevation=0.dp), modifier=Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal=16.dp)
-                                .combinedClickable(
-                                    onClick={
-                                        selectedItemIndex=index
-                                        showChangeNodePopup=true
+                            Card(
+                                colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.editTextBackground),
+                                border=BorderStroke(
+                                    width=2.dp,
+                                    color=if (getNodeBaseUrl(item.toString()) == nodeViewModel.selectedNodeId) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.editTextBackground
+                                ),
+                                shape=RoundedCornerShape(12.dp),
+                                elevation=CardDefaults.cardElevation(defaultElevation=0.dp),
+                                modifier=Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal=16.dp)
+                                    .combinedClickable(
+                                        onClick={
+                                            selectedItemIndex=index
+                                            showChangeNodePopup=true
 
-                                    },
-                                    onLongClick={
-                                        selectedItemIndex=index
-                                        showAddNodeEdit=true
-                                        showAddNode=true
+                                        },
+                                        onLongClick={
+                                            selectedItemIndex=index
+                                            showAddNodeEdit=true
+                                            showAddNode=true
 
-                                    },
-                                )) {
+                                        },
+                                    )
+                            ) {
                                 nodeName=item.name
                                 nodeAddress=item.address
 
-                                Row(verticalAlignment=Alignment.CenterVertically, horizontalArrangement=Arrangement.Center, modifier=Modifier.padding(horizontal=24.dp)) {
-                                    Icon(painter=painterResource(id=R.drawable.ic_connected), contentDescription="", tint=if (errorAction) MaterialTheme.appColors.errorMessageColor else MaterialTheme.appColors.primaryButtonColor, modifier=Modifier.size(10.dp)
+                                Row(
+                                    verticalAlignment=Alignment.CenterVertically,
+                                    horizontalArrangement=Arrangement.Center,
+                                    modifier=Modifier.padding(horizontal=24.dp)
+                                ) {
+                                    Icon(
+                                        painter=painterResource(id=R.drawable.ic_connected),
+                                        contentDescription="",
+                                        tint=if (errorAction) MaterialTheme.appColors.errorMessageColor else MaterialTheme.appColors.primaryButtonColor,
+                                        modifier=Modifier.size(10.dp)
 
                                     )
 
-                                    Column(horizontalAlignment=Alignment.Start, verticalArrangement=Arrangement.Center, modifier=Modifier
-                                        .padding(vertical=10.dp, horizontal=20.dp)
-                                        .weight(0.7f)) {
+                                    Column(
+                                        horizontalAlignment=Alignment.Start,
+                                        verticalArrangement=Arrangement.Center,
+                                        modifier=Modifier
+                                            .padding(vertical=10.dp, horizontal=20.dp)
+                                            .weight(0.7f)
+                                    ) {
                                         if (item.isTested) {
                                             if (item.isValid) {
                                                 errorAction=false
@@ -525,7 +549,8 @@ fun NodeScreen(test:Boolean = false) {
                                                 /*nodeStatusView_Connect.setVisibility(View.VISIBLE)
                                             nodeStatusView_Error.setVisibility(View.INVISIBLE)*/
                                             } else {
-                                                nodeAddress=getResponseErrorText(context, item.responseCode)
+                                                nodeAddress=
+                                                    getResponseErrorText(context, item.responseCode)
                                                 errorAction=true
                                                 // need to update color for address and status image
                                                 /*nodeAddress.setTextColor(ThemeHelper.getThemedColor(context, R.attr.colorError))
@@ -533,11 +558,25 @@ fun NodeScreen(test:Boolean = false) {
                                              nodeStatusView_Connect.setVisibility(View.VISIBLE)*/
                                             }
                                         } else {
-                                            nodeAddress=context.resources.getString(R.string.node_testing, item.hostAddress)
+                                            nodeAddress=context.resources.getString(
+                                                R.string.node_testing, item.hostAddress
+                                            )
                                         }
 
-                                        Text(text=nodeName, style=BChatTypography.titleMedium.copy(color=if (item.isSelected) MaterialTheme.appColors.textColor else if (errorAction) MaterialTheme.appColors.errorMessageColor else MaterialTheme.appColors.primaryButtonColor, fontSize=fontSize, fontWeight=FontWeight(600)))
-                                        Text(text=nodeAddress, style=BChatTypography.titleSmall.copy(color=MaterialTheme.appColors.editTextColor, fontSize=12.sp, fontWeight=FontWeight(400)), modifier=Modifier.padding(vertical=5.dp))
+                                        Text(
+                                            text=nodeName, style=BChatTypography.titleMedium.copy(
+                                                color=if (item.isSelected) MaterialTheme.appColors.textColor else if (errorAction) MaterialTheme.appColors.errorMessageColor else MaterialTheme.appColors.primaryButtonColor,
+                                                fontSize=fontSize,
+                                                fontWeight=FontWeight(600)
+                                            )
+                                        )
+                                        Text(
+                                            text=nodeAddress, style=BChatTypography.titleSmall.copy(
+                                                color=MaterialTheme.appColors.editTextColor,
+                                                fontSize=12.sp,
+                                                fontWeight=FontWeight(400)
+                                            ), modifier=Modifier.padding(vertical=5.dp)
+                                        )
                                     }
                                 }
                             }

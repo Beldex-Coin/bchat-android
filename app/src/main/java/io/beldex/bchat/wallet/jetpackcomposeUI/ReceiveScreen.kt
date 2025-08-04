@@ -18,20 +18,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,7 +43,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.zxing.BarcodeFormat
@@ -68,7 +60,6 @@ import io.beldex.bchat.util.FileProviderUtil
 import io.beldex.bchat.util.Helper
 import io.beldex.bchat.util.copyToClipBoard
 import io.beldex.bchat.util.toPx
-import io.beldex.bchat.wallet.receive.ReceiveFragment
 import io.beldex.bchat.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -79,9 +70,9 @@ import java.io.FileOutputStream
 import java.lang.Exception
 import java.util.HashMap
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
-fun ReceiveScreen(listenerCallback: ReceiveFragment.Listener?, modifier: Modifier) {
+fun ReceiveScreen(modifier: Modifier) {
 
     val context = LocalContext.current
     val numberRegex = remember { "[\\d]*[.]?[\\d]*".toRegex() }
@@ -104,7 +95,6 @@ fun ReceiveScreen(listenerCallback: ReceiveFragment.Listener?, modifier: Modifie
     var bcData: BarcodeData?
     var logo: Bitmap? = null
     val resources = LocalContext.current.resources
-    var qrValid = false
     var qrCodeAsBitmap: Bitmap? = null
 
 
@@ -132,7 +122,6 @@ fun ReceiveScreen(listenerCallback: ReceiveFragment.Listener?, modifier: Modifie
 
 
     fun generate(text: String?, width: Int, height: Int): Bitmap? {
-        println("value changed listern 6 $beldexAmount")
         if (width <= 0 || height <= 0) return null
         val hints: MutableMap<EncodeHintType, Any?> = HashMap()
         hints[EncodeHintType.CHARACTER_SET] = "utf-8"
@@ -166,12 +155,6 @@ fun ReceiveScreen(listenerCallback: ReceiveFragment.Listener?, modifier: Modifie
             return qr
         }
         return null
-    }
-
-    fun clearQR() {
-        if (qrValid) {/*binding.qrCodeReceive.setImageBitmap(null)*/
-            qrValid = false/* if (isLoaded) binding.qrCodeReceive.visibility = View.VISIBLE*/
-        }
     }
 
 
@@ -216,213 +199,200 @@ fun ReceiveScreen(listenerCallback: ReceiveFragment.Listener?, modifier: Modifie
         context.startActivity(Intent.createChooser(intent, resources.getString(R.string.fragment_view_my_qr_code_share_title)))
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.appColors.cardBackground
-                ),
-                title = {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier=modifier
+            .fillMaxSize()
+            .background(color=MaterialTheme.appColors.walletDashboardMainMenuCardBackground)
+            .verticalScroll(rememberScrollState()),
+    ) {
+        Box(modifier=Modifier.padding(10.dp)) {
+            Box(modifier=Modifier.padding(top=80.dp, bottom=20.dp)) {
+
+                Column(
+                    modifier=Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color=MaterialTheme.appColors.receiveCardBackground,
+                            shape=RoundedCornerShape(18.dp)
+                        )
+
+                ) {
+
                     Text(
-                        text = context.getString(R.string.activity_receive_page_title), style = MaterialTheme.typography.titleLarge.copy(
-                            color = MaterialTheme.appColors.editTextColor,
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = 22.sp,
-                        ), textAlign = TextAlign.Start, modifier = Modifier.fillMaxWidth()
+                        text=context.getString(R.string.enter_bdx_amount),
+                        modifier=Modifier
+                            .fillMaxWidth()
+                            .padding(top=150.dp, bottom=5.dp, start=20.dp),
+                        style=MaterialTheme.typography.bodyLarge.copy(
+                            fontSize=16.sp,
+                            fontWeight=FontWeight(600),
+                            color=MaterialTheme.appColors.textColor
+                        )
                     )
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        listenerCallback!!.walletOnBackPressed()
-                    }) {
-                        Icon(
-                            painterResource(id = R.drawable.ic_back_arrow),
-                            contentDescription = stringResource(
-                                id = R.string.back
+
+                    BChatOutlinedTextField(
+                        value=beldexAmount,
+                        placeHolder=stringResource(id=R.string.hint),
+                        keyboardType=KeyboardType.Decimal,
+                        imeAction=ImeAction.Done,
+                        onValueChange={
+                            if (numberRegex.matches(it)) {
+                                beldexAmount=it
+                                if (beldexAmount.isNotEmpty()) {
+                                    if (validateBELDEXAmount(it)) {
+                                        errorAction=false
+                                        generateQr(beldexAddress, beldexAmount, "")
+                                    } else {
+                                        errorAction=true
+                                    }
+                                } else {
+                                    errorAction=false
+                                    generateQr(beldexAddress, beldexAmount, "")
+                                }
+                            }
+                        },
+                        focusedBorderColor=MaterialTheme.appColors.textFiledBorderColor,
+                        focusedLabelColor=MaterialTheme.appColors.textColor,
+                        textColor=MaterialTheme.appColors.textColor,
+                        maxLen=16,
+                        modifier=Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                start=20.dp, top=10.dp, end=20.dp, bottom=20.dp
                             ),
-                            tint = MaterialTheme.appColors.editTextColor,
+                        shape=RoundedCornerShape(8.dp),
+                    )
+
+                    if (errorAction) {
+                        Text(
+                            text=stringResource(id=R.string.beldex_amount_valid_error_message),
+                            modifier=Modifier.padding(start=20.dp, bottom=20.dp),
+                            style=MaterialTheme.typography.bodyLarge.copy(
+                                color=MaterialTheme.appColors.errorMessageColor,
+                                fontSize=13.sp,
+                                fontWeight=FontWeight(400)
+                            )
                         )
                     }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = MaterialTheme.appColors.cardBackground),
-                actions = {
-                    IconButton(enabled = false,onClick = {
-                    }) {
-                        Icon(Icons.Filled.ArrowBack, "Hide", tint = MaterialTheme.appColors.cardBackground)
-                    }
-                }
-            )
-        },
-        content = {
-            Column(modifier = modifier
-                .fillMaxSize()
-                .background(color = MaterialTheme.appColors.cardBackground)
-                .padding(it)
-            ) {
 
-                Box(modifier = Modifier.padding(10.dp)) {
-                    Box(modifier = Modifier.padding(top = 80.dp, bottom = 20.dp)) {
-
-                        Column(modifier = Modifier
+                    Row(
+                        horizontalArrangement=Arrangement.SpaceBetween,
+                        verticalAlignment=Alignment.CenterVertically,
+                        modifier=Modifier
                             .fillMaxWidth()
-                            .background(
-                                color = MaterialTheme.appColors.receiveCardBackground,
-                                shape = RoundedCornerShape(18.dp)
-                            )
+                            .padding(start=20.dp, end=20.dp)
 
+                    ) {
+                        Text(
+                            text="Beldex Address", style=MaterialTheme.typography.bodyLarge.copy(
+                                fontSize=16.sp,
+                                fontWeight=FontWeight(600),
+                                color=MaterialTheme.appColors.textColor
+                            )
+                        )
+
+                        Box(
+                            modifier=Modifier
+                                .width(32.dp)
+                                .height(32.dp)
+                                .background(
+                                    color=MaterialTheme.appColors.primaryButtonColor,
+                                    shape=RoundedCornerShape(10.dp)
+                                )
+                                .clickable {
+                                    context.copyToClipBoard("Beldex Address", beldexAddress)
+                                }, contentAlignment=Alignment.Center
                         ) {
-
-                            Text(text = context.getString(R.string.enter_bdx_amount), modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 150.dp, bottom = 5.dp, start = 20.dp), style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp, fontWeight = FontWeight(600), color = MaterialTheme.appColors.textColor))
-
-                            BChatOutlinedTextField(
-                                value = beldexAmount,
-                                placeHolder = stringResource(id = R.string.hint),
-                                keyboardType = KeyboardType.Decimal,
-                                imeAction = ImeAction.Done,
-                                onValueChange = {
-                                    if(numberRegex.matches(it)) {
-                                        beldexAmount = it
-                                        if (beldexAmount.isNotEmpty()) {
-                                            if (validateBELDEXAmount(it)) {
-                                                errorAction = false
-                                                generateQr(beldexAddress, beldexAmount, "")
-                                            } else {
-                                                errorAction = true
-                                            }
-                                        } else {
-                                            errorAction = false
-                                            generateQr(beldexAddress, beldexAmount, "")
-                                        }
-                                    }
-                                },
-                                focusedBorderColor = MaterialTheme.appColors.textFiledBorderColor,
-                                focusedLabelColor = MaterialTheme.appColors.textColor,
-                                textColor = MaterialTheme.appColors.textColor,
-                                maxLen = 16,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(
-                                        start = 20.dp,
-                                        top = 10.dp,
-                                        end = 20.dp,
-                                        bottom = 20.dp
-                                    ),
-                                shape = RoundedCornerShape(8.dp),
+                            Image(
+                                painter=painterResource(id=R.drawable.copy_icon_small),
+                                contentDescription=""
                             )
-
-                            if (errorAction) {
-                                Text(text = stringResource(id = R.string.beldex_amount_valid_error_message), modifier = Modifier.padding(start = 20.dp, bottom = 20.dp), style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.errorMessageColor, fontSize = 13.sp, fontWeight = FontWeight(400)))
-                            }
-
-                            Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 20.dp, end = 20.dp)
-
-                            ) {
-                                Text(text = "Beldex Address", style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp, fontWeight = FontWeight(600), color = MaterialTheme.appColors.textColor))
-
-                                Box(modifier = Modifier
-                                    .width(32.dp)
-                                    .height(32.dp)
-                                    .background(
-                                        color = MaterialTheme.appColors.primaryButtonColor,
-                                        shape = RoundedCornerShape(10.dp)
-                                    )
-                                    .clickable {
-                                        context.copyToClipBoard("Beldex Address", beldexAddress)
-                                    }, contentAlignment = Alignment.Center) {
-                                    Image(painter = painterResource(id = R.drawable.copy_icon_small), contentDescription = "")
-                                }
-                            }
-
-                            Card(modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 20.dp, top = 10.dp, end = 20.dp, bottom = 30.dp), colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.appColors.beldexAddressBackground,
-                            )) {
-                                Text(text = beldexAddress, modifier = Modifier.padding(20.dp), style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.primaryButtonColor, fontSize = 13.sp, fontWeight = FontWeight(400)))
-                            }
-
                         }
                     }
-                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
 
-                        Column(modifier = Modifier
-                            .size(190.dp)
-                            .clip(RectangleShape)
-                            .background(
-                                color = MaterialTheme.appColors.qrCodeBackground,
-                                shape = RoundedCornerShape(16.dp)
+                    Card(
+                        modifier=Modifier
+                            .fillMaxWidth()
+                            .padding(start=20.dp, top=10.dp, end=20.dp, bottom=30.dp),
+                        colors=CardDefaults.cardColors(
+                            containerColor=MaterialTheme.appColors.beldexAddressBackground,
+                        )
+                    ) {
+                        Text(
+                            text=beldexAddress,
+                            modifier=Modifier.padding(20.dp),
+                            style=MaterialTheme.typography.bodyLarge.copy(
+                                color=MaterialTheme.appColors.primaryButtonColor,
+                                fontSize=13.sp,
+                                fontWeight=FontWeight(400)
                             )
-
-                        ) {
-                            Card(modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(20.dp), colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.appColors.beldexAddressBackground,
-                            )) {
-
-                                generateQr(beldexAddress, beldexAmount, "")?.let {
-                                    Image(bitmap = it.asImageBitmap(), contentDescription = "", modifier = Modifier.fillMaxSize()
-
-                                    )
-                                    qrCodeAsBitmap = it
-                                }
-
-                            }
-                        }
+                        )
                     }
 
                 }
+            }
+            Box(modifier=Modifier.fillMaxWidth(), contentAlignment=Alignment.Center) {
 
+                Column(
+                    modifier=Modifier
+                        .size(190.dp)
+                        .clip(RectangleShape)
+                        .background(
+                            color=MaterialTheme.appColors.qrCodeBackground,
+                            shape=RoundedCornerShape(16.dp)
+                        )
 
-                PrimaryButton(onClick = {
-                    if(isButtonEnabled) {
-                        isButtonEnabled = false
-                        scope.launch(Dispatchers.Main) {
-                            shareQrCode()
-                            delay(2000)
-                            isButtonEnabled = true
+                ) {
+                    Card(
+                        modifier=Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp),
+                        colors=CardDefaults.cardColors(
+                            containerColor=MaterialTheme.appColors.beldexAddressBackground,
+                        )
+                    ) {
+
+                        generateQr(beldexAddress, beldexAmount, "")?.let {
+                            Image(
+                                bitmap=it.asImageBitmap(),
+                                contentDescription="",
+                                modifier=Modifier.fillMaxSize()
+
+                            )
+                            qrCodeAsBitmap=it
                         }
-                    }
 
-                }, modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp), shape = RoundedCornerShape(12.dp)) {
-                    Image(painter = painterResource(id = R.drawable.share), contentDescription = "")
-                    Text(text = stringResource(id = R.string.share), modifier = Modifier.padding(8.dp), style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, fontWeight = FontWeight(400), color = Color.White))
+                    }
                 }
             }
         }
-    )
-}
 
+        PrimaryButton(
+            onClick={
+                if (isButtonEnabled) {
+                    isButtonEnabled=false
+                    scope.launch(Dispatchers.Main) {
+                        shareQrCode()
+                        delay(2000)
+                        isButtonEnabled=true
+                    }
+                }
 
-/*
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun ReceiveScreenPreview() {
-    BChatTheme() {
-        ReceiveScreen(
-            listenerCallback = listenerCallback, modifier = Modifier
-                .fillMaxSize()
-                .padding(10.dp)
-        )
+            }, modifier=Modifier
+                .fillMaxWidth()
+                .padding(10.dp), shape=RoundedCornerShape(12.dp)
+        ) {
+            Image(painter=painterResource(id=R.drawable.share), contentDescription="")
+            Text(
+                text=stringResource(id=R.string.share),
+                modifier=Modifier.padding(8.dp),
+                style=MaterialTheme.typography.titleMedium.copy(
+                    fontSize=16.sp, fontWeight=FontWeight(400), color=Color.White
+                )
+            )
+        }
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Composable
-fun ReceiveScreenLightPreview() {
-    BChatTheme() {
-        ReceiveScreen(
-            listenerCallback = listenerCallback, modifier = Modifier
-                .fillMaxSize()
-                .padding(10.dp)
-        )
-    }
-}*/

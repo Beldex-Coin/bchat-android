@@ -3,6 +3,9 @@ package io.beldex.bchat.wallet.jetpackcomposeUI.node
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,6 +21,7 @@ import io.beldex.bchat.util.SharedPreferenceUtil.Companion.PREF_DAEMON_MAINNET
 import io.beldex.bchat.util.SharedPreferenceUtil.Companion.PREF_DAEMON_STAGENET
 import io.beldex.bchat.util.SharedPreferenceUtil.Companion.PREF_DAEMON_TESTNET
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.Collections
@@ -26,7 +30,9 @@ import javax.inject.Inject
 @HiltViewModel
 
 class NodeViewModel @Inject constructor(
-        private val sharedPreferenceUtil : SharedPreferenceUtil) : ViewModel() {
+    @ApplicationContext context : Context,
+    private val sharedPreferenceUtil : SharedPreferenceUtil,
+    ) : ViewModel() {
 
     data class UiState(
             val multiSelectedActivated: Boolean = false,
@@ -48,6 +54,9 @@ class NodeViewModel @Inject constructor(
 
     private val _currentNode=MutableLiveData<String>()
     val currentNode : LiveData<String> get()=_currentNode
+
+    var selectedNodeId by mutableStateOf<String?>(getSelectedNodeId(context))
+        private set
 
     init {
         _favouritesNodes.value=mutableSetOf()
@@ -184,7 +193,7 @@ class NodeViewModel @Inject constructor(
             nodeInfo.isSelected=nodeInfo == node
         }
         WalletManager.getInstance().setDaemon(node)
-
+        println("save Fav node called 1 -> $node")
         if (save) saveSelectedNode(context)
     }
 
@@ -196,6 +205,7 @@ class NodeViewModel @Inject constructor(
             editor.putString("0", getNode()?.toNodeString())
             _currentNode.postValue(getNode()?.toNodeString())
         }
+        selectedNodeId = getNode().toNodeString()
         editor.apply()
     }
 

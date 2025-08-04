@@ -10,11 +10,13 @@ import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.TextView
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
@@ -32,6 +34,7 @@ import io.beldex.bchat.wallet.jetpackcomposeUI.WalletDashBoardScreen
 import io.beldex.bchat.wallet.jetpackcomposeUI.WalletViewModels
 import io.beldex.bchat.wallet.utils.common.fetchPriceFor
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.ui.WalletScreenContainer
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
@@ -359,10 +362,23 @@ class WalletFragment : Fragment(),OnBackPressedListener {
             setContent {
                 BChatTheme {
                     Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.primary
+                        modifier=Modifier.fillMaxSize(),
+                        color=MaterialTheme.colorScheme.primary
                     ) {
-                        WalletDashBoardScreen(viewModels, activityCallback!!,onScanListener)
+                        WalletScreenContainer(
+                            title=stringResource(id=R.string.my_wallet),
+                            onBackClick={ requireActivity().onBackPressed() },
+                            onSettingsClick = {
+                                this@WalletFragment.activityCallback?.callToolBarSettings()
+                            },
+                            modifier=Modifier
+                                .fillMaxSize()
+                                .background(
+                                    color=MaterialTheme.colorScheme.primary
+                                )
+                        ) {
+                            WalletDashBoardScreen(viewModels, activityCallback!!, onScanListener)
+                        }
                     }
                 }
             }

@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ContactModel(
-    val threadId: Long,
+    val threadId: String,
     val address: Address,
     val name: String
 ): Parcelable

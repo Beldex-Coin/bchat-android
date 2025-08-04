@@ -15123,15 +15123,21 @@ public final class SignalServiceProtos {
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>required double threadId = 1;</code>
+       * <code>required string threadId = 1;</code>
        * @return Whether the threadId field is set.
        */
       boolean hasThreadId();
       /**
-       * <code>required double threadId = 1;</code>
+       * <code>required string threadId = 1;</code>
        * @return The threadId.
        */
-      double getThreadId();
+      java.lang.String getThreadId();
+      /**
+       * <code>required string threadId = 1;</code>
+       * @return The bytes for threadId.
+       */
+      com.google.protobuf.ByteString
+          getThreadIdBytes();
 
       /**
        * <code>required string address = 2;</code>
@@ -15180,6 +15186,7 @@ public final class SignalServiceProtos {
         super(builder);
       }
       private SharedContact() {
+        threadId_ = "";
         address_ = "";
         name_ = "";
       }
@@ -15206,9 +15213,10 @@ public final class SignalServiceProtos {
 
       private int bitField0_;
       public static final int THREADID_FIELD_NUMBER = 1;
-      private double threadId_ = 0D;
+      @SuppressWarnings("serial")
+      private volatile java.lang.Object threadId_ = "";
       /**
-       * <code>required double threadId = 1;</code>
+       * <code>required string threadId = 1;</code>
        * @return Whether the threadId field is set.
        */
       @java.lang.Override
@@ -15216,12 +15224,41 @@ public final class SignalServiceProtos {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>required double threadId = 1;</code>
+       * <code>required string threadId = 1;</code>
        * @return The threadId.
        */
       @java.lang.Override
-      public double getThreadId() {
-        return threadId_;
+      public java.lang.String getThreadId() {
+        java.lang.Object ref = threadId_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            threadId_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <code>required string threadId = 1;</code>
+       * @return The bytes for threadId.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getThreadIdBytes() {
+        java.lang.Object ref = threadId_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          threadId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
       }
 
       public static final int ADDRESS_FIELD_NUMBER = 2;
@@ -15349,7 +15386,7 @@ public final class SignalServiceProtos {
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (((bitField0_ & 0x00000001) != 0)) {
-          output.writeDouble(1, threadId_);
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 1, threadId_);
         }
         if (((bitField0_ & 0x00000002) != 0)) {
           com.google.protobuf.GeneratedMessageV3.writeString(output, 2, address_);
@@ -15367,8 +15404,7 @@ public final class SignalServiceProtos {
 
         size = 0;
         if (((bitField0_ & 0x00000001) != 0)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeDoubleSize(1, threadId_);
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, threadId_);
         }
         if (((bitField0_ & 0x00000002) != 0)) {
           size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, address_);
@@ -15393,9 +15429,8 @@ public final class SignalServiceProtos {
 
         if (hasThreadId() != other.hasThreadId()) return false;
         if (hasThreadId()) {
-          if (java.lang.Double.doubleToLongBits(getThreadId())
-              != java.lang.Double.doubleToLongBits(
-                  other.getThreadId())) return false;
+          if (!getThreadId()
+              .equals(other.getThreadId())) return false;
         }
         if (hasAddress() != other.hasAddress()) return false;
         if (hasAddress()) {
@@ -15420,8 +15455,7 @@ public final class SignalServiceProtos {
         hash = (19 * hash) + getDescriptor().hashCode();
         if (hasThreadId()) {
           hash = (37 * hash) + THREADID_FIELD_NUMBER;
-          hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              java.lang.Double.doubleToLongBits(getThreadId()));
+          hash = (53 * hash) + getThreadId().hashCode();
         }
         if (hasAddress()) {
           hash = (37 * hash) + ADDRESS_FIELD_NUMBER;
@@ -15560,7 +15594,7 @@ public final class SignalServiceProtos {
         public Builder clear() {
           super.clear();
           bitField0_ = 0;
-          threadId_ = 0D;
+          threadId_ = "";
           address_ = "";
           name_ = "";
           return this;
@@ -15625,7 +15659,9 @@ public final class SignalServiceProtos {
         public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.SharedContact other) {
           if (other == com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.SharedContact.getDefaultInstance()) return this;
           if (other.hasThreadId()) {
-            setThreadId(other.getThreadId());
+            threadId_ = other.threadId_;
+            bitField0_ |= 0x00000001;
+            onChanged();
           }
           if (other.hasAddress()) {
             address_ = other.address_;
@@ -15672,11 +15708,11 @@ public final class SignalServiceProtos {
                 case 0:
                   done = true;
                   break;
-                case 9: {
-                  threadId_ = input.readDouble();
+                case 10: {
+                  threadId_ = input.readBytes();
                   bitField0_ |= 0x00000001;
                   break;
-                } // case 9
+                } // case 10
                 case 18: {
                   address_ = input.readBytes();
                   bitField0_ |= 0x00000002;
@@ -15704,42 +15740,82 @@ public final class SignalServiceProtos {
         }
         private int bitField0_;
 
-        private double threadId_ ;
+        private java.lang.Object threadId_ = "";
         /**
-         * <code>required double threadId = 1;</code>
+         * <code>required string threadId = 1;</code>
          * @return Whether the threadId field is set.
          */
-        @java.lang.Override
         public boolean hasThreadId() {
           return ((bitField0_ & 0x00000001) != 0);
         }
         /**
-         * <code>required double threadId = 1;</code>
+         * <code>required string threadId = 1;</code>
          * @return The threadId.
          */
-        @java.lang.Override
-        public double getThreadId() {
-          return threadId_;
+        public java.lang.String getThreadId() {
+          java.lang.Object ref = threadId_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              threadId_ = s;
+            }
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
         }
         /**
-         * <code>required double threadId = 1;</code>
+         * <code>required string threadId = 1;</code>
+         * @return The bytes for threadId.
+         */
+        public com.google.protobuf.ByteString
+            getThreadIdBytes() {
+          java.lang.Object ref = threadId_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            threadId_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>required string threadId = 1;</code>
          * @param value The threadId to set.
          * @return This builder for chaining.
          */
-        public Builder setThreadId(double value) {
-
+        public Builder setThreadId(
+            java.lang.String value) {
+          if (value == null) { throw new NullPointerException(); }
           threadId_ = value;
           bitField0_ |= 0x00000001;
           onChanged();
           return this;
         }
         /**
-         * <code>required double threadId = 1;</code>
+         * <code>required string threadId = 1;</code>
          * @return This builder for chaining.
          */
         public Builder clearThreadId() {
+          threadId_ = getDefaultInstance().getThreadId();
           bitField0_ = (bitField0_ & ~0x00000001);
-          threadId_ = 0D;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required string threadId = 1;</code>
+         * @param value The bytes for threadId to set.
+         * @return This builder for chaining.
+         */
+        public Builder setThreadIdBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) { throw new NullPointerException(); }
+          threadId_ = value;
+          bitField0_ |= 0x00000001;
           onChanged();
           return this;
         }
@@ -30071,7 +30147,7 @@ public final class SignalServiceProtos {
       "\"r\n\004Type\022\007\n\003NEW\020\001\022\027\n\023ENCRYPTION_KEY_PAIR" +
       "\020\003\022\017\n\013NAME_CHANGE\020\004\022\021\n\rMEMBERS_ADDED\020\005\022\023" +
       "\n\017MEMBERS_REMOVED\020\006\022\017\n\013MEMBER_LEFT\020\007\032@\n\r" +
-      "SharedContact\022\020\n\010threadId\030\001 \002(\001\022\017\n\007addre" +
+      "SharedContact\022\020\n\010threadId\030\001 \002(\t\022\017\n\007addre" +
       "ss\030\002 \002(\t\022\014\n\004name\030\003 \002(\t\"$\n\005Flags\022\033\n\027EXPIR" +
       "ATION_TIMER_UPDATE\020\002\"\352\001\n\013CallMessage\022-\n\004" +
       "type\030\001 \002(\0162\037.signalservice.CallMessage.T" +

@@ -158,7 +158,7 @@ message DataMessage {
   }
 
   message SharedContact {
-    required double         threadId          = 1;
+    required string         threadId          = 1;
     required string         address           = 2;
     required string         name              = 3;
   }

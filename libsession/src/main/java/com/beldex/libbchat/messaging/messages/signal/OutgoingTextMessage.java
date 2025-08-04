@@ -55,10 +55,10 @@ public class OutgoingTextMessage {
   }
 
   public static OutgoingTextMessage fromSharedContact(SharedContact contact, Recipient recipient, Long sentTimestamp) {
-    long threadId = contact.getThreadId();
+    String threadId = contact.getThreadId();
     String address = contact.getAddress();
     String name = contact.getName();
-    if (threadId == -1 || address == null || name == null) { return null; }
+    if (threadId == null || address == null || name == null) { return null; }
     // FIXME: Doing toJSON() to get the body here is weird
     String body = UpdateMessageData.Companion.buildSharedContact(threadId, address, name).toJSON();
     OutgoingTextMessage outgoingTextMessage = new OutgoingTextMessage(recipient, body, recipient.getExpireMessages() * 1000, -1, sentTimestamp);

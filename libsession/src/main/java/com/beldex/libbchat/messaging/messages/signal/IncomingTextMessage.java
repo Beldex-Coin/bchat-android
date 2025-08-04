@@ -164,10 +164,10 @@ public class IncomingTextMessage implements Parcelable {
   }
 
   public static IncomingTextMessage fromSharedContact(SharedContact contact, Address sender, Long sentTimestamp, long expiresInMillis) {
-    long threadId = contact.getThreadId();
+    String threadId = contact.getThreadId();
     String address = contact.getAddress();
     String name = contact.getName();
-    if (threadId == -1 || address == null || name == null) { return null; }
+    if (threadId == null || address == null || name == null) { return null; }
     // FIXME: Doing toJSON() to get the body here is weird
     String body = UpdateMessageData.Companion.buildSharedContact(threadId, address, name).toJSON();
     IncomingTextMessage incomingTextMessage = new IncomingTextMessage(sender, 1,  sentTimestamp, body, Optional.absent(),  expiresInMillis, false);

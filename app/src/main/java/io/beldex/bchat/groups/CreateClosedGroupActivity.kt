@@ -97,7 +97,9 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
     override fun onDestroy() {
         super.onDestroy()
         hideSoftKeyboard()
-        binding.nameEditText.isFocusable = false
+        if (this::binding.isInitialized) {
+            binding.nameEditText.isFocusable = false
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

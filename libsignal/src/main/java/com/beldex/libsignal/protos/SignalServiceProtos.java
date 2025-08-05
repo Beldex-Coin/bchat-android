@@ -15123,23 +15123,6 @@ public final class SignalServiceProtos {
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>required string threadId = 1;</code>
-       * @return Whether the threadId field is set.
-       */
-      boolean hasThreadId();
-      /**
-       * <code>required string threadId = 1;</code>
-       * @return The threadId.
-       */
-      java.lang.String getThreadId();
-      /**
-       * <code>required string threadId = 1;</code>
-       * @return The bytes for threadId.
-       */
-      com.google.protobuf.ByteString
-          getThreadIdBytes();
-
-      /**
        * <code>required string address = 2;</code>
        * @return Whether the address field is set.
        */
@@ -15186,7 +15169,6 @@ public final class SignalServiceProtos {
         super(builder);
       }
       private SharedContact() {
-        threadId_ = "";
         address_ = "";
         name_ = "";
       }
@@ -15212,55 +15194,6 @@ public final class SignalServiceProtos {
       }
 
       private int bitField0_;
-      public static final int THREADID_FIELD_NUMBER = 1;
-      @SuppressWarnings("serial")
-      private volatile java.lang.Object threadId_ = "";
-      /**
-       * <code>required string threadId = 1;</code>
-       * @return Whether the threadId field is set.
-       */
-      @java.lang.Override
-      public boolean hasThreadId() {
-        return ((bitField0_ & 0x00000001) != 0);
-      }
-      /**
-       * <code>required string threadId = 1;</code>
-       * @return The threadId.
-       */
-      @java.lang.Override
-      public java.lang.String getThreadId() {
-        java.lang.Object ref = threadId_;
-        if (ref instanceof java.lang.String) {
-          return (java.lang.String) ref;
-        } else {
-          com.google.protobuf.ByteString bs = 
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            threadId_ = s;
-          }
-          return s;
-        }
-      }
-      /**
-       * <code>required string threadId = 1;</code>
-       * @return The bytes for threadId.
-       */
-      @java.lang.Override
-      public com.google.protobuf.ByteString
-          getThreadIdBytes() {
-        java.lang.Object ref = threadId_;
-        if (ref instanceof java.lang.String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          threadId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-
       public static final int ADDRESS_FIELD_NUMBER = 2;
       @SuppressWarnings("serial")
       private volatile java.lang.Object address_ = "";
@@ -15270,7 +15203,7 @@ public final class SignalServiceProtos {
        */
       @java.lang.Override
       public boolean hasAddress() {
-        return ((bitField0_ & 0x00000002) != 0);
+        return ((bitField0_ & 0x00000001) != 0);
       }
       /**
        * <code>required string address = 2;</code>
@@ -15319,7 +15252,7 @@ public final class SignalServiceProtos {
        */
       @java.lang.Override
       public boolean hasName() {
-        return ((bitField0_ & 0x00000004) != 0);
+        return ((bitField0_ & 0x00000002) != 0);
       }
       /**
        * <code>required string name = 3;</code>
@@ -15366,10 +15299,6 @@ public final class SignalServiceProtos {
         if (isInitialized == 1) return true;
         if (isInitialized == 0) return false;
 
-        if (!hasThreadId()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
         if (!hasAddress()) {
           memoizedIsInitialized = 0;
           return false;
@@ -15386,12 +15315,9 @@ public final class SignalServiceProtos {
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (((bitField0_ & 0x00000001) != 0)) {
-          com.google.protobuf.GeneratedMessageV3.writeString(output, 1, threadId_);
-        }
-        if (((bitField0_ & 0x00000002) != 0)) {
           com.google.protobuf.GeneratedMessageV3.writeString(output, 2, address_);
         }
-        if (((bitField0_ & 0x00000004) != 0)) {
+        if (((bitField0_ & 0x00000002) != 0)) {
           com.google.protobuf.GeneratedMessageV3.writeString(output, 3, name_);
         }
         getUnknownFields().writeTo(output);
@@ -15404,12 +15330,9 @@ public final class SignalServiceProtos {
 
         size = 0;
         if (((bitField0_ & 0x00000001) != 0)) {
-          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, threadId_);
-        }
-        if (((bitField0_ & 0x00000002) != 0)) {
           size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, address_);
         }
-        if (((bitField0_ & 0x00000004) != 0)) {
+        if (((bitField0_ & 0x00000002) != 0)) {
           size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, name_);
         }
         size += getUnknownFields().getSerializedSize();
@@ -15427,11 +15350,6 @@ public final class SignalServiceProtos {
         }
         com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.SharedContact other = (com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.SharedContact) obj;
 
-        if (hasThreadId() != other.hasThreadId()) return false;
-        if (hasThreadId()) {
-          if (!getThreadId()
-              .equals(other.getThreadId())) return false;
-        }
         if (hasAddress() != other.hasAddress()) return false;
         if (hasAddress()) {
           if (!getAddress()
@@ -15453,10 +15371,6 @@ public final class SignalServiceProtos {
         }
         int hash = 41;
         hash = (19 * hash) + getDescriptor().hashCode();
-        if (hasThreadId()) {
-          hash = (37 * hash) + THREADID_FIELD_NUMBER;
-          hash = (53 * hash) + getThreadId().hashCode();
-        }
         if (hasAddress()) {
           hash = (37 * hash) + ADDRESS_FIELD_NUMBER;
           hash = (53 * hash) + getAddress().hashCode();
@@ -15594,7 +15508,6 @@ public final class SignalServiceProtos {
         public Builder clear() {
           super.clear();
           bitField0_ = 0;
-          threadId_ = "";
           address_ = "";
           name_ = "";
           return this;
@@ -15632,16 +15545,12 @@ public final class SignalServiceProtos {
           int from_bitField0_ = bitField0_;
           int to_bitField0_ = 0;
           if (((from_bitField0_ & 0x00000001) != 0)) {
-            result.threadId_ = threadId_;
+            result.address_ = address_;
             to_bitField0_ |= 0x00000001;
           }
           if (((from_bitField0_ & 0x00000002) != 0)) {
-            result.address_ = address_;
-            to_bitField0_ |= 0x00000002;
-          }
-          if (((from_bitField0_ & 0x00000004) != 0)) {
             result.name_ = name_;
-            to_bitField0_ |= 0x00000004;
+            to_bitField0_ |= 0x00000002;
           }
           result.bitField0_ |= to_bitField0_;
         }
@@ -15658,19 +15567,14 @@ public final class SignalServiceProtos {
 
         public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.SharedContact other) {
           if (other == com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.SharedContact.getDefaultInstance()) return this;
-          if (other.hasThreadId()) {
-            threadId_ = other.threadId_;
-            bitField0_ |= 0x00000001;
-            onChanged();
-          }
           if (other.hasAddress()) {
             address_ = other.address_;
-            bitField0_ |= 0x00000002;
+            bitField0_ |= 0x00000001;
             onChanged();
           }
           if (other.hasName()) {
             name_ = other.name_;
-            bitField0_ |= 0x00000004;
+            bitField0_ |= 0x00000002;
             onChanged();
           }
           this.mergeUnknownFields(other.getUnknownFields());
@@ -15680,9 +15584,6 @@ public final class SignalServiceProtos {
 
         @java.lang.Override
         public final boolean isInitialized() {
-          if (!hasThreadId()) {
-            return false;
-          }
           if (!hasAddress()) {
             return false;
           }
@@ -15708,19 +15609,14 @@ public final class SignalServiceProtos {
                 case 0:
                   done = true;
                   break;
-                case 10: {
-                  threadId_ = input.readBytes();
-                  bitField0_ |= 0x00000001;
-                  break;
-                } // case 10
                 case 18: {
                   address_ = input.readBytes();
-                  bitField0_ |= 0x00000002;
+                  bitField0_ |= 0x00000001;
                   break;
                 } // case 18
                 case 26: {
                   name_ = input.readBytes();
-                  bitField0_ |= 0x00000004;
+                  bitField0_ |= 0x00000002;
                   break;
                 } // case 26
                 default: {
@@ -15740,93 +15636,13 @@ public final class SignalServiceProtos {
         }
         private int bitField0_;
 
-        private java.lang.Object threadId_ = "";
-        /**
-         * <code>required string threadId = 1;</code>
-         * @return Whether the threadId field is set.
-         */
-        public boolean hasThreadId() {
-          return ((bitField0_ & 0x00000001) != 0);
-        }
-        /**
-         * <code>required string threadId = 1;</code>
-         * @return The threadId.
-         */
-        public java.lang.String getThreadId() {
-          java.lang.Object ref = threadId_;
-          if (!(ref instanceof java.lang.String)) {
-            com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-            java.lang.String s = bs.toStringUtf8();
-            if (bs.isValidUtf8()) {
-              threadId_ = s;
-            }
-            return s;
-          } else {
-            return (java.lang.String) ref;
-          }
-        }
-        /**
-         * <code>required string threadId = 1;</code>
-         * @return The bytes for threadId.
-         */
-        public com.google.protobuf.ByteString
-            getThreadIdBytes() {
-          java.lang.Object ref = threadId_;
-          if (ref instanceof String) {
-            com.google.protobuf.ByteString b = 
-                com.google.protobuf.ByteString.copyFromUtf8(
-                    (java.lang.String) ref);
-            threadId_ = b;
-            return b;
-          } else {
-            return (com.google.protobuf.ByteString) ref;
-          }
-        }
-        /**
-         * <code>required string threadId = 1;</code>
-         * @param value The threadId to set.
-         * @return This builder for chaining.
-         */
-        public Builder setThreadId(
-            java.lang.String value) {
-          if (value == null) { throw new NullPointerException(); }
-          threadId_ = value;
-          bitField0_ |= 0x00000001;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>required string threadId = 1;</code>
-         * @return This builder for chaining.
-         */
-        public Builder clearThreadId() {
-          threadId_ = getDefaultInstance().getThreadId();
-          bitField0_ = (bitField0_ & ~0x00000001);
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>required string threadId = 1;</code>
-         * @param value The bytes for threadId to set.
-         * @return This builder for chaining.
-         */
-        public Builder setThreadIdBytes(
-            com.google.protobuf.ByteString value) {
-          if (value == null) { throw new NullPointerException(); }
-          threadId_ = value;
-          bitField0_ |= 0x00000001;
-          onChanged();
-          return this;
-        }
-
         private java.lang.Object address_ = "";
         /**
          * <code>required string address = 2;</code>
          * @return Whether the address field is set.
          */
         public boolean hasAddress() {
-          return ((bitField0_ & 0x00000002) != 0);
+          return ((bitField0_ & 0x00000001) != 0);
         }
         /**
          * <code>required string address = 2;</code>
@@ -15872,7 +15688,7 @@ public final class SignalServiceProtos {
             java.lang.String value) {
           if (value == null) { throw new NullPointerException(); }
           address_ = value;
-          bitField0_ |= 0x00000002;
+          bitField0_ |= 0x00000001;
           onChanged();
           return this;
         }
@@ -15882,7 +15698,7 @@ public final class SignalServiceProtos {
          */
         public Builder clearAddress() {
           address_ = getDefaultInstance().getAddress();
-          bitField0_ = (bitField0_ & ~0x00000002);
+          bitField0_ = (bitField0_ & ~0x00000001);
           onChanged();
           return this;
         }
@@ -15895,7 +15711,7 @@ public final class SignalServiceProtos {
             com.google.protobuf.ByteString value) {
           if (value == null) { throw new NullPointerException(); }
           address_ = value;
-          bitField0_ |= 0x00000002;
+          bitField0_ |= 0x00000001;
           onChanged();
           return this;
         }
@@ -15906,7 +15722,7 @@ public final class SignalServiceProtos {
          * @return Whether the name field is set.
          */
         public boolean hasName() {
-          return ((bitField0_ & 0x00000004) != 0);
+          return ((bitField0_ & 0x00000002) != 0);
         }
         /**
          * <code>required string name = 3;</code>
@@ -15952,7 +15768,7 @@ public final class SignalServiceProtos {
             java.lang.String value) {
           if (value == null) { throw new NullPointerException(); }
           name_ = value;
-          bitField0_ |= 0x00000004;
+          bitField0_ |= 0x00000002;
           onChanged();
           return this;
         }
@@ -15962,7 +15778,7 @@ public final class SignalServiceProtos {
          */
         public Builder clearName() {
           name_ = getDefaultInstance().getName();
-          bitField0_ = (bitField0_ & ~0x00000004);
+          bitField0_ = (bitField0_ & ~0x00000002);
           onChanged();
           return this;
         }
@@ -15975,7 +15791,7 @@ public final class SignalServiceProtos {
             com.google.protobuf.ByteString value) {
           if (value == null) { throw new NullPointerException(); }
           name_ = value;
-          bitField0_ |= 0x00000004;
+          bitField0_ |= 0x00000002;
           onChanged();
           return this;
         }
@@ -30104,7 +29920,7 @@ public final class SignalServiceProtos {
       "Notification\022<\n\004type\030\001 \002(\0162..signalservi" +
       "ce.DataExtractionNotification.Type\022\021\n\tti" +
       "mestamp\030\002 \001(\004\"\'\n\004Type\022\016\n\nSCREENSHOT\020\001\022\017\n" +
-      "\013MEDIA_SAVED\020\002\"\213\016\n\013DataMessage\022\014\n\004body\030\001" +
+      "\013MEDIA_SAVED\020\002\"\371\r\n\013DataMessage\022\014\n\004body\030\001" +
       " \001(\t\0225\n\013attachments\030\002 \003(\0132 .signalservic" +
       "e.AttachmentPointer\022*\n\005group\030\003 \001(\0132\033.sig" +
       "nalservice.GroupContext\022\r\n\005flags\030\004 \001(\r\022\023" +
@@ -30146,47 +29962,47 @@ public final class SignalServiceProtos {
       "ublicKey\030\001 \002(\014\022\030\n\020encryptedKeyPair\030\002 \002(\014" +
       "\"r\n\004Type\022\007\n\003NEW\020\001\022\027\n\023ENCRYPTION_KEY_PAIR" +
       "\020\003\022\017\n\013NAME_CHANGE\020\004\022\021\n\rMEMBERS_ADDED\020\005\022\023" +
-      "\n\017MEMBERS_REMOVED\020\006\022\017\n\013MEMBER_LEFT\020\007\032@\n\r" +
-      "SharedContact\022\020\n\010threadId\030\001 \002(\t\022\017\n\007addre" +
-      "ss\030\002 \002(\t\022\014\n\004name\030\003 \002(\t\"$\n\005Flags\022\033\n\027EXPIR" +
-      "ATION_TIMER_UPDATE\020\002\"\352\001\n\013CallMessage\022-\n\004" +
-      "type\030\001 \002(\0162\037.signalservice.CallMessage.T" +
-      "ype\022\014\n\004sdps\030\002 \003(\t\022\027\n\017sdpMLineIndexes\030\003 \003" +
-      "(\r\022\017\n\007sdpMids\030\004 \003(\t\022\014\n\004uuid\030\005 \002(\t\"f\n\004Typ" +
-      "e\022\r\n\tPRE_OFFER\020\006\022\t\n\005OFFER\020\001\022\n\n\006ANSWER\020\002\022" +
-      "\026\n\022PROVISIONAL_ANSWER\020\003\022\022\n\016ICE_CANDIDATE" +
-      "S\020\004\022\014\n\010END_CALL\020\005\"\245\004\n\024ConfigurationMessa" +
-      "ge\022E\n\014closedGroups\030\001 \003(\0132/.signalservice" +
-      ".ConfigurationMessage.ClosedGroup\022\022\n\nope" +
-      "nGroups\030\002 \003(\t\022\023\n\013displayName\030\003 \001(\t\022\026\n\016pr" +
-      "ofilePicture\030\004 \001(\t\022\022\n\nprofileKey\030\005 \001(\014\022=" +
-      "\n\010contacts\030\006 \003(\0132+.signalservice.Configu" +
-      "rationMessage.Contact\032\233\001\n\013ClosedGroup\022\021\n" +
-      "\tpublicKey\030\001 \001(\014\022\014\n\004name\030\002 \001(\t\0221\n\021encryp" +
-      "tionKeyPair\030\003 \001(\0132\026.signalservice.KeyPai" +
-      "r\022\017\n\007members\030\004 \003(\014\022\016\n\006admins\030\005 \003(\014\022\027\n\017ex" +
-      "pirationTimer\030\006 \001(\r\032\223\001\n\007Contact\022\021\n\tpubli" +
-      "cKey\030\001 \002(\014\022\014\n\004name\030\002 \002(\t\022\026\n\016profilePictu" +
-      "re\030\003 \001(\t\022\022\n\nprofileKey\030\004 \001(\014\022\022\n\nisApprov" +
-      "ed\030\005 \001(\010\022\021\n\tisBlocked\030\006 \001(\010\022\024\n\014didApprov" +
-      "eMe\030\007 \001(\010\",\n\026MessageRequestResponse\022\022\n\ni" +
-      "sApproved\030\001 \002(\010\"u\n\016ReceiptMessage\0220\n\004typ" +
-      "e\030\001 \002(\0162\".signalservice.ReceiptMessage.T" +
-      "ype\022\021\n\ttimestamp\030\002 \003(\004\"\036\n\004Type\022\014\n\010DELIVE" +
-      "RY\020\000\022\010\n\004READ\020\001\"\354\001\n\021AttachmentPointer\022\n\n\002" +
-      "id\030\001 \002(\006\022\023\n\013contentType\030\002 \001(\t\022\013\n\003key\030\003 \001" +
-      "(\014\022\014\n\004size\030\004 \001(\r\022\021\n\tthumbnail\030\005 \001(\014\022\016\n\006d" +
-      "igest\030\006 \001(\014\022\020\n\010fileName\030\007 \001(\t\022\r\n\005flags\030\010" +
-      " \001(\r\022\r\n\005width\030\t \001(\r\022\016\n\006height\030\n \001(\r\022\017\n\007c" +
-      "aption\030\013 \001(\t\022\013\n\003url\030e \001(\t\"\032\n\005Flags\022\021\n\rVO" +
-      "ICE_MESSAGE\020\001\"\365\001\n\014GroupContext\022\n\n\002id\030\001 \001" +
-      "(\014\022.\n\004type\030\002 \001(\0162 .signalservice.GroupCo" +
-      "ntext.Type\022\014\n\004name\030\003 \001(\t\022\017\n\007members\030\004 \003(" +
-      "\t\0220\n\006avatar\030\005 \001(\0132 .signalservice.Attach" +
-      "mentPointer\022\016\n\006admins\030\006 \003(\t\"H\n\004Type\022\013\n\007U" +
-      "NKNOWN\020\000\022\n\n\006UPDATE\020\001\022\013\n\007DELIVER\020\002\022\010\n\004QUI" +
-      "T\020\003\022\020\n\014REQUEST_INFO\020\004B2\n\033com.beldex.libs" +
-      "ignal.protosB\023SignalServiceProtos"
+      "\n\017MEMBERS_REMOVED\020\006\022\017\n\013MEMBER_LEFT\020\007\032.\n\r" +
+      "SharedContact\022\017\n\007address\030\002 \002(\t\022\014\n\004name\030\003" +
+      " \002(\t\"$\n\005Flags\022\033\n\027EXPIRATION_TIMER_UPDATE" +
+      "\020\002\"\352\001\n\013CallMessage\022-\n\004type\030\001 \002(\0162\037.signa" +
+      "lservice.CallMessage.Type\022\014\n\004sdps\030\002 \003(\t\022" +
+      "\027\n\017sdpMLineIndexes\030\003 \003(\r\022\017\n\007sdpMids\030\004 \003(" +
+      "\t\022\014\n\004uuid\030\005 \002(\t\"f\n\004Type\022\r\n\tPRE_OFFER\020\006\022\t" +
+      "\n\005OFFER\020\001\022\n\n\006ANSWER\020\002\022\026\n\022PROVISIONAL_ANS" +
+      "WER\020\003\022\022\n\016ICE_CANDIDATES\020\004\022\014\n\010END_CALL\020\005\"" +
+      "\245\004\n\024ConfigurationMessage\022E\n\014closedGroups" +
+      "\030\001 \003(\0132/.signalservice.ConfigurationMess" +
+      "age.ClosedGroup\022\022\n\nopenGroups\030\002 \003(\t\022\023\n\013d" +
+      "isplayName\030\003 \001(\t\022\026\n\016profilePicture\030\004 \001(\t" +
+      "\022\022\n\nprofileKey\030\005 \001(\014\022=\n\010contacts\030\006 \003(\0132+" +
+      ".signalservice.ConfigurationMessage.Cont" +
+      "act\032\233\001\n\013ClosedGroup\022\021\n\tpublicKey\030\001 \001(\014\022\014" +
+      "\n\004name\030\002 \001(\t\0221\n\021encryptionKeyPair\030\003 \001(\0132" +
+      "\026.signalservice.KeyPair\022\017\n\007members\030\004 \003(\014" +
+      "\022\016\n\006admins\030\005 \003(\014\022\027\n\017expirationTimer\030\006 \001(" +
+      "\r\032\223\001\n\007Contact\022\021\n\tpublicKey\030\001 \002(\014\022\014\n\004name" +
+      "\030\002 \002(\t\022\026\n\016profilePicture\030\003 \001(\t\022\022\n\nprofil" +
+      "eKey\030\004 \001(\014\022\022\n\nisApproved\030\005 \001(\010\022\021\n\tisBloc" +
+      "ked\030\006 \001(\010\022\024\n\014didApproveMe\030\007 \001(\010\",\n\026Messa" +
+      "geRequestResponse\022\022\n\nisApproved\030\001 \002(\010\"u\n" +
+      "\016ReceiptMessage\0220\n\004type\030\001 \002(\0162\".signalse" +
+      "rvice.ReceiptMessage.Type\022\021\n\ttimestamp\030\002" +
+      " \003(\004\"\036\n\004Type\022\014\n\010DELIVERY\020\000\022\010\n\004READ\020\001\"\354\001\n" +
+      "\021AttachmentPointer\022\n\n\002id\030\001 \002(\006\022\023\n\013conten" +
+      "tType\030\002 \001(\t\022\013\n\003key\030\003 \001(\014\022\014\n\004size\030\004 \001(\r\022\021" +
+      "\n\tthumbnail\030\005 \001(\014\022\016\n\006digest\030\006 \001(\014\022\020\n\010fil" +
+      "eName\030\007 \001(\t\022\r\n\005flags\030\010 \001(\r\022\r\n\005width\030\t \001(" +
+      "\r\022\016\n\006height\030\n \001(\r\022\017\n\007caption\030\013 \001(\t\022\013\n\003ur" +
+      "l\030e \001(\t\"\032\n\005Flags\022\021\n\rVOICE_MESSAGE\020\001\"\365\001\n\014" +
+      "GroupContext\022\n\n\002id\030\001 \001(\014\022.\n\004type\030\002 \001(\0162 " +
+      ".signalservice.GroupContext.Type\022\014\n\004name" +
+      "\030\003 \001(\t\022\017\n\007members\030\004 \003(\t\0220\n\006avatar\030\005 \001(\0132" +
+      " .signalservice.AttachmentPointer\022\016\n\006adm" +
+      "ins\030\006 \003(\t\"H\n\004Type\022\013\n\007UNKNOWN\020\000\022\n\n\006UPDATE" +
+      "\020\001\022\013\n\007DELIVER\020\002\022\010\n\004QUIT\020\003\022\020\n\014REQUEST_INF" +
+      "O\020\004B2\n\033com.beldex.libsignal.protosB\023Sign" +
+      "alServiceProtos"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -30287,7 +30103,7 @@ public final class SignalServiceProtos {
     internal_static_signalservice_DataMessage_SharedContact_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_signalservice_DataMessage_SharedContact_descriptor,
-        new java.lang.String[] { "ThreadId", "Address", "Name", });
+        new java.lang.String[] { "Address", "Name", });
     internal_static_signalservice_CallMessage_descriptor =
       getDescriptor().getMessageTypes().get(7);
     internal_static_signalservice_CallMessage_fieldAccessorTable = new

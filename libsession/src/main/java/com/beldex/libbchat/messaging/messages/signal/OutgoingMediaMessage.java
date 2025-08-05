@@ -102,7 +102,7 @@ public class OutgoingMediaMessage {
       previews = Collections.singletonList(linkPreview);
     }
     SharedContact contact = message.getSharedContact();
-    String body = UpdateMessageData.Companion.buildSharedContact(contact.getThreadId(), contact.getAddress(), contact.getName()).toJSON();
+    String body = UpdateMessageData.Companion.buildSharedContact(contact.getAddress(), contact.getName()).toJSON();
 
     return new OutgoingMediaMessage(recipient, body, attachments, message.getSentTimestamp(), -1,
             recipient.getExpireMessages() * 1000, DistributionTypes.DEFAULT, outgoingQuote, Collections.emptyList(),

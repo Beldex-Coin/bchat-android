@@ -214,7 +214,9 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        binding.edtGroupName.isFocusable = false
+        if (this::binding.isInitialized) {
+            binding.edtGroupName.isFocusable = false
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

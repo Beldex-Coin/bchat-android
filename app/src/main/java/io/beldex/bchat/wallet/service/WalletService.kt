@@ -442,6 +442,7 @@ class WalletService : Service() {
     private val mBinder: IBinder = WalletServiceBinder()
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Running = true
+        startNotification()
         // when the activity starts the service, it expects to start it for a new wallet
         // the service is possibly still occupied with saving the last opened wallet
         // so we queue the open request
@@ -476,7 +477,6 @@ class WalletService : Service() {
     }
 
     private fun start(walletName: String, walletPassword: String): Wallet.Status? {
-        startNotification()
         showProgress(getString(R.string.status_wallet_loading))
         showProgress(0.1f)
         if (listener == null) {

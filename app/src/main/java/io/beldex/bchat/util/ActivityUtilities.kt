@@ -18,29 +18,30 @@ val defaultBchatRequestCode: Int
     get() = 42
 
 fun BaseActionBarActivity.setUpActionBarBchatLogo(title: String, hideBackButton: Boolean = false) {
-    val actionbar = supportActionBar!!
 
-    actionbar.setDisplayShowHomeEnabled(false)
-    actionbar.setDisplayShowTitleEnabled(false)
-    actionbar.setDisplayHomeAsUpEnabled(false)
-    actionbar.setHomeButtonEnabled(false)
+    supportActionBar?.let { actionbar ->
+        actionbar.setDisplayShowHomeEnabled(false)
+        actionbar.setDisplayShowTitleEnabled(false)
+        actionbar.setDisplayHomeAsUpEnabled(false)
+        actionbar.setHomeButtonEnabled(false)
 
-    actionbar.setCustomView(R.layout.bchat_logo_action_bar_content)
-    actionbar.setDisplayShowCustomEnabled(true)
+        actionbar.setCustomView(R.layout.bchat_logo_action_bar_content)
+        actionbar.setDisplayShowCustomEnabled(true)
 
-    val rootView: Toolbar = actionbar.customView!!.parent as Toolbar
-    rootView.setPadding(0, 0, 0, 0)
-    rootView.setContentInsetsAbsolute(0, 0);
+        val rootView: Toolbar = actionbar.customView!!.parent as Toolbar
+        rootView.setPadding(0, 0, 0, 0)
+        rootView.setContentInsetsAbsolute(0, 0);
 
-    val backButton = actionbar.customView!!.findViewById<View>(R.id.back_button)
-    val titleName = actionbar.customView!!.findViewById<TextView>(R.id.title_name)
-    titleName.text = title
-    if (hideBackButton) {
-        backButton.visibility = View.GONE
-    } else {
-        backButton.visibility = View.VISIBLE
-        backButton.setOnClickListener {
-            onSupportNavigateUp()
+        val backButton = actionbar.customView!!.findViewById<View>(R.id.back_button)
+        val titleName = actionbar.customView!!.findViewById<TextView>(R.id.title_name)
+        titleName.text = title
+        if (hideBackButton) {
+            backButton.visibility = View.GONE
+        } else {
+            backButton.visibility = View.VISIBLE
+            backButton.setOnClickListener {
+                onSupportNavigateUp()
+            }
         }
     }
 }

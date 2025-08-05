@@ -32,9 +32,9 @@ class RecoveryPhraseActivity : BaseActionBarActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setUpActionBarBchatLogo(getString(R.string.activity_settings_recovery_phrase_button_title), false)
         binding = ActivityRecoveryPhraseBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setUpActionBarBchatLogo(getString(R.string.activity_settings_recovery_phrase_button_title), false)
         val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
         with(binding)
         {

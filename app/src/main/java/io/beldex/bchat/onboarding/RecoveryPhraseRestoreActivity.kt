@@ -33,7 +33,6 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setUpActionBarBchatLogo("Restore Seed",false)
         TextSecurePreferences.apply {
             setHasViewedSeed(this@RecoveryPhraseRestoreActivity, true)
             setConfigurationMessageSynced(this@RecoveryPhraseRestoreActivity, false)
@@ -42,6 +41,7 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
         }
         binding = ActivityRecoveryPhraseRestoreBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setUpActionBarBchatLogo("Restore Seed",false)
         binding.mnemonicEditText.imeOptions = binding.mnemonicEditText.imeOptions or 16777216 // Always use incognito keyboard
         binding.restoreButton.setOnClickListener {
             if(binding.recoveryPhraseCountWord.text!=null && binding.recoveryPhraseCountWord.text=="25/25") {

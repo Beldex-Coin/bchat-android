@@ -61,9 +61,9 @@ class DisplayNameActivity : BaseActionBarActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setUpActionBarBchatLogo(getString(R.string.display_name),false)
         binding = ActivityDisplayNameBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setUpActionBarBchatLogo(getString(R.string.display_name),false)
         with(binding) {
             displayNameEditText.imeOptions =
                 displayNameEditText.imeOptions or 16777216 // Always use incognito keyboard

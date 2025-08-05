@@ -148,7 +148,9 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
     override fun onDestroy() {
         super.onDestroy()
         hideSoftKeyboard()
-        binding.chatURLEditText.isFocusable = false
+        if (this::binding.isInitialized) {
+            binding.chatURLEditText.isFocusable = false
+        }
     }
 
     // region Updating

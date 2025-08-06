@@ -15123,34 +15123,34 @@ public final class SignalServiceProtos {
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>required string address = 2;</code>
+       * <code>required string address = 1;</code>
        * @return Whether the address field is set.
        */
       boolean hasAddress();
       /**
-       * <code>required string address = 2;</code>
+       * <code>required string address = 1;</code>
        * @return The address.
        */
       java.lang.String getAddress();
       /**
-       * <code>required string address = 2;</code>
+       * <code>required string address = 1;</code>
        * @return The bytes for address.
        */
       com.google.protobuf.ByteString
           getAddressBytes();
 
       /**
-       * <code>required string name = 3;</code>
+       * <code>required string name = 2;</code>
        * @return Whether the name field is set.
        */
       boolean hasName();
       /**
-       * <code>required string name = 3;</code>
+       * <code>required string name = 2;</code>
        * @return The name.
        */
       java.lang.String getName();
       /**
-       * <code>required string name = 3;</code>
+       * <code>required string name = 2;</code>
        * @return The bytes for name.
        */
       com.google.protobuf.ByteString
@@ -15194,11 +15194,11 @@ public final class SignalServiceProtos {
       }
 
       private int bitField0_;
-      public static final int ADDRESS_FIELD_NUMBER = 2;
+      public static final int ADDRESS_FIELD_NUMBER = 1;
       @SuppressWarnings("serial")
       private volatile java.lang.Object address_ = "";
       /**
-       * <code>required string address = 2;</code>
+       * <code>required string address = 1;</code>
        * @return Whether the address field is set.
        */
       @java.lang.Override
@@ -15206,7 +15206,7 @@ public final class SignalServiceProtos {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>required string address = 2;</code>
+       * <code>required string address = 1;</code>
        * @return The address.
        */
       @java.lang.Override
@@ -15225,7 +15225,7 @@ public final class SignalServiceProtos {
         }
       }
       /**
-       * <code>required string address = 2;</code>
+       * <code>required string address = 1;</code>
        * @return The bytes for address.
        */
       @java.lang.Override
@@ -15243,11 +15243,11 @@ public final class SignalServiceProtos {
         }
       }
 
-      public static final int NAME_FIELD_NUMBER = 3;
+      public static final int NAME_FIELD_NUMBER = 2;
       @SuppressWarnings("serial")
       private volatile java.lang.Object name_ = "";
       /**
-       * <code>required string name = 3;</code>
+       * <code>required string name = 2;</code>
        * @return Whether the name field is set.
        */
       @java.lang.Override
@@ -15255,7 +15255,7 @@ public final class SignalServiceProtos {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
-       * <code>required string name = 3;</code>
+       * <code>required string name = 2;</code>
        * @return The name.
        */
       @java.lang.Override
@@ -15274,7 +15274,7 @@ public final class SignalServiceProtos {
         }
       }
       /**
-       * <code>required string name = 3;</code>
+       * <code>required string name = 2;</code>
        * @return The bytes for name.
        */
       @java.lang.Override
@@ -15315,10 +15315,10 @@ public final class SignalServiceProtos {
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (((bitField0_ & 0x00000001) != 0)) {
-          com.google.protobuf.GeneratedMessageV3.writeString(output, 2, address_);
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 1, address_);
         }
         if (((bitField0_ & 0x00000002) != 0)) {
-          com.google.protobuf.GeneratedMessageV3.writeString(output, 3, name_);
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
         }
         getUnknownFields().writeTo(output);
       }
@@ -15330,10 +15330,10 @@ public final class SignalServiceProtos {
 
         size = 0;
         if (((bitField0_ & 0x00000001) != 0)) {
-          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, address_);
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, address_);
         }
         if (((bitField0_ & 0x00000002) != 0)) {
-          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, name_);
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSize = size;
@@ -15609,16 +15609,16 @@ public final class SignalServiceProtos {
                 case 0:
                   done = true;
                   break;
-                case 18: {
+                case 10: {
                   address_ = input.readBytes();
                   bitField0_ |= 0x00000001;
                   break;
-                } // case 18
-                case 26: {
+                } // case 10
+                case 18: {
                   name_ = input.readBytes();
                   bitField0_ |= 0x00000002;
                   break;
-                } // case 26
+                } // case 18
                 default: {
                   if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                     done = true; // was an endgroup tag
@@ -15638,14 +15638,14 @@ public final class SignalServiceProtos {
 
         private java.lang.Object address_ = "";
         /**
-         * <code>required string address = 2;</code>
+         * <code>required string address = 1;</code>
          * @return Whether the address field is set.
          */
         public boolean hasAddress() {
           return ((bitField0_ & 0x00000001) != 0);
         }
         /**
-         * <code>required string address = 2;</code>
+         * <code>required string address = 1;</code>
          * @return The address.
          */
         public java.lang.String getAddress() {
@@ -15663,7 +15663,7 @@ public final class SignalServiceProtos {
           }
         }
         /**
-         * <code>required string address = 2;</code>
+         * <code>required string address = 1;</code>
          * @return The bytes for address.
          */
         public com.google.protobuf.ByteString
@@ -15680,7 +15680,7 @@ public final class SignalServiceProtos {
           }
         }
         /**
-         * <code>required string address = 2;</code>
+         * <code>required string address = 1;</code>
          * @param value The address to set.
          * @return This builder for chaining.
          */
@@ -15693,7 +15693,7 @@ public final class SignalServiceProtos {
           return this;
         }
         /**
-         * <code>required string address = 2;</code>
+         * <code>required string address = 1;</code>
          * @return This builder for chaining.
          */
         public Builder clearAddress() {
@@ -15703,7 +15703,7 @@ public final class SignalServiceProtos {
           return this;
         }
         /**
-         * <code>required string address = 2;</code>
+         * <code>required string address = 1;</code>
          * @param value The bytes for address to set.
          * @return This builder for chaining.
          */
@@ -15718,14 +15718,14 @@ public final class SignalServiceProtos {
 
         private java.lang.Object name_ = "";
         /**
-         * <code>required string name = 3;</code>
+         * <code>required string name = 2;</code>
          * @return Whether the name field is set.
          */
         public boolean hasName() {
           return ((bitField0_ & 0x00000002) != 0);
         }
         /**
-         * <code>required string name = 3;</code>
+         * <code>required string name = 2;</code>
          * @return The name.
          */
         public java.lang.String getName() {
@@ -15743,7 +15743,7 @@ public final class SignalServiceProtos {
           }
         }
         /**
-         * <code>required string name = 3;</code>
+         * <code>required string name = 2;</code>
          * @return The bytes for name.
          */
         public com.google.protobuf.ByteString
@@ -15760,7 +15760,7 @@ public final class SignalServiceProtos {
           }
         }
         /**
-         * <code>required string name = 3;</code>
+         * <code>required string name = 2;</code>
          * @param value The name to set.
          * @return This builder for chaining.
          */
@@ -15773,7 +15773,7 @@ public final class SignalServiceProtos {
           return this;
         }
         /**
-         * <code>required string name = 3;</code>
+         * <code>required string name = 2;</code>
          * @return This builder for chaining.
          */
         public Builder clearName() {
@@ -15783,7 +15783,7 @@ public final class SignalServiceProtos {
           return this;
         }
         /**
-         * <code>required string name = 3;</code>
+         * <code>required string name = 2;</code>
          * @param value The bytes for name to set.
          * @return This builder for chaining.
          */
@@ -29963,7 +29963,7 @@ public final class SignalServiceProtos {
       "\"r\n\004Type\022\007\n\003NEW\020\001\022\027\n\023ENCRYPTION_KEY_PAIR" +
       "\020\003\022\017\n\013NAME_CHANGE\020\004\022\021\n\rMEMBERS_ADDED\020\005\022\023" +
       "\n\017MEMBERS_REMOVED\020\006\022\017\n\013MEMBER_LEFT\020\007\032.\n\r" +
-      "SharedContact\022\017\n\007address\030\002 \002(\t\022\014\n\004name\030\003" +
+      "SharedContact\022\017\n\007address\030\001 \002(\t\022\014\n\004name\030\002" +
       " \002(\t\"$\n\005Flags\022\033\n\027EXPIRATION_TIMER_UPDATE" +
       "\020\002\"\352\001\n\013CallMessage\022-\n\004type\030\001 \002(\0162\037.signa" +
       "lservice.CallMessage.Type\022\014\n\004sdps\030\002 \003(\t\022" +

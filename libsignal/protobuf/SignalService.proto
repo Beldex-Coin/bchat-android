@@ -158,8 +158,8 @@ message DataMessage {
   }
 
   message SharedContact {
-    required string         address           = 2;
-    required string         name              = 3;
+    required string         address           = 1;
+    required string         name              = 2;
   }
 
   optional string                    body                      = 1;

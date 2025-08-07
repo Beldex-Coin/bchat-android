@@ -150,9 +150,9 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
     val KEYGUARD_LOCK_TAG="BChat Messenger" + ":KeyguardLock"
     val WAKELOCK_TAG="BChat Messenger" + ":WakeLock"
 
-    override fun getSystemService(name: String): Any {
+    override fun getSystemService(name: String): Any? {
         if (MessagingModuleConfiguration.MESSAGING_MODULE_SERVICE == name) {
-            return messagingModuleConfiguration!!
+            return messagingModuleConfiguration
         }
         return super.getSystemService(name)
     }

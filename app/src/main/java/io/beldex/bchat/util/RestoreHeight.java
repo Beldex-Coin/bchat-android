@@ -151,7 +151,7 @@ public class RestoreHeight {
             while (prevBc == null) {
                 cal.add(Calendar.MONTH, -1);
                 if (cal.get(Calendar.YEAR) < 2019) {
-                    throw new IllegalStateException("endless loop looking for blockheight");
+                    return 0;
                 }
                 prevTime = cal.getTimeInMillis();
                 prevDate = formatter.format(prevTime);

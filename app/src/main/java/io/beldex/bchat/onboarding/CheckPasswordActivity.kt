@@ -35,7 +35,7 @@ class CheckPasswordActivity : BaseActionBarActivity() {
         setContentView(binding.root)
         setUpActionBarBchatLogo("Password")
 
-        page = intent.extras!!.getInt("page")
+        page = intent.extras?.getInt("page") ?: 0
 
 
         with(binding) {

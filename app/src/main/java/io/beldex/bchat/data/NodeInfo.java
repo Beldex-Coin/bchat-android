@@ -171,12 +171,14 @@ public class  NodeInfo extends Node implements Serializable {
 
 
     static public Comparator<NodeInfo> BestNodeComparator = (o1, o2) -> {
+        if (o1 == null && o2 == null) return 0;
+        if (o1 == null) return 1;
+        if (o2 == null) return -1;
         if (o1.isValid()) {
-            if (o2.isValid()) { // both are valid
+            if (o2.isValid()) {
                 // higher node wins
                 int heightDiff = (int) (o2.height - o1.height);
-                if (heightDiff != 0)
-                    return heightDiff;
+                if (heightDiff != 0) return heightDiff;
                 // if they are equal, faster node wins
                 return (int) Math.signum(o1.responseTime - o2.responseTime);
             } else {

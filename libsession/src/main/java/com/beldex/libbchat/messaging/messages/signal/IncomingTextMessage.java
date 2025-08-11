@@ -163,13 +163,13 @@ public class IncomingTextMessage implements Parcelable {
     return incomingTextMessage;
   }
 
-  public static IncomingTextMessage fromSharedContact(SharedContact contact, Address sender, Long sentTimestamp, long expiresInMillis) {
+  public static IncomingTextMessage fromSharedContact(SharedContact contact, Address sender,  Optional<SignalServiceGroup> group, Long sentTimestamp, long expiresInMillis) {
     String address = contact.getAddress();
     String name = contact.getName();
     if (address == null || name == null) { return null; }
     // FIXME: Doing toJSON() to get the body here is weird
     String body = UpdateMessageData.Companion.buildSharedContact(address, name).toJSON();
-    IncomingTextMessage incomingTextMessage = new IncomingTextMessage(sender, 1,  sentTimestamp, body, Optional.absent(),  expiresInMillis, false);
+    IncomingTextMessage incomingTextMessage = new IncomingTextMessage(sender, 1,  sentTimestamp, body, group,  expiresInMillis, false);
     incomingTextMessage.isContact = true;
     return incomingTextMessage;
   }

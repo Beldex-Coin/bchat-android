@@ -138,8 +138,11 @@ public class BlobProvider {
    */
   public synchronized void onBchatStart(@NonNull Context context) {
     File directory = getOrCreateCacheDirectory(context, SINGLE_BCHAT_DIRECTORY);
-    for (File file : directory.listFiles()) {
-      file.delete();
+    File[] files = directory.listFiles();
+    if (files != null) {
+      for (File file : files) {
+        file.delete();
+      }
     }
   }
 

@@ -225,18 +225,19 @@ object ConversationMenuHelper {
                 val contactPhoto = thread.contactPhoto
                 if (contactPhoto != null) {
                     try {
-                        var bitmap = BitmapFactory.decodeStream(contactPhoto.openInputStream(
-                            context,
-                            true
-                        ))
-                        bitmap = BitmapUtil.createScaledBitmap(bitmap, 300, 300)
-                        icon = IconCompat.createWithAdaptiveBitmap(bitmap)
+                        val inputStream = contactPhoto.openInputStream(context, true)
+                        var bitmap = inputStream?.let { BitmapFactory.decodeStream(it) }
+                        if(bitmap != null) {
+                            bitmap = BitmapUtil.createScaledBitmap(bitmap, 300, 300)
+                            icon = IconCompat.createWithAdaptiveBitmap(bitmap)
+                        } else {
+                            icon = defaultIcon(context, thread)
+                        }
                     } catch (e: IOException) {
                         // Do nothing
                     }
-                }
-                if (icon == null) {
-                    icon = IconCompat.createWithResource(context, if (thread.isGroupRecipient) R.drawable.ic_shortcut_group else R.drawable.ic_shortcut_person)
+                } else {
+                    icon = defaultIcon(context, thread)
                 }
                 return icon
             }
@@ -256,6 +257,10 @@ object ConversationMenuHelper {
                 }
             }
         }.execute()
+    }
+
+    private fun defaultIcon(context: Context, thread: Recipient):IconCompat {
+        return IconCompat.createWithResource(context, if (thread.isGroupRecipient) R.drawable.ic_shortcut_group else R.drawable.ic_shortcut_person)
     }
 
     private fun showExpiringMessagesDialog(context: ConversationFragmentV2, thread: Recipient) {

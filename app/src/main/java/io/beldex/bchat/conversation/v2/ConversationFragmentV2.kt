@@ -1844,11 +1844,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
 
             override fun onFailure(e: ExecutionException) {
-                Toast.makeText(
-                    requireActivity(),
-                    R.string.ConversationActivity_unable_to_record_audio,
-                    Toast.LENGTH_LONG
-                ).show()
+                if (isAdded) {
+                    Toast.makeText(
+                        requireActivity(),
+                        R.string.ConversationActivity_unable_to_record_audio,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         })
     }

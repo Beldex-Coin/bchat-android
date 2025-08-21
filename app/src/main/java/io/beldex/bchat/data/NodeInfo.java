@@ -221,6 +221,9 @@ public class  NodeInfo extends Node implements Serializable {
     public static final double PING_BAD = HTTP_TIMEOUT;
 
     public boolean testRpcService() {
+        if(getHostAddress().isEmpty()) {
+            return false;
+        }
         return testRpcService(rpcPort);
     }
     public boolean testIsMainnet(){
@@ -253,11 +256,11 @@ public class  NodeInfo extends Node implements Serializable {
             long ta = System.nanoTime();
             try  (Response response = client.newCall(request_1).execute()) {
                 if(response.isSuccessful())
-                if (response.body() != null) {
+                    if (response.body() != null) {
                         final JSONObject json = new JSONObject(response.body().string());
                         final JSONObject result = json.getJSONObject("result");
-                    boolean isMainnet_node = result.getBoolean("mainnet");
-                    return isMainnet_node;
+                        boolean isMainnet_node = result.getBoolean("mainnet");
+                        return isMainnet_node;
                     }
 
             }
@@ -272,7 +275,7 @@ public class  NodeInfo extends Node implements Serializable {
 
 
     public boolean testRpcService(NodePinger.Listener listener) {
-        boolean result = testRpcService(rpcPort);
+        boolean result = !getHostAddress().isEmpty() ? testRpcService(rpcPort) : false;
         if (listener != null)
             listener.publish(this);
         return result;
@@ -334,11 +337,12 @@ public class  NodeInfo extends Node implements Serializable {
     static final private int[] TEST_PORTS = {29091}; // check only opt-in port
 
     public boolean findRpcService() {
+        boolean _hostAddress = !getHostAddress().isEmpty();
         // if already have an rpcPort, use that
-        if (rpcPort > 0) return testRpcService(rpcPort);
+        if (rpcPort > 0) return _hostAddress ? testRpcService(rpcPort) : false;
         // otherwise try to find one
         for (int port : TEST_PORTS) {
-            if (testRpcService(port)) { // found a service
+            if (_hostAddress ? testRpcService(port) : false) { // found a service
                 this.rpcPort = port;
                 return true;
             }

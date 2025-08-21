@@ -26,17 +26,18 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.Collections
 import javax.inject.Inject
+import androidx.core.content.edit
 
 @HiltViewModel
 
 class NodeViewModel @Inject constructor(
     @ApplicationContext context : Context,
     private val sharedPreferenceUtil : SharedPreferenceUtil,
-    ) : ViewModel() {
+) : ViewModel() {
 
     data class UiState(
-            val multiSelectedActivated: Boolean = false,
-            val nodeList: List<NodeInfo> = emptyList()
+        val multiSelectedActivated: Boolean = false,
+        val nodeList: List<NodeInfo> = emptyList()
     )
 
 
@@ -67,9 +68,13 @@ class NodeViewModel @Inject constructor(
     }
 
     fun updateNodeList(nodeList : NodeInfo) {
-        val currentList=_favouritesNodes.value ?: mutableSetOf()
-        currentList.add(nodeList)
-        _favouritesNodes.postValue(currentList)
+        val updatedList = _favouritesNodes.value
+            ?.filter { it.name != nodeList.name } // remove old one
+            ?.toMutableSet()
+            ?: mutableSetOf()
+
+        updatedList.add(nodeList) // add new one
+        _favouritesNodes.postValue(updatedList)
     }
 
     private fun addFavourite(nodeString : String) : NodeInfo? {
@@ -81,6 +86,9 @@ class NodeViewModel @Inject constructor(
         return nodeInfo
     }
 
+    fun setDefaultNodes(nodes: MutableSet<NodeInfo>) {
+        _favouritesNodes.postValue(nodes)
+    }
 
     fun loadFavouritesWithNetwork() {
         Helper.runWithNetwork {
@@ -193,25 +201,24 @@ class NodeViewModel @Inject constructor(
             nodeInfo.isSelected=nodeInfo == node
         }
         WalletManager.getInstance().setDaemon(node)
-        println("save Fav node called 1 -> $node")
         if (save) saveSelectedNode(context)
     }
 
     fun saveSelectedNode(nodeInfo : NodeInfo?, context : Context) {
-        val editor=context.getSharedPreferences(SELECTED_NODE_PREFS_NAME, MODE_PRIVATE).edit()
-        if (nodeInfo == null) {
-            editor.clear()
-        } else {
-            editor.putString("0", getNode()?.toNodeString())
-            _currentNode.postValue(getNode()?.toNodeString())
+        context.getSharedPreferences(SELECTED_NODE_PREFS_NAME, MODE_PRIVATE).edit {
+            if (nodeInfo == null) {
+                clear()
+            } else {
+                putString("0", getNode().toNodeString())
+                _currentNode.postValue(getNode().toNodeString())
+            }
+            selectedNodeId = getNode().toNodeString()
         }
-        selectedNodeId = getNode().toNodeString()
-        editor.apply()
     }
 
     fun getSelectedNodeId(context : Context) : String? {
         return context.getSharedPreferences(SELECTED_NODE_PREFS_NAME, MODE_PRIVATE)
-                .getString("0", null)
+            .getString("0", null)
     }
 
 

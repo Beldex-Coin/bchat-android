@@ -63,10 +63,12 @@ import java.util.List;
 
 import io.beldex.bchat.R;
 
-@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class AttachmentManager {
 
   private final static String TAG = AttachmentManager.class.getSimpleName();
+
+  // Max attachment size is 10MB, above which we display a warning toast rather than sending the msg
+  private final long MAX_ATTACHMENTS_FILE_SIZE_BYTES = 10 * 1024 * 1024;
 
   private final @NonNull Context                    context;
   private final @NonNull AttachmentListener         attachmentListener;
@@ -259,15 +261,11 @@ public class AttachmentManager {
             .execute();
   }
 
-  public static String[] storage_permissions_33 = {
-          Manifest.permission.READ_MEDIA_IMAGES,
-          Manifest.permission.READ_MEDIA_VIDEO
-  };
-
   public static void selectGallery(Activity activity, int requestCode, @NonNull Recipient recipient, @NonNull String body) {
     Permissions.PermissionsBuilder builder = Permissions.with(activity);
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      builder = builder.request(storage_permissions_33);
+      builder = builder.request(Manifest.permission.READ_MEDIA_VIDEO)
+              .request(Manifest.permission.READ_MEDIA_IMAGES);
     } else {
       builder = builder.request(Manifest.permission.READ_EXTERNAL_STORAGE);
     }
@@ -339,9 +337,21 @@ public class AttachmentManager {
                                           final @Nullable Slide slide,
                                           final @NonNull  MediaConstraints constraints)
   {
-   return slide == null                                          ||
-          constraints.isSatisfied(context, slide.asAttachment()) ||
-          constraints.canResize(slide.asAttachment());
+    // Null attachment? Not satisfied.
+    if (slide == null) return false;
+
+    // Attachments are excessively large? Not satisfied.
+    // Note: This file size test must come BEFORE the `constraints.isSatisfied` check below because
+    // it is a more specific type of check.
+    if (slide.asAttachment().getSize() > MAX_ATTACHMENTS_FILE_SIZE_BYTES) {
+      Toast.makeText(context, R.string.attachmentsErrorSize, Toast.LENGTH_SHORT).show();
+      return false;
+    }
+
+    // Otherwise we return whether our constraints are satisfied OR if we can resize the attachment
+    // (in the case of one or more images) - either one will be acceptable, but if both aren't then
+    // we fail the constraint test.
+    return constraints.isSatisfied(context, slide.asAttachment()) || constraints.canResize(slide.asAttachment());
   }
 
   public interface AttachmentListener {

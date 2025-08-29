@@ -13,7 +13,8 @@ class EditClosedGroupMembersAdapter(
         private val context: Context,
         private val glide: RequestManager,
         private val admin: Boolean,
-        private val memberClickListener: ((String) -> Unit)? = null
+        private val memberClickListener: ((String) -> Unit)? = null,
+        private val groupAdmin: String
 ) : RecyclerView.Adapter<EditClosedGroupMembersAdapter.ViewHolder>() {
 
     private val members = ArrayList<String>()
@@ -48,12 +49,8 @@ class EditClosedGroupMembersAdapter(
             context,
             Address.fromSerialized(member), false),
             glide,
-            if (unlocked) UserView.ActionIndicator.Menu else UserView.ActionIndicator.None)
-
-        if (zombieMembers.contains(member))
-            viewHolder.view.alpha = 0.5F
-        else
-            viewHolder.view.alpha = 1F
+            if (unlocked) UserView.ActionIndicator.Menu else UserView.ActionIndicator.None,
+            groupAdmin = groupAdmin)
 
         if (unlocked) {
             viewHolder.view.setOnClickListener { this.memberClickListener?.invoke(member) }

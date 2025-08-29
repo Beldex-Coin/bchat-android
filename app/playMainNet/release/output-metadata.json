@@ -11,22 +11,9 @@
       "type": "UNIVERSAL",
       "filters": [],
       "attributes": [],
-      "versionCode": 78,
-      "versionName": "2.6.5",
-      "outputFile": "Bchat-2.6.5-universal.apk"
-    },
-    {
-      "type": "ONE_OF_MANY",
-      "filters": [
-        {
-          "filterType": "ABI",
-          "value": "arm64-v8a"
-        }
-      ],
-      "attributes": [],
-      "versionCode": 78,
-      "versionName": "2.6.5",
-      "outputFile": "Bchat-2.6.5-arm64-v8a.apk"
+      "versionCode": 84,
+      "versionName": "2.7.2",
+      "outputFile": "Bchat-2.7.2-universal.apk"
     },
     {
       "type": "ONE_OF_MANY",
@@ -37,9 +24,22 @@
         }
       ],
       "attributes": [],
-      "versionCode": 78,
-      "versionName": "2.6.5",
-      "outputFile": "Bchat-2.6.5-armeabi-v7a.apk"
+      "versionCode": 84,
+      "versionName": "2.7.2",
+      "outputFile": "Bchat-2.7.2-armeabi-v7a.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "arm64-v8a"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 84,
+      "versionName": "2.7.2",
+      "outputFile": "Bchat-2.7.2-arm64-v8a.apk"
     },
     {
       "type": "ONE_OF_MANY",
@@ -50,10 +50,33 @@
         }
       ],
       "attributes": [],
-      "versionCode": 78,
-      "versionName": "2.6.5",
-      "outputFile": "Bchat-2.6.5-x86_64.apk"
+      "versionCode": 84,
+      "versionName": "2.7.2",
+      "outputFile": "Bchat-2.7.2-x86_64.apk"
     }
   ],
-  "elementType": "File"
+  "elementType": "File",
+  "baselineProfiles": [
+    {
+      "minApi": 28,
+      "maxApi": 30,
+      "baselineProfiles": [
+        "baselineProfiles/1/Bchat-2.7.2-universal.dm",
+        "baselineProfiles/1/Bchat-2.7.2-armeabi-v7a.dm",
+        "baselineProfiles/1/Bchat-2.7.2-arm64-v8a.dm",
+        "baselineProfiles/1/Bchat-2.7.2-x86_64.dm"
+      ]
+    },
+    {
+      "minApi": 31,
+      "maxApi": 2147483647,
+      "baselineProfiles": [
+        "baselineProfiles/0/Bchat-2.7.2-universal.dm",
+        "baselineProfiles/0/Bchat-2.7.2-armeabi-v7a.dm",
+        "baselineProfiles/0/Bchat-2.7.2-arm64-v8a.dm",
+        "baselineProfiles/0/Bchat-2.7.2-x86_64.dm"
+      ]
+    }
+  ],
+  "minSdkVersionForDexing": 26
 }

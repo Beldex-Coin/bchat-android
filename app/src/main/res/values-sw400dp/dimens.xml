@@ -24,4 +24,8 @@
     <dimen name="min_text_width">120dp</dimen>
     <dimen name="max_body_text_width">300dp</dimen>
     <dimen name="min_body_text_width">120dp</dimen>
+    <dimen name="react_with_any_emoji_parent_container_bottom_margin_with_tail">15dp</dimen>
+    <dimen name="react_with_any_emoji_parent_container_bottom_margin_with_tail_group_message">8dp</dimen>
+    <dimen name="react_with_any_emoji_parent_container_bottom_margin">25dp</dimen>
+    <dimen name="react_with_any_emoji_parent_container_bottom_margin_group_message">24dp</dimen>
 </resources>

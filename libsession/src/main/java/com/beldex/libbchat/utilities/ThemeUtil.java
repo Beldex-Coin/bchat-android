@@ -2,6 +2,7 @@ package com.beldex.libbchat.utilities;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.graphics.Color;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -11,7 +12,10 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.StyleRes;
+import androidx.annotation.Nullable;
 import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.content.res.AppCompatResources;
+
 
 import com.beldex.libsignal.utilities.Log;
 
@@ -24,6 +28,24 @@ public class ThemeUtil {
     return getAttributeText(context, R.attr.theme_type, "light").equals("dark");
   }
 
+  public static boolean getThemedBoolean(@NonNull Context context, @AttrRes int attr) {
+    TypedValue      typedValue = new TypedValue();
+    Resources.Theme theme      = context.getTheme();
+    if (theme.resolveAttribute(attr, typedValue, true)) {
+      return typedValue.data != 0;
+    }
+    return false;
+  }
+
+  public static @Nullable
+  Drawable getThemedDrawable(@NonNull Context context, @AttrRes int attr) {
+    TypedValue      typedValue = new TypedValue();
+    Resources.Theme theme      = context.getTheme();
+    if (theme.resolveAttribute(attr, typedValue, true)) {
+      return AppCompatResources.getDrawable(context, typedValue.resourceId);
+    }
+    return null;
+  }
   @ColorInt
   public static int getThemedColor(@NonNull Context context, @AttrRes int attr) {
     TypedValue typedValue = new TypedValue();

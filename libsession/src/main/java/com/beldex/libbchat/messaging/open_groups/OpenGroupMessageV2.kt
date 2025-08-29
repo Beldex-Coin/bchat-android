@@ -21,7 +21,8 @@ data class OpenGroupMessageV2(
      * When sending a message, the sender signs the serialized protobuf with their private key so that
      * a receiving user can verify that the message wasn't tampered with.
      */
-    val base64EncodedSignature: String? = null
+    val base64EncodedSignature: String? = null,
+    val reactions: Map<String, OpenGroupAPIV2.Reaction>? = null
 ) {
 
     companion object {

@@ -11,6 +11,7 @@ import com.beldex.libbchat.messaging.jobs.Job
 import com.beldex.libbchat.messaging.jobs.JobQueue
 import com.beldex.libbchat.messaging.jobs.MessageReceiveJob
 import com.beldex.libbchat.messaging.jobs.MessageSendJob
+import com.beldex.libbchat.messaging.messages.Message
 import com.beldex.libbchat.messaging.messages.control.ConfigurationMessage
 import com.beldex.libbchat.messaging.messages.control.MessageRequestResponse
 import com.beldex.libbchat.messaging.messages.signal.IncomingEncryptedMessage
@@ -22,6 +23,7 @@ import com.beldex.libbchat.messaging.messages.signal.OutgoingMediaMessage
 import com.beldex.libbchat.messaging.messages.signal.OutgoingTextMessage
 import com.beldex.libbchat.messaging.messages.visible.Attachment
 import com.beldex.libbchat.messaging.messages.visible.Profile
+import com.beldex.libbchat.messaging.messages.visible.Reaction
 import com.beldex.libbchat.messaging.messages.visible.VisibleMessage
 import com.beldex.libbchat.messaging.open_groups.OpenGroupV2
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentId
@@ -37,7 +39,9 @@ import com.beldex.libbchat.utilities.GroupRecord
 import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libbchat.utilities.ProfileKeyUtil
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.recipients.MessageType
 import com.beldex.libbchat.utilities.recipients.Recipient
+import com.beldex.libbchat.utilities.recipients.getType
 import com.beldex.libsignal.crypto.ecc.ECKeyPair
 import com.beldex.libsignal.messages.SignalServiceAttachmentPointer
 import com.beldex.libsignal.messages.SignalServiceGroup
@@ -46,6 +50,8 @@ import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.guava.Optional
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.database.helpers.SQLCipherOpenHelper
+import io.beldex.bchat.database.model.MessageId
+import io.beldex.bchat.database.model.ReactionRecord
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.groups.OpenGroupManager
 import io.beldex.bchat.jobs.RetrieveProfileAvatarJob
@@ -247,7 +253,7 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         }
         message.serverHash?.let { serverHash ->
             messageID?.let { id ->
-                DatabaseComponent.get(context).beldexMessageDatabase().setMessageServerHash(id, serverHash)
+                DatabaseComponent.get(context).beldexMessageDatabase().setMessageServerHash(id, message.isMediaMessage(), serverHash)
             }
         }
         return messageID
@@ -387,10 +393,16 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         BchatMetaProtocol.removeTimestamps(timestamps)
     }
 
-    override fun getMessageIdInDatabase(timestamp: Long, author: String): Long? {
+    override fun getMessageIdInDatabase(timestamp: Long, author: String): Pair<Long, Boolean>? {
         val database = DatabaseComponent.get(context).mmsSmsDatabase()
-        val address = Address.fromSerialized(author)
-        return database.getMessageFor(timestamp, address)?.getId()
+        val address = fromSerialized(author)
+        return database.getMessageFor(timestamp, address)?.run { getId() to isMms }
+    }
+
+    override fun getMessageType(timestamp: Long, author: String): MessageType? {
+        val database = DatabaseComponent.get(context).mmsSmsDatabase()
+        val address = fromSerialized(author)
+        return database.getMessageFor(timestamp, address)?.individualRecipient?.getType()
     }
 
     override fun updateSentTimestamp(
@@ -473,8 +485,8 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         db.clearErrorMessage(messageID)
     }
 
-    override fun setMessageServerHash(messageID: Long, serverHash: String) {
-        DatabaseComponent.get(context).beldexMessageDatabase().setMessageServerHash(messageID, serverHash)
+    override fun setMessageServerHash(messageID: Long, mms: Boolean, serverHash: String) {
+        DatabaseComponent.get(context).beldexMessageDatabase().setMessageServerHash(messageID, mms, serverHash)
     }
 
     override fun getGroup(groupID: String): GroupRecord? {
@@ -634,9 +646,8 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         OpenGroupManager.addOpenGroup(urlAsString, context)
     }
 
-    override fun onOpenGroupAdded(urlAsString: String) {
-        val server = OpenGroupV2.getServer(urlAsString)
-        OpenGroupManager.restartPollerForServer(server.toString().removeSuffix("/"))
+    override fun onOpenGroupAdded(server: String) {
+        OpenGroupManager.restartPollerForServer(server.removeSuffix("/"))
     }
 
     override fun hasBackgroundGroupAddJob(groupJoinUrl: String): Boolean {
@@ -879,5 +890,61 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
 
     override fun getIsBnsHolder():String? {
         return TextSecurePreferences.getIsBNSHolder(context)
+    }
+
+    override fun addReaction(reaction: Reaction, messageSender: String,notifyUnread: Boolean) {
+        val timestamp = reaction.timestamp
+        val localId = reaction.localId
+        val isMms = reaction.isMms
+        val messageId = if (localId != null && localId > 0 && isMms != null) {
+            MessageId(localId, isMms)
+        } else if (timestamp != null && timestamp > 0) {
+            val messageRecord = DatabaseComponent.get(context).mmsSmsDatabase().getMessageForTimestamp(timestamp) ?: return
+            MessageId(messageRecord.id, messageRecord.isMms)
+        } else return
+        DatabaseComponent.get(context).reactionDatabase().addReaction(
+            messageId,
+            ReactionRecord(
+                messageId = messageId.id,
+                isMms = messageId.mms,
+                author = messageSender,
+                emoji = reaction.emoji!!,
+                serverId = reaction.serverId!!,
+                count = reaction.count!!,
+                sortId = reaction.index!!,
+                dateSent = reaction.dateSent!!,
+                dateReceived = reaction.dateReceived!!
+            ),
+            notifyUnread
+        )
+    }
+    override fun removeReaction(emoji: String, messageTimestamp: Long, author: String, notifyUnread: Boolean) {
+        val messageRecord = DatabaseComponent.get(context).mmsSmsDatabase().getMessageForTimestamp(messageTimestamp) ?: return
+        val messageId = MessageId(messageRecord.id, messageRecord.isMms)
+        DatabaseComponent.get(context).reactionDatabase().deleteReaction(emoji, messageId, author,notifyUnread)
+    }
+    override fun updateReactionIfNeeded(message: Message, sender: String, openGroupSentTimestamp: Long) {
+        val database = DatabaseComponent.get(context).reactionDatabase()
+        var reaction = database.getReactionFor(message.sentTimestamp!!, sender) ?: return
+        if (openGroupSentTimestamp != -1L) {
+            addReceivedMessageTimestamp(openGroupSentTimestamp)
+            reaction = reaction.copy(dateSent = openGroupSentTimestamp)
+        }
+        message.serverHash?.let {
+            reaction = reaction.copy(serverId = it)
+        }
+        message.openGroupServerMessageID?.let {
+            reaction = reaction.copy(serverId = "$it")
+        }
+        database.updateReaction(reaction)
+    }
+    override fun deleteReactions(messageId: Long, mms: Boolean) {
+        DatabaseComponent.get(context).reactionDatabase().deleteMessageReactions(MessageId(messageId, mms))
+    }
+
+    override fun deleteReactions(messageIds: List<Long>, mms: Boolean) {
+        DatabaseComponent.get(context).reactionDatabase().deleteMessageReactions(
+            messageIds.map { MessageId(it, mms) }
+        )
     }
 }

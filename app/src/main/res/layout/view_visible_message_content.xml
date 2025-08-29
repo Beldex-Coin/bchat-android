@@ -29,30 +29,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <!--Download Attachment File MessageView-->
-            <include
-                android:id="@+id/untrustedView"
-                layout="@layout/view_untrusted_attachment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-            <!--Voice MessageView-->
-            <include
-                android:id="@+id/voiceMessageView"
-                layout="@layout/view_voice_message"
-                android:layout_width="250dp"
-                android:layout_height="69dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <!--Social Group Invitation MessageView without TimeView-->
             <include
                 android:id="@+id/openGroupInvitationView"
@@ -75,20 +51,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <!--Document MessageView-->
-            <include
-                android:id="@+id/documentView"
-                layout="@layout/view_document"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxWidth="@dimen/max_text_width"
-                android:layout_margin="@dimen/small_spacing"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="gone" />
 
             <!--shared contacts view-->
 <!--            <io.beldex.bchat.conversation.v2.messages.SharedContactView-->
@@ -119,6 +81,7 @@
                 android:layout_marginTop="@dimen/small_spacing"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -133,6 +96,46 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
             </com.google.android.material.card.MaterialCardView>
+
+            <!--Download Attachment File MessageView-->
+            <include
+                android:id="@+id/untrustedView"
+                layout="@layout/view_untrusted_attachment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/quote_container" />
+
+            <!--Document MessageView-->
+            <include
+                android:id="@+id/documentView"
+                layout="@layout/view_document"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="@dimen/max_text_width"
+                android:layout_margin="@dimen/small_spacing"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/quote_container"
+                tools:visibility="gone" />
+
+            <!--Voice MessageView-->
+            <include
+                android:id="@+id/voiceMessageView"
+                layout="@layout/view_voice_message"
+                android:layout_width="250dp"
+                android:layout_height="69dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/quote_container" />
 
             <!--LinkPreview MessageView without TimeView-->
             <include
@@ -151,7 +154,14 @@
                 android:layout_height="wrap_content"
                 app:barrierAllowsGoneWidgets="true"
                 app:barrierDirection="end"
-                app:constraint_referenced_ids="album_container,quote_container" />
+                app:constraint_referenced_ids="linkPreviewView,quote_container,voiceMessageView" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/bodyTopBarrier"
+                app:constraint_referenced_ids="linkPreviewView,quote_container"
+                app:barrierDirection="bottom"/>
 
             <!--Album ThumbnailView MessageView-->
             <com.google.android.material.card.MaterialCardView
@@ -218,10 +228,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="-4dp"
                 android:maxWidth="@dimen/max_text_layout_width"
-                app:layout_constraintEnd_toEndOf="@id/bodyBarrier"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/album_container"
+                app:layout_constraintTop_toBottomOf="@id/bodyTopBarrier"
                 app:viewPartMessage="@id/bodyTextView"
                 app:viewPartTime="@id/short_message_time">
 
@@ -247,6 +257,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_gravity="end|bottom"
+                    android:paddingEnd="12dp"
+                    android:paddingStart="0dp"
                     android:paddingBottom="4dp"
                     android:fontFamily="@font/open_sans_regular"
                     android:gravity="end"

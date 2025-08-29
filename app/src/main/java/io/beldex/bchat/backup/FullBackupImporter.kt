@@ -16,7 +16,6 @@ import com.beldex.libsignal.crypto.kdf.HKDFv3
 import com.beldex.libsignal.utilities.ByteUtil
 import com.beldex.libsignal.utilities.Log
 import io.beldex.bchat.backup.BackupProtos.*
-import io.beldex.bchat.crypto.AttachmentSecret
 import io.beldex.bchat.crypto.ModernEncryptingPartOutputStream
 import io.beldex.bchat.database.*
 import io.beldex.bchat.dependencies.DatabaseComponent
@@ -91,7 +90,7 @@ object FullBackupImporter {
     private fun processStatement(db: SQLiteDatabase, statement: SqlStatement) {
         val isForSmsFtsSecretTable = statement.statement.contains(SearchDatabase.SMS_FTS_TABLE_NAME + "_")
         val isForMmsFtsSecretTable = statement.statement.contains(SearchDatabase.MMS_FTS_TABLE_NAME + "_")
-        val isForSqliteSecretTable = statement.statement.toLowerCase(Locale.ENGLISH).startsWith("create table sqlite_")
+        val isForSqliteSecretTable = statement.statement.lowercase(Locale.ENGLISH).startsWith("create table sqlite_")
         if (isForSmsFtsSecretTable || isForMmsFtsSecretTable || isForSqliteSecretTable) {
             Log.i(TAG, "Ignoring import for statement: " + statement.statement)
             return

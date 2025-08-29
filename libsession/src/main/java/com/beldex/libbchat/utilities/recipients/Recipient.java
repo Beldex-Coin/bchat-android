@@ -287,6 +287,9 @@ public class Recipient implements RecipientModifiedListener {
   public boolean isLocalNumber() {
     return isLocalNumber;
   }
+  public boolean isCommunityRecipient() {
+    return address.isOpenGroup();
+  }
 
   public synchronized @Nullable Uri getContactUri() {
     return this.contactUri;

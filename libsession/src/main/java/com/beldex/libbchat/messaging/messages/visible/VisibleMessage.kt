@@ -1,5 +1,6 @@
 package com.beldex.libbchat.messaging.messages.visible
 
+import com.beldex.libbchat.BuildConfig
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.messages.Message
 import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachment
@@ -8,7 +9,6 @@ import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.protos.SignalServiceProtos
 import com.beldex.libsignal.utilities.Log
-import com.goterl.lazysodium.BuildConfig
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment as SignalAttachment
 
 class VisibleMessage : Message()  {
@@ -26,6 +26,7 @@ class VisibleMessage : Message()  {
     var beldexAddress:String?= null
     //Payment Tag
     var payment: Payment? = null
+    var reaction: Reaction? = null
     var sharedContact: SharedContact? = null
 
     override val isSelfSendValid: Boolean = true
@@ -37,10 +38,10 @@ class VisibleMessage : Message()  {
         if (attachmentIDs.isNotEmpty()) return true
         if (openGroupInvitation != null) return true
         if (payment !=null) return true //Payment Tag
+        if (reaction != null) return true
         if (sharedContact != null) return true
         val text = text?.trim() ?: return false
-        if (text.isNotEmpty()) return true
-        return false
+        return text.isNotEmpty()
     }
     // endregion
 
@@ -89,6 +90,11 @@ class VisibleMessage : Message()  {
             // TODO Contact
             val profile = Profile.fromProto(dataMessage)
             if (profile != null) { result.profile = profile }
+            val reactionProto = if (dataMessage.hasReaction()) dataMessage.reaction else null
+            if (reactionProto != null) {
+                val reaction = Reaction.fromProto(reactionProto)
+                result.reaction = reaction
+            }
             return  result
         }
     }
@@ -98,10 +104,10 @@ class VisibleMessage : Message()  {
         val dataMessage: SignalServiceProtos.DataMessage.Builder
         // Profile
         val profileProto = profile?.toProto()
-        if (profileProto != null) {
-            dataMessage = profileProto.toBuilder()
+        dataMessage = if (profileProto != null) {
+            profileProto.toBuilder()
         } else {
-            dataMessage = SignalServiceProtos.DataMessage.newBuilder()
+            SignalServiceProtos.DataMessage.newBuilder()
         }
         // Text
         if (text != null) { dataMessage.body = text }
@@ -110,6 +116,12 @@ class VisibleMessage : Message()  {
         if (quoteProto != null) {
             dataMessage.quote = quoteProto
         }
+        // Reaction
+        val reactionProto = reaction?.toProto()
+        if (reactionProto != null) {
+            dataMessage.reaction = reactionProto
+        }
+
         // Link preview
         val linkPreviewProto = linkPreview?.toProto()
         if (linkPreviewProto != null) {
@@ -166,12 +178,12 @@ class VisibleMessage : Message()  {
             dataMessage.syncTarget = syncTarget
         }
         // Build
-        try {
+        return try {
             proto.dataMessage = dataMessage.build()
-            return proto.build()
+            proto.build()
         } catch (e: Exception) {
             Log.w(TAG, "Couldn't construct visible message proto from: $this")
-            return null
+            null
         }
     }
     // endregion
@@ -185,7 +197,7 @@ class VisibleMessage : Message()  {
     }
 
     fun isMediaMessage(): Boolean {
-        return attachmentIDs.isNotEmpty() || quote != null || linkPreview != null
+        return attachmentIDs.isNotEmpty() || quote != null || linkPreview != null || reaction != null
     }
 
     fun isContact(): Boolean {

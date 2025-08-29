@@ -43,7 +43,6 @@ import io.beldex.bchat.compose_utils.noRippleCallback
 import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
 import io.beldex.bchat.conversation.v2.contact_sharing.SharedContactView
 import io.beldex.bchat.conversation.v2.messages.ControlMessageView
-import io.beldex.bchat.conversation.v2.messages.VisibleMessageContentViewDelegate
 import io.beldex.bchat.conversation.v2.messages.VisibleMessageView
 import io.beldex.bchat.database.CursorRecyclerViewAdapter
 import io.beldex.bchat.database.model.MessageRecord
@@ -51,6 +50,7 @@ import io.beldex.bchat.databinding.ComposeViewHolderBinding
 import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.preferences.PrivacySettingsActivity
+import io.beldex.bchat.conversation.v2.messages.VisibleMessageViewDelegate
 import io.beldex.bchat.util.DateUtils
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.channels.BufferOverflow
@@ -59,15 +59,23 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.Locale
 
-class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPress: (MessageRecord, Int, VisibleMessageView, MotionEvent) -> Unit,
-                          private val onItemSwipeToReply: (MessageRecord, Int) -> Unit, private val onItemLongPress: (MessageRecord, Int) -> Unit,
-                          private val glide: RequestManager, private val onDeselect: (MessageRecord, Int) -> Unit, private val onAttachmentNeedsDownload: (Long, Long) -> Unit, lifecycleCoroutineScope: LifecycleCoroutineScope
+class ConversationAdapter(
+    context: Context,
+    cursor: Cursor,
+    private val onItemPress: (MessageRecord, Int, VisibleMessageView, MotionEvent) -> Unit,
+    private val onItemSwipeToReply: (MessageRecord, Int) -> Unit,
+    private val onItemLongPress: (MessageRecord, Int, View) -> Unit,
+    private val glide: RequestManager,
+    private val onDeselect: (MessageRecord, Int) -> Unit,
+    private val onAttachmentNeedsDownload: (Long, Long) -> Unit, lifecycleCoroutineScope: LifecycleCoroutineScope,
+    var isAdmin: Boolean = false
+
 ) : CursorRecyclerViewAdapter<ViewHolder>(context, cursor) {
     private val messageDB by lazy { DatabaseComponent.get(context).mmsSmsDatabase() }
     private val contactDB by lazy { DatabaseComponent.get(context).bchatContactDatabase() }
     var selectedItems = mutableSetOf<MessageRecord>()
     private var searchQuery: String? = null
-    var visibleMessageContentViewDelegate: VisibleMessageContentViewDelegate? = null
+    var visibleMessageViewDelegate: VisibleMessageViewDelegate? = null
 
     private val updateQueue = Channel<String>(1024, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     private val contactCache = SparseArray<Contact>(100)
@@ -133,7 +141,6 @@ class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPr
         val messageBefore = getMessageBefore(position, cursor)
         when (viewHolder) {
             is VisibleMessageViewHolder -> {
-                val view = viewHolder.view
                 val visibleMessageView = ViewVisibleMessageBinding.bind(viewHolder.view).visibleMessageView
                 val isSelected = selectedItems.contains(message)
                 visibleMessageView.snIsSelected = isSelected
@@ -148,24 +155,30 @@ class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPr
                 }
                 val contact = contactCache[senderIdHash]
 
-                visibleMessageView.bind(message, messageBefore, getMessageAfter(position, cursor), glide, searchQuery, contact, senderId,onAttachmentNeedsDownload, { selectedItems.size > 0 })
+                visibleMessageView.bind(message, messageBefore, getMessageAfter(position, cursor), glide, searchQuery, contact, senderId, onAttachmentNeedsDownload,{ selectedItems.size > 0 }, visibleMessageViewDelegate, position)
                 if (!message.isDeleted) {
                     visibleMessageView.onPress = { event -> onItemPress(message, viewHolder.adapterPosition, visibleMessageView, event) }
                     visibleMessageView.onSwipeToReply = { onItemSwipeToReply(message, viewHolder.adapterPosition) }
                     visibleMessageView.onLongPress = {
-                        onItemLongPress(message, viewHolder.adapterPosition)
+                        ViewUtil.hideKeyboard(context,visibleMessageView)
+                        onItemLongPress(message, viewHolder.adapterPosition, visibleMessageView)
                     }
 
                 } else {
 
                     visibleMessageView.onPress = null
                     visibleMessageView.onSwipeToReply = null
-                    visibleMessageView.onLongPress = null
+                    // you can long press on "marked as deleted" messages
+                    visibleMessageView.onLongPress =
+                        { onItemLongPress(message, viewHolder.adapterPosition, visibleMessageView) }
                 }
-                visibleMessageView.contentViewDelegate = visibleMessageContentViewDelegate
             }
             is ControlMessageViewHolder -> {
-                viewHolder.view.bind(message, messageBefore)
+                viewHolder.view.bind(
+                    message = message,
+                    previous = messageBefore,
+                    longPress = { onItemLongPress(message, viewHolder.adapterPosition, viewHolder.view) }
+                )
                 if (message.isCallLog && message.isFirstMissedCall) {
                     viewHolder.view.setOnClickListener {
                         val factory = LayoutInflater.from(context)
@@ -271,6 +284,11 @@ class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPr
         }
     }
 
+    fun toggleSelection(message: MessageRecord, position: Int) {
+        if (selectedItems.contains(message)) selectedItems.remove(message) else selectedItems.add(message)
+        notifyItemChanged(position)
+    }
+
     override fun onItemViewRecycled(viewHolder: ViewHolder?) {
         when (viewHolder) {
             is VisibleMessageViewHolder -> viewHolder.view.findViewById<VisibleMessageView>(R.id.visibleMessageView).recycle()
@@ -317,12 +335,6 @@ class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPr
             onDeselect(record, pos)
         }
     }
-
-    fun toggleSelection(message: MessageRecord, position: Int) {
-        if (selectedItems.contains(message)) selectedItems.remove(message) else selectedItems.add(message)
-        notifyItemChanged(position)
-    }
-
     fun findLastSeenItemPosition(lastSeenTimestamp: Long): Int? {
         val cursor = this.cursor
         if (lastSeenTimestamp <= 0L || cursor == null || !isActiveCursor) return null

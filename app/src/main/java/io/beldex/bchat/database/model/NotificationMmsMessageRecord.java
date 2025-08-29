@@ -20,6 +20,7 @@ import android.content.Context;
 import android.text.SpannableString;
 import androidx.annotation.NonNull;
 
+import static java.util.Collections.emptyList;
 import io.beldex.bchat.database.MmsDatabase;
 import io.beldex.bchat.database.SmsDatabase;
 import io.beldex.bchat.mms.SlideDeck;
@@ -55,8 +56,8 @@ public class NotificationMmsMessageRecord extends MmsMessageRecord {
   {
     super(id, "", conversationRecipient, individualRecipient,
       dateSent, dateReceived, threadId, SmsDatabase.Status.STATUS_NONE, deliveryReceiptCount, mailbox,
-      new LinkedList<IdentityKeyMismatch>(), new LinkedList<NetworkFailure>(),
-      0, 0, slideDeck, readReceiptCount, null, Collections.emptyList(), Collections.emptyList(), false);
+            emptyList(), emptyList(),
+            0, 0, slideDeck, readReceiptCount, null, emptyList(), emptyList(), false, emptyList());
 
     this.contentLocation = contentLocation;
     this.messageSize     = messageSize;

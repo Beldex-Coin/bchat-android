@@ -16,6 +16,8 @@ import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.CALL_NOTIFI
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_BNS_HOLDER
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_LOCAL_PROFILE
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_MUTE_VIDEO
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_REACTION_OVERLAY_VISIBLE
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_VOICE_RECORDING
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.LAST_VACUUM_TIME
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.PREF_DIALOG_CLICKED
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.PREF_DIALOG_IGNORED_COUNT
@@ -175,8 +177,6 @@ interface TextSecurePreferences {
     fun getWalletPassword(): String?
     fun setAirdropAnimationStatus(status:Boolean)
     fun getAirdropAnimationStatus(): Boolean
-    fun setPlayerStatus(status:Boolean)
-    fun getPlayerStatus(): Boolean
     fun isCallNotificationsEnabled(): Boolean
     fun setShownCallWarning(): Boolean
     fun setShownCallNotification(): Boolean
@@ -268,6 +268,13 @@ interface TextSecurePreferences {
     fun setRefreshDynamicNodesStatus(refresh : Boolean)
     fun getRefreshDynamicNodesStatus():Boolean
 
+    fun setIsReactionOverlayVisible(isVisible: Boolean)
+    fun getReactionOverlayVisible(): Boolean
+
+    fun setRecordingStatus(isRecording: Boolean)
+    fun getRecordingStatus(): Boolean
+
+
 
     companion object {
         val TAG = TextSecurePreferences::class.simpleName
@@ -349,7 +356,6 @@ interface TextSecurePreferences {
         const val MY_PASSWORD = "my_password"
         const val MY_ADDRESS = "my_address"
         const val AIRDROP_STATUS = "airdrop_status"
-        const val PLAYER_STATUS = "player_status"
         const val CALL_NOTIFICATIONS_ENABLED = "pref_call_notifications_enabled"
         const val SHOWN_CALL_WARNING = "pref_shown_call_warning" // call warning is user-facing warning of enabling calls
         const val SHOWN_CALL_NOTIFICATION = "pref_shown_call_notification" // call notification is a promp to check privacy settings
@@ -386,6 +392,8 @@ interface TextSecurePreferences {
         const val IS_LOCAL_PROFILE = "is_local_profile"
         const val IS_BNS_HOLDER = "is_bns_holder"
         const val REFRESH_DYNAMIC_NODES = "refresh_dynamic_nodes"
+        const val IS_REACTION_OVERLAY_VISIBLE = "is_reaction_overlay_visible"
+        const val IS_VOICE_RECORDING = "is_voice_recording"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -758,7 +766,7 @@ interface TextSecurePreferences {
         }
 
         fun setLocalNumber(context: Context, localNumber: String) {
-            setStringPreference(context, LOCAL_NUMBER_PREF, localNumber.toLowerCase())
+            setStringPreference(context, LOCAL_NUMBER_PREF, localNumber.lowercase())
         }
         @JvmStatic
         fun getMyPassword(context: Context): String? {
@@ -1102,16 +1110,6 @@ interface TextSecurePreferences {
         }
 
         @JvmStatic
-        fun setPlayerStatus(context: Context, status: Boolean) {
-            setBooleanPreference(context, PLAYER_STATUS, status)
-        }
-
-        @JvmStatic
-        fun getPlayerStatus(context: Context): Boolean {
-            return getBooleanPreference(context, PLAYER_STATUS, false)
-        }
-
-        @JvmStatic
         fun clearAll(context: Context) {
             getDefaultSharedPreferences(context).edit().clear().commit()
         }
@@ -1435,6 +1433,26 @@ interface TextSecurePreferences {
             return getBooleanPreference(context, REFRESH_DYNAMIC_NODES, false)
         }
 
+        @JvmStatic
+        fun setIsReactionOverlayVisible(context: Context,isVisible: Boolean) {
+            setBooleanPreference(context, IS_REACTION_OVERLAY_VISIBLE, isVisible)
+        }
+
+        @JvmStatic
+        fun getIsReactionOverlayVisible(context: Context):Boolean {
+            return getBooleanPreference(context, IS_REACTION_OVERLAY_VISIBLE, false)
+        }
+
+        @JvmStatic
+        fun setRecordingStatus(context: Context,isRecording: Boolean) {
+            setBooleanPreference(context, IS_VOICE_RECORDING, isRecording)
+        }
+
+        @JvmStatic
+        fun getRecordingStatus(context: Context):Boolean {
+            return getBooleanPreference(context, IS_VOICE_RECORDING, false)
+        }
+
     }
 }
 
@@ -1662,14 +1680,6 @@ class AppTextSecurePreferences @Inject constructor(
         return getBooleanPreference(TextSecurePreferences.AIRDROP_STATUS, false)
     }
 
-    override fun setPlayerStatus(status: Boolean) {
-        setBooleanPreference(TextSecurePreferences.PLAYER_STATUS,status)
-    }
-
-    override fun getPlayerStatus(): Boolean {
-        return getBooleanPreference(TextSecurePreferences.PLAYER_STATUS, false)
-    }
-
     override fun setProfileAvatarId(id: Int) {
         setIntegerPreference(TextSecurePreferences.PROFILE_AVATAR_ID_PREF, id)
     }
@@ -1765,7 +1775,7 @@ class AppTextSecurePreferences @Inject constructor(
     }
 
     override fun setLocalNumber(localNumber: String) {
-        setStringPreference(TextSecurePreferences.LOCAL_NUMBER_PREF, localNumber.toLowerCase())
+        setStringPreference(TextSecurePreferences.LOCAL_NUMBER_PREF, localNumber.lowercase())
     }
 
     override fun setMyPassword(myPassword: String) {
@@ -2342,5 +2352,21 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun getRefreshDynamicNodesStatus(): Boolean {
         return getBooleanPreference(REFRESH_DYNAMIC_NODES, false)
+    }
+
+    override fun setIsReactionOverlayVisible(isVisible : Boolean) {
+        setBooleanPreference(IS_REACTION_OVERLAY_VISIBLE, isVisible)
+    }
+
+    override fun getReactionOverlayVisible() : Boolean {
+        return getBooleanPreference(IS_REACTION_OVERLAY_VISIBLE, false)
+    }
+
+    override fun setRecordingStatus(isVisible : Boolean) {
+        setBooleanPreference(IS_VOICE_RECORDING, isVisible)
+    }
+
+    override fun getRecordingStatus() : Boolean {
+        return getBooleanPreference(IS_VOICE_RECORDING, false)
     }
 }

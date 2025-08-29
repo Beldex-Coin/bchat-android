@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="60dp">
+
+    <include layout="@layout/view_profile_picture"
+        android:id="@+id/reactions_bottom_view_avatar"
+        android:layout_gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="@dimen/small_spacing"
+        android:layout_width="@dimen/very_small_profile_picture_size"
+        android:layout_height="@dimen/very_small_profile_picture_size" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="start"
+        android:orientation="vertical"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/reactions_bottom_view_selected_emoji"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/reactions_bottom_view_avatar"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <io.beldex.bchat.components.FromTextView
+            android:id="@+id/reactions_bottom_view_recipient_name"
+            style="@style/Signal.Text.Preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:maxLines="2"
+            android:textColor="@color/text"
+            android:textSize="@dimen/small_font_size"
+            tools:text="@tools:sample/full_names" />
+
+        <io.beldex.bchat.components.FromTextView
+            android:id="@+id/reactions_bottom_view_tab_to_remove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:text="@string/tap_to_remove"
+            android:textColor="@color/text_hint"
+            android:textSize="7sp" />
+
+    </LinearLayout>
+
+    <io.beldex.bchat.components.emoji.EmojiImageView
+        android:id="@+id/reactions_bottom_view_selected_emoji"
+        android:layout_width="@dimen/large_spacing"
+        android:layout_height="@dimen/large_spacing"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:scaleType="centerInside"
+        app:tint="?android:textColorPrimary" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

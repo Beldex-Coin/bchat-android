@@ -8,12 +8,13 @@ apply plugin: 'kotlinx-serialization'
 apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'com.google.firebase.crashlytics'
 apply from: 'buildGradle/dependencies.gradle'
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 configurations.all {
     exclude module: "commons-logging"
 }
-def canonicalVersionCode = 78
-def canonicalVersionName = "2.6.5"
+def canonicalVersionCode = 84
+def canonicalVersionName = "2.7.2"
 
 def postFixSize = 10
 def abiPostFix = ['armeabi-v7a' : 1,
@@ -25,12 +26,12 @@ android {
     useLibrary 'org.apache.http.legacy'
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
         freeCompilerArgs += [
                 "-Xjvm-default=all",
         ]
@@ -38,6 +39,9 @@ android {
     packagingOptions {
         resources {
             excludes += ['LICENSE.txt', 'LICENSE', 'NOTICE', 'asm-license.txt', 'META-INF/LICENSE', 'META-INF/NOTICE', 'META-INF/proguard/androidx-annotations.pro']
+            jniLibs {
+                useLegacyPackaging = true
+            }
         }
     }
 
@@ -58,8 +62,6 @@ android {
         minSdkVersion androidMinimumSdkVersion
         compileSdk androidCompileSdkVersion
         targetSdkVersion androidTargetSdkVersion
-        compileSdkVersion androidCompileSdkVersion
-        buildToolsVersion '34.0.0'
 
         multiDexEnabled = true
 
@@ -199,17 +201,16 @@ android {
     externalNativeBuild {
         cmake {
             path file('CMakeLists.txt')
-            version '3.10.2'
+            version '3.22.1'
         }
     }
-    ndkVersion '21.4.7075529'
+    ndkVersion '28.1.13356709'
     lint {
         abortOnError true
         baseline file('lint-baseline.xml')
     }
     namespace 'io.beldex.bchat'
-    buildToolsVersion '34.0.0'
-    compileSdk 34
+    compileSdk androidCompileSdkVersion
 }
 
 static def getLastCommitTimestamp() {

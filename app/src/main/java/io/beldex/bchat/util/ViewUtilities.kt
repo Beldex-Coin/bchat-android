@@ -4,10 +4,14 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.FloatEvaluator
 import android.animation.ValueAnimator
+import android.graphics.Bitmap
 import android.graphics.PointF
 import android.graphics.Rect
 import androidx.annotation.DimenRes
 import android.view.View
+import androidx.core.graphics.applyCanvas
+import android.util.Size
+import kotlin.math.roundToInt
 
 fun View.contains(point: PointF): Boolean {
     return hitRect.contains(point.x.toInt(), point.y.toInt())
@@ -52,3 +56,23 @@ fun View.fadeOut(duration: Long = 150) {
         }
     })
 }
+
+fun View.drawToBitmap(config: Bitmap.Config = Bitmap.Config.ARGB_8888, longestWidth: Int = 2000): Bitmap {
+    val size = Size(measuredWidth, measuredHeight).coerceAtMost(longestWidth)
+    val scale = size.width / measuredWidth.toFloat()
+
+    return Bitmap.createBitmap(size.width, size.height, config).applyCanvas {
+        scale(scale, scale)
+        translate(-scrollX.toFloat(), -scrollY.toFloat())
+        draw(this)
+    }
+}
+
+fun Size.coerceAtMost(longestWidth: Int): Size =
+    (width.toFloat() / height).let { aspect ->
+        if (aspect > 1) {
+            width.coerceAtMost(longestWidth).let { Size(it, (it / aspect).roundToInt()) }
+        } else {
+            height.coerceAtMost(longestWidth).let { Size((it * aspect).roundToInt(), it) }
+        }
+    }

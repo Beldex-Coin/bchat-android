@@ -2,19 +2,20 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion androidCompileSdkVersion
+
 
     defaultConfig {
+        compileSdk androidCompileSdkVersion
         minSdkVersion androidMinimumSdkVersion
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
     namespace 'com.beldex.libsignal'
 }
@@ -31,6 +32,6 @@ dependencies {
     implementation "nl.komponents.kovenant:kovenant:$kovenantVersion"
     testImplementation "junit:junit:$junitVersion"
     testImplementation "org.assertj:assertj-core:3.11.1"
-    testImplementation "org.conscrypt:conscrypt-openjdk-uber:2.0.0"
+    testImplementation "org.conscrypt:conscrypt-openjdk-uber:2.5.2"
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
 }

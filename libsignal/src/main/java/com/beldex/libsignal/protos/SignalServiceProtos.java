@@ -6425,6 +6425,21 @@ public final class SignalServiceProtos {
     com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfileOrBuilder getProfileOrBuilder();
 
     /**
+     * <code>optional .signalservice.DataMessage.Reaction reaction = 11;</code>
+     * @return Whether the reaction field is set.
+     */
+    boolean hasReaction();
+    /**
+     * <code>optional .signalservice.DataMessage.Reaction reaction = 11;</code>
+     * @return The reaction.
+     */
+    com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction getReaction();
+    /**
+     * <code>optional .signalservice.DataMessage.Reaction reaction = 11;</code>
+     */
+    com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ReactionOrBuilder getReactionOrBuilder();
+
+    /**
      * <code>optional .signalservice.DataMessage.OpenGroupInvitation openGroupInvitation = 102;</code>
      * @return Whether the openGroupInvitation field is set.
      */
@@ -15859,6 +15874,1169 @@ public final class SignalServiceProtos {
 
     }
 
+    public interface ReactionOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:signalservice.DataMessage.Reaction)
+        com.google.protobuf.MessageOrBuilder {
+
+      /**
+       * <pre>
+       * &#64;required
+       * </pre>
+       *
+       * <code>required uint64 id = 1;</code>
+       * @return Whether the id field is set.
+       */
+      boolean hasId();
+      /**
+       * <pre>
+       * &#64;required
+       * </pre>
+       *
+       * <code>required uint64 id = 1;</code>
+       * @return The id.
+       */
+      long getId();
+
+      /**
+       * <pre>
+       * &#64;required
+       * </pre>
+       *
+       * <code>required string author = 2;</code>
+       * @return Whether the author field is set.
+       */
+      boolean hasAuthor();
+      /**
+       * <pre>
+       * &#64;required
+       * </pre>
+       *
+       * <code>required string author = 2;</code>
+       * @return The author.
+       */
+      java.lang.String getAuthor();
+      /**
+       * <pre>
+       * &#64;required
+       * </pre>
+       *
+       * <code>required string author = 2;</code>
+       * @return The bytes for author.
+       */
+      com.google.protobuf.ByteString
+          getAuthorBytes();
+
+      /**
+       * <code>optional string emoji = 3;</code>
+       * @return Whether the emoji field is set.
+       */
+      boolean hasEmoji();
+      /**
+       * <code>optional string emoji = 3;</code>
+       * @return The emoji.
+       */
+      java.lang.String getEmoji();
+      /**
+       * <code>optional string emoji = 3;</code>
+       * @return The bytes for emoji.
+       */
+      com.google.protobuf.ByteString
+          getEmojiBytes();
+
+      /**
+       * <pre>
+       * &#64;required
+       * </pre>
+       *
+       * <code>required .signalservice.DataMessage.Reaction.Action action = 4;</code>
+       * @return Whether the action field is set.
+       */
+      boolean hasAction();
+      /**
+       * <pre>
+       * &#64;required
+       * </pre>
+       *
+       * <code>required .signalservice.DataMessage.Reaction.Action action = 4;</code>
+       * @return The action.
+       */
+      com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.Action getAction();
+    }
+    /**
+     * Protobuf type {@code signalservice.DataMessage.Reaction}
+     */
+    public static final class Reaction extends
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:signalservice.DataMessage.Reaction)
+        ReactionOrBuilder {
+    private static final long serialVersionUID = 0L;
+      // Use Reaction.newBuilder() to construct.
+      private Reaction(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        super(builder);
+      }
+      private Reaction() {
+        author_ = "";
+        emoji_ = "";
+        action_ = 0;
+      }
+
+      @java.lang.Override
+      @SuppressWarnings({"unused"})
+      protected java.lang.Object newInstance(
+          UnusedPrivateParameter unused) {
+        return new Reaction();
+      }
+
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Reaction_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Reaction_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.class, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.Builder.class);
+      }
+
+      /**
+       * Protobuf enum {@code signalservice.DataMessage.Reaction.Action}
+       */
+      public enum Action
+          implements com.google.protobuf.ProtocolMessageEnum {
+        /**
+         * <code>REACT = 0;</code>
+         */
+        REACT(0),
+        /**
+         * <code>REMOVE = 1;</code>
+         */
+        REMOVE(1),
+        ;
+
+        /**
+         * <code>REACT = 0;</code>
+         */
+        public static final int REACT_VALUE = 0;
+        /**
+         * <code>REMOVE = 1;</code>
+         */
+        public static final int REMOVE_VALUE = 1;
+
+
+        public final int getNumber() {
+          return value;
+        }
+
+        /**
+         * @param value The numeric wire value of the corresponding enum entry.
+         * @return The enum associated with the given numeric wire value.
+         * @deprecated Use {@link #forNumber(int)} instead.
+         */
+        @java.lang.Deprecated
+        public static Action valueOf(int value) {
+          return forNumber(value);
+        }
+
+        /**
+         * @param value The numeric wire value of the corresponding enum entry.
+         * @return The enum associated with the given numeric wire value.
+         */
+        public static Action forNumber(int value) {
+          switch (value) {
+            case 0: return REACT;
+            case 1: return REMOVE;
+            default: return null;
+          }
+        }
+
+        public static com.google.protobuf.Internal.EnumLiteMap<Action>
+            internalGetValueMap() {
+          return internalValueMap;
+        }
+        private static final com.google.protobuf.Internal.EnumLiteMap<
+            Action> internalValueMap =
+              new com.google.protobuf.Internal.EnumLiteMap<Action>() {
+                public Action findValueByNumber(int number) {
+                  return Action.forNumber(number);
+                }
+              };
+
+        public final com.google.protobuf.Descriptors.EnumValueDescriptor
+            getValueDescriptor() {
+          return getDescriptor().getValues().get(ordinal());
+        }
+        public final com.google.protobuf.Descriptors.EnumDescriptor
+            getDescriptorForType() {
+          return getDescriptor();
+        }
+        public static final com.google.protobuf.Descriptors.EnumDescriptor
+            getDescriptor() {
+          return com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.getDescriptor().getEnumTypes().get(0);
+        }
+
+        private static final Action[] VALUES = values();
+
+        public static Action valueOf(
+            com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+          if (desc.getType() != getDescriptor()) {
+            throw new java.lang.IllegalArgumentException(
+              "EnumValueDescriptor is not for this type.");
+          }
+          return VALUES[desc.getIndex()];
+        }
+
+        private final int value;
+
+        private Action(int value) {
+          this.value = value;
+        }
+
+        // @@protoc_insertion_point(enum_scope:signalservice.DataMessage.Reaction.Action)
+      }
+
+      private int bitField0_;
+      public static final int ID_FIELD_NUMBER = 1;
+      private long id_ = 0L;
+      /**
+       * <pre>
+       * &#64;required
+       * </pre>
+       *
+       * <code>required uint64 id = 1;</code>
+       * @return Whether the id field is set.
+       */
+      @java.lang.Override
+      public boolean hasId() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <pre>
+       * &#64;required
+       * </pre>
+       *
+       * <code>required uint64 id = 1;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public long getId() {
+        return id_;
+      }
+
+      public static final int AUTHOR_FIELD_NUMBER = 2;
+      @SuppressWarnings("serial")
+      private volatile java.lang.Object author_ = "";
+      /**
+       * <pre>
+       * &#64;required
+       * </pre>
+       *
+       * <code>required string author = 2;</code>
+       * @return Whether the author field is set.
+       */
+      @java.lang.Override
+      public boolean hasAuthor() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <pre>
+       * &#64;required
+       * </pre>
+       *
+       * <code>required string author = 2;</code>
+       * @return The author.
+       */
+      @java.lang.Override
+      public java.lang.String getAuthor() {
+        java.lang.Object ref = author_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            author_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <pre>
+       * &#64;required
+       * </pre>
+       *
+       * <code>required string author = 2;</code>
+       * @return The bytes for author.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getAuthorBytes() {
+        java.lang.Object ref = author_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          author_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      public static final int EMOJI_FIELD_NUMBER = 3;
+      @SuppressWarnings("serial")
+      private volatile java.lang.Object emoji_ = "";
+      /**
+       * <code>optional string emoji = 3;</code>
+       * @return Whether the emoji field is set.
+       */
+      @java.lang.Override
+      public boolean hasEmoji() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
+      /**
+       * <code>optional string emoji = 3;</code>
+       * @return The emoji.
+       */
+      @java.lang.Override
+      public java.lang.String getEmoji() {
+        java.lang.Object ref = emoji_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            emoji_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <code>optional string emoji = 3;</code>
+       * @return The bytes for emoji.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getEmojiBytes() {
+        java.lang.Object ref = emoji_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          emoji_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      public static final int ACTION_FIELD_NUMBER = 4;
+      private int action_ = 0;
+      /**
+       * <pre>
+       * &#64;required
+       * </pre>
+       *
+       * <code>required .signalservice.DataMessage.Reaction.Action action = 4;</code>
+       * @return Whether the action field is set.
+       */
+      @java.lang.Override public boolean hasAction() {
+        return ((bitField0_ & 0x00000008) != 0);
+      }
+      /**
+       * <pre>
+       * &#64;required
+       * </pre>
+       *
+       * <code>required .signalservice.DataMessage.Reaction.Action action = 4;</code>
+       * @return The action.
+       */
+      @java.lang.Override public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.Action getAction() {
+        com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.Action result = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.Action.forNumber(action_);
+        return result == null ? com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.Action.REACT : result;
+      }
+
+      private byte memoizedIsInitialized = -1;
+      @java.lang.Override
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        if (!hasId()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasAuthor()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasAction()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      @java.lang.Override
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (((bitField0_ & 0x00000001) != 0)) {
+          output.writeUInt64(1, id_);
+        }
+        if (((bitField0_ & 0x00000002) != 0)) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 2, author_);
+        }
+        if (((bitField0_ & 0x00000004) != 0)) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 3, emoji_);
+        }
+        if (((bitField0_ & 0x00000008) != 0)) {
+          output.writeEnum(4, action_);
+        }
+        getUnknownFields().writeTo(output);
+      }
+
+      @java.lang.Override
+      public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (((bitField0_ & 0x00000001) != 0)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeUInt64Size(1, id_);
+        }
+        if (((bitField0_ & 0x00000002) != 0)) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, author_);
+        }
+        if (((bitField0_ & 0x00000004) != 0)) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, emoji_);
+        }
+        if (((bitField0_ & 0x00000008) != 0)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeEnumSize(4, action_);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+      }
+
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction)) {
+          return super.equals(obj);
+        }
+        com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction other = (com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction) obj;
+
+        if (hasId() != other.hasId()) return false;
+        if (hasId()) {
+          if (getId()
+              != other.getId()) return false;
+        }
+        if (hasAuthor() != other.hasAuthor()) return false;
+        if (hasAuthor()) {
+          if (!getAuthor()
+              .equals(other.getAuthor())) return false;
+        }
+        if (hasEmoji() != other.hasEmoji()) return false;
+        if (hasEmoji()) {
+          if (!getEmoji()
+              .equals(other.getEmoji())) return false;
+        }
+        if (hasAction() != other.hasAction()) return false;
+        if (hasAction()) {
+          if (action_ != other.action_) return false;
+        }
+        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+        return true;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        if (hasId()) {
+          hash = (37 * hash) + ID_FIELD_NUMBER;
+          hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getId());
+        }
+        if (hasAuthor()) {
+          hash = (37 * hash) + AUTHOR_FIELD_NUMBER;
+          hash = (53 * hash) + getAuthor().hashCode();
+        }
+        if (hasEmoji()) {
+          hash = (37 * hash) + EMOJI_FIELD_NUMBER;
+          hash = (53 * hash) + getEmoji().hashCode();
+        }
+        if (hasAction()) {
+          hash = (37 * hash) + ACTION_FIELD_NUMBER;
+          hash = (53 * hash) + action_;
+        }
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
+      }
+
+      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction parseFrom(
+          java.nio.ByteBuffer data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction parseFrom(
+          java.nio.ByteBuffer data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
+      }
+      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      @java.lang.Override
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+      }
+      public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      }
+      @java.lang.Override
+      public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+            ? new Builder() : new Builder().mergeFrom(this);
+      }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code signalservice.DataMessage.Reaction}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:signalservice.DataMessage.Reaction)
+          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ReactionOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Reaction_descriptor;
+        }
+
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Reaction_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.class, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.Builder.class);
+        }
+
+        // Construct using com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.newBuilder()
+        private Builder() {
+
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          super(parent);
+
+        }
+        @java.lang.Override
+        public Builder clear() {
+          super.clear();
+          bitField0_ = 0;
+          id_ = 0L;
+          author_ = "";
+          emoji_ = "";
+          action_ = 0;
+          return this;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Reaction_descriptor;
+        }
+
+        @java.lang.Override
+        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction getDefaultInstanceForType() {
+          return com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.getDefaultInstance();
+        }
+
+        @java.lang.Override
+        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction build() {
+          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        @java.lang.Override
+        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction buildPartial() {
+          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction result = new com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction(this);
+          if (bitField0_ != 0) { buildPartial0(result); }
+          onBuilt();
+          return result;
+        }
+
+        private void buildPartial0(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction result) {
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((from_bitField0_ & 0x00000001) != 0)) {
+            result.id_ = id_;
+            to_bitField0_ |= 0x00000001;
+          }
+          if (((from_bitField0_ & 0x00000002) != 0)) {
+            result.author_ = author_;
+            to_bitField0_ |= 0x00000002;
+          }
+          if (((from_bitField0_ & 0x00000004) != 0)) {
+            result.emoji_ = emoji_;
+            to_bitField0_ |= 0x00000004;
+          }
+          if (((from_bitField0_ & 0x00000008) != 0)) {
+            result.action_ = action_;
+            to_bitField0_ |= 0x00000008;
+          }
+          result.bitField0_ |= to_bitField0_;
+        }
+
+        @java.lang.Override
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction) {
+            return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction other) {
+          if (other == com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.getDefaultInstance()) return this;
+          if (other.hasId()) {
+            setId(other.getId());
+          }
+          if (other.hasAuthor()) {
+            author_ = other.author_;
+            bitField0_ |= 0x00000002;
+            onChanged();
+          }
+          if (other.hasEmoji()) {
+            emoji_ = other.emoji_;
+            bitField0_ |= 0x00000004;
+            onChanged();
+          }
+          if (other.hasAction()) {
+            setAction(other.getAction());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          onChanged();
+          return this;
+        }
+
+        @java.lang.Override
+        public final boolean isInitialized() {
+          if (!hasId()) {
+            return false;
+          }
+          if (!hasAuthor()) {
+            return false;
+          }
+          if (!hasAction()) {
+            return false;
+          }
+          return true;
+        }
+
+        @java.lang.Override
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          if (extensionRegistry == null) {
+            throw new java.lang.NullPointerException();
+          }
+          try {
+            boolean done = false;
+            while (!done) {
+              int tag = input.readTag();
+              switch (tag) {
+                case 0:
+                  done = true;
+                  break;
+                case 8: {
+                  id_ = input.readUInt64();
+                  bitField0_ |= 0x00000001;
+                  break;
+                } // case 8
+                case 18: {
+                  author_ = input.readBytes();
+                  bitField0_ |= 0x00000002;
+                  break;
+                } // case 18
+                case 26: {
+                  emoji_ = input.readBytes();
+                  bitField0_ |= 0x00000004;
+                  break;
+                } // case 26
+                case 32: {
+                  int tmpRaw = input.readEnum();
+                  com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.Action tmpValue =
+                      com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.Action.forNumber(tmpRaw);
+                  if (tmpValue == null) {
+                    mergeUnknownVarintField(4, tmpRaw);
+                  } else {
+                    action_ = tmpRaw;
+                    bitField0_ |= 0x00000008;
+                  }
+                  break;
+                } // case 32
+                default: {
+                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                    done = true; // was an endgroup tag
+                  }
+                  break;
+                } // default:
+              } // switch (tag)
+            } // while (!done)
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw e.unwrapIOException();
+          } finally {
+            onChanged();
+          } // finally
+          return this;
+        }
+        private int bitField0_;
+
+        private long id_ ;
+        /**
+         * <pre>
+         * &#64;required
+         * </pre>
+         *
+         * <code>required uint64 id = 1;</code>
+         * @return Whether the id field is set.
+         */
+        @java.lang.Override
+        public boolean hasId() {
+          return ((bitField0_ & 0x00000001) != 0);
+        }
+        /**
+         * <pre>
+         * &#64;required
+         * </pre>
+         *
+         * <code>required uint64 id = 1;</code>
+         * @return The id.
+         */
+        @java.lang.Override
+        public long getId() {
+          return id_;
+        }
+        /**
+         * <pre>
+         * &#64;required
+         * </pre>
+         *
+         * <code>required uint64 id = 1;</code>
+         * @param value The id to set.
+         * @return This builder for chaining.
+         */
+        public Builder setId(long value) {
+
+          id_ = value;
+          bitField0_ |= 0x00000001;
+          onChanged();
+          return this;
+        }
+        /**
+         * <pre>
+         * &#64;required
+         * </pre>
+         *
+         * <code>required uint64 id = 1;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearId() {
+          bitField0_ = (bitField0_ & ~0x00000001);
+          id_ = 0L;
+          onChanged();
+          return this;
+        }
+
+        private java.lang.Object author_ = "";
+        /**
+         * <pre>
+         * &#64;required
+         * </pre>
+         *
+         * <code>required string author = 2;</code>
+         * @return Whether the author field is set.
+         */
+        public boolean hasAuthor() {
+          return ((bitField0_ & 0x00000002) != 0);
+        }
+        /**
+         * <pre>
+         * &#64;required
+         * </pre>
+         *
+         * <code>required string author = 2;</code>
+         * @return The author.
+         */
+        public java.lang.String getAuthor() {
+          java.lang.Object ref = author_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              author_ = s;
+            }
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <pre>
+         * &#64;required
+         * </pre>
+         *
+         * <code>required string author = 2;</code>
+         * @return The bytes for author.
+         */
+        public com.google.protobuf.ByteString
+            getAuthorBytes() {
+          java.lang.Object ref = author_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            author_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <pre>
+         * &#64;required
+         * </pre>
+         *
+         * <code>required string author = 2;</code>
+         * @param value The author to set.
+         * @return This builder for chaining.
+         */
+        public Builder setAuthor(
+            java.lang.String value) {
+          if (value == null) { throw new NullPointerException(); }
+          author_ = value;
+          bitField0_ |= 0x00000002;
+          onChanged();
+          return this;
+        }
+        /**
+         * <pre>
+         * &#64;required
+         * </pre>
+         *
+         * <code>required string author = 2;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearAuthor() {
+          author_ = getDefaultInstance().getAuthor();
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+          return this;
+        }
+        /**
+         * <pre>
+         * &#64;required
+         * </pre>
+         *
+         * <code>required string author = 2;</code>
+         * @param value The bytes for author to set.
+         * @return This builder for chaining.
+         */
+        public Builder setAuthorBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) { throw new NullPointerException(); }
+          author_ = value;
+          bitField0_ |= 0x00000002;
+          onChanged();
+          return this;
+        }
+
+        private java.lang.Object emoji_ = "";
+        /**
+         * <code>optional string emoji = 3;</code>
+         * @return Whether the emoji field is set.
+         */
+        public boolean hasEmoji() {
+          return ((bitField0_ & 0x00000004) != 0);
+        }
+        /**
+         * <code>optional string emoji = 3;</code>
+         * @return The emoji.
+         */
+        public java.lang.String getEmoji() {
+          java.lang.Object ref = emoji_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              emoji_ = s;
+            }
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>optional string emoji = 3;</code>
+         * @return The bytes for emoji.
+         */
+        public com.google.protobuf.ByteString
+            getEmojiBytes() {
+          java.lang.Object ref = emoji_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            emoji_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>optional string emoji = 3;</code>
+         * @param value The emoji to set.
+         * @return This builder for chaining.
+         */
+        public Builder setEmoji(
+            java.lang.String value) {
+          if (value == null) { throw new NullPointerException(); }
+          emoji_ = value;
+          bitField0_ |= 0x00000004;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string emoji = 3;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearEmoji() {
+          emoji_ = getDefaultInstance().getEmoji();
+          bitField0_ = (bitField0_ & ~0x00000004);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string emoji = 3;</code>
+         * @param value The bytes for emoji to set.
+         * @return This builder for chaining.
+         */
+        public Builder setEmojiBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) { throw new NullPointerException(); }
+          emoji_ = value;
+          bitField0_ |= 0x00000004;
+          onChanged();
+          return this;
+        }
+
+        private int action_ = 0;
+        /**
+         * <pre>
+         * &#64;required
+         * </pre>
+         *
+         * <code>required .signalservice.DataMessage.Reaction.Action action = 4;</code>
+         * @return Whether the action field is set.
+         */
+        @java.lang.Override public boolean hasAction() {
+          return ((bitField0_ & 0x00000008) != 0);
+        }
+        /**
+         * <pre>
+         * &#64;required
+         * </pre>
+         *
+         * <code>required .signalservice.DataMessage.Reaction.Action action = 4;</code>
+         * @return The action.
+         */
+        @java.lang.Override
+        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.Action getAction() {
+          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.Action result = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.Action.forNumber(action_);
+          return result == null ? com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.Action.REACT : result;
+        }
+        /**
+         * <pre>
+         * &#64;required
+         * </pre>
+         *
+         * <code>required .signalservice.DataMessage.Reaction.Action action = 4;</code>
+         * @param value The action to set.
+         * @return This builder for chaining.
+         */
+        public Builder setAction(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.Action value) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          bitField0_ |= 0x00000008;
+          action_ = value.getNumber();
+          onChanged();
+          return this;
+        }
+        /**
+         * <pre>
+         * &#64;required
+         * </pre>
+         *
+         * <code>required .signalservice.DataMessage.Reaction.Action action = 4;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearAction() {
+          bitField0_ = (bitField0_ & ~0x00000008);
+          action_ = 0;
+          onChanged();
+          return this;
+        }
+        @java.lang.Override
+        public final Builder setUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.setUnknownFields(unknownFields);
+        }
+
+        @java.lang.Override
+        public final Builder mergeUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.mergeUnknownFields(unknownFields);
+        }
+
+
+        // @@protoc_insertion_point(builder_scope:signalservice.DataMessage.Reaction)
+      }
+
+      // @@protoc_insertion_point(class_scope:signalservice.DataMessage.Reaction)
+      private static final com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction DEFAULT_INSTANCE;
+      static {
+        DEFAULT_INSTANCE = new com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction();
+      }
+
+      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+      }
+
+      @java.lang.Deprecated public static final com.google.protobuf.Parser<Reaction>
+          PARSER = new com.google.protobuf.AbstractParser<Reaction>() {
+        @java.lang.Override
+        public Reaction parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          Builder builder = newBuilder();
+          try {
+            builder.mergeFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw e.setUnfinishedMessage(builder.buildPartial());
+          } catch (com.google.protobuf.UninitializedMessageException e) {
+            throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+          } catch (java.io.IOException e) {
+            throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                .setUnfinishedMessage(builder.buildPartial());
+          }
+          return builder.buildPartial();
+        }
+      };
+
+      public static com.google.protobuf.Parser<Reaction> parser() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<Reaction> getParserForType() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+      }
+
+    }
+
     private int bitField0_;
     public static final int BODY_FIELD_NUMBER = 1;
     @SuppressWarnings("serial")
@@ -16145,6 +17323,32 @@ public final class SignalServiceProtos {
       return profile_ == null ? com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile.getDefaultInstance() : profile_;
     }
 
+    public static final int REACTION_FIELD_NUMBER = 11;
+    private com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction reaction_;
+    /**
+     * <code>optional .signalservice.DataMessage.Reaction reaction = 11;</code>
+     * @return Whether the reaction field is set.
+     */
+    @java.lang.Override
+    public boolean hasReaction() {
+      return ((bitField0_ & 0x00000100) != 0);
+    }
+    /**
+     * <code>optional .signalservice.DataMessage.Reaction reaction = 11;</code>
+     * @return The reaction.
+     */
+    @java.lang.Override
+    public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction getReaction() {
+      return reaction_ == null ? com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.getDefaultInstance() : reaction_;
+    }
+    /**
+     * <code>optional .signalservice.DataMessage.Reaction reaction = 11;</code>
+     */
+    @java.lang.Override
+    public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ReactionOrBuilder getReactionOrBuilder() {
+      return reaction_ == null ? com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.getDefaultInstance() : reaction_;
+    }
+
     public static final int OPENGROUPINVITATION_FIELD_NUMBER = 102;
     private com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation openGroupInvitation_;
     /**
@@ -16153,7 +17357,7 @@ public final class SignalServiceProtos {
      */
     @java.lang.Override
     public boolean hasOpenGroupInvitation() {
-      return ((bitField0_ & 0x00000100) != 0);
+      return ((bitField0_ & 0x00000200) != 0);
     }
     /**
      * <code>optional .signalservice.DataMessage.OpenGroupInvitation openGroupInvitation = 102;</code>
@@ -16179,7 +17383,7 @@ public final class SignalServiceProtos {
      */
     @java.lang.Override
     public boolean hasClosedGroupControlMessage() {
-      return ((bitField0_ & 0x00000200) != 0);
+      return ((bitField0_ & 0x00000400) != 0);
     }
     /**
      * <code>optional .signalservice.DataMessage.ClosedGroupControlMessage closedGroupControlMessage = 104;</code>
@@ -16206,7 +17410,7 @@ public final class SignalServiceProtos {
      */
     @java.lang.Override
     public boolean hasSyncTarget() {
-      return ((bitField0_ & 0x00000400) != 0);
+      return ((bitField0_ & 0x00000800) != 0);
     }
     /**
      * <code>optional string syncTarget = 105;</code>
@@ -16254,7 +17458,7 @@ public final class SignalServiceProtos {
      */
     @java.lang.Override
     public boolean hasPayment() {
-      return ((bitField0_ & 0x00000800) != 0);
+      return ((bitField0_ & 0x00001000) != 0);
     }
     /**
      * <code>optional .signalservice.DataMessage.Payment payment = 106;</code>
@@ -16280,7 +17484,7 @@ public final class SignalServiceProtos {
      */
     @java.lang.Override
     public boolean hasSharedContact() {
-      return ((bitField0_ & 0x00001000) != 0);
+      return ((bitField0_ & 0x00002000) != 0);
     }
     /**
      * <code>optional .signalservice.DataMessage.SharedContact sharedContact = 107;</code>
@@ -16325,6 +17529,12 @@ public final class SignalServiceProtos {
       }
       for (int i = 0; i < getPreviewCount(); i++) {
         if (!getPreview(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      if (hasReaction()) {
+        if (!getReaction().isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -16387,22 +17597,25 @@ public final class SignalServiceProtos {
       for (int i = 0; i < preview_.size(); i++) {
         output.writeMessage(10, preview_.get(i));
       }
+      if (((bitField0_ & 0x00000100) != 0)) {
+        output.writeMessage(11, getReaction());
+      }
       if (((bitField0_ & 0x00000080) != 0)) {
         output.writeMessage(101, getProfile());
       }
-      if (((bitField0_ & 0x00000100) != 0)) {
+      if (((bitField0_ & 0x00000200) != 0)) {
         output.writeMessage(102, getOpenGroupInvitation());
       }
-      if (((bitField0_ & 0x00000200) != 0)) {
+      if (((bitField0_ & 0x00000400) != 0)) {
         output.writeMessage(104, getClosedGroupControlMessage());
       }
-      if (((bitField0_ & 0x00000400) != 0)) {
+      if (((bitField0_ & 0x00000800) != 0)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 105, syncTarget_);
       }
-      if (((bitField0_ & 0x00000800) != 0)) {
+      if (((bitField0_ & 0x00001000) != 0)) {
         output.writeMessage(106, getPayment());
       }
-      if (((bitField0_ & 0x00001000) != 0)) {
+      if (((bitField0_ & 0x00002000) != 0)) {
         output.writeMessage(107, getSharedContact());
       }
       getUnknownFields().writeTo(output);
@@ -16449,26 +17662,30 @@ public final class SignalServiceProtos {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(10, preview_.get(i));
       }
+      if (((bitField0_ & 0x00000100) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(11, getReaction());
+      }
       if (((bitField0_ & 0x00000080) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(101, getProfile());
       }
-      if (((bitField0_ & 0x00000100) != 0)) {
+      if (((bitField0_ & 0x00000200) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(102, getOpenGroupInvitation());
       }
-      if (((bitField0_ & 0x00000200) != 0)) {
+      if (((bitField0_ & 0x00000400) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(104, getClosedGroupControlMessage());
       }
-      if (((bitField0_ & 0x00000400) != 0)) {
+      if (((bitField0_ & 0x00000800) != 0)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(105, syncTarget_);
       }
-      if (((bitField0_ & 0x00000800) != 0)) {
+      if (((bitField0_ & 0x00001000) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(106, getPayment());
       }
-      if (((bitField0_ & 0x00001000) != 0)) {
+      if (((bitField0_ & 0x00002000) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(107, getSharedContact());
       }
@@ -16530,6 +17747,11 @@ public final class SignalServiceProtos {
       if (hasProfile()) {
         if (!getProfile()
             .equals(other.getProfile())) return false;
+      }
+      if (hasReaction() != other.hasReaction()) return false;
+      if (hasReaction()) {
+        if (!getReaction()
+            .equals(other.getReaction())) return false;
       }
       if (hasOpenGroupInvitation() != other.hasOpenGroupInvitation()) return false;
       if (hasOpenGroupInvitation()) {
@@ -16607,6 +17829,10 @@ public final class SignalServiceProtos {
       if (hasProfile()) {
         hash = (37 * hash) + PROFILE_FIELD_NUMBER;
         hash = (53 * hash) + getProfile().hashCode();
+      }
+      if (hasReaction()) {
+        hash = (37 * hash) + REACTION_FIELD_NUMBER;
+        hash = (53 * hash) + getReaction().hashCode();
       }
       if (hasOpenGroupInvitation()) {
         hash = (37 * hash) + OPENGROUPINVITATION_FIELD_NUMBER;
@@ -16761,6 +17987,7 @@ public final class SignalServiceProtos {
           getQuoteFieldBuilder();
           getPreviewFieldBuilder();
           getProfileFieldBuilder();
+          getReactionFieldBuilder();
           getOpenGroupInvitationFieldBuilder();
           getClosedGroupControlMessageFieldBuilder();
           getPaymentFieldBuilder();
@@ -16804,6 +18031,11 @@ public final class SignalServiceProtos {
         if (profileBuilder_ != null) {
           profileBuilder_.dispose();
           profileBuilder_ = null;
+        }
+        reaction_ = null;
+        if (reactionBuilder_ != null) {
+          reactionBuilder_.dispose();
+          reactionBuilder_ = null;
         }
         openGroupInvitation_ = null;
         if (openGroupInvitationBuilder_ != null) {
@@ -16921,32 +18153,38 @@ public final class SignalServiceProtos {
           to_bitField0_ |= 0x00000080;
         }
         if (((from_bitField0_ & 0x00000400) != 0)) {
-          result.openGroupInvitation_ = openGroupInvitationBuilder_ == null
-              ? openGroupInvitation_
-              : openGroupInvitationBuilder_.build();
+          result.reaction_ = reactionBuilder_ == null
+              ? reaction_
+              : reactionBuilder_.build();
           to_bitField0_ |= 0x00000100;
         }
         if (((from_bitField0_ & 0x00000800) != 0)) {
-          result.closedGroupControlMessage_ = closedGroupControlMessageBuilder_ == null
-              ? closedGroupControlMessage_
-              : closedGroupControlMessageBuilder_.build();
+          result.openGroupInvitation_ = openGroupInvitationBuilder_ == null
+              ? openGroupInvitation_
+              : openGroupInvitationBuilder_.build();
           to_bitField0_ |= 0x00000200;
         }
         if (((from_bitField0_ & 0x00001000) != 0)) {
-          result.syncTarget_ = syncTarget_;
+          result.closedGroupControlMessage_ = closedGroupControlMessageBuilder_ == null
+              ? closedGroupControlMessage_
+              : closedGroupControlMessageBuilder_.build();
           to_bitField0_ |= 0x00000400;
         }
         if (((from_bitField0_ & 0x00002000) != 0)) {
-          result.payment_ = paymentBuilder_ == null
-              ? payment_
-              : paymentBuilder_.build();
+          result.syncTarget_ = syncTarget_;
           to_bitField0_ |= 0x00000800;
         }
         if (((from_bitField0_ & 0x00004000) != 0)) {
+          result.payment_ = paymentBuilder_ == null
+              ? payment_
+              : paymentBuilder_.build();
+          to_bitField0_ |= 0x00001000;
+        }
+        if (((from_bitField0_ & 0x00008000) != 0)) {
           result.sharedContact_ = sharedContactBuilder_ == null
               ? sharedContact_
               : sharedContactBuilder_.build();
-          to_bitField0_ |= 0x00001000;
+          to_bitField0_ |= 0x00002000;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -17041,6 +18279,9 @@ public final class SignalServiceProtos {
         if (other.hasProfile()) {
           mergeProfile(other.getProfile());
         }
+        if (other.hasReaction()) {
+          mergeReaction(other.getReaction());
+        }
         if (other.hasOpenGroupInvitation()) {
           mergeOpenGroupInvitation(other.getOpenGroupInvitation());
         }
@@ -17049,7 +18290,7 @@ public final class SignalServiceProtos {
         }
         if (other.hasSyncTarget()) {
           syncTarget_ = other.syncTarget_;
-          bitField0_ |= 0x00001000;
+          bitField0_ |= 0x00002000;
           onChanged();
         }
         if (other.hasPayment()) {
@@ -17082,6 +18323,11 @@ public final class SignalServiceProtos {
         }
         for (int i = 0; i < getPreviewCount(); i++) {
           if (!getPreview(i).isInitialized()) {
+            return false;
+          }
+        }
+        if (hasReaction()) {
+          if (!getReaction().isInitialized()) {
             return false;
           }
         }
@@ -17189,6 +18435,13 @@ public final class SignalServiceProtos {
                 }
                 break;
               } // case 82
+              case 90: {
+                input.readMessage(
+                    getReactionFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000400;
+                break;
+              } // case 90
               case 810: {
                 input.readMessage(
                     getProfileFieldBuilder().getBuilder(),
@@ -17200,33 +18453,33 @@ public final class SignalServiceProtos {
                 input.readMessage(
                     getOpenGroupInvitationFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField0_ |= 0x00000400;
+                bitField0_ |= 0x00000800;
                 break;
               } // case 818
               case 834: {
                 input.readMessage(
                     getClosedGroupControlMessageFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField0_ |= 0x00000800;
+                bitField0_ |= 0x00001000;
                 break;
               } // case 834
               case 842: {
                 syncTarget_ = input.readBytes();
-                bitField0_ |= 0x00001000;
+                bitField0_ |= 0x00002000;
                 break;
               } // case 842
               case 850: {
                 input.readMessage(
                     getPaymentFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField0_ |= 0x00002000;
+                bitField0_ |= 0x00004000;
                 break;
               } // case 850
               case 858: {
                 input.readMessage(
                     getSharedContactFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField0_ |= 0x00004000;
+                bitField0_ |= 0x00008000;
                 break;
               } // case 858
               default: {
@@ -18323,6 +19576,125 @@ public final class SignalServiceProtos {
         return profileBuilder_;
       }
 
+      private com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction reaction_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ReactionOrBuilder> reactionBuilder_;
+      /**
+       * <code>optional .signalservice.DataMessage.Reaction reaction = 11;</code>
+       * @return Whether the reaction field is set.
+       */
+      public boolean hasReaction() {
+        return ((bitField0_ & 0x00000400) != 0);
+      }
+      /**
+       * <code>optional .signalservice.DataMessage.Reaction reaction = 11;</code>
+       * @return The reaction.
+       */
+      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction getReaction() {
+        if (reactionBuilder_ == null) {
+          return reaction_ == null ? com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.getDefaultInstance() : reaction_;
+        } else {
+          return reactionBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .signalservice.DataMessage.Reaction reaction = 11;</code>
+       */
+      public Builder setReaction(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction value) {
+        if (reactionBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          reaction_ = value;
+        } else {
+          reactionBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .signalservice.DataMessage.Reaction reaction = 11;</code>
+       */
+      public Builder setReaction(
+          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.Builder builderForValue) {
+        if (reactionBuilder_ == null) {
+          reaction_ = builderForValue.build();
+        } else {
+          reactionBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .signalservice.DataMessage.Reaction reaction = 11;</code>
+       */
+      public Builder mergeReaction(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction value) {
+        if (reactionBuilder_ == null) {
+          if (((bitField0_ & 0x00000400) != 0) &&
+            reaction_ != null &&
+            reaction_ != com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.getDefaultInstance()) {
+            getReactionBuilder().mergeFrom(value);
+          } else {
+            reaction_ = value;
+          }
+        } else {
+          reactionBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .signalservice.DataMessage.Reaction reaction = 11;</code>
+       */
+      public Builder clearReaction() {
+        bitField0_ = (bitField0_ & ~0x00000400);
+        reaction_ = null;
+        if (reactionBuilder_ != null) {
+          reactionBuilder_.dispose();
+          reactionBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .signalservice.DataMessage.Reaction reaction = 11;</code>
+       */
+      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.Builder getReactionBuilder() {
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return getReactionFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .signalservice.DataMessage.Reaction reaction = 11;</code>
+       */
+      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ReactionOrBuilder getReactionOrBuilder() {
+        if (reactionBuilder_ != null) {
+          return reactionBuilder_.getMessageOrBuilder();
+        } else {
+          return reaction_ == null ?
+              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.getDefaultInstance() : reaction_;
+        }
+      }
+      /**
+       * <code>optional .signalservice.DataMessage.Reaction reaction = 11;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ReactionOrBuilder> 
+          getReactionFieldBuilder() {
+        if (reactionBuilder_ == null) {
+          reactionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Reaction.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ReactionOrBuilder>(
+                  getReaction(),
+                  getParentForChildren(),
+                  isClean());
+          reaction_ = null;
+        }
+        return reactionBuilder_;
+      }
+
       private com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation openGroupInvitation_;
       private com.google.protobuf.SingleFieldBuilderV3<
           com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitationOrBuilder> openGroupInvitationBuilder_;
@@ -18331,7 +19703,7 @@ public final class SignalServiceProtos {
        * @return Whether the openGroupInvitation field is set.
        */
       public boolean hasOpenGroupInvitation() {
-        return ((bitField0_ & 0x00000400) != 0);
+        return ((bitField0_ & 0x00000800) != 0);
       }
       /**
        * <code>optional .signalservice.DataMessage.OpenGroupInvitation openGroupInvitation = 102;</code>
@@ -18356,7 +19728,7 @@ public final class SignalServiceProtos {
         } else {
           openGroupInvitationBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000400;
+        bitField0_ |= 0x00000800;
         onChanged();
         return this;
       }
@@ -18370,7 +19742,7 @@ public final class SignalServiceProtos {
         } else {
           openGroupInvitationBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000400;
+        bitField0_ |= 0x00000800;
         onChanged();
         return this;
       }
@@ -18379,7 +19751,7 @@ public final class SignalServiceProtos {
        */
       public Builder mergeOpenGroupInvitation(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation value) {
         if (openGroupInvitationBuilder_ == null) {
-          if (((bitField0_ & 0x00000400) != 0) &&
+          if (((bitField0_ & 0x00000800) != 0) &&
             openGroupInvitation_ != null &&
             openGroupInvitation_ != com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation.getDefaultInstance()) {
             getOpenGroupInvitationBuilder().mergeFrom(value);
@@ -18389,7 +19761,7 @@ public final class SignalServiceProtos {
         } else {
           openGroupInvitationBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000400;
+        bitField0_ |= 0x00000800;
         onChanged();
         return this;
       }
@@ -18397,7 +19769,7 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.DataMessage.OpenGroupInvitation openGroupInvitation = 102;</code>
        */
       public Builder clearOpenGroupInvitation() {
-        bitField0_ = (bitField0_ & ~0x00000400);
+        bitField0_ = (bitField0_ & ~0x00000800);
         openGroupInvitation_ = null;
         if (openGroupInvitationBuilder_ != null) {
           openGroupInvitationBuilder_.dispose();
@@ -18410,7 +19782,7 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.DataMessage.OpenGroupInvitation openGroupInvitation = 102;</code>
        */
       public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation.Builder getOpenGroupInvitationBuilder() {
-        bitField0_ |= 0x00000400;
+        bitField0_ |= 0x00000800;
         onChanged();
         return getOpenGroupInvitationFieldBuilder().getBuilder();
       }
@@ -18450,7 +19822,7 @@ public final class SignalServiceProtos {
        * @return Whether the closedGroupControlMessage field is set.
        */
       public boolean hasClosedGroupControlMessage() {
-        return ((bitField0_ & 0x00000800) != 0);
+        return ((bitField0_ & 0x00001000) != 0);
       }
       /**
        * <code>optional .signalservice.DataMessage.ClosedGroupControlMessage closedGroupControlMessage = 104;</code>
@@ -18475,7 +19847,7 @@ public final class SignalServiceProtos {
         } else {
           closedGroupControlMessageBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000800;
+        bitField0_ |= 0x00001000;
         onChanged();
         return this;
       }
@@ -18489,7 +19861,7 @@ public final class SignalServiceProtos {
         } else {
           closedGroupControlMessageBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000800;
+        bitField0_ |= 0x00001000;
         onChanged();
         return this;
       }
@@ -18498,7 +19870,7 @@ public final class SignalServiceProtos {
        */
       public Builder mergeClosedGroupControlMessage(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage value) {
         if (closedGroupControlMessageBuilder_ == null) {
-          if (((bitField0_ & 0x00000800) != 0) &&
+          if (((bitField0_ & 0x00001000) != 0) &&
             closedGroupControlMessage_ != null &&
             closedGroupControlMessage_ != com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.getDefaultInstance()) {
             getClosedGroupControlMessageBuilder().mergeFrom(value);
@@ -18508,7 +19880,7 @@ public final class SignalServiceProtos {
         } else {
           closedGroupControlMessageBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000800;
+        bitField0_ |= 0x00001000;
         onChanged();
         return this;
       }
@@ -18516,7 +19888,7 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.DataMessage.ClosedGroupControlMessage closedGroupControlMessage = 104;</code>
        */
       public Builder clearClosedGroupControlMessage() {
-        bitField0_ = (bitField0_ & ~0x00000800);
+        bitField0_ = (bitField0_ & ~0x00001000);
         closedGroupControlMessage_ = null;
         if (closedGroupControlMessageBuilder_ != null) {
           closedGroupControlMessageBuilder_.dispose();
@@ -18529,7 +19901,7 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.DataMessage.ClosedGroupControlMessage closedGroupControlMessage = 104;</code>
        */
       public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Builder getClosedGroupControlMessageBuilder() {
-        bitField0_ |= 0x00000800;
+        bitField0_ |= 0x00001000;
         onChanged();
         return getClosedGroupControlMessageFieldBuilder().getBuilder();
       }
@@ -18567,7 +19939,7 @@ public final class SignalServiceProtos {
        * @return Whether the syncTarget field is set.
        */
       public boolean hasSyncTarget() {
-        return ((bitField0_ & 0x00001000) != 0);
+        return ((bitField0_ & 0x00002000) != 0);
       }
       /**
        * <code>optional string syncTarget = 105;</code>
@@ -18613,7 +19985,7 @@ public final class SignalServiceProtos {
           java.lang.String value) {
         if (value == null) { throw new NullPointerException(); }
         syncTarget_ = value;
-        bitField0_ |= 0x00001000;
+        bitField0_ |= 0x00002000;
         onChanged();
         return this;
       }
@@ -18623,7 +19995,7 @@ public final class SignalServiceProtos {
        */
       public Builder clearSyncTarget() {
         syncTarget_ = getDefaultInstance().getSyncTarget();
-        bitField0_ = (bitField0_ & ~0x00001000);
+        bitField0_ = (bitField0_ & ~0x00002000);
         onChanged();
         return this;
       }
@@ -18636,7 +20008,7 @@ public final class SignalServiceProtos {
           com.google.protobuf.ByteString value) {
         if (value == null) { throw new NullPointerException(); }
         syncTarget_ = value;
-        bitField0_ |= 0x00001000;
+        bitField0_ |= 0x00002000;
         onChanged();
         return this;
       }
@@ -18649,7 +20021,7 @@ public final class SignalServiceProtos {
        * @return Whether the payment field is set.
        */
       public boolean hasPayment() {
-        return ((bitField0_ & 0x00002000) != 0);
+        return ((bitField0_ & 0x00004000) != 0);
       }
       /**
        * <code>optional .signalservice.DataMessage.Payment payment = 106;</code>
@@ -18674,7 +20046,7 @@ public final class SignalServiceProtos {
         } else {
           paymentBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00002000;
+        bitField0_ |= 0x00004000;
         onChanged();
         return this;
       }
@@ -18688,7 +20060,7 @@ public final class SignalServiceProtos {
         } else {
           paymentBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00002000;
+        bitField0_ |= 0x00004000;
         onChanged();
         return this;
       }
@@ -18697,7 +20069,7 @@ public final class SignalServiceProtos {
        */
       public Builder mergePayment(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment value) {
         if (paymentBuilder_ == null) {
-          if (((bitField0_ & 0x00002000) != 0) &&
+          if (((bitField0_ & 0x00004000) != 0) &&
             payment_ != null &&
             payment_ != com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment.getDefaultInstance()) {
             getPaymentBuilder().mergeFrom(value);
@@ -18707,7 +20079,7 @@ public final class SignalServiceProtos {
         } else {
           paymentBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00002000;
+        bitField0_ |= 0x00004000;
         onChanged();
         return this;
       }
@@ -18715,7 +20087,7 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.DataMessage.Payment payment = 106;</code>
        */
       public Builder clearPayment() {
-        bitField0_ = (bitField0_ & ~0x00002000);
+        bitField0_ = (bitField0_ & ~0x00004000);
         payment_ = null;
         if (paymentBuilder_ != null) {
           paymentBuilder_.dispose();
@@ -18728,7 +20100,7 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.DataMessage.Payment payment = 106;</code>
        */
       public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment.Builder getPaymentBuilder() {
-        bitField0_ |= 0x00002000;
+        bitField0_ |= 0x00004000;
         onChanged();
         return getPaymentFieldBuilder().getBuilder();
       }
@@ -18768,7 +20140,7 @@ public final class SignalServiceProtos {
        * @return Whether the sharedContact field is set.
        */
       public boolean hasSharedContact() {
-        return ((bitField0_ & 0x00004000) != 0);
+        return ((bitField0_ & 0x00008000) != 0);
       }
       /**
        * <code>optional .signalservice.DataMessage.SharedContact sharedContact = 107;</code>
@@ -18793,7 +20165,7 @@ public final class SignalServiceProtos {
         } else {
           sharedContactBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00004000;
+        bitField0_ |= 0x00008000;
         onChanged();
         return this;
       }
@@ -18807,7 +20179,7 @@ public final class SignalServiceProtos {
         } else {
           sharedContactBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00004000;
+        bitField0_ |= 0x00008000;
         onChanged();
         return this;
       }
@@ -18816,7 +20188,7 @@ public final class SignalServiceProtos {
        */
       public Builder mergeSharedContact(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.SharedContact value) {
         if (sharedContactBuilder_ == null) {
-          if (((bitField0_ & 0x00004000) != 0) &&
+          if (((bitField0_ & 0x00008000) != 0) &&
             sharedContact_ != null &&
             sharedContact_ != com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.SharedContact.getDefaultInstance()) {
             getSharedContactBuilder().mergeFrom(value);
@@ -18826,7 +20198,7 @@ public final class SignalServiceProtos {
         } else {
           sharedContactBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00004000;
+        bitField0_ |= 0x00008000;
         onChanged();
         return this;
       }
@@ -18834,7 +20206,7 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.DataMessage.SharedContact sharedContact = 107;</code>
        */
       public Builder clearSharedContact() {
-        bitField0_ = (bitField0_ & ~0x00004000);
+        bitField0_ = (bitField0_ & ~0x00008000);
         sharedContact_ = null;
         if (sharedContactBuilder_ != null) {
           sharedContactBuilder_.dispose();
@@ -18847,7 +20219,7 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.DataMessage.SharedContact sharedContact = 107;</code>
        */
       public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.SharedContact.Builder getSharedContactBuilder() {
-        bitField0_ |= 0x00004000;
+        bitField0_ |= 0x00008000;
         onChanged();
         return getSharedContactFieldBuilder().getBuilder();
       }
@@ -29844,6 +31216,11 @@ public final class SignalServiceProtos {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_signalservice_DataMessage_SharedContact_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_signalservice_DataMessage_Reaction_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_signalservice_DataMessage_Reaction_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_signalservice_CallMessage_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -29920,7 +31297,7 @@ public final class SignalServiceProtos {
       "Notification\022<\n\004type\030\001 \002(\0162..signalservi" +
       "ce.DataExtractionNotification.Type\022\021\n\tti" +
       "mestamp\030\002 \001(\004\"\'\n\004Type\022\016\n\nSCREENSHOT\020\001\022\017\n" +
-      "\013MEDIA_SAVED\020\002\"\371\r\n\013DataMessage\022\014\n\004body\030\001" +
+      "\013MEDIA_SAVED\020\002\"\305\017\n\013DataMessage\022\014\n\004body\030\001" +
       " \001(\t\0225\n\013attachments\030\002 \003(\0132 .signalservic" +
       "e.AttachmentPointer\022*\n\005group\030\003 \001(\0132\033.sig" +
       "nalservice.GroupContext\022\r\n\005flags\030\004 \001(\r\022\023" +
@@ -29929,80 +31306,85 @@ public final class SignalServiceProtos {
       "alservice.DataMessage.Quote\0223\n\007preview\030\n" +
       " \003(\0132\".signalservice.DataMessage.Preview" +
       "\0229\n\007profile\030e \001(\0132(.signalservice.DataMe" +
-      "ssage.BeldexProfile\022K\n\023openGroupInvitati" +
-      "on\030f \001(\0132..signalservice.DataMessage.Ope" +
-      "nGroupInvitation\022W\n\031closedGroupControlMe" +
-      "ssage\030h \001(\01324.signalservice.DataMessage." +
-      "ClosedGroupControlMessage\022\022\n\nsyncTarget\030" +
-      "i \001(\t\0223\n\007payment\030j \001(\0132\".signalservice.D" +
-      "ataMessage.Payment\022?\n\rsharedContact\030k \001(" +
-      "\0132(.signalservice.DataMessage.SharedCont" +
-      "act\032\225\002\n\005Quote\022\n\n\002id\030\001 \002(\004\022\016\n\006author\030\002 \002(" +
-      "\t\022\014\n\004text\030\003 \001(\t\022F\n\013attachments\030\004 \003(\01321.s" +
-      "ignalservice.DataMessage.Quote.QuotedAtt" +
-      "achment\032\231\001\n\020QuotedAttachment\022\023\n\013contentT" +
-      "ype\030\001 \001(\t\022\020\n\010fileName\030\002 \001(\t\0223\n\tthumbnail" +
-      "\030\003 \001(\0132 .signalservice.AttachmentPointer" +
-      "\022\r\n\005flags\030\004 \001(\r\"\032\n\005Flags\022\021\n\rVOICE_MESSAG" +
-      "E\020\001\032V\n\007Preview\022\013\n\003url\030\001 \002(\t\022\r\n\005title\030\002 \001" +
-      "(\t\022/\n\005image\030\003 \001(\0132 .signalservice.Attach" +
-      "mentPointer\032<\n\rBeldexProfile\022\023\n\013displayN" +
-      "ame\030\001 \001(\t\022\026\n\016profilePicture\030\002 \001(\t\0320\n\023Ope" +
-      "nGroupInvitation\022\013\n\003url\030\001 \002(\t\022\014\n\004name\030\003 " +
-      "\002(\t\032(\n\007Payment\022\016\n\006amount\030\001 \002(\t\022\r\n\005txnId\030" +
-      "\003 \002(\t\032\374\003\n\031ClosedGroupControlMessage\022G\n\004t" +
-      "ype\030\001 \002(\01629.signalservice.DataMessage.Cl" +
-      "osedGroupControlMessage.Type\022\021\n\tpublicKe" +
-      "y\030\002 \001(\014\022\014\n\004name\030\003 \001(\t\0221\n\021encryptionKeyPa" +
-      "ir\030\004 \001(\0132\026.signalservice.KeyPair\022\017\n\007memb" +
-      "ers\030\005 \003(\014\022\016\n\006admins\030\006 \003(\014\022U\n\010wrappers\030\007 " +
-      "\003(\0132C.signalservice.DataMessage.ClosedGr" +
-      "oupControlMessage.KeyPairWrapper\022\027\n\017expi" +
-      "rationTimer\030\010 \001(\r\032=\n\016KeyPairWrapper\022\021\n\tp" +
-      "ublicKey\030\001 \002(\014\022\030\n\020encryptedKeyPair\030\002 \002(\014" +
-      "\"r\n\004Type\022\007\n\003NEW\020\001\022\027\n\023ENCRYPTION_KEY_PAIR" +
-      "\020\003\022\017\n\013NAME_CHANGE\020\004\022\021\n\rMEMBERS_ADDED\020\005\022\023" +
-      "\n\017MEMBERS_REMOVED\020\006\022\017\n\013MEMBER_LEFT\020\007\032.\n\r" +
-      "SharedContact\022\017\n\007address\030\001 \002(\t\022\014\n\004name\030\002" +
-      " \002(\t\"$\n\005Flags\022\033\n\027EXPIRATION_TIMER_UPDATE" +
-      "\020\002\"\352\001\n\013CallMessage\022-\n\004type\030\001 \002(\0162\037.signa" +
-      "lservice.CallMessage.Type\022\014\n\004sdps\030\002 \003(\t\022" +
-      "\027\n\017sdpMLineIndexes\030\003 \003(\r\022\017\n\007sdpMids\030\004 \003(" +
-      "\t\022\014\n\004uuid\030\005 \002(\t\"f\n\004Type\022\r\n\tPRE_OFFER\020\006\022\t" +
-      "\n\005OFFER\020\001\022\n\n\006ANSWER\020\002\022\026\n\022PROVISIONAL_ANS" +
-      "WER\020\003\022\022\n\016ICE_CANDIDATES\020\004\022\014\n\010END_CALL\020\005\"" +
-      "\245\004\n\024ConfigurationMessage\022E\n\014closedGroups" +
-      "\030\001 \003(\0132/.signalservice.ConfigurationMess" +
-      "age.ClosedGroup\022\022\n\nopenGroups\030\002 \003(\t\022\023\n\013d" +
-      "isplayName\030\003 \001(\t\022\026\n\016profilePicture\030\004 \001(\t" +
-      "\022\022\n\nprofileKey\030\005 \001(\014\022=\n\010contacts\030\006 \003(\0132+" +
-      ".signalservice.ConfigurationMessage.Cont" +
-      "act\032\233\001\n\013ClosedGroup\022\021\n\tpublicKey\030\001 \001(\014\022\014" +
-      "\n\004name\030\002 \001(\t\0221\n\021encryptionKeyPair\030\003 \001(\0132" +
-      "\026.signalservice.KeyPair\022\017\n\007members\030\004 \003(\014" +
-      "\022\016\n\006admins\030\005 \003(\014\022\027\n\017expirationTimer\030\006 \001(" +
-      "\r\032\223\001\n\007Contact\022\021\n\tpublicKey\030\001 \002(\014\022\014\n\004name" +
-      "\030\002 \002(\t\022\026\n\016profilePicture\030\003 \001(\t\022\022\n\nprofil" +
-      "eKey\030\004 \001(\014\022\022\n\nisApproved\030\005 \001(\010\022\021\n\tisBloc" +
-      "ked\030\006 \001(\010\022\024\n\014didApproveMe\030\007 \001(\010\",\n\026Messa" +
-      "geRequestResponse\022\022\n\nisApproved\030\001 \002(\010\"u\n" +
-      "\016ReceiptMessage\0220\n\004type\030\001 \002(\0162\".signalse" +
-      "rvice.ReceiptMessage.Type\022\021\n\ttimestamp\030\002" +
-      " \003(\004\"\036\n\004Type\022\014\n\010DELIVERY\020\000\022\010\n\004READ\020\001\"\354\001\n" +
-      "\021AttachmentPointer\022\n\n\002id\030\001 \002(\006\022\023\n\013conten" +
-      "tType\030\002 \001(\t\022\013\n\003key\030\003 \001(\014\022\014\n\004size\030\004 \001(\r\022\021" +
-      "\n\tthumbnail\030\005 \001(\014\022\016\n\006digest\030\006 \001(\014\022\020\n\010fil" +
-      "eName\030\007 \001(\t\022\r\n\005flags\030\010 \001(\r\022\r\n\005width\030\t \001(" +
-      "\r\022\016\n\006height\030\n \001(\r\022\017\n\007caption\030\013 \001(\t\022\013\n\003ur" +
-      "l\030e \001(\t\"\032\n\005Flags\022\021\n\rVOICE_MESSAGE\020\001\"\365\001\n\014" +
-      "GroupContext\022\n\n\002id\030\001 \001(\014\022.\n\004type\030\002 \001(\0162 " +
-      ".signalservice.GroupContext.Type\022\014\n\004name" +
-      "\030\003 \001(\t\022\017\n\007members\030\004 \003(\t\0220\n\006avatar\030\005 \001(\0132" +
-      " .signalservice.AttachmentPointer\022\016\n\006adm" +
-      "ins\030\006 \003(\t\"H\n\004Type\022\013\n\007UNKNOWN\020\000\022\n\n\006UPDATE" +
-      "\020\001\022\013\n\007DELIVER\020\002\022\010\n\004QUIT\020\003\022\020\n\014REQUEST_INF" +
-      "O\020\004B2\n\033com.beldex.libsignal.protosB\023Sign" +
-      "alServiceProtos"
+      "ssage.BeldexProfile\0225\n\010reaction\030\013 \001(\0132#." +
+      "signalservice.DataMessage.Reaction\022K\n\023op" +
+      "enGroupInvitation\030f \001(\0132..signalservice." +
+      "DataMessage.OpenGroupInvitation\022W\n\031close" +
+      "dGroupControlMessage\030h \001(\01324.signalservi" +
+      "ce.DataMessage.ClosedGroupControlMessage" +
+      "\022\022\n\nsyncTarget\030i \001(\t\0223\n\007payment\030j \001(\0132\"." +
+      "signalservice.DataMessage.Payment\022?\n\rsha" +
+      "redContact\030k \001(\0132(.signalservice.DataMes" +
+      "sage.SharedContact\032\225\002\n\005Quote\022\n\n\002id\030\001 \002(\004" +
+      "\022\016\n\006author\030\002 \002(\t\022\014\n\004text\030\003 \001(\t\022F\n\013attach" +
+      "ments\030\004 \003(\01321.signalservice.DataMessage." +
+      "Quote.QuotedAttachment\032\231\001\n\020QuotedAttachm" +
+      "ent\022\023\n\013contentType\030\001 \001(\t\022\020\n\010fileName\030\002 \001" +
+      "(\t\0223\n\tthumbnail\030\003 \001(\0132 .signalservice.At" +
+      "tachmentPointer\022\r\n\005flags\030\004 \001(\r\"\032\n\005Flags\022" +
+      "\021\n\rVOICE_MESSAGE\020\001\032V\n\007Preview\022\013\n\003url\030\001 \002" +
+      "(\t\022\r\n\005title\030\002 \001(\t\022/\n\005image\030\003 \001(\0132 .signa" +
+      "lservice.AttachmentPointer\032<\n\rBeldexProf" +
+      "ile\022\023\n\013displayName\030\001 \001(\t\022\026\n\016profilePictu" +
+      "re\030\002 \001(\t\0320\n\023OpenGroupInvitation\022\013\n\003url\030\001" +
+      " \002(\t\022\014\n\004name\030\003 \002(\t\032(\n\007Payment\022\016\n\006amount\030" +
+      "\001 \002(\t\022\r\n\005txnId\030\003 \002(\t\032\374\003\n\031ClosedGroupCont" +
+      "rolMessage\022G\n\004type\030\001 \002(\01629.signalservice" +
+      ".DataMessage.ClosedGroupControlMessage.T" +
+      "ype\022\021\n\tpublicKey\030\002 \001(\014\022\014\n\004name\030\003 \001(\t\0221\n\021" +
+      "encryptionKeyPair\030\004 \001(\0132\026.signalservice." +
+      "KeyPair\022\017\n\007members\030\005 \003(\014\022\016\n\006admins\030\006 \003(\014" +
+      "\022U\n\010wrappers\030\007 \003(\0132C.signalservice.DataM" +
+      "essage.ClosedGroupControlMessage.KeyPair" +
+      "Wrapper\022\027\n\017expirationTimer\030\010 \001(\r\032=\n\016KeyP" +
+      "airWrapper\022\021\n\tpublicKey\030\001 \002(\014\022\030\n\020encrypt" +
+      "edKeyPair\030\002 \002(\014\"r\n\004Type\022\007\n\003NEW\020\001\022\027\n\023ENCR" +
+      "YPTION_KEY_PAIR\020\003\022\017\n\013NAME_CHANGE\020\004\022\021\n\rME" +
+      "MBERS_ADDED\020\005\022\023\n\017MEMBERS_REMOVED\020\006\022\017\n\013ME" +
+      "MBER_LEFT\020\007\032.\n\rSharedContact\022\017\n\007address\030" +
+      "\001 \002(\t\022\014\n\004name\030\002 \002(\t\032\222\001\n\010Reaction\022\n\n\002id\030\001" +
+      " \002(\004\022\016\n\006author\030\002 \002(\t\022\r\n\005emoji\030\003 \001(\t\022:\n\006a" +
+      "ction\030\004 \002(\0162*.signalservice.DataMessage." +
+      "Reaction.Action\"\037\n\006Action\022\t\n\005REACT\020\000\022\n\n\006" +
+      "REMOVE\020\001\"$\n\005Flags\022\033\n\027EXPIRATION_TIMER_UP" +
+      "DATE\020\002\"\352\001\n\013CallMessage\022-\n\004type\030\001 \002(\0162\037.s" +
+      "ignalservice.CallMessage.Type\022\014\n\004sdps\030\002 " +
+      "\003(\t\022\027\n\017sdpMLineIndexes\030\003 \003(\r\022\017\n\007sdpMids\030" +
+      "\004 \003(\t\022\014\n\004uuid\030\005 \002(\t\"f\n\004Type\022\r\n\tPRE_OFFER" +
+      "\020\006\022\t\n\005OFFER\020\001\022\n\n\006ANSWER\020\002\022\026\n\022PROVISIONAL" +
+      "_ANSWER\020\003\022\022\n\016ICE_CANDIDATES\020\004\022\014\n\010END_CAL" +
+      "L\020\005\"\245\004\n\024ConfigurationMessage\022E\n\014closedGr" +
+      "oups\030\001 \003(\0132/.signalservice.Configuration" +
+      "Message.ClosedGroup\022\022\n\nopenGroups\030\002 \003(\t\022" +
+      "\023\n\013displayName\030\003 \001(\t\022\026\n\016profilePicture\030\004" +
+      " \001(\t\022\022\n\nprofileKey\030\005 \001(\014\022=\n\010contacts\030\006 \003" +
+      "(\0132+.signalservice.ConfigurationMessage." +
+      "Contact\032\233\001\n\013ClosedGroup\022\021\n\tpublicKey\030\001 \001" +
+      "(\014\022\014\n\004name\030\002 \001(\t\0221\n\021encryptionKeyPair\030\003 " +
+      "\001(\0132\026.signalservice.KeyPair\022\017\n\007members\030\004" +
+      " \003(\014\022\016\n\006admins\030\005 \003(\014\022\027\n\017expirationTimer\030" +
+      "\006 \001(\r\032\223\001\n\007Contact\022\021\n\tpublicKey\030\001 \002(\014\022\014\n\004" +
+      "name\030\002 \002(\t\022\026\n\016profilePicture\030\003 \001(\t\022\022\n\npr" +
+      "ofileKey\030\004 \001(\014\022\022\n\nisApproved\030\005 \001(\010\022\021\n\tis" +
+      "Blocked\030\006 \001(\010\022\024\n\014didApproveMe\030\007 \001(\010\",\n\026M" +
+      "essageRequestResponse\022\022\n\nisApproved\030\001 \002(" +
+      "\010\"u\n\016ReceiptMessage\0220\n\004type\030\001 \002(\0162\".sign" +
+      "alservice.ReceiptMessage.Type\022\021\n\ttimesta" +
+      "mp\030\002 \003(\004\"\036\n\004Type\022\014\n\010DELIVERY\020\000\022\010\n\004READ\020\001" +
+      "\"\354\001\n\021AttachmentPointer\022\n\n\002id\030\001 \002(\006\022\023\n\013co" +
+      "ntentType\030\002 \001(\t\022\013\n\003key\030\003 \001(\014\022\014\n\004size\030\004 \001" +
+      "(\r\022\021\n\tthumbnail\030\005 \001(\014\022\016\n\006digest\030\006 \001(\014\022\020\n" +
+      "\010fileName\030\007 \001(\t\022\r\n\005flags\030\010 \001(\r\022\r\n\005width\030" +
+      "\t \001(\r\022\016\n\006height\030\n \001(\r\022\017\n\007caption\030\013 \001(\t\022\013" +
+      "\n\003url\030e \001(\t\"\032\n\005Flags\022\021\n\rVOICE_MESSAGE\020\001\"" +
+      "\365\001\n\014GroupContext\022\n\n\002id\030\001 \001(\014\022.\n\004type\030\002 \001" +
+      "(\0162 .signalservice.GroupContext.Type\022\014\n\004" +
+      "name\030\003 \001(\t\022\017\n\007members\030\004 \003(\t\0220\n\006avatar\030\005 " +
+      "\001(\0132 .signalservice.AttachmentPointer\022\016\n" +
+      "\006admins\030\006 \003(\t\"H\n\004Type\022\013\n\007UNKNOWN\020\000\022\n\n\006UP" +
+      "DATE\020\001\022\013\n\007DELIVER\020\002\022\010\n\004QUIT\020\003\022\020\n\014REQUEST" +
+      "_INFO\020\004B2\n\033com.beldex.libsignal.protosB\023" +
+      "SignalServiceProtos"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -30049,7 +31431,7 @@ public final class SignalServiceProtos {
     internal_static_signalservice_DataMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_signalservice_DataMessage_descriptor,
-        new java.lang.String[] { "Body", "Attachments", "Group", "Flags", "ExpireTimer", "ProfileKey", "Timestamp", "Quote", "Preview", "Profile", "OpenGroupInvitation", "ClosedGroupControlMessage", "SyncTarget", "Payment", "SharedContact", });
+        new java.lang.String[] { "Body", "Attachments", "Group", "Flags", "ExpireTimer", "ProfileKey", "Timestamp", "Quote", "Preview", "Profile", "Reaction", "OpenGroupInvitation", "ClosedGroupControlMessage", "SyncTarget", "Payment", "SharedContact", });
     internal_static_signalservice_DataMessage_Quote_descriptor =
       internal_static_signalservice_DataMessage_descriptor.getNestedTypes().get(0);
     internal_static_signalservice_DataMessage_Quote_fieldAccessorTable = new
@@ -30104,6 +31486,12 @@ public final class SignalServiceProtos {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_signalservice_DataMessage_SharedContact_descriptor,
         new java.lang.String[] { "Address", "Name", });
+    internal_static_signalservice_DataMessage_Reaction_descriptor =
+      internal_static_signalservice_DataMessage_descriptor.getNestedTypes().get(7);
+    internal_static_signalservice_DataMessage_Reaction_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_signalservice_DataMessage_Reaction_descriptor,
+        new java.lang.String[] { "Id", "Author", "Emoji", "Action", });
     internal_static_signalservice_CallMessage_descriptor =
       getDescriptor().getMessageTypes().get(7);
     internal_static_signalservice_CallMessage_fieldAccessorTable = new

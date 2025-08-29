@@ -5,6 +5,7 @@ import android.security.keystore.KeyProperties;
 import android.util.Base64;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -37,10 +38,13 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 
+import timber.log.Timber;
+
 public final class KeyStoreHelper {
 
   private static final String ANDROID_KEY_STORE = "AndroidKeyStore";
   private static final String KEY_ALIAS         = "SignalSecret";
+  private static final String TAG = "KeyStoreHelper";
 
   public static SealedData seal(@NonNull byte[] input) {
     SecretKey secretKey = getOrCreateKeyStoreEntry();
@@ -94,30 +98,36 @@ public final class KeyStoreHelper {
     }
   }
 
+  @Nullable
   private static SecretKey getKeyStoreEntry() {
     KeyStore keyStore = getKeyStore();
-
-    try {
-      // Attempt 1
-      return getSecretKey(keyStore);
-    } catch (UnrecoverableKeyException e1) {
-      try {
-        // Attempt 2
-        return getSecretKey(keyStore);
-      } catch (UnrecoverableKeyException e2) {
-        throw new AssertionError(e2);
-      }
+    SecretKey key = getSecretKey(keyStore);
+    if (key == null) {
+        Timber.tag(TAG).w("SecretKey not found in keystore (KEY_ALIAS: " + KEY_ALIAS + ")");
     }
+    return key;
   }
 
-  private static SecretKey getSecretKey(KeyStore keyStore) throws UnrecoverableKeyException {
+  @Nullable
+  private static SecretKey getSecretKey(KeyStore keyStore) {
     try {
-      KeyStore.SecretKeyEntry entry = (KeyStore.SecretKeyEntry) keyStore.getEntry(KEY_ALIAS, null);
-      return entry.getSecretKey();
+      KeyStore.Entry entry = keyStore.getEntry(KEY_ALIAS, null);
+
+      if (entry instanceof KeyStore.SecretKeyEntry) {
+        return ((KeyStore.SecretKeyEntry) entry).getSecretKey();
+      } else {
+          Timber.tag(TAG).w("KeyStore entry is null or not a SecretKeyEntry for alias: %s", KEY_ALIAS);
+        return null;
+      }
     } catch (UnrecoverableKeyException e) {
-      throw e;
-    } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableEntryException | NullPointerException e) {
-      throw new AssertionError(e);
+        Timber.tag(TAG).e(e, "UnrecoverableKeyException while getting SecretKey: %s", e.getMessage());
+      return null;
+    } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableEntryException e) {
+        Timber.tag(TAG).e(e, "Exception while accessing keystore: %s", e.getMessage());
+      return null;
+    } catch (Exception e) {
+        Timber.tag(TAG).e(e, "Unexpected exception while retrieving SecretKey: %s", e.getMessage());
+      return null;
     }
   }
 

@@ -2,7 +2,9 @@ package io.beldex.bchat.conversation.v2.menus
 
 import android.content.Context
 import android.view.ActionMode
+import android.view.ContextThemeWrapper
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -11,15 +13,29 @@ import io.beldex.bchat.conversation.v2.ConversationAdapter
 import io.beldex.bchat.database.model.MediaMmsMessageRecord
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.dependencies.DatabaseComponent
+import androidx.core.view.size
+import androidx.core.view.get
+import com.beldex.libbchat.utilities.getColorFromAttr
 
 class ConversationActionModeCallback(private val adapter: ConversationAdapter, private val threadID: Long,
     private val context: Context) : ActionMode.Callback {
     var delegate: ConversationActionModeCallbackDelegate? = null
 
     override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-        val inflater = mode.menuInflater
+        val themedContext = ContextThemeWrapper(context, context.theme)
+        val inflater = MenuInflater(themedContext)
         inflater.inflate(R.menu.menu_conversation_item_action, menu)
         updateActionModeMenu(menu)
+
+
+        // tint icons manually as it seems the xml color is ignored, in spite of the context theme wrapper
+        val tintColor = context.getColorFromAttr(android.R.attr.textColorPrimary)
+
+        for (i in 0 until menu.size) {
+            val menuItem = menu[i]
+            menuItem.icon?.setTint(tintColor)
+        }
+
         return true
     }
 
@@ -34,7 +50,6 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
         val openGroup = DatabaseComponent.get(context).beldexThreadDatabase().getOpenGroupChat(threadID)
         val thread = DatabaseComponent.get(context).threadDatabase().getRecipientForThreadId(threadID)!!
         val userPublicKey = TextSecurePreferences.getLocalNumber(context)!!
-
         fun userCanBanSelectedUsers(): Boolean {
             if (openGroup == null) { return false }
             val anySentByCurrentUser = selectedItems.any { it.isOutgoing }
@@ -44,7 +59,7 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
             return OpenGroupAPIV2.isUserModerator(userPublicKey, openGroup.room, openGroup.server)
         }
         // Delete message
-        menu.findItem(R.id.menu_context_delete_message).isVisible = true // can always delete since delete logic will be handled by the VM
+        menu.findItem(R.id.menu_context_delete_message).isVisible = true
         // Ban user
         menu.findItem(R.id.menu_context_ban_user).isVisible = userCanBanSelectedUsers()
         // Ban and delete all
@@ -55,7 +70,7 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
         menu.findItem(R.id.menu_context_copy_public_key).isVisible =
             (thread.isGroupRecipient && !thread.isOpenGroupRecipient && selectedItems.size == 1 && firstMessage.individualRecipient.address.toString() != userPublicKey)
         // Message detail
-        menu.findItem(R.id.menu_message_details).isVisible = (selectedItems.size == 1 && firstMessage.isOutgoing)
+        menu.findItem(R.id.menu_message_details).isVisible = (selectedItems.size == 1 && firstMessage.isOutgoing && !firstMessage.isPending)
         // Resend
         menu.findItem(R.id.menu_context_resend).isVisible = (selectedItems.size == 1 && firstMessage.isFailed)
         // Save media
@@ -71,7 +86,7 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
     }
 
     override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-        val selectedItems = adapter.selectedItems
+        val selectedItems = adapter.selectedItems.toSet()
         when (item.itemId) {
             R.id.menu_context_delete_message -> delegate?.deleteMessages(selectedItems)
             R.id.menu_context_ban_user -> delegate?.banUser(selectedItems)
@@ -94,6 +109,7 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
 }
 
 interface ConversationActionModeCallbackDelegate {
+    fun selectMessages(messages : Set<MessageRecord>, position : Int)
 
     fun deleteMessages(messages: Set<MessageRecord>)
     fun banUser(messages: Set<MessageRecord>)

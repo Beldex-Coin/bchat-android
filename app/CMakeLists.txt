@@ -4,7 +4,7 @@
 
 # Sets the minimum version of CMake required to build the native library.
 
-cmake_minimum_required(VERSION 3.10.2)
+cmake_minimum_required(VERSION 3.22.1)
 
 # Declares and names the project.
 
@@ -63,3 +63,5 @@ target_link_libraries( # Specifies the target library.
                        # included in the NDK.
                        wallet_api
                        ${log-lib} )
+
+target_link_options(app PRIVATE "-Wl,-z,max-page-size=16384")

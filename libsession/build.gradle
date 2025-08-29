@@ -7,19 +7,19 @@ plugins {
 }
 
 android {
-    compileSdkVersion androidCompileSdkVersion
 
     defaultConfig {
+        compileSdk androidCompileSdkVersion
         minSdkVersion androidMinimumSdkVersion
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
 
     buildFeatures {
@@ -60,8 +60,8 @@ dependencies {
     ksp("com.google.dagger:hilt-compiler:$daggerHiltVersion")
     ksp("androidx.hilt:hilt-compiler:$jetpackHiltVersion")
 
-    implementation 'com.goterl:lazysodium-android:5.0.2@aar'
-    implementation "net.java.dev.jna:jna:5.12.1@aar"
+    implementation 'com.goterl:lazysodium-android:5.2.0@aar'
+    implementation "net.java.dev.jna:jna:5.17.0@aar"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     implementation "androidx.core:core-ktx:$coreVersion"
     implementation "androidx.appcompat:appcompat:$appcompatVersion"
@@ -93,6 +93,6 @@ dependencies {
     testImplementation "androidx.test:core:$testCoreVersion"
     testImplementation "androidx.arch.core:core-testing:2.1.0"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
-    testImplementation "org.conscrypt:conscrypt-openjdk-uber:2.0.0"
+    testImplementation "org.conscrypt:conscrypt-openjdk-uber:2.5.2"
     implementation 'org.greenrobot:eventbus:3.0.0'
 }

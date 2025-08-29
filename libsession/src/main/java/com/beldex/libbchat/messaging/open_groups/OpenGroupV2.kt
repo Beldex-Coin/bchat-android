@@ -28,8 +28,8 @@ data class OpenGroupV2(
             return try {
                 val json = JsonUtil.fromJson(jsonAsString)
                 if (!json.has("room")) return null
-                val room = json.get("room").asText().toLowerCase(Locale.US)
-                val server = json.get("server").asText().toLowerCase(Locale.US)
+                val room = json.get("room").asText().lowercase(Locale.US)
+                val server = json.get("server").asText().lowercase(Locale.US)
                 val displayName = json.get("displayName").asText()
                 val publicKey = json.get("publicKey").asText()
                 OpenGroupV2(server, room, displayName, publicKey)
@@ -59,4 +59,5 @@ data class OpenGroupV2(
     )
 
     val joinURL: String get() = "$server/$room?public_key=$publicKey"
+    val groupId: String get() = "$server.$room"
 }

@@ -37,6 +37,7 @@ import io.beldex.bchat.components.ComposeText;
 import io.beldex.bchat.components.ControllableViewPager;
 import io.beldex.bchat.components.InputAwareLayout;
 import io.beldex.bchat.components.emoji.EmojiEditText;
+import io.beldex.bchat.components.emoji.EmojiEventListener;
 import io.beldex.bchat.components.emoji.EmojiKeyboardProvider;
 import io.beldex.bchat.components.emoji.EmojiToggle;
 import io.beldex.bchat.components.emoji.MediaKeyboard;
@@ -191,7 +192,6 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
     mediaRail.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
     mediaRail.setAdapter(mediaRailAdapter);
 
-    hud.getRootView().getViewTreeObserver().addOnGlobalLayoutListener(this);
     hud.addOnKeyboardShownListener(this);
     hud.addOnKeyboardHiddenListener(this);
 
@@ -242,8 +242,6 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
 
     fragmentPagerAdapter.restoreState(viewModel.getDrawState());
     viewModel.onImageEditorStarted();
-
-    requireActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
   }
 
@@ -395,8 +393,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
 
   private void onEmojiToggleClicked(View v) {
     if (!emojiDrawer.resolved()) {
-      emojiDrawer.get().setProviders(0, new EmojiKeyboardProvider(requireContext(), new EmojiKeyboardProvider.EmojiEventListener() {
-        @Override
+      emojiDrawer.get().setProviders(0, new EmojiKeyboardProvider(requireContext(), new EmojiEventListener() {        @Override
         public void onKeyEvent(KeyEvent keyEvent) {
           getActiveInputField().dispatchKeyEvent(keyEvent);
         }

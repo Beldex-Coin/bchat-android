@@ -7,6 +7,7 @@
     android:layout_weight="1"
     style="@style/CustomCardViewStyle"
     app:cardBackgroundColor="@color/page_background"
+    android:fitsSystemWindows="true"
     app:cardElevation="4dp">
 
     <LinearLayout

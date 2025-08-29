@@ -18,6 +18,7 @@ package com.beldex.libbchat.utilities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -118,5 +119,64 @@ public class ViewUtil {
 
   public static int dpToPx(Context context, int dp) {
     return (int)((dp * context.getResources().getDisplayMetrics().density) + 0.5);
+  }
+  public static int dpToPx(int dp) {
+    return Math.round(dp * Resources.getSystem().getDisplayMetrics().density);
+  }
+
+
+  public static void updateLayoutParams(@NonNull View view, int width, int height) {
+    view.getLayoutParams().width  = width;
+    view.getLayoutParams().height = height;
+    view.requestLayout();
+  }
+
+  public static int getLeftMargin(@NonNull View view) {
+    if (ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_LTR) {
+      return ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).leftMargin;
+    }
+    return ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).rightMargin;
+  }
+
+  public static int getRightMargin(@NonNull View view) {
+    if (ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_LTR) {
+      return ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).rightMargin;
+    }
+    return ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).leftMargin;
+  }
+
+  public static void setLeftMargin(@NonNull View view, int margin) {
+    if (ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_LTR) {
+      ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).leftMargin = margin;
+    } else {
+      ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).rightMargin = margin;
+    }
+    view.forceLayout();
+    view.requestLayout();
+  }
+
+  public static void setTopMargin(@NonNull View view, int margin) {
+    ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).topMargin = margin;
+    view.requestLayout();
+  }
+
+  public static void setPaddingTop(@NonNull View view, int padding) {
+    view.setPadding(view.getPaddingLeft(), padding, view.getPaddingRight(), view.getPaddingBottom());
+  }
+
+  public static void setPaddingBottom(@NonNull View view, int padding) {
+    view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight(), padding);
+  }
+
+  public static boolean isPointInsideView(@NonNull View view, float x, float y) {
+    int[] location = new int[2];
+
+    view.getLocationOnScreen(location);
+
+    int viewX = location[0];
+    int viewY = location[1];
+
+    return x > viewX && x < viewX + view.getWidth() &&
+           y > viewY && y < viewY + view.getHeight();
   }
 }

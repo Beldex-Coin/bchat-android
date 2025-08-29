@@ -489,6 +489,51 @@
           "description":"Minor bug fixes"
         }
       ]
+    },
+    {
+      "title": "2.7.0",
+      "descriptions": [
+        {
+          "description":"Introducing emoji reaction feature"
+        },
+        {
+          "description":"Improved audio messages"
+        },
+        {
+          "description":"Fixed issues in update profile"
+        },
+        {
+          "description":"Fixed issues in disappearing messages"
+        },
+        {
+          "description":"Minor bug fixes"
+        }
+      ]
+    },
+    {
+      "title": "2.7.1",
+      "descriptions": [
+        {
+          "description":"UI fixes for latest android versions"
+        },
+        {
+          "description":"Targeted latest version of android"
+        },
+        {
+          "description":"Minor bug fixes"
+        }
+      ]
+    },
+    {
+      "title": "2.7.2",
+      "descriptions": [
+        {
+          "description":"Added support for 16 KB page size"
+        },
+        {
+          "description":"Minor bug fixes"
+        }
+      ]
     }
   ]
 }

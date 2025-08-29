@@ -190,6 +190,19 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
         notifyConversationListListeners()
     }
 
+    @Throws(NoSuchMessageException::class)
+    override fun getMessageRecord(messageId: Long): MessageRecord {
+        rawQuery(RAW_ID_WHERE, arrayOf("$messageId")).use { cursor ->
+            return Reader(cursor).next ?: throw NoSuchMessageException("No message for ID: $messageId")
+        }
+    }
+
+    override fun getMessageRecords(messageId : Long) : MessageRecord? {
+        return rawQuery(RAW_ID_WHERE, arrayOf("$messageId")).use { cursor ->
+            Reader(cursor).next
+        }
+    }
+
     fun getThreadIdForMessage(id: Long): Long {
         val sql = "SELECT $THREAD_ID FROM $TABLE_NAME WHERE $ID = ?"
         val sqlArgs = arrayOf(id.toString())
@@ -225,9 +238,9 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
     private fun rawQuery(where: String, arguments: Array<String>?): Cursor {
         val database = databaseHelper.readableDatabase
         return database.rawQuery(
-            "SELECT " + MMS_PROJECTION.joinToString(",")+
-                    " FROM " + TABLE_NAME + " LEFT OUTER JOIN " + AttachmentDatabase.TABLE_NAME +
-                    " ON (" + TABLE_NAME + "." + ID + " = " + AttachmentDatabase.TABLE_NAME + "." + AttachmentDatabase.MMS_ID + ")" +
+            "SELECT " + MMS_PROJECTION.joinToString(",") + " FROM " + TABLE_NAME +
+                    " LEFT OUTER JOIN " + AttachmentDatabase.TABLE_NAME + " ON (" + TABLE_NAME + "." + ID + " = " + AttachmentDatabase.TABLE_NAME + "." + AttachmentDatabase.MMS_ID + ")" +
+                    " LEFT OUTER JOIN " + ReactionDatabase.TABLE_NAME + " ON (" + TABLE_NAME + "." + ID + " = " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.MESSAGE_ID + " AND " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.IS_MMS + " = 1)" +
                     " WHERE " + where + " GROUP BY " + TABLE_NAME + "." + ID, arguments
         )
     }
@@ -294,19 +307,20 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
         db.update(TABLE_NAME, contentValues, ID_WHERE, arrayOf(messageId.toString()))
     }
 
-    override fun markAsDeleted(messageId: Long, read: Boolean) {
+    override fun markAsDeleted(messageId: Long, isOutgoing: Boolean, displayedMessage: String) {
         val database = databaseHelper.writableDatabase
         val contentValues = ContentValues()
         contentValues.put(READ, 1)
-        contentValues.put(BODY, "")
+        contentValues.put(BODY, displayedMessage)
         database.update(TABLE_NAME, contentValues, ID_WHERE, arrayOf(messageId.toString()))
         val attachmentDatabase = get(context).attachmentDatabase()
         queue(Runnable { attachmentDatabase.deleteAttachmentsForMessage(messageId) })
         val threadId = getThreadIdForMessage(messageId)
-        if (!read) {
-            get(context).threadDatabase().decrementUnread(threadId, 1)
+
+        val deletedType = if (isOutgoing) {  MmsSmsColumns.Types.BASE_DELETED_OUTGOING_TYPE} else {
+            MmsSmsColumns.Types.BASE_DELETED_INCOMING_TYPE
         }
-        markAs(messageId, MmsSmsColumns.Types.BASE_DELETED_TYPE, threadId)
+        markAs(messageId, deletedType, threadId)
     }
 
     override fun markExpireStarted(messageId: Long) {
@@ -331,7 +345,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
 
     fun setMessagesRead(threadId: Long): List<MarkedMessageInfo> {
         return setMessagesRead(
-            THREAD_ID + " = ? AND " + READ + " = 0",
+            THREAD_ID + " = ? AND (" + READ + " = 0 OR " + REACTIONS_UNREAD + " = 1)",
             arrayOf(threadId.toString())
         )
     }
@@ -365,6 +379,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
             }
             val contentValues = ContentValues()
             contentValues.put(READ, 1)
+            contentValues.put(REACTIONS_UNREAD, 0)
             database.update(TABLE_NAME, contentValues, where, arguments)
             database.setTransactionSuccessful()
         } finally {
@@ -1202,7 +1217,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
                                 message.outgoingQuote!!.missing,
                                 SlideDeck(context, message.outgoingQuote!!.attachments!!)
                         ) else null,
-                        message.sharedContacts, message.linkPreviews, false
+                    message.sharedContacts, message.linkPreviews, listOf(), false
                 )
             }
 
@@ -1318,12 +1333,13 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
                     .filterNot { o: DatabaseAttachment? -> o in previewAttachments }
             )
             val quote = getQuote(cursor)
+            val reactions = get(context).reactionDatabase().getReactions(cursor)
             return MediaMmsMessageRecord(
                     id, recipient, recipient,
                     addressDeviceId, dateSent, dateReceived, deliveryReceiptCount,
                     threadId, body, slideDeck!!, partCount, box, mismatches,
                     networkFailures, subscriptionId, expiresIn, expireStarted,
-                    readReceiptCount, quote, contacts, previews, unidentified
+                    readReceiptCount, quote, contacts, previews, reactions, unidentified
             )
         }
 
@@ -1414,27 +1430,67 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
         const val QUOTE_MISSING: String = "quote_missing"
         const val SHARED_CONTACTS: String = "shared_contacts"
         const val LINK_PREVIEWS: String = "previews"
+
+        private const val IS_DELETED_COLUMN_DEF = """
+            $IS_DELETED GENERATED ALWAYS AS (
+                    ($MESSAGE_BOX & ${MmsSmsColumns.Types.BASE_TYPE_MASK}) IN (${MmsSmsColumns.Types.BASE_DELETED_OUTGOING_TYPE}, ${MmsSmsColumns.Types.BASE_DELETED_INCOMING_TYPE})
+                ) VIRTUAL
+        """
+
         const val CREATE_TABLE: String =
-            "CREATE TABLE " + TABLE_NAME + " (" + ID + " INTEGER PRIMARY KEY, " +
-                    THREAD_ID + " INTEGER, " + DATE_SENT + " INTEGER, " + DATE_RECEIVED + " INTEGER, " + MESSAGE_BOX + " INTEGER, " +
-                    READ + " INTEGER DEFAULT 0, " + "m_id" + " TEXT, " + "sub" + " TEXT, " +
-                    "sub_cs" + " INTEGER, " + BODY + " TEXT, " + PART_COUNT + " INTEGER, " +
-                    "ct_t" + " TEXT, " + CONTENT_LOCATION + " TEXT, " + ADDRESS + " TEXT, " +
-                    ADDRESS_DEVICE_ID + " INTEGER, " +
-                    EXPIRY + " INTEGER, " + "m_cls" + " TEXT, " + MESSAGE_TYPE + " INTEGER, " +
-                    "v" + " INTEGER, " + MESSAGE_SIZE + " INTEGER, " + "pri" + " INTEGER, " +
-                    "rr" + " INTEGER, " + "rpt_a" + " INTEGER, " + "resp_st" + " INTEGER, " +
-                    STATUS + " INTEGER, " + TRANSACTION_ID + " TEXT, " + "retr_st" + " INTEGER, " +
-                    "retr_txt" + " TEXT, " + "retr_txt_cs" + " INTEGER, " + "read_status" + " INTEGER, " +
-                    "ct_cls" + " INTEGER, " + "resp_txt" + " TEXT, " + "d_tm" + " INTEGER, " +
-                    DELIVERY_RECEIPT_COUNT + " INTEGER DEFAULT 0, " + MISMATCHED_IDENTITIES + " TEXT DEFAULT NULL, " +
-                    NETWORK_FAILURE + " TEXT DEFAULT NULL," + "d_rpt" + " INTEGER, " +
-                    SUBSCRIPTION_ID + " INTEGER DEFAULT -1, " + EXPIRES_IN + " INTEGER DEFAULT 0, " +
-                    EXPIRE_STARTED + " INTEGER DEFAULT 0, " + NOTIFIED + " INTEGER DEFAULT 0, " +
-                    READ_RECEIPT_COUNT + " INTEGER DEFAULT 0, " + QUOTE_ID + " INTEGER DEFAULT 0, " +
-                    QUOTE_AUTHOR + " TEXT, " + QUOTE_BODY + " TEXT, " + QUOTE_ATTACHMENT + " INTEGER DEFAULT -1, " +
-                    QUOTE_MISSING + " INTEGER DEFAULT 0, " + SHARED_CONTACTS + " TEXT, " + UNIDENTIFIED + " INTEGER DEFAULT 0, " +
-                    LINK_PREVIEWS + " TEXT);"
+
+            """CREATE TABLE $TABLE_NAME (
+                $ID INTEGER PRIMARY KEY AUTOINCREMENT, 
+                $THREAD_ID INTEGER, 
+                $DATE_SENT INTEGER, 
+                $DATE_RECEIVED INTEGER, 
+                $MESSAGE_BOX INTEGER, 
+                $READ INTEGER DEFAULT 0, 
+                m_id TEXT, 
+                sub TEXT, 
+                sub_cs INTEGER, 
+                $BODY TEXT, 
+                $PART_COUNT INTEGER, 
+                ct_t TEXT, 
+                $CONTENT_LOCATION TEXT, 
+                $ADDRESS TEXT, 
+                $ADDRESS_DEVICE_ID INTEGER, 
+                $EXPIRY INTEGER, 
+                m_cls TEXT, 
+                $MESSAGE_TYPE INTEGER, 
+                v INTEGER, 
+                $MESSAGE_SIZE INTEGER, 
+                pri INTEGER, 
+                rr INTEGER, 
+                rpt_a INTEGER, 
+                resp_st INTEGER, 
+                $STATUS INTEGER, 
+                $TRANSACTION_ID TEXT, 
+                retr_st INTEGER, 
+                retr_txt TEXT, 
+                retr_txt_cs INTEGER, 
+                read_status INTEGER, 
+                ct_cls INTEGER, 
+                resp_txt TEXT, 
+                d_tm INTEGER, 
+                $DELIVERY_RECEIPT_COUNT INTEGER DEFAULT 0, 
+                $MISMATCHED_IDENTITIES TEXT DEFAULT NULL, 
+                $NETWORK_FAILURE TEXT DEFAULT NULL,
+                d_rpt INTEGER, 
+                $SUBSCRIPTION_ID INTEGER DEFAULT -1, 
+                $EXPIRES_IN INTEGER DEFAULT 0, 
+                $EXPIRE_STARTED INTEGER DEFAULT 0, 
+                $NOTIFIED INTEGER DEFAULT 0, 
+                $READ_RECEIPT_COUNT INTEGER DEFAULT 0, 
+                $QUOTE_ID INTEGER DEFAULT 0, 
+                $QUOTE_AUTHOR TEXT, 
+                $QUOTE_BODY TEXT, 
+                $QUOTE_ATTACHMENT INTEGER DEFAULT -1, 
+                $QUOTE_MISSING INTEGER DEFAULT 0, 
+                $SHARED_CONTACTS TEXT, 
+                $UNIDENTIFIED INTEGER DEFAULT 0, 
+                $LINK_PREVIEWS TEXT,
+                $IS_DELETED_COLUMN_DEF);"""
 
         @JvmField
         val CREATE_INDEXS: Array<String> = arrayOf(
@@ -1445,6 +1501,9 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
             "CREATE INDEX IF NOT EXISTS mms_date_sent_index ON $TABLE_NAME ($DATE_SENT);",
             "CREATE INDEX IF NOT EXISTS mms_thread_date_index ON $TABLE_NAME ($THREAD_ID, $DATE_RECEIVED);"
         )
+
+        const val ADD_IS_DELETED_COLUMN: String = "ALTER TABLE $TABLE_NAME ADD COLUMN $IS_DELETED_COLUMN_DEF"
+
         private val MMS_PROJECTION: Array<String> = arrayOf(
             "$TABLE_NAME.$ID AS $ID",
             THREAD_ID,
@@ -1500,11 +1559,25 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
                     "'" + AttachmentDatabase.STICKER_PACK_ID + "', " + AttachmentDatabase.TABLE_NAME + "." + AttachmentDatabase.STICKER_PACK_ID + ", " +
                     "'" + AttachmentDatabase.STICKER_PACK_KEY + "', " + AttachmentDatabase.TABLE_NAME + "." + AttachmentDatabase.STICKER_PACK_KEY + ", " +
                     "'" + AttachmentDatabase.STICKER_ID + "', " + AttachmentDatabase.TABLE_NAME + "." + AttachmentDatabase.STICKER_ID +
-                    ")) AS " + AttachmentDatabase.ATTACHMENT_JSON_ALIAS
+                    ")) AS " + AttachmentDatabase.ATTACHMENT_JSON_ALIAS,
+            "json_group_array(json_object(" +
+                    "'" + ReactionDatabase.ROW_ID + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.ROW_ID + ", " +
+                    "'" + ReactionDatabase.MESSAGE_ID + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.MESSAGE_ID + ", " +
+                    "'" + ReactionDatabase.IS_MMS + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.IS_MMS + ", " +
+                    "'" + ReactionDatabase.AUTHOR_ID + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.AUTHOR_ID + ", " +
+                    "'" + ReactionDatabase.EMOJI + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.EMOJI + ", " +
+                    "'" + ReactionDatabase.SERVER_ID + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.SERVER_ID + ", " +
+                    "'" + ReactionDatabase.COUNT + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.COUNT + ", " +
+                    "'" + ReactionDatabase.SORT_ID + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.SORT_ID + ", " +
+                    "'" + ReactionDatabase.DATE_SENT + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.DATE_SENT + ", " +
+                    "'" + ReactionDatabase.DATE_RECEIVED + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.DATE_RECEIVED +
+                    ")) AS " + ReactionDatabase.REACTION_JSON_ALIAS
         )
         private const val RAW_ID_WHERE: String = "$TABLE_NAME._id = ?"
         /*Hales63*/
-        const val getCreateMessageRequestResponseCommand: String = "ALTER TABLE $TABLE_NAME ADD COLUMN $MESSAGE_REQUEST_RESPONSE INTEGER DEFAULT 0;"
+        const val CREATE_MESSAGE_REQUEST_RESPONSE_COMMAND = "ALTER TABLE $TABLE_NAME ADD COLUMN $MESSAGE_REQUEST_RESPONSE INTEGER DEFAULT 0;"
+        const val CREATE_REACTIONS_UNREAD_COMMAND = "ALTER TABLE $TABLE_NAME ADD COLUMN $REACTIONS_UNREAD INTEGER DEFAULT 0;"
+        const val CREATE_REACTIONS_LAST_SEEN_COMMAND = "ALTER TABLE $TABLE_NAME ADD COLUMN $REACTIONS_LAST_SEEN INTEGER DEFAULT 0;"
     }
 
 }

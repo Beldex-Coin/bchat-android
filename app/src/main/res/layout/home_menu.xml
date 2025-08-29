@@ -150,7 +150,7 @@
             android:clickable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:text="BChat V2.6.5"
+            tools:text="BChat V2.7.2"
             android:padding="12dp"
             android:focusable="true" />
 

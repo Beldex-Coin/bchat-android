@@ -1,5 +1,6 @@
 package io.beldex.bchat.conversation.v2.messages
 
+import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
 import io.beldex.bchat.database.model.MessageId
 import io.beldex.bchat.database.model.MessageRecord
 
@@ -11,4 +12,5 @@ interface VisibleMessageViewDelegate {
     fun onReactionClicked(emoji: String, messageId: MessageId, userWasSender: Boolean)
     fun onReactionLongClicked(messageId: MessageId, emoji : String?)
     fun onItemLongPress(messageRecord : MessageRecord, visibleMessageView : VisibleMessageView, position: Int)
+    fun chatWithContact(contact: ContactModel)
 }

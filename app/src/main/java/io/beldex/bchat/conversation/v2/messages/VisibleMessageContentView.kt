@@ -878,8 +878,6 @@ class VisibleMessageContentView : MaterialCardView {
     }
 
     interface VisibleMessageContentViewDelegate {
-
         fun scrollToMessageIfPossible(timestamp: Long)
-        fun chatWithContact(contact: ContactModel)
     }
 }

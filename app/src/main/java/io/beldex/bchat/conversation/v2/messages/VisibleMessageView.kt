@@ -85,7 +85,6 @@ class VisibleMessageView : LinearLayout {
     var onPress: ((event: MotionEvent) -> Unit)? = null
     var onSwipeToReply: (() -> Unit)? = null
     var onLongPress: (() -> Unit)? = null
-    var contentViewDelegate: VisibleMessageContentView.VisibleMessageContentViewDelegate? = null
     val messageContentView: VisibleMessageContentView by lazy { binding.messageContentView.root }
 
     companion object {
@@ -244,7 +243,7 @@ class VisibleMessageView : LinearLayout {
             onAttachmentNeedsDownload, thread.isOpenGroupRecipient,delegate!!, this, position,messageSelected)
         binding.messageContentView.root.delegate = delegate
         binding.messageContentView.root.chatWithContact = { ct ->
-            contentViewDelegate?.chatWithContact(ct)
+            delegate.chatWithContact(ct)
         }
         onDoubleTap = { binding.messageContentView.root.onContentDoubleTap?.invoke() }
     }

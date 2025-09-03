@@ -4,7 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,6 +21,7 @@ class ContactSharingActivity: ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, true)
         setContent {
             BChatTheme {
                 val viewModel: ContactsViewModel = hiltViewModel()
@@ -43,8 +50,8 @@ class ContactSharingActivity: ComponentActivity() {
                     onBack = {
                         finish()
                     },
-                    contactChanged = viewModel::onContactSelected
-                )
+                    contactChanged = viewModel::onContactSelected,
+                    modifier=Modifier.padding(WindowInsets.systemBars.asPaddingValues()))
             }
         }
     }

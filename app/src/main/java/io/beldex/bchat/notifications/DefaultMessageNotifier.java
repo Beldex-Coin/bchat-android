@@ -623,7 +623,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
           if (data != null) {
             name = data.getName();
           }
-          body = String.format(context.getString(R.string.contact_received), name);
+        body = "👤 " + name;
       }
 
       if (threadRecipients == null || !threadRecipients.isMuted()) {

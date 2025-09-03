@@ -555,6 +555,7 @@ class VisibleMessageContentView : MaterialCardView {
     }
 
     private fun setContactView(message: MessageRecord, messageSelected: () -> Boolean, isQuoted: Boolean = false) {
+        binding.quoteShortMessageTime.isVisible = false
         val umd = UpdateMessageData.fromJSON(message.body)!!
         val data = umd.kind as UpdateMessageData.Kind.SharedContact
         binding.contactView.setContent {

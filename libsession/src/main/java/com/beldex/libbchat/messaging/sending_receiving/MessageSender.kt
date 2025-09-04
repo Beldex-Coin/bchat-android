@@ -17,6 +17,7 @@ import com.beldex.libbchat.messaging.messages.visible.VisibleMessage
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.messaging.open_groups.OpenGroupMessageV2
 import com.beldex.libbchat.messaging.utilities.MessageWrapper
+import com.beldex.libbchat.messaging.utilities.UpdateMessageData.Companion.buildSharedContact
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.mnode.MnodeMessage
 import com.beldex.libbchat.mnode.MnodeModule
@@ -338,6 +339,13 @@ object MessageSender {
         val attachmentIDs = messageDataProvider.getAttachmentIDsFor(message.id!!)
         message.attachmentIDs.addAll(attachmentIDs)
         message.quote = Quote.from(quote)
+        message.sharedContact?.let { contact ->
+            message.text = contact.address?.let { address ->
+                contact.name?.let { name ->
+                    buildSharedContact(address, name).toJSON()
+                }
+            }
+        }
         message.linkPreview = LinkPreview.from(linkPreview)
         message.linkPreview?.let { linkPreview ->
             if (linkPreview.attachmentID == null) {

@@ -491,6 +491,8 @@ class ConversationReactionOverlay : FrameLayout {
         // control messages and "marked as deleted" messages can only delete
         val isDeleteOnly = message.isDeleted || message.isControlMessage
 
+        val isSharedContact = message.isSharedContact
+
 
         // Select message
         if(!isDeleteOnly) {
@@ -506,7 +508,7 @@ class ConversationReactionOverlay : FrameLayout {
             items += ActionItem(R.attr.menu_reply_icon, context.resources.getString(R.string.accessibilityId_reply), { handleActionItemClicked(Action.REPLY) }, R.string.accessibilityId_reply)
         }
         // Copy message text
-        if (!containsControlMessage && hasText) {
+        if (!containsControlMessage && hasText && !isSharedContact) {
             items += ActionItem(R.attr.menu_copy_icon, context.resources.getString(R.string.copy), { handleActionItemClicked(Action.COPY_MESSAGE) })
         }
         // Copy BChat ID

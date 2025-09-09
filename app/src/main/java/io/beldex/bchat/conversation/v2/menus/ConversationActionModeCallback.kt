@@ -16,6 +16,7 @@ import io.beldex.bchat.dependencies.DatabaseComponent
 import androidx.core.view.size
 import androidx.core.view.get
 import com.beldex.libbchat.utilities.getColorFromAttr
+import io.beldex.bchat.util.isSharedContact
 
 class ConversationActionModeCallback(private val adapter: ConversationAdapter, private val threadID: Long,
     private val context: Context) : ActionMode.Callback {
@@ -58,6 +59,7 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
             if (selectedUsers.size > 1) { return false }
             return OpenGroupAPIV2.isUserModerator(userPublicKey, openGroup.room, openGroup.server)
         }
+        val isSharedContact = selectedItems.any { isSharedContact(it.body) }
         // Delete message
         menu.findItem(R.id.menu_context_delete_message).isVisible = true
         // Ban user
@@ -65,7 +67,7 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
         // Ban and delete all
         menu.findItem(R.id.menu_context_ban_and_delete_all).isVisible = userCanBanSelectedUsers()
         // Copy message text
-        menu.findItem(R.id.menu_context_copy).isVisible = !containsControlMessage && !containsContacts && hasText
+        menu.findItem(R.id.menu_context_copy).isVisible = !containsControlMessage && !containsContacts && hasText && !isSharedContact
         // Copy Bchat ID
         menu.findItem(R.id.menu_context_copy_public_key).isVisible =
             (thread.isGroupRecipient && !thread.isOpenGroupRecipient && selectedItems.size == 1 && firstMessage.individualRecipient.address.toString() != userPublicKey)

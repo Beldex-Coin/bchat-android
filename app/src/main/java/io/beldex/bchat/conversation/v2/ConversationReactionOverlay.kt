@@ -42,6 +42,7 @@ import io.beldex.bchat.dependencies.DatabaseComponent.Companion.get
 import io.beldex.bchat.repository.ConversationRepository
 import io.beldex.bchat.util.AnimationCompleteListener
 import io.beldex.bchat.util.DateUtils
+import io.beldex.bchat.util.isSharedContact
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -491,9 +492,11 @@ class ConversationReactionOverlay : FrameLayout {
         // control messages and "marked as deleted" messages can only delete
         val isDeleteOnly = message.isDeleted || message.isControlMessage
 
-        val isSharedContact = message.isSharedContact
+        var isSharedContact = message.isSharedContact
 
-
+        if (isSharedContact(message.body)) {
+            isSharedContact = true
+        }
         // Select message
         if(!isDeleteOnly) {
             items += ActionItem(

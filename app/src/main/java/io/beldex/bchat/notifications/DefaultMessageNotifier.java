@@ -54,6 +54,7 @@ import io.beldex.bchat.database.model.ReactionRecord;
 import io.beldex.bchat.home.HomeActivity;
 import io.beldex.bchat.mms.SlideDeck;
 import io.beldex.bchat.util.BchatMetaProtocol;
+import io.beldex.bchat.util.ExtensionFunctionsKt;
 import io.beldex.bchat.util.SpanUtil;
 
 import com.beldex.libbchat.messaging.utilities.UpdateMessageData;
@@ -615,7 +616,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
           direction = context.getString(R.string.message_details_header__received);
         }
         body = SpanUtil.italic(context.getString(R.string.ThreadRecord_payment, amount, direction));
-      } else if(record.isSharedContact()) {
+      } else if(record.isSharedContact() || ExtensionFunctionsKt.isSharedContact(record.getBody())) {
         UpdateMessageData messageData = UpdateMessageData.Companion.fromJSON(record.getBody());
           assert messageData != null;
           UpdateMessageData.Kind.SharedContact data = (UpdateMessageData.Kind.SharedContact) messageData.getKind();

@@ -1363,11 +1363,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
 
             override fun onFailure(e: ExecutionException?) {
-                Toast.makeText(
-                    requireActivity(),
-                    R.string.activity_conversation_attachment_prep_failed,
-                    Toast.LENGTH_LONG
-                ).show()
+                if (isAdded) {
+                    Toast.makeText(
+                        requireActivity(),
+                        R.string.activity_conversation_attachment_prep_failed,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
         when (requestCode) {
@@ -2574,11 +2576,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                         }
 
                         override fun onFailure(e: ExecutionException?) {
-                            Toast.makeText(
-                                requireActivity(),
-                                R.string.activity_conversation_attachment_prep_failed,
-                                Toast.LENGTH_LONG
-                            ).show()
+                            if (isAdded) {
+                                Toast.makeText(
+                                    requireActivity(),
+                                    R.string.activity_conversation_attachment_prep_failed,
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
                         }
                     })
                     return
@@ -2612,11 +2616,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     }
 
                     override fun onFailure(e: ExecutionException?) {
-                        Toast.makeText(
-                            requireActivity(),
-                            R.string.activity_conversation_attachment_prep_failed,
-                            Toast.LENGTH_LONG
-                        ).show()
+                        if (isAdded) {
+                            Toast.makeText(
+                                requireActivity(),
+                                R.string.activity_conversation_attachment_prep_failed,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     }
                 })
                 return

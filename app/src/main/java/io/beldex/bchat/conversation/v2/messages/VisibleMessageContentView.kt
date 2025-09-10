@@ -28,6 +28,7 @@ import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.getValue
@@ -38,7 +39,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -76,7 +76,6 @@ import io.beldex.bchat.util.isSharedContact
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.TextColor
-import io.beldex.bchat.compose_utils.noRippleCallback
 import io.beldex.bchat.conversation.v2.ConversationFragmentV2
 import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
 import io.beldex.bchat.conversation.v2.contact_sharing.SharedContactView
@@ -155,7 +154,7 @@ class VisibleMessageContentView : MaterialCardView {
             binding.documentView.root.isVisible = false
             binding.albumThumbnailView.root.isVisible = false
             binding.openGroupInvitationView.root.isVisible = false
-            binding.contactView.isVisible = false
+            binding.sharedContactView.isVisible = false
             return
         } else {
             binding.deletedMessageView.root.isVisible = false
@@ -182,7 +181,7 @@ class VisibleMessageContentView : MaterialCardView {
         //Payment Tag
         binding.paymentCardView.isVisible = message.isPayment
         //shared contact
-        binding.contactView.isVisible = message.isSharedContact
+        binding.sharedContactView.isVisible = message.isSharedContact
 
         var hideBody = false
         var showQuoteBody = false
@@ -198,6 +197,9 @@ class VisibleMessageContentView : MaterialCardView {
                 } else if(message.slideDeck.audioSlide != null) {
                     binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
                     binding.quoteContainer.layoutParams.width = binding.quoteView.root.width
+                } else if (isSharedContact(message.body))  {
+                    binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                    binding.quoteContainer.layoutParams.width = binding.sharedContactView.width
                 } else {
                     binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                     binding.quoteContainer.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -308,7 +310,7 @@ class VisibleMessageContentView : MaterialCardView {
                     }
                     onContentDoubleTap={ binding.voiceMessageView.root.handleDoubleTap() }
                 } else {
-                    binding.untrustedView.root.visibility=View.VISIBLE
+                    binding.untrustedView.root.visibility=VISIBLE
                     binding.untrustedView.root.bind(
                         message,
                         message.quote,
@@ -368,7 +370,7 @@ class VisibleMessageContentView : MaterialCardView {
                         }
                     }
                 } else {
-                    binding.untrustedView.root.visibility=View.VISIBLE
+                    binding.untrustedView.root.visibility=VISIBLE
                     binding.untrustedView.root.bind(
                         message,
                         message.quote,
@@ -424,7 +426,7 @@ class VisibleMessageContentView : MaterialCardView {
                     hideBody=true
                     showQuoteBody=false
                     binding.albumThumbnailView.root.clearViews()
-                    binding.untrustedView.root.visibility=View.VISIBLE
+                    binding.untrustedView.root.visibility=VISIBLE
                     binding.untrustedView.root.bind(
                         message,
                         message.quote,
@@ -520,7 +522,7 @@ class VisibleMessageContentView : MaterialCardView {
         }
         if (message.body.isNotEmpty() && showQuoteBody) {
             if (isSharedContact(message.body)) {
-                binding.contactView.visibility = View.VISIBLE
+                binding.sharedContactView.visibility = VISIBLE
                 setContactView(message, messageSelected, true)
             } else {
                 setBodyForQuotedMessage(message, searchQuery,delegate, visibleMessageView, position)
@@ -554,11 +556,19 @@ class VisibleMessageContentView : MaterialCardView {
             }
     }
 
-    private fun setContactView(message: MessageRecord, messageSelected: () -> Boolean, isQuoted: Boolean = false) {
+    private fun setContactView(
+        message : MessageRecord,
+        messageSelected : () -> Boolean,
+        isQuoted : Boolean=false
+    ) {
+        if (isQuoted) {
+            binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+            binding.quoteContainer.layoutParams.width = binding.sharedContactView.width
+        }
         binding.quoteShortMessageTime.isVisible = false
         val umd = UpdateMessageData.fromJSON(message.body)!!
         val data = umd.kind as UpdateMessageData.Kind.SharedContact
-        binding.contactView.setContent {
+        binding.sharedContactView.setContent {
             BChatTheme {
                 val contact = ContactModel(
                     address = Address.fromSerialized(data.address),
@@ -605,20 +615,20 @@ class VisibleMessageContentView : MaterialCardView {
                         colorResource(R.color.received_message_text_color)
                     },
                     modifier = Modifier
-                        .width(screenWidth * 0.7f)
+                        .fillMaxWidth(0.7f)
                         .padding(
                             bottom = if (isQuoted) 0.dp else 8.dp,
-                            start = 8.dp,
+                            start = if(isQuoted) 2.dp else 8.dp,
                             end = 8.dp
                         ),
                     columnModifier = Modifier
-                        .padding(bottom = 8.dp)
+                        .padding(bottom=8.dp)
                         .pointerInput(Unit) {
                             detectTapGestures(
-                                onLongPress = {
+                                onLongPress={
                                     onLongPress?.let { it1 -> it1() }
                                 },
-                                onTap = {
+                                onTap={
                                     if (messageSelected()) {
                                         onLongPress?.let { it1 -> it1() }
                                     } else {
@@ -630,9 +640,6 @@ class VisibleMessageContentView : MaterialCardView {
                 )
             }
         }
-
-    }
-    private fun detectTapGestures(onLongPress: () -> Unit?, onTap: () -> Unit?, on: Any) {
 
     }
 
@@ -739,7 +746,7 @@ class VisibleMessageContentView : MaterialCardView {
             binding.albumMessageTime,
             binding.bodyTextView,
             binding.bodyTextViewLayout,
-            binding.contactView
+            binding.sharedContactView
         ).forEach { view:View -> view.isVisible = false }
     }
 

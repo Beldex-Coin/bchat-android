@@ -52,26 +52,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <!--shared contacts view-->
-<!--            <io.beldex.bchat.conversation.v2.messages.SharedContactView-->
-<!--                android:id="@+id/contactView"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:visibility="gone"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent" />-->
-
-            <androidx.compose.ui.platform.ComposeView
-                android:id="@+id/contactView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/quote_container"
-                android:visibility="gone" />
-
             <!--Quote MessageView without TimeView-->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/quote_container"
@@ -79,6 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/small_spacing"
                 android:layout_marginTop="@dimen/small_spacing"
+                android:maxWidth="@dimen/max_text_width"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -110,6 +91,16 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/quote_container" />
+
+            <!--shared contacts view-->
+            <androidx.compose.ui.platform.ComposeView
+                android:id="@+id/sharedContactView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/quote_container"
+                android:visibility="gone" />
 
             <!--Document MessageView-->
             <include

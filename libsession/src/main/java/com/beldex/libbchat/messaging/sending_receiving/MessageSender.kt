@@ -339,13 +339,6 @@ object MessageSender {
         val attachmentIDs = messageDataProvider.getAttachmentIDsFor(message.id!!)
         message.attachmentIDs.addAll(attachmentIDs)
         message.quote = Quote.from(quote)
-        message.sharedContact?.let { contact ->
-            message.text = contact.address?.let { address ->
-                contact.name?.let { name ->
-                    buildSharedContact(address, name).toJSON()
-                }
-            }
-        }
         message.linkPreview = LinkPreview.from(linkPreview)
         message.linkPreview?.let { linkPreview ->
             if (linkPreview.attachmentID == null) {

@@ -82,6 +82,7 @@ import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment
 import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview
 import com.beldex.libbchat.messaging.sending_receiving.quotes.QuoteModel
+import com.beldex.libbchat.messaging.utilities.UpdateMessageData.Companion.buildSharedContact
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.MediaTypes
@@ -2441,19 +2442,11 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             onConfirm={
                 val recipient=Recipient.from(requireContext(), contact.address, true)
                 val threadId=viewModel.getOrCreateThreadIdForContact(recipient)
-//                val conversationFragment = newInstance(threadId)
-
                 val extras=Bundle()
                 extras.putLong(ConversationFragmentV2.THREAD_ID, threadId)
                 val manager=requireActivity().supportFragmentManager
                 manager.popBackStack()
                 replaceFragment(ConversationFragmentV2(), null, extras)
-
-//                    .replace(
-//                        R.id.activity_home_frame_layout_container,
-//                        conversationFragment,
-//                        ConversationFragmentV2::class.java.name
-//                    ).commit()
             },
             onCancel={}
         )
@@ -3491,6 +3484,11 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             if (contacts.isNotEmpty()) {
                 val contact=SharedContact(contacts[0].address.toString(), contacts[0].name)
                 message.sharedContact=contact
+                message.text = contact.address?.let { address ->
+                    contact.name?.let { name ->
+                        buildSharedContact(address, name).toJSON()
+                    }
+                }
                 outgoingMediaMessage=OutgoingMediaMessage.fromSharedContact(
                     message,
                     recipient,

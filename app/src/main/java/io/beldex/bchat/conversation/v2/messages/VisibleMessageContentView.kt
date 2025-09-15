@@ -533,6 +533,7 @@ class VisibleMessageContentView : MaterialCardView {
     private fun setBodyForQuotedMessage(message: MessageRecord, searchQuery: String?,delegate : VisibleMessageViewDelegate,visibleMessageView : VisibleMessageView, position : Int) {
         binding.quoteBodyTextViewLayout.isVisible = true
         binding.quoteBodyTextView.isVisible = true
+        binding.quoteShortMessageTime.isVisible = true
             val color = getTextColor(context, message)
             binding.quoteBodyTextView.setTextColor(color)
             binding.quoteBodyTextView.setLinkTextColor(color)

@@ -138,7 +138,7 @@ class VisibleMessageView : LinearLayout {
         binding.moderatorIconImageView.isVisible = false
         binding.profilePictureView.root.visibility = when {
             thread.isGroupRecipient && !message.isOutgoing && isEndOfMessageCluster -> View.VISIBLE
-            thread.isGroupRecipient -> View.INVISIBLE
+            thread.isGroupRecipient && !message.isOutgoing -> View.INVISIBLE
             else -> View.GONE
         }
 

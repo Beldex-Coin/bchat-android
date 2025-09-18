@@ -3458,6 +3458,13 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                         resources.getString(R.string.reply_payment_card_message, direction, amount)
                 } else if (it.isOpenGroupInvitation) {
                     quoteBody=resources.getString(R.string.ThreadRecord_open_group_invitation)
+                } else if (it.isSharedContact) {
+                    val mainObject = JSONObject(it.body)
+                    val uniObject = mainObject.getJSONObject("kind")
+                    val contactAddress = uniObject.getString("address")
+                    val contactName = uniObject.getString("name")
+                    val contact = SharedContact(contactAddress,contactName)
+                    message.sharedContact = contact
                 }
                 QuoteModel(it.dateSent, sender, quoteBody, false, quotedAttachments)
             }
@@ -3560,7 +3567,8 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             val message=VisibleMessage()
             message.sentTimestamp=MnodeAPI.nowWithOffset
             val contact=SharedContact(contacts[0].address.serialize(), contacts[0].name)
-            message.sharedContact=contact
+            message.sharedContact = contact
+            message.text = contacts[0].name
             val outgoingTextMessage=OutgoingTextMessage.fromSharedContact(
                 contact,
                 viewModel.recipient.value,

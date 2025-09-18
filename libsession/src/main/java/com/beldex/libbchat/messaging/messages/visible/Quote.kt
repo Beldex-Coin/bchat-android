@@ -30,7 +30,7 @@ class Quote() {
         fun from(signalQuote: SignalQuote?): Quote? {
             if (signalQuote == null) { return null }
             val attachmentID = (signalQuote.attachments?.firstOrNull() as? DatabaseAttachment)?.attachmentId?.rowId
-            return Quote(signalQuote.id, signalQuote.author.serialize(), "", attachmentID) // TODO: re-add this
+            return Quote(signalQuote.id, signalQuote.author.serialize(), signalQuote.text, attachmentID) // TODO: re-add this
         }
     }
 
@@ -44,6 +44,7 @@ class Quote() {
     fun toProto(): SignalServiceProtos.DataMessage.Quote? {
         val timestamp = timestamp
         val publicKey = publicKey
+        val textMessage = text
         if (timestamp == null || publicKey == null) {
             Log.w(TAG, "Couldn't construct quote proto from: $this")
             return null
@@ -51,6 +52,7 @@ class Quote() {
         val quoteProto = SignalServiceProtos.DataMessage.Quote.newBuilder()
         quoteProto.id = timestamp
         quoteProto.author = publicKey
+        quoteProto.text = textMessage
         text?.let { quoteProto.text = it }
         addAttachmentsIfNeeded(quoteProto)
         // Build

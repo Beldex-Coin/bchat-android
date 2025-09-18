@@ -115,6 +115,11 @@ class VisibleMessage : Message()  {
         val quoteProto = quote?.toProto()
         if (quoteProto != null) {
             dataMessage.quote = quoteProto
+            quote?.text = dataMessage.body
+            val contactsProto = sharedContact?.toProto()
+            if (contactsProto != null) {
+                dataMessage.sharedContact = contactsProto
+            }
         }
         // Reaction
         val reactionProto = reaction?.toProto()

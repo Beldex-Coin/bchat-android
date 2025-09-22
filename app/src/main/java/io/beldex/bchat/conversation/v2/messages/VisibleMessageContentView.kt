@@ -188,26 +188,51 @@ class VisibleMessageContentView : MaterialCardView {
 
         if (message is MmsMessageRecord && message.quote != null) {
             if(contactIsTrusted || message.isOutgoing) {
-                if(message.slideDeck.asAttachments().isNotEmpty()) {
-                    binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-                    binding.quoteContainer.layoutParams.width = binding.albumContainer.width
-                } else if(message.slideDeck.documentSlide != null) {
-                    binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-                    binding.quoteContainer.layoutParams.width = binding.documentView.root.width
-                } else if(message.slideDeck.audioSlide != null) {
-                    binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-                    binding.quoteContainer.layoutParams.width = binding.quoteView.root.width
-                } else if (isSharedContact(message.body))  {
-                    binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-                    binding.quoteContainer.layoutParams.width = binding.sharedContactView.width
-                } else {
-                    binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                    binding.quoteContainer.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                val params = binding.quoteContainer.layoutParams
+
+                when {
+                    message.slideDeck.audioSlide != null -> {
+                        binding.voiceMessageView.root.post {
+                            params.width = binding.voiceMessageView.root.measuredWidth
+                            binding.quoteContainer.layoutParams = params
+                        }
+                    }
+                    message.slideDeck.documentSlide != null -> {
+                        binding.documentView.root.post {
+                            params.width = binding.documentView.root.measuredWidth
+                            binding.quoteContainer.layoutParams = params
+                        }
+                    }
+                    message.slideDeck.asAttachments().isNotEmpty() -> {
+                        binding.albumContainer.post {
+                            params.width = binding.albumContainer.measuredWidth
+                            binding.quoteContainer.layoutParams = params
+                        }
+                    }
+                    isSharedContact(message.body) -> {
+                        binding.sharedContactView.post {
+                            params.width = binding.sharedContactView.measuredWidth
+                            binding.quoteContainer.layoutParams = params
+                        }
+                    }
+                    else -> {
+                        params.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                        binding.quoteContainer.layoutParams = params
+                    }
                 }
-            } else {
                 binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-                if(message.slideDeck.audioSlide != null || message.slideDeck.documentSlide != null || message.slideDeck.asAttachments().isNotEmpty()) {
-                    binding.quoteContainer.layoutParams.width = binding.untrustedView.root.width
+                binding.quoteContainer.layoutParams = params
+                binding.quoteContainer.requestLayout()
+            } else {
+                if (message.slideDeck.audioSlide != null || message.slideDeck.documentSlide != null || message.slideDeck.asAttachments().isNotEmpty()) {
+                    binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                    val params = binding.quoteContainer.layoutParams
+                    binding.untrustedView.root.post {
+                        params.width = binding.untrustedView.root.measuredWidth
+                        binding.quoteContainer.layoutParams = params
+                    }
+                    binding.quoteContainer.layoutParams = params
+                    binding.quoteContainer.requestLayout()
                 } else {
                     binding.quoteContainer.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                 }
@@ -226,7 +251,6 @@ class VisibleMessageContentView : MaterialCardView {
             )
             text = getBodySpans(context, message, searchQuery)
             textWidth = paint.measureText(text.toString())
-            /*End*/
 
             binding.quoteView.root.isVisible = true
             val quote = message.quote!!
@@ -244,10 +268,10 @@ class VisibleMessageContentView : MaterialCardView {
                 val r = Rect()
                 binding.quoteView.root.getGlobalVisibleRect(r)
                 if (r.contains(event.rawX.roundToInt(), event.rawY.roundToInt())) {
-                    delegate?.scrollToMessageIfPossible(quote.id)
+                    delegate.scrollToMessageIfPossible(quote.id)
                 }
             }
-        }else {
+        } else {
             binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
             binding.quoteContainer.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
         }
@@ -523,7 +547,7 @@ class VisibleMessageContentView : MaterialCardView {
         if (message.body.isNotEmpty() && showQuoteBody) {
             if (isSharedContact(message.body)) {
                 binding.sharedContactView.visibility = VISIBLE
-                setContactView(message, messageSelected, true)
+                setContactView(message, messageSelected)
             } else {
                 setBodyForQuotedMessage(message, searchQuery,delegate, visibleMessageView, position)
             }
@@ -559,10 +583,11 @@ class VisibleMessageContentView : MaterialCardView {
 
     private fun setContactView(
         message : MessageRecord,
-        messageSelected : () -> Boolean,
-        isQuoted : Boolean=false
+        messageSelected : () -> Boolean
     ) {
-        if (isQuoted) {
+        val isQuoteView : Boolean =  message is MmsMessageRecord && message.quote != null
+
+        if (isQuoteView) {
             binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
             binding.quoteContainer.layoutParams.width = binding.sharedContactView.width
         }
@@ -579,23 +604,24 @@ class VisibleMessageContentView : MaterialCardView {
                 val screenWidth = configuration.screenWidthDp.dp
                 val cardBackgroundColor by remember(message) {
                     val backgroundColor = when {
-                        message.isOutgoing && !isQuoted -> R.color.outgoing_call_background
-                        message.isOutgoing && isQuoted -> R.color.send_message_background
-                        !message.isOutgoing && !isQuoted -> R.color.received_call_card_background
-                        !message.isOutgoing && isQuoted -> R.color.received_message_background
+                        message.isOutgoing && !isQuoteView -> R.color.outgoing_call_background
+                        message.isOutgoing && isQuoteView -> R.color.outgoing_call_background
+                        !message.isOutgoing && !isQuoteView -> R.color.received_call_card_background
+                        !message.isOutgoing && isQuoteView -> R.color.quote_view_background
                         else -> R.color.outgoing_call_background
                     }
                     mutableIntStateOf(
                         backgroundColor
                     )
                 }
+
                 SharedContactView(
                     contacts = listOf(
                         contact
                     ),
                     backgroundColor = colorResource(cardBackgroundColor),
                     timeStamp = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp),
-                    isQuoted = isQuoted,
+                    isQuoted = isQuoteView,
                     timeStampColor = colorResource(
                         if (message.isOutgoing) {
                             R.color.sent_message_time_color
@@ -618,9 +644,10 @@ class VisibleMessageContentView : MaterialCardView {
                     modifier = Modifier
                         .fillMaxWidth(0.7f)
                         .padding(
-                            bottom = if (isQuoted) 0.dp else 8.dp,
-                            start = if(isQuoted) 2.dp else 8.dp,
-                            end = 8.dp
+                            start=if (isQuoteView) 2.dp else 4.dp,
+                            top=if (isQuoteView) 4.dp else 0.dp,
+                            end=if (isQuoteView) 2.dp else 4.dp,
+                            bottom=if (isQuoteView) 4.dp else 8.dp
                         ),
                     columnModifier = Modifier
                         .padding(bottom=8.dp)

@@ -19,6 +19,7 @@ import com.beldex.libbchat.utilities.recipients.Recipient
 import com.bumptech.glide.RequestManager
 import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
+import io.beldex.bchat.conversation.v2.contact_sharing.flattenData
 import io.beldex.bchat.conversation.v2.utilities.MentionUtilities.highlightMentions
 import io.beldex.bchat.database.RecipientDatabase.NOTIFY_TYPE_ALL
 import io.beldex.bchat.database.RecipientDatabase.NOTIFY_TYPE_NONE
@@ -124,7 +125,14 @@ class ConversationView : LinearLayout {
 
             UpdateMessageData.fromJSON(thread.body)?.let {
                 val data = it.kind as UpdateMessageData.Kind.SharedContact
-                binding.contactName.text = data.name
+                val names = flattenData(data.name).ifEmpty { flattenData(data.address) }
+                val displayName = when {
+                    names.size > 2 -> "${names.first()} and ${names.size - 1} others"
+                    names.size == 2 -> "${names[0]} and ${names[1]}"
+                    names.size == 1 -> names.first()
+                    else -> "No Name"
+                }
+                binding.contactName.text = displayName
             }
         } else {
             binding.contactView.visibility = View.GONE

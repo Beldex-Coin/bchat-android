@@ -108,6 +108,8 @@ import io.beldex.bchat.contacts.SelectContactsActivity
 import io.beldex.bchat.contactshare.SimpleTextWatcher
 import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
 import io.beldex.bchat.conversation.v2.contact_sharing.ContactSharingActivity
+import io.beldex.bchat.conversation.v2.contact_sharing.ViewAllContactFragment
+import io.beldex.bchat.conversation.v2.contact_sharing.flattenData
 import io.beldex.bchat.conversation.v2.dialogs.LinkPreviewDialog
 import io.beldex.bchat.conversation.v2.dialogs.SendSeedDialog
 import io.beldex.bchat.conversation.v2.input_bar.InputBarButton
@@ -208,6 +210,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import nl.komponents.kovenant.ui.successUi
 import org.apache.commons.lang3.time.DurationFormatUtils
 import org.json.JSONException
@@ -616,6 +620,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                 }
             }
         }
+
 
         groupRepository=
             SecretGroupInfoRepository(DatabaseComponent.get(requireContext()).groupDatabase())
@@ -2433,29 +2438,51 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         //disable popup if audio recording is in progress
         if (binding.inputBarRecordingView.isTimerRunning)
             return
+        val numberOfContacts=flattenData(contact.address.serialize())
         //disabling popup display on simultaneous touches
-        val dialog=childFragmentManager.findFragmentByTag(ComposeDialogContainer.TAG)
-        if (dialog != null) return
-
-        val chatConfirmationDialog=ComposeDialogContainer(
-            dialogType=DialogType.ChatWithContactConfirmation,
-            onConfirm={
-                val recipient=Recipient.from(requireContext(), contact.address, true)
-                val threadId=viewModel.getOrCreateThreadIdForContact(recipient)
-                val extras=Bundle()
-                extras.putLong(ConversationFragmentV2.THREAD_ID, threadId)
-                val manager=requireActivity().supportFragmentManager
-                manager.popBackStack()
-                replaceFragment(ConversationFragmentV2(), null, extras)
-            },
-            onCancel={}
-        )
-        chatConfirmationDialog.apply {
-            arguments=Bundle().apply {
-                putString(ConversationActionDialog.EXTRA_ARGUMENT_1, contact.name)
+        if (numberOfContacts.size > 1) {
+            val extras=Bundle().apply {
+                putParcelable(ViewAllContactFragment.CONTACTMODEL, contact)
             }
+            val fragment=ViewAllContactFragment().apply { arguments=extras }
+
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.activity_home_frame_layout_container, fragment)
+                .addToBackStack(null)
+                .commit()
+        } else {
+            val dialog=childFragmentManager.findFragmentByTag(ComposeDialogContainer.TAG)
+            if (dialog != null) return
+
+            val chatConfirmationDialog=ComposeDialogContainer(
+                dialogType=DialogType.ChatWithContactConfirmation,
+                onConfirm={
+                    val address = flattenData(contact.address.serialize())
+                    val addressForThread=Address.fromSerialized(address[0])
+                    val recipient=Recipient.from(requireContext(), addressForThread, true)
+                    val threadId=viewModel.getOrCreateThreadIdForContact(recipient)
+                    val extras=Bundle()
+                    extras.putLong(THREAD_ID, threadId)
+                    val manager=requireActivity().supportFragmentManager
+                    manager.popBackStack()
+                    replaceFragment(ConversationFragmentV2(), null, extras)
+                },
+                onCancel={}
+            )
+            chatConfirmationDialog.apply {
+                val names = flattenData(contact.name)
+                val displayName = when {
+                    names.size > 2 -> "${names.first()} and ${names.size - 1} others"
+                    names.size == 2 -> "${names[0]} and ${names[1]}"
+                    names.size == 1 -> names.first()
+                    else -> "No Name"
+                }
+                arguments=Bundle().apply {
+                    putString(ConversationActionDialog.EXTRA_ARGUMENT_1, displayName)
+                }
+            }
+            chatConfirmationDialog.show(childFragmentManager, ComposeDialogContainer.TAG)
         }
-        chatConfirmationDialog.show(childFragmentManager, ComposeDialogContainer.TAG)
     }
 
     override fun playVoiceMessageAtIndexIfPossible(indexInAdapter: Int) {
@@ -3489,8 +3516,15 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             val outgoingMediaMessage : OutgoingMediaMessage
             /*if contact is shared with quoted msg - if case will handle, rest cases will be handled by else case*/
             if (contacts.isNotEmpty()) {
-                val contact=SharedContact(contacts[0].address.toString(), contacts[0].name)
-                message.sharedContact=contact
+                // Collect all addresses and names
+                val addresses = contacts.map { it.address.serialize()}
+                val names = contacts.map { it.name }
+
+                val contact = SharedContact(
+                    address = Json.encodeToString(addresses),
+                    name = Json.encodeToString(names)
+                )
+                message.sharedContact = contact
                 message.text = contact.address?.let { address ->
                     contact.name?.let { name ->
                         buildSharedContact(address, name).toJSON()
@@ -3558,33 +3592,45 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             )
         }
 
-        private fun shareContact(contacts : List<ContactModel>) {
-            val recipient=viewModel.recipient.value ?: return
-            //New Line v32
-            processMessageRequestApproval()
+    private fun shareContact(contacts: List<ContactModel>) {
+        val recipient = viewModel.recipient.value ?: return
+        processMessageRequestApproval()
 
-            // Create the message
-            val message=VisibleMessage()
-            message.sentTimestamp=MnodeAPI.nowWithOffset
-            val contact=SharedContact(contacts[0].address.serialize(), contacts[0].name)
-            message.sharedContact = contact
-            message.text = contacts[0].name
-            val outgoingTextMessage=OutgoingTextMessage.fromSharedContact(
-                contact,
-                viewModel.recipient.value,
-                message.sentTimestamp
-            )
-            // Put the message in the database
-            message.id=viewModel.insertMessageOutBoxSMS(outgoingTextMessage, message.sentTimestamp)
-            // Send it
-            MessageSender.send(message, recipient.address)
-            // Send a typing stopped message
-            ApplicationContext.getInstance(requireActivity()).typingStatusSender.onTypingStopped(
-                viewModel.threadId
-            )
-        }
+        // Create the message
+        val message = VisibleMessage()
+        message.sentTimestamp = MnodeAPI.nowWithOffset
 
-        //New Line v32
+        // Collect all addresses and names
+        val addresses = contacts.map { it.address.serialize()}
+        val names = contacts.map { it.name }
+
+        val contact = SharedContact(
+            address = Json.encodeToString(addresses),
+            name = Json.encodeToString(names)
+        )
+        message.sharedContact = contact
+        message.text = names.joinToString(", ")
+
+        val outgoingTextMessage = OutgoingTextMessage.fromSharedContact(
+            contact,
+            recipient,
+            message.sentTimestamp
+        )
+
+        // Put the message in the database
+        message.id = viewModel.insertMessageOutBoxSMS(outgoingTextMessage, message.sentTimestamp)
+
+        // Send it
+        MessageSender.send(message, recipient.address)
+
+        // Send a typing stopped message
+        ApplicationContext.getInstance(requireActivity()).typingStatusSender.onTypingStopped(
+            viewModel.threadId
+        )
+    }
+
+
+    //New Line v32
         private fun processMessageRequestApproval() {
             if (viewModel.isIncomingMessageRequestThread()) {
                 acceptMessageRequest()

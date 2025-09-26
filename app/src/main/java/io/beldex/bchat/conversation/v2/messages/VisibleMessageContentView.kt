@@ -650,7 +650,7 @@ class VisibleMessageContentView : MaterialCardView {
                             bottom=if (isQuoteView) 4.dp else 8.dp
                         ),
                     columnModifier = Modifier
-                        .padding(bottom=8.dp)
+                        .padding(bottom=4.dp)
                         .pointerInput(Unit) {
                             detectTapGestures(
                                 onLongPress={

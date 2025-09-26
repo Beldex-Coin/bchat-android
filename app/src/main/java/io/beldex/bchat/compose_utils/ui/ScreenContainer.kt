@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -42,7 +44,7 @@ fun ScreenContainer(
                 .padding(16.dp)
         ) {
             Icon(
-                painterResource(id = R.drawable.ic_back_arrow),
+                Icons.Default.ArrowBack,
                 contentDescription = stringResource(R.string.back),
                 tint = MaterialTheme.appColors.editTextColor,
                 modifier = Modifier

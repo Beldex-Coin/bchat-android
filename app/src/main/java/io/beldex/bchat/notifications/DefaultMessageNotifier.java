@@ -19,6 +19,8 @@ package io.beldex.bchat.notifications;
 import android.Manifest;
 import static com.beldex.libbchat.utilities.Address.fromSerialized;
 
+import static io.beldex.bchat.conversation.v2.contact_sharing.SharedContactViewKt.flattenData;
+
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -620,11 +622,22 @@ public class DefaultMessageNotifier implements MessageNotifier {
         UpdateMessageData messageData = UpdateMessageData.Companion.fromJSON(record.getBody());
           assert messageData != null;
           UpdateMessageData.Kind.SharedContact data = (UpdateMessageData.Kind.SharedContact) messageData.getKind();
-          String name = context.getString(R.string.no_name);
-          if (data != null) {
-            name = data.getName();
-          }
-        body = "👤 " + name;
+        List<String> names = flattenData(data.getName());
+        if (names.isEmpty()) {
+          names = flattenData(data.getAddress());
+        }
+
+        String displayName;
+        if (names.size() > 2) {
+          displayName = names.get(0) + " and " + (names.size() - 1) + " others";
+        } else if (names.size() == 2) {
+          displayName = names.get(0) + " and " + names.get(1);
+        } else if (names.size() == 1) {
+          displayName = names.get(0);
+        } else {
+          displayName = "No Name";
+        }
+          body = "👤 " + displayName;
       }
 
       if (threadRecipients == null || !threadRecipients.isMuted()) {

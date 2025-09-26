@@ -102,14 +102,19 @@ class ContactsViewModel @Inject constructor(
     }
 
     fun onContactSelected(contact: ThreadRecord, isSelected: Boolean) {
-        val newList = if (isSelected) {
-            listOf(contact)
-        } else {
-            emptyList()
-        }
-        _state.update {
-            it.copy(
-                selectedContacts = newList
+        _state.update { currentState ->
+            val currentList = currentState.selectedContacts.toMutableList()
+
+            if (isSelected) {
+                if (!currentList.contains(contact)) {
+                    currentList.add(contact)
+                }
+            } else {
+                currentList.remove(contact)
+            }
+
+            currentState.copy(
+                selectedContacts = currentList
             )
         }
     }

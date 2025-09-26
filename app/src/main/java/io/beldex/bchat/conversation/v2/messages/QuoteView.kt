@@ -20,6 +20,7 @@ import com.bumptech.glide.RequestManager
 import com.google.android.material.card.MaterialCardView
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
+import io.beldex.bchat.conversation.v2.contact_sharing.flattenData
 import io.beldex.bchat.conversation.v2.utilities.MentionUtilities
 import io.beldex.bchat.database.BchatContactDatabase
 import io.beldex.bchat.databinding.ViewQuoteBinding
@@ -102,66 +103,82 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
         /*------code section to handle sent contact inside quote view-------*/
         try {
-            val mainObject = JSONObject(body)
-            val uniObject = mainObject.getJSONObject("kind")
-            val type = uniObject.getString("@type")
-            if (type.equals("SharedContact")) {
-                binding.contactView.visibility = View.VISIBLE
-                if (mode == Mode.Regular) {
-                    binding.quoteViewAttachmentPreviewContainer.visibility = View.GONE
-                    binding.quoteContentType.visibility = View.GONE
-                    binding.container.orientation = LinearLayout.VERTICAL
-                    binding.mainQuoteViewContainer.setBackgroundColor(resources.getColor(getContainerColor(isOutgoingMessage), null))
-                } else {
-                    binding.quoteGroup.visibility = View.GONE
-                    binding.quoteViewAttachmentPreviewImageView.visibility = View.GONE
-                }
-                body?.let { message ->
-                    UpdateMessageData.fromJSON(message)?.let {
-                        val data = it.kind as UpdateMessageData.Kind.SharedContact
-                        binding.contactName.text = data.name
-                        //setting dynamic width to linear layout
-                        if (mode == Mode.Regular) {
-                            val paint = Paint()
-                            paint.textSize = TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_SP,
-                                14f,
-                                context.resources.displayMetrics
-                            )
-                            val nameWidth = paint.measureText(data.name)
-                            val params = binding.contactView.layoutParams
-                            val maxWidth = max(max(350, nameWidth.toInt()), textWidth)
-                            val maxPossibleWidth = min((getScreenWidth() * 0.6).toInt(), maxWidth)
-                            params.width = maxPossibleWidth
-                            binding.contactView.layoutParams = params
-                        }
-                        /*end*/
+            if (body != null && body.trim().startsWith("{")) {
+                val mainObject = JSONObject(body)
+                val uniObject = mainObject.optJSONObject("kind")
+                val type = uniObject?.optString("@type")
+
+                if (type == "SharedContact") {
+                    binding.contactView.visibility = View.VISIBLE
+                    binding.contactName.setTextColor(getTextColor(isOutgoingMessage))
+
+                    if (mode == Mode.Regular) {
+                        binding.quoteViewAttachmentPreviewContainer.visibility = View.GONE
+                        binding.quoteContentType.visibility = View.GONE
+                        binding.container.orientation = LinearLayout.VERTICAL
+                        binding.mainQuoteViewContainer.setBackgroundColor(
+                            resources.getColor(getContainerColor(isOutgoingMessage), null)
+                        )
+                    } else {
+                        binding.quoteGroup.visibility = View.GONE
+                        binding.quoteViewAttachmentPreviewImageView.visibility = View.GONE
                     }
-                }
-                return
-            } else {
-                binding.contactView.visibility = View.GONE
-                if (mode == Mode.Regular) {
-//                    binding.quoteViewAttachmentPreviewContainer.visibility = View.VISIBLE
-                    binding.quoteContentType.visibility = View.VISIBLE
-                    binding.container.orientation = LinearLayout.HORIZONTAL
-                } else {
-                    binding.quoteGroup.visibility = View.VISIBLE
-//                    binding.quoteViewAttachmentPreviewImageView.visibility = View.VISIBLE
+
+                    body.let { message ->
+                        UpdateMessageData.fromJSON(message)?.let {
+                            val data = it.kind as UpdateMessageData.Kind.SharedContact
+                            val names = flattenData(data.name).ifEmpty { flattenData(data.address) }
+                            val displayName = when {
+                                names.size > 2 -> "${names.first()} and ${names.size - 1} others"
+                                names.size == 2 -> "${names[0]} and ${names[1]}"
+                                names.size == 1 -> names.first()
+                                else -> "No Name"
+                            }
+                            binding.contactName.text = displayName
+
+                            // Dynamic width calculation
+                            if (mode == Mode.Regular) {
+                                val paint = Paint().apply {
+                                    textSize = TypedValue.applyDimension(
+                                        TypedValue.COMPLEX_UNIT_SP,
+                                        14f,
+                                        context.resources.displayMetrics
+                                    )
+                                }
+                                val nameWidth = paint.measureText(data.name)
+                                val params = binding.contactView.layoutParams
+                                val maxWidth = max(max(350, nameWidth.toInt()), textWidth)
+                                val maxPossibleWidth =
+                                    min((getScreenWidth() * 0.6).toInt(), maxWidth)
+                                params.width = maxPossibleWidth
+                                binding.contactView.layoutParams = params
+                            }
+                        }
+                    }
+                    return
                 }
             }
-        } catch (e: JSONException) {
-            e.printStackTrace()
+
+            // If not JSON or type isn’t SharedContact → fallback
             binding.contactView.visibility = View.GONE
             if (mode == Mode.Regular) {
-//                binding.quoteViewAttachmentPreviewContainer.visibility = View.VISIBLE
                 binding.quoteContentType.visibility = View.VISIBLE
                 binding.container.orientation = LinearLayout.HORIZONTAL
             } else {
                 binding.quoteGroup.visibility = View.VISIBLE
-//                binding.quoteViewAttachmentPreviewImageView.visibility = View.VISIBLE
+            }
+
+        } catch (e: JSONException) {
+            e.printStackTrace()
+            binding.contactView.visibility = View.GONE
+            if (mode == Mode.Regular) {
+                binding.quoteContentType.visibility = View.VISIBLE
+                binding.container.orientation = LinearLayout.HORIZONTAL
+            } else {
+                binding.quoteGroup.visibility = View.VISIBLE
             }
         }
+
         /*--------section ends here----------*/
 
         // Body

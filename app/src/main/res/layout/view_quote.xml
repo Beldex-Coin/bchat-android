@@ -136,10 +136,10 @@
             tools:visibility="visible">
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_profile_default"
-                app:tint="@color/text" />
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:src="@drawable/ic_contact_person"
+                app:tint="@color/version_color" />
 
             <TextView
                 android:fontFamily="@font/open_sans_regular"

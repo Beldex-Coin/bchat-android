@@ -83,8 +83,7 @@ fun ContactItem(
                 modifier = Modifier
                     .weight(if (isSharing) 0.8f else 0.7f)
             ) {
-                Text(
-                    contact?.recipient?.name ?: "No Name",
+                Text((contact?.recipient?.name ?: contact?.recipient?.address.toString()).capitalizeFirstLetter(),
                     style = MaterialTheme.typography.titleMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -93,7 +92,7 @@ fun ContactItem(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    contact?.recipient?.address?.toString() ?: "",
+                    contact?.recipient?.address?.toString()?.let { formatAddresses(it) } ?: "",
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.bodySmall
@@ -153,10 +152,11 @@ private fun OutlinedCheckbox(
     color: Color = MaterialTheme.appColors.primaryButtonColor
 ) {
     Box(
-        modifier = modifier
+        modifier=modifier
             .border(
-                shape = RoundedCornerShape(2.dp),
-                border = BorderStroke(2.dp, if (checked) {
+                shape=RoundedCornerShape(2.dp),
+                border=BorderStroke(
+                    2.dp, if (checked) {
                         MaterialTheme.appColors.primaryButtonColor
                     } else {
                         MaterialTheme.appColors.secondaryContentColor
@@ -166,13 +166,13 @@ private fun OutlinedCheckbox(
             .size(18.dp)
             .background(Color.Transparent)
             .padding(2.dp),
-        contentAlignment = Alignment.Center
+        contentAlignment=Alignment.Center
     ) {
         if (checked) {
             Icon(
                 Icons.Default.Check,
-                contentDescription = "Checked",
-                tint = color,
+                contentDescription="Checked",
+                tint=color,
             )
         }
     }

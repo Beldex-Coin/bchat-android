@@ -317,7 +317,7 @@ fun ChatWithContactPopUp(name: String, address : String, onDismiss: () -> Unit){
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                        text= stringResource(id = R.string.chat),
+                        text= stringResource(id = R.string.message),
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight(400),
                             fontSize = 14.sp,

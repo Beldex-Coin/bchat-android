@@ -91,7 +91,7 @@ fun SharedContactView(
                     verticalAlignment=Alignment.CenterVertically
                 ) {
                     Text(
-                        text= if(numberOfContacts.size > 1) stringResource(R.string.view_all) else stringResource(R.string.chat),
+                        text= if(numberOfContacts.size > 1) stringResource(R.string.view_all) else stringResource(R.string.message),
                         style=MaterialTheme.typography.bodySmall.copy(
                             color=timeStampColor,
                             fontSize=16.sp

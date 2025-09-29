@@ -79,7 +79,8 @@ class OpenGroupInvitationView : LinearLayout {
 
             val titleColor = getTitleTextColor(message.isOutgoing)
             titleTextView.setTextColor(resources.getColor(titleColor, null))
-
+            socialGroupUrl.setTextColor(textColor)
+            socialGroupMessageTime.setTextColor(textColor)
     }
 }
     private fun getTitleTextColor(isOutgoingMessage: Boolean): Int {

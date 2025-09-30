@@ -473,7 +473,6 @@ class VisibleMessageContentView : MaterialCardView {
                 binding.openGroupInvitationView.root.bind(
                     message, getTextColor(context, message)
                 )
-                onContentClick.add { binding.openGroupInvitationView.root.joinOpenGroup() }
             }
 
             message.isPayment -> { //Payment Tag

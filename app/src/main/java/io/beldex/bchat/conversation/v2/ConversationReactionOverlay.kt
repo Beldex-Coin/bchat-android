@@ -297,15 +297,11 @@ class ConversationReactionOverlay : FrameLayout {
     }
     private fun updateSystemUiOnShow(activity: Activity) {
         val window = activity.window
-        val barColor = ContextCompat.getColor(context, R.color.reactions_screen_dark_shade_color)
+        val barColor = ContextCompat.getColor(context, R.color.transparent)
         originalStatusBarColor = window.statusBarColor
         WindowUtil.setStatusBarColor(window, barColor)
         originalNavigationBarColor = window.navigationBarColor
         WindowUtil.setNavigationBarColor(window, barColor)
-        if (!ThemeUtil.isDarkTheme(context)) {
-            WindowUtil.clearLightStatusBar(window)
-            WindowUtil.clearLightNavigationBar(window)
-        }
     }
     fun hide() {
         hideInternal(onHideListener)

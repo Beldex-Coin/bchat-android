@@ -6,9 +6,13 @@ import io.beldex.bchat.database.MmsDatabase;
 import io.beldex.bchat.mms.MmsException;
 
 import org.jetbrains.annotations.NotNull;
+
+import com.beldex.libbchat.messaging.messages.control.DataExtractionNotification;
 import com.beldex.libbchat.messaging.messages.control.ExpirationTimerUpdate;
 import com.beldex.libbchat.messaging.messages.signal.IncomingMediaMessage;
 import com.beldex.libbchat.messaging.messages.signal.OutgoingExpirationUpdateMessage;
+import com.beldex.libbchat.messaging.messages.signal.OutgoingScreenShotMessage;
+import com.beldex.libbchat.messaging.messages.signal.OutgoingScreenShotMessage;
 import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.GroupUtil;
 import com.beldex.libbchat.utilities.SSKEnvironment;
@@ -81,6 +85,37 @@ public class ExpiringMessageManager implements SSKEnvironment.MessageExpirationM
 
     if (message.getId() != null) {
       DatabaseComponent.get(context).smsDatabase().deleteMessage(message.getId());
+    }
+  }
+
+  public void setScreenShotMessage(@NotNull DataExtractionNotification message) {
+    String userPublicKey = TextSecurePreferences.getLocalNumber(context);
+    String senderPublicKey = message.getSender();
+
+    // Notify the user
+    if (senderPublicKey == null || userPublicKey.equals(senderPublicKey)) {
+      insertOutgoingScreenShotMessage(message);
+    }
+
+    if (message.getId() != null) {
+      DatabaseComponent.get(context).smsDatabase().deleteMessage(message.getId());
+    }
+  }
+
+  private void insertOutgoingScreenShotMessage(DataExtractionNotification message) {
+    MmsDatabase database = DatabaseComponent.get(context).mmsDatabase();
+
+    Long sentTimestamp = message.getSentTimestamp();
+
+    Address address = Address.fromSerialized(message.getRecipient());
+    Recipient recipient = Recipient.from(context, address, false);
+
+    try {
+      OutgoingScreenShotMessage screenshotMessage = new OutgoingScreenShotMessage(recipient, sentTimestamp);
+      database.insertSecureDecryptedScreenShotMessageOutbox(screenshotMessage, -1, sentTimestamp,true);
+
+    } catch (MmsException ioe) {
+      Log.e("Beldex", "Failed to insert expiration update message.");
     }
   }
 

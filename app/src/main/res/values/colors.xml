@@ -353,5 +353,6 @@
     <color name="conversation_reaction_background">#080812CC</color>
     <color name="emoji_variation_selector_background">#393647</color>
     <color name="chat_to_contact">#FFFFFF</color>
+    <color name="control_message_text">#87879E</color>
 
 </resources>

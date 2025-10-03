@@ -73,7 +73,7 @@ fun MessageReceiver.handle(message: Message, proto: SignalServiceProtos.Content,
 }
 
 fun handleMessageRequestResponse(message: MessageRequestResponse) {
-    MessagingModuleConfiguration.shared.storage.insertMessageRequestResponse(message)
+    MessagingModuleConfiguration.shared.storage.insertMessageRequestResponseFromContact(message)
 }
 
 // region Control Messages

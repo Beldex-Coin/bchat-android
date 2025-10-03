@@ -490,9 +490,9 @@
     <string name="arrays__enabled" translatable="false">Enabled</string>
     <string name="arrays__disabled" translatable="false">Disabled</string>
 
-    <string name="arrays__name_and_message" translatable="false">Name and content</string>
-    <string name="arrays__name_only" translatable="false">Name only</string>
-    <string name="arrays__no_name_or_message" translatable="false">No name or content</string>
+    <string name="arrays__name_and_message" translatable="false">Name and Content</string>
+    <string name="arrays__name_only" translatable="false">Name Only</string>
+    <string name="arrays__no_name_or_message" translatable="false">No Name or Content</string>
 
     <string name="arrays__images" translatable="false">Images</string>
     <string name="arrays__audio" translatable="false">Audio</string>
@@ -1025,6 +1025,7 @@
     <string name="message_requests_clear_all_message" translatable="false">Are you sure you want to clear all message requests?</string>
     <string name="message_requests_cleared" translatable="false">Message requests deleted</string>
     <string name="message_requests_accepted" translatable="false">Your message request has been accepted.</string>
+    <string name="message_request_you_have_accepted" translatable="false">You have accepted the message request from %s.</string>
     <string name="message_requests_pending" translatable="false">Your message request is currently pending.</string>
     <string name="message_request_empty_state_message" translatable="false">No pending message requests</string>
     <string name="message_requests_accept_all" translatable="false">Accept All</string>

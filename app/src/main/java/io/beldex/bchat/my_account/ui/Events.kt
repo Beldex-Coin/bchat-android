@@ -14,6 +14,7 @@ sealed interface BlockedContactEvents {
 sealed interface MessageRequestEvents {
     data class DeleteRequest(val request: ThreadRecord): MessageRequestEvents
     data class BlockRequest(val request: ThreadRecord): MessageRequestEvents
+    data class AcceptRequest(val request: ThreadRecord): MessageRequestEvents
     data class RequestSelected(val request: ThreadRecord): MessageRequestEvents
     data object AcceptAllRequest: MessageRequestEvents
     data object ClearAllRequest: MessageRequestEvents

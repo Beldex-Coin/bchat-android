@@ -2,10 +2,13 @@ package io.beldex.bchat.contacts
 
 import android.app.Activity
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -83,6 +86,35 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
                 binding.searchContact.text.clear()
             }
         }
+        selectContactsAdapter.selectionChangedListener=
+            object : SelectContactsAdapter.OnSelectionChangedListener {
+                override fun onSelectionChanged(selectedCount : Int) {
+                    val context=this@SelectContactsActivity
+                    val resources=context.resources
+
+                    if (selectedCount > 0) {
+                        val enabledColor=
+                            ResourcesCompat.getColor(resources, R.color.button_green, context.theme)
+                        binding.addButton.apply {
+                            isEnabled=true
+                            backgroundTintList=ColorStateList.valueOf(enabledColor)
+                            setTextColor(ContextCompat.getColor(context, R.color.white))
+                        }
+                    } else {
+                        val disabledColor=ResourcesCompat.getColor(
+                            resources, R.color.disable_button_background_color, context.theme
+                        )
+                        val disabledTextColor=
+                            ContextCompat.getColor(context, R.color.disable_button_text_color)
+
+                        binding.addButton.apply {
+                            isEnabled=false
+                            backgroundTintList=ColorStateList.valueOf(disabledColor)
+                            setTextColor(disabledTextColor)
+                        }
+                    }
+                }
+            }
     }
     fun filter(text: String?, arrayList: ArrayList<String>) {
         val temp: MutableList<String> = ArrayList()

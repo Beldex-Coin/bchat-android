@@ -70,7 +70,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         when (mode) {
             Mode.Draft -> {
                 binding.quoteViewCancelButton.setOnClickListener {
-                    delegate?.cancelQuoteDraft(1)
+                    delegate?.cancelQuoteDraft(2)
                 }
             }
             Mode.Regular -> {

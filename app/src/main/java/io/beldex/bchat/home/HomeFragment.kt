@@ -39,6 +39,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -539,6 +540,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                     while (true) {
                         threads += reader.next ?: break
                     }
+                    threads.sortedByDescending { it.dateReceived }
                     request = threads
                 }
             }
@@ -850,9 +852,14 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 
     override fun onPause() {
         super.onPause()
-        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-//        imm?.hideSoftInputFromWindow(binding.globalSearchInputLayout.windowToken, 0)
-//        binding.globalSearchInputLayout.clearFocus()
+        val dialog = childFragmentManager.findFragmentByTag(ConversationActionDialog.TAG)
+        if (dialog is DialogFragment) {
+            dialog.dismissAllowingStateLoss()
+        }
+        val bottomSheet = childFragmentManager.findFragmentByTag(UserDetailsBottomSheet.TAG)
+        if (bottomSheet is UserDetailsBottomSheet) {
+            bottomSheet.dismissAllowingStateLoss()
+        }
     }
 
     override fun onDestroy() {
@@ -1023,7 +1030,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                     UserDetailsBottomSheet.ARGUMENT_THREAD_ID to thread.threadId
                 )
                 userDetailsBottomSheet.arguments = bundle
-                userDetailsBottomSheet.show(childFragmentManager, userDetailsBottomSheet.tag)
+                userDetailsBottomSheet.show(childFragmentManager, UserDetailsBottomSheet.TAG)
             }
             R.id.menu_pin -> {
                 setConversationPinned(thread.threadId, true)

@@ -94,7 +94,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/add"
-            style="@style/PrimaryContainedPositiveButton"/>
+            android:enabled="false"
+            style="@style/PrimaryContainedPositiveDisabledButton"/>
     </LinearLayout>
 
 </RelativeLayout>

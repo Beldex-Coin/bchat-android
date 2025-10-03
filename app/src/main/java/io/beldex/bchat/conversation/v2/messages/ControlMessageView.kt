@@ -1,5 +1,6 @@
 package io.beldex.bchat.conversation.v2.messages
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewControlMessageBinding
+import io.beldex.bchat.dependencies.DatabaseComponent
 import java.util.Locale
 
 
@@ -46,9 +48,9 @@ class ControlMessageView : LinearLayout {
             RecyclerView.LayoutParams.WRAP_CONTENT
         )
     }
-    // endregion
 
     // region Updating
+    @SuppressLint("StringFormatMatches")
     fun bind(message: MessageRecord, previous: MessageRecord?, longPress: (() -> Unit)? = null) {
         binding.dateBreakTextView.showDateBreak(message, previous)
         binding.iconImageView.visibility = View.GONE
@@ -109,16 +111,7 @@ class ControlMessageView : LinearLayout {
                         R.drawable.ic_filled_circle_missed_call
                     }
                 }
-               /* binding.iconImageView.setImageDrawable(
-                    ResourcesCompat.getDrawable(
-                        resources,
-                        drawable,
-                        context.theme
-                    )
-                )
-                binding.iconImageView.visibility = View.VISIBLE*/
 
-                //SteveJosephh21
                 if(message.isOutgoing){
                     binding.dialledCallCardView.visibility = View.VISIBLE
                     binding.dialledCallCardView.background=ContextCompat.getDrawable(
@@ -132,7 +125,7 @@ class ControlMessageView : LinearLayout {
                             context.theme
                         )
                     )
-//                    binding.senderStatusIconTextView.text = messageBody
+
                     messageBody = ""
                     binding.dialledMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
                 }else{
@@ -148,30 +141,23 @@ class ControlMessageView : LinearLayout {
                             context.theme
                         )
                     )
-//                    binding.receiverStatusIconTextView.text = messageBody
+
                     messageBody = ""
                     binding.receivedMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
                 }
-            /*    if (message.isOutgoing) {
-                    binding.dialledCallCardView.background=ContextCompat.getDrawable(
-                        context,
-                        R.drawable.call_message_bubble_background_sent_end
-                    )
-                    binding.dialledCallCardView.backgroundTintList=
-                        ContextCompat.getColorStateList(context, R.color.button_green)
-                } else {
-                    binding.receivedCallCardView.background=ContextCompat.getDrawable(
-                        context,
-                        R.drawable.call_message_bubble_background_received_end
-                    )
-                    binding.receivedCallCardView.backgroundTintList=ContextCompat.getColorStateList(
-                        context,
-                        R.color.received_message_background
-                    )
-                }*/
             }
             message.isMessageRequestResponse -> {
-                messageBody = context.getString(R.string.message_requests_accepted)
+                val msgRecipient=message.recipient.address.toString()
+                val me=TextSecurePreferences.getLocalNumber(context)
+                messageBody=if (me == msgRecipient) { // you accepted the user's request
+                    val threadRecipient=DatabaseComponent.get(context).threadDatabase()
+                        .getRecipientForThreadId(message.threadId)
+                    context.getString(
+                        R.string.message_request_you_have_accepted, threadRecipient?.name ?: ""
+                    )
+                } else { // they accepted your request
+                    context.getString(R.string.message_requests_accepted)
+                }
             }
         }
         binding.textView.isVisible = messageBody.trim().isNotEmpty()

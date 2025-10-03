@@ -33,6 +33,7 @@ import io.beldex.bchat.database.SmsDatabase;
 
 import com.beldex.libbchat.messaging.utilities.UpdateMessageBuilder;
 import com.beldex.libbchat.messaging.utilities.UpdateMessageData;
+import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.utilities.ExpirationUtil;
 import org.json.JSONException;
@@ -51,6 +52,7 @@ import io.beldex.bchat.R;
 public class ThreadRecord extends DisplayRecord implements Serializable {
 
   private @Nullable final Uri     snippetUri;
+  public @Nullable  final MessageRecord lastMessage;
   private           final long    count;
   private           final int     unreadCount;
   private           final int     distributionType;
@@ -64,7 +66,7 @@ public class ThreadRecord extends DisplayRecord implements Serializable {
   private           final String  nickName;
   private           final int messageRequestCount;
 
-  public ThreadRecord(@NonNull String body, @Nullable Uri snippetUri,
+  public ThreadRecord(@NonNull String body, @Nullable Uri snippetUri,@Nullable MessageRecord lastMessage,
                       Recipient recipient, long date, long count, int unreadCount,
                       long threadId, int deliveryReceiptCount, int status, long snippetType,
                       int distributionType, boolean archived, long expiresIn, long lastSeen,
@@ -72,6 +74,7 @@ public class ThreadRecord extends DisplayRecord implements Serializable {
   {
     super(body, recipient, date, date, threadId, status, deliveryReceiptCount, snippetType, readReceiptCount);
     this.snippetUri       = snippetUri;
+    this.lastMessage        = lastMessage;
     this.count            = count;
     this.unreadCount      = unreadCount;
     this.distributionType = distributionType;
@@ -140,8 +143,18 @@ public class ThreadRecord extends DisplayRecord implements Serializable {
     } else if (MmsSmsColumns.Types.isMediaSavedExtraction(type)) {
       return emphasisAdded(context.getString(R.string.ThreadRecord_media_saved_by_s, getRecipient().toShortString()));
     } else if (MmsSmsColumns.Types.isScreenshotExtraction(type)) {
-      return emphasisAdded(context.getString(R.string.ThreadRecord_s_took_a_screenshot, getRecipient().toShortString()));
-    } else if (SmsDatabase.Types.isIdentityUpdate(type)) {
+      String name = isOutgoing() ? context.getString(R.string.MessageRecord_you) : getRecipient().toShortString();
+      return emphasisAdded(context.getString(R.string.ThreadRecord_s_took_a_screenshot, name));
+    } else if (MmsSmsColumns.Types.isMessageRequestResponse(type)) {
+      if (lastMessage != null && lastMessage.getRecipient().getAddress().serialize().equals(
+              TextSecurePreferences.getLocalNumber(context))) {
+        return emphasisAdded(context.getString(R.string.message_request_you_have_accepted, getRecipient().toShortString()));
+      } else {
+        return emphasisAdded(context.getString(R.string.message_requests_accepted));
+    }
+
+    }
+    else if (SmsDatabase.Types.isIdentityUpdate(type)) {
       if (getRecipient().isGroupRecipient()) return emphasisAdded(context.getString(R.string.ThreadRecord_safety_number_changed));
       else                                   return emphasisAdded(context.getString(R.string.ThreadRecord_your_safety_number_with_s_has_changed, getRecipient().toShortString()));
     } else if (SmsDatabase.Types.isIdentityVerified(type)) {

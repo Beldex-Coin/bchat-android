@@ -431,10 +431,10 @@ fun MyAccountNavHost(
             return false
         }
 
-        val checkGalleryProfile = TextSecurePreferences.getIsLocalProfile(context)
-        updateProfile(checkGalleryProfile,null, displayName = displayName, context)
-         //viewModel.refreshProfileName()
-        return true
+         val checkGalleryProfile=TextSecurePreferences.getIsLocalProfile(context)
+         updateProfile(checkGalleryProfile, null, displayName=displayName, context)
+         viewModel.updateProfile(true)
+         return true
     }
 
     var showLoader by remember {

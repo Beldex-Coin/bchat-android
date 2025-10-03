@@ -270,4 +270,5 @@
     <color name="conversation_reaction_background">#E0E0E0CC</color>
     <color name="emoji_variation_selector_background">#FFFFFF</color>
     <color name="chat_to_contact">#C5C5C5</color>
+    <color name="control_message_text">#333333</color>
 </resources>

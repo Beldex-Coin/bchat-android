@@ -129,6 +129,10 @@ public class OutgoingMediaMessage {
     return false;
   }
 
+  public boolean isScreenShot(){
+    return false;
+  }
+
   public boolean isExpirationUpdate() { return false; }
 
   public long getSentTimeMillis() {

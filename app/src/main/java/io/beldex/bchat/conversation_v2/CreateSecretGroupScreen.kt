@@ -47,6 +47,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
@@ -401,8 +402,12 @@ private fun GroupContact(
                 overflow = TextOverflow.Ellipsis
             )
 
-            Image(painter = painterResource(id = if(isSelected) R.drawable.ic_checkedbox else R.drawable.ic_checkbox), contentDescription = "check box", modifier = Modifier.padding(end = 25.dp))
-        }
+            Image(
+                painter=painterResource(id=if (isSelected) R.drawable.ic_checkedbox else R.drawable.ic_checkbox),
+                contentDescription="check box",
+                modifier=Modifier.padding(end=25.dp),
+                colorFilter = ColorFilter.tint(if(isSelected) MaterialTheme.appColors.textGreen else MaterialTheme.appColors.textColor)
+            )        }
     }
 }
 

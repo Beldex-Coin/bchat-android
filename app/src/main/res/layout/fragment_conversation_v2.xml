@@ -674,19 +674,19 @@
                     android:padding="16dp"
                     android:visibility="gone">
 
-                    <com.google.android.material.button.MaterialButton
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:backgroundTint="@color/received_message_background"
+                        android:clickable="false"
+                        android:enabled="false"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:padding="8dp"
                         android:text="@string/blocked_user_message"
                         android:textAllCaps="false"
-                        android:clickable="false"
                         android:textColor="@color/received_quoted_text_color"
                         android:textSize="12sp"
-                        app:cornerRadius="24dp"
-                        android:backgroundTint="@color/received_message_background"
-                        android:fontFamily="@font/open_sans_regular"
-                        android:enabled="false"
-                        android:padding="8dp"/>
+                        app:cornerRadius="24dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"

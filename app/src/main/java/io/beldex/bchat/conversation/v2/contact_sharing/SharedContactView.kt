@@ -24,12 +24,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -42,6 +44,7 @@ import io.beldex.bchat.compose_utils.OutlineLight
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.TextColor
+import io.beldex.bchat.dependencies.DatabaseComponent
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
@@ -131,125 +134,114 @@ fun SharedContactContent(
     backgroundColor : Color,
     subtitleColor: Color = TextColor,
 ) {
-    val names = if (contacts.isNotEmpty()) {
-        flattenData(contacts[0].name)
-    } else {
-        emptyList()
+    val context = LocalContext.current
+
+    data class ContactDisplay(val name: String, val address: String)
+
+    val contactList: List<ContactDisplay> = contacts.firstOrNull()?.let { contact ->
+        val names = flattenData(contact.name)
+        val addresses = flattenData(contact.address.serialize())
+        names.zip(addresses) { name, address -> ContactDisplay(name, address) }
+    } ?: emptyList()
+
+    val displayName = when (contactList.size) {
+        0 -> ""
+        1 -> contactList[0].name
+        2 -> "${contactList[0].name} and ${contactList[1].name}"
+        else -> "${contactList[0].name} and ${contactList.size - 1} others"
     }
 
-    val addresses = if (contacts.isNotEmpty()) {
-        flattenData(contacts[0].address.serialize())
-    } else {
-        emptyList()
-    }
-
-    val displayName = when {
-        names.size > 2 -> "${names.first()} and ${names.size - 1} others"
-        names.size == 2 -> "${names[0]} and ${names[1]}"
-        names.size == 1 -> names.first()
-        else -> addresses[0]
-    }
-
-    val addressString by remember(contacts) {
-        var address = "aaaaaaaaaaa.........zzzzzzz"
-        if (addresses.isNotEmpty()) {
-            val address0 = addresses[0]
-            address = address0.take(7)
-            if (addresses.size > 1) {
-                val lastAddress = addresses.last()
-                address = "$address.........${lastAddress.takeLast(7)}"
-            } else {
-                address = "$address.........${address0.takeLast(7)}"
-            }
-        }
+    val addressString by remember(contactList) {
+        val address = if (contactList.isNotEmpty()) {
+            val first = contactList.first().address
+            val last = contactList.last().address
+            "${first.take(7)}.........${last.takeLast(7)}"
+        } else ""
         mutableStateOf(address)
     }
-    Row(
-        modifier = modifier.padding(8.dp)
-    ) {
-        Column(
-            modifier = Modifier.weight(0.8f)
-        ) {
 
+    fun getUserIsBNSHolderStatus(publicKey: String): Boolean? {
+        return DatabaseComponent.get(context)
+            .bchatContactDatabase()
+            .getContactWithBchatID(publicKey)
+            ?.isBnsHolder
+    }
+
+    Row(modifier = modifier.padding(8.dp)) {
+        Column(modifier = Modifier.weight(0.8f)) {
             Text(
-                text = displayName.ifEmpty { addresses[0] },
-                style = MaterialTheme.typography.titleMedium.copy(
-                    color = titleColor
-                ),
+                text = displayName.ifEmpty { contactList.firstOrNull()?.address.orEmpty() },
+                style = MaterialTheme.typography.titleMedium.copy(color = titleColor),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                   painter = painterResource(R.drawable.ic_contact_person),
-                    contentDescription = "shared contact person",
-                    tint = subtitleColor,
-                    modifier = Modifier.size(16.dp)
-                )
+            if (contactList.isNotEmpty()) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_contact_person),
+                        contentDescription = "shared contact person",
+                        tint = subtitleColor,
+                        modifier = Modifier.size(16.dp)
+                    )
 
-                Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
 
-                Text(
-                    addressString,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        color = subtitleColor
-                    ),
-                )
+                    Text(
+                        text = addressString,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.bodySmall.copy(color = subtitleColor)
+                    )
+                }
             }
         }
 
         Spacer(modifier = Modifier.width(12.dp))
 
-        if (addresses.isNotEmpty() && names.isNotEmpty()) {
-            val multiContact: Boolean = addresses.size > 1
+        if (contactList.isNotEmpty()) {
+            val multiContact = contactList.size > 1
             Box {
-                if (multiContact) {
-                    ProfilePictureComponent(
-                        publicKey = addresses[1],
-                        displayName = names[1],
-                        containerSize = 30.dp,
-                        pictureMode = ProfilePictureMode.SmallPicture,
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .offset(x = 3.dp, y = (-3).dp)
-                    )
+                contactList.getOrNull(1)?.let { second ->
+                    key(second.address) {
+                        ProfilePictureComponent(
+                            publicKey=second.address,
+                            displayName=second.name,
+                            containerSize=30.dp,
+                            pictureMode=ProfilePictureMode.SmallPicture,
+                            modifier=Modifier
+                                .align(Alignment.TopEnd)
+                                .offset(x=3.dp, y=(-3).dp)
+                        )
+                    }
                 }
-                ProfilePictureComponent(
-                    publicKey = addresses[0],
-                    displayName = names[0],
-                    containerSize = 36.dp,
-                    pictureMode = ProfilePictureMode.SmallPicture,
-                    modifier = Modifier.then(
-                        if (multiContact) {
-                            Modifier
-                                .size(36.dp)
-                                .clip(CircleShape)
-                                .border(
-                                    width = 2.dp,
-                                    color = backgroundColor,
-                                    shape = CircleShape
-                                )
-                        } else {
-                            Modifier
-                        }
-                    )
-                )
+
+                contactList.getOrNull(0)?.let { first ->
+                    key(first.address) {
+                        ProfilePictureComponent(
+                            publicKey=first.address,
+                            displayName=first.name,
+                            containerSize=36.dp,
+                            pictureMode=ProfilePictureMode.SmallPicture,
+                            modifier=Modifier.then(
+                                if (multiContact && getUserIsBNSHolderStatus(first.address) != true) {
+                                    Modifier
+                                        .size(36.dp)
+                                        .clip(CircleShape)
+                                        .border(2.dp, backgroundColor, CircleShape)
+                                } else Modifier
+                            )
+                        )
+                    }
+                }
             }
         } else {
             Box(
                 modifier = Modifier
                     .size(48.dp)
-                    .background(
-                        color = Color.Green,
-                        shape = RoundedCornerShape(100)
-                    )
+                    .background(Color.Green, RoundedCornerShape(100))
             )
         }
     }

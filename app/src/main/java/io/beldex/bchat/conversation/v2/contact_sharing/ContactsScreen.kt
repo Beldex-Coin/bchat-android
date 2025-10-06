@@ -1,5 +1,6 @@
 package io.beldex.bchat.conversation.v2.contact_sharing
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +25,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,6 +39,8 @@ import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.noRippleCallback
 import io.beldex.bchat.compose_utils.ui.SearchView
 import io.beldex.bchat.database.model.ThreadRecord
+import io.beldex.bchat.util.UiMode
+import io.beldex.bchat.util.UiModeUtilities
 
 @Composable
 fun ContactsScreen(
@@ -48,6 +53,7 @@ fun ContactsScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(LocalContext.current) == UiMode.NIGHT
     Scaffold(
         topBar = {
             Row(
@@ -118,12 +124,9 @@ fun ContactsScreen(
                         .fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = stringResource(R.string.no_contact_found),
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.W700,
-                            fontSize = 20.sp
-                        )
+                    Image(
+                        painterResource(id= if(isDarkTheme) R.drawable.ic_no_contact_found else R.drawable.ic_no_contact_found_white),
+                        contentDescription = "drawable for no contact found",
                     )
                 }
             } else {

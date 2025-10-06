@@ -1,5 +1,6 @@
 package io.beldex.bchat.compose_utils.ui
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -17,6 +18,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import io.beldex.bchat.compose_utils.appColors
 
 @Composable
@@ -33,6 +35,11 @@ fun SearchView(
         shape = RoundedCornerShape(50),
         modifier = modifier
             .fillMaxWidth()
+            .border(
+                width=1.dp,
+                color=MaterialTheme.appColors.textFiledBorderColor,
+                shape=RoundedCornerShape(50.dp)
+            )
     ) {
         TextField(
             value = searchQuery,

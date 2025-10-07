@@ -51,7 +51,6 @@ import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.messaging.utilities.UpdateMessageData
 import com.beldex.libbchat.utilities.GroupRecord
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.isScreenSecurityEnabled
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.R
 import io.beldex.bchat.archivechats.ArchiveChatViewModel
@@ -110,10 +109,6 @@ fun ArchiveChatScreen(
     }
     var showDeletePopup by remember {
         mutableStateOf(false)
-    }
-    if (isScreenSecurityEnabled(context))
-        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE) else {
-        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
     }
     if (showBlockPopup) {
         BChatTheme(

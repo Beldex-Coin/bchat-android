@@ -75,11 +75,6 @@ public abstract class AppLockActivityDuplicate extends PinActivity implements Ke
         setContentView(getContentView());
         initializeToolbar();
         initLayout(getIntent());
-        if (TextSecurePreferences.isScreenSecurityEnabled(this)) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
-        } else {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
-        }
     }
 
     private void initializeToolbar() {

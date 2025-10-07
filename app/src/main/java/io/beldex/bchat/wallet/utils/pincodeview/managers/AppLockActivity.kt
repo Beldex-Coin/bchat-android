@@ -26,7 +26,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.isScreenSecurityEnabled
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setWalletEntryPassword
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.ui.ScreenContainer
@@ -96,11 +95,6 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
 //        setContentView(contentView)
 //        initializeToolbar()
         initLayout(intent)
-        if (isScreenSecurityEnabled(this)) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-        } else {
-            window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
-        }
         setContent {
             BChatTheme {
                 Surface {

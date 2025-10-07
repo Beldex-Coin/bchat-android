@@ -38,7 +38,6 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
   @Override
   protected void onResume() {
     super.onResume();
-    initializeScreenshotSecurity();
     DynamicLanguageActivityHelper.recreateIfNotInCorrectLanguage(this, TextSecurePreferences.getLanguage(this));
     String name = getResources().getString(R.string.app_name);
     Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_foreground);
@@ -52,14 +51,6 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
 
     onBackPressed();
     return true;
-  }
-
-  private void initializeScreenshotSecurity() {
-    if (TextSecurePreferences.isScreenSecurityEnabled(this)) {
-      getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
-    } else {
-      getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
-    }
   }
 
   @Override

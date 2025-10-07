@@ -71,12 +71,6 @@ class WalletSettingComposeActivity : ComponentActivity() {
             BChatTheme(
                     darkTheme=UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
             ) {
-                val context = LocalContext.current
-                val activity = (context as? Activity)
-                if (TextSecurePreferences.isScreenSecurityEnabled(context))
-                    activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE) else {
-                    activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
-                }
                 Surface {
                     Scaffold(
                             containerColor=MaterialTheme.colorScheme.primary,

@@ -70,10 +70,6 @@ fun MessageRequestsScreen(
     var threadRecord by remember {
         mutableStateOf(requestToTakeAction)
     }
-    if (TextSecurePreferences.isScreenSecurityEnabled(context))
-        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE) else {
-        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
-    }
     if (requestsList.isEmpty()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

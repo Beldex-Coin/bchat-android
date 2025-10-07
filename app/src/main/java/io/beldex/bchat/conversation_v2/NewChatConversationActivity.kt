@@ -45,11 +45,6 @@ class NewChatConversationActivity: ComponentActivity() {
                 darkTheme = isDarkTheme
             ) {
                 // A surface container using the 'background' color from the theme
-                val activity = (context as? Activity)
-                if (TextSecurePreferences.isScreenSecurityEnabled(context))
-                    activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE) else {
-                    activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
-                }
                 Surface {
                     NewChatScreen(
                         searchQuery = searchQuery,

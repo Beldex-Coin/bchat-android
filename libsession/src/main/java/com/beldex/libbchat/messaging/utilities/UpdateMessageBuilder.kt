@@ -116,7 +116,7 @@ object UpdateMessageBuilder {
         val formattedName = if (isOutgoing) {
             senderName
         } else {
-            "<b>$senderName</b>"
+            "<b>${senderName.capitalizeFirstLetter()}</b>"
         }
         val rawMessage = context.getString(R.string.MessageRecord_s_took_a_screenshot, formattedName)
 
@@ -184,5 +184,9 @@ object UpdateMessageBuilder {
             CallMessageType.CALL_FIRST_MISSED ->
                 context.getString(R.string.MessageRecord_missed_call_from, senderName)
         }
+    }
+
+    fun String.capitalizeFirstLetter() : String {
+        return this.replaceFirstChar { it.uppercase() }
     }
 }

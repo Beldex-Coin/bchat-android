@@ -113,6 +113,7 @@ import io.beldex.bchat.contactshare.SimpleTextWatcher
 import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
 import io.beldex.bchat.conversation.v2.contact_sharing.ContactSharingActivity
 import io.beldex.bchat.conversation.v2.contact_sharing.ViewAllContactFragment
+import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 import io.beldex.bchat.conversation.v2.contact_sharing.flattenData
 import io.beldex.bchat.conversation.v2.dialogs.LinkPreviewDialog
 import io.beldex.bchat.conversation.v2.dialogs.SendSeedDialog
@@ -3577,13 +3578,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                         resources.getString(R.string.reply_payment_card_message, direction, amount)
                 } else if (it.isOpenGroupInvitation) {
                     quoteBody=resources.getString(R.string.ThreadRecord_open_group_invitation)
-                } else if (it.isSharedContact) {
-                    val mainObject = JSONObject(it.body)
-                    val uniObject = mainObject.getJSONObject("kind")
-                    val contactAddress = uniObject.getString("address")
-                    val contactName = uniObject.getString("name")
-                    val contact = SharedContact(contactAddress,contactName)
-                    message.sharedContact = contact
                 }
                 QuoteModel(it.dateSent, sender, quoteBody, false, quotedAttachments)
             }

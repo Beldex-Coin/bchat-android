@@ -136,10 +136,11 @@
             tools:visibility="visible">
 
             <ImageView
+                android:id="@+id/imgContactPerson"
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:src="@drawable/ic_contact_person"
-                app:tint="@color/version_color" />
+                />
 
             <TextView
                 android:fontFamily="@font/open_sans_regular"

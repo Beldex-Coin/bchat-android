@@ -17,6 +17,8 @@
  */
 package io.beldex.bchat.database.model;
 
+import static io.beldex.bchat.conversation.v2.contact_sharing.ViewContactsScreenKt.capitalizeFirstLetter;
+
 import android.content.Context;
 import android.net.Uri;
 import android.text.Spannable;
@@ -143,7 +145,7 @@ public class ThreadRecord extends DisplayRecord implements Serializable {
     } else if (MmsSmsColumns.Types.isMediaSavedExtraction(type)) {
       return emphasisAdded(context.getString(R.string.ThreadRecord_media_saved_by_s, getRecipient().toShortString()));
     } else if (MmsSmsColumns.Types.isScreenshotExtraction(type)) {
-      String name = isOutgoing() ? context.getString(R.string.MessageRecord_you) : getRecipient().toShortString();
+      String name = isOutgoing() ? context.getString(R.string.MessageRecord_you) : capitalizeFirstLetter(getRecipient().toShortString()) ;
       return emphasisAdded(context.getString(R.string.ThreadRecord_s_took_a_screenshot, name));
     } else if (MmsSmsColumns.Types.isMessageRequestResponse(type)) {
       if (lastMessage != null && lastMessage.getRecipient().getAddress().serialize().equals(

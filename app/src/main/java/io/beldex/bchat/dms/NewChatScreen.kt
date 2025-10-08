@@ -88,6 +88,7 @@ import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.conversation.v2.ConversationFragmentV2
+import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 import io.beldex.bchat.conversation_v2.NewChatScreenViewModel
 import io.beldex.bchat.conversation_v2.OpenActivity
 import io.beldex.bchat.conversation_v2.getUserDisplayName
@@ -493,7 +494,7 @@ private fun GroupContact(
         }
 
         Text(
-            text = if(recipient.name != null) recipient.name.toString() else recipient.address.toString(),
+            text = if(recipient.name != null) recipient.name.toString().capitalizeFirstLetter() else recipient.address.toString().capitalizeFirstLetter(),
             textAlign = TextAlign.Start,
             fontSize = 16.sp,
             fontWeight = FontWeight(400),

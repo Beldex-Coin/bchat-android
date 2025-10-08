@@ -61,7 +61,7 @@ class ContactsViewModel @Inject constructor(
                 val contacts = allContacts.filter { record ->
                     record.recipient.isContactRecipient
                 }.filter { record ->
-                    record.recipient.address.toString() != publicKey
+                    record.recipient.address.toString() != publicKey && record.recipient.hasApprovedMe()
                 }
                 _state.update {
                     it.copy(

@@ -47,6 +47,9 @@ import io.beldex.bchat.util.isSameDayMessage
 import io.beldex.bchat.util.toDp
 import io.beldex.bchat.util.toPx
 import io.beldex.bchat.database.BeldexAPIDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject

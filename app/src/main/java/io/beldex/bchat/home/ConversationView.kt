@@ -19,6 +19,7 @@ import com.beldex.libbchat.utilities.recipients.Recipient
 import com.bumptech.glide.RequestManager
 import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
+import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 import io.beldex.bchat.conversation.v2.contact_sharing.flattenData
 import io.beldex.bchat.conversation.v2.utilities.MentionUtilities.highlightMentions
 import io.beldex.bchat.database.RecipientDatabase.NOTIFY_TYPE_ALL
@@ -127,9 +128,9 @@ class ConversationView : LinearLayout {
                 val data = it.kind as UpdateMessageData.Kind.SharedContact
                 val names = flattenData(data.name).ifEmpty { flattenData(data.address) }
                 val displayName = when {
-                    names.size > 2 -> "${names.first()} and ${names.size - 1} others"
-                    names.size == 2 -> "${names[0]} and ${names[1]}"
-                    names.size == 1 -> names.first()
+                    names.size > 2 -> "${names.first().capitalizeFirstLetter()} and ${names.size - 1} others"
+                    names.size == 2 -> "${names[0].capitalizeFirstLetter()} and ${names[1].capitalizeFirstLetter()}"
+                    names.size == 1 -> names.first().capitalizeFirstLetter()
                     else -> "No Name"
                 }
                 binding.contactName.text = displayName

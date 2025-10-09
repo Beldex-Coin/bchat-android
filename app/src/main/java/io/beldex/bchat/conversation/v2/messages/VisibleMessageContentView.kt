@@ -31,6 +31,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -590,10 +591,11 @@ class VisibleMessageContentView : MaterialCardView {
             binding.quoteContainer.layoutParams.width=binding.sharedContactView.width
         }
         binding.quoteShortMessageTime.isVisible = false
-        val umd = UpdateMessageData.fromJSON(message.body)!!
-        val data = umd.kind as UpdateMessageData.Kind.SharedContact
         binding.sharedContactView.setContent {
+            key(message.id) {
                 BChatTheme {
+                    val umd=UpdateMessageData.fromJSON(message.body)!!
+                    val data=umd.kind as UpdateMessageData.Kind.SharedContact
                     val contact=ContactModel(
                         address=Address.fromSerialized(data.address),
                         name=data.name
@@ -660,9 +662,10 @@ class VisibleMessageContentView : MaterialCardView {
                                     },
                                 )
                             },
-                        searchQuery = searchQuery.toString()
+                        searchQuery=searchQuery.toString()
                     )
                 }
+            }
         }
     }
 

@@ -8,6 +8,8 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
+import androidx.compose.ui.res.colorResource
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.content.res.use
 import androidx.core.text.toSpannable
@@ -20,6 +22,8 @@ import com.bumptech.glide.RequestManager
 import com.google.android.material.card.MaterialCardView
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.TextColor
+import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 import io.beldex.bchat.conversation.v2.contact_sharing.flattenData
 import io.beldex.bchat.conversation.v2.utilities.MentionUtilities
 import io.beldex.bchat.database.BchatContactDatabase
@@ -90,12 +94,12 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         // Author
         val author = contactDb.getContactWithBchatID(authorPublicKey)
         val localNumber = TextSecurePreferences.getLocalNumber(context)
-        val quoteIsLocalUser = localNumber != null && localNumber != null && authorPublicKey == localNumber
+        val quoteIsLocalUser = localNumber != null && authorPublicKey == localNumber
         val authorDisplayName =
             if (quoteIsLocalUser) context.getString(R.string.QuoteView_you)
             else author?.displayName(Contact.contextForRecipient(thread)) ?: "${authorPublicKey.take(4)}...${authorPublicKey.takeLast(4)}"
-        binding.quoteViewAuthorTextView.text = authorDisplayName
-        binding.quoteViewAuthorTextView.setTextColor(if(quoteIsLocalUser){
+        binding.quoteViewAuthorTextView.text = authorDisplayName.capitalizeFirstLetter()
+        binding.quoteViewAuthorTextView.setTextColor(if(quoteIsLocalUser && !outgoing){
             ResourcesCompat.getColor(resources, R.color.button_green, context.theme)
         }else {
            getTextColor(isOutgoingMessage)
@@ -111,6 +115,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 if (type == "SharedContact") {
                     binding.contactView.visibility = View.VISIBLE
                     binding.contactName.setTextColor(getTextColor(isOutgoingMessage))
+                    binding.imgContactPerson.setColorFilter(ContextCompat.getColor(context, if(isOutgoingMessage) R.color.sent_quoted_text_color else R.color.received_message_text_color))
 
                     if (mode == Mode.Regular) {
                         binding.quoteViewAttachmentPreviewContainer.visibility = View.GONE
@@ -129,9 +134,9 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                             val data = it.kind as UpdateMessageData.Kind.SharedContact
                             val names = flattenData(data.name).ifEmpty { flattenData(data.address) }
                             val displayName = when {
-                                names.size > 2 -> "${names.first()} and ${names.size - 1} others"
-                                names.size == 2 -> "${names[0]} and ${names[1]}"
-                                names.size == 1 -> names.first()
+                                names.size > 2 -> "${names.first().capitalizeFirstLetter()} and ${names.size - 1} others"
+                                names.size == 2 -> "${names[0].capitalizeFirstLetter()} and ${names[1].capitalizeFirstLetter()}"
+                                names.size == 1 -> names.first().capitalizeFirstLetter()
                                 else -> "No Name"
                             }
                             binding.contactName.text = displayName

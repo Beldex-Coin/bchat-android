@@ -252,13 +252,6 @@ class ConversationAdapter(
                             ),
                             backgroundColor = colorResource(cardBackgroundColor),
                             timeStamp = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp),
-                            timeStampColor = colorResource(
-                                if (message.isOutgoing) {
-                                    R.color.sent_message_time_color
-                                } else {
-                                    R.color.received_message_time_color
-                                }
-                            ),
                             titleColor = colorResource(
                                 if (message.isOutgoing) {
                                     R.color.white

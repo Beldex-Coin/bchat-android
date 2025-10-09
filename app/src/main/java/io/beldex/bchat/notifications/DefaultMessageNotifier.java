@@ -19,7 +19,8 @@ package io.beldex.bchat.notifications;
 import android.Manifest;
 import static com.beldex.libbchat.utilities.Address.fromSerialized;
 
-import static io.beldex.bchat.conversation.v2.contact_sharing.SharedContactViewKt.flattenData;
+
+import static io.beldex.bchat.conversation.v2.contact_sharing.ViewContactsScreenKt.flattenData;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
@@ -629,11 +630,11 @@ public class DefaultMessageNotifier implements MessageNotifier {
 
         String displayName;
         if (names.size() > 2) {
-          displayName = names.get(0) + " and " + (names.size() - 1) + " others";
+          displayName = capitalizeFirstLetter(names.get(0)) + " and " + (names.size() - 1) + " others";
         } else if (names.size() == 2) {
-          displayName = names.get(0) + " and " + names.get(1);
+          displayName = capitalizeFirstLetter(names.get(0)) + " and " + capitalizeFirstLetter(names.get(1));
         } else if (names.size() == 1) {
-          displayName = names.get(0);
+          displayName = capitalizeFirstLetter(names.get(0));
         } else {
           displayName = "No Name";
         }
@@ -695,6 +696,14 @@ public class DefaultMessageNotifier implements MessageNotifier {
     reader.close();
     return notificationState;
   }
+
+  public String capitalizeFirstLetter(String input) {
+    if (input == null || input.isEmpty()) {
+      return input;
+    }
+    return input.substring(0, 1).toUpperCase() + input.substring(1);
+  }
+
 
   private void updateBadge(Context context, int count) {
     try {

@@ -59,6 +59,7 @@ import io.beldex.bchat.compose_utils.ui.BubbledText
 import io.beldex.bchat.database.model.ThreadRecord
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.R
+import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -251,7 +252,7 @@ fun RequestItem(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = request.recipient.name ?: "",
+            text = request.recipient.name?.capitalizeFirstLetter() ?: "",
             style = MaterialTheme.typography.bodyMedium,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,

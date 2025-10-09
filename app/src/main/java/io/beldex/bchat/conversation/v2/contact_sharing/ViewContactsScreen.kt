@@ -60,6 +60,8 @@ import io.beldex.bchat.conversation.v2.ConversationFragmentV2.Companion.THREAD_I
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.util.BaseFragment
 import io.beldex.bchat.wallet.OnBackPressedListener
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 
 
 class ViewAllContactFragment : BaseFragment(), OnBackPressedListener {
@@ -152,6 +154,20 @@ fun formatAddresses(address: String): String {
     val first = address.take(15)
     val last = address.takeLast(7)
     return "$first.........$last"
+}
+
+fun flattenData(json: String): List<String> {
+    return try {
+        if (json.trim().startsWith("[[")) {
+            val nested: List<List<String>> = Json.decodeFromString(json)
+            nested.firstOrNull()?.map { it.trim() } ?: emptyList()
+        } else {
+            val list: List<String> = Json.decodeFromString(json)
+            list.map { it.trim() }
+        }
+    } catch (e: Exception) {
+        emptyList()
+    }
 }
 
 @Composable

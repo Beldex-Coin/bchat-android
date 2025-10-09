@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -45,20 +46,18 @@ import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.TextColor
 import io.beldex.bchat.dependencies.DatabaseComponent
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 
 @Composable
 fun SharedContactView(
     contacts: List<ContactModel>,
     timeStamp: String,
-    timeStampColor: Color,
     modifier: Modifier = Modifier,
     columnModifier: Modifier = Modifier,
     backgroundColor: Color = Color.DarkGray,
     titleColor: Color = Color.White,
     subtitleColor: Color = OutlineLight,
-    isQuoted: Boolean = false
+    isQuoted: Boolean = false,
+    isOutgoing: Boolean = false
 ) {
     val numberOfContacts = flattenData(contacts[0].address.serialize())
 
@@ -96,15 +95,15 @@ fun SharedContactView(
                     Text(
                         text= if(numberOfContacts.size > 1) stringResource(R.string.view_all) else stringResource(R.string.message),
                         style=MaterialTheme.typography.bodySmall.copy(
-                            color=timeStampColor,
+                            color= colorResource(if(isOutgoing) R.color.view_all_text_out else R.color.view_all_text),
                             fontSize=16.sp
                         )
                     )
 
                     Icon(
-                        imageVector=Icons.Default.ChevronRight, // or your custom drawable
+                        imageVector=Icons.Default.ChevronRight,
                         contentDescription="view all",
-                        tint=timeStampColor,
+                        tint=colorResource(if(isOutgoing) R.color.view_all_text_out else R.color.view_all_text),
                         modifier=Modifier
                             .size(18.dp)
                             .padding(start=2.dp)
@@ -114,7 +113,7 @@ fun SharedContactView(
             Text(
                 text = timeStamp,
                 style = MaterialTheme.typography.bodySmall.copy(
-                    color = timeStampColor,
+                    color = colorResource(if(isOutgoing) R.color.timestamp_out else R.color.timestamp_in),
                     fontSize = 11.sp
                 ),
                 modifier = Modifier.
@@ -145,10 +144,10 @@ fun SharedContactContent(
     } ?: emptyList()
 
     val displayName = when (contactList.size) {
-        0 -> ""
-        1 -> contactList[0].name
-        2 -> "${contactList[0].name} and ${contactList[1].name}"
-        else -> "${contactList[0].name} and ${contactList.size - 1} others"
+        0 -> "No Name"
+        1 -> contactList[0].name.capitalizeFirstLetter()
+        2 -> "${contactList[0].name.capitalizeFirstLetter()} and ${contactList[1].name.capitalizeFirstLetter()}"
+        else -> "${contactList[0].name.capitalizeFirstLetter()} and ${contactList.size - 1} others"
     }
 
     val addressString by remember(contactList) {
@@ -167,7 +166,10 @@ fun SharedContactContent(
             ?.isBnsHolder
     }
 
-    Row(modifier = modifier.padding(8.dp)) {
+    Row(
+        modifier = modifier.padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Column(modifier = Modifier.weight(0.8f)) {
             Text(
                 text = displayName.ifEmpty { contactList.firstOrNull()?.address.orEmpty() },
@@ -184,10 +186,10 @@ fun SharedContactContent(
                         painter = painterResource(R.drawable.ic_contact_person),
                         contentDescription = "shared contact person",
                         tint = subtitleColor,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(12.dp)
                     )
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
 
                     Text(
                         text = addressString,
@@ -247,28 +249,12 @@ fun SharedContactContent(
     }
 }
 
-
-fun flattenData(json: String): List<String> {
-    return try {
-        if (json.trim().startsWith("[[")) {
-            val nested: List<List<String>> = Json.decodeFromString(json)
-            nested.firstOrNull()?.map { it.trim() } ?: emptyList()
-        } else {
-            val list: List<String> = Json.decodeFromString(json)
-            list.map { it.trim() }
-        }
-    } catch (e: Exception) {
-        emptyList()
-    }
-}
-
 @Preview
 @Composable
 private fun SharedContactViewPreview() {
     BChatTheme {
         SharedContactView(
             contacts = listOf(),
-            timeStampColor = Color.White,
             timeStamp = ""
         )
     }

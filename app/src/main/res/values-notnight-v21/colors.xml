@@ -271,4 +271,8 @@
     <color name="emoji_variation_selector_background">#FFFFFF</color>
     <color name="chat_to_contact">#C5C5C5</color>
     <color name="control_message_text">#333333</color>
+    <color name="view_all_text">#333333</color>
+    <color name="view_all_text_out">#FFFFFF</color>
+    <color name="timestamp_out">#EBEBEB</color>
+    <color name="timestamp_in">#A7A7BA</color>
 </resources>

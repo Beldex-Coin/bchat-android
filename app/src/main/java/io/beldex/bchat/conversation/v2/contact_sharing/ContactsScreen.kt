@@ -1,6 +1,7 @@
 package io.beldex.bchat.conversation.v2.contact_sharing
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -59,15 +61,14 @@ fun ContactsScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    Icons.Default.ArrowBack,
-                    contentDescription = "",
+                    painterResource(id = R.drawable.ic_back_arrow),
+                    contentDescription = stringResource(R.string.back),
                     modifier = Modifier
-                        .noRippleCallback {
-                            onBack()
-                        }
+                        .noRippleCallback { onBack() }
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))
@@ -78,33 +79,62 @@ fun ContactsScreen(
                 )
             }
         },
-        modifier = modifier
-            .fillMaxSize()
-    ) {
+        bottomBar = {
+            if (contacts.isNotEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = MaterialTheme.appColors.createButtonBackground
+                        ),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    PrimaryButton(
+                        onClick={
+                            onSend(selectedContacts)
+                        },
+                        enabled=selectedContacts.isNotEmpty(),
+                        disabledContainerColor=MaterialTheme.appColors.disabledCreateButtonContainer,
+                        modifier=Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                            .imePadding()
+                    ) {
+                        Text(
+                            text=stringResource(id=R.string.send),
+                            style=MaterialTheme.typography.bodyMedium.copy(
+                                color=Color.White,
+                                fontWeight=FontWeight(400),
+                                fontSize=16.sp
+                            ),
+                            modifier=Modifier.padding(8.dp)
+                        )
+                    }
+                }
+            }
+        },
+        modifier = modifier.fillMaxSize()
+    ) { innerPadding ->
+
         Column(
             modifier = Modifier
-                .padding(it)
-                .padding(
-                    16.dp
-                )
+                .padding(innerPadding)
+                .padding(16.dp)
                 .fillMaxSize()
         ) {
-
             SearchView(
                 hint = stringResource(id = R.string.search_contact),
                 searchQuery = searchQuery,
                 onQueryChanged = onQueryChanged,
                 trailingIcon = {
-                    if(searchQuery.isNotEmpty()) {
+                    if (searchQuery.isNotEmpty()) {
                         Icon(
                             Icons.Default.Close,
                             contentDescription = "clear",
                             tint = MaterialTheme.appColors.iconTint,
-                            modifier = Modifier.clickable(
-                                onClick = {
-                                    onQueryChanged("")
-                                }
-                            )
+                            modifier = Modifier.clickable {
+                                onQueryChanged("")
+                            }
                         )
                     } else {
                         Icon(
@@ -117,32 +147,39 @@ fun ContactsScreen(
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-
             if (contacts.isEmpty()) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        painterResource(id= if(isDarkTheme) R.drawable.ic_no_contact_found else R.drawable.ic_no_contact_found_white),
-                        contentDescription = "drawable for no contact found",
+                        painter = painterResource(
+                            id = if (isDarkTheme)
+                                R.drawable.ic_no_contact_found
+                            else
+                                R.drawable.ic_no_contact_found_white
+                        ),
+                        contentDescription = "no contact found",
                     )
                 }
             } else {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier
-                        .weight(1f)
+                        .fillMaxSize()
+                        .weight(1f, fill = true)
                 ) {
-                    items(contacts.size, key = {index ->
-                        contacts[index].recipient.address}
+                    items(
+                        contacts.size,
+                        key = { index -> contacts[index].recipient.address }
                     ) { index ->
                         val contact = contacts[index]
                         ContactItem(
                             isSharing = true,
                             contact = contact,
-                            isSelected = selectedContacts.any { c -> c.threadId == contact.threadId },
+                            isSelected = selectedContacts.any { c ->
+                                c.threadId == contact.threadId
+                            },
                             contactChanged = { c, isSelected ->
                                 c?.let {
                                     contactChanged(c, isSelected)
@@ -150,29 +187,6 @@ fun ContactsScreen(
                             }
                         )
                     }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                PrimaryButton(
-                    onClick = {
-                        onSend(listOf())
-                    },
-                    enabled = selectedContacts.isNotEmpty(),
-                    containerColor = MaterialTheme.appColors.primaryButtonColor,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.send),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = Color.White,
-                            fontWeight = FontWeight(400),
-                            fontSize = 16.sp
-                        ),
-                        modifier = Modifier
-                            .padding(8.dp)
-                    )
                 }
             }
         }

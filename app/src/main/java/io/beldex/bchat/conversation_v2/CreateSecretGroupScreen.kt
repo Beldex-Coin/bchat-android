@@ -81,6 +81,7 @@ import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.wallet.CheckOnline
 import io.beldex.bchat.R
+import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -387,7 +388,7 @@ private fun GroupContact(
             }
 
             Text(
-                text = if(recipient.name != null) recipient.name.toString() else recipient.address.toString(),
+                text = if(recipient.name != null) recipient.name.toString().capitalizeFirstLetter() else recipient.address.toString().capitalizeFirstLetter(),
                 textAlign = TextAlign.Start,
                 fontSize = 16.sp,
                 fontWeight = FontWeight(400),

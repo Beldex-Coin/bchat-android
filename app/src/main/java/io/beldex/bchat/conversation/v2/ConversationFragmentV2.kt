@@ -2138,7 +2138,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             val selectedMessageDialog=ConversationActionDialog()
             selectedMessageDialog.apply {
                 arguments=Bundle().apply {
-                    putInt(ConversationActionDialog.EXTRA_ARGUMENT_1, messages.size)
+                    putInt(ConversationActionDialog.EXTRA_ARGUMENT_3, messages.size)
                     putSerializable(
                         ConversationActionDialog.EXTRA_DIALOG_TYPE,
                         HomeDialogType.SelectedMessageDelete
@@ -2418,7 +2418,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                     ConversationActionDialog.EXTRA_DIALOG_TYPE,
                     HomeDialogType.BlockUser
                 )
-                putInt(ConversationActionDialog.EXTRA_ARGUMENT_1, if (deleteThread) 1 else 0)
+                putInt(ConversationActionDialog.EXTRA_ARGUMENT_3, if (deleteThread) 1 else 0)
             }
             setListener(this@ConversationFragmentV2)
         }
@@ -2487,7 +2487,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                     ConversationActionDialog.EXTRA_DIALOG_TYPE,
                     HomeDialogType.DisappearingTimer
                 )
-                putInt(ConversationActionDialog.EXTRA_ARGUMENT_1, thread.expireMessages)
+                putInt(ConversationActionDialog.EXTRA_ARGUMENT_3, thread.expireMessages)
             }
             setListener(this@ConversationFragmentV2)
         }
@@ -2555,7 +2555,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                     else -> "No Name"
                 }
                 arguments=Bundle().apply {
-                    putString(ConversationActionDialog.EXTRA_ARGUMENT_1, displayName)
+                    putString(ComposeDialogContainer.EXTRA_ARGUMENT_1, displayName)
                 }
             }
             chatConfirmationDialog.show(childFragmentManager, ComposeDialogContainer.TAG)
@@ -4584,7 +4584,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                         ConversationActionDialog.EXTRA_DIALOG_TYPE,
                         HomeDialogType.MuteChat
                     )
-                    putSerializable(ConversationActionDialog.EXTRA_ARGUMENT_1, thread.mutedUntil)
+                    putSerializable(ConversationActionDialog.EXTRA_ARGUMENT_3, thread.mutedUntil)
                 }
                 setListener(this@ConversationFragmentV2)
             }

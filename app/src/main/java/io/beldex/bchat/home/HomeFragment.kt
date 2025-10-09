@@ -1058,7 +1058,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                 val dialog = ConversationActionDialog()
                 dialog.apply {
                     arguments = Bundle().apply {
-                        putInt(ConversationActionDialog.EXTRA_ARGUMENT_1, thread.recipient.notifyType)
+                        putInt(ConversationActionDialog.EXTRA_ARGUMENT_3, thread.recipient.notifyType)
                         putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, thread)
                         putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.NotificationSettings)
                     }
@@ -1115,7 +1115,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             val dialog = ConversationActionDialog()
             dialog.apply {
                 arguments = Bundle().apply {
-                    putSerializable(ConversationActionDialog.EXTRA_ARGUMENT_1, thread.recipient.mutedUntil)
+                    putSerializable(ConversationActionDialog.EXTRA_ARGUMENT_3, thread.recipient.mutedUntil)
                     putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.MuteChat)
                     putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, thread)
                 }
@@ -1151,7 +1151,6 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     private fun deleteConversation(thread: ThreadRecord) {
-        val threadID = thread.threadId
         val recipient = thread.recipient
         val message = if (recipient.isGroupRecipient) {
             val group = groupDb.getGroup(recipient.address.toString()).orNull()
@@ -1169,6 +1168,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             arguments = Bundle().apply {
                 putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, thread)
                 putString(ConversationActionDialog.EXTRA_ARGUMENT_1, message)
+                putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.DeleteChat)
             }
             setListener(this@HomeFragment)
         }

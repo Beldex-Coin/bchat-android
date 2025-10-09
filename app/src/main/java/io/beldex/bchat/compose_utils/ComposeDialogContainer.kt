@@ -40,8 +40,8 @@ class ComposeDialogContainer(
 
     private var argument1: String? = null
     private var argument2: String? = null
+    private var argument3: Int = 0
     private var dismissAllowed: Boolean = false
-    var data:Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,11 +49,11 @@ class ComposeDialogContainer(
             if(it.containsKey(EXTRA_ARGUMENT_1))
                 argument1 = it.getString(EXTRA_ARGUMENT_1, null)
 
-            if(it.containsKey(EXTRA_ARGUMENT_1))
-                data = arguments?.getInt(EXTRA_ARGUMENT_1) ?: 0
-
             if(it.containsKey(EXTRA_ARGUMENT_2))
                 argument2 = it.getString(EXTRA_ARGUMENT_2, null)
+
+            if(it.containsKey(EXTRA_ARGUMENT_3))
+                argument3 = it.getInt(EXTRA_ARGUMENT_3)
         }
     }
 
@@ -184,7 +184,7 @@ class ComposeDialogContainer(
                                     onCancel()
                                 },
                                 options = option.toList(),
-                                currentValue = option[data ?: 0],
+                                currentValue = option[argument3],
                                 onValueChanged = { _, index ->
                                     onConfirmWithData(index)
                                     dismiss()
@@ -220,6 +220,7 @@ class ComposeDialogContainer(
     companion object {
         const val EXTRA_ARGUMENT_1 = "argument_1"
         const val EXTRA_ARGUMENT_2 = "argument_2"
+        const val EXTRA_ARGUMENT_3 = "argument_3"
         const val TAG = "ComposeDialogContainer"
     }
 

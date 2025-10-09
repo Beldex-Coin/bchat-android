@@ -30,13 +30,11 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -487,7 +485,7 @@ class VisibleMessageContentView : MaterialCardView {
             message.isSharedContact -> {
                 hideBody=true
                 showQuoteBody=false
-                setContactView(message, messageSelected)
+                setContactView(message, messageSelected,searchQuery)
             }
         }
 
@@ -546,7 +544,7 @@ class VisibleMessageContentView : MaterialCardView {
         if (message.body.isNotEmpty() && showQuoteBody) {
             if (isSharedContact(message.body)) {
                 binding.sharedContactView.visibility = VISIBLE
-                setContactView(message, messageSelected)
+                setContactView(message, messageSelected, searchQuery)
             } else {
                 setBodyForQuotedMessage(message, searchQuery,delegate, visibleMessageView, position)
             }
@@ -582,86 +580,90 @@ class VisibleMessageContentView : MaterialCardView {
 
     private fun setContactView(
         message : MessageRecord,
-        messageSelected : () -> Boolean
+        messageSelected : () -> Boolean,
+        searchQuery : String?
     ) {
-        val isQuoteView : Boolean =  message is MmsMessageRecord && message.quote != null
+        val isQuoteView : Boolean=message is MmsMessageRecord && message.quote != null
 
         if (isQuoteView) {
-            binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-            binding.quoteContainer.layoutParams.width = binding.sharedContactView.width
+            binding.quoteView.root.layoutParams.width=ViewGroup.LayoutParams.MATCH_PARENT
+            binding.quoteContainer.layoutParams.width=binding.sharedContactView.width
         }
         binding.quoteShortMessageTime.isVisible = false
         val umd = UpdateMessageData.fromJSON(message.body)!!
         val data = umd.kind as UpdateMessageData.Kind.SharedContact
         binding.sharedContactView.setContent {
-            BChatTheme {
-                val contact = ContactModel(
-                    address = Address.fromSerialized(data.address),
-                    name = data.name
-                )
-                val configuration = LocalConfiguration.current
-                val screenWidth = configuration.screenWidthDp.dp
-                val cardBackgroundColor by remember(message) {
-                    val backgroundColor = when {
-                        message.isOutgoing && !isQuoteView -> R.color.outgoing_call_background
-                        message.isOutgoing && isQuoteView -> R.color.outgoing_call_background
-                        !message.isOutgoing && !isQuoteView -> R.color.received_call_card_background
-                        !message.isOutgoing && isQuoteView -> R.color.quote_view_background
-                        else -> R.color.outgoing_call_background
+                BChatTheme {
+                    val contact=ContactModel(
+                        address=Address.fromSerialized(data.address),
+                        name=data.name
+                    )
+                    val cardBackgroundColor by remember(message) {
+                        val backgroundColor=when {
+                            message.isOutgoing && !isQuoteView -> R.color.outgoing_call_background
+                            message.isOutgoing && isQuoteView -> R.color.outgoing_call_background
+                            !message.isOutgoing && !isQuoteView -> R.color.received_call_card_background
+                            !message.isOutgoing && isQuoteView -> R.color.quote_view_background
+                            else -> R.color.outgoing_call_background
+                        }
+                        mutableIntStateOf(
+                            backgroundColor
+                        )
                     }
-                    mutableIntStateOf(
-                        backgroundColor
+
+                    SharedContactView(
+                        contacts=listOf(
+                            contact
+                        ),
+                        backgroundColor=colorResource(cardBackgroundColor),
+                        timeStamp=DateUtils.getTimeStamp(
+                            context,
+                            Locale.getDefault(),
+                            message.timestamp
+                        ),
+                        isQuoted=isQuoteView,
+                        isOutgoing=message.isOutgoing,
+                        titleColor=colorResource(
+                            if (message.isOutgoing) {
+                                R.color.white
+                            } else {
+                                R.color.received_message_text_color
+                            }
+                        ),
+                        subtitleColor=if (message.isOutgoing) {
+                            TextColor
+                        } else {
+                            colorResource(R.color.received_message_text_color)
+                        },
+                        modifier=Modifier
+                            .fillMaxWidth(0.7f)
+                            .padding(
+                                start=if (isQuoteView) 2.dp else 4.dp,
+                                top=if (isQuoteView) 4.dp else 0.dp,
+                                end=if (isQuoteView) 2.dp else 4.dp,
+                                bottom=if (isQuoteView) 4.dp else 8.dp
+                            ),
+                        columnModifier=Modifier
+                            .padding(bottom=4.dp)
+                            .pointerInput(Unit) {
+                                detectTapGestures(
+                                    onLongPress={
+                                        onLongPress?.let { it1 -> it1() }
+                                    },
+                                    onTap={
+                                        if (messageSelected()) {
+                                            onLongPress?.let { it1 -> it1() }
+                                        } else {
+                                            chatWithContact?.let { it1 -> it1(contact) }
+
+                                        }
+                                    },
+                                )
+                            },
+                        searchQuery = searchQuery.toString()
                     )
                 }
-
-                SharedContactView(
-                    contacts = listOf(
-                        contact
-                    ),
-                    backgroundColor = colorResource(cardBackgroundColor),
-                    timeStamp = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp),
-                    isQuoted = isQuoteView,
-                    isOutgoing = message.isOutgoing,
-                    titleColor = colorResource(
-                        if (message.isOutgoing) {
-                            R.color.white
-                        } else {
-                            R.color.received_message_text_color
-                        }
-                    ),
-                    subtitleColor = if (message.isOutgoing) {
-                        TextColor
-                    } else {
-                        colorResource(R.color.received_message_text_color)
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth(0.7f)
-                        .padding(
-                            start=if (isQuoteView) 2.dp else 4.dp,
-                            top=if (isQuoteView) 4.dp else 0.dp,
-                            end=if (isQuoteView) 2.dp else 4.dp,
-                            bottom=if (isQuoteView) 4.dp else 8.dp
-                        ),
-                    columnModifier = Modifier
-                        .padding(bottom=4.dp)
-                        .pointerInput(Unit) {
-                            detectTapGestures(
-                                onLongPress={
-                                    onLongPress?.let { it1 -> it1() }
-                                },
-                                onTap={
-                                    if (messageSelected()) {
-                                        onLongPress?.let { it1 -> it1() }
-                                    } else {
-                                        chatWithContact?.let { it1 -> it1(contact) }
-                                    }
-                                },
-                            )
-                        }
-                )
-            }
         }
-
     }
 
     val onContentClick: MutableList<((event: MotionEvent) -> Unit)> = mutableListOf()
@@ -789,6 +791,7 @@ class VisibleMessageContentView : MaterialCardView {
             searchQuery: String?
         ): Spannable {
             var body = message.body.toSpannable()
+            println("search filter called 1 -> $body")
             var linkLastClickTime: Long = 0
 
             body = MentionUtilities.highlightMentions(

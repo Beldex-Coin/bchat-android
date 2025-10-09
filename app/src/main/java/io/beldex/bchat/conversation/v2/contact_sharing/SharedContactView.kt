@@ -35,7 +35,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,7 +61,8 @@ fun SharedContactView(
     titleColor: Color = Color.White,
     subtitleColor: Color = OutlineLight,
     isQuoted: Boolean = false,
-    isOutgoing: Boolean = false
+    isOutgoing: Boolean = false,
+    searchQuery: String = ""
 ) {
     val numberOfContacts = flattenData(contacts[0].address.serialize())
 
@@ -78,7 +83,9 @@ fun SharedContactView(
                 subtitleColor = subtitleColor,
                 backgroundColor = backgroundColor,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                searchQuery = searchQuery,
+                isOutgoing = isOutgoing
             )
         }
 
@@ -132,6 +139,8 @@ fun SharedContactContent(
     titleColor: Color = Color.White,
     backgroundColor : Color,
     subtitleColor: Color = TextColor,
+    searchQuery: String = "",
+    isOutgoing: Boolean = false,
 ) {
     val context = LocalContext.current
 
@@ -171,9 +180,15 @@ fun SharedContactContent(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(0.8f)) {
+            val annotatedDisplayName = highlightText(
+                fullText = displayName.ifEmpty { contactList.firstOrNull()?.address.orEmpty() },
+                query = searchQuery,
+                highlightBackground = if(isOutgoing) Color(0xFF000000) else Color(0xFF4B4B64)
+            )
+
             Text(
-                text = displayName.ifEmpty { contactList.firstOrNull()?.address.orEmpty() },
-                style = MaterialTheme.typography.titleMedium.copy(color = titleColor),
+                text = annotatedDisplayName,
+                style = MaterialTheme.typography.titleMedium.copy(color = if (searchQuery.isBlank()){ titleColor }else{ if(isOutgoing) { titleColor } else { Color(0xFFFFFFFF) } }),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -248,6 +263,39 @@ fun SharedContactContent(
         }
     }
 }
+
+fun highlightText(
+    fullText: String,
+    query: String,
+    highlightBackground: Color
+): AnnotatedString {
+    if (query.isBlank()) return AnnotatedString(fullText)
+
+    val lowerFullText = fullText.lowercase()
+    val lowerQuery = query.lowercase()
+
+    return buildAnnotatedString {
+        var startIndex = 0
+        while (true) {
+            val index = lowerFullText.indexOf(lowerQuery, startIndex)
+            if (index == -1) {
+                append(fullText.substring(startIndex))
+                break
+            }
+            append(fullText.substring(startIndex, index))
+            withStyle(
+                style = SpanStyle(
+                    background = highlightBackground
+                )
+            ) {
+                append(fullText.substring(index, index + query.length))
+            }
+            startIndex = index + query.length
+        }
+    }
+}
+
+
 
 @Preview
 @Composable

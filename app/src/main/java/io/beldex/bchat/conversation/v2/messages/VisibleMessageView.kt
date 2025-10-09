@@ -47,6 +47,9 @@ import io.beldex.bchat.util.isSameDayMessage
 import io.beldex.bchat.util.toDp
 import io.beldex.bchat.util.toPx
 import io.beldex.bchat.database.BeldexAPIDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
@@ -243,7 +246,11 @@ class VisibleMessageView : LinearLayout {
             onAttachmentNeedsDownload, thread.isOpenGroupRecipient,delegate!!, this, position,messageSelected)
         binding.messageContentView.root.delegate = delegate
         binding.messageContentView.root.chatWithContact = { ct ->
-            delegate.chatWithContact(ct)
+            if((message.expiresIn == 0L && message.expireStarted == 0L) || (message.expiresIn > 0 && message.expireStarted > 0) ) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    delegate.chatWithContact(ct, message)
+                }
+            }
         }
         onDoubleTap = { binding.messageContentView.root.onContentDoubleTap?.invoke() }
     }

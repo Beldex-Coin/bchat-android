@@ -2511,7 +2511,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         binding.conversationRecyclerView.scrollToPosition(lastSeenItemPosition)
     }
 
-    override fun chatWithContact(contact : ContactModel) {
+    override suspend fun chatWithContact(contact : ContactModel, message : MessageRecord) {
         //disable popup if audio recording is in progress
         if (binding.inputBarRecordingView.isTimerRunning)
             return
@@ -2559,7 +2559,23 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                 }
             }
             chatConfirmationDialog.show(childFragmentManager, ComposeDialogContainer.TAG)
+            if(message.expiresIn > 0) {
+                delay(
+                    getRemainingTime(
+                        message.expireStarted, message.expiresIn
+                    )
+                )
+                if (chatConfirmationDialog.isVisible) {
+                    chatConfirmationDialog.dismiss()
+                }
+            }
         }
+    }
+
+    private fun getRemainingTime(startedAt: Long, expiresIn: Long) : Long {
+        val progressed: Long = System.currentTimeMillis() - startedAt
+        val remaining: Long = expiresIn - progressed
+        return remaining
     }
 
     override fun playVoiceMessageAtIndexIfPossible(indexInAdapter: Int) {

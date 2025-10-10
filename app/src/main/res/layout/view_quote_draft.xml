@@ -74,7 +74,7 @@
                 android:id="@+id/imgContactPerson"
                 android:layout_width="12dp"
                 android:layout_height="12dp"
-                android:src="@drawable/ic_profile_default"
+                android:src="@drawable/ic_contact_person"
                 />
 
             <TextView

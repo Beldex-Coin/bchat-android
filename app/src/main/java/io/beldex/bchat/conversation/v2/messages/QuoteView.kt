@@ -115,7 +115,14 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 if (type == "SharedContact") {
                     binding.contactView.visibility = View.VISIBLE
                     binding.contactName.setTextColor(getTextColor(isOutgoingMessage))
-                    binding.imgContactPerson.setColorFilter(ContextCompat.getColor(context, if(isOutgoingMessage) R.color.sent_quoted_text_color else R.color.received_message_text_color))
+                    when(mode){
+                        Mode.Draft -> {
+                            binding.imgContactPerson.setColorFilter(ContextCompat.getColor(context, R.color.text))
+                        }
+                        Mode.Regular -> {
+                            binding.imgContactPerson.setColorFilter(ContextCompat.getColor(context, if(isOutgoingMessage) R.color.sent_quoted_text_color else R.color.received_message_text_color))
+                        }
+                    }
 
                     if (mode == Mode.Regular) {
                         binding.quoteViewAttachmentPreviewContainer.visibility = View.GONE

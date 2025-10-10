@@ -662,7 +662,7 @@ class VisibleMessageContentView : MaterialCardView {
                                     },
                                 )
                             },
-                        searchQuery=searchQuery.toString()
+                        searchQuery=searchQuery ?: ""
                     )
                 }
             }

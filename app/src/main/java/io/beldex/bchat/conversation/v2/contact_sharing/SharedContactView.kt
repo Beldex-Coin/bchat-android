@@ -185,10 +185,17 @@ fun SharedContactContent(
                 query = searchQuery,
                 highlightBackground = if(isOutgoing) Color(0xFF000000) else Color(0xFF4B4B64)
             )
+            val textColor = when {
+                searchQuery.isBlank() -> titleColor
+                isOutgoing -> titleColor
+                searchQuery.isNotBlank()-> Color.White
+                else -> titleColor
+            }
+
 
             Text(
                 text = annotatedDisplayName,
-                style = MaterialTheme.typography.titleMedium.copy(color = if (searchQuery.isBlank()){ titleColor }else{ if(isOutgoing) { titleColor } else { Color(0xFFFFFFFF) } }),
+                style = MaterialTheme.typography.titleMedium.copy(color = textColor),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

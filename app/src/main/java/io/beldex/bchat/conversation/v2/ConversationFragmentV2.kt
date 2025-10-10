@@ -2566,9 +2566,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                         message.expireStarted, message.expiresIn
                     )
                 )
-                if (chatConfirmationDialog.isVisible) {
-                    chatConfirmationDialog.dismiss()
-                }
+                chatConfirmationDialog.dismiss()
             }
         }
     }

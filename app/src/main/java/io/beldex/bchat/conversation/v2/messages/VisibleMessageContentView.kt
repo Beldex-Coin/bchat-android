@@ -33,9 +33,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -78,6 +81,7 @@ import io.beldex.bchat.compose_utils.TextColor
 import io.beldex.bchat.conversation.v2.ConversationFragmentV2
 import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
 import io.beldex.bchat.conversation.v2.contact_sharing.SharedContactView
+import io.beldex.bchat.conversation.v2.search.SearchViewModel
 import io.beldex.bchat.databinding.ViewVisibleMessageContentBinding
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.util.Locale
@@ -112,7 +116,8 @@ class VisibleMessageContentView : MaterialCardView {
         delegate : VisibleMessageViewDelegate,
         visibleMessageView : VisibleMessageView,
         position : Int,
-        messageSelected: () -> Boolean
+        messageSelected : () -> Boolean,
+        searchViewModel : SearchViewModel?
     ) {
         // Background
         val background = getBackground(message.isOutgoing, isStartOfMessageCluster, isEndOfMessageCluster)
@@ -486,7 +491,7 @@ class VisibleMessageContentView : MaterialCardView {
             message.isSharedContact -> {
                 hideBody=true
                 showQuoteBody=false
-                setContactView(message, messageSelected,searchQuery)
+                setContactView(message, messageSelected,searchQuery, searchViewModel)
             }
         }
 
@@ -545,7 +550,12 @@ class VisibleMessageContentView : MaterialCardView {
         if (message.body.isNotEmpty() && showQuoteBody) {
             if (isSharedContact(message.body)) {
                 binding.sharedContactView.visibility = VISIBLE
-                setContactView(message, messageSelected, searchQuery)
+                setContactView(
+                    message,
+                    messageSelected,
+                    searchQuery,
+                    searchViewModel
+                )
             } else {
                 setBodyForQuotedMessage(message, searchQuery,delegate, visibleMessageView, position)
             }
@@ -582,7 +592,8 @@ class VisibleMessageContentView : MaterialCardView {
     private fun setContactView(
         message : MessageRecord,
         messageSelected : () -> Boolean,
-        searchQuery : String?
+        searchQuery : String?,
+        viewModel : SearchViewModel?
     ) {
         val isQuoteView : Boolean=message is MmsMessageRecord && message.quote != null
 
@@ -594,6 +605,14 @@ class VisibleMessageContentView : MaterialCardView {
         binding.sharedContactView.setContent {
             key(message.id) {
                 BChatTheme {
+                    val lifecycleOwner = LocalLifecycleOwner.current
+                    var hadResult by remember {
+                        mutableStateOf(false)
+                    }
+                    viewModel?.hasSearchResults?.observe(lifecycleOwner){ value ->
+                        hadResult = value
+                    }
+
                     val umd=UpdateMessageData.fromJSON(message.body)!!
                     val data=umd.kind as UpdateMessageData.Kind.SharedContact
                     val contact=ContactModel(
@@ -662,7 +681,8 @@ class VisibleMessageContentView : MaterialCardView {
                                     },
                                 )
                             },
-                        searchQuery=searchQuery ?: ""
+                        searchQuery=searchQuery ?: "",
+                        hasResult = hadResult
                     )
                 }
             }
@@ -794,7 +814,7 @@ class VisibleMessageContentView : MaterialCardView {
             searchQuery: String?
         ): Spannable {
             var body = message.body.toSpannable()
-            println("search filter called 1 -> $body")
+
             var linkLastClickTime: Long = 0
 
             body = MentionUtilities.highlightMentions(

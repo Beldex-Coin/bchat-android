@@ -51,6 +51,7 @@ import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.preferences.PrivacySettingsActivity
 import io.beldex.bchat.conversation.v2.messages.VisibleMessageViewDelegate
+import io.beldex.bchat.conversation.v2.search.SearchViewModel
 import io.beldex.bchat.util.DateUtils
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.channels.BufferOverflow
@@ -62,6 +63,7 @@ import java.util.Locale
 class ConversationAdapter(
     context: Context,
     cursor: Cursor,
+    private val searchViewModel : SearchViewModel?,
     private val onItemPress: (MessageRecord, Int, VisibleMessageView, MotionEvent) -> Unit,
     private val onItemSwipeToReply: (MessageRecord, Int) -> Unit,
     private val onItemLongPress: (MessageRecord, Int, View) -> Unit,
@@ -154,8 +156,7 @@ class ConversationAdapter(
                     }
                 }
                 val contact = contactCache[senderIdHash]
-
-                visibleMessageView.bind(message, messageBefore, getMessageAfter(position, cursor), glide, searchQuery, contact, senderId, onAttachmentNeedsDownload,{ selectedItems.size > 0 }, visibleMessageViewDelegate, position)
+                visibleMessageView.bind(message, messageBefore, getMessageAfter(position, cursor), glide, searchQuery, contact, senderId, onAttachmentNeedsDownload,{ selectedItems.size > 0 }, visibleMessageViewDelegate, position, searchViewModel)
                 if (!message.isDeleted) {
                     visibleMessageView.onPress = { event -> onItemPress(message, viewHolder.adapterPosition, visibleMessageView, event) }
                     visibleMessageView.onSwipeToReply = { onItemSwipeToReply(message, viewHolder.adapterPosition) }
@@ -359,6 +360,8 @@ class ConversationAdapter(
                 val message = messageDB.readerFor(cursor).current
                 if (message.body.lowercase(Locale.US).contains(searchQuery.toString().lowercase(Locale.US))) {
                     notifyItemChanged(i)
+                } else {
+                    notifyDataSetChanged()
                 }
             }
         }else{

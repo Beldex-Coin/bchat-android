@@ -31,6 +31,7 @@ import com.bumptech.glide.RequestManager
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.R
+import io.beldex.bchat.conversation.v2.search.SearchViewModel
 import io.beldex.bchat.database.BeldexThreadDatabase
 import io.beldex.bchat.database.MmsDatabase
 import io.beldex.bchat.database.MmsSmsDatabase
@@ -125,9 +126,10 @@ class VisibleMessageView : LinearLayout {
         contact : Contact?,
         senderBChatID : String,
         onAttachmentNeedsDownload : (Long, Long) -> Unit,
-        messageSelected: () -> Boolean,
+        messageSelected : () -> Boolean,
         delegate : VisibleMessageViewDelegate?,
-        position : Int
+        position : Int,
+        searchViewModel : SearchViewModel?
     ) {
         val threadID = message.threadId
         val thread = threadDb.getRecipientForThreadId(threadID) ?: return
@@ -243,7 +245,7 @@ class VisibleMessageView : LinearLayout {
             )
         }
         binding.messageContentView.root.bind(message, isStartOfMessageCluster, isEndOfMessageCluster, glide, thread, searchQuery, message.isOutgoing || isGroupThread || (contact?.isTrusted ?: false),
-            onAttachmentNeedsDownload, thread.isOpenGroupRecipient,delegate!!, this, position,messageSelected)
+            onAttachmentNeedsDownload, thread.isOpenGroupRecipient,delegate!!, this, position,messageSelected, searchViewModel)
         binding.messageContentView.root.delegate = delegate
         binding.messageContentView.root.chatWithContact = { ct ->
             if((message.expiresIn == 0L && message.expireStarted == 0L) || (message.expiresIn > 0 && message.expireStarted > 0) ) {

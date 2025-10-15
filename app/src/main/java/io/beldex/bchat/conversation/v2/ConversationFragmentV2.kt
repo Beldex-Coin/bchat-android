@@ -387,6 +387,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         val adapter=ConversationAdapter(
             requireActivity(),
             cursor,
+            searchViewModel,
             onItemPress={ message, position, view, event ->
                 if (!TextSecurePreferences.getIsReactionOverlayVisible(requireContext())) {
                     handlePress(message, position, view, event)
@@ -3323,6 +3324,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                     Observer { result : SearchViewModel.SearchResult? ->
                         if (result == null) return@Observer
                         if (result.getResults().isNotEmpty()) {
+                            searchViewModel!!.updateSearchResult(true)
                             result.getResults()[result.position]?.let {
                                 jumpToMessage(
                                     it.messageRecipient.address,
@@ -3348,6 +3350,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                                 binding.closeSearch.visibility=View.GONE
                                 binding.searchClose.visibility=View.VISIBLE
                             }
+                            searchViewModel!!.updateSearchResult(false)
                             binding.searchUp.visibility=View.GONE
                             binding.searchDown.visibility=View.GONE
                             binding.searchProgress.visibility=View.GONE

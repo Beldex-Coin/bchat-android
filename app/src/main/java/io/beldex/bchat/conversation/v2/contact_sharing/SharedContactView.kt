@@ -62,7 +62,8 @@ fun SharedContactView(
     subtitleColor: Color = OutlineLight,
     isQuoted: Boolean = false,
     isOutgoing: Boolean = false,
-    searchQuery: String = ""
+    searchQuery: String = "",
+    hasResult: Boolean = false
 ) {
     val numberOfContacts = flattenData(contacts[0].address.serialize())
 
@@ -85,7 +86,9 @@ fun SharedContactView(
                 modifier = Modifier
                     .fillMaxWidth(),
                 searchQuery = searchQuery,
-                isOutgoing = isOutgoing
+                isOutgoing = isOutgoing,
+                hasResult = hasResult
+
             )
         }
 
@@ -141,6 +144,7 @@ fun SharedContactContent(
     subtitleColor: Color = TextColor,
     searchQuery: String = "",
     isOutgoing: Boolean = false,
+    hasResult: Boolean = false
 ) {
     val context = LocalContext.current
 
@@ -183,7 +187,8 @@ fun SharedContactContent(
             val annotatedDisplayName = highlightText(
                 fullText = displayName.ifEmpty { contactList.firstOrNull()?.address.orEmpty() },
                 query = searchQuery,
-                highlightBackground = if(isOutgoing) Color(0xFF000000) else Color(0xFF4B4B64)
+                highlightBackground = if(isOutgoing) Color(0xFF000000) else Color(0xFF4B4B64),
+                hasResult = hasResult
             )
             val textColor = when {
                 searchQuery.isBlank() -> titleColor
@@ -274,9 +279,10 @@ fun SharedContactContent(
 fun highlightText(
     fullText: String,
     query: String,
-    highlightBackground: Color
+    highlightBackground: Color,
+    hasResult : Boolean
 ): AnnotatedString {
-    if (query.isBlank()) return AnnotatedString(fullText)
+    if (query.isBlank() || !hasResult) return AnnotatedString(fullText)
 
     val lowerFullText = fullText.lowercase()
     val lowerQuery = query.lowercase()

@@ -1,6 +1,7 @@
 package io.beldex.bchat.conversation.v2.search
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.beldex.libbchat.utilities.Debouncer
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,6 +24,13 @@ class SearchViewModel @Inject constructor(
     private var searchOpen = false
     private var activeQuery: String? = null
     private var activeThreadId: Long = 0
+    private val _hasSearchResults = MutableLiveData<Boolean>()
+    var hasSearchResults: LiveData<Boolean> = _hasSearchResults
+
+    fun updateSearchResult(hasResult: Boolean){
+        _hasSearchResults.postValue(hasResult)
+    }
+
     val searchResults: LiveData<SearchResult>
         get() = result
 

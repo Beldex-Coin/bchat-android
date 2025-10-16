@@ -1530,12 +1530,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             override fun onSuccess(result : Boolean?) {
                 if (result == true) {
                     sendAttachments(attachmentManager.buildSlideDeck().asAttachments(), null)
-                } else {
-                    Toast.makeText(
-                        requireActivity().applicationContext,
-                        R.string.MediaSendActivity_an_item_was_removed_because_it_exceeded_the_size_limit,
-                        Toast.LENGTH_LONG
-                    ).show()
                 }
             }
 

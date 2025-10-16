@@ -7,4 +7,12 @@
         <item name="android:homeAsUpIndicator">@drawable/ic_back</item>
     </style>
 
+    <style name="Theme.Bchat.DayNight.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
 </resources>

@@ -9,6 +9,7 @@ import io.beldex.bchat.databinding.ViewMentionCandidateBinding
 import com.beldex.libbchat.messaging.mentions.Mention
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.bumptech.glide.RequestManager
+import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 
 class MentionCandidateView : LinearLayout {
     private lateinit var binding: ViewMentionCandidateBinding
@@ -27,7 +28,7 @@ class MentionCandidateView : LinearLayout {
     }
 
     private fun update() = with(binding) {
-        mentionCandidateNameTextView.text = mentionCandidate.displayName
+        mentionCandidateNameTextView.text = mentionCandidate.displayName.capitalizeFirstLetter()
         profilePictureView.root.publicKey = mentionCandidate.publicKey
         profilePictureView.root.displayName = mentionCandidate.displayName
         profilePictureView.root.additionalPublicKey = null

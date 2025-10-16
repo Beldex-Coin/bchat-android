@@ -1820,6 +1820,8 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                 Toast.LENGTH_SHORT
             ).show()
         } else {
+            binding.conversationRecyclerView.scrollToPosition(0)
+
             sendTextOnlyMessage()
         }
     }
@@ -2848,6 +2850,8 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                             contactsList?.toList() ?: listOf()
                         )
                     } else {
+                        binding.conversationRecyclerView.scrollToPosition(0)
+
                         shareContact(contactsList?.toList() ?: listOf())
                     }
                 }
@@ -3554,6 +3558,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             contacts : List<ContactModel> = emptyList()
         ) {
             val recipient=viewModel.recipient.value ?: return
+            binding.conversationRecyclerView.scrollToPosition(0)
             //New Line v32
             processMessageRequestApproval()?.let { conversationApprovalJob = it }
 

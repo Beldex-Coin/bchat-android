@@ -233,6 +233,9 @@ fun GroupDetailsScreen(
     var groupName by remember {
         mutableStateOf(groupInfo.title)
     }
+    var profileRefresh by remember {
+        mutableStateOf(false)
+    }
     var groupMembersCount by remember {
         mutableIntStateOf(
             groupMembers?.members?.count() ?: 0
@@ -251,6 +254,7 @@ fun GroupDetailsScreen(
         if (result.resultCode == RESULT_OK) {
             result.data?.let { data ->
                 groupName=data.getStringExtra("group_name") ?: ""
+                profileRefresh = !profileRefresh
                 groupMembersCount=data.getIntExtra("group_members_count", 0)
                 if (memberCount != groupMembersCount) {
                     secretGroupInfoViewModel.fetchGroupMembers()
@@ -644,15 +648,27 @@ fun GroupDetailsScreen(
                 .take(2).toMutableList()
             val additionalPk=members.getOrNull(1)?.serialize() ?: ""
             val additionalDisplay=getUserDisplayName(additionalPk)
-            ProfilePictureComponent(
-                publicKey=recipient.address.toString(),
-                displayName=recipient.name.toString(),
-                additionalPublicKey=additionalPk,
-                additionalDisplayName=additionalDisplay,
-                containerSize=70.dp,
-                pictureMode=pictureType,
-                isGroupInfo = true
-            )
+            if(profileRefresh) {
+                ProfilePictureComponent(
+                    publicKey=recipient.address.toString(),
+                    displayName=recipient.name.toString(),
+                    additionalPublicKey=additionalPk,
+                    additionalDisplayName=additionalDisplay,
+                    containerSize=70.dp,
+                    pictureMode=pictureType,
+                    isGroupInfo = true
+                )
+            } else {
+                ProfilePictureComponent(
+                    publicKey=recipient.address.toString(),
+                    displayName=recipient.name.toString(),
+                    additionalPublicKey=additionalPk,
+                    additionalDisplayName=additionalDisplay,
+                    containerSize=70.dp,
+                    pictureMode=pictureType,
+                    isGroupInfo = true
+                )
+            }
         }
 
         Row(

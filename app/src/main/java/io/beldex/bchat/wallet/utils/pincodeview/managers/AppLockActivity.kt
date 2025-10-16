@@ -1,5 +1,6 @@
 package io.beldex.bchat.wallet.utils.pincodeview.managers
 
+import android.app.Activity
 import android.content.Intent
 import android.hardware.fingerprint.FingerprintManager
 import android.os.Build
@@ -19,11 +20,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setWalletEntryPassword
@@ -44,6 +50,8 @@ import io.beldex.bchat.wallet.utils.pincodeview.PinCodeRoundView
 import io.beldex.bchat.wallet.utils.pincodeview.managers.FingerprintUiHelper.FingerprintUiHelperBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
+import io.beldex.bchat.util.UiMode
+import io.beldex.bchat.util.UiModeUtilities
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Arrays
@@ -96,6 +104,14 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
 //        initializeToolbar()
         initLayout(intent)
         setContent {
+            val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
+            val view = LocalView.current
+            val window = (view.context as Activity).window
+            val statusBarColor = if (isDarkTheme) Color.Black else Color.White
+            SideEffect {
+                window.statusBarColor = statusBarColor.toArgb()
+                WindowInsetsControllerCompat(window, view).isAppearanceLightStatusBars = !isDarkTheme
+            }
             BChatTheme {
                 Surface {
                     Scaffold(

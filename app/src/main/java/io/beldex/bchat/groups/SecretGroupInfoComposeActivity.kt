@@ -130,7 +130,7 @@ class SecretGroupInfoComposeActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowCompat.setDecorFitsSystemWindows(window, true)
         setContent {
             val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
             val view = LocalView.current
@@ -555,29 +555,35 @@ fun GroupDetailsScreen(
                         Row(
                             modifier=Modifier
                                 .fillMaxWidth()
-                                .padding(vertical=8.dp),
+                                .padding(vertical=8.dp)
+                                .clickable {
+                                if (getLocalNumber(context) != member) {
+                                    selectedItem=member
+                                    showMemberOptionDialog=true
+                                }
+                            },
                             verticalAlignment=Alignment.CenterVertically
                         )
                         {
                             Box(
                                 modifier=Modifier
-                                    .padding(4.dp)
-                                    .height(30.dp)
-                                    .width(30.dp),
+                                    .padding(1.dp)
+                                    .height(40.dp)
+                                    .width(40.dp),
                                 contentAlignment=Alignment.Center,
                             ) {
                                 if (updateProfile) {
                                     ProfilePictureComponent(
                                         publicKey=member,
                                         displayName=getUserDisplayName(member),
-                                        containerSize=profileSize,
+                                        containerSize=40.dp,
                                         pictureMode=ProfilePictureMode.SmallPicture
                                     )
                                 } else {
                                     ProfilePictureComponent(
                                         publicKey=member,
                                         displayName=getUserDisplayName(member),
-                                        containerSize=profileSize,
+                                        containerSize=40.dp,
                                         pictureMode=ProfilePictureMode.SmallPicture
                                     )
                                 }
@@ -587,7 +593,7 @@ fun GroupDetailsScreen(
                                 Text(
                                     text=getUserDisplayName(member).capitalizeFirstLetter(),
                                     style=MaterialTheme.typography.bodyMedium.copy(
-                                        fontSize=14.sp,
+                                        fontSize=16.sp,
                                         color=MaterialTheme.appColors.textColor
                                     ),
                                     modifier=Modifier.padding(end=8.dp)
@@ -846,15 +852,15 @@ fun GroupDetailsScreen(
                         ) {
                         Box(
                             modifier=Modifier
-                                .padding(4.dp)
-                                .height(30.dp)
-                                .width(30.dp),
+                                .padding(1.dp)
+                                .height(40.dp)
+                                .width(40.dp),
                             contentAlignment=Alignment.Center,
                         ) {
                             ProfilePictureComponent(
                                 publicKey=member,
                                 displayName=getUserDisplayName(member),
-                                containerSize=profileSize,
+                                containerSize=40.dp,
                                 pictureMode=ProfilePictureMode.SmallPicture
                             )
                         }
@@ -863,7 +869,7 @@ fun GroupDetailsScreen(
                             Text(
                                 text=getUserDisplayName(member).capitalizeFirstLetter(),
                                 style=MaterialTheme.typography.bodyMedium.copy(
-                                    fontSize=14.sp,
+                                    fontSize=16.sp,
                                     color=MaterialTheme.appColors.textColor
                                 ),
                                 modifier=Modifier.padding(end=8.dp)

@@ -2548,7 +2548,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                 val names = flattenData(contact.name)
                 val displayName = when {
                     names.size > 2 -> "${names.first()} and ${names.size - 1} others"
-                    names.size == 2 -> "${names[0]} and ${names[1]}"
+                    names.size == 2 -> "${names[0]} and ${names.size - 1} other"
                     names.size == 1 -> names.first()
                     else -> "No Name"
                 }

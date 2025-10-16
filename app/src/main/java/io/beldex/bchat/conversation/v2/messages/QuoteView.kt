@@ -142,7 +142,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                             val names = flattenData(data.name).ifEmpty { flattenData(data.address) }
                             val displayName = when {
                                 names.size > 2 -> "${names.first().capitalizeFirstLetter()} and ${names.size - 1} others"
-                                names.size == 2 -> "${names[0].capitalizeFirstLetter()} and ${names[1].capitalizeFirstLetter()}"
+                                names.size == 2 -> "${names[0].capitalizeFirstLetter()} and ${names.size - 1} other"
                                 names.size == 1 -> names.first().capitalizeFirstLetter()
                                 else -> "No Name"
                             }

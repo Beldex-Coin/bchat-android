@@ -632,7 +632,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
         if (names.size() > 2) {
           displayName = capitalizeFirstLetter(names.get(0)) + " and " + (names.size() - 1) + " others";
         } else if (names.size() == 2) {
-          displayName = capitalizeFirstLetter(names.get(0)) + " and " + capitalizeFirstLetter(names.get(1));
+          displayName = capitalizeFirstLetter(names.get(0)) + " and " + (names.size() - 1) + " other";
         } else if (names.size() == 1) {
           displayName = capitalizeFirstLetter(names.get(0));
         } else {

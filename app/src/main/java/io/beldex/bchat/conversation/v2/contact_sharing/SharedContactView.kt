@@ -159,7 +159,7 @@ fun SharedContactContent(
     val displayName = when (contactList.size) {
         0 -> "No Name"
         1 -> contactList[0].name.capitalizeFirstLetter()
-        2 -> "${contactList[0].name.capitalizeFirstLetter()} and ${contactList[1].name.capitalizeFirstLetter()}"
+        2 -> "${contactList[0].name.capitalizeFirstLetter()} and ${contactList.size - 1} other"
         else -> "${contactList[0].name.capitalizeFirstLetter()} and ${contactList.size - 1} others"
     }
 

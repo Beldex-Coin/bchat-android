@@ -190,17 +190,10 @@ fun SharedContactContent(
                 highlightBackground = if(isOutgoing) Color(0xFF000000) else Color(0xFF4B4B64),
                 hasResult = hasResult
             )
-            val textColor = when {
-                searchQuery.isBlank() -> titleColor
-                isOutgoing -> titleColor
-                searchQuery.isNotBlank()-> Color.White
-                else -> titleColor
-            }
-
 
             Text(
                 text = annotatedDisplayName,
-                style = MaterialTheme.typography.titleMedium.copy(color = textColor),
+                style = MaterialTheme.typography.titleMedium.copy(color = titleColor),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -280,7 +273,8 @@ fun highlightText(
     fullText: String,
     query: String,
     highlightBackground: Color,
-    hasResult : Boolean
+    hasResult : Boolean,
+    highlightTextColor: Color = Color.White
 ): AnnotatedString {
     if (query.isBlank() || !hasResult) return AnnotatedString(fullText)
 
@@ -295,10 +289,13 @@ fun highlightText(
                 append(fullText.substring(startIndex))
                 break
             }
+
             append(fullText.substring(startIndex, index))
+
             withStyle(
                 style = SpanStyle(
-                    background = highlightBackground
+                    background = highlightBackground,
+                    color = highlightTextColor
                 )
             ) {
                 append(fullText.substring(index, index + query.length))

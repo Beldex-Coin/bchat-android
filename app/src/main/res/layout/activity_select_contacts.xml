@@ -62,6 +62,26 @@
         tools:listitem="@layout/view_user"/>
 
     <LinearLayout
+        android:id="@+id/noContactFoundContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_centerInParent="true">
+
+        <ImageView
+            android:id="@+id/icNoContactFound"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/no_record_found"
+            android:src="@drawable/ic_no_contact_found"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/emptyStateContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

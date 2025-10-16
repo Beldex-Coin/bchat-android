@@ -3628,11 +3628,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                     name = Json.encodeToString(names)
                 )
                 message.sharedContact = contact
-                message.text = contact.address?.let { address ->
-                    contact.name?.let { name ->
-                        buildSharedContact(address, name).toJSON()
-                    }
-                }
                 outgoingMediaMessage=OutgoingMediaMessage.fromSharedContact(
                     message,
                     recipient,
@@ -3728,7 +3723,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             name = Json.encodeToString(names)
         )
         message.sharedContact = contact
-        message.text = names.joinToString(", ")
 
         val outgoingTextMessage = OutgoingTextMessage.fromSharedContact(
             contact,

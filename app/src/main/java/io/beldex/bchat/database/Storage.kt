@@ -192,15 +192,21 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
             val quote: Optional<QuoteModel> = if (quotes != null) Optional.of(quotes) else Optional.absent()
             val linkPreviews: Optional<List<LinkPreview>> = if (linkPreview.isEmpty()) Optional.absent() else Optional.of(linkPreview.mapNotNull { it!! })
             val mmsDatabase = DatabaseComponent.get(context).mmsDatabase()
+            val isContact = (message.sharedContact != null)
             val insertResult = if (message.sender == getUserPublicKey()) {
-                val mediaMessage = OutgoingMediaMessage.from(message, targetRecipient, pointers, quote.orNull(), linkPreviews.orNull()?.firstOrNull())
+                val mediaMessage = if(isContact) {
+                    OutgoingMediaMessage.fromSharedContact(message, targetRecipient, pointers, quote.orNull(), linkPreviews.orNull()?.firstOrNull())
+                }
+                else OutgoingMediaMessage.from(message, targetRecipient, pointers, quote.orNull(), linkPreviews.orNull()?.firstOrNull())
                 mmsDatabase.insertSecureDecryptedMessageOutbox(mediaMessage, message.threadID ?: -1, message.sentTimestamp!!,runThreadUpdate)
             } else {
                 // It seems like we have replaced SignalServiceAttachment with BchatServiceAttachment
                 val signalServiceAttachments = attachments.mapNotNull {
                     it.toSignalPointer()
                 }
-                val mediaMessage = IncomingMediaMessage.from(message, senderAddress, targetRecipient.expireMessages * 1000L, group, signalServiceAttachments, quote, linkPreviews)
+
+                val mediaMessage = if(isContact) IncomingMediaMessage.fromSharedContact(message.sharedContact, message, senderAddress, targetRecipient.expireMessages * 1000L, group, signalServiceAttachments, quote, linkPreviews)
+                else IncomingMediaMessage.from(message, senderAddress, targetRecipient.expireMessages * 1000L, group, signalServiceAttachments, quote, linkPreviews)
                 mmsDatabase.insertSecureDecryptedMessageInbox(mediaMessage, message.threadID ?: -1, message.receivedTimestamp ?: 0,runIncrement,runThreadUpdate)
             }
             if (insertResult.isPresent) {

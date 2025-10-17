@@ -35,6 +35,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import com.beldex.libbchat.messaging.messages.control.MessageRequestResponse
 import com.beldex.libbchat.messaging.messages.visible.Reaction
+import com.beldex.libbchat.messaging.messages.visible.SharedContact
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.utilities.GroupUtil.doubleEncodeGroupID
 import com.beldex.libbchat.utilities.recipients.MessageType
@@ -294,6 +295,13 @@ fun MessageReceiver.handleVisibleMessage(message: VisibleMessage, proto: SignalS
                 profileManager.setProfilePictureURL(context, recipient, profile.profilePictureURL!!)
             }
         }
+    }
+    // Parse shared contact if needed
+    if (message.isContact()) {
+        val contactProto=
+            if (proto.dataMessage.hasSharedContact()) proto.dataMessage.sharedContact else null
+        val sharedContacts=contactProto?.let { SharedContact.fromProto(it) }
+        message.sharedContact=sharedContacts
     }
     // Parse quote if needed
     var quoteModel: QuoteModel? = null

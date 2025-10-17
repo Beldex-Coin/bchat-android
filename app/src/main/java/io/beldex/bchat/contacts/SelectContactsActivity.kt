@@ -35,7 +35,6 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
 
     companion object {
         val usersToExcludeKey = "usersToExcludeKey"
-        val emptyStateTextKey = "emptyStateTextKey"
         val selectedContactsKey = "selectedContactsKey"
     }
 
@@ -48,10 +47,6 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
 
         isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
         usersToExclude=intent.getStringArrayExtra(usersToExcludeKey)?.toSet() ?: setOf()
-        val emptyStateText=intent.getStringExtra(emptyStateTextKey)
-        if (emptyStateText != null) {
-            binding.emptyStateMessageTextView.text=emptyStateText
-        }
 
         binding.recyclerView.adapter=selectContactsAdapter
         binding.recyclerView.layoutManager=LinearLayoutManager(this)
@@ -130,15 +125,7 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
 
         selectContactsAdapter.updateList(filteredList)
 
-        if (filteredList.isEmpty()) {
-            binding.noContactFoundContainer.visibility = View.VISIBLE
-            binding.icNoContactFound.setImageResource(
-                if (isDarkTheme) R.drawable.ic_no_contact_found
-                else R.drawable.ic_no_contact_found_white
-            )
-        } else {
-            binding.noContactFoundContainer.visibility = View.GONE
-        }
+        showNoContactFoundContainer(if(filteredList.isEmpty()) View.VISIBLE else View.GONE)
     }
 
     private fun getUserDisplayName(publicKey: String): String {
@@ -167,10 +154,20 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
         update(listOf())
     }
 
+    private fun showNoContactFoundContainer(isVisible: Int) {
+        binding.noContactFoundContainer.visibility = isVisible
+        if(isVisible == View.VISIBLE) {
+            binding.icNoContactFound.setImageResource(
+                if (isDarkTheme) R.drawable.ic_no_contact_found
+                else R.drawable.ic_no_contact_found_white
+            )
+        }
+    }
+
     private fun update(members: List<String>) {
         this.members = members
         binding.recyclerView.visibility = if (members.isEmpty()) View.GONE else View.VISIBLE
-        binding.emptyStateContainer.visibility = if (members.isEmpty()) View.VISIBLE else View.GONE
+        showNoContactFoundContainer(if (members.isEmpty()) View.VISIBLE else View.GONE)
         invalidateOptionsMenu()
     }
     // endregion

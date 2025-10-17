@@ -99,16 +99,36 @@ public class IncomingMediaMessage {
                                                        List<SignalServiceAttachment> attachments,
                                                        Optional<QuoteModel> quote,
                                                        Optional<List<LinkPreview>> linkPreviews) {
-    String address = contact.getAddress();
-    String name = contact.getName();
-    if (address == null || name == null) { return null; }
-    // FIXME: Doing toJSON() to get the body here is weird
-    String body = UpdateMessageData.Companion.buildSharedContact(address, name).toJSON();
-    IncomingMediaMessage incomingMediaMessage = new IncomingMediaMessage(from, message.getSentTimestamp(), -1, expiresIn, false,
-            false, false, Optional.fromNullable(body), group, Optional.fromNullable(attachments), quote, Optional.absent(), linkPreviews, Optional.absent());
+    return java.util.Optional.ofNullable(contact)
+            .filter(c -> c.getAddress() != null && c.getName() != null)
+            .map(c -> {
+              String body = UpdateMessageData.Companion
+                      .buildSharedContact(c.getAddress(), c.getName())
+                      .toJSON();
 
-    incomingMediaMessage.isContact = true;
-    return incomingMediaMessage;
+              long timestamp = java.util.Optional.ofNullable(message.getSentTimestamp()).orElse(-1L);
+
+              IncomingMediaMessage msg = new IncomingMediaMessage(
+                      from,
+                      timestamp,
+                      -1,
+                      expiresIn,
+                      false,
+                      false,
+                      false,
+                      Optional.fromNullable(body),
+                      group,
+                      Optional.fromNullable(attachments),
+                      quote,
+                      Optional.absent(),
+                      linkPreviews,
+                      Optional.absent()
+              );
+
+              msg.isContact = true;
+              return msg;
+            })
+            .orElse(null);
   }
   public int getSubscriptionId() {
     return subscriptionId;

@@ -18,6 +18,7 @@ import com.beldex.libbchat.utilities.recipients.Recipient;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public class OutgoingMediaMessage {
 
@@ -97,16 +98,35 @@ public class OutgoingMediaMessage {
                                           @Nullable QuoteModel outgoingQuote,
                                           @Nullable LinkPreview linkPreview)
   {
-    List<LinkPreview> previews = Collections.emptyList();
-    if (linkPreview != null) {
-      previews = Collections.singletonList(linkPreview);
-    }
-    SharedContact contact = message.getSharedContact();
-    String body = UpdateMessageData.Companion.buildSharedContact(contact.getAddress(), contact.getName()).toJSON();
+    List<LinkPreview> previews = Optional.ofNullable(linkPreview)
+            .map(Collections::singletonList)
+            .orElse(Collections.emptyList());
 
-    return new OutgoingMediaMessage(recipient, body, attachments, message.getSentTimestamp(), -1,
-            recipient.getExpireMessages() * 1000, DistributionTypes.DEFAULT, outgoingQuote, Collections.emptyList(),
-            previews, Collections.emptyList(), Collections.emptyList());
+    return Optional.ofNullable(message.getSharedContact())
+            .filter(c -> c.getAddress() != null && c.getName() != null)
+            .map(c -> {
+              String body = UpdateMessageData.Companion
+                      .buildSharedContact(c.getAddress(), c.getName())
+                      .toJSON();
+
+              long timestamp = Optional.ofNullable(message.getSentTimestamp()).orElse(-1L);
+
+              return new OutgoingMediaMessage(
+                      recipient,
+                      body,
+                      attachments,
+                      timestamp,
+                      -1,
+                      recipient.getExpireMessages() * 1000L,
+                      DistributionTypes.DEFAULT,
+                      outgoingQuote,
+                      Collections.emptyList(),
+                      previews,
+                      Collections.emptyList(),
+                      Collections.emptyList()
+              );
+            })
+            .orElse(null);
   }
 
   public Recipient getRecipient() {

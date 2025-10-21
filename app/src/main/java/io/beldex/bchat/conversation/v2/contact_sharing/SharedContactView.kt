@@ -210,7 +210,7 @@ fun SharedContactContent(
 
                 Text(
                     text = annotatedDisplayName,
-                    style = MaterialTheme.typography.titleMedium.copy(color = titleColor),
+                    style = MaterialTheme.typography.titleSmall.copy(color = titleColor, lineHeight = 15.0.sp),
                     maxLines = if(contactList.size >= 2) 2 else 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -223,7 +223,7 @@ fun SharedContactContent(
                         text = addressString,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.bodySmall.copy(color = subtitleColor)
+                        style = MaterialTheme.typography.bodySmall.copy(color = subtitleColor, lineHeight = 15.0.sp)
                     )
                 }
             }

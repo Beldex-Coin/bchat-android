@@ -102,8 +102,8 @@ fun SharedContactView(
             modifier=Modifier
                 .fillMaxWidth(0.7f)
                 .padding(
-                    top=if (isQuoted) 3.dp else 0.dp,
-                    bottom=if (isQuoted) 0.dp else 3.dp
+                    top = if (isQuoted) 3.dp else 0.dp,
+                    bottom = 3.dp
                 ),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.SpaceBetween

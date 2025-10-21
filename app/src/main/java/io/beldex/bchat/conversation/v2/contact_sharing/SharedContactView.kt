@@ -15,10 +15,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -76,7 +75,14 @@ fun SharedContactView(
             colors =CardDefaults.cardColors(
                 containerColor = backgroundColor
             ),
-            modifier = modifier
+            modifier=Modifier
+                .fillMaxWidth(0.7f)
+                .padding(
+                    start=if (isQuoted) 2.dp else 8.dp,
+                    top=if (isQuoted) 4.dp else 0.dp,
+                    end=if (isQuoted) 2.dp else 8.dp,
+                    bottom=if (isQuoted) 4.dp else 8.dp
+                ),
         ) {
             SharedContactContent(
                 contacts = contacts,
@@ -92,33 +98,16 @@ fun SharedContactView(
             )
         }
 
-        Row(
-            modifier = modifier
-                .padding(horizontal = 8.dp),
-            verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.SpaceBetween
+        Column(
+            modifier=Modifier
+                .fillMaxWidth(0.7f)
+                .padding(
+                    top=if (isQuoted) 3.dp else 0.dp,
+                    bottom=if (isQuoted) 0.dp else 3.dp
+                ),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-
-                Row(
-                    verticalAlignment=Alignment.CenterVertically
-                ) {
-                    Text(
-                        text= if(numberOfContacts.size > 1) stringResource(R.string.view_all) else stringResource(R.string.message),
-                        style=MaterialTheme.typography.bodySmall.copy(
-                            color= colorResource(if(isOutgoing) R.color.view_all_text_out else R.color.view_all_text),
-                            fontSize=16.sp
-                        )
-                    )
-
-                    Icon(
-                        imageVector=Icons.Default.ChevronRight,
-                        contentDescription="view all",
-                        tint=colorResource(if(isOutgoing) R.color.view_all_text_out else R.color.view_all_text),
-                        modifier=Modifier
-                            .size(18.dp)
-                            .padding(start=2.dp)
-                    )
-                }
 
             Text(
                 text = timeStamp,
@@ -126,9 +115,27 @@ fun SharedContactView(
                     color = colorResource(if(isOutgoing) R.color.timestamp_out else R.color.timestamp_in),
                     fontSize = 11.sp
                 ),
-                modifier = Modifier.
-                padding(top = 2.dp)
+                modifier = Modifier.align(Alignment.End).padding(
+                    end=if (isQuoted) 2.dp else 8.dp,
+                )
             )
+            Spacer(modifier = Modifier.height(5.dp))
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                HorizontalDivider(
+                    modifier = Modifier.fillMaxWidth().height(0.5.dp),
+                    color = colorResource(if(isOutgoing) R.color.outgoing_message_divider_color else R.color.incoming_message_divider_color)
+                )
+                Spacer(modifier = Modifier.height(5.dp))
+                Text(
+                    text= if(numberOfContacts.size > 1) stringResource(R.string.view_all) else stringResource(R.string.message),
+                    style=MaterialTheme.typography.bodySmall.copy(
+                        color= colorResource(if(isOutgoing) R.color.view_all_text_out else R.color.view_all_text),
+                        fontSize=14.sp
+                    ),
+                )
+            }
         }
 
 
@@ -191,26 +198,27 @@ fun SharedContactContent(
                 hasResult = hasResult
             )
 
-            Text(
-                text = annotatedDisplayName,
-                style = MaterialTheme.typography.titleMedium.copy(color = titleColor),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_contact_person),
+                    contentDescription = "shared contact person",
+                    tint = subtitleColor,
+                    modifier = Modifier.size(12.dp)
+                )
 
-            Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.width(5.dp))
 
-            if (contactList.isNotEmpty()) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_contact_person),
-                        contentDescription = "shared contact person",
-                        tint = subtitleColor,
-                        modifier = Modifier.size(12.dp)
-                    )
+                Text(
+                    text = annotatedDisplayName,
+                    style = MaterialTheme.typography.titleMedium.copy(color = titleColor),
+                    maxLines = if(contactList.size >= 2) 2 else 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
 
-                    Spacer(modifier = Modifier.width(4.dp))
-
+            if(contactList.size < 2) {
+                Spacer(modifier = Modifier.height(4.dp))
+                if(contactList.isNotEmpty()) {
                     Text(
                         text = addressString,
                         maxLines = 1,

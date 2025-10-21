@@ -275,4 +275,6 @@
     <color name="view_all_text_out">#FFFFFF</color>
     <color name="timestamp_out">#EBEBEB</color>
     <color name="timestamp_in">#A7A7BA</color>
+    <color name="incoming_message_divider_color">#A7A7BA</color>
+    <color name="outgoing_message_divider_color">#2FA62F</color>
 </resources>

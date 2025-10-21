@@ -656,14 +656,6 @@ class VisibleMessageContentView : MaterialCardView {
                         } else {
                             colorResource(R.color.received_message_text_color)
                         },
-                        modifier=Modifier
-                            .fillMaxWidth(0.7f)
-                            .padding(
-                                start=if (isQuoteView) 2.dp else 4.dp,
-                                top=if (isQuoteView) 4.dp else 0.dp,
-                                end=if (isQuoteView) 2.dp else 4.dp,
-                                bottom=if (isQuoteView) 4.dp else 8.dp
-                            ),
                         columnModifier=Modifier
                             .padding(bottom=4.dp)
                             .pointerInput(Unit) {

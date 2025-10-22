@@ -623,16 +623,18 @@ public class DefaultMessageNotifier implements MessageNotifier {
         UpdateMessageData messageData = UpdateMessageData.Companion.fromJSON(record.getBody());
           assert messageData != null;
           UpdateMessageData.Kind.SharedContact data = (UpdateMessageData.Kind.SharedContact) messageData.getKind();
-        List<String> names = flattenData(data.getName());
+          assert data != null;
+          List<String> names = flattenData(data.getName());
+        List<String> addresses = flattenData(data.getAddress());
         if (names.isEmpty()) {
           names = flattenData(data.getAddress());
         }
 
         String displayName;
         if (names.size() > 2) {
-          displayName = capitalizeFirstLetter(names.get(0)) + " and " + (names.size() - 1) + " others";
+          displayName = shortNameAndAddress(names.get(0), addresses.get(0)) + " and " + (names.size() - 1) + " others";
         } else if (names.size() == 2) {
-          displayName = capitalizeFirstLetter(names.get(0)) + " and " + (names.size() - 1) + " other";
+          displayName = shortNameAndAddress(names.get(0), addresses.get(0)) + " and " + (names.size() - 1) + " other";
         } else if (names.size() == 1) {
           displayName = capitalizeFirstLetter(names.get(0));
         } else {
@@ -702,6 +704,18 @@ public class DefaultMessageNotifier implements MessageNotifier {
       return input;
     }
     return input.substring(0, 1).toUpperCase() + input.substring(1);
+  }
+
+  public String shortNameAndAddress(String name, String address) {
+    if(name.equals(address)) {
+      if(address.length() >= 7) {
+        return capitalizeFirstLetter(address.substring(0, 4))+"...."+address.substring(address.length() - 3);
+      } else {
+        return capitalizeFirstLetter(address);
+      }
+    } else {
+      return capitalizeFirstLetter(name);
+    }
   }
 
 

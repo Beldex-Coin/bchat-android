@@ -196,6 +196,7 @@ import io.beldex.bchat.util.getColorWithID
 import io.beldex.bchat.util.isValidString
 import io.beldex.bchat.util.parcelable
 import io.beldex.bchat.util.serializable
+import io.beldex.bchat.util.shortNameAndAddress
 import io.beldex.bchat.util.slidetoact.SlideToActView
 import io.beldex.bchat.util.slidetoact.SlideToActView.OnSlideCompleteListener
 import io.beldex.bchat.util.toPx
@@ -2545,12 +2546,13 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                 onCancel={}
             )
             chatConfirmationDialog.apply {
-                val names = flattenData(contact.name)
-                val displayName = when {
-                    names.size > 2 -> "${names.first()} and ${names.size - 1} others"
-                    names.size == 2 -> "${names[0]} and ${names.size - 1} other"
-                    names.size == 1 -> names.first()
-                    else -> "No Name"
+                val addresses = flattenData(contact.address.serialize())
+                val names = flattenData(contact.name).ifEmpty { addresses }
+                val displayName = when(names.size) {
+                    0 -> "No Name"
+                    1 -> names.first().capitalizeFirstLetter()
+                    2 -> "${shortNameAndAddress(names[0],addresses[0])} and ${names.size - 1} other"
+                    else -> "${shortNameAndAddress(names.first(), addresses.first())} and ${names.size - 1} others"
                 }
                 arguments=Bundle().apply {
                     putString(ComposeDialogContainer.EXTRA_ARGUMENT_1, displayName)

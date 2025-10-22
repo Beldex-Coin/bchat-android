@@ -28,6 +28,7 @@ import io.beldex.bchat.database.model.ThreadRecord
 import io.beldex.bchat.databinding.ViewConversationBinding
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.isSharedContact
+import io.beldex.bchat.util.shortNameAndAddress
 import java.util.Locale
 
 class ConversationView : LinearLayout {
@@ -126,12 +127,13 @@ class ConversationView : LinearLayout {
 
             UpdateMessageData.fromJSON(thread.body)?.let {
                 val data = it.kind as UpdateMessageData.Kind.SharedContact
-                val names = flattenData(data.name).ifEmpty { flattenData(data.address) }
-                val displayName = when {
-                    names.size > 2 -> "${names.first().capitalizeFirstLetter()} and ${names.size - 1} others"
-                    names.size == 2 -> "${names[0].capitalizeFirstLetter()} and ${names.size - 1} other"
-                    names.size == 1 -> names.first().capitalizeFirstLetter()
-                    else -> "No Name"
+                val addresses = flattenData(data.address)
+                val names = flattenData(data.name).ifEmpty { addresses }
+                val displayName = when(names.size) {
+                    0 -> "No Name"
+                    1 -> names.first().capitalizeFirstLetter()
+                    2 -> "${shortNameAndAddress(names[0],addresses[0])} and ${names.size - 1} other"
+                    else -> "${shortNameAndAddress(names.first(), addresses.first())} and ${names.size - 1} others"
                 }
                 binding.contactName.text = displayName
             }

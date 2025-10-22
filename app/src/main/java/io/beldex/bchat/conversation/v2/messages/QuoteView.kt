@@ -32,6 +32,7 @@ import io.beldex.bchat.mms.SlideDeck
 import io.beldex.bchat.util.MediaUtil
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.getScreenWidth
+import io.beldex.bchat.util.shortNameAndAddress
 import io.beldex.bchat.util.toPx
 import org.json.JSONException
 import org.json.JSONObject
@@ -139,12 +140,13 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                     body.let { message ->
                         UpdateMessageData.fromJSON(message)?.let {
                             val data = it.kind as UpdateMessageData.Kind.SharedContact
-                            val names = flattenData(data.name).ifEmpty { flattenData(data.address) }
-                            val displayName = when {
-                                names.size > 2 -> "${names.first().capitalizeFirstLetter()} and ${names.size - 1} others"
-                                names.size == 2 -> "${names[0].capitalizeFirstLetter()} and ${names.size - 1} other"
-                                names.size == 1 -> names.first().capitalizeFirstLetter()
-                                else -> "No Name"
+                            val addresses = flattenData(data.address)
+                            val names = flattenData(data.name).ifEmpty { addresses }
+                            val displayName = when(names.size) {
+                                0 -> "No Name"
+                                1 -> names.first().capitalizeFirstLetter()
+                                2 -> "${shortNameAndAddress(names[0],addresses[0])} and ${names.size - 1} other"
+                                else -> "${shortNameAndAddress(names.first(), addresses.first())} and ${names.size - 1} others"
                             }
                             binding.contactName.text = displayName
 

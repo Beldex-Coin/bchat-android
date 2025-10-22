@@ -49,6 +49,7 @@ import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.TextColor
 import io.beldex.bchat.dependencies.DatabaseComponent
+import io.beldex.bchat.util.shortNameAndAddress
 
 @Composable
 fun SharedContactView(
@@ -166,15 +167,20 @@ fun SharedContactContent(
     val displayName = when (contactList.size) {
         0 -> "No Name"
         1 -> contactList[0].name.capitalizeFirstLetter()
-        2 -> "${contactList[0].name.capitalizeFirstLetter()} and ${contactList.size - 1} other"
-        else -> "${contactList[0].name.capitalizeFirstLetter()} and ${contactList.size - 1} others"
+        2 -> "${shortNameAndAddress(contactList[0].name, contactList[0].address)} and ${contactList.size - 1} other"
+        else -> "${shortNameAndAddress(contactList[0].name, contactList[0].address)} and ${contactList.size - 1} others"
     }
+
 
     val addressString by remember(contactList) {
         val address = if (contactList.isNotEmpty()) {
             val first = contactList.first().address
             val last = contactList.last().address
-            "${first.take(7)}.........${last.takeLast(7)}"
+            if(first.length >= 7 && last.length >= 7) {
+                "${first.take(7)}.........${last.takeLast(7)}"
+            } else {
+                "${first}.........${last}"
+            }
         } else ""
         mutableStateOf(address)
     }

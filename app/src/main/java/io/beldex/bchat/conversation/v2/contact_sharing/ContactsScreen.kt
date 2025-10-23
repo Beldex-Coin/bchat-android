@@ -74,7 +74,7 @@ fun ContactsScreen(
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Text(
-                    stringResource(R.string.send_contact),
+                    stringResource(R.string.share_contacts),
                     style = MaterialTheme.typography.titleMedium
                 )
             }

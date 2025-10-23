@@ -1683,7 +1683,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="zero_time_durationMs" translatable="false">0:00</string>
     <string name="attachmentsErrorSize" translatable="false">Files must be less than 10MB</string>
     <string name="view_contacts" translatable="false">View Contacts</string>
-    <string name="send_contact" translatable="false">Send Contact</string>
+    <string name="share_contacts" translatable="false">Share Contacts</string>
     <string name="chat_with_contact_confirmation" translatable="false">Do you want to chat with this contact now?</string>
     <string name="no_contact_found" translatable="false">No Contact Found</string>
     <string name="contact_received" translatable="false">Contact Received: %s</string>

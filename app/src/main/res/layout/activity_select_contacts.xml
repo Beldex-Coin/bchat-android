@@ -62,21 +62,22 @@
         tools:listitem="@layout/view_user"/>
 
     <LinearLayout
-        android:id="@+id/emptyStateContainer"
+        android:id="@+id/noContactFoundContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center_horizontal"
         android:orientation="vertical"
+        android:visibility="gone"
         android:layout_centerInParent="true">
 
-        <TextView
-            android:id="@+id/emptyStateMessageTextView"
+        <ImageView
+            android:id="@+id/icNoContactFound"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/medium_font_size"
-            android:textColor="@color/text"
-            android:text="@string/activity_create_closed_group_empty_state_message" />
+            android:contentDescription="@string/no_record_found"
+            android:src="@drawable/ic_no_contact_found"
+            />
 
     </LinearLayout>
 
@@ -94,7 +95,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/add"
-            style="@style/PrimaryContainedPositiveButton"/>
+            android:enabled="false"
+            style="@style/PrimaryContainedPositiveDisabledButton"/>
     </LinearLayout>
 
 </RelativeLayout>

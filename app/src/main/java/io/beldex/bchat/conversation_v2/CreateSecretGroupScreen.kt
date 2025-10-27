@@ -47,6 +47,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
@@ -80,6 +81,7 @@ import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.wallet.CheckOnline
 import io.beldex.bchat.R
+import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -100,10 +102,6 @@ fun CreateSecretGroup(
     val context = LocalContext.current
     val device: Device = Device.ANDROID
     val keyboardController = LocalSoftwareKeyboardController.current
-    if (TextSecurePreferences.isScreenSecurityEnabled(context))
-        activity.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE) else {
-        activity.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
-    }
     var showLoader by remember {
         mutableStateOf(false)
     }
@@ -390,7 +388,7 @@ private fun GroupContact(
             }
 
             Text(
-                text = if(recipient.name != null) recipient.name.toString() else recipient.address.toString(),
+                text = if(recipient.name != null) recipient.name.toString().capitalizeFirstLetter() else recipient.address.toString().capitalizeFirstLetter(),
                 textAlign = TextAlign.Start,
                 fontSize = 16.sp,
                 fontWeight = FontWeight(400),
@@ -401,8 +399,12 @@ private fun GroupContact(
                 overflow = TextOverflow.Ellipsis
             )
 
-            Image(painter = painterResource(id = if(isSelected) R.drawable.ic_checkedbox else R.drawable.ic_checkbox), contentDescription = "check box", modifier = Modifier.padding(end = 25.dp))
-        }
+            Image(
+                painter=painterResource(id=if (isSelected) R.drawable.ic_checkedbox else R.drawable.ic_checkbox),
+                contentDescription="check box",
+                modifier=Modifier.padding(end=25.dp),
+                colorFilter = ColorFilter.tint(if(isSelected) MaterialTheme.appColors.textGreen else MaterialTheme.appColors.textColor)
+            )        }
     }
 }
 

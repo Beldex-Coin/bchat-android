@@ -57,6 +57,47 @@
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginHorizontal="8dp"/>
 
+        <LinearLayout
+            android:id="@+id/contactView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp"
+            tools:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/quoteStartBarrier"
+            app:layout_constraintTop_toBottomOf="@id/quoteViewAuthorTextView"
+            android:layout_marginHorizontal="8dp">
+
+            <ImageView
+                android:id="@+id/imgContactPerson"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:src="@drawable/ic_contact_person"
+                />
+
+            <TextView
+                android:fontFamily="@font/open_sans_regular"
+                android:id="@+id/contactName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/text"
+                android:textSize="@dimen/very_small_font_size"
+                tools:text="Sorry, gotta go fight crime again"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/quoteGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="contentTypeIcon,quoteViewBodyTextView"/>
+
         <ImageView
             android:id="@+id/contentTypeIcon"
             android:layout_width="16dp"
@@ -124,6 +165,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tint="@color/icon_tint" />
+
+        <LinearLayout
+            android:id="@+id/quoteContentType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:orientation="horizontal"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

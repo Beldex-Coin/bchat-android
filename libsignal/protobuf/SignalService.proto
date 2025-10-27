@@ -157,6 +157,11 @@ message DataMessage {
     optional uint32         expirationTimer   = 8;
   }
 
+  message SharedContact {
+    required string         address           = 1;
+    required string         name              = 2;
+  }
+
   message Reaction {
     enum Action {
       REACT = 0;
@@ -180,12 +185,13 @@ message DataMessage {
   optional uint64                    timestamp                 = 7;
   optional Quote                     quote                     = 8;
   repeated Preview                   preview                   = 10;
+  optional BeldexProfile             profile                 = 101;
   optional Reaction                  reaction                  = 11;
-  optional BeldexProfile               profile                 = 101;
   optional OpenGroupInvitation       openGroupInvitation       = 102;
   optional ClosedGroupControlMessage closedGroupControlMessage = 104;
   optional string                    syncTarget                = 105;
   optional Payment                   payment                   = 106;
+  optional SharedContact             sharedContact            = 107;
 }
 
 message CallMessage {

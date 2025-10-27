@@ -1,5 +1,7 @@
 package io.beldex.bchat.my_account.ui
 
+import android.app.Activity
+import android.view.WindowManager
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -67,6 +69,8 @@ fun RecoverySeedView(
 ) {
     val context = LocalContext.current
     val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(LocalContext.current) == UiMode.NIGHT
+    val activity = (context as? Activity)
+    activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
     val copyToClipBoard: () -> Unit = {
         context.copyToClipBoard("Seed", seed)
     }

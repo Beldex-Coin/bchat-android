@@ -3,16 +3,18 @@ package io.beldex.bchat.conversation_v2
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.beldex.libbchat.utilities.recipients.Recipient
-import com.beldex.libsignal.utilities.Log
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
@@ -35,21 +37,24 @@ class NewChatConversationActivity: ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, true)
         setContent {
             val context = this
             val contactViewModel: NewChatScreenViewModel = hiltViewModel()
             val searchQuery by contactViewModel.searchQuery.collectAsState()
             val contacts by contactViewModel.recipients.collectAsState(initial = listOf())
             val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
+            val view = LocalView.current
+            val window = (view.context as Activity).window
+            val statusBarColor = if (isDarkTheme) Color.Black else Color.White
+            SideEffect {
+                window.statusBarColor = statusBarColor.toArgb()
+                WindowInsetsControllerCompat(window, view).isAppearanceLightStatusBars = !isDarkTheme
+            }
             BChatTheme(
                 darkTheme = isDarkTheme
             ) {
                 // A surface container using the 'background' color from the theme
-                val activity = (context as? Activity)
-                if (TextSecurePreferences.isScreenSecurityEnabled(context))
-                    activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE) else {
-                    activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
-                }
                 Surface {
                     NewChatScreen(
                         searchQuery = searchQuery,

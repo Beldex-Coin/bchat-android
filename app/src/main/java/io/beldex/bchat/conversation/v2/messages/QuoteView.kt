@@ -2,30 +2,43 @@ package io.beldex.bchat.conversation.v2.messages
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.View
+import android.widget.LinearLayout
 import androidx.annotation.ColorInt
+import androidx.compose.ui.res.colorResource
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.content.res.use
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import com.beldex.libbchat.messaging.contacts.Contact
+import com.beldex.libbchat.messaging.utilities.UpdateMessageData
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
+import com.bumptech.glide.RequestManager
 import com.google.android.material.card.MaterialCardView
+import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.TextColor
+import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
+import io.beldex.bchat.conversation.v2.contact_sharing.flattenData
 import io.beldex.bchat.conversation.v2.utilities.MentionUtilities
 import io.beldex.bchat.database.BchatContactDatabase
-import com.bumptech.glide.RequestManager
+import io.beldex.bchat.databinding.ViewQuoteBinding
 import io.beldex.bchat.mms.SlideDeck
 import io.beldex.bchat.util.MediaUtil
 import io.beldex.bchat.util.UiModeUtilities
+import io.beldex.bchat.util.getScreenWidth
+import io.beldex.bchat.util.shortNameAndAddress
 import io.beldex.bchat.util.toPx
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ViewQuoteBinding
 import org.json.JSONException
 import org.json.JSONObject
 import javax.inject.Inject
+import kotlin.math.max
+import kotlin.math.min
 
 
 // There's quite some calculation going on here. It's a bit complex so don't make changes
@@ -60,7 +73,11 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     override fun onFinishInflate() {
         super.onFinishInflate()
         when (mode) {
-            Mode.Draft -> binding.quoteViewCancelButton.setOnClickListener { delegate?.cancelQuoteDraft(1)}
+            Mode.Draft -> {
+                binding.quoteViewCancelButton.setOnClickListener {
+                    delegate?.cancelQuoteDraft(2)
+                }
+            }
             Mode.Regular -> {
                 binding.quoteViewCancelButton.isVisible = false
 //                binding.mainQuoteViewContainer.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.transparent, context.theme))
@@ -73,21 +90,111 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     fun bind(
         authorPublicKey: String, body: String?, attachments: SlideDeck?, thread: Recipient,
         isOutgoingMessage: Boolean, isOpenGroupInvitation: Boolean, isPayment: Boolean,
-        outgoing: Boolean, threadID: Long, isOriginalMissing: Boolean, glide: RequestManager
+        outgoing: Boolean, threadID: Long, isOriginalMissing: Boolean, glide: RequestManager, textWidth: Int = 0
     ) {
         // Author
         val author = contactDb.getContactWithBchatID(authorPublicKey)
         val localNumber = TextSecurePreferences.getLocalNumber(context)
-        val quoteIsLocalUser = localNumber != null && localNumber != null && authorPublicKey == localNumber
+        val quoteIsLocalUser = localNumber != null && authorPublicKey == localNumber
         val authorDisplayName =
             if (quoteIsLocalUser) context.getString(R.string.QuoteView_you)
             else author?.displayName(Contact.contextForRecipient(thread)) ?: "${authorPublicKey.take(4)}...${authorPublicKey.takeLast(4)}"
-        binding.quoteViewAuthorTextView.text = authorDisplayName
-        binding.quoteViewAuthorTextView.setTextColor(if(quoteIsLocalUser){
+        binding.quoteViewAuthorTextView.text = authorDisplayName.capitalizeFirstLetter()
+        binding.quoteViewAuthorTextView.setTextColor(if(quoteIsLocalUser && !outgoing){
             ResourcesCompat.getColor(resources, R.color.button_green, context.theme)
         }else {
            getTextColor(isOutgoingMessage)
         })
+
+        /*------code section to handle sent contact inside quote view-------*/
+        try {
+            if (body != null && body.trim().startsWith("{")) {
+                val mainObject = JSONObject(body)
+                val uniObject = mainObject.optJSONObject("kind")
+                val type = uniObject?.optString("@type")
+
+                if (type == "SharedContact") {
+                    binding.contactView.visibility = View.VISIBLE
+                    binding.contactName.setTextColor(getTextColor(isOutgoingMessage))
+                    when(mode){
+                        Mode.Draft -> {
+                            binding.imgContactPerson.setColorFilter(ContextCompat.getColor(context, R.color.text))
+                        }
+                        Mode.Regular -> {
+                            binding.imgContactPerson.setColorFilter(ContextCompat.getColor(context, if(isOutgoingMessage) R.color.sent_quoted_text_color else R.color.received_message_text_color))
+                        }
+                    }
+
+                    if (mode == Mode.Regular) {
+                        binding.quoteViewAttachmentPreviewContainer.visibility = View.GONE
+                        binding.quoteContentType.visibility = View.GONE
+                        binding.container.orientation = LinearLayout.VERTICAL
+                        binding.mainQuoteViewContainer.setBackgroundColor(
+                            resources.getColor(getContainerColor(isOutgoingMessage), null)
+                        )
+                    } else {
+                        binding.quoteGroup.visibility = View.GONE
+                        binding.quoteViewAttachmentPreviewImageView.visibility = View.GONE
+                    }
+
+                    body.let { message ->
+                        UpdateMessageData.fromJSON(message)?.let {
+                            val data = it.kind as UpdateMessageData.Kind.SharedContact
+                            val addresses = flattenData(data.address)
+                            val names = flattenData(data.name).ifEmpty { addresses }
+                            val displayName = when(names.size) {
+                                0 -> "No Name"
+                                1 -> names.first().capitalizeFirstLetter()
+                                2 -> "${shortNameAndAddress(names[0],addresses[0])} and ${names.size - 1} other"
+                                else -> "${shortNameAndAddress(names.first(), addresses.first())} and ${names.size - 1} others"
+                            }
+                            binding.contactName.text = displayName
+
+                            // Dynamic width calculation
+                            if (mode == Mode.Regular) {
+                                val paint = Paint().apply {
+                                    textSize = TypedValue.applyDimension(
+                                        TypedValue.COMPLEX_UNIT_SP,
+                                        14f,
+                                        context.resources.displayMetrics
+                                    )
+                                }
+                                val nameWidth = paint.measureText(data.name)
+                                val params = binding.contactView.layoutParams
+                                val maxWidth = max(max(350, nameWidth.toInt()), textWidth)
+                                val maxPossibleWidth =
+                                    min((getScreenWidth() * 0.6).toInt(), maxWidth)
+                                params.width = maxPossibleWidth
+                                binding.contactView.layoutParams = params
+                            }
+                        }
+                    }
+                    return
+                }
+            }
+
+            // If not JSON or type isn’t SharedContact → fallback
+            binding.contactView.visibility = View.GONE
+            if (mode == Mode.Regular) {
+                binding.quoteContentType.visibility = View.VISIBLE
+                binding.container.orientation = LinearLayout.HORIZONTAL
+            } else {
+                binding.quoteGroup.visibility = View.VISIBLE
+            }
+
+        } catch (e: JSONException) {
+            e.printStackTrace()
+            binding.contactView.visibility = View.GONE
+            if (mode == Mode.Regular) {
+                binding.quoteContentType.visibility = View.VISIBLE
+                binding.container.orientation = LinearLayout.HORIZONTAL
+            } else {
+                binding.quoteGroup.visibility = View.VISIBLE
+            }
+        }
+
+        /*--------section ends here----------*/
+
         // Body
         binding.quoteViewBodyTextView.text = when {
             isOpenGroupInvitation -> {

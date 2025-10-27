@@ -23,11 +23,8 @@ import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletEn
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletName
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletPassword
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.isPasswordDisabled
-import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.isScreenSecurityEnabled
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setBooleanPreference
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setScreenLockEnabled
-import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setScreenLockTimeout
-import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setScreenSecurityPreference
 import com.beldex.libsignal.utilities.Log
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.components.SwitchPreferenceCompat
@@ -65,8 +62,6 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
         //New Line
         findPreference<Preference>(TextSecurePreferences.CALL_NOTIFICATIONS_ENABLED)!!.onPreferenceChangeListener =
             CallToggleListener(this) { setCall(it) }
-        findPreference<Preference>(TextSecurePreferences.SCREEN_SECURITY_PREF)!!.onPreferenceChangeListener =
-            ScreenSecurityListener()
         findPreference<Preference>(TextSecurePreferences.PAY_AS_YOU_CHAT_PREF)!!.onPreferenceChangeListener = PayAsYouChatListener()
         findPreference<Preference>(TextSecurePreferences.IS_WALLET_ACTIVE)!!.onPreferenceChangeListener = StartWalletListener()
         initializeVisibility()
@@ -188,19 +183,6 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
             val intent = Intent(context, KeyCachingService::class.java)
             intent.action = KeyCachingService.LOCK_TOGGLED_EVENT
             context!!.startService(intent)
-            return true
-        }
-    }
-
-    private inner class ScreenSecurityListener : Preference.OnPreferenceChangeListener {
-        override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
-            val enabled = newValue as Boolean
-            setScreenSecurityPreference(context!!, enabled)
-            if (isScreenSecurityEnabled(context!!)) {
-                activity!!.window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-            } else {
-                activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
-            }
             return true
         }
     }

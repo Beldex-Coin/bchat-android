@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.bumptech.glide.RequestManager
+import com.google.android.material.datepicker.OnSelectionChangedListener
 
 
 class SelectContactsAdapter(private val context: Context, private val glide: RequestManager) : RecyclerView.Adapter<SelectContactsAdapter.ViewHolder>() {
@@ -14,6 +15,9 @@ class SelectContactsAdapter(private val context: Context, private val glide: Req
         set(value) { field = value; notifyDataSetChanged() }
 
     class ViewHolder(val view: UserView) : RecyclerView.ViewHolder(view)
+
+    var selectionChangedListener: OnSelectionChangedListener? = null
+
 
     override fun getItemCount(): Int {
         return members.size
@@ -66,10 +70,15 @@ class SelectContactsAdapter(private val context: Context, private val glide: Req
         }
         val index = members.indexOf(member)
         notifyItemChanged(index, Payload.MEMBER_CLICKED)
+        selectionChangedListener?.onSelectionChanged(selectedMembers.size)
     }
     fun updateList(list: List<String>) {
         members = list
         notifyDataSetChanged()
+    }
+
+    interface OnSelectionChangedListener {
+        fun onSelectionChanged(selectedCount: Int)
     }
 
     // define below the different events used to notify the adapter

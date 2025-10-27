@@ -14,16 +14,21 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
+import com.beldex.libbchat.messaging.utilities.UpdateMessageData
 import com.beldex.libbchat.utilities.recipients.Recipient
+import com.bumptech.glide.RequestManager
+import io.beldex.bchat.BuildConfig
+import io.beldex.bchat.R
+import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
+import io.beldex.bchat.conversation.v2.contact_sharing.flattenData
 import io.beldex.bchat.conversation.v2.utilities.MentionUtilities.highlightMentions
 import io.beldex.bchat.database.RecipientDatabase.NOTIFY_TYPE_ALL
 import io.beldex.bchat.database.RecipientDatabase.NOTIFY_TYPE_NONE
 import io.beldex.bchat.database.model.ThreadRecord
-import com.bumptech.glide.RequestManager
-import io.beldex.bchat.util.DateUtils
-import io.beldex.bchat.BuildConfig
-import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewConversationBinding
+import io.beldex.bchat.util.DateUtils
+import io.beldex.bchat.util.isSharedContact
+import io.beldex.bchat.util.shortNameAndAddress
 import java.util.Locale
 
 class ConversationView : LinearLayout {
@@ -116,42 +121,62 @@ class ConversationView : LinearLayout {
             R.drawable.ic_mention_home
         }
         binding.muteIcon.setImageResource(drawableRes)
-        val rawSnippet = thread.getDisplayBody(context)
-        val snippet = highlightMentions(rawSnippet,thread.threadId, context)
+        if (thread.isSharedContact || isSharedContact(thread.body)) {
+            binding.contactView.visibility = View.VISIBLE
+            binding.snippetTextViewLayout.visibility = View.GONE
 
-        //SteveJosephh21-17 - if
-        /*val mmsSmsDatabase = get(context).mmsSmsDatabase()
-        var reader: MmsSmsDatabase.Reader? = null
-        try {
-            reader = mmsSmsDatabase.readerFor(mmsSmsDatabase.getConversationSnippet(thread.threadId))
-            var record: MessageRecord? = null
-            if (reader != null) {
-                record = reader.next
-                while (record != null && record.isDeleted) {
-                    record = reader.next
+            UpdateMessageData.fromJSON(thread.body)?.let {
+                val data = it.kind as UpdateMessageData.Kind.SharedContact
+                val addresses = flattenData(data.address)
+                val names = flattenData(data.name).ifEmpty { addresses }
+                val displayName = when(names.size) {
+                    0 -> "No Name"
+                    1 -> names.first().capitalizeFirstLetter()
+                    2 -> "${shortNameAndAddress(names[0],addresses[0])} and ${names.size - 1} other"
+                    else -> "${shortNameAndAddress(names.first(), addresses.first())} and ${names.size - 1} others"
                 }
-                Log.d("ThreadDatabase- 1", "" + record)
-                if(record==null){
-                    binding.snippetTextView.text = "This message has been deleted"
-                }else{
-                    binding.snippetTextView.text = snippet
-                }
+                binding.contactName.text = displayName
             }
-        } finally {
-            if (reader != null)
-            reader.close()
-        }*/
-        //Important - else
-        binding.snippetTextView.text = snippet
-
-        //binding.snippetTextView.typeface = if (unreadCount > 0 && !thread.isRead) Typeface.DEFAULT else Typeface.DEFAULT
-        binding.snippetTextView.visibility = if (isTyping) View.GONE else View.VISIBLE
-        if (isTyping) {
-            binding.typingIndicatorView.root.startAnimation()
         } else {
-            binding.typingIndicatorView.root.stopAnimation()
-        }
-        binding.typingIndicatorView.root.visibility = if (isTyping) View.VISIBLE else View.GONE
+            binding.contactView.visibility = View.GONE
+            binding.snippetTextViewLayout.visibility = View.VISIBLE
+
+            val rawSnippet = thread.getDisplayBody(context)
+            val snippet = highlightMentions(rawSnippet,thread.threadId, context)
+
+            //SteveJosephh21-17 - if
+            /*val mmsSmsDatabase = get(context).mmsSmsDatabase()
+            var reader: MmsSmsDatabase.Reader? = null
+            try {
+                reader = mmsSmsDatabase.readerFor(mmsSmsDatabase.getConversationSnippet(thread.threadId))
+                var record: MessageRecord? = null
+                if (reader != null) {
+                    record = reader.next
+                    while (record != null && record.isDeleted) {
+                        record = reader.next
+                    }
+                    Log.d("ThreadDatabase- 1", "" + record)
+                    if(record==null){
+                        binding.snippetTextView.text = "This message has been deleted"
+                    }else{
+                        binding.snippetTextView.text = snippet
+                    }
+                }
+            } finally {
+                if (reader != null)
+                reader.close()
+            }*/
+            //Important - else
+            binding.snippetTextView.text = snippet
+
+            //binding.snippetTextView.typeface = if (unreadCount > 0 && !thread.isRead) Typeface.DEFAULT else Typeface.DEFAULT
+            binding.snippetTextView.visibility = if (isTyping) View.GONE else View.VISIBLE
+            if (isTyping) {
+                binding.typingIndicatorView.root.startAnimation()
+            } else {
+                binding.typingIndicatorView.root.stopAnimation()
+            }
+            binding.typingIndicatorView.root.visibility = if (isTyping) View.VISIBLE else View.GONE
 //        binding.statusIndicatorImageView.visibility = View.VISIBLE
 //        when {
 //            !thread.isOutgoing -> binding.statusIndicatorImageView.visibility = View.GONE
@@ -167,6 +192,7 @@ class ConversationView : LinearLayout {
 //            else -> binding.statusIndicatorImageView.setImageResource(R.drawable.ic_circle_check)
 //
 //        }
+        }
         binding.profilePictureView.root.update(thread.recipient)
     }
 

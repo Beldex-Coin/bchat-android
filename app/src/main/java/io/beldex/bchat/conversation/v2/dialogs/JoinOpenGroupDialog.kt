@@ -1,10 +1,13 @@
 package io.beldex.bchat.conversation.v2.dialogs
 
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
@@ -52,5 +55,18 @@ class JoinOpenGroupDialog(private val name: String, private val url: String) : B
             }
         }
         dismiss()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val activity = activity
+        if (activity != null) {
+            val imm = activity.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            val view = activity.currentFocus ?: View(activity)
+            if(imm.isAcceptingText) {
+                imm.hideSoftInputFromWindow(view.windowToken, 0)
+                view.clearFocus()
+            }
+        }
     }
 }

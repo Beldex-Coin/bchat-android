@@ -108,6 +108,9 @@ public class RestoreHeight {
         blockheight.put("2025-05-01", 4305270L);
         blockheight.put("2025-06-01", 4394570L);
         blockheight.put("2025-07-01", 4480990L);
+        blockheight.put("2025-08-01", 4570250L);
+        blockheight.put("2025-09-01", 4659510L);
+        blockheight.put("2025-10-01", 4745910L);
     }
 
     public long getHeight(String date) {
@@ -174,14 +177,14 @@ public class RestoreHeight {
             long days = TimeUnit.DAYS.convert(query.getTimeInMillis() - prevTime,
                     TimeUnit.MILLISECONDS);
             height = Math.round(prevBc + diff * (1.0 * days / diffDays));
-            Log.d("Beldex","Value of restoreHeight in offline nextBc value if 1 " +height);
+            Log.d("Beldex","Value of restoreHeight in offline height value if " +height);
         } else {
             long days = TimeUnit.DAYS.convert(query.getTimeInMillis() - prevTime,
                     TimeUnit.MILLISECONDS);
-            Log.d("Beldex","Value of restoreHeight in offline days value else 1 " +days);
-            Log.d("Beldex","Value of restoreHeight in offline prevBc value else 1 " +prevBc);
+            Log.d("Beldex","Value of restoreHeight in offline days value else " +days);
+            Log.d("Beldex","Value of restoreHeight in offline prevBc value else " +prevBc);
             height = Math.round(prevBc + 1.0 * days * (24f * 60 * 60 / DIFFICULTY_TARGET));
-            Log.d("Beldex","Value of restoreHeight in offline nextBc value else 1 " +height);
+            Log.d("Beldex","Value of restoreHeight in offline height value else " +height);
         }
         return height;
     }

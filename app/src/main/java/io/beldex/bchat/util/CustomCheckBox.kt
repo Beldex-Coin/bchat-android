@@ -1,6 +1,9 @@
 package io.beldex.bchat.util
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -38,8 +41,8 @@ fun CustomCheckBox(
             .border(
                 shape = RoundedCornerShape(2.dp),
                 border = BorderStroke(checkBoxBorderWidth,
-                if (checkBoxState.value) checkBoxBorderColorSelected
-                else checkBoxBorderColorUnSelected)
+                    if (checkBoxState.value) checkBoxBorderColorSelected
+                    else checkBoxBorderColorUnSelected)
             )
             .size(checkBoxSize)
             .background(Color.Transparent)

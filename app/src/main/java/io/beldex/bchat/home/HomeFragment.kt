@@ -39,6 +39,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -539,6 +540,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                     while (true) {
                         threads += reader.next ?: break
                     }
+                    threads.sortedByDescending { it.dateReceived }
                     request = threads
                 }
             }
@@ -850,9 +852,14 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 
     override fun onPause() {
         super.onPause()
-        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-//        imm?.hideSoftInputFromWindow(binding.globalSearchInputLayout.windowToken, 0)
-//        binding.globalSearchInputLayout.clearFocus()
+        val dialog = childFragmentManager.findFragmentByTag(ConversationActionDialog.TAG)
+        if (dialog is DialogFragment) {
+            dialog.dismissAllowingStateLoss()
+        }
+        val bottomSheet = childFragmentManager.findFragmentByTag(UserDetailsBottomSheet.TAG)
+        if (bottomSheet is UserDetailsBottomSheet) {
+            bottomSheet.dismissAllowingStateLoss()
+        }
     }
 
     override fun onDestroy() {
@@ -1023,7 +1030,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                     UserDetailsBottomSheet.ARGUMENT_THREAD_ID to thread.threadId
                 )
                 userDetailsBottomSheet.arguments = bundle
-                userDetailsBottomSheet.show(childFragmentManager, userDetailsBottomSheet.tag)
+                userDetailsBottomSheet.show(childFragmentManager, UserDetailsBottomSheet.TAG)
             }
             R.id.menu_pin -> {
                 setConversationPinned(thread.threadId, true)
@@ -1051,7 +1058,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                 val dialog = ConversationActionDialog()
                 dialog.apply {
                     arguments = Bundle().apply {
-                        putInt(ConversationActionDialog.EXTRA_ARGUMENT_1, thread.recipient.notifyType)
+                        putInt(ConversationActionDialog.EXTRA_ARGUMENT_3, thread.recipient.notifyType)
                         putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, thread)
                         putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.NotificationSettings)
                     }
@@ -1108,7 +1115,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             val dialog = ConversationActionDialog()
             dialog.apply {
                 arguments = Bundle().apply {
-                    putSerializable(ConversationActionDialog.EXTRA_ARGUMENT_1, thread.recipient.mutedUntil)
+                    putSerializable(ConversationActionDialog.EXTRA_ARGUMENT_3, thread.recipient.mutedUntil)
                     putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.MuteChat)
                     putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, thread)
                 }
@@ -1144,7 +1151,6 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     private fun deleteConversation(thread: ThreadRecord) {
-        val threadID = thread.threadId
         val recipient = thread.recipient
         val message = if (recipient.isGroupRecipient) {
             val group = groupDb.getGroup(recipient.address.toString()).orNull()
@@ -1162,6 +1168,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             arguments = Bundle().apply {
                 putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, thread)
                 putString(ConversationActionDialog.EXTRA_ARGUMENT_1, message)
+                putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.DeleteChat)
             }
             setListener(this@HomeFragment)
         }

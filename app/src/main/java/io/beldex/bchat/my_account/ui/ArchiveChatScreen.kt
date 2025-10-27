@@ -31,7 +31,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCompositionContext
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,9 +48,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import com.beldex.libbchat.messaging.contacts.Contact
+import com.beldex.libbchat.messaging.utilities.UpdateMessageData
 import com.beldex.libbchat.utilities.GroupRecord
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.isScreenSecurityEnabled
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.R
 import io.beldex.bchat.archivechats.ArchiveChatViewModel
@@ -110,10 +109,6 @@ fun ArchiveChatScreen(
     }
     var showDeletePopup by remember {
         mutableStateOf(false)
-    }
-    if (isScreenSecurityEnabled(context))
-        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE) else {
-        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
     }
     if (showBlockPopup) {
         BChatTheme(
@@ -506,13 +501,9 @@ fun ArchiveChatItem(
 
         Spacer(modifier=Modifier.width(8.dp))
 
-        val senderName=
-            getUserDisplayName(context, thread.recipient) ?: thread.recipient.address.toString()
+        val senderName= getUserDisplayName(context, thread.recipient) ?: thread.recipient.address.toString()
         val rawSnippet=thread.getDisplayBody(context)
-        val snippet=MentionUtilities.highlightMentions(rawSnippet, thread.threadId, context)
-        val timeStamp=
-            DateUtils.getDisplayFormattedTimeSpanString(context, Locale.getDefault(), thread.date)
-
+        val timeStamp= DateUtils.getDisplayFormattedTimeSpanString(context, Locale.getDefault(), thread.date)
 
         Column(
             verticalArrangement=Arrangement.SpaceEvenly,
@@ -529,11 +520,42 @@ fun ArchiveChatItem(
 
             Spacer(modifier=Modifier.height(8.dp))
 
-            Text(
-                text=snippet, style=MaterialTheme.typography.bodySmall.copy(
-                    fontWeight=FontWeight(400), fontSize=12.sp
-                ), maxLines=1, overflow=TextOverflow.Ellipsis
-            )
+            if (thread.isSharedContact) {
+                val contactName = UpdateMessageData.fromJSON(thread.body)?.let {
+                    val data = it.kind as UpdateMessageData.Kind.SharedContact
+                    data.name
+                } ?: "No Name"
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_profile_default),
+                        contentDescription = "",
+                        tint = MaterialTheme.appColors.iconTint,
+                        modifier = Modifier
+                            .size(20.dp)
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text(
+                        text = contactName,
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontWeight = FontWeight(400),
+                            fontSize = 12.sp
+                        ),
+                        maxLines=1,
+                        overflow=TextOverflow.Ellipsis,
+                    )
+                }
+            } else {
+                val snippet=MentionUtilities.highlightMentions(rawSnippet, thread.threadId, context)
+                Text(
+                    text=snippet, style=MaterialTheme.typography.bodySmall.copy(
+                        fontWeight=FontWeight(400), fontSize=12.sp
+                    ), maxLines=1, overflow=TextOverflow.Ellipsis
+                )
+            }
         }
 
         Spacer(modifier=Modifier.width(8.dp))

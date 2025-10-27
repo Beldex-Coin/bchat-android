@@ -1,8 +1,5 @@
 package com.beldex.libbchat.messaging.jobs
 
-import com.esotericsoftware.kryo.Kryo
-import com.esotericsoftware.kryo.io.Input
-import com.esotericsoftware.kryo.io.Output
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.jobs.Job.Companion.MAX_BUFFER_SIZE_BYTES
 import com.beldex.libbchat.messaging.messages.Destination
@@ -10,9 +7,11 @@ import com.beldex.libbchat.messaging.messages.Message
 import com.beldex.libbchat.messaging.messages.visible.VisibleMessage
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.utilities.Data
-import com.beldex.libbchat.mnode.OnionRequestAPI
 import com.beldex.libsignal.utilities.HTTP
 import com.beldex.libsignal.utilities.Log
+import com.esotericsoftware.kryo.Kryo
+import com.esotericsoftware.kryo.io.Input
+import com.esotericsoftware.kryo.io.Output
 
 class MessageSendJob(val message: Message, val destination: Destination) : Job {
 

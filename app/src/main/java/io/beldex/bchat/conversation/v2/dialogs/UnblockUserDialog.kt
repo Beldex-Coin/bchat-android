@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.R
+import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 
 @Composable
 fun UnblockUserDialog(
@@ -48,7 +49,7 @@ fun UnblockUserDialog(
                 .padding(16.dp)
         ) {
             Text(
-                text = title,
+                text = title.capitalizeFirstLetter(),
                 style = MaterialTheme.typography.titleMedium.copy(
                     color = MaterialTheme.appColors.secondaryContentColor,
                     fontWeight = FontWeight(700),

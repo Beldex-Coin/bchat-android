@@ -707,6 +707,25 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
         return insertMessageInbox(retrieved, "", threadId, type, serverTimestamp, runIncrement, runThreadUpdate)
     }
 
+    @Throws(MmsException::class)
+    fun insertSecureDecryptedScreenShotMessageOutbox(
+        retrieved: OutgoingMediaMessage,
+        threadId: Long,
+        serverTimestamp: Long,
+        runThreadUpdate: Boolean
+    ): Optional<InsertResult> {
+        var threadId = threadId
+        if (threadId == -1L) {
+            threadId = get(context).threadDatabase().getOrCreateThreadIdFor(retrieved.recipient)
+        }
+        val messageId = insertMessageOutbox(retrieved, threadId, false, null, serverTimestamp, runThreadUpdate)
+        if (messageId == -1L) {
+            return Optional.absent()
+        }
+        markAsSent(messageId, true)
+        return Optional.fromNullable(InsertResult(messageId, threadId))
+    }
+
     @JvmOverloads
     @Throws(MmsException::class)
     fun insertMessageOutbox(
@@ -725,6 +744,9 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
         }
         if (message.isExpirationUpdate) {
             type = type or MmsSmsColumns.Types.EXPIRATION_TIMER_UPDATE_BIT
+        }
+        if (message.isScreenShot) {
+            type = type or MmsSmsColumns.Types.SCREENSHOT_EXTRACTION_BIT
         }
         val earlyDeliveryReceipts = earlyDeliveryReceiptCache.remove(message.sentTimeMillis)
         val earlyReadReceipts = earlyReadReceiptCache.remove(message.sentTimeMillis)
@@ -796,7 +818,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
             setLastSeen(threadId)
             setHasSent(threadId, true)
             if (runThreadUpdate) {
-                update(threadId, true)
+                update(threadId, false)
             }
         }
         return messageId

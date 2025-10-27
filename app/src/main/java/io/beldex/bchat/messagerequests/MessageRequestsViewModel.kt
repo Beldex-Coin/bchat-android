@@ -36,6 +36,9 @@ class MessageRequestsViewModel @Inject constructor(
             is MessageRequestEvents.DeleteRequest -> {
                 deleteMessageRequest(event.request)
             }
+            is MessageRequestEvents.AcceptRequest -> {
+                acceptMessageRequest(event.request)
+            }
             is MessageRequestEvents.RequestSelected -> {
 
             }
@@ -60,6 +63,10 @@ class MessageRequestsViewModel @Inject constructor(
         repository.deleteMessageRequest(thread)
     }
 
+    private fun acceptMessageRequest(thread: ThreadRecord) = viewModelScope.launch {
+        repository.acceptMessageRequest(thread.threadId, thread.recipient)
+    }
+
     fun clearAllMessageRequests() = viewModelScope.launch {
         repository.clearAllMessageRequests()
     }
@@ -76,9 +83,9 @@ class MessageRequestsViewModel @Inject constructor(
                     threads += reader.next ?: break
                 }
                 withContext(Dispatchers.Main) {
-                    _uiState.update {
+                    _uiState.update { it ->
                         it.copy(
-                            messageRequests = threads
+                            messageRequests = threads.sortedByDescending { it.dateReceived }
                         )
                     }
                 }

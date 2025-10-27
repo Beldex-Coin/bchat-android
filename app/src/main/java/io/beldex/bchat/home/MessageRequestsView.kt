@@ -33,6 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -58,6 +59,7 @@ import io.beldex.bchat.compose_utils.ui.BubbledText
 import io.beldex.bchat.database.model.ThreadRecord
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.R
+import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -170,7 +172,10 @@ fun MessageRequestsView(
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        items(requests) { record ->
+                        items(
+                            items = requests,
+                            key = { it.recipient.address.toString() }
+                        ) { record ->
                             RequestItem(
                                 request = record,
                                 onClick = openChat,
@@ -202,50 +207,52 @@ fun RequestItem(
         Box(
             modifier = Modifier
         ) {
-            ProfilePictureComponent(
-                publicKey = request.recipient.address.toString(),
-                displayName = getDisplayName(context, request.recipient.address.toString()),
-                containerSize = ProfilePictureMode.SmallPicture.size,
-                pictureMode = ProfilePictureMode.SmallPicture,
-                modifier = Modifier
-                    .padding(
-                        end = 8.dp,
-                        top = 8.dp
-                    )
-                    .clickable {
-                        onClick(request)
-                    }
-            )
-
-            Card(
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 4.dp
-                ),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White
-                ),
-                shape = CircleShape,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .size(24.dp)
-                    .clickable {
-                        onCancel(request)
-                    }
-            ) {
-                Icon(
-                    Icons.Default.Close,
-                    contentDescription = "",
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .size(16.dp)
+            key(request.recipient.address.toString()) {
+                ProfilePictureComponent(
+                    publicKey=request.recipient.address.toString(),
+                    displayName=getDisplayName(context, request.recipient.address.toString()),
+                    containerSize=ProfilePictureMode.SmallPicture.size,
+                    pictureMode=ProfilePictureMode.SmallPicture,
+                    modifier=Modifier
+                        .padding(
+                            end=8.dp,
+                            top=8.dp
+                        )
+                        .clickable {
+                            onClick(request)
+                        }
                 )
+
+                Card(
+                    elevation=CardDefaults.cardElevation(
+                        defaultElevation=4.dp
+                    ),
+                    colors=CardDefaults.cardColors(
+                        containerColor=Color.White
+                    ),
+                    shape=CircleShape,
+                    modifier=Modifier
+                        .align(Alignment.TopEnd)
+                        .size(24.dp)
+                        .clickable {
+                            onCancel(request)
+                        }
+                ) {
+                    Icon(
+                        Icons.Default.Close,
+                        contentDescription="",
+                        modifier=Modifier
+                            .padding(4.dp)
+                            .size(16.dp)
+                    )
+                }
             }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = request.recipient.name ?: "",
+            text = request.recipient.name?.capitalizeFirstLetter() ?: "",
             style = MaterialTheme.typography.bodyMedium,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,

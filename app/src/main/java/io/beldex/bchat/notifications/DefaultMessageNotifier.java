@@ -19,6 +19,9 @@ package io.beldex.bchat.notifications;
 import android.Manifest;
 import static com.beldex.libbchat.utilities.Address.fromSerialized;
 
+
+import static io.beldex.bchat.conversation.v2.contact_sharing.ViewContactsScreenKt.flattenData;
+
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -54,7 +57,10 @@ import io.beldex.bchat.database.model.ReactionRecord;
 import io.beldex.bchat.home.HomeActivity;
 import io.beldex.bchat.mms.SlideDeck;
 import io.beldex.bchat.util.BchatMetaProtocol;
+import io.beldex.bchat.util.ExtensionFunctionsKt;
 import io.beldex.bchat.util.SpanUtil;
+
+import com.beldex.libbchat.messaging.utilities.UpdateMessageData;
 import com.beldex.libbchat.mnode.MnodeAPI;
 import io.beldex.bchat.ApplicationContext;
 import io.beldex.bchat.contactshare.ContactUtil;
@@ -613,6 +619,28 @@ public class DefaultMessageNotifier implements MessageNotifier {
           direction = context.getString(R.string.message_details_header__received);
         }
         body = SpanUtil.italic(context.getString(R.string.ThreadRecord_payment, amount, direction));
+      } else if(record.isSharedContact() || ExtensionFunctionsKt.isSharedContact(record.getBody())) {
+        UpdateMessageData messageData = UpdateMessageData.Companion.fromJSON(record.getBody());
+          assert messageData != null;
+          UpdateMessageData.Kind.SharedContact data = (UpdateMessageData.Kind.SharedContact) messageData.getKind();
+          assert data != null;
+          List<String> names = flattenData(data.getName());
+        List<String> addresses = flattenData(data.getAddress());
+        if (names.isEmpty()) {
+          names = flattenData(data.getAddress());
+        }
+
+        String displayName;
+        if (names.size() > 2) {
+          displayName = shortNameAndAddress(names.get(0), addresses.get(0)) + " and " + (names.size() - 1) + " others";
+        } else if (names.size() == 2) {
+          displayName = shortNameAndAddress(names.get(0), addresses.get(0)) + " and " + (names.size() - 1) + " other";
+        } else if (names.size() == 1) {
+          displayName = capitalizeFirstLetter(names.get(0));
+        } else {
+          displayName = "No Name";
+        }
+          body = "👤 " + displayName;
       }
 
       if (threadRecipients == null || !threadRecipients.isMuted()) {
@@ -670,6 +698,26 @@ public class DefaultMessageNotifier implements MessageNotifier {
     reader.close();
     return notificationState;
   }
+
+  public String capitalizeFirstLetter(String input) {
+    if (input == null || input.isEmpty()) {
+      return input;
+    }
+    return input.substring(0, 1).toUpperCase() + input.substring(1);
+  }
+
+  public String shortNameAndAddress(String name, String address) {
+    if(name.equals(address)) {
+      if(address.length() >= 7) {
+        return capitalizeFirstLetter(address.substring(0, 4))+"...."+address.substring(address.length() - 3);
+      } else {
+        return capitalizeFirstLetter(address);
+      }
+    } else {
+      return capitalizeFirstLetter(name);
+    }
+  }
+
 
   private void updateBadge(Context context, int count) {
     try {

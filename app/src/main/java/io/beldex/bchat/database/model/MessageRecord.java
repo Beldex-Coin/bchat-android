@@ -115,10 +115,10 @@ public abstract class MessageRecord extends DisplayRecord {
       int seconds = (int) (getExpiresIn() / 1000);
       return new SpannableString(UpdateMessageBuilder.INSTANCE.buildExpirationTimerMessage(context, seconds, getIndividualRecipient().getAddress().serialize(), isOutgoing()));
     } else if (isDataExtractionNotification()) {
-      if (isScreenshotNotification()) return new SpannableString((UpdateMessageBuilder.INSTANCE.buildDataExtractionMessage(context, DataExtractionNotificationInfoMessage.Kind.SCREENSHOT, getIndividualRecipient().getAddress().serialize())));
+      if (isScreenshotNotification()) return new SpannableString((UpdateMessageBuilder.INSTANCE.buildScreenShotMessage(context, getIndividualRecipient().getAddress().serialize(),isOutgoing())));
       else if (isMediaSavedNotification()) return new SpannableString((UpdateMessageBuilder.INSTANCE.buildDataExtractionMessage(context, DataExtractionNotificationInfoMessage.Kind.MEDIA_SAVED, getIndividualRecipient().getAddress().serialize())));
     }
-    //New Line
+
     else if (isCallLog()) {
       CallMessageType callType;
       if (isIncomingCall()) {

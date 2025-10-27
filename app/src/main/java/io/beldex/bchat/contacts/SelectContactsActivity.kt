@@ -2,10 +2,13 @@ package io.beldex.bchat.contacts
 
 import android.app.Activity
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +18,8 @@ import io.beldex.bchat.dependencies.DatabaseComponent
 import com.bumptech.glide.Glide
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivitySelectContactsBinding
+import io.beldex.bchat.util.UiMode
+import io.beldex.bchat.util.UiModeUtilities
 
 
 class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderManager.LoaderCallbacks<List<String>> {
@@ -26,10 +31,10 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
     private val selectContactsAdapter by lazy {
         SelectContactsAdapter(this, Glide.with(this))
     }
+    var isDarkTheme = true
 
     companion object {
         val usersToExcludeKey = "usersToExcludeKey"
-        val emptyStateTextKey = "emptyStateTextKey"
         val selectedContactsKey = "selectedContactsKey"
     }
 
@@ -40,11 +45,8 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
         setContentView(binding.root)
         supportActionBar!!.title=resources.getString(R.string.activity_select_contacts_title)
 
+        isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
         usersToExclude=intent.getStringArrayExtra(usersToExcludeKey)?.toSet() ?: setOf()
-        val emptyStateText=intent.getStringExtra(emptyStateTextKey)
-        if (emptyStateText != null) {
-            binding.emptyStateMessageTextView.text=emptyStateText
-        }
 
         binding.recyclerView.adapter=selectContactsAdapter
         binding.recyclerView.layoutManager=LinearLayoutManager(this)
@@ -83,19 +85,49 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
                 binding.searchContact.text.clear()
             }
         }
-    }
-    fun filter(text: String?, arrayList: ArrayList<String>) {
-        val temp: MutableList<String> = ArrayList()
+        selectContactsAdapter.selectionChangedListener=
+            object : SelectContactsAdapter.OnSelectionChangedListener {
+                override fun onSelectionChanged(selectedCount : Int) {
+                    val context=this@SelectContactsActivity
+                    val resources=context.resources
 
-        for (d in arrayList) {
-            if (getUserDisplayName(d).lowercase().contains(text!!)) {
-                temp.add(d)
+                    if (selectedCount > 0) {
+                        val enabledColor=
+                            ResourcesCompat.getColor(resources, R.color.button_green, context.theme)
+                        binding.addButton.apply {
+                            isEnabled=true
+                            backgroundTintList=ColorStateList.valueOf(enabledColor)
+                            setTextColor(ContextCompat.getColor(context, R.color.white))
+                        }
+                    } else {
+                        val disabledColor=ResourcesCompat.getColor(
+                            resources, R.color.cancel_background, context.theme
+                        )
+                        val disabledTextColor=
+                            ContextCompat.getColor(context, R.color.white)
+
+                        binding.addButton.apply {
+                            isEnabled=false
+                            backgroundTintList=ColorStateList.valueOf(disabledColor)
+                            setTextColor(disabledTextColor)
+                        }
+                    }
+                }
             }
-
-        }
-        //update recyclerview
-        selectContactsAdapter.updateList(temp)
     }
+
+    fun filter(text: String?, arrayList: List<String>) {
+        val query = text?.lowercase()?.trim().orEmpty()
+
+        val filteredList = arrayList.filter { d ->
+            getUserDisplayName(d).lowercase().contains(query)
+        }
+
+        selectContactsAdapter.updateList(filteredList)
+
+        showNoContactFoundContainer(if(filteredList.isEmpty()) View.VISIBLE else View.GONE)
+    }
+
     private fun getUserDisplayName(publicKey: String): String {
         val contact = DatabaseComponent.get(this).bchatContactDatabase()
                 .getContactWithBchatID(publicKey)
@@ -122,11 +154,20 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
         update(listOf())
     }
 
+    private fun showNoContactFoundContainer(isVisible: Int) {
+        binding.noContactFoundContainer.visibility = isVisible
+        if(isVisible == View.VISIBLE) {
+            binding.icNoContactFound.setImageResource(
+                if (isDarkTheme) R.drawable.ic_no_contact_found
+                else R.drawable.ic_no_contact_found_white
+            )
+        }
+    }
+
     private fun update(members: List<String>) {
-        println("filter function called 5 $members")
         this.members = members
         binding.recyclerView.visibility = if (members.isEmpty()) View.GONE else View.VISIBLE
-        binding.emptyStateContainer.visibility = if (members.isEmpty()) View.VISIBLE else View.GONE
+        showNoContactFoundContainer(if (members.isEmpty()) View.VISIBLE else View.GONE)
         invalidateOptionsMenu()
     }
     // endregion

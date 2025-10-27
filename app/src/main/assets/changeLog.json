@@ -534,6 +534,20 @@
           "description":"Minor bug fixes"
         }
       ]
+    },
+    {
+      "title": "2.8.0",
+      "descriptions": [
+        {
+          "description":"Introduced share contact feature"
+        },
+        {
+          "description":"Introduced screenshot notify feature"
+        },
+        {
+          "description":"Minor bug fixes"
+        }
+      ]
     }
   ]
 }

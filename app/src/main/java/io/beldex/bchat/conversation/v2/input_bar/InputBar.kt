@@ -18,20 +18,21 @@ import androidx.core.view.isVisible
 import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
+import com.bumptech.glide.RequestManager
+import io.beldex.bchat.R
 import io.beldex.bchat.conversation.v2.components.LinkPreviewDraftView
 import io.beldex.bchat.conversation.v2.components.LinkPreviewDraftViewDelegate
 import io.beldex.bchat.conversation.v2.messages.QuoteView
 import io.beldex.bchat.conversation.v2.messages.QuoteViewDelegate
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.database.model.MmsMessageRecord
-import com.bumptech.glide.RequestManager
+import com.google.android.material.card.MaterialCardView
+import io.beldex.bchat.databinding.ViewInputBarBinding
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.getColorWithID
 import io.beldex.bchat.util.toDp
 import io.beldex.bchat.util.toPx
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ViewInputBarBinding
 
 
 class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, LinkPreviewDraftViewDelegate{
@@ -74,6 +75,9 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     constructor(context: Context) : super(context) { initialize() }
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { initialize() }
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { initialize() }
+
+    val containerCardView : MaterialCardView
+        get() = binding.containerCardView
 
     private fun initialize() {
         binding = ViewInputBarBinding.inflate(LayoutInflater.from(context), this, true)

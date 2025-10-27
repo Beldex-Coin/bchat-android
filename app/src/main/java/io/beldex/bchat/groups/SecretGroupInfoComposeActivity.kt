@@ -130,7 +130,7 @@ class SecretGroupInfoComposeActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowCompat.setDecorFitsSystemWindows(window, true)
         setContent {
             val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
             val view = LocalView.current
@@ -233,6 +233,9 @@ fun GroupDetailsScreen(
     var groupName by remember {
         mutableStateOf(groupInfo.title)
     }
+    var profileRefresh by remember {
+        mutableStateOf(false)
+    }
     var groupMembersCount by remember {
         mutableIntStateOf(
             groupMembers?.members?.count() ?: 0
@@ -251,6 +254,7 @@ fun GroupDetailsScreen(
         if (result.resultCode == RESULT_OK) {
             result.data?.let { data ->
                 groupName=data.getStringExtra("group_name") ?: ""
+                profileRefresh = !profileRefresh
                 groupMembersCount=data.getIntExtra("group_members_count", 0)
                 if (memberCount != groupMembersCount) {
                     secretGroupInfoViewModel.fetchGroupMembers()
@@ -555,29 +559,35 @@ fun GroupDetailsScreen(
                         Row(
                             modifier=Modifier
                                 .fillMaxWidth()
-                                .padding(vertical=8.dp),
+                                .padding(vertical=8.dp)
+                                .clickable {
+                                if (getLocalNumber(context) != member) {
+                                    selectedItem=member
+                                    showMemberOptionDialog=true
+                                }
+                            },
                             verticalAlignment=Alignment.CenterVertically
                         )
                         {
                             Box(
                                 modifier=Modifier
-                                    .padding(4.dp)
-                                    .height(30.dp)
-                                    .width(30.dp),
+                                    .padding(1.dp)
+                                    .height(40.dp)
+                                    .width(40.dp),
                                 contentAlignment=Alignment.Center,
                             ) {
                                 if (updateProfile) {
                                     ProfilePictureComponent(
                                         publicKey=member,
                                         displayName=getUserDisplayName(member),
-                                        containerSize=profileSize,
+                                        containerSize=40.dp,
                                         pictureMode=ProfilePictureMode.SmallPicture
                                     )
                                 } else {
                                     ProfilePictureComponent(
                                         publicKey=member,
                                         displayName=getUserDisplayName(member),
-                                        containerSize=profileSize,
+                                        containerSize=40.dp,
                                         pictureMode=ProfilePictureMode.SmallPicture
                                     )
                                 }
@@ -587,7 +597,7 @@ fun GroupDetailsScreen(
                                 Text(
                                     text=getUserDisplayName(member).capitalizeFirstLetter(),
                                     style=MaterialTheme.typography.bodyMedium.copy(
-                                        fontSize=14.sp,
+                                        fontSize=16.sp,
                                         color=MaterialTheme.appColors.textColor
                                     ),
                                     modifier=Modifier.padding(end=8.dp)
@@ -638,15 +648,27 @@ fun GroupDetailsScreen(
                 .take(2).toMutableList()
             val additionalPk=members.getOrNull(1)?.serialize() ?: ""
             val additionalDisplay=getUserDisplayName(additionalPk)
-            ProfilePictureComponent(
-                publicKey=recipient.address.toString(),
-                displayName=recipient.name.toString(),
-                additionalPublicKey=additionalPk,
-                additionalDisplayName=additionalDisplay,
-                containerSize=70.dp,
-                pictureMode=pictureType,
-                isGroupInfo = true
-            )
+            if(profileRefresh) {
+                ProfilePictureComponent(
+                    publicKey=recipient.address.toString(),
+                    displayName=recipient.name.toString(),
+                    additionalPublicKey=additionalPk,
+                    additionalDisplayName=additionalDisplay,
+                    containerSize=70.dp,
+                    pictureMode=pictureType,
+                    isGroupInfo = true
+                )
+            } else {
+                ProfilePictureComponent(
+                    publicKey=recipient.address.toString(),
+                    displayName=recipient.name.toString(),
+                    additionalPublicKey=additionalPk,
+                    additionalDisplayName=additionalDisplay,
+                    containerSize=70.dp,
+                    pictureMode=pictureType,
+                    isGroupInfo = true
+                )
+            }
         }
 
         Row(
@@ -846,15 +868,15 @@ fun GroupDetailsScreen(
                         ) {
                         Box(
                             modifier=Modifier
-                                .padding(4.dp)
-                                .height(30.dp)
-                                .width(30.dp),
+                                .padding(1.dp)
+                                .height(40.dp)
+                                .width(40.dp),
                             contentAlignment=Alignment.Center,
                         ) {
                             ProfilePictureComponent(
                                 publicKey=member,
                                 displayName=getUserDisplayName(member),
-                                containerSize=profileSize,
+                                containerSize=40.dp,
                                 pictureMode=ProfilePictureMode.SmallPicture
                             )
                         }
@@ -863,7 +885,7 @@ fun GroupDetailsScreen(
                             Text(
                                 text=getUserDisplayName(member).capitalizeFirstLetter(),
                                 style=MaterialTheme.typography.bodyMedium.copy(
-                                    fontSize=14.sp,
+                                    fontSize=16.sp,
                                     color=MaterialTheme.appColors.textColor
                                 ),
                                 modifier=Modifier.padding(end=8.dp)

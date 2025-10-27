@@ -1,0 +1,333 @@
+package io.beldex.bchat.conversation.v2.contact_sharing
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.compose_utils.OutlineLight
+import io.beldex.bchat.compose_utils.ProfilePictureComponent
+import io.beldex.bchat.compose_utils.ProfilePictureMode
+import io.beldex.bchat.compose_utils.TextColor
+import io.beldex.bchat.dependencies.DatabaseComponent
+import io.beldex.bchat.util.shortNameAndAddress
+
+@Composable
+fun SharedContactView(
+    contacts: List<ContactModel>,
+    timeStamp: String,
+    modifier: Modifier = Modifier,
+    columnModifier: Modifier = Modifier,
+    backgroundColor: Color = Color.DarkGray,
+    titleColor: Color = Color.White,
+    subtitleColor: Color = OutlineLight,
+    isQuoted: Boolean = false,
+    isOutgoing: Boolean = false,
+    searchQuery: String = "",
+    hasResult: Boolean = false
+) {
+    val numberOfContacts = flattenData(contacts[0].address.serialize())
+
+    Column(
+        horizontalAlignment = Alignment.End,
+        modifier = columnModifier
+    ) {
+        Card(
+            shape = RoundedCornerShape(12.dp),
+            colors =CardDefaults.cardColors(
+                containerColor = backgroundColor
+            ),
+            modifier=Modifier
+                .fillMaxWidth(0.7f)
+                .padding(
+                    start=if (isQuoted) 2.dp else 8.dp,
+                    top=if (isQuoted) 4.dp else 0.dp,
+                    end=if (isQuoted) 2.dp else 8.dp,
+                    bottom=if (isQuoted) 4.dp else 8.dp
+                ),
+        ) {
+            SharedContactContent(
+                contacts = contacts,
+                titleColor = titleColor,
+                subtitleColor = subtitleColor,
+                backgroundColor = backgroundColor,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                searchQuery = searchQuery,
+                isOutgoing = isOutgoing,
+                hasResult = hasResult
+
+            )
+        }
+
+        Column(
+            modifier=Modifier
+                .fillMaxWidth(0.7f)
+                .padding(
+                    top = if (isQuoted) 3.dp else 0.dp,
+                    bottom = 3.dp
+                ),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+
+            Text(
+                text = timeStamp,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    color = colorResource(if(isOutgoing) R.color.timestamp_out else R.color.timestamp_in),
+                    fontSize = 11.sp
+                ),
+                modifier = Modifier.align(Alignment.End).padding(
+                    end=if (isQuoted) 2.dp else 8.dp,
+                )
+            )
+            Spacer(modifier = Modifier.height(5.dp))
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                HorizontalDivider(
+                    modifier = Modifier.fillMaxWidth().height(0.5.dp),
+                    color = colorResource(if(isOutgoing) R.color.outgoing_message_divider_color else R.color.incoming_message_divider_color)
+                )
+                Spacer(modifier = Modifier.height(5.dp))
+                Text(
+                    text= if(numberOfContacts.size > 1) stringResource(R.string.view_all) else stringResource(R.string.message),
+                    style=MaterialTheme.typography.bodySmall.copy(
+                        color= colorResource(if(isOutgoing) R.color.view_all_text_out else R.color.view_all_text),
+                        fontSize=14.sp
+                    ),
+                )
+            }
+        }
+
+
+    }
+}
+
+@Composable
+fun SharedContactContent(
+    contacts: List<ContactModel>,
+    modifier: Modifier = Modifier,
+    titleColor: Color = Color.White,
+    backgroundColor : Color,
+    subtitleColor: Color = TextColor,
+    searchQuery: String = "",
+    isOutgoing: Boolean = false,
+    hasResult: Boolean = false
+) {
+    val context = LocalContext.current
+
+    data class ContactDisplay(val name: String, val address: String)
+
+    val contactList: List<ContactDisplay> = contacts.firstOrNull()?.let { contact ->
+        val names = flattenData(contact.name)
+        val addresses = flattenData(contact.address.serialize())
+        names.zip(addresses) { name, address -> ContactDisplay(name, address) }
+    } ?: emptyList()
+
+    val displayName = when (contactList.size) {
+        0 -> "No Name"
+        1 -> contactList[0].name.capitalizeFirstLetter()
+        2 -> "${shortNameAndAddress(contactList[0].name, contactList[0].address)} and ${contactList.size - 1} other"
+        else -> "${shortNameAndAddress(contactList[0].name, contactList[0].address)} and ${contactList.size - 1} others"
+    }
+
+
+    val addressString by remember(contactList) {
+        val address = if (contactList.isNotEmpty()) {
+            val first = contactList.first().address
+            val last = contactList.last().address
+            if(first.length >= 7 && last.length >= 7) {
+                "${first.take(7)}.........${last.takeLast(7)}"
+            } else {
+                "${first}.........${last}"
+            }
+        } else ""
+        mutableStateOf(address)
+    }
+
+    fun getUserIsBNSHolderStatus(publicKey: String): Boolean? {
+        return DatabaseComponent.get(context)
+            .bchatContactDatabase()
+            .getContactWithBchatID(publicKey)
+            ?.isBnsHolder
+    }
+
+    Row(
+        modifier = modifier.padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(modifier = Modifier.weight(0.8f)) {
+            val annotatedDisplayName = highlightText(
+                fullText = displayName.ifEmpty { contactList.firstOrNull()?.address.orEmpty() },
+                query = searchQuery,
+                highlightBackground = if(isOutgoing) Color(0xFF000000) else Color(0xFF4B4B64),
+                hasResult = hasResult
+            )
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_contact_person),
+                    contentDescription = "shared contact person",
+                    tint = subtitleColor,
+                    modifier = Modifier.size(12.dp)
+                )
+
+                Spacer(modifier = Modifier.width(5.dp))
+
+                Text(
+                    text = annotatedDisplayName,
+                    style = MaterialTheme.typography.titleSmall.copy(color = titleColor, lineHeight = 15.0.sp),
+                    maxLines = if(contactList.size >= 2) 2 else 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            if(contactList.size < 2) {
+                Spacer(modifier = Modifier.height(4.dp))
+                if(contactList.isNotEmpty()) {
+                    Text(
+                        text = addressString,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.bodySmall.copy(color = subtitleColor, lineHeight = 15.0.sp)
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.width(12.dp))
+
+        if (contactList.isNotEmpty()) {
+            val multiContact = contactList.size > 1
+            Box {
+                contactList.getOrNull(1)?.let { second ->
+                    key(second.address) {
+                        ProfilePictureComponent(
+                            publicKey=second.address,
+                            displayName=second.name,
+                            containerSize=30.dp,
+                            pictureMode=ProfilePictureMode.SmallPicture,
+                            modifier=Modifier
+                                .align(Alignment.TopEnd)
+                                .offset(x=3.dp, y=(-3).dp)
+                        )
+                    }
+                }
+
+                contactList.getOrNull(0)?.let { first ->
+                    key(first.address) {
+                        ProfilePictureComponent(
+                            publicKey=first.address,
+                            displayName=first.name,
+                            containerSize=36.dp,
+                            pictureMode=ProfilePictureMode.SmallPicture,
+                            modifier=Modifier.then(
+                                if (multiContact && getUserIsBNSHolderStatus(first.address) != true) {
+                                    Modifier
+                                        .size(36.dp)
+                                        .clip(CircleShape)
+                                        .border(2.dp, backgroundColor, CircleShape)
+                                } else Modifier
+                            )
+                        )
+                    }
+                }
+            }
+        } else {
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .background(Color.Green, RoundedCornerShape(100))
+            )
+        }
+    }
+}
+
+fun highlightText(
+    fullText: String,
+    query: String,
+    highlightBackground: Color,
+    hasResult : Boolean,
+    highlightTextColor: Color = Color.White
+): AnnotatedString {
+    if (query.isBlank() || !hasResult) return AnnotatedString(fullText)
+
+    val lowerFullText = fullText.lowercase()
+    val lowerQuery = query.lowercase()
+
+    return buildAnnotatedString {
+        var startIndex = 0
+        while (true) {
+            val index = lowerFullText.indexOf(lowerQuery, startIndex)
+            if (index == -1) {
+                append(fullText.substring(startIndex))
+                break
+            }
+
+            append(fullText.substring(startIndex, index))
+
+            withStyle(
+                style = SpanStyle(
+                    background = highlightBackground,
+                    color = highlightTextColor
+                )
+            ) {
+                append(fullText.substring(index, index + query.length))
+            }
+            startIndex = index + query.length
+        }
+    }
+}
+
+
+
+@Preview
+@Composable
+private fun SharedContactViewPreview() {
+    BChatTheme {
+        SharedContactView(
+            contacts = listOf(),
+            timeStamp = ""
+        )
+    }
+}

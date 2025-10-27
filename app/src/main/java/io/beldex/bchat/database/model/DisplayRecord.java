@@ -122,7 +122,14 @@ public abstract class DisplayRecord {
   public boolean isMessageRequestResponse() { return  MmsSmsColumns.Types.isMessageRequestResponse(type); }
 
   //Payment Tag
-  public boolean isPayment() { return MmsSmsColumns.Types.isPayment(type); }
+  public boolean isPayment() {
+    return MmsSmsColumns.Types.isPayment(type);
+  }
+
+  //Contact Tag
+  public boolean isSharedContact() {
+    return MmsSmsColumns.Types.isContact(type);
+  }
 
 
   //New Line

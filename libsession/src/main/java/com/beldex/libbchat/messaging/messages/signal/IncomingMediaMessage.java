@@ -1,5 +1,7 @@
 package com.beldex.libbchat.messaging.messages.signal;
 
+import com.beldex.libbchat.messaging.messages.visible.SharedContact;
+import com.beldex.libbchat.messaging.utilities.UpdateMessageData;
 import com.beldex.libsignal.messages.SignalServiceAttachment;
 import com.beldex.libsignal.messages.SignalServiceGroup;
 import com.beldex.libsignal.utilities.guava.Optional;
@@ -31,6 +33,8 @@ public class IncomingMediaMessage {
   private final boolean       unidentified;
   /*Hales63*/
   private final boolean       messageRequestResponse;
+  //Shared Contact
+  private boolean isContact = false;
 
   private final DataExtractionNotificationInfoMessage dataExtractionNotification;
   private final QuoteModel                            quote;
@@ -65,6 +69,7 @@ public class IncomingMediaMessage {
     this.quote                      = quote.orNull();
     this.unidentified               = unidentified;
     this.messageRequestResponse     = messageRequestResponse;
+    this.isContact                  = false;
 
     if (group.isPresent()) this.groupId = Address.fromSerialized(GroupUtil.INSTANCE.getEncodedId(group.get()));
     else                   this.groupId = null;
@@ -84,6 +89,46 @@ public class IncomingMediaMessage {
   {
     return new IncomingMediaMessage(from, message.getSentTimestamp(), -1, expiresIn, false,
             false, false, Optional.fromNullable(message.getText()), group, Optional.fromNullable(attachments), quote, Optional.absent(), linkPreviews, Optional.absent());
+  }
+
+  public static IncomingMediaMessage fromSharedContact(SharedContact contact,
+                                                       VisibleMessage message,
+                                                       Address from,
+                                                       long expiresIn,
+                                                       Optional<SignalServiceGroup> group,
+                                                       List<SignalServiceAttachment> attachments,
+                                                       Optional<QuoteModel> quote,
+                                                       Optional<List<LinkPreview>> linkPreviews) {
+    return java.util.Optional.ofNullable(contact)
+            .filter(c -> c.getAddress() != null && c.getName() != null)
+            .map(c -> {
+              String body = UpdateMessageData.Companion
+                      .buildSharedContact(c.getAddress(), c.getName())
+                      .toJSON();
+
+              long timestamp = java.util.Optional.ofNullable(message.getSentTimestamp()).orElse(-1L);
+
+              IncomingMediaMessage msg = new IncomingMediaMessage(
+                      from,
+                      timestamp,
+                      -1,
+                      expiresIn,
+                      false,
+                      false,
+                      false,
+                      Optional.fromNullable(body),
+                      group,
+                      Optional.fromNullable(attachments),
+                      quote,
+                      Optional.absent(),
+                      linkPreviews,
+                      Optional.absent()
+              );
+
+              msg.isContact = true;
+              return msg;
+            })
+            .orElse(null);
   }
   public int getSubscriptionId() {
     return subscriptionId;

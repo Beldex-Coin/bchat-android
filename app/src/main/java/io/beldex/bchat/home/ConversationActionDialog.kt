@@ -44,8 +44,8 @@ class ConversationActionDialog: DialogFragment() {
 
     private var argument1: String? = null
     private var argument2: String? = null
+    private var argument3: Int = 0
     private var dismissAllowed: Boolean = false
-    var data:Int? = null
     var longData: Long? = null
     private var dialogType: HomeDialogType = HomeDialogType.DeleteChat
     private var listener: ConversationActionDialogListener? = null
@@ -60,8 +60,8 @@ class ConversationActionDialog: DialogFragment() {
             if(it.containsKey(EXTRA_ARGUMENT_1))
                 argument1 = it.getString(EXTRA_ARGUMENT_1, null)
 
-            if(it.containsKey(EXTRA_ARGUMENT_1))
-                data = arguments?.getInt(EXTRA_ARGUMENT_1) ?: 0
+            if(it.containsKey(EXTRA_ARGUMENT_3))
+                argument3 = it.getInt(EXTRA_ARGUMENT_3)
 
             if(it.containsKey(EXTRA_ARGUMENT_2))
                 argument2 = it.getString(EXTRA_ARGUMENT_2, null)
@@ -145,7 +145,7 @@ class ConversationActionDialog: DialogFragment() {
                             LockOptionsDialog(
                                 title = stringResource(R.string.mute_notification),
                                 options = timesOption.toList(),
-                                currentValue = timesOption[argument1?.toInt() ?: 0],
+                                currentValue = timesOption[argument3],
                                 onDismiss = {
                                     dismiss()
                                 },
@@ -166,7 +166,7 @@ class ConversationActionDialog: DialogFragment() {
                                 positiveButtonTitle = stringResource(id = R.string.yes),
                                 onAccept = {
                                     dismiss()
-                                    listener?.onConfirmationWithData(dialogType, data, threadRecord)
+                                    listener?.onConfirmationWithData(dialogType, argument3, threadRecord)
                                 },
                                 onCancel = {
                                     dismiss()
@@ -190,7 +190,7 @@ class ConversationActionDialog: DialogFragment() {
                                     listener?.onCancel(dialogType, threadRecord)
                                 },
                                 options = option.toList(),
-                                currentValue = option[data ?: 0],
+                                currentValue = option[argument3],
                                 onValueChanged = { _, index ->
                                     listener?.onConfirmationWithData(dialogType, index, threadRecord)
                                     dismiss()
@@ -239,7 +239,7 @@ class ConversationActionDialog: DialogFragment() {
                         BChatTheme(
                             darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
                         ) {
-                            val messageCount = data ?:0
+                            val messageCount = argument3
                             val title = resources.getQuantityString(
                                 R.plurals.ConversationFragment_delete_selected_messages,
                                 messageCount,
@@ -281,13 +281,13 @@ class ConversationActionDialog: DialogFragment() {
                             LockOptionsDialog(
                                 title = stringResource(R.string.disappearing_messages),
                                 options = options,
-                                currentValue = options[timesOption.indexOf(data ?: 0)],
+                                currentValue = options[timesOption.indexOf(argument3)],
                                 onDismiss = {
                                     dismiss()
                                 },
                                 onValueChanged = { _, index ->
                                     dismiss()
-                                    if (options[timesOption.indexOf(data ?:0)] != options[index]) {
+                                    if (options[timesOption.indexOf(argument3)] != options[index]) {
                                         listener?.onConfirmationWithData(dialogType, timesOption[index], threadRecord)
                                     }
                                 }
@@ -386,6 +386,7 @@ class ConversationActionDialog: DialogFragment() {
         const val EXTRA_DIALOG_TYPE = "dialog_type"
         const val EXTRA_ARGUMENT_1 = "argument_1"
         const val EXTRA_ARGUMENT_2 = "argument_2"
+        const val EXTRA_ARGUMENT_3 = "argument_3"
         const val EXTRA_ARGUMENT_LONG = "argument_long_type"
         const val EXTRA_THREAD_RECORD = "thread_record"
         const val TAG = "ComposeDialogContainer"

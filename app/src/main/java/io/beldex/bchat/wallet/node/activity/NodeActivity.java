@@ -60,11 +60,6 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         loadFavouritesWithNetwork();
-        if (TextSecurePreferences.isScreenSecurityEnabled(this)) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
-        } else {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
-        }
         Fragment nodeFragment = new NodeFragment();
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.nodeList_frame, nodeFragment, NodeFragment.class.getName()).commit();

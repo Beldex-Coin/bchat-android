@@ -217,7 +217,7 @@
 
     <!-- MediaSendActivity -->
     <string name="MediaSendActivity_add_a_caption" translatable="false">Add a caption...</string>
-    <string name="MediaSendActivity_an_item_was_removed_because_it_exceeded_the_size_limit" translatable="false">An item was removed because it exceeded the size limit</string>
+    <string name="MediaSendActivity_an_item_was_removed_because_it_exceeded_the_size_limit" translatable="false">An item was removed. Files must be less than 10MB.</string>
     <string name="MediaSendActivity_camera_unavailable" translatable="false">Camera unavailable.</string>
     <string name="MediaSendActivity_message_to_s" translatable="false">Message to %s</string>
     <plurals name="MediaSendActivity_cant_share_more_than_n_items">
@@ -490,9 +490,9 @@
     <string name="arrays__enabled" translatable="false">Enabled</string>
     <string name="arrays__disabled" translatable="false">Disabled</string>
 
-    <string name="arrays__name_and_message" translatable="false">Name and content</string>
-    <string name="arrays__name_only" translatable="false">Name only</string>
-    <string name="arrays__no_name_or_message" translatable="false">No name or content</string>
+    <string name="arrays__name_and_message" translatable="false">Name and Content</string>
+    <string name="arrays__name_only" translatable="false">Name Only</string>
+    <string name="arrays__no_name_or_message" translatable="false">No Name or Content</string>
 
     <string name="arrays__images" translatable="false">Images</string>
     <string name="arrays__audio" translatable="false">Audio</string>
@@ -1025,6 +1025,7 @@
     <string name="message_requests_clear_all_message" translatable="false">Are you sure you want to clear all message requests?</string>
     <string name="message_requests_cleared" translatable="false">Message requests deleted</string>
     <string name="message_requests_accepted" translatable="false">Your message request has been accepted.</string>
+    <string name="message_request_you_have_accepted" translatable="false">You have accepted the message request from %s.</string>
     <string name="message_requests_pending" translatable="false">Your message request is currently pending.</string>
     <string name="message_request_empty_state_message" translatable="false">No pending message requests</string>
     <string name="message_requests_accept_all" translatable="false">Accept All</string>
@@ -1480,7 +1481,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="description_for_paste_icon">This allows user to paste their seed from clipboard</string>
     <string name="transaction_progress_attention"> Please don\'t close this window or attend calls or navigate to another app until the transaction gets initiated</string>
     <string name="select_date_range">Select Date Range</string>
-    <string name ="wallet_settings" translatable="false">Wallet settings</string>
+    <string name="wallet_settings" translatable="false">Wallet settings</string>
     <string name="transactions" translatable="false">Transactions</string>
     <string name="transaction_filter" translatable="false">Transaction Filter</string>
     <string name="chat" translatable="false">Chat</string>
@@ -1680,5 +1681,14 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="members_option_message" translatable="false">Message to </string>
     <string name="members_option_copy_bchat_id" translatable="false">Copy BChat ID</string>
     <string name="zero_time_durationMs" translatable="false">0:00</string>
-    <string name="attachmentsErrorSize" translatable="false" >Files must be less than 10MB</string>
+    <string name="attachmentsErrorSize" translatable="false">Files must be less than 10MB</string>
+    <string name="view_contacts" translatable="false">View Contacts</string>
+    <string name="share_contacts" translatable="false">Share Contacts</string>
+    <string name="chat_with_contact_confirmation" translatable="false">Do you want to chat with this contact now?</string>
+    <string name="no_contact_found" translatable="false">No Contact Found</string>
+    <string name="contact_received" translatable="false">Contact Received: %s</string>
+    <string name="no_name" translatable="false">No Name</string>
+    <string name="title_activity_view_contact" translatable="false">ViewContactActivity</string>
+    <string name="view_all" translatable="false">View all</string>
+    <string name="message" translatable="false">Message</string>
 </resources>

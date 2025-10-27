@@ -73,6 +73,7 @@ import io.beldex.bchat.conversation.v2.ConversationReactionDelegate
 import io.beldex.bchat.conversation.v2.ConversationReactionOverlay
 import io.beldex.bchat.conversation.v2.ConversationViewModel
 import io.beldex.bchat.conversation.v2.ViewUtil
+import io.beldex.bchat.conversation.v2.contact_sharing.ViewAllContactFragment
 import io.beldex.bchat.conversation.v2.utilities.BaseDialog
 import io.beldex.bchat.data.BarcodeData
 import io.beldex.bchat.data.NodeInfo
@@ -635,7 +636,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         val fragment: Fragment? = getCurrentFragment()
-        if (fragment is ConversationFragmentV2 || fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment || fragment is WalletFragment) {
+        if (fragment is ConversationFragmentV2 || fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment || fragment is WalletFragment || fragment is ViewAllContactFragment) {
             if (!(fragment as OnBackPressedListener).onBackPressed()) {
                 TextSecurePreferences.callFiatCurrencyApi(this,false)
                 try {

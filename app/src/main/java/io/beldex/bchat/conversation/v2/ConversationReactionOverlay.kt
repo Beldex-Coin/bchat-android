@@ -42,6 +42,7 @@ import io.beldex.bchat.dependencies.DatabaseComponent.Companion.get
 import io.beldex.bchat.repository.ConversationRepository
 import io.beldex.bchat.util.AnimationCompleteListener
 import io.beldex.bchat.util.DateUtils
+import io.beldex.bchat.util.isSharedContact
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -296,15 +297,11 @@ class ConversationReactionOverlay : FrameLayout {
     }
     private fun updateSystemUiOnShow(activity: Activity) {
         val window = activity.window
-        val barColor = ContextCompat.getColor(context, R.color.reactions_screen_dark_shade_color)
+        val barColor = ContextCompat.getColor(context, R.color.transparent)
         originalStatusBarColor = window.statusBarColor
         WindowUtil.setStatusBarColor(window, barColor)
         originalNavigationBarColor = window.navigationBarColor
         WindowUtil.setNavigationBarColor(window, barColor)
-        if (!ThemeUtil.isDarkTheme(context)) {
-            WindowUtil.clearLightStatusBar(window)
-            WindowUtil.clearLightNavigationBar(window)
-        }
     }
     fun hide() {
         hideInternal(onHideListener)
@@ -491,7 +488,11 @@ class ConversationReactionOverlay : FrameLayout {
         // control messages and "marked as deleted" messages can only delete
         val isDeleteOnly = message.isDeleted || message.isControlMessage
 
+        var isSharedContact = message.isSharedContact
 
+        if (isSharedContact(message.body)) {
+            isSharedContact = true
+        }
         // Select message
         if(!isDeleteOnly) {
             items += ActionItem(
@@ -506,7 +507,7 @@ class ConversationReactionOverlay : FrameLayout {
             items += ActionItem(R.attr.menu_reply_icon, context.resources.getString(R.string.accessibilityId_reply), { handleActionItemClicked(Action.REPLY) }, R.string.accessibilityId_reply)
         }
         // Copy message text
-        if (!containsControlMessage && hasText) {
+        if (!containsControlMessage && hasText && !isSharedContact) {
             items += ActionItem(R.attr.menu_copy_icon, context.resources.getString(R.string.copy), { handleActionItemClicked(Action.COPY_MESSAGE) })
         }
         // Copy BChat ID

@@ -32,6 +32,7 @@ import com.beldex.libbchat.messaging.sending_receiving.data_extraction.DataExtra
 import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview
 import com.beldex.libbchat.messaging.sending_receiving.quotes.QuoteModel
 import com.beldex.libbchat.messaging.utilities.UpdateMessageData
+import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.mnode.OnionRequestAPI
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.Address.Companion.fromSerialized
@@ -191,15 +192,21 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
             val quote: Optional<QuoteModel> = if (quotes != null) Optional.of(quotes) else Optional.absent()
             val linkPreviews: Optional<List<LinkPreview>> = if (linkPreview.isEmpty()) Optional.absent() else Optional.of(linkPreview.mapNotNull { it!! })
             val mmsDatabase = DatabaseComponent.get(context).mmsDatabase()
+            val isContact = (message.sharedContact != null)
             val insertResult = if (message.sender == getUserPublicKey()) {
-                val mediaMessage = OutgoingMediaMessage.from(message, targetRecipient, pointers, quote.orNull(), linkPreviews.orNull()?.firstOrNull())
+                val mediaMessage = if(isContact) {
+                    OutgoingMediaMessage.fromSharedContact(message, targetRecipient, pointers, quote.orNull(), linkPreviews.orNull()?.firstOrNull())
+                }
+                else OutgoingMediaMessage.from(message, targetRecipient, pointers, quote.orNull(), linkPreviews.orNull()?.firstOrNull())
                 mmsDatabase.insertSecureDecryptedMessageOutbox(mediaMessage, message.threadID ?: -1, message.sentTimestamp!!,runThreadUpdate)
             } else {
                 // It seems like we have replaced SignalServiceAttachment with BchatServiceAttachment
                 val signalServiceAttachments = attachments.mapNotNull {
                     it.toSignalPointer()
                 }
-                val mediaMessage = IncomingMediaMessage.from(message, senderAddress, targetRecipient.expireMessages * 1000L, group, signalServiceAttachments, quote, linkPreviews)
+
+                val mediaMessage = if(isContact) IncomingMediaMessage.fromSharedContact(message.sharedContact, message, senderAddress, targetRecipient.expireMessages * 1000L, group, signalServiceAttachments, quote, linkPreviews)
+                else IncomingMediaMessage.from(message, senderAddress, targetRecipient.expireMessages * 1000L, group, signalServiceAttachments, quote, linkPreviews)
                 mmsDatabase.insertSecureDecryptedMessageInbox(mediaMessage, message.threadID ?: -1, message.receivedTimestamp ?: 0,runIncrement,runThreadUpdate)
             }
             if (insertResult.isPresent) {
@@ -211,16 +218,20 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
             val isOpenGroupInvitation = (message.openGroupInvitation != null)
             //Payment Tag
             val isPayment = (message.payment != null)
+            //contact tag
+            val isContact = (message.sharedContact != null)
 
             val insertResult = if (message.sender == getUserPublicKey()) {
                 val textMessage = if (isOpenGroupInvitation) OutgoingTextMessage.fromOpenGroupInvitation(message.openGroupInvitation, targetRecipient, message.sentTimestamp)
                 else if(isPayment) OutgoingTextMessage.fromPayment(message.payment,targetRecipient,message.sentTimestamp) //Payment Tag
+                else if(isContact) OutgoingTextMessage.fromSharedContact(message.sharedContact, targetRecipient, message.sentTimestamp)
                 else OutgoingTextMessage.from(message, targetRecipient)
                 smsDatabase.insertMessageOutboxNew(message.threadID ?: -1, textMessage, message.sentTimestamp!!,runThreadUpdate)
 
             } else {
                 val textMessage = if (isOpenGroupInvitation) IncomingTextMessage.fromOpenGroupInvitation(message.openGroupInvitation, senderAddress, message.sentTimestamp,targetRecipient.expireMessages * 1000L)
                 else if(isPayment) IncomingTextMessage.fromPayment(message.payment,senderAddress,message.sentTimestamp,targetRecipient.expireMessages * 1000L) //Payment Tag
+                else if(isContact) IncomingTextMessage.fromSharedContact(message.sharedContact, senderAddress, group, message.sentTimestamp,targetRecipient.expireMessages * 1000L) //Payment Tag
                 else IncomingTextMessage.from(message, senderAddress, group, targetRecipient.expireMessages * 1000L)
                 val encrypted =
                     IncomingEncryptedMessage(
@@ -708,7 +719,6 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
     }
 
     override fun setContact(contact: Contact) {
-        Log.d("beldex","Hi am SetContact in Storage.kt")
         DatabaseComponent.get(context).bchatContactDatabase().setContact(contact)
     }
 
@@ -812,7 +822,10 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         database.insertSecureDecryptedMessageInbox(mediaMessage, -1,runIncrement = true, runThreadUpdate = true)
     }
 
-    override fun insertMessageRequestResponse(response: MessageRequestResponse) {
+    /**
+     * This will create a control message used to indicate that a contact has accepted our message request
+     */
+    override fun insertMessageRequestResponseFromContact(response: MessageRequestResponse) {
         val userPublicKey = getUserPublicKey()
         val senderPublicKey = response.sender!!
         val recipientPublicKey = response.recipient!!
@@ -852,11 +865,36 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         }
     }
 
-    /*Msg Req Hales63*/
+    /**
+     * This will create a control message used to indicate that you have accepted a message request
+     */
+    override fun insertMessageRequestResponseFromYou(threadId: Long) {
+        val userPublicKey = getUserPublicKey() ?: return
+
+        val mmsDb = DatabaseComponent.get(context).mmsDatabase()
+        val message = IncomingMediaMessage(
+            fromSerialized(userPublicKey),
+            MnodeAPI.nowWithOffset,
+            -1,
+            0,
+            false,
+            false,
+            true,
+            Optional.absent(),
+            Optional.absent(),
+            Optional.absent(),
+            Optional.absent(),
+            Optional.absent(),
+            Optional.absent(),
+            Optional.absent()
+        )
+        mmsDb.insertSecureDecryptedMessageInbox(message, threadId, runIncrement = true, runThreadUpdate = true)
+    }
+
     override fun setRecipientApproved(recipient: Recipient, approved: Boolean) {
         DatabaseComponent.get(context).recipientDatabase().setApproved(recipient, approved)
     }
-    /*Msg Req Hales63*/
+
     override fun setRecipientApprovedMe(recipient: Recipient, approvedMe: Boolean) {
         DatabaseComponent.get(context).recipientDatabase().setApprovedMe(recipient, approvedMe)
     }

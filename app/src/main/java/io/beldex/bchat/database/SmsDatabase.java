@@ -433,6 +433,9 @@ public class SmsDatabase extends MessagingDatabase {
     //Payment Tag
     if (message.isPayment())             type |= Types.PAYMENT_BIT;
 
+    //Contact tag
+    if (message.isContact())             type |= Types.CONTACTS_BIT;
+
     CallMessageType callMessageType = message.getCallType();
     if (callMessageType != null) {
       switch (callMessageType) {
@@ -557,7 +560,7 @@ public class SmsDatabase extends MessagingDatabase {
     if (message.isOpenGroupInvitation()) type |= Types.OPEN_GROUP_INVITATION_BIT;
     //Payment Tag
     if (message.isPayment())             type |= Types.PAYMENT_BIT;
-
+    if (message.isContact())             type |= Types.CONTACTS_BIT;
     Address            address               = message.getRecipient().getAddress();
     Map<Address, Long> earlyDeliveryReceipts = earlyDeliveryReceiptCache.remove(date);
     Map<Address, Long> earlyReadReceipts     = earlyReadReceiptCache.remove(date);

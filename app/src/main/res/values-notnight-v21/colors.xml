@@ -269,4 +269,12 @@
     <color name="emoji_reaction_border">#A7A7BA</color>
     <color name="conversation_reaction_background">#E0E0E0CC</color>
     <color name="emoji_variation_selector_background">#FFFFFF</color>
+    <color name="chat_to_contact">#C5C5C5</color>
+    <color name="control_message_text">#333333</color>
+    <color name="view_all_text">#333333</color>
+    <color name="view_all_text_out">#FFFFFF</color>
+    <color name="timestamp_out">#EBEBEB</color>
+    <color name="timestamp_in">#A7A7BA</color>
+    <color name="incoming_message_divider_color">#A7A7BA</color>
+    <color name="outgoing_message_divider_color">#2FA62F</color>
 </resources>

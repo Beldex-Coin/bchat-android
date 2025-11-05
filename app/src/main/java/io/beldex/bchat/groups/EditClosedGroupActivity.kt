@@ -321,7 +321,6 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
     private fun onAddMembersClick() {
         val intent = Intent(this@EditClosedGroupActivity, SelectContactsActivity::class.java)
         intent.putExtra(SelectContactsActivity.usersToExcludeKey, allMembers.toTypedArray())
-        intent.putExtra(SelectContactsActivity.emptyStateTextKey, "No contacts to add")
         startActivityForResult(intent, addUsersRequestCode)
     }
 

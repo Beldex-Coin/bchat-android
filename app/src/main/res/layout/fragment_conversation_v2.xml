@@ -468,52 +468,62 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
-                        <ImageView
-                            android:id="@+id/cameraButton"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:src="@drawable/ic_camera_new"
-                            android:contentDescription="@string/camera_option"
-                            android:padding="3dp"/>
+                    <ImageView
+                        android:id="@+id/cameraButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:src="@drawable/ic_camera_new"
+                        android:contentDescription="@string/camera_option"
+                        android:padding="3dp"/>
 
-                        <ImageView
-                            android:id="@+id/imageButton"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginEnd="5dp"
-                            android:src="@drawable/ic_gallery_new"
-                            android:contentDescription="@string/gallery_option"
-                            android:padding="3dp"/>
+                    <ImageView
+                        android:id="@+id/imageButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="5dp"
+                        android:src="@drawable/ic_gallery_new"
+                        android:contentDescription="@string/gallery_option"
+                        android:padding="3dp"/>
 
 
-                        <ImageView
-                            android:id="@+id/documentButton"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginEnd="5dp"
-                            android:src="@drawable/ic_document_new"
-                            android:contentDescription="@string/document_option"
-                            android:padding="3dp"/>
+                    <ImageView
+                        android:id="@+id/documentButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="5dp"
+                        android:src="@drawable/ic_document_new"
+                        android:contentDescription="@string/document_option"
+                        android:padding="3dp"/>
 
-                        <ImageView
-                            android:id="@+id/gifButton"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:padding="3dp"
-                            android:src="@drawable/ic_gif_new"
-                            android:contentDescription="@string/gif_option"
-                            />
+                    <ImageView
+                        android:id="@+id/gifButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:padding="3dp"
+                        android:src="@drawable/ic_gif_new"
+                        android:contentDescription="@string/gif_option" />
+
+                    <ImageView
+                        android:id="@+id/contactButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:padding="3dp"
+                        android:src="@drawable/ic_contact_share"
+                        android:contentDescription="@string/gif_option" />
 
                     </LinearLayout>
 
@@ -664,19 +674,19 @@
                     android:padding="16dp"
                     android:visibility="gone">
 
-                    <com.google.android.material.button.MaterialButton
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:backgroundTint="@color/received_message_background"
+                        android:clickable="false"
+                        android:enabled="false"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:padding="8dp"
                         android:text="@string/blocked_user_message"
                         android:textAllCaps="false"
-                        android:clickable="false"
                         android:textColor="@color/received_quoted_text_color"
                         android:textSize="12sp"
-                        app:cornerRadius="24dp"
-                        android:backgroundTint="@color/received_message_background"
-                        android:fontFamily="@font/open_sans_regular"
-                        android:enabled="false"
-                        android:padding="8dp"/>
+                        app:cornerRadius="24dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"

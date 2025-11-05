@@ -369,7 +369,7 @@ object ConversationMenuHelper {
         )
         dialog.apply {
             arguments = Bundle().apply {
-                putInt(ComposeDialogContainer.EXTRA_ARGUMENT_1,thread.notifyType)
+                putInt(ComposeDialogContainer.EXTRA_ARGUMENT_3,thread.notifyType)
             }
         }
         dialog.show(fragmentManager, ComposeDialogContainer.TAG)

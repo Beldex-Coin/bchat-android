@@ -15,12 +15,14 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.Pair
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
+import io.beldex.bchat.audio.AudioSlidePlayer
 import io.beldex.bchat.database.BchatContactDatabase
 import io.beldex.bchat.database.BeldexAPIDatabase
 import io.beldex.bchat.database.BeldexMessageDatabase
 import io.beldex.bchat.database.BeldexThreadDatabase
 import io.beldex.bchat.database.GroupDatabase
-import io.beldex.bchat.audio.AudioSlidePlayer
 import io.beldex.bchat.database.MmsDatabase
 import io.beldex.bchat.database.MmsSmsDatabase
 import io.beldex.bchat.database.RecipientDatabase
@@ -28,8 +30,6 @@ import io.beldex.bchat.database.SmsDatabase
 import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.repository.ConversationRepository
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
 import io.beldex.bchat.R
 import io.beldex.bchat.database.Storage
 import io.beldex.bchat.database.model.MmsMessageRecord
@@ -255,7 +255,7 @@ class ConversationViewModel (
                 showMessage(application.getString(R.string.banUserBanned))
             }
             .onFailure {
-                showMessage(application.getString(R.string.banErrorFailed))
+                showMessage("Couldn't execute request due to error: $it")
             }
     }
 
@@ -344,6 +344,10 @@ class ConversationViewModel (
 
     fun setMessagesToDelete(messages: Set<MessageRecord>?) {
         this.deleteMessages = messages
+    }
+
+    fun getOrCreateThreadIdForContact(recipient: Recipient): Long {
+        return threadDb.getOrCreateThreadIdFor(recipient)
     }
 
     @dagger.assisted.AssistedFactory

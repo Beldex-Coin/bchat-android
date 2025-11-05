@@ -173,9 +173,8 @@ interface StorageProtocol {
     fun updateThread(threadId: Long, unarchive: Boolean)
     fun insertDataExtractionNotificationMessage(senderPublicKey: String, message: DataExtractionNotificationInfoMessage, sentTimestamp: Long)
     fun insertCallMessage(senderPublicKey: String, callMessageType: CallMessageType, sentTimestamp: Long)
-    /*Hales63*/
-    fun insertMessageRequestResponse(response: MessageRequestResponse)
-    //New Line v32
+    fun insertMessageRequestResponseFromContact(response: MessageRequestResponse)
+    fun insertMessageRequestResponseFromYou(threadId: Long)
     fun setRecipientApproved(recipient: Recipient, approved: Boolean)
     fun setRecipientApprovedMe(recipient: Recipient, approvedMe: Boolean)
     fun insertRecipientAddress(transactionId:String,recipientAddress:String)

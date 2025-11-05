@@ -70,10 +70,6 @@ fun MessageRequestsScreen(
     var threadRecord by remember {
         mutableStateOf(requestToTakeAction)
     }
-    if (TextSecurePreferences.isScreenSecurityEnabled(context))
-        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE) else {
-        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
-    }
     if (requestsList.isEmpty()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -97,6 +93,9 @@ fun MessageRequestsScreen(
             mutableStateOf(false)
         }
         var showDeleteConfirmationDialog by remember {
+            mutableStateOf(false)
+        }
+        var showAcceptConfirmationDialog by remember {
             mutableStateOf(false)
         }
         val coroutineScope = rememberCoroutineScope()
@@ -138,6 +137,28 @@ fun MessageRequestsScreen(
                 }
             )
         }
+
+        if (showAcceptConfirmationDialog) {
+            RequestBlockConfirmationDialog(
+                title = stringResource(id = R.string.accept_request),
+                message = stringResource(id = R.string.message_requests_accept_message),
+                actionTitle = stringResource(id = R.string.accept),
+                onConfirmation = {
+                    threadRecord?.let {
+                        onEvent(MessageRequestEvents.AcceptRequest(it))
+                        coroutineScope.launch(Dispatchers.IO) {
+                            ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(context)
+                        }
+                    }
+                    threadRecord = null
+                    showAcceptConfirmationDialog = false
+                },
+                onDismissRequest = {
+                    showAcceptConfirmationDialog = false
+                }
+            )
+        }
+
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = modifier
@@ -160,6 +181,10 @@ fun MessageRequestsScreen(
                         threadRecord = request
                         showBlockConfirmationDialog = true
                     },
+                    acceptRequest = { request ->
+                        threadRecord = request
+                        showAcceptConfirmationDialog = true
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
@@ -167,9 +192,6 @@ fun MessageRequestsScreen(
                             shape = RoundedCornerShape(50)
                         )
                         .padding(16.dp)
-                        .clickable {
-                            onRequestClick(recipient)
-                        }
                 )
             }
         }
@@ -182,119 +204,125 @@ fun MessageRequestItem(
     request: ThreadRecord,
     deleteRequest: (ThreadRecord) -> Unit,
     blockRequest: (ThreadRecord) -> Unit,
+    acceptRequest: (ThreadRecord) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
     ) {
-        val isOpenGroupWithProfilePicture = request.recipient.isOpenGroupRecipient && request.recipient.groupAvatarId != null
+        val isOpenGroupWithProfilePicture=
+            request.recipient.isOpenGroupRecipient && request.recipient.groupAvatarId != null
         if (request.recipient.isGroupRecipient && !isOpenGroupWithProfilePicture) {
-            val pictureType = ProfilePictureMode.GroupPicture
-            val members = DatabaseComponent.get(context).groupDatabase()
+            val pictureType=ProfilePictureMode.GroupPicture
+            val members=DatabaseComponent.get(context).groupDatabase()
                 .getGroupMemberAddresses(request.recipient.address.toGroupString(), true)
                 .sorted()
                 .take(2)
                 .toMutableList()
-            val pk = members.getOrNull(0)?.serialize() ?: ""
-            val displayName = getDisplayName(context, pk)
-            val additionalPk = members.getOrNull(1)?.serialize() ?: ""
-            val additionalDisplay = getDisplayName(context, additionalPk)
+            val pk=members.getOrNull(0)?.serialize() ?: ""
+            val displayName=getDisplayName(context, pk)
+            val additionalPk=members.getOrNull(1)?.serialize() ?: ""
+            val additionalDisplay=getDisplayName(context, additionalPk)
             ProfilePictureComponent(
-                publicKey = pk,
-                displayName = displayName,
-                additionalPublicKey = additionalPk,
-                additionalDisplayName = additionalDisplay,
-                containerSize = pictureType.size,
-                pictureMode = pictureType
+                publicKey=pk,
+                displayName=displayName,
+                additionalPublicKey=additionalPk,
+                additionalDisplayName=additionalDisplay,
+                containerSize=pictureType.size,
+                pictureMode=pictureType
             )
         } else {
-            val pictureType = ProfilePictureMode.SmallPicture
-            val displayName = getDisplayName(context, request.recipient.address.toString())
+            val pictureType=ProfilePictureMode.SmallPicture
+            val displayName=getDisplayName(context, request.recipient.address.toString())
             ProfilePictureComponent(
-                publicKey = request.recipient.address.toString(),
-                displayName = displayName,
-                containerSize = pictureType.size,
-                pictureMode = pictureType
+                publicKey=request.recipient.address.toString(),
+                displayName=displayName,
+                containerSize=pictureType.size,
+                pictureMode=pictureType
             )
         }
 
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier=Modifier.width(8.dp))
 
-        val senderName = getUserDisplayName(context, request.recipient) ?: request.recipient.address.toString()
+        val senderName=getUserDisplayName(context, request.recipient)
+            ?: request.recipient.address.toString()
         Text(
-            text = senderName,
-            style = MaterialTheme.typography.titleMedium.copy(
-                color = MaterialTheme.appColors.editTextColor,
-                fontWeight = FontWeight(400),
-                fontSize = 14.sp
+            text=senderName,
+            style=MaterialTheme.typography.titleMedium.copy(
+                color=MaterialTheme.appColors.editTextColor,
+                fontWeight=FontWeight(400),
+                fontSize=14.sp
             ),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
+            maxLines=1,
+            overflow=TextOverflow.Ellipsis,
+            modifier=Modifier
                 .weight(1f)
         )
 
         Box(
-            contentAlignment = Alignment.Center,
-            modifier =Modifier
-                    .size(32.dp)
-                    .background(
-                            color=MaterialTheme.appColors.actionIconBackground,
-                            shape=RoundedCornerShape(15)
-                    )
-                    .clickable {
+            contentAlignment=Alignment.Center,
+            modifier=Modifier
+                .size(32.dp)
+                .background(
+                    color=MaterialTheme.appColors.actionIconBackground,
+                    shape=RoundedCornerShape(15)
+                )
+                .clickable {
 
-                        deleteRequest(request)
-                    }
+                    deleteRequest(request)
+                }
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_delete_24),
-                contentDescription = "",
-                modifier = Modifier
+                painter=painterResource(id=R.drawable.ic_delete_24),
+                contentDescription="",
+                modifier=Modifier
                     .size(16.dp)
             )
         }
 
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier=Modifier.width(8.dp))
 
         Box(
-            contentAlignment = Alignment.Center,
-            modifier =Modifier
-                    .size(32.dp)
-                    .background(
-                            color=MaterialTheme.appColors.actionIconBackground,
-                            shape=RoundedCornerShape(15)
-                    )
-                    .clickable {
-                        blockRequest(request)
-                    }
+            contentAlignment=Alignment.Center,
+            modifier=Modifier
+                .size(32.dp)
+                .background(
+                    color=MaterialTheme.appColors.actionIconBackground,
+                    shape=RoundedCornerShape(15)
+                )
+                .clickable {
+                    blockRequest(request)
+                }
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_block_request),
-                contentDescription = "",
-                colorFilter = ColorFilter.tint(color = MaterialTheme.appColors.iconTint),
-                modifier = Modifier
+                painter=painterResource(id=R.drawable.ic_block_request),
+                contentDescription="",
+                colorFilter=ColorFilter.tint(color=MaterialTheme.appColors.iconTint),
+                modifier=Modifier
                     .size(16.dp)
             )
         }
 
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier=Modifier.width(8.dp))
 
         Box(
-            contentAlignment = Alignment.Center,
-            modifier =Modifier
-                    .size(32.dp)
-                    .background(
-                            color=MaterialTheme.appColors.primaryButtonColor,
-                            shape=RoundedCornerShape(15)
-                    )
+            contentAlignment=Alignment.Center,
+            modifier=Modifier
+                .size(32.dp)
+                .background(
+                    color=MaterialTheme.appColors.primaryButtonColor,
+                    shape=RoundedCornerShape(15)
+                )
+                .clickable {
+                    acceptRequest(request)
+                }
         ) {
             Icon(
                 Icons.Default.Check,
-                contentDescription = "",
-                tint = Color.White,
-                modifier = Modifier
+                contentDescription="",
+                tint=Color.White,
+                modifier=Modifier
                     .size(16.dp)
             )
         }

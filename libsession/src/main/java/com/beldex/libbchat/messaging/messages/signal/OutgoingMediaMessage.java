@@ -3,7 +3,9 @@ package com.beldex.libbchat.messaging.messages.signal;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.beldex.libbchat.messaging.messages.visible.SharedContact;
 import com.beldex.libbchat.messaging.messages.visible.VisibleMessage;
+import com.beldex.libbchat.messaging.utilities.UpdateMessageData;
 import com.beldex.libbchat.utilities.DistributionTypes;
 import com.beldex.libbchat.utilities.IdentityKeyMismatch;
 import com.beldex.libbchat.utilities.NetworkFailure;
@@ -16,6 +18,7 @@ import com.beldex.libbchat.utilities.recipients.Recipient;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public class OutgoingMediaMessage {
 
@@ -89,6 +92,43 @@ public class OutgoingMediaMessage {
             previews, Collections.emptyList(), Collections.emptyList());
   }
 
+  public static OutgoingMediaMessage fromSharedContact(VisibleMessage message,
+                                          Recipient recipient,
+                                          List<Attachment> attachments,
+                                          @Nullable QuoteModel outgoingQuote,
+                                          @Nullable LinkPreview linkPreview)
+  {
+    List<LinkPreview> previews = Optional.ofNullable(linkPreview)
+            .map(Collections::singletonList)
+            .orElse(Collections.emptyList());
+
+    return Optional.ofNullable(message.getSharedContact())
+            .filter(c -> c.getAddress() != null && c.getName() != null)
+            .map(c -> {
+              String body = UpdateMessageData.Companion
+                      .buildSharedContact(c.getAddress(), c.getName())
+                      .toJSON();
+
+              long timestamp = Optional.ofNullable(message.getSentTimestamp()).orElse(-1L);
+
+              return new OutgoingMediaMessage(
+                      recipient,
+                      body,
+                      attachments,
+                      timestamp,
+                      -1,
+                      recipient.getExpireMessages() * 1000L,
+                      DistributionTypes.DEFAULT,
+                      outgoingQuote,
+                      Collections.emptyList(),
+                      previews,
+                      Collections.emptyList(),
+                      Collections.emptyList()
+              );
+            })
+            .orElse(null);
+  }
+
   public Recipient getRecipient() {
     return recipient;
   }
@@ -106,6 +146,10 @@ public class OutgoingMediaMessage {
   }
 
   public boolean isGroup() {
+    return false;
+  }
+
+  public boolean isScreenShot(){
     return false;
   }
 

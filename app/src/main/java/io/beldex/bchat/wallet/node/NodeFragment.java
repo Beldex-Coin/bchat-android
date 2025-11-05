@@ -507,12 +507,6 @@ public class NodeFragment extends Fragment
             View promptsView = li.inflate(R.layout.prompt_editnode, null);
             alertDialogBuilder.setView(promptsView);
 
-            if (TextSecurePreferences.isScreenSecurityEnabled(requireContext())) {
-                getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
-            } else {
-                getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
-            }
-
             etNodeName = promptsView.findViewById(R.id.nodeNameEditTxtLayout);
             etNodeHost = promptsView.findViewById(R.id.nodeAddressEditTxtLayout);
             etNodePort = promptsView.findViewById(R.id.nodePortEditTxtLayout);

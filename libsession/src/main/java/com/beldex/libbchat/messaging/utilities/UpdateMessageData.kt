@@ -6,7 +6,7 @@ import com.beldex.libsignal.utilities.Log
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.core.JsonParseException
-import java.util.*
+import java.util.Collections
 
 // class used to save update messages details
 class UpdateMessageData () {
@@ -22,7 +22,8 @@ class UpdateMessageData () {
             JsonSubTypes.Type(Kind.GroupMemberRemoved::class, name = "GroupMemberRemoved"),
             JsonSubTypes.Type(Kind.GroupMemberLeft::class, name = "GroupMemberLeft"),
             JsonSubTypes.Type(Kind.OpenGroupInvitation::class, name = "OpenGroupInvitation"),
-            JsonSubTypes.Type(Kind.Payment::class,name = "Payment")
+            JsonSubTypes.Type(Kind.Payment::class,name = "Payment"),
+            JsonSubTypes.Type(Kind.SharedContact::class,name = "SharedContact"),
     )
     sealed class Kind() {
         class GroupCreation(): Kind()
@@ -43,6 +44,10 @@ class UpdateMessageData () {
         //Payment Tag
         class Payment(val amount: String, val txnId: String):Kind() {
             constructor(): this("","")
+        }
+
+        class SharedContact(val address: String, val name: String): Kind() {
+            constructor(): this("", "")
         }
     }
 
@@ -70,6 +75,10 @@ class UpdateMessageData () {
 
         fun buildPayment(amount: String, txnId: String): UpdateMessageData {
             return UpdateMessageData(Kind.Payment(amount,txnId))
+        }
+
+        fun buildSharedContact(address: String, name: String): UpdateMessageData {
+            return UpdateMessageData(Kind.SharedContact(address, name))
         }
 
         fun fromJSON(json: String): UpdateMessageData? {

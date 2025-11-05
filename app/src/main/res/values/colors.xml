@@ -352,5 +352,13 @@
     <color name="emoji_reaction_border">#4B4B64</color>
     <color name="conversation_reaction_background">#080812CC</color>
     <color name="emoji_variation_selector_background">#393647</color>
+    <color name="chat_to_contact">#FFFFFF</color>
+    <color name="control_message_text">#87879E</color>
+    <color name="view_all_text">#FFFFFF</color>
+    <color name="view_all_text_out">#FFFFFF</color>
+    <color name="timestamp_out">#EBEBEB</color>
+    <color name="timestamp_in">#A7A7BA</color>
+    <color name="incoming_message_divider_color">#4B4B64</color>
+    <color name="outgoing_message_divider_color">#2FA62F</color>
 
 </resources>

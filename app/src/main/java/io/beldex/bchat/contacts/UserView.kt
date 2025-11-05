@@ -12,6 +12,7 @@ import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.conversation.v2.utilities.MentionManagerUtilities
 import io.beldex.bchat.dependencies.DatabaseComponent
 import com.bumptech.glide.RequestManager
+import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 
 class UserView : LinearLayout {
     private lateinit var binding: ViewUserBinding
@@ -58,7 +59,7 @@ class UserView : LinearLayout {
         binding.profilePictureView.root.glide = glide
         binding.profilePictureView.root.update(user)
         binding.actionIndicatorImageView.setImageResource(R.drawable.ic_baseline_edit_group_name)
-        binding.nameTextView.text = if (user.isGroupRecipient) user.name else getUserDisplayName(address)
+        binding.nameTextView.text = if (user.isGroupRecipient) user.name?.capitalizeFirstLetter() else getUserDisplayName(address).capitalizeFirstLetter()
         when (actionIndicator) {
             ActionIndicator.None -> {
                 binding.actionIndicatorImageView.visibility = View.GONE

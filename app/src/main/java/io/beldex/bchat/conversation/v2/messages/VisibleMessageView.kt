@@ -7,6 +7,7 @@ import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.util.AttributeSet
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
@@ -26,15 +27,19 @@ import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.ViewUtil
 import com.beldex.libsignal.utilities.ThreadUtils
+import com.bumptech.glide.RequestManager
+import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.ApplicationContext
+import io.beldex.bchat.R
+import io.beldex.bchat.conversation.v2.search.SearchViewModel
 import io.beldex.bchat.database.BeldexThreadDatabase
 import io.beldex.bchat.database.MmsDatabase
 import io.beldex.bchat.database.MmsSmsDatabase
 import io.beldex.bchat.database.SmsDatabase
 import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.database.model.MessageRecord
+import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import io.beldex.bchat.home.UserDetailsBottomSheet
-import com.bumptech.glide.RequestManager
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.disableClipping
@@ -42,10 +47,10 @@ import io.beldex.bchat.util.getColorWithID
 import io.beldex.bchat.util.isSameDayMessage
 import io.beldex.bchat.util.toDp
 import io.beldex.bchat.util.toPx
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.R
 import io.beldex.bchat.database.BeldexAPIDatabase
-import io.beldex.bchat.databinding.ViewVisibleMessageBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
@@ -121,8 +126,10 @@ class VisibleMessageView : LinearLayout {
         contact : Contact?,
         senderBChatID : String,
         onAttachmentNeedsDownload : (Long, Long) -> Unit,
+        messageSelected : () -> Boolean,
         delegate : VisibleMessageViewDelegate?,
-        position : Int
+        position : Int,
+        searchViewModel : SearchViewModel?
     ) {
         val threadID = message.threadId
         val thread = threadDb.getRecipientForThreadId(threadID) ?: return
@@ -136,7 +143,7 @@ class VisibleMessageView : LinearLayout {
         binding.moderatorIconImageView.isVisible = false
         binding.profilePictureView.root.visibility = when {
             thread.isGroupRecipient && !message.isOutgoing && isEndOfMessageCluster -> View.VISIBLE
-            thread.isGroupRecipient -> View.INVISIBLE
+            thread.isGroupRecipient && !message.isOutgoing -> View.INVISIBLE
             else -> View.GONE
         }
 
@@ -224,9 +231,29 @@ class VisibleMessageView : LinearLayout {
 
         // Populate content view
         binding.messageContentView.root.indexInAdapter = indexInAdapter
+        //added for the long press handling on shared contact
+        binding.messageContentView.root.onLongPress = {
+            onDown(
+                MotionEvent.obtain(
+                    SystemClock.uptimeMillis(),
+                    SystemClock.uptimeMillis(),
+                    MotionEvent.ACTION_DOWN,
+                    0F,
+                    0F,
+                    0
+                )
+            )
+        }
         binding.messageContentView.root.bind(message, isStartOfMessageCluster, isEndOfMessageCluster, glide, thread, searchQuery, message.isOutgoing || isGroupThread || (contact?.isTrusted ?: false),
-            onAttachmentNeedsDownload, thread.isOpenGroupRecipient,delegate!!, this, position)
+            onAttachmentNeedsDownload, thread.isOpenGroupRecipient,delegate!!, this, position,messageSelected, searchViewModel)
         binding.messageContentView.root.delegate = delegate
+        binding.messageContentView.root.chatWithContact = { ct ->
+            if((message.expiresIn == 0L && message.expireStarted == 0L) || (message.expiresIn > 0 && message.expireStarted > 0) ) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    delegate.chatWithContact(ct, message)
+                }
+            }
+        }
         onDoubleTap = { binding.messageContentView.root.onContentDoubleTap?.invoke() }
     }
 
@@ -460,7 +487,8 @@ class VisibleMessageView : LinearLayout {
     }
 
     fun onContentClick(event: MotionEvent) {
-        binding.messageContentView.root.onContentClick(event) }
+        binding.messageContentView.root.onContentClick.iterator().forEach { clickHandler -> clickHandler.invoke(event) }
+    }
 
     private fun onPress(event: MotionEvent) {
         onPress?.invoke(event)

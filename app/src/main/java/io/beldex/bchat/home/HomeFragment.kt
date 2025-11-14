@@ -96,7 +96,6 @@ import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.preferences.NotificationSettingsActivity
 import io.beldex.bchat.preferences.PrivacySettingsActivity
 import io.beldex.bchat.search.SearchActivityResults
-import io.beldex.bchat.service.WebRtcCallService
 import io.beldex.bchat.util.BaseFragment
 import io.beldex.bchat.util.ConfigurationMessageUtilities
 import io.beldex.bchat.util.NodePinger
@@ -384,7 +383,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         return binding.root
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "UnsafeRepeatOnLifecycleDetector")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -727,7 +726,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             }
         }
         binding.hanUpCall.setOnClickListener {
-            requireActivity().applicationContext.startService(WebRtcCallService.hangupIntent(requireActivity().applicationContext))
+            viewModel?.hangUp()
             binding.toolbarCall.isVisible = false
             Toast.makeText(requireActivity().applicationContext, "Call ended", Toast.LENGTH_SHORT).show()
         }

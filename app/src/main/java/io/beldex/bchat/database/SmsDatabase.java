@@ -450,6 +450,8 @@ public class SmsDatabase extends MessagingDatabase {
           break;
         case CALL_FIRST_MISSED:
           type |= Types.FIRST_MISSED_CALL_TYPE;
+        case CALL_MISSED_PERMISSION:
+          type |=  Types.MISSED_PERMISSION_CALL_TYPE;
           break;
       }
     }
@@ -465,7 +467,7 @@ public class SmsDatabase extends MessagingDatabase {
     }
 
     boolean    unread     = (Util.isDefaultSmsProvider(context) ||
-            message.isSecureMessage() || message.isGroup() || message.isCallInfo());
+            message.isSecureMessage() || message.isGroup() || message.isUnreadCallMessage());
 
     long       threadId;
 

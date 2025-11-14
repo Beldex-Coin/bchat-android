@@ -44,8 +44,9 @@ fun View.animateSizeChange(startSize: Float, endSize: Float, animationDuration: 
 }
 
 fun View.fadeIn(duration: Long = 150) {
+    alpha = 0.0f
     visibility = View.VISIBLE
-    animate().setDuration(duration).alpha(1.0f).start()
+    animate().setDuration(duration).alpha(1.0f).setListener(null).start()
 }
 
 fun View.fadeOut(duration: Long = 150) {

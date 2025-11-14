@@ -1,5 +1,7 @@
 package io.beldex.bchat.conversation.v2
 
+import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -33,8 +35,10 @@ import androidx.core.util.set
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.beldex.libbchat.messaging.contacts.Contact
+import com.beldex.libbchat.messaging.utilities.UpdateMessageBuilder.capitalizeFirstLetter
 import com.beldex.libbchat.messaging.utilities.UpdateMessageData
 import com.beldex.libbchat.utilities.Address
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.bumptech.glide.RequestManager
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
@@ -44,14 +48,15 @@ import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
 import io.beldex.bchat.conversation.v2.contact_sharing.SharedContactView
 import io.beldex.bchat.conversation.v2.messages.ControlMessageView
 import io.beldex.bchat.conversation.v2.messages.VisibleMessageView
+import io.beldex.bchat.conversation.v2.messages.VisibleMessageViewDelegate
+import io.beldex.bchat.conversation.v2.search.SearchViewModel
 import io.beldex.bchat.database.CursorRecyclerViewAdapter
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.databinding.ComposeViewHolderBinding
 import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
+import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.preferences.PrivacySettingsActivity
-import io.beldex.bchat.conversation.v2.messages.VisibleMessageViewDelegate
-import io.beldex.bchat.conversation.v2.search.SearchViewModel
 import io.beldex.bchat.util.DateUtils
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.channels.BufferOverflow
@@ -61,6 +66,7 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 
 class ConversationAdapter(
+    private val activity: Activity,
     context: Context,
     cursor: Cursor,
     private val searchViewModel : SearchViewModel?,
@@ -180,44 +186,37 @@ class ConversationAdapter(
                     previous = messageBefore,
                     longPress = { onItemLongPress(message, viewHolder.adapterPosition, viewHolder.view) }
                 )
-                if (message.isCallLog && message.isFirstMissedCall) {
-                    viewHolder.view.setOnClickListener {
-                        val factory = LayoutInflater.from(context)
-                        val callMissedDialogView: View = factory.inflate(R.layout.call_missed_dialog_box, null)
-                        val callMissedDialog = AlertDialog.Builder(context).create()
-                        callMissedDialog.window?.setBackgroundDrawableResource(R.color.transparent)
-                        callMissedDialog.setView(callMissedDialogView)
-                        val color = ResourcesCompat.getColor(context.resources, R.color.text_old_green, context.theme)
-                        val description = callMissedDialogView.findViewById<TextView>(R.id.messageTextView)
-                        description.text = context.getString(R.string.call_missed_description,
-                            if(message.recipient.name != null) "\"${message.recipient.name}\"" else "\"${message.recipient.address}\"")
+                if (message.isMissedCall || message.isFirstMissedCall) {
+                    if(Permissions.hasAll(context, Manifest.permission.RECORD_AUDIO) && TextSecurePreferences.isCallNotificationsEnabled(context)) {
+                        viewHolder.view.setOnClickListener(null)
+                    }
 
-                        val recipientName = SpannableStringBuilder(description.text)
-                        val startIndex =message.recipient.name?.let { it1 ->
-                            description.text.indexOf(
-                                it1
-                            )
-                        }
-                        var endIndex = 0
-                        if(startIndex != -1){
-                            if (startIndex != null) {
-                                endIndex = startIndex + message.recipient.name!!.length
+                    viewHolder.view.setOnClickListener {
+                        when {
+                            // if we're currently missing the audio/microphone permission,
+                            // show a dedicated permission dialog
+                            !Permissions.hasAll(context, Manifest.permission.RECORD_AUDIO) -> {
+                                val description = context.getString(R.string.call_microphone_permissions_required,
+                                    if(message.recipient.name != null) "\"${message.recipient.name?.capitalizeFirstLetter()}\"" else "\"${message.recipient.address.toString().capitalizeFirstLetter()}\"")
+                                Permissions.with(activity)
+                                    .request(Manifest.permission.RECORD_AUDIO)
+                                    .withRationaleDialog(
+                                        description,
+                                        context.getString(R.string.Permissions_permission_required),
+                                        R.drawable.ic_microphone
+                                    )
+                                    .withPermanentDenialDialog(context.getString(R.string.ConversationActivity_signal_requires_the_microphone_permission_in_order_to_send_audio_messages))
+                                    .execute()
                             }
+                            // when the call toggle is disabled in the privacy screen,
+                            // show a dedicated privacy dialog
+                            !TextSecurePreferences.isCallNotificationsEnabled(context) -> {
+                                val description = context.getString(R.string.call_missed_description,
+                                    if(message.recipient.name != null) "\"${message.recipient.name}\"" else "\"${message.recipient.address}\"")
+                                permissionDialog(message, description)
+                            }
+
                         }
-                        if (startIndex != null) {
-                            recipientName.setSpan(ForegroundColorSpan(color), startIndex -1, endIndex +1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        }
-                        if (startIndex != null) {
-                            recipientName.setSpan(StyleSpan(Typeface.BOLD), startIndex -1, endIndex +1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        }
-                        description.text = recipientName
-                        val okButton =  callMissedDialogView.findViewById<Button>(R.id.missedCallOkButton)
-                        okButton.setOnClickListener {
-                            val intent = Intent(context, PrivacySettingsActivity::class.java)
-                            context.startActivity(intent)
-                            callMissedDialog.dismiss()
-                        }
-                        callMissedDialog.show()
                     }
                 } else {
                     viewHolder.view.setOnClickListener(null)
@@ -276,6 +275,95 @@ class ConversationAdapter(
                 }
             }
         }
+    }
+
+    private fun permissionDialog(message : MessageRecord, descriptionText : String) {
+        val factory = LayoutInflater.from(context)
+        val callMissedDialogView: View = factory.inflate(R.layout.call_missed_dialog_box, null)
+        val callMissedDialog = AlertDialog.Builder(context).create()
+        callMissedDialog.window?.setBackgroundDrawableResource(R.color.transparent)
+        callMissedDialog.setView(callMissedDialogView)
+        val color = ResourcesCompat.getColor(context.resources, R.color.text_old_green, context.theme)
+        val description = callMissedDialogView.findViewById<TextView>(R.id.messageTextView)
+        description.text = descriptionText
+
+        val recipientName = SpannableStringBuilder(description.text)
+        val startIndex =message.recipient.name?.let { it1 ->
+            description.text.indexOf(
+                it1
+            )
+        }
+        var endIndex = 0
+        if(startIndex != -1){
+            if (startIndex != null) {
+                endIndex = startIndex + message.recipient.name!!.length
+            }
+        }
+        if (startIndex != null) {
+            recipientName.setSpan(ForegroundColorSpan(color), startIndex -1, endIndex +1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        if (startIndex != null) {
+            recipientName.setSpan(StyleSpan(Typeface.BOLD), startIndex -1, endIndex +1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        description.text = recipientName
+        val okButton =  callMissedDialogView.findViewById<Button>(R.id.missedCallOkButton)
+        okButton.setOnClickListener {
+            val intent = Intent(context, PrivacySettingsActivity::class.java)
+            context.startActivity(intent)
+            callMissedDialog.dismiss()
+        }
+        callMissedDialog.show()
+    }
+
+    private fun microPhonePermissionDialog(message : MessageRecord, descriptionText : String) {
+        val factory = LayoutInflater.from(context)
+        val callMissedDialogView: View = factory.inflate(R.layout.microphone_permission_dialog_box, null)
+        val callMissedDialog = AlertDialog.Builder(context).create()
+        callMissedDialog.window?.setBackgroundDrawableResource(R.color.transparent)
+        callMissedDialog.setView(callMissedDialogView)
+        val color = ResourcesCompat.getColor(context.resources, R.color.text_old_green, context.theme)
+        val description = callMissedDialogView.findViewById<TextView>(R.id.permission_message)
+        description.text = descriptionText
+
+        val recipientName = SpannableStringBuilder(description.text)
+        val startIndex =message.recipient.name?.let { it1 ->
+            description.text.indexOf(
+                it1
+            )
+        }
+        var endIndex = 0
+        if(startIndex != -1){
+            if (startIndex != null) {
+                endIndex = startIndex + message.recipient.name!!.length
+            }
+        }
+        if (startIndex != null) {
+            recipientName.setSpan(ForegroundColorSpan(color), startIndex -1, endIndex +1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        if (startIndex != null) {
+            recipientName.setSpan(StyleSpan(Typeface.BOLD), startIndex -1, endIndex +1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        description.text = recipientName
+        callMissedDialogView.findViewById<Button>(R.id.settingsDialogBoxButton)
+            .setOnClickListener {
+                Permissions.with(activity)
+                    .request(Manifest.permission.RECORD_AUDIO)
+                    .withRationaleDialog(
+                        context.getString(R.string.call_microphone_permissions_required),
+                        context.getString(R.string.call_permission_required_title),
+                        R.drawable.ic_microphone
+                    )
+                    .withPermanentDenialDialog(context.getString(R.string.ConversationActivity_signal_requires_the_microphone_permission_in_order_to_send_audio_messages))
+                    .execute()
+                callMissedDialog.dismiss()
+
+            }
+        callMissedDialogView.findViewById<Button>(R.id.cancelDialogBoxButton)
+            .setOnClickListener {
+                callMissedDialog.dismiss()
+            }
+
+        callMissedDialog.show()
     }
 
     fun toggleSelection(message: MessageRecord, position: Int) {

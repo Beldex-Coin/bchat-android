@@ -37,6 +37,7 @@ public interface MmsSmsColumns {
     protected static final long MISSED_CALL_TYPE                   = 3;
     protected static final long JOINED_TYPE                        = 4;
     protected static final long FIRST_MISSED_CALL_TYPE             = 5;
+    protected static final long MISSED_PERMISSION_CALL_TYPE        = 6;
 
     protected static final long BASE_DELETED_INCOMING_TYPE         = 19;
 
@@ -229,8 +230,8 @@ public interface MmsSmsColumns {
     }*/
     public static boolean isCallLog(long type) {
       long baseType = type & BASE_TYPE_MASK;
-      return baseType == INCOMING_CALL_TYPE || baseType == OUTGOING_CALL_TYPE || baseType == MISSED_CALL_TYPE || baseType == FIRST_MISSED_CALL_TYPE;
-    }
+      return baseType == INCOMING_CALL_TYPE || baseType == OUTGOING_CALL_TYPE ||
+              baseType == MISSED_CALL_TYPE || baseType == FIRST_MISSED_CALL_TYPE || baseType == MISSED_PERMISSION_CALL_TYPE;    }
 
     public static boolean isExpirationTimerUpdate(long type) {
       return (type & EXPIRATION_TIMER_UPDATE_BIT) != 0;
@@ -267,6 +268,10 @@ public interface MmsSmsColumns {
 
     public static boolean isMissedCall(long type) {
       return (type & BASE_TYPE_MASK) == MISSED_CALL_TYPE;
+    }
+
+    public static boolean isMissedPermissionCall(long type) {
+      return (type & BASE_TYPE_MASK) == MISSED_PERMISSION_CALL_TYPE;
     }
 
     public static boolean isFirstMissedCall(long type) {

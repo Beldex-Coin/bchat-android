@@ -3,11 +3,8 @@ package io.beldex.bchat.webrtc
 import android.Manifest
 import android.app.NotificationManager
 import android.content.Context
-import android.content.Intent
 import android.util.Log
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.coroutineScope
+import kotlinx.coroutines.GlobalScope
 import com.beldex.libbchat.database.StorageProtocol
 import com.beldex.libbchat.messaging.calls.CallMessageType
 import com.beldex.libbchat.messaging.messages.control.CallMessage
@@ -15,49 +12,37 @@ import com.beldex.libbchat.messaging.utilities.WebRtcUtils
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import io.beldex.bchat.service.WebRtcCallService
 import io.beldex.bchat.util.CallNotificationBuilder
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.webrtc.IceCandidate
+import javax.inject.Inject
+import javax.inject.Singleton
 import com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.ANSWER
 import com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.END_CALL
 import com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.ICE_CANDIDATES
 import com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.OFFER
 import com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.PRE_OFFER
 import com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.PROVISIONAL_ANSWER
-import io.beldex.bchat.ApplicationContext
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers.IO
 import io.beldex.bchat.permissions.Permissions
 
-class CallMessageProcessor (private val context: Context, private val textSecurePreferences: TextSecurePreferences, lifecycle: Lifecycle, private val storage: StorageProtocol) {
+@Singleton
+class CallMessageProcessor @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val textSecurePreferences: TextSecurePreferences,
+    private val webRtcBridge: WebRtcCallBridge,
+    private val storage: StorageProtocol
+) {
 
     companion object {
         private const val TAG = "CallMessageProcessor"
-        private const val VERY_EXPIRED_TIME = 15 * 60 * 1000L
-
-        fun safeStartForegroundService(context: Context, intent: Intent) {
-            // Wake up the device (if required) before attempting to start any services - otherwise on Android 12 and above we get
-            // a BackgroundServiceStartNotAllowedException such as:
-            //      Unable to start CallMessage intent: startForegroundService() not allowed due to mAllowStartForeground false:
-            //      service ic.beldex.bchat/io.beldex.bchat.service.WebRtcCallService
-            (context as ApplicationContext).wakeUpDeviceAndDismissKeyguardIfRequired()
-            // Attempt to start the call service..
-            try {
-                context.startService(intent)
-            } catch (e: Exception) {
-                Log.e("Beldex", "Unable to start service: ${e.message}", e)
-                try {
-                    ContextCompat.startForegroundService(context, intent)
-                } catch (e2: Exception) {
-                    Log.e(TAG, "Unable to start CallMessage intent: ${e2.message}", e2)
-                }
-            }
-        }
+        private const val VERY_EXPIRED_TIME  = 15 * 60 * 1000L
     }
     /*Hales63*/
     init {
-        lifecycle.coroutineScope.launch(Dispatchers.IO) {
+        GlobalScope.launch(IO) {
             while (isActive) {
                 val nextMessage = WebRtcUtils.SIGNAL_QUEUE.receive()
                 Log.d("Beldex", nextMessage.type?.name ?: "CALL MESSAGE RECEIVED")
@@ -83,6 +68,14 @@ class CallMessageProcessor (private val context: Context, private val textSecure
                         Log.d("Beldex","busy call called 2")
                         insertMissedCall(sender, sentTimestamp)
                     }
+                    continue
+                }
+                // or if the user has not granted audio/microphone permissions
+                else if (!Permissions.hasAll(context, Manifest.permission.RECORD_AUDIO)) {
+                    if (nextMessage.type != PRE_OFFER) continue
+                    val sentTimestamp = nextMessage.sentTimestamp ?: continue
+                    Log.d("Beldex", "Attempted to receive a call without audio permissions")
+                    insertMissedPermissionCall(sender, sentTimestamp)
                     continue
                 }
 
@@ -113,69 +106,69 @@ class CallMessageProcessor (private val context: Context, private val textSecure
         }
     }
 
+    private fun insertMissedPermissionCall(sender: String, sentTimestamp: Long) {
+        val currentUserPublicKey = storage.getUserPublicKey()
+        if (sender == currentUserPublicKey) return // don't insert a "missed" due to call notifications disabled if it's our own sender
+        storage.insertCallMessage(sender, CallMessageType.CALL_MISSED_PERMISSION, sentTimestamp)
+    }
+
+
     private fun incomingHangup(callMessage: CallMessage) {
-        //TextSecurePreferences.setRemoteCallEnded(context, true)
-        //SteveJosephh21 - ContextCompat.startForegroundService()
+        Log.d("", "CallMessageProcessor: incomingHangup")
         val callId = callMessage.callId ?: return
-        val hangupIntent = WebRtcCallService.remoteHangupIntent(context, callId)
-        Log.d("startForegroundService->","3")
-        safeStartForegroundService(context, hangupIntent)
+        webRtcBridge.handleRemoteHangup(callId)
     }
 
     private fun incomingAnswer(callMessage: CallMessage) {
+        Log.d("", "CallMessageProcessor: incomingAnswer")
         val recipientAddress = callMessage.sender ?: return //Log.w(TAG, "Cannot answer incoming call without sender")
         val callId = callMessage.callId ?: return //Log.w(TAG, "Cannot answer incoming call without callId" )
         val sdp = callMessage.sdps.firstOrNull() ?: return //Log.w(TAG, "Cannot answer incoming call without sdp")
-        val answerIntent = WebRtcCallService.incomingAnswer(
-            context = context,
+        webRtcBridge.handleAnswerIncoming(
             address = Address.fromSerialized(recipientAddress),
             sdp = sdp,
             callId = callId
         )
-        safeStartForegroundService(context, answerIntent)
     }
 
     private fun handleIceCandidates(callMessage: CallMessage) {
+        Log.d("", "CallMessageProcessor: handleIceCandidates")
         val callId = callMessage.callId ?: return
         val sender = callMessage.sender ?: return
 
         val iceCandidates = callMessage.iceCandidates()
         if (iceCandidates.isEmpty()) return
 
-        val iceIntent = WebRtcCallService.iceCandidates(
-            context = context,
+        webRtcBridge.handleRemoteIceCandidate(
             iceCandidates = iceCandidates,
-            callId = callId,
-            address = Address.fromSerialized(sender)
+            callId = callId
         )
-        safeStartForegroundService(context, iceIntent)
     }
 
     private fun incomingPreOffer(callMessage: CallMessage) {
         // handle notification state
+        Log.d("", "CallMessageProcessor: incomingPreOffer")
         val recipientAddress = callMessage.sender ?: return
         val callId = callMessage.callId ?: return
-        val incomingIntent = WebRtcCallService.preOffer(
-            context = context,
+        webRtcBridge.handlePreOffer(
             address = Address.fromSerialized(recipientAddress),
             callId = callId,
             callTime = callMessage.sentTimestamp!!
         )
-        safeStartForegroundService(context, incomingIntent)
     }
 
     private fun incomingCall(callMessage: CallMessage) {
+        Log.d("", "CallMessageProcessor: incomingCall")
+
         val recipientAddress = callMessage.sender ?: return
         val callId = callMessage.callId ?: return
         val sdp = callMessage.sdps.firstOrNull() ?: return
-        val incomingIntent = WebRtcCallService.incomingCall(
-            context = context,
+        webRtcBridge.onIncomingCall(
             address = Address.fromSerialized(recipientAddress),
             sdp = sdp,
             callId = callId,
             callTime = callMessage.sentTimestamp!!
         )
-        safeStartForegroundService(context, incomingIntent)
 
     }
 

@@ -21,6 +21,7 @@
     <string name="MessageRecord_received_call_from">Received call from %s</string>
     <string name="MessageRecord_called_s">Called %s</string>
     <string name="MessageRecord_missed_call_from">Missed call from %s</string>
+    <string name="MessageRecord_microphone_description">Allow access to microphone. %s</string>
     <string name="MessageRecord_s_joined_signal">%s is on Bchat!</string>
     <string name="MessageRecord_you_disabled_disappearing_messages">You disabled disappearing messages</string>
     <string name="MessageRecord_s_disabled_disappearing_messages">%1$s disabled disappearing messages</string>

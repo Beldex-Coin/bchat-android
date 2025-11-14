@@ -1,13 +1,11 @@
 package io.beldex.bchat
 
 import android.app.Application
-import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Handler
 import android.os.HandlerThread
-import android.os.PowerManager
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
@@ -86,6 +84,7 @@ import io.beldex.bchat.util.FirebaseRemoteConfigUtil
 import io.beldex.bchat.util.UiModeUtilities.setupUiModeToUserSelected
 import io.beldex.bchat.util.dynamiclanguage.LocaleParseHelper
 import io.beldex.bchat.webrtc.CallMessageProcessor
+import io.beldex.bchat.webrtc.WebRtcCallBridge
 import kotlinx.coroutines.Job
 import nl.komponents.kovenant.android.startKovenant
 import nl.komponents.kovenant.android.stopKovenant
@@ -143,12 +142,14 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
     @Inject lateinit var textSecurePreferences: TextSecurePreferences
     @Inject lateinit var remoteConfigUtil : FirebaseRemoteConfigUtil
     private var messagingModuleConfiguration: MessagingModuleConfiguration? = null
+
+    @Inject
     lateinit var callMessageProcessor : CallMessageProcessor
 
+    @Inject
+    lateinit var webRtcCallBridge : WebRtcCallBridge
     @Volatile
     var isAppVisible: Boolean = false
-    val KEYGUARD_LOCK_TAG="BChat Messenger" + ":KeyguardLock"
-    val WAKELOCK_TAG="BChat Messenger" + ":WakeLock"
 
     override fun getSystemService(name: String): Any {
         if (MessagingModuleConfiguration.MESSAGING_MODULE_SERVICE == name) {
@@ -185,10 +186,6 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
             device,
             messageDataProvider
         ) { getUserED25519KeyPair(this) }
-        callMessageProcessor=CallMessageProcessor(
-            this,
-            textSecurePreferences, ProcessLifecycleOwner.get().lifecycle, storage
-        )
         Log.i(TAG, "onCreate()")
         startKovenant()
         initializeSecurityProvider()
@@ -476,34 +473,6 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
                     Log.e("Beldex", "Failed to load emoji search index")
                 }
             }
-        }
-    }
-
-
-    // Method to wake up the screen and dismiss the keyguard
-    fun wakeUpDeviceAndDismissKeyguardIfRequired() {
-        // Get the KeyguardManager and PowerManager
-        val keyguardManager=getSystemService(KEYGUARD_SERVICE) as KeyguardManager?
-        val powerManager=getSystemService(POWER_SERVICE) as PowerManager?
-        // Check if the phone is locked & if the screen is awake
-        val isPhoneLocked=keyguardManager!!.isKeyguardLocked
-        val isScreenAwake=powerManager!!.isInteractive
-        if (!isScreenAwake) {
-            val wakeLock=powerManager.newWakeLock(
-                PowerManager.FULL_WAKE_LOCK
-                        or PowerManager.ACQUIRE_CAUSES_WAKEUP
-                        or PowerManager.ON_AFTER_RELEASE,
-                WAKELOCK_TAG
-            )
-            // Acquire the wake lock to wake up the device
-            wakeLock.acquire(3000)
-        }
-        // Dismiss the keyguard.
-        // Note: This will not bypass any app-level (BChat) lock; only the device-level keyguard.
-        // TODO: When moving to a minimum Android API of 27, replace these deprecated calls with new APIs.
-        if (isPhoneLocked) {
-            val keyguardLock=keyguardManager.newKeyguardLock(KEYGUARD_LOCK_TAG)
-            keyguardLock.disableKeyguard()
         }
     }
 

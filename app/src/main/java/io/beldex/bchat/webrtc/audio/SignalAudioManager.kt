@@ -73,7 +73,7 @@ class SignalAudioManager(private val context: Context,
                 is AudioManagerCommand.Stop -> stop(command.playDisconnect)
                 is AudioManagerCommand.SetDefaultDevice -> setDefaultAudioDevice(command.device, command.clearUserEarpieceSelection)
                 is AudioManagerCommand.SetUserDevice -> selectAudioDevice(command.device)
-                is AudioManagerCommand.StartIncomingRinger -> startIncomingRinger(command.vibrate)
+                is AudioManagerCommand.StartIncomingRinger -> startIncomingRinger()
                 is AudioManagerCommand.SilenceIncomingRinger -> silenceIncomingRinger()
                 is AudioManagerCommand.StartOutgoingRinger -> startOutgoingRinger(command.type)
             }
@@ -292,7 +292,13 @@ class SignalAudioManager(private val context: Context,
     }
 
     private fun selectAudioDevice(device: AudioDevice) {
-        val actualDevice = if (device == AudioDevice.EARPIECE && audioDevices.contains(AudioDevice.WIRED_HEADSET)) AudioDevice.WIRED_HEADSET else device
+        // if we are toggling the speaker button back and forth, the code sets the device to earpiece by default
+        // but really we want to go back to whatever is currently connected, so a wired or blt set if such audio is ready
+        val actualDevice = when {
+            device == AudioDevice.EARPIECE && audioDevices.contains(AudioDevice.WIRED_HEADSET) -> AudioDevice.WIRED_HEADSET
+            device == AudioDevice.EARPIECE && audioDevices.contains(AudioDevice.BLUETOOTH) -> AudioDevice.BLUETOOTH
+            else -> device
+        }
 
         Log.d(TAG, "selectAudioDevice(): device: $device actualDevice: $actualDevice")
         if (!audioDevices.contains(actualDevice)) {
@@ -327,11 +333,11 @@ class SignalAudioManager(private val context: Context,
         }
     }
 
-    private fun startIncomingRinger(vibrate: Boolean) {
-        Log.i(TAG, "startIncomingRinger(): vibrate: $vibrate")
+    private fun startIncomingRinger() {
+        Log.i(TAG, "startIncomingRinger()")
         androidAudioManager.mode = AudioManager.MODE_RINGTONE
 
-        incomingRinger.start(vibrate)
+        incomingRinger.start()
     }
 
     private fun silenceIncomingRinger() {

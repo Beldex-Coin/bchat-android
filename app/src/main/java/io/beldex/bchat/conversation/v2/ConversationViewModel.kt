@@ -1,6 +1,7 @@
 package io.beldex.bchat.conversation.v2
 
 import android.app.Application
+import android.content.Context
 import android.database.Cursor
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +18,7 @@ import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.Pair
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import dagger.hilt.android.qualifiers.ApplicationContext
 import io.beldex.bchat.audio.AudioSlidePlayer
 import io.beldex.bchat.database.BchatContactDatabase
 import io.beldex.bchat.database.BeldexAPIDatabase
@@ -33,10 +35,15 @@ import io.beldex.bchat.repository.ConversationRepository
 import io.beldex.bchat.R
 import io.beldex.bchat.database.Storage
 import io.beldex.bchat.database.model.MmsMessageRecord
+import io.beldex.bchat.webrtc.CallManager
+import io.beldex.bchat.webrtc.data.State
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -56,7 +63,9 @@ class ConversationViewModel (
         val threadId: Long,
         private val storage: Storage,
         private val application: Application,
-        private val textSecurePreferences : TextSecurePreferences
+        private val textSecurePreferences : TextSecurePreferences,
+        private val callManager: CallManager,
+        @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ConversationUiState())
@@ -82,6 +91,15 @@ class ConversationViewModel (
     /*Hales63*/
 //    val recipient: Recipient?
 //        get() = repository.getRecipientForThreadId(threadId)
+
+    val callBanner: StateFlow<String?> = callManager.currentConnectionStateFlow.map {
+        // a call is in progress if it isn't idle nor disconnected and the recipient is the person on the call
+        if(it !is State.Idle && it !is State.Disconnected && callManager.recipient?.address == recipient.value?.address){
+            // call is started, we need to differentiate between in progress vs incoming
+            if(it is State.Connected) context.getString(R.string.call_in_progress)
+            else context.getString(R.string.unknown_sender)
+        } else null // null when the call isn't in progress / incoming
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 
     init {
         _uiState.update {
@@ -371,11 +389,32 @@ class ConversationViewModel (
         private val beldexMessageDb: BeldexMessageDatabase,
         private val storage: Storage,
         private val application: Application,
-        private val textSecurePreferences: TextSecurePreferences
+        private val textSecurePreferences: TextSecurePreferences,
+        private val callManager: CallManager,
+        @ApplicationContext
+        private val context: Context,
     ) : ViewModelProvider.Factory {
 
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return ConversationViewModel(repository,beldexThreadDb, bchatContactDb, threadDb, recipientDatabase, groupDb, beldexApiDb, mmsDb, smsDb, mmsSmsDatabase, beldexMessageDb, threadId, storage, application,textSecurePreferences) as T
+        override fun <T : ViewModel> create(modelClass : Class<T>) : T {
+            return ConversationViewModel(
+                repository,
+                beldexThreadDb,
+                bchatContactDb,
+                threadDb,
+                recipientDatabase,
+                groupDb,
+                beldexApiDb,
+                mmsDb,
+                smsDb,
+                mmsSmsDatabase,
+                beldexMessageDb,
+                threadId,
+                storage,
+                application,
+                textSecurePreferences,
+                callManager,
+                context,
+            ) as T
         }
     }
 }

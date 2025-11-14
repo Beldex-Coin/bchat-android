@@ -96,6 +96,7 @@
     <string name="ConversationActivity_join_open_group_confirmation_message" translatable="false">Are you sure you want to join the <b>%s</b> social group?</string>
 
     <string name="ConversationActivity_to_send_audio_messages_allow_signal_access_to_your_microphone" translatable="false">Allow Recorder to access voice recording?</string>
+    <string name="ConversationActivity_to_audio_call_allow_signal_access_to_your_microphone" translatable="false">Allow Recorder to access voice call?</string>
     <string name="ConversationActivity_signal_requires_the_microphone_permission_in_order_to_send_audio_messages" translatable="false">BChat needs microphone access to send audio messages, but it has been permanently denied. Please continue to app settings, select \"Permissions\", and enable \"Microphone\".</string>
     <string name="ConversationActivity_to_capture_photos_and_video_allow_signal_access_to_the_camera" translatable="false">BChat needs camera access to take photos and videos.</string>
     <string name="ConversationActivity_to_send_photos_and_video_allow_signal_access_to_storage" translatable="false">Allow attachment to access Photos and videos on this Device?</string>
@@ -1564,6 +1565,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="block_request">Block Request?</string>
     <string name="delete_request">Delete Request?</string>
     <string name="call_missed_description">Call Missed from "%1$s" because you needed to enable the ‘Voice and video calls’ permission in the privacy settings.</string>
+    <string name="call_microphone_permissions_required">You missed a call from <b>"%1$s"</b> because you haven\'t granted <b>microphone access</b>.</string>
     <string name="mute_notification">Mute Notification</string>
     <string name="disappearing_messages">Disappearing Messages</string>
     <string name="Permissions_record_permission_required" translatable="false">Record Permission Required!</string>
@@ -1691,4 +1693,17 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="title_activity_view_contact" translatable="false">ViewContactActivity</string>
     <string name="view_all" translatable="false">View all</string>
     <string name="message" translatable="false">Message</string>
+    <string name="callsRinging" translatable="false">Ringing...</string>
+    <string name="callsConnecting" translatable="false">Connecting...</string>
+    <string name="callsReconnecting" translatable="false">Reconnecting…</string>
+    <string name="callsEnded" translatable="false">Call Ended</string>
+    <string name="callsErrorStart" translatable="false">Failed to start call</string>
+    <string name="creatingCall" translatable="false">Creating Call</string>
+    <string name="receivingCallOffer" translatable="false">Receiving Call Offer</string>
+    <string name="receivingPreOffer" translatable="false">Receiving Pre Offer</string>
+    <string name="sendingCallOffer" translatable="false">Sending Call Offer</string>
+    <string name="sendingConnectionCandidates" translatable="false">Sending Connection Candidates</string>
+    <string name="receivedAnswer" translatable="false">Received Answer</string>
+    <string name="handlingConnectionCandidates" translatable="false">Handling Connection Candidates</string>
+
 </resources>

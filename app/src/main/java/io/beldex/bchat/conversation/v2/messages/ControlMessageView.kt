@@ -1,5 +1,6 @@
 package io.beldex.bchat.conversation.v2.messages
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
@@ -16,6 +17,7 @@ import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewControlMessageBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
+import io.beldex.bchat.permissions.Permissions
 import java.util.Locale
 
 
@@ -100,7 +102,11 @@ class ControlMessageView : LinearLayout {
                     }
                     message.isMissedCall -> {
                         binding.receivedCallText.text = context.resources.getString(R.string.ThreadRecord_missed_call)
-                        R.drawable.ic_filled_circle_missed_call
+                        if(!Permissions.hasAll(context, Manifest.permission.RECORD_AUDIO) || !TextSecurePreferences.isCallNotificationsEnabled(context)){
+                            R.drawable.ic_first_missed_call
+                        } else {
+                            R.drawable.ic_filled_circle_missed_call
+                        }
                     }
                     message.isFirstMissedCall -> {
                         binding.receivedCallText.text = context.resources.getString(R.string.ThreadRecord_missed_call)

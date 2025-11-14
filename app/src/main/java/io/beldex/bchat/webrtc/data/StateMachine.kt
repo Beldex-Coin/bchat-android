@@ -3,6 +3,8 @@ package io.beldex.bchat.webrtc.data
 import com.beldex.libsignal.utilities.Log
 import io.beldex.bchat.webrtc.data.State.Companion.CAN_DECLINE_STATES
 import io.beldex.bchat.webrtc.data.State.Companion.CAN_HANGUP_STATES
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 sealed class State {
     object Idle : State()
@@ -84,6 +86,7 @@ sealed class Event(vararg val expectedStates: State, val outputState: State) {
             outputState = State.Disconnected
         )
 
+    object IgnoreCall : Event(*State.ALL_STATES, outputState = State.Disconnected)
     object Error : Event(*State.ALL_STATES, outputState = State.Disconnected)
     object DeclineCall : Event(*CAN_DECLINE_STATES, outputState = State.Disconnected)
     object Hangup : Event(*CAN_HANGUP_STATES, outputState = State.Disconnected)
@@ -91,16 +94,16 @@ sealed class Event(vararg val expectedStates: State, val outputState: State) {
 }
 
 open class StateProcessor(initialState: State) {
-    private var _currentState: State = initialState
-    val currentState get() = _currentState
-
+    private var _currentStateFlow: MutableStateFlow<State> = MutableStateFlow(initialState)
+    val currentStateFlow: StateFlow<State> get() = _currentStateFlow
+    val currentState get() = _currentStateFlow.value
     open fun processEvent(event: Event, sideEffect: () -> Unit = {}): Boolean {
         if (currentState in event.expectedStates) {
             Log.i(
                 "Beldex-Call",
                 "succeeded transitioning from ${currentState::class.simpleName} to ${event.outputState::class.simpleName} with ${event::class.simpleName}"
             )
-            _currentState = event.outputState
+            _currentStateFlow.value = event.outputState
             sideEffect()
             return true
         }

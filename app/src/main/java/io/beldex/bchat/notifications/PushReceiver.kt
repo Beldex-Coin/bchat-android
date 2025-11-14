@@ -1,6 +1,8 @@
 package io.beldex.bchat.notifications
 import android.Manifest
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -23,6 +25,7 @@ import com.beldex.libbchat.utilities.bencode.BencodeString
 import com.beldex.libsignal.utilities.Base64
 import com.beldex.libsignal.utilities.Log
 import io.beldex.bchat.crypto.IdentityKeyUtil
+import io.beldex.bchat.home.HomeActivity
 import javax.inject.Inject
 private const val TAG = "PushHandler"
 class PushReceiver @Inject constructor(@ApplicationContext val context: Context) {
@@ -58,6 +61,7 @@ class PushReceiver @Inject constructor(@ApplicationContext val context: Context)
             .setContentText("You've got a new message.")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
+            .setContentIntent(PendingIntent.getActivity(context, 0, Intent(context, HomeActivity::class.java), PendingIntent.FLAG_IMMUTABLE))
         NotificationManagerCompat.from(context).notify(11111, builder.build())
     }
     private fun Map<String, String>.asByteArray() =
@@ -85,7 +89,7 @@ class PushReceiver @Inject constructor(@ApplicationContext val context: Context)
         val bencoded = Bencode.Decoder(decrypted)
         val expectedList = (bencoded.decode() as? BencodeList)?.values
             ?: error("Failed to decode bencoded list from payload")
-        val metadataJson = (expectedList[0] as? BencodeString)?.value ?: error("no metadata")
+        val metadataJson = (expectedList.getOrNull(0) as? BencodeString)?.value ?: error("no metadata")
         val metadata: PushNotificationMetadata = json.decodeFromString(String(metadataJson))
         return (expectedList.getOrNull(1) as? BencodeString)?.value.also {
             // null content is valid only if we got a "data_too_long" flag

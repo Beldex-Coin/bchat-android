@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/default_dialog_background_inset"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:elevation="4dp"
+    android:padding="32dp">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_call_missed"
+        android:contentDescription="missed call icon"
+        />
+
+    <TextView
+        android:fontFamily="@font/open_sans_bold"
+        android:id="@+id/downloadTitleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Permissions_permission_required"
+        android:textColor="@color/text"
+        android:textStyle="bold"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/permission_message"
+        android:fontFamily="@font/open_sans_medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/call_microphone_permissions_required"
+        android:paddingHorizontal="@dimen/medium_spacing"
+        android:textColor="@color/download_icon"
+        android:textSize="@dimen/small_font_size"
+        android:textAlignment="center" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+        <Button
+            style="@style/Widget.Bchat.Button.Dialog.Cancel"
+            android:id="@+id/cancelDialogBoxButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            android:layout_marginEnd="5dp"
+            android:textColor="@color/negative_green_button_text"
+            android:padding="12dp"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:layout_weight="1"/>
+
+        <Button
+            style="@style/Widget.Bchat.Button.Dialog.Enable"
+            android:id="@+id/settingsDialogBoxButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/activity_settings_title"
+            android:layout_marginStart="5dp"
+            android:textColor="@color/white"
+            android:padding="12dp"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+</LinearLayout>

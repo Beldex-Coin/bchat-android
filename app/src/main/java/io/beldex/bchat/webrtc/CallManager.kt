@@ -11,6 +11,7 @@ import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.Debouncer
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.Util
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
@@ -32,7 +33,6 @@ import java.nio.ByteBuffer
 import java.util.*
 import io.beldex.bchat.webrtc.data.State as CallState
 import com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.ICE_CANDIDATES
-import io.beldex.bchat.service.WebRtcCallService
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import nl.komponents.kovenant.functional.bind
@@ -104,7 +104,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
 
     private val stateProcessor = StateProcessor(CallState.Idle)
 
-    private val _callStateEvents = MutableStateFlow(CallViewModel.State.CALL_PENDING)
+    private val _callStateEvents = MutableStateFlow(CallViewModel.State.CALL_INITIALIZING)
     val callStateEvents = _callStateEvents.asSharedFlow()
     private val _recipientEvents = MutableStateFlow(StateEvent.RecipientUpdate.UNKNOWN)
     val recipientEvents = _recipientEvents.asSharedFlow()
@@ -117,6 +117,9 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         )
     )
     val audioDeviceEvents = _audioDeviceEvents.asSharedFlow()
+
+    val currentConnectionStateFlow
+        get() = stateProcessor.currentStateFlow
 
     val currentConnectionState
         get() = stateProcessor.currentState
@@ -155,27 +158,36 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
     var fullscreenRenderer: SurfaceViewRenderer? = null
     private var peerConnectionFactory: PeerConnectionFactory? = null
 
+    private val lockManager by lazy { LockManager(context) }
+    private var uncaughtExceptionHandlerManager: UncaughtExceptionHandlerManager? = null
+
+    init {
+        registerUncaughtExceptionHandler()
+    }
+
+    private fun registerUncaughtExceptionHandler() {
+        uncaughtExceptionHandlerManager = UncaughtExceptionHandlerManager().apply {
+            registerHandler(ProximityLockRelease(lockManager))
+        }
+    }
+
     fun clearPendingIceUpdates() {
         pendingOutgoingIceUpdates.clear()
         pendingIncomingIceUpdates.clear()
     }
 
     fun initializeAudioForCall() {
-        Log.d("Beldex","signalAudioManager.handleCommand 1")
         signalAudioManager.handleCommand(AudioManagerCommand.Initialize)
     }
 
     fun startOutgoingRinger(ringerType: OutgoingRinger.Type) {
         if (ringerType == OutgoingRinger.Type.RINGING) {
-            Log.d("Beldex","signalAudioManager.handleCommand 2")
             signalAudioManager.handleCommand(AudioManagerCommand.UpdateAudioDeviceState)
         }
-        Log.d("Beldex","signalAudioManager.handleCommand 3")
         signalAudioManager.handleCommand(AudioManagerCommand.StartOutgoingRinger(ringerType))
     }
 
     fun silenceIncomingRinger() {
-        Log.d("Beldex","signalAudioManager.handleCommand 4")
         signalAudioManager.handleCommand(AudioManagerCommand.SilenceIncomingRinger)
     }
 
@@ -212,8 +224,6 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
     fun isPreOffer() = currentConnectionState == CallState.RemotePreOffer
 
     fun isIdle() = currentConnectionState == CallState.Idle
-
-    fun isCurrentUser(recipient: Recipient) = recipient.address.serialize() == storage.getUserPublicKey()
 
     fun initializeVideo(context: Context) {
         Util.runOnMainSync {
@@ -261,7 +271,13 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
     fun setAudioEnabled(isEnabled: Boolean) {
         currentConnectionState.withState(*CallState.CAN_HANGUP_STATES) {
             peerConnection?.setAudioEnabled(isEnabled)
-            _audioEvents.value = StateEvent.AudioEnabled(true)
+            _audioEvents.value = StateEvent.AudioEnabled(isEnabled)
+        }
+
+        dataChannel?.let { channel ->
+            val toSend = if (!isEnabled) AUDIO_DISABLED_JSON else AUDIO_ENABLED_JSON
+            val buffer = DataChannel.Buffer(ByteBuffer.wrap(toSend.toString().encodeToByteArray()), false)
+            channel.send(buffer)
         }
     }
 
@@ -298,6 +314,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
     }
 
     private fun queueOutgoingIce(expectedCallId: UUID, expectedRecipient: Recipient) {
+        postViewModelState(CallViewModel.State.CALL_SENDING_ICE)
         outgoingIceDebouncer.publish {
             val currentCallId = this.callId ?: return@publish
             val currentRecipient = this.recipient ?: return@publish
@@ -397,6 +414,8 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
     fun stop() {
         val isOutgoing = currentConnectionState in CallState.OUTGOING_STATES
         stateProcessor.processEvent(Event.Cleanup) {
+            lockManager.updatePhoneState(LockManager.PhoneState.IDLE)
+
             Log.d("Beldex","signalAudioManager.handleCommand 5")
             signalAudioManager.handleCommand(AudioManagerCommand.Stop(true))
             peerConnection?.dispose()
@@ -424,6 +443,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
                 remoteVideoEnabled = false
             )
             //SteveJosephh21
+            println("call muted called 3->")
             _remoteAudioEvents.value =StateEvent.AudioEnabled(true)
             _remoteVideoStatusEvents.value = StateEvent.VideoEnabled(false)
 
@@ -490,6 +510,8 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
     }
 
     fun onIncomingCall(context: Context, isAlwaysTurn: Boolean = false): Promise<Unit, Exception> {
+        lockManager.updatePhoneState(LockManager.PhoneState.PROCESSING)
+
         val callId = callId ?: return Promise.ofFail(NullPointerException("callId is null"))
         val recipient = recipient ?: return Promise.ofFail(NullPointerException("recipient is null"))
         val offer = pendingOffer ?: return Promise.ofFail(NullPointerException("pendingOffer is null"))
@@ -534,6 +556,8 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
     }
 
     fun onOutgoingCall(context: Context, isAlwaysTurn: Boolean = false): Promise<Unit, Exception> {
+        lockManager.updatePhoneState(LockManager.PhoneState.IN_CALL)
+
         val callId = callId ?: return Promise.ofFail(NullPointerException("callId is null"))
         val recipient = recipient
             ?: return Promise.ofFail(NullPointerException("recipient is null"))
@@ -572,6 +596,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
             ), recipient.address).bind {
                 Log.d("Beldex", "Sent pre-offer")
                 Log.d("Beldex", "Sending offer")
+                postViewModelState(CallViewModel.State.CALL_OFFER_OUTGOING)
                 MessageSender.sendNonDurably(CallMessage.offer(
                     offer.description,
                     callId
@@ -591,16 +616,20 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         stateProcessor.processEvent(Event.DeclineCall) {
             MessageSender.sendNonDurably(CallMessage.endCall(callId), Address.fromSerialized(userAddress))
             MessageSender.sendNonDurably(CallMessage.endCall(callId), recipient.address)
-            insertCallMessage(recipient.address.serialize(), CallMessageType.CALL_MISSED)
+            insertCallMessage(recipient.address.toString(), CallMessageType.CALL_INCOMING)
         }
     }
+
+    fun handleIgnoreCall(){
+        stateProcessor.processEvent(Event.IgnoreCall)
+    }
+
 
     fun handleLocalHangup(intentRecipient: Recipient?) {
         val recipient = recipient ?: return
         val callId = callId ?: return
 
-        val currentUserPublicKey  = storage.getUserPublicKey()
-        val sendHangup = intentRecipient == null || (intentRecipient == recipient && recipient.address.serialize() != currentUserPublicKey)
+        val sendHangup = intentRecipient == null || (intentRecipient == recipient && !recipient.isLocalNumber)
 
         postViewModelState(CallViewModel.State.CALL_DISCONNECTED)
         stateProcessor.processEvent(Event.Hangup)
@@ -652,6 +681,50 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
             channel.send(buffer)
         }
     }
+    fun toggleVideo(context : Context){
+        handleSetMuteVideo(_videoState.value.userVideoEnabled)
+        TextSecurePreferences.setMuteVide(context,!_videoState.value.userVideoEnabled)
+
+    }
+
+    fun toggleMuteAudio() {
+        val muted = !_audioEvents.value.isEnabled
+        setAudioEnabled(muted)
+    }
+
+
+    fun toggleSpeakerphone() {
+        if (currentConnectionState !in arrayOf(
+                CallState.Connected,
+                *CallState.PENDING_CONNECTION_STATES
+            )
+        ) {
+            Log.w(TAG, "handling audio command not in call")
+            return
+        }
+        // we default to EARPIECE if not SPEAKER but the audio manager will know to actually use a headset if any is connected
+        val command=
+            AudioManagerCommand.SetUserDevice(if (isOnSpeakerphone()) SignalAudioManager.AudioDevice.EARPIECE else SignalAudioManager.AudioDevice.SPEAKER_PHONE)
+        handleAudioCommand(command)
+    }
+
+    fun toggleBluetoothPhone() {
+        if (currentConnectionState !in arrayOf(
+                CallState.Connected,
+                *CallState.PENDING_CONNECTION_STATES
+            )
+        ) {
+            Log.w(TAG, "handling audio command not in call")
+            return
+        }
+        val command=
+            AudioManagerCommand.SetUserDevice(if (isOnBluetoothPhone()) SignalAudioManager.AudioDevice.EARPIECE else SignalAudioManager.AudioDevice.BLUETOOTH)
+        handleAudioCommand(command)
+    }
+
+    private fun isOnSpeakerphone() = _audioDeviceEvents.value.selectedDevice == SignalAudioManager.AudioDevice.SPEAKER_PHONE
+
+    private fun isOnBluetoothPhone() = _audioDeviceEvents.value.selectedDevice == SignalAudioManager.AudioDevice.BLUETOOTH
 
     /**
      * Returns the renderer currently showing the user's video, not the contact's
@@ -676,7 +749,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         }
     }
 
-    fun handleSetMuteVideo(muted: Boolean, lockManager: LockManager) {
+    private fun handleSetMuteVideo(muted: Boolean) {
         _videoState.update { it.copy(userVideoEnabled = !muted) }
         handleMirroring()
 
@@ -703,7 +776,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         }
     }
 
-    fun handleSetCameraFlip() {
+    fun flipCamera() {
         if (!localCameraState.enabled) return
         peerConnection?.let { connection ->
             connection.flipCamera()
@@ -751,7 +824,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         }
     }
 
-    fun handleScreenOffChange(context: Context) {
+    fun handleScreenOffChange() {
         if (currentConnectionState in arrayOf(CallState.Connecting, CallState.LocalRing)) {
             Log.d("Beldex","signalAudioManager.handleCommand 9")
             signalAudioManager.handleCommand(AudioManagerCommand.SilenceIncomingRinger)
@@ -765,14 +838,13 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
                     val buffer = DataChannel.Buffer(ByteBuffer.wrap(toSend.toString().encodeToByteArray()), false)
                     channel.send(buffer)
                 }
-                val intent = WebRtcCallService.cameraEnabled(context, false)
-                context.startService(intent)
+                handleSetMuteVideo(false)
             }
         }
     }
 
     //SteveJosephh21 -
-    fun handleScreenOnChange(context: Context) {
+    fun handleScreenOnChange() {
         if (currentConnectionState in arrayOf(CallState.Connected)) {
             if(videoEnabledStatus){
                 videoEnabledStatus = false
@@ -781,8 +853,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
                     val buffer = DataChannel.Buffer(ByteBuffer.wrap(toSend.toString().encodeToByteArray()), false)
                     channel.send(buffer)
                 }
-                val intent = WebRtcCallService.cameraEnabled(context, true)
-                context.startService(intent)
+                handleSetMuteVideo(true)
             }
         }
     }
@@ -810,6 +881,10 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
             return
         }
 
+        if(_callStateEvents.value != CallViewModel.State.CALL_CONNECTED){
+            postViewModelState(CallViewModel.State.CALL_HANDLING_ICE)
+        }
+
         val connection = peerConnection
         if (connection != null && connection.readyForIce && currentConnectionState != CallState.Reconnecting) {
             Log.i("Beldex", "Handling connection ice candidate")
@@ -824,17 +899,16 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
 
     fun startIncomingRinger() {
         Log.d("Beldex","signalAudioManager.handleCommand 10")
-        signalAudioManager.handleCommand(AudioManagerCommand.StartIncomingRinger(true))
+        signalAudioManager.handleCommand(AudioManagerCommand.StartIncomingRinger)
     }
 
-    fun startCommunication(lockManager: LockManager) {
+    fun startCommunication() {
         Log.d("Beldex","signalAudioManager.handleCommand 11")
         signalAudioManager.handleCommand(AudioManagerCommand.Start)
         val connection = peerConnection ?: return
         if (connection.isVideoEnabled()) lockManager.updatePhoneState(LockManager.PhoneState.IN_VIDEO)
         else lockManager.updatePhoneState(LockManager.PhoneState.IN_CALL)
         connection.setCommunicationMode()
-        setAudioEnabled(true)
         dataChannel?.let { channel ->
             val toSend = if (_videoState.value.userVideoEnabled) VIDEO_ENABLED_JSON else VIDEO_DISABLED_JSON
             val buffer = DataChannel.Buffer(ByteBuffer.wrap(toSend.toString().encodeToByteArray()), false)

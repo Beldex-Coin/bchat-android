@@ -5,4 +5,5 @@ enum class CallMessageType {
     CALL_INCOMING,
     CALL_OUTGOING,
     CALL_FIRST_MISSED,
+    CALL_MISSED_PERMISSION
 }

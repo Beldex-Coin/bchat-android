@@ -183,6 +183,8 @@ object UpdateMessageBuilder {
                 context.getString(R.string.MessageRecord_called_s, senderName)
             CallMessageType.CALL_FIRST_MISSED ->
                 context.getString(R.string.MessageRecord_missed_call_from, senderName)
+            CallMessageType.CALL_MISSED_PERMISSION ->
+                context.getString(R.string.MessageRecord_microphone_description, senderName)
         }
     }
 

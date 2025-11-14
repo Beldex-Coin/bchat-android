@@ -70,7 +70,7 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
     //SteveJosephh21 -
     if (TextSecurePreferences.getCallisActive(ApplicationContext.getInstance(this)) && TextSecurePreferences.getMuteVideo(ApplicationContext.getInstance(this))) {
       if (powerButtonReceiver == null) {
-        powerButtonReceiver = new PowerButtonReceiver();
+        powerButtonReceiver = new PowerButtonReceiver(powerButtonReceiver.getOnScreenOffChange(), powerButtonReceiver.getOnScreenOnChange());
       }
       if (powerButtonReceiver != null) {
         registerReceiver(powerButtonReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
@@ -91,11 +91,9 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
 
     if (TextSecurePreferences.getCallisActive(ApplicationContext.getInstance(this)) && TextSecurePreferences.getMuteVideo(ApplicationContext.getInstance(this))) {
       if (powerButtonReceiver == null) {
-        powerButtonReceiver = new PowerButtonReceiver();
+        powerButtonReceiver = new PowerButtonReceiver(powerButtonReceiver.getOnScreenOffChange(), powerButtonReceiver.getOnScreenOnChange());
       }
-      if (powerButtonReceiver != null) {
         registerReceiver(powerButtonReceiver, new IntentFilter(Intent.ACTION_USER_PRESENT));
-      }
     } else {
       if (powerButtonReceiver != null) {
         this.unregisterReceiver(powerButtonReceiver);

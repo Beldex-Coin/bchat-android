@@ -21,6 +21,7 @@ import static com.beldex.libbchat.utilities.Address.fromSerialized;
 
 
 import static io.beldex.bchat.conversation.v2.contact_sharing.ViewContactsScreenKt.flattenData;
+import static io.beldex.bchat.util.CallNotificationBuilder.WEBRTC_NOTIFICATION;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
@@ -200,11 +201,13 @@ public class DefaultMessageNotifier implements MessageNotifier {
       StatusBarNotification[] activeNotifications = notifications.getActiveNotifications();
 
       for (StatusBarNotification activeNotification : activeNotifications) {
-        notifications.cancel(activeNotification.getId());
+        if(activeNotification.getId() != WEBRTC_NOTIFICATION) {
+          notifications.cancel(activeNotification.getId());
+        }
       }
     } catch (Throwable e) {
       // XXX Appears to be a ROM bug, see #6043
-      Log.w(TAG, e);
+      Log.w(TAG, "cancel notification error: $e");
       notifications.cancelAll();
     }
   }
@@ -231,7 +234,9 @@ public class DefaultMessageNotifier implements MessageNotifier {
           }
 
           if (!validNotification) {
-            notifications.cancel(notification.getId());
+            if(notification.getId() != WEBRTC_NOTIFICATION) {
+              notifications.cancel(notification.getId());
+            }
           }
         }
       }
@@ -355,7 +360,9 @@ public class DefaultMessageNotifier implements MessageNotifier {
     Log.i(TAG, "sendSingleThreadNotification()  signal: " + signal + "  bundled: " + bundled);
 
     if (notificationState.getNotifications().isEmpty()) {
-      if (!bundled) cancelActiveNotifications(context);
+      if (!bundled) {
+        cancelActiveNotifications(context);
+      }
       Log.i(TAG, "Empty notification state. Skipping.");
       return;
     }
@@ -365,14 +372,6 @@ public class DefaultMessageNotifier implements MessageNotifier {
     Recipient                          messageOriginator = notifications.get(0).getRecipient();
     int                                notificationId = (int) (SUMMARY_NOTIFICATION_ID + (bundled ? notifications.get(0).getThreadId() : 0));
     String                             messageIdTag   = String.valueOf(notifications.get(0).getTimestamp());
-
-    NotificationManager notificationManager = ServiceUtil.getNotificationManager(context);
-    for (StatusBarNotification notification: notificationManager.getActiveNotifications()) {
-      if ( (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && notification.isAppGroup() == bundled)
-              && messageIdTag.equals(notification.getNotification().extras.getString(LATEST_MESSAGE_ID_TAG))) {
-        return;
-      }
-    }
 
     long timestamp = notifications.get(0).getTimestamp();
     if (timestamp != 0) builder.setWhen(timestamp);
@@ -644,7 +643,11 @@ public class DefaultMessageNotifier implements MessageNotifier {
       }
 
       if (threadRecipients == null || !threadRecipients.isMuted()) {
-        if (threadRecipients != null && threadRecipients.notifyType == RecipientDatabase.NOTIFY_TYPE_MENTIONS) {
+        if(record.isIncomingCall() || record.isOutgoingCall()){
+          // do nothing here as we do not want to display a notification for incoming and outgoing calls,
+          // they will instead be handled independently by the pre offer
+        }
+        else if (threadRecipients != null && threadRecipients.notifyType == RecipientDatabase.NOTIFY_TYPE_MENTIONS) {
           // check if mentioned here
           boolean isQuoteMentioned = false;
           if (record instanceof MmsMessageRecord) {

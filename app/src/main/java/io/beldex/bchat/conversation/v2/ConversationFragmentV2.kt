@@ -183,7 +183,6 @@ import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.preferences.PrivacySettingsActivity
 import io.beldex.bchat.reactions.ReactionsDialogFragment
 import io.beldex.bchat.reactions.any.ReactWithAnyEmojiDialogFragment
-import io.beldex.bchat.service.WebRtcCallService
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.util.BChatThreadPoolExecutor
 import io.beldex.bchat.util.BaseFragment
@@ -237,6 +236,8 @@ import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
+import io.beldex.bchat.webrtc.WebRTCComposeActivity.Companion.ACTION_START_CALL
+import io.beldex.bchat.webrtc.WebRtcCallBridge.Companion.EXTRA_RECIPIENT_ADDRESS
 
 
 private const val ARG_PARAM1="param1"
@@ -386,6 +387,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
     private val adapter by lazy {
         val cursor=viewModel.getConversationsCursor()
         val adapter=ConversationAdapter(
+            requireActivity(),
             requireActivity(),
             cursor,
             searchViewModel,
@@ -700,6 +702,11 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             }
         }
 
+/*        // in case a phone call is in progress, this banner is visible and should bring the user back to the call
+        binding.conversationHeader.callInProgress.setOnClickListener {
+            startActivity(WebRTCComposeActivity.getCallActivityIntent(requireContext()))
+        }*/
+
 
         updateUnreadCountIndicator()
         updateSubtitle()
@@ -978,11 +985,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             }
         }
         binding.hanUpCall.setOnClickListener {
-            requireActivity().applicationContext.startService(
-                WebRtcCallService.hangupIntent(
-                    requireActivity().applicationContext
-                )
-            )
+            callViewModel?.hangUp()
             binding.callActionBarView.isVisible=false
             Toast.makeText(requireActivity().applicationContext, "Call ended", Toast.LENGTH_SHORT)
                 .show()
@@ -2993,6 +2996,19 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                     }
                 }
             }
+
+            lifecycleScope.launch {
+                viewModel.callBanner.collect { callBanner ->
+                    println("need to add call incoming UI")
+//                    when (callBanner) {
+//                        null -> binding.conversationHeader.callInProgress.fadeOut()
+//                        else -> {
+//                            binding.conversationHeader.callInProgress.text = callBanner
+//                            binding.conversationHeader.callInProgress.fadeIn()
+//                        }
+//                }
+                }
+            }
         }
 
         private fun setMediaControlForReportIssue() {
@@ -3205,14 +3221,26 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                 callPermissionDialog.show()
                 return
             }
-
-            val service=WebRtcCallService.createCall(context, thread)
-            context.startService(service)
-            val activity=Intent(context, WebRTCComposeActivity::class.java).apply {
-                flags=Intent.FLAG_ACTIVITY_NEW_TASK
+            // or if the user has not granted audio/microphone permissions
+            else if (!Permissions.hasAll(context, Manifest.permission.RECORD_AUDIO)) {
+                Permissions.with(requireActivity())
+                    .request(Manifest.permission.RECORD_AUDIO)
+                    .withRationaleDialog(
+                        context.getString(R.string.ConversationActivity_to_audio_call_allow_signal_access_to_your_microphone),
+                        context.getString(R.string.Permissions_permission_required),
+                        R.drawable.ic_microphone
+                    )
+                    .withPermanentDenialDialog(context.getString(R.string.ConversationActivity_signal_requires_the_microphone_permission_in_order_to_send_audio_messages))
+                    .execute()
+                return
             }
-            context.startActivity(activity)
 
+            WebRTCComposeActivity.getCallActivityIntent(context)
+                .apply {
+                    action = ACTION_START_CALL
+                    putExtra(EXTRA_RECIPIENT_ADDRESS, viewModel.recipient.value?.address)
+                }
+                .let(context::startActivity)
         }
 
         private fun getLatestOpenGroupInfoIfNeeded() {

@@ -136,6 +136,9 @@ public abstract class DisplayRecord {
   public boolean isFirstMissedCall() {
     return SmsDatabase.Types.isFirstMissedCall(type);
   }
+  public boolean isMissedPermissionCall() {
+    return SmsDatabase.Types.isMissedPermissionCall(type);
+  }
 
   public boolean isControlMessage() {
     return isGroupUpdateMessage() || isExpirationTimerUpdate() || isDataExtractionNotification()

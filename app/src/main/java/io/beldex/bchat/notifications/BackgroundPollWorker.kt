@@ -8,22 +8,27 @@ import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.all
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.jobs.BatchMessageReceiveJob
-import com.beldex.libbchat.messaging.jobs.MessageReceiveJob
 import com.beldex.libbchat.messaging.jobs.MessageReceiveParameters
 import com.beldex.libbchat.messaging.sending_receiving.pollers.ClosedGroupPollerV2
 import com.beldex.libbchat.messaging.sending_receiving.pollers.OpenGroupPollerV2
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.utilities.Log
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import io.beldex.bchat.dependencies.DatabaseComponent
 import nl.komponents.kovenant.functional.bind
 import nl.komponents.kovenant.functional.map
 import java.util.concurrent.TimeUnit
 
-class BackgroundPollWorker(val context: Context, params: WorkerParameters) : Worker(context, params) {
+class BackgroundPollWorker @AssistedInject constructor(
+    @Assisted val context: Context,
+    @Assisted params: WorkerParameters
+) : CoroutineWorker(context, params) {
 
     companion object {
         const val TAG = "BackgroundPollWorker"
+        private const val REQUEST_TARGETS = "REQUEST_TARGETS"
 
         @JvmStatic
         fun schedulePeriodic(context: Context) {
@@ -37,9 +42,27 @@ class BackgroundPollWorker(val context: Context, params: WorkerParameters) : Wor
                 workRequest
             )
         }
+
+        fun cancelPeriodic(context: Context) {
+            Log.v(TAG, "Cancelling periodic work.")
+            WorkManager.getInstance(context).cancelUniqueWork(TAG)
+        }
+
+        fun scheduleOnce(context: Context) {
+            Log.v(TAG, "Scheduling single run.")
+            val builder = OneTimeWorkRequestBuilder<BackgroundPollWorker>()
+            builder.setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+
+            val dataBuilder = Data.Builder()
+            //dataBuilder.putStringArray(REQUEST_TARGETS, targets.map { it.name }.toTypedArray())
+            builder.setInputData(dataBuilder.build())
+
+            val workRequest = builder.build()
+            WorkManager.getInstance(context).enqueue(workRequest)
+        }
     }
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         if (TextSecurePreferences.getLocalNumber(context) == null) {
 
             Log.v(TAG, "User not registered yet.")

@@ -29,7 +29,6 @@ import io.beldex.bchat.databinding.ActivityWebRtcCallBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
 import com.bumptech.glide.Glide
 import io.beldex.bchat.permissions.Permissions
-import io.beldex.bchat.service.WebRtcCallService
 import io.beldex.bchat.util.AvatarPlaceholderGenerator
 import io.beldex.bchat.webrtc.AudioManagerCommand
 import io.beldex.bchat.webrtc.CallViewModel
@@ -64,7 +63,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
     private var wantsToAnswer = false
         set(value) {
             field = value
-            WebRtcCallService.broadcastWantsToAnswer(this, value)
+            //WebRtcCallService.broadcastWantsToAnswer(this, value)
         }
     private var hangupReceiver: BroadcastReceiver? = null
 
@@ -94,9 +93,9 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         if (intent.action == ACTION_ANSWER) {
-            val answerIntent = WebRtcCallService.acceptCallIntent(this)
-            answerIntent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-            ContextCompat.startForegroundService(this, answerIntent)
+//            val answerIntent = WebRtcCallService.acceptCallIntent(this)
+//            answerIntent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+//            ContextCompat.startForegroundService(this, answerIntent)
         }
     }
 
@@ -148,15 +147,15 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                      )
                  )
              }*/
-            val audioEnabledIntent =
-                WebRtcCallService.microphoneIntent(this, !viewModel.microphoneEnabled)
-            startService(audioEnabledIntent)
+//            val audioEnabledIntent =
+//                WebRtcCallService.microphoneIntent(this, !viewModel.microphoneEnabled)
+//            startService(audioEnabledIntent)
         }
 
         binding.speakerPhoneButton.setOnClickListener {
-            val command =
-                AudioManagerCommand.SetUserDevice(if (viewModel.isSpeaker) EARPIECE else SPEAKER_PHONE)
-            WebRtcCallService.sendAudioManagerCommand(this, command)
+//            val command =
+//                AudioManagerCommand.SetUserDevice(if (viewModel.isSpeaker) EARPIECE else SPEAKER_PHONE)
+//            WebRtcCallService.sendAudioManagerCommand(this, command)
         }
 
         binding.acceptCallButton.setOnClickListener {
@@ -168,8 +167,8 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
         }
 
         binding.declineCallButton.setOnClickListener {
-            val declineIntent = WebRtcCallService.denyCallIntent(this)
-            startService(declineIntent)
+//            val declineIntent = WebRtcCallService.denyCallIntent(this)
+//            startService(declineIntent)
         }
 
         hangupReceiver = object : BroadcastReceiver() {
@@ -222,11 +221,11 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                 binding.switchCameraButton.setColorFilter(ContextCompat.getColor(this,R.color.text))
                 flipCamera=true
             }
-            startService(WebRtcCallService.flipCamera(this))
+            //startService(WebRtcCallService.flipCamera(this))
         }
 
         binding.endCallButton.setOnClickListener {
-            startService(WebRtcCallService.hangupIntent(this))
+            //startService(WebRtcCallService.hangupIntent(this))
         }
         binding.backArrow.setOnClickListener {
             onBackPressed()
@@ -259,8 +258,8 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
     }
 
     private fun answerCall() {
-        val answerIntent = WebRtcCallService.acceptCallIntent(this)
-        ContextCompat.startForegroundService(this, answerIntent)
+//        val answerIntent = WebRtcCallService.acceptCallIntent(this)
+//        ContextCompat.startForegroundService(this, answerIntent)
     }
 
     private fun updateControlsRotation(newRotation: Int) {
@@ -380,29 +379,29 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                 }
             }
 
-            launch {
-                viewModel.callState.collect { state ->
-                    Log.d("Beldex", "Consuming view model state $state")
-                    when (state) {
-                        CALL_RINGING -> {
-                            if (wantsToAnswer) {
-                                answerCall()
-                                wantsToAnswer = false
-                            }
-                        }
-                        CALL_OUTGOING -> {
-                            //SteveJosephh21
-                            binding.statusView.text=getString(R.string.outgoing_call)
-                            binding.dialingStatus.isVisible = true
-                        }
-                        CALL_CONNECTED -> {
-                            wantsToAnswer = false
-                        }
-                        else -> Unit
-                    }
-                    updateControls(state)
-                }
-            }
+//            launch {
+//                viewModel.callState.collect { state ->
+//                    Log.d("Beldex", "Consuming view model state $state")
+//                    when (state) {
+//                        CALL_RINGING -> {
+//                            if (wantsToAnswer) {
+//                                answerCall()
+//                                wantsToAnswer = false
+//                            }
+//                        }
+//                        CALL_OUTGOING -> {
+//                            //SteveJosephh21
+//                            binding.statusView.text=getString(R.string.outgoing_call)
+//                            binding.dialingStatus.isVisible = true
+//                        }
+//                        CALL_CONNECTED -> {
+//                            wantsToAnswer = false
+//                        }
+//                        else -> Unit
+//                    }
+//                    updateControls(state)
+//                }
+//            }
 
             launch {
                 viewModel.recipient.collect { latestRecipient ->

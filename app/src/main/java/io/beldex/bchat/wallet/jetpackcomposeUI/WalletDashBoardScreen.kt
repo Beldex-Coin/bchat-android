@@ -68,6 +68,7 @@ import io.beldex.bchat.util.Helper
 import io.beldex.bchat.util.copyToClipBoard
 import io.beldex.bchat.wallet.WalletFragment
 import io.beldex.bchat.wallet.jetpackcomposeUI.walletdashboard.FilterTransactionByDatePopUp
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -81,9 +82,21 @@ fun WalletDashBoardScreen(
 
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.US)
-    val subDateFormat = SimpleDateFormat("dd-MMM-yyyy", Locale.US)
-    val dateTimeFormat = SimpleDateFormat("MMM dd, yyyy, HH:mm:ss a", Locale.US)
+    val transactionInfo: TransactionInfo? = null
+    var transactionInfoItem by remember {
+        mutableStateOf(transactionInfo)
+    }
+    val dateFormat = remember { SimpleDateFormat("dd-MM-yyyy", Locale.US) }
+    val subDateFormat = remember { SimpleDateFormat("dd-MMM-yyyy", Locale.US) }
+    val dateTimeFormat = remember { SimpleDateFormat("MMM dd, yyyy, HH:mm:ss a", Locale.US) }
+
+    val formattedDateTimeFormat = remember(transactionInfoItem?.timestamp) {
+        transactionInfoItem?.timestamp?.let { dateTimeFormat.format(Date(it * 1000)) } ?: ""
+    }
+
+    val formattedSubDateFormat = remember(transactionInfoItem?.timestamp) {
+        transactionInfoItem?.timestamp?.let { subDateFormat.format(Date(it * 1000)) } ?: ""
+    }
 
     var incomingTransactionIsChecked by remember {
         mutableStateOf(true)
@@ -95,11 +108,6 @@ fun WalletDashBoardScreen(
 
     var expandHistory by remember {
         mutableStateOf(false)
-    }
-
-    val transactionInfo: TransactionInfo? = null
-    var transactionInfoItem by remember {
-        mutableStateOf(transactionInfo)
     }
 
     var sendCardViewButtonIsEnabled by remember {
@@ -1047,10 +1055,8 @@ fun WalletDashBoardScreen(
                                 transactionInfoItem!!.blockheight.toString()
                             }
                         }
-                        transactionDate=
-                            getDateTime(transactionInfoItem!!.timestamp, subDateFormat)
-                        transactionDateTime=
-                            getDateTime(transactionInfoItem!!.timestamp, dateTimeFormat)
+                        transactionDate= formattedSubDateFormat
+                        transactionDateTime= formattedDateTimeFormat
 
                         if (transactionInfoItem!!.fee > 0) {
                             val fee : String=Helper.getDisplayAmount(
@@ -1541,14 +1547,9 @@ private fun CategoryHeader(
     modifier: Modifier = Modifier,
     dateFormat: SimpleDateFormat
 ) {
-    val nowDate = convertStringToDate(
-        convertTodayTimeStampToDateString(
-            System.currentTimeMillis(),
-            dateFormat
-        ), dateFormat
-    )
+    val nowDate = getTodayDate(dateFormat)
     val date = convertStringToDate(dateTimeStamp, dateFormat)
-    val diffDays: Long = date.time - System.currentTimeMillis()
+    val diffDays: Long = (date?.time ?: 0L) - nowDate!!.time
 
     val dayCount: Int = (diffDays.toFloat() / (24 * 60 * 60 * 1000)).toInt()
     val isToday: Boolean = nowDate == date
@@ -1586,18 +1587,48 @@ private fun callIfTransactionListEmpty(size: Int, viewModels: WalletViewModels,s
     }
 }
 
-private fun getDateTime(time: Long, dateTimeFormat: SimpleDateFormat): String {
-    return dateTimeFormat.format(Date(time * 1000))
+private fun getDateTime(time: Long?, dateTimeFormat: SimpleDateFormat?): String {
+    return try {
+        if (time == null || time <= 0) {
+            SimpleDateFormat("hh:mm a", Locale.getDefault()).format(Date(System.currentTimeMillis()))
+        } else if (dateTimeFormat == null) {
+            SimpleDateFormat("MMM dd, yyyy, HH:mm:ss a", Locale.getDefault()).format(Date(time * 1000))
+        } else {
+            dateTimeFormat.format(Date(time * 1000))
+        }
+    } catch (e: Exception) {
+        SimpleDateFormat("hh:mm a", Locale.getDefault()).format(Date(System.currentTimeMillis()))
+    }
 }
 
-private fun convertTimeStampToDateString(time: Long, dateFormat: SimpleDateFormat): String {
-    return dateFormat.format(Date(time * 1000))
+private fun convertTimeStampToDateString(time: Long?, dateFormat: SimpleDateFormat?): String {
+    return try {
+        if (time == null || time <= 0) {
+            SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date(System.currentTimeMillis()))
+        } else if (dateFormat == null) {
+            SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date(time))
+        } else {
+            dateFormat.format(Date(time * 1000))
+        }
+    } catch (e: Exception) {
+        SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date(System.currentTimeMillis()))
+    }
 }
 
-private fun convertTodayTimeStampToDateString(time: Long, dateFormat: SimpleDateFormat): String {
-    return dateFormat.format(Date(time))
-}
 
-private fun convertStringToDate(date: String, dateFormat: SimpleDateFormat): Date {
-    return dateFormat.parse(date) as Date
+private fun convertStringToDate(date: String?, dateFormat: SimpleDateFormat): Date? {
+    if (date.isNullOrBlank()) {
+        return null
+    }
+
+    return try {
+        dateFormat.parse(date) as Date
+    } catch (e: ParseException) {
+        null
+    }
+}
+@SuppressLint("SimpleDateFormat")
+fun getTodayDate(dateFormat : SimpleDateFormat) : Date? {
+    val todayString = dateFormat.format(Date())
+    return dateFormat.parse(todayString)
 }

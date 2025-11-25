@@ -154,7 +154,7 @@ class WalletViewModels : ViewModel() {
     }
 
     fun setTransactionInfoItems(newItems: MutableList<TransactionInfo>) {
-        newItems.sort()
-        _transactionInfoItems.value = newItems
+        val sortedCopy = newItems.toMutableList().apply { sort() }
+        _transactionInfoItems.value = sortedCopy
     }
 }

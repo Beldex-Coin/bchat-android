@@ -548,6 +548,17 @@
           "description":"Minor bug fixes"
         }
       ]
+    },
+    {
+      "title": "2.9.0",
+      "descriptions": [
+        {
+          "description":"Update for Hardfork 20"
+        },
+        {
+          "description":"Minor Bug fixes"
+        }
+      ]
     }
   ]
 }

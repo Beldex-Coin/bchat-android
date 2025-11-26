@@ -122,8 +122,10 @@ fun LinkYourBNSDialog(
             }
         }
 
-        fun verifyBNSName(bnsName:String):Boolean{
-            return bnsName.isNotEmpty() && bnsName.length > 4 && bnsName.substring(bnsName.length-4) == ".bdx"
+        fun verifyBNSName(bnsName: String): Boolean {
+            return bnsName.isNotEmpty() &&
+                    bnsName.length > 4 &&
+                    (bnsName.endsWith(".bdx") || bnsName.endsWith(".BDX"))
         }
 
         Column(
@@ -198,7 +200,7 @@ fun LinkYourBNSDialog(
                     )
                 },
                 onValueChange = {
-                    bnsName = it.trim().lowercase(Locale.US)
+                    bnsName = it
                     isVerified = false
                     showErrorMessage = false
                 },
@@ -286,7 +288,7 @@ fun LinkYourBNSDialog(
                         if (CheckOnline.isOnline(context)) {
                             if (!isVerified) {
                                 if (verifyBNSName(bnsName) && state.publicKey.isNotEmpty()) {
-                                    verifyBNS(bnsName, state.publicKey, context, result={
+                                    verifyBNS(bnsName.trim().lowercase(Locale.US), state.publicKey, context, result={
                                         isVerified=it
                                         showErrorMessage=!it
                                     })

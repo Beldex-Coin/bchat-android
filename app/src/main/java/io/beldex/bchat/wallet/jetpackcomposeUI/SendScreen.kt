@@ -222,7 +222,12 @@ fun SendScreen(
                     WalletCallbackType.SendTransactionFailed -> {
                         val pendingTransaction = it.serializable<PendingTransaction>("data")
                         val tag = it.getStringExtra("tag")
-                        transactionSentFailedError = pendingTransaction?.errorString.toString()
+
+                        transactionSentFailedError = if (pendingTransaction?.errorString.toString().contains("Failed to get output distribution")) {
+                            "Failed to get output distribution"
+                        } else {
+                            pendingTransaction?.errorString.toString()
+                        }
                         //Important
                         //getWallet()!!.disposePendingTransaction()
                         showTransactionSentFailedPopup = true
@@ -633,6 +638,8 @@ fun SendScreen(
             showTransactionLoading=false
             TransactionConfirmPopUp(onDismiss={
                 showTransactionConfirmPopup=false
+                pendingTx = null
+                pendingTransactions = null
             }, pendingTransactions!!, txData, onClick={ send() })
         }
         if (showTransactionSentPopup) {

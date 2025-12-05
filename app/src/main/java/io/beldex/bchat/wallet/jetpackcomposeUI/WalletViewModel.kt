@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.beldex.bchat.model.TransactionInfo
-import java.util.Objects
 
 class WalletViewModels : ViewModel() {
 
@@ -155,8 +154,7 @@ class WalletViewModels : ViewModel() {
     }
 
     fun setTransactionInfoItems(newItems: MutableList<TransactionInfo>) {
-        newItems.removeIf(Objects::isNull)
-        newItems.sort()
-        _transactionInfoItems.value = newItems
+        val sortedCopy = newItems.toMutableList().apply { sort() }
+        _transactionInfoItems.value = sortedCopy
     }
 }

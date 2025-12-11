@@ -112,6 +112,7 @@ public class RestoreHeight {
         blockheight.put("2025-09-01", 4659510L);
         blockheight.put("2025-10-01", 4745910L);
         blockheight.put("2025-11-01", 4835190L);
+        blockheight.put("2025-12-01", 4921600L);
     }
 
     public long getHeight(String date) {
@@ -155,7 +156,7 @@ public class RestoreHeight {
             while (prevBc == null) {
                 cal.add(Calendar.MONTH, -1);
                 if (cal.get(Calendar.YEAR) < 2019) {
-                    throw new IllegalStateException("endless loop looking for blockheight");
+                    return 0;
                 }
                 prevTime = cal.getTimeInMillis();
                 prevDate = formatter.format(prevTime);

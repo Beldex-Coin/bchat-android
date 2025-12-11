@@ -13,7 +13,7 @@ class SplashScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        nextPage = intent.extras?.getBoolean("nextPage")!!
+        nextPage = intent.getBooleanExtra("nextPage", false)
         if (nextPage) {
             startActivity(Intent(this, PasswordActivity::class.java).apply {
                 putExtra("action", PinCodeAction.VerifyPinCode.action)

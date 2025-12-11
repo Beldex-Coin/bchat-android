@@ -28,8 +28,12 @@ class ConversationNotificationDebouncer(private val context: Context) {
     }
 
     private fun publish() {
+        if (threadIDs.isEmpty()) return
         for (threadID in threadIDs.toList()) {
-            context.contentResolver.notifyChange(DatabaseContentProviders.Conversation.getUriForThread(threadID), null)
+            context.contentResolver.notifyChange(
+                DatabaseContentProviders.Conversation.getUriForThread(threadID),
+                null
+            )
         }
         threadIDs.clear()
     }

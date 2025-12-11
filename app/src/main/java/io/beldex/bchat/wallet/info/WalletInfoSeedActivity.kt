@@ -44,9 +44,9 @@ class WalletInfoSeedActivity : BaseActionBarActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setUpActionBarBchatLogo("Seed", false)
         binding = ActivityWalletInfoSeedBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setUpActionBarBchatLogo("Seed", false)
         with(binding)
         {
             walletInfoSeedContinueButton.setTextColor(

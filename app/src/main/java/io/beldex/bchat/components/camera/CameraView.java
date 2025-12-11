@@ -238,11 +238,24 @@ public class CameraView extends ViewGroup {
               if (!CameraView.this.camera.isPresent()) {
                 return;
               }
+              Camera.Parameters params = null;
+              try {
+                params = camera.getParameters();
+              } catch (RuntimeException e) {
+                Log.w("CameraView", "getParameters failed: " + e.getMessage());
+              }
 
-              final int  rotation    = getCameraPictureOrientation();
-              final Size previewSize = camera.getParameters().getPreviewSize();
-              if (data != null) {
-                previewCallback.onPreviewFrame(new PreviewFrame(data, previewSize.width, previewSize.height, rotation));
+              if (params == null) {
+                return;
+              }
+
+              final int rotation = getCameraPictureOrientation();
+              final Size previewSize = params.getPreviewSize();
+
+              if (data != null && previewSize != null) {
+                previewCallback.onPreviewFrame(
+                        new PreviewFrame(data, previewSize.width, previewSize.height, rotation)
+                );
               }
             }
           });

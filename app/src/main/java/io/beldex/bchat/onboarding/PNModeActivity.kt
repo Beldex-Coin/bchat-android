@@ -34,10 +34,10 @@ class PNModeActivity : BaseActionBarActivity() {
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setUpActionBarBchatLogo("",true)
         TextSecurePreferences.setHasSeenWelcomeScreen(this, true)
         binding = ActivityPnModeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setUpActionBarBchatLogo("",true)
         with(binding) {
             contentView.disableClipping()
             fcmOptionView.setOnClickListener { toggleFCM() }

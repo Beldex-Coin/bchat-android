@@ -26,7 +26,7 @@ import io.beldex.bchat.crypto.IdentityKeyUtil
 import javax.inject.Inject
 private const val TAG = "PushHandler"
 class PushReceiver @Inject constructor(@ApplicationContext val context: Context) {
-    private val sodium = LazySodiumAndroid(SodiumAndroid())
+    private val sodium by lazy { LazySodiumAndroid(SodiumAndroid()) }
     private val json = Json { ignoreUnknownKeys = true }
     fun onPush(dataMap: Map<String, String>?) {
         onPush(dataMap?.asByteArray())

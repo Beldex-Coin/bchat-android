@@ -11,9 +11,9 @@ class AboutActivity : BaseActionBarActivity() {
     private lateinit var binding:ActivityAboutBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setUpActionBarBchatLogo("About",false)
         binding = ActivityAboutBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setUpActionBarBchatLogo("About",false)
         with(binding){
             aboutPageContent.text = loadFileContents(this@AboutActivity)
         }

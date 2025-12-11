@@ -120,8 +120,6 @@ class RegisterActivity : BaseActionBarActivity() {
         val displayedName : String=displayName?.substring(0, 1)?.uppercase(Locale.ROOT) + displayName?.substring(1)?.lowercase(Locale.ROOT)
         binding.titleContentTextView.text= "Hey $displayedName, welcome to BChat!"
 
-        Log.d("--> wallet path ", walletPath!!)
-        Log.d("--> wallet localPassword ", localPassword!!)
         showDetails()
 
 

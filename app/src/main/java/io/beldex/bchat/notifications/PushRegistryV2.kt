@@ -33,7 +33,7 @@ private val TAG = PushRegistryV2::class.java.name
 private const val maxRetryCount = 4
 @Singleton
 class PushRegistryV2 @Inject constructor(private val pushReceiver: PushReceiver) {
-    private val sodium = LazySodiumAndroid(SodiumAndroid())
+    private val sodium by lazy { LazySodiumAndroid(SodiumAndroid()) }
     fun register(
         device: Device,
         token: String,

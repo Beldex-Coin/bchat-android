@@ -42,9 +42,9 @@ class CreatePasswordActivity : BaseActionBarActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setUpActionBarBchatLogo("Create Password", true)
         binding = ActivityCreatePasswordBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setUpActionBarBchatLogo("Create Password", true)
         callPage = intent.extras!!.getInt("callPage")
         with(binding)
         {

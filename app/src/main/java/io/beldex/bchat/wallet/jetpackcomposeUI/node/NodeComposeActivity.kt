@@ -81,7 +81,6 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.changeDaemon
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getNodeIsMainnet
@@ -146,7 +145,7 @@ class NodeComposeActivity : ComponentActivity() {
                         .padding(WindowInsets.systemBars.asPaddingValues())
                 ) {
                     Scaffold(
-                            containerColor=MaterialTheme.colorScheme.primary,
+                        containerColor=MaterialTheme.colorScheme.primary,
                     ) {
                         val lifecycleOwner=LocalLifecycleOwner.current
                         pingSelectedNode(context, nodeViewModel)
@@ -182,7 +181,7 @@ fun NodeScreen(test:Boolean = false) {
 
     val nodeViewModel: NodeViewModel=hiltViewModel()
     val context=LocalContext.current
-    val lifecycleOwner=LocalLifecycleOwner.current
+    val lifecycleOwner= androidx.lifecycle.compose.LocalLifecycleOwner.current
 
     var nodesValue by remember {
         mutableStateOf("")
@@ -204,13 +203,44 @@ fun NodeScreen(test:Boolean = false) {
         mutableStateOf(test)
     }
 
+    val favouriteNodes = nodeViewModel.favouritesNodes.value
+
     var data by rememberSaveable(Unit) {
-        mutableStateOf(nodeViewModel.favouritesNodes.value)
+        mutableStateOf(favouriteNodes)
+    }
+
+    val defaultAddNode = NodeInfo()
+    var addedNodeStatus by rememberSaveable(Unit) {
+        mutableStateOf(defaultAddNode)
+    }
+
+    fun setFavouriteNode(i: Int) {
+        val nodeInfo = data?.toMutableList()!![i]
+        nodeInfo.isFavourite = true
+        // Need to check
+        nodeViewModel.setFavouriteNodes(data, context)
+        AsyncTask.execute {
+            nodeViewModel.setNode(nodeInfo, true, context)
+            nodeInfo.isSelecting = true
+            changeDaemon(context, true)
+        }
     }
 
     nodeViewModel.favouritesNodes.observe(lifecycleOwner) { nodes ->
         if (nodes != null) {
-            data=nodes
+            data=nodes.toMutableSet()
+            if(!addedNodeStatus.name.isNullOrEmpty()) {
+                val fav = nodes.toList() ?: emptyList()
+                for (i in nodes.indices) {
+                    if (fav[i].name == addedNodeStatus.name) {
+                        setFavouriteNode(i)
+                    }
+                }
+                addedNodeStatus = NodeInfo()
+            }
+
+        } else {
+            addedNodeStatus = NodeInfo()
         }
 
     }
@@ -245,7 +275,7 @@ fun NodeScreen(test:Boolean = false) {
     var isVisible by remember { mutableStateOf(true) }
 
     var selectedItemIndex by remember {
-        mutableIntStateOf(-1)
+        mutableIntStateOf(0)
     }
 
     val configuration=LocalConfiguration.current
@@ -298,17 +328,19 @@ fun NodeScreen(test:Boolean = false) {
 
         @Deprecated("Deprecated in Java")
         @SuppressLint("WrongThread")
-        override fun doInBackground(vararg params: Int?): Boolean? {
+        override fun doInBackground(vararg params: Int?): Boolean {
             if (params[0] == restoreDefault) {
                 // true = restore defaults
-                nodeViewModel.favouritesNodes.value?.clear()
+                val defaultNodes = nodeViewModel.favouritesNodes.value
+                defaultNodes?.clear()
                 for (node in getNodes(context)) {
                     val nodeInfo=NodeInfo.fromString(node)
                     if (nodeInfo != null) {
                         nodeInfo.isFavourite=true
-                        nodeViewModel.favouritesNodes.value?.add(nodeInfo)
+                        defaultNodes?.add(nodeInfo)
                     }
                 }
+                defaultNodes?.let { nodeViewModel.setDefaultNodes(it) }
                 nodeViewModel.favouritesNodes.value?.toMutableList()?.random()?.isFavourite=true
                 nodeViewModel.setNode(nodeViewModel.favouritesNodes.value?.toMutableList()?.random(), true, context)
                 nodeViewModel.favouritesNodes.value?.toMutableList()?.random()?.isSelecting=true
@@ -424,14 +456,23 @@ fun NodeScreen(test:Boolean = false) {
         AddNodePopUp(onDismiss={
             showAddNode=false
             showAddNodeEdit=false
-            selectedItemIndex=-1
-        }, nodeInfo=NodeInfo(), nodeViewModel.favouritesNodes.value!!, showAddNodeEdit, selectedItemIndex)
+            selectedItemIndex=0
+        }, nodeInfo=NodeInfo(), nodeViewModel.favouritesNodes.value!!, showAddNodeEdit, selectedItemIndex, nodeViewModel,
+            addNode = {nodeInfo->
+                nodeInfo.isFavourite=true
+                //Need to add list value
+                nodeViewModel.updateNodeList(nodeInfo)
+                nodeViewModel.saveNodes(nodeViewModel.favouritesNodes.value!!)
+                addedNodeStatus = nodeInfo
+            })
     }
 
     if (showChangeNodePopup) {
         SwitchNodePopUp(onDismiss={
             showChangeNodePopup=false
-        }, nodeViewModel, nodeViewModel.favouritesNodes.value?.toMutableList()!![selectedItemIndex])
+        }, onChangeNode = {
+            setFavouriteNode(selectedItemIndex)
+        })
     }
 
     if (showRefreshNodePopup) {
@@ -465,22 +506,25 @@ fun NodeScreen(test:Boolean = false) {
             ).show()
         }
     }
-    fun getNodeBaseUrl(fullUrl: String): String {
-        return fullUrl.substringBefore("?")
+
+    fun getLastNodePart(nodeURL: String?): String? {
+        if (nodeURL.isNullOrBlank()) return null
+        val trimmedNode = nodeURL.substringBefore("?")
+        return trimmedNode.substringAfterLast("/")
     }
 
-        Column(modifier=Modifier
-            .fillMaxSize()
-            .padding(vertical=10.dp)) {
+    Column(modifier=Modifier
+        .fillMaxSize()
+        .padding(vertical = 10.dp)) {
 
 
-            Column(modifier =Modifier
-                .fillMaxWidth()
-                .weight(1f)) {
+        Column(modifier =Modifier
+            .fillMaxWidth()
+            .weight(1f)) {
 
 
             AnimatedContent(targetState=isVisible, label="NodeList",
-                    modifier=Modifier)
+                modifier=Modifier)
             {
                 if (it) {
                     LazyColumn(verticalArrangement=Arrangement.spacedBy(16.dp), horizontalAlignment=Alignment.CenterHorizontally
@@ -491,29 +535,65 @@ fun NodeScreen(test:Boolean = false) {
                                 colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.editTextBackground),
                                 border=BorderStroke(
                                     width=2.dp,
-                                    color=if (getNodeBaseUrl(item.toString()) == nodeViewModel.selectedNodeId) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.editTextBackground
+                                    color=if (getLastNodePart(item.toString()) == getLastNodePart(nodeViewModel.selectedNodeId.toString())) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.editTextBackground
                                 ),
                                 shape=RoundedCornerShape(12.dp),
                                 elevation=CardDefaults.cardElevation(defaultElevation=0.dp),
                                 modifier=Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal=16.dp)
+                                    .padding(horizontal = 16.dp)
                                     .combinedClickable(
-                                        onClick={
-                                            selectedItemIndex=index
-                                            showChangeNodePopup=true
-
+                                        onClick = {
+                                            if (item.hostAddress.isEmpty()) {
+                                                Toast.makeText(
+                                                    context,
+                                                    context.getString(R.string.please_connect_to_other_node),
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            } else {
+                                                selectedItemIndex = index
+                                                showChangeNodePopup = true
+                                            }
                                         },
-                                        onLongClick={
-                                            selectedItemIndex=index
-                                            showAddNodeEdit=true
-                                            showAddNode=true
+                                        onLongClick = {
+                                            selectedItemIndex = index
+                                            showAddNodeEdit = true
+                                            showAddNode = true
 
                                         },
                                     )
                             ) {
                                 nodeName=item.name
                                 nodeAddress=item.address
+
+                                if (item.isTested) {
+                                    if (item.isValid) {
+                                        errorAction=false
+                                        //IMPORTANT
+                                        //Helper.showTimeDifference(nodeAddress., item.timestamp)
+                                        // need to update node status image
+                                        /*nodeStatusView_Connect.setVisibility(View.VISIBLE)
+                                    nodeStatusView_Error.setVisibility(View.INVISIBLE)*/
+                                    } else {
+                                        nodeAddress=
+                                            getResponseErrorText(context, item.responseCode)
+                                        errorAction=true
+                                        // need to update color for address and status image
+                                        /*nodeAddress.setTextColor(ThemeHelper.getThemedColor(context, R.attr.colorError))
+                                     nodeStatusView_Error.setVisibility(View.VISIBLE)
+                                     nodeStatusView_Connect.setVisibility(View.VISIBLE)*/
+                                    }
+                                } else {
+                                    if(item.hostAddress.isEmpty()) {
+                                        nodeAddress=
+                                            getResponseErrorText(context, item.responseCode)
+                                        errorAction=true
+                                    } else {
+                                        nodeAddress=context.resources.getString(
+                                            R.string.node_testing, item.hostAddress
+                                        )
+                                    }
+                                }
 
                                 Row(
                                     verticalAlignment=Alignment.CenterVertically,
@@ -532,35 +612,13 @@ fun NodeScreen(test:Boolean = false) {
                                         horizontalAlignment=Alignment.Start,
                                         verticalArrangement=Arrangement.Center,
                                         modifier=Modifier
-                                            .padding(vertical=10.dp, horizontal=20.dp)
+                                            .padding(vertical = 10.dp, horizontal = 20.dp)
                                             .weight(0.7f)
                                     ) {
-                                        if (item.isTested) {
-                                            if (item.isValid) {
-                                                errorAction=false
-                                                //IMPORTANT
-                                                //Helper.showTimeDifference(nodeAddress., item.timestamp)
-                                                // need to update node status image
-                                                /*nodeStatusView_Connect.setVisibility(View.VISIBLE)
-                                            nodeStatusView_Error.setVisibility(View.INVISIBLE)*/
-                                            } else {
-                                                nodeAddress=
-                                                    getResponseErrorText(context, item.responseCode)
-                                                errorAction=true
-                                                // need to update color for address and status image
-                                                /*nodeAddress.setTextColor(ThemeHelper.getThemedColor(context, R.attr.colorError))
-                                             nodeStatusView_Error.setVisibility(View.VISIBLE)
-                                             nodeStatusView_Connect.setVisibility(View.VISIBLE)*/
-                                            }
-                                        } else {
-                                            nodeAddress=context.resources.getString(
-                                                R.string.node_testing, item.hostAddress
-                                            )
-                                        }
 
                                         Text(
                                             text=nodeName, style=BChatTypography.titleMedium.copy(
-                                                color=if (item.isSelected) MaterialTheme.appColors.textColor else if (errorAction) MaterialTheme.appColors.errorMessageColor else MaterialTheme.appColors.primaryButtonColor,
+                                                color=if (getLastNodePart(item.toString()) == getLastNodePart(nodeViewModel.selectedNodeId.toString())) MaterialTheme.appColors.textColor else if (errorAction) MaterialTheme.appColors.errorMessageColor else MaterialTheme.appColors.primaryButtonColor,
                                                 fontSize=fontSize,
                                                 fontWeight=FontWeight(600)
                                             )
@@ -580,36 +638,36 @@ fun NodeScreen(test:Boolean = false) {
                 }
             }
         }
-            Column(
+        Column(
 
-                verticalArrangement=Arrangement.Bottom, horizontalAlignment=Alignment.CenterHorizontally, modifier=Modifier.fillMaxWidth()) {
+            verticalArrangement=Arrangement.Bottom, horizontalAlignment=Alignment.CenterHorizontally, modifier=Modifier.fillMaxWidth()) {
 
-                Row(modifier=Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)) {
-                    Button(onClick={
-                        showRefreshNodePopup=true
-                    }, colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.searchBackground),
-                        modifier=Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        Text(text="Refresh", style=MaterialTheme.typography.bodyMedium.copy(color=MaterialTheme.appColors.secondaryContentColor, fontWeight=FontWeight(400), fontSize = 14.sp), modifier=Modifier.padding(10.dp))
-                        Icon(painter=painterResource(id=R.drawable.ic_refresh), contentDescription="Refresh", modifier=Modifier, tint=MaterialTheme.appColors.secondaryContentColor)
-                    }
+            Row(modifier=Modifier
+                .fillMaxWidth()
+                .padding(16.dp)) {
+                Button(onClick={
+                    showRefreshNodePopup=true
+                }, colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.searchBackground),
+                    modifier=Modifier.weight(1f),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(text="Refresh", style=MaterialTheme.typography.bodyMedium.copy(color=MaterialTheme.appColors.secondaryContentColor, fontWeight=FontWeight(400), fontSize = 14.sp), modifier=Modifier.padding(10.dp))
+                    Icon(painter=painterResource(id=R.drawable.ic_refresh), contentDescription="Refresh", modifier=Modifier, tint=MaterialTheme.appColors.secondaryContentColor)
+                }
 
-                    Spacer(modifier=Modifier.width(16.dp))
+                Spacer(modifier=Modifier.width(16.dp))
 
-                    Button(onClick={
-                        showAddNode=true
-                    }, colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.primaryButtonColor),
-                        modifier=Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        Text(text=stringResource(id=R.string.node_fab_add), style=MaterialTheme.typography.bodyMedium.copy(color=Color.White, fontWeight=FontWeight(400), fontSize = 14.sp), modifier=Modifier.padding(10.dp))
-                    }
+                Button(onClick={
+                    showAddNode=true
+                }, colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.primaryButtonColor),
+                    modifier=Modifier.weight(1f),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(text=stringResource(id=R.string.node_fab_add), style=MaterialTheme.typography.bodyMedium.copy(color=Color.White, fontWeight=FontWeight(400), fontSize = 14.sp), modifier=Modifier.padding(10.dp))
                 }
             }
         }
+    }
 }
 
 @Composable
@@ -674,9 +732,7 @@ fun RefreshNodePopup(onDismiss: () -> Unit,onCallRefresh: () -> Unit) {
 
                     Button(
                         onClick={
-                            println("refresh node in call onclick function")
-                           onCallRefresh()
-                            println("refresh node in call onclick function 1")
+                            onCallRefresh()
                         },
                         colors=ButtonDefaults.buttonColors(
                             containerColor=MaterialTheme.appColors.primaryButtonColor
@@ -705,12 +761,18 @@ fun RefreshNodePopup(onDismiss: () -> Unit,onCallRefresh: () -> Unit) {
 
 
 @Composable
-fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet<NodeInfo>, showAddNodeEdit: Boolean, selectedIndex: Int) {
+fun AddNodePopUp(
+    onDismiss: () -> Unit,
+    nodeInfo: NodeInfo,
+    nodeList: MutableSet<NodeInfo>,
+    showAddNodeEdit: Boolean,
+    selectedIndex: Int,
+    nodeViewModel: NodeViewModel,
+    addNode: (nodeInfo: NodeInfo) -> Unit
+) {
 
     val nodeBackup: NodeInfo?=null
     val context=LocalContext.current
-    val nodeViewModel: NodeViewModel=viewModel()
-
 
     var nodeAddress by remember {
         mutableStateOf(if (showAddNodeEdit) nodeList.toList()[selectedIndex].name else "")
@@ -879,10 +941,7 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
         if (applyChanges()) {
             onDismiss()
             if (nodeBackup == null) { // this is a (FAB) new node
-                nodeInfo.isFavourite=true
-                //Need to add list value
-                nodeViewModel.favouritesNodes.value!!.add(nodeInfo)
-                nodeViewModel.saveNodes(nodeViewModel.favouritesNodes.value!!)
+                addNode(nodeInfo)
             }
             shutdown=true
             asyncTestNode()
@@ -912,132 +971,132 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
     ) {
 
         OutlinedCard(
-                colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.dialogBackground),
-                elevation=CardDefaults.cardElevation(defaultElevation=4.dp)) {
+            colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.dialogBackground),
+            elevation=CardDefaults.cardElevation(defaultElevation=4.dp)) {
             Column(verticalArrangement=Arrangement.Center, modifier=Modifier
                 .fillMaxWidth()
                 .padding(10.dp)) {
 
                 Text(text= stringResource(id = R.string.node_fab_add), modifier=Modifier
                     .fillMaxWidth()
-                    .padding(top=10.dp, bottom=5.dp, start=10.dp),
-                        style=MaterialTheme.typography.bodyLarge.copy(
-                                fontSize=16.sp,
-                                fontWeight=FontWeight(700),
-                                color=MaterialTheme.appColors.secondaryContentColor),
-                        textAlign=TextAlign.Center)
+                    .padding(top = 10.dp, bottom = 5.dp, start = 10.dp),
+                    style=MaterialTheme.typography.bodyLarge.copy(
+                        fontSize=16.sp,
+                        fontWeight=FontWeight(700),
+                        color=MaterialTheme.appColors.secondaryContentColor),
+                    textAlign=TextAlign.Center)
 
                 TextField(
-                        value=nodeAddress,
-                        placeholder={
-                            Text(text=stringResource(R.string.node_address),
-                                    style=MaterialTheme.typography.bodyMedium,
-                                    color=MaterialTheme.appColors.addNodeHintColor)
-                        },
-                        onValueChange={
-                            nodeAddress=it
-                            nodeStatusSuccessAction=false
-                            nodeStatusErrorAction=false
-                        },
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next
-                        ),
-                        colors=TextFieldDefaults.colors(
-                                unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
-                                focusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
-                                focusedIndicatorColor=Color.Transparent,
-                                unfocusedIndicatorColor=Color.Transparent,
-                                disabledIndicatorColor=Color.Transparent,
-                                selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
-                                cursorColor=MaterialTheme.appColors.textColor),
-                        textStyle=TextStyle(
-                                color=MaterialTheme.appColors.textColor,
-                                fontSize=13.sp,
-                                fontWeight=FontWeight(400)),
-                        modifier=Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp)
-                            .border(
-                                1.dp,
-                                MaterialTheme.appColors.textFiledBorderColor,
-                                shape=RoundedCornerShape(12.dp)
-                            )
+                    value=nodeAddress,
+                    placeholder={
+                        Text(text=stringResource(R.string.node_address),
+                            style=MaterialTheme.typography.bodyMedium,
+                            color=MaterialTheme.appColors.addNodeHintColor)
+                    },
+                    onValueChange={
+                        nodeAddress=it
+                        nodeStatusSuccessAction=false
+                        nodeStatusErrorAction=false
+                    },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    ),
+                    colors=TextFieldDefaults.colors(
+                        unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
+                        focusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
+                        focusedIndicatorColor=Color.Transparent,
+                        unfocusedIndicatorColor=Color.Transparent,
+                        disabledIndicatorColor=Color.Transparent,
+                        selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
+                        cursorColor=MaterialTheme.appColors.textColor),
+                    textStyle=TextStyle(
+                        color=MaterialTheme.appColors.textColor,
+                        fontSize=13.sp,
+                        fontWeight=FontWeight(400)),
+                    modifier=Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                        .border(
+                            1.dp,
+                            MaterialTheme.appColors.textFiledBorderColor,
+                            shape = RoundedCornerShape(12.dp)
+                        )
                 )
                 if (nodeAddressErrorAction) {
                     Text(
-                            text=nodeAddressErrorText,
-                            modifier=Modifier
-                                    .padding(start=20.dp),
-                            style=MaterialTheme.typography.bodyLarge.copy(
-                                    color=MaterialTheme.appColors.errorMessageColor,
-                                    fontSize=13.sp,
-                                    fontWeight=FontWeight(400),
-                            ),
-                            textAlign=TextAlign.Start
+                        text=nodeAddressErrorText,
+                        modifier=Modifier
+                            .padding(start=20.dp),
+                        style=MaterialTheme.typography.bodyLarge.copy(
+                            color=MaterialTheme.appColors.errorMessageColor,
+                            fontSize=13.sp,
+                            fontWeight=FontWeight(400),
+                        ),
+                        textAlign=TextAlign.Start
                     )
                 }
 
                 TextField(
-                        value=nodePort,
-                        placeholder={
-                            Text(text=stringResource(R.string.node_port),
-                                    style=MaterialTheme.typography.bodyMedium,
-                                    color=MaterialTheme.appColors.addNodeHintColor)
-                        },
-                        onValueChange={
-                            if(it.isDigitsOnly()) {
-                                nodePort = it
-                                nodeStatusSuccessAction=false
-                                nodeStatusErrorAction=false
-                            }
-                        },
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Done,
+                    value=nodePort,
+                    placeholder={
+                        Text(text=stringResource(R.string.node_port),
+                            style=MaterialTheme.typography.bodyMedium,
+                            color=MaterialTheme.appColors.addNodeHintColor)
+                    },
+                    onValueChange={
+                        if(it.isDigitsOnly()) {
+                            nodePort = it
+                            nodeStatusSuccessAction=false
+                            nodeStatusErrorAction=false
+                        }
+                    },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done,
+                    ),
+                    colors=TextFieldDefaults.colors(
+                        unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
+                        focusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
+                        focusedIndicatorColor=Color.Transparent,
+                        unfocusedIndicatorColor=Color.Transparent,
+                        disabledIndicatorColor=Color.Transparent,
+                        selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
+                        cursorColor=MaterialTheme.appColors.textColor),
+                    textStyle=TextStyle(
+                        color=MaterialTheme.appColors.textColor,
+                        fontSize=13.sp,
+                        fontWeight=FontWeight(400)),
+                    modifier=Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                        .border(
+                            1.dp,
+                            MaterialTheme.appColors.textFiledBorderColor,
+                            shape = RoundedCornerShape(12.dp)
                         ),
-                        colors=TextFieldDefaults.colors(
-                                unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
-                                focusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
-                                focusedIndicatorColor=Color.Transparent,
-                                unfocusedIndicatorColor=Color.Transparent,
-                                disabledIndicatorColor=Color.Transparent,
-                                selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
-                                cursorColor=MaterialTheme.appColors.textColor),
-                        textStyle=TextStyle(
-                                color=MaterialTheme.appColors.textColor,
-                                fontSize=13.sp,
-                                fontWeight=FontWeight(400)),
-                        modifier=Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp)
-                            .border(
-                                1.dp,
-                                MaterialTheme.appColors.textFiledBorderColor,
-                                shape=RoundedCornerShape(12.dp)
-                            ),
                 )
                 if (nodePortErrorAction) {
                     Text(
-                            text=nodePortErrorText,
-                            modifier=Modifier
-                                    .padding(start=20.dp),
-                            style=MaterialTheme.typography.bodyLarge.copy(
-                                    color=MaterialTheme.appColors.errorMessageColor,
-                                    fontSize=13.sp,
-                                    fontWeight=FontWeight(400),
-                            ),
-                            textAlign=TextAlign.Start
+                        text=nodePortErrorText,
+                        modifier=Modifier
+                            .padding(start=20.dp),
+                        style=MaterialTheme.typography.bodyLarge.copy(
+                            color=MaterialTheme.appColors.errorMessageColor,
+                            fontSize=13.sp,
+                            fontWeight=FontWeight(400),
+                        ),
+                        textAlign=TextAlign.Start
                     )
                 }
 
 
                 TextField(value=nodeName, placeholder={
                     Text(text=stringResource(R.string.node_name),
-                            style=MaterialTheme.typography.bodyMedium,
-                            color=MaterialTheme.appColors.addNodeHintColor)
+                        style=MaterialTheme.typography.bodyMedium,
+                        color=MaterialTheme.appColors.addNodeHintColor)
                 }, onValueChange={
                     nodeName=it
 
@@ -1047,28 +1106,28 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                     .border(
                         1.dp,
                         MaterialTheme.appColors.textFiledBorderColor,
-                        shape=RoundedCornerShape(12.dp)
+                        shape = RoundedCornerShape(12.dp)
                     ),
-                        singleLine = true,
-                        colors=TextFieldDefaults.colors(
-                                unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
-                                focusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
-                                focusedIndicatorColor=Color.Transparent,
-                                unfocusedIndicatorColor=Color.Transparent,
-                                disabledIndicatorColor=Color.Transparent,
-                                selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
-                                cursorColor=MaterialTheme.appColors.textColor),
-                        textStyle=TextStyle(
-                                color=MaterialTheme.appColors.primaryButtonColor,
-                                fontSize=13.sp,
-                                fontWeight=FontWeight(400))
+                    singleLine = true,
+                    colors=TextFieldDefaults.colors(
+                        unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
+                        focusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
+                        focusedIndicatorColor=Color.Transparent,
+                        unfocusedIndicatorColor=Color.Transparent,
+                        disabledIndicatorColor=Color.Transparent,
+                        selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
+                        cursorColor=MaterialTheme.appColors.textColor),
+                    textStyle=TextStyle(
+                        color=MaterialTheme.appColors.primaryButtonColor,
+                        fontSize=13.sp,
+                        fontWeight=FontWeight(400))
 
                 )
 
                 TextField(value=nodeUserName, placeholder={
                     Text(text=stringResource(R.string.node_login),
-                            style=MaterialTheme.typography.bodyMedium,
-                            color=MaterialTheme.appColors.addNodeHintColor)
+                        style=MaterialTheme.typography.bodyMedium,
+                        color=MaterialTheme.appColors.addNodeHintColor)
                 }, onValueChange={
                     nodeUserName=it
 
@@ -1078,28 +1137,28 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                     .border(
                         1.dp,
                         MaterialTheme.appColors.textFiledBorderColor,
-                        shape=RoundedCornerShape(12.dp)
+                        shape = RoundedCornerShape(12.dp)
                     ),
-                        singleLine = true,
-                        colors=TextFieldDefaults.colors(
-                                unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
-                                focusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
-                                focusedIndicatorColor=Color.Transparent,
-                                unfocusedIndicatorColor=Color.Transparent,
-                                disabledIndicatorColor=Color.Transparent,
-                                selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
-                                cursorColor=MaterialTheme.appColors.textColor),
-                        textStyle=TextStyle(
-                                color=MaterialTheme.appColors.textColor,
-                                fontSize=13.sp,
-                                fontWeight=FontWeight(400))
+                    singleLine = true,
+                    colors=TextFieldDefaults.colors(
+                        unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
+                        focusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
+                        focusedIndicatorColor=Color.Transparent,
+                        unfocusedIndicatorColor=Color.Transparent,
+                        disabledIndicatorColor=Color.Transparent,
+                        selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
+                        cursorColor=MaterialTheme.appColors.textColor),
+                    textStyle=TextStyle(
+                        color=MaterialTheme.appColors.textColor,
+                        fontSize=13.sp,
+                        fontWeight=FontWeight(400))
 
                 )
 
                 TextField(value=nodePassword, placeholder={
                     Text(text=stringResource(R.string.node_password),
-                            style=MaterialTheme.typography.bodyMedium,
-                            color=MaterialTheme.appColors.addNodeHintColor)
+                        style=MaterialTheme.typography.bodyMedium,
+                        color=MaterialTheme.appColors.addNodeHintColor)
                 }, onValueChange={
                     nodePassword=it
 
@@ -1109,107 +1168,105 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                     .border(
                         1.dp,
                         MaterialTheme.appColors.textFiledBorderColor,
-                        shape=RoundedCornerShape(12.dp)
+                        shape = RoundedCornerShape(12.dp)
                     ),
-                        singleLine = true,
-                        colors=TextFieldDefaults.colors(
-                                unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
-                                focusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
-                                focusedIndicatorColor=Color.Transparent,
-                                unfocusedIndicatorColor=Color.Transparent,
-                                disabledIndicatorColor=Color.Transparent,
-                                selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
-                                cursorColor=MaterialTheme.appColors.textColor),
-                        textStyle=TextStyle(
-                                color=MaterialTheme.appColors.textColor,
-                                fontSize=13.sp,
-                                fontWeight=FontWeight(400))
+                    singleLine = true,
+                    colors=TextFieldDefaults.colors(
+                        unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
+                        focusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
+                        focusedIndicatorColor=Color.Transparent,
+                        unfocusedIndicatorColor=Color.Transparent,
+                        disabledIndicatorColor=Color.Transparent,
+                        selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
+                        cursorColor=MaterialTheme.appColors.textColor),
+                    textStyle=TextStyle(
+                        color=MaterialTheme.appColors.textColor,
+                        fontSize=13.sp,
+                        fontWeight=FontWeight(400))
 
                 )
 
                 Row(
-                        horizontalArrangement=Arrangement.Start,
-                        verticalAlignment=Alignment.CenterVertically,
-                        modifier=Modifier.align(Alignment.Start)
+                    horizontalArrangement=Arrangement.Start,
+                    verticalAlignment=Alignment.CenterVertically,
+                    modifier=Modifier.align(Alignment.Start)
 
                 ) {
-
-
                     Button(
-                            onClick={
-                                testNode()
-                                nodeStatusSuccessAction=false
-                                nodeStatusErrorAction=false
+                        onClick={
+                            testNode()
+                            nodeStatusSuccessAction=false
+                            nodeStatusErrorAction=false
 
-                            },
-                            colors=ButtonDefaults.buttonColors(
-                                    containerColor=MaterialTheme.appColors.secondaryButtonColor
-                            ),
-                            border=BorderStroke(
-                                    width=2.dp,
-                                    color=MaterialTheme.appColors.primaryButtonColor
-                            ),
-                            modifier=Modifier
-                                    .padding(horizontal=10.dp)
+                        },
+                        colors=ButtonDefaults.buttonColors(
+                            containerColor=MaterialTheme.appColors.secondaryButtonColor
+                        ),
+                        border=BorderStroke(
+                            width=2.dp,
+                            color=MaterialTheme.appColors.primaryButtonColor
+                        ),
+                        modifier=Modifier
+                            .padding(horizontal=10.dp)
                     ) {
                         Text(
-                                text=stringResource(id=R.string.test),
-                                style=MaterialTheme.typography.titleMedium.copy(
-                                        color= MaterialTheme.appColors.onMainContainerTextColor,
-                                        fontSize=14.sp,
-                                        fontWeight=FontWeight(400)
-                                ),
-                                modifier=Modifier.padding(horizontal=10.dp)
+                            text=stringResource(id=R.string.test),
+                            style=MaterialTheme.typography.titleMedium.copy(
+                                color= MaterialTheme.appColors.onMainContainerTextColor,
+                                fontSize=14.sp,
+                                fontWeight=FontWeight(400)
+                            ),
+                            modifier=Modifier.padding(horizontal=10.dp)
                         )
                     }
                     if(testProgressAction) {
                         CircularProgressIndicator(
-                                modifier=Modifier
-                                    .height(16.dp)
-                                    .width(16.dp),
-                                color=MaterialTheme.appColors.primaryButtonColor,
-                                strokeWidth=2.dp
+                            modifier=Modifier
+                                .height(16.dp)
+                                .width(16.dp),
+                            color=MaterialTheme.appColors.primaryButtonColor,
+                            strokeWidth=2.dp
                         )
                     }
                     if (nodeStatusSuccessAction) {
                         Text(text=nodeStatus, modifier=Modifier,
-                                style=MaterialTheme.typography.bodyLarge.copy(
-                                        fontSize=12.sp,
-                                        fontWeight=FontWeight(700),
-                                        color=MaterialTheme.appColors.primaryButtonColor),
-                                textAlign=TextAlign.Center
+                            style=MaterialTheme.typography.bodyLarge.copy(
+                                fontSize=12.sp,
+                                fontWeight=FontWeight(700),
+                                color=MaterialTheme.appColors.primaryButtonColor),
+                            textAlign=TextAlign.Center
                         )
 
                         Icon(
-                                painter=painterResource(id=R.drawable.ic_node_succcess),
-                                contentDescription="",
-                                tint=MaterialTheme.appColors.primaryButtonColor,
-                                modifier=Modifier
-                                        .padding(horizontal=5.dp))
+                            painter=painterResource(id=R.drawable.ic_node_succcess),
+                            contentDescription="",
+                            tint=MaterialTheme.appColors.primaryButtonColor,
+                            modifier=Modifier
+                                .padding(horizontal=5.dp))
                     }
                     if (nodeStatusErrorAction) {
                         Text(text=nodeStatus, modifier=Modifier,
-                                style=MaterialTheme.typography.bodyLarge.copy(
-                                        fontSize=12.sp,
-                                        fontWeight=FontWeight(700),
-                                        color=MaterialTheme.appColors.errorMessageColor),
-                                textAlign=TextAlign.Center
+                            style=MaterialTheme.typography.bodyLarge.copy(
+                                fontSize=12.sp,
+                                fontWeight=FontWeight(700),
+                                color=MaterialTheme.appColors.errorMessageColor),
+                            textAlign=TextAlign.Center
                         )
                         Icon(
-                                painter=painterResource(id=R.drawable.ic_connection_error),
-                                contentDescription="",
-                                tint=MaterialTheme.appColors.errorMessageColor,
-                                modifier=Modifier
-                                        .padding(horizontal=5.dp))
+                            painter=painterResource(id=R.drawable.ic_connection_error),
+                            contentDescription="",
+                            tint=MaterialTheme.appColors.errorMessageColor,
+                            modifier=Modifier
+                                .padding(horizontal=5.dp))
                     }
 
 
                 }
 
                 Row(
-                        modifier=Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
+                    modifier=Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
                 ) {
                     Button(
                         onClick={ onDismiss() },
@@ -1219,44 +1276,44 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                             contentColor = MaterialTheme.appColors.negativeGreenButtonText
                         ),
                         modifier=Modifier
-                                .weight(1f),
+                            .weight(1f),
                         border = BorderStroke(width = 0.5.dp, color = MaterialTheme.appColors.negativeGreenButtonBorder)
                     ) {
                         Text(
-                                text=stringResource(id=R.string.cancel),
-                                style=MaterialTheme.typography.bodyMedium.copy(
-                                    fontWeight = FontWeight(400),
-                                    fontSize = 14.sp,
-                                    color = MaterialTheme.appColors.negativeGreenButtonText
-                                ),
-                                modifier=Modifier.padding(10.dp)
+                            text=stringResource(id=R.string.cancel),
+                            style=MaterialTheme.typography.bodyMedium.copy(
+                                fontWeight = FontWeight(400),
+                                fontSize = 14.sp,
+                                color = MaterialTheme.appColors.negativeGreenButtonText
+                            ),
+                            modifier=Modifier.padding(10.dp)
                         )
                     }
 
                     Spacer(modifier=Modifier.width(16.dp))
 
                     Button(
-                         onClick={
-                             addNode()
-                         },
-                         enabled = nodeStatusSuccessAction,
-                         shape = RoundedCornerShape(12.dp),
-                         colors=ButtonDefaults.buttonColors(
-                             containerColor=MaterialTheme.appColors.primaryButtonColor,
-                             disabledContainerColor = MaterialTheme.colorScheme.primary,
-                             disabledContentColor = MaterialTheme.appColors.disableAddButtonContainer
-                         ),
-                         modifier=Modifier
-                                 .weight(1f)
+                        onClick={
+                            addNode()
+                        },
+                        enabled = nodeStatusSuccessAction,
+                        shape = RoundedCornerShape(12.dp),
+                        colors=ButtonDefaults.buttonColors(
+                            containerColor=MaterialTheme.appColors.primaryButtonColor,
+                            disabledContainerColor = MaterialTheme.colorScheme.primary,
+                            disabledContentColor = MaterialTheme.appColors.disableAddButtonContainer
+                        ),
+                        modifier=Modifier
+                            .weight(1f)
                     ) {
                         Text(
-                                text= stringResource(id = R.string.add),
-                                style=MaterialTheme.typography.bodyMedium.copy(
-                                    color=if(nodeStatusSuccessAction)Color.White else MaterialTheme.appColors.disableAddButtonContent,
-                                    fontWeight = FontWeight(400),
-                                    fontSize = 12.sp
-                                ),
-                                modifier=Modifier.padding(10.dp)
+                            text= stringResource(id = R.string.add),
+                            style=MaterialTheme.typography.bodyMedium.copy(
+                                color=if(nodeStatusSuccessAction)Color.White else MaterialTheme.appColors.disableAddButtonContent,
+                                fontWeight = FontWeight(400),
+                                fontSize = 12.sp
+                            ),
+                            modifier=Modifier.padding(10.dp)
                         )
                     }
                 }
@@ -1267,9 +1324,7 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
 }
 
 @Composable
-fun SwitchNodePopUp(onDismiss: () -> Unit, nodeViewModel: NodeViewModel, nodeInfo: NodeInfo) {
-
-    val context=LocalContext.current
+fun SwitchNodePopUp(onDismiss: () -> Unit, onChangeNode: () -> Unit) {
 
     DialogContainer(
         dismissOnBackPress = true,
@@ -1295,25 +1350,25 @@ fun SwitchNodePopUp(onDismiss: () -> Unit, nodeViewModel: NodeViewModel, nodeInf
                     text=stringResource(id=R.string.switch_node_alert),
                     textAlign=TextAlign.Center,
                     style=MaterialTheme.typography.titleMedium.copy(
-                            fontSize=14.sp,
-                            fontWeight=FontWeight(400),
-                            color=MaterialTheme.appColors.textColor),
+                        fontSize=14.sp,
+                        fontWeight=FontWeight(400),
+                        color=MaterialTheme.appColors.textColor),
                     modifier=Modifier.padding(top =10.dp, bottom = 20.dp, start =40.dp, end = 40.dp))
 
                 Row(
-                        modifier=Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
+                    modifier=Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
                 ) {
                     Button(
-                            onClick={ onDismiss() },
+                        onClick={ onDismiss() },
                         colors=ButtonDefaults.buttonColors(
                             containerColor=MaterialTheme.appColors.negativeGreenButton
                         ),
                         shape = RoundedCornerShape(12.dp),
                         border = BorderStroke(width = 0.5.dp, color = MaterialTheme.appColors.negativeGreenButtonBorder),
                         modifier=Modifier
-                                .weight(1f)
+                            .weight(1f)
                     ) {
                         Text(
                             text=stringResource(id=R.string.cancel),
@@ -1330,23 +1385,16 @@ fun SwitchNodePopUp(onDismiss: () -> Unit, nodeViewModel: NodeViewModel, nodeInf
 
                     Button(
                         onClick={
-                            nodeInfo.isFavourite=true
-                            // Need to check
-                            nodeViewModel.setFavouriteNodes(nodeViewModel.favouritesNodes.value, context)
-                            AsyncTask.execute {
-                                nodeViewModel.setNode(nodeInfo, true, context)
-                                nodeInfo.isSelecting=true
-                                changeDaemon(context, true)
-                            }
+                            onChangeNode()
                             onDismiss()
 
                         },
                         colors=ButtonDefaults.buttonColors(
-                                containerColor=MaterialTheme.appColors.primaryButtonColor
+                            containerColor=MaterialTheme.appColors.primaryButtonColor
                         ),
                         shape = RoundedCornerShape(12.dp),
                         modifier=Modifier
-                                    .weight(1f)
+                            .weight(1f)
                     ) {
                         Text(
                             text= stringResource(id = R.string.yes),
@@ -1387,43 +1435,43 @@ private class NodeDiff(oldList: MutableList<NodeInfo>, newList: List<NodeInfo?>?
 
 @Composable
 private fun NodeScreenContainer(
-        title: String,
-        wrapInCard: Boolean=true,
-        onBackClick: () -> Unit,
-        actionItems: @Composable () -> Unit={},
-        content: @Composable () -> Unit,
+    title: String,
+    wrapInCard: Boolean=true,
+    onBackClick: () -> Unit,
+    actionItems: @Composable () -> Unit={},
+    content: @Composable () -> Unit,
 ) {
     Column(
-            modifier=Modifier
-                    .fillMaxSize()
+        modifier=Modifier
+            .fillMaxSize()
     ) {
         Row(
-                verticalAlignment=Alignment.CenterVertically,
-                modifier=Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
+            verticalAlignment=Alignment.CenterVertically,
+            modifier=Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
         ) {
             Icon(
-                    painterResource(id = R.drawable.ic_back_arrow),
-                    contentDescription=stringResource(R.string.back),
-                    tint=MaterialTheme.appColors.editTextColor,
-                    modifier=Modifier
-                            .clickable {
-                                onBackClick()
-                            }
+                painterResource(id = R.drawable.ic_back_arrow),
+                contentDescription=stringResource(R.string.back),
+                tint=MaterialTheme.appColors.editTextColor,
+                modifier=Modifier
+                    .clickable {
+                        onBackClick()
+                    }
             )
 
             Spacer(modifier=Modifier.width(16.dp))
 
             Text(
-                    text=title,
-                    style=MaterialTheme.typography.titleLarge.copy(
-                            color=MaterialTheme.appColors.editTextColor,
-                            fontWeight=FontWeight.Bold,
-                            fontSize=18.sp
-                    ),
-                    modifier=Modifier
-                            .weight(1f)
+                text=title,
+                style=MaterialTheme.typography.titleLarge.copy(
+                    color=MaterialTheme.appColors.editTextColor,
+                    fontWeight=FontWeight.Bold,
+                    fontSize=18.sp
+                ),
+                modifier=Modifier
+                    .weight(1f)
             )
 
             actionItems()
@@ -1433,9 +1481,9 @@ private fun NodeScreenContainer(
 
         if (wrapInCard) {
             CardContainer(
-                    modifier=Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
+                modifier=Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
             ) {
                 content()
             }
@@ -1445,27 +1493,7 @@ private fun NodeScreenContainer(
     }
 }
 
-
-private var favouriteNodeSet: MutableSet<NodeInfo> = HashSet()
-private const val pingSelected=0
-private const val prefDaemonTestNet="daemon_testnet"
-private const val prefDaemonStageNet="daemon_stagenet"
-private const val prefDaemonMainNet="daemon_mainnet"
-
+private const val pingSelected = 0
 private fun pingSelectedNode(context: Context, nodeViewModel: NodeViewModel) {
     nodeViewModel.asyncFindBestNode(context, pingSelected)
 }
-
-
-/*
-@Preview(uiMode=Configuration.UI_MODE_NIGHT_NO)
-@Composable
-fun NodeScreenPreview() {
-    NodeScreen()
-}
-
-@Preview(uiMode=Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun NodeScreenPreviewDark() {
-    NodeScreen()
-}*/

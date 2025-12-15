@@ -1535,11 +1535,13 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             }
 
             override fun onFailure(e : ExecutionException?) {
-                Toast.makeText(
-                    requireActivity(),
-                    R.string.activity_conversation_attachment_prep_failed,
-                    Toast.LENGTH_LONG
-                ).show()
+                if (isAdded) {
+                    Toast.makeText(
+                        requireActivity(),
+                        R.string.activity_conversation_attachment_prep_failed,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
         when (requestCode) {
@@ -2054,11 +2056,13 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             }
 
             override fun onFailure(e : ExecutionException) {
-                Toast.makeText(
-                    requireActivity(),
-                    R.string.ConversationActivity_unable_to_record_audio,
-                    Toast.LENGTH_LONG
-                ).show()
+                if (isAdded) {
+                    Toast.makeText(
+                        requireActivity(),
+                        R.string.ConversationActivity_unable_to_record_audio,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         })
     }
@@ -2919,11 +2923,13 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                             }
 
                             override fun onFailure(e : ExecutionException?) {
-                                Toast.makeText(
-                                    requireActivity(),
-                                    R.string.activity_conversation_attachment_prep_failed,
-                                    Toast.LENGTH_LONG
-                                ).show()
+                                if (isAdded) {
+                                    Toast.makeText(
+                                        requireActivity(),
+                                        R.string.activity_conversation_attachment_prep_failed,
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
                             }
                         })
                         return
@@ -2960,11 +2966,13 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                         }
 
                         override fun onFailure(e : ExecutionException?) {
-                            Toast.makeText(
-                                requireActivity(),
-                                R.string.activity_conversation_attachment_prep_failed,
-                                Toast.LENGTH_LONG
-                            ).show()
+                            if (isAdded) {
+                                Toast.makeText(
+                                    requireActivity(),
+                                    R.string.activity_conversation_attachment_prep_failed,
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
                         }
                     })
                     return

@@ -28,9 +28,9 @@ class ChangePasswordActivity : BaseActionBarActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setUpActionBarBchatLogo("Change Password")
         binding = ActivityChangePasswordBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setUpActionBarBchatLogo("Change Password")
         val oldPassword = TextSecurePreferences.getMyPassword(this)
         with(binding)
         {

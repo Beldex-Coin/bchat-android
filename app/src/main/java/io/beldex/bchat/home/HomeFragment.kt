@@ -1245,7 +1245,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                     } else {
                         //Steve Josephh21
                         if (selectedNode != null) {
-                            selectedNode!!.testRpcService()
+                            selectedNode.testRpcService()
                         }
                     }
                 } else throw IllegalStateException()
@@ -1253,8 +1253,9 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                     activityCallback!!.setNode(selectedNode)
                     selectedNode
                 } else {
-                    activityCallback!!.setNode(null)
-                    null
+                    selectedNode = autoselect(favourites)
+                    activityCallback!!.setNode(selectedNode)
+                    selectedNode
                 }
             } else {
                 activityCallback!!.setNode(null)

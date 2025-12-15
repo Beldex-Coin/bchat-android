@@ -3,6 +3,7 @@ package io.beldex.bchat.database.helpers;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
 
 import androidx.annotation.NonNull;
 
@@ -97,18 +98,22 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
         connection.execute("PRAGMA cipher_default_page_size = 4096;", null, null);
       }
 
-      @Override
-      public void postKey(SQLiteConnection connection) {
-        connection.execute("PRAGMA kdf_iter = '256000';", null, null);
-        connection.execute("PRAGMA cipher_page_size = 4096;", null, null);
-        // if not vacuumed in a while, perform that operation
-        long currentTime = System.currentTimeMillis();
-        // 7 days
-        if (currentTime - TextSecurePreferences.getLastVacuumTime(context) > 604_800_000) {
-          connection.execute("VACUUM;", null, null);
-          TextSecurePreferences.setLastVacuumNow(context);
+        @Override
+        public void postKey(SQLiteConnection connection) {
+          try {
+            connection.execute("PRAGMA kdf_iter = '256000';", null, null);
+            connection.execute("PRAGMA cipher_page_size = 4096;", null, null);
+            // if not vacuumed in a while, perform that operation
+            long currentTime = System.currentTimeMillis();
+            // 7 days
+            if (currentTime - TextSecurePreferences.getLastVacuumTime(context) > 604_800_000) {
+              connection.execute("VACUUM;", null, null);
+              TextSecurePreferences.setLastVacuumNow(context);
+            }
+          } catch (SQLiteException e) {
+            Log.e("SQLCipherOpenHelper", "Error executing PRAGMA statements", e);
+          }
         }
-      }
     }, true);
 
     this.context        = context.getApplicationContext();

@@ -13,6 +13,8 @@ import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import io.beldex.bchat.BuildConfig;
 import timber.log.Timber;
 
@@ -40,7 +42,7 @@ public class Node {
 
     @Override
     public int hashCode() {
-        return hostAddress.hashCode();
+        return hostAddress != null ? hostAddress.hashCode() : 0 ;
     }
 
     // Nodes are equal if they are the same host address:port & are on the same network
@@ -48,6 +50,7 @@ public class Node {
     public boolean equals(Object other) {
         if (!(other instanceof Node)) return false;
         final Node anotherNode = (Node) other;
+        if (hostAddress == null || anotherNode.hostAddress == null) return false;
         return (hostAddress.equals(anotherNode.hostAddress)
                 && (rpcPort == anotherNode.rpcPort)
                 && (networkType == anotherNode.networkType));
@@ -136,13 +139,21 @@ public class Node {
         } else {
             port = getDefaultRpcPort();
         }
-        try {
-            setHost(host);
-        } catch (UnknownHostException ex) {
-            throw new IllegalArgumentException("cannot resolve host " + host);
-        }
+        setHostAsync(host);
         this.rpcPort = port;
         this.levinPort = getDefaultLevinPort();
+    }
+
+    private void setHostAsync(String host) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try {
+                setHost(host);
+            } catch (UnknownHostException e) {
+                //throw new IllegalArgumentException("cannot resolve host " + e.getMessage());
+                Log.d("cannot resolve host ", e.getMessage());
+            }
+        });
     }
 
     public String toNodeString() {
@@ -221,8 +232,11 @@ public class Node {
     }
 
     public String getHostAddress() {
-        Log.d("Beldex","node list getHostAddress " + hostAddress.getHostAddress());
-        return hostAddress.getHostAddress();
+        if (hostAddress == null) {
+            return "";
+        }
+        Log.d("Beldex","node list getHostAddress " + hostAddress.getHostAddress() != null ? hostAddress.getHostAddress() : "");
+        return hostAddress.getHostAddress() != null ? hostAddress.getHostAddress() : "";
     }
 
 
@@ -260,12 +274,12 @@ public class Node {
     }
 
     public void setHost(String host) throws UnknownHostException {
-        if ((host == null) || (host.isEmpty())) {
-            Log.d("Beldex","node class host value 1 " + host);
-            throw new UnknownHostException("loopback not supported (yet?)");
+        if (host == null || host.isEmpty() || host.equals("null")) {
+            Log.d("Beldex","node class host value " + host);
+        } else {
+            Log.d("Beldex", "node class host value " + host);
+            setHostAndHostAddress(host);
         }
-        Log.d("Beldex","node class host value 2 " + host);
-        setHostAndHostAddress(host);
     }
 
     @WorkerThread

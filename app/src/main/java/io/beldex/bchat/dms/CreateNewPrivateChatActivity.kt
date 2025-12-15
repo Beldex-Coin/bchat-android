@@ -144,7 +144,9 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
     override fun onDestroy() {
         super.onDestroy()
         hideSoftKeyboard()
-        binding.publicKeyEditText.isFocusable = false
+        if (this::binding.isInitialized) {
+            binding.publicKeyEditText.isFocusable = false
+        }
     }
     // endregion
 

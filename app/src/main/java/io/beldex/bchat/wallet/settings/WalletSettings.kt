@@ -47,9 +47,9 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
     private var status = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setUpActionBarBchatLogo("Wallet Settings",false)
         binding = ActivityWalletSettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setUpActionBarBchatLogo("Wallet Settings",false)
 
         // data to populate the RecyclerView with
         displayBalanceAsList.add("Beldex Full Balance")

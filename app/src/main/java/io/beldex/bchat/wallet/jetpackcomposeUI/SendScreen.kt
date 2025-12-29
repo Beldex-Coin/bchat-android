@@ -939,8 +939,8 @@ fun SendScreen(
                         unfocusedIndicatorColor=Color.Transparent,
                         disabledIndicatorColor=Color.Transparent,
                         selectionColors=TextSelectionColors(
-                            MaterialTheme.appColors.textSelectionColor,
-                            MaterialTheme.appColors.textSelectionColor
+                            MaterialTheme.appColors.textSelectionBackgroundColor,
+                            MaterialTheme.appColors.textSelectionBackgroundColor
                         ),
                         cursorColor=colorResource(id=R.color.button_green)
                     ),

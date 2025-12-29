@@ -84,27 +84,11 @@ class ConversationView : LinearLayout {
         }
         binding.profilePictureView.root.glide = glide
         val unreadCount = thread.unreadCount
-        if (thread.recipient.isBlocked) {
-//            binding.accentView.setBackgroundResource(R.color.destructive)
-//            binding.accentView.visibility = View.VISIBLE
-        } else {
-//            binding.accentView.setBackgroundResource(R.color.accent)
-            // Using thread.isRead we can determine if the last message was our own, and display it as 'read' even though previous messages may not be
-            // This would also not trigger the disappearing message timer which may or may not be desirable
-//            binding.accentView.visibility = if (unreadCount > 0 && !thread.isRead) View.VISIBLE else View.INVISIBLE
-        }
-        val formattedUnreadCount = if (thread.isRead) {
-            null
-        } else {
-            if (unreadCount < 100) unreadCount.toString() else "99+"
-        }
+        val formattedUnreadCount = if (unreadCount < 100) unreadCount.toString() else "99+"
         binding.unreadCountTextView.text = formattedUnreadCount
-        val textSize = if (unreadCount < 100) 12.0f else 10.0f
-        binding.unreadCountTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize)
-        binding.unreadCountTextView.setTypeface(Typeface.DEFAULT, if (unreadCount < 100) Typeface.BOLD else Typeface.NORMAL)
         binding.unreadCountIndicator.isVisible = (unreadCount != 0 && !thread.isRead)
         val senderDisplayName = getUserDisplayName(thread.recipient)
-                ?: thread.recipient.address.toString()
+            ?: thread.recipient.address.toString()
         val recipientName : String=senderDisplayName.substring(0, 1).uppercase(Locale.ROOT) + senderDisplayName.substring(1).lowercase(Locale.ROOT)
 
         binding.conversationViewDisplayNameTextView.text = recipientName

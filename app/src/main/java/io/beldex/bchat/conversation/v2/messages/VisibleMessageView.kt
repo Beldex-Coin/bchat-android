@@ -317,7 +317,7 @@ class VisibleMessageView : LinearLayout {
             binding.messageStatusImageView.setImageDrawable(drawable)
         }
         if (message.isOutgoing) {
-            val lastMessageID = mmsSmsDb.getLastMessageID(message.threadId)
+            val lastMessageID = mmsSmsDb.getLastMessageID(message.threadId, false, false)
             binding.messageStatusImageView.isVisible = (iconID != null && (!message.isSent || message.id == lastMessageID))
         } else {
             binding.messageStatusImageView.isVisible = false
@@ -498,8 +498,8 @@ class VisibleMessageView : LinearLayout {
     private fun showUserDetails(publicKey: String, threadID: Long) {
         val userDetailsBottomSheet = UserDetailsBottomSheet()
         val bundle = bundleOf(
-                UserDetailsBottomSheet.ARGUMENT_PUBLIC_KEY to publicKey,
-                UserDetailsBottomSheet.ARGUMENT_THREAD_ID to threadID
+            UserDetailsBottomSheet.ARGUMENT_PUBLIC_KEY to publicKey,
+            UserDetailsBottomSheet.ARGUMENT_THREAD_ID to threadID
         )
         ActivityDispatcher.get(context)?.showBottomSheetDialogWithBundle(UserDetailsBottomSheet(),userDetailsBottomSheet.tag,bundle)
     }

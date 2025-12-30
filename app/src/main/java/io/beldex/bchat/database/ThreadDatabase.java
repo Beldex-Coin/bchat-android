@@ -905,7 +905,7 @@ public class ThreadDatabase extends Database {
         readReceiptCount = 0;
       }
 
-      MessageRecord lastMessage = count > 0 ? getLastMessage(threadId) : null;
+      MessageRecord lastMessage = count > 0 ? getLastMessage(threadId, false, false) : null;
 
       return new ThreadRecord(body, snippetUri,lastMessage, recipient, date, count,
                               unreadCount, threadId, deliveryReceiptCount, status, type,
@@ -925,9 +925,9 @@ public class ThreadDatabase extends Database {
       }
     }
 
-    private MessageRecord getLastMessage(long threadId) {
+    private MessageRecord getLastMessage(long threadId, boolean includeReactions, boolean getQuote) {
       MmsSmsDatabase mmsSmsDatabase = DatabaseComponent.get(context).mmsSmsDatabase();
-      long messageTimestamp = mmsSmsDatabase.getLastMessageTimestamp(threadId);
+      long messageTimestamp = mmsSmsDatabase.getLastMessageTimestamp(threadId, includeReactions, getQuote);
       return mmsSmsDatabase.getMessageForTimestamp(messageTimestamp);
     }
 

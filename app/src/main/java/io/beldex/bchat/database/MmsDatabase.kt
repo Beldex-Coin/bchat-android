@@ -1452,6 +1452,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
         const val QUOTE_MISSING: String = "quote_missing"
         const val SHARED_CONTACTS: String = "shared_contacts"
         const val LINK_PREVIEWS: String = "previews"
+        const val UNIDENTIFIED: String = "unidentified"
 
         private const val IS_DELETED_COLUMN_DEF = """
             $IS_DELETED GENERATED ALWAYS AS (

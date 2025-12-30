@@ -48,7 +48,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -122,6 +124,9 @@ fun JoinSocialGroupScreen(
         restartOnPlay = false
     )
 
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+
     val joinPublicChatScanQRCodeActivityResultLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -138,8 +143,8 @@ fun JoinSocialGroupScreen(
 
     Column(
         modifier =Modifier
-                .fillMaxSize()
-                .padding(16.dp)
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
 
         OutlinedCard(
@@ -162,12 +167,12 @@ fun JoinSocialGroupScreen(
             )
 
             TextField(
-                    value=uiState.groupUrl,
-                    placeholder={
-                        Text(text=stringResource(R.string.fragment_enter_chat_url_edit_text_hint),
-                                style=MaterialTheme.typography.bodyMedium
-                        )
-                    },
+                value=uiState.groupUrl,
+                placeholder={
+                    Text(text=stringResource(R.string.fragment_enter_chat_url_edit_text_hint),
+                        style=MaterialTheme.typography.bodyMedium
+                    )
+                },
                 onValueChange = { url ->
                     onEvent(OpenGroupEvents.GroupUrlChanged(url))
                 },
@@ -181,6 +186,8 @@ fun JoinSocialGroupScreen(
                             color = MaterialTheme.appColors.iconTint
                         ),
                         modifier = Modifier.clickable {
+                            focusManager.clearFocus()
+                            keyboardController?.hide()
                             val intent = Intent(
                                 context,
                                 JoinPublicChatScanQRCodeActivity::class.java
@@ -189,17 +196,17 @@ fun JoinSocialGroupScreen(
                         })
                 },
                 modifier =Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                        colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
                     focusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
                     selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
                     cursorColor = colorResource(id = R.color.button_green)
-            )
+                )
             )
 
             PrimaryButton(
@@ -210,12 +217,12 @@ fun JoinSocialGroupScreen(
                 enabled = uiState.groupUrl.isNotEmpty(),
                 disabledContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
                 modifier =Modifier
-                        .fillMaxWidth()
-                        .padding(
-                                start=16.dp,
-                                end=16.dp,
-                                bottom=16.dp
-                        )
+                    .fillMaxWidth()
+                    .padding(
+                        start=16.dp,
+                        end=16.dp,
+                        bottom=16.dp
+                    )
             ) {
                 Text(
                     text = stringResource(id = R.string.next),
@@ -250,8 +257,8 @@ fun JoinSocialGroupScreen(
                 composition,
                 progress,
                 modifier =Modifier
-                        .size(70.dp)
-                        .align(Alignment.CenterHorizontally)
+                    .size(70.dp)
+                    .align(Alignment.CenterHorizontally)
             )
         } else {
             LazyVerticalGrid(
@@ -263,22 +270,22 @@ fun JoinSocialGroupScreen(
                     items(groups.size) { i ->
                         Column(
                             modifier =Modifier
-                                    .background(
-                                            color=MaterialTheme.appColors.disabledButtonContainerColor,
-                                            shape=RoundedCornerShape(8.dp)
+                                .background(
+                                    color=MaterialTheme.appColors.disabledButtonContainerColor,
+                                    shape=RoundedCornerShape(8.dp)
+                                )
+                                .padding(start=16.dp, end=16.dp, top=14.dp, bottom=14.dp)
+                                .clickable {
+                                    showLoader=true
+                                    joinPublicChatIfPossible(
+                                        groups[i].joinURL,
+                                        lifecycleOwner,
+                                        context
                                     )
-                                    .padding(start=16.dp, end=16.dp, top=14.dp, bottom=14.dp)
-                                    .clickable {
-                                        showLoader=true
-                                        joinPublicChatIfPossible(
-                                                groups[i].joinURL,
-                                                lifecycleOwner,
-                                                context
-                                        )
-                                    },
+                                },
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            ) {
+                        ) {
                             groups[i].image?.let {
                                 convertImageByteArrayToBitmap(it).asImageBitmap()
                             }?.let { bitmap ->
@@ -286,9 +293,9 @@ fun JoinSocialGroupScreen(
                                     bitmap = bitmap,
                                     contentDescription = "",
                                     modifier =Modifier
-                                            .width(52.dp)
-                                            .height(52.dp)
-                                            .clip(shape=RoundedCornerShape(6.dp)),
+                                        .width(52.dp)
+                                        .height(52.dp)
+                                        .clip(shape=RoundedCornerShape(6.dp)),
                                     alignment = Alignment.Center
                                 )
                             }

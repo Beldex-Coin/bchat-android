@@ -3010,17 +3010,11 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             }
         }
 
-        private fun updateUnreadCountIndicator() {
-            val formattedUnreadCount=if (unreadCount < 10000) unreadCount.toString() else "9999+"
-            binding.unreadCountTextView.text=formattedUnreadCount
-            val textSize=if (unreadCount < 10000) 12.0f else 9.0f
-            binding.unreadCountTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize)
-            binding.unreadCountTextView.setTypeface(
-                Typeface.DEFAULT,
-                if (unreadCount < 100) Typeface.BOLD else Typeface.NORMAL
-            )
-            binding.unreadCountIndicator.isVisible=(unreadCount != 0)
-        }
+    private fun updateUnreadCountIndicator() {
+        val formattedUnreadCount=if (unreadCount < 100) unreadCount.toString() else "99+"
+        binding.unreadCountTextView.text=formattedUnreadCount
+        binding.unreadCountIndicator.isVisible=unreadCount != 0
+    }
 
         private fun setUpTypingObserver(thread : Recipient) {
             ApplicationContext.getInstance(requireActivity()).typingStatusRepository.getTypists(

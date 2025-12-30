@@ -241,7 +241,10 @@ fun LinkYourBNSDialog(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
-                    selectionColors = TextSelectionColors(
+                    selectionColors = if(isVerified) TextSelectionColors(
+                        MaterialTheme.appColors.textSelectionBackgroundColor,
+                        MaterialTheme.appColors.textSelectionBackgroundColor
+                    ) else  TextSelectionColors(
                         MaterialTheme.appColors.textSelectionColor,
                         MaterialTheme.appColors.textSelectionColor
                     ),

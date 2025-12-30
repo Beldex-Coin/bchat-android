@@ -1115,7 +1115,7 @@ fun AddNodePopUp(
                         focusedIndicatorColor=Color.Transparent,
                         unfocusedIndicatorColor=Color.Transparent,
                         disabledIndicatorColor=Color.Transparent,
-                        selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
+                        selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionBackgroundColor, MaterialTheme.appColors.textSelectionBackgroundColor),
                         cursorColor=MaterialTheme.appColors.textColor),
                     textStyle=TextStyle(
                         color=MaterialTheme.appColors.primaryButtonColor,

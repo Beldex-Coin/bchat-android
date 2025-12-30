@@ -66,7 +66,7 @@ public class LongMessageActivity extends PassphraseRequiredActionBarActivity {
 
   private void initViewModel(long messageId, boolean isMms) {
     viewModel = new ViewModelProvider(this, new LongMessageViewModel.Factory(getApplication(), new LongMessageRepository(this), messageId, isMms))
-                                  .get(LongMessageViewModel.class);
+            .get(LongMessageViewModel.class);
 
     viewModel.getMessage().observe(this, message -> {
       if (message == null) return;
@@ -84,7 +84,7 @@ public class LongMessageActivity extends PassphraseRequiredActionBarActivity {
         String    name      = Util.getFirstNonEmpty(recipient.getName(), recipient.getProfileName(), recipient.getAddress().serialize());
         getSupportActionBar().setTitle(getString(R.string.LongMessageActivity_message_from_s, name));
       }
-      Spannable bodySpans = VisibleMessageContentView.Companion.getBodySpans(this, message.get().getMessageRecord(), null);
+      Spannable bodySpans = VisibleMessageContentView.Companion.getBodySpans(this, message.get().getMessageRecord(), null, message.get().getMessageRecord().isOutgoing());
       textBody.setText(bodySpans);
       textBody.setMovementMethod(LinkMovementMethod.getInstance());
     });

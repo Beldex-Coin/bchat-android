@@ -20,6 +20,10 @@ open class BaseFragment: Fragment() {
         activity?.replaceFragment(newFragment, stackName, extras)
     }
 
+    protected fun showOrHideFragment(homeFragment: Fragment, extras: Bundle?, threadId: Long) {
+        activity?.showOrHideFragment(homeFragment, extras, threadId)
+    }
+
     protected fun push(intent: Intent, isForResult: Boolean = false) {
         if (isForResult) {
             startActivityForResult(intent, defaultBchatRequestCode)

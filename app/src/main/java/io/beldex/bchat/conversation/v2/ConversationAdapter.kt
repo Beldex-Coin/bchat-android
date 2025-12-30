@@ -18,41 +18,26 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.WorkerThread
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.unit.dp
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.util.getOrDefault
 import androidx.core.util.set
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.beldex.libbchat.messaging.contacts.Contact
-import com.beldex.libbchat.messaging.utilities.UpdateMessageData
-import com.beldex.libbchat.utilities.Address
+import com.beldex.libbchat.utilities.recipients.Recipient
 import com.bumptech.glide.RequestManager
 import io.beldex.bchat.R
-import io.beldex.bchat.compose_utils.BChatTheme
-import io.beldex.bchat.compose_utils.TextColor
-import io.beldex.bchat.compose_utils.noRippleCallback
-import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
-import io.beldex.bchat.conversation.v2.contact_sharing.SharedContactView
 import io.beldex.bchat.conversation.v2.messages.ControlMessageView
 import io.beldex.bchat.conversation.v2.messages.VisibleMessageView
-import io.beldex.bchat.database.CursorRecyclerViewAdapter
 import io.beldex.bchat.database.model.MessageRecord
-import io.beldex.bchat.databinding.ComposeViewHolderBinding
 import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.preferences.PrivacySettingsActivity
 import io.beldex.bchat.conversation.v2.messages.VisibleMessageViewDelegate
 import io.beldex.bchat.conversation.v2.search.SearchViewModel
-import io.beldex.bchat.util.DateUtils
+import io.beldex.bchat.database.CursorRecyclerViewAdapter
+import io.beldex.bchat.database.MmsSmsColumns
+import io.beldex.bchat.database.MmsSmsDatabase
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
@@ -62,7 +47,7 @@ import java.util.Locale
 
 class ConversationAdapter(
     context: Context,
-    cursor: Cursor,
+    cursor: Cursor?,
     private val searchViewModel : SearchViewModel?,
     private val onItemPress: (MessageRecord, Int, VisibleMessageView, MotionEvent) -> Unit,
     private val onItemSwipeToReply: (MessageRecord, Int) -> Unit,
@@ -70,115 +55,100 @@ class ConversationAdapter(
     private val glide: RequestManager,
     private val onDeselect: (MessageRecord, Int) -> Unit,
     private val onAttachmentNeedsDownload: (Long, Long) -> Unit, lifecycleCoroutineScope: LifecycleCoroutineScope,
-    var isAdmin: Boolean = false
-
+    var isAdmin: Boolean = false,
+    private val threadRecipientProvider: Recipient?,
+    private val messageDB: MmsSmsDatabase,
 ) : CursorRecyclerViewAdapter<ViewHolder>(context, cursor) {
-    private val messageDB by lazy { DatabaseComponent.get(context).mmsSmsDatabase() }
     private val contactDB by lazy { DatabaseComponent.get(context).bchatContactDatabase() }
     var selectedItems = mutableSetOf<MessageRecord>()
     private var searchQuery: String? = null
     var visibleMessageViewDelegate: VisibleMessageViewDelegate? = null
 
     private val updateQueue = Channel<String>(1024, onBufferOverflow = BufferOverflow.DROP_OLDEST)
-    private val contactCache = SparseArray<Contact>(100)
-    private val contactLoadedCache = SparseBooleanArray(100)
-    init {
-        lifecycleCoroutineScope.launch(IO) {
-            while (isActive) {
-                val item = updateQueue.receive()
-                val contact = getSenderInfo(item) ?: continue
-                    contactCache[item.hashCode()] = contact
-                contactLoadedCache[item.hashCode()] = true
-            }
-        }
-    }
-
+    private val contactCache by lazy { SparseArray<Contact>(100) }
+    private val contactLoadedCache by lazy { SparseBooleanArray(100) }
     @WorkerThread
     private fun getSenderInfo(sender: String): Contact? {
         return contactDB.getContactWithBchatID(sender)
     }
 
-    sealed class ViewType(val rawValue: Int) {
-        data object Visible : ViewType(0)
-        data object Control : ViewType(1)
-        data object SharedContact: ViewType(2)
-
-        companion object {
-
-            val allValues: Map<Int, ViewType> get() = mapOf(
-                Visible.rawValue to Visible,
-                Control.rawValue to Control,
-                SharedContact.rawValue to SharedContact
-            )
+    init {
+        lifecycleCoroutineScope.launch(IO) {
+            while (isActive) {
+                val item = updateQueue.receive()
+                val contact = getSenderInfo(item) ?: continue
+                contactCache[item.hashCode()] = contact
+                contactLoadedCache[item.hashCode()] = true
+            }
         }
+        setHasStableIds(true)
     }
 
     class VisibleMessageViewHolder(val view: View) : ViewHolder(view)
     class ControlMessageViewHolder(val view: ControlMessageView) : ViewHolder(view)
-    class SharedContactViewHolder(val binding: ComposeViewHolderBinding): ViewHolder(binding.root)
 
     override fun getItemViewType(cursor: Cursor): Int {
         val message = getMessage(cursor)!!
         return when {
-            message.isControlMessage -> ViewType.Control.rawValue
-//            message.isSharedContact -> ViewType.SharedContact.rawValue
-            else -> ViewType.Visible.rawValue
+            message.isControlMessage -> VIEW_TYPE_CONTROL
+            else -> VIEW_TYPE_VISIBLE
         }
     }
 
     override fun onCreateItemViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        @Suppress("NAME_SHADOWING")
-        val viewType = ViewType.allValues[viewType]
         return when (viewType) {
-            ViewType.Visible -> VisibleMessageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.view_visible_message, parent, false))
-            ViewType.Control -> ControlMessageViewHolder(ControlMessageView(context))
-//            ViewType.SharedContact -> SharedContactViewHolder(ComposeViewHolderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            VIEW_TYPE_VISIBLE -> VisibleMessageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.view_visible_message, parent, false))
+            VIEW_TYPE_CONTROL -> ControlMessageViewHolder(ControlMessageView(context))
             else -> throw IllegalStateException("Unexpected view type: $viewType.")
         }
     }
 
-    override fun onBindItemViewHolder(viewHolder: ViewHolder, cursor: Cursor) {
+    override fun getItemId(cursor: Cursor): Long {
+        val id = cursor.getLong(cursor.getColumnIndexOrThrow(MmsSmsColumns.ID))
+        val transport = cursor.getString(cursor.getColumnIndexOrThrow(MmsSmsDatabase.TRANSPORT))
+        return if (transport == MmsSmsDatabase.SMS_TRANSPORT) id else -id
+    }
+
+    override fun onBindItemViewHolder(viewHolder: ViewHolder, cursor: Cursor, position: Int) {
         val message = getMessage(cursor)!!
-        val position = viewHolder.adapterPosition
         val messageBefore = getMessageBefore(position, cursor)
+        val messageAfter = getMessageAfter(position, cursor)
         when (viewHolder) {
             is VisibleMessageViewHolder -> {
                 val visibleMessageView = ViewVisibleMessageBinding.bind(viewHolder.view).visibleMessageView
                 val isSelected = selectedItems.contains(message)
-                visibleMessageView.snIsSelected = isSelected
+                visibleMessageView.isMessageSelected = isSelected
                 visibleMessageView.indexInAdapter = position
                 val senderId = message.individualRecipient.address.serialize()
                 val senderIdHash = senderId.hashCode()
                 updateQueue.trySend(senderId)
                 if (contactCache[senderIdHash] == null && !contactLoadedCache.getOrDefault(senderIdHash, false)) {
                     getSenderInfo(senderId)?.let { contact ->
-                            contactCache[senderIdHash] = contact
+                        contactCache[senderIdHash] = contact
                     }
                 }
                 val contact = contactCache[senderIdHash]
-                visibleMessageView.bind(message, messageBefore, getMessageAfter(position, cursor), glide, searchQuery, contact, senderId, onAttachmentNeedsDownload,{ selectedItems.size > 0 }, visibleMessageViewDelegate, position, searchViewModel)
+                visibleMessageView.bind(message, threadRecipient = threadRecipientProvider!!, messageBefore, messageAfter, glide, searchQuery, contact, senderId, onAttachmentNeedsDownload,{ selectedItems.isNotEmpty() }, visibleMessageViewDelegate, position, searchViewModel)
                 if (!message.isDeleted) {
-                    visibleMessageView.onPress = { event -> onItemPress(message, viewHolder.adapterPosition, visibleMessageView, event) }
-                    visibleMessageView.onSwipeToReply = { onItemSwipeToReply(message, viewHolder.adapterPosition) }
+                    visibleMessageView.onPress = { event -> onItemPress(message, position, visibleMessageView, event) }
+                    visibleMessageView.onSwipeToReply = { onItemSwipeToReply(message, position) }
                     visibleMessageView.onLongPress = {
                         ViewUtil.hideKeyboard(context,visibleMessageView)
-                        onItemLongPress(message, viewHolder.adapterPosition, visibleMessageView)
+                        onItemLongPress(message, position, visibleMessageView)
                     }
-
                 } else {
-
                     visibleMessageView.onPress = null
                     visibleMessageView.onSwipeToReply = null
                     // you can long press on "marked as deleted" messages
                     visibleMessageView.onLongPress =
-                        { onItemLongPress(message, viewHolder.adapterPosition, visibleMessageView) }
+                        { onItemLongPress(message, position, visibleMessageView) }
                 }
             }
             is ControlMessageViewHolder -> {
                 viewHolder.view.bind(
                     message = message,
                     previous = messageBefore,
-                    longPress = { onItemLongPress(message, viewHolder.adapterPosition, viewHolder.view) }
+                    longPress = { onItemLongPress(message, position, viewHolder.view) }
                 )
                 if (message.isCallLog && message.isFirstMissedCall) {
                     viewHolder.view.setOnClickListener {
@@ -221,58 +191,6 @@ class ConversationAdapter(
                     }
                 } else {
                     viewHolder.view.setOnClickListener(null)
-                }
-            }
-            is SharedContactViewHolder -> {
-                val umd = UpdateMessageData.fromJSON(message.body)!!
-                val data = umd.kind as UpdateMessageData.Kind.SharedContact
-                viewHolder.binding.contactView.setContent {
-                    BChatTheme {
-                        val contact = ContactModel(
-                            address = Address.fromSerialized(data.address),
-                            name = data.name
-                        )
-                        val configuration = LocalConfiguration.current
-                        val screenWidth = configuration.screenWidthDp.dp
-                        val cardBackgroundColor by remember(message) {
-                            val backgroundColor = if (message.isOutgoing) {
-                                R.color.outgoing_call_background
-                            } else {
-                                R.color.received_call_card_background
-                            }
-                            mutableIntStateOf(
-                                backgroundColor
-                            )
-                        }
-                        val onContactClicked: (ContactModel) -> Unit = { model ->
-                            //delegate?.chatWithContact(model)
-                        }
-                        SharedContactView(
-                            contacts = listOf(
-                                contact
-                            ),
-                            backgroundColor = colorResource(cardBackgroundColor),
-                            timeStamp = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp),
-                            titleColor = colorResource(
-                                if (message.isOutgoing) {
-                                    R.color.white
-                                } else {
-                                    R.color.received_message_text_color
-                                }
-                            ),
-                            subtitleColor = if (message.isOutgoing) {
-                                TextColor
-                            } else {
-                                colorResource(R.color.received_message_text_color)
-                            },
-                            modifier = Modifier
-                                .width(screenWidth * 0.7f)
-                                .padding(8.dp)
-                                .noRippleCallback {
-                                    onContactClicked(contact)
-                                }
-                        )
-                    }
                 }
             }
         }
@@ -318,7 +236,10 @@ class ConversationAdapter(
             if (position == null || position == -1) {
                 toRemove += selected
             } else {
-                val item = getMessage(getCursorAtPositionOrThrow(position))
+                val item = cursor?.let {
+                    it.moveToPosition(position)
+                    getMessage(it)
+                }
                 if (item == null || item.isDeleted) {
                     toDeselect += position to selected
                 }
@@ -329,6 +250,7 @@ class ConversationAdapter(
             onDeselect(record, pos)
         }
     }
+
     fun findLastSeenItemPosition(lastSeenTimestamp: Long): Int? {
         val cursor = this.cursor
         if (lastSeenTimestamp <= 0L || cursor == null || !isActiveCursor) return null
@@ -367,5 +289,9 @@ class ConversationAdapter(
         }else{
             notifyDataSetChanged()
         }
+    }
+    companion object {
+        private const val VIEW_TYPE_VISIBLE = 1
+        private const val VIEW_TYPE_CONTROL = 2
     }
 }

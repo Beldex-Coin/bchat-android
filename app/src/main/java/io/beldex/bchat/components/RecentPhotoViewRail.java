@@ -96,13 +96,13 @@ public class RecentPhotoViewRail extends FrameLayout implements LoaderManager.Lo
     @Override
     public RecentPhotoViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
       View itemView = LayoutInflater.from(parent.getContext())
-                                    .inflate(R.layout.recent_photo_view_item, parent, false);
+              .inflate(R.layout.recent_photo_view_item, parent, false);
 
       return new RecentPhotoViewHolder(itemView);
     }
 
     @Override
-    public void onBindItemViewHolder(RecentPhotoViewHolder viewHolder, @NonNull Cursor cursor) {
+    public void onBindItemViewHolder(RecentPhotoViewHolder viewHolder, @NonNull Cursor cursor, int position) {
       viewHolder.imageView.setImageDrawable(null);
 
       long   id           = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns._ID));

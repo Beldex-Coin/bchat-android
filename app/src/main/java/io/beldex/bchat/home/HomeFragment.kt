@@ -24,7 +24,6 @@ import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -101,8 +100,6 @@ import io.beldex.bchat.util.BaseFragment
 import io.beldex.bchat.util.ConfigurationMessageUtilities
 import io.beldex.bchat.util.NodePinger
 import io.beldex.bchat.util.SaveYourSeedDialogBox
-import io.beldex.bchat.util.SwipeController
-import io.beldex.bchat.util.SwipeControllerActions
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.disableClipping
@@ -209,43 +206,6 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     private val globalSearchAdapter = GlobalSearchAdapter { model ->
-//        when (model) {
-//            is GlobalSearchAdapter.Model.Message -> {
-//                val threadId = model.messageResult.threadId
-//                val timestamp = model.messageResult.sentTimestampMs
-//                val author = model.messageResult.messageRecipient.address
-//                if (binding.globalSearchRecycler.isVisible) {
-//                    binding.globalSearchInputLayout.clearSearch(true)
-//                }
-//                passGlobalSearchAdapterModelMessageValue(threadId,timestamp,author)
-//            }
-//            is GlobalSearchAdapter.Model.SavedMessages -> {
-//                if (binding.globalSearchRecycler.isVisible) {
-//                    binding.globalSearchInputLayout.clearSearch(true)
-//                }
-//                passGlobalSearchAdapterModelSavedMessagesValue(Address.fromSerialized(model.currentUserPublicKey))
-//            }
-//            is GlobalSearchAdapter.Model.Contact -> {
-//                val address = model.contact.bchatID
-//                if (binding.globalSearchRecycler.isVisible) {
-//                    binding.globalSearchInputLayout.clearSearch(true)
-//                }
-//                passGlobalSearchAdapterModelContactValue(Address.fromSerialized(address))
-//            }
-//            is GlobalSearchAdapter.Model.GroupConversation -> {
-//                val groupAddress = Address.fromSerialized(model.groupRecord.encodedId)
-//                val threadId = threadDb.getThreadIdIfExistsFor(Recipient.from(requireActivity().applicationContext, groupAddress, false))
-//                if (threadId >= 0) {
-//                    if (binding.globalSearchRecycler.isVisible) {
-//                        binding.globalSearchInputLayout.clearSearch(true)
-//                    }
-//                    passGlobalSearchAdapterModelGroupConversationValue(threadId)
-//                }
-//            }
-//            else -> {
-//                Log.d("Beldex", "callback with model: $model")
-//            }
-//        }
     }
 
     //New Line
@@ -263,7 +223,6 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         NavigationItemModel(R.drawable.ic_about_outline, "About",0)
     )
 
-    // NavigationItemModel(R.drawable.ic_recovery_key, "Recovery Key"),
     private val hexEncodedPublicKey: String
         get() {
             return TextSecurePreferences.getLocalNumber(requireActivity().applicationContext)!!
@@ -297,19 +256,6 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 
     private var mContext : Context? = null
     var activityCallback: HomeFragmentListener? = null
-
-    private val swipeController = SwipeController(
-    object : SwipeControllerActions {
-        override fun onRightClicked(position: Int) {
-//            mAdapter.players.remove(position)
-//            mAdapter.notifyItemRemoved(position)
-//            mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount())
-        }
-
-        override fun onLeftClicked(position: Int) {
-
-        }
-    })
 
     private val swipeHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
         override fun onMove(
@@ -491,36 +437,17 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         binding.navigationMenu.drawerProfileIcon.root.isClickable = true
         binding.navigationMenu.drawerProfileId.text = String.format(requireContext().resources.getString(R.string.id_format), hexEncodedPublicKey)
 
-//        binding.searchViewContainer.setOnClickListener {
-//            binding.globalSearchInputLayout.requestFocus()
-//            Intent(requireContext(), SearchActivity::class.java).also {
-//                searchResultLauncher.launch(it)
-//            }
-//        }
         binding.bchatToolbar.disableClipping()
-
-//        setupMessageRequestsBanner()
         setupHeaderImage()
-        // Set up recycler view
-//        binding.globalSearchInputLayout.listener = this
-        /*homeAdapter.setHasStableIds(true)*/
         homeAdapter.glide = glide
         binding.recyclerView.adapter = homeAdapter
         swipeHelper.attachToRecyclerView(binding.recyclerView)
         val itemDecorator = RecyclerViewDivider(requireContext(),
-                R.drawable.ic_divider
-                ,0,
-                0
-                )
+            R.drawable.ic_divider
+            ,0,
+            0
+        )
         binding.recyclerView.addItemDecoration(itemDecorator)
-//        val itemTouchHelper = ItemTouchHelper(swipeController)
-//        itemTouchHelper.attachToRecyclerView(binding.recyclerView)
-//        binding.recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
-//            override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-//                swipeController.onDraw(c)
-//            }
-//        })
-//        binding.globalSearchRecycler.adapter = globalSearchAdapter
         // Set up empty state view
         binding.createNewPrivateChatButton.setOnClickListener { openNewConversationChat() }
         homeViewModel.getObservable(requireActivity().applicationContext).observe(requireActivity()) { newData ->
@@ -568,33 +495,33 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                             onConversationClick(it.threadId)
                         },
                         modifier =Modifier
-                                .fillMaxWidth()
-                                .padding(
-                                        horizontal=16.dp
-                                )
+                            .fillMaxWidth()
+                            .padding(
+                                horizontal=16.dp
+                            )
                     )
                 }
             }
 
-           if( threadDb.archivedConversationList.count !=0) {
-               binding.archiveChatCardView.visibility = View.VISIBLE
-               binding.archiveChatDivider.visibility = View.VISIBLE
-               binding.archiveChatCardView.setContent {
-                   BChatTheme {
-                       ArchiveChatView(
-                           archiveChatViewModel=archiveChatViewModel!!,
-                           threadDatabase=threadDb,
-                           onRequestClick={
-                               showArchiveChats()
-                           },
-                           context = requireContext()
-                       )
-                   }
-               }
-           }else{
-               binding.archiveChatCardView.visibility = View.GONE
-               binding.archiveChatDivider.visibility = View.GONE
-           }
+            if( threadDb.archivedConversationList.count !=0) {
+                binding.archiveChatCardView.visibility = View.VISIBLE
+                binding.archiveChatDivider.visibility = View.VISIBLE
+                binding.archiveChatCardView.setContent {
+                    BChatTheme {
+                        ArchiveChatView(
+                            archiveChatViewModel=archiveChatViewModel!!,
+                            threadDatabase=threadDb,
+                            onRequestClick={
+                                showArchiveChats()
+                            },
+                            context = requireContext()
+                        )
+                    }
+                }
+            }else{
+                binding.archiveChatCardView.visibility = View.GONE
+                binding.archiveChatDivider.visibility = View.GONE
+            }
             homeAdapter.data = newData
             if(firstPos >= 0) { manager.scrollToPositionWithOffset(firstPos, offsetTop) }
             //setupMessageRequestsBanner()
@@ -873,6 +800,11 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         }
         super.onDestroy()
 
+    }
+
+    override fun onStop() {
+        super.onStop()
+        uiJob?.cancel()
     }
 
     private fun updateEmptyState() {
@@ -1266,7 +1198,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         override fun onPostExecute(result: NodeInfo?) {
             Log.d("Beldex", "daemon connected to  ${result?.host}")
         }
-        
+
     }
 
     inner class DownloadNodeListFileInHomeScreenAsyncTask(private val mContext: Context) :
@@ -1402,7 +1334,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     private fun onConversationClick(threadId: Long) {
         val extras = Bundle()
         extras.putLong(ConversationFragmentV2.THREAD_ID, threadId)
-        replaceFragment(ConversationFragmentV2(), null, extras)
+        showOrHideFragment(this, extras, threadId)
     }
 
     private fun openSettings() {
@@ -1426,7 +1358,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
             extras.putParcelable(ConversationFragmentV2.URI,result.data!!.parcelable(ConversationFragmentV2.URI))
             extras.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
-            replaceFragment(ConversationFragmentV2(), null, extras)
+            showOrHideFragment(ConversationFragmentV2(), extras, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
         }else {
             homeAdapter.notifyDataSetChanged()
         }
@@ -1479,7 +1411,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 //        }
         //Intent(activity, MyProfileActivity::class.java).also {
 //            it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.MyAccountScreen.route)
-            //startActivity(it)
+        //startActivity(it)
         //}
 
         val intent = Intent(activity,MyProfileActivity::class.java)
@@ -1494,7 +1426,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
             extras.putParcelable(ConversationFragmentV2.URI,result.data!!.parcelable(ConversationFragmentV2.URI))
             extras.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
-            replaceFragment(ConversationFragmentV2(), null, extras)
+            showOrHideFragment(ConversationFragmentV2(), extras, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
         }
     }
 
@@ -1515,7 +1447,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         if (result.resultCode == Activity.RESULT_OK) {
             val extras = Bundle()
             extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
-            replaceFragment(ConversationFragmentV2(), null, extras)
+            showOrHideFragment(ConversationFragmentV2(), extras, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
         }
     }
 
@@ -1534,7 +1466,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                     extras.putParcelable(ConversationFragmentV2.URI,result.data!!.parcelable(ConversationFragmentV2.URI))
                     extras.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
                     extras.putString(ConversationFragmentV2.BNS_NAME,result.data!!.getStringExtra(ConversationFragmentV2.BNS_NAME))
-                    replaceFragment(ConversationFragmentV2(), null, extras)
+                    showOrHideFragment(ConversationFragmentV2(), extras, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
                 }
                 2 -> { // Secret Group
                     createNewSecretGroup()
@@ -1552,7 +1484,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                 6 -> { // Individual Conversation
                     val extras = Bundle()
                     extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.parcelable(ConversationFragmentV2.ADDRESS))
-                    replaceFragment(ConversationFragmentV2(),null,extras)
+                    replaceFragment(ConversationFragmentV2(), null, extras)
                 }
                 else -> return@registerForActivityResult
             }
@@ -1571,7 +1503,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             val extras = Bundle()
             extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
             extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.parcelable(ConversationFragmentV2.ADDRESS))
-            replaceFragment(ConversationFragmentV2(), null, extras)
+            showOrHideFragment(ConversationFragmentV2(), extras, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
         }
         if (result.resultCode == CreateClosedGroupActivity.closedGroupCreatedResultCode) {
             openNewConversationChat()
@@ -1596,7 +1528,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                 ConversationFragmentV2.ADDRESS,
                 result.data!!.parcelable(ConversationFragmentV2.ADDRESS)
             )
-            replaceFragment(ConversationFragmentV2(), null, extras)
+            showOrHideFragment(ConversationFragmentV2(), extras, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID, -1))
         }
     }
 
@@ -1621,7 +1553,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     private fun passGlobalSearchAdapterModelGroupConversationValue(threadId: Long) {
         val extras = Bundle()
         extras.putLong(ConversationFragmentV2.THREAD_ID,threadId)
-        replaceFragment(ConversationFragmentV2(),null,extras)
+        showOrHideFragment(ConversationFragmentV2(), extras, threadId)
     }
 
     private fun passGlobalSearchAdapterModelMessageValue(
@@ -1633,7 +1565,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         extras.putLong(ConversationFragmentV2.THREAD_ID,threadId)
         extras.putLong(ConversationFragmentV2.SCROLL_MESSAGE_ID,timestamp)
         extras.putParcelable(ConversationFragmentV2.SCROLL_MESSAGE_AUTHOR,author)
-        replaceFragment(ConversationFragmentV2(),null,extras)
+        showOrHideFragment(ConversationFragmentV2(), extras, threadId)
     }
 
     private fun callConversationScreen(threadId: Long, address: Address?, uri: Uri?, type: String?, extraText: CharSequence?) {
@@ -1643,7 +1575,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         extras.putParcelable(ConversationFragmentV2.URI,uri)
         extras.putString(ConversationFragmentV2.TYPE,type)
         extras.putCharSequence(Intent.EXTRA_TEXT,extraText)
-        replaceFragment(ConversationFragmentV2(), null, extras)
+        showOrHideFragment(ConversationFragmentV2(), extras, threadId)
     }
 
     override fun onConfirm(dialogType: HomeDialogType, threadRecord: ThreadRecord?) {

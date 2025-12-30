@@ -15,7 +15,6 @@ import android.database.Cursor
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.Typeface
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
@@ -33,7 +32,6 @@ import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.util.Pair
-import android.util.TypedValue
 import android.view.ActionMode
 import android.view.LayoutInflater
 import android.view.Menu
@@ -69,7 +67,6 @@ import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.annimon.stream.Stream
-import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.messaging.jobs.AttachmentDownloadJob
 import com.beldex.libbchat.messaging.jobs.JobQueue
 import com.beldex.libbchat.messaging.mentions.Mention
@@ -86,7 +83,6 @@ import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment
 import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview
 import com.beldex.libbchat.messaging.sending_receiving.quotes.QuoteModel
-import com.beldex.libbchat.messaging.utilities.UpdateMessageData.Companion.buildSharedContact
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.MediaTypes
@@ -113,11 +109,9 @@ import io.beldex.bchat.contactshare.SimpleTextWatcher
 import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
 import io.beldex.bchat.conversation.v2.contact_sharing.ContactSharingActivity
 import io.beldex.bchat.conversation.v2.contact_sharing.ViewAllContactFragment
-import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 import io.beldex.bchat.conversation.v2.contact_sharing.flattenData
 import io.beldex.bchat.conversation.v2.dialogs.LinkPreviewDialog
 import io.beldex.bchat.conversation.v2.dialogs.SendSeedDialog
-import io.beldex.bchat.conversation.v2.input_bar.InputBarButton
 import io.beldex.bchat.conversation.v2.input_bar.InputBarDelegate
 import io.beldex.bchat.conversation.v2.input_bar.InputBarRecordingViewDelegate
 import io.beldex.bchat.conversation.v2.input_bar.mentions.MentionCandidatesView
@@ -142,6 +136,7 @@ import io.beldex.bchat.data.TxData
 import io.beldex.bchat.data.UserNotes
 import io.beldex.bchat.database.BeldexMessageDatabase
 import io.beldex.bchat.database.MmsDatabase
+import io.beldex.bchat.database.MmsSmsDatabase
 import io.beldex.bchat.database.ReactionDatabase
 import io.beldex.bchat.database.SmsDatabase
 import io.beldex.bchat.database.ThreadDatabase
@@ -237,6 +232,9 @@ import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
+import androidx.core.graphics.drawable.toDrawable
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 
 
 private const val ARG_PARAM1="param1"
@@ -270,7 +268,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         )[LinkPreviewViewModel::class.java]
     }
 
-    //    var threadId: Long? = -1L
     @Inject
     lateinit var threadDb : ThreadDatabase
 
@@ -291,15 +288,25 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
     @Inject
     lateinit var mmsDb : MmsDatabase
 
+    @Inject
+    lateinit var mmsSmsDb : MmsSmsDatabase
+
     private val viewModel : ConversationViewModel by viewModels {
         var threadId=requireArguments().getLong(THREAD_ID, -1L)
         if (threadId == -1L) {
-            requireArguments().getParcelable<Address>(ADDRESS)?.let { address ->
-                val recipient=Recipient.from(requireActivity(), address, false)
-                threadId=threadDb.getOrCreateThreadIdFor(recipient)
+            val address: Address? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                requireArguments().getParcelable(ADDRESS, Address::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                requireArguments().getParcelable(ADDRESS)
+            }
+
+            address?.let { addr ->
+                val recipient = Recipient.from(requireActivity(), addr, false)
+                threadId = threadDb.getOrCreateThreadIdFor(recipient)
             }
         }
-        listenerCallback!!.getConversationViewModel().create(threadId!!)
+        listenerCallback!!.getConversationViewModel().create(threadId)
     }
 
     private fun callViewModel() : Recipient? {
@@ -311,7 +318,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                     threadId=threadDb.getOrCreateThreadIdFor(recipient)
                 }
             }
-            listenerCallback!!.getConversationViewModel().create(threadId!!)
+            listenerCallback!!.getConversationViewModel().create(threadId)
         }
         return viewModels.recipient.value
     }
@@ -352,8 +359,8 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
     private var isShowingMentionCandidatesView=false
 
     // Search
-    var searchViewModel : SearchViewModel?=null
-    var searchViewItem : MenuItem?=null
+    private var searchViewModel : SearchViewModel?=null
+    private var searchViewItem : MenuItem?=null
 
     private var emojiLastClickTime : Long=0
 
@@ -384,10 +391,9 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
 
     /*Hales63*/
     private val adapter by lazy {
-        val cursor=viewModel.getConversationsCursor()
         val adapter=ConversationAdapter(
             requireActivity(),
-            cursor,
+            null,
             searchViewModel,
             onItemPress={ message, position, view, event ->
                 if (!TextSecurePreferences.getIsReactionOverlayVisible(requireContext())) {
@@ -417,14 +423,16 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                     onDeselect(message, position, it)
                 }
             },
-            onAttachmentNeedsDownload={ attachmentId, mmsId ->
+            onAttachmentNeedsDownload ={ attachmentId, mmsId ->
                 // Start download (on IO thread)
                 lifecycleScope.launch(Dispatchers.IO) {
                     JobQueue.shared.add(AttachmentDownloadJob(attachmentId, mmsId))
                 }
             },
-            glide=glide,
-            lifecycleCoroutineScope=lifecycleScope
+            glide =glide,
+            lifecycleCoroutineScope =lifecycleScope,
+            threadRecipientProvider = viewModel::recipient.get().value,
+            messageDB = mmsSmsDb
         )
         adapter.visibleMessageViewDelegate=this
         adapter
@@ -443,43 +451,13 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
 
     private val glide by lazy { Glide.with(this) }
     private val lockViewHitMargin by lazy { toPx(40, resources) }
-    private val gifButton by lazy {
-        InputBarButton(
-            requireActivity(),
-            R.drawable.ic_gif,
-            hasOpaqueBackground=false,
-            isGIFButton=true
-        )
-    }
-    private val documentButton by lazy {
-        InputBarButton(
-            requireActivity(),
-            R.drawable.ic_document,
-            hasOpaqueBackground=false
-        )
-    }
-    private val libraryButton by lazy {
-        InputBarButton(
-            requireActivity(),
-            R.drawable.ic_gallery,
-            hasOpaqueBackground=false
-        )
-    }
-    private val cameraButton by lazy {
-        InputBarButton(
-            requireActivity(),
-            R.drawable.ic_camera,
-            hasOpaqueBackground=false
-        )
-    }
     private val messageToScrollTimestamp=AtomicLong(-1)
     private val messageToScrollAuthor=AtomicReference<Address?>(null)
-    private var amplitudeJob : Job?=null
 
     private lateinit var reactionDelegate : ConversationReactionDelegate
     private val reactWithAnyEmojiStartPage=-1
 
-     // The coroutine job that was used to submit a message approval response to the Mnode
+    // The coroutine job that was used to submit a message approval response to the Mnode
     private var conversationApprovalJob: Job? = null
 
 
@@ -625,25 +603,24 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
 
         checkReadExternalStoragePermission()
 
-//        val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
         callViewModel=ViewModelProvider(requireActivity())[CallViewModel::class.java]
-        lifecycleScope.launch {
-            viewModel.backToHome.collectLatest {
-                if (it) {
-                    Toast.makeText(
-                        requireActivity(),
-                        getString(R.string.conversationsDeleted),
-                        Toast.LENGTH_LONG
-                    ).show()
-                    backToHome()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.backToHome.collectLatest {
+                    if (it) {
+                        Toast.makeText(
+                            requireActivity(),
+                            getString(R.string.conversationsDeleted),
+                            Toast.LENGTH_LONG
+                        ).show()
+                        backToHome()
+                    }
                 }
             }
         }
 
-
-        groupRepository=
-            SecretGroupInfoRepository(DatabaseComponent.get(requireContext()).groupDatabase())
-
+        groupRepository= SecretGroupInfoRepository(DatabaseComponent.get(requireContext()).groupDatabase())
 
         // messageIdToScroll
         messageToScrollTimestamp.set(requireArguments().getLong(SCROLL_MESSAGE_ID, -1))
@@ -655,20 +632,15 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             binding.networkStatusLayout.visibility=View.GONE
         }
 
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            unreadCount=viewModel.getUnreadCount()
-            withContext(Dispatchers.Main) {
-                setUpRecyclerView()
-                viewModel.recipient.value?.let { recipient ->
-                    setUpTypingObserver(recipient)
-                }
-                setUpRecipientObserver()
-                getLatestOpenGroupInfoIfNeeded()
-                setUpSearchResultObserver()
-                scrollToFirstUnreadMessageIfNeeded()
-            }
+        setUpRecyclerView()
+        viewModel.recipient.value?.let { recipient ->
+            setUpTypingObserver(recipient)
         }
+        setUpRecipientObserver()
+        getLatestOpenGroupInfoIfNeeded()
+        setUpSearchResultObserver()
+        scrollToFirstUnreadMessageIfNeeded()
+
         setUpToolBar()
         setUpInputBar()
         setUpLinkPreviewObserver()
@@ -700,8 +672,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             }
         }
 
-
-        updateUnreadCountIndicator()
         updateSubtitle()
         setUpBlockedBanner()
         binding.searchBottomBar.setEventListener(this)
@@ -709,25 +679,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         /*Hales63*/
         setUpMessageRequestsBar()
         setSearchView()
-
-
-//        viewModel.recipient.value?.let { recipient ->
-//            if (recipient.isOpenGroupRecipient) {
-//                try {
-//                    val openGroup = beldexThreadDb.getOpenGroupChat(viewModel.threadId)
-//                    if (openGroup == null) {
-//                        Toast.makeText(
-//                            requireContext(),
-//                            "This thread has been deleted.",
-//                            Toast.LENGTH_LONG
-//                        ).show()
-//                        return backToHome()
-//                    }
-//                } catch (ex: NullPointerException) {
-//                    Log.d("Exception ", ex.message.toString())
-//                }
-//            }
-//        }
 
         val reactionOverlayStub : Stub<ConversationReactionOverlay> =
             ViewUtil.findStubById(requireActivity(), R.id.conversation_reaction_scrubber_stub)
@@ -753,7 +704,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                 2f
             )
         }
-
 
         binding.slideToPayButton.onSlideCompleteListener=object : OnSlideCompleteListener {
             override fun onSlideComplete(view : SlideToActView) {
@@ -821,7 +771,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                 }
             }
         }
-        callViewModel=ViewModelProvider(requireActivity())[CallViewModel::class.java]
     }
 
     override fun onResume() {
@@ -882,6 +831,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         * way.*/
         binding.inputBar.clearFocus()
         Helper.hideKeyboard(requireActivity())
+        uiJob?.cancel()
     }
 
     override fun onDestroy() {
@@ -892,7 +842,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         networkChangedReceiver=null
         val activity=activity
         if (isAdded && activity != null) {
-            this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            activity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
 
@@ -971,7 +921,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                                 callDurationFormat
                             )
                         }
-
                         delay(1_000)
                     }
                 }
@@ -1127,9 +1076,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
 
     // `position` is the adapter position; not the visual position
     private fun handleSwipeToReply(message : MessageRecord) {
-        //New Line
-//        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-//        params.bottomMargin = 16
         val recipient=viewModel.recipient.value ?: return
         binding.slideToPayButton.visibility=View.GONE
         binding.inputBar.draftQuote(recipient, message, glide)
@@ -1150,8 +1096,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             is ControlMessageView -> messageView.controlContentView
             else -> null
         } ?: return Timber.tag("Beldex")
-            .w("Failed to show reaction because the messageRecord is not of a known type: " + messageView)
-
+            .w("Failed to show reaction because the messageRecord is not of a known type: %s", messageView)
 
         val messageContentBitmap=try {
             messageContentView.drawToBitmap()
@@ -1300,7 +1245,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             reactionDelegate.hideForReactWithAny()
             ReactWithAnyEmojiDialogFragment
                 .createForMessageRecord(messageRecord, reactWithAnyEmojiStartPage)
-                .show(requireActivity().supportFragmentManager, "BOTTOM");
+                .show(requireActivity().supportFragmentManager, "BOTTOM")
         }
     }
 
@@ -1487,30 +1432,8 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
 
     override fun toggleAttachmentOptions() {
         checkUnBlock()
-//        val targetAlpha = if (isShowingAttachmentOptions) 0.0f else 1.0f
-//        val allButtonContainers = listOfNotNull(
-//            binding.cameraButtonContainer,
-//            binding.libraryButtonContainer,
-//            binding.documentButtonContainer,
-//            binding.gifButtonContainer
-//        )
-//        val isReversed = isShowingAttachmentOptions // Run the animation in reverse
-//        val count = allButtonContainers.size
-//        allButtonContainers.indices.forEach { index ->
-//            val view = allButtonContainers[index]
-//            val animation = ValueAnimator.ofObject(FloatEvaluator(), view.alpha, targetAlpha)
-//            animation.duration = 250L
-//            animation.startDelay =
-//                if (isReversed) 50L * (count - index.toLong()) else 50L * index.toLong()
-//            animation.addUpdateListener { animator ->
-//                view.alpha = animator.animatedValue as Float
-//            }
-//            animation.start()
-//        }
         isShowingAttachmentOptions=!isShowingAttachmentOptions
         binding.attachmentContainer.isVisible=isShowingAttachmentOptions
-//        val allButtons = listOf(cameraButton, libraryButton, documentButton, gifButton)
-//        allButtons.forEach { it.snIsEnabled = isShowingAttachmentOptions }
     }
 
     @Deprecated("Deprecated in Java")
@@ -1565,9 +1488,12 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             TAKE_PHOTO -> {
                 intent ?: return
                 val body=intent.getStringExtra(MediaSendActivity.EXTRA_MESSAGE)
-                val media=intent.getParcelableArrayListExtra<Media>(
-                    MediaSendActivity.EXTRA_MEDIA
-                ) ?: return
+                val media: ArrayList<Media> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    intent.getParcelableArrayListExtra(MediaSendActivity.EXTRA_MEDIA, Media::class.java)
+                } else {
+                    @Suppress("DEPRECATION")
+                    intent.getParcelableArrayListExtra(MediaSendActivity.EXTRA_MEDIA)
+                } ?: return
                 val slideDeck=SlideDeck()
                 for (item in media) {
                     when {
@@ -1843,7 +1769,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             val enableInstruction=
                 dialogView.findViewById<TextView>(R.id.payAsYouChatEnable_Instruction)
             val alert=dialog.create()
-            alert.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            alert.window!!.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
             alert.setCanceledOnTouchOutside(false)
             alert.show()
             if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
@@ -1968,21 +1894,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         binding.tooltip.typeface=face
     }
 
-    private fun failedToConnectToolTipStyle() {
-        val face=
-            Typeface.createFromAsset(
-                requireContext().assets,
-                "fonts/open_sans_medium.ttf"
-            )
-        @ColorInt val color=
-            requireContext().resources.getColorWithID(
-                R.color.negative_red_button_border,
-                requireContext().theme
-            )
-        binding.tooltip.setTextColor(color)
-        binding.tooltip.typeface=face
-    }
-
     private fun fromHtml(source : String?) : Spanned? {
         return Html.fromHtml(source, Html.FROM_HTML_MODE_LEGACY)
     }
@@ -2016,17 +1927,14 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
 
     override fun handleVoiceMessageUIHidden() {
         val inputBar=binding.inputBar
-//        val inputBarCard = binding.inputBarCard
         //New Line
         inputBar.visibility=View.VISIBLE
 
         inputBar.alpha=1.0f
-//        inputBarCard.alpha = 1.0f
         val animation=ValueAnimator.ofObject(FloatEvaluator(), 0.0f, 1.0f)
         animation.duration=250L
         animation.addUpdateListener { animator ->
             inputBar.alpha=animator.animatedValue as Float
-//            inputBarCard.alpha = animator.animatedValue as Float
         }
         animation.start()
     }
@@ -2035,7 +1943,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         hideVoiceMessageUI()
         this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         val future=audioRecorder.stopRecording()
-//        amplitudeJob?.cancel()
         stopAudioHandler.removeCallbacks(stopVoiceMessageRecordingTask)
         future.addListener(object : ListenableFuture.Listener<Pair<Uri, Long>> {
 
@@ -2150,35 +2057,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                 setListener(this@ConversationFragmentV2)
             }
             selectedMessageDialog.show(childFragmentManager, ConversationActionDialog.TAG)
-
-            /* val messageCount = messages.size
-            val builder = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
-            builder.setTitle(
-                resources.getQuantityString(
-                    R.plurals.ConversationFragment_delete_selected_messages,
-                    messageCount,
-                    messageCount
-                )
-            )
-            builder.setMessage(
-                resources.getQuantityString(
-                    R.plurals.ConversationFragment_this_will_permanently_delete_all_n_selected_messages,
-                    messageCount,
-                    messageCount
-                )
-            )
-            builder.setCancelable(true)
-            builder.setPositiveButton(R.string.delete) { _, _ ->
-                for (message in messages) {
-                    viewModel.deleteLocally(message)
-                }
-                endActionMode()
-            }
-            builder.setNegativeButton(android.R.string.cancel) { dialog, _ ->
-                dialog.dismiss()
-                endActionMode()
-            }
-            builder.show()*/
         }
     }
 
@@ -2229,7 +2107,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             if (message.isPayment) {
                 //Payment Tag
                 var amount=""
-                var direction=""
                 try {
                     val mainObject=JSONObject(message.body)
                     val uniObject=mainObject.getJSONObject("kind")
@@ -2237,7 +2114,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                 } catch (e : JSONException) {
                     e.printStackTrace()
                 }
-                direction=if (message.isOutgoing) {
+                val direction: String = if (message.isOutgoing) {
                     resources.getString(R.string.payment_sent)
                 } else {
                     resources.getString(R.string.payment_received)
@@ -2302,7 +2179,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
 
     override fun showMessageDetail(messages : Set<MessageRecord>) {
         if (messages.isNotEmpty()) {
-            val message=messages.first()
             val intent=Intent(requireActivity(), MessageDetailActivity::class.java)
             intent.putExtra(MessageDetailActivity.MESSAGE_TIMESTAMP, messages.first().timestamp)
             startActivity(intent)
@@ -2375,9 +2251,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
 
     override fun reply(messages : Set<MessageRecord>) {
         val recipient=viewModel.recipient.value ?: return
-        //New Line
-//        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-//        params.bottomMargin = 16
         if (messages.isNotEmpty()) {
             binding.slideToPayButton.visibility=View.GONE
             binding.inputBar.draftQuote(recipient, messages.first(), glide)
@@ -2390,30 +2263,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         this.actionMode=null
     }
 
-    //SteveJosephh21 - 08
     override fun block(deleteThread : Boolean) {
-//        val title = R.string.RecipientPreferenceActivity_block_this_contact_question
-//        val message =
-//            R.string.RecipientPreferenceActivity_you_will_no_longer_receive_messages_and_calls_from_this_contact
-//        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog_Clear_All)
-//            .setTitle(title)
-//            .setMessage(message)
-//            .setNegativeButton(android.R.string.cancel, null)
-//            .setPositiveButton(R.string.RecipientPreferenceActivity_block) { _, _ ->
-//                viewModel.block()
-//                viewModel.recipient.value?.let { thread ->
-//                    showBlockProgressBar(thread)
-//                }
-//                if (deleteThread) {
-//                    viewModel.deleteThread()
-//                }
-//            }.show()
-//        //New Line
-//        val textView: TextView? = dialog.findViewById(android.R.id.message)
-//        val face: Typeface =
-//            Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
-//        textView!!.typeface = face
-
         val blockDialog=ConversationActionDialog()
         blockDialog.apply {
             arguments=Bundle().apply {
@@ -2429,26 +2279,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
     }
 
     override fun unblock() {
-//        val title = R.string.ConversationActivity_unblock_this_contact_question
-//        val message =
-//            R.string.ConversationActivity_you_will_once_again_be_able_to_receive_messages_and_calls_from_this_contact
-//        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog_Clear_All)
-//            .setTitle(title)
-//            .setMessage(message)
-//            .setNegativeButton(android.R.string.cancel, null)
-//            .setPositiveButton(R.string.ConversationActivity_unblock) { _, _ ->
-//                viewModel.unblock()
-//                viewModel.recipient.value?.let { thread ->
-//                    showBlockProgressBar(thread)
-//                }
-//            }.show()
-//
-//        //New Line
-//        val textView: TextView? = dialog.findViewById(android.R.id.message)
-//        val face: Typeface =
-//            Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
-//        textView!!.typeface = face
-
         val blockDialog=ConversationActionDialog()
         blockDialog.apply {
             arguments=Bundle().apply {
@@ -2495,18 +2325,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             setListener(this@ConversationFragmentV2)
         }
         dialog.show(childFragmentManager, ConversationActionDialog.TAG)
-
-//        ExpirationDialog.show(requireActivity(), thread.expireMessages) { expirationTime: Int ->
-//            viewModel.setExpireMessages(thread, expirationTime)
-//            val message = ExpirationTimerUpdate(expirationTime)
-//            message.recipient = thread.address.serialize()
-//            message.sentTimestamp = MnodeAPI.nowWithOffset
-//            val expiringMessageManager =
-//                ApplicationContext.getInstance(requireActivity()).expiringMessageManager
-//            expiringMessageManager.setExpirationTimer(message)
-//            MessageSender.send(message, thread.address)
-//            this.activity?.invalidateOptionsMenu()
-//        }
     }
 
     override fun scrollToMessageIfPossible(timestamp : Long) {
@@ -2545,7 +2363,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                     extras.putLong(THREAD_ID, threadId)
                     val manager=requireActivity().supportFragmentManager
                     manager.popBackStack()
-                    replaceFragment(ConversationFragmentV2(), null, extras)
+                    showOrHideFragment(ConversationFragmentV2(), extras, threadId)
                 },
                 onCancel={}
             )
@@ -2590,371 +2408,299 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         visibleMessageView.playVoiceMessage()
     }
 
-        override fun isAudioPlaying(isPlaying : Boolean, audioPlayingIndex : Int) {
-            isAudioPlaying=isPlaying
-            audioPlayingIndexInAdapter=audioPlayingIndex
-        }
+    override fun isAudioPlaying(isPlaying : Boolean, audioPlayingIndex : Int) {
+        isAudioPlaying=isPlaying
+        audioPlayingIndexInAdapter=audioPlayingIndex
+    }
 
-        override fun stopVoiceMessages(indexInAdapter : Int) {
-            if (indexInAdapter < 0 || indexInAdapter >= adapter.itemCount) {
-                return
-            }
-            val viewHolder=
-                binding.conversationRecyclerView.findViewHolderForAdapterPosition(indexInAdapter) as? ConversationAdapter.VisibleMessageViewHolder
-                    ?: return
-            val visibleMessageView=
-                ViewVisibleMessageBinding.bind(viewHolder.view).visibleMessageView
-            visibleMessageView.stoppedVoiceMessage()
+    override fun stopVoiceMessages(indexInAdapter : Int) {
+        if (indexInAdapter < 0 || indexInAdapter >= adapter.itemCount) {
+            return
         }
+        val viewHolder=
+            binding.conversationRecyclerView.findViewHolderForAdapterPosition(indexInAdapter) as? ConversationAdapter.VisibleMessageViewHolder
+                ?: return
+        val visibleMessageView=
+            ViewVisibleMessageBinding.bind(viewHolder.view).visibleMessageView
+        visibleMessageView.stoppedVoiceMessage()
+    }
 
     private fun onSearchOpened() {
-            searchViewModel!!.onSearchOpened()
-            binding.searchBar.visibility=View.VISIBLE
-            binding.noMatchesFoundTextview.visibility=View.GONE
-            binding.searchProgress.visibility = View.GONE
-            binding.searchQuery.setText("")
-            binding.searchQuery.requestFocus()
-        }
+        searchViewModel!!.onSearchOpened()
+        binding.searchBar.visibility=View.VISIBLE
+        binding.noMatchesFoundTextview.visibility=View.GONE
+        binding.searchProgress.visibility = View.GONE
+        binding.searchQuery.setText("")
+        binding.searchQuery.requestFocus()
+    }
 
-        private fun onSearchClosed() {
-            searchViewModel!!.onSearchClosed()
-            binding.searchProgress.visibility = View.GONE
-            binding.searchBar.visibility=View.GONE
-            binding.noMatchesFoundTextview.visibility=View.GONE
-            adapter.onSearchQueryUpdated(null)
-            binding.searchQuery.clearFocus()
+    private fun onSearchClosed() {
+        searchViewModel!!.onSearchClosed()
+        binding.searchProgress.visibility = View.GONE
+        binding.searchBar.visibility=View.GONE
+        binding.noMatchesFoundTextview.visibility=View.GONE
+        adapter.onSearchQueryUpdated(null)
+        binding.searchQuery.clearFocus()
+        this.activity?.invalidateOptionsMenu()
+        hideKeyboard()
+    }
+
+    fun onSearchQueryUpdated(query : String) {
+        if (query.trim().isNotEmpty()) {
+            searchViewModel!!.onQueryUpdated(query, viewModel.threadId)
+            binding.searchProgress.visibility=View.VISIBLE
+            adapter.onSearchQueryUpdated(query)
+        }
+    }
+
+    override fun onSearchMoveUpPressed() {
+        this.searchViewModel!!.onMoveUp()
+    }
+
+    override fun onSearchMoveDownPressed() {
+        this.searchViewModel!!.onMoveDown()
+    }
+
+    override fun onAttachmentChanged() {
+    }
+
+
+    // region Animation & Updating
+    override fun onModified(recipient : Recipient) {
+        this.activity?.runOnUiThread {
+            val threadRecipient=viewModel.recipient.value ?: return@runOnUiThread
+            if (threadRecipient.isContactRecipient) {
+                binding.blockedBanner.isVisible=threadRecipient.isBlocked
+                setConversationRecyclerViewLayout(threadRecipient)
+                callShowPayAsYouChatBDXIcon(threadRecipient)
+                showBlockProgressBar(threadRecipient)
+            }
+            //New Line v32
+            setUpMessageRequestsBar()
             this.activity?.invalidateOptionsMenu()
-            hideKeyboard()
-        }
-
-        fun onSearchQueryUpdated(query : String) {
-            if (query.trim().isNotEmpty()) {
-                searchViewModel!!.onQueryUpdated(query, viewModel.threadId)
-                binding.searchProgress.visibility=View.VISIBLE
-                adapter.onSearchQueryUpdated(query)
-            }
-        }
-
-        override fun onSearchMoveUpPressed() {
-            this.searchViewModel!!.onMoveUp()
-        }
-
-        override fun onSearchMoveDownPressed() {
-            this.searchViewModel!!.onMoveDown()
-        }
-
-        override fun onAttachmentChanged() {
-        }
-
-
-        // region Animation & Updating
-        override fun onModified(recipient : Recipient) {
-            this.activity?.runOnUiThread {
-                val threadRecipient=viewModel.recipient.value ?: return@runOnUiThread
-                if (threadRecipient.isContactRecipient) {
-                    binding.blockedBanner.isVisible=threadRecipient.isBlocked
-                    setConversationRecyclerViewLayout(threadRecipient)
-                    callShowPayAsYouChatBDXIcon(threadRecipient)
-                    showBlockProgressBar(threadRecipient)
-                }
-                //New Line v32
-                setUpMessageRequestsBar()
-                this.activity?.invalidateOptionsMenu()
-                updateSubtitle()
-                showOrHideInputIfNeeded()
-                binding.profilePictureView.root.recycle()
-                binding.profilePictureView.root.update(threadRecipient)
-                //New Line v32
-                binding.conversationTitleView.text=when {
-                    threadRecipient.isLocalNumber -> getString(R.string.note_to_self).capitalizeFirstLetter()
-                    else -> threadRecipient.toShortString().capitalizeFirstLetter()
-                }
-            }
-        }
-
-        override fun onCreateLoader(id : Int, args : Bundle?) : Loader<Cursor> {
-            return ConversationLoader(
-                viewModel.threadId,
-                !viewModel.isIncomingMessageRequestThread(),
-                requireActivity()
-            )
-        }
-
-        override fun onLoadFinished(loader : Loader<Cursor>, cursor : Cursor?) {
-            adapter.changeCursor(cursor)
-            if (cursor != null) {
-                val messageTimestamp=messageToScrollTimestamp.getAndSet(-1)
-                val author=messageToScrollAuthor.getAndSet(null)
-                if (author != null && messageTimestamp >= 0) {
-                    jumpToMessage(author, messageTimestamp, null)
-                }
-            }
-        }
-
-        override fun onLoaderReset(loader : Loader<Cursor>) {
-            adapter.changeCursor(null)
-        }
-
-        /*Hales63*/
-        private fun setUpRecyclerView() {
-            binding.conversationRecyclerView.adapter=adapter
-            val layoutManager=LinearLayoutManager(
-                requireActivity(),
-                LinearLayoutManager.VERTICAL,
-                !viewModel.isIncomingMessageRequestThread()
-            )
-            binding.conversationRecyclerView.layoutManager=layoutManager
-            // Workaround for the fact that CursorRecyclerViewAdapter doesn't auto-update automatically (even though it says it will)
-            LoaderManager.getInstance(this).restartLoader(0, null, this)
-            binding.conversationRecyclerView.addOnScrollListener(object :
-                RecyclerView.OnScrollListener() {
-
-                override fun onScrolled(recyclerView : RecyclerView, dx : Int, dy : Int) {
-                    handleRecyclerViewScrolled()
-                }
-            })
-
-            binding.conversationRecyclerView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-                showScrollToBottomButtonIfApplicable()
-            }
-        }
-
-        private fun String.capitalizeFirstLetter() : String {
-            return this.replaceFirstChar { it.uppercase() }
-        }
-
-        private fun setUpToolBar() {
-            val profileManager=SSKEnvironment.shared.profileManager
-            val recipient=viewModel.recipient.value ?: return
-            val bnsName=requireArguments().getString(BNS_NAME)
-            if (bnsName != null && adapter.cursor?.count == 0) {
-                profileManager.setName(requireContext(), recipient, bnsName)
-            }
-            val recipientName : String=recipient.toShortString()
-
+            updateSubtitle()
+            showOrHideInputIfNeeded()
+            binding.profilePictureView.root.recycle()
+            binding.profilePictureView.root.update(threadRecipient)
+            //New Line v32
             binding.conversationTitleView.text=when {
-                recipient.isLocalNumber -> getString(R.string.note_to_self).capitalizeFirstLetter()
-                else -> recipientName.capitalizeFirstLetter()
+                threadRecipient.isLocalNumber -> getString(R.string.note_to_self).capitalizeFirstLetter()
+                else -> threadRecipient.toShortString().capitalizeFirstLetter()
             }
-            @DimenRes val sizeID : Int=if (recipient.isClosedGroupRecipient) {
-                R.dimen.medium_profile_picture_size
+        }
+    }
+
+    override fun onCreateLoader(id : Int, args : Bundle?) : Loader<Cursor> {
+        return ConversationLoader(
+            viewModel.threadId,
+            !viewModel.isIncomingMessageRequestThread(),
+            requireActivity(),
+            mmsSmsDatabase = mmsSmsDb
+        )
+    }
+
+    override fun onLoadFinished(loader : Loader<Cursor>, cursor : Cursor?) {
+        val oldCount = adapter.itemCount
+        val newCount = cursor?.count ?: 0
+        if (adapter.cursor !== cursor) {
+            adapter.changeCursor(cursor)
+        }
+        if (cursor != null) {
+            val messageTimestamp=messageToScrollTimestamp.getAndSet(-1)
+            val author=messageToScrollAuthor.getAndSet(null)
+            val initialUnreadCount = viewModel.getUnreadCount()
+
+            // Update the unreadCount value to be loaded from the database since we got a new message
+            if (oldCount != newCount || initialUnreadCount != unreadCount) {
+                // Update the unreadCount value to be loaded from the database since we got a new
+                // message (we need to store it in a local variable as it can get overwritten on
+                // another thread before the 'firstLoad.getAndSet(false)' case below)
+                unreadCount = initialUnreadCount
+                updateUnreadCountIndicator()
+            }
+
+            if (author != null && messageTimestamp >= 0) {
+                jumpToMessage(author, messageTimestamp, null)
+            }
+        }
+    }
+
+    override fun onLoaderReset(loader : Loader<Cursor>) {
+        adapter.changeCursor(null)
+    }
+
+    /*Hales63*/
+    private fun setUpRecyclerView() {
+        binding.conversationRecyclerView.adapter=adapter
+        val layoutManager=LinearLayoutManager(
+            requireActivity(),
+            LinearLayoutManager.VERTICAL,
+            !viewModel.isIncomingMessageRequestThread()
+        )
+        binding.conversationRecyclerView.layoutManager=layoutManager
+        // Workaround for the fact that CursorRecyclerViewAdapter doesn't auto-update automatically (even though it says it will)
+        binding.conversationRecyclerView.post {
+            LoaderManager.getInstance(this).initLoader(0, null, this)
+        }
+        binding.conversationRecyclerView.addOnScrollListener(object :
+            RecyclerView.OnScrollListener() {
+
+            override fun onScrolled(recyclerView : RecyclerView, dx : Int, dy : Int) {
+                handleRecyclerViewScrolled()
+            }
+        })
+
+        binding.conversationRecyclerView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            showScrollToBottomButtonIfApplicable()
+        }
+    }
+
+    private fun String.capitalizeFirstLetter() : String {
+        return this.replaceFirstChar { it.uppercase() }
+    }
+
+    private fun setUpToolBar() {
+        val profileManager=SSKEnvironment.shared.profileManager
+        val recipient=viewModel.recipient.value ?: return
+        val bnsName=requireArguments().getString(BNS_NAME)
+        if (bnsName != null && adapter.cursor?.count == 0) {
+            profileManager.setName(requireContext(), recipient, bnsName)
+        }
+        val recipientName : String=recipient.toShortString()
+
+        binding.conversationTitleView.text=when {
+            recipient.isLocalNumber -> getString(R.string.note_to_self).capitalizeFirstLetter()
+            else -> recipientName.capitalizeFirstLetter()
+        }
+        @DimenRes val sizeID : Int=if (recipient.isClosedGroupRecipient) {
+            R.dimen.medium_profile_picture_size
+        } else {
+            R.dimen.small_profile_picture_size
+        }
+        val size=resources.getDimension(sizeID).roundToInt()
+        binding.profilePictureView.root.layoutParams=LinearLayout.LayoutParams(size, size)
+        binding.profilePictureView.root.glide=glide
+        MentionManagerUtilities.populateUserPublicKeyCacheIfNeeded(
+            viewModel.threadId,
+            requireActivity()
+        )
+        binding.profilePictureView.root.update(recipient)
+        binding.layoutConversation.setOnClickListener()
+        {
+            cancelVoiceMessage()
+            if (recipient.isClosedGroupRecipient) {
+                callSecretGroupInfo(recipient)
             } else {
-                R.dimen.small_profile_picture_size
+                hideAttachmentContainer()
+                ConversationMenuHelper.showAllMedia(recipient, listenerCallback)
             }
-            val size=resources.getDimension(sizeID).roundToInt()
-            binding.profilePictureView.root.layoutParams=LinearLayout.LayoutParams(size, size)
-            binding.profilePictureView.root.glide=glide
-            MentionManagerUtilities.populateUserPublicKeyCacheIfNeeded(
-                viewModel.threadId,
-                requireActivity()
-            )
-            binding.profilePictureView.root.update(recipient)
-            binding.layoutConversation.setOnClickListener()
-            {
-                cancelVoiceMessage()
-                if (recipient.isClosedGroupRecipient) {
-                    callSecretGroupInfo(recipient)
+
+        }
+        binding.backToHomeBtn.setOnClickListener {
+            listenerCallback?.walletOnBackPressed()
+        }
+
+    }
+
+    fun backToHome() {
+        val homeFragment : Fragment=HomeFragment()
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(
+                R.id.activity_home_frame_layout_container,
+                homeFragment,
+                HomeFragment::class.java.name
+            ).commit()
+    }
+
+    private fun setUpInputBar() {
+        binding.inputBar.delegate=this
+        binding.inputBarRecordingView.delegate=this
+        binding.cameraButton.setOnClickListener {
+            showCamera()
+            toggleAttachmentOptions()
+        }
+        binding.imageButton.setOnClickListener {
+            pickFromLibrary()
+            toggleAttachmentOptions()
+        }
+        binding.documentButton.setOnClickListener {
+            showDocumentPicker()
+            toggleAttachmentOptions()
+        }
+        binding.gifButton.setOnClickListener {
+            if (CheckOnline.isOnline(requireContext())) {
+                showGIFPicker()
+                toggleAttachmentOptions()
+            } else {
+                Toast.makeText(
+                    requireActivity(),
+                    R.string.please_check_your_internet_connection,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+        binding.contactButton.setOnClickListener {
+            toggleAttachmentOptions()
+            val intent=Intent(requireContext(), ContactSharingActivity::class.java)
+            contactActivityLauncher.launch(intent)
+        }
+    }
+
+    private val contactActivityLauncher=
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val contactsList=
+                    result.data?.serializable<ArrayList<ContactModel>>(ContactSharingActivity.RESULT_CONTACT_TO_SHARE)
+                if (binding.inputBar.quote != null) {
+                    sendAttachments(
+                        listOf(),
+                        null,
+                        binding.inputBar.quote,
+                        binding.inputBar.linkPreview,
+                        contactsList?.toList() ?: listOf()
+                    )
                 } else {
-                    hideAttachmentContainer()
-                    ConversationMenuHelper.showAllMedia(recipient, listenerCallback)
-                }
+                    binding.conversationRecyclerView.scrollToPosition(0)
 
-            }
-            binding.backToHomeBtn.setOnClickListener {
-                listenerCallback?.walletOnBackPressed()
-            }
-
-        }
-
-        fun backToHome() {
-            val homeFragment : Fragment=HomeFragment()
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(
-                    R.id.activity_home_frame_layout_container,
-                    homeFragment,
-                    HomeFragment::class.java.name
-                ).commit()
-        }
-
-        private fun setUpInputBar() {
-            binding.inputBar.delegate=this
-            binding.inputBarRecordingView.delegate=this
-            // GIF button
-//        binding.gifButtonContainer.addView(gifButton)
-//        gifButton.layoutParams = RelativeLayout.LayoutParams(
-//            RelativeLayout.LayoutParams.MATCH_PARENT,
-//            RelativeLayout.LayoutParams.MATCH_PARENT
-//        )
-//        gifButton.onUp = { showGIFPicker() }
-//        gifButton.snIsEnabled = false
-//        // Document button
-//        binding.documentButtonContainer.addView(documentButton)
-//        documentButton.layoutParams = RelativeLayout.LayoutParams(
-//            RelativeLayout.LayoutParams.MATCH_PARENT,
-//            RelativeLayout.LayoutParams.MATCH_PARENT
-//        )
-//        documentButton.onUp = { showDocumentPicker() }
-//        documentButton.snIsEnabled = false
-//        // Library button
-//        binding.libraryButtonContainer.addView(libraryButton)
-//        libraryButton.layoutParams = RelativeLayout.LayoutParams(
-//            RelativeLayout.LayoutParams.MATCH_PARENT,
-//            RelativeLayout.LayoutParams.MATCH_PARENT
-//        )
-//        libraryButton.onUp = { pickFromLibrary() }
-//        libraryButton.snIsEnabled = false
-//        // Camera button
-//        binding.cameraButtonContainer.addView(cameraButton)
-//        cameraButton.layoutParams = RelativeLayout.LayoutParams(
-//            RelativeLayout.LayoutParams.MATCH_PARENT,
-//            RelativeLayout.LayoutParams.MATCH_PARENT
-//        )
-//        cameraButton.onUp = { showCamera() }
-//        cameraButton.snIsEnabled = false
-            binding.cameraButton.setOnClickListener {
-                showCamera()
-                toggleAttachmentOptions()
-            }
-            binding.imageButton.setOnClickListener {
-                pickFromLibrary()
-                toggleAttachmentOptions()
-            }
-            binding.documentButton.setOnClickListener {
-                showDocumentPicker()
-                toggleAttachmentOptions()
-            }
-            binding.gifButton.setOnClickListener {
-                if (CheckOnline.isOnline(requireContext())) {
-                    showGIFPicker()
-                    toggleAttachmentOptions()
-                } else {
-                    Toast.makeText(
-                        requireActivity(),
-                        R.string.please_check_your_internet_connection,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-            binding.contactButton.setOnClickListener {
-                toggleAttachmentOptions()
-                val intent=Intent(requireContext(), ContactSharingActivity::class.java)
-                contactActivityLauncher.launch(intent)
-            }
-        }
-
-        private val contactActivityLauncher=
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    val contactsList=
-                        result.data?.serializable<ArrayList<ContactModel>>(ContactSharingActivity.RESULT_CONTACT_TO_SHARE)
-                    if (binding.inputBar.quote != null) {
-                        sendAttachments(
-                            listOf(),
-                            null,
-                            binding.inputBar.quote,
-                            binding.inputBar.linkPreview,
-                            contactsList?.toList() ?: listOf()
-                        )
-                    } else {
-                        binding.conversationRecyclerView.scrollToPosition(0)
-
-                        shareContact(contactsList?.toList() ?: listOf())
-                    }
-                }
-            }
-
-        private fun setUpLinkPreviewObserver() {
-            if (!listenerCallback!!.gettextSecurePreferences().isLinkPreviewsEnabled()) {
-                linkPreviewViewModel.onUserCancel(); return
-            }
-            linkPreviewViewModel.linkPreviewState.observe(requireActivity()) { previewState : LinkPreviewViewModel.LinkPreviewState? ->
-                if (previewState == null) return@observe
-                when {
-                    previewState.isLoading -> {
-                        //New Line
-//                    val params =
-//                        binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-//                    params.bottomMargin = 20
-
-                        binding.inputBar.draftLinkPreview()
-                    }
-
-                    previewState.linkPreview.isPresent -> {
-                        //New Line
-//                    val params =
-//                        binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-//                    params.bottomMargin = 20
-
-                        binding.inputBar.updateLinkPreviewDraft(
-                            glide,
-                            previewState.linkPreview.get()
-                        )
-                    }
-
-                    else -> {
-                        //New Line
-//                    val params =
-//                        binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-//                    params.bottomMargin = 16
-
-                        binding.inputBar.cancelLinkPreviewDraft(2)
-                    }
+                    shareContact(contactsList?.toList() ?: listOf())
                 }
             }
         }
 
-        private fun restoreDraftIfNeeded() {
-            //SetDataAndType
-            val mediaURI=requireArguments().parcelable<Uri>(URI)
-            val mediaType=AttachmentManager.MediaType.from(requireArguments().getString(TYPE))
-            val isInChatShare=requireActivity().intent.getBooleanExtra(IN_CHAT_SHARE, false)
-            val mimeType=MediaUtil.getMimeType(requireActivity(), mediaURI)
-            if (mediaURI != null && mediaType != null) {
-                if (mimeType != null && (AttachmentManager.MediaType.IMAGE == mediaType || AttachmentManager.MediaType.GIF == mediaType || AttachmentManager.MediaType.VIDEO == mediaType)) {
-                    if (isInChatShare) {
-                        prepMediaForSending(mediaURI, mediaType).addListener(object :
-                            ListenableFuture.Listener<Boolean> {
+    private fun setUpLinkPreviewObserver() {
+        if (!listenerCallback!!.gettextSecurePreferences().isLinkPreviewsEnabled()) {
+            linkPreviewViewModel.onUserCancel(); return
+        }
+        linkPreviewViewModel.linkPreviewState.observe(requireActivity()) { previewState : LinkPreviewViewModel.LinkPreviewState? ->
+            if (previewState == null) return@observe
+            when {
+                previewState.isLoading -> {
+                    binding.inputBar.draftLinkPreview()
+                }
 
-                            override fun onSuccess(result : Boolean?) {
-                                sendAttachments(
-                                    attachmentManager.buildSlideDeck().asAttachments(),
-                                    null
-                                )
-                            }
+                previewState.linkPreview.isPresent -> {
+                    binding.inputBar.updateLinkPreviewDraft(
+                        glide,
+                        previewState.linkPreview.get()
+                    )
+                }
 
-                            override fun onFailure(e : ExecutionException?) {
-                                if (isAdded) {
-                                    Toast.makeText(
-                                        requireActivity(),
-                                        R.string.activity_conversation_attachment_prep_failed,
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
-                            }
-                        })
-                        return
-                    } else {
-                        val media=Media(
-                            mediaURI,
-                            mimeType,
-                            0,
-                            0,
-                            0,
-                            0,
-                            Optional.absent(),
-                            Optional.absent()
-                        )
-                        startActivityForResult(
-                            MediaSendActivity.buildEditorIntent(
-                                requireActivity(),
-                                listOf(media),
-                                viewModel.recipient.value!!,
-                                ""
-                            ), PICK_FROM_LIBRARY
-                        )
-                        return
-                    }
-                } else {
+                else -> {
+                    binding.inputBar.cancelLinkPreviewDraft(2)
+                }
+            }
+        }
+    }
+
+    private fun restoreDraftIfNeeded() {
+        //SetDataAndType
+        val mediaURI=requireArguments().parcelable<Uri>(URI)
+        val mediaType=AttachmentManager.MediaType.from(requireArguments().getString(TYPE))
+        val isInChatShare=requireActivity().intent.getBooleanExtra(IN_CHAT_SHARE, false)
+        val mimeType=MediaUtil.getMimeType(requireActivity(), mediaURI)
+        if (mediaURI != null && mediaType != null) {
+            if (mimeType != null && (AttachmentManager.MediaType.IMAGE == mediaType || AttachmentManager.MediaType.GIF == mediaType || AttachmentManager.MediaType.VIDEO == mediaType)) {
+                if (isInChatShare) {
                     prepMediaForSending(mediaURI, mediaType).addListener(object :
                         ListenableFuture.Listener<Boolean> {
 
@@ -2976,20 +2722,64 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                         }
                     })
                     return
+                } else {
+                    val media=Media(
+                        mediaURI,
+                        mimeType,
+                        0,
+                        0,
+                        0,
+                        0,
+                        Optional.absent(),
+                        Optional.absent()
+                    )
+                    startActivityForResult(
+                        MediaSendActivity.buildEditorIntent(
+                            requireActivity(),
+                            listOf(media),
+                            viewModel.recipient.value!!,
+                            ""
+                        ), PICK_FROM_LIBRARY
+                    )
+                    return
                 }
-            } else if (!requireArguments().getCharSequence(Intent.EXTRA_TEXT).isNullOrEmpty()) {
-                val dataTextExtra=
-                    requireArguments().getCharSequence(Intent.EXTRA_TEXT) ?: ""
-                binding.inputBar.text=dataTextExtra.toString()
             } else {
-                viewModel.getDraft()?.let { text ->
-                    binding.inputBar.text=text
-                }
+                prepMediaForSending(mediaURI, mediaType).addListener(object :
+                    ListenableFuture.Listener<Boolean> {
+
+                    override fun onSuccess(result : Boolean?) {
+                        sendAttachments(
+                            attachmentManager.buildSlideDeck().asAttachments(),
+                            null
+                        )
+                    }
+
+                    override fun onFailure(e : ExecutionException?) {
+                        if (isAdded) {
+                            Toast.makeText(
+                                requireActivity(),
+                                R.string.activity_conversation_attachment_prep_failed,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                })
+                return
+            }
+        } else if (!requireArguments().getCharSequence(Intent.EXTRA_TEXT).isNullOrEmpty()) {
+            val dataTextExtra=
+                requireArguments().getCharSequence(Intent.EXTRA_TEXT) ?: ""
+            binding.inputBar.text=dataTextExtra.toString()
+        } else {
+            viewModel.getDraft()?.let { text ->
+                binding.inputBar.text=text
             }
         }
+    }
 
-        private fun setUpUiStateObserver() {
-            lifecycleScope.launchWhenStarted {
+    private fun setUpUiStateObserver() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
                     uiState.uiMessages.firstOrNull()?.let {
                         Toast.makeText(requireActivity(), it.message, Toast.LENGTH_LONG).show()
@@ -2997,18 +2787,19 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                     }
                     addOpenGroupGuidelinesIfNeeded(uiState.isBeldexHostedOpenGroup)
                     if (uiState.isMessageRequestAccepted == true) {
-                        binding.messageRequestBar.visibility=View.GONE
+                        binding.messageRequestBar.visibility = View.GONE
                     }
                 }
             }
         }
+    }
 
-        private fun setMediaControlForReportIssue() {
-            val recipient=viewModel.recipient.value ?: return
-            if (recipient.address.toString() == HomeActivity.reportIssueBChatID) {
-                binding.inputBar.showMediaControls=true
-            }
+    private fun setMediaControlForReportIssue() {
+        val recipient=viewModel.recipient.value ?: return
+        if (recipient.address.toString() == HomeActivity.reportIssueBChatID) {
+            binding.inputBar.showMediaControls=true
         }
+    }
 
     private fun updateUnreadCountIndicator() {
         val formattedUnreadCount=if (unreadCount < 100) unreadCount.toString() else "99+"
@@ -3016,645 +2807,608 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         binding.unreadCountIndicator.isVisible=unreadCount != 0
     }
 
-        private fun setUpTypingObserver(thread : Recipient) {
-            ApplicationContext.getInstance(requireActivity()).typingStatusRepository.getTypists(
-                viewModel.threadId
-            ).observe(requireActivity()) { state ->
-                val recipients=if (state != null) state.typists else listOf()
-                val viewContainer=binding.typingIndicatorViewContainer
-                viewContainer.isVisible=recipients.isNotEmpty() && isScrolledToBottom
-                viewContainer.setTypists(recipients)
-                inputBarHeightChanged(binding.inputBar.height)
-            }
-            if (listenerCallback!!.gettextSecurePreferences().isTypingIndicatorsEnabled()) {
-                binding.inputBar.addTextChangedListener(object : SimpleTextWatcher() {
-
-                    override fun onTextChanged(text : String?) {
-                        ApplicationContext.getInstance(requireActivity()).typingStatusSender.onTypingStarted(
-                            viewModel.threadId
-                        )
-                        checkInputBarTextOnTextChanged(text, thread)
-                    }
-
-                    override fun afterTextChanged(s : Editable?) {
-                        super.afterTextChanged(s)
-                        //formatBoldText(s)
-                    }
-                })
-            } else {
-                binding.inputBar.addTextChangedListener(object : SimpleTextWatcher() {
-                    override fun onTextChanged(text : String?) {
-                        checkInputBarTextOnTextChanged(text, thread)
-                    }
-
-                    override fun afterTextChanged(s : Editable?) {
-                        super.afterTextChanged(s)
-                        //formatBoldText(s)
-                    }
-                })
-            }
+    private fun setUpTypingObserver(thread : Recipient) {
+        ApplicationContext.getInstance(requireActivity()).typingStatusRepository.getTypists(
+            viewModel.threadId
+        ).observe(requireActivity()) { state ->
+            val recipients=if (state != null) state.typists else listOf()
+            val viewContainer=binding.typingIndicatorViewContainer
+            viewContainer.isVisible=recipients.isNotEmpty() && isScrolledToBottom
+            viewContainer.setTypists(recipients)
+            inputBarHeightChanged(binding.inputBar.height)
         }
+        if (listenerCallback!!.gettextSecurePreferences().isTypingIndicatorsEnabled()) {
+            binding.inputBar.addTextChangedListener(object : SimpleTextWatcher() {
 
-        /* private fun formatBoldText(s: Editable?) {
-        try {
-            val text = s.toString()
-            val start = text.indexOf("*")
-            val end = text.lastIndexOf("*")
-
-            if (start != -1 && end != -1 && start != end) {
-                s?.setSpan(
-                    StyleSpan(Typeface.BOLD),
-                    start + 1,
-                    end,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                s?.delete(start, start + 1)
-                s?.delete(end - 1, end)
-            }
-        } catch (ex: IndexOutOfBoundsException) {
-            Log.d("ConversationFragment ",ex.message.toString())
-        }
-    }*/
-
-        private fun checkInputBarTextOnTextChanged(text : String?, thread : Recipient) {
-            if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
-                if (text!!.isNotEmpty() && text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$")) && binding.inputBar.quote == null) {
-                    binding.inputBar.setTextColor(thread, HomeActivity.reportIssueBChatID, true)
-                    showPayWithSlide(thread, true)
-                } else {
-                    binding.inputBar.setTextColor(thread, HomeActivity.reportIssueBChatID, false)
-                    showPayWithSlide(thread, false)
-                }
-            }
-        }
-
-        private fun setUpRecipientObserver() {
-            viewModel.recipient.value?.addListener(this)
-        }
-
-        private fun updateSubtitle() {
-            val recipient=viewModel.recipient.value ?: return
-            binding.muteIconImageView.isVisible=recipient.isMuted
-            binding.conversationSubtitleView.isVisible=true
-            if (recipient.isMuted) {
-                if (recipient.mutedUntil != Long.MAX_VALUE) {
-                    binding.conversationSubtitleView.text=getString(
-                        R.string.ConversationActivity_muted_until_date,
-                        DateUtils.getFormattedDateTime(
-                            recipient.mutedUntil,
-                            "EEE, MMM d, yyyy HH:mm",
-                            Locale.getDefault()
-                        )
+                override fun onTextChanged(text : String?) {
+                    ApplicationContext.getInstance(requireActivity()).typingStatusSender.onTypingStarted(
+                        viewModel.threadId
                     )
-                } else {
-                    binding.conversationSubtitleView.text=
-                        getString(R.string.ConversationActivity_muted_forever)
+                    checkInputBarTextOnTextChanged(text, thread)
                 }
-            } else if (recipient.isGroupRecipient) {
-                try {
-                    val openGroup=viewModel.getOpenGroupChat()
-                    if (openGroup != null) {
-                        val userCount=viewModel.getUserCount(openGroup)
-                        try {
-                            if (userCount != null) {
-                                binding.conversationSubtitleView.text=
-                                    getString(R.string.ConversationActivity_member_count, userCount)
-                            } else {
-                                binding.conversationSubtitleView.isVisible=false
-                            }
-                        } catch (ex : IllegalStateException) {
-                            Timber.w(ex.message)
-                        }
-                    } else if (recipient.isClosedGroupRecipient) {
-                        val groupID : String=recipient.address.toGroupString()
-                        val members=groupRepository?.getGroupMembers(groupID)
-                        val memberCount=members?.members?.size ?: 0
-                        binding.conversationSubtitleView.isVisible=true
-                        binding.conversationSubtitleView.text=
-                            if (memberCount > 1) "$memberCount members" else "$memberCount member"
-                    } else {
-                        binding.conversationSubtitleView.isVisible=false
-                    }
-                } catch (ex : NullPointerException) {
-                    Timber.tag("Exception ").d(ex.message.toString())
+
+                override fun afterTextChanged(s : Editable?) {
+                    super.afterTextChanged(s)
                 }
+            })
+        } else {
+            binding.inputBar.addTextChangedListener(object : SimpleTextWatcher() {
+                override fun onTextChanged(text : String?) {
+                    checkInputBarTextOnTextChanged(text, thread)
+                }
+
+                override fun afterTextChanged(s : Editable?) {
+                    super.afterTextChanged(s)
+                }
+            })
+        }
+    }
+
+    private fun checkInputBarTextOnTextChanged(text : String?, thread : Recipient) {
+        if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
+            if (text!!.isNotEmpty() && text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$")) && binding.inputBar.quote == null) {
+                binding.inputBar.setTextColor(thread, HomeActivity.reportIssueBChatID, true)
+                showPayWithSlide(thread, true)
             } else {
-                binding.conversationSubtitleView.isVisible=false
+                binding.inputBar.setTextColor(thread, HomeActivity.reportIssueBChatID, false)
+                showPayWithSlide(thread, false)
             }
         }
+    }
 
-        private fun hideAttachmentContainer() {
-            isShowingAttachmentOptions=false
-            binding.attachmentContainer.isVisible=isShowingAttachmentOptions
-        }
+    private fun setUpRecipientObserver() {
+        viewModel.recipient.value?.addListener(this)
+    }
 
-        @Deprecated("Deprecated in Java")
-        override fun onOptionsItemSelected(item : MenuItem) : Boolean {
-            if (SystemClock.elapsedRealtime() - menuItemLastClickTime >= 1000) {
-                if (!binding.inputBarRecordingView.isTimerRunning) {
-                    menuItemLastClickTime = SystemClock.elapsedRealtime()
-                    if (item.itemId == android.R.id.home) {
-                        hideAttachmentContainer()
-                        return false
-                    } else if (item.itemId == R.id.menu_call) {
-                        hideAttachmentContainer()
-                        val recipient=viewModel.recipient.value ?: return false
-                        if (recipient.isContactRecipient && recipient.isBlocked) {
-                            unblock()
-                        } else {
-                            viewModel.recipient.value?.let { recipients ->
-                                call(requireActivity(), recipients)
-                            }
-                        }
-                    }
-                    return viewModel.recipient.value?.let { recipient ->
-                        ConversationMenuHelper.onOptionItemSelected(
-                            requireActivity(),
-                            this,
-                            item,
-                            recipient,
-                            listenerCallback,
-                            childFragmentManager
-                        )
-                    } ?: false
-                } else {
-                    return false
-                }
+    private fun updateSubtitle() {
+        val recipient=viewModel.recipient.value ?: return
+        binding.muteIconImageView.isVisible=recipient.isMuted
+        binding.conversationSubtitleView.isVisible=true
+        if (recipient.isMuted) {
+            if (recipient.mutedUntil != Long.MAX_VALUE) {
+                binding.conversationSubtitleView.text=getString(
+                    R.string.ConversationActivity_muted_until_date,
+                    DateUtils.getFormattedDateTime(
+                        recipient.mutedUntil,
+                        "EEE, MMM d, yyyy HH:mm",
+                        Locale.getDefault()
+                    )
+                )
+            } else {
+                binding.conversationSubtitleView.text=
+                    getString(R.string.ConversationActivity_muted_forever)
             }
-            return false
-        }
-
-        private fun call(context : Context, thread : Recipient) {
-
-            if (!TextSecurePreferences.isCallNotificationsEnabled(context)) {
-                //SteveJosephh22
-                val factory=LayoutInflater.from(requireActivity())
-                val callPermissionDialogView : View=
-                    factory.inflate(R.layout.call_permissions_dialog_box, null)
-                val callPermissionDialog=AlertDialog.Builder(requireActivity()).create()
-                callPermissionDialog.setView(callPermissionDialogView)
-                callPermissionDialogView.findViewById<Button>(R.id.settingsDialogBoxButton)
-                    .setOnClickListener {
-                        val intent=Intent(requireActivity(), PrivacySettingsActivity::class.java)
-                        this.activity?.startActivity(intent)
-                        callPermissionDialog.dismiss()
-                    }
-                callPermissionDialogView.findViewById<Button>(R.id.cancelDialogBoxButton)
-                    .setOnClickListener {
-                        callPermissionDialog.dismiss()
-                    }
-                callPermissionDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-                callPermissionDialog.show()
-                return
-            }
-
-            val service=WebRtcCallService.createCall(context, thread)
-            context.startService(service)
-            val activity=Intent(context, WebRTCComposeActivity::class.java).apply {
-                flags=Intent.FLAG_ACTIVITY_NEW_TASK
-            }
-            context.startActivity(activity)
-
-        }
-
-        private fun getLatestOpenGroupInfoIfNeeded() {
+        } else if (recipient.isGroupRecipient) {
             try {
                 val openGroup=viewModel.getOpenGroupChat()
-                    ?: return
-                OpenGroupAPIV2.getMemberCount(openGroup.room, openGroup.server)
-                    .successUi { updateSubtitle() }
+                if (openGroup != null) {
+                    val userCount=viewModel.getUserCount(openGroup)
+                    try {
+                        if (userCount != null) {
+                            binding.conversationSubtitleView.text=
+                                getString(R.string.ConversationActivity_member_count, userCount)
+                        } else {
+                            binding.conversationSubtitleView.isVisible=false
+                        }
+                    } catch (ex : IllegalStateException) {
+                        Timber.w(ex.message)
+                    }
+                } else if (recipient.isClosedGroupRecipient) {
+                    val groupID : String=recipient.address.toGroupString()
+                    val members=groupRepository?.getGroupMembers(groupID)
+                    val memberCount=members?.members?.size ?: 0
+                    binding.conversationSubtitleView.isVisible=true
+                    binding.conversationSubtitleView.text=
+                        if (memberCount > 1) "$memberCount members" else "$memberCount member"
+                } else {
+                    binding.conversationSubtitleView.isVisible=false
+                }
             } catch (ex : NullPointerException) {
                 Timber.tag("Exception ").d(ex.message.toString())
             }
+        } else {
+            binding.conversationSubtitleView.isVisible=false
         }
+    }
 
-        private fun setUpBlockedBanner() {
-            val recipient=viewModel.recipient.value ?: return
-            if (recipient.isGroupRecipient) {
-                return
-            }
-            val contact=viewModel.getContactWithBChatId()
-            val name=
-                contact?.displayName(Contact.ContactContext.REGULAR) ?: recipient.address.toString()
-//        binding.blockedBannerTextView.text =
-//            resources.getString(R.string.activity_conversation_blocked_banner_text, name)
-            binding.blockedBanner.isVisible=recipient.isBlocked
-            setConversationRecyclerViewLayout(recipient)
-            callShowPayAsYouChatBDXIcon(recipient)
-            showBlockProgressBar(recipient)
-            /*setting click listener on banner to avoid background click gesture - DO NOT REMOVE This line*/
-            binding.blockedBanner.setOnClickListener { }
-            binding.clearChat.setOnClickListener {
-                if(SystemClock.elapsedRealtime() - clearChatButtonLastClickTiem >= 1000) {
-                    clearChatButtonLastClickTiem = SystemClock.elapsedRealtime()
-                    clearChatDialog()
-                }
-            }
-            binding.unblockButton.setOnClickListener {
-                if(SystemClock.elapsedRealtime() - unblockButtonLastClickTime >= 1000) {
-                    unblockButtonLastClickTime = SystemClock.elapsedRealtime()
-                    unblockContactDialog()
-                }
-            }
-        }
+    private fun hideAttachmentContainer() {
+        isShowingAttachmentOptions=false
+        binding.attachmentContainer.isVisible=isShowingAttachmentOptions
+    }
 
-        private fun setConversationRecyclerViewLayout(recipient : Recipient) {
-            val layoutParams : RelativeLayout.LayoutParams=
-                binding.conversationRecyclerView.layoutParams as RelativeLayout.LayoutParams
-            if (recipient.isBlocked) {
-                layoutParams.addRule(RelativeLayout.ABOVE, R.id.blockedBanner)
-            } else {
-                layoutParams.addRule(RelativeLayout.ABOVE, R.id.typingIndicatorViewContainer)
-            }
-        }
-
-        private fun clearChatDialog() {
-            val dialog=ConversationActionDialog()
-            dialog.apply {
-                arguments=Bundle().apply {
-                    putSerializable(
-                        ConversationActionDialog.EXTRA_DIALOG_TYPE,
-                        HomeDialogType.ClearChat
-                    )
-                }
-                setListener(this@ConversationFragmentV2)
-            }
-            dialog.show(childFragmentManager, ConversationActionDialog.TAG)
-        }
-
-        private fun deleteBlockedConversation() {
-            lifecycleScope.launch(Dispatchers.Main) {
-                val context=requireActivity() as Context
-                // Cancel any outstanding jobs
-                DatabaseComponent.get(context).bchatJobDatabase()
-                    .cancelPendingMessageSendJobs(viewModel.threadId)
-                // Delete the conversation
-                lifecycleScope.launch(Dispatchers.IO) {
-                    threadDb.deleteConversation(viewModel.threadId)
-                }
-                // Update the badge count
-                ApplicationContext.getInstance(context).messageNotifier.updateNotification(
-                    context
-                )
-                // Notify the user
-                val toastMessage=R.string.activity_home_conversation_deleted_message
-                Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
-                listenerCallback?.walletOnBackPressed()
-            }
-        }
-
-
-        private fun unblockContactDialog() {
-            val dialog=ConversationActionDialog()
-            dialog.apply {
-                arguments=Bundle().apply {
-                    putSerializable(
-                        ConversationActionDialog.EXTRA_DIALOG_TYPE,
-                        HomeDialogType.UnblockUser
-                    )
-                }
-                setListener(this@ConversationFragmentV2)
-            }
-            dialog.show(childFragmentManager, ConversationActionDialog.TAG)
-        }
-
-        // region Search
-        private fun setUpSearchResultObserver() {
-            try {
-                searchViewModel!!.searchResults.observe(
-                    requireActivity(),
-                    Observer { result : SearchViewModel.SearchResult? ->
-                        if (result == null) return@Observer
-                        if (result.getResults().isNotEmpty()) {
-                            searchViewModel!!.updateSearchResult(true)
-                            result.getResults()[result.position]?.let {
-                                jumpToMessage(
-                                    it.messageRecipient.address,
-                                    it.sentTimestampMs,
-                                    Runnable { searchViewModel!!.onMissingResult() })
-                            }
-                            binding.searchUp.visibility=View.VISIBLE
-                            binding.searchDown.visibility=View.VISIBLE
-                            binding.searchProgress.visibility=View.GONE
-                            binding.closeSearch.visibility=View.VISIBLE
-                            binding.search.visibility=View.GONE
-                            binding.noMatchesFoundTextview.visibility=View.GONE
-                            if (binding.searchQuery.text?.isEmpty() == true) {
-                                binding.noMatchesFoundTextview.visibility=View.GONE
-                                binding.closeSearch.visibility=View.GONE
-                                binding.searchDown.visibility=View.GONE
-                                binding.searchUp.visibility=View.GONE
-                                binding.searchClose.visibility=View.VISIBLE
-                            }
-                        } else {
-                            if (binding.searchQuery.text?.isEmpty() == true) {
-                                binding.noMatchesFoundTextview.visibility=View.GONE
-                                binding.closeSearch.visibility=View.GONE
-                                binding.searchClose.visibility=View.VISIBLE
-                            }
-                            searchViewModel!!.updateSearchResult(false)
-                            binding.searchUp.visibility=View.GONE
-                            binding.searchDown.visibility=View.GONE
-                            binding.searchProgress.visibility=View.GONE
-                            binding.closeSearch.visibility=View.VISIBLE
-                            binding.search.visibility=View.GONE
-                            binding.noMatchesFoundTextview.visibility=View.VISIBLE
+    @Deprecated("Deprecated in Java")
+    override fun onOptionsItemSelected(item : MenuItem) : Boolean {
+        if (SystemClock.elapsedRealtime() - menuItemLastClickTime >= 1000) {
+            if (!binding.inputBarRecordingView.isTimerRunning) {
+                menuItemLastClickTime = SystemClock.elapsedRealtime()
+                if (item.itemId == android.R.id.home) {
+                    hideAttachmentContainer()
+                    return false
+                } else if (item.itemId == R.id.menu_call) {
+                    hideAttachmentContainer()
+                    val recipient=viewModel.recipient.value ?: return false
+                    if (recipient.isContactRecipient && recipient.isBlocked) {
+                        unblock()
+                    } else {
+                        viewModel.recipient.value?.let { recipients ->
+                            call(requireActivity(), recipients)
                         }
-//                binding.searchBottomBar.setData(result.position, result.getResults().size)
-                    })
-            } catch (ex : Exception) {
-                Log.e("Search result Exception -> ", ex.message.toString())
-            }
-        }
-
-
-        private fun scrollToFirstUnreadMessageIfNeeded() {
-            val lastSeenTimestamp=viewModel.getLastSeenAndHasSent().first()
-            val lastSeenItemPosition=adapter.findLastSeenItemPosition(lastSeenTimestamp) ?: return
-            if (lastSeenItemPosition <= 3) {
-                return
-            }
-            binding.conversationRecyclerView.scrollToPosition(lastSeenItemPosition)
-        }
-
-        @Deprecated("Deprecated in Java")
-        override fun onPrepareOptionsMenu(menu : Menu) {
-            val recipient=viewModel.recipient.value ?: return
-            //New Line
-            if (!isMessageRequestThread()) {
-                callOnPrepareOptionsMenu(menu, recipient)
-            } else if (recipient.isLocalNumber) {
-                callOnPrepareOptionsMenu(menu, recipient)
-            }
-            super.onPrepareOptionsMenu(menu)
-        }
-
-        private fun callOnPrepareOptionsMenu(menu : Menu, recipient : Recipient) {
-            hideAttachmentContainer()
-            ConversationMenuHelper.onPrepareOptionsMenu(
-                menu,
-                requireActivity().menuInflater,
-                recipient,
-                viewModel.threadId,
-                requireActivity().applicationContext,
-                this
-            ) {
-                onOptionsItemSelected(it)
-            }
-        }
-
-        private fun showOrHideInputIfNeeded() {
-            binding.inputBar.showInput=isSecretGroupIsActive()
-        }
-
-        private fun isIncomingMessageRequestThread() : Boolean {
-            val recipient=viewModel.recipient.value ?: return false
-            return !recipient.isGroupRecipient &&
-                    !recipient.isApproved &&
-                    !recipient.isLocalNumber &&
-                    !threadDb.getLastSeenAndHasSent(viewModel.threadId).second() &&
-                    threadDb.getMessageCount(viewModel.threadId) > 0
-        }
-
-        /*Hales63*/
-        private fun setUpMessageRequestsBar() {
-            val recipient=viewModel.recipient.value ?: return
-            if (recipient.address.toString() != HomeActivity.reportIssueBChatID) {
-                binding.inputBar.showMediaControls=!isOutgoingMessageRequestThread()
-            }
-            binding.messageRequestBar.isVisible=isIncomingMessageRequestThread()
-            binding.acceptMessageRequestButton.setOnClickListener {
-                acceptAlertDialog()
-            }
-            binding.messageRequestBlock.setOnClickListener {
-                block(deleteThread=true)
-            }
-            binding.declineMessageRequestButton.setOnClickListener {
-                declineAlertDialog()
-            }
-        }
-
-        private fun hideVoiceMessageUI() {
-            try {
-                handleAttachment(false)
-                val chevronImageView=binding.inputBarRecordingView.chevronImageView
-                val slideToCancelTextView=binding.inputBarRecordingView.slideToCancelTextView
-                listOf(chevronImageView, slideToCancelTextView).forEach { view ->
-                    val animation=ValueAnimator.ofObject(FloatEvaluator(), view.translationX, 0.0f)
-                    animation.duration=250L
-                    animation.addUpdateListener { animator ->
-                        view.translationX=animator.animatedValue as Float
                     }
-                    animation.start()
                 }
-                binding.inputBarRecordingView.hide()
-            } catch (e : UninitializedPropertyAccessException) {
-                println("Hide voice message -> ${e.localizedMessage}")
-            }
-        }
-
-        private fun isOutgoingMessageRequestThread() : Boolean {
-            val recipient=viewModel.recipient.value ?: return false
-            return !recipient.isGroupRecipient &&
-                    !recipient.isLocalNumber &&
-                    !(recipient.hasApprovedMe() || viewModel.hasReceived())
-        }
-
-        private fun showOrHideMentionCandidatesIfNeeded(text : CharSequence) {
-            if (text.length < previousText.length) {
-                currentMentionStartIndex=-1
-                hideMentionCandidates()
-                val mentionsToRemove=mentions.filter { !text.contains(it.displayName) }
-                mentions.removeAll(mentionsToRemove)
-            }
-            if (text.isNotEmpty()) {
-                val lastCharIndex=text.lastIndex
-                val lastChar=text[lastCharIndex]
-                // Check if there is whitespace before the '@' or the '@' is the first character
-                val isCharacterBeforeLastWhiteSpaceOrStartOfLine : Boolean=if (text.length == 1) {
-                    true // Start of line
-                } else {
-                    val charBeforeLast=text[lastCharIndex - 1]
-                    Character.isWhitespace(charBeforeLast)
-                }
-                if (lastChar == '@' && isCharacterBeforeLastWhiteSpaceOrStartOfLine) {
-                    currentMentionStartIndex=lastCharIndex
-                    showOrUpdateMentionCandidatesIfNeeded()
-                } else if (Character.isWhitespace(lastChar) || lastChar == '@') { // the lastCharacter == "@" is to check for @@
-                    currentMentionStartIndex=-1
-                    hideMentionCandidates()
-                } else if (currentMentionStartIndex != -1) {
-                    val query=
-                        text.substring(currentMentionStartIndex + 1) // + 1 to get rid of the "@"
-                    showOrUpdateMentionCandidatesIfNeeded(query)
-                }
+                return viewModel.recipient.value?.let { recipient ->
+                    ConversationMenuHelper.onOptionItemSelected(
+                        requireActivity(),
+                        this,
+                        item,
+                        recipient,
+                        listenerCallback,
+                        childFragmentManager
+                    )
+                } ?: false
             } else {
-                currentMentionStartIndex=-1
-                hideMentionCandidates()
+                return false
             }
-            previousText=text
+        }
+        return false
+    }
+
+    private fun call(context : Context, thread : Recipient) {
+        if (!TextSecurePreferences.isCallNotificationsEnabled(context)) {
+            val factory=LayoutInflater.from(requireActivity())
+            val callPermissionDialogView : View=
+                factory.inflate(R.layout.call_permissions_dialog_box, null)
+            val callPermissionDialog=AlertDialog.Builder(requireActivity()).create()
+            callPermissionDialog.setView(callPermissionDialogView)
+            callPermissionDialogView.findViewById<Button>(R.id.settingsDialogBoxButton)
+                .setOnClickListener {
+                    val intent=Intent(requireActivity(), PrivacySettingsActivity::class.java)
+                    this.activity?.startActivity(intent)
+                    callPermissionDialog.dismiss()
+                }
+            callPermissionDialogView.findViewById<Button>(R.id.cancelDialogBoxButton)
+                .setOnClickListener {
+                    callPermissionDialog.dismiss()
+                }
+            callPermissionDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+            callPermissionDialog.show()
+            return
         }
 
-        private fun isValidLockViewLocation(x : Int, y : Int) : Boolean {
-            // We can be anywhere above the lock view and a bit to the side of it (at most `lockViewHitMargin`
-            // to the side)
-            val binding=binding
-            val lockViewLocation=IntArray(2) { 0 }
-            binding.inputBarRecordingView.lockView.getLocationOnScreen(lockViewLocation)
-            val hitRect=Rect(
-                lockViewLocation[0] - lockViewHitMargin,
-                0,
-                lockViewLocation[0] + binding.inputBarRecordingView.lockView.width + lockViewHitMargin,
-                lockViewLocation[1] + binding.inputBarRecordingView.lockView.height
-            )
-            return hitRect.contains(x, y)
+        val service=WebRtcCallService.createCall(context, thread)
+        context.startService(service)
+        val activity=Intent(context, WebRTCComposeActivity::class.java).apply {
+            flags=Intent.FLAG_ACTIVITY_NEW_TASK
         }
+        context.startActivity(activity)
+    }
+
+    private fun getLatestOpenGroupInfoIfNeeded() {
+        try {
+            val openGroup=viewModel.getOpenGroupChat()
+                ?: return
+            OpenGroupAPIV2.getMemberCount(openGroup.room, openGroup.server)
+                .successUi { updateSubtitle() }
+        } catch (ex : NullPointerException) {
+            Timber.tag("Exception ").d(ex.message.toString())
+        }
+    }
+
+    private fun setUpBlockedBanner() {
+        val recipient=viewModel.recipient.value ?: return
+        if (recipient.isGroupRecipient) {
+            return
+        }
+        binding.blockedBanner.isVisible=recipient.isBlocked
+        setConversationRecyclerViewLayout(recipient)
+        callShowPayAsYouChatBDXIcon(recipient)
+        showBlockProgressBar(recipient)
+        /*setting click listener on banner to avoid background click gesture - DO NOT REMOVE This line*/
+        binding.blockedBanner.setOnClickListener { }
+        binding.clearChat.setOnClickListener {
+            if(SystemClock.elapsedRealtime() - clearChatButtonLastClickTiem >= 1000) {
+                clearChatButtonLastClickTiem = SystemClock.elapsedRealtime()
+                clearChatDialog()
+            }
+        }
+        binding.unblockButton.setOnClickListener {
+            if(SystemClock.elapsedRealtime() - unblockButtonLastClickTime >= 1000) {
+                unblockButtonLastClickTime = SystemClock.elapsedRealtime()
+                unblockContactDialog()
+            }
+        }
+    }
+
+    private fun setConversationRecyclerViewLayout(recipient : Recipient) {
+        val layoutParams : RelativeLayout.LayoutParams=
+            binding.conversationRecyclerView.layoutParams as RelativeLayout.LayoutParams
+        if (recipient.isBlocked) {
+            layoutParams.addRule(RelativeLayout.ABOVE, R.id.blockedBanner)
+        } else {
+            layoutParams.addRule(RelativeLayout.ABOVE, R.id.typingIndicatorViewContainer)
+        }
+    }
+
+    private fun clearChatDialog() {
+        val dialog=ConversationActionDialog()
+        dialog.apply {
+            arguments=Bundle().apply {
+                putSerializable(
+                    ConversationActionDialog.EXTRA_DIALOG_TYPE,
+                    HomeDialogType.ClearChat
+                )
+            }
+            setListener(this@ConversationFragmentV2)
+        }
+        dialog.show(childFragmentManager, ConversationActionDialog.TAG)
+    }
+
+    private fun deleteBlockedConversation() {
+        lifecycleScope.launch(Dispatchers.Main) {
+            val context=requireActivity() as Context
+            // Cancel any outstanding jobs
+            DatabaseComponent.get(context).bchatJobDatabase()
+                .cancelPendingMessageSendJobs(viewModel.threadId)
+            // Delete the conversation
+            lifecycleScope.launch(Dispatchers.IO) {
+                threadDb.deleteConversation(viewModel.threadId)
+            }
+            // Update the badge count
+            ApplicationContext.getInstance(context).messageNotifier.updateNotification(
+                context
+            )
+            // Notify the user
+            val toastMessage=R.string.activity_home_conversation_deleted_message
+            Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
+            listenerCallback?.walletOnBackPressed()
+        }
+    }
+
+
+    private fun unblockContactDialog() {
+        val dialog=ConversationActionDialog()
+        dialog.apply {
+            arguments=Bundle().apply {
+                putSerializable(
+                    ConversationActionDialog.EXTRA_DIALOG_TYPE,
+                    HomeDialogType.UnblockUser
+                )
+            }
+            setListener(this@ConversationFragmentV2)
+        }
+        dialog.show(childFragmentManager, ConversationActionDialog.TAG)
+    }
+
+    // region Search
+    private fun setUpSearchResultObserver() {
+        try {
+            searchViewModel!!.searchResults.observe(
+                requireActivity(),
+                Observer { result : SearchViewModel.SearchResult? ->
+                    if (result == null) return@Observer
+                    if (result.getResults().isNotEmpty()) {
+                        searchViewModel!!.updateSearchResult(true)
+                        result.getResults()[result.position]?.let {
+                            jumpToMessage(
+                                it.messageRecipient.address,
+                                it.sentTimestampMs
+                            ) { searchViewModel!!.onMissingResult() }
+                        }
+                        binding.searchUp.visibility=View.VISIBLE
+                        binding.searchDown.visibility=View.VISIBLE
+                        binding.searchProgress.visibility=View.GONE
+                        binding.closeSearch.visibility=View.VISIBLE
+                        binding.search.visibility=View.GONE
+                        binding.noMatchesFoundTextview.visibility=View.GONE
+                        if (binding.searchQuery.text?.isEmpty() == true) {
+                            binding.noMatchesFoundTextview.visibility=View.GONE
+                            binding.closeSearch.visibility=View.GONE
+                            binding.searchDown.visibility=View.GONE
+                            binding.searchUp.visibility=View.GONE
+                            binding.searchClose.visibility=View.VISIBLE
+                        }
+                    } else {
+                        if (binding.searchQuery.text?.isEmpty() == true) {
+                            binding.noMatchesFoundTextview.visibility=View.GONE
+                            binding.closeSearch.visibility=View.GONE
+                            binding.searchClose.visibility=View.VISIBLE
+                        }
+                        searchViewModel!!.updateSearchResult(false)
+                        binding.searchUp.visibility=View.GONE
+                        binding.searchDown.visibility=View.GONE
+                        binding.searchProgress.visibility=View.GONE
+                        binding.closeSearch.visibility=View.VISIBLE
+                        binding.search.visibility=View.GONE
+                        binding.noMatchesFoundTextview.visibility=View.VISIBLE
+                    }
+                })
+        } catch (ex : Exception) {
+            Log.e("Search result Exception -> ", ex.message.toString())
+        }
+    }
+
+    private fun scrollToFirstUnreadMessageIfNeeded() {
+        val lastSeenTimestamp=viewModel.getLastSeenAndHasSent().first()
+        val lastSeenItemPosition=adapter.findLastSeenItemPosition(lastSeenTimestamp) ?: return
+        if (lastSeenItemPosition <= 3) {
+            return
+        }
+        binding.conversationRecyclerView.scrollToPosition(lastSeenItemPosition)
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onPrepareOptionsMenu(menu : Menu) {
+        val recipient=viewModel.recipient.value ?: return
+        //New Line
+        if (!isMessageRequestThread()) {
+            callOnPrepareOptionsMenu(menu, recipient)
+        } else if (recipient.isLocalNumber) {
+            callOnPrepareOptionsMenu(menu, recipient)
+        }
+        super.onPrepareOptionsMenu(menu)
+    }
+
+    private fun callOnPrepareOptionsMenu(menu : Menu, recipient : Recipient) {
+        hideAttachmentContainer()
+        ConversationMenuHelper.onPrepareOptionsMenu(
+            menu,
+            requireActivity().menuInflater,
+            recipient,
+            viewModel.threadId,
+            requireActivity().applicationContext,
+            this
+        ) {
+            onOptionsItemSelected(it)
+        }
+    }
+
+    private fun showOrHideInputIfNeeded() {
+        binding.inputBar.showInput=isSecretGroupIsActive()
+    }
+
+    private fun isIncomingMessageRequestThread() : Boolean {
+        val recipient=viewModel.recipient.value ?: return false
+        return !recipient.isGroupRecipient &&
+                !recipient.isApproved &&
+                !recipient.isLocalNumber &&
+                !threadDb.getLastSeenAndHasSent(viewModel.threadId).second() &&
+                threadDb.getMessageCount(viewModel.threadId) > 0
+    }
+
+    /*Hales63*/
+    private fun setUpMessageRequestsBar() {
+        val recipient=viewModel.recipient.value ?: return
+        if (recipient.address.toString() != HomeActivity.reportIssueBChatID) {
+            binding.inputBar.showMediaControls=!isOutgoingMessageRequestThread()
+        }
+        binding.messageRequestBar.isVisible=isIncomingMessageRequestThread()
+        binding.acceptMessageRequestButton.setOnClickListener {
+            acceptAlertDialog()
+        }
+        binding.messageRequestBlock.setOnClickListener {
+            block(deleteThread=true)
+        }
+        binding.declineMessageRequestButton.setOnClickListener {
+            declineAlertDialog()
+        }
+    }
+
+    private fun hideVoiceMessageUI() {
+        try {
+            handleAttachment(false)
+            val chevronImageView=binding.inputBarRecordingView.chevronImageView
+            val slideToCancelTextView=binding.inputBarRecordingView.slideToCancelTextView
+            listOf(chevronImageView, slideToCancelTextView).forEach { view ->
+                val animation=ValueAnimator.ofObject(FloatEvaluator(), view.translationX, 0.0f)
+                animation.duration=250L
+                animation.addUpdateListener { animator ->
+                    view.translationX=animator.animatedValue as Float
+                }
+                animation.start()
+            }
+            binding.inputBarRecordingView.hide()
+        } catch (e : UninitializedPropertyAccessException) {
+            println("Hide voice message -> ${e.localizedMessage}")
+        }
+    }
+
+    private fun isOutgoingMessageRequestThread() : Boolean {
+        val recipient=viewModel.recipient.value ?: return false
+        return !recipient.isGroupRecipient &&
+                !recipient.isLocalNumber &&
+                !(recipient.hasApprovedMe() || viewModel.hasReceived())
+    }
+
+    private fun showOrHideMentionCandidatesIfNeeded(text : CharSequence) {
+        if (text.length < previousText.length) {
+            currentMentionStartIndex=-1
+            hideMentionCandidates()
+            val mentionsToRemove=mentions.filter { !text.contains(it.displayName) }
+            mentions.removeAll(mentionsToRemove)
+        }
+        if (text.isNotEmpty()) {
+            val lastCharIndex=text.lastIndex
+            val lastChar=text[lastCharIndex]
+            // Check if there is whitespace before the '@' or the '@' is the first character
+            val isCharacterBeforeLastWhiteSpaceOrStartOfLine : Boolean=if (text.length == 1) {
+                true // Start of line
+            } else {
+                val charBeforeLast=text[lastCharIndex - 1]
+                Character.isWhitespace(charBeforeLast)
+            }
+            if (lastChar == '@' && isCharacterBeforeLastWhiteSpaceOrStartOfLine) {
+                currentMentionStartIndex=lastCharIndex
+                showOrUpdateMentionCandidatesIfNeeded()
+            } else if (Character.isWhitespace(lastChar) || lastChar == '@') { // the lastCharacter == "@" is to check for @@
+                currentMentionStartIndex=-1
+                hideMentionCandidates()
+            } else if (currentMentionStartIndex != -1) {
+                val query=
+                    text.substring(currentMentionStartIndex + 1) // + 1 to get rid of the "@"
+                showOrUpdateMentionCandidatesIfNeeded(query)
+            }
+        } else {
+            currentMentionStartIndex=-1
+            hideMentionCandidates()
+        }
+        previousText=text
+    }
+
+    private fun isValidLockViewLocation(x : Int, y : Int) : Boolean {
+        // We can be anywhere above the lock view and a bit to the side of it (at most `lockViewHitMargin`
+        // to the side)
+        val binding=binding
+        val lockViewLocation=IntArray(2) { 0 }
+        binding.inputBarRecordingView.lockView.getLocationOnScreen(lockViewLocation)
+        val hitRect=Rect(
+            lockViewLocation[0] - lockViewHitMargin,
+            0,
+            lockViewLocation[0] + binding.inputBarRecordingView.lockView.width + lockViewHitMargin,
+            lockViewLocation[1] + binding.inputBarRecordingView.lockView.height
+        )
+        return hitRect.contains(x, y)
+    }
 
     private fun handleAttachment(isHidden: Boolean) {
         val visibility = if (isHidden) View.GONE else View.VISIBLE
         binding.inputBar.containerCardView.visibility = visibility
     }
 
-        override fun showVoiceMessageUI() {
-            Helper.hideKeyboard(activity)
-            handleAttachment(true)
-            //New Line
-            binding.inputBar.visibility=View.INVISIBLE
+    override fun showVoiceMessageUI() {
+        Helper.hideKeyboard(activity)
+        handleAttachment(true)
+        //New Line
+        binding.inputBar.visibility=View.INVISIBLE
 
-            binding.inputBarRecordingView.show()
-//        binding.inputBarCard.alpha = 0.0f
-            binding.inputBar.alpha=0.0f
-            val animation=ValueAnimator.ofObject(FloatEvaluator(), 1.0f, 0.0f)
-            animation.duration=250L
-            animation.addUpdateListener { animator ->
-                binding.inputBar.alpha=animator.animatedValue as Float
-            }
-            animation.start()
+        binding.inputBarRecordingView.show()
+        binding.inputBar.alpha=0.0f
+        val animation=ValueAnimator.ofObject(FloatEvaluator(), 1.0f, 0.0f)
+        animation.duration=250L
+        animation.addUpdateListener { animator ->
+            binding.inputBar.alpha=animator.animatedValue as Float
         }
+        animation.start()
+    }
 
-        private fun expandVoiceMessageLockView() {
-            val lockView=binding.inputBarRecordingView.lockView
-            val animation=ValueAnimator.ofObject(FloatEvaluator(), lockView.scaleX, 1.10f)
-            animation.duration=250L
-            animation.addUpdateListener { animator ->
-                lockView.scaleX=animator.animatedValue as Float
-                lockView.scaleY=animator.animatedValue as Float
-            }
-            animation.start()
+    private fun expandVoiceMessageLockView() {
+        val lockView=binding.inputBarRecordingView.lockView
+        val animation=ValueAnimator.ofObject(FloatEvaluator(), lockView.scaleX, 1.10f)
+        animation.duration=250L
+        animation.addUpdateListener { animator ->
+            lockView.scaleX=animator.animatedValue as Float
+            lockView.scaleY=animator.animatedValue as Float
         }
+        animation.start()
+    }
 
-        private fun collapseVoiceMessageLockView() {
-            val lockView=binding.inputBarRecordingView.lockView
-            val animation=ValueAnimator.ofObject(FloatEvaluator(), lockView.scaleX, 1.0f)
-            animation.duration=250L
-            animation.addUpdateListener { animator ->
-                lockView.scaleX=animator.animatedValue as Float
-                lockView.scaleY=animator.animatedValue as Float
-            }
-            animation.start()
+    private fun collapseVoiceMessageLockView() {
+        val lockView=binding.inputBarRecordingView.lockView
+        val animation=ValueAnimator.ofObject(FloatEvaluator(), lockView.scaleX, 1.0f)
+        animation.duration=250L
+        animation.addUpdateListener { animator ->
+            lockView.scaleX=animator.animatedValue as Float
+            lockView.scaleY=animator.animatedValue as Float
         }
+        animation.start()
+    }
 
-        private fun sendAttachments(
-            attachments : List<Attachment>,
-            body : String?,
-            quotedMessage : MessageRecord?=binding?.inputBar?.quote,
-            linkPreview : LinkPreview?=null,
-            contacts : List<ContactModel> = emptyList()
-        ) {
-            val recipient=viewModel.recipient.value ?: return
-            binding.conversationRecyclerView.scrollToPosition(0)
-            //New Line v32
-            processMessageRequestApproval()?.let { conversationApprovalJob = it }
+    private fun sendAttachments(
+        attachments : List<Attachment>,
+        body : String?,
+        quotedMessage : MessageRecord?= binding.inputBar.quote,
+        linkPreview : LinkPreview?=null,
+        contacts : List<ContactModel> = emptyList()
+    ) {
+        val recipient=viewModel.recipient.value ?: return
+        binding.conversationRecyclerView.scrollToPosition(0)
+        //New Line v32
+        processMessageRequestApproval()?.let { conversationApprovalJob = it }
 
-            // Create the message
-            val message=VisibleMessage()
-            message.sentTimestamp=MnodeAPI.nowWithOffset
-            message.text=body
-            val quote=quotedMessage?.let {
-                val quotedAttachments=
-                    (it as? MmsMessageRecord)?.slideDeck?.asAttachments() ?: listOf()
-                val sender=
-                    if (it.isOutgoing) Address.fromSerialized(
-                        listenerCallback!!.gettextSecurePreferences().getLocalNumber()!!
-                    ) else it.individualRecipient.address
+        // Create the message
+        val message=VisibleMessage()
+        message.sentTimestamp=MnodeAPI.nowWithOffset
+        message.text=body
+        val quote=quotedMessage?.let {
+            val quotedAttachments=
+                (it as? MmsMessageRecord)?.slideDeck?.asAttachments() ?: listOf()
+            val sender=
+                if (it.isOutgoing) Address.fromSerialized(
+                    listenerCallback!!.gettextSecurePreferences().getLocalNumber()!!
+                ) else it.individualRecipient.address
+            //Payment Tag
+            var quoteBody=it.body
+            if (it.isPayment) {
                 //Payment Tag
-                var quoteBody=it.body
-                if (it.isPayment) {
-                    //Payment Tag
-                    var amount=""
-                    try {
-                        val mainObject=JSONObject(it.body)
-                        val uniObject=mainObject.getJSONObject("kind")
-                        amount=uniObject.getString("amount")
-                    } catch (e : JSONException) {
-                        e.printStackTrace()
-                    }
-                    val direction : String=if (it.isOutgoing) {
-                        resources.getString(R.string.payment_sent)
-                    } else {
-                        resources.getString(R.string.payment_received)
-                    }
-                    quoteBody=
-                        resources.getString(R.string.reply_payment_card_message, direction, amount)
-                } else if (it.isOpenGroupInvitation) {
-                    quoteBody=resources.getString(R.string.ThreadRecord_open_group_invitation)
+                var amount=""
+                try {
+                    val mainObject=JSONObject(it.body)
+                    val uniObject=mainObject.getJSONObject("kind")
+                    amount=uniObject.getString("amount")
+                } catch (e : JSONException) {
+                    e.printStackTrace()
                 }
-                QuoteModel(it.dateSent, sender, quoteBody, false, quotedAttachments)
+                val direction : String=if (it.isOutgoing) {
+                    resources.getString(R.string.payment_sent)
+                } else {
+                    resources.getString(R.string.payment_received)
+                }
+                quoteBody=
+                    resources.getString(R.string.reply_payment_card_message, direction, amount)
+            } else if (it.isOpenGroupInvitation) {
+                quoteBody=resources.getString(R.string.ThreadRecord_open_group_invitation)
             }
-            // Clear the input bar
-            binding.inputBar.text=""
-            //New Line
-//        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-//        params.bottomMargin = 16
-
-            binding.inputBar.cancelQuoteDraft(2)
-            binding.inputBar.cancelLinkPreviewDraft(2)
-            // Clear mentions
-            previousText=""
-            currentMentionStartIndex=-1
-            mentions.clear()
-            // Reset the attachment manager
-            attachmentManager.clear()
-            // Reset attachments button if needed
-            if (isShowingAttachmentOptions) {
-                toggleAttachmentOptions()
-            }
-            val outgoingMediaMessage : OutgoingMediaMessage
-            /*if contact is shared with quoted msg - if case will handle, rest cases will be handled by else case*/
-            if (contacts.isNotEmpty()) {
-                // Collect all addresses and names
-                val addresses = contacts.map { it.address.serialize()}
-                val names = contacts.map { it.name }
-
-                val contact = SharedContact(
-                    address = Json.encodeToString(addresses),
-                    name = Json.encodeToString(names)
-                )
-                message.sharedContact = contact
-                outgoingMediaMessage=OutgoingMediaMessage.fromSharedContact(
-                    message,
-                    recipient,
-                    attachments,
-                    quote,
-                    linkPreview
-                )
-            } else {
-                outgoingMediaMessage=
-                    OutgoingMediaMessage.from(message, recipient, attachments, quote, linkPreview)
-            }
-            lifecycleScope.launch(Dispatchers.Default) {
-                // Put the message in the database
-                message.id=viewModel.insertMessageOutBox(outgoingMediaMessage)
-
-                waitForApprovalJobToBeSubmitted()
-                // Send it
-                MessageSender.send(message, recipient.address, attachments, quote, linkPreview)
-            }
-            // Send a typing stopped message
-            ApplicationContext.getInstance(requireActivity()).typingStatusSender.onTypingStopped(
-                viewModel.threadId
-            )
+            QuoteModel(it.dateSent, sender, quoteBody, false, quotedAttachments)
         }
+        // Clear the input bar
+        binding.inputBar.text=""
+
+        binding.inputBar.cancelQuoteDraft(2)
+        binding.inputBar.cancelLinkPreviewDraft(2)
+        // Clear mentions
+        previousText=""
+        currentMentionStartIndex=-1
+        mentions.clear()
+        // Reset the attachment manager
+        attachmentManager.clear()
+        // Reset attachments button if needed
+        if (isShowingAttachmentOptions) {
+            toggleAttachmentOptions()
+        }
+        val outgoingMediaMessage : OutgoingMediaMessage
+        /*if contact is shared with quoted msg - if case will handle, rest cases will be handled by else case*/
+        if (contacts.isNotEmpty()) {
+            // Collect all addresses and names
+            val addresses = contacts.map { it.address.serialize()}
+            val names = contacts.map { it.name }
+
+            val contact = SharedContact(
+                address = Json.encodeToString(addresses),
+                name = Json.encodeToString(names)
+            )
+            message.sharedContact = contact
+            outgoingMediaMessage=OutgoingMediaMessage.fromSharedContact(
+                message,
+                recipient,
+                attachments,
+                quote,
+                linkPreview
+            )
+        } else {
+            outgoingMediaMessage=
+                OutgoingMediaMessage.from(message, recipient, attachments, quote, linkPreview)
+        }
+        lifecycleScope.launch(Dispatchers.Default) {
+            // Put the message in the database
+            message.id=viewModel.insertMessageOutBox(outgoingMediaMessage)
+
+            waitForApprovalJobToBeSubmitted()
+            // Send it
+            MessageSender.send(message, recipient.address, attachments, quote, linkPreview)
+        }
+        // Send a typing stopped message
+        ApplicationContext.getInstance(requireActivity()).typingStatusSender.onTypingStopped(
+            viewModel.threadId
+        )
+    }
 
     // If we previously approve this recipient, either implicitly or explicitly, we need to wait for
     // that submission to complete first.
@@ -3665,49 +3419,46 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         }
     }
 
-        private fun sendTextOnlyMessage(hasPermissionToSendSeed : Boolean=false) {
-            val recipient=viewModel.recipient.value ?: return
-            //New Line v32
-            processMessageRequestApproval().let { conversationApprovalJob = it }
+    private fun sendTextOnlyMessage(hasPermissionToSendSeed : Boolean=false) {
+        val recipient=viewModel.recipient.value ?: return
+        //New Line v32
+        processMessageRequestApproval().let { conversationApprovalJob = it }
 
-            val text=getMessageBody()
-            val userPublicKey=listenerCallback!!.gettextSecurePreferences().getLocalNumber()
-            val isNoteToSelf=
-                (recipient.isContactRecipient && recipient.address.toString() == userPublicKey)
-            if (text.contains(seed) && !isNoteToSelf && !hasPermissionToSendSeed) {
-                val dialog=SendSeedDialog { sendTextOnlyMessage(true) }
-                return dialog.show(requireActivity().supportFragmentManager, "Send Seed Dialog")
-            }
-            // Create the message
-            val message=VisibleMessage()
-            message.sentTimestamp=MnodeAPI.nowWithOffset
-            message.text=text
-            val outgoingTextMessage=OutgoingTextMessage.from(message, viewModel.recipient.value)
-            // Clear the input bar
-            binding.inputBar.text=""
-            //New Line
-//        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-//        params.bottomMargin = 16
-
-            binding.inputBar.cancelQuoteDraft(2)
-            binding.inputBar.cancelLinkPreviewDraft(2)
-            // Clear mentions
-            previousText=""
-            currentMentionStartIndex=-1
-            mentions.clear()
-            lifecycleScope.launch(Dispatchers.Default) {
-                // Put the message in the database
-                message.id=viewModel.insertMessageOutBoxSMS(outgoingTextMessage, message.sentTimestamp)
-
-                waitForApprovalJobToBeSubmitted()
-                // Send it
-                MessageSender.send(message, recipient.address)
-            }
-            // Send a typing stopped message
-            ApplicationContext.getInstance(requireActivity()).typingStatusSender.onTypingStopped(
-                viewModel.threadId
-            )
+        val text=getMessageBody()
+        val userPublicKey=listenerCallback!!.gettextSecurePreferences().getLocalNumber()
+        val isNoteToSelf=
+            (recipient.isContactRecipient && recipient.address.toString() == userPublicKey)
+        if (text.contains(seed) && !isNoteToSelf && !hasPermissionToSendSeed) {
+            val dialog=SendSeedDialog { sendTextOnlyMessage(true) }
+            return dialog.show(requireActivity().supportFragmentManager, "Send Seed Dialog")
         }
+        // Create the message
+        val message=VisibleMessage()
+        message.sentTimestamp=MnodeAPI.nowWithOffset
+        message.text=text
+        val outgoingTextMessage=OutgoingTextMessage.from(message, viewModel.recipient.value)
+        // Clear the input bar
+        binding.inputBar.text=""
+
+        binding.inputBar.cancelQuoteDraft(2)
+        binding.inputBar.cancelLinkPreviewDraft(2)
+        // Clear mentions
+        previousText=""
+        currentMentionStartIndex=-1
+        mentions.clear()
+        lifecycleScope.launch(Dispatchers.Default) {
+            // Put the message in the database
+            message.id=viewModel.insertMessageOutBoxSMS(outgoingTextMessage, message.sentTimestamp)
+
+            waitForApprovalJobToBeSubmitted()
+            // Send it
+            MessageSender.send(message, recipient.address)
+        }
+        // Send a typing stopped message
+        ApplicationContext.getInstance(requireActivity()).typingStatusSender.onTypingStopped(
+            viewModel.threadId
+        )
+    }
 
     private fun shareContact(contacts: List<ContactModel>) {
         val recipient = viewModel.recipient.value ?: return
@@ -3757,27 +3508,27 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         return null
     }
 
-        // region General
-        private fun getMessageBody() : String {
-            var result=binding.inputBar.text.trim()
-            for (mention in mentions) {
-                try {
-                    val startIndex=result.indexOf("@" + mention.displayName)
-                    val endIndex=
-                        startIndex + mention.displayName.count() + 1 // + 1 to include the "@"
-                    result=
-                        result.substring(
-                            0,
-                            startIndex
-                        ) + "@" + mention.publicKey + result.substring(
-                            endIndex
-                        )
-                } catch (exception : Exception) {
-                    Timber.tag("Beldex").d("Failed to process mention due to error: $exception")
-                }
+    // region General
+    private fun getMessageBody() : String {
+        var result=binding.inputBar.text.trim()
+        for (mention in mentions) {
+            try {
+                val startIndex=result.indexOf("@" + mention.displayName)
+                val endIndex=
+                    startIndex + mention.displayName.count() + 1 // + 1 to include the "@"
+                result=
+                    result.substring(
+                        0,
+                        startIndex
+                    ) + "@" + mention.publicKey + result.substring(
+                        endIndex
+                    )
+            } catch (exception : Exception) {
+                Timber.tag("Beldex").d("Failed to process mention due to error: $exception")
             }
-            return result
         }
+        return result
+    }
 
     private fun acceptMessageRequest() : Job {
         binding.messageRequestBar.isVisible=false
@@ -3793,683 +3544,625 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         }
     }
 
-        // Remove this after the unsend request is enabled
-        /* private fun deleteMessagesWithoutUnsendRequest(messages : Set<MessageRecord>) {
-        *//**//*
-        val messageCount=messages.size
-        val builder=AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
-        builder.setTitle(
-            resources.getQuantityString(
-                R.plurals.ConversationFragment_delete_selected_messages,
-                messageCount,
-                messageCount
-            )
-        )
-        builder.setMessage(
-            resources.getQuantityString(
-                R.plurals.ConversationFragment_this_will_permanently_delete_all_n_selected_messages,
-                messageCount,
-                messageCount
-            )
-        )
-        builder.setCancelable(true)
-        builder.setPositiveButton(R.string.delete) { _, _ ->
-            viewModel.deleteMessagesWithoutUnsendRequest(messages)
-            endActionMode()
-        }
-        builder.setNegativeButton(android.R.string.cancel) { dialog, _ ->
-            dialog.dismiss()
-            endActionMode()
-        }
-        builder.show()
-    }*/
-        override fun selectMessages(messages : Set<MessageRecord>, position : Int) {
-            selectMessage(messages.first(), position) //TODO: begin selection mode
-        }
+    override fun selectMessages(messages : Set<MessageRecord>, position : Int) {
+        selectMessage(messages.first(), position)
+    }
 
-        private fun endActionMode() {
-            this.actionMode?.finish()
-            this.actionMode=null
-        }
+    private fun endActionMode() {
+        this.actionMode?.finish()
+        this.actionMode=null
+    }
 
-        private fun jumpToMessage(
-            author : Address,
-            timestamp : Long,
-            onMessageNotFound : Runnable?
+    private fun jumpToMessage(
+        author : Address,
+        timestamp : Long,
+        onMessageNotFound : Runnable?
+    ) {
+        SimpleTask.run(lifecycle, {
+            viewModel.getMessagePositionInConversation(timestamp, author)
+        }) { p : Int -> moveToMessagePosition(p, onMessageNotFound) }
+    }
+
+    private fun handleRecyclerViewScrolled() {
+        val wasTypingIndicatorVisibleBefore=binding.typingIndicatorViewContainer.isVisible
+        binding.typingIndicatorViewContainer.isVisible=
+            wasTypingIndicatorVisibleBefore && isScrolledToBottom
+        showScrollToBottomButtonIfApplicable()
+        val firstVisiblePosition=layoutManager?.findFirstVisibleItemPosition() ?: -1
+        unreadCount=min(unreadCount, firstVisiblePosition).coerceAtLeast(0)
+        updateUnreadCountIndicator()
+    }
+
+    private fun showScrollToBottomButtonIfApplicable() {
+        binding.scrollToBottomButton.isVisible=!isScrolledToBottom && adapter.itemCount > 0
+    }
+
+    private fun moveToMessagePosition(position : Int, onMessageNotFound : Runnable?) {
+        if (position >= 0) {
+            binding.conversationRecyclerView.scrollToPosition(position)
+        } else {
+            onMessageNotFound?.run()
+        }
+    }
+
+    private fun sendMediaSavedNotification() {
+        val recipient=viewModel.recipient.value ?: return
+        if (recipient.isGroupRecipient) {
+            return
+        }
+        val timestamp=MnodeAPI.nowWithOffset
+        val kind=DataExtractionNotification.Kind.MediaSaved(timestamp)
+        val message=DataExtractionNotification(kind)
+        MessageSender.send(message, recipient.address)
+    }
+
+    private fun gifInfoDialog() {
+        val gifSettingsDialog=ConversationActionDialog()
+        gifSettingsDialog.apply {
+            arguments=Bundle().apply {
+                putSerializable(
+                    ConversationActionDialog.EXTRA_DIALOG_TYPE,
+                    HomeDialogType.GifSetting
+                )
+            }
+            setListener(this@ConversationFragmentV2)
+        }
+        gifSettingsDialog.show(childFragmentManager, ConversationActionDialog.TAG)
+    }
+
+    private fun showGIFPicker() {
+        val hasSeenGIFMetaDataWarning : Boolean=
+            listenerCallback!!.gettextSecurePreferences().hasSeenGIFMetaDataWarning()
+        if (!hasSeenGIFMetaDataWarning) {
+            gifInfoDialog()
+        } else {
+            AttachmentManager.selectGif(requireActivity(), PICK_GIF)
+        }
+    }
+
+    private fun showDocumentPicker() {
+        AttachmentManager.selectDocument(requireActivity(), PICK_DOCUMENT)
+    }
+
+    private fun pickFromLibrary() {
+        val recipient=viewModel.recipient.value ?: return
+        binding.inputBar.text.trim().let { text ->
+            AttachmentManager.selectGallery(
+                requireActivity(),
+                PICK_FROM_LIBRARY, recipient, text
+            )
+        }
+    }
+
+    private fun showCamera() {
+        attachmentManager.capturePhoto(requireActivity(), TAKE_PHOTO, viewModel.recipient.value)
+    }
+
+    private fun hideMentionCandidates() {
+        if (isShowingMentionCandidatesView) {
+            val mentionCandidatesView=mentionCandidatesView ?: return
+            val animation=
+                ValueAnimator.ofObject(FloatEvaluator(), mentionCandidatesView.alpha, 0.0f)
+            animation.duration=250L
+            animation.addUpdateListener { animator ->
+                mentionCandidatesView.alpha=animator.animatedValue as Float
+                if (animator.animatedFraction == 1.0f) {
+                    binding.additionalContentContainer.removeAllViews()
+                }
+            }
+            animation.start()
+        }
+        isShowingMentionCandidatesView=false
+    }
+
+    private fun showOrUpdateMentionCandidatesIfNeeded(query : String="") {
+        val additionalContentContainer=binding.additionalContentContainer
+        val recipient=viewModel.recipient.value ?: return
+        if (!isShowingMentionCandidatesView) {
+            additionalContentContainer.removeAllViews()
+            val view=MentionCandidatesView(requireActivity())
+            view.glide=glide
+            view.onCandidateSelected={ handleMentionSelected(it) }
+            additionalContentContainer.addView(view)
+            val candidates=MentionsManager.getMentionCandidates(
+                query,
+                viewModel.threadId,
+                recipient.isOpenGroupRecipient
+            )
+            this.mentionCandidatesView=view
+            view.show(candidates, viewModel.threadId)
+        } else {
+            val candidates=MentionsManager.getMentionCandidates(
+                query,
+                viewModel.threadId,
+                recipient.isOpenGroupRecipient
+            )
+            this.mentionCandidatesView!!.setMentionCandidates(candidates)
+        }
+        isShowingMentionCandidatesView=true
+    }
+
+    /*Hales63*/
+    private fun acceptAlertDialog() {
+        val acceptRequest=ConversationActionDialog()
+        acceptRequest.apply {
+            arguments=Bundle().apply {
+                putSerializable(
+                    ConversationActionDialog.EXTRA_DIALOG_TYPE,
+                    HomeDialogType.AcceptRequest
+                )
+            }
+            setListener(this@ConversationFragmentV2)
+        }
+        acceptRequest.show(childFragmentManager, ConversationActionDialog.TAG)
+    }
+
+    private fun declineAlertDialog() {
+        val declineRequest=ConversationActionDialog()
+        declineRequest.apply {
+            arguments=Bundle().apply {
+                putSerializable(
+                    ConversationActionDialog.EXTRA_DIALOG_TYPE,
+                    HomeDialogType.DeclineRequest
+                )
+            }
+            setListener(this@ConversationFragmentV2)
+        }
+        declineRequest.show(childFragmentManager, ConversationActionDialog.TAG)
+    }
+
+    private fun handleMentionSelected(mention : Mention) {
+        val binding=binding
+        if (currentMentionStartIndex == -1) {
+            return
+        }
+        mentions.add(mention)
+        val previousText=binding.inputBar.text
+        val newText=
+            previousText.substring(
+                0,
+                currentMentionStartIndex
+            ) + "@" + mention.displayName + " "
+        binding.inputBar.text=newText
+        binding.inputBar.setSelection(newText.length)
+        currentMentionStartIndex=-1
+        hideMentionCandidates()
+        this.previousText=newText
+    }
+
+    private fun addOpenGroupGuidelinesIfNeeded(isBeldexHostedOpenGroup : Boolean) {
+        if (!isBeldexHostedOpenGroup) {
+            return
+        }
+        binding.openGroupGuidelinesView.visibility=View.VISIBLE
+        val recyclerViewLayoutParams=
+            binding.conversationRecyclerView.layoutParams as RelativeLayout.LayoutParams
+        recyclerViewLayoutParams.topMargin=toPx(
+            5,
+            resources
+        ) // The height of the social group guidelines view is hardcoded to this
+        binding.conversationRecyclerView.layoutParams=recyclerViewLayoutParams
+    }
+
+    private fun isMessageRequestThread() : Boolean {
+        //New Line v32
+        val recipient=viewModel.recipient.value ?: return false
+        return !recipient.isGroupRecipient && !recipient.isApproved
+    }
+
+    private fun selectedItem(message : MessageRecord) : Boolean {
+        return adapter.selectedItems.contains(message)
+    }
+
+    override fun onBackPressed() : Boolean {
+        return false
+    }
+
+    //Payment Tag
+    override fun sendBDX() {
+        val txData : TxData=getTxData()
+        txData.destinationAddress=senderBeldexAddress
+        txData.destinationAddress?.let { Timber.tag("SenderBeldexAddress txData->").d(it) }
+        if (getCleanAmountString(getBDXAmount()).equals(
+                Wallet.getDisplayAmount(totalFunds)
+            )
         ) {
-            SimpleTask.run(lifecycle, {
-                viewModel.getMessagePositionInConversation(timestamp, author)
-            }) { p : Int -> moveToMessagePosition(p, onMessageNotFound) }
-        }
-
-        private fun handleRecyclerViewScrolled() {
-            val binding=binding
-            val wasTypingIndicatorVisibleBefore=binding.typingIndicatorViewContainer.isVisible
-            binding.typingIndicatorViewContainer.isVisible=
-                wasTypingIndicatorVisibleBefore && isScrolledToBottom
-            val isTypingIndicatorVisibleAfter=binding.typingIndicatorViewContainer.isVisible
-            if (isTypingIndicatorVisibleAfter != wasTypingIndicatorVisibleBefore) {
-                inputBarHeightChanged(binding.inputBar.height)
-            }
-            showScrollToBottomButtonIfApplicable()
-            val firstVisiblePosition=layoutManager?.findFirstVisibleItemPosition() ?: -1
-            unreadCount=min(unreadCount, firstVisiblePosition).coerceAtLeast(0)
-            updateUnreadCountIndicator()
-        }
-
-        private fun showScrollToBottomButtonIfApplicable() {
-            binding.scrollToBottomButton.isVisible=!isScrolledToBottom && adapter.itemCount > 0
-        }
-
-        private fun moveToMessagePosition(position : Int, onMessageNotFound : Runnable?) {
-            if (position >= 0) {
-                binding.conversationRecyclerView.scrollToPosition(position)
+            val amount=(totalFunds - 10485760)// 10485760 == 050000000
+            val bdx=getCleanAmountString(getBDXAmount())
+            if (bdx != null) {
+                txData.amount=amount
             } else {
-                onMessageNotFound?.run()
+                txData.amount=0L
+            }
+
+        } else {
+            val bdx=
+                getCleanAmountString(getBDXAmount())
+            if (bdx != null) {
+                txData.amount=Wallet.getAmountFromString(bdx)
+            } else {
+                txData.amount=0L
             }
         }
+        txData.userNotes=UserNotes("-")
+        if (TextSecurePreferences.getFeePriority(requireActivity()) == 0) {
+            txData.priority=PendingTransaction.Priority.Priority_Slow
+        } else {
+            txData.priority=PendingTransaction.Priority.Priority_Flash
+        }
+        txData.mixin=mixin
+        //Important
+        val lockManager : LockManager<CustomPinActivity> =
+            LockManager.getInstance() as LockManager<CustomPinActivity>
+        lockManager.enableAppLock(requireActivity(), CustomPinActivity::class.java)
+        val intent=Intent(requireActivity(), CustomPinActivity::class.java)
+        intent.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.VerifyWalletPin.action)
+        intent.putExtra("change_pin", false)
+        intent.putExtra("send_authentication", true)
+        resultLaunchers.launch(intent)
+        // Clear the input bar
+        binding.inputBar.text=""
+    }
 
-        private fun sendMediaSavedNotification() {
-            val recipient=viewModel.recipient.value ?: return
-            if (recipient.isGroupRecipient) {
+    override fun sendFailed(errorText : String?) {
+        val transactionLoadingBar : Fragment?=
+            requireActivity().supportFragmentManager.findFragmentByTag("transaction_progressbar_tag")
+        if (transactionLoadingBar != null) {
+            val df : DialogFragment=transactionLoadingBar as DialogFragment
+            try {
+                df.dismiss()
+            } catch (e : IllegalStateException) {
                 return
             }
-            val timestamp=MnodeAPI.nowWithOffset
-            val kind=DataExtractionNotification.Kind.MediaSaved(timestamp)
-            val message=DataExtractionNotification(kind)
-            MessageSender.send(message, recipient.address)
         }
+        SendFailedDialog(errorText!!).show(requireActivity().supportFragmentManager, "")
+        transactionInProgress=false
+    }
 
-        private fun gifInfoDialog() {
-            val gifSettingsDialog=ConversationActionDialog()
-            gifSettingsDialog.apply {
-                arguments=Bundle().apply {
-                    putSerializable(
-                        ConversationActionDialog.EXTRA_DIALOG_TYPE,
-                        HomeDialogType.GifSetting
-                    )
-                }
-                setListener(this@ConversationFragmentV2)
-            }
-            gifSettingsDialog.show(childFragmentManager, ConversationActionDialog.TAG)
-        }
-
-        private fun showGIFPicker() {
-            val hasSeenGIFMetaDataWarning : Boolean=
-                listenerCallback!!.gettextSecurePreferences().hasSeenGIFMetaDataWarning()
-            if (!hasSeenGIFMetaDataWarning) {
-                gifInfoDialog()
-            } else {
-                AttachmentManager.selectGif(requireActivity(), PICK_GIF)
-            }
-        }
-
-        private fun showDocumentPicker() {
-            AttachmentManager.selectDocument(requireActivity(), PICK_DOCUMENT)
-        }
-
-        private fun pickFromLibrary() {
-            val recipient=viewModel.recipient.value ?: return
-            binding.inputBar.text.trim().let { text ->
-                AttachmentManager.selectGallery(
-                    requireActivity(),
-                    PICK_FROM_LIBRARY, recipient, text
-                )
-            }
-        }
-
-        private fun showCamera() {
-            attachmentManager.capturePhoto(requireActivity(), TAKE_PHOTO, viewModel.recipient.value)
-        }
-
-        private fun hideMentionCandidates() {
-            if (isShowingMentionCandidatesView) {
-                val mentionCandidatesView=mentionCandidatesView ?: return
-                val animation=
-                    ValueAnimator.ofObject(FloatEvaluator(), mentionCandidatesView.alpha, 0.0f)
-                animation.duration=250L
-                animation.addUpdateListener { animator ->
-                    mentionCandidatesView.alpha=animator.animatedValue as Float
-                    if (animator.animatedFraction == 1.0f) {
-                        binding.additionalContentContainer.removeAllViews()
-                    }
-                }
-                animation.start()
-            }
-            isShowingMentionCandidatesView=false
-        }
-
-        private fun showOrUpdateMentionCandidatesIfNeeded(query : String="") {
-            val additionalContentContainer=binding.additionalContentContainer
-            val recipient=viewModel.recipient.value ?: return
-            if (!isShowingMentionCandidatesView) {
-                additionalContentContainer.removeAllViews()
-                val view=MentionCandidatesView(requireActivity())
-                view.glide=glide
-                view.onCandidateSelected={ handleMentionSelected(it) }
-                additionalContentContainer.addView(view)
-                val candidates=MentionsManager.getMentionCandidates(
-                    query,
-                    viewModel.threadId,
-                    recipient.isOpenGroupRecipient
-                )
-                this.mentionCandidatesView=view
-                view.show(candidates, viewModel.threadId)
-            } else {
-                val candidates=MentionsManager.getMentionCandidates(
-                    query,
-                    viewModel.threadId,
-                    recipient.isOpenGroupRecipient
-                )
-                this.mentionCandidatesView!!.setMentionCandidates(candidates)
-            }
-            isShowingMentionCandidatesView=true
-        }
-
-        /*Hales63*/
-        private fun acceptAlertDialog() {
-            val acceptRequest=ConversationActionDialog()
-            acceptRequest.apply {
-                arguments=Bundle().apply {
-                    putSerializable(
-                        ConversationActionDialog.EXTRA_DIALOG_TYPE,
-                        HomeDialogType.AcceptRequest
-                    )
-                }
-                setListener(this@ConversationFragmentV2)
-            }
-            acceptRequest.show(childFragmentManager, ConversationActionDialog.TAG)
-        }
-
-        private fun declineAlertDialog() {
-            val declineRequest=ConversationActionDialog()
-            declineRequest.apply {
-                arguments=Bundle().apply {
-                    putSerializable(
-                        ConversationActionDialog.EXTRA_DIALOG_TYPE,
-                        HomeDialogType.DeclineRequest
-                    )
-                }
-                setListener(this@ConversationFragmentV2)
-            }
-            declineRequest.show(childFragmentManager, ConversationActionDialog.TAG)
-        }
-
-        private fun handleMentionSelected(mention : Mention) {
-            val binding=binding
-            if (currentMentionStartIndex == -1) {
-                return
-            }
-            mentions.add(mention)
-            val previousText=binding.inputBar.text
-            val newText=
-                previousText.substring(
-                    0,
-                    currentMentionStartIndex
-                ) + "@" + mention.displayName + " "
-            binding.inputBar.text=newText
-            binding.inputBar.setSelection(newText.length)
-            currentMentionStartIndex=-1
-            hideMentionCandidates()
-            this.previousText=newText
-        }
-
-        private fun addOpenGroupGuidelinesIfNeeded(isBeldexHostedOpenGroup : Boolean) {
-            if (!isBeldexHostedOpenGroup) {
-                return
-            }
-            binding.openGroupGuidelinesView.visibility=View.VISIBLE
-            val recyclerViewLayoutParams=
-                binding.conversationRecyclerView.layoutParams as RelativeLayout.LayoutParams
-            recyclerViewLayoutParams.topMargin=toPx(
-                5,
-                resources
-            ) // The height of the social group guidelines view is hardcoded to this
-            binding.conversationRecyclerView.layoutParams=recyclerViewLayoutParams
-        }
-
-        private fun isMessageRequestThread() : Boolean {
-            //New Line v32
-            val recipient=viewModel.recipient.value ?: return false
-            return !recipient.isGroupRecipient && !recipient.isApproved
-        }
-
-        private fun selectedItem(message : MessageRecord) : Boolean {
-            return adapter.selectedItems.contains(message)
-        }
-
-        override fun onBackPressed() : Boolean {
-            return false
-        }
-
-        //Payment Tag
-        override fun sendBDX() {
-            val txData : TxData=getTxData()
-            txData.destinationAddress=senderBeldexAddress
-            txData.destinationAddress?.let { Timber.tag("SenderBeldexAddress txData->").d(it) }
-            if (getCleanAmountString(getBDXAmount()).equals(
-                    Wallet.getDisplayAmount(totalFunds)
-                )
-            ) {
-                val amount=(totalFunds - 10485760)// 10485760 == 050000000
-                val bdx=getCleanAmountString(getBDXAmount())
-                if (bdx != null) {
-                    txData.amount=amount
-                } else {
-                    txData.amount=0L
-                }
-
-            } else {
-                val bdx=
-                    getCleanAmountString(getBDXAmount())
-                if (bdx != null) {
-                    txData.amount=Wallet.getAmountFromString(bdx)
-                } else {
-                    txData.amount=0L
-                }
-            }
-            txData.userNotes=UserNotes("-")
-            if (TextSecurePreferences.getFeePriority(requireActivity()) == 0) {
-                txData.priority=PendingTransaction.Priority.Priority_Slow
-            } else {
-                txData.priority=PendingTransaction.Priority.Priority_Flash
-            }
-            txData.mixin=mixin
-            //Important
-            val lockManager : LockManager<CustomPinActivity> =
-                LockManager.getInstance() as LockManager<CustomPinActivity>
-            lockManager.enableAppLock(requireActivity(), CustomPinActivity::class.java)
-            val intent=Intent(requireActivity(), CustomPinActivity::class.java)
-            intent.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.VerifyWalletPin.action)
-            intent.putExtra("change_pin", false)
-            intent.putExtra("send_authentication", true)
-            resultLaunchers.launch(intent)
-            // Clear the input bar
-            binding.inputBar.text=""
-        }
-
-        override fun sendFailed(errorText : String?) {
-            val transactionLoadingBar : Fragment?=
-                requireActivity().supportFragmentManager.findFragmentByTag("transaction_progressbar_tag")
-            if (transactionLoadingBar != null) {
-                val df : DialogFragment=transactionLoadingBar as DialogFragment
-                try {
-                    df.dismiss()
-                } catch (e : IllegalStateException) {
-                    return
-                }
-            }
-            //sendButtonEnabled()
-            //showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
-            SendFailedDialog(errorText!!).show(requireActivity().supportFragmentManager, "")
-            transactionInProgress=false
-        }
-
-        override fun createTransactionFailed(errorText : String?) {
-            hideProgress()
-            if (getString(R.string.invalid_destination_address) == errorText!!) {
-                //showAlert(getString(R.string.send_create_tx_error_title), getString(R.string.receiver_address_is_not_available))
-                SendFailedDialog(getString(R.string.receiver_address_is_not_available)).show(
-                    requireActivity().supportFragmentManager,
-                    ""
-                )
-                transactionInProgress=false
-            } else {
-                //showAlert(getString(R.string.send_create_tx_error_title), errorText)
-                SendFailedDialog(errorText).show(requireActivity().supportFragmentManager, "")
-                transactionInProgress=false
-            }
-        }
-
-        override fun transactionCreated(txTag : String?, pendingTransaction : PendingTransaction?) {
-            // ignore txTag - the app flow ensures this is the correct tx
-            hideProgress()
-            if (isResume) {
-                this.pendingTransaction=pendingTransaction
-                refreshTransactionDetails()
-            } else {
-                this.disposeTransaction()
-            }
-        }
-
-        // callbacks from send service
-        fun onTransactionCreated(txTag : String?, pendingTransaction : PendingTransaction?) {
-            pendingTx=PendingTx(pendingTransaction)
-            transactionCreated(txTag, pendingTransaction)
-        }
-
-        fun onCreateTransactionFailed(errorText : String?) {
-            createTransactionFailed(errorText)
-        }
-
-        private fun showAlert(title : String, message : String) {
-            val builder=AlertDialog.Builder(
-                requireActivity(), R.style.backgroundColor
-            )
-            builder.setCancelable(true).setTitle(title).setMessage(message).create().show()
-            transactionInProgress=false
-        }
-
-        private fun disposeTransaction() {
-            pendingTx=null
-            listenerCallback!!.onDisposeRequest()
-        }
-
-        private var inProgress=false
-
-        //Minimized app
-        private var onTransactionProgress=false
-
-        private fun hideProgress() {
-            val transactionLoadingBar : Fragment?=
-                requireActivity().supportFragmentManager.findFragmentByTag("transaction_progressbar_tag")
-            if (transactionLoadingBar != null) {
-                val df : DialogFragment=transactionLoadingBar as DialogFragment
-                try {
-                    df.dismiss()
-                } catch (e : IllegalStateException) {
-                    //Minimized app
-                    onTransactionProgress=true
-                    return
-                }
-            }
-            inProgress=false
-        }
-
-        private fun showProgress() {
-            TransactionLoadingBar().show(
+    override fun createTransactionFailed(errorText : String?) {
+        hideProgress()
+        if (getString(R.string.invalid_destination_address) == errorText!!) {
+            //showAlert(getString(R.string.send_create_tx_error_title), getString(R.string.receiver_address_is_not_available))
+            SendFailedDialog(getString(R.string.receiver_address_is_not_available)).show(
                 requireActivity().supportFragmentManager,
-                "transaction_progressbar_tag"
+                ""
             )
-            inProgress=true
+            transactionInProgress=false
+        } else {
+            //showAlert(getString(R.string.send_create_tx_error_title), errorText)
+            SendFailedDialog(errorText).show(requireActivity().supportFragmentManager, "")
+            transactionInProgress=false
         }
+    }
 
-        private fun refreshTransactionDetails() {
-            if (pendingTransaction != null) {
-                val txData : TxData=getTxData()
-                try {
-                    if (pendingTransaction!!.firstTxId != null) {
-                        InChatSend(
-                            pendingTransaction!!,
-                            txData,
-                            this
-                        ).show(requireActivity().supportFragmentManager, "")
-                    }
-                } catch (e : IllegalStateException) {
-                    //Minimized app
-                    onTransactionProgress=true
-                    return
-                } catch (e : IndexOutOfBoundsException) {
-                    //Minimized app
-                    hideProgress()
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.please_try_again_later),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+    override fun transactionCreated(txTag : String?, pendingTransaction : PendingTransaction?) {
+        // ignore txTag - the app flow ensures this is the correct tx
+        hideProgress()
+        if (isResume) {
+            this.pendingTransaction=pendingTransaction
+            refreshTransactionDetails()
+        } else {
+            this.disposeTransaction()
+        }
+    }
+
+    // callbacks from send service
+    fun onTransactionCreated(txTag : String?, pendingTransaction : PendingTransaction?) {
+        pendingTx=PendingTx(pendingTransaction)
+        transactionCreated(txTag, pendingTransaction)
+    }
+
+    fun onCreateTransactionFailed(errorText : String?) {
+        createTransactionFailed(errorText)
+    }
+
+    private fun disposeTransaction() {
+        pendingTx=null
+        listenerCallback!!.onDisposeRequest()
+    }
+
+    private var inProgress=false
+
+    //Minimized app
+    private var onTransactionProgress=false
+
+    private fun hideProgress() {
+        val transactionLoadingBar : Fragment?=
+            requireActivity().supportFragmentManager.findFragmentByTag("transaction_progressbar_tag")
+        if (transactionLoadingBar != null) {
+            val df : DialogFragment=transactionLoadingBar as DialogFragment
+            try {
+                df.dismiss()
+            } catch (e : IllegalStateException) {
+                //Minimized app
+                onTransactionProgress=true
+                return
             }
         }
+        inProgress=false
+    }
 
-        private fun getCleanAmountString(enteredAmount : String) : String? {
-            return try {
-                val amount=enteredAmount.toDouble()
-                if (amount >= 0) {
-                    String.format(Locale.US, cleanFormat, amount)
-                } else {
-                    null
+    private fun showProgress() {
+        TransactionLoadingBar().show(
+            requireActivity().supportFragmentManager,
+            "transaction_progressbar_tag"
+        )
+        inProgress=true
+    }
+
+    private fun refreshTransactionDetails() {
+        if (pendingTransaction != null) {
+            val txData : TxData=getTxData()
+            try {
+                if (pendingTransaction!!.firstTxId != null) {
+                    InChatSend(
+                        pendingTransaction!!,
+                        txData,
+                        this
+                    ).show(requireActivity().supportFragmentManager, "")
                 }
-            } catch (ex : NumberFormatException) {
+            } catch (e : IllegalStateException) {
+                //Minimized app
+                onTransactionProgress=true
+                return
+            } catch (e : IndexOutOfBoundsException) {
+                //Minimized app
+                hideProgress()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.please_try_again_later),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    private fun getCleanAmountString(enteredAmount : String) : String? {
+        return try {
+            val amount=enteredAmount.toDouble()
+            if (amount >= 0) {
+                String.format(Locale.US, cleanFormat, amount)
+            } else {
                 null
             }
+        } catch (ex : NumberFormatException) {
+            null
         }
+    }
 
-        private val resultLaunchers=
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    onResumeFragment()
-                }
-            }
-
-        private fun onResumeFragment() {
-            Helper.hideKeyboard(activity)
-            isResume=true
-            transactionInProgress=true
-            val activity=activity
-            if (isAdded && activity != null) {
-                this.activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }
-            refreshTransactionDetails()
-            if (pendingTransaction == null && !inProgress) {
-                showProgress()
-                prepareSend(txData)
+    private val resultLaunchers=
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                onResumeFragment()
             }
         }
 
-        private fun prepareSend(txData : TxData?) {
-            listenerCallback!!.onPrepareSend(null, txData)
+    private fun onResumeFragment() {
+        Helper.hideKeyboard(activity)
+        isResume=true
+        transactionInProgress=true
+        val activity=activity
+        if (isAdded && activity != null) {
+            this.activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
-
-        fun send() {
-            commitTransaction()
-            //Insert Recipient Address
-            if (TextSecurePreferences.getSaveRecipientAddress(requireActivity())) {
-                val insertRecipientAddress=
-                    DatabaseComponent.get(requireActivity()).bchatRecipientAddressDatabase()
-                try {
-                    if (pendingTransaction!!.firstTxId != null) {
-                        insertRecipientAddress.insertRecipientAddress(
-                            pendingTransaction!!.firstTxId,
-                            txData.destinationAddress
-                        )
-                    }
-                } catch (e : IndexOutOfBoundsException) {
-                    e.message?.let { Timber.tag("ConversationFragmentV2->").d(it) }
-                }
-            }
+        refreshTransactionDetails()
+        if (pendingTransaction == null && !inProgress) {
             showProgress()
+            prepareSend(txData)
         }
+    }
 
-        private fun commitTransaction() {
-            listenerCallback!!.onSend(txData.userNotes)
-            committedTx=pendingTx
-        }
+    private fun prepareSend(txData : TxData?) {
+        listenerCallback!!.onPrepareSend(null, txData)
+    }
 
-
-        private fun getBDXAmount() : String {
-            sendBDXAmount=binding.inputBar.text.trim()
-            return sendBDXAmount as String
-        }
-
-        //If Transaction successfully completed after call this function
-        fun onTransactionSent(txId : String?) {
-            hideProgress()
-            //Payment Tag
-            viewModel.sentPayment(sendBDXAmount.toString(), txId, viewModel.recipient.value)
-            processMessageRequestApproval()
-            val activity=activity
-            if (isAdded && activity != null) {
-                this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }
-            InChatSendSuccess(this).show(requireActivity().supportFragmentManager, "")
-        }
-
-        fun setProgress(text : String?) {
-            //WalletFragment Functionality
+    fun send() {
+        commitTransaction()
+        //Insert Recipient Address
+        if (TextSecurePreferences.getSaveRecipientAddress(requireActivity())) {
+            val insertRecipientAddress=
+                DatabaseComponent.get(requireActivity()).bchatRecipientAddressDatabase()
             try {
-                if (text == getString(R.string.reconnecting) || text == getString(R.string.status_wallet_loading) || text == getString(
-                        R.string.status_wallet_connecting
-                    )
-                ) {
-                    binding.inputBar.setDrawableProgressBar(
-                        requireActivity().applicationContext,
-                        false,
-                        valueOfWallet,
-                        4f
+                if (pendingTransaction!!.firstTxId != null) {
+                    insertRecipientAddress.insertRecipientAddress(
+                        pendingTransaction!!.firstTxId,
+                        txData.destinationAddress
                     )
                 }
-                syncText=text
-            } catch (ex : IllegalStateException) {
-                Timber.tag("Exception").d(ex.toString())
+            } catch (e : IndexOutOfBoundsException) {
+                e.message?.let { Timber.tag("ConversationFragmentV2->").d(it) }
             }
         }
+        showProgress()
+    }
 
-        fun setProgress(n : Float) {
-            syncProgress=n
-            when {
-                n == 4f -> {
-                    binding.inputBar.showProgressBar(blockProgressBarVisible)
-                }
+    private fun commitTransaction() {
+        listenerCallback!!.onSend(txData.userNotes)
+        committedTx=pendingTx
+    }
 
-                n == 2f -> {
-                    binding.inputBar.showProgressBar(blockProgressBarVisible)
-                }
 
-                n == 3f -> {
-                    binding.inputBar.showProgressBar(blockProgressBarVisible)
+    private fun getBDXAmount() : String {
+        sendBDXAmount=binding.inputBar.text.trim()
+        return sendBDXAmount as String
+    }
+
+    //If Transaction successfully completed after call this function
+    fun onTransactionSent(txId : String?) {
+        hideProgress()
+        //Payment Tag
+        viewModel.sentPayment(sendBDXAmount.toString(), txId, viewModel.recipient.value)
+        processMessageRequestApproval()
+        val activity=activity
+        if (isAdded && activity != null) {
+            this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+        InChatSendSuccess(this).show(requireActivity().supportFragmentManager, "")
+    }
+
+    fun setProgress(text : String?) {
+        //WalletFragment Functionality
+        try {
+            if (text == getString(R.string.reconnecting) || text == getString(R.string.status_wallet_loading) || text == getString(
+                    R.string.status_wallet_connecting
+                )
+            ) {
+                binding.inputBar.setDrawableProgressBar(
+                    requireActivity().applicationContext,
+                    false,
+                    valueOfWallet,
+                    4f
+                )
+            }
+            syncText=text
+        } catch (ex : IllegalStateException) {
+            Timber.tag("Exception").d(ex.toString())
+        }
+    }
+
+    fun setProgress(n : Float) {
+        syncProgress=n
+        when {
+            n == 4f -> {
+                binding.inputBar.showProgressBar(blockProgressBarVisible)
+            }
+
+            n == 2f -> {
+                binding.inputBar.showProgressBar(blockProgressBarVisible)
+            }
+
+            n == 3f -> {
+                binding.inputBar.showProgressBar(blockProgressBarVisible)
+                binding.inputBar.setProgress(100)
+                //viewModels.setProgress(1f)
+            }
+
+            n < 1f && n >= 0f -> {
+                //viewModels.setProgress(n)
+                if (n >= 0.01f && n < 0.1f) {
+                    binding.inputBar.setProgress(5)
+                } else if (n >= 0.1f && n < 0.2f) {
+                    binding.inputBar.setProgress(10)
+                } else if (n >= 0.2f && n < 0.3f) {
+                    binding.inputBar.setProgress(20)
+                } else if (n >= 0.3f && n < 0.4f) {
+                    binding.inputBar.setProgress(30)
+                } else if (n >= 0.4f && n < 0.5f) {
+                    binding.inputBar.setProgress(40)
+                } else if (n >= 0.55f && n < 0.6f) {
+                    binding.inputBar.setProgress(55)
+                } else if (n >= 0.6f && n < 0.7f) {
+                    binding.inputBar.setProgress(60)
+                } else if (n >= 0.7f && n < 0.8f) {
+                    binding.inputBar.setProgress(70)
+                } else if (n >= 0.8f && n < 0.9f) {
+                    binding.inputBar.setProgress(80)
+                } else if (n >= 0.9f && n < 0.95f) {
+                    binding.inputBar.setProgress(90)
+                } else if (n >= 0.95f && n < 0.99f) {
+                    binding.inputBar.setProgress(95)
+                } else {
                     binding.inputBar.setProgress(100)
-                    //viewModels.setProgress(1f)
                 }
+                binding.inputBar.showProgressBar(blockProgressBarVisible)
+            }
 
-                n < 1f && n >= 0f -> {
-                    //viewModels.setProgress(n)
-                    if (n >= 0.01f && n < 0.1f) {
-                        binding.inputBar.setProgress(5)
-                    } else if (n >= 0.1f && n < 0.2f) {
-                        binding.inputBar.setProgress(10)
-                    } else if (n >= 0.2f && n < 0.3f) {
-                        binding.inputBar.setProgress(20)
-                    } else if (n >= 0.3f && n < 0.4f) {
-                        binding.inputBar.setProgress(30)
-                    } else if (n >= 0.4f && n < 0.5f) {
-                        binding.inputBar.setProgress(40)
-                    } else if (n >= 0.55f && n < 0.6f) {
-                        binding.inputBar.setProgress(55)
-                    } else if (n >= 0.6f && n < 0.7f) {
-                        binding.inputBar.setProgress(60)
-                    } else if (n >= 0.7f && n < 0.8f) {
-                        binding.inputBar.setProgress(70)
-                    } else if (n >= 0.8f && n < 0.9f) {
-                        binding.inputBar.setProgress(80)
-                    } else if (n >= 0.9f && n < 0.95f) {
-                        binding.inputBar.setProgress(90)
-                    } else if (n >= 0.95f && n < 0.99f) {
-                        binding.inputBar.setProgress(95)
-                    } else {
-                        binding.inputBar.setProgress(100)
-                    }
-                    binding.inputBar.showProgressBar(blockProgressBarVisible)
-                }
-
-                else -> { // <0
-                    //viewModels.setProgress(n)
-                    binding.inputBar.showProgressBar(false)
-                }
+            else -> { // <0
+                //viewModels.setProgress(n)
+                binding.inputBar.showProgressBar(false)
             }
         }
+    }
 
-        fun onRefreshed(wallet : Wallet, full : Boolean) {
-            val recipient=viewModel.recipient.value ?: return
-            if (!recipient.isGroupRecipient && recipient.hasApprovedMe() && !recipient.isBlocked && HomeActivity.reportIssueBChatID != recipient.address.toString() && !recipient.isLocalNumber) {
-                if (full && listenerCallback!!.isSynced) {
-                    if (CheckOnline.isOnline(requireContext())) {
-                        check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
-                        val daemonConnected : Wallet.ConnectionStatus=
-                            listenerCallback!!.connectionStatus!!
-                        if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
-                            //getUnlockedBalance(wallet)
-                            AsyncGetUnlockedBalance(wallet).execute<Executor>(
-                                BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR
-                            )
-                        }
+    fun onRefreshed(wallet : Wallet, full : Boolean) {
+        val recipient=viewModel.recipient.value ?: return
+        if (!recipient.isGroupRecipient && recipient.hasApprovedMe() && !recipient.isBlocked && HomeActivity.reportIssueBChatID != recipient.address.toString() && !recipient.isLocalNumber) {
+            if (full && listenerCallback!!.isSynced) {
+                if (CheckOnline.isOnline(requireContext())) {
+                    check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
+                    val daemonConnected : Wallet.ConnectionStatus=
+                        listenerCallback!!.connectionStatus!!
+                    if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
+                        AsyncGetUnlockedBalance(wallet).execute<Executor>(
+                            BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR
+                        )
                     }
                 }
-                updateStatus(wallet)
             }
+            updateStatus(wallet)
         }
+    }
 
-        private fun updateStatus(wallet : Wallet) {
-            if (!isAdded) return
-            if (CheckOnline.isOnline(requireContext())) {
-                val daemonHeight : Long=wallet.daemonBlockChainHeight
-                val walletHeight : Long=wallet.blockChainHeight
-                val df=DecimalFormat("#.##")
-                val walletSyncPercentage=((100.00 * walletHeight.toDouble()) / daemonHeight)
-                val sync : String
-                check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
-                val daemonConnected : Wallet.ConnectionStatus=listenerCallback!!.connectionStatus!!
-                if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
-                    if (!wallet.isSynchronized) {
-                        ApplicationContext.getInstance(requireContext()).messageNotifier.setHomeScreenVisible(
-                            true
-                        )
-                        val n=daemonHeight - walletHeight
-                        sync=formatter.format(n) + " " + getString(R.string.status_remaining)
-                        if (firstBlock == 0L) {
-                            firstBlock=walletHeight
-                        }
-                        var x=
-                            (100 - Math.round(100f * n / (1f * daemonHeight - firstBlock))).toInt()
-                        if (x == 0) x=1 // indeterminate
-                        valueOfWallet="${df.format(walletSyncPercentage)}%"
-                        if (x >= 0) {
-                            val progress=(x / 100.0).toFloat()
-                            setProgress(progress)
-                            binding.inputBar.setDrawableProgressBar(
-                                requireActivity().applicationContext,
-                                false,
-                                valueOfWallet,
-                                progress
-                            )
-                        } else {
-                            setProgress(x.toFloat())
-                            binding.inputBar.setDrawableProgressBar(
-                                requireActivity().applicationContext,
-                                false,
-                                valueOfWallet,
-                                x.toFloat()
-                            )
-                        }
-                    } else {
-                        ApplicationContext.getInstance(requireContext()).messageNotifier.setHomeScreenVisible(
-                            false
-                        )
-                        sync=
-                            getString(R.string.status_synchronized)
-                        valueOfWallet="${df.format(walletSyncPercentage)}%"
+    private fun updateStatus(wallet : Wallet) {
+        if (!isAdded) return
+        if (CheckOnline.isOnline(requireContext())) {
+            val daemonHeight : Long=wallet.daemonBlockChainHeight
+            val walletHeight : Long=wallet.blockChainHeight
+            val df=DecimalFormat("#.##")
+            val walletSyncPercentage=((100.00 * walletHeight.toDouble()) / daemonHeight)
+            val sync : String
+            check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
+            val daemonConnected : Wallet.ConnectionStatus=listenerCallback!!.connectionStatus!!
+            if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
+                if (!wallet.isSynchronized) {
+                    ApplicationContext.getInstance(requireContext()).messageNotifier.setHomeScreenVisible(
+                        true
+                    )
+                    val n=daemonHeight - walletHeight
+                    sync=formatter.format(n) + " " + getString(R.string.status_remaining)
+                    if (firstBlock == 0L) {
+                        firstBlock=walletHeight
+                    }
+                    var x=
+                        (100 - Math.round(100f * n / (1f * daemonHeight - firstBlock))).toInt()
+                    if (x == 0) x=1 // indeterminate
+                    valueOfWallet="${df.format(walletSyncPercentage)}%"
+                    if (x >= 0) {
+                        val progress=(x / 100.0).toFloat()
+                        setProgress(progress)
                         binding.inputBar.setDrawableProgressBar(
                             requireActivity().applicationContext,
                             false,
                             valueOfWallet,
-                            3f
+                            progress
                         )
-                        //SteveJosephh21
-                        setProgress(3f)
+                    } else {
+                        setProgress(x.toFloat())
+                        binding.inputBar.setDrawableProgressBar(
+                            requireActivity().applicationContext,
+                            false,
+                            valueOfWallet,
+                            x.toFloat()
+                        )
                     }
-                } else if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connecting) {
-                    sync=getString(R.string.status_wallet_connecting)
-                    setProgress(4f)
-                    valueOfWallet="--"
-                    binding.inputBar.setDrawableProgressBar(
-                        requireActivity().applicationContext,
-                        true,
-                        valueOfWallet,
-                        4f
-                    )
                 } else {
-                    sync=getString(R.string.failed_connected_to_the_node)
-                    setProgress(4f)
-                    valueOfWallet="--"
+                    ApplicationContext.getInstance(requireContext()).messageNotifier.setHomeScreenVisible(
+                        false
+                    )
+                    sync=
+                        getString(R.string.status_synchronized)
+                    valueOfWallet="${df.format(walletSyncPercentage)}%"
                     binding.inputBar.setDrawableProgressBar(
                         requireActivity().applicationContext,
-                        true,
+                        false,
                         valueOfWallet,
-                        4f
+                        3f
                     )
+                    setProgress(3f)
                 }
-                setProgress(sync)
+            } else if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connecting) {
+                sync=getString(R.string.status_wallet_connecting)
+                setProgress(4f)
+                valueOfWallet="--"
+                binding.inputBar.setDrawableProgressBar(
+                    requireActivity().applicationContext,
+                    true,
+                    valueOfWallet,
+                    4f
+                )
             } else {
-                setProgress(getString(R.string.no_node_connection))
+                sync=getString(R.string.failed_connected_to_the_node)
+                setProgress(4f)
                 valueOfWallet="--"
                 binding.inputBar.setDrawableProgressBar(
                     requireActivity().applicationContext,
@@ -4478,39 +4171,53 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                     4f
                 )
             }
-            toolTip()
+            setProgress(sync)
+        } else {
+            setProgress(getString(R.string.no_node_connection))
+            valueOfWallet="--"
+            binding.inputBar.setDrawableProgressBar(
+                requireActivity().applicationContext,
+                true,
+                valueOfWallet,
+                4f
+            )
         }
+        toolTip()
+    }
 
-        private fun refreshBalance(synchronized : Boolean) {
-            refreshBalance(
-                synchronized=synchronized,
-                unlockedBalance=unlockedBalance,
-                balance=balance,
-            ) { bal, unlockedBal, sync ->
-                showBalance(bal, unlockedBal, sync)
+    private fun refreshBalance(synchronized : Boolean) {
+        refreshBalance(
+            synchronized=synchronized,
+            unlockedBalance=unlockedBalance,
+            balance=balance,
+        ) { bal, unlockedBal, sync ->
+            showBalance(bal, unlockedBal, sync)
+        }
+    }
+
+    private fun showBalance(
+        walletBalance : String?,
+        walletUnlockedBalance : String?,
+        synchronized : Boolean
+    ) {
+        showBalance(
+            walletBalance=walletBalance,
+            walletUnlockedBalance=walletUnlockedBalance,
+            synchronized=synchronized,
+            mContext=mContext,
+        ) { bal, unlockedBal ->
+            valueOfBalance=bal
+            unlockedBal?.let {
+                valueOfUnLockedBalance=it
             }
         }
+        toolTip()
+    }
 
-        private fun showBalance(
-            walletBalance : String?,
-            walletUnlockedBalance : String?,
-            synchronized : Boolean
-        ) {
-            showBalance(
-                walletBalance=walletBalance,
-                walletUnlockedBalance=walletUnlockedBalance,
-                synchronized=synchronized,
-                mContext=mContext,
-            ) { bal, unlockedBal ->
-                valueOfBalance=bal
-                unlockedBal?.let {
-                    valueOfUnLockedBalance=it
-                }
-            }
-            toolTip()
-        }
-
-        private fun getUnlockedBalance(wallet : Wallet) {
+    inner class AsyncGetUnlockedBalance(val wallet : Wallet) :
+        AsyncTaskCoroutine<Executor?, Boolean?>() {
+        override fun onPreExecute() {
+            super.onPreExecute()
             if (mContext != null && walletAvailableBalance != null) {
                 if (walletAvailableBalance!!.replace(",", "").toDouble() > 0.0) {
                     showBalance(walletAvailableBalance!!, unlockedBalance.toString(), true)
@@ -4518,223 +4225,201 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             } else {
                 refreshBalance(false)
             }
-            lifecycleScope.launch(Dispatchers.IO) {
-                try {
-                    unlockedBalance=wallet.unlockedBalance
-                    delay(100)
-                    refreshBalance(wallet.isSynchronized)
-                } catch (e : Exception) {
-                    Timber.tag("WalletFragment").d(e.toString())
-                }
-            }
         }
 
-        inner class AsyncGetUnlockedBalance(val wallet : Wallet) :
-            AsyncTaskCoroutine<Executor?, Boolean?>() {
-            override fun onPreExecute() {
-                super.onPreExecute()
-                if (mContext != null && walletAvailableBalance != null) {
-                    if (walletAvailableBalance!!.replace(",", "").toDouble() > 0.0) {
-                        showBalance(walletAvailableBalance!!, unlockedBalance.toString(), true)
-                    }
-                } else {
-                    refreshBalance(false)
-                }
+        override fun doInBackground(vararg params : Executor?) : Boolean {
+            try {
+                unlockedBalance=listenerCallback!!.getUnLockedBalance
+                balance=listenerCallback!!.getFullBalance
+            } catch (e : Exception) {
+                Timber.tag("ConversationFragment").d(e.toString())
             }
-
-            override fun doInBackground(vararg params : Executor?) : Boolean {
-                try {
-                    unlockedBalance=listenerCallback!!.getUnLockedBalance
-                    balance=listenerCallback!!.getFullBalance
-                } catch (e : Exception) {
-                    Timber.tag("ConversationFragment").d(e.toString())
-                }
-                return true
-            }
-
-            override fun onPostExecute(result : Boolean?) {
-                refreshBalance(wallet.isSynchronized)
-            }
+            return true
         }
 
-        private fun checkIfFragmentAttached(operation : Context.() -> Unit) {
-            if (isAdded && context != null) {
-                operation(requireContext())
-            }
+        override fun onPostExecute(result : Boolean?) {
+            refreshBalance(wallet.isSynchronized)
         }
+    }
 
-        inner class AsyncStartWallet() : AsyncTaskCoroutine<Executor?, Boolean?>() {
-            override fun doInBackground(vararg params : Executor?) : Boolean {
-                try {
-                    viewModel.recipient.value?.let { thread ->
-                        if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && HomeActivity.reportIssueBChatID != thread.address.toString() && !thread.isLocalNumber && TextSecurePreferences.isWalletActive(
-                                requireContext()
-                            )
-                        ) {
-                            val activity=activity
-                            if (isAdded && activity != null) {
-                                listenerCallback!!.forceUpdate(activity)
-                            }
+    private fun checkIfFragmentAttached(operation : Context.() -> Unit) {
+        if (isAdded && context != null) {
+            operation(requireContext())
+        }
+    }
+
+    inner class AsyncStartWallet : AsyncTaskCoroutine<Executor?, Boolean?>() {
+        override fun doInBackground(vararg params : Executor?) : Boolean {
+            try {
+                viewModel.recipient.value?.let { thread ->
+                    if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && HomeActivity.reportIssueBChatID != thread.address.toString() && !thread.isLocalNumber && TextSecurePreferences.isWalletActive(
+                            requireContext()
+                        )
+                    ) {
+                        val activity=activity
+                        if (isAdded && activity != null) {
+                            listenerCallback!!.forceUpdate(activity)
                         }
                     }
-                } catch (e : Exception) {
-                    println("start wallet exception $e")
                 }
-                return true
+            } catch (e : Exception) {
+                println("start wallet exception $e")
             }
+            return true
         }
+    }
 
-        override fun showMuteOptionDialog(thread : Recipient) {
-            val dialog=ConversationActionDialog()
-            dialog.apply {
-                arguments=Bundle().apply {
-                    putSerializable(
-                        ConversationActionDialog.EXTRA_DIALOG_TYPE,
-                        HomeDialogType.MuteChat
+    override fun showMuteOptionDialog(thread : Recipient) {
+        val dialog=ConversationActionDialog()
+        dialog.apply {
+            arguments=Bundle().apply {
+                putSerializable(
+                    ConversationActionDialog.EXTRA_DIALOG_TYPE,
+                    HomeDialogType.MuteChat
+                )
+                putSerializable(ConversationActionDialog.EXTRA_ARGUMENT_3, thread.mutedUntil)
+            }
+            setListener(this@ConversationFragmentV2)
+        }
+        dialog.show(childFragmentManager, ConversationActionDialog.TAG)
+    }
+
+    override fun openSearch() {
+        onSearchOpened()
+    }
+
+    private fun setSearchView() {
+        binding.searchUp.setOnClickListener {
+            onSearchMoveUpPressed()
+        }
+        binding.searchDown.setOnClickListener {
+            onSearchMoveDownPressed()
+        }
+        binding.closeSearch.setOnClickListener {
+            onSearchClosed()
+        }
+        binding.searchClose.setOnClickListener {
+            onSearchClosed()
+        }
+        binding.searchQuery.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0 : CharSequence?, p1 : Int, p2 : Int, p3 : Int) {
+
+            }
+
+            override fun onTextChanged(p0 : CharSequence?, p1 : Int, p2 : Int, p3 : Int) {
+                if (p0 != null && p0.trim().isNotEmpty()) {
+                    onSearchQueryUpdated(p0.toString())
+                    binding.searchProgress.visibility=View.VISIBLE
+                    binding.closeSearch.visibility=View.VISIBLE
+                    binding.search.visibility=View.GONE
+                    binding.searchClose.visibility=View.GONE
+                } else {
+                    binding.closeSearch.visibility=View.GONE
+                    binding.search.visibility=View.VISIBLE
+                    binding.searchUp.visibility=View.GONE
+                    binding.searchDown.visibility=View.GONE
+                    binding.searchClose.visibility=View.VISIBLE
+                    binding.noMatchesFoundTextview.visibility=View.GONE
+                    adapter.onSearchQueryUpdated(p0.toString())
+                }
+            }
+
+            override fun afterTextChanged(p0 : Editable?) {
+
+            }
+        })
+    }
+
+    override fun onConfirm(dialogType : HomeDialogType, threadRecord : ThreadRecord?) {
+        when (dialogType) {
+            HomeDialogType.UnblockUser -> {
+                viewModel.unblock()
+                viewModel.recipient.value?.let { thread ->
+                    showBlockProgressBar(thread)
+                }
+            }
+
+            HomeDialogType.ClearChat -> {
+                deleteBlockedConversation()
+            }
+
+            HomeDialogType.AcceptRequest -> {
+                conversationApprovalJob = acceptMessageRequest()
+                viewModel.recipient.value?.let {
+                    showBlockProgressBar(it)
+                }
+            }
+
+            HomeDialogType.DeclineRequest -> {
+                viewModel.declineMessageRequest()
+                lifecycleScope.launch(Dispatchers.IO) {
+                    ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(
+                        requireActivity()
                     )
-                    putSerializable(ConversationActionDialog.EXTRA_ARGUMENT_3, thread.mutedUntil)
                 }
-                setListener(this@ConversationFragmentV2)
+                backToHome()
             }
-            dialog.show(childFragmentManager, ConversationActionDialog.TAG)
+
+            HomeDialogType.SelectedMessageDelete -> {
+                for (message in viewModel.deleteMessages ?: setOf()) {
+                    viewModel.deleteLocally(message)
+                }
+                viewModel.setMessagesToDelete(null)
+                endActionMode()
+            }
+
+            HomeDialogType.GifSetting -> {
+                listenerCallback!!.gettextSecurePreferences().setHasSeenGIFMetaDataWarning()
+                AttachmentManager.selectGif(requireActivity(), PICK_GIF)
+            }
+
+            else -> Unit
         }
+    }
 
-        override fun openSearch() {
-            onSearchOpened()
+    override fun onCancel(dialogType : HomeDialogType, threadRecord : ThreadRecord?) {
+        when (dialogType) {
+            HomeDialogType.SelectedMessageDelete -> {
+                endActionMode()
+            }
+
+            else -> Unit
         }
+    }
 
-        fun setSearchView() {
-            binding.searchUp.setOnClickListener {
-                onSearchMoveUpPressed()
+    override fun onConfirmationWithData(
+        dialogType : HomeDialogType,
+        data : Any?,
+        threadRecord : ThreadRecord?
+    ) {
+        when (dialogType) {
+            HomeDialogType.MuteChat -> {
+                val muteUntil=when (data as Int) {
+                    1 -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(2)
+                    2 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)
+                    3 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7)
+                    4 -> Long.MAX_VALUE
+                    else -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)
+                }
+                viewModel.recipient.value?.let {
+                    DatabaseComponent.get(requireContext()).recipientDatabase()
+                        .setMuted(it, muteUntil)
+                }
             }
-            binding.searchDown.setOnClickListener {
-                onSearchMoveDownPressed()
+
+            HomeDialogType.BlockUser -> {
+                val deleteThread=(data as Int) == 1
+                viewModel.block()
+                viewModel.recipient.value?.let { thread ->
+                    showBlockProgressBar(thread)
+                }
+                if (deleteThread) {
+                    viewModel.deleteThread()
+                }
+                cancelVoiceMessage()
             }
-            binding.closeSearch.setOnClickListener {
-                onSearchClosed()
-            }
-            binding.searchClose.setOnClickListener {
-                onSearchClosed()
-            }
-            binding.searchQuery.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(p0 : CharSequence?, p1 : Int, p2 : Int, p3 : Int) {
 
-                }
-
-                override fun onTextChanged(p0 : CharSequence?, p1 : Int, p2 : Int, p3 : Int) {
-                    if (p0 != null && p0.trim().isNotEmpty()) {
-                        onSearchQueryUpdated(p0.toString())
-                        binding.searchProgress.visibility=View.VISIBLE
-                        binding.closeSearch.visibility=View.VISIBLE
-                        binding.search.visibility=View.GONE
-                        binding.searchClose.visibility=View.GONE
-                    } else {
-                        binding.closeSearch.visibility=View.GONE
-                        binding.search.visibility=View.VISIBLE
-                        binding.searchUp.visibility=View.GONE
-                        binding.searchDown.visibility=View.GONE
-                        binding.searchClose.visibility=View.VISIBLE
-                        binding.noMatchesFoundTextview.visibility=View.GONE
-                        adapter.onSearchQueryUpdated(p0.toString())
-                    }
-                }
-
-                override fun afterTextChanged(p0 : Editable?) {
-
-                }
-            })
-        }
-
-        override fun onConfirm(dialogType : HomeDialogType, threadRecord : ThreadRecord?) {
-            when (dialogType) {
-                HomeDialogType.UnblockUser -> {
-                    viewModel.unblock()
-                    viewModel.recipient.value?.let { thread ->
-                        showBlockProgressBar(thread)
-                    }
-                }
-
-                HomeDialogType.ClearChat -> {
-                    deleteBlockedConversation()
-                }
-
-                HomeDialogType.AcceptRequest -> {
-                    conversationApprovalJob = acceptMessageRequest()
-                    viewModel.recipient.value?.let {
-                        showBlockProgressBar(it)
-                    }
-                }
-
-                HomeDialogType.DeclineRequest -> {
-                    viewModel.declineMessageRequest()
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(
-                            requireActivity()
-                        )
-                    }
-                    backToHome()
-                }
-
-                HomeDialogType.SelectedMessageDelete -> {
-                    for (message in viewModel.deleteMessages ?: setOf()) {
-                        viewModel.deleteLocally(message)
-                    }
-                    viewModel.setMessagesToDelete(null)
-                    endActionMode()
-                }
-
-                HomeDialogType.GifSetting -> {
-                    listenerCallback!!.gettextSecurePreferences().setHasSeenGIFMetaDataWarning()
-                    AttachmentManager.selectGif(requireActivity(), PICK_GIF)
-                }
-
-                else -> Unit
-            }
-        }
-
-        override fun onCancel(dialogType : HomeDialogType, threadRecord : ThreadRecord?) {
-            when (dialogType) {
-                HomeDialogType.SelectedMessageDelete -> {
-                    endActionMode()
-                }
-
-                else -> Unit
-            }
-        }
-
-        override fun onConfirmationWithData(
-            dialogType : HomeDialogType,
-            data : Any?,
-            threadRecord : ThreadRecord?
-        ) {
-            when (dialogType) {
-                HomeDialogType.MuteChat -> {
-                    val muteUntil=when (data as Int) {
-                        1 -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(2)
-                        2 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)
-                        3 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7)
-                        4 -> Long.MAX_VALUE
-                        else -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)
-                    }
-                    viewModel.recipient.value?.let {
-                        DatabaseComponent.get(requireContext()).recipientDatabase()
-                            .setMuted(it, muteUntil)
-                    }
-                }
-
-                HomeDialogType.BlockUser -> {
-                    val deleteThread=(data as Int) == 1
-                    viewModel.block()
-                    viewModel.recipient.value?.let { thread ->
-                        showBlockProgressBar(thread)
-                    }
-                    if (deleteThread) {
-                        viewModel.deleteThread()
-                    }
-                    cancelVoiceMessage()
-                }
-
-                HomeDialogType.DisappearingTimer -> {
+            HomeDialogType.DisappearingTimer -> {
                 val expirationTime = data as Int
                 viewModel.recipient.value?.let { thread ->
                     viewModel.setExpireMessages(thread, expirationTime)

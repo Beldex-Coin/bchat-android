@@ -1,7 +1,6 @@
 package io.beldex.bchat.conversation.v2
 
 import android.app.Application
-import android.database.Cursor
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -42,21 +41,21 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 
 class ConversationViewModel (
-        private val repository: ConversationRepository,
-        private val beldexThreadDb: BeldexThreadDatabase,
-        private val bchatContactDb: BchatContactDatabase,
-        private val threadDb: ThreadDatabase,
-        private val recipientDatabase: RecipientDatabase,
-        private val groupDb: GroupDatabase,
-        private val beldexApiDb: BeldexAPIDatabase,
-        private val mmsDb: MmsDatabase,
-        private val smsDb: SmsDatabase,
-        private val mmsSmsDatabase: MmsSmsDatabase,
-        private val beldexMessageDb: BeldexMessageDatabase,
-        val threadId: Long,
-        private val storage: Storage,
-        private val application: Application,
-        private val textSecurePreferences : TextSecurePreferences
+    private val repository: ConversationRepository,
+    private val beldexThreadDb: BeldexThreadDatabase,
+    private val bchatContactDb: BchatContactDatabase,
+    private val threadDb: ThreadDatabase,
+    private val recipientDatabase: RecipientDatabase,
+    private val groupDb: GroupDatabase,
+    private val beldexApiDb: BeldexAPIDatabase,
+    private val mmsDb: MmsDatabase,
+    private val smsDb: SmsDatabase,
+    private val mmsSmsDatabase: MmsSmsDatabase,
+    private val beldexMessageDb: BeldexMessageDatabase,
+    val threadId: Long,
+    private val storage: Storage,
+    private val application: Application,
+    private val textSecurePreferences : TextSecurePreferences
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ConversationUiState())
@@ -68,20 +67,11 @@ class ConversationViewModel (
     private val _backToHome = MutableStateFlow(false)
     val backToHome: StateFlow<Boolean> = _backToHome
 
-    private lateinit var conversationsCursor: Cursor
-
     var senderBeldexAddress: String? = null
     var deleteMessages: Set<MessageRecord>? = null
 
     val openGroup: OpenGroupV2?
         get() = storage.getV2OpenGroup(threadId)
-
- /*   val serverCapabilities: List<String>
-        get() = openGroup?.let { storage.getServerCapabilities(it.server) } ?: listOf()*/
-
-    /*Hales63*/
-//    val recipient: Recipient?
-//        get() = repository.getRecipientForThreadId(threadId)
 
     init {
         _uiState.update {
@@ -102,26 +92,12 @@ class ConversationViewModel (
                 if (!it.isGroupRecipient && it.hasApprovedMe()) {
                     senderBeldexAddress = getBeldexAddress(it.address)
                 }
-                fetchConversations()
             }
         }
     }
     override fun onCleared() {
         super.onCleared()
         AudioSlidePlayer.stopAll()
-    }
-
-    fun getConversationsCursor(): Cursor {
-        return if (::conversationsCursor.isInitialized) {
-            conversationsCursor
-        } else {
-            fetchConversations()
-            conversationsCursor
-        }
-    }
-
-    private fun fetchConversations() {
-        conversationsCursor = mmsSmsDatabase.getConversation(threadId, !isIncomingMessageRequestThread())
     }
 
     fun isIncomingMessageRequestThread(): Boolean {

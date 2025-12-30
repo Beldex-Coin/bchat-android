@@ -36,7 +36,7 @@ public class CursorRecyclerViewAdapterTest {
       }
 
       @Override
-      public void onBindItemViewHolder(ViewHolder viewHolder, @NonNull Cursor cursor) {
+      public void onBindItemViewHolder(ViewHolder viewHolder, @NonNull Cursor cursor, int position) {
       }
     };
   }

@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public abstract class FastCursorRecyclerViewAdapter<VH extends RecyclerView.ViewHolder, T>
-    extends CursorRecyclerViewAdapter<VH>
+        extends CursorRecyclerViewAdapter<VH>
 {
   private static final String TAG = FastCursorRecyclerViewAdapter.class.getSimpleName();
 
@@ -65,7 +65,7 @@ public abstract class FastCursorRecyclerViewAdapter<VH extends RecyclerView.View
   }
 
   @Override
-  public void onBindItemViewHolder(VH viewHolder, @NonNull Cursor cursor) {
+  public void onBindItemViewHolder(VH viewHolder, @NonNull Cursor cursor, int position) {
     T record = getRecordFromCursor(cursor);
     onBindItemViewHolder(viewHolder, record);
   }

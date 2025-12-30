@@ -39,7 +39,7 @@ class MessageRequestsAdapter(
         return ViewHolder(view)
     }
 
-    override fun onBindItemViewHolder(viewHolder: ViewHolder, cursor: Cursor) {
+    override fun onBindItemViewHolder(viewHolder: ViewHolder, cursor: Cursor, position: Int) {
         val thread = getThread(cursor)!!
         viewHolder.view.bind(thread, glide)
     }
@@ -67,7 +67,7 @@ class MessageRequestsAdapter(
             //item.iconTintList = ColorStateList.valueOf(context.getColor(R.color.destructive))
             item.title = s
         }
-        popupMenu.setForceShowIcon(true) //TODO: call setForceShowIcon(true) after update to appcompat 1.4.1+
+        popupMenu.setForceShowIcon(true)
         popupMenu.show()
     }
 

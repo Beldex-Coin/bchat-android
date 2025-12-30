@@ -119,9 +119,9 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
     if (!isActiveCursor()) return 0;
 
     return cursor.getCount()
-           + getFastAccessSize()
-           + (hasHeaderView() ? 1 : 0)
-           + (hasFooterView() ? 1 : 0);
+            + getFastAccessSize()
+            + (hasHeaderView() ? 1 : 0)
+            + (hasFooterView() ? 1 : 0);
   }
 
   public int getCursorCount() {
@@ -141,9 +141,9 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
   @Override
   public @NonNull final ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     switch (viewType) {
-    case HEADER_TYPE: return new HeaderFooterViewHolder(header);
-    case FOOTER_TYPE: return new HeaderFooterViewHolder(footer);
-    default:          return onCreateItemViewHolder(parent, viewType);
+      case HEADER_TYPE: return new HeaderFooterViewHolder(header);
+      case FOOTER_TYPE: return new HeaderFooterViewHolder(footer);
+      default:          return onCreateItemViewHolder(parent, viewType);
     }
   }
 
@@ -154,11 +154,11 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
   public final void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
     if (!isHeaderPosition(position) && !isFooterPosition(position)) {
       if (isFastAccessPosition(position)) onBindFastAccessItemViewHolder((VH)viewHolder, position);
-      else                                onBindItemViewHolder((VH)viewHolder, getCursorAtPositionOrThrow(position));
+      else                                onBindItemViewHolder((VH)viewHolder, getCursorAtPositionOrThrow(position), position);
     }
   }
 
-  public abstract void onBindItemViewHolder(VH viewHolder, @NonNull Cursor cursor);
+  public abstract void onBindItemViewHolder(VH viewHolder, @NonNull Cursor cursor, int position);
 
   protected void onBindFastAccessItemViewHolder(VH viewHolder, int position) {
 

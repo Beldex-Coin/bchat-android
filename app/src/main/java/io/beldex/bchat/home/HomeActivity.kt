@@ -238,7 +238,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         networkChangedReceiver!!.register(this)
 
         if(intent.getBooleanExtra(SHORTCUT_LAUNCHER,false)){
-           //Shortcut launcher
+            //Shortcut launcher
             intent.removeExtra(SHORTCUT_LAUNCHER)
             val extras = Bundle()
             val address = intent.parcelable<Address>(ConversationFragmentV2.ADDRESS)
@@ -438,8 +438,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
     }
 
-        @Deprecated("Deprecated in Java")
-        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         //New Line App Update
         if (requestCode == immediateAppUpdateRequestCode) {
@@ -581,14 +581,43 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             .commit()
     }
 
+    fun showOrHideFragment(homeFragment: Fragment, extras: Bundle?, threadId: Long) {
+        val fragmentManager = supportFragmentManager
+        val tag = "CHAT_$threadId"
+
+        val conversationFragment =
+            fragmentManager.findFragmentByTag(tag) as? ConversationFragmentV2
+                ?: ConversationFragmentV2().apply {
+                    if (extras != null) {
+                        arguments = extras
+                    }
+                }
+
+        fragmentManager.beginTransaction().apply {
+            hide(homeFragment)
+
+            if (!conversationFragment.isAdded) {
+                add(
+                    R.id.activity_home_frame_layout_container,
+                    conversationFragment,
+                    tag
+                )
+            } else {
+                show(conversationFragment)
+            }
+
+            addToBackStack(tag)
+        }.commit()
+    }
+
     private fun replaceFragmentWithTransition(newFragment: Fragment, stackName: String?, extras: Bundle?) {
         if (extras != null) {
             newFragment.arguments = extras
         }
         supportFragmentManager.beginTransaction()
-                .add(R.id.activity_home_frame_layout_container, newFragment)
-                .addToBackStack(stackName)
-                .commit()
+            .add(R.id.activity_home_frame_layout_container, newFragment)
+            .addToBackStack(stackName)
+            .commit()
     }
 
     private fun updateProfileButton(
@@ -670,16 +699,16 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         when {
             !synced && TextSecurePreferences.isWalletActive(this) -> {
                 val walletSyncDialog = ComposeDialogContainer(
-                        dialogType = DialogType.WalletSyncing,
-                        onConfirm = {
-                            if (CheckOnline.isOnline(this)) {
-                                onDisposeRequest()
-                            }
-                            setBarcodeData(null)
-                            fragment!!.onBackPressed()
-                            finish()
-                        },
-                        onCancel = {}
+                    dialogType = DialogType.WalletSyncing,
+                    onConfirm = {
+                        if (CheckOnline.isOnline(this)) {
+                            onDisposeRequest()
+                        }
+                        setBarcodeData(null)
+                        fragment!!.onBackPressed()
+                        finish()
+                    },
+                    onCancel = {}
                 )
                 walletSyncDialog.show(this.supportFragmentManager, ComposeDialogContainer.TAG)
             }
@@ -711,7 +740,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         extras.putLong(ConversationFragmentV2.THREAD_ID, existingThread)
         extras.putParcelable(ConversationFragmentV2.URI, intent.data)
         extras.putString(ConversationFragmentV2.TYPE, intent.type)
-        replaceFragment(ConversationFragmentV2(), null, extras)
+        showOrHideFragment(ConversationFragmentV2(), extras, existingThread)
     }
 
     override fun onDestroy() {
@@ -753,7 +782,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         val extras = Bundle()
         extras.putParcelable(ConversationFragmentV2.ADDRESS,address)
         extras.putLong(ConversationFragmentV2.THREAD_ID,threadId)
-        replaceFragment(ConversationFragmentV2(),null,extras)
+        showOrHideFragment(ConversationFragmentV2(), extras, threadId)
     }
 
     fun playVoiceMessageAtIndexIfPossible(indexInAdapter: Int) {
@@ -1039,7 +1068,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                         val streetHeight: Long = streetModeHeight
                         for (info in wallet.history.all) {
                             if ((info.isPending || info.blockheight >= streetHeight)
-                                /*&& !dismissedTransactions.contains(info.hash)*/
+                            /*&& !dismissedTransactions.contains(info.hash)*/
                             ) list.add(info)
                         }
                     }
@@ -1141,7 +1170,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                         currentFragment.onCreateTransactionFailed(errorText)
                     }*/
                 } else {
-                     if(currentFragment is ConversationFragmentV2){
+                    if(currentFragment is ConversationFragmentV2){
                         currentFragment.onTransactionCreated("txTag", pendingTransaction)
                     }/*else if(currentFragment is SendFragment){
                         currentFragment.onTransactionCreated("txTag", pendingTransaction)
@@ -1462,7 +1491,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
     }
 
-     fun saveWallet() {
+    fun saveWallet() {
         if (mIsBound) { // no point in talking to unbound service
             var intent: Intent? = null
             if(intent==null) {

@@ -430,12 +430,8 @@
         <activity
             android:name="io.beldex.bchat.ShareActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
-            android:excludeFromRecents="true"
             android:exported="true"
-            android:launchMode="singleTask"
-            android:noHistory="true"
             android:screenOrientation="portrait"
-            android:taskAffinity=""
             android:theme="@style/Theme.TextSecure.DayNight.NoActionBar"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>

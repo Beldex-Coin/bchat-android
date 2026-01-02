@@ -147,9 +147,11 @@ public class MmsSmsDatabase extends Database {
 
     //includeReactions and additionalReactionSelection
     try (Cursor cursor = queryTables(PROJECTION, selection, includeReactions, null, order, "1")) {
-      cursor.moveToFirst();
-      return cursor.getLong(cursor.getColumnIndexOrThrow(MmsSmsColumns.ID));
+      if(cursor.moveToFirst()) {
+        return cursor.getLong(cursor.getColumnIndexOrThrow(MmsSmsColumns.ID));
+      }
     }
+    return -1;
   }
 
   public long getLastMessageTimestamp(long threadId, boolean includeReactions, boolean getQuote) {
@@ -157,9 +159,12 @@ public class MmsSmsDatabase extends Database {
     String selection = MmsSmsColumns.THREAD_ID + " = " + threadId;
 
     try (Cursor cursor = queryTables(PROJECTION, selection, includeReactions, null, order, "1")) {
-      cursor.moveToFirst();
-      return cursor.getLong(cursor.getColumnIndexOrThrow(MmsSmsColumns.NORMALIZED_DATE_SENT));
+      if (cursor.moveToFirst()) {
+        return cursor.getLong(cursor.getColumnIndexOrThrow(MmsSmsColumns.NORMALIZED_DATE_SENT));
+      }
     }
+
+    return -1;
   }
 
   public Cursor getUnread() {

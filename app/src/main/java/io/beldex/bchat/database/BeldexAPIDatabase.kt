@@ -9,9 +9,7 @@ import com.beldex.libsignal.crypto.ecc.ECKeyPair
 import com.beldex.libsignal.database.BeldexAPIDatabaseProtocol
 import com.beldex.libsignal.utilities.*
 import io.beldex.bchat.crypto.IdentityKeyUtil
-import io.beldex.bchat.database.*
 import io.beldex.bchat.database.helpers.SQLCipherOpenHelper
-import io.beldex.bchat.util.*
 import java.util.*
 import kotlin.Array
 import kotlin.Boolean
@@ -49,14 +47,14 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
         private const val lastMessageHashValue = "last_message_hash_value"
         private const val lastMessageHashNamespace = "last_message_namespace"
         @JvmStatic val createLastMessageHashValueTable2Command
-            = "CREATE TABLE $legacyLastMessageHashValueTable2 ($mnode TEXT, $publicKey TEXT, $lastMessageHashValue TEXT, PRIMARY KEY ($mnode, $publicKey));"
+                = "CREATE TABLE $legacyLastMessageHashValueTable2 ($mnode TEXT, $publicKey TEXT, $lastMessageHashValue TEXT, PRIMARY KEY ($mnode, $publicKey));"
         // Received message hash values
         private const val legacyReceivedMessageHashValuesTable3 = "received_message_hash_values_table_3"
         private const val receivedMessageHashValuesTable = "bchat_received_message_hash_values_table"
         private const val receivedMessageHashValues = "received_message_hash_values"
         private const val receivedMessageHashNamespace = "received_message_namespace"
         @JvmStatic val createReceivedMessageHashValuesTable3Command
-            = "CREATE TABLE $legacyReceivedMessageHashValuesTable3 ($publicKey STRING PRIMARY KEY, $receivedMessageHashValues TEXT);"
+                = "CREATE TABLE $legacyReceivedMessageHashValuesTable3 ($publicKey STRING PRIMARY KEY, $receivedMessageHashValues TEXT);"
         // Social group auth tokens
         private val openGroupAuthTokenTable = "beldex_api_group_chat_auth_token_database"
         private val server = "server"
@@ -125,7 +123,7 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
         private val requestSignature = "request_signature"
         private val authorizationSignature = "grant_signature"
         @JvmStatic val createDeviceLinkCacheCommand = "CREATE TABLE $deviceLinkCache ($masterPublicKey STRING, $slavePublicKey STRING, " +
-            "$requestSignature STRING NULLABLE DEFAULT NULL, $authorizationSignature STRING NULLABLE DEFAULT NULL, PRIMARY KEY ($masterPublicKey, $slavePublicKey));"
+                "$requestSignature STRING NULLABLE DEFAULT NULL, $authorizationSignature STRING NULLABLE DEFAULT NULL, PRIMARY KEY ($masterPublicKey, $slavePublicKey));"
         private val bchatRequestTimestampCache = "bchat_request_timestamp_cache"
         @JvmStatic val createBchatRequestTimestampCacheCommand = "CREATE TABLE $bchatRequestTimestampCache ($publicKey STRING PRIMARY KEY, $timestamp STRING);"
         // endregion
@@ -273,7 +271,30 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
         val query = "${Companion.publicKey} = ? AND ${Companion.receivedMessageHashNamespace} = ?"
         return database.get(receivedMessageHashValuesTable, query, arrayOf( publicKey, namespace.toString() )) { cursor ->
             val receivedMessageHashValuesAsString = cursor.getString(cursor.getColumnIndexOrThrow(Companion.receivedMessageHashValues))
-            receivedMessageHashValuesAsString.split("-").toSet()
+            if (receivedMessageHashValuesAsString.length > 1_000_000) {
+                // prevent catastrophic OOM
+                return@get emptySet<String>()
+            }
+            val result = HashSet<String>()
+            var start = 0
+
+            for (i in receivedMessageHashValuesAsString.indices) {
+                if (receivedMessageHashValuesAsString[i] == '-') {
+                    val hash = receivedMessageHashValuesAsString.substring(start, i)
+                    if (hash.isNotEmpty()) {
+                        result.add(hash)
+                    }
+                    start = i + 1
+                }
+            }
+            if (start < receivedMessageHashValuesAsString.length) {
+                val hash = receivedMessageHashValuesAsString.substring(start)
+                if (hash.isNotEmpty()) {
+                    result.add(hash)
+                }
+            }
+
+            result
         }
     }
 

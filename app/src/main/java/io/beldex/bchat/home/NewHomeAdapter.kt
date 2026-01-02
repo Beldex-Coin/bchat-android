@@ -75,11 +75,7 @@ class NewHomeAdapter(private val context: Context, private val listener: Convers
             }
             ITEM -> {
                 val view = ConversationView(context)
-                view.setOnClickListener { view.thread?.let { listener.onConversationClick(it) } }
-                view.setOnLongClickListener {
-                    view.thread?.let { listener.onLongConversationClick(it, view) }
-                    true
-                }
+
                 ViewHolder(view)
             }
             else -> throw Exception("viewType $viewType isn't valid")
@@ -91,6 +87,11 @@ class NewHomeAdapter(private val context: Context, private val listener: Convers
             val thread = data[offset]
             val isTyping = typingThreadIDs.contains(thread.threadId)
             holder.view.bind(thread, isTyping, glide)
+            holder.view.setOnClickListener { holder.view.thread?.let { listener.onConversationClick(it) } }
+            holder.view.setOnLongClickListener {
+                holder.view.thread?.let { listener.onLongConversationClick(it, holder.view, position) }
+                true
+            }
         }
     }
 

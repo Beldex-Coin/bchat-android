@@ -12,6 +12,7 @@ import android.util.AttributeSet
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -20,6 +21,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.marginBottom
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.messaging.contacts.Contact.ContactContext
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
@@ -90,6 +92,8 @@ class VisibleMessageView : LinearLayout {
     var onSwipeToReply: (() -> Unit)? = null
     var onLongPress: (() -> Unit)? = null
     val messageContentView: VisibleMessageContentView by lazy { binding.messageContentView.root }
+    private var isOutgoing: Boolean = false
+    private var isGroupMessage: Boolean = false
 
     companion object {
         const val swipeToReplyThreshold = 64.0f // dp
@@ -134,6 +138,8 @@ class VisibleMessageView : LinearLayout {
         val threadID = message.threadId
         val thread = threadDb.getRecipientForThreadId(threadID) ?: return
         val isGroupThread = thread.isGroupRecipient
+        isGroupMessage = isGroupThread
+        isOutgoing = message.isOutgoing
         val isStartOfMessageCluster = isStartOfMessageCluster(message, previous, isGroupThread)
         val isEndOfMessageCluster = isEndOfMessageCluster(message, next, isGroupThread)
         val fontSize = TextSecurePreferences.getChatFontSize(context)
@@ -362,23 +368,44 @@ class VisibleMessageView : LinearLayout {
     }
 
     override fun onDraw(canvas: Canvas) {
-        val spacing = context.resources.getDimensionPixelSize(R.dimen.small_spacing)
-        val iconSize = toPx(24, context.resources)
-        val top = height - (binding.messageInnerContainer.height / 2) - binding.profilePictureView.root.marginBottom - (iconSize / 2)
-        val bottom = top + iconSize
-        swipeToReplyIconRect.left = -(spacing+spacing)
-        swipeToReplyIconRect.top = top
-        swipeToReplyIconRect.right = 16
-        swipeToReplyIconRect.bottom = bottom
-        if (translationX > 0 && !binding.expirationTimerView.isVisible) {
-            val threshold = swipeToReplyThreshold
-            swipeToReplyIcon.bounds = swipeToReplyIconRect
-            swipeToReplyIcon.alpha = (255.0f * (min(abs(translationX), threshold) / threshold)).roundToInt()
+        super.onDraw(canvas)
+        val iconSize = toPx(24, resources)
+        val spacing = resources.getDimensionPixelSize(R.dimen.small_spacing)
+
+        val top =
+            height -
+                    (binding.messageInnerContainer.height / 2) -
+                    binding.profilePictureView.root.marginBottom -
+                    (iconSize / 2)
+
+        val tx = translationX.coerceAtLeast(0f)
+
+        val left=if (!isOutgoing && isGroupMessage) {
+            -(binding.profilePictureView.root.right + spacing)
+        } else if (!isOutgoing) {
+            -iconSize
+        } else {
+            spacing
+        }
+
+        val right = left + iconSize
+
+        swipeToReplyIconRect.set(
+            left,
+            top,
+            right,
+            top + iconSize
+        )
+
+        if (tx > 0 && !binding.expirationTimerView.isVisible) {
+            val threshold = swipeToReplyThreshold * resources.displayMetrics.density
+            swipeToReplyIcon.alpha =
+                (255f * min(tx, threshold) / threshold).toInt()
         } else {
             swipeToReplyIcon.alpha = 0
         }
+        swipeToReplyIcon.bounds = swipeToReplyIconRect
         swipeToReplyIcon.draw(canvas)
-        super.onDraw(canvas)
     }
 
     fun recycle() {
@@ -417,21 +444,30 @@ class VisibleMessageView : LinearLayout {
     }
 
     private fun onMove(event: MotionEvent) {
-        val translationX = toDp(event.rawX + dx, context.resources)
-        if (abs(translationX) < longPressMovementThreshold || snIsSelected) {
+        val dxRaw = event.rawX + dx
+
+        if (abs(dxRaw) < ViewConfiguration.get(context).scaledTouchSlop || snIsSelected) {
             return
         } else {
             longPressCallback?.let { gestureHandler.removeCallbacks(it) }
         }
-        if (translationX < 0) { return } // Only allow swipes to the left
-        // The idea here is to asymptotically approach a maximum drag distance
-        val damping = 50.0f
-        val sign = 1.0f
-        val x = (damping * (sqrt(abs(translationX)) / sqrt(damping))) * sign
-        this.translationX = x
-        binding.dateBreakTextView.translationX = -x // Bit of a hack to keep the date break text view from moving
-        postInvalidate() // Ensure onDraw(canvas:) is called
-        if (abs(x) < swipeToReplyThreshold && abs(previousTranslationX) > swipeToReplyThreshold) {
+
+        if (dxRaw < 0f) return   // only allow LEFT → RIGHT
+
+        val maxSwipe = swipeToReplyThreshold * resources.displayMetrics.density
+        val resistance = 0.4f
+
+        val x = if (dxRaw <= maxSwipe) {
+            dxRaw
+        } else {
+            maxSwipe + (dxRaw - maxSwipe) * resistance
+        }
+
+        translationX = x
+        binding.dateBreakTextView.translationX = -x
+        invalidate()
+
+        if (x > maxSwipe && previousTranslationX <= maxSwipe) {
             performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK)
         }
         previousTranslationX = x
@@ -468,16 +504,18 @@ class VisibleMessageView : LinearLayout {
 
     private fun resetPosition() {
         animate()
-            .translationX(0.0f)
-            .setDuration(150)
+            .translationX(0f)
+            .setInterpolator(FastOutSlowInInterpolator())
+            .setDuration(200)
             .setUpdateListener {
-                postInvalidate() // Ensure onDraw(canvas:) is called
+                invalidate()
             }
             .start()
-        // Bit of a hack to keep the date break text view from moving
+
         binding.dateBreakTextView.animate()
-            .translationX(0.0f)
-            .setDuration(150)
+            .translationX(0f)
+            .setInterpolator(FastOutSlowInInterpolator())
+            .setDuration(200)
             .start()
     }
 

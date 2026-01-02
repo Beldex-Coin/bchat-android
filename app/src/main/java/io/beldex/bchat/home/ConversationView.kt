@@ -1,10 +1,7 @@
 package io.beldex.bchat.home
 
 import android.content.Context
-import android.content.res.Resources
-import android.graphics.Typeface
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
@@ -33,7 +30,6 @@ import java.util.Locale
 
 class ConversationView : LinearLayout {
     private lateinit var binding: ViewConversationBinding
-    private val screenWidth = Resources.getSystem().displayMetrics.widthPixels
     var thread: ThreadRecord? = null
     var isReportIssueID: Boolean = false
     private val reportIssueBChatID = BuildConfig.REPORT_ISSUE_ID
@@ -127,33 +123,7 @@ class ConversationView : LinearLayout {
 
             val rawSnippet = thread.getDisplayBody(context)
             val snippet = highlightMentions(rawSnippet,thread.threadId, context)
-
-            //SteveJosephh21-17 - if
-            /*val mmsSmsDatabase = get(context).mmsSmsDatabase()
-            var reader: MmsSmsDatabase.Reader? = null
-            try {
-                reader = mmsSmsDatabase.readerFor(mmsSmsDatabase.getConversationSnippet(thread.threadId))
-                var record: MessageRecord? = null
-                if (reader != null) {
-                    record = reader.next
-                    while (record != null && record.isDeleted) {
-                        record = reader.next
-                    }
-                    Log.d("ThreadDatabase- 1", "" + record)
-                    if(record==null){
-                        binding.snippetTextView.text = "This message has been deleted"
-                    }else{
-                        binding.snippetTextView.text = snippet
-                    }
-                }
-            } finally {
-                if (reader != null)
-                reader.close()
-            }*/
-            //Important - else
             binding.snippetTextView.text = snippet
-
-            //binding.snippetTextView.typeface = if (unreadCount > 0 && !thread.isRead) Typeface.DEFAULT else Typeface.DEFAULT
             binding.snippetTextView.visibility = if (isTyping) View.GONE else View.VISIBLE
             if (isTyping) {
                 binding.typingIndicatorView.root.startAnimation()
@@ -161,21 +131,6 @@ class ConversationView : LinearLayout {
                 binding.typingIndicatorView.root.stopAnimation()
             }
             binding.typingIndicatorView.root.visibility = if (isTyping) View.VISIBLE else View.GONE
-//        binding.statusIndicatorImageView.visibility = View.VISIBLE
-//        when {
-//            !thread.isOutgoing -> binding.statusIndicatorImageView.visibility = View.GONE
-//            thread.isPending -> binding.statusIndicatorImageView.setImageResource(R.drawable.ic_circle_dot_dot_dot)
-//            thread.isRead -> binding.statusIndicatorImageView.setImageResource(R.drawable.ic_filled_circle_check)
-//            thread.isSent -> binding.statusIndicatorImageView.setImageResource(R.drawable.ic_circle_check)
-//            thread.isFailed -> {
-//                val drawable = ContextCompat.getDrawable(context, R.drawable.ic_error)?.mutate()
-//                drawable?.setTint(ContextCompat.getColor(context, R.color.destructive))
-//                binding.statusIndicatorImageView.setImageDrawable(drawable)
-//            }
-//
-//            else -> binding.statusIndicatorImageView.setImageResource(R.drawable.ic_circle_check)
-//
-//        }
         }
         binding.profilePictureView.root.update(thread.recipient)
     }
@@ -197,11 +152,6 @@ class ConversationView : LinearLayout {
                 recipient.name // Internally uses the Contact API
             }
         }
-    }
-
-    private fun getActualDPsFromPixels(context: Context, pixels: Int): Float {
-        val resources = context.resources
-        return pixels / (resources.displayMetrics.densityDpi / 160f)
     }
     // endregion
 }

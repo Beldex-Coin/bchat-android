@@ -9,8 +9,6 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.util.SparseArray
-import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -19,8 +17,6 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.WorkerThread
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.util.getOrDefault
-import androidx.core.util.set
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.beldex.libbchat.messaging.contacts.Contact
@@ -30,7 +26,6 @@ import io.beldex.bchat.R
 import io.beldex.bchat.conversation.v2.messages.ControlMessageView
 import io.beldex.bchat.conversation.v2.messages.VisibleMessageView
 import io.beldex.bchat.database.model.MessageRecord
-import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.preferences.PrivacySettingsActivity
 import io.beldex.bchat.conversation.v2.messages.VisibleMessageViewDelegate
@@ -44,6 +39,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.Locale
+import java.util.concurrent.ConcurrentHashMap
 
 class ConversationAdapter(
     context: Context,
@@ -65,26 +61,34 @@ class ConversationAdapter(
     var visibleMessageViewDelegate: VisibleMessageViewDelegate? = null
 
     private val updateQueue = Channel<String>(1024, onBufferOverflow = BufferOverflow.DROP_OLDEST)
-    private val contactCache by lazy { SparseArray<Contact>(100) }
-    private val contactLoadedCache by lazy { SparseBooleanArray(100) }
+    private val contactCache = ConcurrentHashMap<String, Contact>(100)
+    private val contactLoadedCache = ConcurrentHashMap<String, Boolean>(100)
     @WorkerThread
     private fun getSenderInfo(sender: String): Contact? {
         return contactDB.getContactWithBchatID(sender)
     }
+
+    var lastSentMessageId: Long? = null
+        set(value) {
+            if (field != value) {
+                field = value
+                notifyDataSetChanged()
+            }
+        }
 
     init {
         lifecycleCoroutineScope.launch(IO) {
             while (isActive) {
                 val item = updateQueue.receive()
                 val contact = getSenderInfo(item) ?: continue
-                contactCache[item.hashCode()] = contact
-                contactLoadedCache[item.hashCode()] = true
+                contactCache[item] = contact
+                contactLoadedCache[item] = true
             }
         }
         setHasStableIds(true)
     }
 
-    class VisibleMessageViewHolder(val view: View) : ViewHolder(view)
+    class VisibleMessageViewHolder(val view: VisibleMessageView) : ViewHolder(view)
     class ControlMessageViewHolder(val view: ControlMessageView) : ViewHolder(view)
 
     override fun getItemViewType(cursor: Cursor): Int {
@@ -97,7 +101,7 @@ class ConversationAdapter(
 
     override fun onCreateItemViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {
-            VIEW_TYPE_VISIBLE -> VisibleMessageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.view_visible_message, parent, false))
+            VIEW_TYPE_VISIBLE -> VisibleMessageViewHolder(VisibleMessageView(context))
             VIEW_TYPE_CONTROL -> ControlMessageViewHolder(ControlMessageView(context))
             else -> throw IllegalStateException("Unexpected view type: $viewType.")
         }
@@ -115,20 +119,19 @@ class ConversationAdapter(
         val messageAfter = getMessageAfter(position, cursor)
         when (viewHolder) {
             is VisibleMessageViewHolder -> {
-                val visibleMessageView = ViewVisibleMessageBinding.bind(viewHolder.view).visibleMessageView
+                val visibleMessageView = viewHolder.view
                 val isSelected = selectedItems.contains(message)
                 visibleMessageView.isMessageSelected = isSelected
                 visibleMessageView.indexInAdapter = position
                 val senderId = message.individualRecipient.address.serialize()
-                val senderIdHash = senderId.hashCode()
                 updateQueue.trySend(senderId)
-                if (contactCache[senderIdHash] == null && !contactLoadedCache.getOrDefault(senderIdHash, false)) {
+                if (contactCache[senderId] == null && !contactLoadedCache.getOrDefault(senderId, false)) {
                     getSenderInfo(senderId)?.let { contact ->
-                        contactCache[senderIdHash] = contact
+                        contactCache[senderId] = contact
                     }
                 }
-                val contact = contactCache[senderIdHash]
-                visibleMessageView.bind(message, threadRecipient = threadRecipientProvider!!, messageBefore, messageAfter, glide, searchQuery, contact, senderId, onAttachmentNeedsDownload,{ selectedItems.isNotEmpty() }, visibleMessageViewDelegate, position, searchViewModel)
+                val contact = contactCache[senderId]
+                visibleMessageView.bind(message, threadRecipient = threadRecipientProvider!!, messageBefore, messageAfter, glide, searchQuery, contact, senderId, onAttachmentNeedsDownload,{ selectedItems.isNotEmpty() }, visibleMessageViewDelegate, position, searchViewModel, lastSentMessageId)
                 if (!message.isDeleted) {
                     visibleMessageView.onPress = { event -> onItemPress(message, position, visibleMessageView, event) }
                     visibleMessageView.onSwipeToReply = { onItemSwipeToReply(message, position) }
@@ -203,7 +206,7 @@ class ConversationAdapter(
 
     override fun onItemViewRecycled(viewHolder: ViewHolder?) {
         when (viewHolder) {
-            is VisibleMessageViewHolder -> viewHolder.view.findViewById<VisibleMessageView>(R.id.visibleMessageView).recycle()
+            is VisibleMessageViewHolder -> viewHolder.view.recycle()
             is ControlMessageViewHolder -> viewHolder.view.recycle()
         }
         super.onItemViewRecycled(viewHolder)

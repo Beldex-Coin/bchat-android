@@ -129,11 +129,6 @@ fun ContentView.bindModel(query: String?, model: Message) {
     binding.searchResultProfilePicture.root.isVisible = true
     binding.searchResultSavedMessages.isVisible = false
     binding.searchResultTimestamp.isVisible = true
-//    val hasUnreads = model.unread > 0
-//    binding.unreadCountIndicator.isVisible = hasUnreads
-//    if (hasUnreads) {
-//        binding.unreadCountTextView.text = model.unread.toString()
-//    }
     binding.searchResultTimestamp.text = DateUtils.getDisplayFormattedTimeSpanString(binding.root.context, Locale.getDefault(), model.messageResult.sentTimestampMs)
     binding.searchResultProfilePicture.root.update(model.messageResult.conversationRecipient)
     val textSpannable = SpannableStringBuilder()

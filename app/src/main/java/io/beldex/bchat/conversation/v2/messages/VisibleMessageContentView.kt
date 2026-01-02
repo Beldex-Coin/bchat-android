@@ -492,7 +492,7 @@ class VisibleMessageContentView : MaterialCardView {
                 hideBody=true
                 showQuoteBody=false
                 bindingRef.paymentCardView.bind(
-                    message, getTextColor(ctx, message)
+                    message
                 )
             }
 

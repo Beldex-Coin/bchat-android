@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<io.beldex.bchat.conversation.v2.messages.VisibleMessageView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/visibleMessageView"
@@ -119,9 +119,10 @@
 
         </LinearLayout>
 
-        <include
-            layout="@layout/view_emoji_reactions"
+        <ViewStub
+            android:layout="@layout/view_emoji_reactions"
             android:id="@+id/emojiReactionsView"
+            android:inflatedId="@+id/emojiReactionsView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/medium_spacing"
@@ -135,4 +136,4 @@
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</io.beldex.bchat.conversation.v2.messages.VisibleMessageView>
+</LinearLayout>

@@ -8,9 +8,11 @@ import android.os.Looper
 import android.os.SystemClock
 import android.util.AttributeSet
 import android.view.HapticFeedbackConstants
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.widget.LinearLayout
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -58,16 +60,22 @@ import kotlin.math.roundToInt
 import kotlin.math.sqrt
 import androidx.core.view.isGone
 import androidx.core.graphics.drawable.toDrawable
+import io.beldex.bchat.databinding.ViewEmojiReactionsBinding
+import com.beldex.libsignal.utilities.Log
 
 @AndroidEntryPoint
-class VisibleMessageView : LinearLayout {
+class VisibleMessageView : FrameLayout {
     @Inject lateinit var beldexThreadDb: BeldexThreadDatabase
     @Inject lateinit var mmsSmsDb: MmsSmsDatabase
     @Inject lateinit var smsDb: SmsDatabase
     @Inject lateinit var mmsDb: MmsDatabase
     @Inject lateinit var beldexApiDb: BeldexAPIDatabase
 
-    private val binding by lazy { ViewVisibleMessageBinding.bind(this) }
+    private val binding = ViewVisibleMessageBinding.inflate(LayoutInflater.from(context), this, true)
+
+    private val emojiReactionsBinding = lazy(LazyThreadSafetyMode.NONE) {
+        ViewEmojiReactionsBinding.bind(binding.emojiReactionsView.inflate())
+    }
     private val swipeToReplyIcon = ContextCompat.getDrawable(context, R.drawable.ic_baseline_reply_24)!!.mutate()
     private val swipeToReplyIconRect = Rect()
     private var dx = 0.0f
@@ -86,7 +94,7 @@ class VisibleMessageView : LinearLayout {
     var onPress: ((event: MotionEvent) -> Unit)? = null
     var onSwipeToReply: (() -> Unit)? = null
     var onLongPress: (() -> Unit)? = null
-    val messageContentView: VisibleMessageContentView by lazy { binding.messageContentView.root }
+    val messageContentView: VisibleMessageContentView get() = binding.messageContentView.root
 
     companion object {
         const val SWIPE_TO_REPLY_THRESHOLD = 64.0f // dp
@@ -100,16 +108,13 @@ class VisibleMessageView : LinearLayout {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    override fun onFinishInflate() {
-        super.onFinishInflate()
-        initialize()
-    }
-
-    private fun initialize() {
+    init {
         isHapticFeedbackEnabled = true
         setWillNotDraw(false)
         binding.messageInnerContainer.disableClipping()
         binding.messageContentView.root.disableClipping()
+
+        layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
     }
     // endregion
 
@@ -127,7 +132,8 @@ class VisibleMessageView : LinearLayout {
         messageSelected : () -> Boolean,
         delegate : VisibleMessageViewDelegate?,
         position : Int,
-        searchViewModel : SearchViewModel?
+        searchViewModel : SearchViewModel?,
+        lastSentMessageId: Long?,
     ) {
         val threadID = message.threadId
         val isGroupThread = threadRecipient.isGroupRecipient
@@ -199,17 +205,19 @@ class VisibleMessageView : LinearLayout {
             }
         }
         // Expiration timer
-        updateExpirationTimer(message)
-
-        val reactionsRoot = binding.emojiReactionsView.root
-        (reactionsRoot.layoutParams as ConstraintLayout.LayoutParams).apply {
-            horizontalBias = if (message.isOutgoing) 1f else 0f
+        updateExpirationTimer(message, lastSentMessageId)
+        emojiReactionsBinding.value.root.let { root ->
+            (root.layoutParams as ConstraintLayout.LayoutParams).apply {
+                horizontalBias = if (message.isOutgoing) 1f else 0f
+            }
         }
         val containerParams = binding.messageInnerContainer.layoutParams as ConstraintLayout.LayoutParams
 
         if (message.reactions.isNotEmpty()) {
-            reactionsRoot.setReactions(message.id, message.reactions, message.isOutgoing, delegate)
-            reactionsRoot.isVisible = true
+            emojiReactionsBinding.value.root.let { root ->
+                root.setReactions(message.id, message.reactions, message.isOutgoing, delegate)
+                root.isVisible = true
+            }
             containerParams.bottomMargin = when {
                 isEndOfMessageCluster && isGroupThread ->
                     resources.getDimensionPixelSize(R.dimen.react_with_any_emoji_parent_container_bottom_margin_with_tail_group_message)
@@ -223,8 +231,8 @@ class VisibleMessageView : LinearLayout {
                 else ->
                     resources.getDimensionPixelSize(R.dimen.react_with_any_emoji_parent_container_bottom_margin)
             }
-        } else {
-            reactionsRoot.visibility = View.GONE
+        } else if (emojiReactionsBinding.isInitialized()) {
+            emojiReactionsBinding.value.root.isVisible = false
             containerParams.bottomMargin = 0
         }
 
@@ -288,7 +296,7 @@ class VisibleMessageView : LinearLayout {
         }
     }
 
-    private fun updateExpirationTimer(message: MessageRecord) {
+    private fun updateExpirationTimer(message: MessageRecord, lastSentMessageId: Long?) {
         val container = binding.messageInnerContainer
         val content = binding.messageContentView.root
         val expiration = binding.expirationTimerView
@@ -312,8 +320,7 @@ class VisibleMessageView : LinearLayout {
             binding.messageStatusImageView.setImageDrawable(drawable)
         }
         if (message.isOutgoing) {
-            val lastMessageID = mmsSmsDb.getLastMessageID(message.threadId, false, false)
-            binding.messageStatusImageView.isVisible = (iconID != null && (!message.isSent || message.id == lastMessageID))
+            binding.messageStatusImageView.isVisible = (iconID != null && (!message.isSent || (lastSentMessageId != null && lastSentMessageId > 0 && message.id == lastSentMessageId)))
         } else {
             binding.messageStatusImageView.isVisible = false
         }

@@ -146,7 +146,6 @@ import io.beldex.bchat.database.model.MmsMessageRecord
 import io.beldex.bchat.database.model.ReactionRecord
 import io.beldex.bchat.database.model.ThreadRecord
 import io.beldex.bchat.databinding.FragmentConversationV2Binding
-import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import io.beldex.bchat.delegates.WalletDelegates
 import io.beldex.bchat.delegates.WalletDelegatesImpl
 import io.beldex.bchat.dependencies.DatabaseComponent
@@ -501,7 +500,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         const val PICK_GIF=10
         const val PICK_FROM_LIBRARY=12
         const val INVITE_CONTACTS=124
-
     }
 
     private var listenerCallback : Listener?=null
@@ -2404,8 +2402,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         }
         val viewHolder =
             binding.conversationRecyclerView.findViewHolderForAdapterPosition(indexInAdapter) as? ConversationAdapter.VisibleMessageViewHolder ?: return
-        val visibleMessageView = ViewVisibleMessageBinding.bind(viewHolder.view).visibleMessageView
-        visibleMessageView.playVoiceMessage()
+        viewHolder.view.playVoiceMessage()
     }
 
     override fun isAudioPlaying(isPlaying : Boolean, audioPlayingIndex : Int) {
@@ -2420,9 +2417,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         val viewHolder=
             binding.conversationRecyclerView.findViewHolderForAdapterPosition(indexInAdapter) as? ConversationAdapter.VisibleMessageViewHolder
                 ?: return
-        val visibleMessageView=
-            ViewVisibleMessageBinding.bind(viewHolder.view).visibleMessageView
-        visibleMessageView.stoppedVoiceMessage()
+        viewHolder.view.stoppedVoiceMessage()
     }
 
     private fun onSearchOpened() {
@@ -2517,6 +2512,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                 // another thread before the 'firstLoad.getAndSet(false)' case below)
                 unreadCount = initialUnreadCount
                 updateUnreadCountIndicator()
+                updateLastSeenMessageId()
             }
 
             if (author != null && messageTimestamp >= 0) {
@@ -2552,6 +2548,14 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
 
         binding.conversationRecyclerView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
             showScrollToBottomButtonIfApplicable()
+        }
+    }
+
+    private fun updateLastSeenMessageId() {
+        lifecycleScope.launch {
+            viewModel
+                .lastSeenMessageId
+                .collectLatest { adapter.lastSentMessageId = it }
         }
     }
 

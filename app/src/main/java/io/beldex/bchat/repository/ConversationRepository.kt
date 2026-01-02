@@ -25,6 +25,9 @@ import io.beldex.bchat.database.model.ThreadRecord
 import kotlinx.coroutines.flow.Flow
 import app.cash.copper.Query
 import app.cash.copper.flow.observeQuery
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -82,6 +85,8 @@ interface ConversationRepository {
     fun declineMessageRequest(threadId: Long)
 
     fun hasReceived(threadId: Long): Boolean
+
+    fun getLastSentMessageID(threadId: Long): Flow<Long>
 }
 
 class DefaultConversationRepository @Inject constructor(
@@ -362,5 +367,10 @@ class DefaultConversationRepository @Inject constructor(
         }
         return false
     }
+
+    override fun getLastSentMessageID(threadId: Long): Flow<Long> =
+        flow {
+            emit(mmsSmsDb.getLastMessageID(threadId, false, false))
+        }.flowOn(Dispatchers.IO)
 
 }

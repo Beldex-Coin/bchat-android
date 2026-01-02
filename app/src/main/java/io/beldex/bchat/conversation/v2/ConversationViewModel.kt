@@ -34,6 +34,7 @@ import io.beldex.bchat.database.Storage
 import io.beldex.bchat.database.model.MmsMessageRecord
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -325,6 +326,9 @@ class ConversationViewModel (
     fun getOrCreateThreadIdForContact(recipient: Recipient): Long {
         return threadDb.getOrCreateThreadIdFor(recipient)
     }
+
+    val lastSeenMessageId: Flow<Long>
+        get() = repository.getLastSentMessageID(threadId)
 
     @dagger.assisted.AssistedFactory
     interface AssistedFactory {

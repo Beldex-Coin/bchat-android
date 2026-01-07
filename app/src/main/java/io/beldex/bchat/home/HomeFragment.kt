@@ -851,7 +851,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         onConversationClick(thread.threadId)
     }
 
-    override fun onLongConversationClick(thread: ThreadRecord, view: View) {
+    override fun onLongConversationClick(thread: ThreadRecord, view: View, position: Int) {
         val recipient = thread.recipient
         val popupMenu = PopupMenu(requireContext(), view, R.style.PopupMenu)
         popupMenu.menuInflater.inflate(R.menu.menu_conversation_v2, popupMenu.menu)
@@ -885,7 +885,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             findItem(R.id.menu_archive_chat).setVisible(true)
         }
         popupMenu.setOnMenuItemClickListener {
-            handlePopUpMenuClickListener(it, thread)
+            handlePopUpMenuClickListener(it, thread, position)
             return@setOnMenuItemClickListener true
         }
         popupMenu.show()
@@ -953,7 +953,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
     fun getGroup(recipient: Recipient): GroupRecord? = groupDb.getGroup(recipient.address.toGroupString()).orNull()
 
-    private fun handlePopUpMenuClickListener(item: MenuItem, thread: ThreadRecord) {
+    private fun handlePopUpMenuClickListener(item: MenuItem, thread: ThreadRecord, position: Int) {
         when (item.itemId) {
             R.id.menu_details -> {
                 val userDetailsBottomSheet = UserDetailsBottomSheet()
@@ -972,19 +972,19 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             }
             R.id.menu_block -> {
                 if (!thread.recipient.isBlocked) {
-                    blockConversation(thread)
+                    blockConversation(thread, position)
                 }
             }
             R.id.menu_unblock -> {
                 if (thread.recipient.isBlocked) {
-                    unblockConversation(thread)
+                    unblockConversation(thread, position)
                 }
             }
             R.id.menu_mute_notifications -> {
-                setConversationMuted(thread, true)
+                setConversationMuted(thread, true, position)
             }
             R.id.menu_unmute_notifications -> {
-                setConversationMuted(thread, false)
+                setConversationMuted(thread, false, position)
             }
             R.id.menu_notification_settings -> {
                 val dialog = ConversationActionDialog()
@@ -1011,36 +1011,38 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         }
     }
 
-    private fun blockConversation(thread: ThreadRecord) {
+    private fun blockConversation(thread: ThreadRecord, position: Int) {
         val blockDialog = ConversationActionDialog()
         blockDialog.apply {
             arguments = Bundle().apply {
                 putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, thread)
                 putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.BlockUser)
+                putInt(ConversationActionDialog.EXTRA_THREAD_POSITION, position)
             }
             setListener(this@HomeFragment)
         }
         blockDialog.show(childFragmentManager, ConversationActionDialog.TAG)
     }
 
-    private fun unblockConversation(thread: ThreadRecord) {
+    private fun unblockConversation(thread: ThreadRecord, position: Int) {
         val unBlockDialog = ConversationActionDialog()
         unBlockDialog.apply {
             arguments = Bundle().apply {
                 putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, thread)
                 putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.UnblockUser)
+                putInt(ConversationActionDialog.EXTRA_THREAD_POSITION, position)
             }
             setListener(this@HomeFragment)
         }
         unBlockDialog.show(childFragmentManager, ConversationActionDialog.TAG)
     }
 
-    private fun setConversationMuted(thread: ThreadRecord, isMuted: Boolean) {
+    private fun setConversationMuted(thread: ThreadRecord, isMuted: Boolean, position: Int) {
         if (!isMuted) {
             lifecycleScope.launch(Dispatchers.IO) {
                 recipientDatabase.setMuted(thread.recipient, 0)
                 withContext(Dispatchers.Main) {
-                    binding.recyclerView.adapter!!.notifyDataSetChanged()
+                    binding.recyclerView.adapter!!.notifyItemChanged(position)
                 }
             }
         } else {
@@ -1050,6 +1052,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                     putSerializable(ConversationActionDialog.EXTRA_ARGUMENT_3, thread.recipient.mutedUntil)
                     putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.MuteChat)
                     putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, thread)
+                    putInt(ConversationActionDialog.EXTRA_THREAD_POSITION, position)
                 }
                 setListener(this@HomeFragment)
             }
@@ -1578,14 +1581,14 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         showOrHideFragment(ConversationFragmentV2(), extras, threadId)
     }
 
-    override fun onConfirm(dialogType: HomeDialogType, threadRecord: ThreadRecord?) {
+    override fun onConfirm(dialogType: HomeDialogType, threadRecord: ThreadRecord?, position: Int) {
         when (dialogType) {
             HomeDialogType.UnblockUser -> {
                 threadRecord?.let {
                     lifecycleScope.launch(Dispatchers.IO) {
                         recipientDatabase.setBlocked(it.recipient, false)
                         withContext(Dispatchers.Main) {
-                            binding.recyclerView.adapter!!.notifyDataSetChanged()
+                            homeAdapter.notifyItemChanged(position)
                         }
                     }
                 }
@@ -1595,7 +1598,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                     lifecycleScope.launch(Dispatchers.IO) {
                         recipientDatabase.setBlocked(it.recipient, true)
                         withContext(Dispatchers.Main) {
-                            binding.recyclerView.adapter!!.notifyDataSetChanged()
+                            homeAdapter.notifyItemChanged(position)
                         }
                     }
                 }
@@ -1689,7 +1692,8 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     override fun onConfirmationWithData(
         dialogType: HomeDialogType,
         data: Any?,
-        threadRecord: ThreadRecord?
+        threadRecord: ThreadRecord?,
+        position : Int
     ) {
         when (dialogType) {
             HomeDialogType.MuteChat -> {
@@ -1705,7 +1709,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                     threadRecord?.let {
                         DatabaseComponent.get(requireContext()).recipientDatabase().setMuted(it.recipient, muteUntil)
                         withContext(Dispatchers.Main) {
-                            binding.recyclerView.adapter!!.notifyDataSetChanged()
+                            homeAdapter.notifyItemChanged(position)
                         }
                     }
                 }
@@ -1714,7 +1718,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                 threadRecord?.let {
                     val index = data as Int
                     DatabaseComponent.get(requireActivity()).recipientDatabase().setNotifyType(it.recipient, index.toString().toInt())
-                    binding.recyclerView.adapter?.notifyDataSetChanged()
+                    homeAdapter.notifyItemChanged(position)
                 }
             }
             HomeDialogType.BlockUser -> {
@@ -1722,7 +1726,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                     lifecycleScope.launch(Dispatchers.IO) {
                         recipientDatabase.setBlocked(it.recipient, true)
                         withContext(Dispatchers.Main) {
-                            binding.recyclerView.adapter!!.notifyDataSetChanged()
+                            homeAdapter.notifyItemChanged(position)
                         }
                     }
                 }
@@ -1733,7 +1737,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                     lifecycleScope.launch(Dispatchers.IO) {
                         recipientDatabase.setBlocked(it.recipient, false)
                         withContext(Dispatchers.Main) {
-                            binding.recyclerView.adapter!!.notifyDataSetChanged()
+                            homeAdapter.notifyItemChanged(position)
                         }
                     }
                 }

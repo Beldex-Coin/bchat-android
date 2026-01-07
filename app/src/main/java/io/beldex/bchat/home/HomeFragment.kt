@@ -451,11 +451,11 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         // Set up empty state view
         binding.createNewPrivateChatButton.setOnClickListener { openNewConversationChat() }
         homeViewModel.getObservable(requireActivity().applicationContext).observe(requireActivity()) { newData ->
-            val manager = binding.recyclerView.layoutManager as LinearLayoutManager
-            val firstPos = manager.findFirstCompletelyVisibleItemPosition()
-            val offsetTop = if(firstPos >= 0) {
+            val manager=binding.recyclerView.layoutManager as LinearLayoutManager
+            val firstPos = manager.findFirstVisibleItemPosition()
+            val offsetTop = if (firstPos >= 0) {
                 manager.findViewByPosition(firstPos)?.let { view ->
-                    manager.getDecoratedTop(view) - manager.getTopDecorationHeight(view)
+                    view.top - manager.paddingTop
                 } ?: 0
             } else 0
             val messageRequestCount = threadDb.unapprovedConversationCount

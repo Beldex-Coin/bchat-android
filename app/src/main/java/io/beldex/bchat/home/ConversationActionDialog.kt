@@ -381,7 +381,7 @@ class ConversationActionDialog: DialogFragment() {
 
     interface ConversationActionDialogListener {
         fun onConfirm(dialogType: HomeDialogType, threadRecord: ThreadRecord?, position : Int)
-        fun onCancel(dialogType: HomeDialogType, threadRecord: ThreadRecord?)
+        fun onCancel(dialogType: HomeDialogType, threadRecord: ThreadRecord?, position : Int)
         fun onConfirmationWithData(dialogType: HomeDialogType, data: Any?, threadRecord: ThreadRecord?, position: Int)
     }
 

@@ -306,7 +306,7 @@ class HomeFragment : BaseFragment(), ConversationClickListener,
             override fun onSwiped(viewHolder : RecyclerView.ViewHolder, direction : Int) {
                 val position=viewHolder.adapterPosition
                 val thread=homeAdapter.data[position]
-                deleteConversation(thread)
+                deleteConversation(thread, position)
             }
 
             override fun onChildDraw(
@@ -1143,7 +1143,7 @@ class HomeFragment : BaseFragment(), ConversationClickListener,
             }
 
             R.id.menu_delete -> {
-                deleteConversation(thread)
+                deleteConversation(thread, position)
             }
 
             R.id.menu_archive_chat -> {
@@ -1240,7 +1240,7 @@ class HomeFragment : BaseFragment(), ConversationClickListener,
         }
     }
 
-    private fun deleteConversation(thread : ThreadRecord) {
+    private fun deleteConversation(thread : ThreadRecord, position : Int) {
         val recipient=thread.recipient
         val message=if (recipient.isGroupRecipient) {
             val group=groupDb.getGroup(recipient.address.toString()).orNull()
@@ -1262,6 +1262,7 @@ class HomeFragment : BaseFragment(), ConversationClickListener,
                     ConversationActionDialog.EXTRA_DIALOG_TYPE,
                     HomeDialogType.DeleteChat
                 )
+                putInt(ConversationActionDialog.EXTRA_THREAD_POSITION, position)
             }
             setListener(this@HomeFragment)
         }
@@ -1949,8 +1950,11 @@ class HomeFragment : BaseFragment(), ConversationClickListener,
         }
     }
 
-    override fun onCancel(dialogType: HomeDialogType, threadRecord: ThreadRecord?) {
+    override fun onCancel(dialogType: HomeDialogType, threadRecord: ThreadRecord?, position: Int) {
         when (dialogType) {
+            HomeDialogType.DeleteChat -> {
+                homeAdapter.notifyItemChanged(position)
+            }
             HomeDialogType.IgnoreRequest -> {
                 threadRecord.let {
                     lifecycleScope.launch(Dispatchers.IO) {

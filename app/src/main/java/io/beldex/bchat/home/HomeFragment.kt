@@ -267,7 +267,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val position = viewHolder.adapterPosition
             val thread =homeAdapter.data[position]
-            deleteConversation(thread)
+            deleteConversation(thread, position)
         }
 
         override fun onChildDraw(
@@ -1002,7 +1002,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                 markAllAsRead(thread)
             }
             R.id.menu_delete -> {
-                deleteConversation(thread)
+                deleteConversation(thread, position)
             }
             R.id.menu_archive_chat ->{
                 archiveChatViewModel?.let { archiveConversation(thread, it) }
@@ -1085,7 +1085,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         }
     }
 
-    private fun deleteConversation(thread: ThreadRecord) {
+    private fun deleteConversation(thread: ThreadRecord, position : Int) {
         val recipient = thread.recipient
         val message = if (recipient.isGroupRecipient) {
             val group = groupDb.getGroup(recipient.address.toString()).orNull()
@@ -1104,6 +1104,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                 putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, thread)
                 putString(ConversationActionDialog.EXTRA_ARGUMENT_1, message)
                 putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.DeleteChat)
+                putInt(ConversationActionDialog.EXTRA_THREAD_POSITION, position)
             }
             setListener(this@HomeFragment)
         }
@@ -1673,10 +1674,10 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         }
     }
 
-    override fun onCancel(dialogType: HomeDialogType, threadRecord: ThreadRecord?) {
+    override fun onCancel(dialogType: HomeDialogType, threadRecord: ThreadRecord?, position: Int) {
         when (dialogType) {
             HomeDialogType.DeleteChat -> {
-                binding.recyclerView.adapter?.notifyDataSetChanged()
+                homeAdapter.notifyItemChanged(position)
             }
             HomeDialogType.IgnoreRequest -> {
                 threadRecord.let {

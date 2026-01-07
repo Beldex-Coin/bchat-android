@@ -135,7 +135,7 @@ class ConversationActionDialog: DialogFragment() {
                                 },
                                 onCancel = {
                                     dismiss()
-                                    listener?.onCancel(dialogType, threadRecord)
+                                    listener?.onCancel(dialogType, threadRecord, threadPosition)
                                 }
                             )
                         }
@@ -173,7 +173,7 @@ class ConversationActionDialog: DialogFragment() {
                                 },
                                 onCancel = {
                                     dismiss()
-                                    listener?.onCancel(dialogType, threadRecord)
+                                    listener?.onCancel(dialogType, threadRecord, threadPosition)
                                 }
                             )
                         }
@@ -190,7 +190,7 @@ class ConversationActionDialog: DialogFragment() {
                                 },
                                 onClick = {
                                     dismiss()
-                                    listener?.onCancel(dialogType, threadRecord)
+                                    listener?.onCancel(dialogType, threadRecord, threadPosition)
                                 },
                                 options = option.toList(),
                                 currentValue = option[argument3],
@@ -213,7 +213,7 @@ class ConversationActionDialog: DialogFragment() {
                                 },
                                 onDismissRequest = {
                                     dismiss()
-                                    listener?.onCancel(dialogType, threadRecord)
+                                    listener?.onCancel(dialogType, threadRecord, threadPosition)
                                 },
                             )
                         }
@@ -230,7 +230,7 @@ class ConversationActionDialog: DialogFragment() {
                                 },
                                 onDelete = {
                                     dismiss()
-                                    listener?.onCancel(dialogType, threadRecord)
+                                    listener?.onCancel(dialogType, threadRecord, threadPosition)
                                 },
                                 onDismissRequest = {
                                     dismiss()
@@ -263,7 +263,7 @@ class ConversationActionDialog: DialogFragment() {
                                 },
                                 onCancel = {
                                     dismiss()
-                                    listener?.onCancel(dialogType, threadRecord)
+                                    listener?.onCancel(dialogType, threadRecord, threadPosition)
                                 }
                             )
                         }
@@ -308,7 +308,7 @@ class ConversationActionDialog: DialogFragment() {
                                 },
                                 onCancel = {
                                     dismiss()
-                                    listener?.onCancel(dialogType, threadRecord)
+                                    listener?.onCancel(dialogType, threadRecord, threadPosition)
                                 }
                             )
                         }
@@ -327,7 +327,7 @@ class ConversationActionDialog: DialogFragment() {
                                 },
                                 onCancel = {
                                     dismiss()
-                                    listener?.onCancel(dialogType, threadRecord)
+                                    listener?.onCancel(dialogType, threadRecord, threadPosition)
                                 }
                             )
                         }
@@ -346,7 +346,7 @@ class ConversationActionDialog: DialogFragment() {
                                 },
                                 onCancel = {
                                     dismiss()
-                                    listener?.onCancel(dialogType, threadRecord)
+                                    listener?.onCancel(dialogType, threadRecord, threadPosition)
                                 }
                             )
                         }
@@ -365,7 +365,7 @@ class ConversationActionDialog: DialogFragment() {
                                 },
                                 onCancel = {
                                     dismiss()
-                                    listener?.onCancel(dialogType, threadRecord)
+                                    listener?.onCancel(dialogType, threadRecord, threadPosition)
                                 }
                             )
                         }
@@ -381,7 +381,7 @@ class ConversationActionDialog: DialogFragment() {
 
     interface ConversationActionDialogListener {
         fun onConfirm(dialogType: HomeDialogType, threadRecord: ThreadRecord?, position : Int)
-        fun onCancel(dialogType: HomeDialogType, threadRecord: ThreadRecord?)
+        fun onCancel(dialogType: HomeDialogType, threadRecord: ThreadRecord?, position : Int)
         fun onConfirmationWithData(dialogType: HomeDialogType, data: Any?, threadRecord: ThreadRecord?, position : Int)
     }
 

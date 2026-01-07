@@ -4381,7 +4381,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         }
     }
 
-    override fun onCancel(dialogType : HomeDialogType, threadRecord : ThreadRecord?) {
+    override fun onCancel(dialogType : HomeDialogType, threadRecord : ThreadRecord?, position : Int) {
         when (dialogType) {
             HomeDialogType.SelectedMessageDelete -> {
                 endActionMode()

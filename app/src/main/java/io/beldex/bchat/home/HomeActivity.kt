@@ -308,12 +308,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             }
         }
 
-        /*if(TextSecurePreferences.getAirdropAnimationStatus(this)) {
-            //New Line AirDrop
-            TextSecurePreferences.setAirdropAnimationStatus(this,false)
-            launchSuccessLottieDialog()
-        }*/
-
         val reactionOverlayStub: Stub<ConversationReactionOverlay> =
             ViewUtil.findStubById(this, R.id.conversation_reaction_scrubber_stub)
         reactionDelegate = ConversationReactionDelegate(reactionOverlayStub)
@@ -612,24 +606,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     //Important
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        if (event?.action == MotionEvent.ACTION_DOWN) {
-            val touch = PointF(event.x, event.y)
             when (val currentFragment: Fragment? = getCurrentFragment()) {
-                is HomeFragment -> {
-                    currentFragment.dispatchTouchEvent()
-                }
                 is ConversationFragmentV2 -> {
-                    currentFragment.dispatchTouchEvents(event)
+                    if (event != null) {
+                        currentFragment.dispatchTouchEvents(event)
+                    }
                 }
             }
-        }
-        when (val currentFragment: Fragment? = getCurrentFragment()) {
-            is ConversationFragmentV2 -> {
-                if (event != null) {
-                    currentFragment.dispatchTouchEvents(event)
-                }
-            }
-        }
         return super.dispatchTouchEvent(event)
     }
 
@@ -1062,7 +1045,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                             currentFragment.onRefreshed(wallet, full)
                         }
                         is WalletFragment -> {
-                            currentFragment.onRefreshed(wallet, full,list)
+                            currentFragment.onRefreshed(wallet,list)
                         }
                     }
                 }

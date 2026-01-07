@@ -48,7 +48,10 @@ import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.core.text.getSpans
 import androidx.core.text.toSpannable
+import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
+import android.util.LruCache
+import androidx.core.view.updateLayoutParams
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentTransferProgress
 import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachment
@@ -97,6 +100,7 @@ class VisibleMessageContentView : MaterialCardView {
     var onLongPress: (() -> Unit)? = null
     var chatWithContact: ((ContactModel) -> Unit)? = null
 
+    private val textWidthCache = LruCache<Long, Int>(200)
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
@@ -196,9 +200,10 @@ class VisibleMessageContentView : MaterialCardView {
 
                 when {
                     message.slideDeck.audioSlide != null -> {
-                        binding.voiceMessageView.root.post {
-                            params.width = binding.voiceMessageView.root.measuredWidth
-                            binding.quoteContainer.layoutParams = params
+                        binding.voiceMessageView.root.doOnLayout {
+                            binding.quoteContainer.updateLayoutParams {
+                                width = it.measuredWidth
+                            }
                         }
                     }
                     message.slideDeck.documentSlide != null -> {
@@ -226,7 +231,9 @@ class VisibleMessageContentView : MaterialCardView {
                 }
                 binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
                 binding.quoteContainer.layoutParams = params
-                binding.quoteContainer.requestLayout()
+                binding.quoteContainer.updateLayoutParams {
+                    width = ViewGroup.LayoutParams.WRAP_CONTENT
+                }
             } else {
                 if (message.slideDeck.audioSlide != null || message.slideDeck.documentSlide != null || message.slideDeck.asAttachments().isNotEmpty()) {
                     binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
@@ -236,7 +243,9 @@ class VisibleMessageContentView : MaterialCardView {
                         binding.quoteContainer.layoutParams = params
                     }
                     binding.quoteContainer.layoutParams = params
-                    binding.quoteContainer.requestLayout()
+                    binding.quoteContainer.updateLayoutParams {
+                        width = ViewGroup.LayoutParams.WRAP_CONTENT
+                    }
                 } else {
                     binding.quoteContainer.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                 }
@@ -508,9 +517,10 @@ class VisibleMessageContentView : MaterialCardView {
 
 
         if(binding.albumThumbnailView.root.isVisible){
-            val params: ConstraintLayout.LayoutParams = binding.bodyTextViewLayout.layoutParams as ConstraintLayout.LayoutParams
-            params.width = binding.albumContainer.width
-            params.topMargin = 4
+            binding.bodyTextViewLayout.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                width = binding.albumContainer.width
+                topMargin = 4
+            }
             val params1: RelativeLayout.LayoutParams = binding.bodyTextView.layoutParams as RelativeLayout.LayoutParams
             params1.width = RelativeLayout.LayoutParams.MATCH_PARENT
         } else if(binding.linkPreviewView.root.isVisible){

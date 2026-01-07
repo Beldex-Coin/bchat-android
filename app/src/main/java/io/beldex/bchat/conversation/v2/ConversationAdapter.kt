@@ -18,41 +18,25 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.WorkerThread
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.unit.dp
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.util.getOrDefault
 import androidx.core.util.set
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.beldex.libbchat.messaging.contacts.Contact
-import com.beldex.libbchat.messaging.utilities.UpdateMessageData
-import com.beldex.libbchat.utilities.Address
 import com.bumptech.glide.RequestManager
 import io.beldex.bchat.R
-import io.beldex.bchat.compose_utils.BChatTheme
-import io.beldex.bchat.compose_utils.TextColor
-import io.beldex.bchat.compose_utils.noRippleCallback
-import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
-import io.beldex.bchat.conversation.v2.contact_sharing.SharedContactView
 import io.beldex.bchat.conversation.v2.messages.ControlMessageView
 import io.beldex.bchat.conversation.v2.messages.VisibleMessageView
+import io.beldex.bchat.conversation.v2.messages.VisibleMessageViewDelegate
+import io.beldex.bchat.conversation.v2.search.SearchViewModel
+import io.beldex.bchat.database.BchatContactDatabase
 import io.beldex.bchat.database.CursorRecyclerViewAdapter
+import io.beldex.bchat.database.MmsSmsDatabase
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.databinding.ComposeViewHolderBinding
 import io.beldex.bchat.databinding.ViewVisibleMessageBinding
-import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.preferences.PrivacySettingsActivity
-import io.beldex.bchat.conversation.v2.messages.VisibleMessageViewDelegate
-import io.beldex.bchat.conversation.v2.search.SearchViewModel
-import io.beldex.bchat.util.DateUtils
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
@@ -62,7 +46,7 @@ import java.util.Locale
 
 class ConversationAdapter(
     context: Context,
-    cursor: Cursor,
+    cursor: Cursor?,
     private val searchViewModel : SearchViewModel?,
     private val onItemPress: (MessageRecord, Int, VisibleMessageView, MotionEvent) -> Unit,
     private val onItemSwipeToReply: (MessageRecord, Int) -> Unit,
@@ -70,11 +54,10 @@ class ConversationAdapter(
     private val glide: RequestManager,
     private val onDeselect: (MessageRecord, Int) -> Unit,
     private val onAttachmentNeedsDownload: (Long, Long) -> Unit, lifecycleCoroutineScope: LifecycleCoroutineScope,
-    var isAdmin: Boolean = false
+    private val messageDB: MmsSmsDatabase,
+    private val contactDB: BchatContactDatabase
 
 ) : CursorRecyclerViewAdapter<ViewHolder>(context, cursor) {
-    private val messageDB by lazy { DatabaseComponent.get(context).mmsSmsDatabase() }
-    private val contactDB by lazy { DatabaseComponent.get(context).bchatContactDatabase() }
     var selectedItems = mutableSetOf<MessageRecord>()
     private var searchQuery: String? = null
     var visibleMessageViewDelegate: VisibleMessageViewDelegate? = null
@@ -121,7 +104,6 @@ class ConversationAdapter(
         val message = getMessage(cursor)!!
         return when {
             message.isControlMessage -> ViewType.Control.rawValue
-//            message.isSharedContact -> ViewType.SharedContact.rawValue
             else -> ViewType.Visible.rawValue
         }
     }
@@ -132,7 +114,6 @@ class ConversationAdapter(
         return when (viewType) {
             ViewType.Visible -> VisibleMessageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.view_visible_message, parent, false))
             ViewType.Control -> ControlMessageViewHolder(ControlMessageView(context))
-//            ViewType.SharedContact -> SharedContactViewHolder(ComposeViewHolderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             else -> throw IllegalStateException("Unexpected view type: $viewType.")
         }
     }
@@ -221,58 +202,6 @@ class ConversationAdapter(
                     }
                 } else {
                     viewHolder.view.setOnClickListener(null)
-                }
-            }
-            is SharedContactViewHolder -> {
-                val umd = UpdateMessageData.fromJSON(message.body)!!
-                val data = umd.kind as UpdateMessageData.Kind.SharedContact
-                viewHolder.binding.contactView.setContent {
-                    BChatTheme {
-                        val contact = ContactModel(
-                            address = Address.fromSerialized(data.address),
-                            name = data.name
-                        )
-                        val configuration = LocalConfiguration.current
-                        val screenWidth = configuration.screenWidthDp.dp
-                        val cardBackgroundColor by remember(message) {
-                            val backgroundColor = if (message.isOutgoing) {
-                                R.color.outgoing_call_background
-                            } else {
-                                R.color.received_call_card_background
-                            }
-                            mutableIntStateOf(
-                                backgroundColor
-                            )
-                        }
-                        val onContactClicked: (ContactModel) -> Unit = { model ->
-                            //delegate?.chatWithContact(model)
-                        }
-                        SharedContactView(
-                            contacts = listOf(
-                                contact
-                            ),
-                            backgroundColor = colorResource(cardBackgroundColor),
-                            timeStamp = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp),
-                            titleColor = colorResource(
-                                if (message.isOutgoing) {
-                                    R.color.white
-                                } else {
-                                    R.color.received_message_text_color
-                                }
-                            ),
-                            subtitleColor = if (message.isOutgoing) {
-                                TextColor
-                            } else {
-                                colorResource(R.color.received_message_text_color)
-                            },
-                            modifier = Modifier
-                                .width(screenWidth * 0.7f)
-                                .padding(8.dp)
-                                .noRippleCallback {
-                                    onContactClicked(contact)
-                                }
-                        )
-                    }
                 }
             }
         }

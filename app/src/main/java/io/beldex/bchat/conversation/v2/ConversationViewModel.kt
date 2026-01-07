@@ -1,6 +1,7 @@
 package io.beldex.bchat.conversation.v2
 
 import android.app.Application
+import android.content.Context
 import android.database.Cursor
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -34,7 +35,6 @@ import io.beldex.bchat.R
 import io.beldex.bchat.database.Storage
 import io.beldex.bchat.database.model.MmsMessageRecord
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -42,21 +42,20 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 
 class ConversationViewModel (
-        private val repository: ConversationRepository,
-        private val beldexThreadDb: BeldexThreadDatabase,
-        private val bchatContactDb: BchatContactDatabase,
-        private val threadDb: ThreadDatabase,
-        private val recipientDatabase: RecipientDatabase,
-        private val groupDb: GroupDatabase,
-        private val beldexApiDb: BeldexAPIDatabase,
-        private val mmsDb: MmsDatabase,
-        private val smsDb: SmsDatabase,
-        private val mmsSmsDatabase: MmsSmsDatabase,
-        private val beldexMessageDb: BeldexMessageDatabase,
-        val threadId: Long,
-        private val storage: Storage,
-        private val application: Application,
-        private val textSecurePreferences : TextSecurePreferences
+    private val repository: ConversationRepository,
+    private val beldexThreadDb: BeldexThreadDatabase,
+    private val bchatContactDb: BchatContactDatabase,
+    private val threadDb: ThreadDatabase,
+    private val recipientDatabase: RecipientDatabase,
+    private val groupDb: GroupDatabase,
+    private val beldexApiDb: BeldexAPIDatabase,
+    private val mmsDb: MmsDatabase,
+    private val smsDb: SmsDatabase,
+    private val mmsSmsDatabase: MmsSmsDatabase,
+    private val beldexMessageDb: BeldexMessageDatabase,
+    val threadId: Long,
+    private val storage: Storage,
+    private val application: Application,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ConversationUiState())
@@ -75,13 +74,6 @@ class ConversationViewModel (
 
     val openGroup: OpenGroupV2?
         get() = storage.getV2OpenGroup(threadId)
-
- /*   val serverCapabilities: List<String>
-        get() = openGroup?.let { storage.getServerCapabilities(it.server) } ?: listOf()*/
-
-    /*Hales63*/
-//    val recipient: Recipient?
-//        get() = repository.getRecipientForThreadId(threadId)
 
     init {
         _uiState.update {
@@ -102,7 +94,7 @@ class ConversationViewModel (
                 if (!it.isGroupRecipient && it.hasApprovedMe()) {
                     senderBeldexAddress = getBeldexAddress(it.address)
                 }
-                fetchConversations()
+                //fetchConversations()
             }
         }
     }
@@ -152,7 +144,7 @@ class ConversationViewModel (
     }
 
     fun saveDraft(text: String) {
-        GlobalScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.saveDraft(threadId, text)
         }
     }
@@ -370,12 +362,26 @@ class ConversationViewModel (
         private val mmsSmsDatabase: MmsSmsDatabase,
         private val beldexMessageDb: BeldexMessageDatabase,
         private val storage: Storage,
-        private val application: Application,
-        private val textSecurePreferences: TextSecurePreferences
+        private val application: Application
     ) : ViewModelProvider.Factory {
 
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return ConversationViewModel(repository,beldexThreadDb, bchatContactDb, threadDb, recipientDatabase, groupDb, beldexApiDb, mmsDb, smsDb, mmsSmsDatabase, beldexMessageDb, threadId, storage, application,textSecurePreferences) as T
+        override fun <T : ViewModel> create(modelClass : Class<T>) : T {
+            return ConversationViewModel(
+                repository,
+                beldexThreadDb,
+                bchatContactDb,
+                threadDb,
+                recipientDatabase,
+                groupDb,
+                beldexApiDb,
+                mmsDb,
+                smsDb,
+                mmsSmsDatabase,
+                beldexMessageDb,
+                threadId,
+                storage,
+                application,
+            ) as T
         }
     }
 }

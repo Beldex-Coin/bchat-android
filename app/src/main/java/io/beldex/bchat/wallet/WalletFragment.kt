@@ -1,15 +1,12 @@
 package io.beldex.bchat.wallet
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
-import android.view.*
-import android.widget.Button
-import android.widget.TextView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -18,52 +15,42 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.ApplicationContext
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.compose_utils.ui.WalletScreenContainer
 import io.beldex.bchat.data.NodeInfo
 import io.beldex.bchat.model.AsyncTaskCoroutine
 import io.beldex.bchat.model.TransactionInfo
 import io.beldex.bchat.model.Wallet
-import io.beldex.bchat.util.BChatThreadPoolExecutor
 import io.beldex.bchat.util.Helper
-import io.beldex.bchat.util.NodePinger
 import io.beldex.bchat.wallet.jetpackcomposeUI.WalletDashBoardScreen
 import io.beldex.bchat.wallet.jetpackcomposeUI.WalletViewModels
 import io.beldex.bchat.wallet.utils.common.fetchPriceFor
-import io.beldex.bchat.R
-import io.beldex.bchat.compose_utils.ui.WalletScreenContainer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
 import org.json.JSONObject
 import java.io.IOException
-import java.lang.ClassCastException
 import java.math.BigDecimal
 import java.text.NumberFormat
-import java.util.*
-import kotlin.collections.ArrayList
 import java.util.concurrent.Executor
 
 
 class WalletFragment : Fragment(),OnBackPressedListener {
 
     private val formatter = NumberFormat.getInstance()
-
     private var syncText: String? = null
-
-    private var adapterItems: ArrayList<TransactionInfo> = ArrayList()
-
     private var walletAvailableBalance: String? =null
     private var walletSynchronized:Boolean = false
 
     fun setProgress(text: String?) {
-        if(text==getString(R.string.reconnecting) || text == getString(R.string.status_wallet_loading) || text==getString(R.string.status_wallet_connecting)){
-           ///binding.syncStatusIcon.visibility=View.GONE
-            ///binding.syncFailIcon.visibility = View.GONE
-        }
         if(text==getString(R.string.reconnecting) || text == getString(R.string.status_wallet_loading) || text == getString(R.string.status_wallet_connecting)){
             viewModels.setSyncStatusTextColor(R.color.icon_tint)
             viewModels.setProgressBarColor(R.color.green_color)
@@ -71,7 +58,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         syncText = text
         viewModels.setSyncStatus(text)
     }
-    var onScanListener: OnScanListener? = null
+    private var onScanListener: OnScanListener? = null
 
     interface OnScanListener {
         fun onWalletScan()
@@ -105,13 +92,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         }
     }
 
-    private val dismissedTransactions: MutableList<String> = ArrayList()
-
-    fun resetDismissedTransactions() {
-        dismissedTransactions.clear()
-    }
-
-    var walletLoaded = false
+    private var walletLoaded = false
 
     fun onLoaded() {
         walletLoaded = true
@@ -139,8 +120,6 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         }
         firstBlock = 0
     }
-
-    private var walletTitle: String? = null
     private var mContext : Context? = null
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -169,14 +148,11 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         if(TextSecurePreferences.getDisplayBalanceAs(requireActivity())==2) {
             hideDisplayBalance()
         }else{
-            Log.d("FiatCurrency Exception: ", "onResume 1")
             if(walletAvailableBalance!=null) {
                 showSelectedDecimalBalance(walletAvailableBalance!!, walletSynchronized)
             }
             if(TextSecurePreferences.getChangedCurrency(requireActivity())) {
-                Log.d("FiatCurrency Exception: ", "onResume 2")
                 TextSecurePreferences.changeCurrency(requireActivity(),false)
-                Log.d("FiatCurrency Exception: ", "onResume 3")
                 callCurrencyConversionApi()
             }
         }
@@ -203,7 +179,6 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                             if(result.length()!=0) {
                                 price = result.getDouble(currency)
                                 if(walletAvailableBalance!=null) {
-                                    Log.d("FiatCurrency Exception: ", "one")
                                     updateFiatCurrency(walletAvailableBalance!!)
                                 }
                                 if(isAdded) {
@@ -215,7 +190,6 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                             }else{
                                 price = 0.00
                                 if(walletAvailableBalance!=null) {
-                                    Log.d("FiatCurrency Exception: ", "two")
                                     updateFiatCurrency(walletAvailableBalance!!)
                                 }
                                 if(isAdded) {
@@ -270,47 +244,80 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         }
     }
 
-    inner class AsyncGetFullBalance(val wallet: Wallet) : AsyncTaskCoroutine<Executor?, Boolean?>() {
-        override fun onPreExecute() {
-            super.onPreExecute()
-            if (mContext != null && walletAvailableBalance != null) {
-                if (TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 1 || TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 0) {
-                    if (walletAvailableBalance!!.replace(",", "").toDouble() > 0.0) {
-                        showSelectedDecimalBalance(walletAvailableBalance!!, true)
-                    } else {
-                        refreshBalance(false)
+    inner class  GetUnlockedBalanceCoroutine(private val wallet: Wallet) {
+
+        fun execute() {
+            viewLifecycleOwner.lifecycleScope.launch {
+                val shouldShowBalance = withContext(Dispatchers.IO) {
+                    try {
+                        val balanceValue = walletAvailableBalance
+                            ?.replace(",", "")
+                            ?.toDoubleOrNull() ?: 0.0
+
+                        unlockedBalance = activityCallback?.getUnLockedBalance!!
+                        balanceValue > 0.0
+                    } catch (e: Exception) {
+                        Log.d("WalletFragment", e.toString())
+                        false
                     }
                 }
-            } else {
-                refreshBalance(false)
-            }
-        }
 
-        override fun doInBackground(vararg params: Executor?): Boolean {
-            try {
-                balance = activityCallback!!.getFullBalance
-            } catch (e: Exception) {
-                Log.d("WalletFragment", e.toString())
-            }
-            return true
-        }
+                if (mContext != null && walletAvailableBalance != null) {
+                    val displayType =
+                        TextSecurePreferences.getDisplayBalanceAs(mContext!!)
 
-        override fun onPostExecute(result: Boolean?) {
-            refreshBalance(wallet.isSynchronized)
+                    if (displayType == 0 || displayType == 1) {
+                        if (shouldShowBalance) {
+                            showSelectedDecimalBalance(walletAvailableBalance!!, true)
+                        } else {
+                            refreshBalance(false)
+                        }
+                    }
+                } else {
+                    refreshBalance(false)
+                }
+                refreshBalance(wallet.isSynchronized)
+            }
         }
     }
 
-    fun autoselect(nodes: Set<NodeInfo?>): NodeInfo? {
-        if (nodes.isEmpty()) return null
-        NodePinger.execute(nodes, null)
-        val nodeList: ArrayList<NodeInfo?> = ArrayList<NodeInfo?>(nodes)
-        Collections.sort(nodeList, NodeInfo.BestNodeComparator)
-        val rnd = Random().nextInt(nodeList.size)
-        return nodeList[rnd]
-    }
 
-    override fun onPause() {
-        super.onPause()
+    inner class GetFullBalanceCoroutine(private val wallet: Wallet) {
+
+        fun execute() {
+            viewLifecycleOwner.lifecycleScope.launch {
+
+                val shouldShowBalance = withContext(Dispatchers.IO) {
+                    try {
+                        val balanceValue = walletAvailableBalance
+                            ?.replace(",", "")
+                            ?.toDoubleOrNull() ?: 0.0
+
+                        balance = activityCallback?.getFullBalance!!
+                        balanceValue > 0.0
+                    } catch (e: Exception) {
+                        false
+                    }
+                }
+
+                // UI THREAD ONLY
+                if (mContext != null && walletAvailableBalance != null) {
+                    val displayType =
+                        TextSecurePreferences.getDisplayBalanceAs(mContext!!)
+
+                    if (displayType == 0 || displayType == 1) {
+                        if (shouldShowBalance) {
+                            showSelectedDecimalBalance(walletAvailableBalance!!, true)
+                        } else {
+                            refreshBalance(false)
+                        }
+                    }
+                } else {
+                    refreshBalance(false)
+                }
+                refreshBalance(wallet.isSynchronized)
+            }
+        }
     }
 
     companion object{
@@ -431,35 +438,14 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                     viewModels.setSyncStatusTextColor(R.color.green_color)
                     viewModels.setProgressBarColor(R.color.green_color)
                     setProgress(3f)
-                    //viewModels.setFilterTransactionIconIsClickable(true)
-                    ///binding.syncStatusIcon.visibility=View.VISIBLE
-                    ///binding.syncFailIcon.visibility = View.GONE
-                    ///
-                    /*binding.syncStatusIcon.setOnClickListener {
-                        if(CheckOnline.isOnline(requireActivity())){
-                            if(wallet!=null) {
-                                checkSyncInfo(requireActivity(),wallet.restoreHeight)
-                            }
-                        }
-                    }*/
                 }
             } else if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connecting) {
-                ///binding.syncStatusIcon.visibility = View.GONE
-                ///binding.syncFailIcon.visibility = View.GONE
                 sync = getString(R.string.status_wallet_connecting)
                 setProgress(2f)
                 viewModels.setSyncStatusTextColor(R.color.icon_tint)
                 viewModels.setProgressBarColor(R.color.green_color)
 
             } else {
-                ///binding.syncStatusIcon.visibility=View.GONE
-                ///binding.syncFailIcon.visibility=View.VISIBLE
-                ///
-                /*binding.syncFailIcon.setOnClickListener {
-                    if(CheckOnline.isOnline(requireActivity())){
-                            checkSyncFailInfo(requireActivity())
-                        }
-                    }*/
                 sync = getString(R.string.failed_connected_to_the_node)
                 setProgress(2f)
                 viewModels.setSyncStatusTextColor(R.color.red)
@@ -473,46 +459,10 @@ class WalletFragment : Fragment(),OnBackPressedListener {
             viewModels.setSyncStatusTextColor(R.color.red)
             setProgress(2f)
             viewModels.setProgressBarColor(R.color.red)
-            ///binding.syncStatusIcon.visibility=View.GONE
-            ///binding.syncFailIcon.visibility=View.GONE
-        }
-    }
-
-    private fun checkSyncInfo(requireActivity: FragmentActivity, restoreHeight: Long) {
-        val dialog = AlertDialog.Builder(requireActivity)
-        val inflater = layoutInflater
-        val dialogView = inflater.inflate(R.layout.sync_info, null)
-        dialog.setView(dialogView)
-        val restoreFromHeight = dialogView.findViewById<TextView>(R.id.restoreFromHeight)
-        val okButton = dialogView.findViewById<Button>(R.id.okButton)
-        restoreFromHeight.text = "$restoreHeight."
-        val alert = dialog.create()
-        alert.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        alert.setCanceledOnTouchOutside(false)
-        alert.show()
-        okButton.setOnClickListener {
-            alert.dismiss()
-        }
-    }
-
-    private fun checkSyncFailInfo(requireActivity: FragmentActivity) {
-        val dialog = AlertDialog.Builder(requireActivity)
-        val inflater = layoutInflater
-        val dialogView = inflater.inflate(R.layout.sync_fail_info, null)
-        dialog.setView(dialogView)
-        val okButton = dialogView.findViewById<Button>(R.id.okButton)
-        val alert = dialog.create()
-        alert.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        alert.setCanceledOnTouchOutside(false)
-        alert.show()
-        okButton.setOnClickListener {
-            alert.dismiss()
         }
     }
 
     fun updateNodeConnectingStatus() {
-        ///binding.syncStatusIcon.visibility = View.GONE
-        ///binding.syncFailIcon.visibility = View.GONE
         setProgress(getString(R.string.status_wallet_connecting))
         setProgress(2f)
         viewModels.setSyncStatusTextColor(R.color.icon_tint)
@@ -587,7 +537,6 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                 viewModels.scanQRCodeButtonIsEnabled(true)
             }
         }
-        Log.d("FiatCurrency Exception: ", "four")
         //Update Fiat Currency
         updateFiatCurrency(balance)
     }
@@ -595,13 +544,10 @@ class WalletFragment : Fragment(),OnBackPressedListener {
     private fun updateFiatCurrency(balance: String) {
         if(balance.isNotEmpty() && balance!=null) {
             try {
-                Log.d("FiatCurrency Exception: ", "$balance, $price")
                 val amount: BigDecimal = BigDecimal(balance.replace(",","").toDouble()).multiply(BigDecimal(price))
                 viewModels.updateFiatCurrency(getString(R.string.fiat_currency, amount.toDouble(), TextSecurePreferences.getCurrency(requireActivity()).toString()))
-                Log.d("FiatCurrency Exception: ","try")
             }catch (e:NumberFormatException){
                 viewModels.updateFiatCurrency(getString(R.string.fiat_currency, 0.00, TextSecurePreferences.getCurrency(requireActivity()).toString()))
-                Log.d("FiatCurrency Exception: catch 1 ",e.message.toString())
             }catch(e:IllegalStateException){
                 Log.d("FiatCurrency Exception: catch 2 ",e.message.toString())
             }
@@ -687,7 +633,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
 
     private var accountIndex = 0
 
-    fun onRefreshed(wallet: Wallet, full: Boolean, list: MutableList<TransactionInfo>) {
+    fun onRefreshed(wallet: Wallet, list: MutableList<TransactionInfo>) {
         updateStatus(wallet)
         callRefreshHistory(wallet,list)
     }
@@ -696,7 +642,6 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         viewModels.setTransactionInfoItems(list)
         if (accountIndex != wallet.accountIndex) {
             accountIndex = wallet.accountIndex
-            ///binding.transactionList.scrollToPosition(0)
         }
 
         //Steve Josephh21 ANRS
@@ -707,9 +652,9 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                 val daemonConnected: Wallet.ConnectionStatus = activityCallback!!.connectionStatus!!
                 if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
                     if (TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 1) {
-                        AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+                        GetUnlockedBalanceCoroutine(wallet).execute()
                     } else if (TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 0) {
-                        AsyncGetFullBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+                        GetFullBalanceCoroutine(wallet).execute()
                     }
                 }
             }

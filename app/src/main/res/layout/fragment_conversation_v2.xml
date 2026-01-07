@@ -86,7 +86,6 @@
                             android:ellipsize="end"
                             android:fontFamily="@font/open_sans_regular"
                             android:maxLines="1"
-                            android:text="Muted"
                             android:textColor="@color/text"
                             android:textSize="@dimen/very_small_font_size" />
 

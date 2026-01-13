@@ -3,7 +3,6 @@ package io.beldex.bchat.groups
 import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -14,23 +13,26 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityJoinPublicChatScanQrcodeBinding
-import okhttp3.HttpUrl
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.PublicKeyValidation
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
+import io.beldex.bchat.R
 import io.beldex.bchat.conversation.v2.ConversationFragmentV2
+import io.beldex.bchat.databinding.ActivityJoinPublicChatScanQrcodeBinding
 import io.beldex.bchat.dms.PrivateChatScanQRCodeActivity
 import io.beldex.bchat.qr.ScanListener
-import io.beldex.bchat.util.*
+import io.beldex.bchat.util.ConfigurationMessageUtilities
+import io.beldex.bchat.util.ScanQRCodeFragment
+import io.beldex.bchat.util.ScanQRCodePlaceholderFragment
+import io.beldex.bchat.util.ScanQRCodePlaceholderFragmentDelegate
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 class JoinPublicChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
     ScanQRCodePlaceholderFragmentDelegate,

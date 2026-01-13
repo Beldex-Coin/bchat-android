@@ -11,7 +11,6 @@ import com.beldex.libbchat.messaging.calls.CallMessageType
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.messaging.sending_receiving.data_extraction.DataExtractionNotificationInfoMessage
 import com.beldex.libbchat.utilities.ExpirationUtil
-import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.truncateIdForDisplay
 
 object UpdateMessageBuilder {

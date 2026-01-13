@@ -8,9 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
-import io.beldex.bchat.database.RecipientDatabase
-import io.beldex.bchat.dependencies.DatabaseComponent
 import com.bumptech.glide.RequestManager
+import io.beldex.bchat.dependencies.DatabaseComponent
 import javax.inject.Inject
 
 class BlockedContactAdapter(

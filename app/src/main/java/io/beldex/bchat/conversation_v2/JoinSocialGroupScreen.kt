@@ -9,7 +9,6 @@ import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -49,7 +48,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -70,11 +68,10 @@ import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.GroupUtil
-import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.PublicKeyValidation
-import io.beldex.bchat.compose_utils.BChatOutlinedTextField
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.appColors
@@ -85,7 +82,6 @@ import io.beldex.bchat.groups.JoinPublicChatScanQRCodeActivity
 import io.beldex.bchat.groups.OpenGroupManager
 import io.beldex.bchat.util.ConfigurationMessageUtilities
 import io.beldex.bchat.util.parcelable
-import io.beldex.bchat.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

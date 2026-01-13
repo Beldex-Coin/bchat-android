@@ -2,7 +2,6 @@ package io.beldex.bchat.contacts
 
 import android.content.Context
 import android.util.Log
-import io.beldex.bchat.util.AsyncLoader
 import io.beldex.bchat.util.ContactUtilities
 
 class BlockedContactLoader(context: Context, private val usersToExclude: Set<String>) :

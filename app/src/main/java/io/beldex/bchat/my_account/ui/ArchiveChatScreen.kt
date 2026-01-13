@@ -2,7 +2,6 @@ package io.beldex.bchat.my_account.ui
 
 import android.app.Activity
 import android.content.Context
-import android.view.WindowManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures

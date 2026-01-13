@@ -7,17 +7,16 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.widget.LinearLayout
 import android.widget.Toast
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivitySeedBinding
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.crypto.MnemonicCodec
 import com.beldex.libsignal.utilities.hexEncodedPrivateKey
 import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.R
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.crypto.MnemonicUtilities
+import io.beldex.bchat.databinding.ActivitySeedBinding
 import io.beldex.bchat.util.getColorWithID
 
 class SeedActivity : BaseActionBarActivity() {

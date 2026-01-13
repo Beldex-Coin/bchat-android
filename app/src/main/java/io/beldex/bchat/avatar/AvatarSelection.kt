@@ -9,14 +9,13 @@ import android.net.Uri
 import android.provider.MediaStore
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.content.ContextCompat
+import com.beldex.libsignal.utilities.ExternalStorageUtil.getImageDir
+import com.beldex.libsignal.utilities.Log
+import com.beldex.libsignal.utilities.NoExternalStorageException
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
 import com.canhub.cropper.CropImageView
 import io.beldex.bchat.R
-import com.beldex.libbchat.utilities.getColorFromAttr
-import com.beldex.libsignal.utilities.ExternalStorageUtil.getImageDir
-import com.beldex.libsignal.utilities.Log
-import com.beldex.libsignal.utilities.NoExternalStorageException
 import io.beldex.bchat.util.FileProviderUtil
 import io.beldex.bchat.util.IntentUtils
 import io.beldex.bchat.util.UiMode
@@ -24,6 +23,7 @@ import io.beldex.bchat.util.UiModeUtilities
 import java.io.File
 import java.io.IOException
 import java.util.LinkedList
+
 class AvatarSelection(
     private val activity: Activity,
     private val onAvatarCropped: ActivityResultLauncher<CropImageContractOptions>,

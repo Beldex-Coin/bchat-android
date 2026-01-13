@@ -1,7 +1,6 @@
 package com.beldex.libbchat.messaging.messages
 
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
-import com.beldex.libbchat.messaging.open_groups.OpenGroupV2
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libsignal.utilities.toHexString

@@ -5,16 +5,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import android.widget.*
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.R
 import io.beldex.bchat.data.NodeInfo
+import io.beldex.bchat.databinding.ActivityWalletSettingsBinding
 import io.beldex.bchat.onboarding.ui.EXTRA_PIN_CODE_ACTION
 import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.util.push
@@ -25,10 +28,7 @@ import io.beldex.bchat.wallet.node.activity.NodeActivity
 import io.beldex.bchat.wallet.settings.adapter.WalletSubOptionsListAdapter
 import io.beldex.bchat.wallet.settings.adapter.WalletSubOptionsSearchListItemAdapter
 import io.beldex.bchat.wallet.utils.pincodeview.CustomPinActivity
-import io.beldex.bchat.wallet.utils.pincodeview.managers.AppLock
 import io.beldex.bchat.wallet.utils.pincodeview.managers.LockManager
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityWalletSettingsBinding
 
 
 class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemClickListener,WalletSubOptionsSearchListItemAdapter.ItemClickListener {

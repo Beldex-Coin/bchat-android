@@ -2,13 +2,12 @@ package io.beldex.bchat.backup
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import android.preference.PreferenceManager
 import android.preference.PreferenceManager.getDefaultSharedPreferencesName
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.backup.FullBackupImporter.PREF_PREFIX_TYPE_BOOLEAN
 import io.beldex.bchat.backup.FullBackupImporter.PREF_PREFIX_TYPE_INT
-import java.util.*
+import java.util.LinkedList
 
 object BackupPreferences {
     // region Backup related

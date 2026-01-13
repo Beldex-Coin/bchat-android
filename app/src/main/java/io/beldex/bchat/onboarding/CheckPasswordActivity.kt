@@ -2,7 +2,6 @@ package io.beldex.bchat.onboarding
 
 import android.content.Intent
 import android.graphics.Typeface
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,10 +11,10 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import android.widget.Toast
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityCheckPasswordBinding
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ActivityCheckPasswordBinding
 import io.beldex.bchat.keyboard.CustomKeyboardView
 import io.beldex.bchat.seed.ShowSeedActivity
 import io.beldex.bchat.util.push

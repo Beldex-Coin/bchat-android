@@ -2,7 +2,6 @@ package io.beldex.bchat.my_account.ui.dialogs
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,10 +24,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.ui.BChatPreviewContainer
-import io.beldex.bchat.R
 
 @Composable
 fun RequestBlockConfirmationDialog(

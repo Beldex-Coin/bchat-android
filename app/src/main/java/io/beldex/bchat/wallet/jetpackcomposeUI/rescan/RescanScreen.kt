@@ -16,7 +16,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -53,11 +52,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.wallet.CheckOnline
-import io.beldex.bchat.R
 import java.math.BigInteger
 import java.text.SimpleDateFormat
 import java.util.Date

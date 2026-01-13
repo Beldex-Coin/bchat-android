@@ -1,6 +1,5 @@
 package com.beldex.libsignal.utilities
 
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request

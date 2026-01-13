@@ -13,7 +13,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentId;
-import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentTransferProgress;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.UriAttachment;
 import com.beldex.libsignal.utilities.JsonUtil;
 

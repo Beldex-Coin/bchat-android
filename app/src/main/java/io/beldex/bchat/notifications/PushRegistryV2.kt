@@ -1,34 +1,33 @@
 package io.beldex.bchat.notifications
-import com.goterl.lazysodium.LazySodiumAndroid
-import com.goterl.lazysodium.SodiumAndroid
-import com.goterl.lazysodium.interfaces.Sign
-import com.goterl.lazysodium.utils.KeyPair
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromStream
-import nl.komponents.kovenant.Promise
-import nl.komponents.kovenant.functional.map
-import okhttp3.MediaType
-import okhttp3.Request
-import okhttp3.RequestBody
 import com.beldex.libbchat.messaging.sending_receiving.notifications.Response
 import com.beldex.libbchat.messaging.sending_receiving.notifications.Server
 import com.beldex.libbchat.messaging.sending_receiving.notifications.SubscriptionRequest
 import com.beldex.libbchat.messaging.sending_receiving.notifications.SubscriptionResponse
 import com.beldex.libbchat.messaging.sending_receiving.notifications.UnsubscribeResponse
 import com.beldex.libbchat.messaging.sending_receiving.notifications.UnsubscriptionRequest
-import com.beldex.libbchat.mnode.OnionRequestAPI
 import com.beldex.libbchat.mnode.MnodeAPI
+import com.beldex.libbchat.mnode.OnionRequestAPI
 import com.beldex.libbchat.mnode.Version
 import com.beldex.libbchat.utilities.Device
 import com.beldex.libsignal.utilities.Base64
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.Namespace
 import com.beldex.libsignal.utilities.retryIfNeeded
+import com.goterl.lazysodium.LazySodiumAndroid
+import com.goterl.lazysodium.SodiumAndroid
+import com.goterl.lazysodium.interfaces.Sign
+import com.goterl.lazysodium.utils.KeyPair
 import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
+import nl.komponents.kovenant.Promise
+import nl.komponents.kovenant.functional.map
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Request
+import okhttp3.RequestBody
 import javax.inject.Inject
 import javax.inject.Singleton
+
 private val TAG = PushRegistryV2::class.java.name
 private const val maxRetryCount = 4
 @Singleton

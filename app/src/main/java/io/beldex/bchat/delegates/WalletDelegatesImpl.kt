@@ -1,7 +1,6 @@
 package io.beldex.bchat.delegates
 
 import android.content.Context
-import androidx.fragment.app.FragmentActivity
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.util.Helper
 

@@ -1,9 +1,7 @@
 package io.beldex.bchat.jobs
 
-import android.os.Build
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentId
-import org.greenrobot.eventbus.EventBus
 import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachmentAudioExtras
 import com.beldex.libbchat.messaging.utilities.Data
 import com.beldex.libbchat.utilities.DecodedAudio
@@ -11,8 +9,10 @@ import com.beldex.libbchat.utilities.InputStreamMediaDataSource
 import com.beldex.libsignal.utilities.Log
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.jobmanager.Job
+import io.beldex.bchat.jobs.PrepareAttachmentAudioExtrasJob.AudioExtrasUpdatedEvent
 import io.beldex.bchat.mms.PartAuthority
-import java.util.*
+import org.greenrobot.eventbus.EventBus
+import java.util.Random
 import java.util.concurrent.TimeUnit
 
 /**

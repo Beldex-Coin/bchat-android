@@ -20,7 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Backspace
-import androidx.compose.material.icons.outlined.Backspace
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -45,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.coerceAtMost
 import androidx.compose.ui.unit.dp
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.PinCodeView
@@ -52,7 +52,6 @@ import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
-import io.beldex.bchat.R
 
 const val EXTRA_PIN_CODE_ACTION = "action"
 

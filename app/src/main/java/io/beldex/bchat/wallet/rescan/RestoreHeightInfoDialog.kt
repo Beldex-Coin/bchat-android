@@ -1,7 +1,5 @@
 package io.beldex.bchat.wallet.rescan
 
-import android.content.Intent
-import android.net.Uri
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import io.beldex.bchat.conversation.v2.utilities.BaseDialog

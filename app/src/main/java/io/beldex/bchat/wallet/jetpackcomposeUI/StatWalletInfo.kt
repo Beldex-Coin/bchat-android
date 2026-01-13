@@ -5,8 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
-import android.view.WindowManager
-import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -54,12 +52,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.home.HomeActivity
-import io.beldex.bchat.R
 
 
 @Composable

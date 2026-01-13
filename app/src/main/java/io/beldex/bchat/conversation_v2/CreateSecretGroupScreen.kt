@@ -2,7 +2,6 @@ package io.beldex.bchat.conversation_v2
 
 import android.app.Activity
 import android.content.Context
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -72,16 +71,15 @@ import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.Device
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
-import io.beldex.bchat.compose_utils.BChatCheckBox
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.wallet.CheckOnline
-import io.beldex.bchat.R
-import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

@@ -6,12 +6,11 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.media.SoundPool
-import android.os.Build
 import android.os.HandlerThread
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.ThreadUtils
-import io.beldex.bchat.webrtc.AudioManagerCommand
 import io.beldex.bchat.R
+import io.beldex.bchat.webrtc.AudioManagerCommand
 import io.beldex.bchat.webrtc.audio.SignalBluetoothManager.State as BState
 
 private val TAG = Log.tag(SignalAudioManager::class.java)

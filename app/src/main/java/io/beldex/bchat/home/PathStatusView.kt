@@ -6,14 +6,13 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Canvas
 import android.graphics.Paint
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
-import io.beldex.bchat.R
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.beldex.libbchat.mnode.OnionRequestAPI
-import io.beldex.bchat.util.getColorWithID
+import io.beldex.bchat.R
 import io.beldex.bchat.util.toPx
 
 class PathStatusView : View {

@@ -4,18 +4,16 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.widget.Toast
 import androidx.annotation.WorkerThread
 import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
-import io.beldex.bchat.R
-import org.greenrobot.eventbus.EventBus
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.utilities.ByteUtil
 import com.beldex.libsignal.utilities.Log
+import io.beldex.bchat.R
 import io.beldex.bchat.backup.BackupEvent
 import io.beldex.bchat.backup.BackupPassphrase
 import io.beldex.bchat.backup.BackupProtos.SharedPreference
@@ -24,6 +22,7 @@ import io.beldex.bchat.crypto.AttachmentSecretProvider
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.database.BackupFileRecord
 import io.beldex.bchat.dependencies.DatabaseComponent
+import org.greenrobot.eventbus.EventBus
 import java.io.IOException
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException

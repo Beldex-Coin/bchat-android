@@ -88,13 +88,12 @@ class EmojiSearchDatabase(context: Context, helper: SQLCipherOpenHelper) : Datab
 
         val startIndex = match.indexOf(searchTerm)
 
-        val prefixCount = startIndex
         val suffixCount = match.length - (startIndex + searchTerm.length)
 
         val prefixRankWeight = 1.5f
         val suffixRankWeight = 1f
 
-        return ((prefixCount * prefixRankWeight) + (suffixCount * suffixRankWeight)).roundToInt()
+        return ((startIndex * prefixRankWeight) + (suffixCount * suffixRankWeight)).roundToInt()
     }
 
     private data class Entry(val label: String, val emoji: String)

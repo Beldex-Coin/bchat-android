@@ -1,12 +1,6 @@
 package com.beldex.libbchat.messaging.file_server
 
 import com.beldex.libbchat.BuildConfig
-import nl.komponents.kovenant.Promise
-import nl.komponents.kovenant.functional.map
-import okhttp3.Headers
-import okhttp3.HttpUrl
-import okhttp3.MediaType
-import okhttp3.RequestBody
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.mnode.OnionRequestAPI
 import com.beldex.libbchat.mnode.OnionResponse
@@ -15,10 +9,13 @@ import com.beldex.libsignal.utilities.Base64
 import com.beldex.libsignal.utilities.HTTP
 import com.beldex.libsignal.utilities.JsonUtil
 import com.beldex.libsignal.utilities.Log
+import nl.komponents.kovenant.Promise
+import nl.komponents.kovenant.functional.map
 import okhttp3.Headers.Companion.toHeaders
-import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody
 
 object FileServerAPIV2 {
 

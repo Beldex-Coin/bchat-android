@@ -4,10 +4,9 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import io.beldex.bchat.conversation.v2.utilities.BaseDialog
 import io.beldex.bchat.data.TxData
+import io.beldex.bchat.databinding.DialogSendConfirmBinding
 import io.beldex.bchat.model.PendingTransaction
 import io.beldex.bchat.model.Wallet
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.DialogSendConfirmBinding
 
 class SendConfirmDialog(
         private val pendingTransaction: PendingTransaction,

@@ -9,16 +9,15 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
+import com.bumptech.glide.RequestManager
+import io.beldex.bchat.R
 import io.beldex.bchat.components.CornerMask
 import io.beldex.bchat.conversation.v2.ModalUrlBottomSheet
 import io.beldex.bchat.database.model.MmsMessageRecord
-import com.bumptech.glide.RequestManager
+import io.beldex.bchat.databinding.ViewLinkPreviewBinding
 import io.beldex.bchat.mms.ImageSlide
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.util.UiModeUtilities
-import io.beldex.bchat.util.toPx
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ViewLinkPreviewBinding
 
 class LinkPreviewView : LinearLayout {
     private val binding: ViewLinkPreviewBinding by lazy { ViewLinkPreviewBinding.bind(this) }

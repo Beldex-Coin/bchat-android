@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
-import android.util.ArrayMap
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -23,9 +22,11 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.crypto.ecc.ECKeyPair
 import com.goterl.lazysodium.utils.KeyPair
 import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.R
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.data.NetworkNodes
 import io.beldex.bchat.data.NodeInfo
+import io.beldex.bchat.databinding.ActivityRecoveryGetSeedDetailsBinding
 import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.model.AsyncTaskCoroutine
 import io.beldex.bchat.model.NetworkType
@@ -41,8 +42,6 @@ import io.beldex.bchat.util.RestoreHeight
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
 import io.beldex.bchat.wallet.CheckOnline
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityRecoveryGetSeedDetailsBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch

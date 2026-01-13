@@ -8,9 +8,12 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.TypedArray
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Outline
+import android.graphics.Paint
+import android.graphics.RectF
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
-import android.media.Image
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -23,7 +26,6 @@ import android.view.View
 import android.view.ViewOutlineProvider
 import android.view.animation.AnticipateOvershootInterpolator
 import android.view.animation.OvershootInterpolator
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
@@ -32,13 +34,12 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.widget.TextViewCompat
+import io.beldex.bchat.R
 import io.beldex.bchat.util.slidetoact.SlideToActIconUtil.createIconAnimator
 import io.beldex.bchat.util.slidetoact.SlideToActIconUtil.loadIconCompat
 import io.beldex.bchat.util.slidetoact.SlideToActIconUtil.startIconAnimation
 import io.beldex.bchat.util.slidetoact.SlideToActIconUtil.stopIconAnimation
 import io.beldex.bchat.util.slidetoact.SlideToActIconUtil.tintIconCompat
-import io.beldex.bchat.R
-import org.webrtc.ContextUtils.getApplicationContext
 
 class SlideToActView @JvmOverloads constructor(
     context: Context,

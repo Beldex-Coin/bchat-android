@@ -2,10 +2,16 @@ package io.beldex.bchat.attachments
 
 import android.content.Context
 import android.text.TextUtils
-import com.google.protobuf.ByteString
-import org.greenrobot.eventbus.EventBus
 import com.beldex.libbchat.database.MessageDataProvider
-import com.beldex.libbchat.messaging.sending_receiving.attachments.*
+import com.beldex.libbchat.messaging.messages.MarkAsDeletedMessage
+import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment
+import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentId
+import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentState
+import com.beldex.libbchat.messaging.sending_receiving.attachments.BchatServiceAttachmentPointer
+import com.beldex.libbchat.messaging.sending_receiving.attachments.BchatServiceAttachmentStream
+import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachment
+import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachmentAudioExtras
+import com.beldex.libbchat.messaging.sending_receiving.attachments.PointerAttachment
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.UploadResult
 import com.beldex.libbchat.utilities.Util
@@ -13,19 +19,13 @@ import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.messages.SignalServiceAttachment
 import com.beldex.libsignal.messages.SignalServiceAttachmentPointer
 import com.beldex.libsignal.messages.SignalServiceAttachmentStream
-import com.beldex.libbchat.messaging.messages.MarkAsDeletedMessage
 import com.beldex.libsignal.utilities.Base64
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.guava.Optional
-import io.beldex.bchat.database.AttachmentDatabase
-import io.beldex.bchat.database.Database
+import com.google.protobuf.ByteString
 import io.beldex.bchat.database.MessagingDatabase
-import io.beldex.bchat.database.helpers.SQLCipherOpenHelper
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.events.PartProgressEvent
-import io.beldex.bchat.mms.MediaConstraints
-import io.beldex.bchat.mms.PartAuthority
-import io.beldex.bchat.util.MediaUtil
+import org.greenrobot.eventbus.EventBus
 import java.io.IOException
 import java.io.InputStream
 

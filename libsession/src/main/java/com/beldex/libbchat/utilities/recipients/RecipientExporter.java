@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 
-import com.beldex.libbchat.utilities.Address;
-
 import static android.content.Intent.ACTION_INSERT_OR_EDIT;
 
 import com.beldex.libbchat.utilities.Address;

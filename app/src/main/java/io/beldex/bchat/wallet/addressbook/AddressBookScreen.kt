@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
@@ -61,13 +60,13 @@ import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.conversation.v2.utilities.MentionManagerUtilities
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.util.ContactUtilities
-import io.beldex.bchat.R
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable

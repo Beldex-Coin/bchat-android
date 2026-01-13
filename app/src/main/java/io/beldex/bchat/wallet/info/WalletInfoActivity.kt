@@ -1,15 +1,12 @@
 package io.beldex.bchat.wallet.info
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.databinding.ActivityWalletInfoBinding
 import io.beldex.bchat.onboarding.CheckPasswordActivity
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivitySeedPermissionBinding
-import io.beldex.bchat.databinding.ActivityWalletInfoBinding
 
 class WalletInfoActivity : BaseActionBarActivity() {
     private lateinit var binding: ActivityWalletInfoBinding

@@ -1,9 +1,5 @@
 package com.beldex.libbchat.messaging.sending_receiving.notifications
 import android.annotation.SuppressLint
-import nl.komponents.kovenant.Promise
-import okhttp3.MediaType
-import okhttp3.Request
-import okhttp3.RequestBody
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.mnode.OnionRequestAPI
 import com.beldex.libbchat.mnode.OnionResponse
@@ -15,7 +11,10 @@ import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.emptyPromise
 import com.beldex.libsignal.utilities.retryIfNeeded
 import com.beldex.libsignal.utilities.sideEffect
+import nl.komponents.kovenant.Promise
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.Request
+import okhttp3.RequestBody
 
 @SuppressLint("StaticFieldLeak")
 object PushRegistryV1 {

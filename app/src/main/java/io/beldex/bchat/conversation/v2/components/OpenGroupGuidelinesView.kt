@@ -6,13 +6,11 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
+import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewOpenGroupGuidelinesBinding
 import io.beldex.bchat.groups.OpenGroupGuidelinesActivity
-import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
-import io.beldex.bchat.util.push
-import io.beldex.bchat.R
 
 class OpenGroupGuidelinesView : FrameLayout {
 

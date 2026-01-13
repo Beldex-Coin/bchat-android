@@ -1,13 +1,12 @@
 package io.beldex.bchat.preferences
 
-import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.Glide
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.NotificationContentItemSelectableBinding
 

@@ -1,11 +1,12 @@
 package com.beldex.libbchat.utilities
 
-import okhttp3.HttpUrl
 import com.beldex.libbchat.messaging.file_server.FileServerAPIV2
 import com.beldex.libsignal.utilities.HTTP
 import com.beldex.libsignal.utilities.Log
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import java.io.*
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 
 object DownloadUtilities {
 

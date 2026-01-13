@@ -52,7 +52,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -71,6 +70,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
+import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
@@ -85,8 +86,6 @@ import io.beldex.bchat.search.SearchResults
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale

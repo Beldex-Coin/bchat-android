@@ -1,15 +1,9 @@
 package io.beldex.bchat.wallet.utils.common
 
-import android.net.Uri
-import android.util.Log
-import com.beldex.libsignal.utilities.getProperty
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers
-import com.google.gson.GsonBuilder
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.json.*
-import okhttp3.*
-import java.io.IOException
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Request
 
 fun fetchPriceFor(fiat: String, callback: Callback): Call {
     val fiatApiAuthority = "api.coingecko.com/api/v3/simple/price?ids=beldex&"

@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,9 +48,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.appColors
@@ -60,10 +59,6 @@ import io.beldex.bchat.model.PendingTransaction
 import io.beldex.bchat.model.Wallet
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
-import io.beldex.bchat.wallet.send.SendFragment
-import io.beldex.bchat.R
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 

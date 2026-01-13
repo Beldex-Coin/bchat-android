@@ -3,7 +3,6 @@ package io.beldex.bchat.util
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
-import android.content.DialogInterface.OnClickListener
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
@@ -18,13 +17,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.beldex.libbchat.utilities.task.ProgressDialogAsyncTask
-import io.beldex.bchat.R
 import com.beldex.libsignal.utilities.ExternalStorageUtil
 import com.beldex.libsignal.utilities.Log
-import io.beldex.bchat.compose_utils.ComposeDialogContainer
-import io.beldex.bchat.compose_utils.DialogType
+import io.beldex.bchat.R
 import io.beldex.bchat.mms.PartAuthority
-import io.beldex.bchat.preferences.PrivacySettingsActivity
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException

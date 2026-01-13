@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.Network
-import androidx.core.content.ContextCompat
 import com.beldex.libsignal.utilities.Log
 
 class NetworkChangeReceiver(private val onNetworkChangedCallback: (Boolean)->Unit) {

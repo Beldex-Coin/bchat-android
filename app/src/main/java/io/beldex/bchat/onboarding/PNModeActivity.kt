@@ -13,16 +13,19 @@ import android.view.View
 import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityPnModeBinding
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ActivityPnModeBinding
 import io.beldex.bchat.home.HomeActivity
-import io.beldex.bchat.util.*
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.notifications.PushManager
 import io.beldex.bchat.notifications.PushRegistry
+import io.beldex.bchat.util.GlowViewUtilities
+import io.beldex.bchat.util.PNModeView
+import io.beldex.bchat.util.disableClipping
+import io.beldex.bchat.util.getColorWithID
+import io.beldex.bchat.util.setUpActionBarBchatLogo
+import io.beldex.bchat.util.show
 import javax.inject.Inject
 
 class PNModeActivity : BaseActionBarActivity() {

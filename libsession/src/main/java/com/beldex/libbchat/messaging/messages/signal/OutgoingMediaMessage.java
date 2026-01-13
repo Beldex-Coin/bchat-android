@@ -3,7 +3,6 @@ package com.beldex.libbchat.messaging.messages.signal;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.beldex.libbchat.messaging.messages.visible.SharedContact;
 import com.beldex.libbchat.messaging.messages.visible.VisibleMessage;
 import com.beldex.libbchat.messaging.utilities.UpdateMessageData;
 import com.beldex.libbchat.utilities.DistributionTypes;

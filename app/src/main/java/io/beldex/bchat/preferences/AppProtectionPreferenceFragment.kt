@@ -4,16 +4,10 @@ import android.app.AlertDialog
 import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
-import android.view.LayoutInflater
-import android.view.View
-import android.view.WindowManager
-import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
 import androidx.preference.Preference
@@ -27,6 +21,8 @@ import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setBooleanP
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setScreenLockEnabled
 import com.beldex.libsignal.utilities.Log
 import io.beldex.bchat.ApplicationContext
+import io.beldex.bchat.BuildConfig
+import io.beldex.bchat.R
 import io.beldex.bchat.components.SwitchPreferenceCompat
 import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.onboarding.ui.EXTRA_PIN_CODE_ACTION
@@ -38,10 +34,7 @@ import io.beldex.bchat.util.IntentUtils
 import io.beldex.bchat.wallet.WalletSetupLoadingBar
 import io.beldex.bchat.wallet.info.WalletInfoActivity
 import io.beldex.bchat.wallet.utils.pincodeview.CustomPinActivity
-import io.beldex.bchat.wallet.utils.pincodeview.managers.AppLock
 import io.beldex.bchat.wallet.utils.pincodeview.managers.LockManager
-import io.beldex.bchat.BuildConfig
-import io.beldex.bchat.R
 import java.util.concurrent.TimeUnit
 
 class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {

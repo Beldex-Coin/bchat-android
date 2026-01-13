@@ -4,13 +4,13 @@ import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.DialogInterface
 import android.os.Bundle
 import android.util.ArrayMap
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -35,13 +35,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.layout.Box
 import androidx.fragment.app.DialogFragment
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.wallet.jetpackcomposeUI.rescan.RescanScreen
-import io.beldex.bchat.R
 
 class RescanDialog(private val contextHomeActivity: HomeActivity, private val daemonBlockChainHeight: Long): DialogFragment() {
     private var dates = ArrayMap<String,Int>()

@@ -1,7 +1,6 @@
 package io.beldex.bchat.conversation.v2
 
 import android.app.Application
-import android.content.Context
 import android.database.Cursor
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -12,12 +11,12 @@ import com.beldex.libbchat.messaging.messages.signal.OutgoingTextMessage
 import com.beldex.libbchat.messaging.open_groups.OpenGroupV2
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.GroupRecord
-import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.Pair
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import io.beldex.bchat.R
 import io.beldex.bchat.audio.AudioSlidePlayer
 import io.beldex.bchat.database.BchatContactDatabase
 import io.beldex.bchat.database.BeldexAPIDatabase
@@ -28,12 +27,11 @@ import io.beldex.bchat.database.MmsDatabase
 import io.beldex.bchat.database.MmsSmsDatabase
 import io.beldex.bchat.database.RecipientDatabase
 import io.beldex.bchat.database.SmsDatabase
+import io.beldex.bchat.database.Storage
 import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.database.model.MessageRecord
-import io.beldex.bchat.repository.ConversationRepository
-import io.beldex.bchat.R
-import io.beldex.bchat.database.Storage
 import io.beldex.bchat.database.model.MmsMessageRecord
+import io.beldex.bchat.repository.ConversationRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

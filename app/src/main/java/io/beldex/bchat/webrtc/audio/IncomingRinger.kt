@@ -7,9 +7,6 @@ import android.media.RingtoneManager
 import android.os.Vibrator
 import com.beldex.libbchat.utilities.ServiceUtil
 import com.beldex.libsignal.utilities.Log
-import android.media.Ringtone
-import android.net.Uri
-import org.webrtc.ContextUtils.getApplicationContext
 
 
 class IncomingRinger(private val context: Context) {

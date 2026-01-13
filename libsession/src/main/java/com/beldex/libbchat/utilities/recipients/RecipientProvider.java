@@ -23,13 +23,8 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.beldex.libbchat.messaging.MessagingModuleConfiguration;
-import com.beldex.libbchat.utilities.Address;
-import com.beldex.libbchat.utilities.GroupRecord;
 import com.beldex.libbchat.utilities.ListenableFutureTask;
 import com.beldex.libbchat.utilities.MaterialColor;
-import com.beldex.libbchat.utilities.TextSecurePreferences;
-import com.beldex.libbchat.utilities.Util;
 import com.beldex.libsignal.utilities.guava.Optional;
 
 import com.beldex.libbchat.R;
@@ -39,7 +34,6 @@ import com.beldex.libbchat.utilities.GroupRecord;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libbchat.utilities.Util;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;

@@ -18,12 +18,9 @@ import androidx.annotation.StringRes
 import androidx.annotation.StyleRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.setMargins
-import androidx.core.view.setPadding
-import androidx.core.view.updateMargins
 import androidx.fragment.app.Fragment
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.util.toPx
-import io.beldex.bchat.R
 
 
 @DslMarker

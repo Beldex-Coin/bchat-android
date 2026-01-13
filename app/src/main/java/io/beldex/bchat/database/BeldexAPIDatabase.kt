@@ -7,20 +7,16 @@ import com.beldex.libsignal.crypto.ecc.DjbECPrivateKey
 import com.beldex.libsignal.crypto.ecc.DjbECPublicKey
 import com.beldex.libsignal.crypto.ecc.ECKeyPair
 import com.beldex.libsignal.database.BeldexAPIDatabaseProtocol
-import com.beldex.libsignal.utilities.*
+import com.beldex.libsignal.utilities.ForkInfo
+import com.beldex.libsignal.utilities.Hex
+import com.beldex.libsignal.utilities.Log
+import com.beldex.libsignal.utilities.Mnode
+import com.beldex.libsignal.utilities.PublicKeyValidation
+import com.beldex.libsignal.utilities.removingbdPrefixIfNeeded
+import com.beldex.libsignal.utilities.toHexString
 import io.beldex.bchat.crypto.IdentityKeyUtil
-import io.beldex.bchat.database.*
 import io.beldex.bchat.database.helpers.SQLCipherOpenHelper
-import io.beldex.bchat.util.*
-import java.util.*
-import kotlin.Array
-import kotlin.Boolean
-import kotlin.Int
-import kotlin.Long
-import kotlin.Pair
-import kotlin.String
-import kotlin.arrayOf
-import kotlin.to
+import java.util.Date
 
 class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Database(context, helper), BeldexAPIDatabaseProtocol {
 

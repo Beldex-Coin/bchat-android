@@ -8,7 +8,6 @@ import androidx.annotation.Nullable;
 import com.beldex.libbchat.messaging.calls.CallMessageType;
 import com.beldex.libbchat.messaging.messages.visible.Payment;
 import com.beldex.libbchat.messaging.messages.visible.SharedContact;
-import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libsignal.messages.SignalServiceGroup;
 import com.beldex.libsignal.utilities.guava.Optional;
 

@@ -7,8 +7,6 @@ import androidx.lifecycle.Lifecycle;
 
 import com.beldex.libbchat.utilities.Util;
 
-import com.beldex.libbchat.utilities.Util;
-
 public class SimpleTask {
 
   /**

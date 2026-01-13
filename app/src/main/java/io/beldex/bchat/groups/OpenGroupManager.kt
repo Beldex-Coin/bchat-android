@@ -2,16 +2,14 @@ package io.beldex.bchat.groups
 
 import android.content.Context
 import androidx.annotation.WorkerThread
-import okhttp3.HttpUrl
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.messaging.open_groups.OpenGroupV2
 import com.beldex.libbchat.messaging.sending_receiving.pollers.OpenGroupPollerV2
-import com.beldex.libbchat.utilities.Util
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.ThreadUtils
 import io.beldex.bchat.dependencies.DatabaseComponent
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.util.concurrent.Executors
 
 object OpenGroupManager {

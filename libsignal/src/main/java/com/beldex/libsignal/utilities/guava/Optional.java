@@ -16,8 +16,6 @@
 
 package com.beldex.libsignal.utilities.guava;
 
-import static com.beldex.libsignal.utilities.guava.Preconditions.checkNotNull;
-
 import java.io.Serializable;
 import java.util.Set;
 

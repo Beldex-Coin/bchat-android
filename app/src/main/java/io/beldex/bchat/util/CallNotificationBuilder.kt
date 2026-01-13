@@ -11,20 +11,18 @@ import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
-import android.os.Build
 import android.view.View
 import android.widget.RemoteViews
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.ui.graphics.Canvas
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.beldex.libbchat.utilities.recipients.Recipient
+import io.beldex.bchat.R
 import io.beldex.bchat.notifications.NotificationChannels
 import io.beldex.bchat.preferences.PrivacySettingsActivity
 import io.beldex.bchat.service.WebRtcCallService
 import io.beldex.bchat.webrtc.WebRTCComposeActivity
-import io.beldex.bchat.R
 
 
 class CallNotificationBuilder {

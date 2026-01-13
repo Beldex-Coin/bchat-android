@@ -3,7 +3,6 @@ package io.beldex.bchat.database
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
-import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libsignal.utilities.Log
 import io.beldex.bchat.database.helpers.SQLCipherOpenHelper
 

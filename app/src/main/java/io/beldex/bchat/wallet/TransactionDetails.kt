@@ -2,23 +2,20 @@ package io.beldex.bchat.wallet
 
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ActivityTransactionDetailsBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.model.TransactionInfo
 import io.beldex.bchat.util.Helper
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityAddressBookBinding
-import io.beldex.bchat.databinding.ActivityTransactionDetailsBinding
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 class TransactionDetails : PassphraseRequiredActionBarActivity() {
 

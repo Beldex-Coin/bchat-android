@@ -2,7 +2,6 @@ package io.beldex.bchat.messagerequests
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.ColorStateList
 import android.database.Cursor
 import android.os.Build
 import android.text.SpannableString
@@ -11,11 +10,11 @@ import android.util.Log
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.RequestManager
+import io.beldex.bchat.R
 import io.beldex.bchat.database.CursorRecyclerViewAdapter
 import io.beldex.bchat.database.model.ThreadRecord
 import io.beldex.bchat.dependencies.DatabaseComponent
-import com.bumptech.glide.RequestManager
-import io.beldex.bchat.R
 
 
 class MessageRequestsAdapter(

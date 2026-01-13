@@ -3,9 +3,6 @@ package io.beldex.bchat.wallet
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.provider.Settings.Global.getString
-import android.text.Html
-import android.text.Spanned
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,22 +12,18 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
-import androidx.core.view.get
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.io.Resources.getResource
-import io.beldex.bchat.data.Crypto
-import io.beldex.bchat.data.UserNotes
+import io.beldex.bchat.BuildConfig
+import io.beldex.bchat.R
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.model.TransactionInfo
 import io.beldex.bchat.util.Helper
-import io.beldex.bchat.BuildConfig
-import io.beldex.bchat.R
 import timber.log.Timber
 import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
+import java.util.Calendar
+import java.util.Collections
+import java.util.Date
 
 class TransactionInfoAdapter(context: Context?)  :
     RecyclerView.Adapter<TransactionInfoAdapter.ViewHolder>() {

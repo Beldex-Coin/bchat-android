@@ -5,33 +5,27 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
+import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentTransferProgress
+import com.beldex.libbchat.utilities.Util.equals
+import com.beldex.libsignal.utilities.ListenableFuture
+import com.beldex.libsignal.utilities.SettableFuture
+import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ThumbnailViewBinding
-import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentTransferProgress
-import com.beldex.libsignal.utilities.ListenableFuture
-import com.beldex.libsignal.utilities.SettableFuture
 import io.beldex.bchat.components.GlideBitmapListeningTarget
 import io.beldex.bchat.components.GlideDrawableListeningTarget
 import io.beldex.bchat.database.model.MmsMessageRecord
+import io.beldex.bchat.databinding.ThumbnailViewBinding
 import io.beldex.bchat.mms.DecryptableStreamUriLoader.DecryptableUri
-import com.bumptech.glide.RequestBuilder
-import com.bumptech.glide.RequestManager
 import io.beldex.bchat.mms.Slide
-import com.beldex.libbchat.utilities.Util.equals
-import kotlin.Boolean
-import kotlin.Int
-import kotlin.getValue
-import kotlin.lazy
-import kotlin.let
 
 open class ThumbnailView: FrameLayout {
     companion object {

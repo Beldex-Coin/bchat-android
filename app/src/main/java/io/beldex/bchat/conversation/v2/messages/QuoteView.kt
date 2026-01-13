@@ -8,7 +8,6 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
-import androidx.compose.ui.res.colorResource
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.content.res.use
@@ -22,7 +21,6 @@ import com.bumptech.glide.RequestManager
 import com.google.android.material.card.MaterialCardView
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
-import io.beldex.bchat.compose_utils.TextColor
 import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 import io.beldex.bchat.conversation.v2.contact_sharing.flattenData
 import io.beldex.bchat.conversation.v2.utilities.MentionUtilities

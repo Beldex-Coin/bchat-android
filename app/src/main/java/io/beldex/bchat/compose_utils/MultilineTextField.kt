@@ -2,7 +2,6 @@ package io.beldex.bchat.compose_utils
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

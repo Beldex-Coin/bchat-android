@@ -18,7 +18,6 @@ import android.os.Message
 import android.os.Process
 import android.util.Log
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import io.beldex.bchat.R

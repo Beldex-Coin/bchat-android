@@ -1,7 +1,6 @@
 package io.beldex.bchat.applock
 
 import android.app.AlertDialog
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -18,9 +17,9 @@ import android.widget.TextView
 import android.widget.Toast
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.BaseActionBarActivity
-import io.beldex.bchat.util.setUpActionBarBchatLogo
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityChangePasswordBinding
+import io.beldex.bchat.util.setUpActionBarBchatLogo
 import java.util.Objects
 
 class ChangePasswordActivity : BaseActionBarActivity() {

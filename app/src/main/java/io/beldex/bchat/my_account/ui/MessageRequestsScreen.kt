@@ -2,7 +2,6 @@ package io.beldex.bchat.my_account.ui
 
 import android.app.Activity
 import android.content.Context
-import android.view.WindowManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -42,10 +41,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.lifecycleScope
 import com.beldex.libbchat.messaging.contacts.Contact
-import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
@@ -53,7 +51,6 @@ import io.beldex.bchat.database.model.ThreadRecord
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.my_account.ui.dialogs.RequestBlockConfirmationDialog
 import io.beldex.bchat.util.ConfigurationMessageUtilities
-import io.beldex.bchat.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

@@ -6,12 +6,12 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.provider.Settings
-import androidx.core.content.ContextCompat.getSystemService
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import io.beldex.bchat.PassphraseRequiredActionBarActivity.SENSOR_SERVICE
 import io.beldex.bchat.webrtc.Orientation
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlin.math.asin
+
 class OrientationManager(private val context: Context): SensorEventListener {
     private var sensorManager: SensorManager? = null
     private var rotationVectorSensor: Sensor? = null

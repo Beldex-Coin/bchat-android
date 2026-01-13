@@ -1,12 +1,11 @@
 package io.beldex.bchat.wallet
 
-import android.os.Build
 import android.text.Html
 import android.text.Spanned
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
-import io.beldex.bchat.conversation.v2.utilities.BaseDialog
 import io.beldex.bchat.R
+import io.beldex.bchat.conversation.v2.utilities.BaseDialog
 import io.beldex.bchat.databinding.ActivityWalletSetupLoadingBarBinding
 
 class WalletSetupLoadingBar : BaseDialog() {

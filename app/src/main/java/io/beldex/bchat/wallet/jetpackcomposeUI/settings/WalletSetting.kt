@@ -1,7 +1,5 @@
 package io.beldex.bchat.wallet.jetpackcomposeUI.settings
 
-import android.app.Activity
-import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.background
@@ -49,13 +47,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.util.SharedPreferenceUtil.Companion.SELECTED_NODE_PREFS_NAME
-import io.beldex.bchat.util.UiMode
-import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.wallet.CheckOnline
-import io.beldex.bchat.R
 
 enum class WalletSettingsItem(val title : Int) {
     DisplayBalance(R.string.display_balance_as), Decimals(R.string.decimals), Currency(R.string.currency), FeePriority(R.string.fee_priority),

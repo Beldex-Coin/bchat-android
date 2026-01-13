@@ -7,8 +7,6 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.PointF
-import android.graphics.Typeface
-import android.os.Build
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
@@ -22,7 +20,17 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.res.ResourcesCompat
 import io.beldex.bchat.R
-import io.beldex.bchat.util.*
+import io.beldex.bchat.util.GlowViewUtilities
+import io.beldex.bchat.util.NewConversationButtonImageView
+import io.beldex.bchat.util.UiModeUtilities
+import io.beldex.bchat.util.animateSizeChange
+import io.beldex.bchat.util.contains
+import io.beldex.bchat.util.disableClipping
+import io.beldex.bchat.util.distanceTo
+import io.beldex.bchat.util.getColorWithID
+import io.beldex.bchat.util.isAbove
+import io.beldex.bchat.util.isLeftOf
+import io.beldex.bchat.util.toPx
 
 class NewConversationButtonSetView : RelativeLayout {
     private var expandedButton: Button? = null

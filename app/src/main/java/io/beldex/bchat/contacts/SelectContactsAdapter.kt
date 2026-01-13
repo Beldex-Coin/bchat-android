@@ -1,8 +1,8 @@
 package io.beldex.bchat.contacts
 
 import android.content.Context
-import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.bumptech.glide.RequestManager

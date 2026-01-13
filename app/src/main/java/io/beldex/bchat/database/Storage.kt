@@ -47,7 +47,6 @@ import com.beldex.libsignal.crypto.ecc.ECKeyPair
 import com.beldex.libsignal.messages.SignalServiceAttachmentPointer
 import com.beldex.libsignal.messages.SignalServiceGroup
 import com.beldex.libsignal.utilities.KeyHelper
-import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.guava.Optional
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.database.helpers.SQLCipherOpenHelper

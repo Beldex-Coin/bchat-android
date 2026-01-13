@@ -5,12 +5,7 @@ package io.beldex.bchat.wallet.utils.common
 // val json    = Json(JsonConfiguration.Stable)
 // val welcome = json.parse(Welcome.serializer(), jsonString)
 
-import kotlinx.serialization.*
-import kotlinx.serialization.json.*
-import kotlinx.serialization.descriptors.*
-import kotlinx.serialization.encoding.*
-
-
+import kotlinx.serialization.Serializable
 
 
 @Serializable

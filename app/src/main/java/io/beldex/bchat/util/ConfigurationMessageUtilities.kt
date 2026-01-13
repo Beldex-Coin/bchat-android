@@ -1,13 +1,12 @@
 package io.beldex.bchat.util
 
 import android.content.Context
-import nl.komponents.kovenant.Promise
 import com.beldex.libbchat.messaging.messages.Destination
 import com.beldex.libbchat.messaging.messages.control.ConfigurationMessage
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import io.beldex.bchat.crypto.IdentityKeyUtil
+import nl.komponents.kovenant.Promise
 
 object ConfigurationMessageUtilities {
 

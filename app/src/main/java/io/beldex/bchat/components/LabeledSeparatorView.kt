@@ -8,7 +8,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.RelativeLayout
 import com.beldex.libbchat.utilities.ThemeUtil
-import io.beldex.bchat.util.toPx
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewSeparatorBinding
 import io.beldex.bchat.util.toPx

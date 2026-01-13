@@ -17,8 +17,6 @@ import android.view.animation.DecelerateInterpolator
 import android.view.animation.Interpolator
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import android.widget.TextView
-import com.squareup.phrase.Phrase
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
@@ -26,10 +24,11 @@ import androidx.core.view.isVisible
 import androidx.vectordrawable.graphics.drawable.AnimatorInflaterCompat
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.LocalisedTimeUtil.toShortTwoPartString
-import io.beldex.bchat.R
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getLocalNumber
 import com.beldex.libbchat.utilities.ThemeUtil
+import com.squareup.phrase.Phrase
 import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.R
 import io.beldex.bchat.components.emoji.EmojiImageView
 import io.beldex.bchat.components.emoji.RecentEmojiPageModel
 import io.beldex.bchat.components.menu.ActionItem
@@ -41,7 +40,6 @@ import io.beldex.bchat.database.model.ReactionRecord
 import io.beldex.bchat.dependencies.DatabaseComponent.Companion.get
 import io.beldex.bchat.repository.ConversationRepository
 import io.beldex.bchat.util.AnimationCompleteListener
-import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.isSharedContact
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -49,7 +47,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.max
@@ -543,8 +540,7 @@ class ConversationReactionOverlay : FrameLayout {
         }
         // Save media
         if (message.isMms && (message as MediaMmsMessageRecord).containsMediaSlide()  && !isDeleteOnly) {
-            val mmsMessage =message
-            if (mmsMessage.containsMediaSlide() && !mmsMessage.isMediaPending) {
+            if (message.containsMediaSlide() && !message.isMediaPending) {
                 items += ActionItem(R.attr.menu_save_icon,
                     context.resources.getString(R.string.save),
                     { handleActionItemClicked(Action.DOWNLOAD) },

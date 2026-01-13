@@ -1,6 +1,5 @@
 package com.beldex.libbchat.messaging.jobs
 
-import okhttp3.HttpUrl
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.messaging.open_groups.OpenGroupV2

@@ -3,19 +3,16 @@ package io.beldex.bchat.preferences
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.DialogInterface
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
-import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.Fragment
 import androidx.preference.Preference
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setBooleanPreference
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setShownCallWarning
-import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.R
+import io.beldex.bchat.permissions.Permissions
 
 internal class CallToggleListener(
     private val context: Fragment,

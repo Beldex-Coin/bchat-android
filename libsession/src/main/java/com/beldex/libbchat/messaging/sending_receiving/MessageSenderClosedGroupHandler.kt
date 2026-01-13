@@ -2,15 +2,15 @@
 
 package com.beldex.libbchat.messaging.sending_receiving
 
-import com.google.protobuf.ByteString
-import nl.komponents.kovenant.Promise
-import nl.komponents.kovenant.deferred
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.messages.control.ClosedGroupControlMessage
+import com.beldex.libbchat.messaging.sending_receiving.MessageSender.Error
 import com.beldex.libbchat.messaging.sending_receiving.notifications.PushRegistryV1
 import com.beldex.libbchat.messaging.sending_receiving.pollers.ClosedGroupPollerV2
+import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.Address.Companion.fromSerialized
+import com.beldex.libbchat.utilities.Device
 import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
@@ -18,14 +18,28 @@ import com.beldex.libsignal.crypto.ecc.Curve
 import com.beldex.libsignal.crypto.ecc.ECKeyPair
 import com.beldex.libsignal.messages.SignalServiceGroup
 import com.beldex.libsignal.protos.SignalServiceProtos
-import com.beldex.libsignal.utilities.*
+import com.beldex.libsignal.utilities.Hex
+import com.beldex.libsignal.utilities.Log
+import com.beldex.libsignal.utilities.ThreadUtils
 import com.beldex.libsignal.utilities.guava.Optional
-import java.util.*
+import com.beldex.libsignal.utilities.hexEncodedPublicKey
+import com.beldex.libsignal.utilities.removingbdPrefixIfNeeded
+import com.google.protobuf.ByteString
+import nl.komponents.kovenant.Promise
+import nl.komponents.kovenant.deferred
+import java.util.LinkedList
 import java.util.concurrent.ConcurrentHashMap
-import com.beldex.libbchat.messaging.sending_receiving.MessageSender.Error
-import com.beldex.libbchat.messaging.sending_receiving.notifications.MessageNotifier
-import com.beldex.libbchat.mnode.MnodeAPI
-import com.beldex.libbchat.utilities.Device
+import kotlin.collections.Collection
+import kotlin.collections.List
+import kotlin.collections.any
+import kotlin.collections.isNotEmpty
+import kotlin.collections.listOf
+import kotlin.collections.map
+import kotlin.collections.minus
+import kotlin.collections.plus
+import kotlin.collections.set
+import kotlin.collections.setOf
+import kotlin.collections.toSet
 
 const val groupSizeLimit = 100
 

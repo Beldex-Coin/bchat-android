@@ -1,26 +1,21 @@
 package io.beldex.bchat.applock
 
-import android.os.Bundle
-import io.beldex.bchat.databinding.ActivityAppLockDetailsBinding
-import io.beldex.bchat.util.setUpActionBarBchatLogo
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
+import android.os.Bundle
 import android.view.View
 import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import com.beldex.libbchat.utilities.ExpirationUtil
-import io.beldex.bchat.R
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setScreenLockEnabled
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setScreenLockTimeout
 import com.beldex.libsignal.utilities.Log
-import io.beldex.bchat.PassphraseRequiredActionBarActivity
-import io.beldex.bchat.crypto.IdentityKeyUtil
-import io.beldex.bchat.service.KeyCachingService
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ActivityAppLockDetailsBinding
 import io.beldex.bchat.util.push
-import java.util.*
+import io.beldex.bchat.util.setUpActionBarBchatLogo
 import java.util.concurrent.TimeUnit
 
 

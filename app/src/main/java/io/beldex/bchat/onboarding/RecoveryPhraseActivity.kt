@@ -8,21 +8,20 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.view.View
 import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.crypto.MnemonicCodec
 import com.beldex.libsignal.utilities.hexEncodedPrivateKey
 import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.R
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.crypto.MnemonicUtilities
+import io.beldex.bchat.databinding.ActivityRecoveryPhraseBinding
 import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityRecoveryPhraseBinding
 
 
 class RecoveryPhraseActivity : BaseActionBarActivity() {

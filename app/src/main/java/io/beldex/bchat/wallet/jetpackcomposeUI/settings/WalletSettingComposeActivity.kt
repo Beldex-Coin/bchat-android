@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -27,7 +26,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +49,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.my_account.ui.CardContainer
@@ -62,8 +62,6 @@ import io.beldex.bchat.wallet.addressbook.AddressBookScreen
 import io.beldex.bchat.wallet.jetpackcomposeUI.node.NodeComposeActivity
 import io.beldex.bchat.wallet.utils.pincodeview.CustomPinActivity
 import io.beldex.bchat.wallet.utils.pincodeview.managers.LockManager
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.R
 
 @AndroidEntryPoint
 class WalletSettingComposeActivity : ComponentActivity() {

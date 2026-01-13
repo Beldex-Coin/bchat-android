@@ -1,24 +1,18 @@
 package io.beldex.bchat.conversation.v2.messages
 
-import android.R.color
 import android.content.Context
 import android.content.Intent
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
-import androidx.core.content.ContextCompat
 import com.beldex.libbchat.messaging.utilities.UpdateMessageData
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
+import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.databinding.ViewPaymentCardBinding
 import io.beldex.bchat.util.DateUtils
 import java.util.Locale

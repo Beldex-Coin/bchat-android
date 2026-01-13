@@ -100,7 +100,7 @@ class AppLockDetailsActivity : io.beldex.bchat.PassphraseRequiredActionBarActivi
 
         for (i in screenTimeOutArray.indices) {
             screenTimeOutValues[i] =
-                ExpirationUtil.getTimeOutDisplayValue(this, screenTimeOutArray.get(i).toString())
+                ExpirationUtil.getTimeOutDisplayValue(this, screenTimeOutArray[i])
             if (i == currentIndex) {
                 selectedIndex = i
             }

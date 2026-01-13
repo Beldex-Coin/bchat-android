@@ -65,7 +65,7 @@ import java.util.concurrent.Executor
 
 class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletScannedListener, OnBackPressedListener {
 
-    val MIXIN = 0
+    private val MIXIN = 0
 
     private var activityCallback: Listener? = null
     lateinit var binding: FragmentSendBinding
@@ -74,13 +74,13 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     private val possibleCryptos: MutableSet<Crypto> = HashSet()
     private var selectedCrypto: Crypto? = null
-    val INTEGRATED_ADDRESS_LENGTH = 106
+    private val INTEGRATED_ADDRESS_LENGTH = 106
     private var totalFunds: Long = 0
     private var calledUnlockedBalance: Boolean = false
 
 
     fun newInstance(listener: Listener): SendFragment? {
-        val instance: SendFragment = SendFragment()
+        val instance= SendFragment()
         instance.setSendListener(listener)
         return instance
     }
@@ -118,7 +118,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
         fun onScan()
     }
-    var onScanListener: OnScanListener? = null
+    private var onScanListener: OnScanListener? = null
     interface OnScanListener {
         fun onScan()
     }
@@ -155,7 +155,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         //transactionCreated(txTag, pendingTransaction)
     }
 
-    fun disposeTransaction() {
+    private fun disposeTransaction() {
         pendingTx = null
         activityCallback!!.onDisposeRequest()
     }
@@ -171,7 +171,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         SendSuccessDialog(this).show(requireActivity().supportFragmentManager,"")*/
     }
 
-    var committedTx: PendingTx? = null
+    private var committedTx: PendingTx? = null
 
     @SuppressLint("StringFormatMatches")
     fun onSendTransactionFailed(error: String?) {
@@ -670,9 +670,9 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         }
     }
 
-    var inProgress = false
+    private var inProgress = false
     //Minimized app
-    var onTransactionProgress = false
+    private var onTransactionProgress = false
 
     private fun hideProgress() {
         val prev: Fragment? =
@@ -827,10 +827,9 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     fun setMode(aMode: Mode) {
         if (mode != aMode) {
             mode = aMode
-            when (aMode) {
-                Mode.BDX -> txData = TxData()
-                Mode.BTC -> txData = TxDataBtc()
-                else -> throw IllegalArgumentException("Mode " + aMode.toString() + " unknown!")
+            txData=when (aMode) {
+                Mode.BDX -> TxData()
+                Mode.BTC -> TxDataBtc()
             }
             Timber.d("New Mode = %s", mode.toString())
         }

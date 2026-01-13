@@ -50,7 +50,7 @@ public abstract class AppLock {
      * will not log the last opened time, will not launch the
      * {@link io.beldex.bchat.wallet.utils.pincodeview.managers.AppLockActivity} etc...
      */
-    protected HashSet<String> mIgnoredActivities;
+    protected final HashSet<String> mIgnoredActivities;
 
     public AppLock() {
         mIgnoredActivities = new HashSet<String>();

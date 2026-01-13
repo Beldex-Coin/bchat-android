@@ -5,15 +5,12 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import io.beldex.bchat.util.BitmapDecodingException;
-import io.beldex.bchat.util.BitmapUtil;
-import io.beldex.bchat.util.MediaUtil;
 import com.beldex.libbchat.utilities.MediaTypes;
 import com.beldex.libsignal.utilities.Log;
 import android.util.Pair;
 
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment;
-import io.beldex.bchat.mms.DecryptableStreamUriLoader.DecryptableUri;
+
 import io.beldex.bchat.util.BitmapDecodingException;
 import io.beldex.bchat.util.BitmapUtil;
 import io.beldex.bchat.util.MediaUtil;

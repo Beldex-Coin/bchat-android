@@ -8,15 +8,13 @@ import android.os.AsyncTask;
 
 import io.beldex.bchat.ApplicationContext;
 import io.beldex.bchat.dependencies.DatabaseComponent;
-import io.beldex.bchat.ApplicationContext;
-import io.beldex.bchat.dependencies.DatabaseComponent;
 
 public class DeleteNotificationReceiver extends BroadcastReceiver {
 
-  public static String DELETE_NOTIFICATION_ACTION = "io.beldex.securesms.DELETE_NOTIFICATION";
+  public static final String DELETE_NOTIFICATION_ACTION = "io.beldex.securesms.DELETE_NOTIFICATION";
 
   public static String EXTRA_IDS = "message_ids";
-  public static String EXTRA_MMS = "is_mms";
+  public static final String EXTRA_MMS = "is_mms";
 
   @Override
   public void onReceive(final Context context, Intent intent) {

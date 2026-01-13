@@ -20,7 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
@@ -31,15 +30,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.utilities.recipients.Recipient
+import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.ui.ScreenContainer
 import io.beldex.bchat.conversation.v2.ConversationFragmentV2
 import io.beldex.bchat.util.State
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.R
 
 enum class NewGroupConversationType(val destination: String) {
     SecretGroup("secret_group"),
@@ -106,7 +105,7 @@ class NewGroupConversationActivity: ComponentActivity() {
                                 route = NewGroupConversationType.PublicGroup.destination
                             ) {
                                 val viewModel: DefaultGroupsViewModel = hiltViewModel()
-                                val lifecycleOwner = LocalLifecycleOwner.current
+                                val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
                                 val groups = remember {
                                     mutableStateListOf<OpenGroupAPIV2.DefaultGroup>()
                                 }

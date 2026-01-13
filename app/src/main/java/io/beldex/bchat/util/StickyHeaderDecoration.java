@@ -25,7 +25,7 @@ public class StickyHeaderDecoration extends RecyclerView.ItemDecoration {
   private final Map<Long, ViewHolder> headerCache;
   private final StickyHeaderAdapter   adapter;
   private final boolean               renderInline;
-  private       boolean               sticky;
+  private final boolean               sticky;
 
   /**
    * @param adapter the sticky header adapter to use

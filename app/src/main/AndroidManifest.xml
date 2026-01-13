@@ -155,14 +155,14 @@
         </activity>
         <activity
             android:name="io.beldex.bchat.webrtc.WebRTCComposeActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout"
             android:exported="false"
             android:launchMode="singleTop"
             android:parentActivityName="io.beldex.bchat.home.HomeActivity"
-            android:configChanges="screenSize|smallestScreenSize|screenLayout"
             android:screenOrientation="portrait"
             android:showForAllUsers="true"
-            android:theme="@style/Theme.Bchat.CallActivity"
-            android:supportsPictureInPicture="true">
+            android:supportsPictureInPicture="true"
+            android:theme="@style/Theme.Bchat.CallActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.beldex.bchat.home.HomeActivity" />
@@ -264,8 +264,8 @@
             android:name="io.beldex.bchat.seed.RecoveryGetSeedDetailsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
+            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="io.beldex.bchat.seedorkeysrestore.SeedOrKeysRestoreActivity"
             android:exported="false"
@@ -340,9 +340,9 @@
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity-alias
             android:name=".RoutingActivity"
@@ -410,8 +410,8 @@
         <activity
             android:name="io.beldex.bchat.contacts.SelectContactsActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="io.beldex.bchat.preferences.PrivacySettingsActivity"
             android:exported="false"
@@ -572,8 +572,8 @@
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
         <activity
             android:name="io.beldex.bchat.groups.SecretGroupInfoComposeActivity"
-            android:exported="true"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
+            android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
             />
@@ -609,17 +609,17 @@
             android:name="io.beldex.bchat.conversation_v2.NewGroupConversationActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"
             android:label="@string/title_activity_create_secret_group_screen"
-            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name="io.beldex.bchat.conversation_v2.NewChatConversationActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:label="@string/new_chat_screen_title"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
 
         <service
@@ -632,9 +632,9 @@
         </service>
         <service
             android:name="io.beldex.bchat.service.WebRtcCallService"
-            android:foregroundServiceType="phoneCall"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false"
+            android:foregroundServiceType="phoneCall" />
         <service
             android:name="io.beldex.bchat.service.KeyCachingService"
             android:enabled="true"

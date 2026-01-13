@@ -33,7 +33,7 @@ class ProfilePictureView @JvmOverloads constructor(
     var publicKey: String? = null
     var displayName: String? = null
     var additionalPublicKey: String? = null
-    var additionalDisplayName: String? = null
+    private var additionalDisplayName: String? = null
     var isLarge = false
     private var isEditGroup = false
 
@@ -70,7 +70,7 @@ class ProfilePictureView @JvmOverloads constructor(
                     .take(2)
                     .toMutableList()
             /*val pk = members.getOrNull(0)?.serialize() ?: ""*/
-            publicKey = recipient.address.toString() ?: ""
+            publicKey =recipient.address.toString()
             displayName = recipient.name ?: ""
             val apk = members.getOrNull(1)?.serialize() ?: ""
             additionalPublicKey = apk

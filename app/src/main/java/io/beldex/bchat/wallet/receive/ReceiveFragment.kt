@@ -142,7 +142,7 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
 
     private fun generateQr() {
         val address: String = binding.walletAddressReceive.text.toString()
-        val notes: String = ""
+        val notes= ""
         val bdxAmount: String = binding.amountEditTextReceive.text.toString()
         bcData = BarcodeData(Crypto.BDX, address, notes, bdxAmount)
 
@@ -184,7 +184,7 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
 
     private fun reGenerateQr() {
         val address: String = binding.walletAddressReceive.text.toString()
-        val notes: String = ""
+        val notes= ""
         val bdxAmount: String = binding.amountEditTextReceive.text.toString()
         if (!Wallet.isAddressValid(address)) {
             clearQR()

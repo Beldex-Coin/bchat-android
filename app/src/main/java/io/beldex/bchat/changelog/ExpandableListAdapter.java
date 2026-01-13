@@ -17,10 +17,10 @@ import io.beldex.bchat.R;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
-    private Context _context;
-    private ArrayList<String> _listDataHeader; // header titles
+    private final Context _context;
+    private final ArrayList<String> _listDataHeader; // header titles
     // child data in format of header title, child title
-    private HashMap<String, List<String>> _listDataChild;
+    private final HashMap<String, List<String>> _listDataChild;
 
     public ExpandableListAdapter(Context context, ArrayList<String> listDataHeader,
                                  HashMap<String, List<String>> listChildData) {

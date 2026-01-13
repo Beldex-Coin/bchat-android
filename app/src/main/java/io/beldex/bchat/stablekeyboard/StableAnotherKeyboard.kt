@@ -28,11 +28,11 @@ class StableAnotherKeyboard(context: Context?, attrs: AttributeSet?, defStyleAtt
     private var button0: Button? = null
     private var buttonDelete: Button? = null
     var buttonEnter: Button? = null
-    val keyValues = SparseArray<String>()
+    private val keyValues = SparseArray<String>()
     private var inputConnection: InputConnection? = null
 
-    constructor(context: Context?) : this(context, null, 0) {}
-    constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0) {}
+    constructor(context: Context?) : this(context, null, 0)
+    constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
 
     private fun init(context: Context?, attrs: AttributeSet?) {
         LayoutInflater.from(context).inflate(R.layout.activity_stable_another_keyboard, this, true)
@@ -83,7 +83,7 @@ class StableAnotherKeyboard(context: Context?, attrs: AttributeSet?, defStyleAtt
                 inputConnection!!.commitText("", 1)
             }
         }else {
-            val value = keyValues[view.getId()]
+            val value = keyValues[view.id]
             inputConnection!!.commitText(value, 1)
         }
     }

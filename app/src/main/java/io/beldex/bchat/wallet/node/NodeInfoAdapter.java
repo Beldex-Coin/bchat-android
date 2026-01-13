@@ -1,20 +1,16 @@
 package io.beldex.bchat.wallet.node;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,7 +29,6 @@ import java.util.List;
 import java.util.TimeZone;
 
 import io.beldex.bchat.R;
-import timber.log.Timber;
 
 public class NodeInfoAdapter extends RecyclerView.Adapter<NodeInfoAdapter.ViewHolder> {
     private final SimpleDateFormat TS_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -139,7 +134,7 @@ public class NodeInfoAdapter extends RecyclerView.Adapter<NodeInfoAdapter.ViewHo
         final TextView nodeAddress;
         final ImageView ivPing;
         NodeInfo nodeItem;
-        RelativeLayout itemNodeRelativeLayout;
+        final RelativeLayout itemNodeRelativeLayout;
 
         ViewHolder(View itemView) {
             super(itemView);

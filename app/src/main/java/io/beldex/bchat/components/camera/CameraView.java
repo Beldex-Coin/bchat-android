@@ -61,7 +61,7 @@ public class CameraView extends ViewGroup {
 
   private @NonNull  State                    state = State.PAUSED;
   private @Nullable Size                     previewSize;
-  private @NonNull  List<CameraViewListener> listeners = Collections.synchronizedList(new LinkedList<CameraViewListener>());
+  private final @NonNull  List<CameraViewListener> listeners = Collections.synchronizedList(new LinkedList<CameraViewListener>());
   private           int                      outputOrientation  = -1;
 
   public CameraView(Context context) {
@@ -441,7 +441,7 @@ public class CameraView extends ViewGroup {
         Log.i(TAG, "previewSize: " + previewSize.width + "x" + previewSize.height);
         Log.i(TAG, "data bytes: " + data.length);
         Log.i(TAG, "previewFormat: " + camera.getParameters().getPreviewFormat());
-        Log.i(TAG, "croppingRect: " + croppingRect.toString());
+        Log.i(TAG, "croppingRect: " + croppingRect);
         Log.i(TAG, "rotation: " + rotation);
         new CaptureTask(previewSize, rotation, croppingRect).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, data);
       }

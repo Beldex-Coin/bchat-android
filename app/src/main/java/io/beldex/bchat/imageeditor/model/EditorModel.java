@@ -18,11 +18,6 @@ import io.beldex.bchat.imageeditor.ColorableRenderer;
 import io.beldex.bchat.imageeditor.Renderer;
 import io.beldex.bchat.imageeditor.RendererContext;
 import io.beldex.bchat.imageeditor.UndoRedoStackListener;
-import io.beldex.bchat.imageeditor.Bounds;
-import io.beldex.bchat.imageeditor.ColorableRenderer;
-import io.beldex.bchat.imageeditor.Renderer;
-import io.beldex.bchat.imageeditor.RendererContext;
-import io.beldex.bchat.imageeditor.UndoRedoStackListener;
 
 import java.util.HashMap;
 import java.util.LinkedHashSet;

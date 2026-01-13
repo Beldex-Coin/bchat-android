@@ -1,6 +1,6 @@
 package io.beldex.bchat.backup
 
-data class BackupEvent constructor(val type: Type, val count: Int, val exception: Exception?) {
+data class BackupEvent(val type: Type, val count: Int, val exception: Exception?) {
 
     enum class Type {
         PROGRESS, FINISHED

@@ -419,7 +419,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                     if (firstBlock == 0L) {
                         firstBlock = walletHeight
                     }
-                    var x = (100 - Math.round(100f * n / (1f * daemonHeight  - firstBlock))).toInt()
+                    var x =(100 - Math.round(100f * n / (1f * daemonHeight  - firstBlock)))
                     if (x == 0) x = 1 // indeterminate
                     if(x>=0){
                         setProgress((x/100.0).toFloat())

@@ -259,7 +259,7 @@ object FullBackupImporter {
                 mac.update(iv)
                 val buffer = ByteArray(8192)
                 while (length > 0) {
-                    val read = inputStream.read(buffer, 0, Math.min(buffer.size, length))
+                    val read = inputStream.read(buffer, 0, buffer.size.coerceAtMost(length))
                     if (read == -1) throw IOException("File ended early!")
                     mac.update(buffer, 0, read)
                     val plaintext = cipher.update(buffer, 0, read)

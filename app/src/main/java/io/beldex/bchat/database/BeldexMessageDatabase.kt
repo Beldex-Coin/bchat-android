@@ -10,19 +10,19 @@ class BeldexMessageDatabase(context: Context, helper: SQLCipherOpenHelper) : Dat
     BeldexMessageDatabaseProtocol {
 
     companion object {
-        private val messageIDTable = "beldex_message_friend_request_database"
-        private val messageThreadMappingTable = "beldex_message_thread_mapping_database"
-        private val errorMessageTable = "beldex_error_message_database"
-        private val messageHashTable = "beldex_message_hash_database"
-        private val smsHashTable = "beldex_sms_hash_database"
-        private val mmsHashTable = "beldex_mms_hash_database"
-        private val messageID = "message_id"
-        private val serverID = "server_id"
-        private val friendRequestStatus = "friend_request_status"
-        private val threadID = "thread_id"
-        private val errorMessage = "error_message"
-        private val messageType = "message_type"
-        private val serverHash = "server_hash"
+        private const val messageIDTable = "beldex_message_friend_request_database"
+        private const val messageThreadMappingTable = "beldex_message_thread_mapping_database"
+        private const val errorMessageTable = "beldex_error_message_database"
+        private const val messageHashTable = "beldex_message_hash_database"
+        private const val smsHashTable = "beldex_sms_hash_database"
+        private const val mmsHashTable = "beldex_mms_hash_database"
+        private const val messageID = "message_id"
+        private const val serverID = "server_id"
+        private const val friendRequestStatus = "friend_request_status"
+        private const val threadID = "thread_id"
+        private const val errorMessage = "error_message"
+        private const val messageType = "message_type"
+        private const val serverHash = "server_hash"
         @JvmStatic
         val createMessageIDTableCommand = "CREATE TABLE $messageIDTable ($messageID INTEGER PRIMARY KEY, $serverID INTEGER DEFAULT 0, $friendRequestStatus INTEGER DEFAULT 0);"
         @JvmStatic
@@ -91,12 +91,12 @@ class BeldexMessageDatabase(context: Context, helper: SQLCipherOpenHelper) : Dat
 
         database.delete(
             messageIDTable,
-            "${Companion.messageID} IN (${messageIDs.map { "?" }.joinToString(",")})",
+            "$messageID IN (${messageIDs.map { "?" }.joinToString(",")})",
             messageIDs.map { "$it" }.toTypedArray()
         )
         database.delete(
             messageThreadMappingTable,
-            "${Companion.messageID} IN (${messageIDs.map { "?" }.joinToString(",")})",
+            "$messageID IN (${messageIDs.joinToString(",") { "?" }})",
             messageIDs.map { "$it" }.toTypedArray()
         )
 
@@ -128,11 +128,11 @@ class BeldexMessageDatabase(context: Context, helper: SQLCipherOpenHelper) : Dat
             .rawQuery(
                 """
                     SELECT ${messageThreadMappingTable}.${messageID}, ${messageIDTable}.${messageType}
-                    FROM ${messageThreadMappingTable}
-                    JOIN ${messageIDTable} ON ${messageIDTable}.message_id = ${messageThreadMappingTable}.${messageID} 
+                    FROM $messageThreadMappingTable
+                    JOIN $messageIDTable ON ${messageIDTable}.message_id = ${messageThreadMappingTable}.${messageID} 
                     WHERE (
                         ${messageThreadMappingTable}.${Companion.threadID} = $threadID AND
-                        ${messageThreadMappingTable}.${Companion.serverID} IN (${serverIDs.joinToString(",")})
+                        ${messageThreadMappingTable}.${serverID} IN (${serverIDs.joinToString(",")})
                     )
                 """
             )
@@ -250,7 +250,7 @@ class BeldexMessageDatabase(context: Context, helper: SQLCipherOpenHelper) : Dat
     fun deleteMessageServerHashes(messageIDs: List<Long>, mms: Boolean) {
         databaseHelper.writableDatabase.delete(
             getMessageTable(mms),
-            "${Companion.messageID} IN (${messageIDs.joinToString(",") { "?" }})",
+            "$messageID IN (${messageIDs.joinToString(",") { "?" }})",
             messageIDs.map { "$it" }.toTypedArray()
         )
     }

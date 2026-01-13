@@ -81,13 +81,13 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
     companion object {
         @JvmStatic val groupIDKey = "groupIDKey"
         @JvmStatic val recipient = "recipient"
-        private val loaderID = 0
-        val addUsersRequestCode = 124
-        val legacyGroupSizeLimit = 10
+        private const val loaderID = 0
+        const val addUsersRequestCode = 124
+        const val legacyGroupSizeLimit = 10
     }
-    var applyChangesButtonLastClickTime: Long = 0
+    private var applyChangesButtonLastClickTime: Long = 0
 
-    var secretGroupInfoViewModel: SecretGroupInfoViewModel? =  null
+    private var secretGroupInfoViewModel: SecretGroupInfoViewModel? =  null
 
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {

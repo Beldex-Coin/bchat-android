@@ -10,9 +10,7 @@ import androidx.core.app.TaskStackBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Toast;
 
-import io.beldex.bchat.util.CommunicationActions;
 import com.beldex.libbchat.utilities.Address;
-import io.beldex.bchat.home.HomeActivity;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import io.beldex.bchat.onboarding.PasswordActivity;
 import io.beldex.bchat.util.CommunicationActions;

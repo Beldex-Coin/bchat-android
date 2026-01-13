@@ -8,8 +8,6 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
-import io.beldex.bchat.util.ResUtil;
-
 import io.beldex.bchat.R;
 import io.beldex.bchat.util.ResUtil;
 

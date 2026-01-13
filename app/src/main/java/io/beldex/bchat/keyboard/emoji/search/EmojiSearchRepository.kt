@@ -18,7 +18,7 @@ private const val EMOJI_SEARCH_LIMIT = 20
 
 private val NOT_PUNCTUATION = "[A-Za-z0-9 ]".toRegex()
 
-class EmojiSearchRepository(private val context: Context) {
+class EmojiSearchRepository(context: Context) {
 
   private val emojiSearchDatabase: EmojiSearchDatabase = DatabaseComponent.get(context).emojiSearchDatabase()
 

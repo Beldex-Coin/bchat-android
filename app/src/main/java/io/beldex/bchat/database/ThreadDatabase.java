@@ -35,11 +35,9 @@ import com.beldex.libbchat.mnode.MnodeAPI;
 import io.beldex.bchat.ApplicationContext;
 import io.beldex.bchat.mms.Slide;
 import io.beldex.bchat.mms.SlideDeck;
-import io.beldex.bchat.util.BchatMetaProtocol;
 
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
-import org.jetbrains.annotations.NotNull;
 import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.Contact;
 import com.beldex.libbchat.utilities.DelimiterUtil;
@@ -63,13 +61,10 @@ import io.beldex.bchat.notifications.MarkReadReceiver;
 import io.beldex.bchat.util.BchatMetaProtocol;
 
 import java.io.Closeable;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 public class ThreadDatabase extends Database {
@@ -359,7 +354,7 @@ public class ThreadDatabase extends Database {
   }
 
   public Cursor getFilteredConversationList(@Nullable List<Address> filter) {
-    if (filter == null || filter.size() == 0)
+    if (filter == null || filter.isEmpty())
       return null;
 
     SQLiteDatabase      db                   = databaseHelper.getReadableDatabase();
@@ -577,8 +572,7 @@ public class ThreadDatabase extends Database {
     Cursor cursor = db.query(TABLE_NAME, new String[]{ ID }, ID_WHERE, new String[]{ String.valueOf(threadId) }, null, null, null);
 
     try {
-      if (cursor != null && cursor.moveToFirst()) { return true; }
-      return false;
+        return cursor != null && cursor.moveToFirst();
     } finally {
       if (cursor != null) cursor.close();
     }
@@ -741,10 +735,9 @@ public class ThreadDatabase extends Database {
       reader = mmsSmsDatabase.readerFor(mmsSmsDatabase.getConversationSnippet(threadId));
       MessageRecord record = null;
       if (reader != null) {
-        record = reader.getNext();
-        while (record != null && record.isDeleted()) {
-          record = reader.getNext();
-        }
+          do {
+              record = reader.getNext();
+          } while (record != null && record.isDeleted());
       }
       if (record != null && !record.isDeleted()) {
         updateThread(threadId, count, getFormattedBodyFor(record), getAttachmentUriFor(record),
@@ -796,7 +789,7 @@ public class ThreadDatabase extends Database {
   private @NonNull String getFormattedBodyFor(@NonNull MessageRecord messageRecord) {
     if (messageRecord.isMms()) {
       MmsMessageRecord record = (MmsMessageRecord) messageRecord;
-      if (record.getSharedContacts().size() > 0) {
+      if (!record.getSharedContacts().isEmpty()) {
         Contact contact = ((MmsMessageRecord) messageRecord).getSharedContacts().get(0);
         return ContactUtil.getStringSummary(context, contact).toString();
       }

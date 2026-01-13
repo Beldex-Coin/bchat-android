@@ -34,12 +34,12 @@ import io.beldex.bchat.databinding.ActivityWalletSettingsBinding
 class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemClickListener,WalletSubOptionsSearchListItemAdapter.ItemClickListener {
     lateinit var binding:ActivityWalletSettingsBinding
     lateinit var dialog: Dialog
-    lateinit var walletSubOptionsListAdapter:WalletSubOptionsListAdapter
+    private lateinit var walletSubOptionsListAdapter:WalletSubOptionsListAdapter
     private val displayBalanceAsList: ArrayList<String> = ArrayList()
     private val feePriorityList: ArrayList<String> = ArrayList()
     private val decimalsList: ArrayList<String> = ArrayList()
     private val currencyList:ArrayList<String> = ArrayList()
-    lateinit var walletSubOptionsSearchListItemAdapter:WalletSubOptionsSearchListItemAdapter
+    private lateinit var walletSubOptionsSearchListItemAdapter:WalletSubOptionsSearchListItemAdapter
     private var selectedDecimalIndex:Int = 0
     private var selectedCurrencyIndex:Int = 30
     var nodeItem: NodeInfo? = null
@@ -212,10 +212,10 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         dialog.setContentView(R.layout.wallet_sub_options_list)
         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent);
         dialog.window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
-        val dialogBoxTitle = dialog.findViewById(R.id.dialogBoxTitle) as TextView
+        val dialogBoxTitle : TextView=dialog.findViewById(R.id.dialogBoxTitle)
         dialogBoxTitle.text = getString(R.string.display_balance_as)
-        val walletSubOptionsList = dialog.findViewById(R.id.walletSubOptionsListRecyclerView) as RecyclerView
-        val close = dialog.findViewById(R.id.closeDialogBox) as ImageView
+        val walletSubOptionsList : RecyclerView=dialog.findViewById(R.id.walletSubOptionsListRecyclerView)
+        val close : ImageView=dialog.findViewById(R.id.closeDialogBox)
         close.setOnClickListener {
             dialog.dismiss()
             status = true
@@ -235,10 +235,10 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         dialog.setContentView(R.layout.wallet_sub_options_list)
         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent);
         dialog.window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
-        val dialogBoxTitle = dialog.findViewById(R.id.dialogBoxTitle) as TextView
+        val dialogBoxTitle : TextView=dialog.findViewById(R.id.dialogBoxTitle)
         dialogBoxTitle.text = getString(R.string.fee_priority)
-        val walletSubOptionsList = dialog.findViewById(R.id.walletSubOptionsListRecyclerView) as RecyclerView
-        val close = dialog.findViewById(R.id.closeDialogBox) as ImageView
+        val walletSubOptionsList : RecyclerView=dialog.findViewById(R.id.walletSubOptionsListRecyclerView)
+        val close : ImageView=dialog.findViewById(R.id.closeDialogBox)
         close.setOnClickListener {
             dialog.dismiss()
             status = true
@@ -258,10 +258,10 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         dialog.setContentView(R.layout.wallet_sub_options_list)
         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent);
         dialog.window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
-        val dialogBoxTitle = dialog.findViewById(R.id.dialogBoxTitle) as TextView
+        val dialogBoxTitle : TextView=dialog.findViewById(R.id.dialogBoxTitle)
         dialogBoxTitle.text = getString(R.string.decimals)
-        val walletSubOptionsList = dialog.findViewById(R.id.walletSubOptionsListRecyclerView) as RecyclerView
-        val close = dialog.findViewById(R.id.closeDialogBox) as ImageView
+        val walletSubOptionsList : RecyclerView=dialog.findViewById(R.id.walletSubOptionsListRecyclerView)
+        val close : ImageView=dialog.findViewById(R.id.closeDialogBox)
         close.setOnClickListener {
             dialog.dismiss()
             status = true
@@ -281,17 +281,17 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         dialog.setContentView(R.layout.wallet_sub_options_search_list)
         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent);
         dialog.window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
-        val dialogBoxTitle = dialog.findViewById(R.id.dialogBoxTitle) as TextView
+        val dialogBoxTitle : TextView=dialog.findViewById(R.id.dialogBoxTitle)
         dialogBoxTitle.text = getString(R.string.currency)
-        val walletSubOptionsList = dialog.findViewById(R.id.walletSubOptionsListRecyclerView) as RecyclerView
-        val close = dialog.findViewById(R.id.closeDialogBox) as ImageView
+        val walletSubOptionsList : RecyclerView=dialog.findViewById(R.id.walletSubOptionsListRecyclerView)
+        val close : ImageView=dialog.findViewById(R.id.closeDialogBox)
         close.setOnClickListener {
             dialog.dismiss()
             status = true
         }
-        val searchText = dialog.findViewById(R.id.searchTextEditText) as EditText
-        val searchIcon = dialog.findViewById(R.id.currencySearchIcon) as ImageView
-        val clearIcon  = dialog.findViewById(R.id.currencyClearIcon) as ImageView
+        val searchText : EditText=dialog.findViewById(R.id.searchTextEditText)
+        val searchIcon : ImageView=dialog.findViewById(R.id.currencySearchIcon)
+        val clearIcon : ImageView=dialog.findViewById(R.id.currencyClearIcon)
 
         searchText.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {

@@ -24,12 +24,9 @@ import static java.util.Collections.emptyList;
 import io.beldex.bchat.database.MmsDatabase;
 import io.beldex.bchat.database.SmsDatabase;
 import io.beldex.bchat.mms.SlideDeck;
-import com.beldex.libbchat.utilities.IdentityKeyMismatch;
-import com.beldex.libbchat.utilities.NetworkFailure;
+
 import com.beldex.libbchat.utilities.recipients.Recipient;
 
-import java.util.Collections;
-import java.util.LinkedList;
 import io.beldex.bchat.R;
 
 /**

@@ -356,7 +356,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
   }
 
   //SetDataAndType
-  ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result->{
+  final ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result->{
     if (result.getResultCode() == Activity.RESULT_OK) {
       Bundle extras = new Bundle();
       assert result.getData() != null;

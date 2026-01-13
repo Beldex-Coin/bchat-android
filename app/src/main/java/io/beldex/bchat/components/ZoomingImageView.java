@@ -124,7 +124,7 @@ public class ZoomingImageView extends FrameLayout {
 
   private static class AttachmentBitmapDecoderFactory implements DecoderFactory<AttachmentBitmapDecoder> {
     @Override
-    public AttachmentBitmapDecoder make() throws IllegalAccessException, InstantiationException {
+    public AttachmentBitmapDecoder make() {
       return new AttachmentBitmapDecoder();
     }
   }

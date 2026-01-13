@@ -21,7 +21,7 @@ public class KeyboardButtonView extends RelativeLayout{
 
     private KeyboardButtonClickedListener mKeyboardButtonClickedListener;
 
-    private Context mContext;
+    private final Context mContext;
     private RippleView mRippleView;
 
     public KeyboardButtonView(Context context) {

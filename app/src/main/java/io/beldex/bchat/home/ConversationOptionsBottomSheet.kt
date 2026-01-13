@@ -18,15 +18,15 @@ class ConversationOptionsBottomSheet : BottomSheetDialogFragment(), View.OnClick
     // if we want to use dialog fragments properly.
     lateinit var thread: ThreadRecord
 
-    var onViewDetailsTapped: (() -> Unit?)? = null
-    var onPinTapped: (() -> Unit)? = null
-    var onUnpinTapped: (() -> Unit)? = null
-    var onBlockTapped: (() -> Unit)? = null
-    var onUnblockTapped: (() -> Unit)? = null
-    var onDeleteTapped: (() -> Unit)? = null
-    var onMarkAllAsReadTapped: (() -> Unit)? = null
-    var onNotificationTapped: (() -> Unit)? = null
-    var onSetMuteTapped: ((Boolean) -> Unit)? = null
+    private var onViewDetailsTapped: (() -> Unit?)? = null
+    private var onPinTapped: (() -> Unit)? = null
+    private var onUnpinTapped: (() -> Unit)? = null
+    private var onBlockTapped: (() -> Unit)? = null
+    private var onUnblockTapped: (() -> Unit)? = null
+    private var onDeleteTapped: (() -> Unit)? = null
+    private var onMarkAllAsReadTapped: (() -> Unit)? = null
+    private var onNotificationTapped: (() -> Unit)? = null
+    private var onSetMuteTapped: ((Boolean) -> Unit)? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentConversationBottomSheetBinding.inflate(inflater, container, false)

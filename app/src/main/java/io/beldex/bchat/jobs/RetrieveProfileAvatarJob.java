@@ -5,7 +5,6 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import io.beldex.bchat.jobmanager.impl.NetworkConstraint;
 import com.beldex.libbchat.avatars.AvatarHelper;
 import com.beldex.libbchat.messaging.utilities.Data;
 import com.beldex.libbchat.utilities.Address;
@@ -41,8 +40,8 @@ public class RetrieveProfileAvatarJob extends BaseJob {
     private static final String KEY_ADDRESS        = "address";
 
 
-    private String    profileAvatar;
-    private Recipient recipient;
+    private final String    profileAvatar;
+    private final Recipient recipient;
 
     public RetrieveProfileAvatarJob(Recipient recipient, String profileAvatar) {
         this(new Job.Parameters.Builder()
@@ -119,8 +118,7 @@ public class RetrieveProfileAvatarJob extends BaseJob {
 
     @Override
     public boolean onShouldRetry(@NonNull Exception e) {
-        if (e instanceof PushNetworkException) return true;
-        return false;
+        return e instanceof PushNetworkException;
     }
 
     @Override

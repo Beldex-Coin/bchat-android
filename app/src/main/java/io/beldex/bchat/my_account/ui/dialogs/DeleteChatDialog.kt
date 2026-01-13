@@ -95,7 +95,6 @@ fun DeleteChatConfirmationDialog(
 
                 Button(
                     onClick={
-                    println("deleted button clicked called 3")
                     onConfirmation()
                             }
                     ,

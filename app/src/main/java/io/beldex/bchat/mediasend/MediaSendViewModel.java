@@ -89,7 +89,7 @@ class MediaSendViewModel extends ViewModel {
           error.setValue(Error.TOO_MANY_ITEMS);
         }
 
-        if (filteredMedia.size() > 0) {
+        if (!filteredMedia.isEmpty()) {
           String computedId = Stream.of(filteredMedia)
                                     .skip(1)
                                     .reduce(filteredMedia.get(0).getBucketId().or(Media.ALL_MEDIA_BUCKET_ID), (id, m) -> {

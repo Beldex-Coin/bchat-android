@@ -80,7 +80,7 @@ class NodeViewModel @Inject constructor(
     private fun addFavourite(nodeString : String) : NodeInfo? {
         val nodeInfo=NodeInfo.fromString(nodeString)
         if (nodeInfo != null) {
-            nodeInfo.setFavourite(true)
+            nodeInfo.isFavourite=true
             _favouritesNodes.value?.add(nodeInfo)
         }
         return nodeInfo
@@ -135,9 +135,10 @@ class NodeViewModel @Inject constructor(
         }
     }
 
-    fun loadLegacyList(legacyListString : String?) {
+    private fun loadLegacyList(legacyListString : String?) {
         if (legacyListString == null) return
-        val nodeStrings : Array<String> =legacyListString.split(";".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+        val nodeStrings : Array<String> =legacyListString.split(";".toRegex()).dropLastWhile { it.isEmpty() }
+            .toTypedArray()
         for (nodeString in nodeStrings) {
             addFavourite(nodeString)
         }
@@ -155,12 +156,12 @@ class NodeViewModel @Inject constructor(
         editor.apply()
     }
 
-    fun getOrPopulateFavourites(context : Context?) : Set<NodeInfo> {
+    private fun getOrPopulateFavourites(context : Context?) : Set<NodeInfo> {
         if (_favouritesNodes.value?.isEmpty() == true) {
             for (node in getNodes(context!!)) {
                 val nodeInfo=NodeInfo.fromString(node)
                 if (nodeInfo != null) {
-                    nodeInfo.setFavourite(true)
+                    nodeInfo.isFavourite=true
                     favouritesNodes.value
                     _favouritesNodes.value!!.add(nodeInfo)
                 }
@@ -204,7 +205,7 @@ class NodeViewModel @Inject constructor(
         if (save) saveSelectedNode(context)
     }
 
-    fun saveSelectedNode(nodeInfo : NodeInfo?, context : Context) {
+    private fun saveSelectedNode(nodeInfo : NodeInfo?, context : Context) {
         context.getSharedPreferences(SELECTED_NODE_PREFS_NAME, MODE_PRIVATE).edit {
             if (nodeInfo == null) {
                 clear()
@@ -216,29 +217,29 @@ class NodeViewModel @Inject constructor(
         }
     }
 
-    fun getSelectedNodeId(context : Context) : String? {
+    private fun getSelectedNodeId(context : Context) : String? {
         return context.getSharedPreferences(SELECTED_NODE_PREFS_NAME, MODE_PRIVATE)
             .getString("0", null)
     }
 
 
-    fun saveSelectedNode(context : Context) {
+    private fun saveSelectedNode(context : Context) {
         // save only if changed
         val nodeInfo=getNode()
         val selectedNodeId=getSelectedNodeId(context)
-        if (nodeInfo?.toNodeString() != selectedNodeId) saveSelectedNode(nodeInfo, context)
+        if (nodeInfo.toNodeString() != selectedNodeId) saveSelectedNode(nodeInfo, context)
     }
 
-    fun saveFavourites(favouriteNodes : HashSet<NodeInfo>, context : Context) {
-        val editor=context.getSharedPreferences(NODES_PREFS_NAME, Context.MODE_PRIVATE).edit()
-        editor.clear()
-        var i=1
-        for (info in favouriteNodes) {
-            val nodeString=info.toNodeString()
-            editor.putString(i.toString(), nodeString)
-            i++
+    private fun saveFavourites(favouriteNodes : HashSet<NodeInfo>, context : Context) {
+        context.getSharedPreferences(NODES_PREFS_NAME, Context.MODE_PRIVATE).edit {
+            clear()
+            var i=1
+            for (info in favouriteNodes) {
+                val nodeString=info.toNodeString()
+                putString(i.toString(), nodeString)
+                i++
+            }
         }
-        editor.apply()
     }
 
     fun setFavouriteNodes(nodes : MutableCollection<NodeInfo>?, context : Context) {
@@ -282,7 +283,7 @@ class NodeViewModel @Inject constructor(
         }
     }
 
-    fun autoselect(nodes : Set<NodeInfo?>?) : NodeInfo? {
+    private fun autoselect(nodes : Set<NodeInfo?>?) : NodeInfo? {
         if (nodes?.isEmpty() == true) return null
         NodePinger.execute(nodes, null)
         val nodeList : List<NodeInfo> =java.util.ArrayList<NodeInfo>(nodes)

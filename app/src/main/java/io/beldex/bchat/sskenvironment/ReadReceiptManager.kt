@@ -14,7 +14,7 @@ class ReadReceiptManager: SSKEnvironment.ReadReceiptManagerProtocol {
         if (TextSecurePreferences.isReadReceiptsEnabled(context)) {
 
             // Redirect message to master device conversation
-            var address = Address.fromSerialized(fromRecipientId)
+            val address = Address.fromSerialized(fromRecipientId)
             for (timestamp in sentTimestamps) {
                 Log.i("Beldex", "Received encrypted read receipt: (XXXXX, $timestamp)")
                 DatabaseComponent.get(context).mmsSmsDatabase().incrementReadReceiptCount(SyncMessageId(address, timestamp), readTimestamp)

@@ -12,10 +12,9 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import io.beldex.bchat.R;
 
-import io.beldex.bchat.components.emoji.parsing.EmojiParser;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libbchat.utilities.Util;
-import io.beldex.bchat.components.emoji.EmojiProvider.EmojiDrawable;
+
 import io.beldex.bchat.components.emoji.parsing.EmojiParser;
 import com.beldex.libsignal.utilities.guava.Optional;
 
@@ -29,7 +28,7 @@ public class EmojiTextView extends AppCompatTextView {
   private float        originalFontSize;
   private boolean      useSystemEmoji;
   private boolean      sizeChangeInProgress;
-  private int          maxLength;
+  private final int          maxLength;
   private CharSequence overflowText;
   private CharSequence previousOverflowText;
 

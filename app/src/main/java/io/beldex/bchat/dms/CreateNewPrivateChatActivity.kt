@@ -38,7 +38,7 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
     private lateinit var binding: ActivityCreateNewPrivateChatBinding
     private var shareButtonLastClickTime: Long = 0
 
-    var isKeyboardShowing = false
+    private var isKeyboardShowing = false
         set(value) {
             field = value; handleIsKeyboardShowingChanged()
         }
@@ -116,7 +116,7 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
                     s: CharSequence, start: Int,
                     before: Int, count: Int
                 ) {
-                    if (s.length == 0){
+                    if (s.isEmpty()){
                         createPrivateChatButton.isEnabled = false
                         createPrivateChatButton.setTextColor(ContextCompat.getColor(this@CreateNewPrivateChatActivity, R.color.disable_button_text_color))
                         createPrivateChatButton.background =

@@ -57,7 +57,6 @@ import android.content.pm.ServiceInfo
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import io.beldex.bchat.ApplicationContext
-import io.beldex.bchat.service.WebRtcCallService.Companion.ACTION_ICE_CONNECTED
 
 @AndroidEntryPoint
 class WebRtcCallService: LifecycleService(), CallManager.WebRtcListener {
@@ -80,7 +79,6 @@ class WebRtcCallService: LifecycleService(), CallManager.WebRtcListener {
         const val ACTION_SCREEN_ON = "SCREEN_ON" //SteveJosephh21 -
         const val ACTION_CHECK_TIMEOUT = "CHECK_TIMEOUT"
         const val ACTION_CHECK_RECONNECT = "CHECK_RECONNECT"
-        const val ACTION_CHECK_RECONNECT_TIMEOUT = "CHECK_RECONNECT_TIMEOUT"
         const val ACTION_IS_IN_CALL_QUERY = "IS_IN_CALL"
         const val ACTION_WANTS_TO_ANSWER = "WANTS_TO_ANSWER"
 
@@ -91,9 +89,7 @@ class WebRtcCallService: LifecycleService(), CallManager.WebRtcListener {
         const val ACTION_ICE_CONNECTED = "ICE_CONNECTED"
 
         const val EXTRA_RECIPIENT_ADDRESS = "RECIPIENT_ID"
-        const val EXTRA_ENABLED = "ENABLED"
         const val EXTRA_AUDIO_COMMAND = "AUDIO_COMMAND"
-        const val EXTRA_SWAPPED = "is_video_swapped"
         const val EXTRA_MUTE = "mute_value"
         const val EXTRA_AVAILABLE = "enabled_value"
         const val EXTRA_REMOTE_DESCRIPTION = "remote_description"
@@ -105,7 +101,6 @@ class WebRtcCallService: LifecycleService(), CallManager.WebRtcListener {
         const val EXTRA_RESULT_RECEIVER = "result_receiver"
         const val EXTRA_WANTS_TO_ANSWER = "wants_to_answer"
 
-        const val INVALID_NOTIFICATION_ID = -1
         private const val TIMEOUT_SECONDS = 30L
         private const val RECONNECT_SECONDS = 5L
         private const val MAX_RECONNECTS = 5
@@ -821,13 +816,6 @@ class WebRtcCallService: LifecycleService(), CallManager.WebRtcListener {
                 .putExtra(EXTRA_CALL_ID, callId)
             context.startService(intent)
         }
-    }
-
-    private abstract class FailureListener<V>(
-        expectedState: CallState,
-        expectedCallId: UUID?,
-        getState: () -> Pair<CallState, UUID?>): StateAwareListener<V>(expectedState, expectedCallId, getState) {
-        override fun onSuccessContinue(result: V) {}
     }
 
     private abstract class SuccessOnlyListener<V>(

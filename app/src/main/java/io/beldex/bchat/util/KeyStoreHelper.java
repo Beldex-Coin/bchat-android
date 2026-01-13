@@ -120,7 +120,7 @@ public class KeyStoreHelper {
 
     public static boolean hasStoredPasswords(@NonNull Context context) {
         SharedPreferences prefs = context.getSharedPreferences(SecurityConstants.WALLET_PASS_PREFS_NAME, Context.MODE_PRIVATE);
-        return prefs.getAll().size() > 0;
+        return !prefs.getAll().isEmpty();
     }
 
     public static String loadWalletUserPass(@NonNull Context context, String wallet) throws BrokenPasswordStoreException {

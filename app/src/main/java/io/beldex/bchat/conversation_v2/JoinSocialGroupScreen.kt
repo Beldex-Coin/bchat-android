@@ -100,7 +100,7 @@ fun JoinSocialGroupScreen(
 ) {
     val context = LocalContext.current
     val activity = (context as? Activity)
-    val lifecycleOwner = LocalLifecycleOwner.current
+    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
 
     var showLoader by remember { mutableStateOf(false) }
 
@@ -368,7 +368,7 @@ fun joinPublicChatIfPossible(url: String, lifecycleOwner: LifecycleOwner, contex
             withContext(Dispatchers.Main) {
                 val recipient = Recipient.from(context, Address.fromSerialized(groupID), false)
                 openConversationActivity(threadID, recipient, activity!!)
-                activity?.finish()
+                activity.finish()
             }
         } catch (e: Exception) {
             Log.e("Beldex", "Couldn't join social group.", e)

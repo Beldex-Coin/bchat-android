@@ -194,9 +194,7 @@ public class AttachmentDatabase extends Database {
     }
   }
 
-  public void setTransferProgressFailed(AttachmentId attachmentId, long mmsId)
-      throws MmsException
-  {
+  public void setTransferProgressFailed(AttachmentId attachmentId, long mmsId) {
     SQLiteDatabase database = databaseHelper.getWritableDatabase();
     ContentValues  values   = new ContentValues();
     values.put(TRANSFER_STATE, AttachmentTransferProgress.TRANSFER_PROGRESS_FAILED);
@@ -216,7 +214,7 @@ public class AttachmentDatabase extends Database {
       if (cursor != null && cursor.moveToFirst()) {
         List<DatabaseAttachment> list = getAttachment(cursor);
 
-        if (list != null && list.size() > 0) {
+        if (list != null && !list.isEmpty()) {
           return list.get(0);
         }
       }

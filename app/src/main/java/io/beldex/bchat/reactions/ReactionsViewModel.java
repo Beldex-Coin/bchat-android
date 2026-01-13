@@ -22,7 +22,7 @@ public class ReactionsViewModel extends ViewModel {
   private final MessageId           messageId;
   private final ReactionsRepository repository;
 
-  private MutableLiveData<Integer> reactionCount;
+  private final MutableLiveData<Integer> reactionCount;
 
   public LiveData<Integer> getReactionCount(){
     return this.reactionCount;

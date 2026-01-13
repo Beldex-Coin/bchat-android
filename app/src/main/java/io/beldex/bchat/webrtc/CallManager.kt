@@ -151,7 +151,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
     private val outgoingIceDebouncer = Debouncer(200L)
 
     var floatingRenderer: SurfaceViewRenderer? = null
-    var remoteRotationSink: RemoteRotationVideoProxySink? = null
+    private var remoteRotationSink: RemoteRotationVideoProxySink? = null
     var fullscreenRenderer: SurfaceViewRenderer? = null
     private var peerConnectionFactory: PeerConnectionFactory? = null
 
@@ -866,7 +866,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
 
     fun isInitiator(): Boolean = peerConnection?.isInitiator() == true
 
-    fun isCameraFrontFacing() = localCameraState.activeDirection != CameraState.Direction.BACK
+    private fun isCameraFrontFacing() = localCameraState.activeDirection != CameraState.Direction.BACK
 
     interface WebRtcListener: PeerConnection.Observer {
         fun onHangup()

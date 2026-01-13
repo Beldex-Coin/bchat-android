@@ -8,11 +8,6 @@ import androidx.annotation.WorkerThread;
 
 import com.annimon.stream.Stream;
 
-import io.beldex.bchat.jobmanager.persistence.ConstraintSpec;
-import io.beldex.bchat.jobmanager.persistence.DependencySpec;
-import io.beldex.bchat.jobmanager.persistence.FullSpec;
-import io.beldex.bchat.jobmanager.persistence.JobSpec;
-import io.beldex.bchat.jobmanager.persistence.JobStorage;
 import com.beldex.libbchat.messaging.utilities.Data;
 import com.beldex.libbchat.utilities.Debouncer;
 import com.beldex.libsignal.utilities.Log;
@@ -226,11 +221,8 @@ class JobController {
         if (chain.size() == 1 && chain.get(0).size() == 1) {
             Job solo = chain.get(0).get(0);
 
-            if (solo.getParameters().getMaxInstances() != Job.Parameters.UNLIMITED &&
-                    jobStorage.getJobInstanceCount(solo.getFactoryKey()) >= solo.getParameters().getMaxInstances())
-            {
-                return true;
-            }
+            return solo.getParameters().getMaxInstances() != Job.Parameters.UNLIMITED &&
+                    jobStorage.getJobInstanceCount(solo.getFactoryKey()) >= solo.getParameters().getMaxInstances();
         }
         return false;
     }

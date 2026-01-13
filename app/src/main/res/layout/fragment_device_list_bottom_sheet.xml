@@ -12,13 +12,13 @@
     <TextView
         android:id="@+id/editDisplayNameText"
         style="@style/BottomSheetActionItem"
-        android:drawableStart="@drawable/ic_baseline_edit_24"
-        android:text="@string/fragment_device_list_bottom_sheet_change_name_button_title"/>
+        android:text="@string/fragment_device_list_bottom_sheet_change_name_button_title"
+        app:drawableStartCompat="@drawable/ic_baseline_edit_24" />
 
     <TextView
         android:id="@+id/unlinkDeviceText"
         style="@style/BottomSheetActionItem"
-        android:drawableStart="@drawable/ic_phonelink_erase_white_24dp"
-        android:text="@string/fragment_device_list_bottom_sheet_unlink_device_button_title" />
+        android:text="@string/fragment_device_list_bottom_sheet_unlink_device_button_title"
+        app:drawableStartCompat="@drawable/ic_phonelink_erase_white_24dp" />
 
 </LinearLayout>

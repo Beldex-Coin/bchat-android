@@ -108,7 +108,7 @@ class BeldexBackupFilesDatabase(context: Context, databaseHelper: SQLCipherOpenH
         return deleteBackupFile(record.id)
     }
 
-    fun deleteBackupFile(id: Long): Boolean {
+    private fun deleteBackupFile(id: Long): Boolean {
         if (id < 0) {
             throw IllegalArgumentException("ID must be zero or a positive number.")
         }

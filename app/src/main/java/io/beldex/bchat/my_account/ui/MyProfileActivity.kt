@@ -93,7 +93,7 @@ class MyProfileActivity: AppCompatActivity() {
     val viewModel: MyAccountViewModel by viewModels()
     private var shareButtonLastClickTime: Long = 0
 
-    var profileEditable:Boolean = false
+    private var profileEditable:Boolean = false
     private fun isBnsHolder():String? = TextSecurePreferences.getIsBNSHolder(this)
 
     private val TAG = "MyProfileActivity"
@@ -275,7 +275,10 @@ class MyProfileActivity: AppCompatActivity() {
             Permissions.with(this)
                 .request(Manifest.permission.CAMERA)
                 .onAnyResult {
-                    tempFile = avatarSelection.startAvatarSelection( false, true)
+                    tempFile = avatarSelection.startAvatarSelection(
+                        includeClear=false,
+                        attemptToIncludeCamera=true
+                    )
                 }
                 .execute()
         } else {

@@ -6,14 +6,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import timber.log.Timber;
-
 public class TransactionHistory {
     static {
         System.loadLibrary("app");
     }
 
-    private long handle;
+    private final long handle;
 
     int accountIndex;
 

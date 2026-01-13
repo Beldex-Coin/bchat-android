@@ -50,14 +50,14 @@ class SearchViewModel @Inject constructor(
     fun onMoveUp() {
         debouncer.clear()
         val messages = result.value!!.getResults() as CursorList<MessageResult?>
-        val position = Math.min(result.value!!.position + 1, messages.size - 1)
+        val position =(result.value!!.position + 1).coerceAtMost(messages.size - 1)
         result.setValue(SearchResult(messages, position), false)
     }
 
     fun onMoveDown() {
         debouncer.clear()
         val messages = result.value!!.getResults() as CursorList<MessageResult?>
-        val position = Math.max(result.value!!.position - 1, 0)
+        val position =(result.value!!.position - 1).coerceAtLeast(0)
         result.setValue(SearchResult(messages, position), false)
     }
 

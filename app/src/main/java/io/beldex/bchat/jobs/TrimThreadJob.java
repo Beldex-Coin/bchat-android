@@ -32,7 +32,7 @@ public class TrimThreadJob extends BaseJob {
 
     private static final String KEY_THREAD_ID = "thread_id";
 
-    private long threadId;
+    private final long threadId;
 
     public TrimThreadJob(long threadId) {
         this(new Job.Parameters.Builder().setQueue("TrimThreadJob").build(), threadId);

@@ -28,7 +28,7 @@ import java.util.Map;
 // a simplified Levin Writer WITHOUT support for arrays
 
 public class LevinWriter {
-    private DataOutput out;
+    private final DataOutput out;
 
     public LevinWriter(DataOutput out) {
         this.out = out;

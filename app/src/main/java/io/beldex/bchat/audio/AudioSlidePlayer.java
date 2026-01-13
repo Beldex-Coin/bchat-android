@@ -6,8 +6,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
@@ -15,7 +13,6 @@ import android.os.PowerManager.WakeLock;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.util.Pair;
-import io.beldex.bchat.mms.AudioSlide;
 
 import androidx.annotation.OptIn;
 import androidx.media3.common.AudioAttributes;
@@ -38,8 +35,6 @@ import io.beldex.bchat.mms.AudioSlide;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-
-import io.beldex.bchat.BuildConfig;
 
 public class AudioSlidePlayer implements SensorEventListener {
 

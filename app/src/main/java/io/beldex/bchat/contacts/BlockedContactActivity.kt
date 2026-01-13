@@ -26,8 +26,8 @@ class BlockedContactActivity : io.beldex.bchat.PassphraseRequiredActionBarActivi
     }
 
     companion object {
-        val usersToExcludeKey = "usersToExcludeKey"
-        val emptyStateTextKey = "emptyStateTextKey"
+        const val usersToExcludeKey = "usersToExcludeKey"
+        const val emptyStateTextKey = "emptyStateTextKey"
     }
 
     // region Lifecycle

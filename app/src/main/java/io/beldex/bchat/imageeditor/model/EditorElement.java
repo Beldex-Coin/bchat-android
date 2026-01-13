@@ -8,8 +8,6 @@ import androidx.annotation.Nullable;
 
 import io.beldex.bchat.imageeditor.Renderer;
 import io.beldex.bchat.imageeditor.RendererContext;
-import io.beldex.bchat.imageeditor.Renderer;
-import io.beldex.bchat.imageeditor.RendererContext;
 
 import java.util.Iterator;
 import java.util.LinkedList;

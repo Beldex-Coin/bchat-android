@@ -1,38 +1,27 @@
 package io.beldex.bchat.preferences;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.DialogFragment;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 
-import io.beldex.bchat.home.HomeActivity;
 import io.beldex.bchat.permissions.Permissions;
 import io.beldex.bchat.util.Trimmer;
 
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libsignal.utilities.Log;
-import io.beldex.bchat.wallet.WalletSetupLoadingBar;
-import io.beldex.bchat.wallet.info.WalletInfoActivity;
-import io.beldex.bchat.wallet.utils.pincodeview.CustomPinActivity;
-import io.beldex.bchat.wallet.utils.pincodeview.managers.AppLock;
-import io.beldex.bchat.wallet.utils.pincodeview.managers.LockManager;
 
 import io.beldex.bchat.R;
 
@@ -152,7 +141,7 @@ public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
-      if (newValue == null || ((String)newValue).trim().length() == 0) {
+      if (newValue == null || ((String) newValue).trim().isEmpty()) {
         return false;
       }
 

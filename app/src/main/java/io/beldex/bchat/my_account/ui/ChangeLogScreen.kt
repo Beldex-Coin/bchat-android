@@ -28,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -80,7 +81,7 @@ private fun LogItem(
         mutableStateOf(false)
     }
     val iconRotation by remember(isExpanded) {
-        mutableStateOf(if (isExpanded) 180f else 0f)
+        mutableFloatStateOf(if (isExpanded) 180f else 0f)
     }
     val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(LocalContext.current) == UiMode.NIGHT
     val borderStroke = if (isDarkTheme) {

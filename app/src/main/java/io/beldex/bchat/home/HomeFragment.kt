@@ -15,7 +15,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.provider.Settings
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.view.Gravity
@@ -97,7 +96,6 @@ import io.beldex.bchat.model.AsyncTaskCoroutine
 import io.beldex.bchat.model.Wallet
 import io.beldex.bchat.my_account.ui.MyAccountActivity
 import io.beldex.bchat.my_account.ui.MyAccountScreens
-import io.beldex.bchat.my_account.ui.MyProfileActivity
 import io.beldex.bchat.onboarding.ui.EXTRA_PIN_CODE_ACTION
 import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.preferences.NotificationSettingsActivity
@@ -147,6 +145,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.roundToInt
+import androidx.core.net.toUri
 
 
 @AndroidEntryPoint
@@ -168,7 +167,7 @@ class HomeFragment : BaseFragment(), ConversationClickListener,
             }
     }
 
-    val homeViewModel : HomeFragmentViewModel by viewModels()
+    private val homeViewModel : HomeFragmentViewModel by viewModels()
 
     @Inject
     lateinit var threadDb : ThreadDatabase
@@ -218,7 +217,7 @@ class HomeFragment : BaseFragment(), ConversationClickListener,
         HomeAdapter(context=requireActivity(), listener=this, threadDB=threadDb)
     }
 
-    private val globalSearchAdapter=GlobalSearchAdapter { model ->
+    private val globalSearchAdapter=GlobalSearchAdapter { _ ->
     }
 
     //New Line
@@ -275,8 +274,6 @@ class HomeFragment : BaseFragment(), ConversationClickListener,
                             is SearchActivityResults.SavedMessage -> {
                                 passGlobalSearchAdapterModelSavedMessagesValue(result.address)
                             }
-
-                            else -> {}
                         }
                     }
             }
@@ -304,7 +301,8 @@ class HomeFragment : BaseFragment(), ConversationClickListener,
             )=true
 
             override fun onSwiped(viewHolder : RecyclerView.ViewHolder, direction : Int) {
-                val position=viewHolder.adapterPosition
+                val position=viewHolder.bindingAdapterPosition
+                if (position == RecyclerView.NO_POSITION) return
                 val thread=homeAdapter.data[position]
                 deleteConversation(thread, position)
             }
@@ -682,13 +680,6 @@ class HomeFragment : BaseFragment(), ConversationClickListener,
             )
             resultLauncher.launch(it)
         }
-    }
-
-    private fun callShowQrCode() {
-        showQRCode()
-        Handler(Looper.getMainLooper()).postDelayed({
-            binding.drawerLayout.closeDrawer(GravityCompat.END)
-        }, 200)
     }
 
     private fun registerObservers() {
@@ -1215,15 +1206,6 @@ class HomeFragment : BaseFragment(), ConversationClickListener,
         }
     }
 
-    private fun setNotifyType(thread : ThreadRecord, newNotifyType : Int) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            recipientDatabase.setNotifyType(thread.recipient, newNotifyType)
-            withContext(Dispatchers.Main) {
-                binding.recyclerView.adapter!!.notifyDataSetChanged()
-            }
-        }
-    }
-
     private fun setConversationPinned(
         threadId : Long,
         pinned : Boolean
@@ -1347,10 +1329,7 @@ class HomeFragment : BaseFragment(), ConversationClickListener,
                     if (selectedNode == null) { // autoselect
                         selectedNode=autoselect(favourites)
                     } else {
-                        //Steve Josephh21
-                        if (selectedNode != null) {
-                            selectedNode.testRpcService()
-                        }
+                        selectedNode.testRpcService()
                     }
                 } else throw IllegalStateException()
                 return if (selectedNode != null && selectedNode.isValid) {
@@ -1375,9 +1354,6 @@ class HomeFragment : BaseFragment(), ConversationClickListener,
 
     inner class DownloadNodeListFileInHomeScreenAsyncTask(private val mContext : Context) :
         AsyncTaskCoroutine<String?, String?>() {
-        override fun onPreExecute() {
-            super.onPreExecute()
-        }
 
         override fun doInBackground(vararg downloadUrl : String?) : String? {
             var input : InputStream?=null
@@ -1443,7 +1419,7 @@ class HomeFragment : BaseFragment(), ConversationClickListener,
     fun autoselect(nodes : Set<NodeInfo?>) : NodeInfo? {
         if (nodes.isEmpty()) return null
         NodePinger.execute(nodes, null)
-        val nodeList : ArrayList<NodeInfo?> =ArrayList<NodeInfo?>(nodes)
+        val nodeList : ArrayList<NodeInfo?> =ArrayList(nodes)
         Collections.sort(nodeList, NodeInfo.BestNodeComparator)
         val rnd=Random().nextInt(nodeList.size)
         return nodeList[rnd]
@@ -1475,7 +1451,7 @@ class HomeFragment : BaseFragment(), ConversationClickListener,
 
     private fun help() {
         val intent=Intent(Intent.ACTION_SENDTO)
-        intent.data=Uri.parse("mailto:") // only email apps should handle this
+        intent.data="mailto:".toUri() // only email apps should handle this
         intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("support@beldex.io"))
         intent.putExtra(Intent.EXTRA_SUBJECT, "")
         startActivity(intent)
@@ -1492,14 +1468,6 @@ class HomeFragment : BaseFragment(), ConversationClickListener,
             )
             startActivity(it)
         }
-    }
-
-    private fun callAppPermission() {
-        val intent=Intent()
-        intent.action=Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-        val uri=Uri.fromParts("package", requireActivity().packageName, null)
-        intent.data=uri
-        push(intent)
     }
 
     private fun showPrivacySettings() {
@@ -1536,40 +1504,12 @@ class HomeFragment : BaseFragment(), ConversationClickListener,
         }, 200)
     }
 
-    private var callSettingsActivityResultLauncher=registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val extras=Bundle()
-            extras.putParcelable(
-                ConversationFragmentV2.ADDRESS,
-                result.data!!.parcelable(ConversationFragmentV2.ADDRESS)
-            )
-            extras.putLong(
-                ConversationFragmentV2.THREAD_ID,
-                result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID, -1)
-            )
-            extras.putParcelable(
-                ConversationFragmentV2.URI,
-                result.data!!.parcelable(ConversationFragmentV2.URI)
-            )
-            extras.putString(
-                ConversationFragmentV2.TYPE,
-                result.data!!.getStringExtra(ConversationFragmentV2.TYPE)
-            )
-            replaceFragment(ConversationFragmentV2(), null, extras)
-        } else {
-            homeAdapter.notifyDataSetChanged()
-        }
-    }
-
     private fun openMyWallet() {
         val walletName=TextSecurePreferences.getWalletName(requireContext())
         val walletPassword=TextSecurePreferences.getWalletPassword(requireContext())
         if (walletName != null && walletPassword != null) {
             //startWallet(walletName, walletPassword, fingerprintUsed = false, streetmode = false)
-            val lockManager : LockManager<CustomPinActivity> =
-                LockManager.getInstance() as LockManager<CustomPinActivity>
+            val lockManager: LockManager<CustomPinActivity> =LockManager.getInstance() as LockManager<CustomPinActivity>
             lockManager.enableAppLock(requireContext(), CustomPinActivity::class.java)
             Intent(requireContext(), CustomPinActivity::class.java).also {
                 if (TextSecurePreferences.getWalletEntryPassword(requireContext()) != null) {
@@ -1608,50 +1548,6 @@ class HomeFragment : BaseFragment(), ConversationClickListener,
                 replaceFragment(WalletFragment(), WalletFragment::class.java.name, null)
             }
         }
-
-    private fun showQRCode() {
-//        Intent(requireContext(), ShowQRCodeWithScanQRCodeActivity::class.java).also {
-//            showQRCodeWithScanQRCodeActivityResultLauncher.launch(it)
-//        }
-        //Intent(activity, MyProfileActivity::class.java).also {
-//            it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.MyAccountScreen.route)
-        //startActivity(it)
-        //}
-
-        val intent=Intent(activity, MyProfileActivity::class.java)
-        intent.putExtra("profile_editable", true)
-        startActivity(intent)
-    }
-
-    private var showQRCodeWithScanQRCodeActivityResultLauncher=
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val extras=Bundle()
-                extras.putParcelable(
-                    ConversationFragmentV2.ADDRESS,
-                    result.data!!.parcelable(ConversationFragmentV2.ADDRESS)
-                )
-                extras.putLong(
-                    ConversationFragmentV2.THREAD_ID,
-                    result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID, -1)
-                )
-                extras.putParcelable(
-                    ConversationFragmentV2.URI,
-                    result.data!!.parcelable(ConversationFragmentV2.URI)
-                )
-                extras.putString(
-                    ConversationFragmentV2.TYPE,
-                    result.data!!.getStringExtra(ConversationFragmentV2.TYPE)
-                )
-                replaceFragment(ConversationFragmentV2(), null, extras)
-            }
-        }
-
-    private fun showPath() {
-        Intent(requireContext(), PathActivity::class.java).also {
-            show(it)
-        }
-    }
 
     override fun showMessageRequests() {
         Intent(requireContext(), MyAccountActivity::class.java).also {

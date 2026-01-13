@@ -8,10 +8,6 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import io.beldex.bchat.net.CallRequestController;
-import io.beldex.bchat.net.CompositeRequestController;
-import io.beldex.bchat.net.ContentProxySafetyInterceptor;
-import io.beldex.bchat.net.RequestController;
 import static com.beldex.libbchat.utilities.Util.readFully;
 import io.beldex.bchat.net.CallRequestController;
 import io.beldex.bchat.net.CompositeRequestController;
@@ -27,7 +23,6 @@ import com.beldex.libbchat.utilities.MediaTypes;
 import com.beldex.libbchat.utilities.concurrent.SignalExecutors;
 import com.beldex.libsignal.utilities.Log;
 import com.beldex.libsignal.utilities.guava.Optional;
-import io.beldex.bchat.linkpreview.LinkPreviewUtil.OpenGraph;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

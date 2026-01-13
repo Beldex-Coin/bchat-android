@@ -2,8 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:id="@+id/nodeListFragment"
-    android:layout_height="match_parent"
-    tools:context="io.beldex.bchat.wallet.node.activity.NodeListFragment">
+    android:layout_height="match_parent">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView

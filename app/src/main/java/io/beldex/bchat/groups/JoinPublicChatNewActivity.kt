@@ -98,7 +98,7 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
                 s: CharSequence, start: Int,
                 before: Int, count: Int
             ) {
-                if (s.length == 0){
+                if (s.isEmpty()){
                     binding.joinPublicChatButton.isEnabled = false
                     binding.joinPublicChatButton.setTextColor(ContextCompat.getColor(this@JoinPublicChatNewActivity, R.color.disable_button_text_color))
                     binding.joinPublicChatButton.background =
@@ -205,7 +205,7 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
     }
     // endregion
 
-    fun joinPublicChatIfPossible(url: String) {
+    private fun joinPublicChatIfPossible(url: String) {
         // Add "http" if not entered explicitly
         val stringWithExplicitScheme = if (!url.startsWith("http")) "http://$url" else url
         Log.d("Beldex","join group URL  $url")

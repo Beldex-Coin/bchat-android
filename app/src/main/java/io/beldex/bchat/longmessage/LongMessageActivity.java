@@ -55,11 +55,10 @@ public class LongMessageActivity extends PassphraseRequiredActionBarActivity {
   public boolean onOptionsItemSelected(MenuItem item) {
     super.onOptionsItemSelected(item);
 
-    switch (item.getItemId()) {
-      case android.R.id.home:
-        finish();
-        return true;
-    }
+      if (item.getItemId() == android.R.id.home) {
+          finish();
+          return true;
+      }
 
     return false;
   }

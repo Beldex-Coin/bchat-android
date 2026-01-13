@@ -24,8 +24,8 @@ import io.beldex.bchat.R;
 
 public class DateRangePicker extends Dialog implements OnClickListener, OnTabSelectedListener {
     final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-    private DateRangePicker.OnCalenderClickListener onCalenderClickListener;
-    private Context context;
+    private final DateRangePicker.OnCalenderClickListener onCalenderClickListener;
+    private final Context context;
     private ViewFlipper viewFlipper;
     private CalendarView startDateCalendarView;
     private CalendarView endDateCalendarView;
@@ -35,8 +35,8 @@ public class DateRangePicker extends Dialog implements OnClickListener, OnTabSel
     private TextView btnPositive;
     private long selectedFromDate;
     private long selectedToDate = 0L;
-    private Calendar startDateCal = Calendar.getInstance();
-    private Calendar endDateCal = Calendar.getInstance();
+    private final Calendar startDateCal = Calendar.getInstance();
+    private final Calendar endDateCal = Calendar.getInstance();
     private TabLayout tabLayout;
     private String startDateTitle = "start date";
     private String endDateTitle = "end date";

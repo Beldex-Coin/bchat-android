@@ -21,6 +21,7 @@ import org.xbill.DNS.TXTRecord;
 import org.xbill.DNS.Type;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +55,7 @@ public class OpenAliasHelper {
     }
 
     private static class DnsTxtResolver extends AsyncTask<String, Void, Boolean> {
-        List<String> txts = new ArrayList<>();
+        final List<String> txts = new ArrayList<>();
         boolean dnssec = false;
 
         private final OnResolvedListener resolvedListener;
@@ -90,7 +91,7 @@ public class OpenAliasHelper {
                 SimpleResolver sr = new SimpleResolver(DNSSEC_SERVERS[new Random().nextInt(DNSSEC_SERVERS.length)]);
                 ValidatingResolver vr = new ValidatingResolver(sr);
                 vr.setTimeout(0, DNS_LOOKUP_TIMEOUT);
-                vr.loadTrustAnchors(new ByteArrayInputStream(ROOT.getBytes("ASCII")));
+                vr.loadTrustAnchors(new ByteArrayInputStream(ROOT.getBytes(StandardCharsets.US_ASCII)));
                 Record qr = Record.newRecord(Name.fromConstantString(name + "."), Type.TXT, DClass.IN);
                 Message response = vr.send(Message.newQuery(qr));
                 final int rcode = response.getRcode();

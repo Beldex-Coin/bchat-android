@@ -1,7 +1,5 @@
 package io.beldex.bchat.util;
 
-import android.util.Log;
-
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.HttpUrl;

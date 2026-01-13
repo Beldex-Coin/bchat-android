@@ -19,7 +19,7 @@ class IncomingRinger(private val context: Context) {
     }
 
     private val vibrator: Vibrator? = ServiceUtil.getVibrator(context)
-    var mediaPlayer: MediaPlayer? = null
+    private var mediaPlayer: MediaPlayer? = null
 
     val isRinging: Boolean
         get() = mediaPlayer?.isPlaying ?: false

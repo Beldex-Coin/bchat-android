@@ -28,7 +28,7 @@ import net.zetetic.database.sqlcipher.SQLiteQueryBuilder;
 
 import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.Util;
-import io.beldex.bchat.database.MessagingDatabase.SyncMessageId;
+
 import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
 import io.beldex.bchat.database.model.MessageRecord;
 import io.beldex.bchat.dependencies.DatabaseComponent;

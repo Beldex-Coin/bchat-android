@@ -37,7 +37,7 @@ public class AvatarDownloadJob extends BaseJob {
 
     private static final String KEY_GROUP_ID = "group_id";
 
-    private String groupId;
+    private final String groupId;
 
     public AvatarDownloadJob(@NonNull String groupId) {
         this(new Job.Parameters.Builder()
@@ -120,8 +120,7 @@ public class AvatarDownloadJob extends BaseJob {
 
     @Override
     public boolean onShouldRetry(@NonNull Exception exception) {
-        if (exception instanceof IOException) return true;
-        return false;
+        return exception instanceof IOException;
     }
 
     public static final class Factory implements Job.Factory<AvatarDownloadJob> {

@@ -169,7 +169,6 @@ class PinCodeViewModel @Inject constructor(
                             }
                         }
                         PinCodeSteps.EnterPin -> {
-                            println("called wallet pin changed 1")
                             if (action == PinCodeAction.ChangePinCode.action && newPin == savedPassword) {
                                 _state.update {
                                     it.copy(
@@ -264,7 +263,6 @@ class PinCodeViewModel @Inject constructor(
                     }
                 }
                 PinCodeSteps.EnterPin -> {
-                    println("called wallet pin changed $action and $newPin and $walletSavedPassword")
                     if (action == PinCodeAction.ChangeWalletPin.action && newPin == walletSavedPassword) {
                         _state.update {
                             it.copy(

@@ -111,11 +111,11 @@ class ScanQRCodeActivity : PassphraseRequiredActionBarActivity(), ScanQRCodePlac
     }
 
     // region Interaction
-    fun handleQRCodeScanned(hexEncodedPublicKey: String) {
+    private fun handleQRCodeScanned(hexEncodedPublicKey: String) {
         createPrivateChatIfPossible(hexEncodedPublicKey)
     }
 
-    fun createPrivateChatIfPossible(hexEncodedPublicKey: String) {
+    private fun createPrivateChatIfPossible(hexEncodedPublicKey: String) {
         if (!PublicKeyValidation.isValid(hexEncodedPublicKey)) { return Toast.makeText(this, R.string.invalid_bchat_id, Toast.LENGTH_SHORT).show() }
        /* val recipient = Recipient.from(this, Address.fromSerialized(hexEncodedPublicKey), false)
         val intent = Intent(this, ConversationActivityV2::class.java)

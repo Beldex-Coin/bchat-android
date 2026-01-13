@@ -24,6 +24,7 @@ import io.beldex.bchat.database.model.ReactionRecord
 import io.beldex.bchat.databinding.ViewEmojiReactionsBinding
 import java.util.Collections
 import java.util.Date
+import kotlin.math.max
 
 class EmojiReactionsView : ConstraintLayout, OnTouchListener {
     companion object {
@@ -235,8 +236,8 @@ class EmojiReactionsView : ConstraintLayout, OnTouchListener {
         internal val isMms: Boolean,
         internal var emoji: String?,
         internal var count: Long,
-        internal val sortIndex: Long,
-        internal var lastSeen: Long,
+        private val sortIndex: Long,
+        private var lastSeen: Long,
         internal var userWasSender: Boolean
     ) : Comparable<Reaction?> {
         fun update(emoji: String, count: Long, lastSeen: Long, userWasSender: Boolean) {
@@ -245,13 +246,13 @@ class EmojiReactionsView : ConstraintLayout, OnTouchListener {
                     this.emoji = emoji
                 }
             }
-            this.count = this.count + count
-            this.lastSeen = Math.max(this.lastSeen, lastSeen)
+            this.count+=count
+            this.lastSeen = max(this.lastSeen, lastSeen)
             this.userWasSender = this.userWasSender || userWasSender
         }
         fun merge(other: Reaction): Reaction {
-            count = count + other.count
-            lastSeen = Math.max(lastSeen, other.lastSeen)
+            count+=other.count
+            lastSeen = max(lastSeen, other.lastSeen)
             userWasSender = userWasSender || other.userWasSender
             return this
         }

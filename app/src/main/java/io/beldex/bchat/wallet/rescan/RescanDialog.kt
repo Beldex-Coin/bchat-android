@@ -43,7 +43,7 @@ import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.wallet.jetpackcomposeUI.rescan.RescanScreen
 import io.beldex.bchat.R
 
-class RescanDialog(val contextHomeActivity: HomeActivity, private val daemonBlockChainHeight: Long): DialogFragment() {
+class RescanDialog(private val contextHomeActivity: HomeActivity, private val daemonBlockChainHeight: Long): DialogFragment() {
     private var dates = ArrayMap<String,Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {

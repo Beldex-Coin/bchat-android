@@ -7,8 +7,8 @@ import android.text.TextUtils;
 import android.widget.TextView;
 
 public class EmojiFilter implements InputFilter {
-  private TextView view;
-  private boolean  jumboEmoji;
+  private final TextView view;
+  private final boolean  jumboEmoji;
 
   public EmojiFilter(TextView view, boolean jumboEmoji) {
     this.view       = view;

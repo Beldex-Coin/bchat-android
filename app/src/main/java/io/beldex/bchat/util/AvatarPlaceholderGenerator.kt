@@ -18,11 +18,10 @@ object AvatarPlaceholderGenerator {
     @SuppressLint("ResourceAsColor")
     @JvmStatic
     fun generate(context: Context, pixelSize: Int, hashString: String, displayName: String?): BitmapDrawable {
-        val hash: Long
-        if (hashString.length >= 12 && hashString.matches(Regex("^[0-9A-Fa-f]+\$"))) {
-            hash = getSha512(hashString).substring(0 until 12).toLong(16)
+        val hash: Long=if (hashString.length >= 12 && hashString.matches(Regex("^[0-9A-Fa-f]+\$"))) {
+            getSha512(hashString).substring(0 until 12).toLong(16)
         } else {
-            hash = 0
+            0
         }
 
         // Do not cache color array, it may be different depends on the current theme.
@@ -30,7 +29,11 @@ object AvatarPlaceholderGenerator {
         val colorPrimary = colorArray[(hash % colorArray.size).toInt()]
 
         val labelText = when {
-            !TextUtils.isEmpty(displayName) -> extractLabel(displayName!!.capitalize(Locale.ROOT))
+            !TextUtils.isEmpty(displayName) -> extractLabel(displayName!!.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.ROOT
+                ) else it.toString()
+            })
             !TextUtils.isEmpty(hashString) -> extractLabel(hashString)
             else -> EMPTY_LABEL
         }
@@ -56,8 +59,8 @@ object AvatarPlaceholderGenerator {
         return BitmapDrawable(context.resources, bitmap)
     }
 
-    fun extractLabel(content: String): String {
-        var trimmedContent = content.trim()
+    private fun extractLabel(content: String): String {
+        val trimmedContent = content.trim()
         if (trimmedContent.isEmpty()) return EMPTY_LABEL
         return if (trimmedContent.length > 2 && trimmedContent.startsWith("bd")) {
             trimmedContent[2].toString()

@@ -10,13 +10,13 @@ import io.reactivex.disposables.Disposable
  * A lifecycle-aware [Disposable] that, after being bound to a lifecycle, will automatically dispose all contained disposables at the proper time.
  */
 class LifecycleDisposable : DefaultLifecycleObserver {
-  val disposables: CompositeDisposable = CompositeDisposable()
+  private val disposables: CompositeDisposable = CompositeDisposable()
 
   fun bindTo(lifecycleOwner: LifecycleOwner): LifecycleDisposable {
     return bindTo(lifecycleOwner.lifecycle)
   }
 
-  fun bindTo(lifecycle: Lifecycle): LifecycleDisposable {
+  private fun bindTo(lifecycle: Lifecycle): LifecycleDisposable {
     lifecycle.addObserver(this)
     return this
   }

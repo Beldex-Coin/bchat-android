@@ -39,10 +39,6 @@ class GlobalSearchInputLayout @JvmOverloads constructor(
         binding.searchClear.setOnClickListener(this)
     }
 
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-    }
-
     override fun onFocusChange(v: View?, hasFocus: Boolean) {
         if (v === binding.searchInput) {
             val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -67,7 +63,7 @@ class GlobalSearchInputLayout @JvmOverloads constructor(
         }
     }
 
-    fun clearSearch(clearFocus: Boolean) {
+    private fun clearSearch(clearFocus: Boolean) {
         binding.searchInput.text = null
         if (clearFocus) {
             binding.searchInput.clearFocus()

@@ -3,18 +3,15 @@ package io.beldex.bchat.wallet.utils.pincodeview.managers
 import android.app.Activity
 import android.content.Intent
 import android.hardware.fingerprint.FingerprintManager
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.compose.setContent
-import androidx.appcompat.widget.Toolbar
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -54,7 +51,6 @@ import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.Arrays
 
 /**
  * The activity that appears when the password needs to be set or has to be asked.
@@ -64,34 +60,29 @@ import java.util.Arrays
 @AndroidEntryPoint
 abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, View.OnClickListener,
     FingerprintUiHelper.Callback {
-    protected var mStepTextView: TextView? = null
-    protected var mForgotTextView: TextView? = null
+    private var mStepTextView: TextView? = null
     protected var mPinCodeRoundView: PinCodeRoundView? = null
     protected var mKeyboardView: KeyboardView? = null
-    protected var mFingerprintImageView: ImageView? = null
-    protected var mFingerprintTextView: TextView? = null
+    private var mFingerprintImageView: ImageView? = null
+    private var mFingerprintTextView: TextView? = null
 
-    protected var mLockManager: LockManager<*>? = null
+    private var mLockManager: LockManager<*>? = null
 
 
-    protected var mFingerprintManager: FingerprintManager? = null
-    protected var mFingerprintUiHelper: FingerprintUiHelper? = null
+    private var mFingerprintManager: FingerprintManager? = null
+    private var mFingerprintUiHelper: FingerprintUiHelper? = null
 
     /**
      * Returns the type of this [io.beldex.bchat.wallet.utils.pincodeview.managers.AppLockActivity]
      */
     var type: Int = AppLock.UNLOCK_PIN
         protected set
-    protected var mAttempts: Int = 1
+    private var mAttempts: Int = 1
     protected var mPinCode: String? = null
-
-    //Steve Josephh
-    protected var oldPinCode: String? = null
-
-    protected var mOldPinCode: String? = null
-
-    protected var changePin: Boolean = false
-    protected var sendAuthentication: Boolean = false
+    private var oldPinCode: String? = null
+    private var mOldPinCode: String? = null
+    private var changePin: Boolean = false
+    private var sendAuthentication: Boolean = false
     private var pinCodeAction = PinCodeAction.VerifyWalletPin .action
 
     /**
@@ -258,35 +249,6 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
         }
     }
 
-    private fun initializeToolbar() {
-        /*Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-//    actionBar.setHomeButtonEnabled(false);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_back);
-        actionBar.setTitle("Wallet Password");*/
-        val actionbar = supportActionBar
-        actionbar!!.setDisplayShowHomeEnabled(false)
-        actionbar.setDisplayShowTitleEnabled(false)
-        actionbar.setDisplayHomeAsUpEnabled(false)
-        actionbar.setHomeButtonEnabled(false)
-
-        actionbar.setCustomView(R.layout.bchat_logo_action_bar_content)
-        actionbar.setDisplayShowCustomEnabled(true)
-
-        val rootView = actionbar.customView.parent as Toolbar
-        rootView.setPadding(0, 0, 0, 0)
-        rootView.setContentInsetsAbsolute(0, 0)
-
-        val backButton = actionbar.customView.findViewById<View>(R.id.back_button)
-        val titleName = actionbar.customView.findViewById<TextView>(R.id.title_name)
-        titleName.text = getString(R.string.activity_wallet_password_page_title)
-        backButton.setOnClickListener { view: View? ->
-            onBackPressed()
-        }
-    }
-
     /* @Override
     public boolean onSupportNavigateUp() {
         if (super.onSupportNavigateUp()) return true;
@@ -338,7 +300,7 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
         oldPinCode = ""
 
         enableAppLockerIfDoesNotExist()
-        mLockManager?.getAppLock()?.setPinChallengeCancelled(false)
+        mLockManager?.appLock?.setPinChallengeCancelled(false)
 
 //        mStepTextView = findViewById<View>(R.id.pin_code_step_textview) as TextView
 //        mPinCodeRoundView = findViewById<View>(R.id.pin_code_round_view) as PinCodeRoundView
@@ -381,7 +343,7 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
                 this
             )
             try {
-                if (mFingerprintManager!!.isHardwareDetected && mFingerprintUiHelper?.isFingerprintAuthAvailable() == true) {
+                if (mFingerprintManager!!.isHardwareDetected && mFingerprintUiHelper?.isFingerprintAuthAvailable == true) {
                     //SteveJosephh21
                     /*mFingerprintImageView.setVisibility(View.VISIBLE);
                     mFingerprintTextView.setVisibility(View.VISIBLE);*/
@@ -425,7 +387,7 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
      * @param reason The [.mType] to return a [String] for
      * @return The [String] for the [AppLockActivity]
      */
-    fun getStepText(reason: Int): String? {
+    private fun getStepText(reason: Int): String? {
         var msg: String? = null
         when (reason) {
             AppLock.DISABLE_PINLOCK -> msg = getString(
@@ -470,7 +432,7 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
             val value = keyboardButtonEnum.buttonValue
 
             if (value == KeyboardButtonEnum.BUTTON_CLEAR.buttonValue) {
-                if (!mPinCode!!.isEmpty()) {
+                if (mPinCode!!.isNotEmpty()) {
                     setPinCode(mPinCode!!.substring(0, mPinCode!!.length - 1))
                 } else {
                     setPinCode("")
@@ -494,7 +456,7 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
     /**
      * Switch over the [.mType] to determine if the password is ok, if we should pass to the next step etc...
      */
-    protected fun onPinCodeInputed() {
+    private fun onPinCodeInputed() {
         when (type) {
             AppLock.DISABLE_PINLOCK -> if (mLockManager!!.appLock.checkPasscode(mPinCode)) {
                 setResult(RESULT_OK)
@@ -596,14 +558,14 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
         Log.e(TAG, "Fingerprint READ ERROR!!!")
     }
 
-    val backableTypes: List<Int>
+    private val backableTypes: List<Int>
         /**
          * Gets the list of [AppLock] types that are acceptable to be backed out of using
          * the device's back button
          *
          * @return an [<] of [AppLock] types which are backable
          */
-        get() = Arrays.asList(
+        get() = listOf(
             AppLock.CHANGE_PIN,
             AppLock.DISABLE_PINLOCK,
             AppLock.ENABLE_PINLOCK,
@@ -619,7 +581,7 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
     /**
      * Run a shake animation when the password is not valid.
      */
-    protected fun onPinCodeError() {
+    private fun onPinCodeError() {
         onPinFailure(mAttempts++)
         val thread: Thread = object : Thread() {
             override fun run() {
@@ -646,7 +608,7 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
         runOnUiThread(thread)
     }
 
-    protected fun onPinCodeSuccess(pinLockStatus: Int, appLockActivity: AppLockActivity?) {
+    private fun onPinCodeSuccess(pinLockStatus: Int, appLockActivity: AppLockActivity?) {
         //ENABLE_PINLOCK = 0 DISABLE_PINLOCK = 1 CHANGE_PIN = 2 CONFIRM_PIN = 3, UNLOCK_PIN = 4, FINGERPRINT_UNLOCK = 5 SEND_AUTHENTICATION = 6 CHANGE_PIN pop up confirmation = 7
         onPinSuccess(mAttempts, pinLockStatus, appLockActivity)
         mAttempts = 1
@@ -655,7 +617,7 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
     /**
      * Set the pincode and refreshes the [io.beldex.bchat.wallet.utils.pincodeview.PinCodeRoundView]
      */
-    fun setPinCode(pinCode: String?) {
+    private fun setPinCode(pinCode: String?) {
         mPinCode = pinCode
         /* if (mPinCode.length() == this.getPinLength()) {
             Log.d("AppLock","step 8 -> "+mPinCode.length()+" getPinLength() -> "+this.getPinLength());
@@ -704,7 +666,7 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
          */
         get() = R.layout.activity_pin_code
 
-    val customAppLockActivityClass: Class<out AppLockActivity>
+    private val customAppLockActivityClass: Class<out AppLockActivity>
         /**
          * Get the current class extending [AppLockActivity] to re-enable [AppLock]
          * in case it has been collected
@@ -722,7 +684,7 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
         val TAG: String = AppLockActivity::class.java.simpleName
 
         @JvmField
-        val ACTION_CANCEL: String = TAG + ".actionCancelled"
+        val ACTION_CANCEL: String ="$TAG.actionCancelled"
 
         const val DEFAULT_PIN_LENGTH: Int = 4
 

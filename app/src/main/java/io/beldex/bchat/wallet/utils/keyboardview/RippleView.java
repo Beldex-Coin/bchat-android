@@ -463,7 +463,7 @@ public class RippleView extends RelativeLayout {
         DOUBLE(1),
         RECTANGLE(2);
 
-        int type;
+        final int type;
 
         RippleType(int type)
         {

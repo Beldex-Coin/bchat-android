@@ -32,7 +32,7 @@ class KeyboardPageSearchView @JvmOverloads constructor(
   defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
-  var callbacks: Callbacks? = null
+  private var callbacks: Callbacks? = null
 
   private var state: State=State.HIDE_REQUESTED
   private var targetInputWidth: Int = -1
@@ -108,7 +108,7 @@ class KeyboardPageSearchView @JvmOverloads constructor(
 
   fun showRequested(): Boolean = state == State.SHOW_REQUESTED
 
-  fun enableBackNavigation(enable: Boolean = true) {
+  private fun enableBackNavigation(enable: Boolean = true) {
     navButton.setImageResource(if (enable) R.drawable.ic_arrow_left else R.drawable.ic_search_24)
     if (enable) {
       navButton.setImageResource(R.drawable.ic_arrow_left)
@@ -176,7 +176,7 @@ class KeyboardPageSearchView @JvmOverloads constructor(
     clearChildFocus(input)
   }
 
-  fun clearQuery() {
+  private fun clearQuery() {
     input.text?.clear()
   }
 

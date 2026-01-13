@@ -58,7 +58,7 @@ import java.util.GregorianCalendar
 @Composable
 fun FilterTransactionByDatePopUp(
     onDismiss: () -> Unit,
-    selectedDates: (listOfDates :List<Date>,arrayList: MutableList<TransactionInfo>,) -> Unit,
+    selectedDates: (listOfDates :List<Date>,arrayList: MutableList<TransactionInfo>) -> Unit,
     context: Context,
     viewModels: WalletViewModels,
 ) {

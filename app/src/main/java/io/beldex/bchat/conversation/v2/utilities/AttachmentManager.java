@@ -33,7 +33,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 
 import io.beldex.bchat.giph.ui.GiphyActivity;
 import io.beldex.bchat.mediasend.MediaSendActivity;
@@ -73,7 +72,7 @@ public class AttachmentManager {
   private final @NonNull Context                    context;
   private final @NonNull AttachmentListener         attachmentListener;
 
-  private @NonNull  List<Uri>       garbage = new LinkedList<>();
+  private final @NonNull  List<Uri>       garbage = new LinkedList<>();
   private @NonNull  Optional<Slide> slide   = Optional.absent();
   private @Nullable Uri             captureUri;
 

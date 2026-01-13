@@ -17,10 +17,10 @@ object KeyPairUtilities {
 
     fun generate(): KeyPairGenerationResult {
         val seed = sodium.randomBytesBuf(32)
-        try {
-            return generate(seed)
+        return try {
+            generate(seed)
         } catch (exception: Exception) {
-            return generate()
+            generate()
         }
     }
 

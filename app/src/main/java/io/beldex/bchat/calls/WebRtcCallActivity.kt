@@ -70,7 +70,6 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
 
     //SteveJosephh21
     private var flipCamera:Boolean =true
-    private var microPhoneEnable = false
 
     /*private val rotationListener by lazy {
         object : OrientationEventListener(this) {
@@ -261,18 +260,6 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
     private fun answerCall() {
         val answerIntent = WebRtcCallService.acceptCallIntent(this)
         ContextCompat.startForegroundService(this, answerIntent)
-    }
-
-    private fun updateControlsRotation(newRotation: Int) {
-        with (binding) {
-            val rotation = newRotation.toFloat()
-            remoteRecipient.rotation = rotation
-            speakerPhoneButton.rotation = rotation
-            microphoneButton.rotation = rotation
-            enableCameraButton.rotation = rotation
-            switchCameraButton.rotation = rotation
-            endCallButton.rotation = rotation
-        }
     }
 
     private fun updateControls(state: CallViewModel.State? = null) {

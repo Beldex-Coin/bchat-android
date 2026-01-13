@@ -29,7 +29,7 @@ import java.util.List;
 // Full Levin reader as seen on epee
 
 public class LevinReader {
-    private DataInput in;
+    private final DataInput in;
 
     private LevinReader(byte[] buffer) {
         ByteArrayInputStream bis = new ByteArrayInputStream(buffer);
@@ -131,7 +131,7 @@ public class LevinReader {
         if (count > Integer.MAX_VALUE)
             throw new IllegalArgumentException();
         int len = (int) count;
-        final byte buffer[] = new byte[len];
+        final byte[] buffer = new byte[len];
         in.readFully(buffer);
         return buffer;
     }

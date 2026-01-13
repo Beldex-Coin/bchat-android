@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class GridSpaceItemDecoration(private val mItemOffset: Int) : RecyclerView.ItemDecoration() {
     constructor(
-        @NonNull context: Context,
+        context: Context,
         @DimenRes itemOffsetId: Int
     ) : this(context.resources.getDimensionPixelSize(itemOffsetId))
 

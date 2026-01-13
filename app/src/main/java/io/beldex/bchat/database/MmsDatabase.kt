@@ -254,7 +254,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
     val expireStartedMessages: Reader
         get() {
             val where = "$EXPIRE_STARTED > 0"
-            return readerFor(rawQuery(where, null))!!
+            return readerFor(rawQuery(where, null))
         }
 
     private fun updateMailboxBitmask(
@@ -658,8 +658,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
                 } else {
                     (retrieved as OutgoingGroupMediaMessage).groupId
                 }
-                val groupId: String
-                groupId = try {
+                val groupId: String=try {
                     doubleEncodeGroupID(decodedGroupId)
                 } catch (e: IOException) {
                     Log.e(TAG, "Couldn't encrypt group ID")
@@ -912,7 +911,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
         val values = ContentValues(2)
         values.put(QUOTE_MISSING, 1)
         values.put(QUOTE_AUTHOR, "")
-        db!!.update(TABLE_NAME, values, query, null)
+        db.update(TABLE_NAME, values, query, null)
     }
 
     /**
@@ -952,7 +951,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
         val groupReceiptDatabase = get(context).groupReceiptDatabase()
         groupReceiptDatabase.deleteRowsForMessage(messageId)
         val database = databaseHelper.writableDatabase
-        database!!.delete(TABLE_NAME, ID_WHERE, arrayOf(messageId.toString()))
+        database.delete(TABLE_NAME, ID_WHERE, arrayOf(messageId.toString()))
         val threadDeleted = get(context).threadDatabase().update(threadId, false)
         notifyConversationListeners(threadId)
         notifyStickerListeners()
@@ -968,7 +967,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
         groupReceiptDatabase.deleteRowsForMessages(messageIds)
 
         val database = databaseHelper.writableDatabase
-        database!!.delete(TABLE_NAME, ID_IN, arrayOf(messageIds.joinToString(",")))
+        database.delete(TABLE_NAME, ID_IN, arrayOf(messageIds.joinToString(",")))
 
         val threadDeleted = get(context).threadDatabase().update(threadId, false)
         notifyConversationListeners(threadId)
@@ -1044,7 +1043,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
         threadId: Long
     ): Boolean {
         val database = databaseHelper.readableDatabase
-        val cursor: Cursor? = database!!.query(
+        val cursor: Cursor? = database.query(
             TABLE_NAME,
             null,
             MESSAGE_REQUEST_RESPONSE + " = 1 AND " + ADDRESS + " = ? AND " + THREAD_ID + " = ?",
@@ -1056,16 +1055,14 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
             null,
             "1"
         )
-        return try {
+        return cursor.use { cursor ->
             cursor != null && cursor.moveToFirst()
-        } finally {
-            cursor?.close()
         }
     }
 
     private fun isDuplicate(message: IncomingMediaMessage?, threadId: Long): Boolean {
         val database = databaseHelper.readableDatabase
-        val cursor: Cursor? = database!!.query(
+        val cursor: Cursor? = database.query(
             TABLE_NAME,
             null,
             DATE_SENT + " = ? AND " + ADDRESS + " = ? AND " + THREAD_ID + " = ?",
@@ -1086,7 +1083,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
 
     private fun isDuplicate(message: OutgoingMediaMessage?, threadId: Long): Boolean {
         val database = databaseHelper.readableDatabase
-        val cursor: Cursor? = database!!.query(
+        val cursor: Cursor? = database.query(
             TABLE_NAME,
             null,
             DATE_SENT + " = ? AND " + ADDRESS + " = ? AND " + THREAD_ID + " = ?",
@@ -1109,7 +1106,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
 
     fun isSent(messageId: Long): Boolean {
         val database = databaseHelper.readableDatabase
-        database!!.query(
+        database.query(
             TABLE_NAME,
             arrayOf(MESSAGE_BOX),
             "$ID = ?",
@@ -1137,7 +1134,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
         val whereString = where.substring(0, where.length - 4)
         try {
             cursor =
-                db!!.query(TABLE_NAME, arrayOf<String?>(ID), whereString, null, null, null, null)
+                db.query(TABLE_NAME, arrayOf<String?>(ID), whereString, null, null, null, null)
             val toDeleteStringMessageIds = mutableListOf<String>()
             while (cursor.moveToNext()) {
                 toDeleteStringMessageIds += cursor.getLong(0).toString()
@@ -1171,7 +1168,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
                 where += " WHEN $outgoingType THEN $DATE_SENT < $date"
             }
             where += " ELSE $DATE_RECEIVED < $date END)"
-            cursor = db!!.query(
+            cursor = db.query(
                 TABLE_NAME,
                 arrayOf<String?>(ID),
                 where,
@@ -1201,7 +1198,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
         val contentValues = ContentValues()
         contentValues.put(QUOTE_MISSING, 1)
         val database = databaseHelper.writableDatabase
-        return database!!.update(
+        return database.update(
             TABLE_NAME,
             contentValues,
             "$ID = ?",

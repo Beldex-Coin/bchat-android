@@ -76,7 +76,7 @@ class CheckPasswordActivity : BaseActionBarActivity() {
             binding.userPinEditTxt.requestFocus()
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
             val ic: InputConnection = binding.userPinEditTxt.onCreateInputConnection(EditorInfo())
-            binding.keyboard1?.setInputConnection(ic)
+            binding.keyboard1.setInputConnection(ic)
 
             binding.userPinEditTxt.setOnTouchListener { _: View, event: MotionEvent ->
                 binding.userPinEditTxt.onTouchEvent(event) // call native handler

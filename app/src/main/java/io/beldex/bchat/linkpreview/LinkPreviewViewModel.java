@@ -26,7 +26,7 @@ public class LinkPreviewViewModel extends ViewModel {
   private String            activeUrl;
   private RequestController activeRequest;
   private boolean           userCanceled;
-  private Debouncer         debouncer;
+  private final Debouncer         debouncer;
 
   private LinkPreviewViewModel(@NonNull LinkPreviewRepository repository) {
     this.repository       = repository;

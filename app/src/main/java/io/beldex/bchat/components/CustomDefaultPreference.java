@@ -165,7 +165,7 @@ public class CustomDefaultPreference extends DialogPreference {
     }
 
     interface CustomPreferenceValidator {
-      public boolean isValid(String value);
+      boolean isValid(String value);
     }
 
     private static class NullValidator implements CustomPreferenceValidator {

@@ -189,7 +189,7 @@ private fun SearchView(
     modifier: Modifier = Modifier,
     isDarkTheme: Boolean
 ) {
-    val lifeCycle = LocalLifecycleOwner.current
+    val lifeCycle = androidx.lifecycle.compose.LocalLifecycleOwner.current
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 

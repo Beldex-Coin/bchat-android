@@ -21,7 +21,7 @@ public class Media implements Parcelable {
   private final int    height;
   private final long   size;
 
-  private Optional<String> bucketId;
+  private final Optional<String> bucketId;
   private Optional<String> caption;
 
   public Media(@NonNull Uri uri, @NonNull String mimeType, long date, int width, int height, long size, Optional<String> bucketId, Optional<String> caption) {

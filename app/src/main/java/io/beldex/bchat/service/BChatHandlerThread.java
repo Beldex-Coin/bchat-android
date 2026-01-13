@@ -14,7 +14,7 @@ import android.os.Process;
 public class BChatHandlerThread extends Thread {
     // from src/cryptonote_config.h
     static public final long THREAD_STACK_SIZE = 5 * 1024 * 1024;
-    private int mPriority;
+    private final int mPriority;
     private int mTid = -1;
     private Looper mLooper;
 

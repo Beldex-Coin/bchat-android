@@ -2,7 +2,7 @@ package io.beldex.bchat.crypto;
 
 
 import android.content.Context;
-import android.os.Build;
+
 import androidx.annotation.NonNull;
 
 import com.beldex.libbchat.utilities.TextSecurePreferences;

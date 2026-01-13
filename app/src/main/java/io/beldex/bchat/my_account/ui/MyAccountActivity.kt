@@ -327,7 +327,10 @@ class MyAccountActivity : ComponentActivity() {
             Permissions.with(this)
                 .request(Manifest.permission.CAMERA)
                 .onAnyResult {
-                    tempFile=avatarSelection.startAvatarSelection(false, true)
+                    tempFile=avatarSelection.startAvatarSelection(
+                        includeClear=false,
+                        attemptToIncludeCamera=true
+                    )
                 }
                 .execute()
         } else {
@@ -354,7 +357,7 @@ fun MyAccountNavHost(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
+    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
     val startActivity: (Intent) -> Unit = {
         context.startActivity(it)
     }
@@ -1111,7 +1114,7 @@ fun MyAccountNavHost(
                 mutableStateOf(emptyList<Recipient>())
             }
             val uiState by contactViewModel.uiState.collectAsState()
-            val owner = LocalLifecycleOwner.current
+            val owner = androidx.lifecycle.compose.LocalLifecycleOwner.current
             LaunchedEffect(key1 = Unit) {
                 contactViewModel.subscribe(context).observe(owner) { newState ->
                     contacts = newState.blockedContacts

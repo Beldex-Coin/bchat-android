@@ -149,7 +149,7 @@ class SecretGroupInfoComposeActivity : ComponentActivity() {
                         .padding(WindowInsets.systemBars.asPaddingValues())
                 ) {
                     val context = LocalContext.current
-                    val lifecycleOwner = LocalLifecycleOwner.current
+                    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
 
                     val groupID = intent?.getStringExtra(secretGroupID) ?: ""
                     val viewModelFactory = SecretGroupViewModelFactory(groupID, context)

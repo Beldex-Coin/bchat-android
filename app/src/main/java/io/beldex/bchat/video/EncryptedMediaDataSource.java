@@ -63,7 +63,7 @@ public class EncryptedMediaDataSource extends MediaDataSource {
   }
 
   @Override
-  public long getSize() throws IOException {
+  public long getSize() {
     return length;
   }
 

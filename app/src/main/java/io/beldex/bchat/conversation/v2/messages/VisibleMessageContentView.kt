@@ -28,7 +28,6 @@ import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -38,7 +37,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -50,7 +48,6 @@ import androidx.core.text.getSpans
 import androidx.core.text.toSpannable
 import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
-import android.util.LruCache
 import androidx.core.view.updateLayoutParams
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentTransferProgress
@@ -81,7 +78,6 @@ import io.beldex.bchat.util.isSharedContact
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.TextColor
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2
 import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
 import io.beldex.bchat.conversation.v2.contact_sharing.SharedContactView
 import io.beldex.bchat.conversation.v2.search.SearchViewModel
@@ -100,7 +96,6 @@ class VisibleMessageContentView : MaterialCardView {
     var onLongPress: (() -> Unit)? = null
     var chatWithContact: ((ContactModel) -> Unit)? = null
 
-    private val textWidthCache = LruCache<Long, Int>(200)
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
@@ -116,7 +111,6 @@ class VisibleMessageContentView : MaterialCardView {
         searchQuery : String?,
         contactIsTrusted : Boolean,
         onAttachmentNeedsDownload : (Long, Long) -> Unit,
-        isSocialGroupRecipient : Boolean,
         delegate : VisibleMessageViewDelegate,
         visibleMessageView : VisibleMessageView,
         position : Int,
@@ -254,7 +248,7 @@ class VisibleMessageContentView : MaterialCardView {
             showQuoteBody = true
 
             /*dynamic width calculation of quote message to set the quote content width dynamically*/
-            var textWidth = 0f
+            val textWidth : Float
             val text: Spannable?
             val paint = Paint()
             paint.textSize = TypedValue.applyDimension(
@@ -331,7 +325,7 @@ class VisibleMessageContentView : MaterialCardView {
                 // Audio attachment
                 if (contactIsTrusted || message.isOutgoing) {
                     binding.voiceMessageView.root.indexInAdapter=indexInAdapter
-                    binding.voiceMessageView.root.delegate=context as? ConversationFragmentV2
+                    binding.voiceMessageView.root.delegate= delegate
                     binding.voiceMessageView.root.bind(
                         message,
                         isStartOfMessageCluster,
@@ -443,9 +437,7 @@ class VisibleMessageContentView : MaterialCardView {
 
                     binding.albumThumbnailView.root.bind(
                         glideRequests=glide,
-                        message=message,
-                        isStart=isStartOfMessageCluster,
-                        isEnd=isEndOfMessageCluster
+                        message=message
                     )
                     binding.albumContainer.modifyLayoutParams<ConstraintLayout.LayoutParams> {
                         horizontalBias=if (message.isOutgoing) 1f else 0f
@@ -489,7 +481,6 @@ class VisibleMessageContentView : MaterialCardView {
             }
 
             message.isPayment -> { //Payment Tag
-                val umd=UpdateMessageData.fromJSON(message.body)!!
                 hideBody=true
                 showQuoteBody=false
                 binding.paymentCardView.bind(
@@ -539,12 +530,12 @@ class VisibleMessageContentView : MaterialCardView {
         // set it to use constraints if not only a text message, otherwise wrap content to whatever width it wants
         val fontSize = TextSecurePreferences.getChatFontSize(context)
         binding.bodyTextView.textSize = fontSize!!.toFloat()
-        binding.quoteBodyTextView.textSize = fontSize!!.toFloat()
+        binding.quoteBodyTextView.textSize = fontSize.toFloat()
 
         if (message.body.isNotEmpty() && !hideBody) {
-            val color = getTextColor(context, message)
-            binding.bodyTextView.setTextColor(color)
-            binding.bodyTextView.setLinkTextColor(color)
+            val colorText = getTextColor(context, message)
+            binding.bodyTextView.setTextColor(colorText)
+            binding.bodyTextView.setLinkTextColor(colorText)
             val body = getBodySpans(context, message, searchQuery)
             binding.bodyTextView.text = body
             //New Line
@@ -615,7 +606,7 @@ class VisibleMessageContentView : MaterialCardView {
         binding.sharedContactView.setContent {
             key(message.id) {
                 BChatTheme {
-                    val lifecycleOwner = LocalLifecycleOwner.current
+                    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
                     var hadResult by remember {
                         mutableStateOf(false)
                     }
@@ -696,14 +687,6 @@ class VisibleMessageContentView : MaterialCardView {
     fun onContentClick(event: MotionEvent) {
         onContentClick.forEach { clickHandler -> clickHandler.invoke(event) }
     }
-
-    private fun ViewVisibleMessageContentBinding.barrierViewsGone(): Boolean =
-        listOf<View>(
-            albumThumbnailView.root,
-            linkPreviewView.root,
-            voiceMessageView.root,
-            quoteView.root
-        ).none { it.isVisible }
 
     private fun getBackground(
         isOutgoing: Boolean,
@@ -817,8 +800,6 @@ class VisibleMessageContentView : MaterialCardView {
         ): Spannable {
             var body = message.body.toSpannable()
 
-            var linkLastClickTime: Long = 0
-
             body = MentionUtilities.highlightMentions(
                 body,
                 message.isOutgoing,
@@ -836,7 +817,7 @@ class VisibleMessageContentView : MaterialCardView {
 
             // replace URLSpans with ModalURLSpans
             body.getSpans<URLSpan>(0, body.length).toList().forEach { urlSpan ->
-                val updatedUrl = urlSpan.url.let { it.toHttpUrlOrNull().toString() }
+                val updatedUrl =urlSpan.url.toHttpUrlOrNull().toString()
                 val replacementSpan = ModalURLSpan(updatedUrl) { url ->
                     ActivityDispatcher.get(context)?.showBottomSheetDialog(ModalUrlBottomSheet(url),"Open URL Dialog")
                 }

@@ -11,7 +11,7 @@ import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ItemSelectableBinding
 
 class RadioOptionAdapter(
-    var selectedOptionPosition: Int = 0,
+    private var selectedOptionPosition: Int = 0,
     private val onClickListener: (RadioOption) -> Unit
 ) : ListAdapter<RadioOption, RadioOptionAdapter.ViewHolder>(RadioOptionDiffer()) {
 

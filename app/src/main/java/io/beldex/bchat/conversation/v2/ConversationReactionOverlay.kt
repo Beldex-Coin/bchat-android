@@ -51,6 +51,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
 import javax.inject.Inject
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.time.Duration.Companion.milliseconds
 
 @AndroidEntryPoint
@@ -188,7 +191,7 @@ class ConversationReactionOverlay : FrameLayout {
             }
         } else {
             val reactionBarOffset = DimensionUnit.DP.toPixels(48f)
-            val spaceForReactionBar = Math.max(reactionBarHeight + reactionBarOffset, 0f)
+            val spaceForReactionBar = max(reactionBarHeight + reactionBarOffset, 0f)
             val everythingFitsVertically = contextMenu.getMaxHeight() + conversationItemSnapshot.height + menuPadding + spaceForReactionBar < overlayHeight
             if (everythingFitsVertically) {
                 val bubbleBottom = selectedConversationModel.bubbleY + conversationItemSnapshot.height
@@ -243,7 +246,7 @@ class ConversationReactionOverlay : FrameLayout {
                 }
             }
         }
-        reactionBarBackgroundY = Math.max(reactionBarBackgroundY, -statusBarHeight.toFloat())
+        reactionBarBackgroundY = max(reactionBarBackgroundY, -statusBarHeight.toFloat())
         hideAnimatorSet.end()
         visibility = VISIBLE
         val scrubberX = if (isMessageOnLeft) {
@@ -262,7 +265,7 @@ class ConversationReactionOverlay : FrameLayout {
         if (isWideLayout) {
             val scrubberRight = scrubberX + scrubberWidth
             val offsetX = if (isMessageOnLeft) scrubberRight + menuPadding else scrubberX - contextMenu.getMaxWidth() - menuPadding
-            contextMenu.show(offsetX.toInt(), Math.min(backgroundView.y, (overlayHeight - contextMenu.getMaxHeight()).toFloat()).toInt())
+            contextMenu.show(offsetX.toInt(), min(backgroundView.y, (overlayHeight - contextMenu.getMaxHeight()).toFloat()).toInt())
         } else {
             val contentX = if (isMessageOnLeft) scrubberHorizontalMargin.toFloat() else selectedConversationModel.bubbleX
             val offsetX = if (isMessageOnLeft) contentX else -contextMenu.getMaxWidth() + contentX + bubbleWidth
@@ -287,13 +290,13 @@ class ConversationReactionOverlay : FrameLayout {
                                              spaceNeededBetweenTopOfScreenAndTopOfReactionBar: Float,
                                              messageTop: Float): Float {
         val adjustedTouchY = itemY - statusBarHeight
-        var reactionStartingPoint = Math.min(adjustedTouchY, contextMenuTop)
-        val spaceBetweenTopOfMessageAndTopOfContextMenu = Math.abs(messageTop - contextMenuTop)
+        var reactionStartingPoint = min(adjustedTouchY, contextMenuTop)
+        val spaceBetweenTopOfMessageAndTopOfContextMenu = abs(messageTop - contextMenuTop)
         if (spaceBetweenTopOfMessageAndTopOfContextMenu < DimensionUnit.DP.toPixels(150f)) {
             val offsetToMakeReactionBarOffsetMatchMenuPadding = reactionBarOffset - contextMenuPadding
             reactionStartingPoint = messageTop + offsetToMakeReactionBarOffsetMatchMenuPadding
         }
-        return Math.max(reactionStartingPoint - reactionBarOffset - reactionBarHeight, spaceNeededBetweenTopOfScreenAndTopOfReactionBar)
+        return max(reactionStartingPoint - reactionBarOffset - reactionBarHeight, spaceNeededBetweenTopOfScreenAndTopOfReactionBar)
     }
     private fun updateSystemUiOnShow(activity: Activity) {
         val window = activity.window
@@ -353,8 +356,8 @@ class ConversationReactionOverlay : FrameLayout {
             overlayState = OverlayState.DEADZONE
         }
         if (overlayState == OverlayState.DEADZONE) {
-            val deltaX = Math.abs(deadzoneTouchPoint.x - motionEvent.x)
-            val deltaY = Math.abs(deadzoneTouchPoint.y - motionEvent.y)
+            val deltaX = abs(deadzoneTouchPoint.x - motionEvent.x)
+            val deltaY = abs(deadzoneTouchPoint.y - motionEvent.y)
             if (deltaX > touchDownDeadZoneSize || deltaY > touchDownDeadZoneSize) {
                 overlayState = OverlayState.SCRUB
             } else {
@@ -540,7 +543,7 @@ class ConversationReactionOverlay : FrameLayout {
         }
         // Save media
         if (message.isMms && (message as MediaMmsMessageRecord).containsMediaSlide()  && !isDeleteOnly) {
-            val mmsMessage = message as MediaMmsMessageRecord
+            val mmsMessage =message
             if (mmsMessage.containsMediaSlide() && !mmsMessage.isMediaPending) {
                 items += ActionItem(R.attr.menu_save_icon,
                     context.resources.getString(R.string.save),
@@ -575,7 +578,7 @@ class ConversationReactionOverlay : FrameLayout {
             }
         } + AnimatorInflaterCompat.loadAnimator(context, android.R.animator.fade_in).apply {
             setTarget(backgroundView)
-            setDuration(revealDuration.toLong())
+            duration=revealDuration.toLong()
             startDelay = revealOffset.toLong()
         }
         revealAnimatorSet.interpolator = INTERPOLATOR

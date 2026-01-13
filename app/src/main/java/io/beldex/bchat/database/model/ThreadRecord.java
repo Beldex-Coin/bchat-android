@@ -25,7 +25,6 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.StyleSpan;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,8 +32,6 @@ import androidx.annotation.Nullable;
 import io.beldex.bchat.database.MmsSmsColumns;
 import io.beldex.bchat.database.SmsDatabase;
 
-import com.beldex.libbchat.messaging.utilities.UpdateMessageBuilder;
-import com.beldex.libbchat.messaging.utilities.UpdateMessageData;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.utilities.ExpirationUtil;
@@ -113,7 +110,6 @@ public class ThreadRecord extends DisplayRecord implements Serializable {
         direction = context.getString(R.string.send);
       } else {
         direction = context.getString(R.string.message_details_header__received);
-        ;
       }
       return emphasisAdded(context.getString(R.string.ThreadRecord_payment ,amount,direction));
     } else if (SmsDatabase.Types.isFailedDecryptType(type)) {

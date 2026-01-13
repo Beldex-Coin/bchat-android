@@ -54,7 +54,7 @@ public class VideoPlayer extends FrameLayout {
   @Nullable private final PlayerView          exoView;
 
   @Nullable private ExoPlayer                 exoPlayer;
-  @Nullable private LegacyPlayerControlView   exoControls;
+  @Nullable private final LegacyPlayerControlView   exoControls;
   @Nullable private       AttachmentServer    attachmentServer;
   @Nullable private       Window              window;
 
@@ -118,9 +118,7 @@ public class VideoPlayer extends FrameLayout {
     this.window = window;
   }
 
-  private void setExoViewSource(@NonNull VideoSlide videoSource, boolean autoplay)
-      throws IOException
-  {
+  private void setExoViewSource(@NonNull VideoSlide videoSource, boolean autoplay) {
     exoPlayer = new ExoPlayer.Builder(getContext()).build();
     exoPlayer.addListener(new ExoPlayerListener(window));
     exoPlayer.setAudioAttributes(AudioAttributes.DEFAULT, true);

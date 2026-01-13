@@ -33,7 +33,6 @@ public enum Crypto {
     LTC("LTC", true, "litecoin:amount:label:message", R.id.ibBDX, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, address -> {
         return BitcoinAddressValidator.validate(address, BitcoinAddressType.LTC);
     });
-    ;
 
     @NonNull
     private final String symbol;

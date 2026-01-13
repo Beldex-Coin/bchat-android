@@ -50,7 +50,7 @@ public class Rfc5724Uri {
     else                                        return parts[1];
   }
 
-  private Map<String, String> parseQueryParams() throws URISyntaxException {
+  private Map<String, String> parseQueryParams() {
     Map<String, String> queryParams = new HashMap<>();
     if (uri.split("\\?").length < 2) {
       return queryParams;

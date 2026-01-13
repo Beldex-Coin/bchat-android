@@ -30,18 +30,18 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
         private const val timestamp = "timestamp"
         private const val mnode = "mnode"
         // Mnode pool
-        public val mnodePoolTable = "beldex_mnode_pool_cache"
-        private val dummyKey = "dummy_key"
-        private val mnodePool = "mnode_pool_key"
+        public const val mnodePoolTable = "beldex_mnode_pool_cache"
+        private const val dummyKey = "dummy_key"
+        private const val mnodePool = "mnode_pool_key"
         @JvmStatic val createMnodePoolTableCommand = "CREATE TABLE $mnodePoolTable ($dummyKey TEXT PRIMARY KEY, $mnodePool TEXT);"
         // Onion request paths
-        private val onionRequestPathTable = "beldex_path_cache"
-        private val indexPath = "index_path"
+        private const val onionRequestPathTable = "beldex_path_cache"
+        private const val indexPath = "index_path"
         @JvmStatic val createOnionRequestPathTableCommand = "CREATE TABLE $onionRequestPathTable ($indexPath TEXT PRIMARY KEY, $mnode TEXT);"
         // Swarms
-        public val swarmTable = "beldex_api_swarm_cache"
-        private val swarmPublicKey = "hex_encoded_public_key"
-        private val swarm = "swarm"
+        public const val swarmTable = "beldex_api_swarm_cache"
+        private const val swarmPublicKey = "hex_encoded_public_key"
+        private const val swarm = "swarm"
         @JvmStatic val createSwarmTableCommand = "CREATE TABLE $swarmTable ($swarmPublicKey TEXT PRIMARY KEY, $swarm TEXT);"
         // Last message hash values
         private const val legacyLastMessageHashValueTable2 = "last_message_hash_value_table"
@@ -58,47 +58,47 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
         @JvmStatic val createReceivedMessageHashValuesTable3Command
             = "CREATE TABLE $legacyReceivedMessageHashValuesTable3 ($publicKey STRING PRIMARY KEY, $receivedMessageHashValues TEXT);"
         // Social group auth tokens
-        private val openGroupAuthTokenTable = "beldex_api_group_chat_auth_token_database"
-        private val server = "server"
-        private val token = "token"
+        private const val openGroupAuthTokenTable = "beldex_api_group_chat_auth_token_database"
+        private const val server = "server"
+        private const val token = "token"
         @JvmStatic val createOpenGroupAuthTokenTableCommand = "CREATE TABLE $openGroupAuthTokenTable ($server TEXT PRIMARY KEY, $token TEXT);"
         // Last message server IDs
-        private val lastMessageServerIDTable = "beldex_api_last_message_server_id_cache"
-        private val lastMessageServerIDTableIndex = "beldex_api_last_message_server_id_cache_index"
-        private val lastMessageServerID = "last_message_server_id"
+        private const val lastMessageServerIDTable = "beldex_api_last_message_server_id_cache"
+        private const val lastMessageServerIDTableIndex = "beldex_api_last_message_server_id_cache_index"
+        private const val lastMessageServerID = "last_message_server_id"
         @JvmStatic val createLastMessageServerIDTableCommand = "CREATE TABLE $lastMessageServerIDTable ($lastMessageServerIDTableIndex STRING PRIMARY KEY, $lastMessageServerID INTEGER DEFAULT 0);"
         // Last deletion server IDs
-        private val lastDeletionServerIDTable = "beldex_api_last_deletion_server_id_cache"
-        private val lastDeletionServerIDTableIndex = "beldex_api_last_deletion_server_id_cache_index"
-        private val lastDeletionServerID = "last_deletion_server_id"
+        private const val lastDeletionServerIDTable = "beldex_api_last_deletion_server_id_cache"
+        private const val lastDeletionServerIDTableIndex = "beldex_api_last_deletion_server_id_cache_index"
+        private const val lastDeletionServerID = "last_deletion_server_id"
         @JvmStatic val createLastDeletionServerIDTableCommand = "CREATE TABLE $lastDeletionServerIDTable ($lastDeletionServerIDTableIndex STRING PRIMARY KEY, $lastDeletionServerID INTEGER DEFAULT 0);"
         // User counts
-        private val userCountTable = "beldex_user_count_cache"
-        private val publicChatID = "public_chat_id"
-        private val userCount = "user_count"
+        private const val userCountTable = "beldex_user_count_cache"
+        private const val publicChatID = "public_chat_id"
+        private const val userCount = "user_count"
         @JvmStatic val createUserCountTableCommand = "CREATE TABLE $userCountTable ($publicChatID STRING PRIMARY KEY, $userCount INTEGER DEFAULT 0);"
         // Bchat request sent timestamps
-        private val bchatRequestSentTimestampTable = "bchat_request_sent_timestamp_cache"
+        private const val bchatRequestSentTimestampTable = "bchat_request_sent_timestamp_cache"
         @JvmStatic val createBchatRequestSentTimestampTableCommand = "CREATE TABLE $bchatRequestSentTimestampTable ($publicKey STRING PRIMARY KEY, $timestamp INTEGER DEFAULT 0);"
         // Bchat request processed timestamp cache
-        private val bchatRequestProcessedTimestampTable = "bchat_request_processed_timestamp_cache"
+        private const val bchatRequestProcessedTimestampTable = "bchat_request_processed_timestamp_cache"
         @JvmStatic val createBchatRequestProcessedTimestampTableCommand = "CREATE TABLE $bchatRequestProcessedTimestampTable ($publicKey STRING PRIMARY KEY, $timestamp INTEGER DEFAULT 0);"
         // Social group public keys
-        private val openGroupPublicKeyTable = "open_group_public_keys"
+        private const val openGroupPublicKeyTable = "open_group_public_keys"
         @JvmStatic val createOpenGroupPublicKeyTableCommand = "CREATE TABLE $openGroupPublicKeyTable ($server STRING PRIMARY KEY, $publicKey INTEGER DEFAULT 0);"
         // Social group profile picture cache
-        public val openGroupProfilePictureTable = "open_group_avatar_cache"
-        private val openGroupProfilePicture = "open_group_avatar"
+        public const val openGroupProfilePictureTable = "open_group_avatar_cache"
+        private const val openGroupProfilePicture = "open_group_avatar"
         @JvmStatic val createOpenGroupProfilePictureTableCommand = "CREATE TABLE $openGroupProfilePictureTable ($publicChatID STRING PRIMARY KEY, $openGroupProfilePicture TEXT NULLABLE DEFAULT NULL);"
         // Secret groups (V2)
-        public val closedGroupEncryptionKeyPairsTable = "closed_group_encryption_key_pairs_table"
-        public val closedGroupsEncryptionKeyPairIndex = "closed_group_encryption_key_pair_index"
-        public val encryptionKeyPairPublicKey = "encryption_key_pair_public_key"
-        public val encryptionKeyPairPrivateKey = "encryption_key_pair_private_key"
+        public const val closedGroupEncryptionKeyPairsTable = "closed_group_encryption_key_pairs_table"
+        public const val closedGroupsEncryptionKeyPairIndex = "closed_group_encryption_key_pair_index"
+        public const val encryptionKeyPairPublicKey = "encryption_key_pair_public_key"
+        public const val encryptionKeyPairPrivateKey = "encryption_key_pair_private_key"
         @JvmStatic
         val createClosedGroupEncryptionKeyPairsTable = "CREATE TABLE $closedGroupEncryptionKeyPairsTable ($closedGroupsEncryptionKeyPairIndex STRING PRIMARY KEY, $encryptionKeyPairPublicKey STRING, $encryptionKeyPairPrivateKey STRING)"
-        public val closedGroupPublicKeysTable = "closed_group_public_keys_table"
-        public val groupPublicKey = "group_public_key"
+        public const val closedGroupPublicKeysTable = "closed_group_public_keys_table"
+        public const val groupPublicKey = "group_public_key"
         @JvmStatic
         val createClosedGroupPublicKeysTable = "CREATE TABLE $closedGroupPublicKeysTable ($groupPublicKey STRING PRIMARY KEY)"
         // Hard fork master node info
@@ -119,14 +119,14 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
         const val DROP_LEGACY_RECEIVED_HASHES = "DROP TABLE $legacyReceivedMessageHashValuesTable3;"
 
         // region Deprecated
-        private val deviceLinkCache = "beldex_pairing_authorisation_cache"
-        private val masterPublicKey = "primary_device"
-        private val slavePublicKey = "secondary_device"
-        private val requestSignature = "request_signature"
-        private val authorizationSignature = "grant_signature"
+        private const val deviceLinkCache = "beldex_pairing_authorisation_cache"
+        private const val masterPublicKey = "primary_device"
+        private const val slavePublicKey = "secondary_device"
+        private const val requestSignature = "request_signature"
+        private const val authorizationSignature = "grant_signature"
         @JvmStatic val createDeviceLinkCacheCommand = "CREATE TABLE $deviceLinkCache ($masterPublicKey STRING, $slavePublicKey STRING, " +
             "$requestSignature STRING NULLABLE DEFAULT NULL, $authorizationSignature STRING NULLABLE DEFAULT NULL, PRIMARY KEY ($masterPublicKey, $slavePublicKey));"
-        private val bchatRequestTimestampCache = "bchat_request_timestamp_cache"
+        private const val bchatRequestTimestampCache = "bchat_request_timestamp_cache"
         @JvmStatic val createBchatRequestTimestampCacheCommand = "CREATE TABLE $bchatRequestTimestampCache ($publicKey STRING PRIMARY KEY, $timestamp STRING);"
         // endregion
     }
@@ -134,7 +134,7 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
 
     override fun getMnodePool(): Set<Mnode> {
         val database = databaseHelper.readableDatabase
-        return database.get(mnodePoolTable, "${Companion.dummyKey} = ?", wrap("dummy_key")) { cursor ->
+        return database.get(mnodePoolTable, "$dummyKey = ?", wrap("dummy_key")) { cursor ->
             val mnodePoolAsString = cursor.getString(cursor.getColumnIndexOrThrow(mnodePool))
             mnodePoolAsString.split(", ").mapNotNull { mnodeAsString ->
                 val components = mnodeAsString.split("-")
@@ -157,8 +157,8 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
             }
             string
         }
-        val row = wrap(mapOf( Companion.dummyKey to "dummy_key", mnodePool to mnodePoolAsString ))
-        database.insertOrUpdate(mnodePoolTable, row, "${Companion.dummyKey} = ?", wrap("dummy_key"))
+        val row = wrap(mapOf( dummyKey to "dummy_key", mnodePool to mnodePoolAsString ))
+        database.insertOrUpdate(mnodePoolTable, row, "$dummyKey = ?", wrap("dummy_key"))
     }
 
     override fun setOnionRequestPaths(newValue: List<List<Mnode>>) {
@@ -175,7 +175,7 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
         }
         Log.d("Beldex", "Persisting onion request paths to database.")
         clearOnionRequestPaths()
-        if (newValue.count() < 1) { return }
+        if (newValue.isEmpty()) { return }
         val path0 = newValue[0]
         if (path0.count() != 3) { return }
         set("0-0", path0[0]); set("0-1", path0[1]); set("0-2", path0[2])
@@ -226,7 +226,7 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
 
     override fun getSwarm(publicKey: String): Set<Mnode>? {
         val database = databaseHelper.readableDatabase
-        return database.get(swarmTable, "${Companion.swarmPublicKey} = ?", wrap(publicKey)) { cursor ->
+        return database.get(swarmTable, "$swarmPublicKey = ?", wrap(publicKey)) { cursor ->
             val swarmAsString = cursor.getString(cursor.getColumnIndexOrThrow(swarm))
             swarmAsString.split(", ").mapNotNull { targetAsString ->
                 val components = targetAsString.split("-")
@@ -249,8 +249,8 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
             }
             string
         }
-        val row = wrap(mapOf( Companion.swarmPublicKey to publicKey, swarm to swarmAsString ))
-        database.insertOrUpdate(swarmTable, row, "${Companion.swarmPublicKey} = ?", wrap(publicKey))
+        val row = wrap(mapOf( swarmPublicKey to publicKey, swarm to swarmAsString ))
+        database.insertOrUpdate(swarmTable, row, "$swarmPublicKey = ?", wrap(publicKey))
     }
 
     override fun getLastMessageHashValue(mnode: Mnode, publicKey: String, namespace: Int): String? {
@@ -270,9 +270,11 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
 
     override fun getReceivedMessageHashValues(publicKey: String, namespace: Int): Set<String>? {
         val database = databaseHelper.readableDatabase
-        val query = "${Companion.publicKey} = ? AND ${Companion.receivedMessageHashNamespace} = ?"
+        val query = "${Companion.publicKey} = ? AND ${receivedMessageHashNamespace} = ?"
         return database.get(receivedMessageHashValuesTable, query, arrayOf( publicKey, namespace.toString() )) { cursor ->
-            val receivedMessageHashValuesAsString = cursor.getString(cursor.getColumnIndexOrThrow(Companion.receivedMessageHashValues))
+            val receivedMessageHashValuesAsString = cursor.getString(cursor.getColumnIndexOrThrow(
+                receivedMessageHashValues
+            ))
             receivedMessageHashValuesAsString.split("-").toSet()
         }
     }
@@ -280,7 +282,7 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
     override fun setReceivedMessageHashValues(publicKey: String, newValue: Set<String>, namespace: Int) {
         val database = databaseHelper.writableDatabase
         val receivedMessageHashValuesAsString = newValue.joinToString("-")
-        val row = wrap(mapOf( Companion.publicKey to publicKey, Companion.receivedMessageHashValues to receivedMessageHashValuesAsString, Companion.receivedMessageHashNamespace to namespace.toString() ))
+        val row = wrap(mapOf( Companion.publicKey to publicKey, receivedMessageHashValues to receivedMessageHashValuesAsString, receivedMessageHashNamespace to namespace.toString() ))
         val query = "${Companion.publicKey} = ? AND $receivedMessageHashNamespace = ?"
         database.insertOrUpdate(receivedMessageHashValuesTable, row, query, arrayOf( publicKey, namespace.toString() ))
     }
@@ -369,7 +371,7 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
     override fun setUserCount(group: Long, server: String, newValue: Int) {
         val database = databaseHelper.writableDatabase
         val index = "$server.$group"
-        val row = wrap(mapOf( publicChatID to index, Companion.userCount to newValue.toString() ))
+        val row = wrap(mapOf( publicChatID to index, userCount to newValue.toString() ))
         database.insertOrUpdate(userCountTable, row, "$publicChatID = ?", wrap(index))
     }
 
@@ -421,15 +423,21 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
         val encryptionKeyPairPrivateKey = encryptionKeyPair.privateKey.serialize().toHexString()
         val row = wrap(mapOf(closedGroupsEncryptionKeyPairIndex to index, Companion.encryptionKeyPairPublicKey to encryptionKeyPairPublicKey,
                 Companion.encryptionKeyPairPrivateKey to encryptionKeyPairPrivateKey ))
-        database.insertOrUpdate(closedGroupEncryptionKeyPairsTable, row, "${Companion.closedGroupsEncryptionKeyPairIndex} = ?", wrap(index))
+        database.insertOrUpdate(closedGroupEncryptionKeyPairsTable, row, "${closedGroupsEncryptionKeyPairIndex} = ?", wrap(index))
     }
 
     override fun getClosedGroupEncryptionKeyPairs(groupPublicKey: String): List<ECKeyPair> {
         val database = databaseHelper.readableDatabase
-        val timestampsAndKeyPairs = database.getAll(closedGroupEncryptionKeyPairsTable, "${Companion.closedGroupsEncryptionKeyPairIndex} LIKE ?", wrap("$groupPublicKey%")) { cursor ->
-            val timestamp = cursor.getString(cursor.getColumnIndexOrThrow(Companion.closedGroupsEncryptionKeyPairIndex)).split("-").last()
-            val encryptionKeyPairPublicKey = cursor.getString(cursor.getColumnIndexOrThrow(Companion.encryptionKeyPairPublicKey))
-            val encryptionKeyPairPrivateKey = cursor.getString(cursor.getColumnIndexOrThrow(Companion.encryptionKeyPairPrivateKey))
+        val timestampsAndKeyPairs = database.getAll(closedGroupEncryptionKeyPairsTable, "$closedGroupsEncryptionKeyPairIndex LIKE ?", wrap("$groupPublicKey%")) { cursor ->
+            val timestamp = cursor.getString(cursor.getColumnIndexOrThrow(
+                closedGroupsEncryptionKeyPairIndex
+            )).split("-").last()
+            val encryptionKeyPairPublicKey = cursor.getString(cursor.getColumnIndexOrThrow(
+                encryptionKeyPairPublicKey
+            ))
+            val encryptionKeyPairPrivateKey = cursor.getString(cursor.getColumnIndexOrThrow(
+                encryptionKeyPairPrivateKey
+            ))
             val keyPair = ECKeyPair(
                 DjbECPublicKey(
                     Hex.fromStringCondensed(
@@ -453,7 +461,7 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
 
     fun removeAllClosedGroupEncryptionKeyPairs(groupPublicKey: String) {
         val database = databaseHelper.writableDatabase
-        database.delete(closedGroupEncryptionKeyPairsTable, "${Companion.closedGroupsEncryptionKeyPairIndex} LIKE ?", wrap("$groupPublicKey%"))
+        database.delete(closedGroupEncryptionKeyPairsTable, "$closedGroupsEncryptionKeyPairIndex LIKE ?", wrap("$groupPublicKey%"))
     }
 
     fun addClosedGroupPublicKey(groupPublicKey: String) {
@@ -465,7 +473,7 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
     fun getAllClosedGroupPublicKeys(): Set<String> {
         val database = databaseHelper.readableDatabase
         return database.getAll(closedGroupPublicKeysTable, null, null) { cursor ->
-            cursor.getString(cursor.getColumnIndexOrThrow(Companion.groupPublicKey))
+            cursor.getString(cursor.getColumnIndexOrThrow(groupPublicKey))
         }.toSet()
     }
 

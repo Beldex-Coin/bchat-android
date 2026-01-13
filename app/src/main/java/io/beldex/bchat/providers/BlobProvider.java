@@ -230,11 +230,11 @@ public class BlobProvider {
 
   public class BlobBuilder {
 
-    private InputStream data;
-    private String      id;
+    private final InputStream data;
+    private final String      id;
     private String      mimeType;
     private String      fileName;
-    private long        fileSize;
+    private final long        fileSize;
 
     private BlobBuilder(@NonNull InputStream data, long fileSize) {
       this.id       = UUID.randomUUID().toString();
@@ -277,7 +277,7 @@ public class BlobProvider {
 
   public class MemoryBlobBuilder extends BlobBuilder {
 
-    private byte[] data;
+    private final byte[] data;
 
     private MemoryBlobBuilder(@NonNull byte[] data) {
       super(new ByteArrayInputStream(data), data.length);

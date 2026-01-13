@@ -30,7 +30,7 @@ class ComponentUtils {
         fun configureTextField(field: EditText, singleLine: Boolean, maxChars: Int) {
             if (singleLine) {
                 field.maxLines = 1
-                field.setSingleLine(true)
+                field.isSingleLine=true
             }
             field.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(maxChars))
         }

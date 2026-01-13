@@ -59,7 +59,7 @@ abstract class KeyboardController(private val inputConnection: InputConnection) 
         return inputConnection.getTextAfterCursor(100, 0).toString()
     }
 
-    internal fun cursorPosition(): Int {
+    private fun cursorPosition(): Int {
         return cursorPosition
     }
 
@@ -93,7 +93,7 @@ abstract class KeyboardController(private val inputConnection: InputConnection) 
         }
     }
 
-    internal fun replaceNextCharacter(c: Char) {
+    private fun replaceNextCharacter(c: Char) {
         deleteNextCharacter()
         addCharacter(c)
     }

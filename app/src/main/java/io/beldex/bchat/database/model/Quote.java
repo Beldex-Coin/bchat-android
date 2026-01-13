@@ -4,8 +4,6 @@ package io.beldex.bchat.database.model;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import io.beldex.bchat.mms.SlideDeck;
-
 import com.beldex.libbchat.messaging.sending_receiving.quotes.QuoteModel;
 import com.beldex.libbchat.utilities.Address;
 import io.beldex.bchat.mms.SlideDeck;

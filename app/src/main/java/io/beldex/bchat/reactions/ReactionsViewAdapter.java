@@ -6,7 +6,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,10 +22,10 @@ import com.bumptech.glide.RequestManager;
 
 public class ReactionsViewAdapter extends RecyclerView.Adapter<ReactionsViewAdapter.ViewHolder> {
 
-    private List<ReactionDetails> reactions;
-    private Context context;
+    private final List<ReactionDetails> reactions;
+    private final Context context;
 
-    private Callback callback;
+    private final Callback callback;
 
     private final RequestManager glideRequests;
 

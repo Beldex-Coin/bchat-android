@@ -41,7 +41,7 @@ import io.beldex.bchat.contacts.blocked.BlockedContactsActivity
 import io.beldex.bchat.conversation.v2.ConversationFragmentV2
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.home.PathActivity
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.Glide
 import io.beldex.bchat.util.*
 import java.io.File
 import java.io.FileOutputStream
@@ -59,6 +59,7 @@ import com.canhub.cropper.CropImageContract
 import com.beldex.libsignal.utilities.Log
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
 class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.AnimationListener {
     private lateinit var binding: ActivitySettingsBinding
@@ -113,10 +114,6 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
     }
     private val avatarSelection = AvatarSelection(this, onAvatarCropped, onPickImage)
 
-    companion object {
-        const val updatedProfileResultCode = 1234
-    }
-
     //New Line
     private lateinit var animation1: Animation
     private lateinit var animation2: Animation
@@ -137,7 +134,10 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
         glide = Glide.with(this)
 
         val size = toPx(280, resources)
-        val qrCode = QRCodeUtilities.encode(hexEncodedPublicKey, size, false, false)
+        val qrCode = QRCodeUtilities.encode(hexEncodedPublicKey, size,
+            isInverted=false,
+            hasTransparentBackground=false
+        )
         binding.qrCodeImageView.setImageBitmap(qrCode)
         binding.qrCodeShareButton.setOnClickListener {
             if (SystemClock.elapsedRealtime() - shareButtonLastClickTime >= 1000) {
@@ -185,7 +185,6 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             changeLogButton.setOnClickListener { showChangeLog() }
             //New Line
             appLockButton.setOnClickListener { showAppLockDetailsPage() }
-            val isLightMode = UiModeUtilities.isDayUiMode(this@SettingsActivity)
             //versionTextView.text = String.format(getString(R.string.version_s), "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
             beldexAddressTextView.text = IdentityKeyUtil.retrieve(
                 this@SettingsActivity,
@@ -269,7 +268,10 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
         file.createNewFile()
         val fos = FileOutputStream(file)
         val size = toPx(280, resources)
-        val qrCode = QRCodeUtilities.encode(hexEncodedPublicKey, size, false, false)
+        val qrCode = QRCodeUtilities.encode(hexEncodedPublicKey, size,
+            isInverted=false,
+            hasTransparentBackground=false
+        )
         qrCode.compress(Bitmap.CompressFormat.PNG, 100, fos)
         fos.flush()
         fos.close()
@@ -465,7 +467,10 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             Permissions.with(this)
                     .request(Manifest.permission.CAMERA)
                     .onAnyResult {
-                        tempFile = avatarSelection.startAvatarSelection(false, true)
+                        tempFile = avatarSelection.startAvatarSelection(
+                            includeClear=false,
+                            attemptToIncludeCamera=true
+                        )
                     }
                     .execute()
         } else {
@@ -534,7 +539,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
     private fun showFAQ() {
         try {
             val url = "https://bchat.beldex.io/faq"
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            val intent = Intent(Intent.ACTION_VIEW, url.toUri())
             startActivity(intent)
         } catch (e: Exception) {
             Toast.makeText(this, "Can't open URL", Toast.LENGTH_LONG).show()
@@ -558,7 +563,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
 
     private fun showSurvey() {
         val intent = Intent(Intent.ACTION_SENDTO)
-        intent.data = Uri.parse("mailto:") // only email apps should handle this
+        intent.data ="mailto:".toUri() // only email apps should handle this
         intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("feedback@beldex.io"))
         intent.putExtra(Intent.EXTRA_SUBJECT, "")
         startActivity(intent)
@@ -567,7 +572,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
     private fun helpTranslate() {
         try {
             val url = "https://www.beldex.io/"
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            val intent = Intent(Intent.ACTION_VIEW, url.toUri())
             startActivity(intent)
         } catch (e: Exception) {
             Toast.makeText(this, "Can't open URL", Toast.LENGTH_LONG).show()
@@ -628,7 +633,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
                     return true
                 }
             }
-            return false;
+            return false
         }
     }
 }

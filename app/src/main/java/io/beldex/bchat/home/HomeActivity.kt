@@ -1,6 +1,5 @@
 package io.beldex.bchat.home
 
-import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ComponentName
@@ -11,10 +10,7 @@ import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.PointF
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
@@ -31,19 +27,12 @@ import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.jobs.JobQueue
-import com.beldex.libbchat.messaging.messages.visible.Reaction
-import com.beldex.libbchat.messaging.messages.visible.VisibleMessage
-import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
-import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.Address
-import com.beldex.libbchat.utilities.ProfilePictureModifiedEvent
 import com.beldex.libbchat.utilities.Stub
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getIsReactionOverlayVisible
@@ -88,19 +77,18 @@ import io.beldex.bchat.database.SmsDatabase
 import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.database.model.MessageId
 import io.beldex.bchat.database.model.MessageRecord
-import io.beldex.bchat.database.model.ReactionRecord
 import io.beldex.bchat.databinding.ActivityHomeBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.groups.OpenGroupManager
 import io.beldex.bchat.home.search.GlobalSearchAdapter
 import io.beldex.bchat.home.search.GlobalSearchViewModel
-import io.beldex.bchat.mediapreview.MediaPreviewViewModel
 import io.beldex.bchat.model.AsyncTaskCoroutine
 import io.beldex.bchat.model.NetworkType
 import io.beldex.bchat.model.PendingTransaction
 import io.beldex.bchat.model.TransactionInfo
 import io.beldex.bchat.model.Wallet
 import io.beldex.bchat.model.WalletManager
+import io.beldex.bchat.notifications.PushRegistry
 import io.beldex.bchat.onboarding.SeedActivity
 import io.beldex.bchat.onboarding.SeedReminderViewDelegate
 import io.beldex.bchat.reactions.ReactionsDialogFragment
@@ -139,16 +127,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import java.io.File
 import java.util.Collections
 import java.util.Random
 import javax.inject.Inject
-import io.beldex.bchat.notifications.PushRegistry
-import io.beldex.bchat.permissions.Permissions
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.content.edit
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 
 
 @AndroidEntryPoint
@@ -178,7 +165,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         const val SHORTCUT_LAUNCHER = "short_cut_launcher"
 
         var REQUEST_URI = "uri"
-        const val reportIssueBChatID = BuildConfig.REPORT_ISSUE_ID
+        const val REPORTISSUEBCHATID = BuildConfig.REPORT_ISSUE_ID
     }
 
     //Wallet
@@ -195,13 +182,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     private var onUriWalletScannedListener: OnUriWalletScannedListener? = null
     private var barcodeData: BarcodeData? = null
 
-
-    private val useSSL: Boolean = false
-    private val isLightWallet:  Boolean = false
-
     private val viewModel: HomeViewModel by viewModels()
-    private val conversationViewModel: ConversationViewModel by viewModels()
-    /*private var conversationViewModel : ConversationViewModel?=null*/
 
     @Inject
     lateinit var sharedPreferenceUtil: SharedPreferenceUtil
@@ -276,7 +257,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
 
         IP2Country.configureIfNeeded(this@HomeActivity)
-        EventBus.getDefault().register(this@HomeActivity)
 
         //New Line App Update
         /*binding.airdropIcon.setAnimation(R.raw.airdrop_animation_top)
@@ -355,22 +335,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             }
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             result(false)
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onUpdateProfileEvent(event: ProfilePictureModifiedEvent) {
-        if (event.recipient.isLocalNumber) {
-            val currentFragment = getCurrentFragment()
-            if(currentFragment is HomeFragment) {
-                currentFragment.updateProfileButton()
-            }
-        }else {
-            val currentFragment = getCurrentFragment()
-            if(currentFragment is HomeFragment) {
-                currentFragment.homeViewModel.tryUpdateChannel()
-                currentFragment.updateAdapter()
-            }
         }
     }
 
@@ -478,69 +442,79 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         drawerProfileName: TextView,
         drawerProfileIcon: ProfilePictureView
     ) {
-        lifecycleScope.launchWhenStarted {
-            launch(Dispatchers.IO) {
-                // Double check that the long poller is up
-                (applicationContext as ApplicationContext).startPollingIfNeeded()
-                // update things based on TextSecurePrefs (profile info etc)
-                // Set up remaining components if needed
-                pushRegistry.refresh(false)
-                val userPublicKey = TextSecurePreferences.getLocalNumber(this@HomeActivity)
-                if (userPublicKey != null) {
-                    OpenGroupManager.startPolling()
-                    JobQueue.shared.resumePendingJobs()
-                }
-                // Set up typing observer
-                withContext(Dispatchers.Main) {
-                    updateProfileButton(profileButton,drawerProfileName,drawerProfileIcon,publicKey)
-                    TextSecurePreferences.events.filter { it == TextSecurePreferences.PROFILE_NAME_PREF }.collect {
-                        updateProfileButton(profileButton,drawerProfileName,drawerProfileIcon,publicKey)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch(Dispatchers.IO) {
+                    // Double check that the long poller is up
+                    (applicationContext as ApplicationContext).startPollingIfNeeded()
+                    // update things based on TextSecurePrefs (profile info etc)
+                    // Set up remaining components if needed
+                    pushRegistry.refresh(false)
+                    val userPublicKey=TextSecurePreferences.getLocalNumber(this@HomeActivity)
+                    if (userPublicKey != null) {
+                        OpenGroupManager.startPolling()
+                        JobQueue.shared.resumePendingJobs()
                     }
-                }
-            }
-            // monitor the global search VM query
-//            launch {
-//                globalSearchInputLayout.query
-//                    .onEach(globalSearchViewModel::postQuery)
-//                    .collect()
-//            }
-            // Get group results and display them
-            launch {
-                globalSearchViewModel.result.collect { result ->
-                    val contactAndGroupList =
-                        result.contacts.map { GlobalSearchAdapter.Model.Contact(it) } +
-                                result.threads.map { GlobalSearchAdapter.Model.GroupConversation(it) }
-
-                    val contactResults = contactAndGroupList.toMutableList()
-
-                    if (contactResults.isEmpty()) {
-                        contactResults.add(
-                            GlobalSearchAdapter.Model.SavedMessages(
-                                publicKey
-                            )
+                    // Set up typing observer
+                    withContext(Dispatchers.Main) {
+                        updateProfileButton(
+                            profileButton,
+                            drawerProfileName,
+                            drawerProfileIcon,
+                            publicKey
                         )
+                        TextSecurePreferences.events.filter { it == TextSecurePreferences.PROFILE_NAME_PREF }
+                            .collect {
+                                updateProfileButton(
+                                    profileButton,
+                                    drawerProfileName,
+                                    drawerProfileIcon,
+                                    publicKey
+                                )
+                            }
                     }
+                }
+                // Get group results and display them
+                launch {
+                    globalSearchViewModel.result.collect { result ->
+                        val contactAndGroupList=
+                            result.contacts.map { GlobalSearchAdapter.Model.Contact(it) } +
+                                    result.threads.map {
+                                        GlobalSearchAdapter.Model.GroupConversation(
+                                            it
+                                        )
+                                    }
 
-                    val userIndex =
-                        contactResults.indexOfFirst { it is GlobalSearchAdapter.Model.Contact && it.contact.bchatID == publicKey }
-                    if (userIndex >= 0) {
-                        contactResults[userIndex] =
-                            GlobalSearchAdapter.Model.SavedMessages(publicKey)
-                    }
+                        val contactResults=contactAndGroupList.toMutableList()
 
-                    if (contactResults.isNotEmpty()) {
-                        contactResults.add(
-                            0,
-                            GlobalSearchAdapter.Model.Header(R.string.global_search_contacts_groups)
-                        )
-                    }
-
-                    val unreadThreadMap = result.messages
-                        .groupBy { it.threadId }.keys.associateWith {
-                            mmsSmsDatabase.getUnreadCount(
-                                it
+                        if (contactResults.isEmpty()) {
+                            contactResults.add(
+                                GlobalSearchAdapter.Model.SavedMessages(
+                                    publicKey
+                                )
                             )
                         }
+
+                        val userIndex=
+                            contactResults.indexOfFirst { it is GlobalSearchAdapter.Model.Contact && it.contact.bchatID == publicKey }
+                        if (userIndex >= 0) {
+                            contactResults[userIndex]=
+                                GlobalSearchAdapter.Model.SavedMessages(publicKey)
+                        }
+
+                        if (contactResults.isNotEmpty()) {
+                            contactResults.add(
+                                0,
+                                GlobalSearchAdapter.Model.Header(R.string.global_search_contacts_groups)
+                            )
+                        }
+
+                        val unreadThreadMap=result.messages
+                            .groupBy { it.threadId }.keys.associateWith {
+                                mmsSmsDatabase.getUnreadCount(
+                                    it
+                                )
+                            }
 
                     val messageResults: MutableList<GlobalSearchAdapter.Model> = result.messages
                         .map { messageResult ->
@@ -557,16 +531,17 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                         )
                     }
 
-                    val newData = contactResults + messageResults
-                    globalSearchAdapter.setNewData(result.query, newData)
+                        val newData=contactResults + messageResults
+                        globalSearchAdapter.setNewData(result.query, newData)
+                    }
                 }
             }
         }
     }
 
-    fun replaceFragment(newFragment: Fragment, stackName: String?, extras: Bundle?) {
+    fun replaceFragment(newFragment : Fragment, stackName : String?, extras : Bundle?) {
         if (extras != null) {
-            newFragment.arguments = extras
+            newFragment.arguments=extras
         }
         supportFragmentManager
             .beginTransaction()
@@ -682,11 +657,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         show(intent)
     }
 
-    private var setUpWalletPinActivityResultLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
-
     override fun sendMessageToSupport() {
-        val recipient = Recipient.from(this, Address.fromSerialized(reportIssueBChatID), false)
+        val recipient = Recipient.from(this, Address.fromSerialized(REPORTISSUEBCHATID), false)
         val extras = Bundle()
         extras.putParcelable(ConversationFragmentV2.ADDRESS, recipient.address)
         val existingThread =
@@ -698,8 +670,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun onDestroy() {
-        EventBus.getDefault().unregister(this@HomeActivity)
-
         //Wallet
         Timber.d("onDestroy")
         dismissProgressDialog()
@@ -737,13 +707,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         extras.putParcelable(ConversationFragmentV2.ADDRESS,address)
         extras.putLong(ConversationFragmentV2.THREAD_ID,threadId)
         replaceFragment(ConversationFragmentV2(),null,extras)
-    }
-
-    fun playVoiceMessageAtIndexIfPossible(indexInAdapter: Int) {
-        val fragment = supportFragmentManager.findFragmentById(R.id.activity_home_frame_layout_container)
-        if(fragment is ConversationFragmentV2) {
-            fragment.playVoiceMessageAtIndexIfPossible(indexInAdapter)
-        }
     }
 
     override fun getSystemService(name: String): Any? {
@@ -856,7 +819,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 }
 
             }else{
-                val currentFragment = getCurrentFragment()
                 if (currentFragment is WalletFragment) {
                     currentFragment.updateNodeConnectingStatus()
                 }
@@ -873,7 +835,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
     }
 
-    override val connectionStatus: Wallet.ConnectionStatus?
+    override val connectionStatus: Wallet.ConnectionStatus
         get() = mBoundService!!.connectionStatus
     override val daemonHeight: Long
         get() = mBoundService!!.daemonHeight
@@ -957,11 +919,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             var nodeInfo = node
             val storedNodes=sharedPreferenceUtil.getStoredNodes().all
             for (nodeEntry in storedNodes.entries) {
-                if (nodeEntry != null) { // just in case, ignore possible future errors
-                    val nodeId=nodeEntry.value as String
-                    if (nodeId == selectedNodeId) {
-                        nodeInfo = NodeInfo.fromString(selectedNodeId)
-                    }
+                // just in case, ignore possible future errors
+                val nodeId=nodeEntry.value as String
+                if (nodeId == selectedNodeId) {
+                    nodeInfo = NodeInfo.fromString(selectedNodeId)
                 }
             }
             nodeInfo
@@ -971,10 +932,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun setNode(node: NodeInfo?) {
-        setNode(node, true)
-    }
-
-    private fun setNode(node: NodeInfo?, save: Boolean) {
         if (node !== this.node) {
             require(!(node != null && node.networkType !== walletManager.networkType)) { "network type does not match" }
             this.node = node
@@ -982,9 +939,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 nodeInfo.isSelected = nodeInfo === node
             }
             walletManager.setDaemon(node)
-            if (save) sharedPreferenceUtil.saveSelectedNode(getNode())
-
-            //SteveJosephh21
+            sharedPreferenceUtil.saveSelectedNode(getNode())
             startWalletService()
         }
     }
@@ -1141,15 +1096,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
     }
 
-    override fun onTransactionSent(txId: String?) {
+    override fun onTransactionSent(txid: String?) {
         try {
             //WalletFragment Functionality --
             val currentFragment = getCurrentFragment()
             if(currentFragment is ConversationFragmentV2){
-                runOnUiThread { currentFragment.onTransactionSent(txId) }
-            }/*else if(currentFragment is SendFragment){
-                runOnUiThread { currentFragment.onTransactionSent(txId) }
-            }*/
+                runOnUiThread { currentFragment.onTransactionSent(txid) }
+            }
         } catch (ex: ClassCastException) {
             // not in spend fragment
             Timber.d(ex.localizedMessage)
@@ -1227,7 +1180,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         // #gurke
         val bcData = BarcodeData.fromString(qrCode)
         return if (bcData != null) {
-            popFragmentStack(null)
+            popFragmentStack()
             onUriScanned(bcData)
             true
         } else {
@@ -1301,15 +1254,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun onFragmentDone() {
-        popFragmentStack(null)
+        popFragmentStack()
     }
 
-    private fun popFragmentStack(name: String?) {
-        if (name == null) {
-            supportFragmentManager.popBackStack()
-        } else {
-            supportFragmentManager.popBackStack(name, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        }
+    private fun popFragmentStack() {
+        supportFragmentManager.popBackStack()
     }
 
     override fun setOnUriScannedListener(onUriScannedListener: OnUriScannedListener?) {
@@ -1335,7 +1284,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     enum class Mode {
-        BDX, BTC
+        BDX
     }
 
     override fun setMode(mode: Mode?) {
@@ -1367,7 +1316,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             onDisposeRequest()
         }
         setBarcodeData(null)
-        onBackPressed()
+        onBackPressedDispatcher.onBackPressed()
     }
 
     override fun onWalletScan() {
@@ -1388,7 +1337,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         // #gurke
         val bcData = BarcodeData.fromString(qrCode)
         return if (bcData != null) {
-            popFragmentStack(null)
+            popFragmentStack()
             onUriWalletScanned(bcData)
             true
         } else {
@@ -1445,7 +1394,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
     }
 
-     fun saveWallet() {
+     private fun saveWallet() {
         if (mIsBound) { // no point in talking to unbound service
             var intent: Intent? = null
             if(intent==null) {
@@ -1549,12 +1498,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         val reConnect  = promptsView.findViewById<Button>(R.id.reConnectButton_Alert)
         val reScan = promptsView.findViewById<Button>(R.id.rescanButton_Alert)
         val alertDialog: AlertDialog = dialog.create()
-        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        alertDialog.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
         alertDialog.show()
 
         reConnect.setOnClickListener {
             if (CheckOnline.isOnline(this)) {
-                onWalletReconnect(node, useSSL, isLightWallet)
+                onWalletReconnect(node)
                 alertDialog.dismiss()
             } else {
                 Toast.makeText(
@@ -1598,12 +1547,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
     }
 
-    private fun onWalletReconnect(node: NodeInfo?, useSSL: Boolean, isLightWallet: Boolean) {
+    private fun onWalletReconnect(node: NodeInfo?) {
         val currentWallet = getCurrentFragment()
         if (CheckOnline.isOnline(this)) {
             if (getWallet() != null) {
                 val isOnline =
-                    getWallet()?.reConnectToDaemon(node, useSSL, isLightWallet) as Boolean
+                    getWallet()?.reConnectToDaemon(node, false, false) as Boolean
                 if (isOnline) {
                     synced = false
                     setNode(node)
@@ -1646,23 +1595,20 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     private fun pingSelectedNode() {
-        val PING_SELECTED = 0
-        val FIND_BEST = 1
-        AsyncFindBestNode(PING_SELECTED, FIND_BEST).execute<Int>(PING_SELECTED)
+        val pingSelect = 0
+        val findBest = 1
+        AsyncFindBestNode(pingSelect, findBest).execute<Int>(pingSelect)
     }
 
-    inner class AsyncFindBestNode(val PING_SELECTED: Int, val FIND_BEST: Int) :
+    inner class AsyncFindBestNode(private val pingSelect: Int, private val findBest: Int) :
         AsyncTaskCoroutine<Int?, NodeInfo?>() {
-        override fun onPreExecute() {
-            super.onPreExecute()
-        }
 
         override fun doInBackground(vararg params: Int?): NodeInfo? {
             val favourites: Set<NodeInfo?> = getOrPopulateFavourites(this@HomeActivity)
             var selectedNode: NodeInfo?
-            if (params[0] == FIND_BEST) {
+            if (params[0] == findBest) {
                 selectedNode = autoselect(favourites)
-            } else if (params[0] == PING_SELECTED) {
+            } else if (params[0] == pingSelect) {
                 selectedNode = getNode()
                 if (selectedNode == null) {
                     Log.d("Beldex", "selected node null")
@@ -1676,10 +1622,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 if (selectedNode == null) { // autoselect
                     selectedNode = autoselect(favourites)
                 } else {
-                    //Steve Josephh21
-                    if(selectedNode!=null) {
-                        selectedNode!!.testRpcService()
-                    }
+                    selectedNode.testRpcService()
                 }
             } else throw java.lang.IllegalStateException()
             return if (selectedNode != null && selectedNode.isValid) {
@@ -1699,7 +1642,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     fun autoselect(nodes: Set<NodeInfo?>): NodeInfo? {
         if (nodes.isEmpty()) return null
         NodePinger.execute(nodes, null)
-        val nodeList: ArrayList<NodeInfo?> = ArrayList<NodeInfo?>(nodes)
+        val nodeList: ArrayList<NodeInfo?> = ArrayList(nodes)
         Collections.sort(nodeList, NodeInfo.BestNodeComparator)
         val rnd = Random().nextInt(nodeList.size)
         return nodeList[rnd]
@@ -1756,15 +1699,15 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         when (walletManager.networkType) {
             NetworkType.NetworkType_Mainnet -> {
                 viewModel.loadLegacyList(sharedPref.getString(prefDaemonMainNet, null))
-                sharedPref.edit().remove(prefDaemonMainNet).apply()
+                sharedPref.edit { remove(prefDaemonMainNet) }
             }
             NetworkType.NetworkType_Stagenet -> {
                 viewModel.loadLegacyList(sharedPref.getString(prefDaemonStageNet, null))
-                sharedPref.edit().remove(prefDaemonStageNet).apply()
+                sharedPref.edit { remove(prefDaemonStageNet) }
             }
             NetworkType.NetworkType_Testnet -> {
                 viewModel.loadLegacyList(sharedPref.getString(prefDaemonTestNet, null))
-                sharedPref.edit().remove(prefDaemonTestNet).apply()
+                sharedPref.edit { remove(prefDaemonTestNet) }
             }
             else -> throw java.lang.IllegalStateException("unsupported net " + walletManager.networkType)
         }
@@ -1829,10 +1772,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 currentFragment.sendEmojiRemoval(emoji, messageRecord)
             }
         } else {
-            if (emoji != null) {
-                if(currentFragment is ConversationFragmentV2){
-                    currentFragment.sendEmojiReaction(emoji, messageRecord)
-                }
+            if(currentFragment is ConversationFragmentV2){
+                currentFragment.sendEmojiReaction(emoji, messageRecord)
             }
         }
     }
@@ -1853,7 +1794,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             reactionDelegate.hideForReactWithAny()
             ReactWithAnyEmojiDialogFragment
                 .createForMessageRecord(messageRecord, reactWithAnyEmojiStartPage)
-                .show(supportFragmentManager, "BOTTOM");
+                .show(supportFragmentManager, "BOTTOM")
         }
     }
 

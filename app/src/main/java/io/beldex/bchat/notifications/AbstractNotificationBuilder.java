@@ -27,7 +27,7 @@ public abstract class AbstractNotificationBuilder extends NotificationCompat.Bui
 
   private static final int MAX_DISPLAY_LENGTH = 500;
 
-  protected Context                       context;
+  protected final Context                       context;
   protected NotificationPrivacyPreference privacy;
   protected final Bundle                  extras;
 

@@ -34,7 +34,10 @@ class ShowQRCodeWithScanQRCodeActivity :  PassphraseRequiredActionBarActivity(){
         supportActionBar!!.title = resources.getString(R.string.activity_qr_code_title)
 
         val size = toPx(280, resources)
-        val qrCode = QRCodeUtilities.encode(hexEncodedPublicKey, size, false, false)
+        val qrCode = QRCodeUtilities.encode(hexEncodedPublicKey, size,
+            isInverted=false,
+            hasTransparentBackground=false
+        )
         binding.qrCodeImageView.setImageBitmap(qrCode)
 //        val explanation = SpannableStringBuilder("This is your unique public QR code. Other users can scan this to start a conversation with you.")
 //        explanation.setSpan(StyleSpan(Typeface.BOLD), 8, 34, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -77,7 +80,10 @@ class ShowQRCodeWithScanQRCodeActivity :  PassphraseRequiredActionBarActivity(){
         file.createNewFile()
         val fos = FileOutputStream(file)
         val size = toPx(280, resources)
-        val qrCode = QRCodeUtilities.encode(hexEncodedPublicKey, size, false, false)
+        val qrCode = QRCodeUtilities.encode(hexEncodedPublicKey, size,
+            isInverted=false,
+            hasTransparentBackground=false
+        )
         qrCode.compress(Bitmap.CompressFormat.PNG, 100, fos)
         fos.flush()
         fos.close()

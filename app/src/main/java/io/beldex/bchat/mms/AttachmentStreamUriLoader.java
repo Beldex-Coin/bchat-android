@@ -42,10 +42,10 @@ public class AttachmentStreamUriLoader implements ModelLoader<AttachmentModel, I
   }
 
   public static class AttachmentModel implements Key {
-    public @NonNull File             attachment;
-    public @NonNull byte[]           key;
-    public @NonNull Optional<byte[]> digest;
-    public          long             plaintextLength;
+    public final @NonNull File             attachment;
+    public final @NonNull byte[]           key;
+    public final @NonNull Optional<byte[]> digest;
+    public final long             plaintextLength;
 
     public AttachmentModel(@NonNull File attachment, @NonNull byte[] key,
                            long plaintextLength, @NonNull Optional<byte[]> digest)

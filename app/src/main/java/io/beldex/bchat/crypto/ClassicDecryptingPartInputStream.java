@@ -135,7 +135,7 @@ public class ClassicDecryptingPartInputStream {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
       try {
         super.close();
       } catch (Throwable t) {

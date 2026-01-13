@@ -201,7 +201,7 @@ public abstract class Job {
             private int          maxAttempts    = 1;
             private int          maxInstances   = UNLIMITED;
             private String       queue          = null;
-            private List<String> constraintKeys = new LinkedList<>();
+            private final List<String> constraintKeys = new LinkedList<>();
 
             /** Should only be invoked by {@link JobController} */
             Builder setCreateTime(long createTime) {

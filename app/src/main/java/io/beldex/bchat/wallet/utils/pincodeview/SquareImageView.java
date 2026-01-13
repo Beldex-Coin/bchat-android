@@ -5,10 +5,12 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+import androidx.appcompat.widget.AppCompatImageView;
+
 /**
  * An ImageView that shrinks its larger dimension to become square.
  */
-public class SquareImageView extends ImageView {
+public class SquareImageView extends AppCompatImageView {
     public SquareImageView(Context context) {
         super(context);
     }

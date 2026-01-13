@@ -35,9 +35,9 @@ import java.io.File
 
 @Composable
 fun CroppedImageScreen(file: File, onCropped: () -> Unit) {
-    var scale by remember { mutableStateOf(1.0f) }
+    var scale by remember { mutableFloatStateOf(1.0f) }
     var offset by remember { mutableStateOf(Offset(0f, 0f)) }
-    var rotationState by remember { mutableStateOf(0f) }
+    var rotationState by remember { mutableFloatStateOf(0f) }
     var cropRect by remember { mutableStateOf(Rect(0f, 0f, 1f, 1f)) }
 
     val transformableState = rememberTransformableState { zoomChange, panChange, _ ->

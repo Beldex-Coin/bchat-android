@@ -20,7 +20,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import io.beldex.bchat.database.loaders.RecentPhotosLoader;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.Key;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -149,7 +148,7 @@ public class RecentPhotoViewRail extends FrameLayout implements LoaderManager.Lo
 
     static class RecentPhotoViewHolder extends RecyclerView.ViewHolder {
 
-      ImageView imageView;
+      final ImageView imageView;
 
       RecentPhotoViewHolder(View itemView) {
         super(itemView);

@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 
-import io.beldex.bchat.components.emoji.MediaKeyboardProvider.TabIconProvider;
 import com.bumptech.glide.RequestManager;
 
 

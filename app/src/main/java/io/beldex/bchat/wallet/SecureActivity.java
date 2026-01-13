@@ -2,7 +2,6 @@ package io.beldex.bchat.wallet;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -43,9 +42,7 @@ public abstract class SecureActivity extends AppCompatActivity {
 
     private Configuration updateConfigurationIfSupported(Configuration config) {
         // Configuration.getLocales is added after 24 and Configuration.locale is deprecated in 24
-        if (!config.getLocales().isEmpty()) {
-            return config;
-        }
+        config.getLocales().isEmpty();
 
         //Important
        /* Locale locale = LocaleHelper.getPreferredLocale(this);

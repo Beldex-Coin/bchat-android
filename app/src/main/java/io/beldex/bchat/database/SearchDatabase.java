@@ -9,7 +9,6 @@ import com.annimon.stream.Stream;
 
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
-import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
 import com.beldex.libbchat.utilities.Util;
 import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
 
@@ -135,7 +134,7 @@ public class SearchDatabase extends Database {
   }
 
   private String adjustQuery(@NonNull String query) {
-    List<String> tokens      = Stream.of(query.split(" ")).filter(s -> s.trim().length() > 0).toList();
+    List<String> tokens      = Stream.of(query.split(" ")).filter(s -> !s.trim().isEmpty()).toList();
     String       prefixQuery = Util.join(tokens, "* ");
 
     prefixQuery += "*";

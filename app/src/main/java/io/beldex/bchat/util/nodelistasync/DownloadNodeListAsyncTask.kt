@@ -15,9 +15,6 @@ import java.net.URL
 
 class DownloadNodeListFileAsyncTask(private val mContext: Context) :
     AsyncTaskCoroutine<String?, String?>() {
-    override fun onPreExecute() {
-        super.onPreExecute()
-    }
 
     override fun doInBackground(vararg downloadUrl: String?): String? {
         var input: InputStream? = null

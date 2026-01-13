@@ -53,9 +53,9 @@ class GiphyAdapter extends RecyclerView.Adapter<GiphyAdapter.GiphyViewHolder> {
 
   class GiphyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, RequestListener<Drawable> {
 
-    public AspectRatioImageView thumbnail;
+    public final AspectRatioImageView thumbnail;
     public GiphyImage           image;
-    public ProgressBar          gifProgress;
+    public final ProgressBar          gifProgress;
     public volatile boolean     modelReady;
 
     GiphyViewHolder(View view) {

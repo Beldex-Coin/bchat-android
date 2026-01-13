@@ -67,8 +67,10 @@ class SwipeController(buttonsActions: SwipeControllerActions?) : ItemTouchHelper
         var dX = dX
         if (actionState == ACTION_STATE_SWIPE) {
             if (buttonShowedState != ButtonsState.GONE) {
-                if (buttonShowedState == ButtonsState.LEFT_VISIBLE) dX = Math.max(dX, buttonWidth)
-                if (buttonShowedState == ButtonsState.RIGHT_VISIBLE) dX = Math.min(dX, -buttonWidth)
+                if (buttonShowedState == ButtonsState.LEFT_VISIBLE) dX =
+                    dX.coerceAtLeast(buttonWidth)
+                if (buttonShowedState == ButtonsState.RIGHT_VISIBLE) dX =
+                    dX.coerceAtMost(-buttonWidth)
                 super.onChildDraw(
                     c,
                     recyclerView,
@@ -200,7 +202,7 @@ class SwipeController(buttonsActions: SwipeControllerActions?) : ItemTouchHelper
 
     private fun setItemsClickable(recyclerView: RecyclerView, isClickable: Boolean) {
         for (i in 0 until recyclerView.getChildCount()) {
-            recyclerView.getChildAt(i).setClickable(isClickable)
+            recyclerView.getChildAt(i).isClickable=isClickable
         }
     }
 

@@ -29,7 +29,7 @@ public class EncryptedGifCacheDecoder extends EncryptedCoder implements Resource
 
   @Override
   public boolean handles(@NonNull File source, @NonNull Options options) {
-    Log.i(TAG, "Checking item for encrypted GIF cache decoder: " + source.toString());
+    Log.i(TAG, "Checking item for encrypted GIF cache decoder: " + source);
 
     try (InputStream inputStream = createEncryptedInputStream(secret, source)) {
       return gifDecoder.handles(inputStream, options);

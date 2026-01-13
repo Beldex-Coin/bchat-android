@@ -12,12 +12,7 @@
           "package_name": "io.beldex.bchat"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "225838187372-i76je26pae593nib5c57vfcbnosi05un.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
           "current_key": "AIzaSyB4nd4ZajmzyfUNpqKyveeRYBDn6IqI27c"
@@ -25,19 +20,7 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "225838187372-i76je26pae593nib5c57vfcbnosi05un.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "225838187372-jsohmcnjmqjfj7c262rr3gpoeh11qomp.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.beldex.bchat"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     },
@@ -48,12 +31,7 @@
           "package_name": "io.beldex.bchat.debug"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "225838187372-i76je26pae593nib5c57vfcbnosi05un.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
           "current_key": "AIzaSyB4nd4ZajmzyfUNpqKyveeRYBDn6IqI27c"
@@ -61,19 +39,7 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "225838187372-i76je26pae593nib5c57vfcbnosi05un.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "225838187372-jsohmcnjmqjfj7c262rr3gpoeh11qomp.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.beldex.bchat"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

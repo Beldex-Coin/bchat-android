@@ -9,11 +9,13 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -58,8 +60,8 @@ fun NumberPicker(
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = listStartIndex)
     val flingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
 
-    val itemHeightPixels = remember { mutableStateOf(0) }
-    val itemHeightDp = pixelsToDp(itemHeightPixels.value)
+    val itemHeightPixels = remember { mutableIntStateOf(0) }
+    val itemHeightDp = pixelsToDp(itemHeightPixels.intValue)
 
     val fadingEdgeGradient = remember {
         Brush.verticalGradient(
@@ -113,14 +115,14 @@ fun NumberPicker(
             }
         }
 
-        Divider(
-            color = dividerColor,
-            modifier = Modifier.offset(y = itemHeightDp * visibleItemsMiddle)
+        HorizontalDivider(
+            modifier=Modifier.offset(y = itemHeightDp * visibleItemsMiddle),
+            color=dividerColor
         )
 
-        Divider(
-            color = dividerColor,
-            modifier = Modifier.offset(y = itemHeightDp * (visibleItemsMiddle + 1))
+        HorizontalDivider(
+            modifier=Modifier.offset(y = itemHeightDp * (visibleItemsMiddle + 1)),
+            color=dividerColor
         )
 
     }

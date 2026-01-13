@@ -110,7 +110,7 @@ class CustomDialogBuilder(val context: Context) {
         onSelect: (Int) -> Unit
     ) = singleChoiceItems(options.toTypedArray(), currentSelected, onSelect)
 
-    fun singleChoiceItems(
+    private fun singleChoiceItems(
         options: Array<String>,
         currentSelected: Int = 0,
         onSelect: (Int) -> Unit

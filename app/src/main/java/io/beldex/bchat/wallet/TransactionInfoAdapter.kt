@@ -129,7 +129,7 @@ class TransactionInfoAdapter(context: Context?)  :
         return infoItems!!.size
     }
 
-    fun setInfos(newItems: List<TransactionInfo>?) {
+    private fun setInfos(newItems: List<TransactionInfo>?) {
         var newItems = newItems
         if (newItems == null) {
             newItems = ArrayList()

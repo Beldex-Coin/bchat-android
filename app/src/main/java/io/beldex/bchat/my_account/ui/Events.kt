@@ -20,11 +20,6 @@ sealed interface MessageRequestEvents {
     data object ClearAllRequest: MessageRequestEvents
 }
 
-sealed interface AddressBookEvents {
-    data class SearchQueryChanged(val query: String): AddressBookEvents
-
-}
-
 sealed interface ArchiveChatsEvents {
     data class UnArchiveChats(val thread : ThreadRecord) : ArchiveChatsEvents
 

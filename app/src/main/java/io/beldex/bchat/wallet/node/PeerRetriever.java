@@ -31,8 +31,8 @@ public class PeerRetriever implements Callable<PeerRetriever> {
 
     final private List<LevinPeer> peers = new ArrayList<>();
 
-    private NodeInfo nodeInfo;
-    private OnGetPeers onGetPeersCallback;
+    private final NodeInfo nodeInfo;
+    private final OnGetPeers onGetPeersCallback;
 
     public interface OnGetPeers {
         boolean getMorePeers();

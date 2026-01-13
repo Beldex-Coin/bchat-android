@@ -21,8 +21,6 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import io.beldex.bchat.database.GroupDatabase;
-
 import com.beldex.libbchat.utilities.GroupRecord;
 import io.beldex.bchat.database.GroupDatabase;
 import io.beldex.bchat.dependencies.DatabaseComponent;

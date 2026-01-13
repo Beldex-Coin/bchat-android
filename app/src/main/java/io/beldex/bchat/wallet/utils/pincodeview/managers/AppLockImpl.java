@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.util.Log;
@@ -230,11 +229,7 @@ public class AppLockImpl<T extends AppLockActivity> extends AppLock implements L
             storedPasscode = mSharedPreferences.getString(PASSWORD_PREFERENCE_KEY, "");
         }
 
-        if (passcode.equalsIgnoreCase(storedPasscode)) {
-            return true;
-        } else {
-            return false;
-        }
+        return passcode.equalsIgnoreCase(storedPasscode);
     }
 
     @Override
@@ -259,11 +254,7 @@ public class AppLockImpl<T extends AppLockActivity> extends AppLock implements L
 
     @Override
     public boolean isPasscodeSet() {
-        if (mSharedPreferences.contains(PASSWORD_PREFERENCE_KEY)) {
-            return true;
-        }
-
-        return false;
+        return mSharedPreferences.contains(PASSWORD_PREFERENCE_KEY);
     }
 
     @Override

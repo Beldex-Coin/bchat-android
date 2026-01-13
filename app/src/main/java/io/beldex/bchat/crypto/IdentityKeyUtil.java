@@ -20,7 +20,6 @@ package io.beldex.bchat.crypto;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.os.Build;
 
 import androidx.annotation.NonNull;
 
@@ -176,6 +175,6 @@ public class IdentityKeyUtil {
   }
 
   public static void delete(Context context, String key) {
-    context.getSharedPreferences(MASTER_SECRET_UTIL_PREFERENCES_NAME, 0).edit().remove(key).commit();
+    context.getSharedPreferences(MASTER_SECRET_UTIL_PREFERENCES_NAME, 0).edit().remove(key).apply();
   }
 }

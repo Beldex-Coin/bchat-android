@@ -11,7 +11,7 @@ internal interface TelephonyHandler {
 }
 internal fun TelephonyHandler(serviceExecutor: ExecutorService, callback: () -> Unit) = TelephonyHandlerV31(serviceExecutor, callback)
 @RequiresApi(Build.VERSION_CODES.S)
-class TelephonyHandlerV31(val serviceExecutor: ExecutorService, callback: () -> Unit): TelephonyHandler {
+class TelephonyHandlerV31(private val serviceExecutor: ExecutorService, callback: () -> Unit): TelephonyHandler {
     private val callback = HangUpRtcTelephonyCallback(callback)
     override fun register(telephonyManager: TelephonyManager) {
         telephonyManager.registerTelephonyCallback(serviceExecutor, callback)

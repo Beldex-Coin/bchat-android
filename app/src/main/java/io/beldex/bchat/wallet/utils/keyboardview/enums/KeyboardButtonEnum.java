@@ -14,7 +14,7 @@ public enum KeyboardButtonEnum {
     BUTTON_9(9),
     BUTTON_CLEAR(-1);
 
-    private int mButtonValue;
+    private final int mButtonValue;
 
     KeyboardButtonEnum(int value) {
         this.mButtonValue = value;

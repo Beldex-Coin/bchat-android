@@ -6,30 +6,20 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 
-import androidx.annotation.IdRes;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 
 import io.beldex.bchat.data.BarcodeData;
 import com.beldex.libsignal.utilities.Log;
-import io.beldex.bchat.data.BarcodeData;
 import io.beldex.bchat.home.HomeActivity;
 import io.beldex.bchat.onboarding.SplashScreenActivity;
 import io.beldex.bchat.service.KeyCachingService;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import io.beldex.bchat.webrtc.PowerButtonReceiver;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Locale;
-
 //TODO AC: Rename to ScreenLockActionBarActivity.
 public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarActivity {
   private static final String TAG = PassphraseRequiredActionBarActivity.class.getSimpleName();
-
-  public static final String LOCALE_EXTRA = "locale_extra";
 
   private static final int STATE_NORMAL                   = 0;
   private static final int STATE_PROMPT_PASSPHRASE        = 1;  //TODO AC: Rename to STATE_SCREEN_LOCKED
@@ -37,8 +27,6 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
   private static final int STATE_WELCOME_SCREEN           = 3;
 
   private BroadcastReceiver          clearKeyReceiver;
-
-  //SteveJosephh21 -
   private PowerButtonReceiver powerButtonReceiver = null;
 
   @Override
@@ -67,38 +55,45 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
   protected void onPause() {
     Log.i(TAG, "onPause()");
     super.onPause();
-    //SteveJosephh21 -
-    if (TextSecurePreferences.getCallisActive(ApplicationContext.getInstance(this)) && TextSecurePreferences.getMuteVideo(ApplicationContext.getInstance(this))) {
+    boolean shouldRegister =
+            TextSecurePreferences.getCallisActive(ApplicationContext.getInstance(this)) &&
+                    TextSecurePreferences.getMuteVideo(ApplicationContext.getInstance(this));
+
+    if (shouldRegister) {
       if (powerButtonReceiver == null) {
         powerButtonReceiver = new PowerButtonReceiver();
-      }
-      if (powerButtonReceiver != null) {
-        registerReceiver(powerButtonReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
+        registerReceiver(
+                powerButtonReceiver,
+                new IntentFilter(Intent.ACTION_SCREEN_OFF)
+        );
       }
     } else {
       if (powerButtonReceiver != null) {
-        this.unregisterReceiver(powerButtonReceiver);
+        unregisterReceiver(powerButtonReceiver);
         powerButtonReceiver = null;
       }
     }
   }
-
-  //SteveJosephh21 -
   @Override
   protected void onResume() {
     Log.i(TAG, "onResume()");
     super.onResume();
 
-    if (TextSecurePreferences.getCallisActive(ApplicationContext.getInstance(this)) && TextSecurePreferences.getMuteVideo(ApplicationContext.getInstance(this))) {
+    boolean shouldRegister =
+            TextSecurePreferences.getCallisActive(ApplicationContext.getInstance(this)) &&
+                    TextSecurePreferences.getMuteVideo(ApplicationContext.getInstance(this));
+
+    if (shouldRegister) {
       if (powerButtonReceiver == null) {
         powerButtonReceiver = new PowerButtonReceiver();
-      }
-      if (powerButtonReceiver != null) {
-        registerReceiver(powerButtonReceiver, new IntentFilter(Intent.ACTION_USER_PRESENT));
+        registerReceiver(
+                powerButtonReceiver,
+                new IntentFilter(Intent.ACTION_USER_PRESENT)
+        );
       }
     } else {
       if (powerButtonReceiver != null) {
-        this.unregisterReceiver(powerButtonReceiver);
+        unregisterReceiver(powerButtonReceiver);
         powerButtonReceiver = null;
       }
     }
@@ -118,45 +113,14 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
   }
 
   public void onMasterSecretCleared() {
-    Log.i(TAG, "onMasterSecretCleared(),  if");
-    if (ApplicationContext.getInstance(this).isAppVisible())
+    Log.i(TAG, "onMasterSecretCleared(), if");
+
+    if (ApplicationContext.getInstance(this).isAppVisible()) {
       routeApplicationState(true);
-    else
-      Log.i(TAG, "onMasterSecretCleared(), else" );
+    } else {
+      Log.i(TAG, "onMasterSecretCleared(), else");
       finish();
-
-  }
-
-  protected <T extends Fragment> T initFragment(@IdRes int target,
-                                                @NonNull T fragment)
-  {
-    return initFragment(target, fragment, null);
-  }
-
-  protected <T extends Fragment> T initFragment(@IdRes int target,
-                                                @NonNull T fragment,
-                                                @Nullable Locale locale)
-  {
-    return initFragment(target, fragment, locale, null);
-  }
-
-  protected <T extends Fragment> T initFragment(@IdRes int target,
-                                                @NonNull T fragment,
-                                                @Nullable Locale locale,
-                                                @Nullable Bundle extras)
-  {
-    Bundle args = new Bundle();
-    args.putSerializable(LOCALE_EXTRA, locale);
-
-    if (extras != null) {
-      args.putAll(extras);
     }
-
-    fragment.setArguments(args);
-    getSupportFragmentManager().beginTransaction()
-                               .replace(target, fragment)
-                               .commitAllowingStateLoss();
-    return fragment;
   }
 
   private void routeApplicationState(boolean locked) {
@@ -192,29 +156,29 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
   }
 
   private Intent getPromptPassphraseIntent() {
-    return getRoutedNextIntent(SplashScreenActivity.class, getIntent(),true);
+    return getRoutedNextIntent(getIntent(),true);
   }
 
   private Intent getUpgradeDatabaseIntent() {
-    return getRoutedIntent(DatabaseUpgradeActivity.class, getConversationListIntent());
+    return getRoutedIntent(getConversationListIntent());
   }
 
   private Intent getWelcomeIntent() {
-    return getRoutedNextIntent(SplashScreenActivity.class, getConversationListIntent(),false);
+    return getRoutedNextIntent(getConversationListIntent(),false);
   }
 
   private Intent getConversationListIntent() {
     return new Intent(this, HomeActivity.class);
   }
 
-  private Intent getRoutedIntent(Class<?> destination, @Nullable Intent nextIntent) {
-    final Intent intent = new Intent(this, destination);
+  private Intent getRoutedIntent(@Nullable Intent nextIntent) {
+    final Intent intent = new Intent(this, DatabaseUpgradeActivity.class);
     if (nextIntent != null)   intent.putExtra("next_intent", nextIntent);
     return intent;
   }
 
-  private Intent getRoutedNextIntent(Class<?> destination, @Nullable Intent nextIntent,Boolean next) {
-    final Intent intent = new Intent(this, destination);
+  private Intent getRoutedNextIntent(@Nullable Intent nextIntent, Boolean next) {
+    final Intent intent = new Intent(this, SplashScreenActivity.class);
     intent.putExtra("nextPage",next);
     if (nextIntent != null)   intent.putExtra("next_intent", nextIntent);
     return intent;

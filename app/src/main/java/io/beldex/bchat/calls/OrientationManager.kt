@@ -27,7 +27,7 @@ class OrientationManager(private val context: Context): SensorEventListener {
         }
         sensorManager?.registerListener(this, rotationVectorSensor, SensorManager.SENSOR_DELAY_UI)
     }
-    fun stopOrientationListener(){
+    private fun stopOrientationListener(){
         sensorManager?.unregisterListener(this)
     }
     fun destroy(){

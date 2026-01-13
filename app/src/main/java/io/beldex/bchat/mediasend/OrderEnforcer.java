@@ -61,7 +61,7 @@ public class OrderEnforcer<E> {
 
   private static class StageDetails {
     private boolean         completed = false;
-    private Stack<Runnable> actions   = new Stack<>();
+    private final Stack<Runnable> actions   = new Stack<>();
 
     boolean hasAction() {
       return !actions.isEmpty();

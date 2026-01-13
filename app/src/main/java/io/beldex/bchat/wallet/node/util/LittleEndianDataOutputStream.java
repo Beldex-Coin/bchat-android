@@ -88,7 +88,7 @@ public class LittleEndianDataOutputStream extends FilterOutputStream implements
      * @throws IOException if an I/O error occurs.
      * @see FilterOutputStream#out
      */
-    public synchronized void write(byte b[], int off, int len)
+    public synchronized void write(byte[] b, int off, int len)
             throws IOException {
         out.write(b, off, len);
         incCount(len);
@@ -186,7 +186,7 @@ public class LittleEndianDataOutputStream extends FilterOutputStream implements
         incCount(4);
     }
 
-    private byte writeBuffer[] = new byte[8];
+    private final byte[] writeBuffer = new byte[8];
 
     /**
      * Writes a <code>long</code> to the underlying output stream as eight

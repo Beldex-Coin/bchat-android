@@ -420,8 +420,8 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
       }
 
       if (oldVersion < beldexV24) {
-        String swarmTable = BeldexAPIDatabase.Companion.getSwarmTable();
-        String mnodePoolTable = BeldexAPIDatabase.Companion.getMnodePoolTable();
+        String swarmTable = BeldexAPIDatabase.swarmTable;
+        String mnodePoolTable = BeldexAPIDatabase.mnodePoolTable;
         db.execSQL("DROP TABLE " + swarmTable);
         db.execSQL("DROP TABLE " + mnodePoolTable);
         db.execSQL(BeldexAPIDatabase.getCreateMnodePoolTableCommand());

@@ -5,7 +5,6 @@ import static com.beldex.libbchat.utilities.IdUtilKt.truncateIdForDisplay;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,7 +29,7 @@ final class ReactionRecipientsAdapter extends RecyclerView.Adapter<ReactionRecip
   private static final int RECIPIENT_TYPE = 1;
   private static final int FOOTER_TYPE = 2;
 
-  private ReactionViewPagerAdapter.Listener callback;
+  private final ReactionViewPagerAdapter.Listener callback;
   private List<ReactionDetails> data = Collections.emptyList();
   private MessageId messageId;
   private boolean isUserModerator;
@@ -132,7 +131,7 @@ final class ReactionRecipientsAdapter extends RecyclerView.Adapter<ReactionRecip
 
   static final class RecipientViewHolder extends ViewHolder {
 
-    private ReactionViewPagerAdapter.Listener callback;
+    private final ReactionViewPagerAdapter.Listener callback;
     private final ProfilePictureView avatar;
     private final TextView recipient;
 

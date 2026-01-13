@@ -19,7 +19,7 @@ import io.beldex.bchat.R;
 
 public class PinCodeRoundView extends RelativeLayout {
 
-    private Context mContext;
+    private final Context mContext;
     public List<ImageView> mRoundViews;
     private int mCurrentLength;
     private Drawable mEmptyDotDrawableId;

@@ -1,6 +1,5 @@
 package io.beldex.bchat.database;
 
-import io.beldex.bchat.util.LRUCache;
 import com.beldex.libbchat.utilities.Address;
 import io.beldex.bchat.util.LRUCache;
 import com.beldex.libsignal.utilities.Log;

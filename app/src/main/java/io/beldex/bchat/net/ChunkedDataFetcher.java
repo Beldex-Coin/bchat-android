@@ -15,7 +15,6 @@ import com.beldex.libsignal.utilities.guava.Optional;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.Socket;
 import java.net.SocketException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -396,7 +395,7 @@ public class ChunkedDataFetcher {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
       for (InputStream stream : inputStreams) {
         try {
           stream.close();

@@ -4,7 +4,6 @@ package io.beldex.bchat.util.validator;
 
 
 
-import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 
 public class EthAddressValidator {

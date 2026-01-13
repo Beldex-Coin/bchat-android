@@ -27,7 +27,7 @@ public class RestoreHeight {
         return Singleton;
     }
 
-    private Map<String, Long> blockheight = new HashMap<>();
+    private final Map<String, Long> blockheight = new HashMap<>();
 
     RestoreHeight() {
 

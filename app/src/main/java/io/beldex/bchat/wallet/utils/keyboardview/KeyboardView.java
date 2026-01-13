@@ -17,7 +17,7 @@ import io.beldex.bchat.R;
 
 public class KeyboardView extends RelativeLayout implements View.OnClickListener {
 
-    private Context mContext;
+    private final Context mContext;
     private KeyboardButtonClickedListener mKeyboardButtonClickedListener;
 
     private List<KeyboardButtonView> mButtons;

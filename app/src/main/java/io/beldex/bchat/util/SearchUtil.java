@@ -61,13 +61,13 @@ public class SearchUtil {
                                                          @NonNull String text,
                                                          @NonNull String highlight)
   {
-    if (text.length() == 0) {
+    if (text.isEmpty()) {
       return Collections.emptyList();
     }
 
     String       normalizedText      = text.toLowerCase(locale);
     String       normalizedHighlight = highlight.toLowerCase(locale);
-    List<String> highlightTokens     = Stream.of(normalizedHighlight.split("\\s")).filter(s -> s.trim().length() > 0).toList();
+    List<String> highlightTokens     = Stream.of(normalizedHighlight.split("\\s")).filter(s -> !s.trim().isEmpty()).toList();
 
     List<Pair<Integer, Integer>> ranges = new LinkedList<>();
 

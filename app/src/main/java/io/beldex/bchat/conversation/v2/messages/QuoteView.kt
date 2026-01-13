@@ -205,7 +205,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 var amount = ""
                 var direction = ""
                 try {
-                    val mainObject: JSONObject = JSONObject(body)
+                    val mainObject= JSONObject(body)
                     val uniObject = mainObject.getJSONObject("kind")
                     amount = uniObject.getString("amount")
                 } catch (e: JSONException) {
@@ -224,7 +224,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                     var type = ""
                     if(body.contains("@type")) {
                         try {
-                            val mainObject: JSONObject = JSONObject(body)
+                            val mainObject= JSONObject(body)
                             val uniObject = mainObject.getJSONObject("kind")
                             type = uniObject.getString("@type")
                         } catch (e: JSONException) {
@@ -241,7 +241,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                                 var amount = ""
                                 var direction = ""
                                 try {
-                                    val mainObject: JSONObject = JSONObject(body)
+                                    val mainObject= JSONObject(body)
                                     val uniObject = mainObject.getJSONObject("kind")
                                     amount = uniObject.getString("amount")
                                 } catch (e: JSONException) {
@@ -269,7 +269,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                         }
                     }else{
                         bodyText = MentionUtilities.highlightMentions(
-                            (body ?: "").toSpannable(),
+                            body.toSpannable(),
                             threadID,
                             context
                         )

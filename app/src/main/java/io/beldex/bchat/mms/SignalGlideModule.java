@@ -7,17 +7,6 @@ import androidx.annotation.NonNull;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 
-import io.beldex.bchat.crypto.AttachmentSecret;
-import io.beldex.bchat.crypto.AttachmentSecretProvider;
-import io.beldex.bchat.giph.model.ChunkedImageUrl;
-import io.beldex.bchat.glide.ChunkedImageUrlLoader;
-import io.beldex.bchat.glide.ContactPhotoLoader;
-import io.beldex.bchat.glide.OkHttpUrlLoader;
-import io.beldex.bchat.glide.cache.EncryptedBitmapCacheDecoder;
-import io.beldex.bchat.glide.cache.EncryptedBitmapResourceEncoder;
-import io.beldex.bchat.glide.cache.EncryptedCacheEncoder;
-import io.beldex.bchat.glide.cache.EncryptedGifCacheDecoder;
-import io.beldex.bchat.glide.cache.EncryptedGifDrawableResourceEncoder;
 import com.beldex.libbchat.avatars.PlaceholderAvatarPhoto;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;

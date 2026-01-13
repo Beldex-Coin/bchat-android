@@ -118,7 +118,7 @@ class WebRTCComposeActivity : ComponentActivity() {
     private var hangupReceiver: BroadcastReceiver? = null
     val viewModel:CallViewModel by viewModels()
 
-    val wantsToAnswer :MutableState<Boolean> = mutableStateOf(false)
+    private val wantsToAnswer :MutableState<Boolean> = mutableStateOf(false)
     private val isInPictureInPictureMode :MutableState<Boolean> = mutableStateOf(false)
 
     private val hexEncodedPublicKey: String
@@ -254,7 +254,7 @@ class WebRTCComposeActivity : ComponentActivity() {
         val speakerDescription="speak call"
         val bluetoothDescription="bluetooth call"
 
-        var surfaceView : SurfaceView?=null
+        val surfaceView : SurfaceView?=null
 
         var isRemoteSurfaceView by remember {
             mutableStateOf(surfaceView)
@@ -319,7 +319,7 @@ class WebRTCComposeActivity : ComponentActivity() {
         var isShowReConnecting by remember {
             mutableStateOf(false)
         }
-        var isStatusReConnectingText by remember {
+        val isStatusReConnectingText by remember {
             mutableStateOf(context.getString(R.string.WebRtcCallActivity_Reconnecting))
         }
         var isStatusText by remember {
@@ -578,10 +578,10 @@ class WebRTCComposeActivity : ComponentActivity() {
                     callViewModel.audioDeviceState.collect { state ->
                         val speakerEnabled=state.selectedDevice == SignalAudioManager.AudioDevice.SPEAKER_PHONE
                         isSpeakerIsSelected=speakerEnabled
-                        if (isSpeakerIsSelected) {
-                            isSpeakerOptionColorChange=true
+                        isSpeakerOptionColorChange=if (isSpeakerIsSelected) {
+                            true
                         } else {
-                            isSpeakerOptionColorChange=true
+                            true
                         }
                     }
                 }

@@ -2,35 +2,24 @@ package io.beldex.bchat.onboarding
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.MotionEvent
+import android.view.View
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputConnection
 import android.widget.Toast
-import io.beldex.bchat.databinding.ActivityCreatePasswordBinding
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.databinding.ActivityCreatePasswordBinding
 import io.beldex.bchat.home.HomeActivity
-import io.beldex.bchat.keyboard.CustomKeyboardView
 import io.beldex.bchat.service.KeyCachingService
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
 import javax.inject.Inject
-import android.view.inputmethod.InputConnection
-
-import android.R
-import android.annotation.SuppressLint
-import android.os.Build
-import android.os.Handler
-import android.os.Looper
-import android.text.InputType
-import android.view.View
-import android.view.WindowManager
-import android.view.MotionEvent
-import android.view.View.OnTouchListener
-import androidx.core.widget.addTextChangedListener
-import android.text.Editable
-
-import android.text.TextWatcher
-import org.w3c.dom.Text
 
 
 class CreatePasswordActivity : BaseActionBarActivity() {
@@ -48,14 +37,14 @@ class CreatePasswordActivity : BaseActionBarActivity() {
         callPage = intent.extras!!.getInt("callPage")
         with(binding)
         {
-            keyboard1?.buttonEnter!!.setOnClickListener() {
+            keyboard1.buttonEnter!!.setOnClickListener() {
                 val enteredPIN = enterPinEditTxt.text.toString()
                 val reEnterPIN = reEnterPinEditTxt.text.toString()
                 TextSecurePreferences.setMyPassword(this@CreatePasswordActivity, enteredPIN)
                 //-Log.d("Beldex", "my password --> Create $enteredPIN")
 
                 if (enteredPIN.isEmpty()) {
-                    enterPinEditTxtLayout!!.isErrorEnabled = false
+                    enterPinEditTxtLayout.isErrorEnabled = false
                     Toast.makeText(
                         this@CreatePasswordActivity,
                         "Must set your 4 digit PIN.",
@@ -63,11 +52,11 @@ class CreatePasswordActivity : BaseActionBarActivity() {
                     ).show()
                     //enterPinEditTxtLayout!!.error = "Must set your 4 digit PIN."
                 } else if (enteredPIN.length < 4) {
-                    enterPinEditTxtLayout!!.isErrorEnabled = true
+                    enterPinEditTxtLayout.isErrorEnabled = true
                     enterPinEditTxtLayout.error = "Please enter 4 digit PIN."
                 } else if (reEnterPIN.isEmpty()) {
-                    enterPinEditTxtLayout!!.isErrorEnabled = false
-                    reEnterPinEditTxtLayout!!.isErrorEnabled = false
+                    enterPinEditTxtLayout.isErrorEnabled = false
+                    reEnterPinEditTxtLayout.isErrorEnabled = false
                     Toast.makeText(
                         this@CreatePasswordActivity,
                         "Must set your 4 digit PIN.",
@@ -75,12 +64,12 @@ class CreatePasswordActivity : BaseActionBarActivity() {
                     ).show()
                     //reEnterPinEditTxtLayout!!.error = "Must set your 4 digit PIN."
                 } else if (reEnterPIN.length < 4) {
-                    enterPinEditTxtLayout!!.isErrorEnabled = false
-                    reEnterPinEditTxtLayout!!.isErrorEnabled = true
+                    enterPinEditTxtLayout.isErrorEnabled = false
+                    reEnterPinEditTxtLayout.isErrorEnabled = true
                     reEnterPinEditTxtLayout.error = "Please enter 4 digit PIN."
                 } else if (enteredPIN != reEnterPIN) {
-                    reEnterPinEditTxtLayout!!.isErrorEnabled = true
-                    reEnterPinEditTxtLayout!!.error = "Password is not matched"
+                    reEnterPinEditTxtLayout.isErrorEnabled = true
+                    reEnterPinEditTxtLayout.error = "Password is not matched"
                 } else if (enteredPIN == reEnterPIN) {
                     callPage(callPage)
                 }
@@ -106,12 +95,12 @@ class CreatePasswordActivity : BaseActionBarActivity() {
         binding.enterPinEditTxt.requestFocus()
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
         val ic: InputConnection = binding.enterPinEditTxt.onCreateInputConnection(EditorInfo())
-        binding.keyboard?.setInputConnection(ic)
+        binding.keyboard.setInputConnection(ic)
         val ic1: InputConnection = binding.reEnterPinEditTxt.onCreateInputConnection(EditorInfo())
-        binding.keyboard1!!.setInputConnection(ic1)
+        binding.keyboard1.setInputConnection(ic1)
         binding.enterPinEditTxt.setOnTouchListener { _: View, event: MotionEvent ->
-            binding.keyboard1!!.visibility = View.GONE
-            binding.keyboard!!.visibility = View.VISIBLE
+            binding.keyboard1.visibility = View.GONE
+            binding.keyboard.visibility = View.VISIBLE
             binding.enterPinEditTxt.onTouchEvent(event) // call native handler
 
             true
@@ -124,10 +113,10 @@ class CreatePasswordActivity : BaseActionBarActivity() {
             true
         }
 
-        binding.keyboard?.buttonEnter?.setOnClickListener {
+        binding.keyboard.buttonEnter?.setOnClickListener {
             binding.reEnterPinEditTxt.requestFocus()
-            binding.keyboard!!.visibility = View.GONE
-            binding.keyboard1!!.visibility = View.VISIBLE
+            binding.keyboard.visibility = View.GONE
+            binding.keyboard1.visibility = View.VISIBLE
         }
         binding.enterPinEditTxt.showSoftInputOnFocus = false
         binding.reEnterPinEditTxt.showSoftInputOnFocus = false
@@ -148,8 +137,8 @@ class CreatePasswordActivity : BaseActionBarActivity() {
                 if (s.length == 4 ){
                     Handler(Looper.getMainLooper()).postDelayed({
                         binding.reEnterPinEditTxt.requestFocus()
-                        binding.keyboard!!.visibility = View.GONE
-                        binding.keyboard1!!.visibility = View.VISIBLE
+                        binding.keyboard.visibility = View.GONE
+                        binding.keyboard1.visibility = View.VISIBLE
                     },10)
                 }
             }

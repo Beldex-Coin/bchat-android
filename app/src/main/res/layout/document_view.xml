@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-       xmlns:tools="http://schemas.android.com/tools"
-       xmlns:app="http://schemas.android.com/apk/res-auto"
-       tools:context="io.beldex.bchat.components.DocumentView">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="io.beldex.bchat.components.DocumentView">
 
         <LinearLayout android:id="@+id/document_container"
                       android:layout_width="fill_parent"

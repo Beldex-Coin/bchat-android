@@ -12,7 +12,7 @@
         android:id="@+id/removeFromGroup"
         style="@style/BottomSheetActionItem"
         android:background="@drawable/bchat_id_text_view_background"
-        android:drawableStart="@drawable/ic_phonelink_erase_white_24dp"
-        android:text="@string/fragment_edit_group_bottom_sheet_remove"/>
+        android:text="@string/fragment_edit_group_bottom_sheet_remove"
+        app:drawableStartCompat="@drawable/ic_phonelink_erase_white_24dp" />
 
 </LinearLayout>

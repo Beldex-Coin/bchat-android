@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -65,7 +64,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -81,13 +79,14 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
-import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.changeDaemon
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getNodeIsMainnet
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getNodeIsTested
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setNodeIsMainnet
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setNodeIsTested
+import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.DialogContainer
@@ -102,12 +101,10 @@ import io.beldex.bchat.util.Helper
 import io.beldex.bchat.util.NodePinger
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
+import io.beldex.bchat.wallet.CheckOnline
 import io.beldex.bchat.wallet.node.DiffCallback
 import io.beldex.bchat.wallet.node.Dispatcher
 import io.beldex.bchat.wallet.node.NodeInfoAdapter
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.R
-import io.beldex.bchat.wallet.CheckOnline
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.net.HttpURLConnection
@@ -147,7 +144,7 @@ class NodeComposeActivity : ComponentActivity() {
                     Scaffold(
                         containerColor=MaterialTheme.colorScheme.primary,
                     ) {
-                        val lifecycleOwner=LocalLifecycleOwner.current
+                        val lifecycleOwner=androidx.lifecycle.compose.LocalLifecycleOwner.current
                         pingSelectedNode(context, nodeViewModel)
                         nodeViewModel.loadFavouritesWithNetwork()
                         var nodesValue by remember {
@@ -230,7 +227,7 @@ fun NodeScreen(test:Boolean = false) {
         if (nodes != null) {
             data=nodes.toMutableSet()
             if(!addedNodeStatus.name.isNullOrEmpty()) {
-                val fav = nodes.toList() ?: emptyList()
+                val fav =nodes.toList()
                 for (i in nodes.indices) {
                     if (fav[i].name == addedNodeStatus.name) {
                         setFavouriteNode(i)
@@ -895,7 +892,7 @@ fun AddNodePopUp(
             override fun onPreExecute() {
                 super.onPreExecute()
                 setNodeIsTested(context, true)
-                nodeStatus=context.getString(R.string.node_testing, nodeInfo?.hostAddress)
+                nodeStatus=context.getString(R.string.node_testing, nodeInfo.hostAddress)
             }
 
             @Deprecated("Deprecated in Java")

@@ -192,7 +192,7 @@ public class AttachmentServer implements Runnable {
       long        fileSize    = attachment.getSize();
 
       String headers = "";
-      if (cbSkip > 0) {// It is a seek or skip request if there's a Range
+       if (cbSkip > 0) {// It is a seek or skip request if there's a Range
         // header
         headers += "HTTP/1.1 206 Partial Content\r\n";
         headers += "Content-Type: " + attachment.getContentType() + "\r\n";
@@ -302,7 +302,7 @@ public class AttachmentServer implements Runnable {
         // case insensitive and vary by client.
         if (st.hasMoreTokens()) {
           String line = in.readLine();
-          while (line != null && line.trim().length() > 0) {
+          while (line != null && !line.trim().isEmpty()) {
             int p = line.indexOf(':');
             if (p >= 0)
               header.put(line.substring(0, p).trim().toLowerCase(),
@@ -343,7 +343,7 @@ public class AttachmentServer implements Runnable {
      * Decodes the percent encoding scheme. <br/>
      * For example: "an+example%20string" -> "an example string"
      */
-    private String decodePercent(String str) throws InterruptedException {
+    private String decodePercent(String str) {
       try {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < str.length(); i++) {

@@ -301,7 +301,7 @@ fun SendScreen(
     val possibleCryptos: MutableSet<Crypto> = HashSet()
     var selectedCrypto: Crypto? = null
     val INTEGRATED_ADDRESS_LENGTH = 106
-    var calledUnlockedBalance: Boolean = false
+    var calledUnlockedBalance= false
     val MIXIN = 0
     val pendingTransaction: PendingTransaction? = null
     val inProgress = false
@@ -562,7 +562,7 @@ fun SendScreen(
                 //val txDatas: TxData = txData()
                 txData.destinationAddress = beldexAddress.value.trim()
                 ServiceHelper.ASSET = null
-                if (getCleanAmountString(beldexAmount.value).equals(Wallet.getDisplayAmount(totalFunds))) {
+                if (getCleanAmountString(beldexAmount.value) == Wallet.getDisplayAmount(totalFunds)) {
                     val amount = (totalFunds - 10485760)// 10485760 == 050000000
                     val bdx = getCleanAmountString(beldexAmount.value)
                     if (bdx != null) {
@@ -747,7 +747,7 @@ fun SendScreen(
                                         scanFromGallery.value=false
                                         if (validateBELDEXAmount(it) && totalFunds != 0.0.toLong()) {
                                             amountErrorAction=false
-                                            val bdx=getCleanAmountString(it.toString())
+                                            val bdx=getCleanAmountString(it)
                                             val amount : BigDecimal=if (bdx != null) {
                                                 BigDecimal(bdx.toDouble()).multiply(
                                                     BigDecimal(price)

@@ -34,7 +34,7 @@ class ChangePasswordActivity : BaseActionBarActivity() {
         val oldPassword = TextSecurePreferences.getMyPassword(this)
         with(binding)
         {
-            binding.keyboard1?.buttonEnter?.setOnClickListener()
+            binding.keyboard1.buttonEnter?.setOnClickListener()
             {
                 val oldEnteredPassword = oldPasswordEditTxt.text.toString()
                 val newEnteredPassword = newPasswordEditTxt.text.toString()
@@ -95,28 +95,28 @@ class ChangePasswordActivity : BaseActionBarActivity() {
         binding.oldPasswordEditTxt.requestFocus()
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
         val ic: InputConnection = binding.oldPasswordEditTxt.onCreateInputConnection(EditorInfo())
-        binding.keyboard?.setInputConnection(ic)
+        binding.keyboard.setInputConnection(ic)
         val ic1: InputConnection = binding.newPasswordEditTxt.onCreateInputConnection(EditorInfo())
-        binding.keyboard1!!.setInputConnection(ic1)
+        binding.keyboard1.setInputConnection(ic1)
         binding.oldPasswordEditTxt.setOnTouchListener { _: View, event: MotionEvent ->
-            binding.keyboard1!!.visibility = View.GONE
-            binding.keyboard!!.visibility = View.VISIBLE
+            binding.keyboard1.visibility = View.GONE
+            binding.keyboard.visibility = View.VISIBLE
             binding.oldPasswordEditTxt.onTouchEvent(event) // call native handler
 
             true
         }
         binding.newPasswordEditTxt.setOnTouchListener { _: View, event: MotionEvent ->
-            binding.keyboard!!.visibility = View.GONE
-            binding.keyboard1!!.visibility = View.VISIBLE
+            binding.keyboard.visibility = View.GONE
+            binding.keyboard1.visibility = View.VISIBLE
             binding.newPasswordEditTxt.onTouchEvent(event) // call native handler
 
             true
         }
 
-        binding.keyboard?.buttonEnter?.setOnClickListener {
+        binding.keyboard.buttonEnter?.setOnClickListener {
             binding.newPasswordEditTxt.requestFocus()
-            binding.keyboard!!.visibility = View.GONE
-            binding.keyboard1!!.visibility = View.VISIBLE
+            binding.keyboard.visibility = View.GONE
+            binding.keyboard1.visibility = View.VISIBLE
         }
 
         binding.oldPasswordEditTxt.showSoftInputOnFocus = false
@@ -138,8 +138,8 @@ class ChangePasswordActivity : BaseActionBarActivity() {
                 if (s.length == 4 ){
                     Handler(Looper.getMainLooper()).postDelayed({
                         binding.newPasswordEditTxt.requestFocus()
-                        binding.keyboard!!.visibility = View.GONE
-                        binding.keyboard1!!.visibility = View.VISIBLE
+                        binding.keyboard.visibility = View.GONE
+                        binding.keyboard1.visibility = View.VISIBLE
                     },10)
                 }
             }

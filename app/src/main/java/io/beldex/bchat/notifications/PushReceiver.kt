@@ -31,7 +31,7 @@ class PushReceiver @Inject constructor(@ApplicationContext val context: Context)
     fun onPush(dataMap: Map<String, String>?) {
         onPush(dataMap?.asByteArray())
     }
-    fun onPush(data: ByteArray?) {
+    private fun onPush(data: ByteArray?) {
         if (data == null) {
             onPush()
             return

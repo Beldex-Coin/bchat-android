@@ -16,7 +16,7 @@ class JobRunner extends Thread {
 
     private static final String TAG = JobRunner.class.getSimpleName();
 
-    private static long WAKE_LOCK_TIMEOUT = TimeUnit.MINUTES.toMillis(10);
+    private static final long WAKE_LOCK_TIMEOUT = TimeUnit.MINUTES.toMillis(10);
 
     private final Application   application;
     private final int           id;

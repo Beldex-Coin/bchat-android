@@ -475,11 +475,10 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
             smsDatabase.markAsSentFailed(messageRecord.getId())
         }
         if (error.localizedMessage != null) {
-            val message: String
-            if (error is OnionRequestAPI.HTTPRequestFailedAtDestinationException && error.statusCode == 429) {
-                message = "429: Rate limited."
+            val message: String=if (error is OnionRequestAPI.HTTPRequestFailedAtDestinationException && error.statusCode == 429) {
+                "429: Rate limited."
             } else {
-                message = error.localizedMessage!!
+                error.localizedMessage!!
             }
             DatabaseComponent.get(context).beldexMessageDatabase().setErrorMessage(messageRecord.getId(), message)
         } else {

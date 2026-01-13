@@ -19,9 +19,9 @@ class MentionCandidatesView(context: Context, attrs: AttributeSet?, defStyleAttr
         set(newValue) { field = newValue; snAdapter.candidates = newValue }
     var glide: RequestManager? = null
         set(newValue) { field = newValue; snAdapter.glide = newValue }
-    var openGroupServer: String? = null
+    private var openGroupServer: String? = null
         set(newValue) { field = newValue; snAdapter.openGroupServer = openGroupServer }
-    var openGroupRoom: String? = null
+    private var openGroupRoom: String? = null
         set(newValue) { field = newValue; snAdapter.openGroupRoom = openGroupRoom }
     var onCandidateSelected: ((Mention) -> Unit)? = null
 
@@ -75,7 +75,7 @@ class MentionCandidatesView(context: Context, attrs: AttributeSet?, defStyleAttr
     fun setMentionCandidates(candidates: List<Mention>) {
         this.candidates = candidates
         val layoutParams = this.layoutParams as ViewGroup.LayoutParams
-        layoutParams.height = toPx(Math.min(candidates.count(), 4) * 44, resources)
+        layoutParams.height = toPx(candidates.count().coerceAtMost(4) * 44, resources)
         this.layoutParams = layoutParams
     }
 

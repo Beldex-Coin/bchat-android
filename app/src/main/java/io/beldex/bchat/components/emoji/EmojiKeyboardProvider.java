@@ -12,7 +12,7 @@ import android.widget.ImageView;
 
 
 import io.beldex.bchat.util.ResUtil;
-import io.beldex.bchat.components.emoji.EmojiPageViewGridAdapter.VariationSelectorListener;
+
 import com.bumptech.glide.RequestManager;
 
 import com.beldex.libbchat.utilities.ThemeUtil;
@@ -48,7 +48,7 @@ public class EmojiKeyboardProvider implements MediaKeyboardProvider,
     this.emojiPagerAdapter  = new EmojiPagerAdapter(context, models, new EmojiEventListener() {
       @Override
       public void onEmojiSelected(String emoji) {
-        recentModel.onCodePointSelected(emoji);
+        RecentEmojiPageModel.onCodePointSelected(emoji);
 
         if (emojiEventListener != null) {
           emojiEventListener.onEmojiSelected(emoji);
@@ -69,7 +69,7 @@ public class EmojiKeyboardProvider implements MediaKeyboardProvider,
 
   @Override
   public void requestPresentation(@NonNull Presenter presenter, boolean isSoloProvider) {
-    presenter.present(this, emojiPagerAdapter, this, this, null, null, recentModel.getEmoji().size() > 0 ? 0 : 1);
+    presenter.present(this, emojiPagerAdapter, this, this, null, null, !recentModel.getEmoji().isEmpty() ? 0 : 1);
   }
 
   @Override
@@ -112,10 +112,10 @@ public class EmojiKeyboardProvider implements MediaKeyboardProvider,
   }
 
   private static class EmojiPagerAdapter extends PagerAdapter {
-    private Context                   context;
-    private List<EmojiPageModel>      pages;
-    private EmojiEventListener emojiSelectionListener;
-    private EmojiPageViewGridAdapter.VariationSelectorListener variationSelectorListener;
+    private final Context                   context;
+    private final List<EmojiPageModel>      pages;
+    private final EmojiEventListener emojiSelectionListener;
+    private final EmojiPageViewGridAdapter.VariationSelectorListener variationSelectorListener;
 
     public EmojiPagerAdapter(@NonNull Context context,
                              @NonNull List<EmojiPageModel> pages,

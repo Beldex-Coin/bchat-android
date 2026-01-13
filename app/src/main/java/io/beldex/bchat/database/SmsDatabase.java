@@ -131,7 +131,7 @@ public class SmsDatabase extends MessagingDatabase {
                   ")) AS " + ReactionDatabase.REACTION_JSON_ALIAS
   };
 
-  public static String CREATE_REACTIONS_UNREAD_COMMAND = "ALTER TABLE "+ TABLE_NAME + " " +
+  public static final String CREATE_REACTIONS_UNREAD_COMMAND = "ALTER TABLE "+ TABLE_NAME + " " +
           "ADD COLUMN " + REACTIONS_UNREAD + " INTEGER DEFAULT 0;";
 
   public static final String ADD_IS_DELETED_COLUMN = "ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + IS_DELETED_COLUMN_DEF;
@@ -906,7 +906,7 @@ public class SmsDatabase extends MessagingDatabase {
   }
 
   public interface InsertListener {
-    public void onComplete();
+    void onComplete();
   }
 
 }

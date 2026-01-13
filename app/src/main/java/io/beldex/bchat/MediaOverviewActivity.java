@@ -227,7 +227,7 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
 
     private StickyHeaderGridLayoutManager gridManager;
     private ActionMode                    actionMode;
-    private ActionModeCallback            actionModeCallback = new ActionModeCallback();
+    private final ActionModeCallback            actionModeCallback = new ActionModeCallback();
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -299,7 +299,7 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
     }
 
     //SetDataAndType
-    ActivityResultLauncher resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result->{
+    final ActivityResultLauncher resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result->{
       if (result.getResultCode() == Activity.RESULT_OK) {
         Bundle extras = new Bundle();
         assert result.getData() != null;

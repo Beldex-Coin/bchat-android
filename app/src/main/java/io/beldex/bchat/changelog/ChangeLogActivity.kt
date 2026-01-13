@@ -17,9 +17,9 @@ import java.nio.charset.Charset
 class ChangeLogActivity : io.beldex.bchat.BaseActionBarActivity() {
     private lateinit var binding:ActivityChangeLogBinding
 
-    lateinit var listAdapter: io.beldex.bchat.changelog.ExpandableListAdapter
-    lateinit var listDataHeader: ArrayList<String>
-    lateinit var listDataChild: HashMap<String, List<String>>
+    private lateinit var listAdapter: ExpandableListAdapter
+    private lateinit var listDataHeader: ArrayList<String>
+    private lateinit var listDataChild: HashMap<String, List<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,14 +31,14 @@ class ChangeLogActivity : io.beldex.bchat.BaseActionBarActivity() {
             prepareListData()
         
             listAdapter =
-                    io.beldex.bchat.changelog.ExpandableListAdapter(
+                    ExpandableListAdapter(
                             this@ChangeLogActivity,
                             listDataHeader,
                             listDataChild
                     )
 
             // setting list adapter
-            binding.expandableListView!!.setAdapter(listAdapter)
+            binding.expandableListView.setAdapter(listAdapter)
 
     }
 

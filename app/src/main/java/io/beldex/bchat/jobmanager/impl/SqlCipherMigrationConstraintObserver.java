@@ -2,8 +2,6 @@ package io.beldex.bchat.jobmanager.impl;
 
 import androidx.annotation.NonNull;
 
-import io.beldex.bchat.jobmanager.ConstraintObserver;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;

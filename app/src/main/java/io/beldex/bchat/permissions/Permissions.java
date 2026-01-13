@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -31,8 +30,6 @@ import com.annimon.stream.function.Consumer;
 import io.beldex.bchat.util.LRUCache;
 
 import com.beldex.libbchat.utilities.ServiceUtil;
-
-import org.w3c.dom.Text;
 
 import java.lang.ref.WeakReference;
 import java.security.SecureRandom;
@@ -311,7 +308,7 @@ public class Permissions {
 
   private static class ActivityPermissionObject extends PermissionObject {
 
-    private Activity activity;
+    private final Activity activity;
 
     ActivityPermissionObject(@NonNull Activity activity) {
       this.activity = activity;
@@ -344,7 +341,7 @@ public class Permissions {
 
   private static class FragmentPermissionObject extends PermissionObject {
 
-    private Fragment fragment;
+    private final Fragment fragment;
 
     FragmentPermissionObject(@NonNull Fragment fragment) {
       this.fragment = fragment;

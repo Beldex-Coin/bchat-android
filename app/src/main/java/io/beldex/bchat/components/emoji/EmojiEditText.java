@@ -13,8 +13,6 @@ import io.beldex.bchat.R;
 
 import com.beldex.libsignal.utilities.Log;
 
-import io.beldex.bchat.components.emoji.EmojiProvider.EmojiDrawable;
-
 public class EmojiEditText extends AppCompatEditText {
   private static final String TAG = Log.tag(EmojiEditText.class);
 

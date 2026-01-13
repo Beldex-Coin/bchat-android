@@ -9,7 +9,6 @@ import android.net.ConnectivityManager;
 import androidx.annotation.NonNull;
 
 import io.beldex.bchat.jobmanager.ConstraintObserver;
-import io.beldex.bchat.jobmanager.ConstraintObserver;
 
 public class NetworkConstraintObserver implements ConstraintObserver {
 

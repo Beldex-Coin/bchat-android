@@ -24,7 +24,7 @@ import java.util.List;
  */
 class ReactionViewPagerAdapter extends ListAdapter<EmojiCount, ReactionViewPagerAdapter.ViewHolder> {
 
-  private Listener callback;
+  private final Listener callback;
   private int selectedPosition = 0;
   private MessageId messageId = null;
   private boolean isUserModerator = false;

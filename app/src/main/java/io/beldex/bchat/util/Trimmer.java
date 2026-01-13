@@ -18,7 +18,7 @@ public class Trimmer {
 
   private static class TrimmingProgressTask extends AsyncTask<Integer, Integer, Void> implements ThreadDatabase.ProgressListener {
     private ProgressDialog progressDialog;
-    private Context context;
+    private final Context context;
 
     public TrimmingProgressTask(Context context) {
       this.context = context;

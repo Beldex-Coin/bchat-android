@@ -366,7 +366,7 @@ class WalletService : Service() {
                                      sendBroadCast(bundle)
                                      val notes =
                                          extras.getString(REQUEST_CMD_SEND_NOTES)
-                                     if (notes != null && !notes.isEmpty()) {
+                                     if (!notes.isNullOrEmpty()) {
                                          myWallet.setUserNote(txid, notes)
                                      }
                                      try {

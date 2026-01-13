@@ -28,13 +28,13 @@ public class GiphyActivityToolbar extends Toolbar {
   @Nullable private OnFilterChangedListener filterListener;
   @Nullable private OnLayoutChangedListener layoutListener;
 
-  private EditText        searchText;
-  private AnimatingToggle toggle;
-  private ImageView       action;
-  private ImageView       clearToggle;
-  private LinearLayout    toggleContainer;
-  private View            listLayoutToggle;
-  private View            gridLayoutToggle;
+  private final EditText        searchText;
+  private final AnimatingToggle toggle;
+  private final ImageView       action;
+  private final ImageView       clearToggle;
+  private final LinearLayout    toggleContainer;
+  private final View            listLayoutToggle;
+  private final View            gridLayoutToggle;
   private Persistence     persistence;
 
   public GiphyActivityToolbar(Context context) {

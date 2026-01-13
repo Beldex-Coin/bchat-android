@@ -33,8 +33,7 @@ import java.io.FileNotFoundException
 import java.io.InputStream
 
 
-class WalletScannerFragment(
-) : Fragment(), OnUriScannedListener, OnBackPressedListener {
+class WalletScannerFragment : Fragment(), OnUriScannedListener, OnBackPressedListener {
     private var onScannedListener: OnScannedListener? = null
     private var activityCallback: Listener? = null
     var time = (1 * 1000).toLong()

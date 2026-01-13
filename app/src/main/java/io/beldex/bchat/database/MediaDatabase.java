@@ -130,7 +130,7 @@ public class MediaDatabase extends Database {
         date = cursor.getLong(cursor.getColumnIndexOrThrow(MmsDatabase.DATE_RECEIVED));
       }
 
-      return new MediaRecord(attachments != null && attachments.size() > 0 ? attachments.get(0) : null, address, date, outgoing);
+      return new MediaRecord(attachments != null && !attachments.isEmpty() ? attachments.get(0) : null, address, date, outgoing);
     }
 
     public DatabaseAttachment getAttachment() {

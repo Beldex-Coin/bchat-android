@@ -22,10 +22,7 @@ import com.bumptech.glide.RequestManager
 import io.beldex.bchat.mms.Slide
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.R
-import io.beldex.bchat.conversation.v2.messages.VisibleMessageContentView
 import io.beldex.bchat.databinding.AlbumThumbnailViewBinding
-import io.beldex.bchat.util.DateUtils
-import java.util.Locale
 
 class AlbumThumbnailView : RelativeLayout {
 
@@ -89,8 +86,9 @@ class AlbumThumbnailView : RelativeLayout {
         slideSize = -1
     }
 
-    fun bind(glideRequests: RequestManager, message: MmsMessageRecord,
-             isStart: Boolean, isEnd: Boolean) {
+    fun bind(
+        glideRequests : RequestManager, message : MmsMessageRecord
+    ) {
         slides = message.slideDeck.thumbnailSlides
         if (slides.isEmpty()) {
             // this should never be encountered because it's checked by parent
@@ -120,39 +118,17 @@ class AlbumThumbnailView : RelativeLayout {
     // endregion
 
 
-    fun layoutRes(slideCount: Int) = when (slideCount) {
+    private fun layoutRes(slideCount: Int) = when (slideCount) {
         1 -> R.layout.album_thumbnail_1 // single
         2 -> R.layout.album_thumbnail_2// two sidebyside
         else -> R.layout.album_thumbnail_3 // three stacked with additional text
     }
 
-    fun getThumbnailView(position: Int): ThumbnailView = when (position) {
+    private fun getThumbnailView(position: Int): ThumbnailView = when (position) {
         0 -> binding.albumCellContainer.findViewById<ViewGroup>(R.id.albumCellContainer).findViewById(R.id.album_cell_1)
         1 -> binding.albumCellContainer.findViewById<ViewGroup>(R.id.albumCellContainer).findViewById(R.id.album_cell_2)
         2 -> binding.albumCellContainer.findViewById<ViewGroup>(R.id.albumCellContainer).findViewById(R.id.album_cell_3)
         else -> throw Exception("Can't get thumbnail view for non-existent thumbnail at position: $position")
-    }
-
-    fun calculateRadius(isStart: Boolean, isEnd: Boolean, outgoing: Boolean) {
-        val roundedDimen = context.resources.getDimension(R.dimen.message_corner_radius).toInt()
-        val collapsedDimen = context.resources.getDimension(R.dimen.message_corner_collapse_radius).toInt()
-        val (startTop, endTop, startBottom, endBottom) = when {
-            // single message, consistent dimen
-            isStart && isEnd -> intArrayOf(roundedDimen, roundedDimen, roundedDimen, roundedDimen)
-            // start of message cluster, collapsed BL
-            isStart -> intArrayOf(roundedDimen, roundedDimen, collapsedDimen, roundedDimen)
-            // end of message cluster, collapsed TL
-            isEnd -> intArrayOf(collapsedDimen, roundedDimen, roundedDimen, roundedDimen)
-            // else in the middle, no rounding left side
-            else -> intArrayOf(collapsedDimen, roundedDimen, collapsedDimen, roundedDimen)
-        }
-        // TL, TR, BR, BL (CW direction)
-        cornerMask.setRadii(
-                if (!outgoing) startTop else endTop, // TL
-                if (!outgoing) endTop else startTop, // TR
-                if (!outgoing) endBottom else startBottom, // BR
-                if (!outgoing) startBottom else endBottom // BL
-        )
     }
 
 }

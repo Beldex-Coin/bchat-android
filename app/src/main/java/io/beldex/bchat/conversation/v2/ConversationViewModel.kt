@@ -69,7 +69,7 @@ class ConversationViewModel (
 
     private lateinit var conversationsCursor: Cursor
 
-    var senderBeldexAddress: String? = null
+    private var senderBeldexAddress: String? = null
     var deleteMessages: Set<MessageRecord>? = null
 
     val openGroup: OpenGroupV2?
@@ -302,9 +302,9 @@ class ConversationViewModel (
 
     fun getContactWithBChatId() = bchatContactDb.getContactWithBchatID(recipient.value?.address.toString())
 
-    fun getLastSeenAndHasSent(): Pair<Long, Boolean> = threadDb.getLastSeenAndHasSent(threadId)
+    private fun getLastSeenAndHasSent(): Pair<Long, Boolean> = threadDb.getLastSeenAndHasSent(threadId)
 
-    fun getMessageCount() = threadDb.getMessageCount(threadId)
+    private fun getMessageCount() = threadDb.getMessageCount(threadId)
 
     fun insertMessageOutBox(outgoingTextMessage: OutgoingMediaMessage): Long {
         return mmsDb.insertMessageOutbox(outgoingTextMessage, threadId, false, null, runThreadUpdate = true)

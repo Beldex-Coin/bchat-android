@@ -101,12 +101,13 @@ import java.util.Timer
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import kotlin.concurrent.Volatile
+import androidx.core.content.edit
 
 @HiltAndroidApp
 class ApplicationContext:  Application(), DefaultLifecycleObserver {
 
-    val PREFERENCES_NAME="SecureSMS-Preferences"
-    val TAG=ApplicationContext::class.java.simpleName
+    private val preferencesName="SecureSMS-Preferences"
+    val tag : String=ApplicationContext::class.java.simpleName
 
     lateinit var expiringMessageManager: ExpiringMessageManager
     lateinit var typingStatusRepository : TypingStatusRepository
@@ -114,14 +115,14 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
     lateinit var jobManager : JobManager
 
 
-    lateinit var readReceiptManager : ReadReceiptManager
+    private lateinit var readReceiptManager : ReadReceiptManager
 
-    lateinit var profileManager : ProfileManager
+    private lateinit var profileManager : ProfileManager
     lateinit var messageNotifier : MessageNotifier
     @JvmField
     var poller : Poller?=null
-    var broadcaster : Broadcaster?=null
-    val firebaseInstanceIdJob : Job?=null
+    private var broadcaster : Broadcaster?=null
+    private val firebaseInstanceIdJob : Job?=null
     var conversationListDebouncer: WindowDebouncer? = null
         get() {
             if (field == null) {
@@ -130,8 +131,8 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
             return field
         }
         private set
-    var conversationListHandlerThread : HandlerThread?=null
-    var conversationListHandler : Handler?=null
+    private var conversationListHandlerThread : HandlerThread?=null
+    private var conversationListHandler : Handler?=null
     var persistentLogger : PersistentLogger?= null
 
     @Inject lateinit var beldexAPIDatabase : BeldexAPIDatabase
@@ -143,12 +144,12 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
     @Inject lateinit var textSecurePreferences: TextSecurePreferences
     @Inject lateinit var remoteConfigUtil : FirebaseRemoteConfigUtil
     private var messagingModuleConfiguration: MessagingModuleConfiguration? = null
-    lateinit var callMessageProcessor : CallMessageProcessor
+    private lateinit var callMessageProcessor : CallMessageProcessor
 
     @Volatile
     var isAppVisible: Boolean = false
-    val KEYGUARD_LOCK_TAG="BChat Messenger" + ":KeyguardLock"
-    val WAKELOCK_TAG="BChat Messenger" + ":WakeLock"
+    private val keyguardLockTag="BChat Messenger" + ":KeyguardLock"
+    private val wakeLockTag="BChat Messenger" + ":WakeLock"
 
     override fun getSystemService(name: String): Any? {
         if (MessagingModuleConfiguration.MESSAGING_MODULE_SERVICE == name) {
@@ -189,7 +190,7 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
             this,
             textSecurePreferences, ProcessLifecycleOwner.get().lifecycle, storage
         )
-        Log.i(TAG, "onCreate()")
+        Log.i(tag, "onCreate()")
         startKovenant()
         initializeSecurityProvider()
         initializeLogging()
@@ -230,7 +231,7 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
     override fun onStart(owner : LifecycleOwner) {
         setRefreshDynamicNodesStatus(this, true)
         isAppVisible=true
-        Log.i(TAG, "App is now visible.")
+        Log.i(tag, "App is now visible.")
         KeyCachingService.onAppForegrounded(this)
         queue(Runnable {
             if (poller != null) {
@@ -243,7 +244,7 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
 
     override fun onStop(owner : LifecycleOwner) {
         isAppVisible=false
-        Log.i(TAG, "App is no longer visible.")
+        Log.i(tag, "App is no longer visible.")
         KeyCachingService.onAppBackgrounded(this)
         messageNotifier.setVisibleThread(-1)
         poller?.stopIfNeeded()
@@ -256,7 +257,7 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
         super.onTerminate()
     }
 
-    fun initializeLocaleParser() {
+    private fun initializeLocaleParser() {
         configure(LocaleParseHelper())
     }
 
@@ -264,22 +265,22 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
         try {
             Class.forName("org.signal.aesgcmprovider.AesGcmCipher")
             val aesPosition = Security.insertProviderAt(AesGcmProvider(), 1)
-            Log.i(TAG, "Installed AesGcmProvider: $aesPosition")
+            Log.i(tag, "Installed AesGcmProvider: $aesPosition")
             if (aesPosition < 0) {
-                Log.e(TAG, "Failed to install AesGcmProvider()")
+                Log.e(tag, "Failed to install AesGcmProvider()")
                 // Only throw if you truly can't proceed without it
                 // throw ProviderInitializationException()
             }
         } catch (e: ClassNotFoundException) {
-            Log.e(TAG, "AesGcmCipher class not found - skipping AesGcmProvider", e)
+            Log.e(tag, "AesGcmCipher class not found - skipping AesGcmProvider", e)
         } catch (e: UnsatisfiedLinkError) {
-            Log.e(TAG, "Native libs not found - skipping AesGcmProvider", e)
+            Log.e(tag, "Native libs not found - skipping AesGcmProvider", e)
         }
 
         val conscryptPosition = Security.insertProviderAt(Conscrypt.newProvider(), 2)
-        Log.i(TAG, "Installed Conscrypt provider: $conscryptPosition")
+        Log.i(tag, "Installed Conscrypt provider: $conscryptPosition")
         if (conscryptPosition < 0) {
-            Log.w(TAG, "Did not install Conscrypt provider. May already be present.")
+            Log.w(tag, "Did not install Conscrypt provider. May already be present.")
         }
     }
 
@@ -328,9 +329,9 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
 
     private fun initializePeriodicTasks() {
         schedulePeriodic(this)
-        if (BuildConfig.PLAY_STORE_DISABLED) {
+        //if (BuildConfig.PLAY_STORE_DISABLED) {
             // possibly add update apk job
-        }
+        //}
     }
 
     private fun initializeWebRtc() {
@@ -341,7 +342,7 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
                 ).createInitializationOptions()
             )
         } catch (e : UnsatisfiedLinkError) {
-            Log.w(TAG, e)
+            Log.w(tag, e)
         }
     }
 
@@ -361,9 +362,6 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
             )
         )
     }
-
-
-    private class ProviderInitializationException() : RuntimeException()
 
 
     private fun setUpPollingIfNeeded() {
@@ -400,9 +398,9 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
                     fromSerialized(userPublicKey),
                     false
                 )
-                val baos : ByteArrayOutputStream=ByteArrayOutputStream()
+                val baos=ByteArrayOutputStream()
                 var count : Int
-                val buffer : ByteArray=ByteArray(1024)
+                val buffer=ByteArray(1024)
                 while ((inputStream.read(buffer, 0, buffer.size).also { count=it }) != -1) {
                     baos.write(buffer, 0, count)
                 }
@@ -419,7 +417,6 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
                         this,
                         Date().time
                     )
-                    Unit
                 }
             } catch (exception : Exception) {
                 // Do nothing
@@ -439,18 +436,18 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
             setPushEnabled(this, isUsingFCM)
             setProfileName(this, displayName)
         }
-        getSharedPreferences(PREFERENCES_NAME, 0).edit().clear().commit()
+        getSharedPreferences(preferencesName, 0).edit { clear() }
         if (!deleteDatabase(SQLCipherOpenHelper.DATABASE_NAME)) {
             Log.d("Beldex", "Failed to delete database.")
         }
         runOnMain {
             Handler().postDelayed(
-                Runnable { this.restartApplication() }, 200
+                { this.restartApplication() }, 200
             )
         }
     }
 
-    fun restartApplication() {
+    private fun restartApplication() {
         val intent=Intent(this, HomeActivity::class.java)
         startActivity(Intent.makeRestartActivityTask(intent.component))
         startActivity(Intent.makeRestartActivityTask(intent.component))
@@ -464,8 +461,8 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
                 try {
                     assets.open("emoji/emoji_search_index.json").use { inputStream ->
                         val searchIndex : List<EmojiSearchData> =
-                            java.util.Arrays.asList(
-                                *JsonUtil.fromJson<Array<EmojiSearchData>>(
+                            listOf(
+                                *JsonUtil.fromJson(
                                     inputStream,
                                     Array<EmojiSearchData>::class.java
                                 )
@@ -493,7 +490,7 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
                 PowerManager.FULL_WAKE_LOCK
                         or PowerManager.ACQUIRE_CAUSES_WAKEUP
                         or PowerManager.ON_AFTER_RELEASE,
-                WAKELOCK_TAG
+                wakeLockTag
             )
             // Acquire the wake lock to wake up the device
             wakeLock.acquire(3000)
@@ -502,7 +499,7 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
         // Note: This will not bypass any app-level (BChat) lock; only the device-level keyguard.
         // TODO: When moving to a minimum Android API of 27, replace these deprecated calls with new APIs.
         if (isPhoneLocked) {
-            val keyguardLock=keyguardManager.newKeyguardLock(KEYGUARD_LOCK_TAG)
+            val keyguardLock=keyguardManager.newKeyguardLock(keyguardLockTag)
             keyguardLock.disableKeyguard()
         }
     }

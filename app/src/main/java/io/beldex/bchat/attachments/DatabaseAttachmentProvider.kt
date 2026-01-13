@@ -354,7 +354,7 @@ fun DatabaseAttachment.toAttachmentStream(context: Context): BchatServiceAttachm
             )
     )}
 
-    var attachmentStream = BchatServiceAttachmentStream(stream, this.contentType, this.size, Optional.fromNullable(this.fileName), this.isVoiceNote, Optional.absent(), this.width, this.height, Optional.fromNullable(this.caption), listener)
+    val attachmentStream = BchatServiceAttachmentStream(stream, this.contentType, this.size, Optional.fromNullable(this.fileName), this.isVoiceNote, Optional.absent(), this.width, this.height, Optional.fromNullable(this.caption), listener)
     attachmentStream.attachmentId = this.attachmentId.rowId
     attachmentStream.isAudio = io.beldex.bchat.util.MediaUtil.isAudio(this)
     attachmentStream.isGif = io.beldex.bchat.util.MediaUtil.isGif(this)

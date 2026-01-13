@@ -30,7 +30,7 @@ public abstract class GiphyLoader extends AsyncLoader<List<GiphyImage>> {
 
   public static int PAGE_SIZE = 100;
 
-  @Nullable private String searchString;
+  @Nullable private final String searchString;
 
   private final OkHttpClient client;
 

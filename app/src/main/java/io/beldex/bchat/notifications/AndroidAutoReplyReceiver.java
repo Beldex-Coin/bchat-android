@@ -26,12 +26,9 @@ import android.os.Bundle;
 
 import androidx.core.app.RemoteInput;
 
-import io.beldex.bchat.ApplicationContext;
-import io.beldex.bchat.mms.MmsException;
 import com.beldex.libbchat.mnode.MnodeAPI;
 import io.beldex.bchat.ApplicationContext;
 import io.beldex.bchat.database.MessagingDatabase;
-import io.beldex.bchat.dependencies.DatabaseComponent;
 import io.beldex.bchat.mms.MmsException;
 import com.beldex.libbchat.messaging.messages.signal.OutgoingMediaMessage;
 import com.beldex.libbchat.messaging.messages.signal.OutgoingTextMessage;
@@ -40,7 +37,6 @@ import com.beldex.libbchat.messaging.sending_receiving.MessageSender;
 import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libsignal.utilities.Log;
-
 import io.beldex.bchat.dependencies.DatabaseComponent;
 
 import java.util.Collections;

@@ -35,7 +35,7 @@ class ConversationView : LinearLayout {
     private lateinit var binding: ViewConversationBinding
     private val screenWidth = Resources.getSystem().displayMetrics.widthPixels
     var thread: ThreadRecord? = null
-    var isReportIssueID: Boolean = false
+    private var isReportIssueID: Boolean = false
     private val reportIssueBChatID = BuildConfig.REPORT_ISSUE_ID
 
     // region Lifecycle

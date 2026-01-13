@@ -1,14 +1,9 @@
 package io.beldex.bchat.jobmanager;
 
 import android.app.Application;
-import android.content.Intent;
-import android.os.Build;
 
 import androidx.annotation.NonNull;
 
-import io.beldex.bchat.jobmanager.impl.DefaultExecutorFactory;
-import io.beldex.bchat.jobmanager.impl.JsonDataSerializer;
-import io.beldex.bchat.jobmanager.persistence.JobStorage;
 import com.beldex.libbchat.messaging.utilities.Data;
 import com.beldex.libbchat.utilities.Debouncer;
 import com.beldex.libsignal.utilities.Log;

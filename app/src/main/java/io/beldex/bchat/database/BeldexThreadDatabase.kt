@@ -13,11 +13,11 @@ import io.beldex.bchat.dependencies.DatabaseComponent
 class BeldexThreadDatabase(context: Context, helper: SQLCipherOpenHelper) : Database(context, helper) {
 
     companion object {
-        private val bchatResetTable = "beldex_thread_bchat_reset_database"
-        val publicChatTable = "beldex_public_chat_database"
-        val threadID = "thread_id"
-        private val bchatResetStatus = "bchat_reset_status"
-        val publicChat = "public_chat"
+        private const val bchatResetTable = "beldex_thread_bchat_reset_database"
+        const val publicChatTable = "beldex_public_chat_database"
+        const val threadID = "thread_id"
+        private const val bchatResetStatus = "bchat_reset_status"
+        const val publicChat = "public_chat"
         @JvmStatic
         val createBchatResetTableCommand = "CREATE TABLE $bchatResetTable ($threadID INTEGER PRIMARY KEY, $bchatResetStatus INTEGER DEFAULT 0);"
         @JvmStatic

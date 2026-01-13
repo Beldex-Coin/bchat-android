@@ -1,5 +1,7 @@
 package io.beldex.bchat.conversation.v2.utilities
 
+import kotlin.math.min
+
 class ThumbnailDimensDelegate {
 
     companion object {
@@ -57,8 +59,8 @@ class ThumbnailDimensDelegate {
                     measuredWidth /= maxHeightRatio
                     measuredHeight /= maxHeightRatio
                 }
-                measuredWidth = Math.max(measuredWidth, minWidth.toDouble())
-                measuredHeight = Math.max(measuredHeight, minHeight.toDouble())
+                measuredWidth =measuredWidth.coerceAtLeast(minWidth.toDouble())
+                measuredHeight =measuredHeight.coerceAtLeast(minHeight.toDouble())
             } else if (minWidthRatio < 1 || minHeightRatio < 1) {
                 if (minWidthRatio <= minHeightRatio) {
                     measuredWidth /= minWidthRatio
@@ -67,8 +69,8 @@ class ThumbnailDimensDelegate {
                     measuredWidth /= minHeightRatio
                     measuredHeight /= minHeightRatio
                 }
-                measuredWidth = Math.min(measuredWidth, maxWidth.toDouble())
-                measuredHeight = Math.min(measuredHeight, maxHeight.toDouble())
+                measuredWidth = min(measuredWidth, maxWidth.toDouble())
+                measuredHeight = min(measuredHeight, maxHeight.toDouble())
             }
         }
         measured[WIDTH] = measuredWidth.toInt()

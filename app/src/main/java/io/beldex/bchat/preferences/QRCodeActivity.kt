@@ -41,7 +41,7 @@ class QRCodeActivity : PassphraseRequiredActionBarActivity(), ScanQRCodeWrapperF
         createPrivateChatIfPossible(hexEncodedPublicKey)
     }
 
-    fun createPrivateChatIfPossible(hexEncodedPublicKey: String) {
+    private fun createPrivateChatIfPossible(hexEncodedPublicKey: String) {
        /* if (!PublicKeyValidation.isValid(hexEncodedPublicKey)) { return Toast.makeText(this, R.string.invalid_bchat_id, Toast.LENGTH_SHORT).show() }
         val recipient = Recipient.from(this, Address.fromSerialized(hexEncodedPublicKey), false)
         val intent = Intent(this, ConversationActivityV2::class.java)
@@ -102,7 +102,10 @@ class ViewMyQRCodeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val size = toPx(280, resources)
-        val qrCode = QRCodeUtilities.encode(hexEncodedPublicKey, size, false, false)
+        val qrCode = QRCodeUtilities.encode(hexEncodedPublicKey, size,
+            isInverted=false,
+            hasTransparentBackground=false
+        )
         binding.qrCodeImageView.setImageBitmap(qrCode)
         binding.shareButton.setOnClickListener { shareQRCode() }
     }
@@ -114,7 +117,10 @@ class ViewMyQRCodeFragment : Fragment() {
         file.createNewFile()
         val fos = FileOutputStream(file)
         val size = toPx(280, resources)
-        val qrCode = QRCodeUtilities.encode(hexEncodedPublicKey, size, false, false)
+        val qrCode = QRCodeUtilities.encode(hexEncodedPublicKey, size,
+            isInverted=false,
+            hasTransparentBackground=false
+        )
         qrCode.compress(Bitmap.CompressFormat.PNG, 100, fos)
         fos.flush()
         fos.close()

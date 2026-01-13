@@ -980,7 +980,7 @@ fun WalletDashBoardScreen(
                         var transactionAmountTextColor : Int
                         var transactionId : String?=""
                         var transactionPaymentId : String?=""
-                        var transactionPaymentIdIsVisible : Boolean=false
+                        var transactionPaymentIdIsVisible=false
                         var transactionBlockHeight : String?=""
                         var transactionDateTime : String?=""
                         var transactionDate : String?=""

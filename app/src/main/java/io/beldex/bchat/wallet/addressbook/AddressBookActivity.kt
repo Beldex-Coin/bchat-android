@@ -11,18 +11,15 @@ import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beldex.libbchat.messaging.contacts.Contact
-import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.dependencies.DatabaseComponent
-import com.bumptech.glide.Glide;
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityAddressBookBinding
 
 
 
 
-class AddressBookActivity(
-) : PassphraseRequiredActionBarActivity(),AddressBookClickListener,
+class AddressBookActivity : PassphraseRequiredActionBarActivity(),AddressBookClickListener,
     LoaderManager.LoaderCallbacks<List<String>> {
     private lateinit var binding: ActivityAddressBookBinding
     private var members = listOf<String>()
@@ -31,12 +28,12 @@ class AddressBookActivity(
         }
     private lateinit var usersToExclude: Set<String>
     private val addressbooktadapter by lazy {
-        AddressBookAdapter(this, Glide.with(this), this)
+        AddressBookAdapter(this, this)
     }
 
     companion object {
-        val usersToExcludeKey = "usersToExcludeKey"
-        val emptyStateTextKey = "emptyStateTextKey"
+        const val usersToExcludeKey = "usersToExcludeKey"
+        const val emptyStateTextKey = "emptyStateTextKey"
     }
 
     // region Lifecycle
@@ -60,7 +57,7 @@ class AddressBookActivity(
 
     // region Updating
     override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<List<String>> {
-        return AddressBookLoader(this, usersToExclude)
+        return AddressBookLoader(this)
     }
 
     override fun onLoadFinished(loader: Loader<List<String>>, members: List<String>) {
@@ -90,7 +87,7 @@ class AddressBookActivity(
         return contact?.displayBeldexAddress(Contact.ContactContext.REGULAR) ?: ""
     }
 
-    override fun onAddressBookClick(position: Int,address: String) {
+    override fun onAddressBookClick(address: String) {
         Log.d("Beldex","beldex address value $address")
         val returnIntent = Intent()
         returnIntent.putExtra("address_value", address)
@@ -127,7 +124,7 @@ class AddressBookActivity(
             if (getUserDisplayName(d).lowercase().contains(text!!)) {
                 temp.add(d)
             }
-            if (temp.count() == 0) {
+            if (temp.isEmpty()) {
                 binding.noRecordFoundStateContainer.visibility = View.VISIBLE
             } else {
                 binding.noRecordFoundStateContainer.visibility = View.GONE

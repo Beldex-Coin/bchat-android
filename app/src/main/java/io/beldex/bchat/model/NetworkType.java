@@ -27,7 +27,7 @@ public enum NetworkType {
         }
     }//value
 
-    private int value;
+    private final int value;
 
     NetworkType(int value) {
         this.value = value;

@@ -49,7 +49,7 @@ class NetworkChangeReceiver(private val onNetworkChangedCallback: (Boolean)->Uni
         onNetworkChangedCallback(connected)
     }
 
-    fun Context.isConnected() : Boolean {
+    private fun Context.isConnected() : Boolean {
         val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         return cm.activeNetwork != null
     }

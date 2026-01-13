@@ -4,7 +4,6 @@ import android.content.res.Configuration;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import io.beldex.bchat.components.camera.CameraView;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ChecksumException;
 import com.google.zxing.DecodeHintType;
@@ -16,7 +15,7 @@ import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 
 import io.beldex.bchat.components.camera.CameraView;
-import io.beldex.bchat.components.camera.CameraView.PreviewFrame;
+
 import com.beldex.libsignal.utilities.Log;
 import com.beldex.libbchat.utilities.Util;
 

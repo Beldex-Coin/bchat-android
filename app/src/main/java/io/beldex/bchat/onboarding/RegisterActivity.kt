@@ -58,14 +58,14 @@ class RegisterActivity : BaseActionBarActivity() {
     private var walletPath: String? = null
     private var localPassword: String? = null
     private var displayName: String? = null
-    val REQUEST_PATH = "path"
-    val REQUEST_PASSWORD = "password"
+    private val REQUEST_PATH = "path"
+    private val REQUEST_PASSWORD = "password"
     val VIEW_TYPE_DETAILS = "details"
     val VIEW_TYPE_ACCEPT = "accept"
     val VIEW_TYPE_WALLET = "wallet"
-    val REQUEST_NAME = "displayName"
+    private val REQUEST_NAME = "displayName"
     var type: String? = null
-    val REQUEST_TYPE = "type"
+    private val REQUEST_TYPE = "type"
     private var walletName: String? = null
 
     // region Lifecycle
@@ -143,7 +143,7 @@ class RegisterActivity : BaseActionBarActivity() {
         )
     }
 
-    fun showDetails() {
+    private fun showDetails() {
         AsyncShow(this, walletPath)
             .execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
     }
@@ -163,7 +163,7 @@ class RegisterActivity : BaseActionBarActivity() {
             super.onPreExecute()
             //showProgress()
             //registerActivity.showProgressDialog(R.string.please_wait, 250)
-            registerActivity.binding.beldexAddressAnimation!!.visibility=View.VISIBLE
+            registerActivity.binding.beldexAddressAnimation.visibility=View.VISIBLE
             registerActivity.binding.beldexAddressTextView.visibility=View.GONE
             registerActivity.binding.registerButton.isEnabled=false
             registerActivity.binding.registerButton.setTextColor(ContextCompat.getColor(registerActivity, R.color.disable_button_text_color))
@@ -269,7 +269,7 @@ class RegisterActivity : BaseActionBarActivity() {
 
                 /*tvWalletAddress.setText(address)
                 tvWalletHeight.setText(NumberFormat.getInstance().format(height))*/
-                if (!seed!!.isEmpty()) {
+                if (seed!!.isNotEmpty()) {
                     /*bCopyAddressMnemonicSeed.setEnabled(true)
                     llMnemonic.setVisibility(View.VISIBLE)
                     tvWalletMnemonic.setText(seed)*/
@@ -377,7 +377,7 @@ class RegisterActivity : BaseActionBarActivity() {
 
     private fun updatePublicKeyTextView() {
         Handler().postDelayed({
-            binding.publicKeyAnimation!!.visibility=View.GONE
+            binding.publicKeyAnimation.visibility=View.GONE
             binding.publicKeyTextView.visibility=View.VISIBLE
             binding.publicKeyTextView.text = x25519KeyPair!!.hexEncodedPublicKey
         }, 32)

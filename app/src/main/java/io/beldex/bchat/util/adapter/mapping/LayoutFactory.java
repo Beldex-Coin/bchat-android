@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 
 public class LayoutFactory<T extends MappingModel<T>> implements Factory<T> {
-  private       Function<View, MappingViewHolder<T>> creator;
+  private final Function<View, MappingViewHolder<T>> creator;
   private final int                                  layout;
 
   public LayoutFactory(@NonNull Function<View, MappingViewHolder<T>> creator, @LayoutRes int layout) {

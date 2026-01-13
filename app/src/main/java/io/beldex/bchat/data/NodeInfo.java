@@ -2,9 +2,6 @@ package io.beldex.bchat.data;
 
 import android.os.NetworkOnMainThreadException;
 
-import io.beldex.bchat.util.NodePinger;
-import io.beldex.bchat.util.OkHttpHelper;
-import io.beldex.bchat.wallet.node.LevinPeer;
 import com.burgstaller.okhttp.AuthenticationCacheInterceptor;
 import com.burgstaller.okhttp.CachingAuthenticatorDecorator;
 import com.burgstaller.okhttp.digest.CachingAuthenticator;
@@ -26,8 +23,6 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import lombok.Getter;
-import lombok.Setter;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -170,7 +165,7 @@ public class  NodeInfo extends Node implements Serializable {
 
 
 
-    static public Comparator<NodeInfo> BestNodeComparator = (o1, o2) -> {
+    static public final Comparator<NodeInfo> BestNodeComparator = (o1, o2) -> {
         if (o1 == null && o2 == null) return 0;
         if (o1 == null) return 1;
         if (o2 == null) return -1;
@@ -275,7 +270,7 @@ public class  NodeInfo extends Node implements Serializable {
 
 
     public boolean testRpcService(NodePinger.Listener listener) {
-        boolean result = !getHostAddress().isEmpty() ? testRpcService(rpcPort) : false;
+        boolean result = !getHostAddress().isEmpty() && testRpcService(rpcPort);
         if (listener != null)
             listener.publish(this);
         return result;
@@ -339,10 +334,10 @@ public class  NodeInfo extends Node implements Serializable {
     public boolean findRpcService() {
         boolean _hostAddress = !getHostAddress().isEmpty();
         // if already have an rpcPort, use that
-        if (rpcPort > 0) return _hostAddress ? testRpcService(rpcPort) : false;
+        if (rpcPort > 0) return _hostAddress && testRpcService(rpcPort);
         // otherwise try to find one
         for (int port : TEST_PORTS) {
-            if (_hostAddress ? testRpcService(port) : false) { // found a service
+            if (_hostAddress && testRpcService(port)) { // found a service
                 this.rpcPort = port;
                 return true;
             }

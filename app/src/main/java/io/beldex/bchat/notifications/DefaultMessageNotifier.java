@@ -32,10 +32,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -47,18 +43,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import io.beldex.bchat.ApplicationContext;
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2;
-import io.beldex.bchat.database.model.MediaMmsMessageRecord;
-import io.beldex.bchat.database.model.MessageRecord;
-import io.beldex.bchat.database.model.MmsMessageRecord;
-import io.beldex.bchat.database.model.Quote;
 import io.beldex.bchat.database.model.ReactionRecord;
-import io.beldex.bchat.home.HomeActivity;
-import io.beldex.bchat.mms.SlideDeck;
-import io.beldex.bchat.util.BchatMetaProtocol;
 import io.beldex.bchat.util.ExtensionFunctionsKt;
-import io.beldex.bchat.util.SpanUtil;
 
 import com.beldex.libbchat.messaging.utilities.UpdateMessageData;
 import com.beldex.libbchat.mnode.MnodeAPI;
@@ -512,7 +498,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
 
     Notification notification = builder.build();
     NotificationManagerCompat.from(context).notify(SUMMARY_NOTIFICATION_ID, builder.build());
-    Log.i(TAG, "Posted notification. " + notification.toString());
+    Log.i(TAG, "Posted notification. " + notification);
   }
 
   /*private void sendInThreadNotification(Context context, Recipient recipient) {

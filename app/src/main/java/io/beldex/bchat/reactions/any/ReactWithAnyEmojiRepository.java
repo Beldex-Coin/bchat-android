@@ -45,6 +45,6 @@ final class ReactWithAnyEmojiRepository {
   }
 
   void addEmojiToMessage(@NonNull String emoji) {
-    recentEmojiPageModel.onCodePointSelected(emoji);
+    RecentEmojiPageModel.onCodePointSelected(emoji);
   }
 }

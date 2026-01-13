@@ -25,7 +25,7 @@ class TransactionDetails : PassphraseRequiredActionBarActivity() {
     private lateinit var binding:ActivityTransactionDetailsBinding
     private val DATETIME_FORMATTER = SimpleDateFormat("dd-MM-yyyy HH:mm")
 
-    val ARG_INFO = "info"
+    private val ARG_INFO = "info"
 
     private var outboundColour = 0
     private var inboundColour = 0

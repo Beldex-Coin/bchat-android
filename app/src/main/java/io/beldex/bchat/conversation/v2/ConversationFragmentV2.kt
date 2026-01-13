@@ -60,9 +60,11 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -171,7 +173,6 @@ import io.beldex.bchat.mms.MediaConstraints
 import io.beldex.bchat.mms.Slide
 import io.beldex.bchat.mms.SlideDeck
 import io.beldex.bchat.mms.VideoSlide
-import io.beldex.bchat.model.AsyncTaskCoroutine
 import io.beldex.bchat.model.PendingTransaction
 import io.beldex.bchat.model.Wallet
 import io.beldex.bchat.onboarding.ui.EXTRA_PIN_CODE_ACTION
@@ -214,7 +215,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import nl.komponents.kovenant.ui.successUi
 import org.apache.commons.lang3.time.DurationFormatUtils
 import org.json.JSONException
 import org.json.JSONObject
@@ -224,7 +224,6 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Locale
 import java.util.concurrent.ExecutionException
-import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
@@ -301,7 +300,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                 threadId=threadDb.getOrCreateThreadIdFor(recipient)
             }
         }
-        listenerCallback!!.getConversationViewModel().create(threadId!!)
+        listenerCallback!!.getConversationViewModel().create(threadId)
     }
 
     private fun callViewModel() : Recipient? {
@@ -313,7 +312,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                     threadId=threadDb.getOrCreateThreadIdFor(recipient)
                 }
             }
-            listenerCallback!!.getConversationViewModel().create(threadId!!)
+            listenerCallback!!.getConversationViewModel().create(threadId)
         }
         return viewModels.recipient.value
     }
@@ -353,8 +352,8 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
     private var isShowingMentionCandidatesView=false
 
     // Search
-    var searchViewModel : SearchViewModel?=null
-    var searchViewItem : MenuItem?=null
+    private var searchViewModel : SearchViewModel?=null
+    private var searchViewItem : MenuItem?=null
 
     private var emojiLastClickTime : Long=0
 
@@ -404,7 +403,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                     if (message.isSent && !isMessageRequestThread() &&
                         !viewModel.recipient.value?.isOpenGroupRecipient!!
                     ) {
-                        if (selectedItem(message) == true) {
+                        if (selectedItem(message)) {
                             actionMode?.let { onDeselect(message, position, it) }
                         } else {
                             showConversationReaction(message, view, position)
@@ -778,10 +777,10 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
 
             if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
                 if (binding.inputBar.text.isNotEmpty() && binding.inputBar.text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"))) {
-                    binding.inputBar.setTextColor(thread, HomeActivity.reportIssueBChatID, true)
+                    binding.inputBar.setTextColor(thread, HomeActivity.REPORTISSUEBCHATID, true)
                     showPayWithSlide(thread, true)
                 } else {
-                    binding.inputBar.setTextColor(thread, HomeActivity.reportIssueBChatID, false)
+                    binding.inputBar.setTextColor(thread, HomeActivity.REPORTISSUEBCHATID, false)
                     showPayWithSlide(thread, false)
                 }
                 if (syncText == getString(R.string.failed_to_connect_to_node) || syncText == getString(
@@ -793,7 +792,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                     binding.inputBar.showDrawableProgressBar(false, valueOfWallet)
                 }
             } else {
-                binding.inputBar.setTextColor(thread, HomeActivity.reportIssueBChatID, false)
+                binding.inputBar.setTextColor(thread, HomeActivity.REPORTISSUEBCHATID, false)
                 showPayWithSlide(thread, false)
             }
         }
@@ -966,7 +965,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
     }
 
     private fun showPayWithSlide(thread : Recipient?, status : Boolean) {
-        if (thread != null && !thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && thread.isApproved && HomeActivity.reportIssueBChatID != thread.address.toString() && !thread.isLocalNumber && status) {
+        if (thread != null && !thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && thread.isApproved && HomeActivity.REPORTISSUEBCHATID != thread.address.toString() && !thread.isLocalNumber && status) {
             binding.slideToPayButton.visibility=View.VISIBLE
             selectedEvent?.let { dispatchTouchEvents(it) }
         } else {
@@ -976,7 +975,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
 
     private fun callShowPayAsYouChatBDXIcon(thread : Recipient?) {
         if (thread != null) {
-            binding.inputBar.showPayAsYouChatBDXIcon(thread, HomeActivity.reportIssueBChatID)
+            binding.inputBar.showPayAsYouChatBDXIcon(thread, HomeActivity.REPORTISSUEBCHATID)
         }
     }
 
@@ -986,7 +985,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                 blockProgressBarVisible=
                     if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && TextSecurePreferences.isPayAsYouChat(
                             requireActivity()
-                        ) && thread.isApproved && HomeActivity.reportIssueBChatID != thread.address.toString() && !thread.isLocalNumber
+                        ) && thread.isApproved && HomeActivity.REPORTISSUEBCHATID != thread.address.toString() && !thread.isLocalNumber
                     ) {
                         binding.inputBar.showProgressBar(true)
                         true
@@ -1238,7 +1237,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             reactionDelegate.hideForReactWithAny()
             ReactWithAnyEmojiDialogFragment
                 .createForMessageRecord(messageRecord, reactWithAnyEmojiStartPage)
-                .show(requireActivity().supportFragmentManager, "BOTTOM");
+                .show(requireActivity().supportFragmentManager, "BOTTOM")
         }
     }
 
@@ -1326,7 +1325,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
     ) {
         if (isSecretGroupIsActive()) {
             if (messageRecord.isSent && !isMessageRequestThread() && !viewModel.recipient.value?.isOpenGroupRecipient!!) {
-                if (selectedItem(messageRecord) == true) {
+                if (selectedItem(messageRecord)) {
                     actionMode?.let { onDeselect(messageRecord, position, it) }
                 } else {
                     showConversationReaction(messageRecord, visibleMessageView, position)
@@ -1665,7 +1664,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             binding.inputBarRecordingView.lock()
         } else {
             val recordButtonOverlay=binding.inputBarRecordingView.recordButtonOverlay
-            val location=IntArray(2) { 0 }
+            val location=IntArray(2)
             recordButtonOverlay.getLocationOnScreen(location)
             val hitRect=Rect(
                 location[0],
@@ -1878,21 +1877,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         @ColorInt val color=
             requireContext().resources.getColorWithID(
                 R.color.text,
-                requireContext().theme
-            )
-        binding.tooltip.setTextColor(color)
-        binding.tooltip.typeface=face
-    }
-
-    private fun failedToConnectToolTipStyle() {
-        val face=
-            Typeface.createFromAsset(
-                requireContext().assets,
-                "fonts/open_sans_medium.ttf"
-            )
-        @ColorInt val color=
-            requireContext().resources.getColorWithID(
-                R.color.negative_red_button_border,
                 requireContext().theme
             )
         binding.tooltip.setTextColor(color)
@@ -2145,7 +2129,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             if (message.isPayment) {
                 //Payment Tag
                 var amount=""
-                var direction=""
                 try {
                     val mainObject=JSONObject(message.body)
                     val uniObject=mainObject.getJSONObject("kind")
@@ -2153,7 +2136,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                 } catch (e : JSONException) {
                     e.printStackTrace()
                 }
-                direction=if (message.isOutgoing) {
+                val direction : String=if (message.isOutgoing) {
                     resources.getString(R.string.payment_sent)
                 } else {
                     resources.getString(R.string.payment_received)
@@ -2218,7 +2201,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
 
     override fun showMessageDetail(messages : Set<MessageRecord>) {
         if (messages.isNotEmpty()) {
-            val message=messages.first()
             val intent=Intent(requireActivity(), MessageDetailActivity::class.java)
             intent.putExtra(MessageDetailActivity.MESSAGE_TIMESTAMP, messages.first().timestamp)
             startActivity(intent)
@@ -2813,8 +2795,9 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             }
         }
 
-        private fun setUpUiStateObserver() {
-            lifecycleScope.launchWhenStarted {
+    private fun setUpUiStateObserver() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
                     uiState.uiMessages.firstOrNull()?.let {
                         Toast.makeText(requireActivity(), it.message, Toast.LENGTH_LONG).show()
@@ -2822,15 +2805,17 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                     }
                     addOpenGroupGuidelinesIfNeeded(uiState.isBeldexHostedOpenGroup)
                     if (uiState.isMessageRequestAccepted == true) {
-                        binding.messageRequestBar.visibility=View.GONE
+                        binding.messageRequestBar.visibility = View.GONE
                     }
                 }
             }
         }
+    }
+
 
     private fun setMediaControlForReportIssue() {
         val recipient=viewModel.recipient.value ?: return
-        if (recipient.address.toString() == HomeActivity.reportIssueBChatID) {
+        if (recipient.address.toString() == HomeActivity.REPORTISSUEBCHATID) {
             binding.inputBar.showMediaControls=true
         }
     }
@@ -2883,10 +2868,10 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
     private fun checkInputBarTextOnTextChanged(text : String?, thread : Recipient) {
         if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
             if (text!!.isNotEmpty() && text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$")) && binding.inputBar.quote == null) {
-                binding.inputBar.setTextColor(thread, HomeActivity.reportIssueBChatID, true)
+                binding.inputBar.setTextColor(thread, HomeActivity.REPORTISSUEBCHATID, true)
                 showPayWithSlide(thread, true)
             } else {
-                binding.inputBar.setTextColor(thread, HomeActivity.reportIssueBChatID, false)
+                binding.inputBar.setTextColor(thread, HomeActivity.REPORTISSUEBCHATID, false)
                 showPayWithSlide(thread, false)
             }
         }
@@ -3020,17 +3005,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
 
         }
 
-    private fun getLatestOpenGroupInfoIfNeeded() {
-        try {
-            val openGroup=viewModel.getOpenGroupChat()
-                ?: return
-            OpenGroupAPIV2.getMemberCount(openGroup.room, openGroup.server)
-                .successUi { updateSubtitle() }
-        } catch (ex : NullPointerException) {
-            Timber.tag("Exception ").d(ex.message.toString())
-        }
-    }
-
     private fun setUpBlockedBanner() {
         val recipient=viewModel.recipient.value ?: return
         if (recipient.isGroupRecipient) {
@@ -3128,8 +3102,8 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                         result.getResults()[result.position]?.let {
                             jumpToMessage(
                                 it.messageRecipient.address,
-                                it.sentTimestampMs,
-                                Runnable { searchViewModel!!.onMissingResult() })
+                                it.sentTimestampMs
+                            ) { searchViewModel!!.onMissingResult() }
                         }
                         binding.searchUp.visibility=View.VISIBLE
                         binding.searchDown.visibility=View.VISIBLE
@@ -3164,15 +3138,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         }
     }
 
-
-    private fun scrollToFirstUnreadMessageIfNeeded() {
-        val lastSeenTimestamp=viewModel.getLastSeenAndHasSent().first()
-        val lastSeenItemPosition=adapter.findLastSeenItemPosition(lastSeenTimestamp) ?: return
-        if (lastSeenItemPosition <= 3) {
-            return
-        }
-        binding.conversationRecyclerView.scrollToPosition(lastSeenItemPosition)
-    }
 
     @Deprecated("Deprecated in Java")
     override fun onPrepareOptionsMenu(menu : Menu) {
@@ -3215,7 +3180,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
 
     private fun setUpMessageRequestsBar() {
         val recipient=viewModel.recipient.value ?: return
-        if (recipient.address.toString() != HomeActivity.reportIssueBChatID) {
+        if (recipient.address.toString() != HomeActivity.REPORTISSUEBCHATID) {
             binding.inputBar.showMediaControls=!isOutgoingMessageRequestThread()
         }
         binding.messageRequestBar.isVisible=isIncomingMessageRequestThread()
@@ -3295,7 +3260,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         // We can be anywhere above the lock view and a bit to the side of it (at most `lockViewHitMargin`
         // to the side)
         val binding=binding
-        val lockViewLocation=IntArray(2) { 0 }
+        val lockViewLocation=IntArray(2)
         binding.inputBarRecordingView.lockView.getLocationOnScreen(lockViewLocation)
         val hitRect=Rect(
             lockViewLocation[0] - lockViewHitMargin,
@@ -3353,7 +3318,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
     private fun sendAttachments(
         attachments : List<Attachment>,
         body : String?,
-        quotedMessage : MessageRecord?=binding?.inputBar?.quote,
+        quotedMessage : MessageRecord?=binding.inputBar.quote,
         linkPreview : LinkPreview?=null,
         contacts : List<ContactModel> = emptyList()
     ) {
@@ -3897,14 +3862,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         createTransactionFailed(errorText)
     }
 
-    private fun showAlert(title : String, message : String) {
-        val builder=AlertDialog.Builder(
-            requireActivity(), R.style.backgroundColor
-        )
-        builder.setCancelable(true).setTitle(title).setMessage(message).create().show()
-        transactionInProgress=false
-    }
-
     private fun disposeTransaction() {
         pendingTx=null
         listenerCallback!!.onDisposeRequest()
@@ -4125,7 +4082,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
 
 /*    fun onRefreshed(wallet : Wallet, full : Boolean) {
         val recipient=viewModel.recipient.value ?: return
-        if (!recipient.isGroupRecipient && recipient.hasApprovedMe() && !recipient.isBlocked && HomeActivity.reportIssueBChatID != recipient.address.toString() && !recipient.isLocalNumber) {
+        if (!recipient.isGroupRecipient && recipient.hasApprovedMe() && !recipient.isBlocked && HomeActivity.REPORTISSUEBCHATID != recipient.address.toString() && !recipient.isLocalNumber) {
             if (full && listenerCallback!!.isSynced) {
                 if (CheckOnline.isOnline(requireContext())) {
                     check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
@@ -4150,7 +4107,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             recipient.isGroupRecipient &&
             !recipient.hasApprovedMe() &&
             recipient.isBlocked &&
-            HomeActivity.reportIssueBChatID == recipient.address.toString() &&
+            HomeActivity.REPORTISSUEBCHATID == recipient.address.toString() &&
             recipient.isLocalNumber
         ) return
 
@@ -4242,7 +4199,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                         firstBlock=walletHeight
                     }
                     var x=
-                        (100 - Math.round(100f * n / (1f * daemonHeight - firstBlock))).toInt()
+                        (100 - Math.round(100f * n / (1f * daemonHeight - firstBlock)))
                     if (x == 0) x=1 // indeterminate
                     valueOfWallet="${df.format(walletSyncPercentage)}%"
                     if (x >= 0) {
@@ -4343,53 +4300,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         toolTip()
     }
 
-    private fun getUnlockedBalance(wallet : Wallet) {
-        if (mContext != null && walletAvailableBalance != null) {
-            if (walletAvailableBalance!!.replace(",", "").toDouble() > 0.0) {
-                showBalance(walletAvailableBalance!!, unlockedBalance.toString(), true)
-            }
-        } else {
-            refreshBalance(false)
-        }
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                unlockedBalance=wallet.unlockedBalance
-                delay(100)
-                refreshBalance(wallet.isSynchronized)
-            } catch (e : Exception) {
-                Timber.tag("WalletFragment").d(e.toString())
-            }
-        }
-    }
-
-    inner class AsyncGetUnlockedBalance(val wallet : Wallet) :
-        AsyncTaskCoroutine<Executor?, Boolean?>() {
-        override fun onPreExecute() {
-            super.onPreExecute()
-            if (mContext != null && walletAvailableBalance != null) {
-                if (walletAvailableBalance!!.replace(",", "").toDouble() > 0.0) {
-                    showBalance(walletAvailableBalance!!, unlockedBalance.toString(), true)
-                }
-            } else {
-                refreshBalance(false)
-            }
-        }
-
-        override fun doInBackground(vararg params : Executor?) : Boolean {
-            try {
-                unlockedBalance=listenerCallback!!.getUnLockedBalance
-                balance=listenerCallback!!.getFullBalance
-            } catch (e : Exception) {
-                Timber.tag("ConversationFragment").d(e.toString())
-            }
-            return true
-        }
-
-        override fun onPostExecute(result : Boolean?) {
-            refreshBalance(wallet.isSynchronized)
-        }
-    }
-
     private fun checkIfFragmentAttached(operation : Context.() -> Unit) {
         if (isAdded && context != null) {
             operation(requireContext())
@@ -4401,7 +4311,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             try {
 
                 viewModel.recipient.value?.let { thread ->
-                    if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && HomeActivity.reportIssueBChatID != thread.address.toString() && !thread.isLocalNumber && TextSecurePreferences.isWalletActive(
+                    if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && HomeActivity.REPORTISSUEBCHATID != thread.address.toString() && !thread.isLocalNumber && TextSecurePreferences.isWalletActive(
                             requireContext()
                         )
                     ) {
@@ -4427,7 +4337,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                     if (!thread.isGroupRecipient &&
                         thread.hasApprovedMe() &&
                         !thread.isBlocked &&
-                        HomeActivity.reportIssueBChatID != thread.address.toString() &&
+                        HomeActivity.REPORTISSUEBCHATID != thread.address.toString() &&
                         !thread.isLocalNumber &&
                         TextSecurePreferences.isWalletActive(requireContext())
                     ) {
@@ -4465,7 +4375,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         onSearchOpened()
     }
 
-    fun setSearchView() {
+    private fun setSearchView() {
         binding.searchUp.setOnClickListener {
             onSearchMoveUpPressed()
         }

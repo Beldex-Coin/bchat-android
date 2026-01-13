@@ -34,7 +34,7 @@ public class LimitedInputStream extends FilterInputStream {
   /**
    * The maximum size of an item, in bytes.
    */
-  private long sizeMax;
+  private final long sizeMax;
 
   /**
    * The current number of bytes.

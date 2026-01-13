@@ -10,10 +10,6 @@ import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 
-import io.beldex.bchat.imageeditor.Bounds;
-import io.beldex.bchat.imageeditor.Renderer;
-import io.beldex.bchat.imageeditor.RendererContext;
-
 import io.beldex.bchat.R;
 import io.beldex.bchat.imageeditor.Bounds;
 import io.beldex.bchat.imageeditor.Renderer;

@@ -34,8 +34,8 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
     var isDarkTheme = true
 
     companion object {
-        val usersToExcludeKey = "usersToExcludeKey"
-        val selectedContactsKey = "selectedContactsKey"
+        const val usersToExcludeKey = "usersToExcludeKey"
+        const val selectedContactsKey = "selectedContactsKey"
     }
 
     // region Lifecycle

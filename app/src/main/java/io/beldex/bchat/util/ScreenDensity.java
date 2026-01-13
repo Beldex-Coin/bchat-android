@@ -5,9 +5,6 @@ import android.util.DisplayMetrics;
 
 import androidx.annotation.NonNull;
 
-import com.beldex.libbchat.messaging.MessagingModuleConfiguration;
-import io.beldex.bchat.ApplicationContext;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 

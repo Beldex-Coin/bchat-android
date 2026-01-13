@@ -32,10 +32,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import io.beldex.bchat.wallet.utils.dialog.ProgressDialog;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.google.android.material.textfield.TextInputLayout;
-import io.beldex.bchat.data.DefaultNodes;
+
 import io.beldex.bchat.data.NetworkNodes;
 import io.beldex.bchat.data.Node;
 import io.beldex.bchat.data.NodeInfo;
@@ -59,7 +58,7 @@ import timber.log.Timber;
 public class NodeFragment extends Fragment
         implements NodeInfoAdapter.OnInteractionListener, View.OnClickListener {
 
-    static private int NODES_TO_FIND = 10;
+    static private final int NODES_TO_FIND = 10;
     private SwipeRefreshLayout pullToRefresh;
     private TextView tvPull;
     private View fab;
@@ -107,7 +106,7 @@ public class NodeFragment extends Fragment
         if (context instanceof Listener) {
             this.activityCallback = (Listener) context;
         } else {
-            throw new ClassCastException(context.toString()
+            throw new ClassCastException(context
                     + " must implement Listener");
         }
     }
@@ -472,15 +471,15 @@ public class NodeFragment extends Fragment
 
         AlertDialog editDialog = null;
 
-        TextInputLayout etNodeName;
-        TextInputLayout etNodeHost;
-        TextInputLayout etNodePort;
-        TextInputLayout etNodeUser;
-        TextInputLayout etNodePass;
-        TextView tvResult;
-        ImageView iVVerified;
-        ImageView iVConnectionError;
-        CardView tvResultCardView;
+        final TextInputLayout etNodeName;
+        final TextInputLayout etNodeHost;
+        final TextInputLayout etNodePort;
+        final TextInputLayout etNodeUser;
+        final TextInputLayout etNodePass;
+        final TextView tvResult;
+        final ImageView iVVerified;
+        final ImageView iVConnectionError;
+        final CardView tvResultCardView;
 
         void showTestResult() {
             if (nodeInfo.isSuccessful()) {
@@ -632,11 +631,7 @@ public class NodeFragment extends Fragment
             @Override
             protected Boolean doInBackground(Void... params) {
                 nodeInfo.testIsMainnet();
-                if (nodeInfo.testIsMainnet()) {
-                    TextSecurePreferences.setNodeIsMainnet(requireContext(), true);
-                } else {
-                    TextSecurePreferences.setNodeIsMainnet(requireContext(), false);
-                }
+                TextSecurePreferences.setNodeIsMainnet(requireContext(), nodeInfo.testIsMainnet());
                 nodeInfo.testRpcService();
                 return true;
             }

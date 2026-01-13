@@ -33,7 +33,7 @@ public class Dispatcher implements PeerRetriever.OnGetPeers {
         void onGet(NodeInfo nodeInfo);
     }
 
-    private Listener listener;
+    private final Listener listener;
 
     public Dispatcher(Listener listener) {
         this.listener = listener;
@@ -150,7 +150,7 @@ public class Dispatcher implements PeerRetriever.OnGetPeers {
     }
 
     // TODO: does this NEED to be a ConcurrentLinkedDeque?
-    private ConcurrentLinkedDeque<Future<PeerRetriever>> jobs = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<Future<PeerRetriever>> jobs = new ConcurrentLinkedDeque<>();
 
     private void retrievePeer(NodeInfo nodeInfo) {
         if (knownNodes.add(nodeInfo)) {

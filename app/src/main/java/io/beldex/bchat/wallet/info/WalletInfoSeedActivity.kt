@@ -134,7 +134,7 @@ class WalletInfoSeedActivity : BaseActionBarActivity() {
             )
     }
 
-    var clearJob: Job? = null
+    private var clearJob: Job? = null
         set(value) {
             field = value
         }

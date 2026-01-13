@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import androidx.annotation.NonNull;
 
-import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
 import com.beldex.libsignal.utilities.Log;
 
 import net.zetetic.database.sqlcipher.SQLiteDatabase;

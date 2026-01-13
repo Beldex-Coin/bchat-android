@@ -34,8 +34,8 @@ import java.util.*
 object BackupUtil {
     private const val MASTER_SECRET_UTIL_PREFERENCES_NAME = "SecureSMS-Preferences"
     private const val TAG = "BackupUtil"
-    const val BACKUP_FILE_MIME_TYPE = "application/bchat-backup"
-    const val BACKUP_PASSPHRASE_LENGTH = 30
+    private const val BACKUP_FILE_MIME_TYPE = "application/bchat-backup"
+    private const val BACKUP_PASSPHRASE_LENGTH = 30
 
     fun getBackupRecords(context: Context): List<SharedPreference> {
         val prefName = MASTER_SECRET_UTIL_PREFERENCES_NAME
@@ -75,10 +75,8 @@ object BackupUtil {
 
     @JvmStatic
     fun getLastBackupTimeString(context: Context, locale: Locale): String {
-        val timestamp = DatabaseComponent.get(context).beldexBackupFilesDatabase().getLastBackupFileTime()
-        if (timestamp == null) {
-            return context.getString(R.string.BackupUtil_never)
-        }
+        val timestamp =DatabaseComponent.get(context).beldexBackupFilesDatabase().getLastBackupFileTime()
+            ?: return context.getString(R.string.BackupUtil_never)
         return DateUtils.getDisplayFormattedTimeSpanString(context, locale, timestamp.time)
     }
 
@@ -103,11 +101,7 @@ object BackupUtil {
         if (!hasWritePermission) return false
 
         val document = DocumentFile.fromTreeUri(context, dirUri)
-        if (document == null || !document.exists()) {
-            return false
-        }
-
-        return true
+        return !(document == null || !document.exists())
     }
 
     @JvmStatic
@@ -287,7 +281,7 @@ class BackupDirSelector(private val contextProvider: ContextProvider) {
         contextProvider.startActivityForResult(intent, REQUEST_CODE_SAVE_DIR)
     }
 
-    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    private fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode != REQUEST_CODE_SAVE_DIR) return
 
         if (resultCode == Activity.RESULT_OK && data != null && data.data != null) {

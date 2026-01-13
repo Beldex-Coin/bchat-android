@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ContentViewModel @Inject constructor(
-    private val assetHelper: AssetFileHelper
+    assetHelper: AssetFileHelper
 ): ViewModel() {
 
     private val _content = MutableStateFlow("")

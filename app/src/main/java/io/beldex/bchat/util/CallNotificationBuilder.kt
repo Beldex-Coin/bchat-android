@@ -37,7 +37,7 @@ class CallNotificationBuilder {
         const val TYPE_ESTABLISHED = 3
         const val TYPE_INCOMING_CONNECTING = 4
         const val TYPE_INCOMING_PRE_OFFER = 5
-        const val TYPE_SCREEN_ON = 6
+        private const val TYPE_SCREEN_ON = 6
 
         @JvmStatic
         fun areNotificationsEnabled(context: Context): Boolean {

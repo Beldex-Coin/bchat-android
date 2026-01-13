@@ -84,7 +84,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
     private val dateFormat = SimpleDateFormat("yyyy-MM", Locale.US)
     private val namePattern = Pattern.compile("[A-Za-z0-9\\s]+")
     private val myFormat = "yyyy-MM-dd" // mention the format you need
-    val sdf = SimpleDateFormat(myFormat, Locale.US)
+    private val sdf = SimpleDateFormat(myFormat, Locale.US)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -368,7 +368,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         var i = 1
         for (info in favouriteNodes) {
             val nodeString = info.toNodeString()
-            editor.putString(Integer.toString(i), nodeString)
+            editor.putString(i.toString(), nodeString)
             Timber.d("saved %d:%s", i, nodeString)
             i++
         }
@@ -475,7 +475,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
             }
             this.node = node
             for (nodeInfo in favouriteNodes) {
-                Timber.d("Testing-->14 ${node.toString()}")
+                Timber.d("Testing-->14 $node")
                 //Important
                 nodeInfo.isSelected = nodeInfo === node
             }
@@ -660,7 +660,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         val nodeInfo = NodeInfo.fromString(nodeString)
         if (nodeInfo != null) {
             //Important
-            nodeInfo.setFavourite(true)
+            nodeInfo.isFavourite=true
             favouriteNodes.add(nodeInfo)
         } else Timber.w("nodeString invalid: %s", nodeString)
         return nodeInfo

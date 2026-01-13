@@ -20,8 +20,8 @@ public final class AccelerometerListener {
     private static final boolean DEBUG = true;
     private static final boolean VDEBUG = false;
 
-    private SensorManager mSensorManager;
-    private Sensor mSensor;
+    private final SensorManager mSensorManager;
+    private final Sensor mSensor;
 
     // mOrientation is the orientation value most recently reported to the client.
     private int mOrientation;
@@ -45,7 +45,7 @@ public final class AccelerometerListener {
     private static final double VERTICAL_ANGLE = 50.0;
 
     public interface OrientationListener {
-        public void orientationChanged(int orientation);
+        void orientationChanged(int orientation);
     }
 
     public AccelerometerListener(Context context, OrientationListener listener) {
@@ -115,7 +115,7 @@ public final class AccelerometerListener {
         setOrientation(orientation);
     }
 
-    SensorEventListener mSensorListener = new SensorEventListener() {
+    final SensorEventListener mSensorListener = new SensorEventListener() {
         public void onSensorChanged(SensorEvent event) {
             onSensorEvent(event.values[0], event.values[1], event.values[2]);
         }

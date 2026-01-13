@@ -195,9 +195,7 @@ public class BitcoinAddressValidator {
 
         if (remainderSize >= 5) return false;
         // ignore checksum at end and get last byte of program
-        if ((data[data.length - 1 - 6] & ((1 << remainderSize) - 1)) != 0) return false;
-
-        return true;
+        return (data[data.length - 1 - 6] & ((1 << remainderSize) - 1)) == 0;
     }
 }
 

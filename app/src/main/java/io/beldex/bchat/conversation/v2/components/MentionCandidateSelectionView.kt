@@ -16,11 +16,11 @@ class MentionCandidateSelectionView(context: Context, attrs: AttributeSet?, defS
         set(newValue) { field = newValue; mentionCandidateSelectionViewAdapter.mentionCandidates = newValue }
     var glide: RequestManager? = null
         set(newValue) { field = newValue; mentionCandidateSelectionViewAdapter.glide = newValue }
-    var openGroupServer: String? = null
+    private var openGroupServer: String? = null
         set(newValue) { field = newValue; mentionCandidateSelectionViewAdapter.openGroupServer = openGroupServer }
-    var openGroupRoom: String? = null
+    private var openGroupRoom: String? = null
         set(newValue) { field = newValue; mentionCandidateSelectionViewAdapter.openGroupRoom = openGroupRoom }
-    var onMentionCandidateSelected: ((Mention) -> Unit)? = null
+    private var onMentionCandidateSelected: ((Mention) -> Unit)? = null
 
     private val mentionCandidateSelectionViewAdapter by lazy { Adapter(context) }
 
@@ -74,7 +74,7 @@ class MentionCandidateSelectionView(context: Context, attrs: AttributeSet?, defS
         }
         this.mentionCandidates = mentionCandidates
         val layoutParams = this.layoutParams as ViewGroup.LayoutParams
-        layoutParams.height = toPx(Math.min(mentionCandidates.count(), 4) * 44, resources)
+        layoutParams.height = toPx(mentionCandidates.count().coerceAtMost(4) * 44, resources)
         this.layoutParams = layoutParams
     }
 

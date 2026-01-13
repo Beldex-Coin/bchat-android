@@ -33,7 +33,7 @@ class NewHomeAdapter(private val context: Context, private val listener: Convers
             diffResult.dispatchUpdatesTo(this as ListUpdateCallback)
         }
 
-    fun hasHeaderView(): Boolean = header != null
+    private fun hasHeaderView(): Boolean = header != null
 
     private val headerCount: Int
         get() = if (header == null) 0 else 1
@@ -61,7 +61,7 @@ class NewHomeAdapter(private val context: Context, private val listener: Convers
     }
 
     lateinit var glide: RequestManager
-    var typingThreadIDs = setOf<Long>()
+    private var typingThreadIDs = setOf<Long>()
         set(value) {
             field = value
             // TODO: replace this with a diffed update or a partial change set with payloads

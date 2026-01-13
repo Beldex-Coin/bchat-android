@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import io.beldex.bchat.data.Subaddress;
-import io.beldex.bchat.data.Subaddress;
 
 import java.util.List;
 
@@ -39,25 +38,25 @@ public class TransactionInfo implements Parcelable, Comparable<TransactionInfo> 
         private final int value;
     }
 
-    public Direction direction;
-    public boolean isPending;
-    public boolean isFailed;
-    public long amount;
-    public long fee;
-    public long blockheight;
-    public String hash;
-    public long timestamp;
-    public String paymentId;
-    public int accountIndex;
-    public int addressIndex;
-    public long confirmations;
-    public String subaddressLabel;
-    public List<Transfer> transfers;
+    public final Direction direction;
+    public final boolean isPending;
+    public final boolean isFailed;
+    public final long amount;
+    public final long fee;
+    public final long blockheight;
+    public final String hash;
+    public final long timestamp;
+    public final String paymentId;
+    public final int accountIndex;
+    public final int addressIndex;
+    public final long confirmations;
+    public final String subaddressLabel;
+    public final List<Transfer> transfers;
 
     public String txKey = null;
     public String notes = null;
     public String address = null;
-    public boolean isBns;
+    public final boolean isBns;
 
     public TransactionInfo(
             int direction,

@@ -40,7 +40,7 @@ class HomeAdapter(private val context: Context, private val listener: Conversati
             diffResult.dispatchUpdatesTo(this as ListUpdateCallback)
         }
 
-    fun hasHeaderView(): Boolean = header != null
+    private fun hasHeaderView(): Boolean = header != null
 
     private val headerCount: Int
         get() = if (header == null) 0 else 1
@@ -158,9 +158,5 @@ class HomeAdapter(private val context: Context, private val listener: Conversati
     class ViewHolder(val view: ConversationView) : RecyclerView.ViewHolder(view)
 
     class HeaderFooterViewHolder(val view: ViewMessageRequestBannerBinding) : RecyclerView.ViewHolder(view.root)
-
-    fun setHasMessageRequestCount(hasRequests: Boolean) {
-        hasMessageRequests = hasRequests
-    }
 
 }

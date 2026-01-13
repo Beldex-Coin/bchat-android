@@ -175,7 +175,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
         var i = 1
         for (info in favouriteNodes) {
             val nodeString = info.toNodeString()
-            editor.putString(Integer.toString(i), nodeString)
+            editor.putString(i.toString(), nodeString)
             Timber.d("saved %d:%s", i, nodeString)
             i++
         }
@@ -287,7 +287,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
             for (nodeInfo in favouriteNodes) {
                 Timber.d("Testing-->14")
                 //Important
-                nodeInfo.setSelected(nodeInfo === node)
+                nodeInfo.isSelected=nodeInfo === node
             }
             WalletManager.getInstance().setDaemon(node)
             if (save) saveSelectedNode()
@@ -425,7 +425,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
                     // get it from the connected node if we have one, and go back ca. 4 days
                     //val restoreHeight: Long = if (currentNode != null) currentNode.getHeight() - 2000 else -1
                     val newWallet: Wallet = WalletManager.getInstance()
-                        .getWallet()
+                        .wallet
                     return checkAndCloseWallet(newWallet)
                 }
             })
@@ -590,7 +590,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
         val nodeInfo = NodeInfo.fromString(nodeString)
         if (nodeInfo != null) {
             //Important
-            nodeInfo.setFavourite(true)
+            nodeInfo.isFavourite=true
             favouriteNodes.add(nodeInfo)
         } else Timber.w("nodeString invalid: %s", nodeString)
         return nodeInfo

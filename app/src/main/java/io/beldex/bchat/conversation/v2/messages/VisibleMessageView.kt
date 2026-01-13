@@ -1,10 +1,8 @@
 package io.beldex.bchat.conversation.v2.messages
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Rect
-import android.graphics.drawable.ColorDrawable
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
@@ -47,7 +45,6 @@ import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.disableClipping
 import io.beldex.bchat.util.getColorWithID
 import io.beldex.bchat.util.isSameDayMessage
-import io.beldex.bchat.util.toDp
 import io.beldex.bchat.util.toPx
 import io.beldex.bchat.database.BeldexAPIDatabase
 import kotlinx.coroutines.CoroutineScope
@@ -58,8 +55,8 @@ import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.min
-import kotlin.math.roundToInt
-import kotlin.math.sqrt
+import androidx.core.view.isGone
+import androidx.core.graphics.drawable.toDrawable
 
 @AndroidEntryPoint
 class VisibleMessageView : LinearLayout {
@@ -72,7 +69,6 @@ class VisibleMessageView : LinearLayout {
     @Inject lateinit var beldexApiDb: BeldexAPIDatabase
 
     private val binding by lazy { ViewVisibleMessageBinding.bind(this) }
-    private val screenWidth = Resources.getSystem().displayMetrics.widthPixels
     private val swipeToReplyIcon = ContextCompat.getDrawable(context, R.drawable.ic_baseline_reply_24)!!.mutate()
     private val swipeToReplyIconRect = Rect()
     private var dx = 0.0f
@@ -96,10 +92,9 @@ class VisibleMessageView : LinearLayout {
     private var isGroupMessage: Boolean = false
 
     companion object {
-        const val swipeToReplyThreshold = 64.0f // dp
-        const val longPressMovementThreshold = 10.0f // dp
-        const val longPressDurationThreshold = 250L // ms
-        const val maxDoubleTapInterval = 200L
+        const val SWIPETOREPLYTHRESHOLD = 64.0f // dp
+        const val LONGPRESSDURATIONTHREDHOLD = 250L // ms
+        const val MAXDOUBLETAPINTERVAL = 200L
     }
 
     // region Lifecycle
@@ -118,7 +113,6 @@ class VisibleMessageView : LinearLayout {
         binding.messageInnerContainer.disableClipping()
         binding.messageContentView.root.disableClipping()
     }
-    // endregion
 
     // region Updating
     fun bind(
@@ -156,7 +150,7 @@ class VisibleMessageView : LinearLayout {
         val bottomMargin = if (isEndOfMessageCluster) resources.getDimensionPixelSize(R.dimen.small_spacing)
         else ViewUtil.dpToPx(context,2)
 
-        if (binding.profilePictureView.root.visibility == View.GONE) {
+        if (binding.profilePictureView.root.isGone) {
             val expirationParams = binding.messageInnerContainer.layoutParams as MarginLayoutParams
             expirationParams.bottomMargin = bottomMargin
             binding.messageInnerContainer.layoutParams = expirationParams
@@ -251,7 +245,7 @@ class VisibleMessageView : LinearLayout {
             )
         }
         binding.messageContentView.root.bind(message, isStartOfMessageCluster, isEndOfMessageCluster, glide, thread, searchQuery, message.isOutgoing || isGroupThread || (contact?.isTrusted ?: false),
-            onAttachmentNeedsDownload, thread.isOpenGroupRecipient,delegate!!, this, position,messageSelected, searchViewModel)
+            onAttachmentNeedsDownload, delegate!!, this, position,messageSelected, searchViewModel)
         binding.messageContentView.root.delegate = delegate
         binding.messageContentView.root.chatWithContact = { ct ->
             if((message.expiresIn == 0L && message.expireStarted == 0L) || (message.expiresIn > 0 && message.expireStarted > 0) ) {
@@ -364,7 +358,7 @@ class VisibleMessageView : LinearLayout {
 
     private fun handleIsSelectedChanged() {
         background = if (snIsSelected) {
-            ColorDrawable(context.resources.getColorWithID(R.color.message_selected, context.theme))
+            context.resources.getColorWithID(R.color.message_selected, context.theme).toDrawable()
         } else {
             null
         }
@@ -401,7 +395,7 @@ class VisibleMessageView : LinearLayout {
         )
 
         if (tx > 0 && !binding.expirationTimerView.isVisible) {
-            val threshold = swipeToReplyThreshold * resources.displayMetrics.density
+            val threshold = SWIPETOREPLYTHRESHOLD * resources.displayMetrics.density
             swipeToReplyIcon.alpha =
                 (255f * min(tx, threshold) / threshold).toInt()
         } else {
@@ -415,7 +409,6 @@ class VisibleMessageView : LinearLayout {
         binding.profilePictureView.root.recycle()
         binding.messageContentView.root.recycle()
     }
-    // endregion
 
     // region Interaction
     override fun onTouchEvent(event : MotionEvent) : Boolean {
@@ -430,7 +423,7 @@ class VisibleMessageView : LinearLayout {
                     onSwipeToReply?.let { onMove(event) }
                 }
 
-                MotionEvent.ACTION_CANCEL -> onCancel(event)
+                MotionEvent.ACTION_CANCEL -> onCancel()
                 MotionEvent.ACTION_UP -> onUp(event)
             }
         }
@@ -442,7 +435,7 @@ class VisibleMessageView : LinearLayout {
         longPressCallback?.let { gestureHandler.removeCallbacks(it) }
         val newLongPressCallback = Runnable { onLongPress() }
         this.longPressCallback = newLongPressCallback
-        gestureHandler.postDelayed(newLongPressCallback, longPressDurationThreshold)
+        gestureHandler.postDelayed(newLongPressCallback, LONGPRESSDURATIONTHREDHOLD)
         onDownTimestamp = Date().time
     }
 
@@ -457,7 +450,7 @@ class VisibleMessageView : LinearLayout {
 
         if (dxRaw < 0f) return   // only allow LEFT → RIGHT
 
-        val maxSwipe = swipeToReplyThreshold * resources.displayMetrics.density
+        val maxSwipe = SWIPETOREPLYTHRESHOLD * resources.displayMetrics.density
         val resistance = 0.4f
 
         val x = if (dxRaw <= maxSwipe) {
@@ -476,8 +469,8 @@ class VisibleMessageView : LinearLayout {
         previousTranslationX = x
     }
 
-    private fun onCancel(event: MotionEvent) {
-        if (abs(translationX) > swipeToReplyThreshold) {
+    private fun onCancel() {
+        if (abs(translationX) > SWIPETOREPLYTHRESHOLD) {
             onSwipeToReply?.invoke()
         }
         longPressCallback?.let { gestureHandler.removeCallbacks(it) }
@@ -485,9 +478,9 @@ class VisibleMessageView : LinearLayout {
     }
 
     private fun onUp(event: MotionEvent) {
-        if (abs(translationX) > swipeToReplyThreshold) {
+        if (abs(translationX) > SWIPETOREPLYTHRESHOLD) {
             onSwipeToReply?.invoke()
-        } else if ((Date().time - onDownTimestamp) < longPressDurationThreshold) {
+        } else if ((Date().time - onDownTimestamp) < LONGPRESSDURATIONTHREDHOLD) {
             longPressCallback?.let { gestureHandler.removeCallbacks(it) }
             val pressCallback = this.pressCallback
             if (pressCallback != null) {
@@ -499,7 +492,7 @@ class VisibleMessageView : LinearLayout {
             } else {
                 val newPressCallback = Runnable { onPress(event) }
                 this.pressCallback = newPressCallback
-                gestureHandler.postDelayed(newPressCallback, maxDoubleTapInterval)
+                gestureHandler.postDelayed(newPressCallback, MAXDOUBLETAPINTERVAL)
             }
         }
         resetPosition()

@@ -48,7 +48,7 @@ class MessageDetailActivity: PassphraseRequiredActionBarActivity() {
         }
     }
 
-    fun updateContent() {
+    private fun updateContent() {
         val dateLocale = Locale.getDefault()
         val dateFormatter: SimpleDateFormat = DateUtils.getDetailedDateFormatter(this, dateLocale)
         binding.sentTime.text = dateFormatter.format(Date(messageRecord!!.dateSent))
@@ -74,7 +74,9 @@ class MessageDetailActivity: PassphraseRequiredActionBarActivity() {
             val elapsed = MnodeAPI.nowWithOffset - messageRecord!!.expireStarted
             val remaining = messageRecord!!.expiresIn - elapsed
 
-            val duration = ExpirationUtil.getExpirationDisplayValue(this, Math.max((remaining / 1000).toInt(), 1))
+            val duration = ExpirationUtil.getExpirationDisplayValue(this,
+                (remaining / 1000).toInt().coerceAtLeast(1)
+            )
             binding.expiresIn.text = duration
         }
     }

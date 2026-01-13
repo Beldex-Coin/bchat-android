@@ -65,11 +65,11 @@ class CustomKeyboardView(context: Context, attr: AttributeSet) : ExpandableView(
 
         // empty onClickListener prevents user from
         // accidentally clicking views under the keyboard
-        setOnClickListener({})
+        setOnClickListener {}
         isSoundEffectsEnabled = false
     }
 
-    fun registerEditText(type: KeyboardType, field: EditText) {
+    private fun registerEditText(type: KeyboardType, field: EditText) {
         if (!field.isEnabled) {
             return  // disabled fields do not have input connections
         }
@@ -175,7 +175,7 @@ class CustomKeyboardView(context: Context, attr: AttributeSet) : ExpandableView(
             KeyboardType.QWERTY -> {
                 return QwertyKeyboardLayout(context, createKeyboardController(type, ic))
             }
-            else -> return@createKeyboardLayout null // this should never happen
+            else -> return null // this should never happen
         }
     }
 

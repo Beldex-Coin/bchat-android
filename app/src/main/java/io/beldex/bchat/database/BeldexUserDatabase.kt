@@ -8,14 +8,14 @@ class BeldexUserDatabase(context: Context, helper: SQLCipherOpenHelper) : Databa
 
     companion object {
         // Shared
-        private val displayName = "display_name"
+        private const val displayName = "display_name"
         // Display name cache
-        private val displayNameTable = "beldex_user_display_name_database"
-        private val publicKey = "hex_encoded_public_key"
+        private const val displayNameTable = "beldex_user_display_name_database"
+        private const val publicKey = "hex_encoded_public_key"
         @JvmStatic val createDisplayNameTableCommand = "CREATE TABLE $displayNameTable ($publicKey TEXT PRIMARY KEY, $displayName TEXT);"
         // Server display name cache
-        private val serverDisplayNameTable = "beldex_user_server_display_name_database"
-        private val serverID = "server_id"
+        private const val serverDisplayNameTable = "beldex_user_server_display_name_database"
+        private const val serverID = "server_id"
         @JvmStatic val createServerDisplayNameTableCommand = "CREATE TABLE $serverDisplayNameTable ($publicKey TEXT, $serverID TEXT, $displayName TEXT, PRIMARY KEY ($publicKey, $serverID));"
     }
 
@@ -28,10 +28,10 @@ class BeldexUserDatabase(context: Context, helper: SQLCipherOpenHelper) : Databa
                 cursor.getString(cursor.getColumnIndexOrThrow(displayName))
             } ?: return null
             val suffix = " (...${publicKey.substring(publicKey.count() - 8)})"
-            if (result.endsWith(suffix)) {
-                return result.substring(0..(result.count() - suffix.count()))
+            return if (result.endsWith(suffix)) {
+                result.substring(0..(result.count() - suffix.count()))
             } else {
-                return result
+                result
             }
         }
     }

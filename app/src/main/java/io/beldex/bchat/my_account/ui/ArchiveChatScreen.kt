@@ -481,8 +481,8 @@ fun ArchiveChatItem(
             val additionalPk=members.getOrNull(1)?.serialize() ?: ""
             val additionalDisplay=getDisplayName(context, additionalPk)
             ProfilePictureComponent(
-                publicKey=thread.recipient.address.toString() ?: "",
-                displayName=thread.recipient.name.toString() ?: "",
+                publicKey=thread.recipient.address.toString(),
+                displayName=thread.recipient.name.toString(),
                 additionalPublicKey=additionalPk,
                 additionalDisplayName=additionalDisplay,
                 containerSize=ProfilePictureMode.SmallPicture.size,

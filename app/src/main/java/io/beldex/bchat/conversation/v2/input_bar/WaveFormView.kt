@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
+import kotlin.math.min
 
 class WaveFormView(context: Context?, attr: AttributeSet?): View(context, attr) {
 
@@ -32,7 +33,7 @@ class WaveFormView(context: Context?, attr: AttributeSet?): View(context, attr) 
     }
 
     fun addAmplitude(amp: Float) {
-        val norm = Math.min(amp.toInt() / 7, 400).toFloat()
+        val norm = min(amp.toInt() / 7, 400).toFloat()
         amplitudes.add(norm)
 
         spikes.clear()

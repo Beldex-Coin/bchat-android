@@ -85,7 +85,7 @@ class SlideToActView @JvmOverloads constructor(
         }
 
     /** Typeface for the text field */
-    var typeFace = Typeface.NORMAL
+    private var typeFace = Typeface.NORMAL
         set(value) {
             field = value
             mTextView.typeface = Typeface.create("sans-serif-light", value)
@@ -136,10 +136,10 @@ class SlideToActView @JvmOverloads constructor(
         }
 
     /** Duration of the complete and reset animation (in milliseconds). */
-    var animDuration: Long = 300
+    private var animDuration: Long = 300
 
     /** Duration of vibration after bumping to the end point */
-    var bumpVibration: Long = 0L
+    private var bumpVibration: Long = 0L
 
     @ColorInt
     var textColor: Int = 0
@@ -279,10 +279,10 @@ class SlideToActView @JvmOverloads constructor(
     private var mIsRespondingToTouchEvents = true
 
     /** Public flag to lock the slider */
-    var isLocked = false
+    private var isLocked = false
 
     /** Public flag to reverse the slider by 180 degree */
-    var isReversed = false
+    private var isReversed = false
         set(value) {
             field = value
             // We reassign the position field to trigger the re-computation of the effective position.
@@ -291,16 +291,16 @@ class SlideToActView @JvmOverloads constructor(
         }
 
     /** Public flag to lock the rotation icon */
-    var isRotateIcon = true
+    private var isRotateIcon = true
 
     /** Public flag to enable complete animation */
-    var isAnimateCompletion = true
+    private var isAnimateCompletion = true
 
     /** Public Slide event listeners */
     var onSlideToActAnimationEventListener: OnSlideToActAnimationEventListener? = null
     var onSlideCompleteListener: OnSlideCompleteListener? = null
     var onSlideResetListener: OnSlideResetListener? = null
-    var onSlideUserFailedListener: OnSlideUserFailedListener? = null
+    private var onSlideUserFailedListener: OnSlideUserFailedListener? = null
 
     private var bounceAnimator: ValueAnimator = ValueAnimator.ofInt(
         0, 50, 0, 20, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -502,22 +502,20 @@ class SlideToActView @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val widthMode = MeasureSpec.getMode(widthMeasureSpec)
         val widthSize = MeasureSpec.getSize(widthMeasureSpec)
-        val width: Int
 
         val heightMode = MeasureSpec.getMode(heightMeasureSpec)
         val heightSize = MeasureSpec.getSize(heightMeasureSpec)
-        val height: Int
 
-        width = when (widthMode) {
+        val width: Int=when (widthMode) {
             MeasureSpec.EXACTLY -> widthSize
-            MeasureSpec.AT_MOST -> Math.min(mDesiredSliderWidth, widthSize)
+            MeasureSpec.AT_MOST -> mDesiredSliderWidth.coerceAtMost(widthSize)
             MeasureSpec.UNSPECIFIED -> mDesiredSliderWidth
             else -> mDesiredSliderWidth
         }
 
-        height = when (heightMode) {
+        val height: Int=when (heightMode) {
             MeasureSpec.EXACTLY -> heightSize
-            MeasureSpec.AT_MOST -> Math.min(mDesiredSliderHeight, heightSize)
+            MeasureSpec.AT_MOST -> mDesiredSliderHeight.coerceAtMost(heightSize)
             MeasureSpec.UNSPECIFIED -> mDesiredSliderHeight
             else -> mDesiredSliderHeight
         }

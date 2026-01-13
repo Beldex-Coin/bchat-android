@@ -123,7 +123,7 @@ class AvatarSelection(
             galleryIntent,
             context.getString(R.string.CreateProfileActivity_profile_photo)
         )
-        if (!extraIntents.isEmpty()) {
+        if (extraIntents.isNotEmpty()) {
             chooserIntent.putExtra(
                 Intent.EXTRA_INITIAL_INTENTS,
                 extraIntents.toTypedArray<Intent>()

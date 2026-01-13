@@ -13,7 +13,6 @@ import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.database.RecipientDatabase
-import com.bumptech.glide.RequestManager
 import io.beldex.bchat.R
 import javax.inject.Inject
 
@@ -21,9 +20,8 @@ import javax.inject.Inject
 
 
 class AddressBookAdapter(
-    private val context: Context,
-    private val glide: RequestManager,
-    val listener: AddressBookActivity
+    private val context : Context,
+    val listener : AddressBookActivity
 ) : RecyclerView.Adapter<AddressBookAdapter.ViewHolder>() {
     var members = listOf<String>()
         set(value) {
@@ -59,8 +57,7 @@ class AddressBookAdapter(
             Recipient.from(
                 context,
                 Address.fromSerialized(member), false
-            ),
-            glide
+            )
         )
 
 
@@ -85,7 +82,7 @@ class AddressBookAdapter(
             viewHolder.view.sendAction().setOnClickListener {
 
                 if (beldexAddress != null) {
-                    listener.onAddressBookClick(position, beldexAddress)
+                    listener.onAddressBookClick(beldexAddress)
                 }
             }
         }
@@ -102,6 +99,6 @@ class AddressBookAdapter(
 
 
 interface AddressBookClickListener {
-    fun onAddressBookClick(position: Int, address: String)
+    fun onAddressBookClick(address: String)
 }
 // endregion

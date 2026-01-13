@@ -1,16 +1,13 @@
 package io.beldex.bchat.notifications;
 
-import android.annotation.TargetApi;
 import android.app.NotificationChannel;
 import android.app.NotificationChannelGroup;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
 
@@ -21,13 +18,11 @@ import androidx.annotation.WorkerThread;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import io.beldex.bchat.database.RecipientDatabase;
-import io.beldex.bchat.dependencies.DatabaseComponent;
 
 import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.ServiceUtil;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libbchat.utilities.recipients.Recipient;
-import com.beldex.libbchat.utilities.recipients.Recipient.VibrateState;
 import com.beldex.libsignal.utilities.Log;
 
 import io.beldex.bchat.dependencies.DatabaseComponent;
@@ -144,7 +139,7 @@ public class NotificationChannels {
    * Update the message ringtone for the default message channel.
    */
   public static synchronized void updateMessageRingtone(@NonNull Context context, @Nullable Uri uri) {
-    Log.i(TAG, "Updating default message ringtone with URI: " + String.valueOf(uri));
+    Log.i(TAG, "Updating default message ringtone with URI: " + uri);
 
     updateMessageChannel(context, channel -> {
       channel.setSound(uri == null ? Settings.System.DEFAULT_NOTIFICATION_URI : uri, getRingtoneAudioAttributes());

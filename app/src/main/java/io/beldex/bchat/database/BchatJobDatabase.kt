@@ -97,12 +97,12 @@ class BchatJobDatabase(context: Context, helper: SQLCipherOpenHelper) : Database
         }
         if (attachmentUploadJobKeys.isNotEmpty()) {
             val attachmentUploadJobKeysAsString = attachmentUploadJobKeys.joinToString(", ")
-            database.delete(bchatJobTable, "${Companion.jobType} = ? AND ${Companion.jobID} IN (?)",
+            database.delete(bchatJobTable, "$jobType = ? AND $jobID IN (?)",
                 arrayOf( AttachmentUploadJob.KEY, attachmentUploadJobKeysAsString ))
         }
         if (messageSendJobKeys.isNotEmpty()) {
             val messageSendJobKeysAsString = messageSendJobKeys.joinToString(", ")
-            database.delete(bchatJobTable, "${Companion.jobType} = ? AND ${Companion.jobID} IN (?)",
+            database.delete(bchatJobTable, "$jobType = ? AND $jobID IN (?)",
                 arrayOf( MessageSendJob.KEY, messageSendJobKeysAsString ))
         }
     }

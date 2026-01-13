@@ -25,9 +25,9 @@ import io.beldex.bchat.R
 import io.beldex.bchat.util.*
 
 class NewConversationButtonSetView : RelativeLayout {
-    public var expandedButton: Button? = null
+    private var expandedButton: Button? = null
     private var previousAction: Int? = null
-    public var isExpanded = false
+    private var isExpanded = false
     var delegate: NewConversationButtonSetViewDelegate? = null
 
     // region Convenience
@@ -67,7 +67,7 @@ class NewConversationButtonSetView : RelativeLayout {
     // endregion
 
     // region Components
-    val mainButton by lazy { Button(context, true, R.drawable.ic_bchat_plus) }
+    private val mainButton by lazy { Button(context, true, R.drawable.ic_bchat_plus) }
     private val bchatButton by lazy { Button(context, false, R.drawable.ic_chat) }
     private val bchatButtonTitle by lazy {
         TextView(context).apply {
@@ -105,7 +105,7 @@ class NewConversationButtonSetView : RelativeLayout {
         fun getIconID() = iconID
 
         companion object {
-            val animationDuration = 250.toLong()
+            const val animationDuration = 250.toLong()
         }
 
         val expandedSize by lazy { resources.getDimension(R.dimen.new_conversation_button_expanded_size) }
@@ -244,7 +244,7 @@ class NewConversationButtonSetView : RelativeLayout {
         socialGroupButtonLayoutParams.addRule(ALIGN_PARENT_BOTTOM, TRUE)
         socialGroupButtonLayoutParams.bottomMargin = bottomMargin.toInt()
         // Set up main button
-        mainButton.x =mainButton.x+12.0F
+        mainButton.x+=12.0F
         addView(mainButton)
         val mainButtonLayoutParams = mainButton.layoutParams as LayoutParams
         mainButtonLayoutParams.addRule(ALIGN_PARENT_END, TRUE)
@@ -352,7 +352,7 @@ class NewConversationButtonSetView : RelativeLayout {
         return true
     }
 
-    fun expand() {
+    private fun expand() {
         val buttonsExcludingMainButton = listOf( bchatButton, secretGroupButton, socialGroupButton )
         val allTooltips = listOf(bchatButtonTitle, secretGroupButtonTitle, socialGroupButtonTitle)
 
@@ -367,7 +367,7 @@ class NewConversationButtonSetView : RelativeLayout {
         postDelayed({ isExpanded = true }, Button.animationDuration)
     }
 
-     fun collapse() {
+     private fun collapse() {
         val allButtons = listOf( mainButton, bchatButton, secretGroupButton, socialGroupButton )
          val allButtonsTitle = listOf(bchatButtonTitle,secretGroupButtonTitle,socialGroupButtonTitle)
         allButtons.forEach {

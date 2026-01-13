@@ -26,8 +26,6 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.loader.content.CursorLoader;
 
-import io.beldex.bchat.database.GroupDatabase;
-
 import com.beldex.libbchat.utilities.GroupRecord;
 import io.beldex.bchat.database.GroupDatabase;
 import io.beldex.bchat.database.ThreadDatabase;
@@ -91,7 +89,7 @@ public class ContactsCursorLoader extends CursorLoader {
   public Cursor loadInBackground() {
     List<Cursor> cursorList = TextUtils.isEmpty(filter) ? getUnfilteredResults()
                                                         : getFilteredResults();
-    if (cursorList.size() > 0) {
+    if (!cursorList.isEmpty()) {
       return new MergeCursor(cursorList.toArray(new Cursor[0]));
     }
     return null;

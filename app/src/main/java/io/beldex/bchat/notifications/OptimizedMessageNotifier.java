@@ -7,7 +7,6 @@ import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 
 import io.beldex.bchat.ApplicationContext;
-import io.beldex.bchat.groups.OpenGroupManager;
 
 import com.beldex.libbchat.messaging.sending_receiving.notifications.MessageNotifier;
 import com.beldex.libbchat.messaging.sending_receiving.pollers.Poller;

@@ -24,7 +24,7 @@ import java.util.Map;
 
 public final class JobManagerFactories {
 
-    private static Collection<String> factoryKeys = new ArrayList<>();
+    private static final Collection<String> factoryKeys = new ArrayList<>();
 
     public static Map<String, Job.Factory> getJobFactories(@NonNull Application application) {
         HashMap<String, Job.Factory> factoryHashMap = new HashMap<String, Job.Factory>() {{

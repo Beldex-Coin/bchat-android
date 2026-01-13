@@ -6,7 +6,7 @@ import com.annimon.stream.function.Function
 import com.annimon.stream.function.Supplier
 
 class MappingModelList : ArrayList<MappingModel<*>?> {
-    constructor() {}
+    constructor()
     constructor(c: Collection<MappingModel<*>?>) : super(c) {}
 
     companion object {

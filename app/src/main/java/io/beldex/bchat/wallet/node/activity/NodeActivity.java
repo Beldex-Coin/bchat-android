@@ -8,10 +8,9 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.WindowManager;
 
 import com.beldex.libbchat.utilities.TextSecurePreferences;
-import io.beldex.bchat.data.DefaultNodes;
+
 import io.beldex.bchat.data.NetworkNodes;
 import io.beldex.bchat.data.Node;
 import io.beldex.bchat.data.NodeInfo;
@@ -38,7 +37,7 @@ import timber.log.Timber;
 public class NodeActivity extends AppCompatActivity implements NodeFragment.Listener {
 
     private Toolbar toolbar;
-    Set<NodeInfo> favouriteNodes = new HashSet<>();
+    final Set<NodeInfo> favouriteNodes = new HashSet<>();
     private NodeInfo node = null;
 
     public NodeInfo getNode() {
@@ -165,7 +164,7 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
         final static int PING_SELECTED = 0;
         final static int FIND_BEST = 1;
 
-        NodeActivity context;
+        final NodeActivity context;
 
         public AsyncFindBestNode(NodeActivity nodeActivity) {
             context = nodeActivity;

@@ -38,8 +38,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 
-import io.beldex.bchat.mms.PartAuthority;
-import io.beldex.bchat.util.MediaUtil;
 import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.DistributionTypes;
 import com.beldex.libbchat.utilities.ViewUtil;
@@ -168,11 +166,10 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-      case android.R.id.home:
-        onBackPressed();
-        return true;
-    }
+      if (item.getItemId() == android.R.id.home) {
+          onBackPressed();
+          return true;
+      }
     return super.onOptionsItemSelected(item);
   }
 

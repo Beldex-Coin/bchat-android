@@ -22,10 +22,10 @@ object MentionManagerUtilities {
             var record: MessageRecord? = reader.next
             while (record != null) {
                 result.add(record.individualRecipient.address.serialize())
-                try {
-                    record = reader.next
+                record=try {
+                    reader.next
                 } catch (exception: Exception) {
-                    record = null
+                    null
                 }
             }
             reader.close()

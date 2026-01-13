@@ -296,30 +296,34 @@ class SignalBluetoothManager(
 
     private inner class BluetoothHeadsetBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED) {
-                val connectionState: Int = intent.getIntExtra(BluetoothHeadset.EXTRA_STATE, BluetoothHeadset.STATE_DISCONNECTED)
-                handler.post {
-                    if (state != State.UNINITIALIZED) {
-                        if(connectionState == BluetoothHeadset.STATE_CONNECTED || connectionState == BluetoothHeadset.STATE_AUDIO_CONNECTED ){
-                            state = State.AVAILABLE
-                        } else  if(connectionState == BluetoothHeadset.STATE_DISCONNECTED || connectionState == BluetoothHeadset.STATE_AUDIO_DISCONNECTED) {
-                            state = State.UNAVAILABLE
+            when (intent.action) {
+                BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED -> {
+                    val connectionState: Int = intent.getIntExtra(BluetoothHeadset.EXTRA_STATE, BluetoothHeadset.STATE_DISCONNECTED)
+                    handler.post {
+                        if (state != State.UNINITIALIZED) {
+                            if(connectionState == BluetoothHeadset.STATE_CONNECTED || connectionState == BluetoothHeadset.STATE_AUDIO_CONNECTED ){
+                                state = State.AVAILABLE
+                            } else  if(connectionState == BluetoothHeadset.STATE_DISCONNECTED || connectionState == BluetoothHeadset.STATE_AUDIO_DISCONNECTED) {
+                                state = State.UNAVAILABLE
+                            }
+                            onHeadsetConnectionStateChanged(connectionState)
                         }
-                        onHeadsetConnectionStateChanged(connectionState)
                     }
                 }
-            } else if (intent.action == BluetoothHeadset.ACTION_AUDIO_STATE_CHANGED) {
-//                val connectionState: Int = intent.getIntExtra(BluetoothHeadset.EXTRA_STATE, BluetoothHeadset.STATE_AUDIO_DISCONNECTED)
-//                handler.post {
-//                    if (state != State.UNINITIALIZED) {
-//                        onAudioStateChanged(connectionState, isInitialStickyBroadcast)
-//                    }
-//                }
-            } else if (intent.action == AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED) {
-                val scoState: Int = intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, AudioManager.ERROR)
-                handler.post {
-                    if (state != State.UNINITIALIZED) {
-                        onAudioStateChanged(scoState, isInitialStickyBroadcast)
+                BluetoothHeadset.ACTION_AUDIO_STATE_CHANGED -> {
+        //                val connectionState: Int = intent.getIntExtra(BluetoothHeadset.EXTRA_STATE, BluetoothHeadset.STATE_AUDIO_DISCONNECTED)
+        //                handler.post {
+        //                    if (state != State.UNINITIALIZED) {
+        //                        onAudioStateChanged(connectionState, isInitialStickyBroadcast)
+        //                    }
+        //                }
+                }
+                AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED -> {
+                    val scoState: Int = intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, AudioManager.ERROR)
+                    handler.post {
+                        if (state != State.UNINITIALIZED) {
+                            onAudioStateChanged(scoState, isInitialStickyBroadcast)
+                        }
                     }
                 }
             }

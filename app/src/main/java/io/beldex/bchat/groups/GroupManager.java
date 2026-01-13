@@ -80,8 +80,8 @@ public class GroupManager {
   }
 
   public static class GroupActionResult {
-    private Recipient groupRecipient;
-    private long      threadId;
+    private final Recipient groupRecipient;
+    private final long      threadId;
 
     public GroupActionResult(Recipient groupRecipient, long threadId) {
       this.groupRecipient = groupRecipient;

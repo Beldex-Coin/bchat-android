@@ -8,7 +8,6 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.ModelLoader;
 import com.bumptech.glide.load.model.ModelLoaderFactory;
 import com.bumptech.glide.load.model.MultiModelLoaderFactory;
-import io.beldex.bchat.net.ContentProxySelector;
 
 import io.beldex.bchat.net.ContentProxySelector;
 
@@ -39,7 +38,7 @@ public class OkHttpUrlLoader implements ModelLoader<GlideUrl, InputStream> {
 
   public static class Factory implements ModelLoaderFactory<GlideUrl, InputStream> {
     private static volatile OkHttpClient internalClient;
-    private OkHttpClient client;
+    private final OkHttpClient client;
 
     private static OkHttpClient getInternalClient() {
       if (internalClient == null) {

@@ -35,7 +35,7 @@ class HomeFragmentViewModel @Inject constructor(
     private val executor = viewModelScope + SupervisorJob()
 
     private val _conversations = MutableLiveData<List<ThreadRecord>>()
-    val conversations: LiveData<List<ThreadRecord>> = _conversations
+    private val conversations: LiveData<List<ThreadRecord>> = _conversations
 
     private val listUpdateChannel = Channel<Unit>(capacity = Channel.CONFLATED)
 
@@ -73,7 +73,7 @@ class HomeFragmentViewModel @Inject constructor(
         }
     }
 
-    fun deleteMessageRequest(thread: ThreadRecord) = viewModelScope.launch {
+    private fun deleteMessageRequest(thread: ThreadRecord) = viewModelScope.launch {
         repository.deleteMessageRequest(thread)
     }
 

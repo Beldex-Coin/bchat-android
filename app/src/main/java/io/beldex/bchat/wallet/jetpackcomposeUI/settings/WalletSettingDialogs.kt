@@ -34,6 +34,7 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -61,7 +62,7 @@ fun DisplayBalanceDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
     val itemList=listOf("Beldex Full Balance", "Beldex Available Balance", "Beldex Hidden")
     val context=LocalContext.current
     var selectedItemIndex by remember {
-        mutableStateOf(TextSecurePreferences.getDisplayBalanceAs(context))
+        mutableIntStateOf(TextSecurePreferences.getDisplayBalanceAs(context))
     }
     val isDarkTheme=UiModeUtilities.getUserSelectedUiMode(LocalContext.current) == UiMode.NIGHT
 
@@ -498,7 +499,7 @@ fun FeePriorityDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
     val itemList=listOf("Flash", "Slow")
     val context=LocalContext.current
     var selectedItemIndex by remember {
-        mutableStateOf(TextSecurePreferences.getFeePriority(context))
+        mutableIntStateOf(TextSecurePreferences.getFeePriority(context))
     }
     val isDarkTheme=UiModeUtilities.getUserSelectedUiMode(LocalContext.current) == UiMode.NIGHT
 

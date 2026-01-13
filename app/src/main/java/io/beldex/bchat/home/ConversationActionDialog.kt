@@ -45,7 +45,7 @@ class ConversationActionDialog: DialogFragment() {
     private var argument2: String? = null
     private var argument3: Int = 0
     private var dismissAllowed: Boolean = false
-    var longData: Long? = null
+    private var longData: Long? = null
     private var dialogType: HomeDialogType = HomeDialogType.DeleteChat
     private var listener: ConversationActionDialogListener? = null
     private var threadRecord: ThreadRecord? = null

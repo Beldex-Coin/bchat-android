@@ -29,7 +29,6 @@ import androidx.core.app.RemoteInput;
 import io.beldex.bchat.ApplicationContext;
 import io.beldex.bchat.database.MessagingDatabase;
 import io.beldex.bchat.database.ThreadDatabase;
-import io.beldex.bchat.dependencies.DatabaseComponent;
 import io.beldex.bchat.mms.MmsException;
 import com.beldex.libbchat.messaging.messages.signal.OutgoingMediaMessage;
 import com.beldex.libbchat.messaging.messages.signal.OutgoingTextMessage;

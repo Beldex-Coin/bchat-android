@@ -19,6 +19,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Backspace
 import androidx.compose.material.icons.outlined.Backspace
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -243,7 +244,7 @@ fun PinCodeScreen(
                                                 .fillMaxSize()
                                         ) {
                                             Icon(
-                                                Icons.Outlined.Backspace,
+                                                Icons.AutoMirrored.Outlined.Backspace,
                                                 contentDescription = "",
                                                 tint = MaterialTheme.appColors.editTextColor
                                             )

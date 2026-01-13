@@ -42,7 +42,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
         fun callConversationFragmentV2(address: Address, threadId: Long)
     }
 
-    var activityCallback: UserDetailsBottomSheetListener? = null
+    private var activityCallback: UserDetailsBottomSheetListener? = null
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is UserDetailsBottomSheetListener) {
@@ -167,7 +167,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
         imm?.showSoftInput(binding.nicknameEditText, 0)
     }
 
-    fun hideSoftKeyboard() {
+    private fun hideSoftKeyboard() {
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         imm?.hideSoftInputFromWindow(binding.nicknameEditText.windowToken, 0)
     }

@@ -118,7 +118,7 @@ public abstract class AudioManagerCompat {
 
     private static class Api26AudioManagerCompat extends AudioManagerCompat {
 
-        private static AudioAttributes AUDIO_ATTRIBUTES = new AudioAttributes.Builder()
+        private static final AudioAttributes AUDIO_ATTRIBUTES = new AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
                 .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
                 .build();

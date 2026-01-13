@@ -58,8 +58,8 @@ class InputBarButton : RelativeLayout {
         }
     }
 
-    val expandedSize by lazy { resources.getDimension(R.dimen.input_bar_button_expanded_size) }
-    val collapsedSize by lazy { resources.getDimension(R.dimen.input_bar_button_collapsed_size) }
+    private val expandedSize by lazy { resources.getDimension(R.dimen.input_bar_button_expanded_size) }
+    private val collapsedSize by lazy { resources.getDimension(R.dimen.input_bar_button_collapsed_size) }
 
     private val imageViewContainer by lazy {
         val result = InputBarButtonImageViewContainer(context)
@@ -129,13 +129,13 @@ class InputBarButton : RelativeLayout {
 
     fun getIconID() = iconID
 
-    fun expand() {
+    private fun expand() {
         GlowViewUtilities.animateColorChange(context, imageViewContainer, colorID, R.color.button_green)
         imageViewContainer.animateSizeChange(R.dimen.input_bar_button_collapsed_size, R.dimen.input_bar_button_expanded_size, animationDuration)
         animateImageViewContainerPositionChange(collapsedImageViewPosition, expandedImageViewPosition)
     }
 
-    fun collapse() {
+    private fun collapse() {
         GlowViewUtilities.animateColorChange(context, imageViewContainer, R.color.button_green, colorID)
         imageViewContainer.animateSizeChange(R.dimen.input_bar_button_expanded_size, R.dimen.input_bar_button_collapsed_size, animationDuration)
         animateImageViewContainerPositionChange(expandedImageViewPosition, collapsedImageViewPosition)

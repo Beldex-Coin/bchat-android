@@ -79,17 +79,16 @@ public class PartProvider extends ContentProvider {
       return null;
     }
 
-    switch (uriMatcher.match(uri)) {
-    case SINGLE_ROW:
-      Log.i(TAG, "Parting out a single row...");
-      try {
-        final PartUriParser partUri = new PartUriParser(uri);
-        return getParcelStreamForAttachment(partUri.getPartId());
-      } catch (IOException ioe) {
-        Log.w(TAG, ioe);
-        throw new FileNotFoundException("Error opening file");
+      if (uriMatcher.match(uri) == SINGLE_ROW) {
+          Log.i(TAG, "Parting out a single row...");
+          try {
+              final PartUriParser partUri = new PartUriParser(uri);
+              return getParcelStreamForAttachment(partUri.getPartId());
+          } catch (IOException ioe) {
+              Log.w(TAG, ioe);
+              throw new FileNotFoundException("Error opening file");
+          }
       }
-    }
 
     throw new FileNotFoundException("Request for bad part.");
   }
@@ -104,16 +103,15 @@ public class PartProvider extends ContentProvider {
   public String getType(@NonNull Uri uri) {
     Log.i(TAG, "getType() called: " + uri);
 
-    switch (uriMatcher.match(uri)) {
-      case SINGLE_ROW:
-        PartUriParser      partUriParser = new PartUriParser(uri);
-        DatabaseAttachment attachment    = DatabaseComponent.get(getContext()).attachmentDatabase()
-                                                          .getAttachment(partUriParser.getPartId());
+      if (uriMatcher.match(uri) == SINGLE_ROW) {
+          PartUriParser partUriParser = new PartUriParser(uri);
+          DatabaseAttachment attachment = DatabaseComponent.get(getContext()).attachmentDatabase()
+                  .getAttachment(partUriParser.getPartId());
 
-        if (attachment != null) {
-          return attachment.getContentType();
-        }
-    }
+          if (attachment != null) {
+              return attachment.getContentType();
+          }
+      }
 
     return null;
   }
@@ -130,25 +128,24 @@ public class PartProvider extends ContentProvider {
 
     if (projection == null || projection.length <= 0) return null;
 
-    switch (uriMatcher.match(url)) {
-      case SINGLE_ROW:
-        PartUriParser      partUri      = new PartUriParser(url);
-        DatabaseAttachment attachment   = DatabaseComponent.get(getContext()).attachmentDatabase().getAttachment(partUri.getPartId());
+      if (uriMatcher.match(url) == SINGLE_ROW) {
+          PartUriParser partUri = new PartUriParser(url);
+          DatabaseAttachment attachment = DatabaseComponent.get(getContext()).attachmentDatabase().getAttachment(partUri.getPartId());
 
-        if (attachment == null) return null;
+          if (attachment == null) return null;
 
-        MatrixCursor       matrixCursor = new MatrixCursor(projection, 1);
-        Object[]           resultRow    = new Object[projection.length];
+          MatrixCursor matrixCursor = new MatrixCursor(projection, 1);
+          Object[] resultRow = new Object[projection.length];
 
-        for (int i=0;i<projection.length;i++) {
-          if (OpenableColumns.DISPLAY_NAME.equals(projection[i])) {
-            resultRow[i] = attachment.getFileName();
+          for (int i = 0; i < projection.length; i++) {
+              if (OpenableColumns.DISPLAY_NAME.equals(projection[i])) {
+                  resultRow[i] = attachment.getFileName();
+              }
           }
-        }
 
-        matrixCursor.addRow(resultRow);
-        return matrixCursor;
-    }
+          matrixCursor.addRow(resultRow);
+          return matrixCursor;
+      }
 
     return null;
   }

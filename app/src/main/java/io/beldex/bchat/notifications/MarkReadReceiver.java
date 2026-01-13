@@ -15,9 +15,7 @@ import com.beldex.libbchat.mnode.MnodeAPI;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import io.beldex.bchat.ApplicationContext;
 import io.beldex.bchat.database.MessagingDatabase;
-import io.beldex.bchat.dependencies.DatabaseComponent;
 import io.beldex.bchat.service.ExpiringMessageManager;
-import io.beldex.bchat.util.BchatMetaProtocol;
 
 import com.beldex.libbchat.messaging.messages.control.ReadReceipt;
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender;

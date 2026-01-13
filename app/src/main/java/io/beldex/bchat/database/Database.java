@@ -23,11 +23,8 @@ import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 
-import io.beldex.bchat.ApplicationContext;
-import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
 import com.beldex.libbchat.messaging.utilities.WindowDebouncer;
 import io.beldex.bchat.ApplicationContext;
-import com.beldex.libbchat.utilities.Debouncer;
 import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
 
 import java.util.Set;

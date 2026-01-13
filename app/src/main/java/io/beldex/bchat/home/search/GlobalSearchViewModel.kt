@@ -52,7 +52,6 @@ class GlobalSearchViewModel @Inject constructor(
     }
 
     fun postQuery(charSequence: CharSequence?) {
-        println("")
         charSequence ?: return
         _queryText.value = charSequence
     }

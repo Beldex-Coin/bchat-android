@@ -134,11 +134,11 @@ class JoinPublicChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
     }
 
     // region Interaction
-    fun handleQRCodeScanned(url: String) {
+    private fun handleQRCodeScanned(url: String) {
         joinPublicChatIfPossible(url)
     }
 
-    fun joinPublicChatIfPossible(url: String) {
+    private fun joinPublicChatIfPossible(url: String) {
         // Add "http" if not entered explicitly
         val stringWithExplicitScheme = if (!url.startsWith("http")) "http://$url" else url
         Log.d("Beldex","join group URL  $url")

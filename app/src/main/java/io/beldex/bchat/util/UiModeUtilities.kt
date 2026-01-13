@@ -27,12 +27,11 @@ object UiModeUtilities {
     fun getUserSelectedUiMode(context: Context): UiMode {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val selectedUiModeName = prefs.getString(PREF_KEY_SELECTED_UI_MODE, UiMode.NIGHT.name)!!
-        var selectedUiMode: UiMode
-        try {
-            selectedUiMode = UiMode.valueOf(selectedUiModeName)
+        val selectedUiMode: UiMode=try {
+            UiMode.valueOf(selectedUiModeName)
         } catch (e: IllegalArgumentException) {
             // Cannot recognize UiMode constant from the given string.
-            selectedUiMode = UiMode.NIGHT
+            UiMode.NIGHT
         }
         return selectedUiMode
     }

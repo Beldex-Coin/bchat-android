@@ -166,7 +166,7 @@ fun LinkYourBNSDialog(
                         .padding(bottom=10.dp)
             ) {
                 Text(
-                    text = state.publicKey ?: "",
+                    text =state.publicKey,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier
                         .padding(

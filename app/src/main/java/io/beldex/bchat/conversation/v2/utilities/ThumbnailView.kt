@@ -149,7 +149,7 @@ open class ThumbnailView: FrameLayout {
         return result
     }
 
-    fun buildThumbnailGlideRequest(glide: RequestManager, slide: Slide): RequestBuilder<Drawable> {
+    private fun buildThumbnailGlideRequest(glide: RequestManager, slide: Slide): RequestBuilder<Drawable> {
 
         val dimens = dimensDelegate.resourceSize()
 
@@ -168,7 +168,7 @@ open class ThumbnailView: FrameLayout {
         return if (slide.isInProgress) request else request.apply(RequestOptions.errorOf(R.drawable.ic_missing_thumbnail_picture))
     }
 
-    fun buildPlaceholderGlideRequest(glide: RequestManager, slide: Slide): RequestBuilder<Bitmap> {
+    private fun buildPlaceholderGlideRequest(glide: RequestManager, slide: Slide): RequestBuilder<Bitmap> {
 
         val dimens = dimensDelegate.resourceSize()
 

@@ -11,7 +11,7 @@ class LocaleParseHelper: LocaleParserHelperProtocol {
     override fun appSupportsTheExactLocale(locale: Locale?): Boolean {
         return if (locale == null) {
             false
-        } else Arrays.asList(*BuildConfig.LANGUAGES).contains(locale.toString())
+        } else listOf(*BuildConfig.LANGUAGES).contains(locale.toString())
     }
 
     override fun findBestSystemLocale(): Locale {

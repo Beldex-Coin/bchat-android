@@ -26,7 +26,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 class EncryptedCoder {
 
-  private static byte[] MAGIC_BYTES = {(byte)0x91, (byte)0x5e, (byte)0x6d, (byte)0xb4,
+  private static final byte[] MAGIC_BYTES = {(byte)0x91, (byte)0x5e, (byte)0x6d, (byte)0xb4,
                                        (byte)0x09, (byte)0xa6, (byte)0x68, (byte)0xbe,
                                        (byte)0xe5, (byte)0xb1, (byte)0x1b, (byte)0xd7,
                                        (byte)0x29, (byte)0xe5, (byte)0x04, (byte)0xcc};

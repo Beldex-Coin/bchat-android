@@ -5,7 +5,6 @@ import android.app.job.JobInfo;
 import androidx.annotation.NonNull;
 
 import io.beldex.bchat.jobmanager.Constraint;
-import io.beldex.bchat.jobmanager.Constraint;
 
 public class NetworkOrCellServiceConstraint implements Constraint {
 

@@ -3,7 +3,7 @@ package io.beldex.bchat.data;
 import io.beldex.bchat.model.PendingTransaction;
 
 public class PendingTx {
-    public PendingTransaction.Status status;
+    public final PendingTransaction.Status status;
     final public String error;
     final public long amount;
     final public long dust;

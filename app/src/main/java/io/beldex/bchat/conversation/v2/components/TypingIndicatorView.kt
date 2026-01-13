@@ -23,9 +23,9 @@ class TypingIndicatorView : LinearLayout {
         val binding = ViewTypingIndicatorBinding.bind(this)
         
         if (tint != -1) {
-            binding.typingDot1.getBackground().setColorFilter(tint, PorterDuff.Mode.MULTIPLY)
-            binding.typingDot2.getBackground().setColorFilter(tint, PorterDuff.Mode.MULTIPLY)
-            binding.typingDot3.getBackground().setColorFilter(tint, PorterDuff.Mode.MULTIPLY)
+            binding.typingDot1.background.setColorFilter(tint, PorterDuff.Mode.MULTIPLY)
+            binding.typingDot2.background.setColorFilter(tint, PorterDuff.Mode.MULTIPLY)
+            binding.typingDot3.background.setColorFilter(tint, PorterDuff.Mode.MULTIPLY)
         }
 
         return@lazy binding

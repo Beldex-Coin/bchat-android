@@ -476,8 +476,8 @@ private fun GroupContact(
                     getUserDisplayName(additionalPk, context)
 
                 ProfilePictureComponent(
-                    publicKey = recipient.address.toString() ?: "",
-                    displayName = recipient.name.toString() ?: "",
+                    publicKey =recipient.address.toString(),
+                    displayName =recipient.name.toString(),
                     additionalPublicKey = additionalPk,
                     additionalDisplayName = additionalDisplay,
                     containerSize = pictureMode.size,

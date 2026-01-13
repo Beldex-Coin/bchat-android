@@ -59,7 +59,7 @@ abstract class KeyboardLayout(context: Context, private val controller: Keyboard
             LayoutParams.WRAP_CONTENT
         )
         ComponentUtils.setBackgroundTint(button, ContextCompat.getColor(context, R.color.button_background))
-        button.setAllCaps(false)
+        button.isAllCaps=false
         button.textSize = textSize
         button.text = text
         button.setTextColor(ContextCompat.getColor(context, R.color.button_text))

@@ -69,9 +69,9 @@ class PNModeView : LinearLayout, GlowView {
     }
 
     // region Lifecycle
-    constructor(context: Context) : super(context) { }
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { }
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { }
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
         setWillNotDraw(false)
@@ -104,9 +104,9 @@ class NewConversationButtonImageView : androidx.appcompat.widget.AppCompatImageV
     }
 
     // region Lifecycle
-    constructor(context: Context) : super(context) { }
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { }
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { }
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
         setWillNotDraw(false)
@@ -137,9 +137,9 @@ class PathDotView : View, GlowView {
     }
 
     // region Lifecycle
-    constructor(context: Context) : super(context) { }
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { }
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { }
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
         setWillNotDraw(false)
@@ -180,9 +180,9 @@ class InputBarButtonImageViewContainer : RelativeLayout, GlowView {
     }
 
     // region Lifecycle
-    constructor(context: Context) : super(context) { }
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { }
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { }
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
         setWillNotDraw(false)
@@ -226,9 +226,9 @@ class InputBarButtonSendImageViewContainer : RelativeLayout, GlowView {
     }
 
     // region Lifecycle
-    constructor(context: Context) : super(context) { }
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { }
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { }
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
         setWillNotDraw(false)

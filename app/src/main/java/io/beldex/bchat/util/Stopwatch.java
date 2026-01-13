@@ -27,7 +27,7 @@ public class Stopwatch {
     StringBuilder out = new StringBuilder();
     out.append("[").append(title).append("] ");
 
-    if (splits.size() > 0) {
+    if (!splits.isEmpty()) {
       out.append(splits.get(0).label).append(": ");
       out.append(splits.get(0).time - startTime);
       out.append("  ");

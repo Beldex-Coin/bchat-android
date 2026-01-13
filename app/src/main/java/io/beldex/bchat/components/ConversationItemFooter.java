@@ -13,16 +13,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import io.beldex.bchat.ApplicationContext;
-import io.beldex.bchat.conversation.v2.components.ExpirationTimerView;
-import io.beldex.bchat.database.model.MessageRecord;
-import io.beldex.bchat.dependencies.DatabaseComponent;
-import io.beldex.bchat.util.DateUtils;
 import com.beldex.libbchat.mnode.MnodeAPI;
-import io.beldex.bchat.ApplicationContext;
-import io.beldex.bchat.database.model.MessageRecord;
-import io.beldex.bchat.service.ExpiringMessageManager;
-import io.beldex.bchat.util.DateUtils;
+
 import io.beldex.bchat.ApplicationContext;
 import io.beldex.bchat.conversation.v2.components.ExpirationTimerView;
 import io.beldex.bchat.database.model.MessageRecord;

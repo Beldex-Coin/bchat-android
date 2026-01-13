@@ -23,6 +23,7 @@ import io.beldex.bchat.components.ComposeText;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -128,25 +129,13 @@ public class Util {
         return spanned;
     }
     public static @NonNull String toIsoString(byte[] bytes) {
-        try {
-            return new String(bytes, CharacterSets.MIMENAME_ISO_8859_1);
-        } catch (UnsupportedEncodingException e) {
-            throw new AssertionError("ISO_8859_1 must be supported!");
-        }
+        return new String(bytes, StandardCharsets.ISO_8859_1);
     }
     public static byte[] toIsoBytes(String isoString) {
-        try {
-            return isoString.getBytes(CharacterSets.MIMENAME_ISO_8859_1);
-        } catch (UnsupportedEncodingException e) {
-            throw new AssertionError("ISO_8859_1 must be supported!");
-        }
+        return isoString.getBytes(StandardCharsets.ISO_8859_1);
     }
     public static byte[] toUtf8Bytes(String utf8String) {
-        try {
-            return utf8String.getBytes(CharacterSets.MIMENAME_UTF_8);
-        } catch (UnsupportedEncodingException e) {
-            throw new AssertionError("UTF_8 must be supported!");
-        }
+        return utf8String.getBytes(StandardCharsets.UTF_8);
     }
     public static void wait(Object lock, long timeout) {
         try {

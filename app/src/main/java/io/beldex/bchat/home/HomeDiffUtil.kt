@@ -49,10 +49,9 @@ class HomeDiffUtil(
         if (!sameSnippet) return false
         val sameSendStatus = oldItem.isFailed == newItem.isFailed && oldItem.isDelivered == newItem.isDelivered
                 && oldItem.isSent == newItem.isSent && oldItem.isPending == newItem.isPending
-        if (!sameSendStatus) return false
+        return sameSendStatus
 
         // all same
-        return true
     }
 
 }

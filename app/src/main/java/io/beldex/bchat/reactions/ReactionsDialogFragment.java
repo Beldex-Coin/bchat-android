@@ -114,7 +114,7 @@ public final class ReactionsDialogFragment extends BottomSheetDialogFragment imp
   private void setUpRecipientsRecyclerView(ReactionsViewModel viewModel) {
     disposables.add(viewModel.getEmojiCounts().subscribe(emojiCounts -> {
 
-      if (emojiCounts.size() < 1) {
+      if (emojiCounts.isEmpty()) {
         dismiss();
         return;
       }

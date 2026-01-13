@@ -27,7 +27,7 @@ import io.beldex.bchat.databinding.ActivityRecoveryPhraseBinding
 
 class RecoveryPhraseActivity : BaseActionBarActivity() {
     private lateinit var binding: ActivityRecoveryPhraseBinding
-    var copiedSeed = false
+    private var copiedSeed = false
     private var shareButtonLastClickTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,7 +103,7 @@ class RecoveryPhraseActivity : BaseActionBarActivity() {
 
     private fun copySeed() {
         TextSecurePreferences.setCopiedSeed(this,true)
-        val seed = binding.bChatSeedTextView?.text.toString()
+        val seed = binding.bChatSeedTextView.text.toString()
         val clipboard = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Seed", seed)
         clipboard.setPrimaryClip(clip)
@@ -119,7 +119,7 @@ class RecoveryPhraseActivity : BaseActionBarActivity() {
     }
 
     private fun shareAddress() {
-        val seed = binding.bChatSeedTextView?.text.toString()
+        val seed = binding.bChatSeedTextView.text.toString()
         val intent = Intent()
         intent.action = Intent.ACTION_SEND
         intent.putExtra(Intent.EXTRA_TEXT, seed)

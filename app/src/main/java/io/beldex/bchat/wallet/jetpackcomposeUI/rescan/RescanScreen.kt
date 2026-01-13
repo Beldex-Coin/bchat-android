@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material3.Button
@@ -347,7 +348,7 @@ fun RescanScreen(
                             .weight(1f)
                     )
                     Icon(
-                        Icons.Filled.ArrowForward,
+                        Icons.AutoMirrored.Filled.ArrowForward,
                         contentDescription = "",
                         tint = MaterialTheme.appColors.primaryButtonColor,
                         modifier = Modifier.align(Alignment.CenterVertically)

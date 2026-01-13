@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
-import io.beldex.bchat.util.MediaUtil;
 import com.beldex.libsignal.utilities.Log;
 
 import com.bumptech.glide.load.data.StreamLocalUriFetcher;
@@ -22,7 +21,7 @@ class DecryptableStreamLocalUriFetcher extends StreamLocalUriFetcher {
 
   private static final String TAG = DecryptableStreamLocalUriFetcher.class.getSimpleName();
 
-  private Context context;
+  private final Context context;
 
   DecryptableStreamLocalUriFetcher(Context context, Uri uri) {
     super(context.getContentResolver(), uri);

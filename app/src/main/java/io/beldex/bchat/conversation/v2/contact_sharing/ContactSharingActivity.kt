@@ -30,7 +30,7 @@ import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 
 @AndroidEntryPoint
-class ContactSharingActivity: ComponentActivity() {
+class ContactSharingActivity : ComponentActivity() {
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {

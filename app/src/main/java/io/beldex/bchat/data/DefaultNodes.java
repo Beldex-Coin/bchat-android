@@ -2,7 +2,6 @@ package io.beldex.bchat.data;
 
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 @AllArgsConstructor
 public enum DefaultNodes {

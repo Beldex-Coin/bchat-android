@@ -86,7 +86,7 @@ public class LittleEndianDataInputStream extends FilterInputStream implements
      * @see FilterInputStream#in
      * @see InputStream#read(byte[], int, int)
      */
-    public final int read(byte b[]) throws IOException {
+    public final int read(byte[] b) throws IOException {
         return in.read(b, 0, b.length);
     }
 
@@ -138,7 +138,7 @@ public class LittleEndianDataInputStream extends FilterInputStream implements
      * @see FilterInputStream#in
      * @see InputStream#read(byte[], int, int)
      */
-    public final int read(byte b[], int off, int len) throws IOException {
+    public final int read(byte[] b, int off, int len) throws IOException {
         return in.read(b, off, len);
     }
 
@@ -156,7 +156,7 @@ public class LittleEndianDataInputStream extends FilterInputStream implements
      *                      occurs.
      * @see FilterInputStream#in
      */
-    public final void readFully(byte b[]) throws IOException {
+    public final void readFully(byte[] b) throws IOException {
         readFully(b, 0, b.length);
     }
 
@@ -176,7 +176,7 @@ public class LittleEndianDataInputStream extends FilterInputStream implements
      *                      occurs.
      * @see FilterInputStream#in
      */
-    public final void readFully(byte b[], int off, int len) throws IOException {
+    public final void readFully(byte[] b, int off, int len) throws IOException {
         if (len < 0)
             throw new IndexOutOfBoundsException();
         int n = 0;
@@ -368,7 +368,7 @@ public class LittleEndianDataInputStream extends FilterInputStream implements
         return ((ch1 << 0) + (ch2 << 8) + (ch3 << 16) + (ch4 << 24));
     }
 
-    private byte readBuffer[] = new byte[8];
+    private final byte[] readBuffer = new byte[8];
 
     /**
      * See the general contract of the <code>readLong</code> method of
@@ -458,8 +458,8 @@ public class LittleEndianDataInputStream extends FilterInputStream implements
     /**
      * working arrays initialized on demand by readUTF
      */
-    private byte bytearr[] = new byte[80];
-    private char chararr[] = new char[80];
+    private byte[] bytearr = new byte[80];
+    private char[] chararr = new char[80];
 
     /**
      * Reads from the stream <code>in</code> a representation of a Unicode

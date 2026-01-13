@@ -20,7 +20,7 @@ class AboutActivity : BaseActionBarActivity() {
 
     }
 
-    public fun loadFileContents(context: Context,): String {
+    public fun loadFileContents(context: Context): String {
         val inputStream = context.assets.open("about.txt")
         val size = inputStream.available()
         val buffer = ByteArray(size)

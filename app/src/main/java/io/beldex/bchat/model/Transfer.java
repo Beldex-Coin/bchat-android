@@ -4,8 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Transfer implements Parcelable {
-    public long amount;
-    public String address;
+    public final long amount;
+    public final String address;
 
     public Transfer(long amount, String address) {
         this.amount = amount;

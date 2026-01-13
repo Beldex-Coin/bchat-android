@@ -231,11 +231,7 @@ public class MediaUtil {
 
     if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
       return uri.getLastPathSegment().contains("video");
-    } else if (uri.toString().startsWith(MediaStore.Video.Media.EXTERNAL_CONTENT_URI.toString())) {
-      return true;
-    }
-
-    return false;
+    } else return uri.toString().startsWith(MediaStore.Video.Media.EXTERNAL_CONTENT_URI.toString());
   }
 
   public static @Nullable Bitmap getVideoThumbnail(Context context, Uri uri) {
@@ -264,8 +260,8 @@ public class MediaUtil {
   }
 
   public static class ThumbnailData {
-    Bitmap bitmap;
-    float aspectRatio;
+    final Bitmap bitmap;
+    final float aspectRatio;
 
     public ThumbnailData(Bitmap bitmap) {
       this.bitmap      = bitmap;

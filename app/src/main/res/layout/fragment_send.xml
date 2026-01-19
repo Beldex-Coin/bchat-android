@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/sendFragment_Sub"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -122,7 +121,6 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <EditText
-                            android:id="@+id/beldexAddressEditTxt"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@color/transparent"
@@ -179,7 +177,6 @@
                     android:visibility="gone" />
 
                 <LinearLayout
-                    android:id="@+id/beldexAmountLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
@@ -188,7 +185,6 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/beldexAmountTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/enter_bdx_amount"
@@ -264,7 +260,6 @@
                         android:paddingBottom="5dp">
 
                         <TextView
-                            android:id="@+id/currencyTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="5dp"
@@ -329,7 +324,6 @@
                 </LinearLayout>-->
 
                 <TextView
-                    android:id="@+id/estimatedFeeTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
@@ -342,7 +336,6 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/estimatedFeeDescriptionTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"

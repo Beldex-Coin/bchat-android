@@ -35,7 +35,6 @@
                 android:background="@color/card_color">
 
                 <EditText
-                    android:id="@+id/restoreKeysWalletName"
                     style="@style/SmallBchatEditText"
                     android:layout_width="match_parent"
                     android:layout_height="64dp"
@@ -75,7 +74,6 @@
                 android:background="@color/card_color">
 
                 <EditText
-                    android:id="@+id/restoreKeysAddress"
                     style="@style/SmallBchatEditText"
                     android:layout_width="match_parent"
                     android:layout_height="64dp"
@@ -115,7 +113,6 @@
                 android:background="@color/card_color">
 
                 <EditText
-                    android:id="@+id/restoreKeysViewKey"
                     style="@style/SmallBchatEditText"
                     android:layout_width="match_parent"
                     android:layout_height="64dp"
@@ -155,7 +152,6 @@
                 android:background="@color/card_color">
 
                 <EditText
-                    android:id="@+id/restoreKeysSpendKey"
                     style="@style/SmallBchatEditText"
                     android:layout_width="match_parent"
                     android:layout_height="64dp"
@@ -245,7 +241,6 @@
                 android:background="@color/card_color">
 
                 <EditText
-                    android:id="@+id/restoreKeysWalletRestoreDate"
                     style="@style/SmallBchatEditText"
                     android:layout_width="match_parent"
                     android:layout_height="64dp"

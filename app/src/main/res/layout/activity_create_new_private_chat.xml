@@ -82,7 +82,6 @@
 
             <TextView
                 android:fontFamily="@font/open_sans_semi_bold"
-                android:id="@+id/publicKeyTextViewTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
@@ -165,7 +164,6 @@
         </LinearLayout>
 
         <View
-            android:id="@+id/spacer"
             android:layout_width="0dp"
             android:layout_height="160dp"/>
 

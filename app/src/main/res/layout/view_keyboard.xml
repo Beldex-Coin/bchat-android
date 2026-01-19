@@ -96,7 +96,7 @@
 
     </LinearLayout>
 
-    <LinearLayout android:id="@+id/pin_code_fourth_row"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -104,7 +104,6 @@
         android:weightSum="3">
 
         <io.beldex.bchat.wallet.utils.keyboardview.KeyboardButtonView
-            android:id="@+id/pin_code_button_10"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

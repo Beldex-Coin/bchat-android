@@ -7,7 +7,6 @@
     android:background="@color/page_background"
     tools:context="io.beldex.bchat.onboarding.SplashScreenActivity">
     <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/img"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_marginStart="27dp"

@@ -4,14 +4,15 @@
     android:layout_height="wrap_content"
     android:background="?colorPrimary"
     xmlns:tools="http://schemas.android.com/tools">
+
     <TextView
-        tools:text="@string/global_search_messages"
-        android:textSize="18sp"
-        android:fontFamily="@font/open_sans_medium"
-        android:paddingVertical="@dimen/medium_spacing"
-        android:paddingHorizontal="@dimen/very_large_spacing"
         android:id="@+id/search_header"
-        android:background="@color/cell_background"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"/>
+        android:background="@color/cell_background"
+        android:fontFamily="@font/open_sans_medium"
+        android:paddingHorizontal="@dimen/very_large_spacing"
+        android:paddingVertical="@dimen/medium_spacing"
+        android:textSize="18sp"
+        tools:text="@string/global_search_messages" />
 </LinearLayout>

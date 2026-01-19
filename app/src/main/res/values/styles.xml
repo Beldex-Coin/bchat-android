@@ -111,13 +111,6 @@
         <item name="android:textSize">16sp</item>
     </style>
 
-    <style name="Widget.Bchat.Button.Common.ProminentFilled.Cancel">
-        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
-        <item name="android:background">@drawable/unimportant_filled_button_medium_background_new</item>
-        <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
-    </style>
-
     <style name="Widget.Bchat.Button.Common.ProminentFilled_Blue">
         <item name="android:fontFamily">@font/open_sans_semi_bold</item>
         <item name="android:background">@drawable/prominent_filled_button_medium_background_blue</item>
@@ -174,13 +167,6 @@
         <item name="android:background">@drawable/sync_option_button_background</item>
         <item name="android:textColor">@color/text_white</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
-    </style>
-
-    <style name="clearButton">
-        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
-        <item name="android:background">@drawable/clear_button_medium_background</item>
-        <item name="android:textColor">@color/red</item>
         <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
     </style>
 
@@ -246,11 +232,6 @@
     </style>
 
 
-    <style name="Widget.Bchat.Button.Dialog.Destructive">
-        <item name="android:background">@drawable/destructive_dialog_button_background</item>
-        <item name="android:textColor">@android:color/white</item>
-    </style>
-
     <style name="Widget.Bchat.EditText.Compose" parent="@style/Signal.Text.Body">
         <item name="android:padding">2dp</item>
         <item name="android:background">@null</item>
@@ -287,15 +268,6 @@
         <item name="android:padding">10dp</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/bchat_id_text_color</item>
-        <item name="android:fontFamily">@font/open_sans_regular</item>
-        <item name="android:textAlignment">viewStart</item>
-    </style>
-
-    <style name="BeldexAddressTextView">
-        <item name="android:background">@drawable/bchat_id_text_view_background</item>
-        <item name="android:padding">10dp</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@color/beldex_address</item>
         <item name="android:fontFamily">@font/open_sans_regular</item>
         <item name="android:textAlignment">viewStart</item>
     </style>
@@ -383,19 +355,6 @@
         <item name="android:textAlignment">viewStart</item>
         <item name="android:maxLines">1</item>
     </style>
-   <style name="BchatAddressEditText">
-        <item name="android:fontFamily">@font/open_sans_medium</item>
-        <item name="android:background">@drawable/bchat_id_text_view_background</item>
-        <item name="android:paddingLeft">@dimen/medium_spacing</item>
-        <item name="android:paddingTop">@dimen/medium_spacing</item>
-        <item name="android:paddingRight">@dimen/medium_spacing</item>
-        <item name="android:paddingBottom">@dimen/medium_spacing</item>
-        <item name="android:textSize">@dimen/small_font_size</item>
-        <item name="android:textColor">@color/text</item>
-        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
-        <item name="android:textAlignment">viewStart</item>
-       <item name="android:maxLines">4</item>
-    </style>
 
     <style name="SmallBChatEditText">
         <item name="android:fontFamily">@font/open_sans_medium</item>
@@ -405,19 +364,6 @@
         <item name="android:paddingRight">@dimen/medium_spacing</item>
         <item name="android:paddingBottom">@dimen/medium_spacing</item>
         <item name="android:textSize">@dimen/very_small_font_size</item>
-        <item name="android:textColor">@color/text</item>
-        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
-        <item name="android:textAlignment">viewStart</item>
-        <item name="android:maxLines">1</item>
-    </style>
-
-    <style name="BigBChatEditText">
-        <item name="android:background">@color/transparent</item>
-        <item name="android:paddingLeft">@dimen/medium_spacing</item>
-        <item name="android:paddingTop">@dimen/medium_spacing</item>
-        <item name="android:paddingRight">@dimen/medium_spacing</item>
-        <item name="android:paddingBottom">@dimen/medium_spacing</item>
-        <item name="android:textSize">@dimen/medium_font_size</item>
         <item name="android:textColor">@color/text</item>
         <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
         <item name="android:textAlignment">viewStart</item>
@@ -478,14 +424,6 @@
            clear out android:textOn and android:textOff, to avoid the default
            text label behavior of the ToggleButton class.) -->
 
-    <style name="BackupPassphrase">
-        <item name="android:fontFamily">monospace</item>
-        <item name="android:typeface">monospace</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:clickable">false</item>
-        <item name="android:focusable">false</item>
-    </style>
-
     <style name="PreferenceThemeOverlay.Fix" parent="PreferenceThemeOverlay.v14.Material">
     </style>
 
@@ -510,26 +448,6 @@
         <item name="android:fontFamily">@font/open_sans_medium</item>
         <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle</item>
         <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle</item>
-        <item name="android:background">@color/card_color</item>
-        <item name="android:textSize">15sp</item>
-        <item name="textAllCaps">false</item>
-        <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
-    </style>
-
-    <style name="BChatAlertDialog_Exit" parent="ThemeOverlay.AppCompat.Dialog.Alert">
-        <item name="android:fontFamily">@font/open_sans_bold</item>
-        <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle_Exit</item>
-        <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle_Exit</item>
-        <item name="android:background">@color/card_color</item>
-        <item name="android:textSize">15sp</item>
-        <item name="textAllCaps">false</item>
-        <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
-    </style>
-
-    <style name="BChatAlertDialog_Wallet_Syncing_Exit_Alert" parent="ThemeOverlay.AppCompat.Dialog.Alert">
-        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
-        <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle_Exit</item>
-        <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle_Exit</item>
         <item name="android:background">@color/card_color</item>
         <item name="android:textSize">15sp</item>
         <item name="textAllCaps">false</item>
@@ -572,16 +490,6 @@
         <item name="alpha">0.5</item>
     </style>
 
-    <style name="BChatAlertDialog_Wallet" parent="ThemeOverlay.AppCompat.Dialog.Alert">
-        <item name="android:fontFamily">@font/open_sans_medium</item>
-        <item name="android:gravity">center</item>
-        <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle_Wallet</item>
-        <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle_Wallet</item>
-        <item name="android:background">@color/card_color</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
-    </style>
-
     <style name="BChatAlertDialog_AddNode" parent="ThemeOverlay.AppCompat.Dialog.Alert">
         <item name="android:fontFamily">@font/open_sans_medium</item>
         <item name="android:gravity">center</item>
@@ -589,16 +497,8 @@
         <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
     </style>
 
-    <style name="Widget.BChat.AlertDialog.NegativeButtonStyle_Wallet" parent="Widget.AppCompat.Button">
-        <item name="android:textColor">@color/text</item>
-        <item name="background">@style/Widget.Bchat.Button.Common.UnimportantFilled.New</item>
-    </style>
-    <style name="Widget.BChat.AlertDialog.PositiveButtonStyle_Wallet" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="android:textColor">@color/text</item>
-        <item name="background">@style/Widget.Bchat.Button.Common.ProminentFilled</item>
-    </style>
-
     //New Line
+
     <style name="BChatAlertDialog_New" parent="ThemeOverlay.AppCompat.Dialog.Alert">
         <item name="android:fontFamily">@font/open_sans_bold</item>
         <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle</item>
@@ -613,18 +513,6 @@
         <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle</item>
         <item name="android:background">@color/card_color</item>
         <item name="android:textSize">15sp</item>
-        <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
-    </style>
-
-    <style name="BChatAlertDialog_remove_new" parent="ThemeOverlay.AppCompat.Dialog.Alert">
-        <item name="android:fontFamily">@font/open_sans_medium</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:itemTextAppearance">@style/textViewStyle</item>
-        <item name="android:textViewStyle">@style/textViewStyle</item>
-        <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle_New</item>
-        <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle_New</item>
-        <item name="android:background">@color/card_color</item>
-        <item name="textAllCaps">false</item>
         <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
     </style>
 
@@ -646,13 +534,6 @@
     <style name="AlertDialog_Negative_Button" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:textColor">@color/text</item>
         <item name="android:textSize">15sp</item>
-    </style>
-    <style name="BChatAlertDialog_Accept" parent="ThemeOverlay.AppCompat.Dialog.Alert">
-        <item name="android:background">@color/card_color</item>
-        <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
-        <item name="colorControlActivated">@color/alert_ok</item>
-        <item name="colorControlNormal">@color/alert_ok</item>
-
     </style>
 
     <style name="BChatAlertDialog_centre" parent="ThemeOverlay.AppCompat.Dialog.Alert">
@@ -676,19 +557,9 @@
         <item name="android:textAllCaps">true</item>
     </style>
 
-    <style name="Widget.BChat.AlertDialog.PositiveButtonStyle_New" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:textColor">@color/red</item>
-        <item name="android:textSize">15sp</item>
-    </style>
-
     <style name="Widget.BChat.AlertDialog.NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/text</item>
         <item name="android:textAllCaps">true</item>
-    </style>
-
-    <style name="Widget.BChat.AlertDialog.NegativeButtonStyle_New" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:textColor">@color/text</item>
-        <item name="android:textSize">15sp</item>
     </style>
 
 
@@ -708,11 +579,6 @@
     <style name="menuTextAppearance" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
         <item name="android:fontFamily">@font/open_sans_medium</item>
     </style>
-    <style name="Widget.Bchat.Button.Common.DestructiveOutline">
-        <item name="android:background">@drawable/destructive_outline_button_medium_background</item>
-        <item name="android:textColor">@color/destructive</item>
-        <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
-    </style>
 
     <style name="MessageRequest.PopupMenu" parent="Widget.AppCompat.PopupMenu">
         <item name="android:textColor">@color/destructive</item>
@@ -720,85 +586,8 @@
         <item name="android:popupBackground">@drawable/alert_dialog_shape</item>
     </style>
 
-    <style name="BChatLabel" parent="@android:style/TextAppearance.DeviceDefault.Medium">
-    </style>
     <style name="TextAppearance.AppCompat.Title" parent="Base.TextAppearance.AppCompat.Title"/>
 
-    <style name="BChatLabel.Subtitle">
-        <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/text</item>
-    </style>
-
-    <style name="custom.PopupMenu" parent="Widget.AppCompat.PopupMenu">
-        <item name="android:textColor">@color/download_icon</item>
-        <item name="android:itemBackground">@color/popup_menu_background</item>
-    </style>
-
-
-    <style name="MaterialCalendarTheme" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
-        <item name="colorPrimary">@color/button_green</item>
-        <item name="colorOnPrimary">@color/text</item>
-        <!-- Header panel -->
-        <item name="materialCalendarHeaderLayout">@style/MaterialCalendar.HeaderLayout1</item>
-        <item name="materialCalendarHeaderToggleButton">@style/customToggleButton</item>
-        <!-- Header title -->
-        <item name="materialCalendarHeaderTitle">@style/customHeaderTitle</item>
-        <item name="materialAlertDialogTitleIconStyle">@style/icon</item>
-        <!-- Header selection title -->
-        <item name="materialCalendarHeaderSelection">@style/CustomHeaderSelection</item>
-        <!-- Buttons -->
-        <item name="buttonBarPositiveButtonStyle">@style/TextButton.Dialog1</item>
-        <item name="buttonBarNegativeButtonStyle">@style/TextButton.Dialog1</item>
-        <item name="materialCalendarStyle">@style/myMaterialCalendar</item>
-<!--        <item name="android:background">@color/yellow</item>-->
-    </style>
-
-    <style name="myMaterialCalendar" parent="Widget.MaterialComponents.MaterialCalendar">
-        <item name="rangeFillColor">@color/clear_all_data_chat_id</item>
-        <item name="android:windowFullscreen">false</item>
-        <item name="dayTodayStyle">@style/materialCalendarDayTodayStyle</item>
-    </style>
-
-
-    <style name="materialCalendarDayTodayStyle" parent="Widget.MaterialComponents.MaterialCalendar">
-        <item name="itemFillColor">@color/button_green</item>
-        <item name="itemTextColor">@color/default_background_start</item>
-        <item name="itemStrokeWidth">2dp</item>
-      <!--  <item name="itemShapeAppearance">
-            @style/Test.ShapeAppearanceOverlay.MaterialComponents.MaterialCalendar.Day
-        </item>-->
-    </style>
-
-
-    <style name="customHeaderTitle" parent="@style/Widget.MaterialComponents.MaterialCalendar.HeaderTitle">
-        <item name="android:textColor">@color/text</item>
-        <item name="android:textAppearance">@style/customTextAppearance</item>
-    </style>
-
-    <style name="icon" parent="@style/Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="android:textColor">@color/text</item>
-    </style>
-
-    <style name="customToggleButton" parent="@style/Widget.MaterialComponents.Button">
-        <item name="android:textColor">@color/text</item>
-    </style>
-
-    <style name="customTextAppearance" parent="@style/TextAppearance.MaterialComponents.Overline">
-        <item name="android:textColor">@color/text</item>
-    </style>
-
-    <style name="MaterialCalendar.HeaderLayout1" parent="Widget.MaterialComponents.MaterialCalendar.HeaderLayout">
-        <!--<item name="android:background">?attr/colorPrimary</item>-->
-        <item name="android:background">@color/button_green</item>
-    </style>
-    <style name="TextButton.Dialog1" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="android:textColor">@color/text</item>
-        <item name="backgroundTint">@color/accent</item>
-    </style>
-
-    <style name="CustomHeaderSelection" parent="Widget.MaterialComponents.MaterialCalendar.HeaderSelection">
-        <item name="android:textColor">@color/text</item>
-    </style>
 
     <style name="backgroundColor" parent="Theme.AppCompat.DayNight.Dialog.Alert">
         <item name="android:background">@color/action_bar_background</item>
@@ -840,10 +629,6 @@
         <item name="outer_color">?colorAccent</item>
         <item name="slider_locked">false</item>
         <item name="image_color">@color/green_color</item>
-    </style>
-
-    <style name="Widget.Bchat.Button.Dialog.UnimportantText">
-        <item name="android:background">@drawable/unimportant_dialog_text_button_background</item>
     </style>
 
     <style name="Widget.Bchat.Button.Dialog.DestructiveText">
@@ -891,23 +676,11 @@
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners</item>
     </style>
 
-    <style name="RightSideRoundedCard" parent="@style/Widget.MaterialComponents.CardView">
-        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_right_corners_rounded</item>
-    </style>
-
     <style name="ShapeAppearanceOverlay_card_custom_corners" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSizeTopRight">16dp</item>
         <item name="cornerSizeTopLeft">16dp</item>
         <item name="cornerSizeBottomRight">0dp</item>
-        <item name="cornerSizeBottomLeft">0dp</item>
-    </style>
-
-    <style name="ShapeAppearanceOverlay_card_right_corners_rounded" parent="">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeTopRight">16dp</item>
-        <item name="cornerSizeTopLeft">0dp</item>
-        <item name="cornerSizeBottomRight">16dp</item>
         <item name="cornerSizeBottomLeft">0dp</item>
     </style>
 
@@ -985,27 +758,6 @@
         <item name="android:thumbTint">#FFFFFF</item>
     </style>
 
-    <style name="Widget.Bchat.Button.Dialog.Ok">
-        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
-        <item name="android:background">@drawable/bchat_dialog_button_shape</item>
-        <item name="android:shadowColor">@color/black</item>
-    </style>
-
-    <style name="Widget.Bchat.Button.Dialog.Accept">
-        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
-        <item name="android:background">@drawable/accept_button_background_shape</item>
-        <item name="text_color">@color/white</item>
-        <item name="text_size">16sp</item>
-        <item name="android:shadowColor">@color/black</item>
-    </style>
-
-    <style name="Widget.Bchat.Button.Dialog.Decline">
-        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
-        <item name="android:background">@drawable/decline_button_background_shape</item>
-        <item name="text_color">@color/red</item>
-        <item name="text_size">16sp</item>
-    </style>
-
     <style name="Widget.Bchat.Button.Dialog.Cancel">
         <item name="android:fontFamily">@font/open_sans_regular</item>
         <item name="android:textSize">14sp</item>
@@ -1040,12 +792,5 @@
         <item name="android:maxLines">1</item>
     </style>
 
-    <style name="PopupMenu.ConversationItem" parent="@style/Widget.AppCompat.PopupMenu">
-        <item name="android:dropDownHorizontalOffset">@dimen/medium_spacing</item>
-    </style>
 
-
-    <style name="Widget.Bchat.TabLayout.Reactions">
-        <item name="tabIndicatorColor">@color/transparent</item>
-    </style>
 </resources>

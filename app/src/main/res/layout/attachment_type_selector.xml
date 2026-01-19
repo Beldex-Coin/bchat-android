@@ -178,7 +178,6 @@
             android:weightSum="3">
 
             <LinearLayout
-                android:id="@+id/location_linear_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

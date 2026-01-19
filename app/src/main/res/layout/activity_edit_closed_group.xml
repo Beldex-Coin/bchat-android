@@ -119,7 +119,6 @@
                     app:drawableEndCompat="@drawable/ic_baseline_edit_group_name" />
 
                 <ImageView
-                    android:id="@+id/lblGroupNameEditImageview"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_marginStart="8dp"

@@ -10,7 +10,6 @@
     android:gravity="center_vertical">
 
     <FrameLayout
-        android:id="@+id/typingIndicatorBubble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="7dp"

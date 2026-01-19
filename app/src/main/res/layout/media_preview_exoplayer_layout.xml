@@ -5,7 +5,6 @@
     android:layout_height="match_parent">
 
     <androidx.media3.ui.AspectRatioFrameLayout
-        android:id="@+id/exo_content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"/>

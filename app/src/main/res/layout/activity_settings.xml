@@ -62,7 +62,6 @@
                                 android:layout_marginBottom="19dp" />
 
                             <ImageView
-                                android:id="@+id/logo"
                                 android:layout_width="35dp"
                                 android:layout_height="35dp"
                                 android:layout_gravity="start"
@@ -81,7 +80,6 @@
                                 android:visibility="visible" />
                             <TextView
                                 android:fontFamily="@font/open_sans_medium"
-                                android:id="@+id/scan_qr_code_title_textView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/activity_join_public_chat_scan_qr_code_tab_title"
@@ -94,7 +92,6 @@
                                 android:textColor="@color/text"/>
                             <TextView
                                 android:fontFamily="@font/open_sans_medium"
-                                android:id="@+id/or_title_textView"
                                 android:layout_width="105dp"
                                 android:layout_height="wrap_content"
                                 android:text="or"
@@ -207,7 +204,6 @@
                                             android:orientation="horizontal">
                                             <TextView
                                                 android:fontFamily="@font/open_sans_medium"
-                                                android:id="@+id/displayNameTitleTextView"
                                                 android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
                                                 android:text="@string/activity_settings_profile_name_title"
@@ -216,7 +212,6 @@
                                                 android:textSize="14sp"
                                                 android:textStyle="bold"/>
                                             <ImageView
-                                                android:id="@+id/profileEditImageView"
                                                 android:layout_width="14dp"
                                                 android:layout_height="14dp"
                                                 android:layout_gravity="center"
@@ -249,7 +244,6 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/addressDetailsLinearLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
@@ -258,7 +252,6 @@
                             android:orientation="horizontal">
 
                             <LinearLayout
-                                android:id="@+id/bchatLinearLayout"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -272,7 +265,6 @@
 
                                     <TextView
                                         android:fontFamily="@font/open_sans_medium"
-                                        android:id="@+id/settings_chat_title"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center"
@@ -338,7 +330,6 @@
                             </LinearLayout>
 
                             <LinearLayout
-                                android:id="@+id/beldexAddressLinearLayout"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
@@ -353,7 +344,6 @@
 
                                     <TextView
                                         android:fontFamily="@font/open_sans_medium"
-                                        android:id="@+id/settings_beldex_address_title"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center"
@@ -368,7 +358,6 @@
                                         app:layout_constraintTop_toTopOf="parent" />
 
                                     <ImageView
-                                        android:id="@+id/beldexAddressCopyButton"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginEnd="10dp"
@@ -433,7 +422,6 @@
                 android:visibility="gone">
 
                 <Button
-                    android:id="@+id/copyButton1"
                     style="@style/Widget.Bchat.Button.Common.ProminentOutline"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/medium_button_height"
@@ -441,7 +429,6 @@
                     android:text="@string/copy" />
 
                 <Button
-                    android:id="@+id/shareButton1"
                     style="@style/Widget.Bchat.Button.Common.UnimportantOutline"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/medium_button_height"
@@ -484,7 +471,6 @@
                             android:layout_height="@dimen/path_status_view_size"/>
                     </FrameLayout>
                     <TextView
-                        android:id="@+id/pathText"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:textColor="@color/text"
@@ -627,7 +613,6 @@
 
                 <TextView
                     android:fontFamily="@font/open_sans_medium"
-                    android:id="@+id/sendInvitationButton"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/setting_button_height"
                     android:background="@drawable/setting_button_background"
@@ -711,7 +696,6 @@
 
                 <TextView
                     android:fontFamily="@font/open_sans_medium"
-                    android:id="@+id/helpTranslateButton"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/setting_button_height"
                     android:background="@drawable/setting_button_background"

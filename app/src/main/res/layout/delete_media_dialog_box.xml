@@ -17,7 +17,6 @@
 
     <TextView
         android:fontFamily="@font/open_sans_bold"
-        android:id="@+id/deleteMediaTitleTextview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/delete_item"
@@ -26,7 +25,6 @@
         android:textSize="16sp" />
 
     <TextView
-        android:id="@+id/deleteMediaDescriptionTextview"
         android:fontFamily="@font/open_sans_regular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

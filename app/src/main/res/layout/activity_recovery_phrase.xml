@@ -20,7 +20,6 @@
             android:layout_weight="0"/>
 
         <ImageView
-            android:id="@+id/restore_seed_hint_icon"
             android:fontFamily="@font/open_sans_medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -113,7 +112,6 @@
             android:visibility="gone">
 
             <Button
-                android:id="@+id/copyBtn"
                 style="@style/Widget.Bchat.Button.Common.Copy"
                 android:layout_width="150dp"
                 android:layout_height="45dp"
@@ -126,7 +124,6 @@
                 android:text="Copy" />
 
             <Button
-                android:id="@+id/shareBtn"
                 style="@style/Widget.Bchat.Button.Common.Copy"
                 android:layout_width="150dp"
                 android:layout_height="45dp"

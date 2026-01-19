@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_node_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -40,20 +39,17 @@
             android:layout_marginEnd="20dp"
             android:elevation="5dp">
             <LinearLayout
-                android:id="@+id/currentNodeLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="15dp"
                 android:orientation="horizontal">
                 <LinearLayout
-                    android:id="@+id/currentNodeLayoutSub"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical"
                     >
                     <TextView
-                        android:id="@+id/currentNodeTextView"
                         android:layout_width="wrap_content"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
@@ -74,7 +70,6 @@
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
                 <ImageView
-                    android:id="@+id/currentNodeImageView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -114,7 +109,6 @@
                     android:layout_marginEnd="15dp"
                     android:layout_marginBottom="20dp">
                     <TextView
-                        android:id="@+id/displayBalanceAsTitle"
                         android:layout_width="0dp"
                         android:layout_weight="2"
                         android:gravity="center|start"
@@ -138,7 +132,6 @@
                     android:layout_marginEnd="15dp"
                     android:layout_marginBottom="20dp">
                     <TextView
-                        android:id="@+id/decimalsTitle"
                         android:layout_width="0dp"
                         android:layout_weight="2"
                         android:gravity="center|start"
@@ -154,7 +147,6 @@
                         android:textAlignment="textEnd"/>
                 </LinearLayout>
                 <LinearLayout
-                    android:id="@+id/enableFiatCurrencyConversionLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -163,14 +155,12 @@
                     android:visibility="gone"
                     android:layout_marginBottom="20dp">
                     <TextView
-                        android:id="@+id/enableFiatCurrencyConversionTitle"
                         android:layout_width="0dp"
                         android:layout_weight="2"
                         android:gravity="center|start"
                         android:layout_height="match_parent"
                         android:text="@string/enable_fiat_currency_conversion"/>
                     <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/enableFiatCurrencyConversionSwitchCompat"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
@@ -185,7 +175,6 @@
                     android:layout_marginEnd="15dp"
                     android:layout_marginBottom="20dp">
                     <TextView
-                        android:id="@+id/currencyTitle"
                         android:layout_width="0dp"
                         android:layout_weight="2"
                         android:gravity="center|start"
@@ -209,7 +198,6 @@
                     android:layout_marginEnd="15dp"
                     android:layout_marginBottom="20dp">
                     <TextView
-                        android:id="@+id/feePriorityTitle"
                         android:layout_width="0dp"
                         android:layout_weight="2"
                         android:gravity="center|start"
@@ -225,7 +213,6 @@
                         android:textAlignment="textEnd"/>
                 </LinearLayout>
                 <LinearLayout
-                    android:id="@+id/saveRecipientAddressLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -233,7 +220,6 @@
                     android:layout_marginEnd="15dp"
                     android:layout_marginBottom="20dp">
                     <TextView
-                        android:id="@+id/saveRecipeintAddressTitle"
                         android:layout_width="0dp"
                         android:layout_weight="2"
                         android:gravity="center|start"

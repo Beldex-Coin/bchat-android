@@ -80,7 +80,6 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
 
   private ContactSelectionListFragment contactsFragment;
   private SearchToolbar                searchToolbar;
-  private ImageView                    searchAction;
   private View                         progressWheel;
   private Uri                          resolvedExtra;
   private CharSequence                 resolvedPlaintext;
@@ -191,33 +190,11 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
   private void initializeResources() {
     progressWheel    = findViewById(R.id.progress_wheel);
     searchToolbar    = findViewById(R.id.search_toolbar);
-    searchAction     = findViewById(R.id.search_action);
     contactsFragment = (ContactSelectionListFragment) getSupportFragmentManager().findFragmentById(R.id.contact_selection_list_fragment);
     contactsFragment.setOnContactSelectedListener(this);
     back             = findViewById(R.id.back);
     searchField      = findViewById(R.id.searchContact);
     searchAndClearImageview = findViewById(R.id.searchAndClearImageview);
-  }
-
-  private void initializeSearch() {
-    searchAction.setOnClickListener(v -> searchToolbar.display(searchAction.getX() + (searchAction.getWidth() / 2),
-                                                               searchAction.getY() + (searchAction.getHeight() / 2)));
-
-    searchToolbar.setListener(new SearchToolbar.SearchListener() {
-      @Override
-      public void onSearchTextChange(String text) {
-        if (contactsFragment != null) {
-          contactsFragment.setQueryFilter(text);
-        }
-      }
-
-      @Override
-      public void onSearchClosed() {
-        if (contactsFragment != null) {
-          contactsFragment.resetQueryFilter();
-        }
-      }
-    });
   }
 
   private void initializeMedia() {

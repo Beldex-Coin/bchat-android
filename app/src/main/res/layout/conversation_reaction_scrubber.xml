@@ -138,7 +138,6 @@
             tools:src="@drawable/ic_outline_disabled_by_default_24" />
 
         <View
-            android:id="@+id/reaction_7_background"
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:alpha="0.5"

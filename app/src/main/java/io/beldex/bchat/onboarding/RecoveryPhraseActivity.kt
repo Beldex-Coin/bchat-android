@@ -37,7 +37,7 @@ class RecoveryPhraseActivity : BaseActionBarActivity() {
         val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
         with(binding)
         {
-            if(isDarkTheme) restoreSeedHintIcon.setImageResource(R.drawable.ic_restore_seed_dark) else restoreSeedHintIcon.setImageResource(R.drawable.ic_restore_seed_white)
+            if(isDarkTheme) restoreSeedHintIcon?.setImageResource(R.drawable.ic_restore_seed_dark) else restoreSeedHintIcon?.setImageResource(R.drawable.ic_restore_seed_white)
             registerButton.setTextColor(ContextCompat.getColor(this@RecoveryPhraseActivity, R.color.disable_button_text_color))
             registerButton.background =
                 ContextCompat.getDrawable(

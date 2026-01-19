@@ -20,7 +20,6 @@
         tools:text="@tools:sample/date/hhmmss" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/mainContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="bottom">

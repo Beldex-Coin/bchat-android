@@ -56,7 +56,6 @@
         android:layout_marginTop="10dp"
         android:orientation="vertical">
         <TextView
-            android:id="@+id/transaction_id_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/transaction_id"
@@ -69,7 +68,6 @@
             android:text=""
             android:textColor="@color/button_green"/>
         <TextView
-            android:id="@+id/transaction_date_and_time_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/date_amp_time"
@@ -83,7 +81,6 @@
             android:text=""
             android:textColor="@color/grey"/>
         <TextView
-            android:id="@+id/transaction_height_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/height"

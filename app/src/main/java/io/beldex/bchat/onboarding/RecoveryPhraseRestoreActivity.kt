@@ -60,10 +60,10 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
 
                 if(s.toString().isNotEmpty()){
                     binding.restoreButton.isEnabled = true
-                    binding.pasteText.visibility = View.GONE
+                    binding.pasteText?.visibility = View.GONE
                 }else{
                     binding.restoreButton.isEnabled = false
-                    binding.pasteText.visibility = View.VISIBLE
+                    binding.pasteText?.visibility = View.VISIBLE
                 }
                 if(s.toString().isNotEmpty())
                     numberOfInputWords = s.toString().trim().split("\\s+".toRegex()).size
@@ -83,7 +83,7 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
         binding.clearButton.setOnClickListener {
             binding.mnemonicEditText.text.clear()
             binding.recoveryPhraseCountWord.text = "0/25"
-            binding.pasteText.visibility = View.VISIBLE
+            binding.pasteText?.visibility = View.VISIBLE
         }
 
         binding.recoveryPhrasePasteIcon.setOnClickListener {
@@ -94,7 +94,7 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
                 // Gets the clipboard as text.
                 if(item.text != null) {
                     binding.mnemonicEditText.setText(item.text.toString())
-                    binding.pasteText.visibility = View.GONE
+                    binding.pasteText?.visibility = View.GONE
                 }
             } else {
                 Toast.makeText(this, R.string.no_copied_seed, Toast.LENGTH_SHORT)

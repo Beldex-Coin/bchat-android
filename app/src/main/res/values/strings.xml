@@ -1316,5 +1316,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="chat_with_contact_confirmation" translatable="false">Do you want to chat with this contact now?</string>
     <string name="view_all" translatable="false">View all</string>
     <string name="message" translatable="false">Message</string>
-    <string name="nickname_special_char_not_allowed" translatable="false">Special char not allowed</string>
+    <string name="nickname_special_char_not_allowed" translatable="false">Special characters are not allowed</string>
 </resources>

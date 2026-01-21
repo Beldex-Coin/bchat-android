@@ -59,6 +59,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
     private lateinit var name: String
     private lateinit var groupRecipientID: String
     private val glide by lazy { Glide.with(this) }
+    private val nicknameRegex = Regex("^[a-zA-Z0-9 ]+$")
 
     private var isEditingName = false
         set(value) {
@@ -335,6 +336,14 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         if(name == originalName){
             return Toast.makeText(this, R.string.activity_edit_closed_group_group_name_same_name_error,Toast.LENGTH_SHORT).show()
         }
+        if (!nicknameRegex.matches(name)) {
+            return Toast.makeText(
+                this,
+                R.string.nickname_special_char_not_allowed,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
         this.name = name
         binding.lblGroupNameDisplay.text = name
         hasNameChanged = true

@@ -771,12 +771,16 @@ fun MyAccountNavHost(
                                         showNameOnly = false
                                         showEditNameTextField = true
                                     } else {
-                                        showNameOnly = true
-                                        showEditNameTextField = false
-                                        saveEditName?.let { it1 -> saveDisplayName(it1.trim(), context) }
+                                        val isSaved = saveEditName?.let {
+                                            saveDisplayName(it.trim(), context)
+                                        } ?: false
+
+                                        if (isSaved) {
+                                            showNameOnly = true
+                                            showEditNameTextField = false
+                                        }
                                     }
-                                }
-                            ,
+                                },
                             contentAlignment = Alignment.Center
 
                         ){

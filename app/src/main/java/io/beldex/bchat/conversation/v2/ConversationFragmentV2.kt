@@ -219,7 +219,6 @@ import org.apache.commons.lang3.time.DurationFormatUtils
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
-import java.lang.System
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Locale
@@ -2533,7 +2532,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                 !viewModel.isIncomingMessageRequestThread()
             )
 
-            binding.conversationRecyclerView.setHasFixedSize(true)
             binding.conversationRecyclerView.setItemViewCacheSize(10)
         }
 
@@ -2541,7 +2539,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         val messageTimestamp = messageToScrollTimestamp.getAndSet(-1)
         val author = messageToScrollAuthor.getAndSet(null)
         val isFirstLoad = firstLoad.get()
-        adapter.changeCursor(cursor)
+        adapter.updateCursor(cursor)
         binding.conversationRecyclerView.post {
             if (!isAdded || binding.conversationRecyclerView.isComputingLayout) return@post
 

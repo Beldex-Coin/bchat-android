@@ -22,6 +22,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.util.getOrDefault
 import androidx.core.util.set
 import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.bumptech.glide.RequestManager
@@ -66,6 +67,7 @@ class ConversationAdapter(
     private val contactCache = SparseArray<Contact>(100)
     private val contactLoadedCache = SparseBooleanArray(100)
     init {
+        setHasStableIds(true)
         lifecycleCoroutineScope.launch(IO) {
             while (isActive) {
                 val item = updateQueue.receive()
@@ -120,7 +122,8 @@ class ConversationAdapter(
 
     override fun onBindItemViewHolder(viewHolder: ViewHolder, cursor: Cursor) {
         val message = getMessage(cursor)!!
-        val position = viewHolder.adapterPosition
+        val position = viewHolder.bindingAdapterPosition
+        if (position == RecyclerView.NO_POSITION) return
         val messageBefore = getMessageBefore(position, cursor)
         when (viewHolder) {
             is VisibleMessageViewHolder -> {
@@ -237,26 +240,9 @@ class ConversationAdapter(
         if (!cursor.moveToPosition(position - 1)) { return null }
         return messageDB.readerFor(cursor).current
     }
-
-    override fun changeCursor(cursor: Cursor?) {
-        super.changeCursor(cursor)
-        val toRemove = mutableSetOf<MessageRecord>()
-        val toDeselect = mutableSetOf<Pair<Int, MessageRecord>>()
-        for (selected in selectedItems) {
-            val position = getItemPositionForTimestamp(selected.timestamp)
-            if (position == null || position == -1) {
-                toRemove += selected
-            } else {
-                val item = getMessage(getCursorAtPositionOrThrow(position))
-                if (item == null || item.isDeleted) {
-                    toDeselect += position to selected
-                }
-            }
-        }
-        selectedItems -= toRemove
-        toDeselect.iterator().forEach { (pos, record) ->
-            onDeselect(record, pos)
-        }
+    fun updateCursor(cursor: Cursor?) {
+        if (cursor === this.cursor) return
+        super.swapCursor(cursor)
     }
     fun findLastSeenItemPosition(lastSeenTimestamp: Long): Int? {
         val cursor = this.cursor

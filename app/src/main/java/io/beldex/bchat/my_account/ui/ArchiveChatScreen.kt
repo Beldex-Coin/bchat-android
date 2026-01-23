@@ -57,6 +57,8 @@ import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
+import io.beldex.bchat.conversation.v2.contact_sharing.flattenData
 import io.beldex.bchat.conversation.v2.dialogs.UnblockUserDialog
 import io.beldex.bchat.conversation.v2.utilities.MentionUtilities
 import io.beldex.bchat.database.GroupDatabase
@@ -69,6 +71,7 @@ import io.beldex.bchat.my_account.ui.dialogs.LockOptionsDialog
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
+import io.beldex.bchat.util.shortNameAndAddress
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -82,7 +85,6 @@ fun ArchiveChatScreen(
     modifier : Modifier=Modifier
 ) {
     val context=LocalContext.current
-    val activity = (context as? Activity)
     val requestToTakeAction : ThreadRecord?=null
     var threadRecord by remember {
         mutableStateOf(requestToTakeAction)
@@ -522,7 +524,14 @@ fun ArchiveChatItem(
             if (thread.isSharedContact) {
                 val contactName = UpdateMessageData.fromJSON(thread.body)?.let {
                     val data = it.kind as UpdateMessageData.Kind.SharedContact
-                    data.name
+                    val addresses = flattenData(data.address)
+                    val names = flattenData(data.name).ifEmpty { addresses }
+                    when(names.size) {
+                        0 -> "No Name"
+                        1 -> names.first().capitalizeFirstLetter()
+                        2 -> "${shortNameAndAddress(names[0],addresses[0])} and ${names.size - 1} other"
+                        else -> "${shortNameAndAddress(names.first(), addresses.first())} and ${names.size - 1} others"
+                    }
                 } ?: "No Name"
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -535,7 +544,7 @@ fun ArchiveChatItem(
                             .size(20.dp)
                     )
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
 
                     Text(
                         text = contactName,

@@ -1,5 +1,7 @@
 package io.beldex.bchat.my_account.ui.dialogs
 
+import android.content.Context
+import android.content.pm.ShortcutManager
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -70,6 +72,17 @@ fun ClearDataDialog(
     var step by remember {
         mutableStateOf(Steps.INFO_PROMPT_DEFAULT)
     }
+    fun removeAllShortcuts(context : Context) {
+        val shortcutManager=context.getSystemService(ShortcutManager::class.java)
+        shortcutManager?.let {
+            // Disable all pinned shortcuts
+            val pinnedIds=it.pinnedShortcuts.map { shortcut -> shortcut.id }
+            if (pinnedIds.isNotEmpty()) {
+                it.disableShortcuts(pinnedIds, "Shortcut removed")
+            }
+        }
+    }
+
     fun removeWallet(){
         val walletFolder: File = Helper.getWalletRoot(context)
         val walletName = TextSecurePreferences.getWalletName(context)
@@ -102,6 +115,7 @@ fun ClearDataDialog(
 
                 //New Line
                 removeWallet()
+                removeAllShortcuts(context)
 
                 ApplicationContext.getInstance(context).clearAllData(false)
                 withContext(Dispatchers.Main) {
@@ -123,6 +137,7 @@ fun ClearDataDialog(
                 } else if (result.values.all { it }) {
                     //New Line
                     removeWallet()
+                    removeAllShortcuts(context)
                     // don't force sync because all the messages are deleted?
                     ApplicationContext.getInstance(context).clearAllData(false)
                     withContext(Dispatchers.Main) {
@@ -340,7 +355,7 @@ fun DeleteOption(
             modifier = Modifier
                 .weight(1f)
                 .padding(
-                    top = 8.dp
+                    top=8.dp
                 )
         ) {
             Text(

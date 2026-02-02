@@ -4,44 +4,21 @@ import android.app.AlertDialog
 import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.provider.Settings
-import android.view.LayoutInflater
-import android.view.View
-import android.view.WindowManager
-import android.widget.Button
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.DialogFragment
 import androidx.preference.Preference
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getScreenLockTimeout
-import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletEntryPassword
-import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletName
-import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletPassword
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.isPasswordDisabled
-import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setBooleanPreference
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setScreenLockEnabled
-import com.beldex.libsignal.utilities.Log
 import io.beldex.bchat.ApplicationContext
+import io.beldex.bchat.BuildConfig
+import io.beldex.bchat.R
 import io.beldex.bchat.components.SwitchPreferenceCompat
-import io.beldex.bchat.home.HomeActivity
-import io.beldex.bchat.onboarding.ui.EXTRA_PIN_CODE_ACTION
-import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.service.KeyCachingService
 import io.beldex.bchat.util.CallNotificationBuilder.Companion.areNotificationsEnabled
 import io.beldex.bchat.util.IntentUtils
-import io.beldex.bchat.wallet.WalletSetupLoadingBar
-import io.beldex.bchat.wallet.info.WalletInfoActivity
-import io.beldex.bchat.wallet.utils.pincodeview.CustomPinActivity
-import io.beldex.bchat.wallet.utils.pincodeview.managers.AppLock
-import io.beldex.bchat.wallet.utils.pincodeview.managers.LockManager
-import io.beldex.bchat.BuildConfig
-import io.beldex.bchat.R
 import java.util.concurrent.TimeUnit
 
 class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
@@ -62,8 +39,6 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
         //New Line
         findPreference<Preference>(TextSecurePreferences.CALL_NOTIFICATIONS_ENABLED)!!.onPreferenceChangeListener =
             CallToggleListener(this) { setCall(it) }
-        findPreference<Preference>(TextSecurePreferences.PAY_AS_YOU_CHAT_PREF)!!.onPreferenceChangeListener = PayAsYouChatListener()
-        findPreference<Preference>(TextSecurePreferences.IS_WALLET_ACTIVE)!!.onPreferenceChangeListener = StartWalletListener()
         initializeVisibility()
     }
 
@@ -224,107 +199,4 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
             return true
         }
     }
-
-    private inner class PayAsYouChatListener : Preference.OnPreferenceChangeListener {
-        override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
-            val preferenceValue = newValue as Boolean
-            return if (preferenceValue) {
-                if (getWalletEntryPassword(requireContext()) != null) {
-                    return true
-                } else {
-                    androidx.appcompat.app.AlertDialog.Builder(requireContext(), R.style.BChatAlertDialog_Call_Missed)
-                            .setTitle(R.string.dialog_title_setup_pin_)
-                            .setMessage(R.string.dialog_message_for_set_wallet_pin)
-                            .setPositiveButton(R.string.dialog_setup_button) { d, w -> setWalletPin() }
-                            .setNegativeButton(R.string.cancel) { d, w -> }
-                            .show()
-                }
-                false
-            } else {
-                true
-            }
-        }
-
-        private fun setWalletPin() {
-            val walletName = getWalletName(requireContext())
-            val walletPassword = getWalletPassword(requireContext())
-            if (walletName != null && walletPassword != null) {
-                val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
-                lockManager.enableAppLock(requireContext(), CustomPinActivity::class.java)
-                Intent(requireContext(), CustomPinActivity::class.java).also {
-                    if(getWalletEntryPassword(requireContext()) != null) {
-                        it.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.VerifyWalletPin.action)
-                        it.putExtra("send_authentication",false)
-                        setUpWalletPinActivityResultLauncher.launch(it)
-                    } else{
-                        it.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.CreateWalletPin.action)
-                        it.putExtra("send_authentication",false)
-                        setUpWalletPinActivityResultLauncher.launch(it)
-                    }
-                }
-            } else {
-                val intent = Intent(requireContext(), WalletInfoActivity::class.java)
-                startActivity(intent)
-            }
-        }
-
-        var setUpWalletPinActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
-    }
-
-    private inner class StartWalletListener : Preference.OnPreferenceChangeListener {
-        override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
-            findPreference<Preference>(TextSecurePreferences.IS_WALLET_ACTIVE)!!.isEnabled = false
-            val preferenceValue = newValue as Boolean
-            if (!preferenceValue) {
-                setBooleanPreference(requireContext(), TextSecurePreferences.PAY_AS_YOU_CHAT_PREF, false)
-            }
-            showProgress()
-            Handler(Looper.getMainLooper()).postDelayed({
-                hideProgress()
-                restartHome()
-            }, 2000)
-            return true
-        }
-
-        private fun restartHome() {
-            val intent = Intent(requireContext(), HomeActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-        }
-
-        private fun showProgress() {
-            WalletSetupLoadingBar().show(
-                    requireActivity().supportFragmentManager,
-                    "wallet_setup_progressbar_tag")
-        }
-
-        private fun hideProgress() {
-            val fragment = requireActivity().supportFragmentManager.findFragmentByTag("wallet_setup_progressbar_tag") as WalletSetupLoadingBar
-            if (fragment != null) {
-                val dialogFragment = DialogFragment()
-                try {
-                    dialogFragment.dismiss()
-                } catch (ex: IllegalStateException) {
-                    Log.e("Beldex", "IllegalStateException $ex")
-                }
-            }
-        }
-    }
-   /* private fun actionFullScreenIntent(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            if (!Settings.canDrawOverlays(context)) {
-                val intent = Intent(
-                        Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT,
-                        Uri.parse("package:${BuildConfig.APPLICATION_ID}")
-                )
-                startActivityForResult(intent, 123)
-            }
-        }
-    }*/
-   /* override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 123) {
-            println("permission result code is $resultCode ")
-        }
-    }*/
 }

@@ -68,7 +68,7 @@ import io.beldex.bchat.util.QRCodeUtilities
 import io.beldex.bchat.util.copyToClipBoard
 import io.beldex.bchat.util.isValidString
 import io.beldex.bchat.util.toPx
-import io.beldex.bchat.wallet.CheckOnline
+import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.R
 import java.io.File
 

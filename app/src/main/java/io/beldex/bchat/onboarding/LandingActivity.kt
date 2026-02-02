@@ -97,9 +97,6 @@ class LandingActivity : AppCompatActivity() {
     }
 
     private fun restore() {
-        /*val intent = Intent(this, RecoveryPhraseRestoreActivity::class.java)
-        push(intent)*/
-        //val intent = Intent(this, SeedOrKeysRestoreActivity::class.java)
         val intent = Intent(this, RecoveryPhraseRestoreActivity::class.java)
         push(intent)
         finish()
@@ -115,7 +112,5 @@ class LandingActivity : AppCompatActivity() {
         } catch(ex: ActivityNotFoundException) {
             Log.d("LandingActivity",ex.message.toString())
         }
-        /*val intent = Intent(this, LinkDeviceActivity::class.java)
-        push(intent)*/
     }
 }

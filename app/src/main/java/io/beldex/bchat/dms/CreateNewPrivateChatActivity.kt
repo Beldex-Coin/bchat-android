@@ -28,7 +28,7 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.PublicKeyValidation
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2
+import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.util.Helper
 import nl.komponents.kovenant.ui.failUi
@@ -224,15 +224,15 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
     private fun createPrivateChat(hexEncodedPublicKey: String, bnsName: String) {
         val recipient = Recipient.from(this, Address.fromSerialized(hexEncodedPublicKey), false)
         val bundle = Bundle()
-        bundle.putParcelable(ConversationFragmentV2.URI,intent.data)
-        bundle.putString(ConversationFragmentV2.TYPE,intent.type)
-        bundle.putString(ConversationFragmentV2.BNS_NAME,bnsName)
+        bundle.putParcelable(ConversationActivityV2.URI,intent.data)
+        bundle.putString(ConversationActivityV2.TYPE,intent.type)
+        bundle.putString(ConversationActivityV2.BNS_NAME,bnsName)
         val returnIntent = Intent()
-        returnIntent.putExtra(ConversationFragmentV2.ADDRESS, recipient.address)
+        returnIntent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
         //returnIntent.setDataAndType(intent.data, intent.type)
         val existingThread =
             DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient)
-        returnIntent.putExtra(ConversationFragmentV2.THREAD_ID, existingThread)
+        returnIntent.putExtra(ConversationActivityV2.THREAD_ID, existingThread)
         returnIntent.putExtras(bundle)
         setResult(RESULT_OK, returnIntent)
         finish()
@@ -241,18 +241,18 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
     private var privateChatScanQRCodeActivityResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val hexEncodedPublicKey = result.data!!.getStringExtra(ConversationFragmentV2.HEX_ENCODED_PUBLIC_KEY)
+            val hexEncodedPublicKey = result.data!!.getStringExtra(ConversationActivityV2.HEX_ENCODED_PUBLIC_KEY)
             if(hexEncodedPublicKey!=null) {
                 val recipient = Recipient.from(this, Address.fromSerialized(hexEncodedPublicKey), false)
                 val bundle = Bundle()
-                bundle.putParcelable(ConversationFragmentV2.URI,result.data!!.getParcelableExtra(ConversationFragmentV2.URI))
-                bundle.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
+                bundle.putParcelable(ConversationActivityV2.URI,result.data!!.getParcelableExtra(ConversationActivityV2.URI))
+                bundle.putString(ConversationActivityV2.TYPE,result.data!!.getStringExtra(ConversationActivityV2.TYPE))
                 val returnIntent = Intent()
-                returnIntent.putExtra(ConversationFragmentV2.ADDRESS, recipient.address)
+                returnIntent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
                 //returnIntent.setDataAndType(intent.data, intent.type)
                 val existingThread =
                     DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient)
-                returnIntent.putExtra(ConversationFragmentV2.THREAD_ID, existingThread)
+                returnIntent.putExtra(ConversationActivityV2.THREAD_ID, existingThread)
                 returnIntent.putExtras(bundle)
                 setResult(RESULT_OK, returnIntent)
                 finish()

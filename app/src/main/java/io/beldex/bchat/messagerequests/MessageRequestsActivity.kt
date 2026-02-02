@@ -13,7 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2
+import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.database.model.ThreadRecord
 import com.bumptech.glide.Glide
@@ -74,7 +74,7 @@ class MessageRequestsActivity : PassphraseRequiredActionBarActivity(), Conversat
 
     override fun onConversationClick(thread: ThreadRecord) {
         val returnIntent = Intent()
-        returnIntent.putExtra(ConversationFragmentV2.THREAD_ID,thread.threadId)
+        returnIntent.putExtra(ConversationActivityV2.THREAD_ID,thread.threadId)
         setResult(RESULT_OK, returnIntent)
         finish()
     }

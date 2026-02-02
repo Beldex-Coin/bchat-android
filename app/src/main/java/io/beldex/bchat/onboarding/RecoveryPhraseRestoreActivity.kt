@@ -41,7 +41,7 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
         }
         binding = ActivityRecoveryPhraseRestoreBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setUpActionBarBchatLogo("Restore Seed",false)
+        setUpActionBarBchatLogo(getString(R.string.restore_seed),false)
         binding.mnemonicEditText.imeOptions = binding.mnemonicEditText.imeOptions or 16777216 // Always use incognito keyboard
         binding.restoreButton.setOnClickListener {
             if(binding.recoveryPhraseCountWord.text!=null && binding.recoveryPhraseCountWord.text=="25/25") {

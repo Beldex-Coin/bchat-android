@@ -34,18 +34,8 @@ class NavigationRVAdapter(private var items: ArrayList<NavigationItemModel>, pri
             holder.itemView.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
         }
         holder.itemView.findViewById<ImageView>(R.id.navigation_icon)
-
-        //holder.itemView.findViewById<ImageView>(R.id.navigation_icon).setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
-        //holder.itemView.findViewById<TextView>(R.id.navigation_title).setTextColor(Color.WHITE)
-        //val font = ResourcesCompat.getFont(context, R.font.mycustomfont)
-        //holder.itemView.navigation_text.typeface = font
-        //holder.itemView.navigation_text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20.toFloat())
-
         holder.itemView.findViewById<TextView>(R.id.navigation_title).text = items[position].title
-
         holder.itemView.findViewById<ImageView>(R.id.navigation_icon).setImageResource(items[position].icon)
-        
-        holder.itemView.findViewById<ImageView>(R.id.navigation_SubIcon).setImageResource(items[position].subIcon)
     }
 
 }

@@ -2,12 +2,7 @@ package io.beldex.bchat.data;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-
 import io.beldex.bchat.model.Wallet;
-import io.beldex.bchat.util.validator.BitcoinAddressType;
-import io.beldex.bchat.util.validator.BitcoinAddressValidator;
-import io.beldex.bchat.util.validator.EthAddressValidator;
 
 
 import io.beldex.bchat.R;
@@ -18,21 +13,7 @@ import timber.log.Timber;
 @RequiredArgsConstructor
 public enum Crypto {
     //by hales
-    BDX("BDX", true, "Beldex:tx_amount:recipient_name:tx_description", R.id.ibBDX, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, Wallet::isAddressValid),
-    BTC("BTC", true, "bitcoin:amount:label:message", R.id.ibBDX, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, address -> {
-        Timber.d("BTC ->%s", address);
-        return BitcoinAddressValidator.validate(address, BitcoinAddressType.BTC);
-    }),
-    DASH("DASH", true, "dash:amount:label:message", R.id.ibBDX, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, address -> {
-        return BitcoinAddressValidator.validate(address, BitcoinAddressType.DASH);
-    }),
-    DOGE("DOGE", true, "dogecoin:amount:label:message", R.id.ibBDX, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, address -> {
-        return BitcoinAddressValidator.validate(address, BitcoinAddressType.DOGE);
-    }),
-    ETH("ETH", false, "ethereum:amount:label:message", R.id.ibBDX, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, EthAddressValidator::validate),
-    LTC("LTC", true, "litecoin:amount:label:message", R.id.ibBDX, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, address -> {
-        return BitcoinAddressValidator.validate(address, BitcoinAddressType.LTC);
-    });
+    BDX("BDX", true, "Beldex:tx_amount:recipient_name:tx_description", R.id.ibBDX, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, Wallet::isAddressValid)
     ;
 
     @NonNull

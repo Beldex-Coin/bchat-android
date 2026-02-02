@@ -24,7 +24,6 @@ import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -54,15 +53,22 @@ import com.beldex.libbchat.utilities.GroupRecord
 import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
-import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.ThreadUtils
 import com.beldex.libsignal.utilities.toHexString
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
+import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.ApplicationContext
+import io.beldex.bchat.BuildConfig
+import io.beldex.bchat.R
+import io.beldex.bchat.archivechats.ArchiveChatViewModel
 import io.beldex.bchat.components.ProfilePictureView
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.conversation.v2.ConversationFragmentV2
+import io.beldex.bchat.conversation_v2.NewChatConversationActivity
+import io.beldex.bchat.conversation_v2.NewGroupConversationActivity
+import io.beldex.bchat.conversation_v2.NewGroupConversationType
 import io.beldex.bchat.crypto.IdentityKeyUtil
-import io.beldex.bchat.data.NodeInfo
 import io.beldex.bchat.database.BchatContactDatabase
 import io.beldex.bchat.database.BeldexAPIDatabase
 import io.beldex.bchat.database.BeldexMessageDatabase
@@ -74,6 +80,7 @@ import io.beldex.bchat.database.RecipientDatabase
 import io.beldex.bchat.database.SmsDatabase
 import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.database.model.ThreadRecord
+import io.beldex.bchat.databinding.FragmentHomeBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.drawer.ClickListener
 import io.beldex.bchat.drawer.NavigationItemModel
@@ -84,22 +91,16 @@ import io.beldex.bchat.groups.OpenGroupManager
 import io.beldex.bchat.home.search.GlobalSearchAdapter
 import io.beldex.bchat.home.search.GlobalSearchInputLayout
 import io.beldex.bchat.home.search.RecyclerViewDivider
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
-import io.beldex.bchat.model.AsyncTaskCoroutine
-import io.beldex.bchat.model.Wallet
 import io.beldex.bchat.my_account.ui.MyAccountActivity
 import io.beldex.bchat.my_account.ui.MyAccountScreens
 import io.beldex.bchat.my_account.ui.MyProfileActivity
-import io.beldex.bchat.onboarding.ui.EXTRA_PIN_CODE_ACTION
-import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.preferences.NotificationSettingsActivity
 import io.beldex.bchat.preferences.PrivacySettingsActivity
+import io.beldex.bchat.repository.ConversationRepository
 import io.beldex.bchat.search.SearchActivityResults
 import io.beldex.bchat.service.WebRtcCallService
 import io.beldex.bchat.util.BaseFragment
 import io.beldex.bchat.util.ConfigurationMessageUtilities
-import io.beldex.bchat.util.NodePinger
 import io.beldex.bchat.util.SaveYourSeedDialogBox
 import io.beldex.bchat.util.SwipeController
 import io.beldex.bchat.util.SwipeControllerActions
@@ -107,43 +108,20 @@ import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.disableClipping
 import io.beldex.bchat.util.getScreenWidth
-import io.beldex.bchat.util.nodelistasync.NodeListConstants
 import io.beldex.bchat.util.parcelable
 import io.beldex.bchat.util.toPx
-import io.beldex.bchat.wallet.CheckOnline
-import io.beldex.bchat.wallet.WalletFragment
-import io.beldex.bchat.wallet.info.WalletInfoActivity
-import io.beldex.bchat.wallet.utils.pincodeview.CustomPinActivity
-import io.beldex.bchat.wallet.utils.pincodeview.managers.LockManager
+import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.webrtc.CallViewModel
 import io.beldex.bchat.webrtc.WebRTCComposeActivity
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.BuildConfig
-import io.beldex.bchat.R
-import io.beldex.bchat.archivechats.ArchiveChatViewModel
-import io.beldex.bchat.conversation_v2.NewChatConversationActivity
-import io.beldex.bchat.conversation_v2.NewGroupConversationActivity
-import io.beldex.bchat.conversation_v2.NewGroupConversationType
-import io.beldex.bchat.databinding.FragmentHomeBinding
-import io.beldex.bchat.repository.ConversationRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.apache.commons.lang3.time.DurationFormatUtils
 import timber.log.Timber
-import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
-import java.net.HttpURLConnection
-import java.net.URL
-import java.util.Collections
-import java.util.Random
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.abs
@@ -252,15 +230,14 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     private lateinit var adapter: NavigationRVAdapter
 
     private var items = arrayListOf(
-        NavigationItemModel(R.drawable.ic_settings_outline, "Settings",0),
-        NavigationItemModel(R.drawable.ic_notification_outline, "Notification",0),
-        NavigationItemModel(R.drawable.ic_msg_rqst_outline, "Message Requests",0),
-        NavigationItemModel(R.drawable.ic_recovery_seed_outline, "Recovery Seed",0),
-        NavigationItemModel(R.drawable.ic_wallet_outline, "Wallet",R.drawable.ic_beta),
-        NavigationItemModel(R.drawable.ic_report_issue_outline,"Report Issue",0),
-        NavigationItemModel(R.drawable.ic_help_outline, "Help",0),
-        NavigationItemModel(R.drawable.ic_invite_outline, "Invite",0),
-        NavigationItemModel(R.drawable.ic_about_outline, "About",0)
+        NavigationItemModel(R.drawable.ic_settings_outline, "Settings"),
+        NavigationItemModel(R.drawable.ic_notification_outline, "Notification"),
+        NavigationItemModel(R.drawable.ic_msg_rqst_outline, "Message Requests"),
+        NavigationItemModel(R.drawable.ic_recovery_seed_outline, "Recovery Seed"),
+        NavigationItemModel(R.drawable.ic_report_issue_outline,"Report Issue"),
+        NavigationItemModel(R.drawable.ic_help_outline, "Help"),
+        NavigationItemModel(R.drawable.ic_invite_outline, "Invite"),
+        NavigationItemModel(R.drawable.ic_about_outline, "About")
     )
 
     // NavigationItemModel(R.drawable.ic_recovery_key, "Recovery Key"),
@@ -423,31 +400,19 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                         showSeed()
                     }
                     4 -> {
-                        // # My Wallet Activity
-                        if (CheckOnline.isOnline(requireActivity().applicationContext)) {
-                            if (TextSecurePreferences.isWalletActive(requireContext())) {
-                                openMyWallet()
-                            } else {
-                                openStartWalletInfo()
-                            }
-                        } else {
-                            Toast.makeText(requireActivity().applicationContext, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                    5 -> {
                         // # Support
                         activityCallback?.sendMessageToSupport()
                         binding.drawerLayout.closeDrawer(GravityCompat.END)
                     }
-                    6 -> {
+                    5 -> {
                         // # Help Activity
                         help()
                     }
-                    7 -> {
+                    6 -> {
                         // # Invite Activity
                         sendInvitation(hexEncodedPublicKey)
                     }
-                    8 -> {
+                    7 -> {
                         // # About Activity
                         showAbout()
                     }
@@ -789,14 +754,6 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     override fun onResume() {
         super.onResume()
         setupCallActionBar()
-        if(TextSecurePreferences.isWalletActive(requireContext())) {
-            if(TextSecurePreferences.getRefreshDynamicNodesStatus(requireContext())) {
-                val async = DownloadNodeListFileInHomeScreenAsyncTask(requireActivity().applicationContext)
-                async.execute<String>(NodeListConstants.downloadNodeListUrl)
-            }else{
-                pingSelectedNode(false)
-            }
-        }
         ApplicationContext.getInstance(requireActivity().applicationContext).messageNotifier.setHomeScreenVisible(false)
         if (TextSecurePreferences.getLocalNumber(requireActivity().applicationContext) == null) {
             return; } // This can be the case after a secondary device is auto-cleared
@@ -1197,148 +1154,9 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             drawerProfileIcon: ProfilePictureView
         )
         fun sendMessageToSupport()
-        //Node Connection
-        fun getFavouriteNodes(): MutableSet<NodeInfo>
-        fun getOrPopulateFavouritesRemoteNodeList(context: Context, storeNodes : Boolean): MutableSet<NodeInfo>
-        fun getNode(): NodeInfo?
-        fun setNode(node: NodeInfo?)
-
-        //Wallet
-        fun hasBoundService(): Boolean
-        val connectionStatus: Wallet.ConnectionStatus?
     }
 
     fun dispatchTouchEvent() {
-    }
-
-    private fun pingSelectedNode(storeNodes : Boolean) {
-        val pingSelected = 0
-        val findBest = 1
-        AsyncFindBestNode(pingSelected, findBest,storeNodes).execute<Int>(pingSelected)
-    }
-
-    inner class AsyncFindBestNode(private val pingSelected : Int, private val findBest : Int, private val storeNodes : Boolean) :
-        AsyncTaskCoroutine<Int?, NodeInfo?>() {
-
-        override fun doInBackground(vararg params: Int?): NodeInfo? {
-            if(isAdded) {
-                val favourites: Set<NodeInfo?> =
-                    activityCallback!!.getOrPopulateFavouritesRemoteNodeList(
-                        requireActivity(),
-                        storeNodes
-                    )
-                var selectedNode: NodeInfo?
-                if (params[0] == findBest) {
-                    selectedNode = autoselect(favourites)
-                } else if (params[0] == pingSelected) {
-                    selectedNode = activityCallback!!.getNode()
-                    if (selectedNode == null) {
-                        for (node in favourites) {
-                            if (node!!.isSelected) {
-                                selectedNode = node
-                                break
-                            }
-                        }
-                    }
-                    if (selectedNode == null) { // autoselect
-                        selectedNode = autoselect(favourites)
-                    } else {
-                        //Steve Josephh21
-                        if (selectedNode != null) {
-                            selectedNode.testRpcService()
-                        }
-                    }
-                } else throw IllegalStateException()
-                return if (selectedNode != null && selectedNode.isValid) {
-                    activityCallback!!.setNode(selectedNode)
-                    selectedNode
-                } else {
-                    selectedNode = autoselect(favourites)
-                    activityCallback!!.setNode(selectedNode)
-                    selectedNode
-                }
-            } else {
-                activityCallback!!.setNode(null)
-                return null
-            }
-        }
-
-        override fun onPostExecute(result: NodeInfo?) {
-            Log.d("Beldex", "daemon connected to  ${result?.host}")
-        }
-        
-    }
-
-    inner class DownloadNodeListFileInHomeScreenAsyncTask(private val mContext: Context) :
-        AsyncTaskCoroutine<String?, String?>() {
-        override fun onPreExecute() {
-            super.onPreExecute()
-        }
-
-        override fun doInBackground(vararg downloadUrl: String?): String? {
-            var input: InputStream? = null
-            var output: OutputStream? = null
-            var connection: HttpURLConnection? = null
-            try {
-                val url = URL(downloadUrl[0])
-                connection = url.openConnection() as HttpURLConnection
-                connection.connect()
-
-                // expect HTTP 200 OK, so we don't mistakenly save error report
-                // instead of the file
-                if (connection.responseCode != HttpURLConnection.HTTP_OK) {
-                    android.util.Log.d("Error","Server returned HTTP  + ${connection.responseCode} \n +${connection.responseMessage}")
-                    return ("Server returned HTTP " + connection.responseCode
-                            + " " + connection.responseMessage)
-                }
-
-                // download the file
-                input = connection.inputStream
-
-                val file = File(mContext.filesDir,"/${NodeListConstants.downloadNodeListFileName}")
-                if(file.exists()){
-                    file.delete()
-                }
-                output = FileOutputStream(mContext.filesDir.toString() + "/${NodeListConstants.downloadNodeListFileName}")
-                val data = ByteArray(4096)
-                var total: Long = 0
-                var count: Int
-                while (input.read(data).also { count = it } != -1) {
-                    // allow canceling with back button
-                    if (NonCancellable.isCancelled) {
-                        input.close()
-                        return null
-                    }
-                    total += count.toLong()
-                    output.write(data, 0, count)
-                }
-            } catch (e: Exception) {
-                return e.toString()
-            } finally {
-                try {
-                    output?.close()
-                    input?.close()
-                } catch (ignored: IOException) {
-                }
-                connection?.disconnect()
-            }
-            return null
-        }
-
-        override fun onPostExecute(result: String?) {
-            super.onPostExecute(result)
-            TextSecurePreferences.setRefreshDynamicNodesStatus(requireContext(), false)
-            pingSelectedNode(true)
-        }
-    }
-
-    fun autoselect(nodes: Set<NodeInfo?>): NodeInfo? {
-        if (nodes.isEmpty()) return null
-        NodePinger.execute(nodes, null)
-        val nodeList: ArrayList<NodeInfo?> = ArrayList<NodeInfo?>(nodes)
-        Collections.sort(nodeList, NodeInfo.BestNodeComparator)
-        val rnd = Random().nextInt(nodeList.size)
-        return nodeList[rnd]
     }
 
     private fun showAbout() {
@@ -1429,47 +1247,6 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             replaceFragment(ConversationFragmentV2(), null, extras)
         }else {
             homeAdapter.notifyDataSetChanged()
-        }
-    }
-
-    private fun openMyWallet() {
-        val walletName = TextSecurePreferences.getWalletName(requireContext())
-        val walletPassword = TextSecurePreferences.getWalletPassword(requireContext())
-        if (walletName != null && walletPassword != null) {
-            //startWallet(walletName, walletPassword, fingerprintUsed = false, streetmode = false)
-            val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
-            lockManager.enableAppLock(requireContext(), CustomPinActivity::class.java)
-            Intent(requireContext(), CustomPinActivity::class.java).also {
-                if(TextSecurePreferences.getWalletEntryPassword(requireContext()) != null) {
-                    it.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.VerifyWalletPin.action)
-                    it.putExtra("send_authentication",false)
-                    customPinActivityResultLauncher.launch(it)
-                } else{
-                    it.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.CreateWalletPin.action)
-                    it.putExtra("send_authentication",false)
-                    customPinActivityResultLauncher.launch(it)
-                }
-            }
-        }else{
-            Intent(requireContext(), WalletInfoActivity::class.java).also {
-                push(it)
-            }
-        }
-    }
-
-    private fun openStartWalletInfo(){
-        /*Intent(requireContext(), StartWalletInfo::class.java).also {
-            push(it)
-        }*/
-        Intent(activity, MyAccountActivity::class.java).also {
-            it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.StartWalletInfoScreen.route)
-            startActivity(it)
-        }
-    }
-
-    private var customPinActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            replaceFragment(WalletFragment(), WalletFragment::class.java.name, null)
         }
     }
 

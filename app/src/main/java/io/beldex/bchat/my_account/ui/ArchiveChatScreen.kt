@@ -436,7 +436,7 @@ fun ArchiveChatScreen(
 
             ArchiveChatItem(context=context, thread=archivedList, modifier=Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(vertical = 4.dp, horizontal = 6.dp)
                 .pointerInput(Unit) {
                     detectTapGestures(onTap={
                         onRequestClick(archivedList)

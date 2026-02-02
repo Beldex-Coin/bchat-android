@@ -16,12 +16,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libsignal.utilities.PublicKeyValidation
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2
 import io.beldex.bchat.qr.ScanListener
 import io.beldex.bchat.util.ScanQRCodeFragment
 import io.beldex.bchat.util.ScanQRCodePlaceholderFragment
 import io.beldex.bchat.util.ScanQRCodePlaceholderFragmentDelegate
 import io.beldex.bchat.R
+import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.databinding.ActivityPrivateChatScanQrcodeBinding
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
@@ -156,11 +156,11 @@ class PrivateChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
 
     private fun createPrivateChat(hexEncodedPublicKey: String,bnsName: String ) {
         val bundle = Bundle()
-        bundle.putParcelable(ConversationFragmentV2.URI,intent.data)
-        bundle.putString(ConversationFragmentV2.TYPE,intent.type)
-        bundle.putString(ConversationFragmentV2.BNS_NAME,bnsName)
+        bundle.putParcelable(ConversationActivityV2.URI,intent.data)
+        bundle.putString(ConversationActivityV2.TYPE,intent.type)
+        bundle.putString(ConversationActivityV2.BNS_NAME,bnsName)
         val returnIntent = Intent()
-        returnIntent.putExtra(ConversationFragmentV2.HEX_ENCODED_PUBLIC_KEY, hexEncodedPublicKey)
+        returnIntent.putExtra(ConversationActivityV2.HEX_ENCODED_PUBLIC_KEY, hexEncodedPublicKey)
         //returnIntent.setDataAndType(intent.data, intent.type)
         returnIntent.putExtras(bundle)
         setResult(RESULT_OK, returnIntent)

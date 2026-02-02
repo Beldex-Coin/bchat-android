@@ -14,7 +14,6 @@ import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -124,7 +123,7 @@ import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.checkAndRequestPermissions
 import io.beldex.bchat.contacts.blocked.BlockedContactsViewModel
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2
+import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.crypto.MnemonicUtilities
 import io.beldex.bchat.database.DatabaseContentProviders
@@ -148,8 +147,7 @@ import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.copyToClipBoard
 import io.beldex.bchat.util.toPx
-import io.beldex.bchat.wallet.CheckOnline
-import io.beldex.bchat.wallet.jetpackcomposeUI.StatWalletInfo
+import io.beldex.bchat.CheckOnline
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -492,21 +490,10 @@ fun MyAccountNavHost(
                 val state by viewModel.uiState.collectAsState()
                 val scrollState = rememberScrollState()
                 val isDarkMode = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
-                val beldexAddress by remember {
-                    mutableStateOf(
-                        IdentityKeyUtil.retrieve(
-                            context,
-                            IdentityKeyUtil.IDENTITY_W_ADDRESS_PREF
-                        )
-                    )
-                }
                 val copyToClipBoard: (String, String) -> Unit = { label, content ->
                     context.copyToClipBoard(label, content)
                 }
                 var showClearDataDialog by remember {
-                    mutableStateOf(false)
-                }
-                var showBeldexAddressDialog by remember {
                     mutableStateOf(false)
                 }
                 var showQRDialog by remember {
@@ -545,19 +532,6 @@ fun MyAccountNavHost(
                     ClearDataDialog {
                         showClearDataDialog = false
                     }
-                }
-
-                if (showBeldexAddressDialog) {
-                    CopyContentDialog(
-                        title = stringResource(id = R.string.beldex_address),
-                        data = beldexAddress,
-                        onCopy = {
-                            copyToClipBoard("Beldex Address", beldexAddress)
-                            showBeldexAddressDialog = false
-                        },
-                        onDismissRequest = {
-                            showBeldexAddressDialog = false
-                        })
                 }
 
                 if (showBChatIdDialog) {
@@ -816,7 +790,6 @@ fun MyAccountNavHost(
                             ProfileCard(
                                 isBnsHolder = isBnsHolder,
                                 uiState = state,
-                                beldexAddress = beldexAddress,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(
@@ -825,11 +798,7 @@ fun MyAccountNavHost(
                                 onShowDialog = {
                                     when (it) {
                                         0 ->
-                                            showBeldexAddressDialog = true
-
-                                        1 ->
                                             showBChatIdDialog = true
-
                                         else ->
                                             showQRDialog = true
                                     }
@@ -1255,20 +1224,6 @@ fun MyAccountNavHost(
             }
         }
 
-        composable(route = MyAccountScreens.StartWalletInfoScreen.route) {
-            MyAccountScreenContainer(title = stringResource(id = R.string.wallets), onBackClick = {
-                (context as ComponentActivity).finish()
-            }) {
-                StatWalletInfo(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp)
-                )
-
-            }
-
-        }
-
         composable(
             route = MyAccountScreens.MessageRequestsScreen.route
         ) {
@@ -1294,7 +1249,7 @@ fun MyAccountNavHost(
                     onEvent = requestViewModel::onEvent,
                     onRequestClick = {
                         val returnIntent = Intent()
-                        returnIntent.putExtra(ConversationFragmentV2.THREAD_ID, it.threadId)
+                        returnIntent.putExtra(ConversationActivityV2.THREAD_ID, it.threadId)
                         (context as Activity).run {
                             setResult(PassphraseRequiredActionBarActivity.RESULT_OK, returnIntent)
                             finish()
@@ -1348,7 +1303,7 @@ fun MyAccountNavHost(
                     requestsList = uiState.archiveChats,
                     onRequestClick = {
                         val returnIntent = Intent()
-                        returnIntent.putExtra(ConversationFragmentV2.THREAD_ID, it.threadId)
+                        returnIntent.putExtra(ConversationActivityV2.THREAD_ID, it.threadId)
                         (context as Activity).run {
                             setResult(PassphraseRequiredActionBarActivity.RESULT_OK, returnIntent)
                             finish()
@@ -1411,7 +1366,6 @@ fun LoaderAnimationPopUp() {
 fun ProfileCard(
     isBnsHolder : String?,
     uiState: MyAccountViewModel.UIState,
-    beldexAddress: String,
     modifier: Modifier = Modifier,
     onShowDialog: (status: Int) -> Unit,
     onShowEditName: Boolean,
@@ -1497,23 +1451,11 @@ fun ProfileCard(
         }
         
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            ProfileCardKeyContainer(
-                isBnsHolder = isBnsHolder,
-                title = stringResource(id = R.string.beldex_address),
-                image = R.drawable.ic_beldex_logo,
-                onCopy = {
-                    copyToClipBoard("Beldex Address", beldexAddress)
-                },
-                isBeldex = true,
-                onShowDialog = {
-                    onShowDialog(0)
-                }
-            )
-
-            Spacer(modifier = Modifier.padding(start = 3.dp))
 
             ProfileCardKeyContainer(
                 isBnsHolder = isBnsHolder,
@@ -1522,22 +1464,18 @@ fun ProfileCard(
                 onCopy = {
                     copyToClipBoard("BChat ID", uiState.publicKey)
                 },
-                onShowDialog = {
-                    onShowDialog(1)
-                }
+                onShowDialog = { onShowDialog(0) },
+                modifier = Modifier.weight(1f)
             )
-            Spacer(modifier = Modifier.padding(start = 3.dp))
 
             ProfileCardKeyContainer(
                 isBnsHolder = isBnsHolder,
                 title = stringResource(id = R.string.show_qr),
                 image = R.drawable.ic_show_qr,
-                onCopy = {
-                },
+                onCopy = {},
                 showCopyIcon = false,
-                onShowDialog = {
-                    onShowDialog(2)
-                }
+                onShowDialog = { onShowDialog(1) },
+                modifier = Modifier.weight(1f)
             )
         }
     }
@@ -1545,45 +1483,55 @@ fun ProfileCard(
 
 @Composable
 fun ProfileCardKeyContainer(
-    isBnsHolder:String?,
+    isBnsHolder: String?,
     title: String,
     image: Int,
     onCopy: () -> Unit,
     showCopyIcon: Boolean = true,
     isBeldex: Boolean = false,
-    onShowDialog: () -> Unit
+    onShowDialog: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
+        modifier = modifier,
         elevation = CardDefaults.cardElevation(
-            defaultElevation = if(!isBnsHolder.isNullOrEmpty()) 2.dp else 0.dp
+            defaultElevation = if (!isBnsHolder.isNullOrEmpty()) 2.dp else 0.dp
         ),
         colors = CardDefaults.cardColors(
-            containerColor = if(!isBnsHolder.isNullOrEmpty()) MaterialTheme.appColors.profileAddressCardBackground else MaterialTheme.appColors.backgroundColor
-        ),
+            containerColor =
+                if (!isBnsHolder.isNullOrEmpty())
+                    MaterialTheme.appColors.profileAddressCardBackground
+                else
+                    MaterialTheme.appColors.backgroundColor
+        )
     ) {
         Box(
             modifier = Modifier
+                .fillMaxWidth()
                 .padding(5.dp)
-                .clickable {
-                    onShowDialog()
-                }
+                .clickable { onShowDialog() }
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(
-                    top = 13.dp,
-                    bottom = 5.dp,
-                    start = if (isBeldex) 5.dp else 15.dp,
-                    end = if (isBeldex) 5.dp else 15.dp
-                )
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = 13.dp,
+                        bottom = 5.dp,
+                        start = if (isBeldex) 5.dp else 15.dp,
+                        end = if (isBeldex) 5.dp else 15.dp
+                    )
             ) {
                 Image(
-                    painter = painterResource(id = image), contentDescription = "",
-                    modifier = Modifier
-                        .size(25.dp),
-                    colorFilter = if (!showCopyIcon) ColorFilter.tint(MaterialTheme.appColors.editTextColor) else null
+                    painter = painterResource(id = image),
+                    contentDescription = null,
+                    modifier = Modifier.size(25.dp),
+                    colorFilter = if (!showCopyIcon)
+                        ColorFilter.tint(MaterialTheme.appColors.editTextColor)
+                    else null
                 )
+
                 Text(
                     text = title,
                     style = MaterialTheme.typography.bodySmall.copy(
@@ -1592,22 +1540,19 @@ fun ProfileCardKeyContainer(
                         fontWeight = FontWeight.Medium
                     ),
                     textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .align(Alignment.CenterHorizontally)
+                    modifier = Modifier.padding(top = 8.dp)
                 )
             }
+
             if (showCopyIcon) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_copy),
-                    contentDescription = "",
+                    contentDescription = null,
                     tint = MaterialTheme.appColors.editTextHint,
                     modifier = Modifier
                         .size(16.dp)
-                        .align(alignment = Alignment.TopEnd)
-                        .clickable {
-                            onCopy()
-                        }
+                        .align(Alignment.TopEnd)
+                        .clickable { onCopy() }
                 )
             }
         }

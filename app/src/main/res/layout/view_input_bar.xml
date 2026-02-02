@@ -67,7 +67,7 @@
                     android:layout_alignParentEnd="true"
                     android:gravity="center"
                     android:layout_centerVertical="true"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <ImageView
                         android:id="@+id/inChatBDX"
@@ -81,6 +81,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginBottom="10dp"
+                        android:visibility="gone"
                         android:src="@drawable/ic_in_chat_bdx" />
 
                     <ProgressBar

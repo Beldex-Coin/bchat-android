@@ -87,13 +87,13 @@ import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2
 import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 import io.beldex.bchat.conversation_v2.NewChatScreenViewModel
 import io.beldex.bchat.conversation_v2.OpenActivity
 import io.beldex.bchat.conversation_v2.getUserDisplayName
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.wallet.CheckOnline
+import io.beldex.bchat.CheckOnline
+import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
 
@@ -126,8 +126,8 @@ fun NewChatScreen(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == RESULT_OK) {
-            val hexEncodedPublicKey = result.data!!.getStringExtra(ConversationFragmentV2.HEX_ENCODED_PUBLIC_KEY)
-            val bnsName = result.data!!.getStringExtra(ConversationFragmentV2.BNS_NAME)
+            val hexEncodedPublicKey = result.data!!.getStringExtra(ConversationActivityV2.HEX_ENCODED_PUBLIC_KEY)
+            val bnsName = result.data!!.getStringExtra(ConversationActivityV2.BNS_NAME)
             if(hexEncodedPublicKey!=null) {
                 createPrivateChat(hexEncodedPublicKey, context, bnsName.toString())
             }
@@ -362,15 +362,15 @@ private fun createPrivateChat(hexEncodedPublicKey: String, context: Context,bnsN
     val recipient = Recipient.from(context, Address.fromSerialized(hexEncodedPublicKey), false)
     val bundle = Bundle()
     val intent = Intent()
-    bundle.putParcelable(ConversationFragmentV2.URI, intent.data)
-    bundle.putString(ConversationFragmentV2.TYPE, intent.type)
-    bundle.putString(ConversationFragmentV2.BNS_NAME,bnsName)
+    bundle.putParcelable(ConversationActivityV2.URI, intent.data)
+    bundle.putString(ConversationActivityV2.TYPE, intent.type)
+    bundle.putString(ConversationActivityV2.BNS_NAME,bnsName)
     val returnIntent = Intent()
-    returnIntent.putExtra(ConversationFragmentV2.ADDRESS, recipient.address)
+    returnIntent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
     //returnIntent.setDataAndType(intent.data, intent.type)
     val existingThread =
         DatabaseComponent.get(context).threadDatabase().getThreadIdIfExistsFor(recipient)
-    returnIntent.putExtra(ConversationFragmentV2.THREAD_ID, existingThread)
+    returnIntent.putExtra(ConversationActivityV2.THREAD_ID, existingThread)
     returnIntent.putExtras(bundle)
     activity?.setResult(RESULT_OK, returnIntent)
     activity?.finish()

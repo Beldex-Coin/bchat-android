@@ -42,29 +42,6 @@ class ClearAllDataDialog : BaseDialog() {
             updateUI()
         }
 
-    //Important
-/*    override fun setContentView(builder: AlertDialog.Builder) {
-        binding = DialogClearAllDataBinding.inflate(LayoutInflater.from(requireContext()))
-        binding.cancelButton.setOnClickListener {
-            if (step == Steps.NETWORK_PROMPT) {
-                clearAllData(false)
-            } else if (step != Steps.DELETING) {
-                dismiss()
-            }
-        }
-        binding.clearAllDataButton.setOnClickListener {
-            when(step) {
-                Steps.INFO_PROMPT -> step = Steps.NETWORK_PROMPT
-                Steps.NETWORK_PROMPT -> {
-                    clearAllData(true)
-                }
-                Steps.DELETING -> { *//* do nothing intentionally *//* }
-            }
-        }
-        builder.setView(binding.root)
-        builder.setCancelable(false)
-    }*/
-
     override fun setContentView(builder: AlertDialog.Builder) {
         binding = DialogClearAllDataBinding.inflate(LayoutInflater.from(requireContext()))
         val device = RadioOption(
@@ -148,23 +125,6 @@ class ClearAllDataDialog : BaseDialog() {
         }
     }
 
-    private fun removeWallet(){
-        val walletFolder: File = Helper.getWalletRoot(context)
-        val walletName = TextSecurePreferences.getWalletName(requireContext())
-        val walletFile = File(walletFolder, walletName!!)
-        val walletKeys =File(walletFolder, "$walletName.keys")
-        val walletAddress = File(walletFolder,"$walletName.address.txt")
-        if(walletFile.exists()) {
-            walletFile.delete() // when recovering wallets, the cache seems corrupt - so remove it
-        }
-        if(walletKeys.exists()) {
-            walletKeys.delete()
-        }
-        if(walletAddress.exists()) {
-            walletAddress.delete()
-        }
-    }
-
     private fun clearAllData(deleteNetworkMessages: Boolean) {
         clearJob = lifecycleScope.launch(Dispatchers.IO) {
             val previousStep = step
@@ -178,9 +138,6 @@ class ClearAllDataDialog : BaseDialog() {
                 } catch (e: Exception) {
                     Log.e("Beldex", "Failed to force sync", e)
                 }
-
-                //New Line
-                removeWallet()
 
                 ApplicationContext.getInstance(requireContext()).clearAllData(false)
                 withContext(Dispatchers.Main) {
@@ -200,8 +157,6 @@ class ClearAllDataDialog : BaseDialog() {
                         step = previousStep
                     }
                 } else if (result.values.all { it }) {
-                    //New Line
-                    removeWallet()
                     // don't force sync because all the messages are deleted?
                     ApplicationContext.getInstance(requireContext()).clearAllData(false)
                         withContext(Dispatchers.Main) {

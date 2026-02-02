@@ -78,7 +78,7 @@ import io.beldex.bchat.util.isSharedContact
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.TextColor
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2
+import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
 import io.beldex.bchat.conversation.v2.contact_sharing.SharedContactView
 import io.beldex.bchat.conversation.v2.search.SearchViewModel
@@ -322,7 +322,7 @@ class VisibleMessageContentView : MaterialCardView {
                 // Audio attachment
                 if (contactIsTrusted || message.isOutgoing) {
                     binding.voiceMessageView.root.indexInAdapter=indexInAdapter
-                    binding.voiceMessageView.root.delegate=context as? ConversationFragmentV2
+                    binding.voiceMessageView.root.delegate=context as? ConversationActivityV2
                     binding.voiceMessageView.root.bind(
                         message,
                         isStartOfMessageCluster,

@@ -26,7 +26,7 @@ import io.beldex.bchat.util.Helper
 import io.beldex.bchat.util.NodePinger
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
-import io.beldex.bchat.wallet.CheckOnline
+import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityDisplayNameBinding
 import kotlinx.coroutines.Dispatchers

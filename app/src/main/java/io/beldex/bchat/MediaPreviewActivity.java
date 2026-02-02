@@ -55,6 +55,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import io.beldex.bchat.conversation.v2.ConversationActivityV2;
 import io.beldex.bchat.database.loaders.PagingMediaLoader;
 import io.beldex.bchat.database.model.MmsMessageRecord;
 import io.beldex.bchat.mms.Slide;
@@ -70,7 +71,6 @@ import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.utilities.recipients.RecipientModifiedListener;
 import com.beldex.libsignal.utilities.Log;
 import io.beldex.bchat.components.MediaView;
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2;
 import io.beldex.bchat.database.MediaDatabase.MediaRecord;
 import io.beldex.bchat.mediapreview.MediaPreviewViewModel;
 import io.beldex.bchat.mediapreview.MediaRailAdapter;
@@ -360,14 +360,12 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     if (result.getResultCode() == Activity.RESULT_OK) {
       Bundle extras = new Bundle();
       assert result.getData() != null;
-      extras.putParcelable(ConversationFragmentV2.ADDRESS,result.getData().getParcelableExtra(ConversationFragmentV2.ADDRESS));
-      extras.putLong(ConversationFragmentV2.THREAD_ID, result.getData().getLongExtra(ConversationFragmentV2.THREAD_ID,-1));
-      Log.d("MediaPreviewActivity->uri",""+result.getData().getParcelableExtra(ConversationFragmentV2.URI));
-      Log.d("MediaPreviewActivity->type",""+result.getData().getStringExtra(ConversationFragmentV2.TYPE));
-      extras.putParcelable(ConversationFragmentV2.URI,result.getData().getParcelableExtra(ConversationFragmentV2.URI));
+      extras.putParcelable(ConversationActivityV2.ADDRESS,result.getData().getParcelableExtra(ConversationActivityV2.ADDRESS));
+      extras.putLong(ConversationActivityV2.THREAD_ID, result.getData().getLongExtra(ConversationActivityV2.THREAD_ID,-1));
+      extras.putParcelable(ConversationActivityV2.URI,result.getData().getParcelableExtra(ConversationActivityV2.URI));
       Intent intent = new Intent();
       intent.putExtra(Intent.EXTRA_TEXT,result.getData().getCharSequenceExtra(Intent.EXTRA_TEXT));
-      intent.putExtra(ConversationFragmentV2.TYPE,result.getData().getStringExtra(ConversationFragmentV2.TYPE));
+      intent.putExtra(ConversationActivityV2.TYPE,result.getData().getStringExtra(ConversationActivityV2.TYPE));
       intent.putExtras(extras);
       setResult(RESULT_OK,intent);
       finish();

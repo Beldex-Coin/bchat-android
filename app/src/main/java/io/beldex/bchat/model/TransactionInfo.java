@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import io.beldex.bchat.data.Subaddress;
-import io.beldex.bchat.data.Subaddress;
 
 import java.util.List;
 

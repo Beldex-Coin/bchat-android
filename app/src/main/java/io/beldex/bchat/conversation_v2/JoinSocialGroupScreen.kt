@@ -77,7 +77,7 @@ import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.ui.BChatPreviewContainer
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2
+import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.groups.GroupManager
 import io.beldex.bchat.groups.JoinPublicChatScanQRCodeActivity
 import io.beldex.bchat.groups.OpenGroupManager
@@ -127,8 +127,8 @@ fun JoinSocialGroupScreen(
     ) { result ->
         if (result.resultCode == RESULT_OK) {
             val extras = Bundle()
-            extras.putParcelable(ConversationFragmentV2.ADDRESS, result.data!!.parcelable(ConversationFragmentV2.ADDRESS))
-            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID, -1))
+            extras.putParcelable(ConversationActivityV2.ADDRESS, result.data!!.parcelable(ConversationActivityV2.ADDRESS))
+            extras.putLong(ConversationActivityV2.THREAD_ID, result.data!!.getLongExtra(ConversationActivityV2.THREAD_ID, -1))
             val returnIntent = Intent()
             returnIntent.putExtras(extras)
             activity?.setResult(RESULT_OK, returnIntent)

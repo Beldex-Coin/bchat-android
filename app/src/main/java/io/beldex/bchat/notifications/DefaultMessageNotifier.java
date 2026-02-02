@@ -48,7 +48,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import io.beldex.bchat.ApplicationContext;
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2;
+import io.beldex.bchat.conversation.v2.ConversationActivityV2;
 import io.beldex.bchat.database.model.MediaMmsMessageRecord;
 import io.beldex.bchat.database.model.MessageRecord;
 import io.beldex.bchat.database.model.MmsMessageRecord;
@@ -64,7 +64,7 @@ import com.beldex.libbchat.messaging.utilities.UpdateMessageData;
 import com.beldex.libbchat.mnode.MnodeAPI;
 import io.beldex.bchat.ApplicationContext;
 import io.beldex.bchat.contactshare.ContactUtil;
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2;
+import io.beldex.bchat.conversation.v2.ConversationActivityV2;
 import io.beldex.bchat.conversation.v2.utilities.MentionManagerUtilities;
 import io.beldex.bchat.conversation.v2.utilities.MentionUtilities;
 import io.beldex.bchat.database.MessagingDatabase;
@@ -166,10 +166,9 @@ public class DefaultMessageNotifier implements MessageNotifier {
     }*/
     if (visibleThread != threadId) {
       Log.d("visibleThread","true");
-      Intent intent = new Intent(context, HomeActivity.class);
-      intent.putExtra(ConversationFragmentV2.ADDRESS, recipient.getAddress());
-      intent.putExtra(ConversationFragmentV2.THREAD_ID, threadId);
-      intent.putExtra(HomeActivity.SHORTCUT_LAUNCHER,true); //- New
+      Intent intent = new Intent(context, ConversationActivityV2.class);
+      intent.putExtra(ConversationActivityV2.ADDRESS, recipient.getAddress());
+      intent.putExtra(ConversationActivityV2.THREAD_ID, threadId);
       intent.setData((Uri.parse("custom://" + MnodeAPI.getNowWithOffset())));
 
       FailedNotificationBuilder builder = new FailedNotificationBuilder(context, TextSecurePreferences.getNotificationPrivacy(context), intent);

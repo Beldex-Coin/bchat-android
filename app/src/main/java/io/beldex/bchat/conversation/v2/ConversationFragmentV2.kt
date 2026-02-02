@@ -12,10 +12,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.database.Cursor
-import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.Typeface
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
@@ -25,12 +23,9 @@ import android.os.Looper
 import android.os.SystemClock
 import android.text.Editable
 import android.text.Html
-import android.text.Spannable
-import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.util.Pair
 import android.util.TypedValue
@@ -46,7 +41,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.ColorInt
@@ -55,10 +49,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
-import io.beldex.bchat.util.drawToBitmap
 import androidx.core.view.isVisible
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -86,7 +77,6 @@ import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment
 import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview
 import com.beldex.libbchat.messaging.sending_receiving.quotes.QuoteModel
-import com.beldex.libbchat.messaging.utilities.UpdateMessageData.Companion.buildSharedContact
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.MediaTypes
@@ -113,7 +103,6 @@ import io.beldex.bchat.contactshare.SimpleTextWatcher
 import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
 import io.beldex.bchat.conversation.v2.contact_sharing.ContactSharingActivity
 import io.beldex.bchat.conversation.v2.contact_sharing.ViewAllContactFragment
-import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 import io.beldex.bchat.conversation.v2.contact_sharing.flattenData
 import io.beldex.bchat.conversation.v2.dialogs.LinkPreviewDialog
 import io.beldex.bchat.conversation.v2.dialogs.SendSeedDialog
@@ -136,10 +125,6 @@ import io.beldex.bchat.conversation.v2.utilities.MentionUtilities
 import io.beldex.bchat.conversation.v2.utilities.ResendMessageUtilities
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.crypto.MnemonicUtilities
-import io.beldex.bchat.data.NodeInfo
-import io.beldex.bchat.data.PendingTx
-import io.beldex.bchat.data.TxData
-import io.beldex.bchat.data.UserNotes
 import io.beldex.bchat.database.BeldexMessageDatabase
 import io.beldex.bchat.database.MmsDatabase
 import io.beldex.bchat.database.ReactionDatabase
@@ -152,8 +137,6 @@ import io.beldex.bchat.database.model.ReactionRecord
 import io.beldex.bchat.database.model.ThreadRecord
 import io.beldex.bchat.databinding.FragmentConversationV2Binding
 import io.beldex.bchat.databinding.ViewVisibleMessageBinding
-import io.beldex.bchat.delegates.WalletDelegates
-import io.beldex.bchat.delegates.WalletDelegatesImpl
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.giph.ui.GiphyActivity
 import io.beldex.bchat.groups.SecretGroupInfoComposeActivity
@@ -174,38 +157,26 @@ import io.beldex.bchat.mms.MediaConstraints
 import io.beldex.bchat.mms.Slide
 import io.beldex.bchat.mms.SlideDeck
 import io.beldex.bchat.mms.VideoSlide
-import io.beldex.bchat.model.AsyncTaskCoroutine
-import io.beldex.bchat.model.PendingTransaction
-import io.beldex.bchat.model.Wallet
-import io.beldex.bchat.onboarding.ui.EXTRA_PIN_CODE_ACTION
-import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.preferences.PrivacySettingsActivity
 import io.beldex.bchat.reactions.ReactionsDialogFragment
 import io.beldex.bchat.reactions.any.ReactWithAnyEmojiDialogFragment
 import io.beldex.bchat.service.WebRtcCallService
 import io.beldex.bchat.util.ActivityDispatcher
-import io.beldex.bchat.util.BChatThreadPoolExecutor
 import io.beldex.bchat.util.BaseFragment
 import io.beldex.bchat.util.ConfigurationMessageUtilities
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.Helper
 import io.beldex.bchat.util.MediaUtil
 import io.beldex.bchat.util.SaveAttachmentTask
+import io.beldex.bchat.util.drawToBitmap
 import io.beldex.bchat.util.getColorWithID
-import io.beldex.bchat.util.isValidString
 import io.beldex.bchat.util.parcelable
 import io.beldex.bchat.util.serializable
 import io.beldex.bchat.util.shortNameAndAddress
-import io.beldex.bchat.util.slidetoact.SlideToActView
-import io.beldex.bchat.util.slidetoact.SlideToActView.OnSlideCompleteListener
 import io.beldex.bchat.util.toPx
-import io.beldex.bchat.wallet.CheckOnline
+import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.wallet.OnBackPressedListener
-import io.beldex.bchat.wallet.send.SendFailedDialog
-import io.beldex.bchat.wallet.send.interfaces.SendConfirm
-import io.beldex.bchat.wallet.utils.pincodeview.CustomPinActivity
-import io.beldex.bchat.wallet.utils.pincodeview.managers.LockManager
 import io.beldex.bchat.webrtc.CallViewModel
 import io.beldex.bchat.webrtc.NetworkChangeReceiver
 import io.beldex.bchat.webrtc.WebRTCComposeActivity
@@ -223,12 +194,8 @@ import org.apache.commons.lang3.time.DurationFormatUtils
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
-import java.lang.System
-import java.text.DecimalFormat
-import java.text.NumberFormat
 import java.util.Locale
 import java.util.concurrent.ExecutionException
-import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
@@ -248,9 +215,8 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
     ConversationActionModeCallbackDelegate,
     RecipientModifiedListener,
     SearchBottomBar.EventListener, LoaderManager.LoaderCallbacks<Cursor>,
-    ConversationMenuHelper.ConversationMenuListener, OnBackPressedListener, SendConfirm,
-    ConversationActionDialog.ConversationActionDialogListener,
-    WalletDelegates by WalletDelegatesImpl(), VisibleMessageViewDelegate,
+    ConversationMenuHelper.ConversationMenuListener, OnBackPressedListener,
+    ConversationActionDialog.ConversationActionDialogListener, VisibleMessageViewDelegate,
     ConversationReactionOverlay.OnReactionSelectedListener,
     ReactWithAnyEmojiDialogFragment.Callback, ReactionsDialogFragment.Callback,
     SecretGroupInfoComposeActivity.SocialGroupInfoInterface,
@@ -270,7 +236,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         )[LinkPreviewViewModel::class.java]
     }
 
-    //    var threadId: Long? = -1L
     @Inject
     lateinit var threadDb : ThreadDatabase
 
@@ -529,37 +494,8 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
     private var listenerCallback : Listener?=null
     private var mContext : Context?=null
 
-    var senderBeldexAddress : String?=null
-    private var sendBDXAmount : String?=null
-
-    private fun getTxData() : TxData {
-        return txData
-    }
-
-    private var txData=TxData()
-
-    var pendingTransaction : PendingTransaction?=null
-    var pendingTx : PendingTx?=null
-    private var totalFunds : Long=0
-    private val mixin=0
     private var isResume : Boolean=false
-    private val cleanFormat="%." + Helper.BDX_DECIMALS.toString() + "f"
-    private var committedTx : PendingTx?=null
-
-    private var syncText : String?=null
-    private var syncProgress=4f//-1
-    private var firstBlock : Long=0
-    private var balance : Long=0
-    private val formatter=NumberFormat.getInstance()
-    private var walletAvailableBalance : String?=null
-    private var unlockedBalance : Long=0
-    private var walletSynchronized : Boolean=false
     private var blockProgressBarVisible : Boolean=false
-    var transactionInProgress=false
-    private var valueOfBalance="--"
-    private var valueOfUnLockedBalance="--"
-    private var valueOfWallet="--"
-    private var tooltipIsVisible=false
     private var dispatchTouched=false
     private var networkChangedReceiver : NetworkChangeReceiver?=null
     private var isNetworkAvailable=true
@@ -570,7 +506,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
     private var isAudioPlaying : Boolean=false
     private var audioPlayingIndexInAdapter : Int=-1
     private lateinit var screenshotDetector: ScreenshotDetector
-
     private var menuItemLastClickTime: Long = 0
     private var unblockButtonLastClickTime: Long = 0
     private var clearChatButtonLastClickTiem: Long = 0
@@ -579,30 +514,13 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
     interface Listener {
         fun getConversationViewModel() : ConversationViewModel.AssistedFactory
         fun gettextSecurePreferences() : TextSecurePreferences
-        fun onDisposeRequest()
-        val getUnLockedBalance : Long
-        val getFullBalance : Long
-        fun onPrepareSend(tag : String?, data : TxData?)
-        fun onSend(notes : UserNotes?)
-        fun onBackPressedFun()
-
-        fun walletOnBackPressed() //-
-
-        //Wallet
-        fun hasBoundService() : Boolean
-        val connectionStatus : Wallet.ConnectionStatus?
-        fun forceUpdate(requireActivity : Context)
-
-        //SetDataAndType
+        fun walletOnBackPressed()
         fun passSharedMessageToConversationScreen(thread : Recipient)
-        fun getNode() : NodeInfo?
-        val isSynced : Boolean
     }
 
     override fun onCreate(savedInstanceState : Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-//            threadId = it.getLong(THREAD_ID)
             param2=it.getString(ARG_PARAM2)
         }
         setHasOptionsMenu(true)
@@ -622,10 +540,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         super.onViewCreated(view, savedInstanceState)
         searchViewModel=ViewModelProvider(requireActivity())[SearchViewModel::class.java]
         audioRecorder=AudioRecorder(requireActivity().applicationContext)
-
         checkReadExternalStoragePermission()
-
-//        val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
         callViewModel=ViewModelProvider(requireActivity())[CallViewModel::class.java]
         lifecycleScope.launch {
             viewModel.backToHome.collectLatest {
@@ -640,10 +555,8 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             }
         }
 
-
         groupRepository=
             SecretGroupInfoRepository(DatabaseComponent.get(requireContext()).groupDatabase())
-
 
         // messageIdToScroll
         messageToScrollTimestamp.set(requireArguments().getLong(SCROLL_MESSAGE_ID, -1))
@@ -654,7 +567,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         if (isNetworkAvailable) {
             binding.networkStatusLayout.visibility=View.GONE
         }
-
 
         lifecycleScope.launch(Dispatchers.IO) {
             unreadCount=viewModel.getUnreadCount()
@@ -733,94 +645,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             ViewUtil.findStubById(requireActivity(), R.id.conversation_reaction_scrubber_stub)
         reactionDelegate=ConversationReactionDelegate(reactionOverlayStub)
         reactionDelegate.setOnReactionSelectedListener(this)
-
-        AsyncStartWallet().execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
-        if (TextSecurePreferences.isWalletActive(requireContext())) {
-            showBlockProgressBar(viewModel.recipient.value)
-
-            callShowPayAsYouChatBDXIcon(viewModel.recipient.value)
-
-            showBalance(Helper.getDisplayAmount(0), Helper.getDisplayAmount(0), walletSynchronized)
-        }
-
-        if (listenerCallback!!.getNode() == null) {
-            setProgress(getString(R.string.failed_to_connect_to_node))
-            setProgress(2f)
-            binding.inputBar.setDrawableProgressBar(
-                requireActivity().applicationContext,
-                true,
-                valueOfWallet,
-                2f
-            )
-        }
-
-
-        binding.slideToPayButton.onSlideCompleteListener=object : OnSlideCompleteListener {
-            override fun onSlideComplete(view : SlideToActView) {
-                binding.slideToPayButton.setCompleted(completed=false, withAnimation=true)
-                if (CheckOnline.isOnline(requireActivity())) {
-                    if (blockProgressBarVisible) {
-                        when {
-                            syncText != getString(R.string.status_synchronized) -> {
-                                Toast.makeText(
-                                    requireActivity(),
-                                    "Blocks are syncing wait until your wallet is fully synchronized",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-
-                            senderBeldexAddress == null || senderBeldexAddress!!.isEmpty() -> {
-                                if (viewModel.recipient.value != null) {
-                                    senderBeldexAddress=
-                                        viewModel.getBeldexAddress(viewModel.recipient.value!!.address)
-                                    if (senderBeldexAddress.isValidString()) {
-                                        if (validateBELDEXAmount(binding.inputBar.text)) {
-                                            sendBDX()
-                                        } else {
-                                            Toast.makeText(
-                                                requireActivity(),
-                                                R.string.beldex_amount_valid_error_message,
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-                                    } else {
-                                        Toast.makeText(
-                                            requireActivity(),
-                                            R.string.invalid_destination_address,
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                } else {
-                                    Toast.makeText(
-                                        requireActivity(),
-                                        R.string.invalid_destination_address,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            }
-
-                            validateBELDEXAmount(binding.inputBar.text) -> {
-                                sendBDX()
-                            }
-
-                            else -> {
-                                Toast.makeText(
-                                    requireActivity(),
-                                    R.string.beldex_amount_valid_error_message,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-                    }
-                } else {
-                    Toast.makeText(
-                        requireActivity(),
-                        R.string.please_check_your_internet_connection,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        }
         callViewModel=ViewModelProvider(requireActivity())[CallViewModel::class.java]
     }
 
@@ -833,38 +657,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
 
         viewModel.recipient.value?.let { thread ->
             showBlockProgressBar(thread)
-            callShowPayAsYouChatBDXIcon(thread)
-
-            if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
-                if (binding.inputBar.text.isNotEmpty() && binding.inputBar.text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"))) {
-                    binding.inputBar.setTextColor(thread, HomeActivity.reportIssueBChatID, true)
-                    showPayWithSlide(thread, true)
-                } else {
-                    binding.inputBar.setTextColor(thread, HomeActivity.reportIssueBChatID, false)
-                    showPayWithSlide(thread, false)
-                }
-                if (syncText == getString(R.string.failed_to_connect_to_node) || syncText == getString(
-                        R.string.failed_connected_to_the_node
-                    ) || syncText == getString(R.string.no_node_connection)
-                ) {
-                    binding.inputBar.showDrawableProgressBar(true, valueOfWallet)
-                } else {
-                    binding.inputBar.showDrawableProgressBar(false, valueOfWallet)
-                }
-            } else {
-                binding.inputBar.setTextColor(thread, HomeActivity.reportIssueBChatID, false)
-                showPayWithSlide(thread, false)
-            }
-        }
-
-        //Minimized app
-        if (onTransactionProgress) {
-            onTransactionProgress=false
-            hideProgress()
-            refreshTransactionDetails()
-            //Continuously Transaction
-            this.pendingTransaction=null
-            this.pendingTx=null
         }
     }
 
@@ -897,10 +689,13 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
     }
 
     private fun sendScreenShotTakenNotification() {
-        val recipient=viewModel.recipient.value ?: return
-        if(!recipient.hasApprovedMe() || !recipient.isApproved) return
-        val userPublicKey=textSecurePreferences.getLocalNumber()
-        val isNoteToSelf=recipient.address.toString() == userPublicKey
+        val recipient = viewModel.recipient.value ?: return
+
+        if (!recipient.hasApprovedMe() || !recipient.isApproved) return
+
+        val localNumber = textSecurePreferences.getLocalNumber()
+        val isNoteToSelf = recipient.address.toString() == localNumber
+
         if (recipient.isGroupRecipient || recipient.isBlocked || isNoteToSelf) {
             return
         }
@@ -1061,10 +856,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
     }
 
     override fun onPause() {
-        //Continuously loading progress bar
-        if (inProgress) {
-            hideProgress()
-        }
         ApplicationContext.getInstance(requireActivity()).messageNotifier.setVisibleThread(-1)
         viewModel.saveDraft(binding.inputBar.text.trim())
         if (isAudioPlaying) {
@@ -1523,7 +1314,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
     }
 
-    @Deprecated("Deprecated in Java")
+/*    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode : Int, resultCode : Int, intent : Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
         val mediaPreppedListener=object : ListenableFuture.Listener<Boolean> {
@@ -1633,7 +1424,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                 viewModel.inviteContacts(recipients)
             }
         }
-    }
+    }*/
 
     private fun prepMediaForSending(
         uri : Uri,
@@ -1793,28 +1584,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         }
     }
 
-    private fun validateBELDEXAmount(amount : String) : Boolean {
-        val maxValue=150000000.00000
-        val value=amount.replace(',', '.')
-        val regExp="^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"
-
-        val isValid : Boolean=if (value.matches(Regex(regExp))) {
-            if (value == ".") {
-                false
-            } else {
-                try {
-                    val dValue=value.toDouble()
-                    (dValue <= maxValue && dValue > 0)
-                } catch (e : java.lang.Exception) {
-                    false
-                }
-            }
-        } else {
-            false
-        }
-        return isValid
-    }
-
     private fun callSendTextOnlyMessage() {
         if (binding.inputBar.text.length > 4096) {
             Toast.makeText(
@@ -1829,143 +1598,8 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         }
     }
 
-    override fun inChatBDXOptions() {
-        hideAttachmentContainer()
-        checkUnBlock()
-        try {
-            val dialog=android.app.AlertDialog.Builder(requireActivity())
-            val inflater=layoutInflater
-            val dialogView=inflater.inflate(R.layout.pay_as_you_chat, null)
-            dialog.setView(dialogView)
-
-            val okButton=dialogView.findViewById<Button>(R.id.okButton)
-            val cancelButton=dialogView.findViewById<Button>(R.id.cancelButton)
-            val enableInstruction=
-                dialogView.findViewById<TextView>(R.id.payAsYouChatEnable_Instruction)
-            val alert=dialog.create()
-            alert.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            alert.setCanceledOnTouchOutside(false)
-            alert.show()
-            if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
-                enableInstruction.text=
-                    fromHtml("To disable pay as you chat, go to <b>Settings -> Wallet Settings -> Pay As You Chat</b> to use this option")
-            } else {
-                enableInstruction.text=
-                    fromHtml("Enable pay as you chat from <b>Settings -> Wallet Settings -> Pay As You Chat</b> to use this option")
-            }
-            okButton.setOnClickListener {
-                val intent=Intent(requireActivity(), PrivacySettingsActivity::class.java)
-                this.activity?.startActivity(intent)
-                alert.dismiss()
-            }
-            cancelButton.setOnClickListener {
-                alert.dismiss()
-            }
-        } catch (exception : Exception) {
-            Timber.tag("Beldex").d("PayAsYouChat exception $exception")
-        }
-    }
-
-    override fun walletDetailsUI() {
-        hideAttachmentContainer()
-        checkUnBlock()
-        when {
-            binding.tooltip.isVisible -> {
-                binding.tooltip.visibility=View.GONE
-                tooltipIsVisible=false
-            }
-
-            dispatchTouched -> {
-                dispatchTouched=false
-            }
-
-            else -> {
-                if (!binding.slideToPayButton.isVisible) {
-                    binding.tooltip.visibility=View.VISIBLE
-                    tooltipIsVisible=true
-                }
-            }
-        }
-        toolTip()
-    }
-
     fun dispatchTouchEvents(event : MotionEvent) {
-        if (tooltipIsVisible) {
-            binding.tooltip.visibility=View.GONE
-            tooltipIsVisible=false
-            dispatchTouched=true
-        } else {
-            dispatchTouched=false
-        }
         reactionDelegate.applyTouchEvent(event)
-    }
-
-    private fun toolTip() {
-        checkIfFragmentAttached {
-            if (TextSecurePreferences.isPayAsYouChat(requireContext())) {
-                when {
-                    valueOfWallet != "100%" -> {
-                        val color=ResourcesCompat.getColor(
-                            requireContext().resources,
-                            R.color.text_old_green,
-                            requireContext().theme
-                        )
-                        val valueOfWalletText=SpannableStringBuilder(valueOfWallet)
-                        valueOfWalletText.setSpan(
-                            ForegroundColorSpan(color),
-                            valueOfWallet.indexOf(valueOfWallet),
-                            valueOfWallet.indexOf(valueOfWallet) + valueOfWallet.length,
-                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                        )
-                        binding.tooltip.text=Html.fromHtml(
-                            "<p>Wallet Synchronizing : <b> <font color='#00BD40'>$valueOfWallet</font> </b> </p>",
-                            Html.FROM_HTML_MODE_COMPACT
-                        )
-                        tooltipStyle()
-                    }
-
-                    else -> {
-                        binding.tooltip.text=Html.fromHtml(
-                            "<p> <b>Balance : <font color='#00BD40'> $valueOfBalance </font> BDX</b> </p> <br /> <p><b>Unlocked Balance : <font color='#00BD40'> $valueOfUnLockedBalance </font> </b> BDX</p> <br /> <p>Wallet : <font color='#00BD40'> $valueOfWallet </font> </p>",
-                            Html.FROM_HTML_MODE_COMPACT
-                        )
-                        tooltipStyle()
-                    }
-                }
-            } else {
-                val explanation=resources.getString(R.string.hold_to_enable_option)
-                val spannable=SpannableStringBuilder(explanation)
-                val face=
-                    Typeface.createFromAsset(requireContext().assets, "fonts/open_sans_bold.ttf")
-                val color=ResourcesCompat.getColor(
-                    requireContext().resources,
-                    R.color.negative_green_button_border, requireContext().theme
-                )
-                spannable.setSpan(
-                    ForegroundColorSpan(color),
-                    14,
-                    30,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                binding.tooltip.typeface=face
-                binding.tooltip.text=spannable
-            }
-        }
-    }
-
-    private fun tooltipStyle() {
-        val face=
-            Typeface.createFromAsset(
-                requireContext().assets,
-                "fonts/open_sans_medium.ttf"
-            )
-        @ColorInt val color=
-            requireContext().resources.getColorWithID(
-                R.color.text,
-                requireContext().theme
-            )
-        binding.tooltip.setTextColor(color)
-        binding.tooltip.typeface=face
     }
 
     private fun failedToConnectToolTipStyle() {
@@ -2372,7 +2006,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                 .execute()
         }
     }
-
     override fun reply(messages : Set<MessageRecord>) {
         val recipient=viewModel.recipient.value ?: return
         //New Line
@@ -2392,28 +2025,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
 
     //SteveJosephh21 - 08
     override fun block(deleteThread : Boolean) {
-//        val title = R.string.RecipientPreferenceActivity_block_this_contact_question
-//        val message =
-//            R.string.RecipientPreferenceActivity_you_will_no_longer_receive_messages_and_calls_from_this_contact
-//        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog_Clear_All)
-//            .setTitle(title)
-//            .setMessage(message)
-//            .setNegativeButton(android.R.string.cancel, null)
-//            .setPositiveButton(R.string.RecipientPreferenceActivity_block) { _, _ ->
-//                viewModel.block()
-//                viewModel.recipient.value?.let { thread ->
-//                    showBlockProgressBar(thread)
-//                }
-//                if (deleteThread) {
-//                    viewModel.deleteThread()
-//                }
-//            }.show()
-//        //New Line
-//        val textView: TextView? = dialog.findViewById(android.R.id.message)
-//        val face: Typeface =
-//            Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
-//        textView!!.typeface = face
-
         val blockDialog=ConversationActionDialog()
         blockDialog.apply {
             arguments=Bundle().apply {
@@ -2429,26 +2040,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
     }
 
     override fun unblock() {
-//        val title = R.string.ConversationActivity_unblock_this_contact_question
-//        val message =
-//            R.string.ConversationActivity_you_will_once_again_be_able_to_receive_messages_and_calls_from_this_contact
-//        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog_Clear_All)
-//            .setTitle(title)
-//            .setMessage(message)
-//            .setNegativeButton(android.R.string.cancel, null)
-//            .setPositiveButton(R.string.ConversationActivity_unblock) { _, _ ->
-//                viewModel.unblock()
-//                viewModel.recipient.value?.let { thread ->
-//                    showBlockProgressBar(thread)
-//                }
-//            }.show()
-//
-//        //New Line
-//        val textView: TextView? = dialog.findViewById(android.R.id.message)
-//        val face: Typeface =
-//            Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
-//        textView!!.typeface = face
-
         val blockDialog=ConversationActionDialog()
         blockDialog.apply {
             arguments=Bundle().apply {
@@ -2495,18 +2086,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             setListener(this@ConversationFragmentV2)
         }
         dialog.show(childFragmentManager, ConversationActionDialog.TAG)
-
-//        ExpirationDialog.show(requireActivity(), thread.expireMessages) { expirationTime: Int ->
-//            viewModel.setExpireMessages(thread, expirationTime)
-//            val message = ExpirationTimerUpdate(expirationTime)
-//            message.recipient = thread.address.serialize()
-//            message.sentTimestamp = MnodeAPI.nowWithOffset
-//            val expiringMessageManager =
-//                ApplicationContext.getInstance(requireActivity()).expiringMessageManager
-//            expiringMessageManager.setExpirationTimer(message)
-//            MessageSender.send(message, thread.address)
-//            this.activity?.invalidateOptionsMenu()
-//        }
     }
 
     override fun scrollToMessageIfPossible(timestamp : Long) {
@@ -2526,10 +2105,10 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             }
             val fragment=ViewAllContactFragment().apply { arguments=extras }
 
-            requireActivity().supportFragmentManager.beginTransaction()
+            /*requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.activity_home_frame_layout_container, fragment)
                 .addToBackStack(null)
-                .commit()
+                .commit()*/
         } else {
             val dialog=childFragmentManager.findFragmentByTag(ComposeDialogContainer.TAG)
             if (dialog != null) return
@@ -2756,7 +2335,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                     callSecretGroupInfo(recipient)
                 } else {
                     hideAttachmentContainer()
-                    ConversationMenuHelper.showAllMedia(recipient, listenerCallback)
+                    //ConversationMenuHelper.showAllMedia(recipient, listenerCallback)
                 }
 
             }
@@ -2767,50 +2346,18 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
         }
 
         fun backToHome() {
-            val homeFragment : Fragment=HomeFragment()
+           /* val homeFragment : Fragment=HomeFragment()
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(
                     R.id.activity_home_frame_layout_container,
                     homeFragment,
                     HomeFragment::class.java.name
-                ).commit()
+                ).commit()*/
         }
 
         private fun setUpInputBar() {
             binding.inputBar.delegate=this
             binding.inputBarRecordingView.delegate=this
-            // GIF button
-//        binding.gifButtonContainer.addView(gifButton)
-//        gifButton.layoutParams = RelativeLayout.LayoutParams(
-//            RelativeLayout.LayoutParams.MATCH_PARENT,
-//            RelativeLayout.LayoutParams.MATCH_PARENT
-//        )
-//        gifButton.onUp = { showGIFPicker() }
-//        gifButton.snIsEnabled = false
-//        // Document button
-//        binding.documentButtonContainer.addView(documentButton)
-//        documentButton.layoutParams = RelativeLayout.LayoutParams(
-//            RelativeLayout.LayoutParams.MATCH_PARENT,
-//            RelativeLayout.LayoutParams.MATCH_PARENT
-//        )
-//        documentButton.onUp = { showDocumentPicker() }
-//        documentButton.snIsEnabled = false
-//        // Library button
-//        binding.libraryButtonContainer.addView(libraryButton)
-//        libraryButton.layoutParams = RelativeLayout.LayoutParams(
-//            RelativeLayout.LayoutParams.MATCH_PARENT,
-//            RelativeLayout.LayoutParams.MATCH_PARENT
-//        )
-//        libraryButton.onUp = { pickFromLibrary() }
-//        libraryButton.snIsEnabled = false
-//        // Camera button
-//        binding.cameraButtonContainer.addView(cameraButton)
-//        cameraButton.layoutParams = RelativeLayout.LayoutParams(
-//            RelativeLayout.LayoutParams.MATCH_PARENT,
-//            RelativeLayout.LayoutParams.MATCH_PARENT
-//        )
-//        cameraButton.onUp = { showCamera() }
-//        cameraButton.snIsEnabled = false
             binding.cameraButton.setOnClickListener {
                 showCamera()
                 toggleAttachmentOptions()
@@ -2871,20 +2418,10 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                 if (previewState == null) return@observe
                 when {
                     previewState.isLoading -> {
-                        //New Line
-//                    val params =
-//                        binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-//                    params.bottomMargin = 20
-
                         binding.inputBar.draftLinkPreview()
                     }
 
                     previewState.linkPreview.isPresent -> {
-                        //New Line
-//                    val params =
-//                        binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-//                    params.bottomMargin = 20
-
                         binding.inputBar.updateLinkPreviewDraft(
                             glide,
                             previewState.linkPreview.get()
@@ -2892,11 +2429,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                     }
 
                     else -> {
-                        //New Line
-//                    val params =
-//                        binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-//                    params.bottomMargin = 16
-
                         binding.inputBar.cancelLinkPreviewDraft(2)
                     }
                 }
@@ -3060,28 +2592,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                 })
             }
         }
-
-        /* private fun formatBoldText(s: Editable?) {
-        try {
-            val text = s.toString()
-            val start = text.indexOf("*")
-            val end = text.lastIndexOf("*")
-
-            if (start != -1 && end != -1 && start != end) {
-                s?.setSpan(
-                    StyleSpan(Typeface.BOLD),
-                    start + 1,
-                    end,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                s?.delete(start, start + 1)
-                s?.delete(end - 1, end)
-            }
-        } catch (ex: IndexOutOfBoundsException) {
-            Log.d("ConversationFragment ",ex.message.toString())
-        }
-    }*/
-
         private fun checkInputBarTextOnTextChanged(text : String?, thread : Recipient) {
             if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
                 if (text!!.isNotEmpty() && text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$")) && binding.inputBar.quote == null) {
@@ -3154,7 +2664,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             binding.attachmentContainer.isVisible=isShowingAttachmentOptions
         }
 
-        @Deprecated("Deprecated in Java")
+/*        @Deprecated("Deprecated in Java")
         override fun onOptionsItemSelected(item : MenuItem) : Boolean {
             if (SystemClock.elapsedRealtime() - menuItemLastClickTime >= 1000) {
                 if (!binding.inputBarRecordingView.isTimerRunning) {
@@ -3188,7 +2698,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                 }
             }
             return false
-        }
+        }*/
 
         private fun call(context : Context, thread : Recipient) {
 
@@ -3366,13 +2876,11 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                             binding.search.visibility=View.GONE
                             binding.noMatchesFoundTextview.visibility=View.VISIBLE
                         }
-//                binding.searchBottomBar.setData(result.position, result.getResults().size)
                     })
             } catch (ex : Exception) {
                 Log.e("Search result Exception -> ", ex.message.toString())
             }
         }
-
 
         private fun scrollToFirstUnreadMessageIfNeeded() {
             val lastSeenTimestamp=viewModel.getLastSeenAndHasSent().first()
@@ -3397,7 +2905,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
 
         private fun callOnPrepareOptionsMenu(menu : Menu, recipient : Recipient) {
             hideAttachmentContainer()
-            ConversationMenuHelper.onPrepareOptionsMenu(
+ /*           ConversationMenuHelper.onPrepareOptionsMenu(
                 menu,
                 requireActivity().menuInflater,
                 recipient,
@@ -3406,7 +2914,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
                 this
             ) {
                 onOptionsItemSelected(it)
-            }
+            }*/
         }
 
         private fun showOrHideInputIfNeeded() {
@@ -3798,37 +3306,6 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(requireActivity())
         }
     }
-
-        // Remove this after the unsend request is enabled
-        /* private fun deleteMessagesWithoutUnsendRequest(messages : Set<MessageRecord>) {
-        *//**//*
-        val messageCount=messages.size
-        val builder=AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
-        builder.setTitle(
-            resources.getQuantityString(
-                R.plurals.ConversationFragment_delete_selected_messages,
-                messageCount,
-                messageCount
-            )
-        )
-        builder.setMessage(
-            resources.getQuantityString(
-                R.plurals.ConversationFragment_this_will_permanently_delete_all_n_selected_messages,
-                messageCount,
-                messageCount
-            )
-        )
-        builder.setCancelable(true)
-        builder.setPositiveButton(R.string.delete) { _, _ ->
-            viewModel.deleteMessagesWithoutUnsendRequest(messages)
-            endActionMode()
-        }
-        builder.setNegativeButton(android.R.string.cancel) { dialog, _ ->
-            dialog.dismiss()
-            endActionMode()
-        }
-        builder.show()
-    }*/
         override fun selectMessages(messages : Set<MessageRecord>, position : Int) {
             selectMessage(messages.first(), position) //TODO: begin selection mode
         }
@@ -3848,20 +3325,29 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             }) { p : Int -> moveToMessagePosition(p, onMessageNotFound) }
         }
 
-        private fun handleRecyclerViewScrolled() {
-            val binding=binding
-            val wasTypingIndicatorVisibleBefore=binding.typingIndicatorViewContainer.isVisible
-            binding.typingIndicatorViewContainer.isVisible=
-                wasTypingIndicatorVisibleBefore && isScrolledToBottom
-            val isTypingIndicatorVisibleAfter=binding.typingIndicatorViewContainer.isVisible
-            if (isTypingIndicatorVisibleAfter != wasTypingIndicatorVisibleBefore) {
-                inputBarHeightChanged(binding.inputBar.height)
-            }
-            showScrollToBottomButtonIfApplicable()
-            val firstVisiblePosition=layoutManager?.findFirstVisibleItemPosition() ?: -1
-            unreadCount=min(unreadCount, firstVisiblePosition).coerceAtLeast(0)
+    private fun handleRecyclerViewScrolled() {
+        val binding =this.binding
+
+        val wasTypingVisible = binding.typingIndicatorViewContainer.isVisible
+
+        binding.typingIndicatorViewContainer.isVisible =
+            wasTypingVisible && isScrolledToBottom
+
+        val isTypingVisibleNow = binding.typingIndicatorViewContainer.isVisible
+        if (wasTypingVisible != isTypingVisibleNow) {
+            inputBarHeightChanged(binding.inputBar.height)
+        }
+
+        showScrollToBottomButtonIfApplicable()
+
+        val firstVisiblePosition =
+            layoutManager?.findFirstVisibleItemPosition() ?: RecyclerView.NO_POSITION
+
+        if (firstVisiblePosition != RecyclerView.NO_POSITION) {
+            unreadCount = min(unreadCount, firstVisiblePosition).coerceAtLeast(0)
             updateUnreadCountIndicator()
         }
+    }
 
         private fun showScrollToBottomButtonIfApplicable() {
             binding.scrollToBottomButton.isVisible=!isScrolledToBottom && adapter.itemCount > 0
@@ -4048,545 +3534,10 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
             return false
         }
 
-        //Payment Tag
-        override fun sendBDX() {
-            val txData : TxData=getTxData()
-            txData.destinationAddress=senderBeldexAddress
-            txData.destinationAddress?.let { Timber.tag("SenderBeldexAddress txData->").d(it) }
-            if (getCleanAmountString(getBDXAmount()).equals(
-                    Wallet.getDisplayAmount(totalFunds)
-                )
-            ) {
-                val amount=(totalFunds - 10485760)// 10485760 == 050000000
-                val bdx=getCleanAmountString(getBDXAmount())
-                if (bdx != null) {
-                    txData.amount=amount
-                } else {
-                    txData.amount=0L
-                }
-
-            } else {
-                val bdx=
-                    getCleanAmountString(getBDXAmount())
-                if (bdx != null) {
-                    txData.amount=Wallet.getAmountFromString(bdx)
-                } else {
-                    txData.amount=0L
-                }
-            }
-            txData.userNotes=UserNotes("-")
-            if (TextSecurePreferences.getFeePriority(requireActivity()) == 0) {
-                txData.priority=PendingTransaction.Priority.Priority_Slow
-            } else {
-                txData.priority=PendingTransaction.Priority.Priority_Flash
-            }
-            txData.mixin=mixin
-            //Important
-            val lockManager : LockManager<CustomPinActivity> =
-                LockManager.getInstance() as LockManager<CustomPinActivity>
-            lockManager.enableAppLock(requireActivity(), CustomPinActivity::class.java)
-            val intent=Intent(requireActivity(), CustomPinActivity::class.java)
-            intent.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.VerifyWalletPin.action)
-            intent.putExtra("change_pin", false)
-            intent.putExtra("send_authentication", true)
-            resultLaunchers.launch(intent)
-            // Clear the input bar
-            binding.inputBar.text=""
-        }
-
-        override fun sendFailed(errorText : String?) {
-            val transactionLoadingBar : Fragment?=
-                requireActivity().supportFragmentManager.findFragmentByTag("transaction_progressbar_tag")
-            if (transactionLoadingBar != null) {
-                val df : DialogFragment=transactionLoadingBar as DialogFragment
-                try {
-                    df.dismiss()
-                } catch (e : IllegalStateException) {
-                    return
-                }
-            }
-            //sendButtonEnabled()
-            //showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
-            SendFailedDialog(errorText!!).show(requireActivity().supportFragmentManager, "")
-            transactionInProgress=false
-        }
-
-        override fun createTransactionFailed(errorText : String?) {
-            hideProgress()
-            if (getString(R.string.invalid_destination_address) == errorText!!) {
-                //showAlert(getString(R.string.send_create_tx_error_title), getString(R.string.receiver_address_is_not_available))
-                SendFailedDialog(getString(R.string.receiver_address_is_not_available)).show(
-                    requireActivity().supportFragmentManager,
-                    ""
-                )
-                transactionInProgress=false
-            } else {
-                //showAlert(getString(R.string.send_create_tx_error_title), errorText)
-                SendFailedDialog(errorText).show(requireActivity().supportFragmentManager, "")
-                transactionInProgress=false
-            }
-        }
-
-        override fun transactionCreated(txTag : String?, pendingTransaction : PendingTransaction?) {
-            // ignore txTag - the app flow ensures this is the correct tx
-            hideProgress()
-            if (isResume) {
-                this.pendingTransaction=pendingTransaction
-                refreshTransactionDetails()
-            } else {
-                this.disposeTransaction()
-            }
-        }
-
-        // callbacks from send service
-        fun onTransactionCreated(txTag : String?, pendingTransaction : PendingTransaction?) {
-            pendingTx=PendingTx(pendingTransaction)
-            transactionCreated(txTag, pendingTransaction)
-        }
-
-        fun onCreateTransactionFailed(errorText : String?) {
-            createTransactionFailed(errorText)
-        }
-
-        private fun showAlert(title : String, message : String) {
-            val builder=AlertDialog.Builder(
-                requireActivity(), R.style.backgroundColor
-            )
-            builder.setCancelable(true).setTitle(title).setMessage(message).create().show()
-            transactionInProgress=false
-        }
-
-        private fun disposeTransaction() {
-            pendingTx=null
-            listenerCallback!!.onDisposeRequest()
-        }
-
-        private var inProgress=false
-
-        //Minimized app
-        private var onTransactionProgress=false
-
-        private fun hideProgress() {
-            val transactionLoadingBar : Fragment?=
-                requireActivity().supportFragmentManager.findFragmentByTag("transaction_progressbar_tag")
-            if (transactionLoadingBar != null) {
-                val df : DialogFragment=transactionLoadingBar as DialogFragment
-                try {
-                    df.dismiss()
-                } catch (e : IllegalStateException) {
-                    //Minimized app
-                    onTransactionProgress=true
-                    return
-                }
-            }
-            inProgress=false
-        }
-
-        private fun showProgress() {
-            TransactionLoadingBar().show(
-                requireActivity().supportFragmentManager,
-                "transaction_progressbar_tag"
-            )
-            inProgress=true
-        }
-
-        private fun refreshTransactionDetails() {
-            if (pendingTransaction != null) {
-                val txData : TxData=getTxData()
-                try {
-                    if (pendingTransaction!!.firstTxId != null) {
-                        InChatSend(
-                            pendingTransaction!!,
-                            txData,
-                            this
-                        ).show(requireActivity().supportFragmentManager, "")
-                    }
-                } catch (e : IllegalStateException) {
-                    //Minimized app
-                    onTransactionProgress=true
-                    return
-                } catch (e : IndexOutOfBoundsException) {
-                    //Minimized app
-                    hideProgress()
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.please_try_again_later),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        }
-
-        private fun getCleanAmountString(enteredAmount : String) : String? {
-            return try {
-                val amount=enteredAmount.toDouble()
-                if (amount >= 0) {
-                    String.format(Locale.US, cleanFormat, amount)
-                } else {
-                    null
-                }
-            } catch (ex : NumberFormatException) {
-                null
-            }
-        }
-
-        private val resultLaunchers=
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    onResumeFragment()
-                }
-            }
-
-        private fun onResumeFragment() {
-            Helper.hideKeyboard(activity)
-            isResume=true
-            transactionInProgress=true
-            val activity=activity
-            if (isAdded && activity != null) {
-                this.activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }
-            refreshTransactionDetails()
-            if (pendingTransaction == null && !inProgress) {
-                showProgress()
-                prepareSend(txData)
-            }
-        }
-
-        private fun prepareSend(txData : TxData?) {
-            listenerCallback!!.onPrepareSend(null, txData)
-        }
-
-        fun send() {
-            commitTransaction()
-            //Insert Recipient Address
-            if (TextSecurePreferences.getSaveRecipientAddress(requireActivity())) {
-                val insertRecipientAddress=
-                    DatabaseComponent.get(requireActivity()).bchatRecipientAddressDatabase()
-                try {
-                    if (pendingTransaction!!.firstTxId != null) {
-                        insertRecipientAddress.insertRecipientAddress(
-                            pendingTransaction!!.firstTxId,
-                            txData.destinationAddress
-                        )
-                    }
-                } catch (e : IndexOutOfBoundsException) {
-                    e.message?.let { Timber.tag("ConversationFragmentV2->").d(it) }
-                }
-            }
-            showProgress()
-        }
-
-        private fun commitTransaction() {
-            listenerCallback!!.onSend(txData.userNotes)
-            committedTx=pendingTx
-        }
-
-
-        private fun getBDXAmount() : String {
-            sendBDXAmount=binding.inputBar.text.trim()
-            return sendBDXAmount as String
-        }
-
-        //If Transaction successfully completed after call this function
-        fun onTransactionSent(txId : String?) {
-            hideProgress()
-            //Payment Tag
-            viewModel.sentPayment(sendBDXAmount.toString(), txId, viewModel.recipient.value)
-            processMessageRequestApproval()
-            val activity=activity
-            if (isAdded && activity != null) {
-                this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }
-            InChatSendSuccess(this).show(requireActivity().supportFragmentManager, "")
-        }
-
-        fun setProgress(text : String?) {
-            //WalletFragment Functionality
-            try {
-                if (text == getString(R.string.reconnecting) || text == getString(R.string.status_wallet_loading) || text == getString(
-                        R.string.status_wallet_connecting
-                    )
-                ) {
-                    binding.inputBar.setDrawableProgressBar(
-                        requireActivity().applicationContext,
-                        false,
-                        valueOfWallet,
-                        4f
-                    )
-                }
-                syncText=text
-            } catch (ex : IllegalStateException) {
-                Timber.tag("Exception").d(ex.toString())
-            }
-        }
-
-        fun setProgress(n : Float) {
-            syncProgress=n
-            when {
-                n == 4f -> {
-                    binding.inputBar.showProgressBar(blockProgressBarVisible)
-                }
-
-                n == 2f -> {
-                    binding.inputBar.showProgressBar(blockProgressBarVisible)
-                }
-
-                n == 3f -> {
-                    binding.inputBar.showProgressBar(blockProgressBarVisible)
-                    binding.inputBar.setProgress(100)
-                    //viewModels.setProgress(1f)
-                }
-
-                n < 1f && n >= 0f -> {
-                    //viewModels.setProgress(n)
-                    if (n >= 0.01f && n < 0.1f) {
-                        binding.inputBar.setProgress(5)
-                    } else if (n >= 0.1f && n < 0.2f) {
-                        binding.inputBar.setProgress(10)
-                    } else if (n >= 0.2f && n < 0.3f) {
-                        binding.inputBar.setProgress(20)
-                    } else if (n >= 0.3f && n < 0.4f) {
-                        binding.inputBar.setProgress(30)
-                    } else if (n >= 0.4f && n < 0.5f) {
-                        binding.inputBar.setProgress(40)
-                    } else if (n >= 0.55f && n < 0.6f) {
-                        binding.inputBar.setProgress(55)
-                    } else if (n >= 0.6f && n < 0.7f) {
-                        binding.inputBar.setProgress(60)
-                    } else if (n >= 0.7f && n < 0.8f) {
-                        binding.inputBar.setProgress(70)
-                    } else if (n >= 0.8f && n < 0.9f) {
-                        binding.inputBar.setProgress(80)
-                    } else if (n >= 0.9f && n < 0.95f) {
-                        binding.inputBar.setProgress(90)
-                    } else if (n >= 0.95f && n < 0.99f) {
-                        binding.inputBar.setProgress(95)
-                    } else {
-                        binding.inputBar.setProgress(100)
-                    }
-                    binding.inputBar.showProgressBar(blockProgressBarVisible)
-                }
-
-                else -> { // <0
-                    //viewModels.setProgress(n)
-                    binding.inputBar.showProgressBar(false)
-                }
-            }
-        }
-
-        fun onRefreshed(wallet : Wallet, full : Boolean) {
-            val recipient=viewModel.recipient.value ?: return
-            if (!recipient.isGroupRecipient && recipient.hasApprovedMe() && !recipient.isBlocked && HomeActivity.reportIssueBChatID != recipient.address.toString() && !recipient.isLocalNumber) {
-                if (full && listenerCallback!!.isSynced) {
-                    if (CheckOnline.isOnline(requireContext())) {
-                        check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
-                        val daemonConnected : Wallet.ConnectionStatus=
-                            listenerCallback!!.connectionStatus!!
-                        if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
-                            //getUnlockedBalance(wallet)
-                            AsyncGetUnlockedBalance(wallet).execute<Executor>(
-                                BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR
-                            )
-                        }
-                    }
-                }
-                updateStatus(wallet)
-            }
-        }
-
-        private fun updateStatus(wallet : Wallet) {
-            if (!isAdded) return
-            if (CheckOnline.isOnline(requireContext())) {
-                val daemonHeight : Long=wallet.daemonBlockChainHeight
-                val walletHeight : Long=wallet.blockChainHeight
-                val df=DecimalFormat("#.##")
-                val walletSyncPercentage=((100.00 * walletHeight.toDouble()) / daemonHeight)
-                val sync : String
-                check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
-                val daemonConnected : Wallet.ConnectionStatus=listenerCallback!!.connectionStatus!!
-                if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
-                    if (!wallet.isSynchronized) {
-                        ApplicationContext.getInstance(requireContext()).messageNotifier.setHomeScreenVisible(
-                            true
-                        )
-                        val n=daemonHeight - walletHeight
-                        sync=formatter.format(n) + " " + getString(R.string.status_remaining)
-                        if (firstBlock == 0L) {
-                            firstBlock=walletHeight
-                        }
-                        var x=
-                            (100 - Math.round(100f * n / (1f * daemonHeight - firstBlock))).toInt()
-                        if (x == 0) x=1 // indeterminate
-                        valueOfWallet="${df.format(walletSyncPercentage)}%"
-                        if (x >= 0) {
-                            val progress=(x / 100.0).toFloat()
-                            setProgress(progress)
-                            binding.inputBar.setDrawableProgressBar(
-                                requireActivity().applicationContext,
-                                false,
-                                valueOfWallet,
-                                progress
-                            )
-                        } else {
-                            setProgress(x.toFloat())
-                            binding.inputBar.setDrawableProgressBar(
-                                requireActivity().applicationContext,
-                                false,
-                                valueOfWallet,
-                                x.toFloat()
-                            )
-                        }
-                    } else {
-                        ApplicationContext.getInstance(requireContext()).messageNotifier.setHomeScreenVisible(
-                            false
-                        )
-                        sync=
-                            getString(R.string.status_synchronized)
-                        valueOfWallet="${df.format(walletSyncPercentage)}%"
-                        binding.inputBar.setDrawableProgressBar(
-                            requireActivity().applicationContext,
-                            false,
-                            valueOfWallet,
-                            3f
-                        )
-                        //SteveJosephh21
-                        setProgress(3f)
-                    }
-                } else if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connecting) {
-                    sync=getString(R.string.status_wallet_connecting)
-                    setProgress(4f)
-                    valueOfWallet="--"
-                    binding.inputBar.setDrawableProgressBar(
-                        requireActivity().applicationContext,
-                        true,
-                        valueOfWallet,
-                        4f
-                    )
-                } else {
-                    sync=getString(R.string.failed_connected_to_the_node)
-                    setProgress(4f)
-                    valueOfWallet="--"
-                    binding.inputBar.setDrawableProgressBar(
-                        requireActivity().applicationContext,
-                        true,
-                        valueOfWallet,
-                        4f
-                    )
-                }
-                setProgress(sync)
-            } else {
-                setProgress(getString(R.string.no_node_connection))
-                valueOfWallet="--"
-                binding.inputBar.setDrawableProgressBar(
-                    requireActivity().applicationContext,
-                    true,
-                    valueOfWallet,
-                    4f
-                )
-            }
-            toolTip()
-        }
-
-        private fun refreshBalance(synchronized : Boolean) {
-            refreshBalance(
-                synchronized=synchronized,
-                unlockedBalance=unlockedBalance,
-                balance=balance,
-            ) { bal, unlockedBal, sync ->
-                showBalance(bal, unlockedBal, sync)
-            }
-        }
-
-        private fun showBalance(
-            walletBalance : String?,
-            walletUnlockedBalance : String?,
-            synchronized : Boolean
-        ) {
-            showBalance(
-                walletBalance=walletBalance,
-                walletUnlockedBalance=walletUnlockedBalance,
-                synchronized=synchronized,
-                mContext=mContext,
-            ) { bal, unlockedBal ->
-                valueOfBalance=bal
-                unlockedBal?.let {
-                    valueOfUnLockedBalance=it
-                }
-            }
-            toolTip()
-        }
-
-        private fun getUnlockedBalance(wallet : Wallet) {
-            if (mContext != null && walletAvailableBalance != null) {
-                if (walletAvailableBalance!!.replace(",", "").toDouble() > 0.0) {
-                    showBalance(walletAvailableBalance!!, unlockedBalance.toString(), true)
-                }
-            } else {
-                refreshBalance(false)
-            }
-            lifecycleScope.launch(Dispatchers.IO) {
-                try {
-                    unlockedBalance=wallet.unlockedBalance
-                    delay(100)
-                    refreshBalance(wallet.isSynchronized)
-                } catch (e : Exception) {
-                    Timber.tag("WalletFragment").d(e.toString())
-                }
-            }
-        }
-
-        inner class AsyncGetUnlockedBalance(val wallet : Wallet) :
-            AsyncTaskCoroutine<Executor?, Boolean?>() {
-            override fun onPreExecute() {
-                super.onPreExecute()
-                if (mContext != null && walletAvailableBalance != null) {
-                    if (walletAvailableBalance!!.replace(",", "").toDouble() > 0.0) {
-                        showBalance(walletAvailableBalance!!, unlockedBalance.toString(), true)
-                    }
-                } else {
-                    refreshBalance(false)
-                }
-            }
-
-            override fun doInBackground(vararg params : Executor?) : Boolean {
-                try {
-                    unlockedBalance=listenerCallback!!.getUnLockedBalance
-                    balance=listenerCallback!!.getFullBalance
-                } catch (e : Exception) {
-                    Timber.tag("ConversationFragment").d(e.toString())
-                }
-                return true
-            }
-
-            override fun onPostExecute(result : Boolean?) {
-                refreshBalance(wallet.isSynchronized)
-            }
-        }
 
         private fun checkIfFragmentAttached(operation : Context.() -> Unit) {
             if (isAdded && context != null) {
                 operation(requireContext())
-            }
-        }
-
-        inner class AsyncStartWallet() : AsyncTaskCoroutine<Executor?, Boolean?>() {
-            override fun doInBackground(vararg params : Executor?) : Boolean {
-                try {
-                    viewModel.recipient.value?.let { thread ->
-                        if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && HomeActivity.reportIssueBChatID != thread.address.toString() && !thread.isLocalNumber && TextSecurePreferences.isWalletActive(
-                                requireContext()
-                            )
-                        ) {
-                            val activity=activity
-                            if (isAdded && activity != null) {
-                                listenerCallback!!.forceUpdate(activity)
-                            }
-                        }
-                    }
-                } catch (e : Exception) {
-                    println("start wallet exception $e")
-                }
-                return true
             }
         }
 
@@ -4764,7 +3715,7 @@ class ConversationFragmentV2 : BaseFragment(), InputBarDelegate,
     }
 
     override fun showAllMedia(recipient : Recipient) {
-        ConversationMenuHelper.showAllMedia(recipient,listenerCallback)
+        //ConversationMenuHelper.showAllMedia(recipient, listenerCallback)
     }
     override fun onScreenCaptured() {
         sendScreenShotTakenNotification()

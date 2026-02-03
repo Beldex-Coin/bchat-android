@@ -111,6 +111,7 @@ import com.beldex.libsignal.utilities.hexEncodedPrivateKey
 import com.canhub.cropper.CropImage
 import com.canhub.cropper.CropImageContract
 import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.archivechats.ArchiveChatViewModel
@@ -147,7 +148,6 @@ import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.copyToClipBoard
 import io.beldex.bchat.util.toPx
-import io.beldex.bchat.CheckOnline
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -376,8 +376,8 @@ fun MyAccountNavHost(
         }
     }
 
-     fun updateProfile(isUpdatingProfilePicture: Boolean, profilePicture: ByteArray? = null,
-                              displayName: String? = null, context : Context) {
+    fun updateProfile(isUpdatingProfilePicture: Boolean, profilePicture: ByteArray? = null,
+                      displayName: String? = null, context : Context) {
         viewModel.updateLoaderStatus(true)
         val promises = mutableListOf<Promise<*, Exception>>()
         if (displayName != null) {
@@ -412,8 +412,8 @@ fun MyAccountNavHost(
         }
     }
 
-     fun saveDisplayName(displayName: String, context : Context): Boolean {
-         val namePattern = Pattern.compile("[A-Za-z0-9\\s]+")
+    fun saveDisplayName(displayName: String, context : Context): Boolean {
+        val namePattern = Pattern.compile("[A-Za-z0-9\\s]+")
         if (displayName.isEmpty()) {
             Toast.makeText(
                 context,
@@ -439,10 +439,10 @@ fun MyAccountNavHost(
             return false
         }
 
-         val checkGalleryProfile=TextSecurePreferences.getIsLocalProfile(context)
-         updateProfile(checkGalleryProfile, null, displayName=displayName, context)
-         viewModel.updateProfile(true)
-         return true
+        val checkGalleryProfile=TextSecurePreferences.getIsLocalProfile(context)
+        updateProfile(checkGalleryProfile, null, displayName=displayName, context)
+        viewModel.updateProfile(true)
+        return true
     }
 
     var showLoader by remember {
@@ -490,10 +490,21 @@ fun MyAccountNavHost(
                 val state by viewModel.uiState.collectAsState()
                 val scrollState = rememberScrollState()
                 val isDarkMode = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
+                val beldexAddress by remember {
+                    mutableStateOf(
+                        IdentityKeyUtil.retrieve(
+                            context,
+                            IdentityKeyUtil.IDENTITY_W_ADDRESS_PREF
+                        )
+                    )
+                }
                 val copyToClipBoard: (String, String) -> Unit = { label, content ->
                     context.copyToClipBoard(label, content)
                 }
                 var showClearDataDialog by remember {
+                    mutableStateOf(false)
+                }
+                var showBeldexAddressDialog by remember {
                     mutableStateOf(false)
                 }
                 var showQRDialog by remember {
@@ -532,6 +543,19 @@ fun MyAccountNavHost(
                     ClearDataDialog {
                         showClearDataDialog = false
                     }
+                }
+
+                if (showBeldexAddressDialog) {
+                    CopyContentDialog(
+                        title = stringResource(id = R.string.beldex_address),
+                        data = beldexAddress,
+                        onCopy = {
+                            copyToClipBoard("Beldex Address", beldexAddress)
+                            showBeldexAddressDialog = false
+                        },
+                        onDismissRequest = {
+                            showBeldexAddressDialog = false
+                        })
                 }
 
                 if (showBChatIdDialog) {
@@ -790,6 +814,7 @@ fun MyAccountNavHost(
                             ProfileCard(
                                 isBnsHolder = isBnsHolder,
                                 uiState = state,
+                                beldexAddress = beldexAddress,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(
@@ -798,7 +823,11 @@ fun MyAccountNavHost(
                                 onShowDialog = {
                                     when (it) {
                                         0 ->
+                                            showBeldexAddressDialog = true
+
+                                        1 ->
                                             showBChatIdDialog = true
+
                                         else ->
                                             showQRDialog = true
                                     }
@@ -1366,6 +1395,7 @@ fun LoaderAnimationPopUp() {
 fun ProfileCard(
     isBnsHolder : String?,
     uiState: MyAccountViewModel.UIState,
+    beldexAddress: String,
     modifier: Modifier = Modifier,
     onShowDialog: (status: Int) -> Unit,
     onShowEditName: Boolean,
@@ -1406,26 +1436,26 @@ fun ProfileCard(
             )
         }
         if (onShowEditName) {
-           TextField(
-               value= textFieldValueState,
-               onValueChange={
-                   textFieldValueState=it
-                   savedName(it)
-               },
-               maxLines = 1,
-               singleLine = true,
-               textStyle = MaterialTheme.typography.bodyMedium.copy(
-                   fontSize = 16.sp,
-                   fontWeight = FontWeight(400),
-                   textAlign = TextAlign.Center
-               ),
-               colors = TextFieldDefaults.colors(
-                   focusedIndicatorColor = MaterialTheme.appColors.textColor,
-                   unfocusedIndicatorColor = MaterialTheme.appColors.textColor,
-                   selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
-                   cursorColor = colorResource(id = R.color.button_green)
-           )
-           )
+            TextField(
+                value= textFieldValueState,
+                onValueChange={
+                    textFieldValueState=it
+                    savedName(it)
+                },
+                maxLines = 1,
+                singleLine = true,
+                textStyle = MaterialTheme.typography.bodyMedium.copy(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight(400),
+                    textAlign = TextAlign.Center
+                ),
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = MaterialTheme.appColors.textColor,
+                    unfocusedIndicatorColor = MaterialTheme.appColors.textColor,
+                    selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
+                    cursorColor = colorResource(id = R.color.button_green)
+                )
+            )
         }
         if(!isBnsHolder.isNullOrEmpty()){
             Row(
@@ -1449,13 +1479,25 @@ fun ProfileCard(
         }else {
             Spacer(modifier = Modifier.height(16.dp))
         }
-        
+
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            ProfileCardKeyContainer(
+                isBnsHolder = isBnsHolder,
+                title = stringResource(id = R.string.beldex_address),
+                image = R.drawable.ic_beldex_logo,
+                onCopy = {
+                    copyToClipBoard("Beldex Address", beldexAddress)
+                },
+                isBeldex = true,
+                onShowDialog = {
+                    onShowDialog(0)
+                }
+            )
+
+            Spacer(modifier = Modifier.padding(start = 3.dp))
 
             ProfileCardKeyContainer(
                 isBnsHolder = isBnsHolder,
@@ -1464,18 +1506,22 @@ fun ProfileCard(
                 onCopy = {
                     copyToClipBoard("BChat ID", uiState.publicKey)
                 },
-                onShowDialog = { onShowDialog(0) },
-                modifier = Modifier.weight(1f)
+                onShowDialog = {
+                    onShowDialog(1)
+                }
             )
+            Spacer(modifier = Modifier.padding(start = 3.dp))
 
             ProfileCardKeyContainer(
                 isBnsHolder = isBnsHolder,
                 title = stringResource(id = R.string.show_qr),
                 image = R.drawable.ic_show_qr,
-                onCopy = {},
+                onCopy = {
+                },
                 showCopyIcon = false,
-                onShowDialog = { onShowDialog(1) },
-                modifier = Modifier.weight(1f)
+                onShowDialog = {
+                    onShowDialog(2)
+                }
             )
         }
     }
@@ -1483,55 +1529,45 @@ fun ProfileCard(
 
 @Composable
 fun ProfileCardKeyContainer(
-    isBnsHolder: String?,
+    isBnsHolder:String?,
     title: String,
     image: Int,
     onCopy: () -> Unit,
     showCopyIcon: Boolean = true,
     isBeldex: Boolean = false,
-    onShowDialog: () -> Unit,
-    modifier: Modifier = Modifier
+    onShowDialog: () -> Unit
 ) {
     Card(
-        modifier = modifier,
         elevation = CardDefaults.cardElevation(
-            defaultElevation = if (!isBnsHolder.isNullOrEmpty()) 2.dp else 0.dp
+            defaultElevation = if(!isBnsHolder.isNullOrEmpty()) 2.dp else 0.dp
         ),
         colors = CardDefaults.cardColors(
-            containerColor =
-                if (!isBnsHolder.isNullOrEmpty())
-                    MaterialTheme.appColors.profileAddressCardBackground
-                else
-                    MaterialTheme.appColors.backgroundColor
-        )
+            containerColor = if(!isBnsHolder.isNullOrEmpty()) MaterialTheme.appColors.profileAddressCardBackground else MaterialTheme.appColors.backgroundColor
+        ),
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(5.dp)
-                .clickable { onShowDialog() }
+                .clickable {
+                    onShowDialog()
+                }
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        top = 13.dp,
-                        bottom = 5.dp,
-                        start = if (isBeldex) 5.dp else 15.dp,
-                        end = if (isBeldex) 5.dp else 15.dp
-                    )
+                modifier = Modifier.padding(
+                    top = 13.dp,
+                    bottom = 5.dp,
+                    start = if (isBeldex) 5.dp else 15.dp,
+                    end = if (isBeldex) 5.dp else 15.dp
+                )
             ) {
                 Image(
-                    painter = painterResource(id = image),
-                    contentDescription = null,
-                    modifier = Modifier.size(25.dp),
-                    colorFilter = if (!showCopyIcon)
-                        ColorFilter.tint(MaterialTheme.appColors.editTextColor)
-                    else null
+                    painter = painterResource(id = image), contentDescription = "",
+                    modifier = Modifier
+                        .size(25.dp),
+                    colorFilter = if (!showCopyIcon) ColorFilter.tint(MaterialTheme.appColors.editTextColor) else null
                 )
-
                 Text(
                     text = title,
                     style = MaterialTheme.typography.bodySmall.copy(
@@ -1540,19 +1576,22 @@ fun ProfileCardKeyContainer(
                         fontWeight = FontWeight.Medium
                     ),
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 8.dp)
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .align(Alignment.CenterHorizontally)
                 )
             }
-
             if (showCopyIcon) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_copy),
-                    contentDescription = null,
+                    contentDescription = "",
                     tint = MaterialTheme.appColors.editTextHint,
                     modifier = Modifier
                         .size(16.dp)
-                        .align(Alignment.TopEnd)
-                        .clickable { onCopy() }
+                        .align(alignment = Alignment.TopEnd)
+                        .clickable {
+                            onCopy()
+                        }
                 )
             }
         }

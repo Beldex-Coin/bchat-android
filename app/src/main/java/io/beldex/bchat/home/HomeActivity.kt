@@ -10,7 +10,6 @@ import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Canvas
-import android.graphics.PointF
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.net.Uri
@@ -37,11 +36,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -56,7 +57,6 @@ import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.GroupRecord
 import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libbchat.utilities.ProfilePictureModifiedEvent
-import com.beldex.libbchat.utilities.Stub
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getIsReactionOverlayVisible
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setIsReactionOverlayVisible
@@ -67,7 +67,6 @@ import com.beldex.libsignal.utilities.toHexString
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.google.android.gms.tasks.Task
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -82,20 +81,14 @@ import io.beldex.bchat.R
 import io.beldex.bchat.components.ProfilePictureView
 import io.beldex.bchat.compose_utils.ComposeDialogContainer
 import io.beldex.bchat.compose_utils.DialogType
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2
 import io.beldex.bchat.conversation.v2.ConversationViewModel
-import io.beldex.bchat.conversation.v2.ViewUtil
 import io.beldex.bchat.conversation.v2.contact_sharing.ViewAllContactFragment
-import io.beldex.bchat.conversation.v2.utilities.BaseDialog
 import io.beldex.bchat.database.BeldexMessageDatabase
 import io.beldex.bchat.database.MmsDatabase
 import io.beldex.bchat.database.MmsSmsDatabase
-import io.beldex.bchat.database.NoSuchMessageException
 import io.beldex.bchat.database.ReactionDatabase
 import io.beldex.bchat.database.SmsDatabase
 import io.beldex.bchat.database.ThreadDatabase
-import io.beldex.bchat.database.model.MessageId
-import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.databinding.ActivityHomeBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.groups.OpenGroupManager
@@ -115,18 +108,14 @@ import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.archivechats.ArchiveChatViewModel
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.conversation.v2.ConversationActivityV2
-import io.beldex.bchat.conversation.v2.search.SearchViewModel
 import io.beldex.bchat.conversation_v2.NewChatConversationActivity
 import io.beldex.bchat.conversation_v2.NewGroupConversationActivity
 import io.beldex.bchat.conversation_v2.NewGroupConversationType
 import io.beldex.bchat.crypto.IdentityKeyUtil
-import io.beldex.bchat.database.BchatContactDatabase
-import io.beldex.bchat.database.BeldexAPIDatabase
 import io.beldex.bchat.database.BeldexThreadDatabase
 import io.beldex.bchat.database.GroupDatabase
 import io.beldex.bchat.database.RecipientDatabase
 import io.beldex.bchat.database.model.ThreadRecord
-import io.beldex.bchat.databinding.FragmentHomeBinding
 import io.beldex.bchat.drawer.ClickListener
 import io.beldex.bchat.drawer.NavigationItemModel
 import io.beldex.bchat.drawer.NavigationRVAdapter
@@ -136,7 +125,6 @@ import io.beldex.bchat.home.search.GlobalSearchInputLayout
 import io.beldex.bchat.home.search.RecyclerViewDivider
 import io.beldex.bchat.my_account.ui.MyAccountActivity
 import io.beldex.bchat.my_account.ui.MyAccountScreens
-import io.beldex.bchat.my_account.ui.MyProfileActivity
 import io.beldex.bchat.preferences.NotificationSettingsActivity
 import io.beldex.bchat.preferences.PrivacySettingsActivity
 import io.beldex.bchat.repository.ConversationRepository
@@ -176,7 +164,6 @@ import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDelegate,
-    HomeFragment.HomeFragmentListener, ConversationFragmentV2.Listener,
     UserDetailsBottomSheet.UserDetailsBottomSheetListener, ConversationClickListener,
     NewConversationButtonSetViewDelegate,
     GlobalSearchInputLayout.GlobalSearchInputLayoutListener, ConversationActionDialog.ConversationActionDialogListener {
@@ -346,7 +333,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                     }
                 }
                 // Don't highlight the 'Profile' and 'Like us on Facebook' item row
-                if (position != 5 && position != 3) {
+                if (position != 4 && position != 3) {
                     updateAdapter(position)
                 }
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -558,10 +545,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                 if (!it) {
                     TextSecurePreferences.setIsBNSHolder(this, null)
                     MessagingModuleConfiguration.shared.storage.setIsBnsHolder(publicKey, false)
-                    val currentFragment = getCurrentFragment()
-                    if(currentFragment is HomeFragment) {
-                        currentFragment.updateProfileButton()
-                    }
+                    updateProfileButton()
                 }
             }
         }
@@ -591,17 +575,29 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onUpdateProfileEvent(event: ProfilePictureModifiedEvent) {
         if (event.recipient.isLocalNumber) {
-            val currentFragment = getCurrentFragment()
-            if(currentFragment is HomeFragment) {
-                currentFragment.updateProfileButton()
-            }
-        }else {
-            val currentFragment = getCurrentFragment()
-            if(currentFragment is HomeFragment) {
-                currentFragment.homeViewModel.tryUpdateChannel()
-                currentFragment.updateAdapter()
-            }
+            updateProfileButton()
+        }else { 
+            homeViewModel.tryUpdateChannel()
+            updateAdapter()
         }
+    }
+
+    fun updateAdapter(){
+        homeAdapter.notifyDataSetChanged()
+    }
+
+    fun updateProfileButton() {
+        binding.profileButton.root.publicKey = publicKey
+        binding.profileButton.root.displayName = TextSecurePreferences.getProfileName(this)
+        binding.profileButton.root.recycle()
+        binding.profileButton.root.update(TextSecurePreferences.getProfileName(this))
+
+        //New Line
+        binding.navigationMenu.drawerProfileName.text = TextSecurePreferences.getProfileName(this)
+        binding.navigationMenu.drawerProfileIcon.root.publicKey = publicKey
+        binding.navigationMenu.drawerProfileIcon.root.displayName = TextSecurePreferences.getProfileName(this)
+        binding.navigationMenu.drawerProfileIcon.root.recycle()
+        binding.navigationMenu.drawerProfileIcon.root.update(TextSecurePreferences.getProfileName(this))
     }
 
     //New Line
@@ -715,7 +711,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         }*/
     }
 
-    override fun callLifeCycleScope(
+     fun callLifeCycleScope(
         recyclerView: RecyclerView,
         mmsSmsDatabase: MmsSmsDatabase,
         globalSearchAdapter: GlobalSearchAdapter,
@@ -1445,48 +1441,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
 
 
 
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        val fragment: Fragment? = getCurrentFragment()
-        if (fragment is ConversationFragmentV2 || fragment is ViewAllContactFragment) {
-            if (!(fragment as OnBackPressedListener).onBackPressed()) {
-                TextSecurePreferences.callFiatCurrencyApi(this,false)
-                try {
-                    if (fragment is ConversationFragmentV2) {
-                        fragment.reactionDelegateDismiss()
-                        if(getIsReactionOverlayVisible(this)){
-                            setIsReactionOverlayVisible(this,false)
-                        }
-                    } else {
-                        onBackPressedDispatcher.onBackPressed()
-                    }
-                }catch(e : IllegalStateException){
-                    println("replace home fragment")
-                    //replaceHomeFragment()
-                }
-            }
-        }else if(fragment is HomeFragment){
-            backToHome(fragment)
-        }
-    }
-
-/*private fun replaceHomeFragment(){
-        val homeFragment: Fragment = HomeFragment()
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.activity_home_frame_layout_container, homeFragment, HomeFragment::class.java.name).commit()
-    }*/
-
-    private fun backToHome(fragment: HomeFragment?) {
-                fragment!!.onBackPressed()
-                finish()
-    }
-
     override fun handleSeedReminderViewContinueButtonTapped() {
         val intent = Intent(this, SeedActivity::class.java)
         show(intent)
     }
 
-    override fun sendMessageToSupport() {
+    fun sendMessageToSupport() {
         val recipient = Recipient.from(this, Address.fromSerialized(reportIssueBChatID), false)
         val extras = Bundle()
         extras.putParcelable(ConversationActivityV2.ADDRESS, recipient.address)
@@ -1514,17 +1474,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         super.onDestroy()
     }
 
-    override fun getConversationViewModel(): ConversationViewModel.AssistedFactory {
-        return viewModelFactory
-    }
-
-    override fun gettextSecurePreferences(): TextSecurePreferences {
-        return textSecurePreferences
-    }
-
-    private fun getCurrentFragment(): Fragment? {
-        return supportFragmentManager.findFragmentById(R.id.conversation_reaction_scrubber_stub)
-    }
 
     override fun callConversationFragmentV2(address: Address, threadId: Long) {
         val extras = Bundle()
@@ -1635,32 +1584,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                 permissionDialog.show(this.supportFragmentManager, ComposeDialogContainer.TAG)
             }
         }
-    }
-
-    override fun walletOnBackPressed(){
-        val fragment: Fragment = getCurrentFragment()!!
-        if (fragment is ConversationFragmentV2) {
-            if (!(fragment as OnBackPressedListener).onBackPressed()) {
-                TextSecurePreferences.callFiatCurrencyApi(this,false)
-                fragment.reactionDelegateDismiss()
-                if(getIsReactionOverlayVisible(this)){
-                    setIsReactionOverlayVisible(this,false)
-                }
-                try {
-                    onBackPressedDispatcher.onBackPressed()
-                }catch(e : IllegalStateException){
-                    //replaceHomeFragment()
-                    println("clicked back arrow called 4")
-                }
-            }
-        }
-    }
-
-    //SetDataAndType
-    override fun passSharedMessageToConversationScreen(thread:Recipient) {
-        val intent = Intent(this, MediaOverviewActivity::class.java)
-        intent.putExtra(MediaOverviewActivity.ADDRESS_EXTRA, thread.address)
-        passSharedMessageToConversationScreen.launch(intent)
     }
 
     private val passSharedMessageToConversationScreen = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

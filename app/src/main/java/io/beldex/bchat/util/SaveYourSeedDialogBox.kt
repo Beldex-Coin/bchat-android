@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.conversation.v2.utilities.BaseDialog
-import io.beldex.bchat.home.HomeFragment
 import io.beldex.bchat.databinding.SaveYourSeedDialogBoxBinding
 
 class SaveYourSeedDialogBox(

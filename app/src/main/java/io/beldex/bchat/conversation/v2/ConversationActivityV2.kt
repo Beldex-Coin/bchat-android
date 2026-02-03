@@ -142,7 +142,6 @@ import io.beldex.bchat.groups.SecretGroupInfoRepository
 import io.beldex.bchat.home.ConversationActionDialog
 import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.home.HomeDialogType
-import io.beldex.bchat.home.HomeFragment
 import io.beldex.bchat.linkpreview.LinkPreviewRepository
 import io.beldex.bchat.linkpreview.LinkPreviewUtil
 import io.beldex.bchat.linkpreview.LinkPreviewViewModel
@@ -1050,6 +1049,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
 
         // ---------- Back button ----------
         binding.backToHomeBtn.setOnClickListener {
+            handleBackPressed()
             onBackPressedDispatcher.onBackPressed()
         }
     }
@@ -2538,7 +2538,6 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     }
 
     private fun walletOnBackPressed() {
-        TextSecurePreferences.callFiatCurrencyApi(this, false)
         reactionDelegateDismiss()
         if (getIsReactionOverlayVisible(this)) {
             setIsReactionOverlayVisible(this, false)
@@ -2720,10 +2719,17 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         sendScreenShotTakenNotification()
     }
 
-    /*override fun onBackPressed(): Boolean {
-        super <ComponentActivity>.onBackPressed()
-        return false
-    }*/
+    override fun onBackPressed() {
+        super.onBackPressed()
+        handleBackPressed()
+    }
+
+    private fun handleBackPressed() {
+        reactionDelegateDismiss()
+        if(getIsReactionOverlayVisible(this)){
+            setIsReactionOverlayVisible(this,false)
+        }
+    }
 
     override fun inputBarHeightChanged(newValue : Int) {
     }
@@ -3878,9 +3884,11 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
                     ConversationActivityV2::class.java
                 ).apply {
                     putExtra(THREAD_ID, threadId)
-                    addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 }
+
                 supportFragmentManager.popBackStack()
+                finish()
                 startActivity(intent)
             },
             onCancel = {}
@@ -4047,9 +4055,9 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     }
 
     override fun dispatchTouchEvent(event : MotionEvent?) : Boolean {
-        if (event?.action == MotionEvent.ACTION_DOWN) {
+        if (event != null) {
             dispatchTouchEvents(event)
-            }
+        }
         return super.dispatchTouchEvent(event)
         }
 

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="end"
-    tools:context="io.beldex.bchat.home.HomeFragment"
+    tools:context="io.beldex.bchat.home.HomeActivity"
     tools:openDrawer="right">
 
     <FrameLayout

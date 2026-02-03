@@ -297,6 +297,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        setupToolbarInsets()
 
         glide = Glide.with(this)
         binding.profileButton.root.glide = glide
@@ -660,7 +662,23 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         }
     }
 
-        @Deprecated("Deprecated in Java")
+    private fun setupToolbarInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar) { view, insets ->
+            val statusBarHeight =
+                insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            view.setPadding(0, statusBarHeight, 0, 0)
+            insets
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.toolbarCall) { view, insets ->
+            val statusBarHeight =
+                insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            view.setPadding(0, statusBarHeight, 0, 0)
+            insets
+        }
+    }
+
+    @Deprecated("Deprecated in Java")
         override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         //New Line App Update

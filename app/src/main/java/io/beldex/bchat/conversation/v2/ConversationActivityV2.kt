@@ -142,6 +142,7 @@ import io.beldex.bchat.groups.SecretGroupInfoRepository
 import io.beldex.bchat.home.ConversationActionDialog
 import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.home.HomeDialogType
+import io.beldex.bchat.home.UserDetailsBottomSheet
 import io.beldex.bchat.linkpreview.LinkPreviewRepository
 import io.beldex.bchat.linkpreview.LinkPreviewUtil
 import io.beldex.bchat.linkpreview.LinkPreviewViewModel
@@ -210,7 +211,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     ReactWithAnyEmojiDialogFragment.Callback, ReactionsDialogFragment.Callback,
     SecretGroupInfoComposeActivity.SocialGroupInfoInterface,
     VisibleMessageContentView.VisibleMessageContentViewDelegate,
-    ScreenshotDetector.ScreenshotDetectionListeners, ActivityDispatcher  {
+    ScreenshotDetector.ScreenshotDetectionListeners, ActivityDispatcher, UserDetailsBottomSheet.UserDetailsBottomSheetListener  {
 
     // -------------------- ViewBinding --------------------
     lateinit var binding: ActivityConversationV2Binding
@@ -4050,7 +4051,15 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         reactionDelegate.applyTouchEvent(event)
     }
 
-
+    override fun callConversationFragmentV2(address : Address, threadId : Long) {
+        val extras = Bundle()
+        extras.putParcelable(ADDRESS,address)
+        extras.putLong(THREAD_ID,threadId)
+        val intent = Intent(this, ConversationActivityV2::class.java)
+        intent.putExtras(extras)
+        finish()
+        startActivity(intent)
+    }
 
     companion object {
 

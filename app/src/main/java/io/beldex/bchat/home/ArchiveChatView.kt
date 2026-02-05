@@ -33,21 +33,11 @@ import io.beldex.bchat.util.UiModeUtilities
 
 @Composable
 fun ArchiveChatView(
-    archiveChatViewModel : ArchiveChatViewModel,
-    threadDatabase : ThreadDatabase,
+    count: Int,
     onRequestClick : () -> Unit,
     context: Context
 ) {
-
-    var count by remember {
-        mutableIntStateOf(0)
-    }
-
-    val lifecycleOwner=LocalLifecycleOwner.current
     val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
-    archiveChatViewModel.archiveChatsCount.observe(lifecycleOwner) {
-        count=threadDatabase.archivedConversationList.count
-    }
 
     Row(verticalAlignment=Alignment.CenterVertically, modifier=Modifier
         .background(

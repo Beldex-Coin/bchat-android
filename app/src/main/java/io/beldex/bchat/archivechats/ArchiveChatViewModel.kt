@@ -2,8 +2,6 @@ package io.beldex.bchat.archivechats
 
 import android.content.Context
 import android.widget.Toast
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
@@ -18,10 +16,10 @@ import kotlinx.coroutines.launch
 import io.beldex.bchat.database.model.ThreadRecord
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.groups.OpenGroupManager
+import io.beldex.bchat.home.ArchiveChatCountRepository
 import io.beldex.bchat.my_account.ui.ArchiveChatsEvents
 import io.beldex.bchat.repository.ConversationRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -41,13 +39,6 @@ class ArchiveChatViewModel @Inject constructor(
 
     private val _uiState=MutableStateFlow(UIState())
     val uiState=_uiState.asStateFlow()
-
-    private val _archiveChatsCount=MutableLiveData<Int>()
-    val archiveChatsCount : LiveData<Int> get()=_archiveChatsCount
-
-    init {
-        _archiveChatsCount.value=threadDb.archivedConversationList.count
-    }
 
     fun onEvent(event : ArchiveChatsEvents) {
         when (event) {
@@ -85,7 +76,7 @@ class ArchiveChatViewModel @Inject constructor(
         val threadID=thread.threadId
         viewModelScope.launch(Dispatchers.IO) {
             threadDb.setThreadUnArchived(threadID)
-            updateArchiveChatCount(threadDb.archivedConversationList.count)
+            ArchiveChatCountRepository.updateArchiveCount(threadDb.archivedConversationList.count)
         }
     }
 
@@ -208,9 +199,5 @@ class ArchiveChatViewModel @Inject constructor(
                 Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
             }
         }
-    }
-
-    fun updateArchiveChatCount(count : Int) {
-        _archiveChatsCount.postValue(count)
     }
 }

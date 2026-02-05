@@ -438,26 +438,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                     )
                 }
             }
-
-            if( threadDb.archivedConversationList.count !=0) {
-                binding.archiveChatCardView.visibility = View.VISIBLE
-                binding.archiveChatDivider.visibility = View.VISIBLE
-                binding.archiveChatCardView.setContent {
-                    BChatTheme {
-                        ArchiveChatView(
-                            archiveChatViewModel=archiveChatViewModel,
-                            threadDatabase=threadDb,
-                            onRequestClick={
-                                showArchiveChats()
-                            },
-                            context = this
-                        )
-                    }
-                }
-            }else{
-                binding.archiveChatCardView.visibility = View.GONE
-                binding.archiveChatDivider.visibility = View.GONE
-            }
             homeAdapter.data = newData
             if(firstPos >= 0) { manager.scrollToPositionWithOffset(firstPos, offsetTop) }
             //setupMessageRequestsBanner()
@@ -467,6 +447,14 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             homeAdapter.typingThreadIDs = (threadIds ?: setOf())
         }
         homeViewModel.tryUpdateChannel()
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                ArchiveChatCountRepository.archiveCount.collect { count ->
+                    updateArchiveCountUI(count)
+                }
+            }
+        }
 
         // Observe blocked contacts changed events
         val broadcastReceiver = object : BroadcastReceiver() {
@@ -534,6 +522,27 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     private fun networkChange(networkAvailable: Boolean) {
         if (networkAvailable) {
             checkIsBnsHolder()
+        }
+    }
+
+    private fun updateArchiveCountUI(count: Int) {
+        if (count != 0) {
+            binding.archiveChatCardView.visibility=View.VISIBLE
+            binding.archiveChatDivider.visibility=View.VISIBLE
+            binding.archiveChatCardView.setContent {
+                BChatTheme {
+                    ArchiveChatView(
+                        count = count,
+                        onRequestClick={
+                            showArchiveChats()
+                        },
+                        context=this
+                    )
+                }
+            }
+        } else {
+            binding.archiveChatCardView.visibility=View.GONE
+            binding.archiveChatDivider.visibility=View.GONE
         }
     }
 
@@ -1335,7 +1344,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             .cancelPendingMessageSendJobs(threadID)
         lifecycleScope.launch(Dispatchers.IO) {
             threadDb.setThreadArchived(threadID)
-            archiveChatViewModel.updateArchiveChatCount(threadDb.archivedConversationList.count)
+            ArchiveChatCountRepository.updateArchiveCount(threadDb.archivedConversationList.count)
         }
     }
 

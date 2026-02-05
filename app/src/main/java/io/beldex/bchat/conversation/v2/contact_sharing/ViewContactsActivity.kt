@@ -2,9 +2,8 @@ package io.beldex.bchat.conversation.v2.contact_sharing
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -36,7 +35,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -59,46 +57,32 @@ import io.beldex.bchat.compose_utils.ui.ScreenContainer
 import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.conversation.v2.ConversationActivityV2.Companion.THREAD_ID
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.util.BaseFragment
-import io.beldex.bchat.wallet.OnBackPressedListener
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 
-class ViewAllContactFragment : BaseFragment(), OnBackPressedListener {
+class ViewAllContactsActivity : AppCompatActivity() {
 
     private var contact : ContactModel?=null
 
     override fun onCreate(savedInstanceState : Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            contact=arguments?.getParcelable(CONTACTMODEL)
-        }
-    }
+        contact = intent.getParcelableExtra(CONTACTMODEL)
 
-    override fun onCreateView(
-        inflater : LayoutInflater, container : ViewGroup?, savedInstanceState : Bundle?
-    ) : View {
-
-        return ComposeView(requireContext()).apply {
-            setContent {
-                BChatTheme {
-                    Surface(
-                        modifier=Modifier.fillMaxSize(),
-                        color=MaterialTheme.appColors.cardBackground
+        setContent {
+            BChatTheme {
+                Surface {
+                    ScreenContainer(
+                        title=stringResource(id=R.string.view_contacts),
+                        onBackClick={ onBackPressedDispatcher.onBackPressed() },
+                        modifier=Modifier
+                            .fillMaxSize()
+                            .background(
+                                color=MaterialTheme.appColors.walletDashboardMainMenuCardBackground
+                            )
                     ) {
-                        ScreenContainer(
-                            title=stringResource(id=R.string.view_contacts),
-                            onBackClick={ requireActivity().onBackPressedDispatcher.onBackPressed() },
-                            modifier=Modifier
-                                .fillMaxSize()
-                                .background(
-                                    color=MaterialTheme.appColors.walletDashboardMainMenuCardBackground
-                                )
-                        ) {
-                            contact?.let {
-                                ViewContactScreen(it)
-                            }
+                        contact?.let {
+                            ViewContactScreen(it)
                         }
                     }
                 }
@@ -108,10 +92,6 @@ class ViewAllContactFragment : BaseFragment(), OnBackPressedListener {
 
     companion object {
         const val CONTACTMODEL="contact_model"
-    }
-
-    override fun onBackPressed() : Boolean {
-        return false
     }
 
 }
@@ -245,7 +225,7 @@ fun ChatWithContactPopUp(name: String, address : String, onDismiss: () -> Unit){
         mutableStateOf(name)
     }
     val context=LocalContext.current
-    val activity = context as FragmentActivity
+    val activity = context as AppCompatActivity
 
     fun moveToChat(address: String) {
         val addressForThread = Address.fromSerialized(address)
@@ -258,6 +238,7 @@ fun ChatWithContactPopUp(name: String, address : String, onDismiss: () -> Unit){
         val intent = Intent(context, ConversationActivityV2::class.java).apply {
             putExtra(THREAD_ID, threadID)
         }
+        activity.finish()
         context.startActivity(intent)
     }
 

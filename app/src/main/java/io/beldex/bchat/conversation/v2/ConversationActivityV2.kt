@@ -100,7 +100,7 @@ import io.beldex.bchat.contacts.SelectContactsActivity
 import io.beldex.bchat.contactshare.SimpleTextWatcher
 import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
 import io.beldex.bchat.conversation.v2.contact_sharing.ContactSharingActivity
-import io.beldex.bchat.conversation.v2.contact_sharing.ViewAllContactFragment
+import io.beldex.bchat.conversation.v2.contact_sharing.ViewAllContactsActivity
 import io.beldex.bchat.conversation.v2.contact_sharing.flattenData
 import io.beldex.bchat.conversation.v2.dialogs.LinkPreviewDialog
 import io.beldex.bchat.conversation.v2.dialogs.SendSeedDialog
@@ -3832,25 +3832,10 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         // CASE 1: Multiple addresses
         // -----------------------------
         if (addresses.size > 1) {
-            val extras = Bundle().apply {
-                putParcelable(ViewAllContactFragment.CONTACTMODEL, contact)
+            val intent = Intent(this, ViewAllContactsActivity::class.java).apply {
+                putExtra(ViewAllContactsActivity.CONTACTMODEL, contact)
             }
-
-
-            supportFragmentManager.beginTransaction()
-                .replace(
-                    R.id.additionalContentContainer,
-                    ViewAllContactFragment().apply {
-                        arguments = Bundle().apply {
-                            putParcelable(
-                                ViewAllContactFragment.CONTACTMODEL,
-                                contact
-                            )
-                        }
-                    }
-                )
-                .addToBackStack(ViewAllContactFragment::class.java.simpleName)
-                .commit()
+            startActivity(intent)
             return
         }
 

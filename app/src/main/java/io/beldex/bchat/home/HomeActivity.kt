@@ -1539,6 +1539,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         if(!TextSecurePreferences.isCopiedSeed(this)){
             showSaveYourSeedDialog()
         }
+        ArchiveChatCountRepository.updateArchiveCount(
+            threadDb.archivedConversationList.count
+        )
     }
 
     override fun onPause() {

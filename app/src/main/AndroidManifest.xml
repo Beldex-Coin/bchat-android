@@ -140,6 +140,13 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
             />
         <activity
+            android:name="io.beldex.bchat.conversation.v2.contact_sharing.ViewAllContactsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            />
+        <activity
             android:name="io.beldex.bchat.onboarding.AboutActivity"
             android:exported="false"
             android:screenOrientation="portrait"

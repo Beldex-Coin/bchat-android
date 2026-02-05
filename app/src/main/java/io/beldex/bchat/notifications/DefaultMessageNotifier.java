@@ -20,7 +20,7 @@ import android.Manifest;
 import static com.beldex.libbchat.utilities.Address.fromSerialized;
 
 
-import static io.beldex.bchat.conversation.v2.contact_sharing.ViewContactsScreenKt.flattenData;
+import static io.beldex.bchat.conversation.v2.contact_sharing.ViewContactsActivityKt.flattenData;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;

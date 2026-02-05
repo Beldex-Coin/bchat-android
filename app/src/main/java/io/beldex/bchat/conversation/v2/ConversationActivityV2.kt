@@ -424,10 +424,6 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         if (!viewModel.markAllRead())
             return
 
-        viewModel.recipient.value?.let { thread ->
-            showBlockProgressBar(thread)
-        }
-
     }
 
     override fun onStart() {
@@ -1379,7 +1375,6 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
 
         // Adjust UI based on block state
         setConversationRecyclerViewLayout(recipient.isBlocked)
-        showBlockProgressBar(recipient)
 
         // Consume click to avoid click-through (DO NOT REMOVE)
         binding.blockedBanner.setOnClickListener { /* no-op */ }
@@ -1400,36 +1395,6 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
                 unblockContactDialog()
             }
         }
-    }
-
-    private fun showBlockProgressBar(recipient: Recipient?) {
-
-        if (recipient == null || recipient.isGroupRecipient) {
-            hideBlockProgress()
-            return
-        }
-
-        val shouldShowProgress =
-            recipient.hasApprovedMe() &&
-                    recipient.isApproved &&
-                    !recipient.isBlocked &&
-                    !recipient.isLocalNumber &&
-                    TextSecurePreferences.isPayAsYouChat(this) &&
-                    HomeActivity.reportIssueBChatID != recipient.address.toString()
-
-        blockProgressBarVisible = shouldShowProgress
-
-        if (shouldShowProgress) {
-            binding.inputBar.showProgressBar(true)
-        } else {
-            hideBlockProgress()
-        }
-    }
-
-    private fun hideBlockProgress() {
-        binding.inputBar.showFailedProgressBar(false)
-        binding.inputBar.showProgressBar(false)
-        blockProgressBarVisible = false
     }
 
     private fun isOutgoingMessageRequestThread() : Boolean {
@@ -3541,9 +3506,6 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             if (threadRecipient.isContactRecipient) {
                 binding.blockedBanner.isVisible = threadRecipient.isBlocked
                 setConversationRecyclerViewLayout(threadRecipient.isBlocked)
-                //Need to check
-                //callShowPayAsYouChatBDXIcon(threadRecipient)
-                showBlockProgressBar(threadRecipient)
             }
 
             // Message request bar
@@ -3609,9 +3571,6 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
 
             HomeDialogType.UnblockUser -> {
                 viewModel.unblock()
-                viewModel.recipient.value?.let { thread ->
-                    showBlockProgressBar(thread)
-                }
             }
 
             HomeDialogType.ClearChat -> {
@@ -3620,9 +3579,6 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
 
             HomeDialogType.AcceptRequest -> {
                 conversationApprovalJob = acceptMessageRequest()
-                viewModel.recipient.value?.let {
-                    showBlockProgressBar(it)
-                }
             }
 
             HomeDialogType.DeclineRequest -> {
@@ -3695,10 +3651,6 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
                 val deleteThread = (data as? Int) == 1
 
                 viewModel.block()
-
-                viewModel.recipient.value?.let { thread ->
-                    showBlockProgressBar(thread)
-                }
 
                 if (deleteThread) {
                     viewModel.deleteThread()

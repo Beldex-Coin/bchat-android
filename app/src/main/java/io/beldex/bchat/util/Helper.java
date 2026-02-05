@@ -1,62 +1,24 @@
 package io.beldex.bchat.util;
 
-import android.Manifest;
 import android.app.Activity;
-import android.app.Dialog;
-import android.content.ClipData;
-import android.content.ClipDescription;
-import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
-import android.os.AsyncTask;
 import android.os.StrictMode;
-import android.system.ErrnoException;
-import android.system.Os;
-import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.TextView;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.util.Calendar;
-import java.util.Locale;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import io.beldex.bchat.BuildConfig;
-import io.beldex.bchat.R;
-import io.beldex.bchat.data.Crypto;
 import io.beldex.bchat.model.WalletManager;
 import timber.log.Timber;
 
 public class Helper {
     static public final String NOCRAZYPASS_FLAGFILE = ".nocrazypass";
-
-    //Important
-    static public final String BASE_CRYPTO = Crypto.BDX.getSymbol();
     static public final int BDX_DECIMALS = 9;
-    static public final long ONE_BDX = Math.round(Math.pow(10, Helper.BDX_DECIMALS));
-
-    static public final boolean SHOW_EXCHANGERATES = true;
-    static public final boolean ALLOW_SHIFT = true;
 
     static private final String WALLET_DIR = "wallets";
     static private final String MONERO_DIR = "monero";
@@ -82,34 +44,7 @@ public class Helper {
     }
 
     static public final int PERMISSIONS_REQUEST_CAMERA = 7;
-    static public  final int PERMISSION_REQUEST_PHONE_STATE = 1;
-    static public  final int PERMISSION_REQUEST_BLUETOOTH_STATE = 2;
 
-    static public boolean getCameraPermission(Activity context) {
-        if (context.checkSelfPermission(Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_DENIED) {
-            Timber.w("Permission denied for CAMERA - requesting it");
-            String[] permissions = {Manifest.permission.CAMERA};
-            context.requestPermissions(permissions, PERMISSIONS_REQUEST_CAMERA);
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    static public File getWalletFile(Context context, String aWalletName) {
-        File walletDir = getWalletRoot(context);
-        File f = new File(walletDir, aWalletName);
-        Timber.d("wallet=%s size= %d", f.getAbsolutePath(), f.length());
-        return f;
-    }
-
-    static public void showKeyboard(Activity act) {
-        InputMethodManager imm = (InputMethodManager) act.getSystemService(Context.INPUT_METHOD_SERVICE);
-        final View focus = act.getCurrentFocus();
-        if (focus != null)
-            imm.showSoftInput(focus, InputMethodManager.SHOW_IMPLICIT);
-    }
 
     static public void hideKeyboard(Activity act) {
         if (act == null) return;
@@ -122,20 +57,8 @@ public class Helper {
         }
     }
 
-    static public void showKeyboard(Dialog dialog) {
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-    }
-
-    static public void hideKeyboardAlways(Activity act) {
-        act.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-    }
-
     static public BigDecimal getDecimalAmount(long amount) {
         return new BigDecimal(amount).scaleByPowerOfTen(-BDX_DECIMALS);
-    }
-
-    static public String getDisplayAmount(long amount) {
-        return getDisplayAmount(amount, BDX_DECIMALS);
     }
 
     static public String getDisplayAmount(long amount, int maxDecimals) {
@@ -149,21 +72,6 @@ public class Helper {
         return d.toPlainString();
     }
 
-    static public String getFormattedAmount(double amount, boolean isCrypto) {
-        // at this point selection is BDX in case of error
-        String displayB;
-        if (isCrypto) {
-            if ((amount >= 0) || (amount == 0)) {
-                displayB = String.format(Locale.US, "%,.4f", amount);
-            } else {
-                displayB = null;
-            }
-        } else { // not crypto
-            displayB = String.format(Locale.US, "%,.4f", amount);
-        }
-        return displayB;
-    }
-
     static public String getDisplayAmount(double amount) {
         // a Java bug does not strip zeros properly if the value is 0
         BigDecimal d = new BigDecimal(amount)
@@ -172,17 +80,6 @@ public class Helper {
         if (d.scale() < 1)
             d = d.setScale(1, BigDecimal.ROUND_UNNECESSARY);
         return d.toPlainString();
-    }
-
-    static public Bitmap getBitmap(Context context, int drawableId) {
-        Drawable drawable = ContextCompat.getDrawable(context, drawableId);
-        if (drawable instanceof BitmapDrawable) {
-            return BitmapFactory.decodeResource(context.getResources(), drawableId);
-        } else if (drawable instanceof VectorDrawable) {
-            return getBitmap((VectorDrawable) drawable);
-        } else {
-            throw new IllegalArgumentException("unsupported drawable type");
-        }
     }
 
     static private Bitmap getBitmap(VectorDrawable vectorDrawable) {
@@ -194,82 +91,6 @@ public class Helper {
         return bitmap;
     }
 
-    static final int HTTP_TIMEOUT = 5000;
-
-    static public String getUrl(String httpsUrl) {
-        HttpsURLConnection urlConnection = null;
-        try {
-            URL url = new URL(httpsUrl);
-            urlConnection = (HttpsURLConnection) url.openConnection();
-            urlConnection.setConnectTimeout(HTTP_TIMEOUT);
-            urlConnection.setReadTimeout(HTTP_TIMEOUT);
-            InputStreamReader in = new InputStreamReader(urlConnection.getInputStream());
-            StringBuffer sb = new StringBuffer();
-            final int BUFFER_SIZE = 512;
-            char[] buffer = new char[BUFFER_SIZE];
-            int length = in.read(buffer, 0, BUFFER_SIZE);
-            while (length >= 0) {
-                sb.append(buffer, 0, length);
-                length = in.read(buffer, 0, BUFFER_SIZE);
-            }
-            return sb.toString();
-        } catch (SocketTimeoutException ex) {
-            Timber.w("C %s", ex.getLocalizedMessage());
-        } catch (MalformedURLException ex) {
-            Timber.e("A %s", ex.getLocalizedMessage());
-        } catch (IOException ex) {
-            Timber.e("B %s", ex.getLocalizedMessage());
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-        }
-        return null;
-    }
-
-    static public void clipBoardCopy(Context context, String label, String text) {
-        ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText(label, text);
-        clipboardManager.setPrimaryClip(clip);
-    }
-
-    static public String getClipBoardText(Context context) {
-        final ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-        try {
-            if (clipboardManager.hasPrimaryClip()
-                    && clipboardManager.getPrimaryClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
-                final ClipData.Item item = clipboardManager.getPrimaryClip().getItemAt(0);
-                return item.getText().toString();
-            }
-        } catch (NullPointerException ex) {
-            // if we have don't find a text in the clipboard
-            return null;
-        }
-        return null;
-    }
-
-    static private Animation ShakeAnimation;
-
-    //Important
-   static public Animation getShakeAnimation(Context context) {
-        if (ShakeAnimation == null) {
-            synchronized (Helper.class) {
-                if (ShakeAnimation == null) {
-                    ShakeAnimation = AnimationUtils.loadAnimation(context, R.anim.shake);
-                }
-            }
-        }
-        return ShakeAnimation;
-    }
-
-    private final static char[] HexArray = "0123456789ABCDEF".toCharArray();
-
-    public static String bytesToHex(byte[] data) {
-        if ((data != null) && (data.length > 0))
-            return String.format("%0" + (data.length * 2) + "X", new BigInteger(1, data));
-        else return "";
-    }
-
     public static byte[] hexToBytes(String hex) {
         final int len = hex.length();
         final byte[] data = new byte[len / 2];
@@ -278,15 +99,6 @@ public class Helper {
                     + Character.digit(hex.charAt(i + 1), 16));
         }
         return data;
-    }
-
-    static public void setMoneroHome(Context context) {
-        try {
-            String home = getStorage(context, MONERO_DIR).getAbsolutePath();
-            Os.setenv("HOME", home, true);
-        } catch (ErrnoException ex) {
-            throw new IllegalStateException(ex);
-        }
     }
 
     static public void initLogger(Context context) {
@@ -330,34 +142,4 @@ public class Helper {
         }
     }
 
-    static public boolean preventScreenshot() {
-        return !(BuildConfig.DEBUG || BuildConfig.FLAVOR.equals("alpha"));
-    }
-
-    static public final int STALE_NODE_HOURS = 2;
-
-    //Important
-    static public void showTimeDifference(TextView view, long timeInSeconds) {
-        final Context ctx = view.getContext();
-        final long now = Calendar.getInstance().getTimeInMillis() / 1000;
-        final long secs = (now - timeInSeconds);
-        final long mins = secs / 60; // in minutes
-        final long hours = mins / 60;
-        final long days = hours / 24;
-        String msg;
-        if (mins < 2) {
-            msg = ctx.getString(R.string.node_updated_now, secs);
-        } else if (hours < 2) {
-            msg = ctx.getString(R.string.node_updated_mins, mins);
-        } else if (days < 2) {
-            msg = ctx.getString(R.string.node_updated_hours, hours);
-        } else {
-            msg = ctx.getString(R.string.node_updated_days, days);
-        }
-        view.setText(msg);
-        if (hours >= STALE_NODE_HOURS)
-            view.setTextColor(ThemeHelper.getThemedColor(view.getContext(), R.attr.colorError));
-        else
-            view.setTextColor(ThemeHelper.getThemedColor(view.getContext(), android.R.attr.textColorPrimary));
-    }
 }

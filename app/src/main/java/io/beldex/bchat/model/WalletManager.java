@@ -29,23 +29,6 @@ public class WalletManager {
         return WalletManager.Instance;
     }
 
-    public String addressPrefix() {
-        return addressPrefix(getNetworkType());
-    }
-
-    static public String addressPrefix(NetworkType networkType) {
-        switch (networkType) {
-            case NetworkType_Testnet:
-                return "9A-";
-            case NetworkType_Mainnet:
-                return "b-";
-            case NetworkType_Stagenet:
-                return "5-";
-            default:
-                throw new IllegalStateException("Unsupported Network: " + networkType);
-        }
-    }
-
     private Wallet managedWallet = null;
 
     public Wallet getWallet() {
@@ -216,31 +199,11 @@ public class WalletManager {
         return daemonPassword;
     }
 
-    public native int getDaemonVersion();
-
-    public native long getBlockchainHeight();
-
-    public native long getBlockchainTargetHeight();
-
-    public native long getBlockTarget();
-
-    //public native String resolveOpenAlias(String address, boolean dnssec_valid);
-
     static public native void initLogger(String argv0, String defaultLogBaseName);
 
     static public int LOGLEVEL_SILENT = -1;
     static public int LOGLEVEL_DEBUG = 2;
 
     static public native void setLogLevel(int level);
-
-    static public native void logDebug(String category, String message);
-
-    static public native void logInfo(String category, String message);
-
-    static public native void logWarning(String category, String message);
-
-    static public native void logError(String category, String message);
-
-    static public native String bChatVersion();
 }
 //endregion

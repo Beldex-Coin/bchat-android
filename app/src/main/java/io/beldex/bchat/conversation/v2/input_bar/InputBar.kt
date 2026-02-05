@@ -37,12 +37,8 @@ import io.beldex.bchat.util.toPx
 
 class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, LinkPreviewDraftViewDelegate{
     private lateinit var binding: ViewInputBarBinding
-    private val screenWidth = Resources.getSystem().displayMetrics.widthPixels
-    private val vMargin by lazy { toDp(4, resources) }
-    private val minHeight by lazy { toPx(56, resources) }
     private var linkPreviewDraftView: LinkPreviewDraftView? = null
     var delegate: InputBarDelegate? = null
-    var additionalContentHeight = 0
     var quote: MessageRecord? = null
     var linkPreview: LinkPreview? = null
     var showInput: Boolean = true
@@ -58,12 +54,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         get() { return binding.inputBarEditText.text?.toString() ?: "" }
         set(value) { binding.inputBarEditText.setText(value) }
 
-    val attachmentButtonsContainerHeight: Int
-        get() = binding.attachmentsButtonContainer.height
-
     private var mLastClickTime: Long = 0
-    private var inChatBDXButtonLastClickTime: Long = 0
-    private var inChatBDXButtonLastLongClickTime: Long = 0
     private var sendButtonLastClickTime: Long = 0
     private var microPhoneButtonLastLongClickTime: Long = 0
 
@@ -116,20 +107,6 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         }
         // Edit text
         binding.inputBarEditText.delegate = this
-        // In Chat BDX
-        binding.inChatBDX.setOnClickListener {
-            if (SystemClock.elapsedRealtime() - inChatBDXButtonLastClickTime >= 500){
-                inChatBDXButtonLastClickTime = SystemClock.elapsedRealtime()
-            }
-        }
-
-        binding.inChatBDX.setOnLongClickListener {
-            if (SystemClock.elapsedRealtime() - inChatBDXButtonLastLongClickTime >= 500){
-                inChatBDXButtonLastLongClickTime = SystemClock.elapsedRealtime()
-            }
-            true
-        }
-
         binding.inputBarEditText.requestFocus()
 
         /* Hales63 */
@@ -287,107 +264,6 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
             }
         } else {
             setEditTextStyleNormal()
-        }
-    }
-
-    fun showPayAsYouChatBDXIcon(thread: Recipient,reportIssueId:String) {
-        if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && thread.isApproved && reportIssueId!=thread.address.toString() && !thread.isLocalNumber && TextSecurePreferences.isWalletActive(context)) {
-            binding.payAsYouChatLayout.visibility = View.VISIBLE
-        }else{
-            binding.payAsYouChatLayout.visibility = View.INVISIBLE
-        }
-    }
-
-    fun showProgressBar(status:Boolean){
-        binding.blockProgressBar.isVisible = status
-    }
-
-    fun showFailedProgressBar(status: Boolean){
-        binding.failedBlockProgressBar.isVisible = status
-        binding.failedBlockProgressBar.progress = 0
-    }
-
-    fun setProgress(progress:Int){
-        binding.blockProgressBar.progress = progress
-    }
-
-    fun setDrawableProgressBar(context: Context, type: Boolean,syncStatus: String,n: Float) {
-        if(TextSecurePreferences.isPayAsYouChat(context)) {
-            if (type) {
-                binding.failedBlockProgressBar.isVisible = type
-                binding.failedBlockProgressBar.progress = 100
-                binding.blockProgressBar.isVisible = !type
-                binding.blockProgressBar.progress = 0
-            } else {
-                binding.blockProgressBar.isVisible = !type
-                if(syncStatus == "100%" && syncStatus != "--") {
-                    binding.blockProgressBar.progress = 100
-                }else{
-                    when {
-                        n==4f -> {
-                            binding.blockProgressBar.isVisible = !type
-                        }
-                        n==2f -> {
-                            binding.blockProgressBar.isVisible = !type
-                        }
-                        n==3f -> {
-                            binding.blockProgressBar.isVisible = !type
-                            binding.blockProgressBar.progress = 100
-                        }
-                        n<1f && n >= 0f -> {
-                            if(n>=0.01f && n<0.1f){
-                                binding.blockProgressBar.progress = 5
-                            }else if(n>=0.1f && n<0.2f){
-                                binding.blockProgressBar.progress = 10
-                            }else if(n>=0.2f && n<0.3f){
-                                binding.blockProgressBar.progress = 20
-                            }else if(n>=0.3f && n<0.4f){
-                                binding.blockProgressBar.progress = 30
-                            }else if(n>=0.4f && n<0.5f){
-                                binding.blockProgressBar.progress = 40
-                            }else if(n>=0.55f && n<0.6f){
-                                binding.blockProgressBar.progress = 55
-                            }else if(n>=0.6f && n<0.7f){
-                                binding.blockProgressBar.progress = 60
-                            }else if(n>=0.7f && n<0.8f){
-                                binding.blockProgressBar.progress = 70
-                            }else if(n>=0.8f && n<0.9f){
-                                binding.blockProgressBar.progress = 80
-                            }else if(n>=0.9f && n<0.95f){
-                                binding.blockProgressBar.progress = 90
-                            }else if(n>=0.95f && n<0.99f){
-                                binding.blockProgressBar.progress = 95
-                            }else{
-                                binding.blockProgressBar.progress = 100
-                            }
-                            binding.blockProgressBar.isVisible = !type
-                        }
-                        else -> { // <0
-                            binding.blockProgressBar.isVisible = false
-                        }
-                    }
-                }
-                binding.failedBlockProgressBar.isVisible = type
-                binding.failedBlockProgressBar.progress = 0
-            }
-        }else{
-            binding.failedBlockProgressBar.isVisible = false
-            binding.failedBlockProgressBar.progress = 0
-        }
-    }
-    fun showDrawableProgressBar(type: Boolean,syncStatus:String) {
-        if (type) {
-            binding.failedBlockProgressBar.isVisible = type
-            binding.failedBlockProgressBar.progress = 100
-            binding.blockProgressBar.isVisible = !type
-            binding.blockProgressBar.progress = 0
-        } else {
-            binding.blockProgressBar.isVisible = !type
-            if (syncStatus == "100%" && syncStatus != "--") {
-                binding.blockProgressBar.progress = 100
-            }
-            binding.failedBlockProgressBar.isVisible = type
-            binding.failedBlockProgressBar.progress = 0
         }
     }
 

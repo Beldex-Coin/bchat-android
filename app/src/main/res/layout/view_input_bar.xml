@@ -51,71 +51,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_centerInParent="true"
-                    android:layout_toStartOf="@id/payAsYouChatLayout"
                     android:layout_toEndOf="@id/attachmentsButtonContainer"
                     android:background="@null"
                     android:gravity="center_vertical"
                     android:fontFamily="@font/open_sans_medium"
                     android:hint="@string/ConversationActivity_message"
                     android:textColor="@color/text"
+                    android:paddingEnd="20dp"
+                    android:paddingStart="0dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
                     android:textSize="@dimen/small_font_size" />
-
-                <RelativeLayout
-                    android:id="@+id/payAsYouChatLayout"
-                    android:layout_width="@dimen/input_bar_button_expanded_size"
-                    android:layout_height="@dimen/input_bar_button_expanded_size"
-                    android:layout_alignParentEnd="true"
-                    android:gravity="center"
-                    android:layout_centerVertical="true"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:id="@+id/inChatBDX"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:visibility="gone"
-                        android:src="@drawable/ic_in_chat_bdx" />
-
-                    <ProgressBar
-                        android:id="@+id/blockProgressBar"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:progressDrawable="@drawable/green_circular_progress_bar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:indeterminate="false"
-                        android:visibility="gone"
-                        android:layout_margin="7dp"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentStart="true"
-                        android:max="100"/>
-
-                    <ProgressBar
-                        android:id="@+id/failedBlockProgressBar"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:progressDrawable="@drawable/red_circular_progress_bar"
-                        android:background="@drawable/circle_shape"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:indeterminate="false"
-                        android:visibility="gone"
-                        android:layout_margin="5dp"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentStart="true"
-                        android:max="100"/>
-
-                </RelativeLayout>
 
             </RelativeLayout>
 

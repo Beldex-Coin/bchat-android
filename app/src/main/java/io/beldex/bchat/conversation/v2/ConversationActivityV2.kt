@@ -1361,12 +1361,33 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     }
 
     private fun updateGroupSubtitle(recipient : Recipient) {
-        val groupID : String=recipient.address.toGroupString()
-        val members=groupRepository?.getGroupMembers(groupID)
-        val memberCount=members?.members?.size ?: 0
-        binding.conversationSubtitleView.isVisible=true
-        binding.conversationSubtitleView.text=
-            if (memberCount > 1) "$memberCount members" else "$memberCount member"
+        try {
+            val openGroup=viewModel.getOpenGroupChat()
+            if (openGroup != null) {
+                val userCount=viewModel.getUserCount(openGroup)
+                try {
+                    if (userCount != null) {
+                        binding.conversationSubtitleView.text=
+                            getString(R.string.ConversationActivity_member_count, userCount)
+                    } else {
+                        binding.conversationSubtitleView.isVisible=false
+                    }
+                } catch (ex : IllegalStateException) {
+                    Timber.w(ex.message)
+                }
+            } else if (recipient.isClosedGroupRecipient) {
+                val groupID : String=recipient.address.toGroupString()
+                val members=groupRepository?.getGroupMembers(groupID)
+                val memberCount=members?.members?.size ?: 0
+                binding.conversationSubtitleView.isVisible=true
+                binding.conversationSubtitleView.text=
+                    if (memberCount > 1) "$memberCount members" else "$memberCount member"
+            } else {
+                binding.conversationSubtitleView.isVisible=false
+            }
+        } catch (ex : NullPointerException) {
+            Timber.tag("Exception ").d(ex.message.toString())
+        }
     }
 
     private fun setUpBlockedBanner() {

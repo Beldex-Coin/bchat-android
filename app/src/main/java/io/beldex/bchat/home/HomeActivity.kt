@@ -284,8 +284,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        setupToolbarInsets()
 
         glide = Glide.with(this)
         binding.profileButton.root.glide = glide

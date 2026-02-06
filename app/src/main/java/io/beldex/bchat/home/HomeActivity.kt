@@ -43,7 +43,9 @@ import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -58,8 +60,6 @@ import com.beldex.libbchat.utilities.GroupRecord
 import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libbchat.utilities.ProfilePictureModifiedEvent
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getIsReactionOverlayVisible
-import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setIsReactionOverlayVisible
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.ThreadUtils
@@ -75,14 +75,12 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.BuildConfig
-import io.beldex.bchat.MediaOverviewActivity
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.components.ProfilePictureView
 import io.beldex.bchat.compose_utils.ComposeDialogContainer
 import io.beldex.bchat.compose_utils.DialogType
 import io.beldex.bchat.conversation.v2.ConversationViewModel
-import io.beldex.bchat.conversation.v2.contact_sharing.ViewAllContactFragment
 import io.beldex.bchat.database.BeldexMessageDatabase
 import io.beldex.bchat.database.MmsDatabase
 import io.beldex.bchat.database.MmsSmsDatabase
@@ -137,7 +135,6 @@ import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.disableClipping
 import io.beldex.bchat.util.getScreenWidth
 import io.beldex.bchat.util.toPx
-import io.beldex.bchat.wallet.OnBackPressedListener
 import io.beldex.bchat.webrtc.CallViewModel
 import io.beldex.bchat.webrtc.NetworkChangeReceiver
 import io.beldex.bchat.webrtc.WebRTCComposeActivity
@@ -1478,6 +1475,14 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         //Ledger.disconnect()
         networkChangedReceiver?.unregister(this)
         networkChangedReceiver = null
+        val broadcastReceiver = this.broadcastReceiver
+        if (broadcastReceiver != null) {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
+        }
+        //PathStatus
+        for (receiver in broadcastReceivers) {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
+        }
         super.onDestroy()
     }
 

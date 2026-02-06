@@ -423,7 +423,15 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         ApplicationContext.getInstance(this).messageNotifier.setVisibleThread(viewModel.threadId)
         if (!viewModel.markAllRead())
             return
+    }
 
+    override fun onPause() {
+        super.onPause()
+        ApplicationContext.getInstance(this).messageNotifier.setVisibleThread(-1)
+        viewModel.saveDraft(binding.inputBar.text.trim())
+        if (isAudioPlaying) {
+            this.stopVoiceMessages(audioPlayingIndexInAdapter)
+        }
     }
 
     override fun onStart() {
@@ -435,6 +443,8 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     override fun onStop() {
         super.onStop()
         screenshotDetector.unregister()
+        binding.inputBar.clearFocus()
+        Helper.hideKeyboard(this)
     }
 
     override fun onDestroy() {

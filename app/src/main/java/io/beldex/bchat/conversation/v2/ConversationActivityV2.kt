@@ -125,6 +125,7 @@ import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.crypto.MnemonicUtilities
 import io.beldex.bchat.database.BeldexMessageDatabase
 import io.beldex.bchat.database.MmsDatabase
+import io.beldex.bchat.database.NoSuchMessageException
 import io.beldex.bchat.database.ReactionDatabase
 import io.beldex.bchat.database.SmsDatabase
 import io.beldex.bchat.database.ThreadDatabase
@@ -3918,19 +3919,35 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         reactionDelegate.hide()
     }
 
-    override fun onReactWithAnyEmojiSelected(emoji : String, messageId : MessageId) {
-        reactionDelegate.hide()
-        val message=if (messageId.mms) {
-            mmsDb.getMessageRecord(messageId.id)
-        } else {
-            smsDb.getMessageRecord(messageId.id)
-        }
-        val oldRecord=reactionDb.getReactions(messageId)
-            .find { it.author == textSecurePreferences.getLocalNumber() }
-        if (oldRecord?.emoji == emoji) {
-            sendEmojiRemoval(emoji, message)
-        } else {
-            sendEmojiReaction(emoji, message)
+    override fun onReactWithAnyEmojiSelected(emoji : String, messageId : MessageId?) {
+        try {
+            reactionDelegate.hide()
+            val message=if (messageId!!.mms) {
+                mmsDb.getMessageRecords(messageId.id)
+            } else {
+                smsDb.getMessageRecords(messageId.id)
+            }
+            if (message != null) {
+                val localUser = textSecurePreferences.getLocalNumber()
+                val userReactions = reactionDb.getReactions(messageId).filter { it.author == localUser }
+                val isAlreadyReacted = userReactions.isNotEmpty()
+                if (isAlreadyReacted && userReactions.any { it.emoji == emoji }) {
+                    userReactions.forEach {
+                        sendEmojiRemoval(it.emoji, message)
+                    }
+                } else {
+                    if (isAlreadyReacted) {
+                        userReactions.forEach {
+                           sendEmojiRemoval(it.emoji, message)
+                        }
+                    }
+                    sendEmojiReaction(emoji, message)
+                }
+            }
+        } catch (e : NoSuchMessageException) {
+            com.beldex.libsignal.utilities.Log.e("onRemoveReaction", "Message not found: ${messageId?.id}", e)
+        } catch (e : Exception) {
+            com.beldex.libsignal.utilities.Log.e("onRemoveReaction", "Unexpected error while removing reaction", e)
         }
     }
 

@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,7 +44,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.fragment.app.FragmentActivity
+import androidx.core.view.WindowCompat
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.R
@@ -63,23 +64,28 @@ import kotlinx.serialization.json.Json
 
 class ViewAllContactsActivity : AppCompatActivity() {
 
-    private var contact : ContactModel?=null
+    private var contact: ContactModel? = null
 
-    override fun onCreate(savedInstanceState : Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         contact = intent.getParcelableExtra(CONTACTMODEL)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
             BChatTheme {
-                Surface {
+                Surface(
+                    modifier = Modifier.fillMaxSize()
+                ) {
                     ScreenContainer(
-                        title=stringResource(id=R.string.view_contacts),
-                        onBackClick={ onBackPressedDispatcher.onBackPressed() },
-                        modifier=Modifier
+                        title = stringResource(id = R.string.view_contacts),
+                        onBackClick = { onBackPressedDispatcher.onBackPressed() },
+                        modifier = Modifier
                             .fillMaxSize()
                             .background(
-                                color=MaterialTheme.appColors.walletDashboardMainMenuCardBackground
+                                color = MaterialTheme.appColors.walletDashboardMainMenuCardBackground
                             )
+                            .systemBarsPadding()
                     ) {
                         contact?.let {
                             ViewContactScreen(it)
@@ -91,7 +97,7 @@ class ViewAllContactsActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val CONTACTMODEL="contact_model"
+        const val CONTACTMODEL = "contact_model"
     }
 
 }

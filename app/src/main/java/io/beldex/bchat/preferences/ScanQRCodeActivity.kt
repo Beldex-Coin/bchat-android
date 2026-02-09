@@ -16,7 +16,7 @@ import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.PublicKeyValidation
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2
+import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.qr.ScanListener
 import io.beldex.bchat.util.*
@@ -128,12 +128,12 @@ class ScanQRCodeActivity : PassphraseRequiredActionBarActivity(), ScanQRCodePlac
 
         val recipient = Recipient.from(this, Address.fromSerialized(hexEncodedPublicKey), false)
         val returnIntent = Intent()
-        returnIntent.putExtra(ConversationFragmentV2.ADDRESS, recipient.address)
-        returnIntent.putExtra(ConversationFragmentV2.URI,intent.data)
-        returnIntent.putExtra(ConversationFragmentV2.TYPE,intent.type)
+        returnIntent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
+        returnIntent.putExtra(ConversationActivityV2.URI,intent.data)
+        returnIntent.putExtra(ConversationActivityV2.TYPE,intent.type)
         //returnIntent.setDataAndType(intent.data, intent.type)
         val existingThread = DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient)
-        returnIntent.putExtra(ConversationFragmentV2.THREAD_ID, existingThread)
+        returnIntent.putExtra(ConversationActivityV2.THREAD_ID, existingThread)
         setResult(RESULT_OK, returnIntent)
         finish()
     }

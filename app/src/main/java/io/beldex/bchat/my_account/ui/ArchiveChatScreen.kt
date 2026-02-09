@@ -436,7 +436,7 @@ fun ArchiveChatScreen(
 
             ArchiveChatItem(context=context, thread=archivedList, modifier=Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(vertical = 4.dp, horizontal = 6.dp)
                 .pointerInput(Unit) {
                     detectTapGestures(onTap={
                         onRequestClick(archivedList)
@@ -576,34 +576,47 @@ fun ArchiveChatItem(
             Spacer(modifier=Modifier.height(8.dp))
 
             Row(
-                horizontalArrangement=Arrangement.SpaceBetween,
-                verticalAlignment=Alignment.CenterVertically,
-                modifier=Modifier.align(Alignment.CenterHorizontally)
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
             ) {
-                if (thread.recipient.isMuted) {
-                    Image(
-                        painter=painterResource(id=R.drawable.ic_mute_home), contentDescription=""
-                    )
+                Box(
+                    modifier = Modifier
+                        .width(28.dp),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
+                    when {
+                        thread.recipient.isMuted -> {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_mute_home),
+                                contentDescription = ""
+                            )
+                        }
+
+                        thread.recipient.notifyType == RecipientDatabase.NOTIFY_TYPE_MENTIONS -> {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_mention_home),
+                                contentDescription = ""
+                            )
+                        }
+                    }
                 }
-                if(thread.recipient.notifyType == RecipientDatabase.NOTIFY_TYPE_MENTIONS && !thread.recipient.isMuted){
-                    Image(
-                        painter=painterResource(id=R.drawable.ic_mention_home), contentDescription=""
-                    )
-                }
-                Spacer(modifier=Modifier.width(4.dp))
+
+                Spacer(modifier = Modifier.width(6.dp))
                 if (thread.unreadCount != 0 && !thread.isRead) {
                     Box(
-                        contentAlignment=Alignment.Center, modifier=Modifier
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
                             .size(24.dp)
                             .background(
-                                color=MaterialTheme.appColors.textSelectionColor, shape=CircleShape
+                                color = MaterialTheme.appColors.textSelectionColor,
+                                shape = CircleShape
                             )
                     ) {
                         Text(
-                            text="$formattedUnreadCount",
-                            color=Color.White,
-                            fontWeight=FontWeight.Bold,
-                            fontSize=if (unreadCount < 100) 12.sp else 10.sp
+                            text = formattedUnreadCount ?: "",
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = if (unreadCount < 100) 12.sp else 10.sp
                         )
                     }
                 }

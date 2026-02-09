@@ -20,7 +20,7 @@ import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2
+import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.dms.NewChatScreen
 
 enum class OpenActivity(val destination: String) {
@@ -82,8 +82,8 @@ class NewChatConversationActivity: ComponentActivity() {
                         },
                         openConversation = {
                             val returnIntent = Intent()
-                            returnIntent.putExtra(ConversationFragmentV2.ACTIVITY_TYPE,6)
-                            returnIntent.putExtra(ConversationFragmentV2.ADDRESS,it.address)
+                            returnIntent.putExtra(ConversationActivityV2.ACTIVITY_TYPE,6)
+                            returnIntent.putExtra(ConversationActivityV2.ADDRESS,it.address)
                             context.setResult(PassphraseRequiredActionBarActivity.RESULT_OK, returnIntent)
                             context.finish()
                         },
@@ -98,7 +98,7 @@ class NewChatConversationActivity: ComponentActivity() {
 
 fun openActivity(activityType:Int, activity: Activity){
     val returnIntent = Intent()
-    returnIntent.putExtra(ConversationFragmentV2.ACTIVITY_TYPE,activityType)
+    returnIntent.putExtra(ConversationActivityV2.ACTIVITY_TYPE,activityType)
     activity.setResult(PassphraseRequiredActionBarActivity.RESULT_OK, returnIntent)
     activity.finish()
 }

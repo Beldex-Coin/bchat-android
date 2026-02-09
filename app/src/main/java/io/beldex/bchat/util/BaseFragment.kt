@@ -6,14 +6,15 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.R
+import io.beldex.bchat.conversation.v2.ConversationActivityV2
 
 open class BaseFragment: Fragment() {
 
-    private var activity: HomeActivity? = null
+    private var activity: ConversationActivityV2? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        activity = context as HomeActivity
+        activity = context as ConversationActivityV2
     }
 
     protected fun replaceFragment(newFragment: Fragment, stackName: String?, extras: Bundle?) {

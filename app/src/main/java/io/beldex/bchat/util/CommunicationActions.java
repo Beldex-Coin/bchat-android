@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.TaskStackBuilder;
 
 import com.beldex.libbchat.utilities.recipients.Recipient;
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2;
+import io.beldex.bchat.conversation.v2.ConversationActivityV2;
 import io.beldex.bchat.dependencies.DatabaseComponent;
 import io.beldex.bchat.home.HomeActivity;
 
@@ -34,13 +34,9 @@ public class CommunicationActions {
 
       @Override
       protected void onPostExecute(Long threadId) {
-        /*Intent intent = new Intent(context, ConversationActivityV2.class);
+        Intent intent = new Intent(context, ConversationActivityV2.class);
         intent.putExtra(ConversationActivityV2.ADDRESS, recipient.getAddress());
-        intent.putExtra(ConversationActivityV2.THREAD_ID, threadId);*/
-        Intent intent = new Intent(context, HomeActivity.class);
-        intent.putExtra(ConversationFragmentV2.ADDRESS, recipient.getAddress());
-        intent.putExtra(ConversationFragmentV2.THREAD_ID, threadId);
-        intent.putExtra(HomeActivity.SHORTCUT_LAUNCHER,true); //- New
+        intent.putExtra(ConversationActivityV2.THREAD_ID, threadId);
 
         if (backStack != null) {
           Log.d("backStack","if");

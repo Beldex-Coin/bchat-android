@@ -34,7 +34,7 @@ import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.ui.ScreenContainer
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2
+import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.util.State
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
@@ -154,7 +154,7 @@ class NewGroupConversationActivity: ComponentActivity() {
 
 fun openConversationActivity(threadId: Long, recipient: Recipient, activity: Activity) {
     val returnIntent = Intent()
-    returnIntent.putExtra(ConversationFragmentV2.THREAD_ID,threadId)
-    returnIntent.putExtra(ConversationFragmentV2.ADDRESS,recipient.address)
+    returnIntent.putExtra(ConversationActivityV2.THREAD_ID,threadId)
+    returnIntent.putExtra(ConversationActivityV2.ADDRESS,recipient.address)
     activity.setResult(PassphraseRequiredActionBarActivity.RESULT_OK, returnIntent)
 }

@@ -1470,7 +1470,9 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="pincode_created">Password created successfully.</string>
     <string name="pincode_changed">Password changed successfully.</string>
     <string name="copy_and_save_the_seed_to_continue">Copy and save the seed to continue</string>
+    <string name="restore_seed_title">Restore Seed</string>
     <string name="register">Register</string>
+    <string name="welcome_message">Hey %1$s, welcome to BChat!</string>
     <string name="copy_your_recovery_seed">Copy your Recovery Seed and keep it safe.</string>
     <string name="copy_seed">Copy Seed</string>
     <string name="menu">Menu</string>

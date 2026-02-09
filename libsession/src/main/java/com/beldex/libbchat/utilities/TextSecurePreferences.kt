@@ -246,7 +246,6 @@ interface TextSecurePreferences {
     fun getCallisActive(): Boolean
 
     fun getChatFontSize(): String?
-    fun isPayAsYouChat(): Boolean
     fun setCopiedSeed(status: Boolean)
     fun isCopiedSeed():Boolean
 
@@ -379,7 +378,6 @@ interface TextSecurePreferences {
         const val NODE_IS_MAINNET = "node_is_mainnet"
         const val CALL_IS_ACTIVE = "call_is_active"
         const val CHAT_FONT_SIZE =  "chat_font_size"
-        const val PAY_AS_YOU_CHAT_PREF = "pref_pay_as_you_chat"
         const val COPIED_SEED = "copied_seed"
         const val LAST_VACUUM_TIME = "pref_last_vacuum_time"
         const val IS_WALLET_ACTIVE = "pref_is_wallet_active"
@@ -1352,11 +1350,6 @@ interface TextSecurePreferences {
         }
 
         @JvmStatic
-        fun isPayAsYouChat(context: Context): Boolean {
-            return getBooleanPreference(context, PAY_AS_YOU_CHAT_PREF, false)
-        }
-
-        @JvmStatic
         fun setCopiedSeed(context: Context,status: Boolean) {
             setBooleanPreference(context, COPIED_SEED, status)
         }
@@ -2259,10 +2252,6 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun getChatFontSize(): String? {
         return getStringPreference(TextSecurePreferences.CHAT_FONT_SIZE,"16")
-    }
-
-    override fun isPayAsYouChat(): Boolean {
-        return getBooleanPreference(TextSecurePreferences.PAY_AS_YOU_CHAT_PREF, false)
     }
 
     override fun setCopiedSeed(status: Boolean) {

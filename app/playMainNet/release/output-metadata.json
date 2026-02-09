@@ -11,9 +11,9 @@
       "type": "UNIVERSAL",
       "filters": [],
       "attributes": [],
-      "versionCode": 88,
-      "versionName": "2.9.2",
-      "outputFile": "Bchat-2.9.2-universal.apk"
+      "versionCode": 90,
+      "versionName": "2.9.3",
+      "outputFile": "Bchat-2.9.3-universal.apk"
     },
     {
       "type": "ONE_OF_MANY",
@@ -24,9 +24,9 @@
         }
       ],
       "attributes": [],
-      "versionCode": 88,
-      "versionName": "2.9.2",
-      "outputFile": "Bchat-2.9.2-x86_64.apk"
+      "versionCode": 90,
+      "versionName": "2.9.3",
+      "outputFile": "Bchat-2.9.3-x86_64.apk"
     },
     {
       "type": "ONE_OF_MANY",
@@ -37,9 +37,9 @@
         }
       ],
       "attributes": [],
-      "versionCode": 88,
-      "versionName": "2.9.2",
-      "outputFile": "Bchat-2.9.2-armeabi-v7a.apk"
+      "versionCode": 90,
+      "versionName": "2.9.3",
+      "outputFile": "Bchat-2.9.3-armeabi-v7a.apk"
     },
     {
       "type": "ONE_OF_MANY",
@@ -50,9 +50,9 @@
         }
       ],
       "attributes": [],
-      "versionCode": 88,
-      "versionName": "2.9.2",
-      "outputFile": "Bchat-2.9.2-arm64-v8a.apk"
+      "versionCode": 90,
+      "versionName": "2.9.3",
+      "outputFile": "Bchat-2.9.3-arm64-v8a.apk"
     }
   ],
   "elementType": "File",
@@ -61,20 +61,20 @@
       "minApi": 28,
       "maxApi": 30,
       "baselineProfiles": [
-        "baselineProfiles/1/Bchat-2.9.2-universal.dm",
-        "baselineProfiles/1/Bchat-2.9.2-x86_64.dm",
-        "baselineProfiles/1/Bchat-2.9.2-armeabi-v7a.dm",
-        "baselineProfiles/1/Bchat-2.9.2-arm64-v8a.dm"
+        "baselineProfiles/1/Bchat-2.9.3-universal.dm",
+        "baselineProfiles/1/Bchat-2.9.3-x86_64.dm",
+        "baselineProfiles/1/Bchat-2.9.3-armeabi-v7a.dm",
+        "baselineProfiles/1/Bchat-2.9.3-arm64-v8a.dm"
       ]
     },
     {
       "minApi": 31,
       "maxApi": 2147483647,
       "baselineProfiles": [
-        "baselineProfiles/0/Bchat-2.9.2-universal.dm",
-        "baselineProfiles/0/Bchat-2.9.2-x86_64.dm",
-        "baselineProfiles/0/Bchat-2.9.2-armeabi-v7a.dm",
-        "baselineProfiles/0/Bchat-2.9.2-arm64-v8a.dm"
+        "baselineProfiles/0/Bchat-2.9.3-universal.dm",
+        "baselineProfiles/0/Bchat-2.9.3-x86_64.dm",
+        "baselineProfiles/0/Bchat-2.9.3-armeabi-v7a.dm",
+        "baselineProfiles/0/Bchat-2.9.3-arm64-v8a.dm"
       ]
     }
   ],

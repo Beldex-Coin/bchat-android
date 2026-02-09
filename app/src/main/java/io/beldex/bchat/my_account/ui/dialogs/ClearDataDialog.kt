@@ -70,6 +70,7 @@ fun ClearDataDialog(
     var step by remember {
         mutableStateOf(Steps.INFO_PROMPT_DEFAULT)
     }
+
     fun removeWallet(){
         val walletFolder: File = Helper.getWalletRoot(context)
         val walletName = TextSecurePreferences.getWalletName(context)
@@ -86,6 +87,7 @@ fun ClearDataDialog(
             walletAddress.delete()
         }
     }
+
     fun clearAllData(deleteNetworkMessages: Boolean) {
         coroutineScope.launch(Dispatchers.IO) {
             val previousStep = step
@@ -100,7 +102,6 @@ fun ClearDataDialog(
                     Log.e("Beldex", "Failed to force sync", e)
                 }
 
-                //New Line
                 removeWallet()
 
                 ApplicationContext.getInstance(context).clearAllData(false)
@@ -121,7 +122,6 @@ fun ClearDataDialog(
                         step = previousStep
                     }
                 } else if (result.values.all { it }) {
-                    //New Line
                     removeWallet()
                     // don't force sync because all the messages are deleted?
                     ApplicationContext.getInstance(context).clearAllData(false)

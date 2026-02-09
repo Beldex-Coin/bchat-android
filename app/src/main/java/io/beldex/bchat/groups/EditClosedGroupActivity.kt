@@ -33,7 +33,7 @@ import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.util.Helper
 import io.beldex.bchat.util.fadeIn
 import io.beldex.bchat.util.fadeOut
-import io.beldex.bchat.wallet.CheckOnline
+import io.beldex.bchat.CheckOnline
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.failUi

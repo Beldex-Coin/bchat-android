@@ -5,11 +5,8 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Environment
-import android.os.Handler
-import android.os.Looper
 import android.os.SystemClock
 import android.view.LayoutInflater
 import android.widget.Toast
@@ -59,7 +56,7 @@ import io.beldex.bchat.util.ConfigurationMessageUtilities
 import io.beldex.bchat.util.FileProviderUtil
 import io.beldex.bchat.util.QRCodeUtilities
 import io.beldex.bchat.util.toPx
-import io.beldex.bchat.wallet.CheckOnline
+import io.beldex.bchat.CheckOnline
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityMyProfileBinding

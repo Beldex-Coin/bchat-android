@@ -1,22 +1,17 @@
 package io.beldex.bchat.seed
 import android.app.Activity
-import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.text.InputType
 import android.text.TextWatcher
-import android.util.ArrayMap
 import android.util.Log
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
-import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.beldex.libbchat.utilities.SSKEnvironment
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -37,10 +32,9 @@ import io.beldex.bchat.service.KeyCachingService
 import io.beldex.bchat.util.BChatThreadPoolExecutor
 import io.beldex.bchat.util.Helper
 import io.beldex.bchat.util.NodePinger
-import io.beldex.bchat.util.RestoreHeight
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
-import io.beldex.bchat.wallet.CheckOnline
+import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityRecoveryGetSeedDetailsBinding
 import kotlinx.coroutines.Dispatchers
@@ -48,11 +42,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
-import java.math.BigInteger
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Collections
-import java.util.Date
 import java.util.Locale
 import java.util.UUID
 import java.util.concurrent.Executor
@@ -60,12 +51,6 @@ import java.util.regex.Pattern
 
 class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
     private lateinit var binding:ActivityRecoveryGetSeedDetailsBinding
-    var cal = Calendar.getInstance()
-
-    //New Line of Code
-    private var seed: ByteArray? = null
-    private var ed25519KeyPair: KeyPair? = null
-    private var x25519KeyPair: ECKeyPair? = null
 
     //New Line
     private val NODES_PREFS_NAME: String? = "nodes"
@@ -92,46 +77,13 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         binding = ActivityRecoveryGetSeedDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUpActionBarBchatLogo(getString(R.string.restore_from_seed), false)
-
         getSeed = intent.extras?.getString("seed")
-        // create an OnDateSetListener
-        val dateSetListener =
-            DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-                cal.set(Calendar.YEAR, year)
-                cal.set(Calendar.MONTH, monthOfYear)
-                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                updateDateInView()
-            }
 
         with(binding){
-            /*restoreSeedWalletRestoreDate.setOnClickListener {
-                restoreSeedWalletRestoreDate.inputType = InputType.TYPE_NULL;
-                DatePickerDialog(this@RecoveryGetSeedDetailsActivity,
-                    dateSetListener,
-                    // set DatePickerDialog to point to today's date when it loads up
-                    cal.get(Calendar.YEAR),
-                    cal.get(Calendar.MONTH),
-                    cal.get(Calendar.DAY_OF_MONTH)).show()
-            }*/
-
-            //SteveJosephh21
-            restoreSeedWalletRestoreDate.setOnClickListener {
-                restoreSeedWalletRestoreDate.inputType = InputType.TYPE_NULL;
-                val datePickerDialog = DatePickerDialog(this@RecoveryGetSeedDetailsActivity,
-                    dateSetListener,
-                    // set DatePickerDialog to point to today's date when it loads up
-                    cal.get(Calendar.YEAR),
-                    cal.get(Calendar.MONTH),
-                    cal.get(Calendar.DAY_OF_MONTH))
-                datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
-                datePickerDialog.show()
-            }
-
             restoreSeedWalletName.imeOptions = restoreSeedWalletName.imeOptions or 16777216 // Always use incognito keyboard
             restoreSeedWalletName.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable) {
-                    restoreSeedRestoreButton.isEnabled =
-                        (s.isNotEmpty() && restoreSeedWalletRestoreHeight.text.trim().isNotEmpty()) || (s.isNotEmpty() && restoreSeedWalletRestoreDate.text.trim().isNotEmpty())
+                    restoreSeedRestoreButton.isEnabled = (s.isNotEmpty())
                 }
 
                 override fun beforeTextChanged(
@@ -156,60 +108,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
                     }
                     false
                 })
-            restoreSeedWalletRestoreHeight.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable) {
-                    if (restoreSeedWalletRestoreHeight.text.toString().length == 9) {
-                        Toast.makeText(
-                            this@RecoveryGetSeedDetailsActivity,
-                            R.string.enter_a_valid_height,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    restoreSeedRestoreButton.isEnabled =
-                        (s.isNotEmpty() && restoreSeedWalletName.text.trim().isNotEmpty()) || (restoreSeedWalletName.text.trim().isNotEmpty() && restoreSeedWalletRestoreDate.text.trim().isNotEmpty())
-                }
-
-                override fun beforeTextChanged(
-                    s: CharSequence, start: Int,
-                    count: Int, after: Int
-                ) {
-                }
-
-                override fun onTextChanged(
-                    s: CharSequence, start: Int,
-                    before: Int, count: Int
-                ) {
-                }
-            })
-            restoreSeedWalletRestoreHeight.setOnEditorActionListener(
-                TextView.OnEditorActionListener { _, actionID, _ ->
-                    if (actionID == EditorInfo.IME_ACTION_SEARCH ||
-                        actionID == EditorInfo.IME_ACTION_DONE
-                    ) {
-                        register()
-                        return@OnEditorActionListener true
-                    }
-                    false
-                })
             restoreSeedRestoreButton.setOnClickListener { register() }
-        }
-
-        binding.restoreFromDateButton.setOnClickListener {
-            binding.restoreFromSeedBlockHeightTitle.text = getString(R.string.restore_from_date_title)
-            binding.restoreSeedWalletRestoreDateCard.visibility = View.VISIBLE
-            binding.restoreSeedWalletRestoreHeightCard.visibility = View.GONE
-            binding.restoreFromHeightButton.visibility = View.VISIBLE
-            binding.restoreFromDateButton.visibility = View.GONE
-            binding.restoreSeedWalletRestoreHeight.text.clear()
-        }
-        binding.restoreFromHeightButton.setOnClickListener {
-            binding.restoreFromSeedBlockHeightTitle.text = getString(R.string.restore_from_height_title)
-            binding.restoreSeedWalletRestoreDateCard.visibility = View.GONE
-            binding.restoreSeedWalletRestoreHeightCard.visibility = View.VISIBLE
-            binding.restoreFromHeightButton.visibility = View.GONE
-            binding.restoreFromDateButton.visibility = View.VISIBLE
-            binding.restoreSeedWalletRestoreDate.text=""
-            binding.restoreSeedRestoreButton.isEnabled = false
         }
 
 
@@ -219,12 +118,8 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         }
     }
     private fun updateDateInView() {
-        binding.restoreSeedWalletRestoreDate.text = sdf.format(cal.time)
         binding.restoreSeedRestoreButton.isEnabled =
-            (binding.restoreSeedWalletName.text.trim().isNotEmpty() && binding.restoreSeedWalletRestoreHeight.text.trim().isNotEmpty()) || (binding.restoreSeedWalletName.text.trim().isNotEmpty() && binding.restoreSeedWalletRestoreDate.text.trim().isNotEmpty())
-        if (cal.time != null) {
-            restoreFromDateHeight = RestoreHeight.getInstance().getHeight(sdf.format(cal.time)).toInt()
-        }
+            (binding.restoreSeedWalletName.text.trim().isNotEmpty())
     }
 
     private val pinCodeLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -250,8 +145,6 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
 
     private fun register() {
         val displayName = binding.restoreSeedWalletName.text.toString().trim()
-        val restoreHeight = binding.restoreSeedWalletRestoreHeight.text.toString()
-        val restoreFromDate = binding.restoreSeedWalletRestoreDate.text.toString()
         if (displayName.isEmpty()) {
             return Toast.makeText(this, R.string.activity_display_name_display_name_missing_error, Toast.LENGTH_SHORT).show()
         }
@@ -272,31 +165,8 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         TextSecurePreferences.setProfileName(this, displayName)
         val uuid = UUID.randomUUID()
         val password = uuid.toString()
-        //SteveJosephh21
-        if (restoreHeight.isNotEmpty() && binding.restoreSeedWalletRestoreHeightCard.isVisible) {
-            val restoreHeightBig = BigInteger(restoreHeight)
-            if (restoreHeightBig.toLong() >= 0) {
-                val currentDate = sdf.format(Date())
-                val currentHeight = RestoreHeight.getInstance().getHeight(currentDate)
-                if (restoreHeightBig.toLong() <= currentHeight) {
-                    binding.restoreSeedWalletRestoreDate.text = ""
-                    binding.restoreSeedRestoreButton.isEnabled = false
-                    _recoveryWallet(displayName, password, getSeed, restoreHeight.toLong())
-                } else {
-                    Toast.makeText(this, getString(R.string.restore_height_excess_error_message), Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                Toast.makeText(this, getString(R.string.restore_height_error_message), Toast.LENGTH_SHORT).show()
-            }
-        } else if (restoreFromDate.isNotEmpty() && binding.restoreSeedWalletRestoreDateCard.isVisible) {
-            binding.restoreSeedWalletRestoreHeight.setText("")
-            binding.restoreSeedRestoreButton.isEnabled = false
-            _recoveryWallet(displayName, password, getSeed, restoreFromDateHeight.toLong())
-        } else if (restoreHeight.isEmpty() && binding.restoreSeedWalletRestoreDateCard.isVisible) {
-            Toast.makeText(this, getString(R.string.activity_restore_from_date_missing_error), Toast.LENGTH_SHORT).show()
-        } else if (restoreFromDate.isEmpty() && binding.restoreSeedWalletRestoreHeightCard.isVisible) {
-            Toast.makeText(this, getString(R.string.activity_restore_from_height_missing_error), Toast.LENGTH_SHORT).show()
-        }
+        binding.restoreSeedRestoreButton.isEnabled = false
+        _recoveryWallet(displayName, password, getSeed, 0L)
     }
     // region Updating
     private fun updateKeyPair() {

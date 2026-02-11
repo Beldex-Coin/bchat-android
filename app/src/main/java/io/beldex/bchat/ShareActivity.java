@@ -38,6 +38,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 
+import io.beldex.bchat.conversation.v2.ConversationActivityV2;
 import io.beldex.bchat.mms.PartAuthority;
 import io.beldex.bchat.util.MediaUtil;
 import com.beldex.libbchat.utilities.Address;
@@ -48,13 +49,9 @@ import com.beldex.libsignal.utilities.Log;
 import io.beldex.bchat.components.SearchToolbar;
 import io.beldex.bchat.contacts.ContactSelectionListFragment;
 import io.beldex.bchat.contacts.ContactSelectionListLoader.DisplayMode;
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2;
 import io.beldex.bchat.dependencies.DatabaseComponent;
 import io.beldex.bchat.home.HomeActivity;
-import io.beldex.bchat.mms.PartAuthority;
 import io.beldex.bchat.providers.BlobProvider;
-import io.beldex.bchat.util.MediaUtil;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -276,11 +273,11 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
   }
 
   private void createConversation(long threadId, Address address, int distributionType, boolean mediaPreviewPage) {
-    final Intent intent = getBaseShareIntent(HomeActivity.class);
+    final Intent intent = getBaseShareIntent(ConversationActivityV2.class);
     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-    intent.putExtra(ConversationFragmentV2.ADDRESS, address);
-    intent.putExtra(ConversationFragmentV2.THREAD_ID, threadId);
-    intent.putExtra(ConversationFragmentV2.IN_CHAT_SHARE, shareIntoChat);
+    intent.putExtra(ConversationActivityV2.ADDRESS, address);
+    intent.putExtra(ConversationActivityV2.THREAD_ID, threadId);
+    intent.putExtra(ConversationActivityV2.IN_CHAT_SHARE, shareIntoChat);
 
 
     isPassingAlongMedia = true;
@@ -297,11 +294,11 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
     final Intent           intent       = new Intent(this, target);
 
     if (resolvedExtra != null) {
-      intent.putExtra(ConversationFragmentV2.URI,resolvedExtra);
-      intent.putExtra(ConversationFragmentV2.TYPE,mimeType);
+      intent.putExtra(ConversationActivityV2.URI,resolvedExtra);
+      intent.putExtra(ConversationActivityV2.TYPE,mimeType);
     } else if (resolvedPlaintext != null) {
       intent.putExtra(Intent.EXTRA_TEXT, resolvedPlaintext);
-      intent.putExtra(ConversationFragmentV2.TYPE,"text/plain");
+      intent.putExtra(ConversationActivityV2.TYPE,"text/plain");
     }
 
     return intent;

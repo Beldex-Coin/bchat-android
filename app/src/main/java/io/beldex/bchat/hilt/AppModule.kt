@@ -5,7 +5,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.model.WalletManager
 import io.beldex.bchat.util.FirebaseRemoteConfigUtil
 import io.beldex.bchat.util.SharedPreferenceUtil
 import dagger.Module
@@ -22,12 +21,6 @@ object AppModule {
     @Provides
     fun providesSharedPreference(application: Application): SharedPreferenceUtil {
         return SharedPreferenceUtil(application.applicationContext)
-    }
-
-    @Singleton
-    @Provides
-    fun providesWalletManager(): WalletManager {
-        return WalletManager.getInstance()
     }
 
     @Singleton

@@ -14,7 +14,6 @@ import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -112,6 +111,7 @@ import com.beldex.libsignal.utilities.hexEncodedPrivateKey
 import com.canhub.cropper.CropImage
 import com.canhub.cropper.CropImageContract
 import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.archivechats.ArchiveChatViewModel
@@ -124,7 +124,7 @@ import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.checkAndRequestPermissions
 import io.beldex.bchat.contacts.blocked.BlockedContactsViewModel
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2
+import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.crypto.MnemonicUtilities
 import io.beldex.bchat.database.DatabaseContentProviders
@@ -148,8 +148,6 @@ import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.copyToClipBoard
 import io.beldex.bchat.util.toPx
-import io.beldex.bchat.wallet.CheckOnline
-import io.beldex.bchat.wallet.jetpackcomposeUI.StatWalletInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -378,8 +376,8 @@ fun MyAccountNavHost(
         }
     }
 
-     fun updateProfile(isUpdatingProfilePicture: Boolean, profilePicture: ByteArray? = null,
-                              displayName: String? = null, context : Context) {
+    fun updateProfile(isUpdatingProfilePicture: Boolean, profilePicture: ByteArray? = null,
+                      displayName: String? = null, context : Context) {
         viewModel.updateLoaderStatus(true)
         val promises = mutableListOf<Promise<*, Exception>>()
         if (displayName != null) {
@@ -414,8 +412,8 @@ fun MyAccountNavHost(
         }
     }
 
-     fun saveDisplayName(displayName: String, context : Context): Boolean {
-         val namePattern = Pattern.compile("[A-Za-z0-9\\s]+")
+    fun saveDisplayName(displayName: String, context : Context): Boolean {
+        val namePattern = Pattern.compile("[A-Za-z0-9\\s]+")
         if (displayName.isEmpty()) {
             Toast.makeText(
                 context,
@@ -441,10 +439,10 @@ fun MyAccountNavHost(
             return false
         }
 
-         val checkGalleryProfile=TextSecurePreferences.getIsLocalProfile(context)
-         updateProfile(checkGalleryProfile, null, displayName=displayName, context)
-         viewModel.updateProfile(true)
-         return true
+        val checkGalleryProfile=TextSecurePreferences.getIsLocalProfile(context)
+        updateProfile(checkGalleryProfile, null, displayName=displayName, context)
+        viewModel.updateProfile(true)
+        return true
     }
 
     var showLoader by remember {
@@ -1255,20 +1253,6 @@ fun MyAccountNavHost(
             }
         }
 
-        composable(route = MyAccountScreens.StartWalletInfoScreen.route) {
-            MyAccountScreenContainer(title = stringResource(id = R.string.wallets), onBackClick = {
-                (context as ComponentActivity).finish()
-            }) {
-                StatWalletInfo(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp)
-                )
-
-            }
-
-        }
-
         composable(
             route = MyAccountScreens.MessageRequestsScreen.route
         ) {
@@ -1294,7 +1278,7 @@ fun MyAccountNavHost(
                     onEvent = requestViewModel::onEvent,
                     onRequestClick = {
                         val returnIntent = Intent()
-                        returnIntent.putExtra(ConversationFragmentV2.THREAD_ID, it.threadId)
+                        returnIntent.putExtra(ConversationActivityV2.THREAD_ID, it.threadId)
                         (context as Activity).run {
                             setResult(PassphraseRequiredActionBarActivity.RESULT_OK, returnIntent)
                             finish()
@@ -1348,7 +1332,7 @@ fun MyAccountNavHost(
                     requestsList = uiState.archiveChats,
                     onRequestClick = {
                         val returnIntent = Intent()
-                        returnIntent.putExtra(ConversationFragmentV2.THREAD_ID, it.threadId)
+                        returnIntent.putExtra(ConversationActivityV2.THREAD_ID, it.threadId)
                         (context as Activity).run {
                             setResult(PassphraseRequiredActionBarActivity.RESULT_OK, returnIntent)
                             finish()
@@ -1452,26 +1436,26 @@ fun ProfileCard(
             )
         }
         if (onShowEditName) {
-           TextField(
-               value= textFieldValueState,
-               onValueChange={
-                   textFieldValueState=it
-                   savedName(it)
-               },
-               maxLines = 1,
-               singleLine = true,
-               textStyle = MaterialTheme.typography.bodyMedium.copy(
-                   fontSize = 16.sp,
-                   fontWeight = FontWeight(400),
-                   textAlign = TextAlign.Center
-               ),
-               colors = TextFieldDefaults.colors(
-                   focusedIndicatorColor = MaterialTheme.appColors.textColor,
-                   unfocusedIndicatorColor = MaterialTheme.appColors.textColor,
-                   selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
-                   cursorColor = colorResource(id = R.color.button_green)
-           )
-           )
+            TextField(
+                value= textFieldValueState,
+                onValueChange={
+                    textFieldValueState=it
+                    savedName(it)
+                },
+                maxLines = 1,
+                singleLine = true,
+                textStyle = MaterialTheme.typography.bodyMedium.copy(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight(400),
+                    textAlign = TextAlign.Center
+                ),
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = MaterialTheme.appColors.textColor,
+                    unfocusedIndicatorColor = MaterialTheme.appColors.textColor,
+                    selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
+                    cursorColor = colorResource(id = R.color.button_green)
+                )
+            )
         }
         if(!isBnsHolder.isNullOrEmpty()){
             Row(
@@ -1495,7 +1479,7 @@ fun ProfileCard(
         }else {
             Spacer(modifier = Modifier.height(16.dp))
         }
-        
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween

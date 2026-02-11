@@ -22,7 +22,6 @@ import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.contacts.SelectContactsAdapter
 import io.beldex.bchat.contacts.SelectContactsLoader
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2
 import io.beldex.bchat.dependencies.DatabaseComponent
 import com.bumptech.glide.Glide;
 import io.beldex.bchat.util.Helper
@@ -30,6 +29,7 @@ import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.fadeIn
 import io.beldex.bchat.util.fadeOut
 import io.beldex.bchat.R
+import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.databinding.ActivityCreateClosedGroupBinding
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
@@ -191,8 +191,8 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
 
     private fun openConversationActivity(threadId: Long, recipient: Recipient) {
         val returnIntent = Intent()
-        returnIntent.putExtra(ConversationFragmentV2.THREAD_ID,threadId)
-        returnIntent.putExtra(ConversationFragmentV2.ADDRESS,recipient.address)
+        returnIntent.putExtra(ConversationActivityV2.THREAD_ID,threadId)
+        returnIntent.putExtra(ConversationActivityV2.ADDRESS,recipient.address)
         setResult(RESULT_OK, returnIntent)
     }
     private fun hideSoftKeyboard() {

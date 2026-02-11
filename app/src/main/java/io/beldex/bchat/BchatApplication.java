@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
 
-import io.beldex.bchat.model.NetworkType;
 import io.beldex.bchat.util.LocalHelper;
 import timber.log.Timber;
 
@@ -32,7 +31,7 @@ public class BchatApplication extends Application {
         LocalHelper.setPreferredLocale(this);
     }
 
-    static public NetworkType getNetworkType() {
+/*    static public NetworkType getNetworkType() {
         switch (BuildConfig.NETWORK_TYPE) {
             case "mainnet":
                 return NetworkType.NetworkType_Mainnet;
@@ -43,5 +42,5 @@ public class BchatApplication extends Application {
             default:
                 throw new IllegalStateException("unknown net flavor " + BuildConfig.FLAVOR);
         }
-    }
+    }*/
 }

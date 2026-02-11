@@ -17,7 +17,7 @@
  */
 package io.beldex.bchat.database.model;
 
-import static io.beldex.bchat.conversation.v2.contact_sharing.ViewContactsScreenKt.capitalizeFirstLetter;
+import static io.beldex.bchat.conversation.v2.contact_sharing.ViewContactsActivityKt.capitalizeFirstLetter;
 
 import android.content.Context;
 import android.net.Uri;
@@ -25,7 +25,6 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.StyleSpan;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,8 +32,6 @@ import androidx.annotation.Nullable;
 import io.beldex.bchat.database.MmsSmsColumns;
 import io.beldex.bchat.database.SmsDatabase;
 
-import com.beldex.libbchat.messaging.utilities.UpdateMessageBuilder;
-import com.beldex.libbchat.messaging.utilities.UpdateMessageData;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.utilities.ExpirationUtil;

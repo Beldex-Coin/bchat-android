@@ -1,9 +1,8 @@
 package io.beldex.bchat.conversation.v2.contact_sharing
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -18,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,7 +36,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -45,6 +44,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowCompat
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.R
@@ -55,49 +55,40 @@ import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.ui.ScreenContainer
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2.Companion.THREAD_ID
+import io.beldex.bchat.conversation.v2.ConversationActivityV2
+import io.beldex.bchat.conversation.v2.ConversationActivityV2.Companion.THREAD_ID
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.util.BaseFragment
-import io.beldex.bchat.wallet.OnBackPressedListener
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 
-class ViewAllContactFragment : BaseFragment(), OnBackPressedListener {
+class ViewAllContactsActivity : AppCompatActivity() {
 
-    private var contact : ContactModel?=null
+    private var contact: ContactModel? = null
 
-    override fun onCreate(savedInstanceState : Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            contact=arguments?.getParcelable(CONTACTMODEL)
-        }
-    }
 
-    override fun onCreateView(
-        inflater : LayoutInflater, container : ViewGroup?, savedInstanceState : Bundle?
-    ) : View {
+        contact = intent.getParcelableExtra(CONTACTMODEL)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        return ComposeView(requireContext()).apply {
-            setContent {
-                BChatTheme {
-                    Surface(
-                        modifier=Modifier.fillMaxSize(),
-                        color=MaterialTheme.appColors.cardBackground
+        setContent {
+            BChatTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    ScreenContainer(
+                        title = stringResource(id = R.string.view_contacts),
+                        onBackClick = { onBackPressedDispatcher.onBackPressed() },
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                color = MaterialTheme.appColors.walletDashboardMainMenuCardBackground
+                            )
+                            .systemBarsPadding()
                     ) {
-                        ScreenContainer(
-                            title=stringResource(id=R.string.view_contacts),
-                            onBackClick={ requireActivity().onBackPressedDispatcher.onBackPressed() },
-                            modifier=Modifier
-                                .fillMaxSize()
-                                .background(
-                                    color=MaterialTheme.appColors.walletDashboardMainMenuCardBackground
-                                )
-                        ) {
-                            contact?.let {
-                                ViewContactScreen(it)
-                            }
+                        contact?.let {
+                            ViewContactScreen(it)
                         }
                     }
                 }
@@ -106,11 +97,7 @@ class ViewAllContactFragment : BaseFragment(), OnBackPressedListener {
     }
 
     companion object {
-        const val CONTACTMODEL="contact_model"
-    }
-
-    override fun onBackPressed() : Boolean {
-        return false
+        const val CONTACTMODEL = "contact_model"
     }
 
 }
@@ -244,21 +231,23 @@ fun ChatWithContactPopUp(name: String, address : String, onDismiss: () -> Unit){
         mutableStateOf(name)
     }
     val context=LocalContext.current
-    val activityCompact=context as AppCompatActivity
+    val activity = context as AppCompatActivity
 
-    fun moveToChat(address : String) {
-        val addressForThread=Address.fromSerialized(address)
-        val recipient=Recipient.from(context, addressForThread, true)
-        val threadID=DatabaseComponent.get(context).threadDatabase()
+    fun moveToChat(address: String) {
+        val addressForThread = Address.fromSerialized(address)
+        val recipient = Recipient.from(context, addressForThread, true)
+
+        val threadID = DatabaseComponent.get(context)
+            .threadDatabase()
             .getOrCreateThreadIdFor(recipient)
-        val extras=Bundle()
-        extras.putLong(THREAD_ID, threadID)
-        val fragment=ConversationFragmentV2().apply {
-            arguments=extras
+
+        val intent = Intent(context, ConversationActivityV2::class.java).apply {
+            putExtra(THREAD_ID, threadID)
         }
-        activityCompact.supportFragmentManager.beginTransaction()
-            .replace(R.id.activity_home_frame_layout_container, fragment).commit()
+        activity.finish()
+        context.startActivity(intent)
     }
+
 
     DialogContainer(
         dismissOnBackPress = true,
@@ -325,6 +314,7 @@ fun ChatWithContactPopUp(name: String, address : String, onDismiss: () -> Unit){
                 Button(
                     onClick = {
                         moveToChat(address)
+                        activity.supportFragmentManager.popBackStack()
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.appColors.negativeGreenButtonBorder

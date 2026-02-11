@@ -12,7 +12,7 @@ import androidx.annotation.Nullable;
 import com.beldex.libsignal.utilities.Log;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.utilities.recipients.Recipient.*;
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2;
+import io.beldex.bchat.conversation.v2.ConversationActivityV2;
 import io.beldex.bchat.home.HomeActivity;
 
 import java.util.LinkedHashSet;
@@ -138,12 +138,12 @@ public class NotificationState {
   public PendingIntent getQuickReplyIntent(Context context, Recipient recipient) {
     android.util.Log.d("Notification","false");
     if (threads.size() != 1) throw new AssertionError("We only support replies to single thread notifications! " + threads.size());
-    Intent     intent           = new Intent(context, HomeActivity.class);
-    intent.putExtra(ConversationFragmentV2.ADDRESS, recipient.getAddress());
-    intent.putExtra(ConversationFragmentV2.THREAD_ID, (long)threads.toArray()[0]);
+    Intent     intent           = new Intent(context, ConversationActivityV2.class);
+    intent.putExtra(ConversationActivityV2.ADDRESS, recipient.getAddress());
+    intent.putExtra(ConversationActivityV2.THREAD_ID, (long)threads.toArray()[0]);
     intent.putExtra(HomeActivity.SHORTCUT_LAUNCHER,true); //- New
     Bundle bundle = new Bundle();
-    bundle.putParcelable(ConversationFragmentV2.URI,Uri.parse("custom://"+System.currentTimeMillis()));
+    bundle.putParcelable(ConversationActivityV2.URI,Uri.parse("custom://"+System.currentTimeMillis()));
     intent.putExtras(bundle);
     //intent.setData((Uri.parse("custom://"+System.currentTimeMillis())));
 

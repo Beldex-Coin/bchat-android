@@ -38,7 +38,7 @@ import io.beldex.bchat.avatar.AvatarSelection
 import io.beldex.bchat.changelog.ChangeLogActivity
 import io.beldex.bchat.components.ProfilePictureView
 import io.beldex.bchat.contacts.blocked.BlockedContactsActivity
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2
+import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.home.PathActivity
 import com.bumptech.glide.Glide;
@@ -51,7 +51,7 @@ import com.bumptech.glide.RequestManager
 import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.profiles.ProfileMediaConstraints
 import io.beldex.bchat.showCustomDialog
-import io.beldex.bchat.wallet.CheckOnline
+import io.beldex.bchat.CheckOnline
 import kotlinx.coroutines.Dispatchers
 import java.util.regex.Pattern
 import com.canhub.cropper.CropImage
@@ -431,11 +431,11 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
         ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val extras = Bundle()
-            extras.putParcelable(ConversationFragmentV2.ADDRESS, result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
-            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
-            extras.putParcelable(ConversationFragmentV2.URI,result.data!!.getParcelableExtra(ConversationFragmentV2.URI))
+            extras.putParcelable(ConversationActivityV2.ADDRESS, result.data!!.getParcelableExtra(ConversationActivityV2.ADDRESS))
+            extras.putLong(ConversationActivityV2.THREAD_ID, result.data!!.getLongExtra(ConversationActivityV2.THREAD_ID,-1))
+            extras.putParcelable(ConversationActivityV2.URI,result.data!!.getParcelableExtra(ConversationActivityV2.URI))
             val returnIntent = Intent()
-            returnIntent.putExtra(ConversationFragmentV2.TYPE,result.data!!.getStringArrayExtra(ConversationFragmentV2.TYPE))
+            returnIntent.putExtra(ConversationActivityV2.TYPE,result.data!!.getStringArrayExtra(ConversationActivityV2.TYPE))
             //returnIntent.setDataAndType(intent.data,intent.type)
             returnIntent.putExtras(extras)
             setResult(RESULT_OK, returnIntent)

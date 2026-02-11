@@ -41,7 +41,7 @@ import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
 import androidx.activity.result.contract.ActivityResultContracts
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2
+import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.conversation_v2.DefaultGroupsViewModel
 import io.beldex.bchat.util.Helper
 
@@ -262,8 +262,8 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
 
     private fun openConversationActivity(threadId: Long, recipient: Recipient) {
         val returnIntent = Intent()
-        returnIntent.putExtra(ConversationFragmentV2.THREAD_ID,threadId)
-        returnIntent.putExtra(ConversationFragmentV2.ADDRESS,recipient.address)
+        returnIntent.putExtra(ConversationActivityV2.THREAD_ID,threadId)
+        returnIntent.putExtra(ConversationActivityV2.ADDRESS,recipient.address)
         setResult(RESULT_OK, returnIntent)
     }
 
@@ -272,8 +272,8 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val extras = Bundle()
-            extras.putParcelable(ConversationFragmentV2.ADDRESS, result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
-            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+            extras.putParcelable(ConversationActivityV2.ADDRESS, result.data!!.getParcelableExtra(ConversationActivityV2.ADDRESS))
+            extras.putLong(ConversationActivityV2.THREAD_ID, result.data!!.getLongExtra(ConversationActivityV2.THREAD_ID,-1))
             val returnIntent = Intent()
             returnIntent.putExtras(extras)
             setResult(RESULT_OK, returnIntent)

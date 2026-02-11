@@ -27,7 +27,7 @@ import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.PublicKeyValidation
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2
+import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.dms.PrivateChatScanQRCodeActivity
 import io.beldex.bchat.qr.ScanListener
 import io.beldex.bchat.util.*
@@ -197,8 +197,8 @@ class JoinPublicChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
     // region Convenience
     private fun openConversationActivity(threadId: Long, recipient: Recipient) {
         val returnIntent = Intent()
-        returnIntent.putExtra(ConversationFragmentV2.THREAD_ID,threadId)
-        returnIntent.putExtra(ConversationFragmentV2.ADDRESS,recipient.address)
+        returnIntent.putExtra(ConversationActivityV2.THREAD_ID,threadId)
+        returnIntent.putExtra(ConversationActivityV2.ADDRESS,recipient.address)
         setResult(RESULT_OK, returnIntent)
     }
     // endregion

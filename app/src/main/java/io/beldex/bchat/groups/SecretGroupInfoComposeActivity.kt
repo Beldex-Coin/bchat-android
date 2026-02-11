@@ -103,7 +103,7 @@ import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2
+import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.conversation.v2.dialogs.LeaveGroupDialog
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.home.HomeActivity
@@ -1200,8 +1200,8 @@ fun MemberDetailsDialog(
 private fun getBaseShareIntent(target : Class<*>, context : Context) : Intent {
     val intent=Intent(context, target)
     val bundle=Bundle()
-    bundle.putParcelable(ConversationFragmentV2.URI, intent.data)
-    bundle.putString(ConversationFragmentV2.TYPE, intent.type)
+    bundle.putParcelable(ConversationActivityV2.URI, intent.data)
+    bundle.putString(ConversationActivityV2.TYPE, intent.type)
     return intent
 }
 
@@ -1211,10 +1211,9 @@ private fun createConversation(
     activity : Activity,
     context : Context
 ) {
-    val intent : Intent=getBaseShareIntent(HomeActivity::class.java, context)
+    val intent : Intent=getBaseShareIntent(ConversationActivityV2::class.java, context)
     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-    intent.putExtra(ConversationFragmentV2.ADDRESS, address)
-    intent.putExtra(ConversationFragmentV2.THREAD_ID, threadId)
-    intent.putExtra(HomeActivity.SHORTCUT_LAUNCHER, true)
+    intent.putExtra(ConversationActivityV2.ADDRESS, address)
+    intent.putExtra(ConversationActivityV2.THREAD_ID, threadId)
     activity.startActivity(intent)
 }

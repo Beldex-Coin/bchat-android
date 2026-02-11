@@ -64,7 +64,8 @@ import com.google.android.material.tabs.TabLayout;
 import com.beldex.libbchat.messaging.messages.control.DataExtractionNotification;
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender;
 import com.beldex.libbchat.utilities.Address;
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2;
+
+import io.beldex.bchat.conversation.v2.ConversationActivityV2;
 import io.beldex.bchat.database.CursorRecyclerViewAdapter;
 import io.beldex.bchat.database.MediaDatabase;
 import io.beldex.bchat.database.loaders.BucketedThreadMediaLoader;
@@ -303,14 +304,12 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
       if (result.getResultCode() == Activity.RESULT_OK) {
         Bundle extras = new Bundle();
         assert result.getData() != null;
-        extras.putParcelable(ConversationFragmentV2.ADDRESS,result.getData().getParcelableExtra(ConversationFragmentV2.ADDRESS));
-        extras.putLong(ConversationFragmentV2.THREAD_ID, result.getData().getLongExtra(ConversationFragmentV2.THREAD_ID,-1));
-        Log.d("MediaOverviewActivity->uri",""+result.getData().getParcelableExtra(ConversationFragmentV2.URI));
-        Log.d("MediaOverviewActivity->type",""+result.getData().getStringExtra(ConversationFragmentV2.TYPE));
-        extras.putParcelable(ConversationFragmentV2.URI,result.getData().getParcelableExtra(ConversationFragmentV2.URI));
+        extras.putParcelable(ConversationActivityV2.ADDRESS,result.getData().getParcelableExtra(ConversationActivityV2.ADDRESS));
+        extras.putLong(ConversationActivityV2.THREAD_ID, result.getData().getLongExtra(ConversationActivityV2.THREAD_ID,-1));
+        extras.putParcelable(ConversationActivityV2.URI,result.getData().getParcelableExtra(ConversationActivityV2.URI));
         Intent intent = new Intent();
         intent.putExtra(Intent.EXTRA_TEXT,result.getData().getCharSequenceExtra(Intent.EXTRA_TEXT));
-        intent.putExtra(ConversationFragmentV2.TYPE,result.getData().getStringExtra(ConversationFragmentV2.TYPE));
+        intent.putExtra(ConversationActivityV2.TYPE,result.getData().getStringExtra(ConversationActivityV2.TYPE));
         intent.putExtras(extras);
         requireActivity().setResult(RESULT_OK,intent);
         requireActivity().finish();

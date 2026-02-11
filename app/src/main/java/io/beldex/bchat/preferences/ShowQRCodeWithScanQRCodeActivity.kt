@@ -11,7 +11,7 @@ import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityShowQrcodeWithScanQrcodeBinding
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2
+import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.util.*
 import java.io.File
 import java.io.FileOutputStream
@@ -58,11 +58,11 @@ class ShowQRCodeWithScanQRCodeActivity :  PassphraseRequiredActionBarActivity(){
         ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val extras = Bundle()
-            extras.putParcelable(ConversationFragmentV2.ADDRESS, result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
-            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
-            extras.putParcelable(ConversationFragmentV2.URI,result.data!!.getParcelableExtra(ConversationFragmentV2.URI))
+            extras.putParcelable(ConversationActivityV2.ADDRESS, result.data!!.getParcelableExtra(ConversationActivityV2.ADDRESS))
+            extras.putLong(ConversationActivityV2.THREAD_ID, result.data!!.getLongExtra(ConversationActivityV2.THREAD_ID,-1))
+            extras.putParcelable(ConversationActivityV2.URI,result.data!!.getParcelableExtra(ConversationActivityV2.URI))
             val returnIntent = Intent()
-            returnIntent.putExtra(ConversationFragmentV2.TYPE,result.data!!.getStringArrayExtra(ConversationFragmentV2.TYPE))
+            returnIntent.putExtra(ConversationActivityV2.TYPE,result.data!!.getStringArrayExtra(ConversationActivityV2.TYPE))
             //returnIntent.setDataAndType(intent.data, intent.type)
             returnIntent.putExtras(extras)
             setResult(RESULT_OK, returnIntent)

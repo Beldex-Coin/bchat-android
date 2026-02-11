@@ -20,7 +20,7 @@ import android.Manifest;
 import static com.beldex.libbchat.utilities.Address.fromSerialized;
 
 
-import static io.beldex.bchat.conversation.v2.contact_sharing.ViewContactsScreenKt.flattenData;
+import static io.beldex.bchat.conversation.v2.contact_sharing.ViewContactsActivityKt.flattenData;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
@@ -32,10 +32,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -48,13 +44,12 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import io.beldex.bchat.ApplicationContext;
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2;
+import io.beldex.bchat.conversation.v2.ConversationActivityV2;
 import io.beldex.bchat.database.model.MediaMmsMessageRecord;
 import io.beldex.bchat.database.model.MessageRecord;
 import io.beldex.bchat.database.model.MmsMessageRecord;
 import io.beldex.bchat.database.model.Quote;
 import io.beldex.bchat.database.model.ReactionRecord;
-import io.beldex.bchat.home.HomeActivity;
 import io.beldex.bchat.mms.SlideDeck;
 import io.beldex.bchat.util.BchatMetaProtocol;
 import io.beldex.bchat.util.ExtensionFunctionsKt;
@@ -62,25 +57,16 @@ import io.beldex.bchat.util.SpanUtil;
 
 import com.beldex.libbchat.messaging.utilities.UpdateMessageData;
 import com.beldex.libbchat.mnode.MnodeAPI;
-import io.beldex.bchat.ApplicationContext;
+
 import io.beldex.bchat.contactshare.ContactUtil;
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2;
 import io.beldex.bchat.conversation.v2.utilities.MentionManagerUtilities;
 import io.beldex.bchat.conversation.v2.utilities.MentionUtilities;
 import io.beldex.bchat.database.MessagingDatabase;
 import io.beldex.bchat.database.MmsSmsDatabase;
 import io.beldex.bchat.database.RecipientDatabase;
 import io.beldex.bchat.database.ThreadDatabase;
-import io.beldex.bchat.database.model.MediaMmsMessageRecord;
-import io.beldex.bchat.database.model.MessageRecord;
-import io.beldex.bchat.database.model.MmsMessageRecord;
-import io.beldex.bchat.database.model.Quote;
 import io.beldex.bchat.dependencies.DatabaseComponent;
-import io.beldex.bchat.home.HomeActivity;
-import io.beldex.bchat.mms.SlideDeck;
 import io.beldex.bchat.service.KeyCachingService;
-import io.beldex.bchat.util.BchatMetaProtocol;
-import io.beldex.bchat.util.SpanUtil;
 
 import com.beldex.libbchat.messaging.sending_receiving.notifications.MessageNotifier;
 import com.beldex.libbchat.utilities.Address;
@@ -166,10 +152,9 @@ public class DefaultMessageNotifier implements MessageNotifier {
     }*/
     if (visibleThread != threadId) {
       Log.d("visibleThread","true");
-      Intent intent = new Intent(context, HomeActivity.class);
-      intent.putExtra(ConversationFragmentV2.ADDRESS, recipient.getAddress());
-      intent.putExtra(ConversationFragmentV2.THREAD_ID, threadId);
-      intent.putExtra(HomeActivity.SHORTCUT_LAUNCHER,true); //- New
+      Intent intent = new Intent(context, ConversationActivityV2.class);
+      intent.putExtra(ConversationActivityV2.ADDRESS, recipient.getAddress());
+      intent.putExtra(ConversationActivityV2.THREAD_ID, threadId);
       intent.setData((Uri.parse("custom://" + MnodeAPI.getNowWithOffset())));
 
       FailedNotificationBuilder builder = new FailedNotificationBuilder(context, TextSecurePreferences.getNotificationPrivacy(context), intent);

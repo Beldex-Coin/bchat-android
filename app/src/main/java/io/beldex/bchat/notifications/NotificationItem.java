@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.TaskStackBuilder;
 
 
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2;
+import io.beldex.bchat.conversation.v2.ConversationActivityV2;
 import io.beldex.bchat.home.HomeActivity;
 import io.beldex.bchat.mms.SlideDeck;
 
@@ -76,14 +76,13 @@ public class NotificationItem {
 
   public PendingIntent getPendingIntent(Context context) {
     Log.d("Notification","true");
-    Intent     intent           = new Intent(context, HomeActivity.class);
+    Intent     intent           = new Intent(context, ConversationActivityV2.class);
     Recipient  notifyRecipients = threadRecipient != null ? threadRecipient : conversationRecipient;
-    if (notifyRecipients != null) intent.putExtra(ConversationFragmentV2.ADDRESS, notifyRecipients.getAddress());
+    if (notifyRecipients != null) intent.putExtra(ConversationActivityV2.ADDRESS, notifyRecipients.getAddress());
 
-    intent.putExtra(ConversationFragmentV2.THREAD_ID, threadId);
-    intent.putExtra(HomeActivity.SHORTCUT_LAUNCHER,true); //- New
+    intent.putExtra(ConversationActivityV2.THREAD_ID, threadId);
     Bundle bundle = new Bundle();
-    bundle.putParcelable(ConversationFragmentV2.URI,Uri.parse("custom://"+System.currentTimeMillis()));
+    bundle.putParcelable(ConversationActivityV2.URI,Uri.parse("custom://"+System.currentTimeMillis()));
     intent.putExtras(bundle);
     //intent.setData((Uri.parse("custom://"+System.currentTimeMillis())));
 

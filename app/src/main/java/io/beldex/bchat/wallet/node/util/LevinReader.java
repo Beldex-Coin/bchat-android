@@ -17,6 +17,7 @@
 package io.beldex.bchat.wallet.node.util;
 
 
+import com.google.common.io.LittleEndianDataInputStream;
 import io.beldex.bchat.wallet.node.Section;
 
 import java.io.ByteArrayInputStream;

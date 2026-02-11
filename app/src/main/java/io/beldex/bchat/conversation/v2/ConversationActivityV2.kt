@@ -1291,32 +1291,9 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     }
 
     private fun updateUnreadCountIndicator() {
-
-        val count = unreadCount
-        if (count <= 0) {
-            binding.unreadCountIndicator.isVisible = false
-            return
-        }
-
-        val displayText = if (count < 10_000) {
-            count.toString()
-        } else {
-            "9999+"
-        }
-
-        binding.unreadCountTextView.apply {
-            text = displayText
-            setTextSize(
-                TypedValue.COMPLEX_UNIT_SP,
-                if (count < 10_000) 12f else 9f
-            )
-            setTypeface(
-                Typeface.DEFAULT,
-                if (count < 100) Typeface.BOLD else Typeface.NORMAL
-            )
-        }
-
-        binding.unreadCountIndicator.isVisible = true
+        val formattedUnreadCount=if (unreadCount < 100) unreadCount.toString() else "99+"
+        binding.unreadCountTextView.text=formattedUnreadCount
+        binding.unreadCountIndicator.isVisible=unreadCount != 0
     }
 
     private fun updateSubtitle() {

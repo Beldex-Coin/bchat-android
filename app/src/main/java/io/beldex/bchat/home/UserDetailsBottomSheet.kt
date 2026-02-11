@@ -30,6 +30,7 @@ import javax.inject.Inject
 class UserDetailsBottomSheet : BottomSheetDialogFragment() {
 
     @Inject lateinit var threadDb: ThreadDatabase
+    private val nicknameRegex = Regex("^[a-zA-Z0-9 ]+$")
 
     private lateinit var binding: FragmentUserDetailsBottomSheetBinding
     companion object {
@@ -145,21 +146,46 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun saveNickName(recipient: Recipient) = with(binding) {
-        if (nicknameEditText.text.trim().isEmpty()) {
-            Toast.makeText(context,R.string.enter_a_valid_nickname,Toast.LENGTH_SHORT).show()
-        }else{
-            nicknameEditText.clearFocus()
-            hideSoftKeyboard()
-            nameTextViewContainer.visibility = View.VISIBLE
-            nameEditTextContainer.visibility = View.INVISIBLE
-            val publicKey = recipient.address.serialize()
-            val contactDB = DatabaseComponent.get(requireContext()).bchatContactDatabase()
-            val contact = contactDB.getContactWithBchatID(publicKey) ?: Contact(publicKey)
-            contact.nickname = nicknameEditText.text.toString()
-            contactDB.setContact(contact)
-            nameTextView.text = recipient.name ?: publicKey // Uses the Contact API internally
+        val nickname = nicknameEditText.text.toString().trim()
+        when {
+            nickname.isEmpty() -> {
+                Toast.makeText(
+                    context,
+                    R.string.enter_a_valid_nickname,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            !nicknameRegex.matches(nickname) -> {
+                Toast.makeText(
+                    context,
+                    R.string.nickname_special_char_not_allowed,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            else -> {
+                nicknameEditText.clearFocus()
+                hideSoftKeyboard()
+
+                nameTextViewContainer.visibility = View.VISIBLE
+                nameEditTextContainer.visibility = View.INVISIBLE
+
+                val publicKey = recipient.address.serialize()
+                val contactDB =
+                    DatabaseComponent.get(requireContext()).bchatContactDatabase()
+
+                val contact =
+                    contactDB.getContactWithBchatID(publicKey) ?: Contact(publicKey)
+
+                contact.nickname = nickname
+                contactDB.setContact(contact)
+
+                nameTextView.text = recipient.name ?: publicKey
+            }
         }
     }
+
 
     @SuppressLint("ServiceCast")
     fun showSoftKeyboard() {

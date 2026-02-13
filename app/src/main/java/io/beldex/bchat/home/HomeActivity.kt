@@ -383,10 +383,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
 
         homeViewModel.getObservable(this).observe(this) { newData ->
             val manager = binding.recyclerView.layoutManager as LinearLayoutManager
-            val firstPos = manager.findFirstCompletelyVisibleItemPosition()
-            val offsetTop = if(firstPos >= 0) {
+            val firstPos = manager.findFirstVisibleItemPosition()
+            val offsetTop = if (firstPos >= 0) {
                 manager.findViewByPosition(firstPos)?.let { view ->
-                    manager.getDecoratedTop(view) - manager.getTopDecorationHeight(view)
+                    view.top - manager.paddingTop
                 } ?: 0
             } else 0
             val messageRequestCount = threadDb.unapprovedConversationCount
@@ -973,7 +973,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         onConversationClick(thread.threadId)
     }
 
-    override fun onLongConversationClick(thread : ThreadRecord, view : View) {
+    override fun onLongConversationClick(thread : ThreadRecord, view : View, position: Int) {
         val recipient = thread.recipient
         val popupMenu = PopupMenu(this, view, R.style.PopupMenu)
         popupMenu.menuInflater.inflate(R.menu.menu_conversation_v2, popupMenu.menu)
@@ -1007,7 +1007,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             findItem(R.id.menu_archive_chat).setVisible(true)
         }
         popupMenu.setOnMenuItemClickListener {
-            handlePopUpMenuClickListener(it, thread)
+            handlePopUpMenuClickListener(it, thread, position)
             return@setOnMenuItemClickListener true
         }
         popupMenu.show()
@@ -1179,7 +1179,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         }
     }
 
-    private fun handlePopUpMenuClickListener(item: MenuItem, thread: ThreadRecord) {
+    private fun handlePopUpMenuClickListener(item: MenuItem, thread: ThreadRecord, position : Int) {
         when (item.itemId) {
             R.id.menu_details -> {
                 val userDetailsBottomSheet = UserDetailsBottomSheet()
@@ -1198,19 +1198,19 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             }
             R.id.menu_block -> {
                 if (!thread.recipient.isBlocked) {
-                    blockConversation(thread)
+                    blockConversation(thread, position)
                 }
             }
             R.id.menu_unblock -> {
                 if (thread.recipient.isBlocked) {
-                    unblockConversation(thread)
+                    unblockConversation(thread, position)
                 }
             }
             R.id.menu_mute_notifications -> {
-                setConversationMuted(thread, true)
+                setConversationMuted(thread, true, position)
             }
             R.id.menu_unmute_notifications -> {
-                setConversationMuted(thread, false)
+                setConversationMuted(thread, false, position)
             }
             R.id.menu_notification_settings -> {
                 val dialog = ConversationActionDialog()
@@ -1237,36 +1237,38 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         }
     }
 
-    private fun blockConversation(thread: ThreadRecord) {
+    private fun blockConversation(thread : ThreadRecord, position : Int) {
         val blockDialog = ConversationActionDialog()
         blockDialog.apply {
             arguments = Bundle().apply {
                 putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, thread)
                 putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.BlockUser)
+                putInt(ConversationActionDialog.EXTRA_THREAD_POSITION, position)
             }
             setListener(this@HomeActivity)
         }
         blockDialog.show(supportFragmentManager, ConversationActionDialog.TAG)
     }
 
-    private fun unblockConversation(thread: ThreadRecord) {
+    private fun unblockConversation(thread : ThreadRecord, position : Int) {
         val unBlockDialog = ConversationActionDialog()
         unBlockDialog.apply {
             arguments = Bundle().apply {
                 putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, thread)
                 putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.UnblockUser)
+                putInt(ConversationActionDialog.EXTRA_THREAD_POSITION, position)
             }
             setListener(this@HomeActivity)
         }
         unBlockDialog.show(supportFragmentManager, ConversationActionDialog.TAG)
     }
 
-    private fun setConversationMuted(thread: ThreadRecord, isMuted: Boolean) {
+    private fun setConversationMuted(thread : ThreadRecord, isMuted : Boolean, position : Int) {
         if (!isMuted) {
             lifecycleScope.launch(Dispatchers.IO) {
                 recipientDatabase.setMuted(thread.recipient, 0)
                 withContext(Dispatchers.Main) {
-                    binding.recyclerView.adapter!!.notifyDataSetChanged()
+                    binding.recyclerView.adapter!!.notifyItemChanged(position)
                 }
             }
         } else {
@@ -1276,6 +1278,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                     putSerializable(ConversationActionDialog.EXTRA_ARGUMENT_3, thread.recipient.mutedUntil)
                     putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.MuteChat)
                     putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, thread)
+                    putInt(ConversationActionDialog.EXTRA_THREAD_POSITION, position)
                 }
                 setListener(this@HomeActivity)
             }
@@ -1625,14 +1628,18 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         TODO("Not yet implemented")
     }
 
-    override fun onConfirm(dialogType: HomeDialogType, threadRecord: ThreadRecord?) {
+    override fun onConfirm(
+        dialogType : HomeDialogType,
+        threadRecord : ThreadRecord?,
+        position : Int
+    ) {
         when (dialogType) {
             HomeDialogType.UnblockUser -> {
                 threadRecord?.let {
                     lifecycleScope.launch(Dispatchers.IO) {
                         recipientDatabase.setBlocked(it.recipient, false)
                         withContext(Dispatchers.Main) {
-                            binding.recyclerView.adapter!!.notifyDataSetChanged()
+                            homeAdapter.notifyItemChanged(position)
                         }
                     }
                 }
@@ -1642,7 +1649,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                     lifecycleScope.launch(Dispatchers.IO) {
                         recipientDatabase.setBlocked(it.recipient, true)
                         withContext(Dispatchers.Main) {
-                            binding.recyclerView.adapter!!.notifyDataSetChanged()
+                            homeAdapter.notifyItemChanged(position)
                         }
                     }
                 }
@@ -1716,10 +1723,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         }
     }
 
-    override fun onCancel(dialogType: HomeDialogType, threadRecord: ThreadRecord?) {
+    override fun onCancel(dialogType: HomeDialogType, threadRecord: ThreadRecord?, position : Int) {
         when (dialogType) {
             HomeDialogType.DeleteChat -> {
-                binding.recyclerView.adapter?.notifyDataSetChanged()
+                homeAdapter.notifyItemChanged(position)
             }
             HomeDialogType.IgnoreRequest -> {
                 threadRecord.let {
@@ -1733,9 +1740,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     }
 
     override fun onConfirmationWithData(
-        dialogType: HomeDialogType,
-        data: Any?,
-        threadRecord: ThreadRecord?
+        dialogType : HomeDialogType,
+        data : Any?,
+        threadRecord : ThreadRecord?,
+        position : Int
     ) {
         when (dialogType) {
             HomeDialogType.MuteChat -> {
@@ -1751,7 +1759,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                     threadRecord?.let {
                         DatabaseComponent.get(this@HomeActivity).recipientDatabase().setMuted(it.recipient, muteUntil)
                         withContext(Dispatchers.Main) {
-                            binding.recyclerView.adapter!!.notifyDataSetChanged()
+                            homeAdapter.notifyItemChanged(position)
                         }
                     }
                 }
@@ -1760,7 +1768,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                 threadRecord?.let {
                     val index = data as Int
                     DatabaseComponent.get(this@HomeActivity).recipientDatabase().setNotifyType(it.recipient, index.toString().toInt())
-                    binding.recyclerView.adapter?.notifyDataSetChanged()
+                    homeAdapter.notifyItemChanged(position)
                 }
             }
             HomeDialogType.BlockUser -> {
@@ -1768,7 +1776,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                     lifecycleScope.launch(Dispatchers.IO) {
                         recipientDatabase.setBlocked(it.recipient, true)
                         withContext(Dispatchers.Main) {
-                            binding.recyclerView.adapter!!.notifyDataSetChanged()
+                            homeAdapter.notifyItemChanged(position)
                         }
                     }
                 }
@@ -1779,7 +1787,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                     lifecycleScope.launch(Dispatchers.IO) {
                         recipientDatabase.setBlocked(it.recipient, false)
                         withContext(Dispatchers.Main) {
-                            binding.recyclerView.adapter!!.notifyDataSetChanged()
+                            homeAdapter.notifyItemChanged(position)
                         }
                     }
                 }

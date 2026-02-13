@@ -77,22 +77,21 @@ class HomeAdapter(private val context: Context, private val listener: Conversati
             notifyDataSetChanged()
         }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): RecyclerView.ViewHolder =
         when (viewType) {
             HEADER -> {
-                val binding = ViewMessageRequestBannerBinding.inflate(LayoutInflater.from(context))
+                val binding = ViewMessageRequestBannerBinding
+                    .inflate(LayoutInflater.from(context), parent, false)
                 HeaderFooterViewHolder(binding)
             }
             ITEM -> {
                 val view = ConversationView(context)
-                view.setOnClickListener { view.thread?.let { listener.onConversationClick(it) } }
-                view.setOnLongClickListener {
-                    view.thread?.let { listener.onLongConversationClick(it, view) }
-                    true
-                }
                 ViewHolder(view)
             }
-            else -> throw Exception("viewType $viewType isn't valid")
+            else -> error("Invalid viewType $viewType")
         }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -107,7 +106,10 @@ class HomeAdapter(private val context: Context, private val listener: Conversati
                 )
                 root.setOnClickListener { listener.showMessageRequests() }
                 expandMessageRequest.setOnClickListener { listener.showMessageRequests() }
-                root.setOnLongClickListener { listener.hideMessageRequests(); true }
+                root.setOnLongClickListener {
+                    listener.hideMessageRequests()
+                    true
+                }
                 root.layoutParams = RecyclerView.LayoutParams(
                     RecyclerView.LayoutParams.MATCH_PARENT,
                     RecyclerView.LayoutParams.WRAP_CONTENT
@@ -115,9 +117,19 @@ class HomeAdapter(private val context: Context, private val listener: Conversati
             }
         } else {
             val offset = if (hasHeaderView()) position - 1 else position
-            val thread = data[position]
+            val thread = data[offset]
             val isTyping = typingThreadIDs.contains(thread.threadId)
-            (holder as ViewHolder).view.bind(thread, isTyping, glide)
+            (holder as ViewHolder).view.apply {
+                bind(thread, isTyping, glide)
+                setOnClickListener {
+                    listener.onConversationClick(thread)
+                }
+
+                setOnLongClickListener {
+                    listener.onLongConversationClick(thread, this, position)
+                    true
+                }
+            }
         }
     }
 

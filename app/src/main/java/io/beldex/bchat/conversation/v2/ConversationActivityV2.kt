@@ -3574,7 +3574,8 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
 
     override fun onConfirm(
         dialogType: HomeDialogType,
-        threadRecord: ThreadRecord?
+        threadRecord: ThreadRecord?,
+        position : Int
     ) {
         when (dialogType) {
 
@@ -3623,7 +3624,8 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
 
     override fun onCancel(
         dialogType: HomeDialogType,
-        threadRecord: ThreadRecord?
+        threadRecord: ThreadRecord?,
+        position : Int
     ) {
         when (dialogType) {
             HomeDialogType.SelectedMessageDelete -> {
@@ -3636,7 +3638,8 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     override fun onConfirmationWithData(
         dialogType: HomeDialogType,
         data: Any?,
-        threadRecord: ThreadRecord?
+        threadRecord: ThreadRecord?,
+        position : Int
     ) {
         when (dialogType) {
 

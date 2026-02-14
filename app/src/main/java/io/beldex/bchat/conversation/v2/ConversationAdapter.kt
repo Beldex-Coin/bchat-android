@@ -31,6 +31,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.util.getOrDefault
 import androidx.core.util.set
 import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.messaging.utilities.UpdateMessageData
@@ -83,6 +84,7 @@ class ConversationAdapter(
     private val contactCache = SparseArray<Contact>(100)
     private val contactLoadedCache = SparseBooleanArray(100)
     init {
+        setHasStableIds(true)
         lifecycleCoroutineScope.launch(IO) {
             while (isActive) {
                 val item = updateQueue.receive()
@@ -139,7 +141,8 @@ class ConversationAdapter(
 
     override fun onBindItemViewHolder(viewHolder: ViewHolder, cursor: Cursor) {
         val message = getMessage(cursor)!!
-        val position = viewHolder.adapterPosition
+        val position = viewHolder.bindingAdapterPosition
+        if (position == RecyclerView.NO_POSITION) return
         val messageBefore = getMessageBefore(position, cursor)
         when (viewHolder) {
             is VisibleMessageViewHolder -> {

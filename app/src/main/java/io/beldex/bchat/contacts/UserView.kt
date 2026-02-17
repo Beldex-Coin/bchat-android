@@ -55,7 +55,7 @@ class UserView : LinearLayout {
         val threadID = DatabaseComponent.get(context).threadDatabase().getOrCreateThreadIdFor(user)
         MentionManagerUtilities.populateUserPublicKeyCacheIfNeeded(threadID, context) // FIXME: This is a bad place to do this
         val address = user.address.serialize()
-        unbind()
+
         binding.profilePictureView.root.glide = glide
         binding.profilePictureView.root.update(user)
         binding.actionIndicatorImageView.setImageResource(R.drawable.ic_baseline_edit_group_name)

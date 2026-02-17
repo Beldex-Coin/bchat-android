@@ -23,14 +23,20 @@ import io.beldex.bchat.util.UiModeUtilities
 
 
 class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderManager.LoaderCallbacks<List<String>> {
+
     private lateinit var binding: ActivitySelectContactsBinding
     private var members = listOf<String>()
-        set(value) { field = value; selectContactsAdapter.members = value }
+        set(value) {
+            field = value
+            selectContactsAdapter.updateList(value)
+        }
+
     private lateinit var usersToExclude: Set<String>
 
     private val selectContactsAdapter by lazy {
         SelectContactsAdapter(this, Glide.with(this))
     }
+
     var isDarkTheme = true
 
     companion object {
@@ -41,81 +47,56 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
         super.onCreate(savedInstanceState, isReady)
-        binding=ActivitySelectContactsBinding.inflate(layoutInflater)
+        binding = ActivitySelectContactsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        supportActionBar!!.title=resources.getString(R.string.activity_select_contacts_title)
+        supportActionBar!!.title = resources.getString(R.string.activity_select_contacts_title)
 
         isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
-        usersToExclude=intent.getStringArrayExtra(usersToExcludeKey)?.toSet() ?: setOf()
+        usersToExclude = intent.getStringArrayExtra(usersToExcludeKey)?.toSet() ?: setOf()
 
-        binding.recyclerView.adapter=selectContactsAdapter
-        binding.recyclerView.layoutManager=LinearLayoutManager(this)
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.adapter = selectContactsAdapter
+
+        binding.recyclerView.visibility = View.GONE
+        binding.noContactFoundContainer.visibility = View.VISIBLE
 
         LoaderManager.getInstance(this).initLoader(0, null, this)
 
-        binding.addButton.setOnClickListener {
-            closeAndReturnSelected()
-        }
+        binding.addButton.setOnClickListener { closeAndReturnSelected() }
 
         binding.searchContact.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s : Editable) {
-                filter(s.toString().lowercase(), members as ArrayList<String>)
+            override fun afterTextChanged(s: Editable) {
+                filter(s.toString(), members)
             }
 
-            override fun beforeTextChanged(
-                    s : CharSequence, start : Int,
-                    count : Int, after : Int
-            ) {
-            }
-
-            override fun onTextChanged(
-                    s : CharSequence, start : Int,
-                    before : Int, count : Int
-            ) {
-                if(s.toString().isNotEmpty()){
-                    binding.searchAndClearImageview.setImageResource(R.drawable.ic_close)
-                }else{
-                    binding.searchAndClearImageview.setImageResource(R.drawable.ic_baseline_search_24)
-                }
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                binding.searchAndClearImageview.setImageResource(
+                    if (s.isNotEmpty()) R.drawable.ic_close else R.drawable.ic_baseline_search_24
+                )
             }
         })
 
         binding.searchAndClearImageview.setOnClickListener {
-            if(binding.searchContact.text.isNotEmpty()){
-                binding.searchContact.text.clear()
-            }
+            if (binding.searchContact.text.isNotEmpty()) binding.searchContact.text.clear()
         }
-        selectContactsAdapter.selectionChangedListener=
+
+        selectContactsAdapter.selectionChangedListener =
             object : SelectContactsAdapter.OnSelectionChangedListener {
-                override fun onSelectionChanged(selectedCount : Int) {
-                    val context=this@SelectContactsActivity
-                    val resources=context.resources
-
-                    if (selectedCount > 0) {
-                        val enabledColor=
-                            ResourcesCompat.getColor(resources, R.color.button_green, context.theme)
-                        binding.addButton.apply {
-                            isEnabled=true
-                            backgroundTintList=ColorStateList.valueOf(enabledColor)
-                            setTextColor(ContextCompat.getColor(context, R.color.white))
-                        }
-                    } else {
-                        val disabledColor=ResourcesCompat.getColor(
-                            resources, R.color.cancel_background, context.theme
-                        )
-                        val disabledTextColor=
-                            ContextCompat.getColor(context, R.color.white)
-
-                        binding.addButton.apply {
-                            isEnabled=false
-                            backgroundTintList=ColorStateList.valueOf(disabledColor)
-                            setTextColor(disabledTextColor)
-                        }
+                override fun onSelectionChanged(selectedCount: Int) {
+                    val enabledColor = ResourcesCompat.getColor(
+                        resources,
+                        if (selectedCount > 0) R.color.button_green else R.color.cancel_background,
+                        theme
+                    )
+                    binding.addButton.apply {
+                        isEnabled = selectedCount > 0
+                        backgroundTintList = ColorStateList.valueOf(enabledColor)
+                        setTextColor(ContextCompat.getColor(context, R.color.white))
                     }
                 }
             }
     }
-
     fun filter(text: String?, arrayList: List<String>) {
         val query = text?.lowercase()?.trim().orEmpty()
 
@@ -125,66 +106,43 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
 
         selectContactsAdapter.updateList(filteredList)
 
-        showNoContactFoundContainer(if(filteredList.isEmpty()) View.VISIBLE else View.GONE)
+        showNoContactFoundContainer(if (filteredList.isEmpty()) View.VISIBLE else View.GONE)
     }
 
     private fun getUserDisplayName(publicKey: String): String {
         val contact = DatabaseComponent.get(this).bchatContactDatabase()
-                .getContactWithBchatID(publicKey)
+            .getContactWithBchatID(publicKey)
         return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
     }
 
-
-   /* override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_done_open_group, menu)
-        return members.isNotEmpty()
-    }*/
-    // endregion
-
-    // region Updating
     override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<List<String>> {
-        return SelectContactsLoader(this, usersToExclude)
+        return SelectContactsLoader(this, usersToExclude) // AsyncTaskLoader
     }
 
-    override fun onLoadFinished(loader: Loader<List<String>>, members: List<String>) {
-        update(members)
+    override fun onLoadFinished(loader: Loader<List<String>>, data: List<String>) {
+        members = data // will auto-update adapter via setter
+        binding.recyclerView.visibility = if (data.isEmpty()) View.GONE else View.VISIBLE
+        showNoContactFoundContainer(if (data.isEmpty()) View.VISIBLE else View.GONE)
     }
 
     override fun onLoaderReset(loader: Loader<List<String>>) {
-        update(listOf())
+        members = listOf()
+        binding.recyclerView.visibility = View.GONE
+        showNoContactFoundContainer(View.VISIBLE)
     }
 
     private fun showNoContactFoundContainer(isVisible: Int) {
         binding.noContactFoundContainer.visibility = isVisible
-        if(isVisible == View.VISIBLE) {
+        if (isVisible == View.VISIBLE) {
             binding.icNoContactFound.setImageResource(
                 if (isDarkTheme) R.drawable.ic_no_contact_found
                 else R.drawable.ic_no_contact_found_white
             )
         }
     }
-
-    private fun update(members: List<String>) {
-        this.members = members
-        binding.recyclerView.visibility = if (members.isEmpty()) View.GONE else View.VISIBLE
-        showNoContactFoundContainer(if (members.isEmpty()) View.VISIBLE else View.GONE)
-        invalidateOptionsMenu()
-    }
-    // endregion
-
-    // region Interaction
-    /*override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
-            R.id.doneButton -> closeAndReturnSelected()
-        }
-        return super.onOptionsItemSelected(item)
-    }
-*/
     private fun closeAndReturnSelected() {
-        val selectedMembers = selectContactsAdapter.selectedMembers
-        val selectedContacts = selectedMembers.toTypedArray()
-        val intent = Intent()
-        intent.putExtra(selectedContactsKey, selectedContacts)
+        val selectedContacts = selectContactsAdapter.selectedMembers.toTypedArray()
+        val intent = Intent().apply { putExtra(selectedContactsKey, selectedContacts) }
         setResult(Activity.RESULT_OK, intent)
         finish()
     }

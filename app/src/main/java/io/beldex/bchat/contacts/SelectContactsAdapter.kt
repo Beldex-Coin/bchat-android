@@ -3,62 +3,73 @@ package io.beldex.bchat.contacts
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.bumptech.glide.RequestManager
-import com.google.android.material.datepicker.OnSelectionChangedListener
 
 
-class SelectContactsAdapter(private val context: Context, private val glide: RequestManager) : RecyclerView.Adapter<SelectContactsAdapter.ViewHolder>() {
+class SelectContactsAdapter(
+    private val context: Context,
+    private val glide: RequestManager
+) : RecyclerView.Adapter<SelectContactsAdapter.ViewHolder>() {
+
     val selectedMembers = mutableSetOf<String>()
     var members = listOf<String>()
-        set(value) { field = value; notifyDataSetChanged() }
 
     class ViewHolder(val view: UserView) : RecyclerView.ViewHolder(view)
 
     var selectionChangedListener: OnSelectionChangedListener? = null
 
-
-    override fun getItemCount(): Int {
-        return members.size
+    init {
+        setHasStableIds(true)
     }
+
+    override fun getItemId(position: Int): Long {
+        // Use hashCode of the member string as stable ID
+        return members[position].hashCode().toLong()
+    }
+
+    override fun getItemCount(): Int = members.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = UserView(context)
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        val member = members[position]
-        viewHolder.view.setOnClickListener { onMemberClick(member) }
-        val isSelected = selectedMembers.contains(member)
-        viewHolder.view.bind(
-            Recipient.from(
-            context,
-            Address.fromSerialized(member), false),
-            glide,
-            UserView.ActionIndicator.Tick,
-            isSelected)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        bindView(holder, position)
     }
 
-    override fun onBindViewHolder(viewHolder: ViewHolder,
-                                  position: Int,
-                                  payloads: MutableList<Any>) {
-        if (payloads.isNotEmpty()) {
-            // Because these updates can be batched,
-            // there can be multiple payloads for a single bind
-            when (payloads[0]) {
-                Payload.MEMBER_CLICKED -> {
-                    val member = members[position]
-                    val isSelected = selectedMembers.contains(member)
-                    viewHolder.view.toggleCheckbox(isSelected)
-                }
-            }
+    override fun onBindViewHolder(
+        holder: ViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        if (payloads.isNotEmpty() && payloads.contains(Payload.MEMBER_CLICKED)) {
+            val member = members[position]
+            holder.view.toggleCheckbox(selectedMembers.contains(member))
         } else {
-            // When payload list is empty,
-            // or we don't have logic to handle a given type,
-            // default to full bind:
-            this.onBindViewHolder(viewHolder, position)
+            bindView(holder, position)
+        }
+    }
+
+    private fun bindView(holder: ViewHolder, position: Int) {
+        val member = members[position]
+        val isSelected = selectedMembers.contains(member)
+
+        // Avoid reloading Glide if already loaded
+        val currentTag = holder.view.tag as? String
+        if (currentTag != member) {
+            val recipient = Recipient.from(context, Address.fromSerialized(member), false)
+            holder.view.bind(recipient, glide, UserView.ActionIndicator.Tick, isSelected)
+            holder.view.tag = member
+        } else {
+            holder.view.toggleCheckbox(isSelected)
+        }
+
+        holder.view.setOnClickListener {
+            onMemberClick(member)
         }
     }
 
@@ -72,17 +83,34 @@ class SelectContactsAdapter(private val context: Context, private val glide: Req
         notifyItemChanged(index, Payload.MEMBER_CLICKED)
         selectionChangedListener?.onSelectionChanged(selectedMembers.size)
     }
-    fun updateList(list: List<String>) {
-        members = list
-        notifyDataSetChanged()
+
+    fun updateList(newList: List<String>) {
+        val diffResult = DiffUtil.calculateDiff(ContactsDiffCallback(members, newList))
+        members = newList
+        diffResult.dispatchUpdatesTo(this)
     }
 
     interface OnSelectionChangedListener {
         fun onSelectionChanged(selectedCount: Int)
     }
 
-    // define below the different events used to notify the adapter
     enum class Payload {
         MEMBER_CLICKED
+    }
+
+    class ContactsDiffCallback(
+        private val oldList: List<String>,
+        private val newList: List<String>
+    ) : DiffUtil.Callback() {
+        override fun getOldListSize(): Int = oldList.size
+        override fun getNewListSize(): Int = newList.size
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition] == newList[newItemPosition]
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition] == newList[newItemPosition]
+        }
     }
 }

@@ -127,10 +127,6 @@ fun CreateSecretGroup(
         restartOnPlay = false
     )
 
-    var updateProfile by remember {
-        mutableStateOf(true)
-    }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -200,7 +196,6 @@ fun CreateSecretGroup(
                     imeAction = ImeAction.Done
                 ),
                 onValueChange = {
-                    updateProfile = !updateProfile
                     onEvent(SecretGroupEvents.SearchQueryChanged(it))
                 },
                 modifier = Modifier
@@ -238,26 +233,20 @@ fun CreateSecretGroup(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(
-                        horizontal = 16.dp
-                    )
+                    .padding(horizontal = 16.dp)
                     .weight(1f)
             ) {
-                items(contacts) {
+                items(
+                    items = contacts,
+                    key = { it.address.toString() }
+                ) { recipient ->
                     GroupContact(
-                        recipient = it,
-                        isSelected = selectedContact.contains(it.address.toString()),
+                        recipient = recipient,
+                        isSelected = selectedContact.contains(recipient.address.toString()),
                         onSelectionChanged = { contact, isSelected ->
-                            onEvent(
-                                SecretGroupEvents.RecipientSelectionChanged(
-                                    contact,
-                                    isSelected
-                                )
-                            )
+                            onEvent(SecretGroupEvents.RecipientSelectionChanged(contact, isSelected))
                         },
-                        updateProfile = updateProfile,
-                        modifier = Modifier
-                            .fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
             }
@@ -342,9 +331,14 @@ private fun GroupContact(
     recipient: Recipient,
     isSelected: Boolean,
     onSelectionChanged: (Recipient, Boolean) -> Unit,
-    updateProfile: Boolean = true,
     modifier: Modifier = Modifier
 ) {
+    val publicKey = recipient.address.toString()
+
+    val rememberedProfile by remember(publicKey) {
+        mutableStateOf(publicKey)
+    }
+
     OutlinedCard(
         shape = RoundedCornerShape(50),
         border = BorderStroke(
@@ -354,39 +348,31 @@ private fun GroupContact(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.appColors.contactCardBackground
         ),
-            modifier= modifier
-                .padding(bottom = 10.dp)
-                .clickable {
-                    onSelectionChanged(recipient, !isSelected)
-                }
+        modifier = modifier
+            .padding(bottom = 10.dp)
+            .clickable {
+                onSelectionChanged(recipient, !isSelected)
+            }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                    .padding(vertical = 4.dp)
+                .padding(vertical = 4.dp)
         ) {
             Box(modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)) {
-                if(updateProfile) {
-                    ProfilePictureComponent(
-                        publicKey = recipient.address.toString(),
-                        displayName = recipient.name.toString(),
-                        containerSize = 36.dp,
-                        pictureMode = ProfilePictureMode.SmallPicture
-                    )
-                }else {
-                    ProfilePictureComponent(
-                        publicKey = recipient.address.toString(),
-                        displayName = recipient.name.toString(),
-                        containerSize = 36.dp,
-                        pictureMode = ProfilePictureMode.SmallPicture
-                    )
-                }
+                ProfilePictureComponent(
+                    publicKey = rememberedProfile,
+                    displayName = recipient.name.toString(),
+                    containerSize = 36.dp,
+                    pictureMode = ProfilePictureMode.SmallPicture
+                )
             }
 
             Text(
-                text = if(recipient.name != null) recipient.name.toString().capitalizeFirstLetter() else recipient.address.toString().capitalizeFirstLetter(),
+                text = recipient.name?.capitalizeFirstLetter()
+                    ?: recipient.address.toString().capitalizeFirstLetter(),
                 textAlign = TextAlign.Start,
                 fontSize = 16.sp,
                 fontWeight = FontWeight(400),
@@ -398,11 +384,15 @@ private fun GroupContact(
             )
 
             Image(
-                painter=painterResource(id=if (isSelected) R.drawable.ic_checkedbox else R.drawable.ic_checkbox),
-                contentDescription="check box",
-                modifier=Modifier.padding(end=25.dp),
-                colorFilter = ColorFilter.tint(if(isSelected) MaterialTheme.appColors.textGreen else MaterialTheme.appColors.textColor)
-            )        }
+                painter = painterResource(id = if (isSelected) R.drawable.ic_checkedbox else R.drawable.ic_checkbox),
+                contentDescription = "check box",
+                modifier = Modifier.padding(end = 25.dp),
+                colorFilter = ColorFilter.tint(
+                    if (isSelected) MaterialTheme.appColors.textGreen
+                    else MaterialTheme.appColors.textColor
+                )
+            )
+        }
     }
 }
 

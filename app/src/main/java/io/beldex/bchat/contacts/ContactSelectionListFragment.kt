@@ -94,7 +94,7 @@ class ContactSelectionListFragment : Fragment(), LoaderManager.LoaderCallbacks<L
                     IllegalStateException())
             return
         }
-        listAdapter.items = items
+        listAdapter.submitList(items)
         binding.recyclerView.visibility = if (items.isEmpty()) View.GONE else View.VISIBLE
         binding.emptyStateContainer.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
     }

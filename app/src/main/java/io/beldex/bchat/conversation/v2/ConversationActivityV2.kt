@@ -269,16 +269,30 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     @Inject lateinit var conversationViewModelFactory: ConversationViewModel.AssistedFactory
 
     // -------------------- ViewModels ---------------------
-    private val viewModel : ConversationViewModel by viewModels {
-        val extras = intent.extras
-        var threadId=extras?.getLong(THREAD_ID, -1L)
-        if (threadId == -1L) {
-            extras?.getParcelable<Address>(ADDRESS)?.let { address ->
-                val recipient=Recipient.from(this, address, false)
-                threadId=threadDb.getOrCreateThreadIdFor(recipient)
+    private val viewModel: ConversationViewModel by viewModels {
+        val resolvedThreadId = resolveThreadId()
+        conversationViewModelFactory.create(resolvedThreadId)
+    }
+
+    private fun resolveThreadId(): Long {
+        var id = intent.getLongExtra(THREAD_ID, -1L)
+
+        if (id == -1L) {
+            val address = intent.getParcelableExtra<Address>(ADDRESS)
+            if (address != null) {
+                val recipient = Recipient.from(this, address, false)
+                id = threadDb.getOrCreateThreadIdFor(recipient)
             }
         }
-        conversationViewModelFactory.create(threadId!!)
+        if (id == -1L) {
+            Toast.makeText(
+                this,
+                getString(R.string.conversationsDeleted),
+                Toast.LENGTH_LONG
+            ).show()
+            finish()
+        }
+        return id
     }
 
 
@@ -399,17 +413,6 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         setContentView(binding.root)
         setSupportActionBar(binding.conversationActivityToolbar)
 
-        if (threadId == -1L) {
-            val extras = intent.extras
-            var threadId= extras?.getLong(THREAD_ID, -1L)
-            if (threadId == -1L) {
-                extras?.getParcelable<Address>(ADDRESS)?.let { address ->
-                    val recipient=Recipient.from(this, address, false)
-                    threadId=threadDb.getOrCreateThreadIdFor(recipient)
-                }
-            }
-           conversationViewModelFactory.create(threadId!!)
-        }
         // ---------- Network monitoring ----------
         networkChangedReceiver = NetworkChangeReceiver(::networkChange)
         networkChangedReceiver?.register(this)

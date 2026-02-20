@@ -82,7 +82,7 @@ class OpenGroupInvitationView : LinearLayout {
             socialGroupUrl.setTextColor(textColor)
             socialGroupMessageTime.setTextColor(textColor)
             binding.socialGroupCardView.setOnClickListener {
-                ActivityDispatcher.get(context)?.showDialog(JoinOpenGroupDialog(data.groupName,data.groupUrl),"Join Open Group Dialog")
+                ActivityDispatcher.get(context)?.showDialog(JoinOpenGroupDialog(data.groupName,data.groupUrl), VisibleMessageContentView.JOIN_SOCIAL_GROUP_POPUP)
             }
     }
 }
@@ -94,6 +94,6 @@ class OpenGroupInvitationView : LinearLayout {
     }
     fun joinOpenGroup() {
         val data = data ?: return
-        ActivityDispatcher.get(context)?.showDialog(JoinOpenGroupDialog(data.groupName,data.groupUrl),"Join Open Group Dialog")
+        ActivityDispatcher.get(context)?.showDialog(JoinOpenGroupDialog(data.groupName,data.groupUrl), VisibleMessageContentView.JOIN_SOCIAL_GROUP_POPUP)
     }
 }

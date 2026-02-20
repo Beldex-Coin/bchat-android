@@ -66,7 +66,7 @@ class UntrustedAttachmentView: LinearLayout {
 
     // region Interaction
     fun showTrustDialog(recipient: Recipient) {
-        ActivityDispatcher.get(context)?.showDialog(DownloadDialog(recipient))
+        ActivityDispatcher.get(context)?.showDialog(DownloadDialog(recipient), VisibleMessageContentView.UNTRUSTED_DIALOG)
     }
 
 }

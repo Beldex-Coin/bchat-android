@@ -2,6 +2,7 @@ package io.beldex.bchat.preferences
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.fragment.app.DialogFragment
 import io.beldex.bchat.R
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.databinding.ActivityFragmentWrapperNewBinding
@@ -21,4 +22,14 @@ class ChatSettingsActivity : PassphraseRequiredActionBarActivity() {
         transaction.replace(R.id.fragmentContainer, fragment)
         transaction.commit()
     }
+
+    override fun onPause() {
+        super.onPause()
+
+        val dialog = supportFragmentManager
+            .findFragmentByTag("EditTextPreferenceDialog") as? DialogFragment
+
+        dialog?.dismissAllowingStateLoss()
+    }
+
 }

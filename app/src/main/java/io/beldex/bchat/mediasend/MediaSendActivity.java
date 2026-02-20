@@ -116,9 +116,17 @@ public class MediaSendActivity extends PassphraseRequiredActionBarActivity imple
     setContentView(R.layout.mediasend_activity);
     setResult(RESULT_CANCELED);
 
-    if (savedInstanceState != null) {
-      return;
-    }
+    viewModel = new ViewModelProvider(
+            this,
+            new MediaSendViewModel.Factory(getApplication(), new MediaRepository())
+    ).get(MediaSendViewModel.class);
+
+    recipient = Recipient.from(
+            this,
+            Address.fromSerialized(getIntent().getStringExtra(KEY_ADDRESS)),
+            true
+    );
+
 
     countButton     = findViewById(R.id.mediasend_count_button);
     countButtonText = findViewById(R.id.mediasend_count_button_text);
@@ -129,27 +137,30 @@ public class MediaSendActivity extends PassphraseRequiredActionBarActivity imple
 
     viewModel.onBodyChanged(getIntent().getStringExtra(KEY_BODY));
 
-    List<Media> media    = getIntent().getParcelableArrayListExtra(KEY_MEDIA);
-    boolean     isCamera = getIntent().getBooleanExtra(KEY_IS_CAMERA, false);
+    if (savedInstanceState == null) {
 
-    if (isCamera) {
-      Fragment fragment = Camera1Fragment.newInstance();
-      getSupportFragmentManager().beginTransaction()
-                                 .replace(R.id.mediasend_fragment_container, fragment, TAG_CAMERA)
-                                 .commit();
+      List<Media> media = getIntent().getParcelableArrayListExtra(KEY_MEDIA);
+      boolean isCamera = getIntent().getBooleanExtra(KEY_IS_CAMERA, false);
 
-    } else if (!Util.isEmpty(media)) {
-      viewModel.onSelectedMediaChanged(this, media);
+      if (isCamera) {
+        Fragment fragment = Camera1Fragment.newInstance();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.mediasend_fragment_container, fragment, TAG_CAMERA)
+                .commit();
 
-      Fragment fragment = MediaSendFragment.newInstance(recipient);
-      getSupportFragmentManager().beginTransaction()
-                                 .replace(R.id.mediasend_fragment_container, fragment, TAG_SEND)
-                                 .commit();
-    } else {
-      MediaPickerFolderFragment fragment = MediaPickerFolderFragment.newInstance(recipient);
-      getSupportFragmentManager().beginTransaction()
-                                 .replace(R.id.mediasend_fragment_container, fragment, TAG_FOLDER_PICKER)
-                                 .commit();
+      } else if (!Util.isEmpty(media)) {
+        viewModel.onSelectedMediaChanged(this, media);
+
+        Fragment fragment = MediaSendFragment.newInstance(recipient);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.mediasend_fragment_container, fragment, TAG_SEND)
+                .commit();
+      } else {
+        MediaPickerFolderFragment fragment = MediaPickerFolderFragment.newInstance(recipient);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.mediasend_fragment_container, fragment, TAG_FOLDER_PICKER)
+                .commit();
+      }
     }
 
     initializeCountButtonObserver();
@@ -169,13 +180,19 @@ public class MediaSendActivity extends PassphraseRequiredActionBarActivity imple
 
   @Override
   public void onBackPressed() {
-    MediaSendFragment sendFragment = (MediaSendFragment) getSupportFragmentManager().findFragmentByTag(TAG_SEND);
-    if (sendFragment == null || !sendFragment.isVisible() || !sendFragment.handleBackPress()) {
-      super.onBackPressed();
+    MediaSendFragment sendFragment =
+            (MediaSendFragment) getSupportFragmentManager().findFragmentByTag(TAG_SEND);
 
-      if (getIntent().getBooleanExtra(KEY_IS_CAMERA, false) && getSupportFragmentManager().getBackStackEntryCount() == 0) {
+    if (sendFragment == null || !sendFragment.isVisible() || !sendFragment.handleBackPress()) {
+
+      if (getIntent().getBooleanExtra(KEY_IS_CAMERA, false)
+              && getSupportFragmentManager().getBackStackEntryCount() == 0
+              && viewModel != null) {
+
         viewModel.onImageCaptureUndo(this);
       }
+
+      super.onBackPressed();
     }
   }
 

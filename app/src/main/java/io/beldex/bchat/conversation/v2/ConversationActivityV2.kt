@@ -12,7 +12,6 @@ import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.database.Cursor
 import android.graphics.Rect
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
@@ -22,7 +21,6 @@ import android.os.Looper
 import android.os.SystemClock
 import android.text.Editable
 import android.util.Log
-import android.util.TypedValue
 import android.view.ActionMode
 import android.view.LayoutInflater
 import android.view.Menu
@@ -44,6 +42,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -446,6 +445,18 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         screenshotDetector.unregister()
         binding.inputBar.clearFocus()
         Helper.hideKeyboard(this)
+        dismissDialogIfExists(ComposeDialogContainer.TAG)
+        dismissDialogIfExists(VisibleMessageContentView.JOIN_SOCIAL_GROUP_POPUP)
+        dismissDialogIfExists(VisibleMessageContentView.OPEN_URL_DIALOG)
+        dismissDialogIfExists(VisibleMessageContentView.UNTRUSTED_DIALOG)
+        dismissDialogIfExists(REACT_ANY_EMOJI_FRAGMENT)
+
+        if (reactionDelegate.isShowing) {
+            reactionDelegate.hide()
+        }
+        if (getIsReactionOverlayVisible(this)) {
+            setIsReactionOverlayVisible(this, false)
+        }
     }
 
     override fun onDestroy() {
@@ -2531,6 +2542,11 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         finish()
     }
 
+    private fun dismissDialogIfExists(tag: String) {
+        val dialog = supportFragmentManager.findFragmentByTag(tag) as? DialogFragment
+        dialog?.dismissAllowingStateLoss()
+    }
+
     @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(
         requestCode : Int,
@@ -3912,7 +3928,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             reactionDelegate.hideForReactWithAny()
             ReactWithAnyEmojiDialogFragment
                 .createForMessageRecord(messageRecord, reactWithAnyEmojiStartPage)
-                .show(supportFragmentManager, "BOTTOM");
+                .show(supportFragmentManager, REACT_ANY_EMOJI_FRAGMENT)
         }
     }
 
@@ -4066,6 +4082,9 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         const val PICK_GIF=10
         const val PICK_FROM_LIBRARY=12
         const val INVITE_CONTACTS=124
+
+        //React Any Emoji Fragment
+        const val REACT_ANY_EMOJI_FRAGMENT = "react_any_emoji_fragment"
     }
 }
 

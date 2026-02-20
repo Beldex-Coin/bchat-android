@@ -828,7 +828,8 @@ class VisibleMessageContentView : MaterialCardView {
             body.getSpans<URLSpan>(0, body.length).toList().forEach { urlSpan ->
                 val updatedUrl = urlSpan.url.let { it.toHttpUrlOrNull().toString() }
                 val replacementSpan = ModalURLSpan(updatedUrl) { url ->
-                    ActivityDispatcher.get(context)?.showBottomSheetDialog(ModalUrlBottomSheet(url),"Open URL Dialog")
+                    ActivityDispatcher.get(context)?.showBottomSheetDialog(ModalUrlBottomSheet(url),
+                        OPEN_URL_DIALOG)
                 }
                 val start = body.getSpanStart(urlSpan)
                 val end = body.getSpanEnd(urlSpan)
@@ -853,6 +854,10 @@ class VisibleMessageContentView : MaterialCardView {
             }
             return context.resources.getColorWithID(colorID, context.theme)
         }
+
+        const val JOIN_SOCIAL_GROUP_POPUP = "Join Open Group Dialog"
+        const val OPEN_URL_DIALOG = "Open URL Dialog"
+        const val UNTRUSTED_DIALOG = "Un Trusted Dialog"
     }
     // endregion
 

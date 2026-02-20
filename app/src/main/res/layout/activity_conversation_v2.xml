@@ -450,6 +450,12 @@
                     android:layout_alignParentBottom="true"
                     android:visibility="gone" />
 
+                <FrameLayout
+                    android:id="@+id/additionalContentContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/conversationRecyclerView" />
+
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/attachment_container"
@@ -869,11 +875,6 @@
         </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/additionalContentContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
     <FrameLayout
         android:id="@+id/reactions_shade"

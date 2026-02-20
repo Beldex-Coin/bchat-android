@@ -137,21 +137,38 @@ class PrivateChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
         if (PublicKeyValidation.isValid(bnsNameOrPublicKey)) {
             createPrivateChat(bnsNameOrPublicKey, bnsNameOrPublicKey)
         } else {
-            //Toast.makeText(this, R.string.invalid_bchat_id, Toast.LENGTH_SHORT).show()
-            // This could be an BNS name
             showLoader()
-            MnodeAPI.getBchatID(bnsNameOrPublicKey).successUi { hexEncodedPublicKey ->
-                hideLoader()
-                this.createPrivateChat(hexEncodedPublicKey,bnsNameOrPublicKey)
-            }.failUi { exception ->
-                hideLoader()
-                var message = resources.getString(R.string.fragment_enter_public_key_error_message)
-                exception.localizedMessage?.let {
-                    message = it
+            // This could be an BNS name
+            MnodeAPI.getBchatID(bnsNameOrPublicKey)
+                .successUi { hexEncodedPublicKey ->
+                    hideLoader()
+                    createPrivateChat(hexEncodedPublicKey, bnsNameOrPublicKey)
                 }
-                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-            }
+                .failUi { exception ->
+                    hideLoader()
+
+                    var message = resources.getString(
+                        R.string.fragment_enter_public_key_error_message
+                    )
+
+                    exception.localizedMessage?.let {
+                        message = it
+                    }
+
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+
+                    restartScannerWithDelay()
+                }
         }
+    }
+
+    private fun restartScannerWithDelay() {
+        val fragment = supportFragmentManager
+            .findFragmentByTag(FRAGMENT_TAG) as? ScanQRCodeFragment
+
+        fragment?.view?.postDelayed({
+            fragment.restartScanning()
+        }, 1000)   // 1 second delay to avoid multiple triggers
     }
 
     private fun createPrivateChat(hexEncodedPublicKey: String,bnsName: String ) {

@@ -74,12 +74,16 @@ class ScanQRCodeFragment : Fragment() {
         super.onResume()
         binding.cameraView.onResume()
         binding.cameraView.setPreviewCallback(scanningThread)
-        try {
+        if (!scanningThread.isAlive) {
             scanningThread.start()
-        } catch (exception: Exception) {
-            // Do nothing
         }
         scanningThread.setScanListener(scanListener)
+    }
+
+    fun restartScanning() {
+        binding.root.postDelayed({
+            scanningThread.restartScanning()
+        }, 1000)
     }
 
     private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

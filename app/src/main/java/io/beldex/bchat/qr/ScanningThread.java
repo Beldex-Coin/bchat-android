@@ -35,6 +35,9 @@ public class ScanningThread extends Thread implements CameraView.PreviewCallback
   private boolean scanning = true;
   private CameraView.PreviewFrame previewFrame;
 
+  private long lastScanTime = 0;
+  private static final long SCAN_COOLDOWN_MS = 1500;
+
   public void setCharacterSet(String characterSet) {
     hints.put(DecodeHintType.CHARACTER_SET, characterSet);
   }
@@ -62,23 +65,40 @@ public class ScanningThread extends Thread implements CameraView.PreviewCallback
       CameraView.PreviewFrame ourFrame;
 
       synchronized (this) {
-        while (scanning && previewFrame == null) {
+        while (previewFrame == null) {
           Util.wait(this, 0);
         }
 
-        if (!scanning) return;
-        else           ourFrame = previewFrame;
-
+        ourFrame = previewFrame;
         previewFrame = null;
       }
 
-      String       data         = getScannedData(ourFrame.getData(), ourFrame.getWidth(), ourFrame.getHeight(), ourFrame.getOrientation());
-      ScanListener scanListener = this.scanListener.get();
+      if (!scanning) continue;
 
-      if (data != null && scanListener != null) {
-        scanListener.onQrDataFound(data);
-        return;
+      String data = getScannedData(
+              ourFrame.getData(),
+              ourFrame.getWidth(),
+              ourFrame.getHeight(),
+              ourFrame.getOrientation()
+      );
+
+      ScanListener listener = scanListener.get();
+
+      long currentTime = System.currentTimeMillis();
+
+      if (data != null && listener != null &&
+              (currentTime - lastScanTime) > SCAN_COOLDOWN_MS) {
+
+        lastScanTime = currentTime;
+        scanning = false;   // pause scanning
+        listener.onQrDataFound(data);
       }
+    }
+  }
+  public void restartScanning() {
+    synchronized (this) {
+      scanning = true;
+      notify();
     }
   }
 
@@ -88,6 +108,7 @@ public class ScanningThread extends Thread implements CameraView.PreviewCallback
       notify();
     }
   }
+
 
   private @Nullable String getScannedData(byte[] data, int width, int height, int orientation) {
     try {

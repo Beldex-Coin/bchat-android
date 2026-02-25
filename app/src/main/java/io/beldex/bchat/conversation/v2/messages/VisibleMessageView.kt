@@ -303,7 +303,7 @@ class VisibleMessageView : LinearLayout {
         expirationTimerViewLayoutParams.marginStart = if (message.isOutgoing) -(smallSpacing + expirationTimerViewSize) else 10
         expirationTimerViewLayoutParams.marginEnd = if (message.isOutgoing) 10 else -(smallSpacing + expirationTimerViewSize)
         binding.expirationTimerView.layoutParams = expirationTimerViewLayoutParams*/
-        container.addView(spacing, if (message.isOutgoing) 0 else 2)
+        container.addView(spacing, if (message.isOutgoing) 0 else 3)
         val containerParams = container.layoutParams as ConstraintLayout.LayoutParams
         containerParams.horizontalBias = if (message.isOutgoing) 1f else 0f
         container.layoutParams = containerParams

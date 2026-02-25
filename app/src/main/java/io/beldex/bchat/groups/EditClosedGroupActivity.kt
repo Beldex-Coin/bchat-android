@@ -1,5 +1,6 @@
 package io.beldex.bchat.groups
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -11,6 +12,8 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.loader.app.LoaderManager
@@ -210,7 +213,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
 
     override fun onPause() {
         super.onPause()
-        Helper.hideKeyboard(this)
+        hideKeyboard()
     }
 
     override fun onDestroy() {
@@ -425,6 +428,14 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
                 binding.loaderContainer.fadeOut()
                 isLoading = false
             }
+        }
+    }
+
+    fun Activity.hideKeyboard() {
+        currentFocus?.let { view ->
+            ViewCompat.getWindowInsetsController(view)
+                ?.hide(WindowInsetsCompat.Type.ime())
+            view.clearFocus()
         }
     }
 

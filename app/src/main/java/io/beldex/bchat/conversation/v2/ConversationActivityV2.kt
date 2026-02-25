@@ -448,7 +448,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         screenshotDetector.unregister()
         binding.inputBar.clearFocus()
         Helper.hideKeyboard(this)
-        dismissDialogIfExists(ComposeDialogContainer.TAG)
+        dismissDialogsIfExist(ComposeDialogContainer.TAG)
         dismissDialogIfExists(VisibleMessageContentView.JOIN_SOCIAL_GROUP_POPUP)
         dismissDialogIfExists(VisibleMessageContentView.OPEN_URL_DIALOG)
         dismissDialogIfExists(VisibleMessageContentView.UNTRUSTED_DIALOG)
@@ -2548,6 +2548,13 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     private fun dismissDialogIfExists(tag: String) {
         val dialog = supportFragmentManager.findFragmentByTag(tag) as? DialogFragment
         dialog?.dismissAllowingStateLoss()
+    }
+
+    private fun dismissDialogsIfExist(vararg tags: String) {
+        tags.forEach { tag ->
+            (supportFragmentManager.findFragmentByTag(tag) as? DialogFragment)
+                ?.dismissAllowingStateLoss()
+        }
     }
 
     @Deprecated("Deprecated in Java")

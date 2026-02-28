@@ -8,6 +8,8 @@ import android.widget.LinearLayout
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewUserBinding
 import com.beldex.libbchat.messaging.contacts.Contact
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getLocalNumber
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getProfileName
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.conversation.v2.utilities.MentionManagerUtilities
 import io.beldex.bchat.dependencies.DatabaseComponent
@@ -48,10 +50,16 @@ class UserView : LinearLayout {
 
     // region Updating
     fun bind(user: Recipient, glide: RequestManager, actionIndicator: ActionIndicator, isSelected: Boolean = false, groupAdmin : String? = null) {
-        fun getUserDisplayName(publicKey: String): String {
-            val contact = DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
-            return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
+        fun getUserDisplayName(publicKey : String) : String {
+            return if (publicKey == getLocalNumber(context)) {
+                getProfileName(context) ?: publicKey
+            } else {
+                val contact=DatabaseComponent.get(context).bchatContactDatabase()
+                    .getContactWithBchatID(publicKey)
+                contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
+            }
         }
+
         val threadID = DatabaseComponent.get(context).threadDatabase().getOrCreateThreadIdFor(user)
         MentionManagerUtilities.populateUserPublicKeyCacheIfNeeded(threadID, context) // FIXME: This is a bad place to do this
         val address = user.address.serialize()

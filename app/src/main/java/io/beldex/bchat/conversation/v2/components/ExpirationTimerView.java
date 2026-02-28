@@ -21,6 +21,12 @@ public class ExpirationTimerView extends androidx.appcompat.widget.AppCompatImag
   private boolean visible = false;
   private boolean stopped = true;
 
+  private OnExpirationListener expirationListener;
+
+  public void setOnExpirationListener(OnExpirationListener listener) {
+    this.expirationListener = listener;
+  }
+
   private final int[] frames = new int[]{ R.drawable.timer00,
                                           R.drawable.timer05,
                                           R.drawable.timer10,
@@ -110,20 +116,42 @@ public class ExpirationTimerView extends androidx.appcompat.widget.AppCompatImag
       ExpirationTimerView timerView = expirationTimerViewReference.get();
       if (timerView == null) return;
 
-      long nextUpdate = timerView.calculateAnimationDelay(timerView.startedAt, timerView.expiresIn);
       synchronized (timerView) {
+
+        float progress = timerView.calculateProgress(
+                timerView.startedAt,
+                timerView.expiresIn
+        );
+
+        if (progress >= 1f) {
+          timerView.stopped = true;
+
+          if (timerView.expirationListener != null) {
+            timerView.expirationListener.onExpired();
+          }
+
+          return;
+        }
+
         if (timerView.visible) {
-          timerView.setExpirationTime(timerView.startedAt, timerView.expiresIn);
+          timerView.setPercentComplete(progress);
         } else {
           timerView.stopped = true;
           return;
         }
-        if (nextUpdate <= 0) {
-          timerView.stopped = true;
-          return;
-        }
       }
+
+      long nextUpdate = timerView.calculateAnimationDelay(
+              timerView.startedAt,
+              timerView.expiresIn
+      );
+
       Util.runOnMainDelayed(this, nextUpdate);
     }
   }
+
+  public interface OnExpirationListener {
+    void onExpired();
+  }
+
 }

@@ -32,6 +32,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.R
 import io.beldex.bchat.conversation.v2.search.SearchViewModel
+import io.beldex.bchat.database.BeldexAPIDatabase
 import io.beldex.bchat.database.BeldexThreadDatabase
 import io.beldex.bchat.database.MmsDatabase
 import io.beldex.bchat.database.MmsSmsDatabase
@@ -47,7 +48,6 @@ import io.beldex.bchat.util.getColorWithID
 import io.beldex.bchat.util.isSameDayMessage
 import io.beldex.bchat.util.toDp
 import io.beldex.bchat.util.toPx
-import io.beldex.bchat.database.BeldexAPIDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -90,6 +90,12 @@ class VisibleMessageView : LinearLayout {
     var onSwipeToReply: (() -> Unit)? = null
     var onLongPress: (() -> Unit)? = null
     val messageContentView: VisibleMessageContentView by lazy { binding.messageContentView.root }
+
+    private var messageExpiredListener : OnMessageExpiredListener?=null
+
+    fun setOnMessageExpiredListener(listener : OnMessageExpiredListener?) {
+        this.messageExpiredListener=listener
+    }
 
     companion object {
         const val swipeToReplyThreshold = 64.0f // dp
@@ -289,6 +295,7 @@ class VisibleMessageView : LinearLayout {
     }
 
     private fun updateExpirationTimer(message: MessageRecord) {
+        binding.expirationTimerView.setOnExpirationListener(null)
         val container = binding.messageInnerContainer
         val content = binding.messageContentView.root
         val expiration = binding.expirationTimerView
@@ -328,7 +335,21 @@ class VisibleMessageView : LinearLayout {
             binding.expirationTimerView.isInvisible = false
             binding.expirationTimerView.setPercentComplete(0.0f)
             if (message.expireStarted > 0) {
-                binding.expirationTimerView.setExpirationTime(message.expireStarted, message.expiresIn)
+                val expiredNow = message.expireStarted + message.expiresIn <= MnodeAPI.nowWithOffset
+
+                if (expiredNow) {
+                    messageExpiredListener?.onMessageExpired(message)
+                    return
+                }
+
+                binding.expirationTimerView.setExpirationTime(
+                    message.expireStarted,
+                    message.expiresIn
+                )
+
+                binding.expirationTimerView.setOnExpirationListener {
+                    messageExpiredListener?.onMessageExpired(message)
+                }
                 binding.expirationTimerView.startAnimation()
                 if (message.expireStarted + message.expiresIn <= MnodeAPI.nowWithOffset) {
                     ApplicationContext.getInstance(context).expiringMessageManager.checkSchedule()
@@ -510,5 +531,11 @@ class VisibleMessageView : LinearLayout {
     fun stoppedVoiceMessage() {
         binding.messageContentView.root.stopVoiceMessage()
     }
+
+    interface OnMessageExpiredListener {
+        fun onMessageExpired(message : MessageRecord?)
+    }
+
+
     // endregion
 }

@@ -4067,6 +4067,12 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         startActivity(intent)
     }
 
+    override fun dismissMenu() {
+        this.actionMode?.let {
+            endActionMode()
+        }
+    }
+
     companion object {
 
         // Extras

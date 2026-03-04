@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -411,38 +412,64 @@ fun ArchiveChatScreen(
             }
         }
     }
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column {
 
-    Text(
-        text=stringResource(id=R.string.archive_chat_content),
-        style=MaterialTheme.typography.titleSmall.copy(
-            fontSize=12.sp, fontWeight=FontWeight(400), color=MaterialTheme.appColors.textColor
-        ),
-        textAlign=TextAlign.Start,
-        modifier=Modifier.padding(16.dp)
-    )
-    /*BottomSheetContent()*/
+            Text(
+                text = stringResource(id = R.string.archive_chat_content),
+                style = MaterialTheme.typography.titleSmall.copy(
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight(400),
+                    color = MaterialTheme.appColors.textColor
+                ),
+                textAlign = TextAlign.Start,
+                modifier = Modifier.padding(16.dp)
+            )
 
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = modifier
+            ) {
+                items(
+                    count = requestsList.size,
+                    key = { requestsList[it].recipient.address }
+                ) {
 
-    LazyColumn(
-        verticalArrangement=Arrangement.spacedBy(8.dp), modifier=modifier
-    ) {
-        items(count=requestsList.size, key={
-            requestsList[it].recipient.address
-        }) {
-            val archivedList=requestsList[it]
+                    val archivedList = requestsList[it]
 
-            ArchiveChatItem(context=context, thread=archivedList, modifier=Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp, horizontal = 6.dp)
-                .pointerInput(Unit) {
-                    detectTapGestures(onTap={
-                        onRequestClick(archivedList)
-                    }, onLongPress={
-                        threadRecord=archivedList
-                        offset=it
-                        showMenu=true
-                    })
-                })
+                    ArchiveChatItem(
+                        context = context,
+                        thread = archivedList,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp, horizontal = 6.dp)
+                            .pointerInput(Unit) {
+                                detectTapGestures(onTap={
+                                    onRequestClick(archivedList)
+                                }, onLongPress={
+                                    threadRecord=archivedList
+                                    offset=it
+                                    showMenu=true
+                                })
+                            }
+                    )
+                }
+            }
+        }
+
+        if (showMenu) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Transparent)
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onTap = {
+                                showMenu = false
+                            }
+                        )
+                    }
+            )
         }
     }
 }

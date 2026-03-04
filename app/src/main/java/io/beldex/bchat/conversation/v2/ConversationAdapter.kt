@@ -158,17 +158,18 @@ class ConversationAdapter(
                     }
                 }
                 val contact = contactCache[senderIdHash]
-                visibleMessageView.setOnMessageExpiredListener(null)
                 visibleMessageView.bind(message, messageBefore, getMessageAfter(position, cursor), glide, searchQuery, contact, senderId, onAttachmentNeedsDownload,{ selectedItems.size > 0 }, visibleMessageViewDelegate, position, searchViewModel)
-                visibleMessageView.setOnMessageExpiredListener(object :
-                    VisibleMessageView.OnMessageExpiredListener {
-                    override fun onMessageExpired(message: MessageRecord?) {
-                        message?.let {
-                            visibleMessageViewDelegate?.dismissMenu()
-
+                if(isSelected) {
+                    visibleMessageView.setOnMessageExpiredListener(object :
+                        VisibleMessageView.OnMessageExpiredListener {
+                        override fun onMessageExpired(message : MessageRecord?) {
+                            message?.let {
+                                visibleMessageViewDelegate?.dismissMenu()
+                                visibleMessageView.setOnMessageExpiredListener(null)
+                            }
                         }
-                    }
-                })
+                    })
+                }
 
                 if (!message.isDeleted) {
                     visibleMessageView.onPress = { event -> onItemPress(message, viewHolder.adapterPosition, visibleMessageView, event) }

@@ -295,7 +295,6 @@ class VisibleMessageView : LinearLayout {
     }
 
     private fun updateExpirationTimer(message: MessageRecord) {
-        binding.expirationTimerView.setOnExpirationListener(null)
         val container = binding.messageInnerContainer
         val content = binding.messageContentView.root
         val expiration = binding.expirationTimerView

@@ -284,6 +284,7 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
     if(!mediaPreviewPage){
       intent.putExtra(HomeActivity.SHORTCUT_LAUNCHER,true);
       startActivity(intent);
+      finish();
     }else {
       setResult(RESULT_OK, intent);
       finish();

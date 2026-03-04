@@ -2551,9 +2551,12 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     }
 
     private fun dismissDialogsIfExist(vararg tags: String) {
-        tags.forEach { tag ->
-            (supportFragmentManager.findFragmentByTag(tag) as? DialogFragment)
-                ?.dismissAllowingStateLoss()
+        val fragments = supportFragmentManager.fragments
+
+        fragments.forEach { fragment ->
+            if (fragment is DialogFragment && tags.contains(fragment.tag)) {
+                fragment.dismissAllowingStateLoss()
+            }
         }
     }
 

@@ -1393,10 +1393,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     private fun handlePathsBuiltEvent() { update() }
 
     private fun update() {
-        binding.hopsWarningLayout.visibility = when {
-            OnionRequestAPI.paths.isNotEmpty() -> View.GONE
-            OnionRequestAPI.paths.isEmpty() && CheckOnline.isOnline(this) -> View.GONE
-            else -> View.VISIBLE
+        val hasPaths = OnionRequestAPI.paths.isNotEmpty()
+        val isOnline = CheckOnline.isOnline(this)
+        val shouldShowWarning = !hasPaths && !isOnline
+        val newVisibility =
+            if (shouldShowWarning) View.VISIBLE else View.GONE
+        if (binding.hopsWarningLayout.visibility != newVisibility) {
+            binding.hopsWarningLayout.visibility = newVisibility
         }
     }
 

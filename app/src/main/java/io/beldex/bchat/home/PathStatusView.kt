@@ -6,6 +6,10 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.util.AttributeSet
 import android.view.View
@@ -18,6 +22,7 @@ import io.beldex.bchat.util.toPx
 
 class PathStatusView : View {
     private val broadcastReceivers = mutableListOf<BroadcastReceiver>()
+    private var networkCallback: ConnectivityManager.NetworkCallback? = null
     @ColorInt var mainColor: Int = 0
         set(newValue) { field = newValue; paint.color = newValue }
     @ColorInt var bchatShadowColor: Int = 0
@@ -29,6 +34,7 @@ class PathStatusView : View {
         result.isAntiAlias = true
         result
     }
+    private var isNetworkAvailable = false
 
     constructor(context: Context) : super(context) {
         initialize()
@@ -54,6 +60,7 @@ class PathStatusView : View {
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         registerObservers()
+        registerNetworkCallback()
     }
 
     private fun registerObservers() {
@@ -79,22 +86,71 @@ class PathStatusView : View {
         for (receiver in broadcastReceivers) {
             LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver)
         }
+        unregisterNetworkCallback()
         super.onDetachedFromWindow()
+    }
+
+    private fun registerNetworkCallback() {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        val request = NetworkRequest.Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .build()
+
+        networkCallback = object : ConnectivityManager.NetworkCallback() {
+
+            override fun onAvailable(network: Network) {
+                post {
+                    isNetworkAvailable = true
+                    update()
+                }
+            }
+
+            override fun onLost(network: Network) {
+                post {
+                    isNetworkAvailable = false
+                    update()
+                }
+            }
+        }
+
+        connectivityManager.registerNetworkCallback(request, networkCallback!!)
+    }
+
+    private fun unregisterNetworkCallback() {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        networkCallback?.let {
+            connectivityManager.unregisterNetworkCallback(it)
+        }
     }
 
     private fun handleBuildingPathsEvent() { update() }
     private fun handlePathsBuiltEvent() { update() }
 
     private fun update() {
-        if (OnionRequestAPI.paths.isNotEmpty()) {
+
+        val isConnectedToHops = OnionRequestAPI.paths.isNotEmpty()
+
+        if (!isNetworkAvailable) {
+            setBackgroundResource(R.drawable.paths_building_dot)
+            mainColor = ContextCompat.getColor(context, R.color.clear_red_color)
+            bchatShadowColor = ContextCompat.getColor(context, R.color.clear_red_color)
+
+        } else if (isConnectedToHops) {
             setBackgroundResource(R.drawable.accent_dot)
-            mainColor = ContextCompat.getColor(context,R.color.button_green)
-            bchatShadowColor = ContextCompat.getColor(context,R.color.button_green)
+            mainColor = ContextCompat.getColor(context, R.color.button_green)
+            bchatShadowColor = ContextCompat.getColor(context, R.color.button_green)
+
         } else {
             setBackgroundResource(R.drawable.paths_building_dot)
-            mainColor = ContextCompat.getColor(context,R.color.clear_red_color)
-            bchatShadowColor = ContextCompat.getColor(context,R.color.clear_red_color)
+            mainColor = ContextCompat.getColor(context, R.color.clear_red_color)
+            bchatShadowColor = ContextCompat.getColor(context, R.color.clear_red_color)
         }
+
+        invalidate()
     }
 
     override fun onDraw(c: Canvas) {

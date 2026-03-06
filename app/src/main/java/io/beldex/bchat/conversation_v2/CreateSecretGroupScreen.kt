@@ -154,6 +154,7 @@ fun CreateSecretGroup(
                     onValueChange = {
                         groupName = it
                     },
+                    enabled = !showLoader,
                     singleLine = true,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Text,
@@ -191,6 +192,7 @@ fun CreateSecretGroup(
                     )
                 },
                 singleLine = true,
+                enabled = !showLoader,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done

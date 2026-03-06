@@ -1146,6 +1146,13 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
 
     private fun restoreDraftIfNeeded() {
 
+        // ---------- Check if this intent has already been handled ----------
+        val alreadyHandled = intent.getBooleanExtra("EXTRA_HANDLED_SHARE", false)
+        if (alreadyHandled) {
+            println("Share already handled, skipping auto-send")
+            return
+        }
+
         // ---------- Intent extras ----------
         val mediaUri: Uri? = intent.getParcelableExtra(URI)
         val mediaType = AttachmentManager.MediaType.from(
@@ -1176,6 +1183,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
                                 attachmentManager.buildSlideDeck().asAttachments(),
                                 null
                             )
+                            markShareHandled()
                         }
 
                         override fun onFailure(e: ExecutionException?) {
@@ -1184,6 +1192,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
                                 R.string.activity_conversation_attachment_prep_failed,
                                 Toast.LENGTH_LONG
                             ).show()
+                            markShareHandled()
                         }
                     })
 
@@ -1212,6 +1221,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
                     PICK_FROM_LIBRARY
                 )
 
+                markShareHandled()
                 return
             }
 
@@ -1220,10 +1230,13 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
                 .addListener(object : ListenableFuture.Listener<Boolean> {
 
                     override fun onSuccess(result: Boolean?) {
-                        sendAttachments(
-                            attachmentManager.buildSlideDeck().asAttachments(),
-                            null
-                        )
+                        if(attachmentManager.buildSlideDeck().asAttachments().isNotEmpty()) {
+                            sendAttachments(
+                                attachmentManager.buildSlideDeck().asAttachments(),
+                                null
+                            )
+                            markShareHandled()
+                        }
                     }
 
                     override fun onFailure(e: ExecutionException?) {
@@ -1232,6 +1245,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
                             R.string.activity_conversation_attachment_prep_failed,
                             Toast.LENGTH_LONG
                         ).show()
+                        markShareHandled()
                     }
                 })
 
@@ -1249,6 +1263,13 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         viewModel.getDraft()?.let { draft ->
             binding.inputBar.text = draft
         }
+    }
+
+    private fun markShareHandled() {
+        intent.removeExtra(URI)
+        intent.removeExtra(TYPE)
+        intent.removeExtra(IN_CHAT_SHARE)
+        intent.putExtra("EXTRA_HANDLED_SHARE", true)
     }
 
     private fun setUpUiStateObserver() {
@@ -2697,22 +2718,6 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             .addToBackStack(stackName)
             .commit()
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressedDispatcher.onBackPressed()

@@ -92,7 +92,7 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
                     binding.addButton.apply {
                         isEnabled = selectedCount > 0
                         backgroundTintList = ColorStateList.valueOf(enabledColor)
-                        setTextColor(ContextCompat.getColor(context, R.color.white))
+                        setTextColor(ContextCompat.getColor(context, if (selectedCount > 0) R.color.white else R.color.disable_button_text_color))
                     }
                 }
             }

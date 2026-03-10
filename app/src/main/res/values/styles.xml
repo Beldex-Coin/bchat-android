@@ -934,7 +934,7 @@
     </style>
 
     <style name="PrimaryContainedPositiveDisabledButton" parent="Widget.MaterialComponents.Button">
-        <item name="backgroundTint">@color/disable_button_background_color</item>
+        <item name="backgroundTint">@color/cancel_background</item>
         <item name="cornerRadius">12dp</item>
         <item name="android:padding">12dp</item>
         <item name="android:textAllCaps">false</item>

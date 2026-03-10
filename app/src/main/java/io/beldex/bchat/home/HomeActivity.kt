@@ -883,7 +883,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val position = viewHolder.adapterPosition
             val thread =homeAdapter.data[position]
-            deleteConversation(thread)
+            deleteConversation(thread, position)
         }
 
         override fun onChildDraw(
@@ -1228,7 +1228,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                 markAllAsRead(thread)
             }
             R.id.menu_delete -> {
-                deleteConversation(thread)
+                deleteConversation(thread, position)
             }
             R.id.menu_archive_chat ->{
                 archiveChatViewModel?.let { archiveConversation(thread, it) }
@@ -1311,7 +1311,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         }
     }
 
-    private fun deleteConversation(thread: ThreadRecord) {
+    private fun deleteConversation(thread: ThreadRecord, position : Int) {
         val recipient = thread.recipient
         val message = if (recipient.isGroupRecipient) {
             val group = groupDb.getGroup(recipient.address.toString()).orNull()
@@ -1329,6 +1329,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             arguments = Bundle().apply {
                 putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, thread)
                 putString(ConversationActionDialog.EXTRA_ARGUMENT_1, message)
+                putInt(ConversationActionDialog.EXTRA_THREAD_POSITION, position)
                 putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.DeleteChat)
             }
             setListener(this@HomeActivity)

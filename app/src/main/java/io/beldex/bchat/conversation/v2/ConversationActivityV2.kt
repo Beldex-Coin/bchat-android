@@ -1481,7 +1481,9 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
 
         binding.closeSearch.setOnClickListener { onSearchClosed() }
         binding.searchClose.setOnClickListener { onSearchClosed() }
-
+        binding.searchQuery.post {
+            binding.searchQuery.setText("")
+        }
         binding.searchQuery.addTextChangedListener(
             object : SimpleTextWatcher() {
 

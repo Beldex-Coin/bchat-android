@@ -49,8 +49,10 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
         if (selectedItems.isEmpty()) { return }
         val firstMessage = selectedItems.iterator().next()
         val openGroup = DatabaseComponent.get(context).beldexThreadDatabase().getOpenGroupChat(threadID)
-        val thread = DatabaseComponent.get(context).threadDatabase().getRecipientForThreadId(threadID)!!
-        val userPublicKey = TextSecurePreferences.getLocalNumber(context)!!
+        val thread = DatabaseComponent.get(context)
+            .threadDatabase()
+            .getRecipientForThreadId(threadID) ?: return
+        val userPublicKey = TextSecurePreferences.getLocalNumber(context) ?: return
         fun userCanBanSelectedUsers(): Boolean {
             if (openGroup == null) { return false }
             val anySentByCurrentUser = selectedItems.any { it.isOutgoing }

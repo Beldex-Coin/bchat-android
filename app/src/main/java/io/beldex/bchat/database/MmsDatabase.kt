@@ -29,6 +29,7 @@ import com.beldex.libbchat.utilities.IdentityKeyMismatch
 import com.beldex.libbchat.utilities.IdentityKeyMismatchList
 import com.beldex.libbchat.utilities.NetworkFailure
 import com.beldex.libbchat.utilities.NetworkFailureList
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.isReadReceiptsEnabled
 import com.beldex.libbchat.utilities.Util.toIsoBytes
 import com.beldex.libbchat.utilities.recipients.Recipient
@@ -636,7 +637,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
                 get(context).threadDatabase().incrementUnread(threadId, 1)
             }
             if (runThreadUpdate) {
-                get(context).threadDatabase().update(threadId, true)
+                get(context).threadDatabase().update(threadId, !TextSecurePreferences.getKeepArchiveChat(context))
             }
         }
         notifyConversationListeners(threadId)

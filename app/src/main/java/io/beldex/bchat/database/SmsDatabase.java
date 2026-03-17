@@ -54,6 +54,7 @@ import io.beldex.bchat.database.model.SmsMessageRecord;
 import io.beldex.bchat.dependencies.DatabaseComponent;
 
 import org.apache.commons.lang3.StringUtils;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.security.SecureRandom;
@@ -410,8 +411,7 @@ public class SmsDatabase extends MessagingDatabase {
             new String[] {body, messageId + ""});
 
     long threadId = getThreadIdForMessage(messageId);
-
-    DatabaseComponent.get(context).threadDatabase().update(threadId, true);
+    DatabaseComponent.get(context).threadDatabase().update(threadId, !TextSecurePreferences.getKeepArchiveChat(context));
     notifyConversationListeners(threadId);
     notifyConversationListListeners();
 
@@ -511,7 +511,7 @@ public class SmsDatabase extends MessagingDatabase {
       }
 
       if (runThreadUpdate) {
-        DatabaseComponent.get(context).threadDatabase().update(threadId, true);
+        DatabaseComponent.get(context).threadDatabase().update(threadId, !TextSecurePreferences.getKeepArchiveChat(context));
       }
 
       if (message.getSubscriptionId() != -1) {

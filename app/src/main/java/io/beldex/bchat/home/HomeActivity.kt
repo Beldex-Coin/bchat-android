@@ -1231,7 +1231,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                 deleteConversation(thread, position)
             }
             R.id.menu_archive_chat ->{
-                archiveChatViewModel?.let { archiveConversation(thread, it) }
+                archiveConversation(thread)
             }
             else -> Unit
         }
@@ -1337,20 +1337,24 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         deleteConversation.show(supportFragmentManager, ConversationActionDialog.TAG)
     }
 
-    private fun archiveConversation(thread : ThreadRecord, archiveChatViewModel : ArchiveChatViewModel){
+    private fun archiveConversation(thread : ThreadRecord){
         val threadID = thread.threadId
         DatabaseComponent.get(this).bchatJobDatabase()
             .cancelPendingMessageSendJobs(threadID)
         lifecycleScope.launch(Dispatchers.IO) {
+            if (TextSecurePreferences.getKeepArchiveChat(this@HomeActivity)) {
+                val muteUntil=Long.MAX_VALUE
+                DatabaseComponent.get(this@HomeActivity).recipientDatabase()
+                    .setMuted(thread.recipient, muteUntil)
+            }
             threadDb.setThreadArchived(threadID)
             ArchiveChatCountRepository.updateArchiveCount(threadDb.archivedConversationList.count)
         }
     }
 
     private fun showArchiveChats(){
-        Intent(this, MyAccountActivity::class.java).also {
-            it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.ArchiveChatScreen.route)
-            resultLauncher.launch(it)
+        Intent(this, ArchiveChatActivity::class.java).also {
+            startActivity(it)
         }
     }
 

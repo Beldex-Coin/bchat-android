@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import com.beldex.libbchat.R
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.CALL_NOTIFICATIONS_ENABLED
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_BNS_HOLDER
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_KEEP_ARCHIVE_CHAT
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_LOCAL_PROFILE
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_MUTE_VIDEO
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_REACTION_OVERLAY_VISIBLE
@@ -270,6 +271,8 @@ interface TextSecurePreferences {
 
     fun setRecordingStatus(isRecording: Boolean)
     fun getRecordingStatus(): Boolean
+    fun setKeepArchiveChat(isKeepChat: Boolean)
+    fun getKeepArchiveChat(): Boolean
 
 
 
@@ -389,6 +392,7 @@ interface TextSecurePreferences {
         const val REFRESH_DYNAMIC_NODES = "refresh_dynamic_nodes"
         const val IS_REACTION_OVERLAY_VISIBLE = "is_reaction_overlay_visible"
         const val IS_VOICE_RECORDING = "is_voice_recording"
+        const val IS_KEEP_ARCHIVE_CHAT = "is_keep_archive_chat"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1433,6 +1437,17 @@ interface TextSecurePreferences {
             return getBooleanPreference(context, IS_VOICE_RECORDING, false)
         }
 
+        @JvmStatic
+        fun setKeepArchiveChat(context: Context,isKeepChat : Boolean) {
+            setBooleanPreference(context, IS_KEEP_ARCHIVE_CHAT, isKeepChat)
+        }
+
+        @JvmStatic
+        fun getKeepArchiveChat(context: Context):Boolean {
+            return getBooleanPreference(context, IS_KEEP_ARCHIVE_CHAT, false)
+        }
+
+
     }
 }
 
@@ -2336,5 +2351,13 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun getRecordingStatus() : Boolean {
         return getBooleanPreference(IS_VOICE_RECORDING, false)
+    }
+
+    override fun setKeepArchiveChat(isKeepChat : Boolean) {
+        setBooleanPreference(IS_KEEP_ARCHIVE_CHAT, isKeepChat)
+    }
+
+    override fun getKeepArchiveChat() : Boolean {
+        return getBooleanPreference(IS_KEEP_ARCHIVE_CHAT, false)
     }
 }

@@ -7,21 +7,22 @@ import com.beldex.libbchat.messaging.messages.control.ExpirationTimerUpdate
 import com.beldex.libbchat.messaging.messages.visible.ParsedMessage
 import com.beldex.libbchat.messaging.messages.visible.VisibleMessage
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
-import com.google.protobuf.ByteString
-import nl.komponents.kovenant.Promise
-import nl.komponents.kovenant.task
 import com.beldex.libbchat.messaging.sending_receiving.MessageReceiver
 import com.beldex.libbchat.messaging.sending_receiving.handle
 import com.beldex.libbchat.messaging.sending_receiving.handleOpenGroupReactions
 import com.beldex.libbchat.messaging.sending_receiving.handleVisibleMessage
 import com.beldex.libbchat.messaging.utilities.Data
 import com.beldex.libbchat.utilities.SSKEnvironment
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.protos.UtilProtos
 import com.beldex.libsignal.utilities.Log
+import com.google.protobuf.ByteString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
+import nl.komponents.kovenant.Promise
+import nl.komponents.kovenant.task
 
 data class MessageReceiveParameters(
     val data: ByteArray,
@@ -153,7 +154,7 @@ class BatchMessageReceiveJob(
                         if (trueUnreadCount > 0) {
                             storage.incrementUnread(threadId, trueUnreadCount)
                         }
-                        storage.updateThread(threadId, true)
+                        storage.updateThread(threadId, !TextSecurePreferences.getKeepArchiveChat(context))
                         SSKEnvironment.shared.notificationManager.updateNotification(context, threadId)
                     }
                 }

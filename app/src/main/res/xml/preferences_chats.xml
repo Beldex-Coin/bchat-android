@@ -113,6 +113,21 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/archive_chat"
+        app:iconSpaceReserved="false"
+        app:layout="@layout/preference_layout_header">
+
+        <io.beldex.bchat.components.SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="is_keep_archive_chat"
+            app:iconSpaceReserved="false"
+            android:title="@string/keep_chats_archived"
+            android:summary="@string/keep_chats_archived_subtitle"
+            app:layout="@layout/preference_layout"
+            app:icon="@drawable/ic_archive_chats"/>
+
+    </PreferenceCategory>
+
 
     <!-- <PreferenceCategory android:layout="@layout/preference_divider" />
 

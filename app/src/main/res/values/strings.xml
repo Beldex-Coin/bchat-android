@@ -1559,9 +1559,13 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="dialog_title_full_screen_intent" translatable="false">Full Screen Notification</string>
     <string name="dialog_content_full_screen_intent" translatable="false">Allow BChat to show full screen notifications for incoming calls and other notifications when the device is locked</string>
     <string name="archive_chat" translatable="false">Archived Chats</string>
+    <string name="archive_settings" translatable="false">Archive Settings</string>
     <string name="archive_chat_title" translatable="false">Archive Chat</string>
     <string name="un_archive_chat_title" translatable="false">Unarchive Chat</string>
-    <string name="archive_chat_content" translatable="false">Chats will automatically Unarchived when new messages are received.</string>
+    <string name="keep_chats_archived" translatable="false">Keep chats archived</string>
+    <string name="keep_chats_archived_subtitle" translatable="false">Archived chats will remain archived when you receive a new message</string>
+    <string name="archive_chat_content" translatable="false">These chats stay archived when new messages are received. Tap to change</string>
+    <string name="unarchive_chat_content" translatable="false">These chats stay unarchived when new messages are received. Tap to change</string>
     <string name="un_archive_chat" translatable="false">Un Archived Chats</string>
     <string name="block_request">Block Request?</string>
     <string name="delete_request">Delete Request?</string>

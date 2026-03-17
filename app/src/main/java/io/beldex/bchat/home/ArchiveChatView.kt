@@ -2,31 +2,30 @@ package io.beldex.bchat.home
 
 import android.content.Context
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Row
-import androidx.compose.runtime.Composable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.beldex.bchat.R
-import io.beldex.bchat.archivechats.ArchiveChatViewModel
 import io.beldex.bchat.compose_utils.appColors
-import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 
@@ -70,17 +69,21 @@ fun ArchiveChatView(
         )
         Spacer(modifier=Modifier.weight(1f))
         Box(
-            contentAlignment=Alignment.Center, modifier=Modifier
-                .size(28.dp)
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .height(28.dp)
+                .defaultMinSize(minWidth = 28.dp)
                 .background(
-                    color=MaterialTheme.appColors.archiveChatCountBackground, shape=CircleShape
+                    color = MaterialTheme.appColors.archiveChatCountBackground,
+                    shape = CircleShape
                 )
+                .padding(horizontal = 6.dp)
         ) {
             Text(
-                text=count.toString(),
-                color=MaterialTheme.appColors.textColor,
-                fontWeight=FontWeight.Bold,
-                fontSize=14.sp
+                text = if (count > 99) "99+" else count.toString(),
+                color = MaterialTheme.appColors.textColor,
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp
             )
         }
     }

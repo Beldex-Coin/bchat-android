@@ -1334,6 +1334,7 @@ fun MyAccountNavHost(
             ) {
                 ArchiveChatScreen(
                     requestsList = uiState.archiveChats,
+                    keepArchiveChat = TextSecurePreferences.getKeepArchiveChat(context),
                     onRequestClick = {
                         val returnIntent = Intent()
                         returnIntent.putExtra(ConversationActivityV2.THREAD_ID, it.threadId)
@@ -1342,6 +1343,7 @@ fun MyAccountNavHost(
                             finish()
                         }
                     },
+                    onTabChatSetting = {},
                     archiveChatViewModel = archiveChatViewModel,
                     groupDatabase = groupDatabase,
                     modifier = Modifier
@@ -1682,7 +1684,7 @@ fun CardContainer(
 }
 
 @Composable
-private fun ArchiveChatScreenContainer(
+fun ArchiveChatScreenContainer(
     title: String,
     wrapInCard: Boolean = true,
     onBackClick: () -> Unit,
@@ -1725,7 +1727,7 @@ private fun ArchiveChatScreenContainer(
             actionItems()
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         if (wrapInCard) {
             CardContainer(

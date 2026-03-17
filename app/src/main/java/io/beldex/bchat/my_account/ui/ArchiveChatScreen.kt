@@ -3,6 +3,7 @@ package io.beldex.bchat.my_account.ui
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +20,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -27,7 +29,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -48,7 +49,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.messaging.utilities.UpdateMessageData
-import com.beldex.libbchat.utilities.GroupRecord
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.R
@@ -79,16 +79,17 @@ import java.util.Locale
 @Composable
 fun ArchiveChatScreen(
     requestsList : List<ThreadRecord>,
+    keepArchiveChat: Boolean,
     onRequestClick : (ThreadRecord) -> Unit,
+    onTabChatSetting : () -> Unit,
     archiveChatViewModel : ArchiveChatViewModel,
     groupDatabase : GroupDatabase,
     modifier : Modifier=Modifier
 ) {
     val context=LocalContext.current
-    val requestToTakeAction : ThreadRecord?=null
-    var threadRecord by remember {
-        mutableStateOf(requestToTakeAction)
-    }
+    var selectedThreadId by remember { mutableStateOf<Long?>(null) }
+
+    val threadRecord = requestsList.find { it.threadId == selectedThreadId }
     var showMenu by remember { mutableStateOf(false) }
     var offset by remember { mutableStateOf(Offset.Zero) }
     val recipient=threadRecord?.recipient
@@ -233,19 +234,6 @@ fun ArchiveChatScreen(
             )
         }
     }
-
-    fun getGroup(recipient: Recipient): GroupRecord? = groupDatabase.getGroup(recipient.address.toGroupString()).orNull()
-
-    fun isSecretGroupIsActive(recipient: Recipient):Boolean {
-        return if (recipient.isClosedGroupRecipient) {
-            val group = getGroup(recipient)
-            val isActive = (group?.isActive == true)
-            isActive
-        } else {
-            true
-        }
-    }
-
     if (showMenu) {
         Popup(
             offset=IntOffset(x=offset.x.toInt(), y=offset.y.toInt()),
@@ -327,44 +315,8 @@ fun ArchiveChatScreen(
                             Text(stringResource(id=R.string.un_archive_chat_title))
                         }
                     }
-                    Row(
-                        horizontalArrangement=Arrangement.Start,
-                        verticalAlignment=Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter=painterResource(id=if (threadRecord!!.recipient.isMuted) R.drawable.ic_unmute_notification_menu else R.drawable.ic_mute_notification_menu),
-                            contentDescription="",
-                            tint=MaterialTheme.appColors.iconTint
-                        )
-                        TextButton(onClick={
-                            // Handle action
-                            showMenu = false
-                            showMuteNotification=true
-                        }) {
-                            Text(stringResource(id=if (threadRecord!!.recipient.isMuted) R.string.conversation_muted__unmute else R.string.conversation_unmuted__mute_notifications))
-                        }
-                    }
-                    if (recipient.isGroupRecipient && !recipient.isMuted && !recipient.isLocalNumber && isSecretGroupIsActive(recipient)) {
-                        Row(
-                            horizontalArrangement=Arrangement.Start,
-                            verticalAlignment=Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                painter=painterResource(id=R.drawable.ic_notification_settings_menu),
-                                contentDescription="",
-                                tint=MaterialTheme.appColors.iconTint
-                            )
-                            TextButton(onClick={
-                                // Handle action
-                                showMenu=false
-                                showNotificationSettings=true
-                                //onDismiss(false)
-                            }) {
-                                Text(stringResource(id=R.string.RecipientPreferenceActivity_notification_settings))
-                            }
-                        }
-                    }
-                    if (threadRecord!!.unreadCount > 0) {
+
+                    if (threadRecord.unreadCount > 0) {
                         Row(
                             horizontalArrangement=Arrangement.Start,
                             verticalAlignment=Alignment.CenterVertically
@@ -377,11 +329,11 @@ fun ArchiveChatScreen(
                             TextButton(onClick={
                                 // Handle action
                                 showMenu=false
-                                archiveChatViewModel.onEvent(
-                                    ArchiveChatsEvents.MarkAsRead(
-                                        threadRecord!!
+                                threadRecord.let { thread ->
+                                    archiveChatViewModel.onEvent(
+                                        ArchiveChatsEvents.MarkAsRead(thread)
                                     )
-                                )
+                                }
                             }) {
                                 Text(stringResource(id=R.string.MessageNotifier_mark_all_as_read))
                             }
@@ -412,18 +364,34 @@ fun ArchiveChatScreen(
             }
         }
     }
+
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column {
 
             Text(
-                text = stringResource(id = R.string.archive_chat_content),
-                style = MaterialTheme.typography.titleSmall.copy(
+                text=stringResource(
+                    id = if (keepArchiveChat)
+                        R.string.archive_chat_content
+                    else
+                        R.string.unarchive_chat_content),
+                    style = MaterialTheme.typography.titleSmall.copy(
                     fontSize = 12.sp,
                     fontWeight = FontWeight(400),
                     color = MaterialTheme.appColors.textColor
                 ),
-                textAlign = TextAlign.Start,
-                modifier = Modifier.padding(16.dp)
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .clickable {
+                        onTabChatSetting()
+                    }
+            )
+
+            Divider(
+                color = MaterialTheme.appColors.dividerColor,
+                thickness = 0.5.dp,
+                modifier = Modifier.fillMaxWidth()
             )
 
             LazyColumn(
@@ -440,6 +408,7 @@ fun ArchiveChatScreen(
                     ArchiveChatItem(
                         context = context,
                         thread = archivedList,
+                        keepArchiveChat,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 4.dp, horizontal = 6.dp)
@@ -447,7 +416,7 @@ fun ArchiveChatScreen(
                                 detectTapGestures(onTap={
                                     onRequestClick(archivedList)
                                 }, onLongPress={
-                                    threadRecord=archivedList
+                                    selectedThreadId = archivedList.threadId
                                     offset=it
                                     showMenu=true
                                 })
@@ -464,10 +433,9 @@ fun ArchiveChatScreen(
                     .background(Color.Transparent)
                     .pointerInput(Unit) {
                         detectTapGestures(
-                            onTap = {
-                                showMenu = false
-                            }
-                        )
+                            onTap={
+                                showMenu=false
+                            })
                     }
             )
         }
@@ -478,16 +446,14 @@ fun ArchiveChatScreen(
 fun ArchiveChatItem(
     context : Context,
     thread : ThreadRecord,
+    keepArchiveChat: Boolean,
     modifier : Modifier=Modifier
 ) {
-    val unreadCount by remember {
-        mutableIntStateOf(thread.unreadCount)
-    }
-    val formattedUnreadCount=if (thread.isRead) {
-        null
-    } else {
-        if (unreadCount < 100) unreadCount.toString() else "99+"
-    }
+    val unreadCount = thread.unreadCount
+
+    val formattedUnreadCount =
+        if (thread.isRead) null
+        else if (unreadCount < 100) unreadCount.toString() else "99+"
 
     Row(
         verticalAlignment=Alignment.CenterVertically, modifier=modifier
@@ -500,8 +466,6 @@ fun ArchiveChatItem(
             val members=DatabaseComponent.get(context).groupDatabase()
                 .getGroupMemberAddresses(thread.recipient.address.toGroupString(), true).sorted()
                 .take(2).toMutableList()
-            /*val pk=members.getOrNull(0)?.serialize() ?: ""
-            val displayName=getDisplayName(context, pk)*/
             val additionalPk=members.getOrNull(1)?.serialize() ?: ""
             val additionalDisplay=getDisplayName(context, additionalPk)
             ProfilePictureComponent(
@@ -610,24 +574,26 @@ fun ArchiveChatItem(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End
             ) {
-                Box(
-                    modifier = Modifier
-                        .width(28.dp),
-                    contentAlignment = Alignment.CenterEnd
-                ) {
-                    when {
-                        thread.recipient.isMuted -> {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_mute_home),
-                                contentDescription = ""
-                            )
-                        }
+                if(!keepArchiveChat) {
+                    Box(
+                        modifier=Modifier
+                            .width(28.dp),
+                        contentAlignment=Alignment.CenterEnd
+                    ) {
+                        when {
+                            thread.recipient.isMuted -> {
+                                Image(
+                                    painter=painterResource(id=R.drawable.ic_mute_home),
+                                    contentDescription=""
+                                )
+                            }
 
-                        thread.recipient.notifyType == RecipientDatabase.NOTIFY_TYPE_MENTIONS -> {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_mention_home),
-                                contentDescription = ""
-                            )
+                            thread.recipient.notifyType == RecipientDatabase.NOTIFY_TYPE_MENTIONS -> {
+                                Image(
+                                    painter=painterResource(id=R.drawable.ic_mention_home),
+                                    contentDescription=""
+                                )
+                            }
                         }
                     }
                 }
@@ -639,8 +605,7 @@ fun ArchiveChatItem(
                         modifier = Modifier
                             .size(24.dp)
                             .background(
-                                color = MaterialTheme.appColors.textSelectionColor,
-                                shape = CircleShape
+                                color=MaterialTheme.appColors.textSelectionColor, shape=CircleShape
                             )
                     ) {
                         Text(

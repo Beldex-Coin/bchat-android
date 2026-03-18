@@ -124,7 +124,7 @@
             android:title="@string/keep_chats_archived"
             android:summary="@string/keep_chats_archived_subtitle"
             app:layout="@layout/preference_layout"
-            app:icon="@drawable/ic_archive_chats"/>
+            app:icon="@drawable/ic_keep_archived"/>
 
     </PreferenceCategory>
 

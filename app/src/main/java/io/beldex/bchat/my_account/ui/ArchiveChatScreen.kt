@@ -118,8 +118,14 @@ fun ArchiveChatScreen(
                 positiveButtonTitle=stringResource(id=R.string.yes),
                 onAccept={
                     showBlockPopup=false
-                    archiveChatViewModel.onEvent(ArchiveChatsEvents.BlockConversation(threadRecord!!))
-                         },
+                    threadRecord?.let { thread ->
+                        archiveChatViewModel.onEvent(
+                            ArchiveChatsEvents.BlockConversation(
+                                thread
+                            )
+                        )
+                    }
+                },
                 onCancel={
                     showBlockPopup=false
 
@@ -135,7 +141,13 @@ fun ArchiveChatScreen(
                 message=stringResource(id=R.string.unblock_user_confirmation),
                 positiveButtonTitle=stringResource(id=R.string.unblock),
                 onAccept={
-                    archiveChatViewModel.onEvent(ArchiveChatsEvents.UnBlockConversation(threadRecord!!))
+                    threadRecord?.let { thread ->
+                        archiveChatViewModel.onEvent(
+                            ArchiveChatsEvents.UnBlockConversation(
+                                thread
+                            )
+                        )
+                    }
                     showUnBlockPopup=false
                 },
                 onCancel={
@@ -145,219 +157,228 @@ fun ArchiveChatScreen(
     }
 
     if (showMuteNotification) {
-        if (threadRecord!!.recipient.isMuted) {
-            LaunchedEffect(key1=true) {
-                launch {
-                    DatabaseComponent.get(context).recipientDatabase()
-                        .setMuted(threadRecord!!.recipient, 0)
-                    showMuteNotification=false
+        threadRecord?.let { thread ->
+            if (thread.recipient.isMuted) {
+                LaunchedEffect(key1=true) {
+                    launch {
+                        DatabaseComponent.get(context).recipientDatabase()
+                            .setMuted(thread.recipient, 0)
+                        showMuteNotification=false
+                    }
                 }
-            }
 
-        } else {
-            BChatTheme(
-                darkTheme=UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
-            ) {
-                val timesOption=context.resources.getStringArray(R.array.mute_durations)
+            } else {
+                BChatTheme(
+                    darkTheme=UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
+                ) {
+                    val timesOption=context.resources.getStringArray(R.array.mute_durations)
 
-                LockOptionsDialog(title=stringResource(R.string.conversation_unmuted__mute_notifications),
-                    options=timesOption.toList(),
-                    currentValue=timesOption[threadRecord!!.recipient.mutedUntil.toInt()],
-                    onDismiss={
-                        showMuteNotification=false
-                    },
-                    onValueChanged={ _, index ->
-                        archiveChatViewModel.onEvent(
-                            ArchiveChatsEvents.MuteNotification(
-                                threadRecord!!, index, context
+                    LockOptionsDialog(
+                        title=stringResource(R.string.conversation_unmuted__mute_notifications),
+                        options=timesOption.toList(),
+                        currentValue=timesOption[thread.recipient.mutedUntil.toInt()],
+                        onDismiss={
+                            showMuteNotification=false
+                        },
+                        onValueChanged={ _, index ->
+                            archiveChatViewModel.onEvent(
+                                ArchiveChatsEvents.MuteNotification(
+                                    thread, index, context
+                                )
                             )
-                        )
-                        showMuteNotification=false
-                    })
+                            showMuteNotification=false
+                        })
+                }
             }
         }
     }
 
     if (showNotificationSettings) {
-        BChatTheme(
-            darkTheme=UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
-        ) {
-            val option=context.resources.getStringArray(R.array.notify_types)
-            NotificationSettingDialog(onDismiss={
-                showNotificationSettings=false
-            },
-                onClick={
-                    showNotificationSettings=false
-                },
-                options=option.toList(),
-                currentValue=option[threadRecord!!.recipient.notifyType],
-                onValueChanged={ _, index ->
-                    archiveChatViewModel.onEvent(
-                        ArchiveChatsEvents.NotificationSettings(
-                            threadRecord!!, index, context
+        threadRecord?.let { thread ->
+            BChatTheme(
+                darkTheme=UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
+            ) {
+                val option=context.resources.getStringArray(R.array.notify_types)
+                NotificationSettingDialog(
+                    onDismiss={
+                        showNotificationSettings=false
+                    },
+                    onClick={
+                        showNotificationSettings=false
+                    },
+                    options=option.toList(),
+                    currentValue=option[thread.recipient.notifyType],
+                    onValueChanged={ _, index ->
+                        archiveChatViewModel.onEvent(
+                            ArchiveChatsEvents.NotificationSettings(
+                                thread, index, context
+                            )
                         )
-                    )
-                    showNotificationSettings=false
-                })
+                        showNotificationSettings=false
+                    })
+            }
         }
     }
 
     if (showDeletePopup) {
-        val message=if (recipient!!.isGroupRecipient) {
-            val group=groupDatabase.getGroup(recipient.address.toString()).orNull()
-            if (group != null && group.admins.map { it.toString() }
-                    .contains(TextSecurePreferences.getLocalNumber(context))) {
-                "Because you are the creator of this group it will be deleted for everyone. This cannot be undone."
+        threadRecord?.let { thread ->
+            val message=if (thread.recipient.isGroupRecipient) {
+                val group=groupDatabase.getGroup(thread.recipient.address.toString()).orNull()
+                if (group != null && group.admins.map { it.toString() }
+                        .contains(TextSecurePreferences.getLocalNumber(context))) {
+                    "Because you are the creator of this group it will be deleted for everyone. This cannot be undone."
+                } else {
+                    context.resources.getString(R.string.activity_home_leave_group_dialog_message)
+                }
             } else {
-                context.resources.getString(R.string.activity_home_leave_group_dialog_message)
+                context.resources.getString(R.string.activity_home_delete_conversation_dialog_message)
             }
-        } else {
-            context.resources.getString(R.string.activity_home_delete_conversation_dialog_message)
-        }
-        BChatTheme(
-            darkTheme=UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
-        ) {
-            DeleteChatConfirmationDialog(
-                message=message,
-                onConfirmation={
-                    archiveChatViewModel.onEvent(
-                        ArchiveChatsEvents.DeleteConversation(
-                            threadRecord!!, context
+            BChatTheme(
+                darkTheme=UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
+            ) {
+                DeleteChatConfirmationDialog(
+                    message=message,
+                    onConfirmation={
+                        archiveChatViewModel.onEvent(
+                            ArchiveChatsEvents.DeleteConversation(
+                                thread, context
+                            )
                         )
-                    )
-                    showDeletePopup=false
-                },
-                onDismissRequest={
-                    //archiveChatViewModel.onEvent(ArchiveChatsEvents.DeleteConversation(thread,context))
-                    showDeletePopup=false
-                },
-            )
+                        showDeletePopup=false
+                    },
+                    onDismissRequest={
+                        //archiveChatViewModel.onEvent(ArchiveChatsEvents.DeleteConversation(thread,context))
+                        showDeletePopup=false
+                    },
+                )
+            }
         }
     }
     if (showMenu) {
-        Popup(
-            offset=IntOffset(x=offset.x.toInt(), y=offset.y.toInt()),
-            onDismissRequest={
-                showMenu=false
-            },
-        ) {
-            Card(
-                modifier=Modifier.width(200.dp)
+        threadRecord?.let { thread ->
+            Popup(
+                offset=IntOffset(x=offset.x.toInt(), y=offset.y.toInt()),
+                onDismissRequest={
+                    showMenu=false
+                },
             ) {
-                Column(
-                    modifier=Modifier
-                        .padding(16.dp)
-                        .verticalScroll(rememberScrollState())
+                Card(
+                    modifier=Modifier.width(200.dp)
                 ) {
-                    if (!recipient!!.isBlocked) {
-                        if (!recipient.isGroupRecipient && !recipient.isLocalNumber) {
-                            Row(
-                                horizontalArrangement=Arrangement.Start,
-                                verticalAlignment=Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    painter=painterResource(id=R.drawable.ic_block),
-                                    contentDescription="",
-                                    tint=MaterialTheme.appColors.iconTint,
-
-                                    )
-                                TextButton(onClick={
-                                    // Handle action
-                                    showMenu=false
-                                    showBlockPopup=true
-
-                                }) {
-                                    Text(stringResource(id=R.string.RecipientPreferenceActivity_block))
-                                }
-                            }
-                        }
-                    }
-                    if (recipient.isBlocked) {
-                        if (!recipient.isGroupRecipient && !recipient.isLocalNumber) {
-                            Row(
-                                horizontalArrangement=Arrangement.Start,
-                                verticalAlignment=Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    painter=painterResource(id=R.drawable.ic_unblock),
-                                    contentDescription="",
-                                    tint=MaterialTheme.appColors.iconTint,
-                                )
-                                TextButton(onClick={
-                                    // Handle action
-                                    showMenu=false
-                                    showUnBlockPopup=true
-                                }) {
-                                    Text(stringResource(id=R.string.RecipientPreferenceActivity_unblock))
-                                }
-                            }
-                        }
-                    }
-                    Row(
-                        horizontalArrangement=Arrangement.Start,
-                        verticalAlignment=Alignment.CenterVertically
+                    Column(
+                        modifier=Modifier
+                            .padding(16.dp)
+                            .verticalScroll(rememberScrollState())
                     ) {
-                        Icon(
-                            painter=painterResource(id=R.drawable.ic_unarchive_chats),
-                            contentDescription="",
-                            tint=MaterialTheme.appColors.iconTint,
-                            modifier=Modifier.size(14.dp)
-                        )
-                        TextButton(onClick={
-                            // Handle action
-                            showMenu=false
-                            archiveChatViewModel.onEvent(
-                                ArchiveChatsEvents.UnArchiveChats(
-                                    threadRecord!!
-                                )
-                            )
-                        }) {
-                            Text(stringResource(id=R.string.un_archive_chat_title))
-                        }
-                    }
+                        if (!thread.recipient.isBlocked) {
+                            if (!thread.recipient.isGroupRecipient && !thread.recipient.isLocalNumber) {
+                                Row(
+                                    horizontalArrangement=Arrangement.Start,
+                                    verticalAlignment=Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        painter=painterResource(id=R.drawable.ic_block),
+                                        contentDescription="",
+                                        tint=MaterialTheme.appColors.iconTint,
 
-                    if (threadRecord.unreadCount > 0) {
+                                        )
+                                    TextButton(onClick={
+                                        // Handle action
+                                        showMenu=false
+                                        showBlockPopup=true
+
+                                    }) {
+                                        Text(stringResource(id=R.string.RecipientPreferenceActivity_block))
+                                    }
+                                }
+                            }
+                        }
+                        if (thread.recipient.isBlocked) {
+                            if (!thread.recipient.isGroupRecipient && !thread.recipient.isLocalNumber) {
+                                Row(
+                                    horizontalArrangement=Arrangement.Start,
+                                    verticalAlignment=Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        painter=painterResource(id=R.drawable.ic_unblock),
+                                        contentDescription="",
+                                        tint=MaterialTheme.appColors.iconTint,
+                                    )
+                                    TextButton(onClick={
+                                        // Handle action
+                                        showMenu=false
+                                        showUnBlockPopup=true
+                                    }) {
+                                        Text(stringResource(id=R.string.RecipientPreferenceActivity_unblock))
+                                    }
+                                }
+                            }
+                        }
                         Row(
                             horizontalArrangement=Arrangement.Start,
                             verticalAlignment=Alignment.CenterVertically
                         ) {
                             Icon(
-                                painter=painterResource(id=R.drawable.ic_mark_as_read_menu),
+                                painter=painterResource(id=R.drawable.ic_unarchive_chats),
                                 contentDescription="",
-                                tint=MaterialTheme.appColors.iconTint
+                                tint=MaterialTheme.appColors.iconTint,
+                                modifier=Modifier.size(14.dp)
                             )
                             TextButton(onClick={
                                 // Handle action
                                 showMenu=false
-                                threadRecord.let { thread ->
-                                    archiveChatViewModel.onEvent(
-                                        ArchiveChatsEvents.MarkAsRead(thread)
+                                archiveChatViewModel.onEvent(
+                                    ArchiveChatsEvents.UnArchiveChats(
+                                        thread
                                     )
-                                }
+                                )
                             }) {
-                                Text(stringResource(id=R.string.MessageNotifier_mark_all_as_read))
+                                Text(stringResource(id=R.string.un_archive_chat_title))
                             }
                         }
-                    }
-                    Row(
-                        horizontalArrangement=Arrangement.Start,
-                        verticalAlignment=Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter=painterResource(id=R.drawable.ic_delete_menu),
-                            contentDescription="",
-                            tint=MaterialTheme.appColors.deleteOptionColor,
-                        )
-                        TextButton(onClick={
-                            // Handle action
-                            showMenu=false
-                            showDeletePopup=true
-                        }){
-                            Text(
-                                stringResource(
-                                    id=R.string.delete),
-                                color=MaterialTheme.appColors.deleteOptionColor,
+
+                        if (thread.unreadCount > 0) {
+                            Row(
+                                horizontalArrangement=Arrangement.Start,
+                                verticalAlignment=Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    painter=painterResource(id=R.drawable.ic_mark_as_read_menu),
+                                    contentDescription="",
+                                    tint=MaterialTheme.appColors.iconTint
+                                )
+                                TextButton(onClick={
+                                    // Handle action
+                                    showMenu=false
+                                        archiveChatViewModel.onEvent(
+                                            ArchiveChatsEvents.MarkAsRead(thread)
+                                        )
+                                }) {
+                                    Text(stringResource(id=R.string.MessageNotifier_mark_all_as_read))
+                                }
+                            }
+                        }
+                        Row(
+                            horizontalArrangement=Arrangement.Start,
+                            verticalAlignment=Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter=painterResource(id=R.drawable.ic_delete_menu),
+                                contentDescription="",
+                                tint=MaterialTheme.appColors.deleteOptionColor,
                             )
+                            TextButton(onClick={
+                                // Handle action
+                                showMenu=false
+                                showDeletePopup=true
+                            }) {
+                                Text(
+                                    stringResource(
+                                        id=R.string.delete
+                                    ),
+                                    color=MaterialTheme.appColors.deleteOptionColor,
+                                )
+                            }
                         }
                     }
                 }
@@ -411,12 +432,12 @@ fun ArchiveChatScreen(
                         keepArchiveChat,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 4.dp, horizontal = 6.dp)
+                            .padding(vertical=4.dp, horizontal=6.dp)
                             .pointerInput(Unit) {
                                 detectTapGestures(onTap={
                                     onRequestClick(archivedList)
                                 }, onLongPress={
-                                    selectedThreadId = archivedList.threadId
+                                    selectedThreadId=archivedList.threadId
                                     offset=it
                                     showMenu=true
                                 })

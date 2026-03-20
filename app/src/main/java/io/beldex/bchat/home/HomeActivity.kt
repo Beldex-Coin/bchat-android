@@ -37,7 +37,6 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
@@ -75,65 +74,65 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.BuildConfig
+import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.R
+import io.beldex.bchat.archivechats.ArchiveChatViewModel
 import io.beldex.bchat.components.ProfilePictureView
+import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.ComposeDialogContainer
 import io.beldex.bchat.compose_utils.DialogType
-import io.beldex.bchat.conversation.v2.ConversationViewModel
-import io.beldex.bchat.database.BeldexMessageDatabase
-import io.beldex.bchat.database.MmsDatabase
-import io.beldex.bchat.database.MmsSmsDatabase
-import io.beldex.bchat.database.ReactionDatabase
-import io.beldex.bchat.database.SmsDatabase
-import io.beldex.bchat.database.ThreadDatabase
-import io.beldex.bchat.databinding.ActivityHomeBinding
-import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.groups.OpenGroupManager
-import io.beldex.bchat.home.search.GlobalSearchAdapter
-import io.beldex.bchat.home.search.GlobalSearchViewModel
-import io.beldex.bchat.notifications.PushRegistry
-import io.beldex.bchat.onboarding.SeedActivity
-import io.beldex.bchat.onboarding.SeedReminderViewDelegate
-import io.beldex.bchat.util.ActivityDispatcher
-import io.beldex.bchat.util.FirebaseRemoteConfigUtil
-import io.beldex.bchat.util.Helper
-import io.beldex.bchat.util.IP2Country
-import io.beldex.bchat.util.parcelable
-import io.beldex.bchat.util.push
-import io.beldex.bchat.util.show
-import io.beldex.bchat.CheckOnline
-import io.beldex.bchat.archivechats.ArchiveChatViewModel
-import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.conversation.v2.ConversationActivityV2
+import io.beldex.bchat.conversation.v2.ConversationViewModel
 import io.beldex.bchat.conversation_v2.NewChatConversationActivity
 import io.beldex.bchat.conversation_v2.NewGroupConversationActivity
 import io.beldex.bchat.conversation_v2.NewGroupConversationType
 import io.beldex.bchat.crypto.IdentityKeyUtil
+import io.beldex.bchat.database.BeldexMessageDatabase
 import io.beldex.bchat.database.BeldexThreadDatabase
 import io.beldex.bchat.database.GroupDatabase
+import io.beldex.bchat.database.MmsDatabase
+import io.beldex.bchat.database.MmsSmsDatabase
+import io.beldex.bchat.database.ReactionDatabase
 import io.beldex.bchat.database.RecipientDatabase
+import io.beldex.bchat.database.SmsDatabase
+import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.database.model.ThreadRecord
+import io.beldex.bchat.databinding.ActivityHomeBinding
+import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.drawer.ClickListener
 import io.beldex.bchat.drawer.NavigationItemModel
 import io.beldex.bchat.drawer.NavigationRVAdapter
 import io.beldex.bchat.drawer.RecyclerTouchListener
 import io.beldex.bchat.groups.CreateClosedGroupActivity
+import io.beldex.bchat.groups.OpenGroupManager
+import io.beldex.bchat.home.search.GlobalSearchAdapter
 import io.beldex.bchat.home.search.GlobalSearchInputLayout
+import io.beldex.bchat.home.search.GlobalSearchViewModel
 import io.beldex.bchat.home.search.RecyclerViewDivider
 import io.beldex.bchat.my_account.ui.MyAccountActivity
 import io.beldex.bchat.my_account.ui.MyAccountScreens
+import io.beldex.bchat.notifications.PushRegistry
+import io.beldex.bchat.onboarding.SeedActivity
+import io.beldex.bchat.onboarding.SeedReminderViewDelegate
 import io.beldex.bchat.preferences.NotificationSettingsActivity
 import io.beldex.bchat.preferences.PrivacySettingsActivity
 import io.beldex.bchat.repository.ConversationRepository
 import io.beldex.bchat.search.SearchActivityResults
 import io.beldex.bchat.service.WebRtcCallService
+import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.util.ConfigurationMessageUtilities
+import io.beldex.bchat.util.FirebaseRemoteConfigUtil
+import io.beldex.bchat.util.Helper
+import io.beldex.bchat.util.IP2Country
 import io.beldex.bchat.util.SaveYourSeedDialogBox
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.disableClipping
 import io.beldex.bchat.util.getScreenWidth
+import io.beldex.bchat.util.parcelable
+import io.beldex.bchat.util.push
+import io.beldex.bchat.util.show
 import io.beldex.bchat.util.toPx
 import io.beldex.bchat.webrtc.CallViewModel
 import io.beldex.bchat.webrtc.NetworkChangeReceiver
@@ -1342,11 +1341,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         DatabaseComponent.get(this).bchatJobDatabase()
             .cancelPendingMessageSendJobs(threadID)
         lifecycleScope.launch(Dispatchers.IO) {
-            if (TextSecurePreferences.getKeepArchiveChat(this@HomeActivity)) {
-                val muteUntil=Long.MAX_VALUE
-                DatabaseComponent.get(this@HomeActivity).recipientDatabase()
-                    .setMuted(thread.recipient, muteUntil)
-            }
             threadDb.setThreadArchived(threadID)
             ArchiveChatCountRepository.updateArchiveCount(threadDb.archivedConversationList.count)
         }

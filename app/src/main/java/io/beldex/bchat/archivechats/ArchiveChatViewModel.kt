@@ -72,11 +72,20 @@ class ArchiveChatViewModel @Inject constructor(
         }
     }
 
-    private fun unArchiveChat(thread : ThreadRecord)=viewModelScope.launch {
-        val threadID=thread.threadId
+    private fun unArchiveChat(thread: ThreadRecord) {
+        val threadID = thread.threadId
+        _uiState.update { currentState ->
+            currentState.copy(
+                archiveChats = currentState.archiveChats.filter {
+                    it.threadId != threadID
+                }
+            )
+        }
         viewModelScope.launch(Dispatchers.IO) {
             threadDb.setThreadUnArchived(threadID)
-            ArchiveChatCountRepository.updateArchiveCount(threadDb.archivedConversationList.count)
+            ArchiveChatCountRepository.updateArchiveCount(
+                threadDb.archivedConversationList.count
+            )
         }
     }
 
@@ -133,18 +142,20 @@ class ArchiveChatViewModel @Inject constructor(
 
     fun refreshContacts() {
         viewModelScope.launch(Dispatchers.IO) {
-            threadDb.archivedConversationList.use { openCursor ->
-                val reader=threadDb.readerFor(openCursor)
-                val threads=mutableListOf<ThreadRecord>()
+
+            val threads = mutableListOf<ThreadRecord>()
+
+            threadDb.archivedConversationList.use { cursor ->
+                val reader = threadDb.readerFor(cursor)
                 while (true) {
-                    threads+=reader.next ?: break
+                    val item = reader.next ?: break
+                    threads.add(item)
                 }
-                withContext(Dispatchers.Main) {
-                    _uiState.update {
-                        it.copy(
-                            archiveChats=threads
-                        )
-                    }
+            }
+
+            withContext(Dispatchers.Main) {
+                if (_uiState.value.archiveChats != threads) {
+                    _uiState.value = UIState(archiveChats = threads)
                 }
             }
         }

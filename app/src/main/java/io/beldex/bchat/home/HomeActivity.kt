@@ -436,6 +436,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             if(firstPos >= 0) { manager.scrollToPositionWithOffset(firstPos, offsetTop) }
             //setupMessageRequestsBanner()
             updateEmptyState()
+            ArchiveChatCountRepository.refreshArchiveCount(threadDb)
         }
         ApplicationContext.getInstance(this).typingStatusRepository.typingThreads.observe(this) { threadIds ->
             homeAdapter.typingThreadIDs = (threadIds ?: setOf())

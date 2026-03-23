@@ -592,48 +592,46 @@ fun ArchiveChatItem(
             Spacer(modifier=Modifier.height(8.dp))
 
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End
+                verticalAlignment=Alignment.CenterVertically,
+                horizontalArrangement=Arrangement.End
             ) {
-                if(!keepArchiveChat) {
-                    Box(
-                        modifier=Modifier
-                            .width(28.dp),
-                        contentAlignment=Alignment.CenterEnd
-                    ) {
-                        when {
-                            thread.recipient.isMuted -> {
-                                Image(
-                                    painter=painterResource(id=R.drawable.ic_mute_home),
-                                    contentDescription=""
-                                )
-                            }
+                Box(
+                    modifier=Modifier
+                        .width(28.dp),
+                    contentAlignment=Alignment.CenterEnd
+                ) {
+                    when {
+                        thread.recipient.isMuted -> {
+                            Image(
+                                painter=painterResource(id=R.drawable.ic_mute_home),
+                                contentDescription=""
+                            )
+                        }
 
-                            thread.recipient.notifyType == RecipientDatabase.NOTIFY_TYPE_MENTIONS -> {
-                                Image(
-                                    painter=painterResource(id=R.drawable.ic_mention_home),
-                                    contentDescription=""
-                                )
-                            }
+                        thread.recipient.notifyType == RecipientDatabase.NOTIFY_TYPE_MENTIONS -> {
+                            Image(
+                                painter=painterResource(id=R.drawable.ic_mention_home),
+                                contentDescription=""
+                            )
                         }
                     }
                 }
 
-                Spacer(modifier = Modifier.width(6.dp))
+                Spacer(modifier=Modifier.width(6.dp))
                 if (thread.unreadCount != 0 && !thread.isRead) {
                     Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
+                        contentAlignment=Alignment.Center,
+                        modifier=Modifier
                             .size(24.dp)
                             .background(
                                 color=MaterialTheme.appColors.textSelectionColor, shape=CircleShape
                             )
                     ) {
                         Text(
-                            text = formattedUnreadCount ?: "",
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = if (unreadCount < 100) 12.sp else 10.sp
+                            text=formattedUnreadCount ?: "",
+                            color=Color.White,
+                            fontWeight=FontWeight.Bold,
+                            fontSize=if (unreadCount < 100) 12.sp else 10.sp
                         )
                     }
                 }

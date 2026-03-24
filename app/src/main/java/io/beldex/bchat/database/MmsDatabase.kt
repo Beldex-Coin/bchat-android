@@ -4,10 +4,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import com.annimon.stream.Stream
-import com.google.android.mms.pdu_alt.PduHeaders
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
 import com.beldex.libbchat.messaging.messages.signal.IncomingMediaMessage
 import com.beldex.libbchat.messaging.messages.signal.OutgoingExpirationUpdateMessage
 import com.beldex.libbchat.messaging.messages.signal.OutgoingGroupMediaMessage
@@ -29,7 +25,6 @@ import com.beldex.libbchat.utilities.IdentityKeyMismatch
 import com.beldex.libbchat.utilities.IdentityKeyMismatchList
 import com.beldex.libbchat.utilities.NetworkFailure
 import com.beldex.libbchat.utilities.NetworkFailureList
-import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.isReadReceiptsEnabled
 import com.beldex.libbchat.utilities.Util.toIsoBytes
 import com.beldex.libbchat.utilities.recipients.Recipient
@@ -38,6 +33,7 @@ import com.beldex.libsignal.utilities.JsonUtil
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.ThreadUtils.queue
 import com.beldex.libsignal.utilities.guava.Optional
+import com.google.android.mms.pdu_alt.PduHeaders
 import io.beldex.bchat.attachments.MmsNotificationAttachment
 import io.beldex.bchat.database.SmsDatabase.InsertListener
 import io.beldex.bchat.database.helpers.SQLCipherOpenHelper
@@ -50,6 +46,9 @@ import io.beldex.bchat.dependencies.DatabaseComponent.Companion.get
 import io.beldex.bchat.mms.MmsException
 import io.beldex.bchat.mms.SlideDeck
 import io.beldex.bchat.util.asSequence
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.Closeable
 import java.io.IOException
 import java.security.SecureRandom
@@ -161,7 +160,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
                         )
                         get(context).groupReceiptDatabase()
                             .update(ourAddress, id, status, timestamp)
-                        get(context).threadDatabase().update(threadId, false)
+                        get(context).threadDatabase().update(threadId)
                         notifyConversationListeners(threadId)
                     }
                 }
@@ -271,7 +270,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
                     " WHERE " + ID + " = ?", arrayOf(id.toString() + "")
         )
         if (threadId.isPresent) {
-            get(context).threadDatabase().update(threadId.get(), false)
+            get(context).threadDatabase().update(threadId.get())
         }
     }
 
@@ -632,12 +631,12 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
             contentValues,
             null,
         )
-        if (!MmsSmsColumns.Types.isExpirationTimerUpdate(mailbox)) {
+         if (!MmsSmsColumns.Types.isExpirationTimerUpdate(mailbox)) {
             if (runIncrement) {
                 get(context).threadDatabase().incrementUnread(threadId, 1)
             }
             if (runThreadUpdate) {
-                get(context).threadDatabase().update(threadId, !TextSecurePreferences.getKeepArchiveChat(context))
+                get(context).threadDatabase().update(threadId)
             }
         }
         notifyConversationListeners(threadId)
@@ -819,7 +818,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
             setLastSeen(threadId)
             setHasSent(threadId, true)
             if (runThreadUpdate) {
-                update(threadId, false)
+                update(threadId)
             }
         }
         return messageId
@@ -954,7 +953,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
         groupReceiptDatabase.deleteRowsForMessage(messageId)
         val database = databaseHelper.writableDatabase
         database!!.delete(TABLE_NAME, ID_WHERE, arrayOf(messageId.toString()))
-        val threadDeleted = get(context).threadDatabase().update(threadId, false)
+        val threadDeleted = get(context).threadDatabase().update(threadId)
         notifyConversationListeners(threadId)
         notifyStickerListeners()
         notifyStickerPackListeners()
@@ -971,7 +970,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
         val database = databaseHelper.writableDatabase
         database!!.delete(TABLE_NAME, ID_IN, arrayOf(messageIds.joinToString(",")))
 
-        val threadDeleted = get(context).threadDatabase().update(threadId, false)
+        val threadDeleted = get(context).threadDatabase().update(threadId)
         notifyConversationListeners(threadId)
         notifyStickerListeners()
         notifyStickerPackListeners()
@@ -1154,7 +1153,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
         }
         val threadDb = get(context).threadDatabase()
         for (threadId in threadIds) {
-            val threadDeleted = threadDb.update(threadId, false)
+            val threadDeleted = threadDb.update(threadId)
             notifyConversationListeners(threadId)
         }
         notifyStickerListeners()

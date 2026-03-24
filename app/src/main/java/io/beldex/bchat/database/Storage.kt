@@ -127,9 +127,9 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         threadDb.incrementUnread(threadId, amount)
     }
 
-    override fun updateThread(threadId: Long, unarchive: Boolean) {
+    override fun updateThread(threadId: Long) {
         val threadDb = DatabaseComponent.get(context).threadDatabase()
-        threadDb.update(threadId, unarchive)
+        threadDb.update(threadId)
     }
 
     override fun setIsBnsHolder(senderPublicKey: String, isBnsHolder: Boolean) {
@@ -980,5 +980,10 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         DatabaseComponent.get(context).reactionDatabase().deleteMessageReactions(
             messageIds.map { MessageId(it, mms) }
         )
+    }
+
+    override fun isThreadArchived(threadId : Long) : Boolean {
+        val threadDb = DatabaseComponent.get(context).threadDatabase()
+        return threadDb.isThreadArchived(threadId)
     }
 }

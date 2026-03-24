@@ -154,7 +154,7 @@ class BatchMessageReceiveJob(
                         if (trueUnreadCount > 0) {
                             storage.incrementUnread(threadId, trueUnreadCount)
                         }
-                        storage.updateThread(threadId, !TextSecurePreferences.getKeepArchiveChat(context))
+                        storage.updateThread(threadId)
                         SSKEnvironment.shared.notificationManager.updateNotification(context, threadId)
                     }
                 }

@@ -39,7 +39,6 @@ import io.beldex.bchat.util.BchatMetaProtocol;
 
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
-import org.jetbrains.annotations.NotNull;
 import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.Contact;
 import com.beldex.libbchat.utilities.DelimiterUtil;
@@ -60,16 +59,12 @@ import io.beldex.bchat.database.model.MmsMessageRecord;
 import io.beldex.bchat.database.model.ThreadRecord;
 import io.beldex.bchat.dependencies.DatabaseComponent;
 import io.beldex.bchat.notifications.MarkReadReceiver;
-import io.beldex.bchat.util.BchatMetaProtocol;
 
 import java.io.Closeable;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 public class ThreadDatabase extends Database {
@@ -172,6 +167,7 @@ public class ThreadDatabase extends Database {
     contentValues.put(READ_RECEIPT_COUNT, readReceiptCount);
     contentValues.put(EXPIRES_IN, expiresIn);
 
+    Log.d("beldex","getting group message called " + unarchive + TextSecurePreferences.getKeepArchiveChat(context));
     if (unarchive) {
       contentValues.put(ARCHIVED, 0);
     }
@@ -272,7 +268,7 @@ public class ThreadDatabase extends Database {
         DatabaseComponent.get(context).smsDatabase().deleteMessagesInThreadBeforeDate(threadId, lastTweetDate);
         DatabaseComponent.get(context).mmsDatabase().deleteMessagesInThreadBeforeDate(threadId, lastTweetDate);
 
-        update(threadId, false);
+        update(threadId);
         notifyConversationListeners(threadId);
       }
     } finally {
@@ -618,6 +614,30 @@ public class ThreadDatabase extends Database {
     notifyConversationListeners(threadId);
   }
 
+  public boolean isThreadArchived(long threadId) {
+    SQLiteDatabase db = databaseHelper.getReadableDatabase();
+
+    try (Cursor cursor = db.query(
+            TABLE_NAME,
+            new String[]{ARCHIVED},
+            ID_WHERE,
+            new String[]{String.valueOf(threadId)},
+            null,
+            null,
+            null
+    )) {
+      if (cursor.moveToFirst()) {
+        int archived = cursor.getInt(
+                cursor.getColumnIndexOrThrow(ARCHIVED)
+        );
+        return archived == 1;
+      } else {
+        Log.w("Database", "Thread not found. ID: " + threadId);
+      }
+    }
+    return false;
+  }
+
   public void setThreadUnArchived(long threadId) {
     ContentValues contentValues = new ContentValues(1);
     contentValues.put(ARCHIVED, 0);
@@ -723,9 +743,11 @@ public class ThreadDatabase extends Database {
     }
   }*/
 
-  public boolean update(long threadId, boolean unarchive) {
+  public boolean update(long threadId) {
     MmsSmsDatabase mmsSmsDatabase = DatabaseComponent.get(context).mmsSmsDatabase();
-    long count                    = mmsSmsDatabase.getConversationCount(threadId);
+    ThreadDatabase threadDb       = DatabaseComponent.get(context).threadDatabase();
+
+    long count = mmsSmsDatabase.getConversationCount(threadId);
 
     boolean shouldDeleteEmptyThread = deleteThreadOnEmpty(threadId);
 
@@ -746,6 +768,23 @@ public class ThreadDatabase extends Database {
           record = reader.getNext();
         }
       }
+
+      boolean isArchived   = threadDb.isThreadArchived(threadId);
+      boolean keepArchived = TextSecurePreferences.getKeepArchiveChat(context);
+      boolean isControlMessage = record != null && record.isControlMessage();
+
+      boolean unarchive;
+
+      if (isControlMessage) {
+        unarchive = false;
+      }
+      else if (isArchived) {
+        unarchive = !keepArchived;
+      }
+      else {
+        unarchive = true;
+      }
+
       if (record != null && !record.isDeleted()) {
         updateThread(threadId, count, getFormattedBodyFor(record), getAttachmentUriFor(record),
                      record.getTimestamp(), record.getDeliveryStatus(), record.getDeliveryReceiptCount(),

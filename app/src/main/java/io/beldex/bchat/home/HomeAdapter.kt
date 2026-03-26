@@ -126,7 +126,10 @@ class HomeAdapter(private val context: Context, private val listener: Conversati
                 }
 
                 setOnLongClickListener {
-                    listener.onLongConversationClick(thread, this, position)
+                    val adapterPosition = holder.bindingAdapterPosition
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        listener.onLongConversationClick(thread, this, adapterPosition)
+                    }
                     true
                 }
             }

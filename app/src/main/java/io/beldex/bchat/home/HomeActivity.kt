@@ -1219,6 +1219,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                         putInt(ConversationActionDialog.EXTRA_ARGUMENT_3, thread.recipient.notifyType)
                         putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, thread)
                         putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.NotificationSettings)
+                        putInt(ConversationActionDialog.EXTRA_THREAD_POSITION, position)
                     }
                     setListener(this@HomeActivity)
                 }
@@ -1770,8 +1771,15 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             HomeDialogType.NotificationSettings -> {
                 threadRecord?.let {
                     val index = data as Int
-                    DatabaseComponent.get(this@HomeActivity).recipientDatabase().setNotifyType(it.recipient, index.toString().toInt())
-                    homeAdapter.notifyItemChanged(position)
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        DatabaseComponent.get(this@HomeActivity)
+                            .recipientDatabase()
+                            .setNotifyType(it.recipient, index)
+
+                        withContext(Dispatchers.Main) {
+                            homeAdapter.notifyItemChanged(position)
+                        }
+                    }
                 }
             }
             HomeDialogType.BlockUser -> {

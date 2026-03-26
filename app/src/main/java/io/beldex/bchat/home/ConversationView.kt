@@ -2,9 +2,7 @@ package io.beldex.bchat.home
 
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.Typeface
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
@@ -54,17 +52,13 @@ class ConversationView : LinearLayout {
         this.thread = thread
         val recipient = thread.recipient
         val isMuted = recipient.isMuted || recipient.notifyType != NOTIFY_TYPE_ALL
+        val unreadCount = thread.unreadCount
         if (thread.isPinned) {
             binding.contentView.apply {
                 background = ContextCompat.getDrawable(context,R.drawable.unread_message_chat_background)
                 val params = layoutParams as FrameLayout.LayoutParams
                 params.setMargins(0, 16, 16, 16)
                 layoutParams = params
-                if(isMuted && thread.unreadCount == 0 && !thread.isRead){
-                    binding.muteIcon.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                        rightMargin=50
-                    }
-                }
 
             }
             binding.pinnedViewContainer.isVisible = thread.isPinned
@@ -77,13 +71,17 @@ class ConversationView : LinearLayout {
                 layoutParams = params
             }
         }
-        if(isMuted && thread.unreadCount == 0 && !thread.isRead && !thread.isPinned){
-            binding.muteIcon.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                rightMargin=70
-            }
+        val margin = when {
+            isMuted && unreadCount == 0 && !thread.isRead && thread.isPinned -> 50
+            isMuted && unreadCount == 0 && !thread.isRead && !thread.isPinned -> 70
+            else -> 16
+        }
+
+        binding.muteIcon.updateLayoutParams<ConstraintLayout.LayoutParams> {
+            rightMargin = margin
         }
         binding.profilePictureView.root.glide = glide
-        val unreadCount = thread.unreadCount
+
         val formattedUnreadCount = if (unreadCount < 100) unreadCount.toString() else "99+"
         binding.unreadCountTextView.text = formattedUnreadCount
         binding.unreadCountIndicator.isVisible = (unreadCount != 0 && !thread.isRead)

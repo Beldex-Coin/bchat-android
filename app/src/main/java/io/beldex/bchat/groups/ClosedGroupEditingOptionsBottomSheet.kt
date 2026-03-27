@@ -20,4 +20,11 @@ class ClosedGroupEditingOptionsBottomSheet : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.removeFromGroup.setOnClickListener { onRemoveTapped?.invoke() }
     }
+
+    override fun onStop() {
+        super.onStop()
+        if (isAdded) {
+            dismissAllowingStateLoss()
+        }
+    }
 }

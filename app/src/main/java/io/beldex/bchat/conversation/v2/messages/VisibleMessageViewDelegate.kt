@@ -13,4 +13,5 @@ interface VisibleMessageViewDelegate {
     fun onReactionLongClicked(messageId: MessageId, emoji : String?)
     fun onItemLongPress(messageRecord : MessageRecord, visibleMessageView : VisibleMessageView, position: Int)
     suspend fun chatWithContact(contact: ContactModel, message: MessageRecord)
+    fun dismissMenu()
 }

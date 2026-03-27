@@ -170,7 +170,8 @@ interface StorageProtocol {
     fun persist(message: VisibleMessage, quotes: QuoteModel?, linkPreview: List<LinkPreview?>, groupPublicKey: String?, openGroupID: String?, attachments: List<Attachment>,runIncrement:Boolean,runThreadUpdate:Boolean): Long?
     fun markConversationAsRead(threadId: Long, updateLastSeen: Boolean)
     fun incrementUnread(threadId: Long, amount: Int)
-    fun updateThread(threadId: Long, unarchive: Boolean)
+    fun updateThread(threadId: Long)
+    fun updateThreadForHandle(threadId: Long, unArchive: Boolean)
     fun insertDataExtractionNotificationMessage(senderPublicKey: String, message: DataExtractionNotificationInfoMessage, sentTimestamp: Long)
     fun insertCallMessage(senderPublicKey: String, callMessageType: CallMessageType, sentTimestamp: Long)
     fun insertMessageRequestResponseFromContact(response: MessageRequestResponse)
@@ -190,4 +191,5 @@ interface StorageProtocol {
     fun updateReactionIfNeeded(message: Message, sender: String, openGroupSentTimestamp: Long)
     fun deleteReactions(messageId: Long, mms: Boolean)
     fun deleteReactions(messageIds: List<Long>, mms: Boolean)
+    fun isThreadArchived(threadId: Long) : Boolean
 }

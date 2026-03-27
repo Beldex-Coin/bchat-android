@@ -12,7 +12,6 @@ import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.database.Cursor
 import android.graphics.Rect
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
@@ -22,7 +21,6 @@ import android.os.Looper
 import android.os.SystemClock
 import android.text.Editable
 import android.util.Log
-import android.util.TypedValue
 import android.view.ActionMode
 import android.view.LayoutInflater
 import android.view.Menu
@@ -44,6 +42,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -270,16 +269,30 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     @Inject lateinit var conversationViewModelFactory: ConversationViewModel.AssistedFactory
 
     // -------------------- ViewModels ---------------------
-    private val viewModel : ConversationViewModel by viewModels {
-        val extras = intent.extras
-        var threadId=extras?.getLong(THREAD_ID, -1L)
-        if (threadId == -1L) {
-            extras?.getParcelable<Address>(ADDRESS)?.let { address ->
-                val recipient=Recipient.from(this, address, false)
-                threadId=threadDb.getOrCreateThreadIdFor(recipient)
+    private val viewModel: ConversationViewModel by viewModels {
+        val resolvedThreadId = resolveThreadId()
+        conversationViewModelFactory.create(resolvedThreadId)
+    }
+
+    private fun resolveThreadId(): Long {
+        var id = intent.getLongExtra(THREAD_ID, -1L)
+
+        if (id == -1L) {
+            val address = intent.getParcelableExtra<Address>(ADDRESS)
+            if (address != null) {
+                val recipient = Recipient.from(this, address, false)
+                id = threadDb.getOrCreateThreadIdFor(recipient)
             }
         }
-        conversationViewModelFactory.create(threadId!!)
+        if (id == -1L) {
+            Toast.makeText(
+                this,
+                getString(R.string.conversationsDeleted),
+                Toast.LENGTH_LONG
+            ).show()
+            finish()
+        }
+        return id
     }
 
 
@@ -400,17 +413,6 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         setContentView(binding.root)
         setSupportActionBar(binding.conversationActivityToolbar)
 
-        if (threadId == -1L) {
-            val extras = intent.extras
-            var threadId= extras?.getLong(THREAD_ID, -1L)
-            if (threadId == -1L) {
-                extras?.getParcelable<Address>(ADDRESS)?.let { address ->
-                    val recipient=Recipient.from(this, address, false)
-                    threadId=threadDb.getOrCreateThreadIdFor(recipient)
-                }
-            }
-           conversationViewModelFactory.create(threadId!!)
-        }
         // ---------- Network monitoring ----------
         networkChangedReceiver = NetworkChangeReceiver(::networkChange)
         networkChangedReceiver?.register(this)
@@ -446,6 +448,18 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         screenshotDetector.unregister()
         binding.inputBar.clearFocus()
         Helper.hideKeyboard(this)
+        dismissDialogsIfExist(ComposeDialogContainer.TAG)
+        dismissDialogIfExists(VisibleMessageContentView.JOIN_SOCIAL_GROUP_POPUP)
+        dismissDialogIfExists(VisibleMessageContentView.OPEN_URL_DIALOG)
+        dismissDialogIfExists(VisibleMessageContentView.UNTRUSTED_DIALOG)
+        dismissDialogIfExists(REACT_ANY_EMOJI_FRAGMENT)
+
+        if (reactionDelegate.isShowing) {
+            reactionDelegate.hide()
+        }
+        if (getIsReactionOverlayVisible(this)) {
+            setIsReactionOverlayVisible(this, false)
+        }
     }
 
     override fun onDestroy() {
@@ -1132,6 +1146,13 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
 
     private fun restoreDraftIfNeeded() {
 
+        // ---------- Check if this intent has already been handled ----------
+        val alreadyHandled = intent.getBooleanExtra("EXTRA_HANDLED_SHARE", false)
+        if (alreadyHandled) {
+            println("Share already handled, skipping auto-send")
+            return
+        }
+
         // ---------- Intent extras ----------
         val mediaUri: Uri? = intent.getParcelableExtra(URI)
         val mediaType = AttachmentManager.MediaType.from(
@@ -1162,6 +1183,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
                                 attachmentManager.buildSlideDeck().asAttachments(),
                                 null
                             )
+                            markShareHandled()
                         }
 
                         override fun onFailure(e: ExecutionException?) {
@@ -1170,6 +1192,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
                                 R.string.activity_conversation_attachment_prep_failed,
                                 Toast.LENGTH_LONG
                             ).show()
+                            markShareHandled()
                         }
                     })
 
@@ -1198,6 +1221,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
                     PICK_FROM_LIBRARY
                 )
 
+                markShareHandled()
                 return
             }
 
@@ -1206,10 +1230,13 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
                 .addListener(object : ListenableFuture.Listener<Boolean> {
 
                     override fun onSuccess(result: Boolean?) {
-                        sendAttachments(
-                            attachmentManager.buildSlideDeck().asAttachments(),
-                            null
-                        )
+                        if(attachmentManager.buildSlideDeck().asAttachments().isNotEmpty()) {
+                            sendAttachments(
+                                attachmentManager.buildSlideDeck().asAttachments(),
+                                null
+                            )
+                            markShareHandled()
+                        }
                     }
 
                     override fun onFailure(e: ExecutionException?) {
@@ -1218,6 +1245,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
                             R.string.activity_conversation_attachment_prep_failed,
                             Toast.LENGTH_LONG
                         ).show()
+                        markShareHandled()
                     }
                 })
 
@@ -1235,6 +1263,13 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         viewModel.getDraft()?.let { draft ->
             binding.inputBar.text = draft
         }
+    }
+
+    private fun markShareHandled() {
+        intent.removeExtra(URI)
+        intent.removeExtra(TYPE)
+        intent.removeExtra(IN_CHAT_SHARE)
+        intent.putExtra("EXTRA_HANDLED_SHARE", true)
     }
 
     private fun setUpUiStateObserver() {
@@ -1291,32 +1326,9 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     }
 
     private fun updateUnreadCountIndicator() {
-
-        val count = unreadCount
-        if (count <= 0) {
-            binding.unreadCountIndicator.isVisible = false
-            return
-        }
-
-        val displayText = if (count < 10_000) {
-            count.toString()
-        } else {
-            "9999+"
-        }
-
-        binding.unreadCountTextView.apply {
-            text = displayText
-            setTextSize(
-                TypedValue.COMPLEX_UNIT_SP,
-                if (count < 10_000) 12f else 9f
-            )
-            setTypeface(
-                Typeface.DEFAULT,
-                if (count < 100) Typeface.BOLD else Typeface.NORMAL
-            )
-        }
-
-        binding.unreadCountIndicator.isVisible = true
+        val formattedUnreadCount=if (unreadCount < 100) unreadCount.toString() else "99+"
+        binding.unreadCountTextView.text=formattedUnreadCount
+        binding.unreadCountIndicator.isVisible=unreadCount != 0
     }
 
     private fun updateSubtitle() {
@@ -1469,7 +1481,9 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
 
         binding.closeSearch.setOnClickListener { onSearchClosed() }
         binding.searchClose.setOnClickListener { onSearchClosed() }
-
+        binding.searchQuery.post {
+            binding.searchQuery.setText("")
+        }
         binding.searchQuery.addTextChangedListener(
             object : SimpleTextWatcher() {
 
@@ -2554,6 +2568,21 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         finish()
     }
 
+    private fun dismissDialogIfExists(tag: String) {
+        val dialog = supportFragmentManager.findFragmentByTag(tag) as? DialogFragment
+        dialog?.dismissAllowingStateLoss()
+    }
+
+    private fun dismissDialogsIfExist(vararg tags: String) {
+        val fragments = supportFragmentManager.fragments
+
+        fragments.forEach { fragment ->
+            if (fragment is DialogFragment && tags.contains(fragment.tag)) {
+                fragment.dismissAllowingStateLoss()
+            }
+        }
+    }
+
     @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(
         requestCode : Int,
@@ -2691,22 +2720,6 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             .addToBackStack(stackName)
             .commit()
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressedDispatcher.onBackPressed()
@@ -3597,7 +3610,8 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
 
     override fun onConfirm(
         dialogType: HomeDialogType,
-        threadRecord: ThreadRecord?
+        threadRecord: ThreadRecord?,
+        position : Int
     ) {
         when (dialogType) {
 
@@ -3646,7 +3660,8 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
 
     override fun onCancel(
         dialogType: HomeDialogType,
-        threadRecord: ThreadRecord?
+        threadRecord: ThreadRecord?,
+        position : Int
     ) {
         when (dialogType) {
             HomeDialogType.SelectedMessageDelete -> {
@@ -3659,7 +3674,8 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     override fun onConfirmationWithData(
         dialogType: HomeDialogType,
         data: Any?,
-        threadRecord: ThreadRecord?
+        threadRecord: ThreadRecord?,
+        position : Int
     ) {
         when (dialogType) {
 
@@ -3932,7 +3948,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             reactionDelegate.hideForReactWithAny()
             ReactWithAnyEmojiDialogFragment
                 .createForMessageRecord(messageRecord, reactWithAnyEmojiStartPage)
-                .show(supportFragmentManager, "BOTTOM");
+                .show(supportFragmentManager, REACT_ANY_EMOJI_FRAGMENT)
         }
     }
 
@@ -4061,6 +4077,12 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         startActivity(intent)
     }
 
+    override fun dismissMenu() {
+        this.actionMode?.let {
+            endActionMode()
+        }
+    }
+
     companion object {
 
         // Extras
@@ -4086,6 +4108,9 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         const val PICK_GIF=10
         const val PICK_FROM_LIBRARY=12
         const val INVITE_CONTACTS=124
+
+        //React Any Emoji Fragment
+        const val REACT_ANY_EMOJI_FRAGMENT = "react_any_emoji_fragment"
     }
 }
 

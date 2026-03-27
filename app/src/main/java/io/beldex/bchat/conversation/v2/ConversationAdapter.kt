@@ -31,6 +31,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.util.getOrDefault
 import androidx.core.util.set
 import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.messaging.utilities.UpdateMessageData
@@ -76,7 +77,7 @@ class ConversationAdapter(
     private val messageDB by lazy { DatabaseComponent.get(context).mmsSmsDatabase() }
     private val contactDB by lazy { DatabaseComponent.get(context).bchatContactDatabase() }
     var selectedItems = mutableSetOf<MessageRecord>()
-    private var searchQuery: String? = null
+    var searchQuery: String? = null
     var visibleMessageViewDelegate: VisibleMessageViewDelegate? = null
 
     private val updateQueue = Channel<String>(1024, onBufferOverflow = BufferOverflow.DROP_OLDEST)
@@ -139,7 +140,8 @@ class ConversationAdapter(
 
     override fun onBindItemViewHolder(viewHolder: ViewHolder, cursor: Cursor) {
         val message = getMessage(cursor)!!
-        val position = viewHolder.adapterPosition
+        val position = viewHolder.bindingAdapterPosition
+        if (position == RecyclerView.NO_POSITION) return
         val messageBefore = getMessageBefore(position, cursor)
         when (viewHolder) {
             is VisibleMessageViewHolder -> {
@@ -157,6 +159,18 @@ class ConversationAdapter(
                 }
                 val contact = contactCache[senderIdHash]
                 visibleMessageView.bind(message, messageBefore, getMessageAfter(position, cursor), glide, searchQuery, contact, senderId, onAttachmentNeedsDownload,{ selectedItems.size > 0 }, visibleMessageViewDelegate, position, searchViewModel)
+                if(isSelected) {
+                    visibleMessageView.setOnMessageExpiredListener(object :
+                        VisibleMessageView.OnMessageExpiredListener {
+                        override fun onMessageExpired(message : MessageRecord?) {
+                            message?.let {
+                                visibleMessageViewDelegate?.dismissMenu()
+                                visibleMessageView.setOnMessageExpiredListener(null)
+                            }
+                        }
+                    })
+                }
+
                 if (!message.isDeleted) {
                     visibleMessageView.onPress = { event -> onItemPress(message, viewHolder.adapterPosition, visibleMessageView, event) }
                     visibleMessageView.onSwipeToReply = { onItemSwipeToReply(message, viewHolder.adapterPosition) }

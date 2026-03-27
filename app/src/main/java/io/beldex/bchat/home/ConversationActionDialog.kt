@@ -50,6 +50,7 @@ class ConversationActionDialog: DialogFragment() {
     private var dialogType: HomeDialogType = HomeDialogType.DeleteChat
     private var listener: ConversationActionDialogListener? = null
     private var threadRecord: ThreadRecord? = null
+    private var threadPosition: Int=0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +72,9 @@ class ConversationActionDialog: DialogFragment() {
 
             if(it.containsKey(EXTRA_THREAD_RECORD))
                 threadRecord = it.serializable(EXTRA_THREAD_RECORD)
+
+            if(it.containsKey(EXTRA_THREAD_POSITION))
+                threadPosition = it.getInt(EXTRA_THREAD_POSITION)
         }
     }
 
@@ -128,11 +132,11 @@ class ConversationActionDialog: DialogFragment() {
                                 positiveButtonTitle = stringResource(id = R.string.unblock),
                                 onAccept = {
                                     dismiss()
-                                    listener?.onConfirm(dialogType, threadRecord)
+                                    listener?.onConfirm(dialogType, threadRecord, threadPosition)
                                 },
                                 onCancel = {
                                     dismiss()
-                                    listener?.onCancel(dialogType, threadRecord)
+                                    listener?.onCancel(dialogType, threadRecord, threadPosition)
                                 }
                             )
                         }
@@ -150,7 +154,7 @@ class ConversationActionDialog: DialogFragment() {
                                     dismiss()
                                 },
                                 onValueChanged = { _, index ->
-                                    listener?.onConfirmationWithData(dialogType, index, threadRecord)
+                                    listener?.onConfirmationWithData(dialogType, index, threadRecord,threadPosition)
                                     dismiss()
                                 }
                             )
@@ -166,11 +170,10 @@ class ConversationActionDialog: DialogFragment() {
                                 positiveButtonTitle = stringResource(id = R.string.yes),
                                 onAccept = {
                                     dismiss()
-                                    listener?.onConfirmationWithData(dialogType, argument3, threadRecord)
-                                },
+                                    listener?.onConfirmationWithData(dialogType, argument3, threadRecord, threadPosition)                                },
                                 onCancel = {
                                     dismiss()
-                                    listener?.onCancel(dialogType, threadRecord)
+                                    listener?.onCancel(dialogType, threadRecord, threadPosition)
                                 }
                             )
                         }
@@ -181,18 +184,18 @@ class ConversationActionDialog: DialogFragment() {
                         ) {
                             val option  = context.resources.getStringArray(R.array.notify_types)
                             NotificationSettingDialog(
-                                onDismiss = {
+                                onDismiss={
                                     dismiss()
-                                    listener?.onConfirm(dialogType, threadRecord)
+                                    listener?.onConfirm(dialogType, threadRecord, threadPosition)
                                 },
                                 onClick = {
                                     dismiss()
-                                    listener?.onCancel(dialogType, threadRecord)
+                                    listener?.onCancel(dialogType, threadRecord, threadPosition)
                                 },
                                 options = option.toList(),
                                 currentValue = option[argument3],
                                 onValueChanged = { _, index ->
-                                    listener?.onConfirmationWithData(dialogType, index, threadRecord)
+                                    listener?.onConfirmationWithData(dialogType, index, threadRecord, threadPosition)
                                     dismiss()
                                 }
                             )
@@ -204,13 +207,13 @@ class ConversationActionDialog: DialogFragment() {
                         ) {
                             DeleteChatConfirmationDialog(
                                 message = argument1?:context.getString(R.string.deleted_message),
-                                onConfirmation = {
+                                onConfirmation={
                                     dismiss()
-                                    listener?.onConfirm(dialogType, threadRecord)
+                                    listener?.onConfirm(dialogType, threadRecord, threadPosition)
                                 },
                                 onDismissRequest = {
                                     dismiss()
-                                    listener?.onCancel(dialogType, threadRecord)
+                                    listener?.onCancel(dialogType, threadRecord, threadPosition)
                                 },
                             )
                         }
@@ -223,11 +226,11 @@ class ConversationActionDialog: DialogFragment() {
                             IgnoreRequestDialog(
                                 onBlock = {
                                     dismiss()
-                                    listener?.onConfirm(dialogType, threadRecord)
+                                    listener?.onConfirm(dialogType, threadRecord, threadPosition)
                                 },
                                 onDelete = {
                                     dismiss()
-                                    listener?.onCancel(dialogType, threadRecord)
+                                    listener?.onCancel(dialogType, threadRecord, threadPosition)
                                 },
                                 onDismissRequest = {
                                     dismiss()
@@ -256,11 +259,11 @@ class ConversationActionDialog: DialogFragment() {
                                 positiveButtonTitle = stringResource(id = R.string.delete),
                                 onAccept = {
                                     dismiss()
-                                    listener?.onConfirm(dialogType, threadRecord)
+                                    listener?.onConfirm(dialogType, threadRecord, threadPosition)
                                 },
                                 onCancel = {
                                     dismiss()
-                                    listener?.onCancel(dialogType, threadRecord)
+                                    listener?.onCancel(dialogType, threadRecord, threadPosition)
                                 }
                             )
                         }
@@ -288,8 +291,7 @@ class ConversationActionDialog: DialogFragment() {
                                 onValueChanged = { _, index ->
                                     dismiss()
                                     if (options[timesOption.indexOf(argument3)] != options[index]) {
-                                        listener?.onConfirmationWithData(dialogType, timesOption[index], threadRecord)
-                                    }
+                                        listener?.onConfirmationWithData(dialogType, timesOption[index], threadRecord, threadPosition)                                    }
                                 }
                             )
                         }
@@ -299,13 +301,13 @@ class ConversationActionDialog: DialogFragment() {
                             darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
                         ) {
                             ClearChatDialog(
-                                onAccept = {
+                                onAccept={
                                     dismiss()
-                                    listener?.onConfirm(dialogType, threadRecord)
+                                    listener?.onConfirm(dialogType, threadRecord, threadPosition)
                                 },
                                 onCancel = {
                                     dismiss()
-                                    listener?.onCancel(dialogType, threadRecord)
+                                    listener?.onCancel(dialogType, threadRecord, threadPosition)
                                 }
                             )
                         }
@@ -320,11 +322,11 @@ class ConversationActionDialog: DialogFragment() {
                                 positiveButtonTitle = stringResource(id = R.string.accept),
                                 onAccept = {
                                     dismiss()
-                                    listener?.onConfirm(dialogType, threadRecord)
+                                    listener?.onConfirm(dialogType, threadRecord, threadPosition)
                                 },
                                 onCancel = {
                                     dismiss()
-                                    listener?.onCancel(dialogType, threadRecord)
+                                    listener?.onCancel(dialogType, threadRecord, threadPosition)
                                 }
                             )
                         }
@@ -339,11 +341,11 @@ class ConversationActionDialog: DialogFragment() {
                                 positiveButtonTitle = stringResource(id = R.string.decline),
                                 onAccept = {
                                     dismiss()
-                                    listener?.onConfirm(dialogType, threadRecord)
+                                    listener?.onConfirm(dialogType, threadRecord, threadPosition)
                                 },
                                 onCancel = {
                                     dismiss()
-                                    listener?.onCancel(dialogType, threadRecord)
+                                    listener?.onCancel(dialogType, threadRecord, threadPosition)
                                 }
                             )
                         }
@@ -358,11 +360,11 @@ class ConversationActionDialog: DialogFragment() {
                                 positiveButtonTitle = stringResource(id = R.string.ok),
                                 onAccept = {
                                     dismiss()
-                                    listener?.onConfirm(dialogType, threadRecord)
+                                    listener?.onConfirm(dialogType, threadRecord, threadPosition)
                                 },
                                 onCancel = {
                                     dismiss()
-                                    listener?.onCancel(dialogType, threadRecord)
+                                    listener?.onCancel(dialogType, threadRecord, threadPosition)
                                 }
                             )
                         }
@@ -377,9 +379,9 @@ class ConversationActionDialog: DialogFragment() {
     }
 
     interface ConversationActionDialogListener {
-        fun onConfirm(dialogType: HomeDialogType, threadRecord: ThreadRecord?)
-        fun onCancel(dialogType: HomeDialogType, threadRecord: ThreadRecord?)
-        fun onConfirmationWithData(dialogType: HomeDialogType, data: Any?, threadRecord: ThreadRecord?)
+        fun onConfirm(dialogType: HomeDialogType, threadRecord: ThreadRecord?, position : Int)
+        fun onCancel(dialogType: HomeDialogType, threadRecord: ThreadRecord?, position : Int)
+        fun onConfirmationWithData(dialogType: HomeDialogType, data: Any?, threadRecord: ThreadRecord?, position: Int)
     }
 
     companion object {
@@ -389,6 +391,7 @@ class ConversationActionDialog: DialogFragment() {
         const val EXTRA_ARGUMENT_3 = "argument_3"
         const val EXTRA_ARGUMENT_LONG = "argument_long_type"
         const val EXTRA_THREAD_RECORD = "thread_record"
+        const val EXTRA_THREAD_POSITION = "thread_position"
         const val TAG = "ComposeDialogContainer"
     }
 }

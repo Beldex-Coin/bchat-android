@@ -48,7 +48,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -122,6 +124,9 @@ fun JoinSocialGroupScreen(
         restartOnPlay = false
     )
 
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+
     val joinPublicChatScanQRCodeActivityResultLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -181,6 +186,8 @@ fun JoinSocialGroupScreen(
                             color = MaterialTheme.appColors.iconTint
                         ),
                         modifier = Modifier.clickable {
+                            focusManager.clearFocus()
+                            keyboardController?.hide()
                             val intent = Intent(
                                 context,
                                 JoinPublicChatScanQRCodeActivity::class.java

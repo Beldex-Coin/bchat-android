@@ -37,7 +37,6 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
@@ -75,65 +74,65 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.BuildConfig
+import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.R
+import io.beldex.bchat.archivechats.ArchiveChatViewModel
 import io.beldex.bchat.components.ProfilePictureView
+import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.ComposeDialogContainer
 import io.beldex.bchat.compose_utils.DialogType
-import io.beldex.bchat.conversation.v2.ConversationViewModel
-import io.beldex.bchat.database.BeldexMessageDatabase
-import io.beldex.bchat.database.MmsDatabase
-import io.beldex.bchat.database.MmsSmsDatabase
-import io.beldex.bchat.database.ReactionDatabase
-import io.beldex.bchat.database.SmsDatabase
-import io.beldex.bchat.database.ThreadDatabase
-import io.beldex.bchat.databinding.ActivityHomeBinding
-import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.groups.OpenGroupManager
-import io.beldex.bchat.home.search.GlobalSearchAdapter
-import io.beldex.bchat.home.search.GlobalSearchViewModel
-import io.beldex.bchat.notifications.PushRegistry
-import io.beldex.bchat.onboarding.SeedActivity
-import io.beldex.bchat.onboarding.SeedReminderViewDelegate
-import io.beldex.bchat.util.ActivityDispatcher
-import io.beldex.bchat.util.FirebaseRemoteConfigUtil
-import io.beldex.bchat.util.Helper
-import io.beldex.bchat.util.IP2Country
-import io.beldex.bchat.util.parcelable
-import io.beldex.bchat.util.push
-import io.beldex.bchat.util.show
-import io.beldex.bchat.CheckOnline
-import io.beldex.bchat.archivechats.ArchiveChatViewModel
-import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.conversation.v2.ConversationActivityV2
+import io.beldex.bchat.conversation.v2.ConversationViewModel
 import io.beldex.bchat.conversation_v2.NewChatConversationActivity
 import io.beldex.bchat.conversation_v2.NewGroupConversationActivity
 import io.beldex.bchat.conversation_v2.NewGroupConversationType
 import io.beldex.bchat.crypto.IdentityKeyUtil
+import io.beldex.bchat.database.BeldexMessageDatabase
 import io.beldex.bchat.database.BeldexThreadDatabase
 import io.beldex.bchat.database.GroupDatabase
+import io.beldex.bchat.database.MmsDatabase
+import io.beldex.bchat.database.MmsSmsDatabase
+import io.beldex.bchat.database.ReactionDatabase
 import io.beldex.bchat.database.RecipientDatabase
+import io.beldex.bchat.database.SmsDatabase
+import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.database.model.ThreadRecord
+import io.beldex.bchat.databinding.ActivityHomeBinding
+import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.drawer.ClickListener
 import io.beldex.bchat.drawer.NavigationItemModel
 import io.beldex.bchat.drawer.NavigationRVAdapter
 import io.beldex.bchat.drawer.RecyclerTouchListener
 import io.beldex.bchat.groups.CreateClosedGroupActivity
+import io.beldex.bchat.groups.OpenGroupManager
+import io.beldex.bchat.home.search.GlobalSearchAdapter
 import io.beldex.bchat.home.search.GlobalSearchInputLayout
+import io.beldex.bchat.home.search.GlobalSearchViewModel
 import io.beldex.bchat.home.search.RecyclerViewDivider
 import io.beldex.bchat.my_account.ui.MyAccountActivity
 import io.beldex.bchat.my_account.ui.MyAccountScreens
+import io.beldex.bchat.notifications.PushRegistry
+import io.beldex.bchat.onboarding.SeedActivity
+import io.beldex.bchat.onboarding.SeedReminderViewDelegate
 import io.beldex.bchat.preferences.NotificationSettingsActivity
 import io.beldex.bchat.preferences.PrivacySettingsActivity
 import io.beldex.bchat.repository.ConversationRepository
 import io.beldex.bchat.search.SearchActivityResults
 import io.beldex.bchat.service.WebRtcCallService
+import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.util.ConfigurationMessageUtilities
+import io.beldex.bchat.util.FirebaseRemoteConfigUtil
+import io.beldex.bchat.util.Helper
+import io.beldex.bchat.util.IP2Country
 import io.beldex.bchat.util.SaveYourSeedDialogBox
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.disableClipping
 import io.beldex.bchat.util.getScreenWidth
+import io.beldex.bchat.util.parcelable
+import io.beldex.bchat.util.push
+import io.beldex.bchat.util.show
 import io.beldex.bchat.util.toPx
 import io.beldex.bchat.webrtc.CallViewModel
 import io.beldex.bchat.webrtc.NetworkChangeReceiver
@@ -383,10 +382,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
 
         homeViewModel.getObservable(this).observe(this) { newData ->
             val manager = binding.recyclerView.layoutManager as LinearLayoutManager
-            val firstPos = manager.findFirstCompletelyVisibleItemPosition()
-            val offsetTop = if(firstPos >= 0) {
+            val firstPos = manager.findFirstVisibleItemPosition()
+            val offsetTop = if (firstPos >= 0) {
                 manager.findViewByPosition(firstPos)?.let { view ->
-                    manager.getDecoratedTop(view) - manager.getTopDecorationHeight(view)
+                    view.top - manager.paddingTop
                 } ?: 0
             } else 0
             val messageRequestCount = threadDb.unapprovedConversationCount
@@ -437,6 +436,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             if(firstPos >= 0) { manager.scrollToPositionWithOffset(firstPos, offsetTop) }
             //setupMessageRequestsBanner()
             updateEmptyState()
+            ArchiveChatCountRepository.refreshArchiveCount(threadDb)
         }
         ApplicationContext.getInstance(this).typingStatusRepository.typingThreads.observe(this) { threadIds ->
             homeAdapter.typingThreadIDs = (threadIds ?: setOf())
@@ -883,7 +883,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val position = viewHolder.adapterPosition
             val thread =homeAdapter.data[position]
-            deleteConversation(thread)
+            deleteConversation(thread, position)
         }
 
         override fun onChildDraw(
@@ -973,7 +973,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         onConversationClick(thread.threadId)
     }
 
-    override fun onLongConversationClick(thread : ThreadRecord, view : View) {
+    override fun onLongConversationClick(thread : ThreadRecord, view : View, position: Int) {
         val recipient = thread.recipient
         val popupMenu = PopupMenu(this, view, R.style.PopupMenu)
         popupMenu.menuInflater.inflate(R.menu.menu_conversation_v2, popupMenu.menu)
@@ -1007,7 +1007,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             findItem(R.id.menu_archive_chat).setVisible(true)
         }
         popupMenu.setOnMenuItemClickListener {
-            handlePopUpMenuClickListener(it, thread)
+            handlePopUpMenuClickListener(it, thread, position)
             return@setOnMenuItemClickListener true
         }
         popupMenu.show()
@@ -1179,7 +1179,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         }
     }
 
-    private fun handlePopUpMenuClickListener(item: MenuItem, thread: ThreadRecord) {
+    private fun handlePopUpMenuClickListener(item: MenuItem, thread: ThreadRecord, position : Int) {
         when (item.itemId) {
             R.id.menu_details -> {
                 val userDetailsBottomSheet = UserDetailsBottomSheet()
@@ -1198,19 +1198,19 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             }
             R.id.menu_block -> {
                 if (!thread.recipient.isBlocked) {
-                    blockConversation(thread)
+                    blockConversation(thread, position)
                 }
             }
             R.id.menu_unblock -> {
                 if (thread.recipient.isBlocked) {
-                    unblockConversation(thread)
+                    unblockConversation(thread, position)
                 }
             }
             R.id.menu_mute_notifications -> {
-                setConversationMuted(thread, true)
+                setConversationMuted(thread, true, position)
             }
             R.id.menu_unmute_notifications -> {
-                setConversationMuted(thread, false)
+                setConversationMuted(thread, false, position)
             }
             R.id.menu_notification_settings -> {
                 val dialog = ConversationActionDialog()
@@ -1219,6 +1219,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                         putInt(ConversationActionDialog.EXTRA_ARGUMENT_3, thread.recipient.notifyType)
                         putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, thread)
                         putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.NotificationSettings)
+                        putInt(ConversationActionDialog.EXTRA_THREAD_POSITION, position)
                     }
                     setListener(this@HomeActivity)
                 }
@@ -1228,45 +1229,47 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                 markAllAsRead(thread)
             }
             R.id.menu_delete -> {
-                deleteConversation(thread)
+                deleteConversation(thread, position)
             }
             R.id.menu_archive_chat ->{
-                archiveChatViewModel?.let { archiveConversation(thread, it) }
+                archiveConversation(thread)
             }
             else -> Unit
         }
     }
 
-    private fun blockConversation(thread: ThreadRecord) {
+    private fun blockConversation(thread : ThreadRecord, position : Int) {
         val blockDialog = ConversationActionDialog()
         blockDialog.apply {
             arguments = Bundle().apply {
                 putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, thread)
                 putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.BlockUser)
+                putInt(ConversationActionDialog.EXTRA_THREAD_POSITION, position)
             }
             setListener(this@HomeActivity)
         }
         blockDialog.show(supportFragmentManager, ConversationActionDialog.TAG)
     }
 
-    private fun unblockConversation(thread: ThreadRecord) {
+    private fun unblockConversation(thread : ThreadRecord, position : Int) {
         val unBlockDialog = ConversationActionDialog()
         unBlockDialog.apply {
             arguments = Bundle().apply {
                 putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, thread)
                 putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.UnblockUser)
+                putInt(ConversationActionDialog.EXTRA_THREAD_POSITION, position)
             }
             setListener(this@HomeActivity)
         }
         unBlockDialog.show(supportFragmentManager, ConversationActionDialog.TAG)
     }
 
-    private fun setConversationMuted(thread: ThreadRecord, isMuted: Boolean) {
+    private fun setConversationMuted(thread : ThreadRecord, isMuted : Boolean, position : Int) {
         if (!isMuted) {
             lifecycleScope.launch(Dispatchers.IO) {
                 recipientDatabase.setMuted(thread.recipient, 0)
                 withContext(Dispatchers.Main) {
-                    binding.recyclerView.adapter!!.notifyDataSetChanged()
+                    binding.recyclerView.adapter!!.notifyItemChanged(position)
                 }
             }
         } else {
@@ -1276,6 +1279,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                     putSerializable(ConversationActionDialog.EXTRA_ARGUMENT_3, thread.recipient.mutedUntil)
                     putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.MuteChat)
                     putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, thread)
+                    putInt(ConversationActionDialog.EXTRA_THREAD_POSITION, position)
                 }
                 setListener(this@HomeActivity)
             }
@@ -1308,7 +1312,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         }
     }
 
-    private fun deleteConversation(thread: ThreadRecord) {
+    private fun deleteConversation(thread: ThreadRecord, position : Int) {
         val recipient = thread.recipient
         val message = if (recipient.isGroupRecipient) {
             val group = groupDb.getGroup(recipient.address.toString()).orNull()
@@ -1326,6 +1330,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             arguments = Bundle().apply {
                 putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, thread)
                 putString(ConversationActionDialog.EXTRA_ARGUMENT_1, message)
+                putInt(ConversationActionDialog.EXTRA_THREAD_POSITION, position)
                 putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.DeleteChat)
             }
             setListener(this@HomeActivity)
@@ -1333,7 +1338,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         deleteConversation.show(supportFragmentManager, ConversationActionDialog.TAG)
     }
 
-    private fun archiveConversation(thread : ThreadRecord, archiveChatViewModel : ArchiveChatViewModel){
+    private fun archiveConversation(thread : ThreadRecord){
         val threadID = thread.threadId
         DatabaseComponent.get(this).bchatJobDatabase()
             .cancelPendingMessageSendJobs(threadID)
@@ -1344,9 +1349,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     }
 
     private fun showArchiveChats(){
-        Intent(this, MyAccountActivity::class.java).also {
-            it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.ArchiveChatScreen.route)
-            resultLauncher.launch(it)
+        Intent(this, ArchiveChatActivity::class.java).also {
+            startActivity(it)
         }
     }
 
@@ -1390,10 +1394,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     private fun handlePathsBuiltEvent() { update() }
 
     private fun update() {
-        binding.hopsWarningLayout.visibility = when {
-            OnionRequestAPI.paths.isNotEmpty() -> View.GONE
-            OnionRequestAPI.paths.isEmpty() && CheckOnline.isOnline(this) -> View.GONE
-            else -> View.VISIBLE
+        val hasPaths = OnionRequestAPI.paths.isNotEmpty()
+        val isOnline = CheckOnline.isOnline(this)
+        val shouldShowWarning = !hasPaths && !isOnline
+        val newVisibility =
+            if (shouldShowWarning) View.VISIBLE else View.GONE
+        if (binding.hopsWarningLayout.visibility != newVisibility) {
+            binding.hopsWarningLayout.visibility = newVisibility
         }
     }
 
@@ -1625,14 +1632,18 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         TODO("Not yet implemented")
     }
 
-    override fun onConfirm(dialogType: HomeDialogType, threadRecord: ThreadRecord?) {
+    override fun onConfirm(
+        dialogType : HomeDialogType,
+        threadRecord : ThreadRecord?,
+        position : Int
+    ) {
         when (dialogType) {
             HomeDialogType.UnblockUser -> {
                 threadRecord?.let {
                     lifecycleScope.launch(Dispatchers.IO) {
                         recipientDatabase.setBlocked(it.recipient, false)
                         withContext(Dispatchers.Main) {
-                            binding.recyclerView.adapter!!.notifyDataSetChanged()
+                            homeAdapter.notifyItemChanged(position)
                         }
                     }
                 }
@@ -1642,7 +1653,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                     lifecycleScope.launch(Dispatchers.IO) {
                         recipientDatabase.setBlocked(it.recipient, true)
                         withContext(Dispatchers.Main) {
-                            binding.recyclerView.adapter!!.notifyDataSetChanged()
+                            homeAdapter.notifyItemChanged(position)
                         }
                     }
                 }
@@ -1716,10 +1727,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         }
     }
 
-    override fun onCancel(dialogType: HomeDialogType, threadRecord: ThreadRecord?) {
+    override fun onCancel(dialogType: HomeDialogType, threadRecord: ThreadRecord?, position : Int) {
         when (dialogType) {
             HomeDialogType.DeleteChat -> {
-                binding.recyclerView.adapter?.notifyDataSetChanged()
+                homeAdapter.notifyItemChanged(position)
             }
             HomeDialogType.IgnoreRequest -> {
                 threadRecord.let {
@@ -1733,9 +1744,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     }
 
     override fun onConfirmationWithData(
-        dialogType: HomeDialogType,
-        data: Any?,
-        threadRecord: ThreadRecord?
+        dialogType : HomeDialogType,
+        data : Any?,
+        threadRecord : ThreadRecord?,
+        position : Int
     ) {
         when (dialogType) {
             HomeDialogType.MuteChat -> {
@@ -1751,7 +1763,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                     threadRecord?.let {
                         DatabaseComponent.get(this@HomeActivity).recipientDatabase().setMuted(it.recipient, muteUntil)
                         withContext(Dispatchers.Main) {
-                            binding.recyclerView.adapter!!.notifyDataSetChanged()
+                            homeAdapter.notifyItemChanged(position)
                         }
                     }
                 }
@@ -1759,8 +1771,15 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             HomeDialogType.NotificationSettings -> {
                 threadRecord?.let {
                     val index = data as Int
-                    DatabaseComponent.get(this@HomeActivity).recipientDatabase().setNotifyType(it.recipient, index.toString().toInt())
-                    binding.recyclerView.adapter?.notifyDataSetChanged()
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        DatabaseComponent.get(this@HomeActivity)
+                            .recipientDatabase()
+                            .setNotifyType(it.recipient, index)
+
+                        withContext(Dispatchers.Main) {
+                            homeAdapter.notifyItemChanged(position)
+                        }
+                    }
                 }
             }
             HomeDialogType.BlockUser -> {
@@ -1768,7 +1787,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                     lifecycleScope.launch(Dispatchers.IO) {
                         recipientDatabase.setBlocked(it.recipient, true)
                         withContext(Dispatchers.Main) {
-                            binding.recyclerView.adapter!!.notifyDataSetChanged()
+                            homeAdapter.notifyItemChanged(position)
                         }
                     }
                 }
@@ -1779,7 +1798,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                     lifecycleScope.launch(Dispatchers.IO) {
                         recipientDatabase.setBlocked(it.recipient, false)
                         withContext(Dispatchers.Main) {
-                            binding.recyclerView.adapter!!.notifyDataSetChanged()
+                            homeAdapter.notifyItemChanged(position)
                         }
                     }
                 }

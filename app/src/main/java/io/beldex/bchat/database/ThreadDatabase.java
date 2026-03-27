@@ -772,23 +772,73 @@ public class ThreadDatabase extends Database {
       boolean isArchived   = threadDb.isThreadArchived(threadId);
       boolean keepArchived = TextSecurePreferences.getKeepArchiveChat(context);
       boolean isControlMessage = record != null && record.isControlMessage();
+      boolean isNewThread = getMessageCount(threadId) == 0;
 
-      boolean unarchive;
+      boolean unarchive = false;
 
-      if (isControlMessage) {
-        unarchive = false;
+      if (!isControlMessage) {
+        if (isArchived) {
+          unarchive = !keepArchived;
+        } else {
+          unarchive = true;
+        }
       }
-      else if (isArchived) {
-        unarchive = !keepArchived;
-      }
-      else {
+
+      if (isNewThread) {
         unarchive = true;
       }
 
       if (record != null && !record.isDeleted()) {
+        if(!record.isNewMessage(record.getTimestamp())){
+          unarchive = false;
+        }
         updateThread(threadId, count, getFormattedBodyFor(record), getAttachmentUriFor(record),
                      record.getTimestamp(), record.getDeliveryStatus(), record.getDeliveryReceiptCount(),
                      record.getType(), unarchive, record.getExpiresIn(), record.getReadReceiptCount());
+        notifyConversationListListeners();
+        return false;
+      } else {
+        if (shouldDeleteEmptyThread) {
+          deleteThread(threadId);
+          notifyConversationListListeners();
+          return true;
+        }
+        return false;
+      }
+    } finally {
+      if (reader != null)
+        reader.close();
+    }
+  }
+
+  public boolean update(long threadId, boolean unarchive) {
+    MmsSmsDatabase mmsSmsDatabase = DatabaseComponent.get(context).mmsSmsDatabase();
+    long count = mmsSmsDatabase.getConversationCount(threadId);
+
+    boolean shouldDeleteEmptyThread = deleteThreadOnEmpty(threadId);
+
+    if (count == 0 && shouldDeleteEmptyThread) {
+      deleteThread(threadId);
+      notifyConversationListListeners();
+      return true;
+    }
+
+    MmsSmsDatabase.Reader reader = null;
+
+    try {
+      reader = mmsSmsDatabase.readerFor(mmsSmsDatabase.getConversationSnippet(threadId));
+      MessageRecord record = null;
+      if (reader != null) {
+        record = reader.getNext();
+        while (record != null && record.isDeleted()) {
+          record = reader.getNext();
+        }
+      }
+
+      if (record != null && !record.isDeleted()) {
+        updateThread(threadId, count, getFormattedBodyFor(record), getAttachmentUriFor(record),
+                record.getTimestamp(), record.getDeliveryStatus(), record.getDeliveryReceiptCount(),
+                record.getType(), unarchive, record.getExpiresIn(), record.getReadReceiptCount());
         notifyConversationListListeners();
         return false;
       } else {

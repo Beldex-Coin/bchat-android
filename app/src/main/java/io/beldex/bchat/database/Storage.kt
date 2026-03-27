@@ -132,6 +132,11 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         threadDb.update(threadId)
     }
 
+    override fun updateThreadForHandle(threadId: Long, unArchive: Boolean) {
+        val threadDb = DatabaseComponent.get(context).threadDatabase()
+        threadDb.update(threadId, unArchive)
+    }
+
     override fun setIsBnsHolder(senderPublicKey: String, isBnsHolder: Boolean) {
         val contactDB   = DatabaseComponent.get(context).bchatContactDatabase()
         var contact = contactDB.getContactWithBchatID(senderPublicKey)

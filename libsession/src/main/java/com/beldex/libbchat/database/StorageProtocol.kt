@@ -171,6 +171,7 @@ interface StorageProtocol {
     fun markConversationAsRead(threadId: Long, updateLastSeen: Boolean)
     fun incrementUnread(threadId: Long, amount: Int)
     fun updateThread(threadId: Long)
+    fun updateThreadForHandle(threadId: Long, unArchive: Boolean)
     fun insertDataExtractionNotificationMessage(senderPublicKey: String, message: DataExtractionNotificationInfoMessage, sentTimestamp: Long)
     fun insertCallMessage(senderPublicKey: String, callMessageType: CallMessageType, sentTimestamp: Long)
     fun insertMessageRequestResponseFromContact(response: MessageRequestResponse)

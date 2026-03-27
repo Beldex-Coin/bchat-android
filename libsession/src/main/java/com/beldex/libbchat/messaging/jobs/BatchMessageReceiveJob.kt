@@ -76,7 +76,7 @@ class BatchMessageReceiveJob(
             val storage = MessagingModuleConfiguration.shared.storage
             val context = MessagingModuleConfiguration.shared.context
             val localUserPublicKey = storage.getUserPublicKey()
-
+            var hasVisibleMessage = false
             // parse and collect IDs
             messages.iterator().forEach { messageParameters ->
                 val (data, serverHash, openGroupMessageServerID) = messageParameters
@@ -128,6 +128,7 @@ class BatchMessageReceiveJob(
                                     if (messageId != null && message.reaction == null) {
                                         messageIds += messageId to (message.sender == localUserPublicKey)
                                     }
+                                    hasVisibleMessage = true
                                     parameters.openGroupMessageServerID?.let {
                                         MessageReceiver.handleOpenGroupReactions(threadId, it, parameters.reactions)
                                     }
@@ -154,7 +155,11 @@ class BatchMessageReceiveJob(
                         if (trueUnreadCount > 0) {
                             storage.incrementUnread(threadId, trueUnreadCount)
                         }
-                        storage.updateThread(threadId)
+                        if(hasVisibleMessage) {
+                            storage.updateThread(threadId)
+                        } else {
+                            storage.updateThreadForHandle(threadId, false)
+                        }
                         SSKEnvironment.shared.notificationManager.updateNotification(context, threadId)
                     }
                 }

@@ -381,6 +381,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
       composeIntent.setType(mediaItem.type);
       composeIntent.putExtra(ShareActivity.IN_CHAT_SHARE,true);
       resultLauncher.launch(composeIntent);
+      finish();
     }
   }
 

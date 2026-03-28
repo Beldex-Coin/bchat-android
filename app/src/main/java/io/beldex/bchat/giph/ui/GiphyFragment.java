@@ -1,5 +1,6 @@
 package io.beldex.bchat.giph.ui;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -15,17 +16,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import io.beldex.bchat.giph.model.GiphyImage;
 import io.beldex.bchat.giph.net.GiphyLoader;
 import io.beldex.bchat.giph.util.InfiniteScrollListener;
 import com.bumptech.glide.Glide;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libbchat.utilities.ViewUtil;
-
 import java.util.LinkedList;
 import java.util.List;
-
 import io.beldex.bchat.R;
 
 public abstract class GiphyFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<GiphyImage>>, GiphyAdapter.OnItemClickListener {
@@ -39,6 +37,7 @@ public abstract class GiphyFragment extends Fragment implements LoaderManager.Lo
   private GiphyAdapter.OnItemClickListener listener;
 
   protected String searchString;
+  private boolean viewCreated = false;
 
   @Override
   public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup viewGroup, Bundle bundle) {
@@ -51,37 +50,74 @@ public abstract class GiphyFragment extends Fragment implements LoaderManager.Lo
   }
 
   @Override
-  public void onActivityCreated(Bundle bundle) {
-    super.onActivityCreated(bundle);
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
 
-    this.giphyAdapter = new GiphyAdapter(getActivity(), Glide.with(this), new LinkedList<>());
+    viewCreated = true;
+
+    this.giphyAdapter = new GiphyAdapter(requireContext(), Glide.with(this), new LinkedList<>());
     this.giphyAdapter.setListener(this);
 
-    setLayoutManager(TextSecurePreferences.isGifSearchInGridLayout(getContext()));
-    this.recyclerView.setItemAnimator(new DefaultItemAnimator());
-    this.recyclerView.setAdapter(giphyAdapter);
-    this.recyclerView.addOnScrollListener(new GiphyScrollListener());
+    recyclerView.setLayoutManager(
+            getLayoutManager(TextSecurePreferences.isGifSearchInGridLayout(requireContext()))
+    );
 
-    getLoaderManager().initLoader(0, null, this);
+    recyclerView.setItemAnimator(new DefaultItemAnimator());
+    recyclerView.setAdapter(giphyAdapter);
+    recyclerView.addOnScrollListener(new GiphyScrollListener());
+
+    LoaderManager.getInstance(this).initLoader(0, null, this);
+
+    if (searchString != null) {
+      restartSearch();
+    }
   }
 
   @Override
-  public void onLoadFinished(@NonNull Loader<List<GiphyImage>> loader, @NonNull List<GiphyImage> data) {
-    this.loadingProgress.setVisibility(View.GONE);
+  public void onAttach(@NonNull Context context) {
+    super.onAttach(context);
+    super.onAttach(context);
 
-    if (data.isEmpty()) noResultsView.setVisibility(View.VISIBLE);
-    else                noResultsView.setVisibility(View.GONE);
-
-    this.giphyAdapter.setImages(data);
+    if (context instanceof GiphyAdapter.OnItemClickListener) {
+      listener = (GiphyAdapter.OnItemClickListener) context;
+    } else {
+      throw new RuntimeException(context
+              + " must implement GiphyAdapter.OnItemClickListener");
+    }
   }
+
+  @Override
+  public void onLoadFinished(@NonNull Loader<List<GiphyImage>> loader,
+                             @NonNull List<GiphyImage> data) {
+
+    if (!viewCreated) return;
+
+    if (loadingProgress != null)
+      loadingProgress.setVisibility(View.GONE);
+
+    if (noResultsView != null)
+      noResultsView.setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
+
+    if (giphyAdapter != null)
+      giphyAdapter.setImages(data);
+  }
+
 
   @Override
   public void onLoaderReset(@NonNull Loader<List<GiphyImage>> loader) {
-    noResultsView.setVisibility(View.GONE);
-    this.giphyAdapter.setImages(new LinkedList<GiphyImage>());
+    if (!viewCreated) return;
+
+    if (noResultsView != null)
+      noResultsView.setVisibility(View.GONE);
+
+    if (giphyAdapter != null)
+      giphyAdapter.setImages(new LinkedList<>());
   }
 
+
   public void setLayoutManager(boolean gridLayout) {
+    if (!viewCreated || recyclerView == null) return;
+
     recyclerView.setLayoutManager(getLayoutManager(gridLayout));
   }
 
@@ -96,8 +132,17 @@ public abstract class GiphyFragment extends Fragment implements LoaderManager.Lo
 
   public void setSearchString(@Nullable String searchString) {
     this.searchString = searchString;
-    this.noResultsView.setVisibility(View.GONE);
-    this.getLoaderManager().restartLoader(0, null, this);
+
+    if (!viewCreated) return;
+
+    restartSearch();
+  }
+
+  private void restartSearch() {
+    if (noResultsView != null)
+      noResultsView.setVisibility(View.GONE);
+
+    LoaderManager.getInstance(this).restartLoader(0, null, this);
   }
 
   @Override
@@ -118,6 +163,8 @@ public abstract class GiphyFragment extends Fragment implements LoaderManager.Lo
         }
 
         protected void onPostExecute(List<GiphyImage> images) {
+          if (!isAdded() || !viewCreated || giphyAdapter == null) return;
+
           giphyAdapter.addImages(images);
         }
       }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

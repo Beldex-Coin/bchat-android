@@ -1,5 +1,6 @@
 package io.beldex.bchat.groups
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -11,6 +12,8 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.loader.app.LoaderManager
@@ -59,6 +62,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
     private lateinit var name: String
     private lateinit var groupRecipientID: String
     private val glide by lazy { Glide.with(this) }
+    private val nicknameRegex = Regex("^[a-zA-Z0-9 ]+$")
 
     private var isEditingName = false
         set(value) {
@@ -209,7 +213,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
 
     override fun onPause() {
         super.onPause()
-        Helper.hideKeyboard(this)
+        hideKeyboard()
     }
 
     override fun onDestroy() {
@@ -335,6 +339,13 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         if(name == originalName){
             return Toast.makeText(this, R.string.activity_edit_closed_group_group_name_same_name_error,Toast.LENGTH_SHORT).show()
         }
+        if (!nicknameRegex.matches(name)) {
+            return Toast.makeText(
+                this,
+                R.string.nickname_special_char_not_allowed,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
         this.name = name
         binding.lblGroupNameDisplay.text = name
         hasNameChanged = true
@@ -417,6 +428,14 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
                 binding.loaderContainer.fadeOut()
                 isLoading = false
             }
+        }
+    }
+
+    fun Activity.hideKeyboard() {
+        currentFocus?.let { view ->
+            ViewCompat.getWindowInsetsController(view)
+                ?.hide(WindowInsetsCompat.Type.ime())
+            view.clearFocus()
         }
     }
 

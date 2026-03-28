@@ -8,6 +8,7 @@ import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.dependencies.DatabaseComponent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -52,25 +53,37 @@ class CreateSecretGroupViewModel@Inject constructor(
             _recipients.value
         )
 
-
-//    fun subscribe(context: Context): LiveData<SelectedContact> {
-//        return selectedContacts
-//    }
-
     init {
-        viewModelScope.launch {
-            threadDb.approvedConversationList.use { openCursor ->
-                val reader = threadDb.readerFor(openCursor)
-                val recipients = mutableListOf<Recipient>()
+        viewModelScope.launch(Dispatchers.IO) {
+
+            val recipients = mutableListOf<Recipient>()
+
+            threadDb.approvedConversationList.use { cursor ->
+                val reader = threadDb.readerFor(cursor)
                 while (true) {
                     recipients += reader.next?.recipient ?: break
                 }
-                withContext(Dispatchers.Main) {
-                    _recipients.value = recipients
-                        .filter { recipient -> !recipient.isGroupRecipient && recipient.hasApprovedMe() && recipient.address.serialize() != textSecurePreferences.getLocalNumber() && !recipient.isBlocked }
-                    kotlinx.coroutines.delay(3000)
-                    readUserDisplayName()
+            }
+
+            threadDb.archivedConversationList.use { cursor ->
+                val reader = threadDb.readerFor(cursor)
+                while (true) {
+                    recipients += reader.next?.recipient ?: break
                 }
+            }
+
+            val uniqueRecipients = recipients.distinctBy { it.address.serialize() }
+
+            withContext(Dispatchers.Main) {
+                _recipients.value = uniqueRecipients.filter { recipient ->
+                    !recipient.isGroupRecipient &&
+                            recipient.hasApprovedMe() &&
+                            recipient.address.serialize() != textSecurePreferences.getLocalNumber() &&
+                            !recipient.isBlocked
+                }
+
+                delay(3000)
+                readUserDisplayName()
             }
         }
     }

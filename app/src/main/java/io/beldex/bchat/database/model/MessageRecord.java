@@ -158,4 +158,8 @@ public abstract class MessageRecord extends DisplayRecord {
   public @NonNull List<ReactionRecord> getReactions() {
     return reactions;
   }
+
+  public boolean isNewMessage(long lastSeenTimestamp) {
+    return getDateReceived() > lastSeenTimestamp;
+  }
 }

@@ -586,6 +586,20 @@
           "description":"Minor Bug fixes"
         }
       ]
+    },
+    {
+      "title": "2.9.4",
+      "descriptions": [
+        {
+          "description":"Enhanced Archive chat feature"
+        },
+        {
+          "description":"Fixed UI issues"
+        },
+        {
+          "description":"Fixed few crash issues"
+        }
+      ]
     }
   ]
 }

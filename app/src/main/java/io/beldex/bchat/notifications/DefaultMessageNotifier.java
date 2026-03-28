@@ -271,6 +271,11 @@ public class DefaultMessageNotifier implements MessageNotifier {
       return;
     }
 
+    if (shouldSuppressNotification(context, threadId)) {
+      Log.d(TAG, "Suppressed notification for archived thread: " + threadId);
+      return;
+    }
+
     /*if (isVisible) {
       sendInThreadNotification(context, threads.getRecipientForThreadId(threadId));
     } else if (!homeScreenVisible) {
@@ -330,6 +335,15 @@ public class DefaultMessageNotifier implements MessageNotifier {
       if (telcoCursor != null) telcoCursor.close();
       if (pushCursor != null)  pushCursor.close();
     }
+  }
+
+  private boolean shouldSuppressNotification(Context context, long threadId) {
+    ThreadDatabase threadDb = DatabaseComponent.get(context).threadDatabase();
+
+    boolean isArchived = threadDb.isThreadArchived(threadId);
+    boolean keepArchived = TextSecurePreferences.getKeepArchiveChat(context);
+
+    return isArchived && keepArchived;
   }
 
 
@@ -568,6 +582,11 @@ public class DefaultMessageNotifier implements MessageNotifier {
         if (messageRequest && (threadDatabase.getMessageCount(threadId) > 1 || !TextSecurePreferences.hasHiddenMessageRequests(context))) {
           continue;
         }
+      }
+
+      if (shouldSuppressNotification(context, threadId)) {
+        Log.d(TAG, "Skipping archived thread in notification state: " + threadId);
+        continue;
       }
 
       if (messageRequest) {

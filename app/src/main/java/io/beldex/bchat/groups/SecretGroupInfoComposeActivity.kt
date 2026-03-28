@@ -246,21 +246,31 @@ fun GroupDetailsScreen(
         mutableIntStateOf(groupMembers?.members?.size ?: 0)
     }
     val searchQuery by secretGroupInfoViewModel.searchQuery.collectAsState()
-    val filteredMembers=remember { MutableStateFlow<List<String>>(emptyList()) }
 
-    val resultLauncher=rememberLauncherForActivityResult(
-        contract=ActivityResultContracts.StartActivityForResult()
+    var membersToDisplay by remember {
+        mutableStateOf(groupMembers?.members ?: emptyList())
+    }
+
+    val resultLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == RESULT_OK) {
             result.data?.let { data ->
-                groupName=data.getStringExtra("group_name") ?: ""
-                profileRefresh = !profileRefresh
-                groupMembersCount=data.getIntExtra("group_members_count", 0)
-                if (memberCount != groupMembersCount) {
+
+                groupName = data.getStringExtra("group_name") ?: ""
+
+                val newMemberCount =
+                    data.getIntExtra("group_members_count", 0)
+
+                if (memberCount != newMemberCount) {
                     secretGroupInfoViewModel.fetchGroupMembers()
-                    val newList=secretGroupInfoViewModel.groupMembers.value
-                    if (newList != null) {
-                        filteredMembers.value=newList.members
+
+                    val updatedList =
+                        secretGroupInfoViewModel.groupMembers.value
+
+                    if (updatedList != null) {
+                        membersToDisplay = updatedList.members
+                        groupMembersCount = updatedList.members.size
                     }
                 }
             }
@@ -459,26 +469,18 @@ fun GroupDetailsScreen(
             true
         }
     }
-    var updateProfile by remember {
-        mutableStateOf(true)
-    }
-    val membersToDisplay by filteredMembers.collectAsState()
 
-
-    LaunchedEffect(searchQuery) {
-        if (searchQuery.isNotEmpty()) {
-            val combinedAllMembers=groupMembers!!.members
-            val filtered=combinedAllMembers.filter { member ->
-                val displayName=getUserDisplayName(member)
-                displayName.contains(searchQuery, ignoreCase=true)
-            }
-            filteredMembers.value=filtered
-            updateProfile = !updateProfile
+    LaunchedEffect(searchQuery, groupMembers) {
+        membersToDisplay = if (searchQuery.isNotEmpty()) {
+            groupMembers?.members?.filter { member ->
+                val displayName = getUserDisplayName(member)
+                displayName.contains(searchQuery, ignoreCase = true)
+            } ?: emptyList()
         } else {
-            filteredMembers.value=groupMembers!!.members
-            updateProfile = !updateProfile
+            groupMembers?.members ?: emptyList()
         }
     }
+
 
 
     fun String.capitalizeFirstLetter() : String {
@@ -554,7 +556,10 @@ fun GroupDetailsScreen(
 
                 LazyColumn(modifier=Modifier.padding(top=16.dp)) {
 
-                    items(membersToDisplay) { member ->
+                    items(
+                        items = membersToDisplay,
+                        key = { member -> member }
+                    ) { member ->
 
                         Row(
                             modifier=Modifier
@@ -576,21 +581,12 @@ fun GroupDetailsScreen(
                                     .width(40.dp),
                                 contentAlignment=Alignment.Center,
                             ) {
-                                if (updateProfile) {
-                                    ProfilePictureComponent(
-                                        publicKey=member,
-                                        displayName=getUserDisplayName(member),
-                                        containerSize=40.dp,
-                                        pictureMode=ProfilePictureMode.SmallPicture
-                                    )
-                                } else {
-                                    ProfilePictureComponent(
-                                        publicKey=member,
-                                        displayName=getUserDisplayName(member),
-                                        containerSize=40.dp,
-                                        pictureMode=ProfilePictureMode.SmallPicture
-                                    )
-                                }
+                                ProfilePictureComponent(
+                                    publicKey = member,
+                                    displayName = getUserDisplayName(member),
+                                    containerSize = 40.dp,
+                                    pictureMode = ProfilePictureMode.SmallPicture
+                                )
                             }
                             Spacer(modifier=Modifier.width(16.dp))
                             Column(modifier=Modifier.weight(1f)) {
@@ -648,27 +644,15 @@ fun GroupDetailsScreen(
                 .take(2).toMutableList()
             val additionalPk=members.getOrNull(1)?.serialize() ?: ""
             val additionalDisplay=getUserDisplayName(additionalPk)
-            if(profileRefresh) {
-                ProfilePictureComponent(
-                    publicKey=recipient.address.toString(),
-                    displayName=recipient.name.toString(),
-                    additionalPublicKey=additionalPk,
-                    additionalDisplayName=additionalDisplay,
-                    containerSize=70.dp,
-                    pictureMode=pictureType,
-                    isGroupInfo = true
-                )
-            } else {
-                ProfilePictureComponent(
-                    publicKey=recipient.address.toString(),
-                    displayName=recipient.name.toString(),
-                    additionalPublicKey=additionalPk,
-                    additionalDisplayName=additionalDisplay,
-                    containerSize=70.dp,
-                    pictureMode=pictureType,
-                    isGroupInfo = true
-                )
-            }
+            ProfilePictureComponent(
+                publicKey = recipient.address.toString(),
+                displayName = recipient.name.toString(),
+                additionalPublicKey = additionalPk,
+                additionalDisplayName = additionalDisplay,
+                containerSize = 70.dp,
+                pictureMode = pictureType,
+                isGroupInfo = true
+            )
         }
 
         Row(
@@ -852,7 +836,11 @@ fun GroupDetailsScreen(
                     }
                 }
 
-                items(groupMembers!!.members) { member ->
+                items(
+                    items = groupMembers!!.members,
+                    key = { member -> member }
+                ) { member ->
+
                     Row(
                         modifier=Modifier
                             .fillMaxWidth()

@@ -2,9 +2,7 @@ package io.beldex.bchat.home
 
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.Typeface
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
@@ -54,17 +52,13 @@ class ConversationView : LinearLayout {
         this.thread = thread
         val recipient = thread.recipient
         val isMuted = recipient.isMuted || recipient.notifyType != NOTIFY_TYPE_ALL
+        val unreadCount = thread.unreadCount
         if (thread.isPinned) {
             binding.contentView.apply {
                 background = ContextCompat.getDrawable(context,R.drawable.unread_message_chat_background)
                 val params = layoutParams as FrameLayout.LayoutParams
                 params.setMargins(0, 16, 16, 16)
                 layoutParams = params
-                if(isMuted && thread.unreadCount == 0 && !thread.isRead){
-                    binding.muteIcon.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                        rightMargin=50
-                    }
-                }
 
             }
             binding.pinnedViewContainer.isVisible = thread.isPinned
@@ -77,31 +71,19 @@ class ConversationView : LinearLayout {
                 layoutParams = params
             }
         }
-        if(isMuted && thread.unreadCount == 0 && !thread.isRead && !thread.isPinned){
-            binding.muteIcon.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                rightMargin=70
-            }
+        val margin = when {
+            isMuted && unreadCount == 0 && !thread.isRead && thread.isPinned -> 50
+            isMuted && unreadCount == 0 && !thread.isRead && !thread.isPinned -> 70
+            else -> 16
+        }
+
+        binding.muteIcon.updateLayoutParams<ConstraintLayout.LayoutParams> {
+            rightMargin = margin
         }
         binding.profilePictureView.root.glide = glide
-        val unreadCount = thread.unreadCount
-        if (thread.recipient.isBlocked) {
-//            binding.accentView.setBackgroundResource(R.color.destructive)
-//            binding.accentView.visibility = View.VISIBLE
-        } else {
-//            binding.accentView.setBackgroundResource(R.color.accent)
-            // Using thread.isRead we can determine if the last message was our own, and display it as 'read' even though previous messages may not be
-            // This would also not trigger the disappearing message timer which may or may not be desirable
-//            binding.accentView.visibility = if (unreadCount > 0 && !thread.isRead) View.VISIBLE else View.INVISIBLE
-        }
-        val formattedUnreadCount = if (thread.isRead) {
-            null
-        } else {
-            if (unreadCount < 100) unreadCount.toString() else "99+"
-        }
+
+        val formattedUnreadCount = if (unreadCount < 100) unreadCount.toString() else "99+"
         binding.unreadCountTextView.text = formattedUnreadCount
-        val textSize = if (unreadCount < 100) 12.0f else 10.0f
-        binding.unreadCountTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize)
-        binding.unreadCountTextView.setTypeface(Typeface.DEFAULT, if (unreadCount < 100) Typeface.BOLD else Typeface.NORMAL)
         binding.unreadCountIndicator.isVisible = (unreadCount != 0 && !thread.isRead)
         val senderDisplayName = getUserDisplayName(thread.recipient)
                 ?: thread.recipient.address.toString()

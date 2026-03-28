@@ -17,6 +17,7 @@ import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -28,6 +29,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import io.beldex.bchat.textformatter.TextFormatter;
 import io.beldex.bchat.util.CharacterCalculator;
 import io.beldex.bchat.util.PushCharacterCalculator;
 import io.beldex.bchat.util.Stopwatch;
@@ -106,6 +108,8 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
 
   private final PushCharacterCalculator characterCalculator = new PushCharacterCalculator();
 
+  private final ComposeKeyPressedListener composeKeyPressedListener = new ComposeKeyPressedListener();
+
   public static MediaSendFragment newInstance(@NonNull Recipient recipient) {
     Bundle args = new Bundle();
     args.putParcelable(KEY_ADDRESS, recipient.getAddress());
@@ -170,8 +174,6 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
 //      sendButtonBkg.getBackground().setColorFilter(getResources().getColor(R.color.transparent), PorterDuff.Mode.MULTIPLY);
 //      sendButtonBkg.getBackground().invalidateSelf();
 //    });
-
-    ComposeKeyPressedListener composeKeyPressedListener = new ComposeKeyPressedListener();
 
     composeText.setOnKeyListener(composeKeyPressedListener);
     composeText.addTextChangedListener(composeKeyPressedListener);
@@ -542,6 +544,38 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
 
     @Override
     public void afterTextChanged(Editable s) {
+      composeText.removeTextChangedListener(composeKeyPressedListener);
+
+      String original = s.toString();
+      int cursor = composeText.getSelectionStart();
+
+      SpannableStringBuilder formatted = TextFormatter.formatAppText(original);
+      String formattedText = formatted.toString();
+
+      // --- Step 2: Only update if the visible text actually changed
+      if (!formattedText.equals(original)) {
+        // --- Step 3: Calculate new cursor position based on visible chars before old cursor
+        // Extract portion before the cursor in the original text
+        String beforeCursor = original.substring(0, Math.max(0, cursor));
+
+        // Format only that portion (so we know how long it will be after formatting)
+        SpannableStringBuilder formattedBeforeCursor = TextFormatter.formatAppText(beforeCursor);
+
+        // The new cursor should be at the end of that formatted portion
+        int newCursor = formattedBeforeCursor.length();
+
+        // --- Step 4: Apply new formatted text
+        composeText.setText(formatted);
+
+        // --- Step 5: Restore cursor safely
+        try {
+          composeText.setSelection(Math.min(newCursor, formatted.length()));
+        } catch (IndexOutOfBoundsException e) {
+          composeText.setSelection(formatted.length());
+        }
+      }
+
+      composeText.addTextChangedListener(composeKeyPressedListener);
       presentCharactersRemaining();
       viewModel.onBodyChanged(s);
     }

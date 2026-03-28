@@ -61,7 +61,8 @@
                     android:paddingStart="0dp"
                     android:paddingTop="2dp"
                     android:paddingBottom="2dp"
-                    android:textSize="@dimen/small_font_size" />
+                    android:textSize="@dimen/small_font_size"
+                    android:inputType="textNoSuggestions|textMultiLine"/>
 
             </RelativeLayout>
 

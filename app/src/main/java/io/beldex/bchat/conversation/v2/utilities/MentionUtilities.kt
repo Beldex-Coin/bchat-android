@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.util.Range
@@ -24,7 +25,12 @@ object MentionUtilities {
     }
 
     @JvmStatic
-    fun highlightMentions(text: CharSequence, isOutgoingMessage: Boolean, threadID: Long, context: Context): SpannableString {
+    fun highlightMentionsSpannableString(text: CharSequence, threadID: Long, context: Context): SpannableStringBuilder {
+        return highlightMentions(text, false, threadID, context) // isOutgoingMessage is irrelevant
+    }
+
+    @JvmStatic
+    fun highlightMentions(text: CharSequence, isOutgoingMessage: Boolean, threadID: Long, context: Context): SpannableStringBuilder {
         @Suppress("NAME_SHADOWING") var text = text
         val pattern = Pattern.compile("@[0-9a-fA-F]*")
         var matcher = pattern.matcher(text)
@@ -54,7 +60,7 @@ object MentionUtilities {
                 if (!matcher.find(startIndex)) { break }
             }
         }
-        val result = SpannableString(text)
+        val result = SpannableStringBuilder(text)
         val isLightMode = UiModeUtilities.isDayUiMode(context)
         for (mention in mentions) {
             val colorID = if (isOutgoingMessage) {

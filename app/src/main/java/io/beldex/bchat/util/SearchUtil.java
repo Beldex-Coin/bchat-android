@@ -2,6 +2,7 @@ package io.beldex.bchat.util;
 
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.CharacterStyle;
 
@@ -49,6 +50,31 @@ public class SearchUtil {
 
     List<Pair<Integer, Integer>> ranges  = getHighlightRanges(locale, text.toString(), highlight);
     SpannableString              spanned = new SpannableString(text);
+
+    for (Pair<Integer, Integer> range : ranges) {
+      spanned.setSpan(styleFactory.create(), range.first(), range.second(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+    }
+
+    return spanned;
+  }
+
+
+  public static SpannableStringBuilder getHighlightedSpanBuilder(@NonNull Locale locale,
+                                                                 @NonNull StyleFactory styleFactory,
+                                                                 @Nullable SpannableStringBuilder text,
+                                                                 @Nullable String highlight)
+  {
+    if (TextUtils.isEmpty(text)) {
+      return new SpannableStringBuilder("");
+    }
+
+
+    if (TextUtils.isEmpty(highlight)) {
+      return new SpannableStringBuilder(text);
+    }
+
+    List<Pair<Integer, Integer>> ranges  = getHighlightRanges(locale, text.toString(), highlight);
+    SpannableStringBuilder              spanned = new SpannableStringBuilder(text);
 
     for (Pair<Integer, Integer> range : ranges) {
       spanned.setSpan(styleFactory.create(), range.first(), range.second(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);

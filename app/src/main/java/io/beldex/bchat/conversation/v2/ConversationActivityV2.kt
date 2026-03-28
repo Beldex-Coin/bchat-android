@@ -2751,14 +2751,12 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             binding.attachmentContainer.visibility = View.GONE
             isShowingAttachmentOptions = false
         }
-
-        val inputBarText = binding.inputBar.text
         val preferences = textSecurePreferences
 
         if (preferences.isLinkPreviewsEnabled()) {
             linkPreviewViewModel.onTextChanged(
                 this,
-                inputBarText,
+                newContent.toString(),
                 0,
                 0
             )
@@ -2783,7 +2781,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
                 linkPreviewViewModel.onEnabled()
                 linkPreviewViewModel.onTextChanged(
                     this,
-                    inputBarText,
+                    newContent.toString(),
                     0,
                     0
                 )

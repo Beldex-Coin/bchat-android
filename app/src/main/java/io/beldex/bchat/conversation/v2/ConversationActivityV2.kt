@@ -2096,16 +2096,16 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         val lastIndex = text.lastIndex
         val lastChar = text[lastIndex]
 
-        val isStartOrWhitespaceBefore =
-            lastIndex == 0 || Character.isWhitespace(text[lastIndex - 1])
+        val isValidBeforeChar =
+            lastIndex == 0 || !Character.isLetterOrDigit(text[lastIndex - 1])
 
         when {
-            lastChar == '@' && isStartOrWhitespaceBefore -> {
+            lastChar == '@' && isValidBeforeChar -> {
                 currentMentionStartIndex = lastIndex
                 showOrUpdateMentionCandidatesIfNeeded()
             }
 
-            Character.isWhitespace(lastChar) || lastChar == '@' -> {
+            Character.isWhitespace(lastChar) -> {
                 // '@@' or space ends mention
                 currentMentionStartIndex = -1
                 hideMentionCandidates()

@@ -549,7 +549,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
       String original = s.toString();
       int cursor = composeText.getSelectionStart();
 
-      SpannableStringBuilder formatted = TextFormatter.formatAppText(original);
+      SpannableStringBuilder formatted = TextFormatter.formatAppText(original, requireContext());
       String formattedText = formatted.toString();
 
       // --- Step 2: Only update if the visible text actually changed
@@ -559,7 +559,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
         String beforeCursor = original.substring(0, Math.max(0, cursor));
 
         // Format only that portion (so we know how long it will be after formatting)
-        SpannableStringBuilder formattedBeforeCursor = TextFormatter.formatAppText(beforeCursor);
+        SpannableStringBuilder formattedBeforeCursor = TextFormatter.formatAppText(beforeCursor, requireContext() );
 
         // The new cursor should be at the end of that formatted portion
         int newCursor = formattedBeforeCursor.length();

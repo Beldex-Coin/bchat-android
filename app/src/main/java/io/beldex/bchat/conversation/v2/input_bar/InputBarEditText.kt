@@ -66,12 +66,12 @@ class InputBarEditText : AppCompatEditText {
         }
 
         // --- Apply formatting (bold/italic/spans) ---
-        val formatted = TextFormatter.formatAppText(rawText)
+        val formatted = TextFormatter.formatAppText(rawText, context)
         if (formatted.toString() != rawText) {
             isFormatting = true
             val oldCursor = selectionStart
             val beforeCursorText = if (oldCursor in 1..rawText.length) rawText.substring(0, oldCursor) else rawText
-            val formattedBeforeCursor = TextFormatter.formatAppText(beforeCursorText)
+            val formattedBeforeCursor = TextFormatter.formatAppText(beforeCursorText, context)
             val newCursor = formattedBeforeCursor.length
             setText(formatted)
             try { setSelection(min(newCursor, formatted.length)) } catch (e: Exception) { setSelection(formatted.length) }

@@ -1,5 +1,6 @@
 package io.beldex.bchat.textformatter
 
+import android.content.Context
 import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableString
@@ -12,11 +13,11 @@ import androidx.core.graphics.toColorInt
 object TextFormatter {
 
     @JvmStatic
-    fun formatAppText(input: CharSequence): SpannableStringBuilder {
+    fun formatAppText(input: CharSequence, context : Context): SpannableStringBuilder {
         val rawText = input.toString()
 
         val out = SpannableStringBuilder()
-        val parser = AppTextFormatter(rawText)
+        val parser = AppTextFormatter(rawText, context)
         parser.appendFormatted(out)
 
         if (out.isEmpty()) {
@@ -47,10 +48,6 @@ object TextFormatter {
 
         applyRegexSpan(builder, Regex("_(.*?)_")) { match ->
             toUnicodeItalic(match.groupValues[1])
-        }
-
-        applyRegexSpan(builder, Regex("~(.*?)~")) { match ->
-            toUnicodeStrikethrough(match.groupValues[1])
         }
 
         applyRegexSpan(builder, Regex("~(.*?)~")) { match ->
@@ -200,12 +197,11 @@ object TextFormatter {
     @JvmStatic
     fun toUnicodeStrikethrough(text: String?): CharSequence {
         if (text.isNullOrEmpty()) return ""
-        return buildString {
-            for (c in text) {
-                append(c)
-                append('\u0336') // Unicode combining long stroke overlay
-            }
+        val sb = StringBuilder(text.length * 2)
+        text.codePoints().forEach { cp ->
+            sb.appendCodePoint(cp).append('\u0336') // combining long stroke overlay
         }
+        return sb.toString()
     }
 
     fun toUnicodeBlockQuote(builder: Editable) {

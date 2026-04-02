@@ -1,7 +1,6 @@
 package io.beldex.bchat.conversation.v2.input_bar
 
 import android.content.Context
-import android.content.res.Resources
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.inputmethod.EditorInfo
@@ -9,22 +8,15 @@ import android.view.inputmethod.InputConnection
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.core.view.inputmethod.InputConnectionCompat
-import io.beldex.bchat.conversation.v2.utilities.TextUtilities
 import io.beldex.bchat.textformatter.TextFormatter
 import io.beldex.bchat.textformatter.TextFormatter.toUnicodeBlockQuote
-import io.beldex.bchat.util.toPx
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.roundToInt
 
 class InputBarEditText : AppCompatEditText {
-    private val screenWidth get() = Resources.getSystem().displayMetrics.widthPixels
     var delegate: InputBarEditTextDelegate? = null
-    /*Hales63*/
-    var showMediaControls: Boolean = true
 
-    private val snMinHeight = toPx(40.0f, resources)
-    private val snMaxHeight = toPx(80.0f, resources)
+    var showMediaControls: Boolean = true
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -94,20 +86,8 @@ class InputBarEditText : AppCompatEditText {
 
         // --- Notify delegate about text changes ---
         delegate?.inputBarEditTextContentChanged(editable.toString())
-
-        // --- Update height dynamically ---
-        val width = (screenWidth - 2 * toPx(64f, resources)).roundToInt()
-        if (width > 0) {
-            val height = TextUtilities.getIntrinsicHeight(editable, paint, width).toFloat()
-            val constrainedHeight = min(max(height, snMinHeight), snMaxHeight)
-            if (constrainedHeight.roundToInt() != this.height) {
-                val layoutParams = this.layoutParams
-                if (layoutParams != null) {
-                    layoutParams.height = constrainedHeight.roundToInt()
-                    this.layoutParams = layoutParams
-                    delegate?.inputBarEditTextHeightChanged(constrainedHeight.roundToInt())
-                }
-            }
+        post {
+            delegate?.inputBarEditTextHeightChanged(height)
         }
     }
 

@@ -49,20 +49,24 @@
                 <io.beldex.bchat.conversation.v2.input_bar.InputBarEditText
                     android:id="@+id/inputBarEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="40dp"
+                    android:maxHeight="100dp"
+                    android:maxLines="3"
                     android:layout_centerInParent="true"
                     android:layout_toEndOf="@id/attachmentsButtonContainer"
                     android:background="@null"
-                    android:gravity="center_vertical"
+                    android:gravity="top|start"
                     android:fontFamily="@font/open_sans_medium"
                     android:hint="@string/ConversationActivity_message"
                     android:textColor="@color/text"
                     android:paddingEnd="20dp"
                     android:paddingStart="0dp"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="2dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp"
                     android:textSize="@dimen/small_font_size"
-                    android:inputType="textNoSuggestions|textMultiLine"/>
+                    android:inputType="textNoSuggestions|textMultiLine"
+                    android:scrollbars="vertical"/>
 
             </RelativeLayout>
 

@@ -3,6 +3,7 @@ package io.beldex.bchat.conversation.v2.input_bar
 import android.content.Context
 import android.net.Uri
 import android.util.AttributeSet
+import android.view.inputmethod.BaseInputConnection
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import androidx.appcompat.widget.AppCompatEditText
@@ -15,80 +16,91 @@ import kotlin.math.min
 
 class InputBarEditText : AppCompatEditText {
     var delegate: InputBarEditTextDelegate? = null
-
     var showMediaControls: Boolean = true
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    )
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     private var isFormatting = false
     private var isBlocQuote = false
 
+    // Runs formatting after IME commits text, also clears spans when markers are removed
+    private val reformatRunnable = Runnable {
+        val cur = text ?: return@Runnable
+        val raw = cur.toString()
+
+        val formatted = TextFormatter.formatAppText(raw, context)
+        val formattedHasSpans = formatted.getSpans(0, formatted.length, Any::class.java).isNotEmpty()
+        val existingHasSpans = cur.getSpans(0, cur.length, Any::class.java).isNotEmpty()
+
+        if (formatted.toString() != raw || formattedHasSpans || existingHasSpans) {
+            isFormatting = true
+            try {
+                val cursorSnapshot = selectionStart.coerceIn(0, raw.length)
+                val formattedBeforeCursor = TextFormatter.formatAppText(raw.take(cursorSnapshot), context)
+                val newCursor = min(formattedBeforeCursor.length, formatted.length)
+
+                setTextKeepState(formatted)
+                try {
+                    setSelection(newCursor)
+                } catch (_: Exception) {
+                    setSelection(formatted.length)
+                }
+            } finally {
+                isFormatting = false
+            }
+        }
+
+        // Quotes
+        toUnicodeBlockQuote(text ?: return@Runnable)
+
+        // Delegates
+        delegate?.inputBarEditTextContentChanged(text.toString())
+        post { delegate?.inputBarEditTextHeightChanged(height) }
+    }
+
     override fun onTextChanged(text: CharSequence, start: Int, lengthBefore: Int, lengthAfter: Int) {
         super.onTextChanged(text, start, lengthBefore, lengthAfter)
-
         if (isFormatting) return
 
         val editable = this.text ?: return
         val cursorPos = selectionStart
         val rawText = editable.toString()
 
-        // --- Convert "* " or "- " into bullet "• " ---
+        // New: revert bullet back to '*' when the trailing space is deleted
+        if (lengthBefore == 1 && lengthAfter == 0 && cursorPos > 0 && editable.getOrNull(cursorPos - 1) == '•') {
+            isFormatting = true
+            editable.replace(cursorPos - 1, cursorPos, "*")
+            setSelection(cursorPos) // cursor stays after '*'
+            isFormatting = false
+            return
+        }
+
         if (lengthAfter == 1 && text.endsWith(" ")) {
             if (cursorPos >= 2) {
                 val twoChars = rawText.substring(cursorPos - 2, cursorPos)
                 if (twoChars == "* " || twoChars == "- ") {
                     isFormatting = true
-                    // Remove typed symbols
                     editable.delete(cursorPos - 2, cursorPos)
-                    // Insert bullet
                     editable.insert(cursorPos - 2, "• ")
-                    // Move cursor after bullet
-                    setSelection(cursorPos - 2 + 2)
+                    setSelection(cursorPos) // after bullet
                     isFormatting = false
                     return
                 }
             }
         }
 
-        // --- Auto-list logic on Enter ---
-        if (lengthAfter == 1 && text.endsWith("\n")) {
-            isFormatting = true
-            val beforeText = rawText.substring(0, max(0, cursorPos - 1))
-            handleAutoList(beforeText)
-            isFormatting = false
+        // If IME is composing, still schedule deferred reformat (prevents eating markers)
+        if (BaseInputConnection.getComposingSpanStart(editable) != -1) {
+            removeCallbacks(reformatRunnable)
+            post(reformatRunnable)
             return
         }
 
-        // --- Apply formatting (bold/italic/spans) ---
-        val formatted = TextFormatter.formatAppText(rawText, context)
-        if (formatted.toString() != rawText) {
-            isFormatting = true
-            val oldCursor = selectionStart
-            val beforeCursorText = if (oldCursor in 1..rawText.length) rawText.substring(0, oldCursor) else rawText
-            val formattedBeforeCursor = TextFormatter.formatAppText(beforeCursorText, context)
-            val newCursor = formattedBeforeCursor.length
-            setText(formatted)
-            try { setSelection(min(newCursor, formatted.length)) } catch (e: Exception) { setSelection(formatted.length) }
-
-            isFormatting = false
-        }
-
-        // -------------------------------------------------
-        // 5: QUOTES (> text)
-        // -------------------------------------------------
-        toUnicodeBlockQuote(editable)
-
-        // --- Notify delegate about text changes ---
-        delegate?.inputBarEditTextContentChanged(editable.toString())
-        post {
-            delegate?.inputBarEditTextHeightChanged(height)
-        }
+        // Schedule reformat for normal cases
+        removeCallbacks(reformatRunnable)
+        post(reformatRunnable)
     }
 
     // -------------------------
@@ -140,28 +152,24 @@ class InputBarEditText : AppCompatEditText {
     /*Hales63*/
     override fun onCreateInputConnection(editorInfo: EditorInfo): InputConnection? {
         val ic = super.onCreateInputConnection(editorInfo) ?: return null
-        EditorInfoCompat.setContentMimeTypes(editorInfo,
+        EditorInfoCompat.setContentMimeTypes(
+            editorInfo,
             if (showMediaControls) arrayOf("image/png", "image/gif", "image/jpg") else null
         )
 
         val callback =
             InputConnectionCompat.OnCommitContentListener { inputContentInfo, flags, opts ->
                 val lacksPermission = (flags and InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION) != 0
-                // read and display inputContentInfo asynchronously
                 if (lacksPermission) {
                     try {
                         inputContentInfo.requestPermission()
                     } catch (e: Exception) {
-                        return@OnCommitContentListener false // return false if failed
+                        return@OnCommitContentListener false
                     }
                 }
 
-                inputContentInfo.contentUri
-
-                // read and display inputContentInfo asynchronously.
                 delegate?.commitInputContent(inputContentInfo.contentUri)
-
-                true  // return true if succeeded
+                true
             }
         return InputConnectionCompat.createWrapper(ic, editorInfo, callback)
     }

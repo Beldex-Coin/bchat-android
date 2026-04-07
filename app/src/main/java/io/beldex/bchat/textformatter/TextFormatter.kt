@@ -29,19 +29,19 @@ object TextFormatter {
     fun formatForSentMessage(rawText: CharSequence): SpannableStringBuilder {
         val builder = SpannableStringBuilder(rawText)
 
-        applyRegexSpan(builder, Regex("(?s)(?<!`)```(?!`)(.+?)```(?!`)")) { match ->
-            toUnicodeMonospace(match.groupValues[1])
+        applyRegexSpan(builder, Regex("(?s)(?<!`)```(?!`)(.+?)```(?!`)"), marker = '`', allowNewlines = true, enforceBoundaries = false) {
+            toUnicodeMonospace(it.groupValues[1])
         }
-        applyRegexSpan(builder, Regex("(?<!`)`(?!`)(.+?)`(?!`)")) { match ->
+        applyRegexSpan(builder, Regex("`([^\\r\\n`]+?)`"), marker = '`') { match ->
             toUnicodeInlineCode(match.groupValues[1])
         }
-        applyRegexSpan(builder, Regex("(?<!\\*)\\*(?!\\*)(.+?)\\*(?!\\*)")) { match ->
+        applyRegexSpan(builder, Regex("\\*([^\\r\\n]+?)\\*"), marker = '*') { match ->
             toUnicodeBold(match.groupValues[1])
         }
-        applyRegexSpan(builder, Regex("(?<!_)_(?!_)(.+?)_(?!_)")) { match ->
+        applyRegexSpan(builder, Regex("_([^\\r\\n]+?)_"), marker = '_') { match ->
             toUnicodeItalic(match.groupValues[1])
         }
-        applyRegexSpan(builder, Regex("(?<!~)~(?!~)(.+?)~(?!~)")) { match ->
+        applyRegexSpan(builder, Regex("~([^\\r\\n]+?)~"), marker = '~') { match ->
             toUnicodeStrikethrough(match.groupValues[1])
         }
 
@@ -52,15 +52,30 @@ object TextFormatter {
     private fun applyRegexSpan(
         builder: SpannableStringBuilder,
         regex: Regex,
+        marker: Char,
+        allowNewlines: Boolean = false,
+        enforceBoundaries: Boolean = true,
         replacement: (MatchResult) -> CharSequence
     ) {
         val matches = regex.findAll(builder).toList().asReversed()
         for (match in matches) {
+            val start = match.range.first
+            val end = match.range.last
+            val prev = builder.getOrNull(start - 1)
+            val next = builder.getOrNull(end + 1)
+
+            if (prev == marker || next == marker) continue
+
             val innerText = match.groupValues.getOrNull(1) ?: ""
-            if (innerText.isBlank()) continue  // don't format empty/whitespace-only content
+            if (innerText.isBlank()) continue
+            if (!allowNewlines && (innerText.contains('\n') || innerText.contains('\r'))) continue
+            if (innerText.first().isWhitespace() || innerText.last().isWhitespace()) continue
+            if (innerText.startsWith(marker) || innerText.endsWith(marker)) continue // blocks **hello**, __hi__, ~~ok~~, etc.
+            if (enforceBoundaries && (prev?.isLetterOrDigit() == true || next?.isLetterOrDigit() == true)) continue
+
             val replacementText = replacement(match)
             if (replacementText.isEmpty()) continue
-            builder.replace(match.range.first, match.range.last + 1, replacementText)
+            builder.replace(start, end + 1, replacementText)
         }
     }
 
@@ -99,7 +114,7 @@ object TextFormatter {
     fun toUnicodeBlockQuote(builder: Editable) {
         val spans = builder.getSpans(0, builder.length, CustomQuoteSpan::class.java)
         spans.forEach { builder.removeSpan(it) }
-        Regex("> ").findAll(builder).forEach { match ->
+        Regex("(?m)^>\\s").findAll(builder).forEach { match ->
             builder.setSpan(
                 CustomQuoteSpan(),
                 match.range.first,

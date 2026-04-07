@@ -11,7 +11,6 @@ import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.core.view.inputmethod.InputConnectionCompat
 import io.beldex.bchat.textformatter.TextFormatter
 import io.beldex.bchat.textformatter.TextFormatter.toUnicodeBlockQuote
-import kotlin.math.max
 import kotlin.math.min
 
 class InputBarEditText : AppCompatEditText {
@@ -23,16 +22,18 @@ class InputBarEditText : AppCompatEditText {
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     private var isFormatting = false
-    private var isBlocQuote = false
+    private val bulletChar = '\u2022'
 
     // Runs formatting after IME commits text, also clears spans when markers are removed
     private val reformatRunnable = Runnable {
-        val cur = text ?: return@Runnable
-        val raw = cur.toString()
+        val editable = text ?: return@Runnable
+        // Avoid touching text while IME is composing to prevent duplication
+        if (BaseInputConnection.getComposingSpanStart(editable) != -1) return@Runnable
 
+        val raw = editable.toString()
         val formatted = TextFormatter.formatAppText(raw, context)
         val formattedHasSpans = formatted.getSpans(0, formatted.length, Any::class.java).isNotEmpty()
-        val existingHasSpans = cur.getSpans(0, cur.length, Any::class.java).isNotEmpty()
+        val existingHasSpans = editable.getSpans(0, editable.length, Any::class.java).isNotEmpty()
 
         if (formatted.toString() != raw || formattedHasSpans || existingHasSpans) {
             isFormatting = true
@@ -41,12 +42,11 @@ class InputBarEditText : AppCompatEditText {
                 val formattedBeforeCursor = TextFormatter.formatAppText(raw.take(cursorSnapshot), context)
                 val newCursor = min(formattedBeforeCursor.length, formatted.length)
 
-                setTextKeepState(formatted)
-                try {
-                    setSelection(newCursor)
-                } catch (_: Exception) {
-                    setSelection(formatted.length)
-                }
+                // In-place replace keeps the InputConnection stable (no keyboard reset)
+                editable.replace(0, editable.length, formatted)
+                setSelection(newCursor.coerceIn(0, editable.length))
+            } catch (_: Exception) {
+                setSelection(editable.length)
             } finally {
                 isFormatting = false
             }
@@ -68,11 +68,11 @@ class InputBarEditText : AppCompatEditText {
         val cursorPos = selectionStart
         val rawText = editable.toString()
 
-        // New: revert bullet back to '*' when the trailing space is deleted
-        if (lengthBefore == 1 && lengthAfter == 0 && cursorPos > 0 && editable.getOrNull(cursorPos - 1) == '•') {
+        // revert bullet back to '*' when the trailing space is deleted
+        if (lengthBefore == 1 && lengthAfter == 0 && cursorPos > 0 && editable.getOrNull(cursorPos - 1) == bulletChar) {
             isFormatting = true
             editable.replace(cursorPos - 1, cursorPos, "*")
-            setSelection(cursorPos) // cursor stays after '*'
+            setSelection(cursorPos)
             isFormatting = false
             return
         }
@@ -83,8 +83,8 @@ class InputBarEditText : AppCompatEditText {
                 if (twoChars == "* " || twoChars == "- ") {
                     isFormatting = true
                     editable.delete(cursorPos - 2, cursorPos)
-                    editable.insert(cursorPos - 2, "• ")
-                    setSelection(cursorPos) // after bullet
+                    editable.insert(cursorPos - 2, "$bulletChar ")
+                    setSelection(cursorPos)
                     isFormatting = false
                     return
                 }

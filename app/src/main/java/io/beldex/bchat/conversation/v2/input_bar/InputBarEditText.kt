@@ -11,6 +11,7 @@ import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.core.view.inputmethod.InputConnectionCompat
 import io.beldex.bchat.textformatter.TextFormatter
 import io.beldex.bchat.textformatter.TextFormatter.toUnicodeBlockQuote
+import kotlin.math.max
 import kotlin.math.min
 
 class InputBarEditText : AppCompatEditText {
@@ -91,6 +92,19 @@ class InputBarEditText : AppCompatEditText {
             }
         }
 
+        if (lengthAfter > lengthBefore &&
+            text.subSequence(start, start + lengthAfter).any { it == '\n' }) {
+            isFormatting = true
+            try {
+                // cursorPos is after the inserted "\n"; use text before it
+                val beforeText = rawText.substring(0, max(0, cursorPos - 1))
+                handleAutoList(beforeText)
+            } finally {
+                isFormatting = false
+            }
+            return
+        }
+
         // If IME is composing, still schedule deferred reformat (prevents eating markers)
         if (BaseInputConnection.getComposingSpanStart(editable) != -1) {
             removeCallbacks(reformatRunnable)
@@ -116,7 +130,7 @@ class InputBarEditText : AppCompatEditText {
         currentLine = currentLine.replace(Regex("[\\u200B-\\u200D\\uFEFF]"), "")
 
         val numberMatch = Regex("""^\s*(\d+)\.\s+""").find(currentLine)
-        val bulletMatch = Regex("""^\s*([-•])\s+""").find(currentLine)
+        val bulletMatch = Regex("""^\s*([\-\u2022])\s+""").find(currentLine)
 
         if (numberMatch != null) {
             val number = numberMatch.groupValues[1].toInt()

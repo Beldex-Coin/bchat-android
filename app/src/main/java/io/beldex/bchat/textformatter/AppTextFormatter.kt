@@ -40,6 +40,52 @@ class AppTextFormatter(private val text: String, val context: Context) {
                 (next == null || !next.isLetterOrDigit())
     }
 
+    private fun applyStyleSkippingEmojiSpan(
+        out: SpannableStringBuilder,
+        base: Int,
+        text: String,
+        spanFactory: () -> Any
+    ) {
+        var runStart = -1
+        for (i in text.indices) {
+            val ch = text[i]
+            if (!ch.isSurrogate()) {
+                if (runStart == -1) runStart = i
+            } else {
+                if (runStart != -1) {
+                    out.setSpan(spanFactory(), base + runStart, base + i, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    runStart = -1
+                }
+            }
+        }
+        if (runStart != -1) {
+            out.setSpan(spanFactory(), base + runStart, base + text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+    }
+
+    private fun applySpanSkippingEmoji(
+        out: SpannableStringBuilder,
+        base: Int,
+        text: String,
+        spanFactory: () -> Any
+    ) {
+        var runStart = -1
+        for (i in text.indices) {
+            val ch = text[i]
+            if (!ch.isSurrogate()) {
+                if (runStart == -1) runStart = i
+            } else {
+                if (runStart != -1) {
+                    out.setSpan(spanFactory(), base + runStart, base + i, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    runStart = -1
+                }
+            }
+        }
+        if (runStart != -1) {
+            out.setSpan(spanFactory(), base + runStart, base + text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+    }
+
     fun appendFormatted(out: SpannableStringBuilder) {
         var last = 0
         val cleanText = text // no normalization; keep **, __, etc. literal
@@ -63,9 +109,11 @@ class AppTextFormatter(private val text: String, val context: Context) {
                     )
 
                     val monoStart = out.length
-                    out.append(monoUnicode)
+                    out.append(innerText)
                     val monoEnd = out.length
 
+                    applySpanSkippingEmoji(out, monoStart, innerText) { TypefaceSpan("monospace") }
+                    applySpanSkippingEmoji(out, monoStart, innerText) { BackgroundColorSpan(Color.TRANSPARENT) }
                     val closeStart = out.length
                     out.append("```")
                     out.setSpan(
@@ -124,10 +172,8 @@ class AppTextFormatter(private val text: String, val context: Context) {
                         )
 
                         val start = out.length
-                        out.append(TextFormatter.toUnicodeBold(innerText))
-                        val end = out.length
-                        out.setSpan(StyleSpan(Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-
+                        out.append(innerText)
+                        applyStyleSkippingEmojiSpan(out, start, innerText) { StyleSpan(Typeface.BOLD) }
                         val endSymbol = out.length
                         out.append("*")
                         out.setSpan(
@@ -163,10 +209,8 @@ class AppTextFormatter(private val text: String, val context: Context) {
                         )
 
                         val start = out.length
-                        out.append(TextFormatter.toUnicodeItalic(innerText))
-                        val end = out.length
-                        out.setSpan(StyleSpan(Typeface.ITALIC), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-
+                        out.append(innerText)
+                        applyStyleSkippingEmojiSpan(out, start, innerText) { StyleSpan(Typeface.ITALIC) }
                         val endSymbol = out.length
                         out.append("_")
                         out.setSpan(
@@ -202,10 +246,8 @@ class AppTextFormatter(private val text: String, val context: Context) {
                         )
 
                         val start = out.length
-                        out.append(TextFormatter.toUnicodeStrikethrough(innerText))
-                        val end = out.length
-                        out.setSpan(StrikethroughSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-
+                        out.append(innerText)
+                        applyStyleSkippingEmojiSpan(out, start, innerText) { StrikethroughSpan() }
                         val endSymbol = out.length
                         out.append("~")
                         out.setSpan(
@@ -241,7 +283,9 @@ class AppTextFormatter(private val text: String, val context: Context) {
                         )
 
                         val start = out.length
-                        out.append(TextFormatter.toUnicodeInlineCode(innerText))
+                        out.append(innerText)
+                        applySpanSkippingEmoji(out, start, innerText) { TypefaceSpan("monospace") }
+                        applySpanSkippingEmoji(out, start, innerText) { BackgroundColorSpan(backgroundColorSpan) }
                         val end = out.length
                         out.setSpan(TypefaceSpan("monospace"), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                         out.setSpan(

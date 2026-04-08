@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Typeface
 import android.text.Editable
 import android.text.Spannable
-import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.BackgroundColorSpan
@@ -49,6 +48,48 @@ object TextFormatter {
         return builder
     }
 
+    private fun applyStyleSkippingEmoji(
+        text: String?,
+        spanFactory: () -> Any
+    ): CharSequence {
+        if (text.isNullOrEmpty()) return ""
+        val sb = SpannableStringBuilder(text)
+        var start = -1
+        for (i in text.indices) {
+            val ch = text[i]
+            if (!ch.isSurrogate()) {
+                if (start == -1) start = i
+            } else {
+                if (start != -1) {
+                    sb.setSpan(spanFactory(), start, i, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    start = -1
+                }
+            }
+        }
+        if (start != -1) {
+            sb.setSpan(spanFactory(), start, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        return sb
+    }
+
+    private fun applySpanSkippingEmoji(builder: SpannableStringBuilder, spanFactory: () -> Any) {
+        var runStart = -1
+        for (i in builder.indices) {
+            val ch = builder[i]
+            if (!ch.isSurrogate()) {
+                if (runStart == -1) runStart = i
+            } else {
+                if (runStart != -1) {
+                    builder.setSpan(spanFactory(), runStart, i, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    runStart = -1
+                }
+            }
+        }
+        if (runStart != -1) {
+            builder.setSpan(spanFactory(), runStart, builder.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+    }
+
     private fun applyRegexSpan(
         builder: SpannableStringBuilder,
         regex: Regex,
@@ -81,34 +122,28 @@ object TextFormatter {
 
     @JvmStatic
     fun toUnicodeBold(text: String?): CharSequence =
-        if (text.isNullOrEmpty()) "" else SpannableString(text).apply {
-            setSpan(StyleSpan(Typeface.BOLD), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
+        applyStyleSkippingEmoji(text) { StyleSpan(Typeface.BOLD) }
 
     @JvmStatic
     fun toUnicodeItalic(text: String?): CharSequence =
-        if (text.isNullOrEmpty()) "" else SpannableString(text).apply {
-            setSpan(StyleSpan(Typeface.ITALIC), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
+        applyStyleSkippingEmoji(text) { StyleSpan(Typeface.ITALIC) }
 
     @JvmStatic
     fun toUnicodeMonospace(text: String?): CharSequence =
-        if (text.isNullOrEmpty()) "" else SpannableString(text).apply {
-            setSpan(TypefaceSpan("monospace"), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        if (text.isNullOrEmpty()) "" else SpannableStringBuilder(text).apply {
+            applySpanSkippingEmoji(this) { TypefaceSpan("monospace") }
         }
 
     @JvmStatic
     fun toUnicodeInlineCode(text: String?): CharSequence =
-        if (text.isNullOrEmpty()) "" else SpannableString(text).apply {
-            setSpan(TypefaceSpan("monospace"), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            setSpan(BackgroundColorSpan("#797984".toColorInt()), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        if (text.isNullOrEmpty()) "" else SpannableStringBuilder(text).apply {
+            applySpanSkippingEmoji(this) { TypefaceSpan("monospace") }
+            applySpanSkippingEmoji(this) { BackgroundColorSpan("#797984".toColorInt()) }
         }
 
     @JvmStatic
     fun toUnicodeStrikethrough(text: String?): CharSequence =
-        if (text.isNullOrEmpty()) "" else SpannableString(text).apply {
-            setSpan(StrikethroughSpan(), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
+        applyStyleSkippingEmoji(text) { StrikethroughSpan() }
 
 
     fun toUnicodeBlockQuote(builder: Editable) {

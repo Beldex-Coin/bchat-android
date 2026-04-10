@@ -26,7 +26,8 @@ object TextFormatter {
 
     @JvmStatic
     fun formatForSentMessage(rawText: CharSequence): SpannableStringBuilder {
-        val builder = SpannableStringBuilder(rawText)
+        val sanitized = sanitizeLoneListMarkers(rawText.toString())
+        val builder = SpannableStringBuilder(sanitized)
 
         applyRegexSpan(builder, Regex("(?s)(?<!`)```(?!`)(.+?)```(?!`)"), marker = '`', allowNewlines = true, enforceBoundaries = false) {
             toUnicodeMonospace(it.groupValues[1])
@@ -46,6 +47,24 @@ object TextFormatter {
 
         toUnicodeBlockQuote(builder)
         return builder
+    }
+
+    private fun sanitizeLoneListMarkers(raw: String): String {
+        return raw
+            .lines()
+            .joinToString("\n") { line ->
+                when {
+                    Regex("""^\s*-\s*$""").matches(line) -> "-"
+
+                    Regex("""^\s*\u2022\s*$""").matches(line) -> "*"
+
+                    Regex("""^\s*(\d+)\.\s*$""").matches(line) -> {
+                        Regex("""(\d+\.)""").find(line)?.value ?: line.trim()
+                    }
+
+                    else -> line
+                }
+            }
     }
 
     private fun applyStyleSkippingEmoji(

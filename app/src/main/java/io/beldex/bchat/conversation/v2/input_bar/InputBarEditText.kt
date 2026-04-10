@@ -25,11 +25,10 @@ class InputBarEditText : AppCompatEditText {
     private var isFormatting = false
     private val bulletChar = '\u2022'
     private val listIndent = "  "
+    private var lastBulletTriggerChar: Char = '*' // ← ADD THIS: tracks what user typed
 
-    // Runs formatting after IME commits text, also clears spans when markers are removed
     private val reformatRunnable = Runnable {
         val editable = text ?: return@Runnable
-        // Avoid touching text while IME is composing to prevent duplication
         if (BaseInputConnection.getComposingSpanStart(editable) != -1) return@Runnable
 
         val raw = editable.toString()
@@ -43,8 +42,6 @@ class InputBarEditText : AppCompatEditText {
                 val cursorSnapshot = selectionStart.coerceIn(0, raw.length)
                 val formattedBeforeCursor = TextFormatter.formatAppText(raw.take(cursorSnapshot), context)
                 val newCursor = min(formattedBeforeCursor.length, formatted.length)
-
-                // In-place replace keeps the InputConnection stable (no keyboard reset)
                 editable.replace(0, editable.length, formatted)
                 setSelection(newCursor.coerceIn(0, editable.length))
             } catch (_: Exception) {
@@ -58,17 +55,47 @@ class InputBarEditText : AppCompatEditText {
         toUnicodeBlockQuote(text ?: return@Runnable)
 
         // Delegates
-        delegate?.inputBarEditTextContentChanged(text.toString())
-        post { delegate?.inputBarEditTextHeightChanged(height) }
+        post {
+            delegate?.inputBarEditTextHeightChanged(height)
+            delegate?.inputBarEditTextContentChanged(text.toString())
+        }
     }
 
     override fun onTextChanged(text: CharSequence, start: Int, lengthBefore: Int, lengthAfter: Int) {
         super.onTextChanged(text, start, lengthBefore, lengthAfter)
         if (isFormatting) return
 
+        if (lengthAfter > 1) {
+            removeCallbacks(reformatRunnable)
+            post {
+                applyFormattingNow()
+                delegate?.inputBarEditTextContentChanged(this.text?.toString().orEmpty())
+            }
+            return
+        }
+
         val editable = this.text ?: return
         val cursorPos = selectionStart
         val rawText = editable.toString()
+
+        if (lengthAfter == 1 && text.endsWith(" ")) {
+            if (cursorPos >= 2) {
+                val lineStart = rawText.lastIndexOf('\n', max(0, cursorPos - 1))
+                    .let { if (it == -1) 0 else it + 1 }
+                val twoChars = rawText.substring(cursorPos - 2, cursorPos)
+                if ((twoChars == "* " || twoChars == "- ") && lineStart == cursorPos - 2) {
+                    if (BaseInputConnection.getComposingSpanStart(editable) != -1) return
+
+                    lastBulletTriggerChar = twoChars[0] // ← SAVE '*' or '-' before converting
+                    isFormatting = true
+                    editable.delete(cursorPos - 2, cursorPos)
+                    editable.insert(cursorPos - 2, "$bulletChar ")
+                    setSelection(cursorPos)
+                    isFormatting = false
+                    return
+                }
+            }
+        }
 
         if (lengthAfter == 1 && text.endsWith(" ")) {
             val lineStart = rawText.lastIndexOf('\n', max(0, cursorPos - 1)).let { if (it == -1) 0 else it + 1 }
@@ -80,41 +107,23 @@ class InputBarEditText : AppCompatEditText {
             if (numberLineMatch != null && !hasLeadingIndent) {
                 isFormatting = true
                 editable.insert(lineStart, listIndent)
-                setSelection(cursorPos + listIndent.length) // move caret past inserted indent
+                setSelection(cursorPos + listIndent.length)
                 isFormatting = false
                 return
             }
         }
 
-
-        // revert bullet back to '*' when the trailing space is deleted
         if (lengthBefore == 1 && lengthAfter == 0 && cursorPos > 0 && editable.getOrNull(cursorPos - 1) == bulletChar) {
             isFormatting = true
-            editable.replace(cursorPos - 1, cursorPos, "*")
+            editable.replace(cursorPos - 1, cursorPos, lastBulletTriggerChar.toString()) // ← USE SAVED CHAR
             setSelection(cursorPos)
             isFormatting = false
             return
         }
-
-        if (lengthAfter == 1 && text.endsWith(" ")) {
-            if (cursorPos >= 2) {
-                val twoChars = rawText.substring(cursorPos - 2, cursorPos)
-                if (twoChars == "* " || twoChars == "- ") {
-                    isFormatting = true
-                    editable.delete(cursorPos - 2, cursorPos)
-                    editable.insert(cursorPos - 2, "$bulletChar ")
-                    setSelection(cursorPos)
-                    isFormatting = false
-                    return
-                }
-            }
-        }
-
         if (lengthAfter > lengthBefore &&
             text.subSequence(start, start + lengthAfter).any { it == '\n' }) {
             isFormatting = true
             try {
-                // cursorPos is after the inserted "\n"; use text before it
                 val beforeText = rawText.substring(0, max(0, cursorPos - 1))
                 handleAutoList(beforeText)
             } finally {
@@ -123,21 +132,21 @@ class InputBarEditText : AppCompatEditText {
             return
         }
 
-        // If IME is composing, still schedule deferred reformat (prevents eating markers)
         if (BaseInputConnection.getComposingSpanStart(editable) != -1) {
             removeCallbacks(reformatRunnable)
             post(reformatRunnable)
             return
         }
 
-        // Schedule reformat for normal cases
         removeCallbacks(reformatRunnable)
         post(reformatRunnable)
     }
 
-    // -------------------------
-    // Auto-numbered and bullet list handling
-    // -------------------------
+    fun applyFormattingNow() {
+        removeCallbacks(reformatRunnable)
+        reformatRunnable.run()
+    }
+
     private fun handleAutoList(beforeText: String) {
         val editable = text ?: return
         var cursor = selectionStart
@@ -151,6 +160,20 @@ class InputBarEditText : AppCompatEditText {
         val bulletMatch = Regex("""^\s*([\-\u2022])\s+""").find(currentLine)
 
         if (numberMatch != null) {
+            val contentAfterMarker = currentLine.substring(numberMatch.value.length).trim()
+            if (contentAfterMarker.isEmpty()) {
+                // Empty numbered line → exit list: remove the empty marker line
+                if (cursor > 0 && editable[cursor - 1] == '\n') {
+                    editable.delete(cursor - 1, cursor)
+                    cursor -= 1
+                }
+                val lineBegin = editable.toString().lastIndexOf('\n', cursor - 1)
+                    .let { if (it == -1) 0 else it + 1 }
+                editable.delete(lineBegin, cursor)
+                setSelection(lineBegin)
+                return
+            }
+
             val number = numberMatch.groupValues[1].toInt()
             val nextNumber = number + 1
 
@@ -164,13 +187,26 @@ class InputBarEditText : AppCompatEditText {
             setSelection(cursor + insertText.length)
 
         } else if (bulletMatch != null) {
+            val contentAfterMarker = currentLine.substring(bulletMatch.value.length).trim()
+            if (contentAfterMarker.isEmpty()) {
+                if (cursor > 0 && editable[cursor - 1] == '\n') {
+                    editable.delete(cursor - 1, cursor)
+                    cursor -= 1
+                }
+                val lineBegin = editable.toString().lastIndexOf('\n', cursor - 1)
+                    .let { if (it == -1) 0 else it + 1 }
+                editable.delete(lineBegin, cursor)
+                setSelection(lineBegin)
+                return
+            }
+
             if (cursor > 0 && editable[cursor - 1] == '\n') {
                 editable.delete(cursor - 1, cursor)
                 cursor -= 1
             }
 
-            val bulletChar = bulletMatch.groupValues[1]
-            val insertText = "\n${listIndent}$bulletChar "
+            val bulletCharVal = bulletMatch.groupValues[1]
+            val insertText = "\n${listIndent}$bulletCharVal "
             editable.insert(cursor, insertText)
             setSelection(cursor + insertText.length)
 
@@ -181,31 +217,24 @@ class InputBarEditText : AppCompatEditText {
         }
     }
 
-    /*Hales63*/
     override fun onCreateInputConnection(editorInfo: EditorInfo): InputConnection? {
         val ic = super.onCreateInputConnection(editorInfo) ?: return null
         EditorInfoCompat.setContentMimeTypes(
             editorInfo,
             if (showMediaControls) arrayOf("image/png", "image/gif", "image/jpg") else null
         )
-
         val callback =
-            InputConnectionCompat.OnCommitContentListener { inputContentInfo, flags, opts ->
+            InputConnectionCompat.OnCommitContentListener { inputContentInfo, flags, _ ->
                 val lacksPermission = (flags and InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION) != 0
                 if (lacksPermission) {
-                    try {
-                        inputContentInfo.requestPermission()
-                    } catch (e: Exception) {
-                        return@OnCommitContentListener false
-                    }
+                    try { inputContentInfo.requestPermission() }
+                    catch (e: Exception) { return@OnCommitContentListener false }
                 }
-
                 delegate?.commitInputContent(inputContentInfo.contentUri)
                 true
             }
         return InputConnectionCompat.createWrapper(ic, editorInfo, callback)
     }
-
 }
 
 interface InputBarEditTextDelegate {

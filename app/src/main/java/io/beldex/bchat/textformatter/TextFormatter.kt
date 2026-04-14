@@ -10,6 +10,14 @@ import android.text.style.BackgroundColorSpan
 import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
 import android.text.style.TypefaceSpan
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.core.graphics.toColorInt
 
 
@@ -48,6 +56,51 @@ object TextFormatter {
         toUnicodeBlockQuote(builder)
         return builder
     }
+
+    fun SpannableStringBuilder.toAnnotatedString(): AnnotatedString {
+        return buildAnnotatedString {
+            append(this@toAnnotatedString.toString())
+
+            getSpans(0, length, StyleSpan::class.java).forEach { span ->
+                val start = getSpanStart(span)
+                val end = getSpanEnd(span)
+                when (span.style) {
+                    Typeface.BOLD -> addStyle(SpanStyle(fontWeight = FontWeight.Bold), start, end)
+                    Typeface.ITALIC -> addStyle(SpanStyle(fontStyle = FontStyle.Italic), start, end)
+                    Typeface.BOLD_ITALIC -> addStyle(
+                        SpanStyle(fontWeight = FontWeight.Bold, fontStyle = FontStyle.Italic), start, end
+                    )
+                }
+            }
+
+            getSpans(0, length, TypefaceSpan::class.java).forEach { span ->
+                val start = getSpanStart(span)
+                val end = getSpanEnd(span)
+                if (span.family == "monospace") {
+                    addStyle(SpanStyle(fontFamily = FontFamily.Monospace), start, end)
+                }
+            }
+
+            getSpans(0, length, BackgroundColorSpan::class.java).forEach { span ->
+                val start = getSpanStart(span)
+                val end = getSpanEnd(span)
+                addStyle(SpanStyle(background = Color(span.backgroundColor)), start, end)
+            }
+
+            getSpans(0, length, StrikethroughSpan::class.java).forEach { span ->
+                val start = getSpanStart(span)
+                val end = getSpanEnd(span)
+                addStyle(SpanStyle(textDecoration = TextDecoration.LineThrough), start, end)
+            }
+
+            getSpans(0, length, CustomQuoteSpan::class.java).forEach { span ->
+                val start = getSpanStart(span)
+                val end = getSpanEnd(span)
+                addStyle(SpanStyle(color = Color.Gray, background = Color(0x1A888888)), start, end)
+            }
+        }
+    }
+
 
     private fun sanitizeLoneListMarkers(raw: String): String {
         return raw

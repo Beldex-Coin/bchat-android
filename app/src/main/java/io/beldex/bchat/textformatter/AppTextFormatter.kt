@@ -25,6 +25,13 @@ class AppTextFormatter(private val text: String, val context: Context) {
                 "`([^\\r\\n`]+?)`"
     )
 
+    private val nestedPattern = Regex(
+        "`([^\\r\\n`]+?)`|" +
+                "_([^\\r\\n]+?)_|" +
+                "~([^\\r\\n]+?)~|" +
+                "\\*([^\\r\\n]+?)\\*"
+    )
+
     val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
 
     @SuppressLint("UseKtx")
@@ -86,9 +93,59 @@ class AppTextFormatter(private val text: String, val context: Context) {
         }
     }
 
+    private fun applyNestedInlineSpans(
+        out: SpannableStringBuilder,
+        baseOffset: Int,
+        innerText: String,
+        outerMarker: Char
+    ) {
+        for (match in nestedPattern.findAll(innerText)) {
+            val nestedContent = match.value
+            val nestedMarker = nestedContent[0]
+
+            // Don't re-process the same marker type as the outer span
+            if (nestedMarker == outerMarker) continue
+
+            val nestedInner = nestedContent.substring(1, nestedContent.length - 1)
+            if (nestedInner.isBlank()) continue
+            if (nestedInner.first().isWhitespace() || nestedInner.last().isWhitespace()) continue
+
+            // Absolute positions inside `out`
+            val absMatchStart = baseOffset + match.range.first
+            val absMatchEnd   = baseOffset + match.range.last + 1   // exclusive
+            val absInnerStart = absMatchStart + 1
+            val absInnerEnd   = absMatchEnd - 1
+
+            if (absMatchEnd > out.length) continue
+
+            // Dim the nested marker symbols
+            out.setSpan(
+                ForegroundColorSpan(getSymbolColor(isDarkTheme)),
+                absMatchStart, absMatchStart + 1,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            out.setSpan(
+                ForegroundColorSpan(getSymbolColor(isDarkTheme)),
+                absMatchEnd - 1, absMatchEnd,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+
+            // Apply the nested style to the inner content
+            when (nestedMarker) {
+                '`' -> {
+                    out.setSpan(TypefaceSpan("monospace"),        absInnerStart, absInnerEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    out.setSpan(BackgroundColorSpan(backgroundColorSpan), absInnerStart, absInnerEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+                '_' -> out.setSpan(StyleSpan(Typeface.ITALIC),      absInnerStart, absInnerEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                '*' -> out.setSpan(StyleSpan(Typeface.BOLD),         absInnerStart, absInnerEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                '~' -> out.setSpan(StrikethroughSpan(),              absInnerStart, absInnerEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+        }
+    }
+
     fun appendFormatted(out: SpannableStringBuilder) {
         var last = 0
-        val cleanText = text // no normalization; keep **, __, etc. literal
+        val cleanText = text
 
         if (codeBlockPattern.containsMatchIn(cleanText)) {
             for (match in codeBlockPattern.findAll(cleanText)) {
@@ -97,14 +154,12 @@ class AppTextFormatter(private val text: String, val context: Context) {
                 val content = match.value
                 if (content.startsWith("```")) {
                     val innerText = content.substring(3, content.length - 3)
-                    val monoUnicode = TextFormatter.toUnicodeMonospace(innerText)
 
                     val openStart = out.length
                     out.append("```")
                     out.setSpan(
                         ForegroundColorSpan(getSymbolColor(isDarkTheme)),
-                        openStart,
-                        openStart + 3,
+                        openStart, openStart + 3,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
 
@@ -118,23 +173,11 @@ class AppTextFormatter(private val text: String, val context: Context) {
                     out.append("```")
                     out.setSpan(
                         ForegroundColorSpan(getSymbolColor(isDarkTheme)),
-                        closeStart,
-                        closeStart + 3,
+                        closeStart, closeStart + 3,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
-
-                    out.setSpan(
-                        TypefaceSpan("monospace"),
-                        monoStart,
-                        monoEnd,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                    out.setSpan(
-                        BackgroundColorSpan(Color.TRANSPARENT),
-                        monoStart,
-                        monoEnd,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
+                    out.setSpan(TypefaceSpan("monospace"), monoStart, monoEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    out.setSpan(BackgroundColorSpan(Color.TRANSPARENT), monoStart, monoEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
                 last = match.range.last + 1
             }
@@ -174,6 +217,7 @@ class AppTextFormatter(private val text: String, val context: Context) {
                         val start = out.length
                         out.append(innerText)
                         applyStyleSkippingEmojiSpan(out, start, innerText) { StyleSpan(Typeface.BOLD) }
+                        applyNestedInlineSpans(out, start, innerText, markerChar)
                         val endSymbol = out.length
                         out.append("*")
                         out.setSpan(
@@ -211,6 +255,7 @@ class AppTextFormatter(private val text: String, val context: Context) {
                         val start = out.length
                         out.append(innerText)
                         applyStyleSkippingEmojiSpan(out, start, innerText) { StyleSpan(Typeface.ITALIC) }
+                        applyNestedInlineSpans(out, start, innerText, markerChar)
                         val endSymbol = out.length
                         out.append("_")
                         out.setSpan(
@@ -248,6 +293,7 @@ class AppTextFormatter(private val text: String, val context: Context) {
                         val start = out.length
                         out.append(innerText)
                         applyStyleSkippingEmojiSpan(out, start, innerText) { StrikethroughSpan() }
+                        applyNestedInlineSpans(out, start, innerText, markerChar)
                         val endSymbol = out.length
                         out.append("~")
                         out.setSpan(
@@ -285,9 +331,18 @@ class AppTextFormatter(private val text: String, val context: Context) {
                         val start = out.length
                         out.append(innerText)
                         applySpanSkippingEmoji(out, start, innerText) { TypefaceSpan("monospace") }
-                        applySpanSkippingEmoji(out, start, innerText) { BackgroundColorSpan(backgroundColorSpan) }
-                        val end = out.length
-                        out.setSpan(TypefaceSpan("monospace"), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        applySpanSkippingEmoji(out, start, innerText) {
+                            BackgroundColorSpan(
+                                backgroundColorSpan
+                            )
+                        }
+                        val end=out.length
+                        out.setSpan(
+                            TypefaceSpan("monospace"),
+                            start,
+                            end,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
                         out.setSpan(
                             BackgroundColorSpan(backgroundColorSpan),
                             start,

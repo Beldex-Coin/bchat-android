@@ -87,6 +87,8 @@ import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
+import io.beldex.bchat.textformatter.TextFormatter
+import io.beldex.bchat.textformatter.TextFormatter.toAnnotatedString
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -426,6 +428,11 @@ private fun MessageView(
         textSpannable.append(
             model.messageResult.bodySnippet
         )
+
+        val annotatedText = remember(model.messageResult.bodySnippet, model.messageResult.messageRecipient) {
+            TextFormatter.formatForSentMessage(textSpannable).toAnnotatedString()
+        }
+
         val address = recipient.address
         if (recipient.isGroupRecipient) {
             val groupRecipients = remember {
@@ -478,7 +485,7 @@ private fun MessageView(
                 )
             }
             Text(
-                text = textSpannable.toString(),
+                text = annotatedText,
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

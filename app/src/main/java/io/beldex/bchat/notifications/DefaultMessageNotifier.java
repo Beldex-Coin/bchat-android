@@ -16,12 +16,9 @@
  */
 package io.beldex.bchat.notifications;
 
-import android.Manifest;
 import static com.beldex.libbchat.utilities.Address.fromSerialized;
-
-
 import static io.beldex.bchat.conversation.v2.contact_sharing.ViewContactsActivityKt.flattenData;
-
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -37,38 +34,13 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
-
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-
-import io.beldex.bchat.ApplicationContext;
-import io.beldex.bchat.conversation.v2.ConversationActivityV2;
-import io.beldex.bchat.database.model.MediaMmsMessageRecord;
-import io.beldex.bchat.database.model.MessageRecord;
-import io.beldex.bchat.database.model.MmsMessageRecord;
-import io.beldex.bchat.database.model.Quote;
-import io.beldex.bchat.database.model.ReactionRecord;
-import io.beldex.bchat.mms.SlideDeck;
-import io.beldex.bchat.util.BchatMetaProtocol;
-import io.beldex.bchat.util.ExtensionFunctionsKt;
-import io.beldex.bchat.util.SpanUtil;
-
+import com.beldex.libbchat.messaging.sending_receiving.notifications.MessageNotifier;
 import com.beldex.libbchat.messaging.utilities.UpdateMessageData;
 import com.beldex.libbchat.mnode.MnodeAPI;
-
-import io.beldex.bchat.contactshare.ContactUtil;
-import io.beldex.bchat.conversation.v2.utilities.MentionManagerUtilities;
-import io.beldex.bchat.conversation.v2.utilities.MentionUtilities;
-import io.beldex.bchat.database.MessagingDatabase;
-import io.beldex.bchat.database.MmsSmsDatabase;
-import io.beldex.bchat.database.RecipientDatabase;
-import io.beldex.bchat.database.ThreadDatabase;
-import io.beldex.bchat.dependencies.DatabaseComponent;
-import io.beldex.bchat.service.KeyCachingService;
-
-import com.beldex.libbchat.messaging.sending_receiving.notifications.MessageNotifier;
 import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.Contact;
 import com.beldex.libbchat.utilities.ServiceUtil;
@@ -77,10 +49,8 @@ import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libsignal.utilities.Log;
 import com.beldex.libsignal.utilities.Util;
 import com.squareup.phrase.Phrase;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
@@ -90,9 +60,29 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import me.leolin.shortcutbadger.ShortcutBadger;
+import io.beldex.bchat.ApplicationContext;
 import io.beldex.bchat.R;
+import io.beldex.bchat.contactshare.ContactUtil;
+import io.beldex.bchat.conversation.v2.ConversationActivityV2;
+import io.beldex.bchat.conversation.v2.utilities.MentionManagerUtilities;
+import io.beldex.bchat.conversation.v2.utilities.MentionUtilities;
+import io.beldex.bchat.database.MessagingDatabase;
+import io.beldex.bchat.database.MmsSmsDatabase;
+import io.beldex.bchat.database.RecipientDatabase;
+import io.beldex.bchat.database.ThreadDatabase;
+import io.beldex.bchat.database.model.MediaMmsMessageRecord;
+import io.beldex.bchat.database.model.MessageRecord;
+import io.beldex.bchat.database.model.MmsMessageRecord;
+import io.beldex.bchat.database.model.Quote;
+import io.beldex.bchat.database.model.ReactionRecord;
+import io.beldex.bchat.dependencies.DatabaseComponent;
+import io.beldex.bchat.mms.SlideDeck;
+import io.beldex.bchat.service.KeyCachingService;
+import io.beldex.bchat.textformatter.TextFormatter;
+import io.beldex.bchat.util.BchatMetaProtocol;
+import io.beldex.bchat.util.ExtensionFunctionsKt;
+import io.beldex.bchat.util.SpanUtil;
+import me.leolin.shortcutbadger.ShortcutBadger;
 
 /**
  * Handles posting system notifications for new messages.
@@ -568,7 +558,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
       Recipient    recipient             = record.getIndividualRecipient();
       Recipient    conversationRecipient = record.getRecipient();
       long         threadId              = record.getThreadId();
-      CharSequence body                  = record.getDisplayBody(context);
+      CharSequence body                  = TextFormatter.formatForSentMessage(record.getDisplayBody(context));
       Recipient    threadRecipients      = null;
       SlideDeck slideDeck             = null;
       long         timestamp             = record.getTimestamp();
@@ -601,9 +591,10 @@ public class DefaultMessageNotifier implements MessageNotifier {
         body = SpanUtil.italic(slideDeck.getBody());
       } else if (record.isMms() && !record.isMmsNotification() && !((MmsMessageRecord) record).getSlideDeck().getSlides().isEmpty()) {
         slideDeck = ((MediaMmsMessageRecord)record).getSlideDeck();
-        String message      = slideDeck.getBody() + ": " + record.getBody();
-        int    italicLength = message.length() - body.length();
-        body = SpanUtil.italic(message, italicLength);
+        String message = slideDeck.getBody() + ": " + record.getBody();
+        body = TextFormatter.formatForSentMessage(message);
+        int italicLength = message.length() - record.getBody().length();
+        body = SpanUtil.italic(body, italicLength);
       } else if (record.isOpenGroupInvitation()) {
         body = SpanUtil.italic(context.getString(R.string.ThreadRecord_open_group_invitation));
       } else if (record.isPayment()) {

@@ -71,10 +71,17 @@ class InputBarEditText : AppCompatEditText {
             try {
                 var pos = 0
                 while (pos < content.length - 1) {
-                    if ((content[pos] == '*' || content[pos] == '-') && content[pos + 1] == ' ') {
-                        val lineStart = content.lastIndexOf('\n', pos).let { if (it == -1) 0 else it + 1 }
+                    val isMarker = content[pos] == '*' || content[pos] == '-'
+                    val isSingleSpace = content[pos + 1] == ' '
+                    val isDoubleSpace = pos + 2 < content.length && content[pos + 2] == ' '
+
+                    if (isMarker && isSingleSpace && !isDoubleSpace) {
+                        val lineStart = content.lastIndexOf('\n', pos)
+                            .let { if (it == -1) 0 else it + 1 }
+
                         val beforeMarker = content.substring(lineStart, pos)
-                        if (beforeMarker.all { it.isWhitespace() }) {
+
+                        if (beforeMarker.isEmpty()) {
                             lastBulletTriggerChar = content[pos]
                             editable.replace(pos, pos + 1, bulletChar.toString())
                             pos++
@@ -103,13 +110,26 @@ class InputBarEditText : AppCompatEditText {
         val editable = this.text ?: return
         val cursorPos = selectionStart
         val rawText = editable.toString()
-
         if (lengthAfter == 1 && text.endsWith(" ")) {
+            if (cursorPos >= 3) {
+                val threeChars = rawText.substring(cursorPos - 3, cursorPos)
+                if (threeChars == "$bulletChar  ") {
+                    isFormatting = true
+                    editable.replace(cursorPos - 3, cursorPos, "$lastBulletTriggerChar  ")
+                    setSelection(cursorPos)
+                    isFormatting = false
+                    return
+                }
+            }
+
             if (cursorPos >= 2) {
                 val lineStart = rawText.lastIndexOf('\n', max(0, cursorPos - 2))
                     .let { if (it == -1) 0 else it + 1 }
                 val twoChars = rawText.substring(cursorPos - 2, cursorPos)
-                if ((twoChars == "* " || twoChars == "- ") && lineStart == cursorPos - 2) {
+                val beforeMarker = rawText.substring(lineStart, cursorPos - 2)
+
+                val isNextCharSpace = cursorPos < rawText.length && rawText[cursorPos] == ' '
+                if ((twoChars == "* " || twoChars == "- ") && beforeMarker.isEmpty() && !isNextCharSpace) {
                     if (BaseInputConnection.getComposingSpanStart(editable) != -1) return
 
                     lastBulletTriggerChar = twoChars[0]
@@ -169,43 +189,44 @@ class InputBarEditText : AppCompatEditText {
 
         val lineStart = beforeText.lastIndexOf('\n') + 1
         var currentLine = beforeText.substring(lineStart)
+
+        if (currentLine.startsWith(" ") || currentLine.startsWith("\t")) {
+            return
+        }
+
         currentLine = currentLine.replace(Regex("[\\u200B-\\u200D\\uFEFF]"), "")
 
-        val numberMatch = Regex("""^(\d+)\.\s+""").find(currentLine)
-        val bulletMatch = Regex("""^([\-\u2022])\s+""").find(currentLine)
+        val numberMatch = Regex("""^(\d+)\.\s(?! )""").find(currentLine)
+        val bulletMatch = Regex("""^([\-\u2022\*])\s(?! )""").find(currentLine)
 
         if (numberMatch != null) {
             val contentAfterMarker = currentLine.substring(numberMatch.value.length).trim()
             if (contentAfterMarker.isEmpty()) {
+
                 if (cursor > 0 && editable[cursor - 1] == '\n') {
                     editable.delete(cursor - 1, cursor)
-                    cursor -= 1
+                    cursor--
                 }
+
                 val lineBegin = editable.toString().lastIndexOf('\n', cursor - 1)
                     .let { if (it == -1) 0 else it + 1 }
+
                 editable.delete(lineBegin, cursor)
                 setSelection(lineBegin)
                 return
             }
 
             val number = numberMatch.groupValues[1].toInt()
-            val nextNumber = number + 1
+            val insertText = "${number + 1}. "
 
-            if (cursor > 0 && editable[cursor - 1] == '\n') {
-                editable.delete(cursor - 1, cursor)
-                cursor -= 1
-            }
-
-            val insertText = "\n$nextNumber. "
             editable.insert(cursor, insertText)
             setSelection(cursor + insertText.length)
-
         } else if (bulletMatch != null) {
             val contentAfterMarker = currentLine.substring(bulletMatch.value.length).trim()
             if (contentAfterMarker.isEmpty()) {
                 if (cursor > 0 && editable[cursor - 1] == '\n') {
                     editable.delete(cursor - 1, cursor)
-                    cursor -= 1
+                    cursor--
                 }
                 val lineBegin = editable.toString().lastIndexOf('\n', cursor - 1)
                     .let { if (it == -1) 0 else it + 1 }
@@ -213,17 +234,11 @@ class InputBarEditText : AppCompatEditText {
                 setSelection(lineBegin)
                 return
             }
-
-            if (cursor > 0 && editable[cursor - 1] == '\n') {
-                editable.delete(cursor - 1, cursor)
-                cursor -= 1
-            }
-
             val bulletCharVal = bulletMatch.groupValues[1]
-            val insertText = "\n$bulletCharVal "
+            val insertText = "$bulletCharVal "
+
             editable.insert(cursor, insertText)
             setSelection(cursor + insertText.length)
-
         } else {
             if (cursor > 0 && editable[cursor - 1] == '\n') return
             editable.insert(cursor, "\n")

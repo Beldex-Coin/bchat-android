@@ -236,11 +236,6 @@ class InputBarEditText : AppCompatEditText {
 
             if (nextNumber > 99) return
 
-            if (cursor > 0 && editable[cursor - 1] == '\n') {
-                editable.delete(cursor - 1, cursor)
-                cursor -= 1
-            }
-
             editable.insert(cursor, insertText)
             setSelection(cursor + insertText.length)
         } else if (bulletMatch != null) {

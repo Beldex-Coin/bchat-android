@@ -109,21 +109,29 @@ object TextFormatter {
 
 
     private fun sanitizeLoneListMarkers(raw: String): String {
-        return raw
-            .lines()
-            .joinToString("\n") { line ->
-                when {
-                    Regex("""^\s*-\s*$""").matches(line) -> "-"
+        return raw.lines().joinToString("\n") { line ->
 
-                    Regex("""^\s*\u2022\s*$""").matches(line) -> "*"
+            val numberMatch = Regex("""^\s*(\d{1,3})\.\s*(.*)$""").find(line)
 
-                    Regex("""^\s*(\d+)\.\s*$""").matches(line) -> {
-                        Regex("""(\d+\.)""").find(line)?.value ?: line.trim()
-                    }
+            if (numberMatch != null) {
+                val number = numberMatch.groupValues[1].toIntOrNull()
+                val content = numberMatch.groupValues[2]
 
-                    else -> line
+                return@joinToString if (number != null && number in 1..99) {
+                    "$number. $content"
+                } else {
+                    content // strip invalid numbers like 100+
                 }
             }
+
+            when {
+                Regex("""^\s*-\s*$""").matches(line) -> "-"
+
+                Regex("""^\s*\u2022\s*$""").matches(line) -> "*"
+
+                else -> line
+            }
+        }
     }
 
     private fun applyStyleSkippingEmoji(

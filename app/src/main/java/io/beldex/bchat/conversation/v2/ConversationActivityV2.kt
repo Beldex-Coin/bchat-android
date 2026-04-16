@@ -199,6 +199,7 @@ import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
+import kotlin.text.indexOfAny
 
 @AndroidEntryPoint
 class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
@@ -2079,10 +2080,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         if (text.length < previousText.length) {
             currentMentionStartIndex = -1
             hideMentionCandidates()
-
-            val mentionsToRemove =
-                mentions.filterNot { text.contains(it.displayName) }
-
+            val mentionsToRemove = mentions.filterNot { text.contains(it.displayName) }
             mentions.removeAll(mentionsToRemove)
         }
 
@@ -2093,30 +2091,43 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             return
         }
 
-        val lastIndex = text.lastIndex
-        val lastChar = text[lastIndex]
+        val lastAtIndex = text.lastIndexOf('@')
 
-        val isValidBeforeChar =
-            lastIndex == 0 || !Character.isLetterOrDigit(text[lastIndex - 1])
+        if (lastAtIndex != -1) {
+            val charBeforeAt = if (lastAtIndex > 0) text[lastAtIndex - 1] else ' '
+            val isFormattingSymbol = charBeforeAt == '*' || charBeforeAt == '_' ||
+                    charBeforeAt == '~' || charBeforeAt == '`'
 
-        when {
-            lastChar == '@' && isValidBeforeChar -> {
-                currentMentionStartIndex = lastIndex
-                showOrUpdateMentionCandidatesIfNeeded()
-            }
+            val isValidTrigger = lastAtIndex == 0 ||
+                    Character.isWhitespace(charBeforeAt) ||
+                    isFormattingSymbol
 
-            Character.isWhitespace(lastChar) -> {
-                // '@@' or space ends mention
-                currentMentionStartIndex = -1
-                hideMentionCandidates()
-            }
+            if (isValidTrigger) {
+                val rawQuery = text.substring(lastAtIndex + 1)
+                val symbols = charArrayOf('*', '_', '~', '`', ' ', '\n')
 
-            currentMentionStartIndex != -1 -> {
-                val query = text.substring(currentMentionStartIndex + 1)
-                showOrUpdateMentionCandidatesIfNeeded(query)
+                val firstSymbolIndex = rawQuery.indexOfAny(symbols)
+
+                val cleanQuery = if (firstSymbolIndex != -1) {
+                    rawQuery.substring(0, firstSymbolIndex)
+                } else {
+                    rawQuery
+                }
+
+                if (rawQuery.startsWith(" ")) {
+                    currentMentionStartIndex = -1
+                    hideMentionCandidates()
+                } else {
+                    currentMentionStartIndex = lastAtIndex
+                    showOrUpdateMentionCandidatesIfNeeded(cleanQuery)
+                    previousText = text
+                    return
+                }
             }
         }
 
+        currentMentionStartIndex = -1
+        hideMentionCandidates()
         previousText = text
     }
 
@@ -2172,13 +2183,26 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         }
         mentions.add(mention)
         val previousText=binding.inputBar.text
+
+        val rawQuery = previousText.substring(currentMentionStartIndex + 1)
+        val symbols = charArrayOf('*', '_', '~', '`', ' ', '\n')
+        val firstSymbolIndex = rawQuery.indexOfAny(symbols)
+
+        val mentionEndIndex = if (firstSymbolIndex != -1) {
+            currentMentionStartIndex + 1 + firstSymbolIndex
+        } else {
+            previousText.length
+        }
+
+        val textAfterMention = previousText.substring(mentionEndIndex)
+
         val newText=
-            previousText.substring(
-                0,
-                currentMentionStartIndex
-            ) + "@" + mention.displayName + " "
+            previousText.substring(0, currentMentionStartIndex) +
+                    "@" + mention.displayName +
+                    textAfterMention
+
         binding.inputBar.text=newText
-        binding.inputBar.setSelection(newText.length)
+        binding.inputBar.setSelection((currentMentionStartIndex + 1 + mention.displayName.length))
         currentMentionStartIndex=-1
         hideMentionCandidates()
         this.previousText=newText

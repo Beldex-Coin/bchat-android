@@ -132,6 +132,12 @@ class InputBarEditText : AppCompatEditText {
             return
         }
 
+        if (text.contains('@')) {
+            removeCallbacks(reformatRunnable)
+            postDelayed(reformatRunnable, 200)
+            return
+        }
+
         if (BaseInputConnection.getComposingSpanStart(editable) != -1) {
             removeCallbacks(reformatRunnable)
             post(reformatRunnable)

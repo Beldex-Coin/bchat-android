@@ -200,15 +200,12 @@ class InputBarEditText : AppCompatEditText {
         val bulletMatch = Regex("""^([\-\u2022\*])\s(?! )""").find(currentLine)
 
         if (numberMatch != null) {
-            val contentAfterMarker = currentLine.substring(numberMatch.value.length).trim()
-            if (contentAfterMarker.isEmpty()) {
 
-                if (cursor > 0 && editable[cursor - 1] == '\n') {
-                    editable.delete(cursor - 1, cursor)
-                    cursor--
-                }
+            val number = numberMatch.groupValues[1].toIntOrNull() ?: return
 
-                val lineBegin = editable.toString().lastIndexOf('\n', cursor - 1)
+            if (number !in 1..99) {
+                val lineBegin = editable.toString()
+                    .lastIndexOf('\n', cursor - 1)
                     .let { if (it == -1) 0 else it + 1 }
 
                 editable.delete(lineBegin, cursor)
@@ -216,8 +213,33 @@ class InputBarEditText : AppCompatEditText {
                 return
             }
 
-            val number = numberMatch.groupValues[1].toInt()
+            val contentAfterMarker = currentLine.substring(numberMatch.value.length).trim()
+
+            if (contentAfterMarker.isEmpty()) {
+
+                if (cursor > 0 && editable[cursor - 1] == '\n') {
+                    editable.delete(cursor - 1, cursor)
+                    cursor--
+                }
+
+                val lineBegin = editable.toString()
+                    .lastIndexOf('\n', cursor - 1)
+                    .let { if (it == -1) 0 else it + 1 }
+
+                editable.delete(lineBegin, cursor)
+                setSelection(lineBegin)
+                return
+            }
+
             val insertText = "${number + 1}. "
+            val nextNumber = number + 1
+
+            if (nextNumber > 99) return
+
+            if (cursor > 0 && editable[cursor - 1] == '\n') {
+                editable.delete(cursor - 1, cursor)
+                cursor -= 1
+            }
 
             editable.insert(cursor, insertText)
             setSelection(cursor + insertText.length)

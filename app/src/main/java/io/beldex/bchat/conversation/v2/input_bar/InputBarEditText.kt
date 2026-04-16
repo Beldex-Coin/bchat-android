@@ -65,6 +65,33 @@ class InputBarEditText : AppCompatEditText {
         super.onTextChanged(text, start, lengthBefore, lengthAfter)
         if (isFormatting) return
 
+        if (lengthAfter > 1 && (text.contains("* ") || text.contains("- "))) {
+            val editable = this.text ?: return
+            val content = editable.toString()
+            isFormatting = true
+            try {
+                var pos = 0
+                while (pos < content.length - 1) {
+                    if ((content[pos] == '*' || content[pos] == '-') && content[pos + 1] == ' ') {
+                        val lineStart = content.lastIndexOf('\n', pos).let { if (it == -1) 0 else it + 1 }
+                        val beforeMarker = content.substring(lineStart, pos)
+                        if (beforeMarker.all { it.isWhitespace() }) {
+                            lastBulletTriggerChar = content[pos]
+                            editable.replace(pos, pos + 1, bulletChar.toString())
+                            pos++
+                        }
+                    }
+                    pos++
+                }
+            } finally {
+                isFormatting = false
+            }
+            setSelection(selectionStart.coerceIn(0, editable.length))
+            removeCallbacks(reformatRunnable)
+            post(reformatRunnable)
+            return
+        }
+
         if (lengthAfter > 1) {
             removeCallbacks(reformatRunnable)
             post {

@@ -29,7 +29,7 @@ object TextFormatter {
         val out = SpannableStringBuilder()
         val parser = AppTextFormatter(rawText, context)
         parser.appendFormatted(out)
-        return if (out.isEmpty()) SpannableStringBuilder(rawText) else out
+        return out.ifEmpty { SpannableStringBuilder(rawText) }
     }
 
     @JvmStatic
@@ -43,14 +43,20 @@ object TextFormatter {
         applyRegexSpan(builder, Regex("`([^\\r\\n`]+?)`"), marker = '`') { match ->
             toUnicodeInlineCode(match.groupValues[1])
         }
-        applyRegexSpan(builder, Regex("\\*([^\\r\\n]+?)\\*"), marker = '*') { match ->
-            toUnicodeBold(match.groupValues[1])
+        applyMarkerSpan(builder, Regex("\\*([^\\r\\n]+?)\\*"), '*') { start, end ->
+            applyStyleSkippingEmojiInRange(builder, start, end) {
+                StyleSpan(Typeface.BOLD)
+            }
         }
-        applyRegexSpan(builder, Regex("_([^\\r\\n]+?)_"), marker = '_') { match ->
-            toUnicodeItalic(match.groupValues[1])
+        applyMarkerSpan(builder, Regex("_([^\\r\\n]+?)_"), '_') { start, end ->
+            applyStyleSkippingEmojiInRange(builder, start, end) {
+                StyleSpan(Typeface.ITALIC)
+            }
         }
-        applyRegexSpan(builder, Regex("~([^\\r\\n]+?)~"), marker = '~') { match ->
-            toUnicodeStrikethrough(match.groupValues[1])
+        applyMarkerSpan(builder, Regex("~([^\\r\\n]+?)~"), '~') { start, end ->
+            applyStyleSkippingEmojiInRange(builder, start, end) {
+                StrikethroughSpan()
+            }
         }
 
         toUnicodeBlockQuote(builder)
@@ -144,6 +150,42 @@ object TextFormatter {
         return sb
     }
 
+    private fun applyStyleSkippingEmojiInRange(
+        builder: SpannableStringBuilder,
+        start: Int,
+        end: Int,
+        spanFactory: () -> Any
+    ) {
+        var runStart = -1
+
+        for (i in start until end) {
+            val ch = builder[i]
+
+            if (!ch.isSurrogate()) {
+                if (runStart == -1) runStart = i
+            } else {
+                if (runStart != -1) {
+                    builder.setSpan(
+                        spanFactory(),
+                        runStart,
+                        i,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    runStart = -1
+                }
+            }
+        }
+
+        if (runStart != -1) {
+            builder.setSpan(
+                spanFactory(),
+                runStart,
+                end,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+    }
+
     private fun applySpanSkippingEmoji(builder: SpannableStringBuilder, spanFactory: () -> Any) {
         var runStart = -1
         for (i in builder.indices) {
@@ -189,6 +231,38 @@ object TextFormatter {
             val replacementText = replacement(match)
             if (replacementText.isEmpty()) continue
             builder.replace(start, end + 1, replacementText)
+        }
+    }
+    private fun applyMarkerSpan(
+        builder: SpannableStringBuilder,
+        regex: Regex,
+        marker: Char,
+        spanApplier: (Int, Int) -> Unit
+    ) {
+        val matches = regex.findAll(builder).toList().asReversed()
+
+        for (match in matches) {
+            val start = match.range.first
+            val end = match.range.last
+
+            val prev = builder.getOrNull(start - 1)
+            val next = builder.getOrNull(end + 1)
+
+            if (prev == marker || next == marker) continue
+
+            val innerStart = start + 1
+            val innerEnd = end
+
+            val innerText = builder.substring(innerStart, innerEnd)
+
+            if (innerText.isBlank()) continue
+            if (innerText.first().isWhitespace() || innerText.last().isWhitespace()) continue
+            if (innerText.contains('\n') || innerText.contains('\r')) continue
+
+            builder.delete(end, end + 1)
+            builder.delete(start, start + 1)
+
+            spanApplier(start, end - 1)
         }
     }
 

@@ -65,6 +65,8 @@ import io.beldex.bchat.textformatter.TextFormatter;
 import io.beldex.bchat.util.CharacterCalculator;
 import io.beldex.bchat.util.PushCharacterCalculator;
 import io.beldex.bchat.util.Stopwatch;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Allows the user to edit and caption a set of media items before choosing to send them.
@@ -108,7 +110,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
 
   private boolean isFormattingCompose = false;
   private final char bulletChar = '\u2022';
-  private final String listIndent = "  ";
+  private char lastBulletTriggerChar = '*';
   private final Runnable formatComposeRunnable = () -> applyFormattingToComposeText();
 
   public static MediaSendFragment newInstance(@NonNull Recipient recipient) {
@@ -538,7 +540,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
     }
 
     @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
+    public void onTextChanged(CharSequence text, int start, int before, int count) {
       if (isFormattingCompose) return;
 
       Editable editable = composeText.getText();
@@ -547,61 +549,99 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
       int cursorPos = composeText.getSelectionStart();
       String rawText = editable.toString();
 
-      if (count > 1) {
+      if (count > 1 && (text.toString().contains("* ") || text.toString().contains("- "))) {
+        isFormattingCompose = true;
+        try {
+          int pos = 0;
+          while (pos < rawText.length() - 1) {
+            boolean isMarker = rawText.charAt(pos) == '*' || rawText.charAt(pos) == '-';
+            boolean isSingleSpace = rawText.charAt(pos + 1) == ' ';
+            boolean isDoubleSpace = (pos + 2 < rawText.length()) && rawText.charAt(pos + 2) == ' ';
+
+            if (isMarker && isSingleSpace && !isDoubleSpace) {
+              int lineStart = rawText.lastIndexOf('\n', pos);
+              lineStart = (lineStart == -1) ? 0 : lineStart + 1;
+
+              String beforeMarker = rawText.substring(lineStart, pos);
+
+              if (beforeMarker.isEmpty()) {
+                lastBulletTriggerChar = rawText.charAt(pos);
+                editable.replace(pos, pos + 1, String.valueOf(bulletChar));
+                pos++;
+              }
+            }
+            pos++;
+          }
+        } finally {
+          isFormattingCompose = false;
+        }
+
+        composeText.setSelection(Math.min(cursorPos, editable.length()));
         composeText.removeCallbacks(formatComposeRunnable);
         composeText.post(formatComposeRunnable);
         return;
       }
 
-      if (before == 1 && count == 0 && cursorPos > 0
-              && editable.length() > cursorPos - 1
-              && editable.charAt(cursorPos - 1) == bulletChar) {
-        isFormattingCompose = true;
-        editable.replace(cursorPos - 1, cursorPos, "*");
-        composeText.setSelection(cursorPos);
-        isFormattingCompose = false;
+      if (count > 1) {
+        composeText.removeCallbacks(formatComposeRunnable);
+        composeText.post(() -> {
+          applyFormattingToComposeText();
+          viewModel.onBodyChanged(composeText.getText().toString());
+        });
         return;
       }
 
-      if (count == 1 && s.length() > 0 && s.charAt(start) == ' ') {
-
-        // "* " or "- " at line start → bullet
-        if (cursorPos >= 2) {
-          int lineStart = rawText.lastIndexOf('\n', Math.max(0, cursorPos - 1));
-          lineStart = (lineStart == -1) ? 0 : lineStart + 1;
-          String twoChars = rawText.substring(cursorPos - 2, cursorPos);
-          if ((twoChars.equals("* ") || twoChars.equals("- "))
-                  && lineStart == cursorPos - 2) {
+      if (count == 1 && text.toString().endsWith(" ")) {
+        if (cursorPos >= 3) {
+          String lastThree = rawText.substring(cursorPos - 3, cursorPos);
+          if (lastThree.equals(bulletChar + "  ")) {
             isFormattingCompose = true;
-            editable.delete(cursorPos - 2, cursorPos);
-            editable.insert(cursorPos - 2, bulletChar + " ");
+            editable.replace(cursorPos - 3, cursorPos, lastBulletTriggerChar + "  ");
             composeText.setSelection(cursorPos);
             isFormattingCompose = false;
             return;
           }
         }
+      }
 
-        if (cursorPos >= 1) {
-          int lineStart = rawText.lastIndexOf('\n', Math.max(0, cursorPos - 1));
+      if (count == 1 && text.charAt(start) == ' ') {
+        if (cursorPos >= 2) {
+          int lineStart = rawText.lastIndexOf('\n', Math.max(0, cursorPos - 2));
           lineStart = (lineStart == -1) ? 0 : lineStart + 1;
-          String line = rawText.substring(lineStart, cursorPos);
-          boolean numberLineMatch = line.matches("\\d+\\.\\s");
-          boolean hasLeadingIndent =
-                  lineStart >= listIndent.length() &&
-                          rawText.regionMatches(lineStart - listIndent.length(),
-                                  listIndent, 0, listIndent.length());
 
-          if (numberLineMatch && !hasLeadingIndent) {
+          String twoChars = rawText.substring(cursorPos - 2, cursorPos);
+          String beforeMarker = rawText.substring(lineStart, cursorPos - 2);
+
+          boolean isNextCharSpace = cursorPos < rawText.length() && rawText.charAt(cursorPos) == ' ';
+
+          if ((twoChars.equals("* ") || twoChars.equals("- "))
+                  && beforeMarker.isEmpty()
+                  && !isNextCharSpace) {
+
+            if (BaseInputConnection.getComposingSpanStart(editable) != -1) return;
+
+            lastBulletTriggerChar = twoChars.charAt(0);
+
             isFormattingCompose = true;
-            editable.insert(lineStart, listIndent);
-            composeText.setSelection(cursorPos + listIndent.length());
+            editable.replace(cursorPos - 2, cursorPos, bulletChar + " ");
+            composeText.setSelection(cursorPos);
             isFormattingCompose = false;
             return;
           }
         }
       }
 
-      if (count == 1 && s.charAt(start) == '\n') {
+      if (before == 1 && count == 0 && cursorPos > 0
+              && editable.charAt(cursorPos - 1) == bulletChar) {
+
+        isFormattingCompose = true;
+        editable.replace(cursorPos - 1, cursorPos, String.valueOf(lastBulletTriggerChar));
+        composeText.setSelection(cursorPos);
+        isFormattingCompose = false;
+        return;
+      }
+
+      if (count > before && text.subSequence(start, start + count).toString().contains("\n")) {
         isFormattingCompose = true;
         try {
           String beforeText = rawText.substring(0, Math.max(0, cursorPos - 1));
@@ -638,57 +678,91 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
     if (cursor == 0) return;
 
     int lineStart = beforeText.lastIndexOf('\n') + 1;
-    String currentLine = beforeText.substring(lineStart)
-            .replaceAll("[\\u200B-\\u200D\\uFEFF]", "");
+    String currentLine = beforeText.substring(lineStart);
 
-    java.util.regex.Matcher numberMatch =
-            java.util.regex.Pattern.compile("^\\s*(\\d+)\\.\\s+")
-                    .matcher(currentLine);
+    if (currentLine.startsWith(" ") || currentLine.startsWith("\t")) {
+      return;
+    }
 
-    java.util.regex.Matcher bulletMatch =
-            java.util.regex.Pattern.compile("^\\s*([\\-\\u2022])\\s+")
-                    .matcher(currentLine);
+    currentLine = currentLine.replaceAll("[\\u200B-\\u200D\\uFEFF]", "");
+
+    Pattern numberPattern = Pattern.compile("^(\\d+)\\.\\s(?! )");
+    Matcher numberMatch = numberPattern.matcher(currentLine);
+
+    Pattern bulletPattern = Pattern.compile("^([\\-\\u2022\\*])\\s(?! )");
+    Matcher bulletMatch = bulletPattern.matcher(currentLine);
 
     if (numberMatch.find()) {
-      int number = Integer.parseInt(numberMatch.group(1));
-      int nextNumber = number + 1;
 
-      if (cursor > 0 && editable.charAt(cursor - 1) == '\n') {
-        editable.delete(cursor - 1, cursor);
-        cursor -= 1;
+      String numberStr = numberMatch.group(1);
+      Integer number = null;
+      try {
+        number = Integer.parseInt(numberStr);
+      } catch (NumberFormatException e) {
+        return;
       }
 
-      String contentAfterMarker = currentLine.substring(numberMatch.end());
-      if (contentAfterMarker.trim().isEmpty()) {
-        // Remove the empty list line
-        int lineBegin = editable.toString().lastIndexOf('\n', cursor - 1);
+      if (number < 1 || number > 99) {
+        int lineBegin = editable.toString()
+                .lastIndexOf('\n', cursor - 1);
         lineBegin = (lineBegin == -1) ? 0 : lineBegin + 1;
+
         editable.delete(lineBegin, cursor);
         composeText.setSelection(lineBegin);
         return;
       }
 
-      String insertText = "\n" + listIndent + nextNumber + ". ";
+      String contentAfterMarker =
+              currentLine.substring(numberMatch.group().length()).trim();
+
+      if (contentAfterMarker.isEmpty()) {
+
+        if (cursor > 0 && editable.charAt(cursor - 1) == '\n') {
+          editable.delete(cursor - 1, cursor);
+          cursor--;
+        }
+
+        int lineBegin = editable.toString()
+                .lastIndexOf('\n', cursor - 1);
+        lineBegin = (lineBegin == -1) ? 0 : lineBegin + 1;
+
+        editable.delete(lineBegin, cursor);
+        composeText.setSelection(lineBegin);
+        return;
+      }
+
+      int nextNumber = number + 1;
+      String insertText = nextNumber + ". ";
+
+      if (nextNumber > 99) return;
+
       editable.insert(cursor, insertText);
       composeText.setSelection(cursor + insertText.length());
 
     } else if (bulletMatch.find()) {
-      if (cursor > 0 && editable.charAt(cursor - 1) == '\n') {
-        editable.delete(cursor - 1, cursor);
-        cursor -= 1;
-      }
 
-      String contentAfterMarker = currentLine.substring(bulletMatch.end());
-      if (contentAfterMarker.trim().isEmpty()) {
-        int lineBegin = editable.toString().lastIndexOf('\n', cursor - 1);
+      String contentAfterMarker =
+              currentLine.substring(bulletMatch.group().length()).trim();
+
+      if (contentAfterMarker.isEmpty()) {
+
+        if (cursor > 0 && editable.charAt(cursor - 1) == '\n') {
+          editable.delete(cursor - 1, cursor);
+          cursor--;
+        }
+
+        int lineBegin = editable.toString()
+                .lastIndexOf('\n', cursor - 1);
         lineBegin = (lineBegin == -1) ? 0 : lineBegin + 1;
+
         editable.delete(lineBegin, cursor);
         composeText.setSelection(lineBegin);
         return;
       }
 
-      String bullet = bulletMatch.group(1);
-      String insertText = "\n" + listIndent + bullet + " ";
+      String bulletCharVal = bulletMatch.group(1);
+      String insertText = bulletCharVal + " ";
+
       editable.insert(cursor, insertText);
       composeText.setSelection(cursor + insertText.length());
 

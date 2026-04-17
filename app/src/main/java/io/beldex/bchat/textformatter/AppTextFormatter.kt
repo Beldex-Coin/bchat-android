@@ -11,6 +11,7 @@ import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
 import android.text.style.TypefaceSpan
 import androidx.core.graphics.toColorInt
+import com.beldex.libsignal.utilities.Log
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 
@@ -365,5 +366,128 @@ class AppTextFormatter(private val text: String, val context: Context) {
         }
 
         if (last < cleanText.length) out.append(cleanText.substring(last))
+
+        applyMarkerBold(out)
+        applyMarkerItalic(out)
+        applyMarkerStrikethrough(out)
+    }
+
+    private fun applyMarkerBold(builder: SpannableStringBuilder) {
+        val text = builder.toString()
+        if (text.isEmpty()) return
+        try {
+            val startCount = text.takeWhile { it == '*' }.length
+            val endCount = text.reversed().takeWhile { it == '*' }.length
+            if (startCount != endCount || startCount !in 1..2) return
+            val inner = text.substring(startCount, text.length - endCount)
+            if (inner.isBlank() ||
+                inner.first().isWhitespace() ||
+                inner.last().isWhitespace()
+            ) return
+            // ===== **hello** =====
+            if (startCount == 2) {
+                builder.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    0,
+                    builder.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+            // ===== *hello* =====
+            else {
+                builder.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    1,
+                    text.length - 1,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+        } catch (ex: Exception) {
+            Log.e("TextFormatter", "Bold span failed", ex)
+        }
+    }
+
+    private fun applyMarkerItalic(builder: SpannableStringBuilder) {
+        val text = builder.toString()
+        if (text.isEmpty()) return
+
+        try {
+            val startCount = text.takeWhile { it == '_' }.length
+            val endCount = text.reversed().takeWhile { it == '_' }.length
+
+            if (startCount != endCount || startCount !in 1..2) return
+
+            val inner = text.substring(startCount, text.length - endCount)
+
+            if (inner.isBlank() ||
+                inner.first().isWhitespace() ||
+                inner.last().isWhitespace()
+            ) return
+
+            // ===== __hello__ =====
+            if (startCount == 2) {
+
+                builder.setSpan(
+                    StyleSpan(Typeface.ITALIC),
+                    0,
+                    builder.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+            // ===== _hello_ =====
+            else {
+                builder.setSpan(
+                    StyleSpan(Typeface.ITALIC),
+                    1,
+                    text.length - 1,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+
+        } catch (ex: Exception) {
+            Log.e("TextFormatter", "Italic span failed", ex)
+        }
+    }
+
+    private fun applyMarkerStrikethrough(builder: SpannableStringBuilder) {
+        val text = builder.toString()
+        if (text.isEmpty()) return
+
+        try {
+            val startCount = text.takeWhile { it == '~' }.length
+            val endCount = text.reversed().takeWhile { it == '~' }.length
+
+            if (startCount != endCount || startCount !in 1..2) return
+
+            val inner = text.substring(startCount, text.length - endCount)
+
+            if (inner.isBlank() ||
+                inner.first().isWhitespace() ||
+                inner.last().isWhitespace()
+            ) return
+
+            // ===== ~~hello~~ =====
+            if (startCount == 2) {
+
+                builder.setSpan(
+                    StrikethroughSpan(),
+                    0,
+                    builder.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+            // ===== ~hello~ =====
+            else {
+                builder.setSpan(
+                    StrikethroughSpan(),
+                    1,
+                    text.length - 1,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+
+        } catch (ex: Exception) {
+            Log.e("TextFormatter", "Strikethrough span failed", ex)
+        }
     }
 }

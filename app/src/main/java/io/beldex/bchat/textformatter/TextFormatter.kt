@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.core.graphics.toColorInt
+import com.beldex.libsignal.utilities.Log
 
 
 object TextFormatter {
@@ -40,26 +41,19 @@ object TextFormatter {
         applyRegexSpan(builder, Regex("(?s)(?<!`)```(?!`)(.+?)```(?!`)"), marker = '`', allowNewlines = true, enforceBoundaries = false) {
             toUnicodeMonospace(it.groupValues[1])
         }
+
         applyRegexSpan(builder, Regex("`([^\\r\\n`]+?)`"), marker = '`') { match ->
             toUnicodeInlineCode(match.groupValues[1])
         }
-        applyMarkerSpan(builder, Regex("\\*([^\\r\\n]+?)\\*"), '*') { start, end ->
-            applyStyleSkippingEmojiInRange(builder, start, end) {
-                StyleSpan(Typeface.BOLD)
-            }
-        }
-        applyMarkerSpan(builder, Regex("_([^\\r\\n]+?)_"), '_') { start, end ->
-            applyStyleSkippingEmojiInRange(builder, start, end) {
-                StyleSpan(Typeface.ITALIC)
-            }
-        }
-        applyMarkerSpan(builder, Regex("~([^\\r\\n]+?)~"), '~') { start, end ->
-            applyStyleSkippingEmojiInRange(builder, start, end) {
-                StrikethroughSpan()
-            }
-        }
+
+        applyMarkerBold(builder)
+
+        applyMarkerItalic(builder)
+
+        applyMarkerStrikethrough(builder)
 
         toUnicodeBlockQuote(builder)
+
         return builder
     }
 
@@ -158,42 +152,6 @@ object TextFormatter {
         return sb
     }
 
-    private fun applyStyleSkippingEmojiInRange(
-        builder: SpannableStringBuilder,
-        start: Int,
-        end: Int,
-        spanFactory: () -> Any
-    ) {
-        var runStart = -1
-
-        for (i in start until end) {
-            val ch = builder[i]
-
-            if (!ch.isSurrogate()) {
-                if (runStart == -1) runStart = i
-            } else {
-                if (runStart != -1) {
-                    builder.setSpan(
-                        spanFactory(),
-                        runStart,
-                        i,
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                    runStart = -1
-                }
-            }
-        }
-
-        if (runStart != -1) {
-            builder.setSpan(
-                spanFactory(),
-                runStart,
-                end,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-        }
-    }
-
     private fun applySpanSkippingEmoji(builder: SpannableStringBuilder, spanFactory: () -> Any) {
         var runStart = -1
         for (i in builder.indices) {
@@ -241,36 +199,186 @@ object TextFormatter {
             builder.replace(start, end + 1, replacementText)
         }
     }
-    private fun applyMarkerSpan(
-        builder: SpannableStringBuilder,
-        regex: Regex,
-        marker: Char,
-        spanApplier: (Int, Int) -> Unit
-    ) {
-        val matches = regex.findAll(builder).toList().asReversed()
 
-        for (match in matches) {
-            val start = match.range.first
-            val end = match.range.last
+    private fun applyMarkerBold(builder: SpannableStringBuilder) {
+        val text = builder.toString()
+        if (text.isEmpty()) return
 
-            val prev = builder.getOrNull(start - 1)
-            val next = builder.getOrNull(end + 1)
+        try {
+            val startCount = text.takeWhile { it == '*' }.length
+            val endCount = text.reversed().takeWhile { it == '*' }.length
 
-            if (prev == marker || next == marker) continue
+            if (startCount != endCount || startCount !in 1..2) return
 
-            val innerStart = start + 1
-            val innerEnd = end
+            val inner = text.substring(startCount, text.length - endCount)
 
-            val innerText = builder.substring(innerStart, innerEnd)
+            if (inner.isBlank() ||
+                inner.first().isWhitespace() ||
+                inner.last().isWhitespace()
+            ) return
 
-            if (innerText.isBlank()) continue
-            if (innerText.first().isWhitespace() || innerText.last().isWhitespace()) continue
-            if (innerText.contains('\n') || innerText.contains('\r')) continue
+            // ===== **hello** =====
+            if (startCount == 2) {
+                builder.replace(0, 2, "*")
+                builder.replace(builder.length - 2, builder.length, "*")
 
-            builder.delete(end, end + 1)
-            builder.delete(start, start + 1)
+                builder.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    0,
+                    builder.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+            // ===== *hello* =====
+            else {
+                builder.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    1,
+                    text.length - 1,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
 
-            spanApplier(start, end - 1)
+                builder.delete(builder.length - 1, builder.length)
+                builder.delete(0, 1)
+            }
+
+        } catch (ex: Exception) {
+            Log.e("TextFormatter", "Bold span failed", ex)
+        }
+    }
+
+    private fun applyMarkerItalic(builder: SpannableStringBuilder) {
+        val text = builder.toString()
+        if (text.isEmpty()) return
+
+        try {
+            val startCount = text.takeWhile { it == '_' }.length
+            val endCount = text.reversed().takeWhile { it == '_' }.length
+
+            if (startCount != endCount || startCount !in 1..2) return
+
+            val innerStart = startCount
+            val innerEnd = text.length - endCount
+            val inner = text.substring(innerStart, innerEnd)
+
+            if (inner.isBlank() ||
+                inner.first().isWhitespace() ||
+                inner.last().isWhitespace()
+            ) return
+
+            // ===== __hello__ → _hello_ (italic) =====
+            if (startCount == 2) {
+                builder.replace(0, 2, "_")
+                builder.replace(builder.length - 2, builder.length, "_")
+            }
+
+            // apply italic
+            builder.setSpan(
+                StyleSpan(Typeface.ITALIC),
+                innerStart,
+                builder.length - endCount,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+
+            // HANDLE NESTED BOLD (*hello*)
+            if (inner.startsWith("*") && inner.endsWith("*") && inner.length > 2) {
+                // apply bold
+                builder.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    innerStart + 1,
+                    builder.length - endCount - 1,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+
+                // REMOVE inner *
+                builder.delete(builder.length - endCount - 1, builder.length - endCount)
+                builder.delete(innerStart, innerStart + 1)
+            }
+
+            // remove markers for single `_`
+            if (startCount == 1) {
+                builder.delete(builder.length - 1, builder.length)
+                builder.delete(0, 1)
+            }
+
+        } catch (ex: Exception) {
+            Log.e("TextFormatter", "Italic span failed", ex)
+        }
+    }
+
+    private fun applyMarkerStrikethrough(builder: SpannableStringBuilder) {
+        val text = builder.toString()
+        if (text.isEmpty()) return
+
+        try {
+            val startCount = text.takeWhile { it == '~' }.length
+            val endCount = text.reversed().takeWhile { it == '~' }.length
+
+            if (startCount != endCount || startCount !in 1..2) return
+
+            val innerStart = startCount
+            val innerEnd = text.length - endCount
+            val inner = text.substring(innerStart, innerEnd)
+
+            if (inner.isBlank() ||
+                inner.first().isWhitespace() ||
+                inner.last().isWhitespace()
+            ) return
+
+            // ===== ~~hello~~ → ~hello~ =====
+            if (startCount == 2) {
+                builder.replace(0, 2, "~")
+                builder.replace(builder.length - 2, builder.length, "~")
+            }
+
+            // apply strikethrough
+            builder.setSpan(
+                StrikethroughSpan(),
+                innerStart,
+                builder.length - endCount,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+
+            // HANDLE NESTED ITALIC (_hello_)
+            if (inner.startsWith("_") && inner.endsWith("_") && inner.length > 2) {
+
+                // apply italic
+                builder.setSpan(
+                    StyleSpan(Typeface.ITALIC),
+                    innerStart + 1,
+                    builder.length - endCount - 1,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+
+                // REMOVE inner _
+                builder.delete(builder.length - endCount - 1, builder.length - endCount)
+                builder.delete(innerStart, innerStart + 1)
+            }
+
+            // HANDLE NESTED BOLD (*hello*)
+            if (inner.startsWith("*") && inner.endsWith("*") && inner.length > 2) {
+
+                // apply bold
+                builder.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    innerStart + 1,
+                    builder.length - endCount - 1,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+
+                // REMOVE inner *
+                builder.delete(builder.length - endCount - 1, builder.length - endCount)
+                builder.delete(innerStart, innerStart + 1)
+            }
+
+            // remove outer ~ if single
+            if (startCount == 1) {
+                builder.delete(builder.length - 1, builder.length)
+                builder.delete(0, 1)
+            }
+
+        } catch (ex: Exception) {
+            Log.e("TextFormatter", "Strikethrough span failed", ex)
         }
     }
 

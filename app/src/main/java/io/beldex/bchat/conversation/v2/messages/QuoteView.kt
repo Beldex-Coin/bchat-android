@@ -22,7 +22,6 @@ import com.bumptech.glide.RequestManager
 import com.google.android.material.card.MaterialCardView
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
-import io.beldex.bchat.compose_utils.TextColor
 import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 import io.beldex.bchat.conversation.v2.contact_sharing.flattenData
 import io.beldex.bchat.conversation.v2.utilities.MentionUtilities
@@ -281,10 +280,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                    bodyText = MentionUtilities.highlightMentions((body ?: "").toSpannable(), threadID, context)
                     TextFormatter.formatForSentMessage(bodyText)
                 }
-                bodyText = when {
-                    bodyText.length > 35 -> "${bodyText.subSequence(0, 35)}... "
-                    else -> bodyText
-                }
+
                 TextFormatter.formatForSentMessage(bodyText)
             }
         }

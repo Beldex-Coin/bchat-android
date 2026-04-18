@@ -80,6 +80,7 @@ import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.TextColor
 import io.beldex.bchat.conversation.v2.ConversationActivityV2
+import io.beldex.bchat.conversation.v2.ViewUtil.dpToPx
 import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
 import io.beldex.bchat.conversation.v2.contact_sharing.SharedContactView
 import io.beldex.bchat.conversation.v2.search.SearchViewModel
@@ -539,7 +540,16 @@ class VisibleMessageContentView : MaterialCardView {
             binding.bodyTextView.setLinkTextColor(color)
             val body = getBodySpans(context, message, searchQuery)
             binding.bodyTextView.setText(body, TextView.BufferType.SPANNABLE)
-            //New Line
+
+            val isList= isListMessage(message.body)
+
+            binding.bodyTextView.setPadding(
+                binding.bodyTextView.paddingLeft,
+                binding.bodyTextView.paddingTop,
+                dpToPx(12),
+                if (isList) dpToPx(12) else dpToPx(6)
+            )
+
             if (binding.bodyTextView.text.trim().length > 705) {
                 addReadMore(binding.bodyTextView.text.trim().toString(), binding.bodyTextView, message, delegate, visibleMessageView, position)
             }
@@ -856,6 +866,14 @@ class VisibleMessageContentView : MaterialCardView {
                 R.color.received_message_time_color
             }
             return context.resources.getColorWithID(colorID, context.theme)
+        }
+
+        fun isListMessage(text: String): Boolean {
+            val lines = text.lines().map { it.trim() }
+
+            return lines.any {
+                it.matches(Regex("^(\\d+\\.|•|-).*"))
+            }
         }
 
         const val JOIN_SOCIAL_GROUP_POPUP = "Join Open Group Dialog"

@@ -47,11 +47,14 @@ object TextFormatter {
             }
 
             val line = builder.substring(index, lineEnd)
+            val isNumberList = Regex("""^\s*\d+\.\s""").containsMatchIn(line)
+            val isBulletList = Regex("""^\s*[\u2022\-\*]\s""").containsMatchIn(line)
 
-            val isNumberList = Regex("""^\d+\.\s""").containsMatchIn(line)
-            val isBulletList = Regex("""^([\u2022\-\*])\s""").containsMatchIn(line)
+            var sub = SpannableStringBuilder(line)
 
-            val sub = SpannableStringBuilder(line)
+            if (isBulletList) {
+                sub = convertBulletMarkers(sub)
+            }
 
             // ---- CODE BLOCK ----
             applyRegexSpan(
@@ -106,6 +109,25 @@ object TextFormatter {
         toUnicodeBlockQuote(builder)
 
         return builder
+    }
+    private fun convertBulletMarkers(text: SpannableStringBuilder): SpannableStringBuilder {
+        val bulletChar = '\u2022'
+
+        var markerPos = 0
+        while (markerPos < text.length && text[markerPos] == ' ') {
+            markerPos++
+        }
+
+        if (markerPos < text.length && markerPos < text.length - 1) {
+            val currentChar = text[markerPos]
+            val nextChar = text[markerPos + 1]
+
+            if ((currentChar == '-' || currentChar == '*') && nextChar == ' ') {
+                text.replace(markerPos, markerPos + 1, bulletChar.toString())
+            }
+        }
+
+        return text
     }
 
     fun SpannableStringBuilder.toAnnotatedString(): AnnotatedString {

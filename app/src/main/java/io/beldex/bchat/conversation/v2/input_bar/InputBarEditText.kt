@@ -317,6 +317,64 @@ class InputBarEditText : AppCompatEditText {
         }
     }
 
+    override fun onSelectionChanged(selStart : Int, selEnd : Int) {
+        try {
+            val text=this.text?.toString() ?: return
+            if (selStart == selEnd) {
+                val newSelection=preventCursorBeforeListMarker(text, selStart)
+                if (newSelection != selStart) {
+                    setSelection(newSelection)
+                    return
+                }
+            }
+        } catch (e : Exception) {
+            println("error exception $e")
+        }
+
+        super.onSelectionChanged(selStart, selEnd)
+    }
+
+    private fun preventCursorBeforeListMarker(text : String, cursorPos : Int) : Int {
+        if (text.isEmpty() || cursorPos < 0 || cursorPos > text.length) return cursorPos
+
+        try {
+            val lineStart=text.lastIndexOf('\n', cursorPos).let {
+                if (it == -1) 0 else it + 1
+            }
+
+            if (cursorPos < lineStart) return cursorPos
+
+            val lineEnd=text.indexOf('\n', cursorPos).let {
+                if (it == -1) text.length else it
+            }
+
+            if (lineStart >= lineEnd) return cursorPos
+            val currentLine=text.substring(lineStart, lineEnd)
+            val numberMatch=Regex("""^(\d+)\.\s""").find(currentLine)
+            if (numberMatch != null) {
+                val markerEndPos=lineStart + numberMatch.value.length
+
+                if (cursorPos <= markerEndPos) {
+                    return markerEndPos
+                }
+            }
+
+            val bulletPattern=Regex("""^([\u2022\*\-])\s""")
+            val bulletMatch=bulletPattern.find(currentLine)
+            if (bulletMatch != null) {
+                val markerEndPos=lineStart + bulletMatch.value.length
+
+                if (cursorPos <= markerEndPos) {
+                    return markerEndPos
+                }
+            }
+
+        } catch (e : Exception) {
+            println("error exception $e")
+        }
+        return cursorPos
+    }
+
     override fun onCreateInputConnection(editorInfo: EditorInfo): InputConnection? {
         val ic = super.onCreateInputConnection(editorInfo) ?: return null
         EditorInfoCompat.setContentMimeTypes(

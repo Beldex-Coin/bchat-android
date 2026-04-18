@@ -8,8 +8,11 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
+import android.text.style.LeadingMarginSpan;
+import android.text.style.StyleSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -709,6 +712,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
 
         editable.delete(lineBegin, cursor);
         composeText.setSelection(lineBegin);
+        composeText.post(formatComposeRunnable);
         return;
       }
 
@@ -728,6 +732,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
 
         editable.delete(lineBegin, cursor);
         composeText.setSelection(lineBegin);
+        composeText.post(formatComposeRunnable);
         return;
       }
 
@@ -738,7 +743,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
 
       editable.insert(cursor, insertText);
       composeText.setSelection(cursor + insertText.length());
-
+      composeText.post(formatComposeRunnable);
     } else if (bulletMatch.find()) {
 
       String contentAfterMarker =
@@ -757,6 +762,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
 
         editable.delete(lineBegin, cursor);
         composeText.setSelection(lineBegin);
+        composeText.post(formatComposeRunnable);
         return;
       }
 
@@ -765,7 +771,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
 
       editable.insert(cursor, insertText);
       composeText.setSelection(cursor + insertText.length());
-
+      composeText.post(formatComposeRunnable);
     } else {
       if (cursor > 0 && editable.charAt(cursor - 1) == '\n') return;
       editable.insert(cursor, "\n");
@@ -801,6 +807,13 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
 
       composeText.removeTextChangedListener(composeKeyPressedListener);
       composeText.setText(formatted);
+
+      // get NEW editable after setText()
+      Editable newEditable = composeText.getText();
+
+      // wait until ALL text mutations are done
+      applyNumberSpan(newEditable);
+
       composeText.setSelection(Math.max(0, Math.min(newCursor, composeText.length())));
       composeText.addTextChangedListener(composeKeyPressedListener);
 
@@ -811,6 +824,52 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
       isFormattingCompose = false;
     }
   }
+
+  private void applyNumberSpan(Editable editable) {
+    int index = 0;
+    String text = editable.toString();
+
+    while (index < text.length()) {
+
+      int lineEnd = text.indexOf('\n', index);
+      if (lineEnd == -1) lineEnd = text.length();
+
+      String line = text.substring(index, lineEnd);
+
+      Matcher match = Pattern.compile("^(\\d+)\\.\\s").matcher(line);
+
+      if (match.find()) {
+
+        // Remove old margin spans (avoid stacking)
+        LeadingMarginSpan[] marginSpans =
+                editable.getSpans(index, lineEnd, LeadingMarginSpan.class);
+        for (LeadingMarginSpan span : marginSpans) {
+          editable.removeSpan(span);
+        }
+
+        // Apply indentation
+        editable.setSpan(
+                new LeadingMarginSpan.Standard(24, 24),
+                index,
+                lineEnd,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
+
+        // Apply bold ONLY to number prefix
+        int numberEnd = index + match.group().length();
+
+        editable.setSpan(
+                new StyleSpan(android.graphics.Typeface.BOLD),
+                index,
+                numberEnd,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
+      }
+
+      index = lineEnd + 1;
+    }
+  }
+
   public interface Controller {
     void onAddMediaClicked(@NonNull String bucketId);
     void onSendClicked(@NonNull List<Media> media, @NonNull String body);

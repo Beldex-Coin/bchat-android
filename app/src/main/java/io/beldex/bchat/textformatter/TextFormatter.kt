@@ -38,19 +38,70 @@ object TextFormatter {
         val sanitized = sanitizeLoneListMarkers(rawText.toString())
         val builder = SpannableStringBuilder(sanitized)
 
-        applyRegexSpan(builder, Regex("(?s)(?<!`)```(?!`)(.+?)```(?!`)"), marker = '`', allowNewlines = true, enforceBoundaries = false) {
-            toUnicodeMonospace(it.groupValues[1])
+        var index = 0
+
+        while (index < builder.length) {
+
+            val lineEnd = builder.indexOf('\n', index).let {
+                if (it == -1) builder.length else it
+            }
+
+            val line = builder.substring(index, lineEnd)
+
+            val isNumberList = Regex("""^\d+\.\s""").containsMatchIn(line)
+            val isBulletList = Regex("""^([\u2022\-\*])\s""").containsMatchIn(line)
+
+            val sub = SpannableStringBuilder(line)
+
+            // ---- CODE BLOCK ----
+            applyRegexSpan(
+                sub,
+                Regex("(?s)(?<!`)```(?!`)(.+?)```(?!`)"),
+                marker = '`',
+                allowNewlines = true,
+                enforceBoundaries = false
+            ) {
+                toUnicodeMonospace(it.groupValues[1])
+            }
+
+            // ---- INLINE CODE ----
+            applyRegexSpan(sub, Regex("`([^\\r\\n`]+?)`"), marker = '`') {
+                toUnicodeInlineCode(it.groupValues[1])
+            }
+
+            if (isNumberList || isBulletList) {
+
+                // LIST → REGEX ENGINE
+                applyRegexSpan(sub, Regex("""\*(?!\s)(.+?)(?<!\s)\*"""), marker = '*') {
+                    toUnicodeBold(it.groupValues[1])
+                }
+
+                applyRegexSpan(sub, Regex("""_(?!\s)(.+?)(?<!\s)_"""), marker = '_') {
+                   toUnicodeItalic(it.groupValues[1])
+                }
+
+                applyRegexSpan(sub, Regex("""~(?!\s)(.+?)(?<!\s)~"""), marker = '~') {
+                    toUnicodeStrikethrough(it.groupValues[1])
+                }
+
+            } else {
+                // NON-LIST → OLD ENGINE
+                applyMarkerBold(sub)
+                applyMarkerItalic(sub)
+                applyMarkerStrikethrough(sub)
+            }
+
+            // SAFE REPLACE
+            builder.replace(index, lineEnd, sub)
+
+            // MOVE INDEX CORRECTLY
+            index += sub.length
+
+            // skip newline if exists
+            if (index < builder.length && builder[index] == '\n') {
+                index++
+            }
         }
-
-        applyRegexSpan(builder, Regex("`([^\\r\\n`]+?)`"), marker = '`') { match ->
-            toUnicodeInlineCode(match.groupValues[1])
-        }
-
-        applyMarkerBold(builder)
-
-        applyMarkerItalic(builder)
-
-        applyMarkerStrikethrough(builder)
 
         toUnicodeBlockQuote(builder)
 

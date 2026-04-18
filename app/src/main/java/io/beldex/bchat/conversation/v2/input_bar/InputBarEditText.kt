@@ -2,6 +2,10 @@
 
 import android.content.Context
 import android.net.Uri
+import android.text.Editable
+import android.text.Spannable
+import android.text.style.LeadingMarginSpan
+import android.text.style.StyleSpan
 import android.util.AttributeSet
 import android.view.inputmethod.BaseInputConnection
 import android.view.inputmethod.EditorInfo
@@ -27,7 +31,7 @@ class InputBarEditText : AppCompatEditText {
     private var lastBulletTriggerChar: Char = '*'
 
     private val reformatRunnable = Runnable {
-        val editable = text ?: return@Runnable
+        val editable = text as? Editable ?: return@Runnable
         if (BaseInputConnection.getComposingSpanStart(editable) != -1) return@Runnable
 
         val raw = editable.toString()
@@ -53,10 +57,55 @@ class InputBarEditText : AppCompatEditText {
         // Quotes
         toUnicodeBlockQuote(text ?: return@Runnable)
 
+        // wait until ALL text mutations are done
+        applyNumberSpan(editable)
+
         // Delegates
         post {
             delegate?.inputBarEditTextHeightChanged(height)
             delegate?.inputBarEditTextContentChanged(text.toString())
+        }
+    }
+
+    private fun applyNumberSpan(editable: Editable) {
+        var index = 0
+        val text = editable.toString()
+
+        while (index < text.length) {
+
+            val lineEnd = text.indexOf('\n', index).let {
+                if (it == -1) text.length else it
+            }
+
+            val line = text.substring(index, lineEnd)
+
+            val match = Regex("^(\\d+)\\.\\s").find(line)
+
+            if (match != null ) {
+
+                // Remove old margin spans (avoid stacking)
+                editable.getSpans(index, lineEnd, LeadingMarginSpan::class.java)
+                    .forEach { editable.removeSpan(it) }
+
+                // Apply indentation
+                editable.setSpan(
+                    LeadingMarginSpan.Standard(12),
+                    index,
+                    lineEnd,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+
+                // Apply bold ONLY to number prefix
+                val numberEnd = index + match.value.length
+
+                editable.setSpan(
+                    StyleSpan(android.graphics.Typeface.BOLD),
+                    index, numberEnd,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+
+            index = lineEnd + 1
         }
     }
 
@@ -210,6 +259,7 @@ class InputBarEditText : AppCompatEditText {
 
                 editable.delete(lineBegin, cursor)
                 setSelection(lineBegin)
+                post(reformatRunnable)
                 return
             }
 
@@ -228,6 +278,7 @@ class InputBarEditText : AppCompatEditText {
 
                 editable.delete(lineBegin, cursor)
                 setSelection(lineBegin)
+                post(reformatRunnable)
                 return
             }
 
@@ -238,6 +289,7 @@ class InputBarEditText : AppCompatEditText {
 
             editable.insert(cursor, insertText)
             setSelection(cursor + insertText.length)
+            post(reformatRunnable)
         } else if (bulletMatch != null) {
             val contentAfterMarker = currentLine.substring(bulletMatch.value.length).trim()
             if (contentAfterMarker.isEmpty()) {
@@ -249,6 +301,7 @@ class InputBarEditText : AppCompatEditText {
                     .let { if (it == -1) 0 else it + 1 }
                 editable.delete(lineBegin, cursor)
                 setSelection(lineBegin)
+                post(reformatRunnable)
                 return
             }
             val bulletCharVal = bulletMatch.groupValues[1]
@@ -256,6 +309,7 @@ class InputBarEditText : AppCompatEditText {
 
             editable.insert(cursor, insertText)
             setSelection(cursor + insertText.length)
+            post(reformatRunnable)
         } else {
             if (cursor > 0 && editable[cursor - 1] == '\n') return
             editable.insert(cursor, "\n")

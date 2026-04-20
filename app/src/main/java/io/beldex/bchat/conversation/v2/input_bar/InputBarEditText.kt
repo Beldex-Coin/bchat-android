@@ -175,7 +175,9 @@ class InputBarEditText : AppCompatEditText {
                 val lineStart = rawText.lastIndexOf('\n', max(0, cursorPos - 2))
                     .let { if (it == -1) 0 else it + 1 }
                 val twoChars = rawText.substring(cursorPos - 2, cursorPos)
-                val beforeMarker = rawText.substring(lineStart, cursorPos - 2)
+                val endIndex = cursorPos - 2
+                val beforeMarker =
+                    if (lineStart in 0..endIndex) rawText.substring(lineStart, endIndex) else ""
 
                 val isNextCharSpace = cursorPos < rawText.length && rawText[cursorPos] == ' '
                 if ((twoChars == "* " || twoChars == "- ") && beforeMarker.isEmpty() && !isNextCharSpace) {

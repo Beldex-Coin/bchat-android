@@ -613,7 +613,11 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
           lineStart = (lineStart == -1) ? 0 : lineStart + 1;
 
           String twoChars = rawText.substring(cursorPos - 2, cursorPos);
-          String beforeMarker = rawText.substring(lineStart, cursorPos - 2);
+          int endIndex = cursorPos - 2;
+          String beforeMarker =
+                  (lineStart >= 0 && endIndex >= lineStart && endIndex <= rawText.length())
+                          ? rawText.substring(lineStart, endIndex)
+                          : "";
 
           boolean isNextCharSpace = cursorPos < rawText.length() && rawText.charAt(cursorPos) == ' ';
 

@@ -1,38 +1,56 @@
 package io.beldex.bchat.mediasend;
 
 import android.annotation.SuppressLint;
-import androidx.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.view.ContextThemeWrapper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
+import android.text.style.LeadingMarginSpan;
+import android.text.style.StyleSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
-import io.beldex.bchat.util.CharacterCalculator;
-import io.beldex.bchat.util.PushCharacterCalculator;
-import io.beldex.bchat.util.Stopwatch;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 import com.beldex.libbchat.utilities.MediaTypes;
+import com.beldex.libbchat.utilities.Stub;
+import com.beldex.libbchat.utilities.TextSecurePreferences;
+import com.beldex.libbchat.utilities.Util;
+import com.beldex.libbchat.utilities.recipients.Recipient;
+import com.beldex.libsignal.utilities.ListenableFuture;
+import com.beldex.libsignal.utilities.Log;
+import com.beldex.libsignal.utilities.SettableFuture;
+import com.beldex.libsignal.utilities.guava.Optional;
+import com.bumptech.glide.Glide;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import io.beldex.bchat.R;
 import io.beldex.bchat.components.ComposeText;
 import io.beldex.bchat.components.ControllableViewPager;
 import io.beldex.bchat.components.InputAwareLayout;
@@ -43,30 +61,15 @@ import io.beldex.bchat.components.emoji.EmojiToggle;
 import io.beldex.bchat.components.emoji.MediaKeyboard;
 import io.beldex.bchat.contactshare.SimpleTextWatcher;
 import io.beldex.bchat.imageeditor.model.EditorModel;
-import com.beldex.libsignal.utilities.Log;
 import io.beldex.bchat.mediapreview.MediaRailAdapter;
-import com.bumptech.glide.Glide;
 import io.beldex.bchat.providers.BlobProvider;
-import com.beldex.libbchat.utilities.recipients.Recipient;
 import io.beldex.bchat.scribbles.ImageEditorFragment;
-import com.beldex.libsignal.utilities.guava.Optional;
-
-import com.beldex.libbchat.utilities.TextSecurePreferences;
-import com.beldex.libbchat.utilities.Util;
-import com.beldex.libbchat.utilities.Stub;
-import com.beldex.libsignal.utilities.ListenableFuture;
-import com.beldex.libsignal.utilities.SettableFuture;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
-import io.beldex.bchat.R;
+import io.beldex.bchat.textformatter.TextFormatter;
+import io.beldex.bchat.util.CharacterCalculator;
+import io.beldex.bchat.util.PushCharacterCalculator;
+import io.beldex.bchat.util.Stopwatch;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Allows the user to edit and caption a set of media items before choosing to send them.
@@ -105,6 +108,13 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
   private final Rect visibleBounds = new Rect();
 
   private final PushCharacterCalculator characterCalculator = new PushCharacterCalculator();
+
+  private final ComposeKeyPressedListener composeKeyPressedListener = new ComposeKeyPressedListener();
+
+  private boolean isFormattingCompose = false;
+  private final char bulletChar = '\u2022';
+  private char lastBulletTriggerChar = '*';
+  private final Runnable formatComposeRunnable = () -> applyFormattingToComposeText();
 
   public static MediaSendFragment newInstance(@NonNull Recipient recipient) {
     Bundle args = new Bundle();
@@ -164,15 +174,6 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
       processMedia(fragmentPagerAdapter.getAllMedia(), fragmentPagerAdapter.getSavedState());
     });
 
-//    sendButton.addOnTransportChangedListener((newTransport, manuallySelected) -> {
-//      presentCharactersRemaining();
-//      composeText.setTransport(newTransport);
-//      sendButtonBkg.getBackground().setColorFilter(getResources().getColor(R.color.transparent), PorterDuff.Mode.MULTIPLY);
-//      sendButtonBkg.getBackground().invalidateSelf();
-//    });
-
-    ComposeKeyPressedListener composeKeyPressedListener = new ComposeKeyPressedListener();
-
     composeText.setOnKeyListener(composeKeyPressedListener);
     composeText.addTextChangedListener(composeKeyPressedListener);
     composeText.setOnClickListener(composeKeyPressedListener);
@@ -208,7 +209,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
     String    displayName = Optional.fromNullable(recipient.getName())
                                     .or(Optional.fromNullable(recipient.getProfileName())
                                                 .or(recipient.getAddress().serialize()));
-    composeText.setHint(getString(R.string.MediaSendActivity_message_to_s, displayName), null);
+    composeText.setHint(getString(R.string.MediaSendActivity_message_to_s, displayName));
     composeText.setOnEditorActionListener((v, actionId, event) -> {
       boolean isSend = actionId == EditorInfo.IME_ACTION_SEND;
       if (isSend) sendButton.performClick();
@@ -512,7 +513,8 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
     }
   }
 
-  private class ComposeKeyPressedListener implements View.OnKeyListener, View.OnClickListener, TextWatcher, View.OnFocusChangeListener {
+  private class ComposeKeyPressedListener implements View.OnKeyListener, View.OnClickListener,
+          TextWatcher, View.OnFocusChangeListener {
 
     int beforeLength;
 
@@ -536,21 +538,340 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
     }
 
     @Override
-    public void beforeTextChanged(CharSequence s, int start, int count,int after) {
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
       beforeLength = composeText.getTextTrimmed().length();
     }
 
     @Override
-    public void afterTextChanged(Editable s) {
-      presentCharactersRemaining();
-      viewModel.onBodyChanged(s);
+    public void onTextChanged(CharSequence text, int start, int before, int count) {
+      if (isFormattingCompose) return;
+
+      Editable editable = composeText.getText();
+      if (editable == null) return;
+
+      int cursorPos = composeText.getSelectionStart();
+      String rawText = editable.toString();
+
+      if (count > 1 && (text.toString().contains("* ") || text.toString().contains("- "))) {
+        isFormattingCompose = true;
+        try {
+          int pos = 0;
+          while (pos < rawText.length() - 1) {
+            boolean isMarker = rawText.charAt(pos) == '*' || rawText.charAt(pos) == '-';
+            boolean isSingleSpace = rawText.charAt(pos + 1) == ' ';
+            boolean isDoubleSpace = (pos + 2 < rawText.length()) && rawText.charAt(pos + 2) == ' ';
+
+            if (isMarker && isSingleSpace && !isDoubleSpace) {
+              int lineStart = rawText.lastIndexOf('\n', pos);
+              lineStart = (lineStart == -1) ? 0 : lineStart + 1;
+
+              String beforeMarker = rawText.substring(lineStart, pos);
+
+              if (beforeMarker.isEmpty()) {
+                lastBulletTriggerChar = rawText.charAt(pos);
+                editable.replace(pos, pos + 1, String.valueOf(bulletChar));
+                pos++;
+              }
+            }
+            pos++;
+          }
+        } finally {
+          isFormattingCompose = false;
+        }
+
+        composeText.setSelection(Math.min(cursorPos, editable.length()));
+        composeText.removeCallbacks(formatComposeRunnable);
+        composeText.post(formatComposeRunnable);
+        return;
+      }
+
+      if (count > 1) {
+        composeText.removeCallbacks(formatComposeRunnable);
+        composeText.post(() -> {
+          applyFormattingToComposeText();
+          viewModel.onBodyChanged(composeText.getText().toString());
+        });
+        return;
+      }
+
+      if (count == 1 && text.toString().endsWith(" ")) {
+        if (cursorPos >= 3) {
+          String lastThree = rawText.substring(cursorPos - 3, cursorPos);
+          if (lastThree.equals(bulletChar + "  ")) {
+            isFormattingCompose = true;
+            editable.replace(cursorPos - 3, cursorPos, lastBulletTriggerChar + "  ");
+            composeText.setSelection(cursorPos);
+            isFormattingCompose = false;
+            return;
+          }
+        }
+      }
+
+      if (count == 1 && text.charAt(start) == ' ') {
+        if (cursorPos >= 2) {
+          int lineStart = rawText.lastIndexOf('\n', Math.max(0, cursorPos - 2));
+          lineStart = (lineStart == -1) ? 0 : lineStart + 1;
+
+          String twoChars = rawText.substring(cursorPos - 2, cursorPos);
+          int endIndex = cursorPos - 2;
+          String beforeMarker =
+                  (lineStart >= 0 && endIndex >= lineStart && endIndex <= rawText.length())
+                          ? rawText.substring(lineStart, endIndex)
+                          : "";
+
+          boolean isNextCharSpace = cursorPos < rawText.length() && rawText.charAt(cursorPos) == ' ';
+
+          if ((twoChars.equals("* ") || twoChars.equals("- "))
+                  && beforeMarker.isEmpty()
+                  && !isNextCharSpace) {
+
+            if (BaseInputConnection.getComposingSpanStart(editable) != -1) return;
+
+            lastBulletTriggerChar = twoChars.charAt(0);
+
+            isFormattingCompose = true;
+            editable.replace(cursorPos - 2, cursorPos, bulletChar + " ");
+            composeText.setSelection(cursorPos);
+            isFormattingCompose = false;
+            return;
+          }
+        }
+      }
+
+      if (before == 1 && count == 0 && cursorPos > 0
+              && editable.charAt(cursorPos - 1) == bulletChar) {
+
+        isFormattingCompose = true;
+        editable.replace(cursorPos - 1, cursorPos, String.valueOf(lastBulletTriggerChar));
+        composeText.setSelection(cursorPos);
+        isFormattingCompose = false;
+        return;
+      }
+
+      if (count > before && text.subSequence(start, start + count).toString().contains("\n")) {
+        isFormattingCompose = true;
+        try {
+          String beforeText = rawText.substring(0, Math.max(0, cursorPos - 1));
+          handleAutoList(editable, beforeText);
+        } finally {
+          isFormattingCompose = false;
+        }
+        return;
+      }
+
+      if (BaseInputConnection.getComposingSpanStart(editable) != -1) {
+        composeText.removeCallbacks(formatComposeRunnable);
+        composeText.post(formatComposeRunnable);
+        return;
+      }
+
+      composeText.removeCallbacks(formatComposeRunnable);
+      composeText.post(formatComposeRunnable);
     }
 
     @Override
-    public void onTextChanged(CharSequence s, int start, int before,int count) {}
+    public void afterTextChanged(Editable s) {
+      if (isFormattingCompose) return;
+      presentCharactersRemaining();
+      viewModel.onBodyChanged(s.toString());
+    }
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {}
+  }
+
+  private void handleAutoList(Editable editable, String beforeText) {
+    int cursor = composeText.getSelectionStart();
+    if (cursor == 0) return;
+
+    int lineStart = beforeText.lastIndexOf('\n') + 1;
+    String currentLine = beforeText.substring(lineStart);
+
+    if (currentLine.startsWith(" ") || currentLine.startsWith("\t")) {
+      return;
+    }
+
+    currentLine = currentLine.replaceAll("[\\u200B-\\u200D\\uFEFF]", "");
+
+    Pattern numberPattern = Pattern.compile("^(\\d+)\\.\\s(?! )");
+    Matcher numberMatch = numberPattern.matcher(currentLine);
+
+    Pattern bulletPattern = Pattern.compile("^([\\-\\u2022\\*])\\s(?! )");
+    Matcher bulletMatch = bulletPattern.matcher(currentLine);
+
+    if (numberMatch.find()) {
+
+      String numberStr = numberMatch.group(1);
+      Integer number = null;
+      try {
+        number = Integer.parseInt(numberStr);
+      } catch (NumberFormatException e) {
+        return;
+      }
+
+      if (number < 1 || number > 99) {
+        int lineBegin = editable.toString()
+                .lastIndexOf('\n', cursor - 1);
+        lineBegin = (lineBegin == -1) ? 0 : lineBegin + 1;
+
+        editable.delete(lineBegin, cursor);
+        composeText.setSelection(lineBegin);
+        composeText.post(formatComposeRunnable);
+        return;
+      }
+
+      String contentAfterMarker =
+              currentLine.substring(numberMatch.group().length()).trim();
+
+      if (contentAfterMarker.isEmpty()) {
+
+        if (cursor > 0 && editable.charAt(cursor - 1) == '\n') {
+          editable.delete(cursor - 1, cursor);
+          cursor--;
+        }
+
+        int lineBegin = editable.toString()
+                .lastIndexOf('\n', cursor - 1);
+        lineBegin = (lineBegin == -1) ? 0 : lineBegin + 1;
+
+        editable.delete(lineBegin, cursor);
+        composeText.setSelection(lineBegin);
+        composeText.post(formatComposeRunnable);
+        return;
+      }
+
+      int nextNumber = number + 1;
+      String insertText = nextNumber + ". ";
+
+      if (nextNumber > 99) return;
+
+      editable.insert(cursor, insertText);
+      composeText.setSelection(cursor + insertText.length());
+      composeText.post(formatComposeRunnable);
+    } else if (bulletMatch.find()) {
+
+      String contentAfterMarker =
+              currentLine.substring(bulletMatch.group().length()).trim();
+
+      if (contentAfterMarker.isEmpty()) {
+
+        if (cursor > 0 && editable.charAt(cursor - 1) == '\n') {
+          editable.delete(cursor - 1, cursor);
+          cursor--;
+        }
+
+        int lineBegin = editable.toString()
+                .lastIndexOf('\n', cursor - 1);
+        lineBegin = (lineBegin == -1) ? 0 : lineBegin + 1;
+
+        editable.delete(lineBegin, cursor);
+        composeText.setSelection(lineBegin);
+        composeText.post(formatComposeRunnable);
+        return;
+      }
+
+      String bulletCharVal = bulletMatch.group(1);
+      String insertText = bulletCharVal + " ";
+
+      editable.insert(cursor, insertText);
+      composeText.setSelection(cursor + insertText.length());
+      composeText.post(formatComposeRunnable);
+    } else {
+      if (cursor > 0 && editable.charAt(cursor - 1) == '\n') return;
+      editable.insert(cursor, "\n");
+      composeText.setSelection(cursor + 1);
+    }
+  }
+
+  private void applyFormattingToComposeText() {
+    if (isFormattingCompose) return;
+
+    Editable editable = composeText.getText();
+    if (editable == null || editable.length() == 0) return;
+
+    if (BaseInputConnection.getComposingSpanStart(editable) != -1) return;
+
+    String raw = editable.toString();
+    SpannableStringBuilder formatted =
+            new SpannableStringBuilder(TextFormatter.formatAppText(raw, requireContext()));
+
+    boolean textChanged = !formatted.toString().equals(raw);
+    boolean spansChanged =
+            formatted.getSpans(0, formatted.length(), Object.class).length > 0
+                    || editable.getSpans(0, editable.length(), Object.class).length > 0;
+
+    if (!textChanged && !spansChanged) return;
+
+    isFormattingCompose = true;
+    try {
+      int cursorPos = Math.min(composeText.getSelectionStart(), raw.length());
+      SpannableStringBuilder formattedBeforeCursor = new SpannableStringBuilder(
+              TextFormatter.formatAppText(raw.substring(0, cursorPos), requireContext()));
+      int newCursor = Math.min(formattedBeforeCursor.length(), formatted.length());
+
+      composeText.removeTextChangedListener(composeKeyPressedListener);
+      composeText.setText(formatted);
+
+      // get NEW editable after setText()
+      Editable newEditable = composeText.getText();
+
+      // wait until ALL text mutations are done
+      applyNumberSpan(newEditable);
+
+      composeText.setSelection(Math.max(0, Math.min(newCursor, composeText.length())));
+      composeText.addTextChangedListener(composeKeyPressedListener);
+
+      viewModel.onBodyChanged(composeText.getText().toString());
+    } catch (Exception e) {
+      Log.w(TAG, "Formatting failed", e);
+    } finally {
+      isFormattingCompose = false;
+    }
+  }
+
+  private void applyNumberSpan(Editable editable) {
+    int index = 0;
+    String text = editable.toString();
+
+    while (index < text.length()) {
+
+      int lineEnd = text.indexOf('\n', index);
+      if (lineEnd == -1) lineEnd = text.length();
+
+      String line = text.substring(index, lineEnd);
+
+      Matcher match = Pattern.compile("^(\\d+)\\.\\s").matcher(line);
+
+      if (match.find()) {
+
+        // Remove old margin spans (avoid stacking)
+        LeadingMarginSpan[] marginSpans =
+                editable.getSpans(index, lineEnd, LeadingMarginSpan.class);
+        for (LeadingMarginSpan span : marginSpans) {
+          editable.removeSpan(span);
+        }
+
+        // Apply indentation
+        editable.setSpan(
+                new LeadingMarginSpan.Standard(24, 24),
+                index,
+                lineEnd,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
+
+        // Apply bold ONLY to number prefix
+        int numberEnd = index + match.group().length();
+
+        editable.setSpan(
+                new StyleSpan(android.graphics.Typeface.BOLD),
+                index,
+                numberEnd,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
+      }
+
+      index = lineEnd + 1;
+    }
   }
 
   public interface Controller {

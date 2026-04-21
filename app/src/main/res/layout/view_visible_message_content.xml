@@ -237,10 +237,12 @@
                     android:layout_gravity="end|bottom"
                     android:gravity="start|top"
                     android:paddingStart="12dp"
-                    android:paddingEnd="6dp"
+                    android:paddingEnd="12dp"
                     android:paddingBottom="5dp"
                     android:visibility="gone"
                     tools:visibility="visible"
+                    android:breakStrategy="high_quality"
+                    android:hyphenationFrequency="full"
                     tools:text="Message"/>
 
                 <com.google.android.material.textview.MaterialTextView
@@ -248,7 +250,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_gravity="end|bottom"
+                    android:layout_gravity="end"
                     android:paddingEnd="12dp"
                     android:paddingStart="0dp"
                     android:paddingBottom="4dp"
@@ -284,10 +286,12 @@
                     android:layout_gravity="end|bottom"
                     android:gravity="start|top"
                     android:paddingStart="12dp"
-                    android:paddingEnd="6dp"
+                    android:paddingEnd="12dp"
                     android:paddingBottom="5dp"
                     android:visibility="gone"
                     tools:visibility="visible"
+                    android:breakStrategy="high_quality"
+                    android:hyphenationFrequency="full"
                     tools:text="Message"/>
 
                 <com.google.android.material.textview.MaterialTextView

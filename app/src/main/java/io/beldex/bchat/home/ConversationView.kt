@@ -19,11 +19,12 @@ import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
 import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 import io.beldex.bchat.conversation.v2.contact_sharing.flattenData
-import io.beldex.bchat.conversation.v2.utilities.MentionUtilities.highlightMentions
+import io.beldex.bchat.conversation.v2.utilities.MentionUtilities.highlightMentionsSpannableString
 import io.beldex.bchat.database.RecipientDatabase.NOTIFY_TYPE_ALL
 import io.beldex.bchat.database.RecipientDatabase.NOTIFY_TYPE_NONE
 import io.beldex.bchat.database.model.ThreadRecord
 import io.beldex.bchat.databinding.ViewConversationBinding
+import io.beldex.bchat.textformatter.TextFormatter
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.isSharedContact
 import io.beldex.bchat.util.shortNameAndAddress
@@ -124,7 +125,8 @@ class ConversationView : LinearLayout {
             binding.snippetTextViewLayout.visibility = View.VISIBLE
 
             val rawSnippet = thread.getDisplayBody(context)
-            val snippet = highlightMentions(rawSnippet,thread.threadId, context)
+            val formatted = TextFormatter.formatForSentMessage(rawSnippet)
+            val snippet = highlightMentionsSpannableString(formatted,thread.threadId, context)
 
             //SteveJosephh21-17 - if
             /*val mmsSmsDatabase = get(context).mmsSmsDatabase()

@@ -600,6 +600,17 @@
           "description":"Fixed few crash issues"
         }
       ]
+    },
+    {
+      "title": "2.9.5",
+      "descriptions": [
+        {
+          "description":"Introduced Text formatting feature"
+        },
+        {
+          "description":"Minor bug fixes"
+        }
+      ]
     }
   ]
 }

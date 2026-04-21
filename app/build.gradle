@@ -13,8 +13,8 @@ apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 configurations.all {
     exclude module: "commons-logging"
 }
-def canonicalVersionCode = 91
-def canonicalVersionName = "2.9.4"
+def canonicalVersionCode = 94
+def canonicalVersionName = "2.9.5"
 
 def postFixSize = 10
 def abiPostFix = ['armeabi-v7a' : 1,

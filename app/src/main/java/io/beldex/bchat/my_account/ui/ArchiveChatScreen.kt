@@ -68,6 +68,8 @@ import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.home.NotificationSettingDialog
 import io.beldex.bchat.my_account.ui.dialogs.DeleteChatConfirmationDialog
 import io.beldex.bchat.my_account.ui.dialogs.LockOptionsDialog
+import io.beldex.bchat.textformatter.TextFormatter
+import io.beldex.bchat.textformatter.TextFormatter.toAnnotatedString
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
@@ -566,8 +568,9 @@ fun ArchiveChatItem(
                 }
             } else {
                 val snippet=MentionUtilities.highlightMentions(rawSnippet, thread.threadId, context)
+                val message = TextFormatter.formatForSentMessage(snippet)
                 Text(
-                    text=snippet, style=MaterialTheme.typography.bodySmall.copy(
+                    text=message.toAnnotatedString(), style=MaterialTheme.typography.bodySmall.copy(
                         fontWeight=FontWeight(400), fontSize=12.sp
                     ), maxLines=1, overflow=TextOverflow.Ellipsis
                 )

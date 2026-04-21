@@ -47,7 +47,6 @@ object TextFormatter {
             }
 
             val line = builder.substring(index, lineEnd)
-            val isNumberList = Regex("""^\s*\d+\.\s""").containsMatchIn(line)
             val isBulletList = Regex("""^\s*[\u2022\-\*]\s""").containsMatchIn(line)
 
             var sub = SpannableStringBuilder(line)
@@ -61,8 +60,7 @@ object TextFormatter {
                 sub,
                 Regex("(?s)(?<!`)```(?!`)(.+?)```(?!`)"),
                 marker = '`',
-                allowNewlines = true,
-                enforceBoundaries = false
+                allowNewlines = true
             ) {
                 toUnicodeMonospace(it.groupValues[1])
             }
@@ -72,27 +70,8 @@ object TextFormatter {
                 toUnicodeInlineCode(it.groupValues[1])
             }
 
-            if (isNumberList || isBulletList) {
-
-                // LIST → REGEX ENGINE
-                applyRegexSpan(sub, Regex("""\*(?!\s)(.+?)(?<!\s)\*"""), marker = '*') {
-                    toUnicodeBold(it.groupValues[1])
-                }
-
-                applyRegexSpan(sub, Regex("""_(?!\s)(.+?)(?<!\s)_"""), marker = '_') {
-                   toUnicodeItalic(it.groupValues[1])
-                }
-
-                applyRegexSpan(sub, Regex("""~(?!\s)(.+?)(?<!\s)~"""), marker = '~') {
-                    toUnicodeStrikethrough(it.groupValues[1])
-                }
-
-            } else {
-                // NON-LIST → OLD ENGINE
-                applyMarkerBold(sub)
-                applyMarkerItalic(sub)
-                applyMarkerStrikethrough(sub)
-            }
+            // ---- BOLD, ITALIC and STRIKETHROUGH ----
+            applyInlineFormatting(sub)
 
             // SAFE REPLACE
             builder.replace(index, lineEnd, sub)
@@ -110,6 +89,224 @@ object TextFormatter {
 
         return builder
     }
+
+    private fun applyInlineFormatting(builder: SpannableStringBuilder) {
+        var i = 0
+
+        while (i < builder.length) {
+
+            val length = builder.length
+
+            // =========================
+            // ESCAPE BLOCKS (*** ___ ~~~)
+            // =========================
+            if (i + 2 < length) {
+                val triple = builder.substring(i, i + 3)
+                if (triple == "***" || triple == "___" || triple == "~~~") {
+                    val end = builder.indexOf(triple, i + 3)
+                    if (end != -1) {
+                        i = end + 3
+                        continue
+                    }
+                }
+            }
+
+            // =====================================================
+            // BOLD (*text* OR **text**)
+            // =====================================================
+            if (builder[i] == '*') {
+
+                val isDouble = i + 1 < length && builder[i + 1] == '*'
+
+                if (isDouble) {
+                    val start = i + 2
+                    val end = builder.indexOf("**", start)
+
+                    if (end != -1) {
+                        val inner = builder.substring(start, end)
+
+                        if (inner.isNotBlank() &&
+                            !inner.first().isWhitespace() &&
+                            !inner.last().isWhitespace()
+                        ) {
+                            // Apply bold
+                            builder.setSpan(
+                                StyleSpan(Typeface.BOLD),
+                                start,
+                                end,
+                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                            )
+
+                            // Convert **text** -> *text*
+                            builder.replace(end, end + 2, "*")
+                            builder.replace(i, i + 2, "*")
+
+                            // Move index forward instead of restarting
+                            i = end
+                            continue
+                        }
+                    }
+                } else {
+                    val start = i + 1
+                    val end = builder.indexOf("*", start)
+
+                    if (end != -1) {
+                        val inner = builder.substring(start, end)
+
+                        if (inner.isNotBlank() &&
+                            !inner.first().isWhitespace() &&
+                            !inner.last().isWhitespace() &&
+                            !inner.contains("*") // prevent *test and *
+                        ) {
+                            builder.setSpan(
+                                StyleSpan(Typeface.BOLD),
+                                start,
+                                end,
+                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                            )
+
+                            builder.delete(end, end + 1)
+                            builder.delete(i, i + 1)
+
+                            i = 0
+                            continue
+                        }
+                    }
+                }
+            }
+
+            // =====================================================
+            // ITALIC (_text_ OR __text__)
+            // =====================================================
+            if (builder[i] == '_') {
+
+                val isDouble = i + 1 < length && builder[i + 1] == '_'
+
+                if (isDouble) {
+                    val start = i + 2
+                    val end = builder.indexOf("__", start)
+
+                    if (end != -1) {
+                        val inner = builder.substring(start, end)
+
+                        if (inner.isNotBlank() &&
+                            !inner.first().isWhitespace() &&
+                            !inner.last().isWhitespace()
+                        ) {
+                            // Apply italic
+                            builder.setSpan(
+                                StyleSpan(Typeface.ITALIC),
+                                start,
+                                end,
+                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                            )
+
+                            // Convert __text__ -> _text_
+                            builder.replace(end, end + 2, "_")
+                            builder.replace(i, i + 2, "_")
+
+                            // Move index forward instead of restarting
+                            i = end
+                            continue
+                        }
+                    }
+                } else {
+                    val start = i + 1
+                    val end = builder.indexOf("_", start)
+
+                    if (end != -1) {
+                        val inner = builder.substring(start, end)
+
+                        if (inner.isNotBlank() &&
+                            !inner.first().isWhitespace() &&
+                            !inner.last().isWhitespace() &&
+                            !inner.contains("_") // prevent _test and _
+                        ) {
+                            builder.setSpan(
+                                StyleSpan(Typeface.ITALIC),
+                                start,
+                                end,
+                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                            )
+
+                            builder.delete(end, end + 1)
+                            builder.delete(i, i + 1)
+
+                            i = 0
+                            continue
+                        }
+                    }
+                }
+            }
+
+            // =====================================================
+            // STRIKETHROUGH (~text~)
+            // =====================================================
+            if (builder[i] == '~') {
+
+                val isDouble = i + 1 < length && builder[i + 1] == '~'
+
+                if (isDouble) {
+                    val start = i + 2
+                    val end = builder.indexOf("~~", start)
+
+                    if (end != -1) {
+                        val inner = builder.substring(start, end)
+
+                        if (inner.isNotBlank() &&
+                            !inner.first().isWhitespace() &&
+                            !inner.last().isWhitespace()
+                        ) {
+                            // Apply strikethrough
+                            builder.setSpan(
+                                StrikethroughSpan(),
+                                start,
+                                end,
+                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                            )
+
+                            // Convert ~~text~~ -> ~text~
+                            builder.replace(end, end + 2, "~")
+                            builder.replace(i, i + 2, "~")
+
+                            // Move index forward instead of restarting
+                            i = end
+                            continue
+                        }
+                    }
+                } else {
+                    val start = i + 1
+                    val end = builder.indexOf("~", start)
+
+                    if (end != -1) {
+                        val inner = builder.substring(start, end)
+
+                        if (inner.isNotBlank() &&
+                            !inner.first().isWhitespace() &&
+                            !inner.last().isWhitespace() &&
+                            !inner.contains("~") // prevent ~test and ~
+                        ) {
+                            builder.setSpan(
+                                StrikethroughSpan(),
+                                start,
+                                end,
+                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                            )
+
+                            builder.delete(end, end + 1)
+                            builder.delete(i, i + 1)
+
+                            i = 0
+                            continue
+                        }
+                    }
+                }
+            }
+
+            i++
+        }
+    }
+
     private fun convertBulletMarkers(text: SpannableStringBuilder): SpannableStringBuilder {
         val bulletChar = '\u2022'
 
@@ -248,7 +445,6 @@ object TextFormatter {
         regex: Regex,
         marker: Char,
         allowNewlines: Boolean = false,
-        enforceBoundaries: Boolean = true,
         replacement: (MatchResult) -> CharSequence
     ) {
         val matches = regex.findAll(builder).toList().asReversed()
@@ -265,193 +461,10 @@ object TextFormatter {
             if (!allowNewlines && (innerText.contains('\n') || innerText.contains('\r'))) continue
             if (innerText.first().isWhitespace() || innerText.last().isWhitespace()) continue
             if (innerText.startsWith(marker) || innerText.endsWith(marker)) continue // blocks **hello**, __hi__, ~~ok~~, etc.
-            if (enforceBoundaries && (prev?.isLetterOrDigit() == true || next?.isLetterOrDigit() == true)) continue
 
             val replacementText = replacement(match)
             if (replacementText.isEmpty()) continue
             builder.replace(start, end + 1, replacementText)
-        }
-    }
-
-    private fun applyMarkerBold(builder: SpannableStringBuilder) {
-        val text = builder.toString()
-        if (text.isEmpty()) return
-
-        try {
-            val startCount = text.takeWhile { it == '*' }.length
-            val endCount = text.reversed().takeWhile { it == '*' }.length
-
-            if (startCount != endCount || startCount !in 1..2) return
-
-            val inner = text.substring(startCount, text.length - endCount)
-
-            if (inner.isBlank() ||
-                inner.first().isWhitespace() ||
-                inner.last().isWhitespace()
-            ) return
-
-            // ===== **hello** =====
-            if (startCount == 2) {
-                builder.replace(0, 2, "*")
-                builder.replace(builder.length - 2, builder.length, "*")
-
-                builder.setSpan(
-                    StyleSpan(Typeface.BOLD),
-                    0,
-                    builder.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
-            // ===== *hello* =====
-            else {
-                builder.setSpan(
-                    StyleSpan(Typeface.BOLD),
-                    1,
-                    text.length - 1,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-
-                builder.delete(builder.length - 1, builder.length)
-                builder.delete(0, 1)
-            }
-
-        } catch (ex: Exception) {
-            Log.e("TextFormatter", "Bold span failed", ex)
-        }
-    }
-
-    private fun applyMarkerItalic(builder: SpannableStringBuilder) {
-        val text = builder.toString()
-        if (text.isEmpty()) return
-
-        try {
-            val startCount = text.takeWhile { it == '_' }.length
-            val endCount = text.reversed().takeWhile { it == '_' }.length
-
-            if (startCount != endCount || startCount !in 1..2) return
-
-            val innerStart = startCount
-            val innerEnd = text.length - endCount
-            val inner = text.substring(innerStart, innerEnd)
-
-            if (inner.isBlank() ||
-                inner.first().isWhitespace() ||
-                inner.last().isWhitespace()
-            ) return
-
-            // ===== __hello__ → _hello_ (italic) =====
-            if (startCount == 2) {
-                builder.replace(0, 2, "_")
-                builder.replace(builder.length - 2, builder.length, "_")
-            }
-
-            // apply italic
-            builder.setSpan(
-                StyleSpan(Typeface.ITALIC),
-                innerStart,
-                builder.length - endCount,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-
-            // HANDLE NESTED BOLD (*hello*)
-            if (inner.startsWith("*") && inner.endsWith("*") && inner.length > 2) {
-                // apply bold
-                builder.setSpan(
-                    StyleSpan(Typeface.BOLD),
-                    innerStart + 1,
-                    builder.length - endCount - 1,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-
-                // REMOVE inner *
-                builder.delete(builder.length - endCount - 1, builder.length - endCount)
-                builder.delete(innerStart, innerStart + 1)
-            }
-
-            // remove markers for single `_`
-            if (startCount == 1) {
-                builder.delete(builder.length - 1, builder.length)
-                builder.delete(0, 1)
-            }
-
-        } catch (ex: Exception) {
-            Log.e("TextFormatter", "Italic span failed", ex)
-        }
-    }
-
-    private fun applyMarkerStrikethrough(builder: SpannableStringBuilder) {
-        val text = builder.toString()
-        if (text.isEmpty()) return
-
-        try {
-            val startCount = text.takeWhile { it == '~' }.length
-            val endCount = text.reversed().takeWhile { it == '~' }.length
-
-            if (startCount != endCount || startCount !in 1..2) return
-
-            val innerStart = startCount
-            val innerEnd = text.length - endCount
-            val inner = text.substring(innerStart, innerEnd)
-
-            if (inner.isBlank() ||
-                inner.first().isWhitespace() ||
-                inner.last().isWhitespace()
-            ) return
-
-            // ===== ~~hello~~ → ~hello~ =====
-            if (startCount == 2) {
-                builder.replace(0, 2, "~")
-                builder.replace(builder.length - 2, builder.length, "~")
-            }
-
-            // apply strikethrough
-            builder.setSpan(
-                StrikethroughSpan(),
-                innerStart,
-                builder.length - endCount,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-
-            // HANDLE NESTED ITALIC (_hello_)
-            if (inner.startsWith("_") && inner.endsWith("_") && inner.length > 2) {
-
-                // apply italic
-                builder.setSpan(
-                    StyleSpan(Typeface.ITALIC),
-                    innerStart + 1,
-                    builder.length - endCount - 1,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-
-                // REMOVE inner _
-                builder.delete(builder.length - endCount - 1, builder.length - endCount)
-                builder.delete(innerStart, innerStart + 1)
-            }
-
-            // HANDLE NESTED BOLD (*hello*)
-            if (inner.startsWith("*") && inner.endsWith("*") && inner.length > 2) {
-
-                // apply bold
-                builder.setSpan(
-                    StyleSpan(Typeface.BOLD),
-                    innerStart + 1,
-                    builder.length - endCount - 1,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-
-                // REMOVE inner *
-                builder.delete(builder.length - endCount - 1, builder.length - endCount)
-                builder.delete(innerStart, innerStart + 1)
-            }
-
-            // remove outer ~ if single
-            if (startCount == 1) {
-                builder.delete(builder.length - 1, builder.length)
-                builder.delete(0, 1)
-            }
-
-        } catch (ex: Exception) {
-            Log.e("TextFormatter", "Strikethrough span failed", ex)
         }
     }
 

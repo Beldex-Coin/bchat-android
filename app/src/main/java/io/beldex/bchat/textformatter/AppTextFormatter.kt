@@ -11,7 +11,6 @@ import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
 import android.text.style.TypefaceSpan
 import androidx.core.graphics.toColorInt
-import com.beldex.libsignal.utilities.Log
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 
@@ -40,13 +39,6 @@ class AppTextFormatter(private val text: String, val context: Context) {
         if (isDark) "#66FFFFFF".toColorInt() else "#66000000".toColorInt()
 
     private val backgroundColorSpan = "#797984".toColorInt()
-
-    private fun hasWordBoundaries(full: String, range: IntRange): Boolean {
-        val prev = full.getOrNull(range.first - 1)
-        val next = full.getOrNull(range.last + 1)
-        return (prev == null || !prev.isLetterOrDigit()) &&
-                (next == null || !next.isLetterOrDigit())
-    }
 
     private fun applyStyleSkippingEmojiSpan(
         out: SpannableStringBuilder,
@@ -186,22 +178,16 @@ class AppTextFormatter(private val text: String, val context: Context) {
             for (match in pattern.findAll(cleanText)) {
                 if (match.range.first > last) out.append(cleanText.substring(last, match.range.first))
 
-                val prev = cleanText.getOrNull(match.range.first - 1)
-                val next = cleanText.getOrNull(match.range.last + 1)
-
                 val content = match.value
                 when {
                     // 1: BOLD (*text*)
                     content.startsWith('*') -> {
                         val markerChar = '*'
                         val innerText = content.substring(1, content.length - 1)
-                        if (!hasWordBoundaries(cleanText, match.range) ||
-                            innerText.isBlank() ||
+                        if (innerText.isBlank() ||
                             innerText.first().isWhitespace() ||
                             innerText.last().isWhitespace() ||
-                            innerText.contains('\n') || innerText.contains('\r') ||
-                            innerText.first() == markerChar || innerText.last() == markerChar ||
-                            prev == markerChar || next == markerChar
+                            innerText.contains('\n') || innerText.contains('\r')
                         ) {
                             out.append(content); last = match.range.last + 1; continue
                         }
@@ -233,13 +219,10 @@ class AppTextFormatter(private val text: String, val context: Context) {
                     content.startsWith("_") -> {
                         val markerChar = '_'
                         val innerText = content.substring(1, content.length - 1)
-                        if (!hasWordBoundaries(cleanText, match.range) ||
-                            innerText.isBlank() ||
+                        if (innerText.isBlank() ||
                             innerText.first().isWhitespace() ||
                             innerText.last().isWhitespace() ||
-                            innerText.contains('\n') || innerText.contains('\r') ||
-                            innerText.first() == markerChar || innerText.last() == markerChar ||
-                            prev == markerChar || next == markerChar
+                            innerText.contains('\n') || innerText.contains('\r')
                         ) {
                             out.append(content); last = match.range.last + 1; continue
                         }
@@ -271,13 +254,10 @@ class AppTextFormatter(private val text: String, val context: Context) {
                     content.startsWith("~") -> {
                         val markerChar = '~'
                         val innerText = content.substring(1, content.length - 1)
-                        if (!hasWordBoundaries(cleanText, match.range) ||
-                            innerText.isBlank() ||
+                        if (innerText.isBlank() ||
                             innerText.first().isWhitespace() ||
                             innerText.last().isWhitespace() ||
-                            innerText.contains('\n') || innerText.contains('\r') ||
-                            innerText.first() == markerChar || innerText.last() == markerChar ||
-                            prev == markerChar || next == markerChar
+                            innerText.contains('\n') || innerText.contains('\r')
                         ) {
                             out.append(content); last = match.range.last + 1; continue
                         }
@@ -309,13 +289,10 @@ class AppTextFormatter(private val text: String, val context: Context) {
                     content.startsWith("`") -> {
                         val markerChar = '`'
                         val innerText = content.substring(1, content.length - 1)
-                        if (!hasWordBoundaries(cleanText, match.range) ||
-                            innerText.isBlank() ||
+                        if (innerText.isBlank() ||
                             innerText.first().isWhitespace() ||
                             innerText.last().isWhitespace() ||
-                            innerText.contains('\n') || innerText.contains('\r') ||
-                            innerText.first() == markerChar || innerText.last() == markerChar ||
-                            prev == markerChar || next == markerChar
+                            innerText.contains('\n') || innerText.contains('\r')
                         ) {
                             out.append(content); last = match.range.last + 1; continue
                         }
@@ -366,128 +343,5 @@ class AppTextFormatter(private val text: String, val context: Context) {
         }
 
         if (last < cleanText.length) out.append(cleanText.substring(last))
-
-        applyMarkerBold(out)
-        applyMarkerItalic(out)
-        applyMarkerStrikethrough(out)
-    }
-
-    private fun applyMarkerBold(builder: SpannableStringBuilder) {
-        val text = builder.toString()
-        if (text.isEmpty()) return
-        try {
-            val startCount = text.takeWhile { it == '*' }.length
-            val endCount = text.reversed().takeWhile { it == '*' }.length
-            if (startCount != endCount || startCount !in 1..2) return
-            val inner = text.substring(startCount, text.length - endCount)
-            if (inner.isBlank() ||
-                inner.first().isWhitespace() ||
-                inner.last().isWhitespace()
-            ) return
-            // ===== **hello** =====
-            if (startCount == 2) {
-                builder.setSpan(
-                    StyleSpan(Typeface.BOLD),
-                    0,
-                    builder.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
-            // ===== *hello* =====
-            else {
-                builder.setSpan(
-                    StyleSpan(Typeface.BOLD),
-                    1,
-                    text.length - 1,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
-        } catch (ex: Exception) {
-            Log.e("TextFormatter", "Bold span failed", ex)
-        }
-    }
-
-    private fun applyMarkerItalic(builder: SpannableStringBuilder) {
-        val text = builder.toString()
-        if (text.isEmpty()) return
-
-        try {
-            val startCount = text.takeWhile { it == '_' }.length
-            val endCount = text.reversed().takeWhile { it == '_' }.length
-
-            if (startCount != endCount || startCount !in 1..2) return
-
-            val inner = text.substring(startCount, text.length - endCount)
-
-            if (inner.isBlank() ||
-                inner.first().isWhitespace() ||
-                inner.last().isWhitespace()
-            ) return
-
-            // ===== __hello__ =====
-            if (startCount == 2) {
-
-                builder.setSpan(
-                    StyleSpan(Typeface.ITALIC),
-                    0,
-                    builder.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
-            // ===== _hello_ =====
-            else {
-                builder.setSpan(
-                    StyleSpan(Typeface.ITALIC),
-                    1,
-                    text.length - 1,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
-
-        } catch (ex: Exception) {
-            Log.e("TextFormatter", "Italic span failed", ex)
-        }
-    }
-
-    private fun applyMarkerStrikethrough(builder: SpannableStringBuilder) {
-        val text = builder.toString()
-        if (text.isEmpty()) return
-
-        try {
-            val startCount = text.takeWhile { it == '~' }.length
-            val endCount = text.reversed().takeWhile { it == '~' }.length
-
-            if (startCount != endCount || startCount !in 1..2) return
-
-            val inner = text.substring(startCount, text.length - endCount)
-
-            if (inner.isBlank() ||
-                inner.first().isWhitespace() ||
-                inner.last().isWhitespace()
-            ) return
-
-            // ===== ~~hello~~ =====
-            if (startCount == 2) {
-
-                builder.setSpan(
-                    StrikethroughSpan(),
-                    0,
-                    builder.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
-            // ===== ~hello~ =====
-            else {
-                builder.setSpan(
-                    StrikethroughSpan(),
-                    1,
-                    text.length - 1,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
-
-        } catch (ex: Exception) {
-            Log.e("TextFormatter", "Strikethrough span failed", ex)
-        }
     }
 }

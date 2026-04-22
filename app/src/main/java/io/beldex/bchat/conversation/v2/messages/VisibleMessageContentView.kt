@@ -551,7 +551,7 @@ class VisibleMessageContentView : MaterialCardView {
             )
 
             if (binding.bodyTextView.text.trim().length > 705) {
-                addReadMore(binding.bodyTextView.text.trim().toString(), binding.bodyTextView, message, delegate, visibleMessageView, position)
+                addReadMore(binding.bodyTextView.text.trim(), binding.bodyTextView, message, delegate, visibleMessageView, position)
             }
             onContentClick.add { e: MotionEvent ->
                 binding.bodyTextView.getIntersectedModalSpans(e).iterator().forEach { span ->
@@ -586,7 +586,7 @@ class VisibleMessageContentView : MaterialCardView {
             binding.quoteBodyTextView.text = body
             if (binding.quoteBodyTextView.text.trim().length > 705) {
                 addReadMore(
-                    binding.quoteBodyTextView.text.trim().toString(),
+                    binding.quoteBodyTextView.text.trim(),
                     binding.quoteBodyTextView,
                     message,
                     delegate,
@@ -817,9 +817,7 @@ class VisibleMessageContentView : MaterialCardView {
             message: MessageRecord,
             searchQuery: String?
         ): SpannableStringBuilder {
-            var formatted = TextFormatter.formatForSentMessage(message.body)
-
-            var linkLastClickTime: Long = 0
+            var formatted = TextFormatter.formatForSentMessage(context, message.body)
 
             formatted  = MentionUtilities.highlightMentions(
                 formatted ,
@@ -882,37 +880,54 @@ class VisibleMessageContentView : MaterialCardView {
     }
     // endregion
 
-    //New Line
     private fun addReadMore(
-        text : String,
-        textView : TextView,
-        message : MessageRecord,
-        delegate : VisibleMessageViewDelegate,
-        visibleMessageView : VisibleMessageView,
-        position : Int
+        fullText: CharSequence,
+        textView: TextView,
+        message: MessageRecord,
+        delegate: VisibleMessageViewDelegate,
+        visibleMessageView: VisibleMessageView,
+        position: Int
     ) {
-        val ss = SpannableString(text.substring(0, 705) + "... Read more")
-        val clickableSpan: ClickableSpan = object : ClickableSpan() {
+        val suffix = "... Read more"
+
+        val result = SpannableStringBuilder(fullText).let {
+            if (it.length <= 705) it
+            else SpannableStringBuilder(it.subSequence(0, 705)).append(suffix)
+        }
+
+        if (fullText.length <= 705) {
+            textView.text = result
+            return
+        }
+
+        val clickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
-                addReadLess(text, textView, message, delegate, visibleMessageView,position)
+                addReadLess(fullText, textView, message, delegate, visibleMessageView, position)
             }
 
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
                 ds.isFakeBoldText = true
+
                 val isDayUiMode = UiModeUtilities.isDayUiMode(context)
                 ds.color = if (message.isOutgoing) {
-                    if (isDayUiMode) {
-                        ContextCompat.getColor(context, R.color.black)
-                    } else ContextCompat.getColor(context, R.color.chat_id_card_background)
+                    if (isDayUiMode) ContextCompat.getColor(context, R.color.black)
+                    else ContextCompat.getColor(context, R.color.chat_id_card_background)
                 } else {
                     ContextCompat.getColor(context, R.color.send_message_background)
                 }
             }
         }
-        ss.setSpan(clickableSpan, ss.length - 10, ss.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textView.text = ss
+
+        result.setSpan(
+            clickableSpan,
+            result.length - 10,
+            result.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        textView.text = result
         textView.movementMethod = LinkMovementMethod.getInstance()
         textView.setOnLongClickListener {
             delegate.onItemLongPress(message, visibleMessageView, position)
@@ -920,29 +935,45 @@ class VisibleMessageContentView : MaterialCardView {
         }
     }
 
-    private fun addReadLess(text: String, textView: TextView, message: MessageRecord, delegate : VisibleMessageViewDelegate, visibleMessageView: VisibleMessageView, position:Int) {
-        val ss = SpannableString("$text Read less")
-        val clickableSpan: ClickableSpan = object : ClickableSpan() {
+    private fun addReadLess(
+        fullText: CharSequence,
+        textView: TextView,
+        message: MessageRecord,
+        delegate: VisibleMessageViewDelegate,
+        visibleMessageView: VisibleMessageView,
+        position: Int
+    ) {
+        val suffix = " Read less"
+        val result = SpannableStringBuilder(fullText).append(suffix)
+
+        val clickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
-                addReadMore(text, textView, message, delegate, visibleMessageView, position)
+                addReadMore(fullText, textView, message, delegate, visibleMessageView, position)
             }
 
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
                 ds.isFakeBoldText = true
+
                 val isDayUiMode = UiModeUtilities.isDayUiMode(context)
                 ds.color = if (message.isOutgoing) {
-                    if (isDayUiMode){
-                        ContextCompat.getColor(context,R.color.black)
-                    }else ContextCompat.getColor(context,R.color.chat_id_card_background)
+                    if (isDayUiMode) ContextCompat.getColor(context, R.color.black)
+                    else ContextCompat.getColor(context, R.color.chat_id_card_background)
                 } else {
-                    ContextCompat.getColor(context,R.color.send_message_background)
+                    ContextCompat.getColor(context, R.color.send_message_background)
                 }
             }
         }
-        ss.setSpan(clickableSpan, ss.length - 10, ss.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textView.text = ss
+
+        result.setSpan(
+            clickableSpan,
+            result.length - suffix.length,
+            result.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        textView.text = result
         textView.movementMethod = LinkMovementMethod.getInstance()
         textView.setOnLongClickListener {
             delegate.onItemLongPress(message, visibleMessageView, position)

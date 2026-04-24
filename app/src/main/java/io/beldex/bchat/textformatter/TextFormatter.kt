@@ -18,8 +18,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
-import com.beldex.libsignal.utilities.Log
+import io.beldex.bchat.R
 
 
 object TextFormatter {
@@ -34,7 +35,7 @@ object TextFormatter {
     }
 
     @JvmStatic
-    fun formatForSentMessage(rawText: CharSequence): SpannableStringBuilder {
+    fun formatForSentMessage(context: Context, rawText: CharSequence): SpannableStringBuilder {
         val sanitized = sanitizeLoneListMarkers(rawText.toString())
         val builder = SpannableStringBuilder(sanitized)
 
@@ -85,7 +86,7 @@ object TextFormatter {
             }
         }
 
-        toUnicodeBlockQuote(builder)
+        toUnicodeBlockQuote(context, builder, removeMarker = true)
 
         return builder
     }
@@ -493,17 +494,94 @@ object TextFormatter {
     fun toUnicodeStrikethrough(text: String?): CharSequence =
         applyStyleSkippingEmoji(text) { StrikethroughSpan() }
 
+    fun toUnicodeBlockQuote(
+        context: Context,
+        builder: Editable,
+        removeMarker: Boolean = false
+    ) {
 
-    fun toUnicodeBlockQuote(builder: Editable) {
-        val spans = builder.getSpans(0, builder.length, CustomQuoteSpan::class.java)
-        spans.forEach { builder.removeSpan(it) }
-        Regex("(?m)^>\\s").findAll(builder).forEach { match ->
-            builder.setSpan(
-                CustomQuoteSpan(),
-                match.range.first,
-                match.range.last + 1,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+        // Remove old spans
+        builder.getSpans(0, builder.length, CustomQuoteSpan::class.java)
+            .forEach { builder.removeSpan(it) }
+
+        builder.getSpans(0, builder.length, QuoteIndentSpan::class.java)
+            .forEach { builder.removeSpan(it) }
+
+        var i = 0
+
+        while (i < builder.length) {
+
+            val lineStart = i
+            var lineEnd = builder.indexOf('\n', i)
+            if (lineEnd == -1) lineEnd = builder.length
+
+            if (lineStart >= lineEnd) {
+                i = lineEnd + 1
+                continue
+            }
+
+            if (builder[lineStart] == '>') {
+
+                val valid =
+                    lineStart + 2 < lineEnd &&
+                            builder[lineStart + 1] == ' ' &&
+                            builder[lineStart + 2] != ' '
+
+                if (valid) {
+
+                    var contentStart = lineStart
+
+                    if (removeMarker) {
+                        // Remove "> "
+                        builder.delete(lineStart, lineStart + 2)
+                        lineEnd -= 2
+                        contentStart = lineStart
+
+                    } else {
+                        // Keep text, hide "> "
+                        contentStart = lineStart + 2
+
+                        builder.setSpan(
+                            android.text.style.ScaleXSpan(0f), // removes width
+                            lineStart,
+                            contentStart,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+                    }
+
+                    // Quote bar
+                    builder.setSpan(
+                        CustomQuoteSpan(context),
+                        lineStart,
+                        lineEnd,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+
+                    // Alignment spacing
+                    builder.setSpan(
+                        QuoteIndentSpan(20),
+                        lineStart,
+                        lineEnd,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+
+                    // Text color
+                    builder.setSpan(
+                        android.text.style.ForegroundColorSpan(
+                            ContextCompat.getColor(context, R.color.quote_gray)
+                        ),
+                        contentStart,
+                        lineEnd,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+
+                    // Move index safely after mutation
+                    i = lineEnd + 1
+                    continue
+                }
+            }
+
+            i = lineEnd + 1
         }
     }
 }

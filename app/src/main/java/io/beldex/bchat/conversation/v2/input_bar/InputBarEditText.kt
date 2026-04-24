@@ -55,7 +55,7 @@ class InputBarEditText : AppCompatEditText {
         }
 
         // Quotes
-        toUnicodeBlockQuote(text ?: return@Runnable)
+        toUnicodeBlockQuote(context, editable)
 
         // wait until ALL text mutations are done
         applyNumberSpan(editable)

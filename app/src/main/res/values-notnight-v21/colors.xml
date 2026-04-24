@@ -277,4 +277,5 @@
     <color name="timestamp_in">#A7A7BA</color>
     <color name="incoming_message_divider_color">#A7A7BA</color>
     <color name="outgoing_message_divider_color">#2FA62F</color>
+    <color name="quote_gray">@color/core_grey_35</color>
 </resources>

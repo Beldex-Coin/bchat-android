@@ -125,7 +125,7 @@ class ConversationView : LinearLayout {
             binding.snippetTextViewLayout.visibility = View.VISIBLE
 
             val rawSnippet = thread.getDisplayBody(context)
-            val formatted = TextFormatter.formatForSentMessage(rawSnippet)
+            val formatted = TextFormatter.formatForSentMessage(context, rawSnippet)
             val snippet = highlightMentionsSpannableString(formatted,thread.threadId, context)
 
             //SteveJosephh21-17 - if

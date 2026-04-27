@@ -480,13 +480,13 @@ object TextFormatter {
     @JvmStatic
     fun toUnicodeMonospace(text: String?): CharSequence =
         if (text.isNullOrEmpty()) "" else SpannableStringBuilder(text).apply {
-            applySpanSkippingEmoji(this) { TypefaceSpan("monospace") }
+            applySpanSkippingEmoji(this) { MonospaceSpan() }
         }
 
     @JvmStatic
     fun toUnicodeInlineCode(text: String?): CharSequence =
         if (text.isNullOrEmpty()) "" else SpannableStringBuilder(text).apply {
-            applySpanSkippingEmoji(this) { TypefaceSpan("monospace") }
+            applySpanSkippingEmoji(this) { MonospaceSpan() }
             applySpanSkippingEmoji(this) { BackgroundColorSpan("#797984".toColorInt()) }
         }
 

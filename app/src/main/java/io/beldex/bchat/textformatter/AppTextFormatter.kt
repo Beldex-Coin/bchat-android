@@ -126,7 +126,7 @@ class AppTextFormatter(private val text: String, val context: Context) {
             // Apply the nested style to the inner content
             when (nestedMarker) {
                 '`' -> {
-                    out.setSpan(TypefaceSpan("monospace"),        absInnerStart, absInnerEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    out.setSpan(MonospaceSpan(),        absInnerStart, absInnerEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     out.setSpan(BackgroundColorSpan(backgroundColorSpan), absInnerStart, absInnerEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
                 '_' -> out.setSpan(StyleSpan(Typeface.ITALIC),      absInnerStart, absInnerEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -160,7 +160,7 @@ class AppTextFormatter(private val text: String, val context: Context) {
                     out.append(innerText)
                     val monoEnd = out.length
 
-                    applySpanSkippingEmoji(out, monoStart, innerText) { TypefaceSpan("monospace") }
+                    applySpanSkippingEmoji(out, monoStart, innerText) { MonospaceSpan() }
                     applySpanSkippingEmoji(out, monoStart, innerText) { BackgroundColorSpan(Color.TRANSPARENT) }
                     val closeStart = out.length
                     out.append("```")
@@ -169,7 +169,7 @@ class AppTextFormatter(private val text: String, val context: Context) {
                         closeStart, closeStart + 3,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
-                    out.setSpan(TypefaceSpan("monospace"), monoStart, monoEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    out.setSpan(MonospaceSpan(), monoStart, monoEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     out.setSpan(BackgroundColorSpan(Color.TRANSPARENT), monoStart, monoEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
                 last = match.range.last + 1
@@ -308,7 +308,7 @@ class AppTextFormatter(private val text: String, val context: Context) {
 
                         val start = out.length
                         out.append(innerText)
-                        applySpanSkippingEmoji(out, start, innerText) { TypefaceSpan("monospace") }
+                        applySpanSkippingEmoji(out, start, innerText) { MonospaceSpan() }
                         applySpanSkippingEmoji(out, start, innerText) {
                             BackgroundColorSpan(
                                 backgroundColorSpan
@@ -316,7 +316,7 @@ class AppTextFormatter(private val text: String, val context: Context) {
                         }
                         val end=out.length
                         out.setSpan(
-                            TypefaceSpan("monospace"),
+                            MonospaceSpan(),
                             start,
                             end,
                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE

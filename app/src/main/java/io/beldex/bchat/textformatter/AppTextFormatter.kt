@@ -1,6 +1,5 @@
 package io.beldex.bchat.textformatter
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
@@ -9,18 +8,18 @@ import android.text.SpannableStringBuilder
 import android.text.style.BackgroundColorSpan
 import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
-import android.text.style.TypefaceSpan
-import androidx.core.graphics.toColorInt
-import io.beldex.bchat.util.UiMode
-import io.beldex.bchat.util.UiModeUtilities
+import androidx.core.content.ContextCompat
+import io.beldex.bchat.R
 
 
-class AppTextFormatter(private val text: String, val context: Context) {
-    private val codeBlockPattern = Regex("(?s)```(.*?)```")
+class AppTextFormatter(private val text: String, val context: Context, imageInputBar: Boolean) {
+    private val monospacePattern = Regex("(?s)```(.*?)```")
     // Disallow newlines inside inline markers and keep backticks single
     private val pattern = Regex(
-        "\\*([^\\r\\n]+?)\\*|" +
-                "_([^\\r\\n]+?)_|" +
+        "(\\*\\*\\*([^*\\r\\n]+?)\\*\\*\\*)|" +   // ***text***
+                "(\\*\\*([^*\\r\\n]+?)\\*\\*)|" +        // **text**
+                "(\\*([^*\\r\\n]+?)\\*)|" +
+                "_(\\S[^\\r\\n]*?\\S)_|" +
                 "~([^\\r\\n]+?)~|" +
                 "`([^\\r\\n`]+?)`"
     )
@@ -29,16 +28,11 @@ class AppTextFormatter(private val text: String, val context: Context) {
         "`([^\\r\\n`]+?)`|" +
                 "_([^\\r\\n]+?)_|" +
                 "~([^\\r\\n]+?)~|" +
-                "\\*([^\\r\\n]+?)\\*"
+                "\\*([^*\\r\\n]+?)\\*"
     )
 
-    val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
-
-    @SuppressLint("UseKtx")
-    private fun getSymbolColor(isDark: Boolean): Int =
-        if (isDark) "#66FFFFFF".toColorInt() else "#66000000".toColorInt()
-
-    private val backgroundColorSpan = "#797984".toColorInt()
+    private val foregroundColorSpan = if(imageInputBar) ContextCompat.getColor(context, R.color.foreground_image_input_bar_symbol) else ContextCompat.getColor(context, R.color.foreground_symbol)
+    private val backgroundColorSpan = ContextCompat.getColor(context, R.color.background_color_span)
 
     private fun applyStyleSkippingEmojiSpan(
         out: SpannableStringBuilder,
@@ -113,12 +107,12 @@ class AppTextFormatter(private val text: String, val context: Context) {
 
             // Dim the nested marker symbols
             out.setSpan(
-                ForegroundColorSpan(getSymbolColor(isDarkTheme)),
+                ForegroundColorSpan(foregroundColorSpan),
                 absMatchStart, absMatchStart + 1,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             out.setSpan(
-                ForegroundColorSpan(getSymbolColor(isDarkTheme)),
+                ForegroundColorSpan(foregroundColorSpan),
                 absMatchEnd - 1, absMatchEnd,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
@@ -136,12 +130,58 @@ class AppTextFormatter(private val text: String, val context: Context) {
         }
     }
 
+    private fun isValidOpening(text: String, index: Int): Boolean {
+        // block letter before (okay*text)
+        if (index > 0 && text[index - 1].isLetterOrDigit()) return false
+
+        // block space after (* text)
+        if (index + 1 < text.length && text[index + 1].isWhitespace()) return false
+
+        return true
+    }
+
+    private fun isValidClosing(text: String, index: Int): Boolean {
+        // block letter after (*text*hello)
+        if (index + 1 < text.length && text[index + 1].isLetterOrDigit()) return false
+
+        // block space before (*text *)
+        if (index > 0 && text[index - 1].isWhitespace()) return false
+
+        return true
+    }
+
+    private fun findClosingChar(
+        text: String,
+        start: Int,
+        marker: Char,
+        endLimit: Int
+    ): Int {
+        var i = start
+        var lastValid = -1
+
+        while (i < endLimit) {
+            if (text[i] == marker) {
+                val inner = text.substring(start, i)
+
+                if (inner.any { !it.isWhitespace() }) {
+                    lastValid = i
+                }
+            }
+
+            if (text[i] == '\n' || text[i] == '\r') return -1
+
+            i++
+        }
+
+        return lastValid
+    }
+
     fun appendFormatted(out: SpannableStringBuilder) {
         var last = 0
         val cleanText = text
 
-        if (codeBlockPattern.containsMatchIn(cleanText)) {
-            for (match in codeBlockPattern.findAll(cleanText)) {
+        if (monospacePattern.containsMatchIn(cleanText)) {
+            for (match in monospacePattern.findAll(cleanText)) {
                 if (match.range.first > last) out.append(cleanText.substring(last, match.range.first))
 
                 val content = match.value
@@ -151,7 +191,7 @@ class AppTextFormatter(private val text: String, val context: Context) {
                     val openStart = out.length
                     out.append("```")
                     out.setSpan(
-                        ForegroundColorSpan(getSymbolColor(isDarkTheme)),
+                        ForegroundColorSpan(foregroundColorSpan),
                         openStart, openStart + 3,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
@@ -165,7 +205,7 @@ class AppTextFormatter(private val text: String, val context: Context) {
                     val closeStart = out.length
                     out.append("```")
                     out.setSpan(
-                        ForegroundColorSpan(getSymbolColor(isDarkTheme)),
+                        ForegroundColorSpan(foregroundColorSpan),
                         closeStart, closeStart + 3,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
@@ -180,22 +220,107 @@ class AppTextFormatter(private val text: String, val context: Context) {
 
                 val content = match.value
                 when {
+                    content.startsWith("***") -> {
+                        // Plain text
+                        out.append(content)
+                        last = match.range.last + 1
+                    }
+                    content.startsWith("**") -> {
+                        val absoluteStart = match.range.first
+                        val startIndex = absoluteStart + 2
+
+                        // block "** text"
+                        if (startIndex < cleanText.length && cleanText[startIndex].isWhitespace()) {
+                            out.append(content)
+                            last = match.range.last + 1
+                            continue
+                        }
+
+                        val betterEnd = cleanText.indexOf("**", startIndex)
+
+                        if (betterEnd == -1 ||
+                            (betterEnd > 0 && cleanText[betterEnd - 1].isWhitespace())
+                        ) {
+                            out.append(content)
+                            last = match.range.last + 1
+                            continue
+                        }
+
+                        val innerText = cleanText.substring(startIndex, betterEnd)
+
+                        if (innerText.isBlank() ||
+                            innerText.first().isWhitespace() ||
+                            innerText.last().isWhitespace()
+                        ) {
+                            out.append(content)
+                            last = match.range.last + 1
+                            continue
+                        }
+
+                        val startSymbol = out.length
+                        out.append("**")
+                        out.setSpan(
+                            ForegroundColorSpan(foregroundColorSpan),
+                            startSymbol,
+                            startSymbol + 2,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+
+                        val start = out.length
+                        out.append(innerText)
+
+                        applyStyleSkippingEmojiSpan(out, start, innerText) {
+                            StyleSpan(Typeface.BOLD)
+                        }
+
+                        applyNestedInlineSpans(out, start, innerText, '*')
+
+                        val endSymbol = out.length
+                        out.append("**")
+                        out.setSpan(
+                            ForegroundColorSpan(foregroundColorSpan),
+                            endSymbol,
+                            endSymbol + 2,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+
+                        last = betterEnd + 2
+                    }
                     // 1: BOLD (*text*)
-                    content.startsWith('*') -> {
+                    content.startsWith("*") -> {
                         val markerChar = '*'
-                        val innerText = content.substring(1, content.length - 1)
+                        val absoluteStart = match.range.first
+                        val startIndex = absoluteStart + 1
+
+                        if (!isValidOpening(cleanText, absoluteStart)) {
+                            out.append(content)
+                            last = match.range.last + 1
+                            continue
+                        }
+
+                        val betterEnd = findClosingChar(cleanText, startIndex, '*', match.range.last+1)
+
+                        if (betterEnd == -1 || !isValidClosing(cleanText, betterEnd)) {
+                            out.append(content)
+                            last = match.range.last + 1
+                            continue
+                        }
+
+                        val innerText = cleanText.substring(startIndex, betterEnd)
                         if (innerText.isBlank() ||
                             innerText.first().isWhitespace() ||
                             innerText.last().isWhitespace() ||
                             innerText.contains('\n') || innerText.contains('\r')
                         ) {
-                            out.append(content); last = match.range.last + 1; continue
+                            out.append(cleanText.substring(absoluteStart, betterEnd + 1))
+                            last = betterEnd + 1
+                            continue
                         }
 
                         val startSymbol = out.length
                         out.append("*")
                         out.setSpan(
-                            ForegroundColorSpan(getSymbolColor(isDarkTheme)),
+                            ForegroundColorSpan(foregroundColorSpan),
                             startSymbol,
                             startSymbol + 1,
                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -208,29 +333,117 @@ class AppTextFormatter(private val text: String, val context: Context) {
                         val endSymbol = out.length
                         out.append("*")
                         out.setSpan(
-                            ForegroundColorSpan(getSymbolColor(isDarkTheme)),
+                            ForegroundColorSpan(foregroundColorSpan),
                             endSymbol,
                             endSymbol + 1,
                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                         )
+                        last = betterEnd + 1
+                    }
+
+                    content.startsWith("___") -> {
+                        // Plain text
+                        out.append(content)
+                        last = match.range.last + 1
+                    }
+
+                    content.startsWith("__") -> {
+                        val absoluteStart = match.range.first
+                        val startIndex = absoluteStart + 2
+
+                        // block "__ text"
+                        if (startIndex < cleanText.length && cleanText[startIndex].isWhitespace()) {
+                            out.append(content)
+                            last = match.range.last + 1
+                            continue
+                        }
+
+                        val betterEnd = cleanText.indexOf("__", startIndex)
+
+                        if (betterEnd == -1 ||
+                            (betterEnd > 0 && cleanText[betterEnd - 1].isWhitespace())
+                        ) {
+                            out.append(content)
+                            last = match.range.last + 1
+                            continue
+                        }
+
+                        val innerText = cleanText.substring(startIndex, betterEnd)
+
+                        if (innerText.isBlank() ||
+                            innerText.first().isWhitespace() ||
+                            innerText.last().isWhitespace()
+                        ) {
+                            out.append(content)
+                            last = match.range.last + 1
+                            continue
+                        }
+
+                        val startSymbol = out.length
+                        out.append("__")
+                        out.setSpan(
+                            ForegroundColorSpan(foregroundColorSpan),
+                            startSymbol,
+                            startSymbol + 2,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+
+                        val start = out.length
+                        out.append(innerText)
+
+                        applyStyleSkippingEmojiSpan(out, start, innerText) {
+                            StyleSpan(Typeface.ITALIC)
+                        }
+
+                        applyNestedInlineSpans(out, start, innerText, '_')
+
+                        val endSymbol = out.length
+                        out.append("__")
+                        out.setSpan(
+                            ForegroundColorSpan(foregroundColorSpan),
+                            endSymbol,
+                            endSymbol + 2,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+
+                        last = betterEnd + 2
                     }
 
                     // 2: ITALIC (_text_)
                     content.startsWith("_") -> {
                         val markerChar = '_'
-                        val innerText = content.substring(1, content.length - 1)
+                        val absoluteStart = match.range.first
+                        val startIndex = absoluteStart + 1
+
+                        if (!isValidOpening(cleanText, absoluteStart)) {
+                            out.append(content)
+                            last = match.range.last + 1
+                            continue
+                        }
+
+                        val betterEnd = findClosingChar(cleanText, startIndex, '_', match.range.last+1)
+
+                        if (betterEnd == -1 || !isValidClosing(cleanText, betterEnd)) {
+                            out.append(content)
+                            last = match.range.last + 1
+                            continue
+                        }
+
+                        val innerText = cleanText.substring(startIndex, betterEnd)
                         if (innerText.isBlank() ||
                             innerText.first().isWhitespace() ||
                             innerText.last().isWhitespace() ||
                             innerText.contains('\n') || innerText.contains('\r')
                         ) {
-                            out.append(content); last = match.range.last + 1; continue
+                            out.append(cleanText.substring(absoluteStart, betterEnd + 1))
+                            last = betterEnd + 1
+                            continue
                         }
 
                         val startSymbol = out.length
                         out.append("_")
                         out.setSpan(
-                            ForegroundColorSpan(getSymbolColor(isDarkTheme)),
+                            ForegroundColorSpan(foregroundColorSpan),
                             startSymbol,
                             startSymbol + 1,
                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -243,29 +456,117 @@ class AppTextFormatter(private val text: String, val context: Context) {
                         val endSymbol = out.length
                         out.append("_")
                         out.setSpan(
-                            ForegroundColorSpan(getSymbolColor(isDarkTheme)),
+                            ForegroundColorSpan(foregroundColorSpan),
                             endSymbol,
                             endSymbol + 1,
                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                         )
+                        last = betterEnd + 1
+                    }
+
+                    content.startsWith("~~~") -> {
+                        // Plain text
+                        out.append(content)
+                        last = match.range.last + 1
+                    }
+
+                    content.startsWith("~~") -> {
+                        val absoluteStart = match.range.first
+                        val startIndex = absoluteStart + 2
+
+                        // block "~~ text"
+                        if (startIndex < cleanText.length && cleanText[startIndex].isWhitespace()) {
+                            out.append(content)
+                            last = match.range.last + 1
+                            continue
+                        }
+
+                        val betterEnd = cleanText.indexOf("~~", startIndex)
+
+                        if (betterEnd == -1 ||
+                            (betterEnd > 0 && cleanText[betterEnd - 1].isWhitespace())
+                        ) {
+                            out.append(content)
+                            last = match.range.last + 1
+                            continue
+                        }
+
+                        val innerText = cleanText.substring(startIndex, betterEnd)
+
+                        if (innerText.isBlank() ||
+                            innerText.first().isWhitespace() ||
+                            innerText.last().isWhitespace()
+                        ) {
+                            out.append(content)
+                            last = match.range.last + 1
+                            continue
+                        }
+
+                        val startSymbol = out.length
+                        out.append("~~")
+                        out.setSpan(
+                            ForegroundColorSpan(foregroundColorSpan),
+                            startSymbol,
+                            startSymbol + 2,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+
+                        val start = out.length
+                        out.append(innerText)
+
+                        applyStyleSkippingEmojiSpan(out, start, innerText) {
+                            StrikethroughSpan()
+                        }
+
+                        applyNestedInlineSpans(out, start, innerText, '~')
+
+                        val endSymbol = out.length
+                        out.append("~~")
+                        out.setSpan(
+                            ForegroundColorSpan(foregroundColorSpan),
+                            endSymbol,
+                            endSymbol + 2,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+
+                        last = betterEnd + 2
                     }
 
                     // 3: STRIKETHROUGH (~text~)
                     content.startsWith("~") -> {
                         val markerChar = '~'
-                        val innerText = content.substring(1, content.length - 1)
+                        val absoluteStart = match.range.first
+                        val startIndex = absoluteStart + 1
+
+                        if (!isValidOpening(cleanText, absoluteStart)) {
+                            out.append(content)
+                            last = match.range.last + 1
+                            continue
+                        }
+
+                        val betterEnd = findClosingChar(cleanText, startIndex, '~', match.range.last+1)
+
+                        if (betterEnd == -1 || !isValidClosing(cleanText, betterEnd)) {
+                            out.append(content)
+                            last = match.range.last + 1
+                            continue
+                        }
+
+                        val innerText = cleanText.substring(startIndex, betterEnd)
                         if (innerText.isBlank() ||
                             innerText.first().isWhitespace() ||
                             innerText.last().isWhitespace() ||
                             innerText.contains('\n') || innerText.contains('\r')
                         ) {
-                            out.append(content); last = match.range.last + 1; continue
+                            out.append(cleanText.substring(absoluteStart, betterEnd + 1))
+                            last = betterEnd + 1
+                            continue
                         }
 
                         val startSymbol = out.length
                         out.append("~")
                         out.setSpan(
-                            ForegroundColorSpan(getSymbolColor(isDarkTheme)),
+                            ForegroundColorSpan(foregroundColorSpan),
                             startSymbol,
                             startSymbol + 1,
                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -278,29 +579,48 @@ class AppTextFormatter(private val text: String, val context: Context) {
                         val endSymbol = out.length
                         out.append("~")
                         out.setSpan(
-                            ForegroundColorSpan(getSymbolColor(isDarkTheme)),
+                            ForegroundColorSpan(foregroundColorSpan),
                             endSymbol,
                             endSymbol + 1,
                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                         )
+                        last = betterEnd + 1
                     }
 
                     // 4: INLINE CODE (`code`)
                     content.startsWith("`") -> {
-                        val markerChar = '`'
-                        val innerText = content.substring(1, content.length - 1)
+                        val absoluteStart = match.range.first
+                        val startIndex = absoluteStart + 1
+
+                        if (!isValidOpening(cleanText, absoluteStart)) {
+                            out.append(content)
+                            last = match.range.last + 1
+                            continue
+                        }
+
+                        val betterEnd = findClosingChar(cleanText, startIndex, '`', match.range.last+1)
+
+                        if (betterEnd == -1 || !isValidClosing(cleanText, betterEnd)) {
+                            out.append(content)
+                            last = match.range.last + 1
+                            continue
+                        }
+
+                        val innerText = cleanText.substring(startIndex, betterEnd)
                         if (innerText.isBlank() ||
                             innerText.first().isWhitespace() ||
                             innerText.last().isWhitespace() ||
                             innerText.contains('\n') || innerText.contains('\r')
                         ) {
-                            out.append(content); last = match.range.last + 1; continue
+                            out.append(cleanText.substring(absoluteStart, betterEnd + 1))
+                            last = betterEnd + 1
+                            continue
                         }
 
                         val startSymbol = out.length
                         out.append("`")
                         out.setSpan(
-                            ForegroundColorSpan(getSymbolColor(isDarkTheme)),
+                            ForegroundColorSpan(foregroundColorSpan),
                             startSymbol,
                             startSymbol + 1,
                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -331,14 +651,14 @@ class AppTextFormatter(private val text: String, val context: Context) {
                         val endSymbol = out.length
                         out.append("`")
                         out.setSpan(
-                            ForegroundColorSpan(getSymbolColor(isDarkTheme)),
+                            ForegroundColorSpan(foregroundColorSpan),
                             endSymbol,
                             endSymbol + 1,
                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                         )
+                        last = betterEnd + 1
                     }
                 }
-                last = match.range.last + 1
             }
         }
 

@@ -278,4 +278,7 @@
     <color name="incoming_message_divider_color">#A7A7BA</color>
     <color name="outgoing_message_divider_color">#2FA62F</color>
     <color name="quote_gray">@color/core_grey_35</color>
+    <color name="foreground_symbol">#66000000</color>
+    <color name="background_color_span">#797984</color>
+    <color name="foreground_image_input_bar_symbol">#66FFFFFF</color>
 </resources>

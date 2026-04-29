@@ -19,17 +19,16 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.toColorInt
 import io.beldex.bchat.R
 
 
 object TextFormatter {
 
     @JvmStatic
-    fun formatAppText(input: CharSequence, context: Context): SpannableStringBuilder {
+    fun formatAppText(input: CharSequence, context: Context, imageInputBar: Boolean = false): SpannableStringBuilder {
         val rawText = input.toString()
         val out = SpannableStringBuilder()
-        val parser = AppTextFormatter(rawText, context)
+        val parser = AppTextFormatter(rawText, context, imageInputBar)
         parser.appendFormatted(out)
         return out.ifEmpty { SpannableStringBuilder(rawText) }
     }
@@ -68,11 +67,11 @@ object TextFormatter {
 
             // ---- INLINE CODE ----
             applyRegexSpan(sub, Regex("`([^\\r\\n`]+?)`"), marker = '`') {
-                toUnicodeInlineCode(it.groupValues[1])
+                toUnicodeInlineCode(context, it.groupValues[1])
             }
 
             // ---- BOLD, ITALIC and STRIKETHROUGH ----
-            applyInlineFormatting(sub)
+            applyInlineFormatting(context, sub)
 
             // SAFE REPLACE
             builder.replace(index, lineEnd, sub)
@@ -91,7 +90,7 @@ object TextFormatter {
         return builder
     }
 
-    private fun applyInlineFormatting(builder: SpannableStringBuilder) {
+    private fun applyInlineFormatting(context: Context, builder: SpannableStringBuilder) {
         var i = 0
 
         while (i < builder.length) {
@@ -137,10 +136,15 @@ object TextFormatter {
                                 end,
                                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                             )
+                            applyNestedFormatting(context, builder, start, end)
 
                             // Convert **text** -> *text*
-                            builder.replace(end, end + 2, "*")
-                            builder.replace(i, i + 2, "*")
+                            if (end + 2 <= builder.length) {
+                                builder.replace(end, end + 2, "*")
+                            }
+                            if (i + 2 <= builder.length) {
+                                builder.replace(i, i + 2, "*")
+                            }
 
                             // Move index forward instead of restarting
                             i = end
@@ -157,7 +161,9 @@ object TextFormatter {
                         if (inner.isNotBlank() &&
                             !inner.first().isWhitespace() &&
                             !inner.last().isWhitespace() &&
-                            !inner.contains("*") // prevent *test and *
+                            !inner.contains("*") && // prevent *test and *
+                            isValidOpening(builder.toString(), i) &&
+                            isValidClosing(builder, end)
                         ) {
                             builder.setSpan(
                                 StyleSpan(Typeface.BOLD),
@@ -166,10 +172,19 @@ object TextFormatter {
                                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                             )
 
-                            builder.delete(end, end + 1)
-                            builder.delete(i, i + 1)
+                            applyNestedFormatting(context, builder, start, end)
 
-                            i = 0
+                            // recompute safety
+                            val safeEnd = builder.indexOf("*", i + 1)
+
+                            if (safeEnd != -1) {
+                                builder.delete(safeEnd, safeEnd + 1)
+                            }
+                            if (i < builder.length) {
+                                builder.delete(i, i + 1)
+                            }
+
+                            i = (end - 1).coerceAtLeast(0)
                             continue
                         }
                     }
@@ -201,10 +216,15 @@ object TextFormatter {
                                 end,
                                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                             )
+                            applyNestedFormatting(context, builder, start, end)
 
                             // Convert __text__ -> _text_
-                            builder.replace(end, end + 2, "_")
-                            builder.replace(i, i + 2, "_")
+                            if (end + 2 <= builder.length) {
+                                builder.replace(end, end + 2, "_")
+                            }
+                            if (i + 2 <= builder.length) {
+                                builder.replace(i, i + 2, "_")
+                            }
 
                             // Move index forward instead of restarting
                             i = end
@@ -221,7 +241,9 @@ object TextFormatter {
                         if (inner.isNotBlank() &&
                             !inner.first().isWhitespace() &&
                             !inner.last().isWhitespace() &&
-                            !inner.contains("_") // prevent _test and _
+                            !inner.contains("_") &&// prevent _test and _
+                            isValidOpening(builder.toString(), i) &&
+                            isValidClosing(builder, end)
                         ) {
                             builder.setSpan(
                                 StyleSpan(Typeface.ITALIC),
@@ -230,10 +252,19 @@ object TextFormatter {
                                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                             )
 
-                            builder.delete(end, end + 1)
-                            builder.delete(i, i + 1)
+                            applyNestedFormatting(context, builder, start, end)
 
-                            i = 0
+                            // recompute safety
+                            val safeEnd = builder.indexOf("_", i + 1)
+
+                            if (safeEnd != -1) {
+                                builder.delete(safeEnd, safeEnd + 1)
+                            }
+                            if (i < builder.length) {
+                                builder.delete(i, i + 1)
+                            }
+
+                            i = (end - 1).coerceAtLeast(0)
                             continue
                         }
                     }
@@ -265,10 +296,15 @@ object TextFormatter {
                                 end,
                                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                             )
+                            applyNestedFormatting(context, builder, start, end)
 
                             // Convert ~~text~~ -> ~text~
-                            builder.replace(end, end + 2, "~")
-                            builder.replace(i, i + 2, "~")
+                            if (end + 2 <= builder.length) {
+                                builder.replace(end, end + 2, "~")
+                            }
+                            if (i + 2 <= builder.length) {
+                                builder.replace(i, i + 2, "~")
+                            }
 
                             // Move index forward instead of restarting
                             i = end
@@ -285,7 +321,9 @@ object TextFormatter {
                         if (inner.isNotBlank() &&
                             !inner.first().isWhitespace() &&
                             !inner.last().isWhitespace() &&
-                            !inner.contains("~") // prevent ~test and ~
+                            !inner.contains("~") &&// prevent ~test and ~
+                            isValidOpening(builder.toString(), i) &&
+                            isValidClosing(builder, end)
                         ) {
                             builder.setSpan(
                                 StrikethroughSpan(),
@@ -294,10 +332,19 @@ object TextFormatter {
                                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                             )
 
-                            builder.delete(end, end + 1)
-                            builder.delete(i, i + 1)
+                            applyNestedFormatting(context, builder, start, end)
 
-                            i = 0
+                            // recompute safety
+                            val safeEnd = builder.indexOf("~", i + 1)
+
+                            if (safeEnd != -1) {
+                                builder.delete(safeEnd, safeEnd + 1)
+                            }
+                            if (i < builder.length) {
+                                builder.delete(i, i + 1)
+                            }
+
+                            i = (end - 1).coerceAtLeast(0)
                             continue
                         }
                     }
@@ -484,10 +531,10 @@ object TextFormatter {
         }
 
     @JvmStatic
-    fun toUnicodeInlineCode(text: String?): CharSequence =
+    fun toUnicodeInlineCode(context: Context, text: String?): CharSequence =
         if (text.isNullOrEmpty()) "" else SpannableStringBuilder(text).apply {
             applySpanSkippingEmoji(this) { MonospaceSpan() }
-            applySpanSkippingEmoji(this) { BackgroundColorSpan("#797984".toColorInt()) }
+            applySpanSkippingEmoji(this) { BackgroundColorSpan(ContextCompat.getColor(context, R.color.background_color_span)) }
         }
 
     @JvmStatic
@@ -582,6 +629,191 @@ object TextFormatter {
             }
 
             i = lineEnd + 1
+        }
+    }
+
+    private fun isValidOpening(text: String, index: Int): Boolean {
+        if (index <= 0) return true
+
+        val prev = text[index - 1]
+
+        // normal case: space before *
+        if (prev == ' ') return true
+
+        // allow @username*text*
+        if (prev.isLetterOrDigit()) {
+            var i = index - 1
+
+            // walk backwards to find start of word
+            while (i >= 0 && text[i].isLetterOrDigit()) {
+                i--
+            }
+
+            // if word starts with '@', allow it
+            if (i >= 0 && text[i] == '@') {
+                return true
+            }
+
+            return false
+        }
+
+        // allow @ directly
+        if (prev == '@') return true
+
+        return true
+    }
+
+    private fun isValidClosing(text: CharSequence, index: Int): Boolean {
+        val prev = text.getOrNull(index - 1)
+        val next = text.getOrNull(index + 1)
+
+        // space before closing (*text *)
+        if (prev != null && prev.isWhitespace()) return false
+
+        // letter immediately after (bold*text)
+        if (next != null && next.isLetterOrDigit()) return false
+
+        return true
+    }
+
+    private fun applyNestedFormatting(
+        context: Context,
+        builder: SpannableStringBuilder,
+        start: Int,
+        endInput: Int
+    ) {
+        var i = start
+        var end = endInput
+
+        while (i < end && i < builder.length) {
+
+            // ========= BOLD (*text*) =========
+            if (builder[i] == '*' && (i + 1 >= end || builder[i + 1] != '*')) {
+                val s = i + 1
+                val e = builder.indexOf("*", s)
+
+                if (e != -1 && e < end) {
+                    val inner = builder.substring(s, e)
+
+                    if (inner.isNotBlank() &&
+                        !inner.first().isWhitespace() &&
+                        !inner.last().isWhitespace()
+                    ) {
+                        builder.setSpan(
+                            StyleSpan(Typeface.BOLD),
+                            s,
+                            e,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+
+                        if (e < builder.length) builder.delete(e, e + 1)
+                        if (i < builder.length) builder.delete(i, i + 1)
+
+                        end -= 2   // ✅ adjust end
+
+                        i = (e - 2).coerceAtLeast(start)
+                        continue
+                    }
+                }
+            }
+
+            // ========= ITALIC (_text_) =========
+            if (builder[i] == '_' && (i + 1 >= end || builder[i + 1] != '*')) {
+                val s = i + 1
+                val e = builder.indexOf("_", s)
+
+                if (e != -1 && e < end) {
+                    val inner = builder.substring(s, e)
+
+                    if (inner.isNotBlank() &&
+                        !inner.first().isWhitespace() &&
+                        !inner.last().isWhitespace()
+                    ) {
+                        builder.setSpan(
+                            StyleSpan(Typeface.ITALIC),
+                            s,
+                            e,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+
+                        if (e < builder.length) builder.delete(e, e + 1)
+                        if (i < builder.length) builder.delete(i, i + 1)
+
+                        end -= 2
+
+                        i = (e - 2).coerceAtLeast(start)
+                        continue
+                    }
+                }
+            }
+
+            // ========= STRIKE (~text~) =========
+            if (builder[i] == '~' && (i + 1 >= end || builder[i + 1] != '*')) {
+                val s = i + 1
+                val e = builder.indexOf("~", s)
+
+                if (e != -1 && e < end) {
+                    val inner = builder.substring(s, e)
+
+                    if (inner.isNotBlank() &&
+                        !inner.first().isWhitespace() &&
+                        !inner.last().isWhitespace()
+                    ) {
+                        builder.setSpan(
+                            StrikethroughSpan(),
+                            s,
+                            e,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+
+                        if (e < builder.length) builder.delete(e, e + 1)
+                        if (i < builder.length) builder.delete(i, i + 1)
+
+                        end -= 2
+
+                        i = (e - 2).coerceAtLeast(start)
+                        continue
+                    }
+                }
+            }
+
+            // ========= INLINE CODE (`text`) =========
+            if (builder[i] == '`' && (i + 1 >= end || builder[i + 1] != '*')) {
+                val s = i + 1
+                val e = builder.indexOf("`", s)
+
+                if (e != -1 && e < end) {
+                    val inner = builder.substring(s, e)
+
+                    if (inner.isNotBlank()) {
+                        builder.setSpan(
+                            TypefaceSpan("monospace"),
+                            s,
+                            e,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+
+                        builder.setSpan(
+                            BackgroundColorSpan(
+                                ContextCompat.getColor(context, R.color.background_color_span)
+                            ),
+                            s,
+                            e,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+
+                        if (e < builder.length) builder.delete(e, e + 1)
+                        if (i < builder.length) builder.delete(i, i + 1)
+
+                        end -= 2
+
+                        i = (e - 2).coerceAtLeast(start)
+                        continue
+                    }
+                }
+            }
+
+            i++
         }
     }
 }

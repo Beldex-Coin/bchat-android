@@ -794,7 +794,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
 
     String raw = editable.toString();
     SpannableStringBuilder formatted =
-            new SpannableStringBuilder(TextFormatter.formatAppText(raw, requireContext()));
+            new SpannableStringBuilder(TextFormatter.formatAppText(raw, requireContext(), true));
 
     boolean textChanged = !formatted.toString().equals(raw);
     boolean spansChanged =
@@ -807,7 +807,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
     try {
       int cursorPos = Math.min(composeText.getSelectionStart(), raw.length());
       SpannableStringBuilder formattedBeforeCursor = new SpannableStringBuilder(
-              TextFormatter.formatAppText(raw.substring(0, cursorPos), requireContext()));
+              TextFormatter.formatAppText(raw.substring(0, cursorPos), requireContext(), true));
       int newCursor = Math.min(formattedBeforeCursor.length(), formatted.length());
 
       composeText.removeTextChangedListener(composeKeyPressedListener);

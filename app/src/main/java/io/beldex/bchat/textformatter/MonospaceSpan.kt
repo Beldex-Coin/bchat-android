@@ -19,6 +19,9 @@ class MonospaceSpan : TypefaceSpan("monospace") {
         val tf = Typeface.MONOSPACE
         val fake = oldStyle and tf.style.inv()
 
+        paint.isFakeBoldText = false
+        paint.textSkewX = 0f
+
         if (fake and Typeface.BOLD != 0) {
             paint.isFakeBoldText = true
         }

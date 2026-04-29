@@ -597,7 +597,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
         return;
       }
 
-      if (count == 1 && text.toString().endsWith(" ")) {
+      if (count == 1) {
         if (cursorPos >= 3) {
           String lastThree = rawText.substring(cursorPos - 3, cursorPos);
           if (lastThree.equals(bulletChar + "  ")) {
@@ -608,9 +608,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
             return;
           }
         }
-      }
 
-      if (count == 1 && text.charAt(start) == ' ') {
         if (cursorPos >= 2) {
           int lineStart = rawText.lastIndexOf('\n', Math.max(0, cursorPos - 2));
           lineStart = (lineStart == -1) ? 0 : lineStart + 1;

@@ -159,7 +159,7 @@ class InputBarEditText : AppCompatEditText {
         val editable = this.text ?: return
         val cursorPos = selectionStart
         val rawText = editable.toString()
-        if (lengthAfter == 1 && text.endsWith(" ")) {
+        if (lengthAfter == 1) {
             if (cursorPos >= 3) {
                 val threeChars = rawText.substring(cursorPos - 3, cursorPos)
                 if (threeChars == "$bulletChar  ") {

@@ -554,6 +554,9 @@ object TextFormatter {
         builder.getSpans(0, builder.length, QuoteIndentSpan::class.java)
             .forEach { builder.removeSpan(it) }
 
+        builder.getSpans(0, builder.length, QuoteMarkerHideSpan::class.java)
+            .forEach { builder.removeSpan(it) }
+
         var i = 0
 
         while (i < builder.length) {
@@ -589,7 +592,7 @@ object TextFormatter {
                         contentStart = lineStart + 2
 
                         builder.setSpan(
-                            android.text.style.ScaleXSpan(0f), // removes width
+                            QuoteMarkerHideSpan(),
                             lineStart,
                             contentStart,
                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE

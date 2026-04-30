@@ -657,6 +657,8 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
         } finally {
           isFormattingCompose = false;
         }
+        composeText.removeCallbacks(formatComposeRunnable);
+        composeText.postDelayed(formatComposeRunnable, 80);
         return;
       }
 

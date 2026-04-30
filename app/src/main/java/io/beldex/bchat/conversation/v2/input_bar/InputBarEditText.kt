@@ -209,6 +209,8 @@ class InputBarEditText : AppCompatEditText {
             } finally {
                 isFormatting = false
             }
+            removeCallbacks(reformatRunnable)
+            postDelayed(reformatRunnable, 80)
             return
         }
 

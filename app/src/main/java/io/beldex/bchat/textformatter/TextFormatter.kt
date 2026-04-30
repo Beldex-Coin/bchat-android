@@ -819,4 +819,71 @@ object TextFormatter {
             i++
         }
     }
+
+    fun applyInlineBlockQuote(
+        context: Context,
+        builder: Editable,
+        attachmentRegex: Regex
+    ) {
+
+        var index = 0
+
+        while (index < builder.length) {
+
+            val lineStart = index
+            val lineEnd = builder.indexOf('\n', index).let {
+                if (it == -1) builder.length else it
+            }
+
+            val line = builder.substring(lineStart, lineEnd)
+
+            val attachmentMatch = attachmentRegex.find(line)
+            if (attachmentMatch == null) {
+                index = lineEnd + 1
+                continue
+            }
+
+            val attachmentEnd = lineStart + attachmentMatch.range.last + 1
+
+            val quoteIndex = builder.indexOf("> ", attachmentEnd)
+            if (quoteIndex == -1 || quoteIndex >= lineEnd) {
+                index = lineEnd + 1
+                continue
+            }
+
+            val quoteStart = quoteIndex
+
+            builder.replace(quoteStart, quoteStart + 2, "| ")
+
+            val pipeStart = quoteStart
+            val pipeEnd = quoteStart + 1
+
+            builder.setSpan(
+                ForegroundColorSpan(
+                    ContextCompat.getColor(context, R.color.quote_gray)
+                ),
+                pipeStart,
+                pipeEnd,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+
+            builder.setSpan(
+                StyleSpan(Typeface.BOLD),
+                pipeStart,
+                pipeEnd,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+
+            builder.setSpan(
+                ForegroundColorSpan(
+                    ContextCompat.getColor(context, R.color.quote_gray)
+                ),
+                pipeStart,
+                lineEnd,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+
+            index = lineEnd + 1
+        }
+    }
 }

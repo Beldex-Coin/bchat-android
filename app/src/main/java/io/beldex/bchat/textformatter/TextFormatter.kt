@@ -91,6 +91,85 @@ object TextFormatter {
     }
 
     private fun applyInlineFormatting(context: Context, builder: SpannableStringBuilder) {
+        if (handleFullLineFormat(
+                builder,
+                '*',
+                "**",
+                validateInner = {
+                    it.isNotBlank() &&
+                            !it.first().isWhitespace() &&
+                            !it.last().isWhitespace()
+                },
+                applySpan = { start, end ->
+                    builder.setSpan(
+                        StyleSpan(Typeface.BOLD),
+                        start,
+                        end,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+            )) return
+        if (handleFullLineFormat(
+                builder,
+                '_',
+                "__",
+                validateInner = {
+                    it.isNotBlank() &&
+                            !it.first().isWhitespace() &&
+                            !it.last().isWhitespace()
+                },
+                applySpan = { start, end ->
+                    builder.setSpan(
+                        StyleSpan(Typeface.ITALIC),
+                        start,
+                        end,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+            )) return
+        if (handleFullLineFormat(
+                builder,
+                '~',
+                "~~",
+                validateInner = {
+                    it.isNotBlank() &&
+                            !it.first().isWhitespace() &&
+                            !it.last().isWhitespace()
+                },
+                applySpan = { start, end ->
+                    builder.setSpan(
+                        StrikethroughSpan(),
+                        start,
+                        end,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+            )) return
+        if (handleFullLineFormat(
+                builder,
+                '`',
+                "``",
+                validateInner = {
+                    it.isNotBlank()
+                },
+                applySpan = { start, end ->
+                    builder.setSpan(
+                        TypefaceSpan("monospace"),
+                        start,
+                        end,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    builder.setSpan(
+                        BackgroundColorSpan(
+                            ContextCompat.getColor(context, R.color.background_color_span)
+                        ),
+                        start,
+                        end,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+            )) return
+
         var i = 0
 
         while (i < builder.length) {
@@ -161,7 +240,6 @@ object TextFormatter {
                         if (inner.isNotBlank() &&
                             !inner.first().isWhitespace() &&
                             !inner.last().isWhitespace() &&
-                            !inner.contains("*") && // prevent *test and *
                             isValidOpening(builder.toString(), i) &&
                             isValidClosing(builder, end)
                         ) {
@@ -241,7 +319,6 @@ object TextFormatter {
                         if (inner.isNotBlank() &&
                             !inner.first().isWhitespace() &&
                             !inner.last().isWhitespace() &&
-                            !inner.contains("_") &&// prevent _test and _
                             isValidOpening(builder.toString(), i) &&
                             isValidClosing(builder, end)
                         ) {
@@ -321,7 +398,6 @@ object TextFormatter {
                         if (inner.isNotBlank() &&
                             !inner.first().isWhitespace() &&
                             !inner.last().isWhitespace() &&
-                            !inner.contains("~") &&// prevent ~test and ~
                             isValidOpening(builder.toString(), i) &&
                             isValidClosing(builder, end)
                         ) {
@@ -712,7 +788,7 @@ object TextFormatter {
                         if (e < builder.length) builder.delete(e, e + 1)
                         if (i < builder.length) builder.delete(i, i + 1)
 
-                        end -= 2   // ✅ adjust end
+                        end -= 2
 
                         i = (e - 2).coerceAtLeast(start)
                         continue
@@ -885,5 +961,47 @@ object TextFormatter {
 
             index = lineEnd + 1
         }
+    }
+
+    private fun handleFullLineFormat(
+        builder: SpannableStringBuilder,
+        delimiter: Char,
+        invalidToken: String,
+        validateInner: (String) -> Boolean,
+        applySpan: (Int, Int) -> Unit
+    ): Boolean {
+
+        val text = builder.toString()
+        val length = builder.length
+        if (length <= 2) return false
+
+        val innerStart = 1
+        val innerEnd = length - 1
+
+        if (
+            builder.first() == delimiter &&
+            builder.last() == delimiter &&
+
+            !text.startsWith(invalidToken) &&
+            !text.endsWith(invalidToken) &&
+            !text.contains(invalidToken) &&
+
+            builder.indexOf(delimiter, 1) != builder.lastIndexOf(delimiter)
+        ) {
+
+            val inner = builder.substring(innerStart, innerEnd)
+
+            if (validateInner(inner)) {
+
+                applySpan(innerStart, innerEnd)
+
+                builder.delete(innerEnd, innerEnd + 1)
+                builder.delete(0, 1)
+
+                return true
+            }
+        }
+
+        return false
     }
 }

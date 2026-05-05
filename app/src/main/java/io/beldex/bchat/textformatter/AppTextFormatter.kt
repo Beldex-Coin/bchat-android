@@ -17,18 +17,18 @@ class AppTextFormatter(private val text: String, val context: Context, imageInpu
     // Disallow newlines inside inline markers and keep backticks single
     private val pattern = Regex(
         "(\\*\\*\\*([^*\\r\\n]+?)\\*\\*\\*)|" +   // ***text***
-                "(\\*\\*([^*\\r\\n]+?)\\*\\*)|" +        // **text**
-                "(\\*([^*\\r\\n]+?)\\*)|" +
-                "_(\\S[^\\r\\n]*?\\S)_|" +
-                "~([^\\r\\n]+?)~|" +
-                "`([^\\r\\n`]+?)`"
+                "(\\*\\*([^*\\r\\n]+?)\\*\\*)|" +         // **text**
+                "(?<![A-Za-z0-9])\\*([^\\r\\n]+?)\\*(?![A-Za-z0-9])|" +  // *text*
+                "(?<![A-Za-z0-9])_([^\\r\\n]+?)_(?![A-Za-z0-9])|" +      // _text_
+                "(?<![A-Za-z0-9])~([^\\r\\n]+?)~(?![A-Za-z0-9])|" +      // ~text~
+                "(?<![A-Za-z0-9])`([^\\r\\n`]+?)`(?![A-Za-z0-9])"        // `text`
     )
 
     private val nestedPattern = Regex(
         "`([^\\r\\n`]+?)`|" +
                 "_([^\\r\\n]+?)_|" +
                 "~([^\\r\\n]+?)~|" +
-                "\\*([^*\\r\\n]+?)\\*"
+                "\\*([^\\r\\n]+?)\\*"
     )
 
     private val foregroundColorSpan = if(imageInputBar) ContextCompat.getColor(context, R.color.foreground_image_input_bar_symbol) else ContextCompat.getColor(context, R.color.foreground_symbol)
@@ -141,9 +141,6 @@ class AppTextFormatter(private val text: String, val context: Context, imageInpu
     }
 
     private fun isValidClosing(text: String, index: Int): Boolean {
-        // block letter after (*text*hello)
-        if (index + 1 < text.length && text[index + 1].isLetterOrDigit()) return false
-
         // block space before (*text *)
         if (index > 0 && text[index - 1].isWhitespace()) return false
 
@@ -163,13 +160,15 @@ class AppTextFormatter(private val text: String, val context: Context, imageInpu
             if (text[i] == marker) {
                 val inner = text.substring(start, i)
 
-                if (inner.any { !it.isWhitespace() }) {
+                if (inner.isNotBlank() &&
+                    !inner.first().isWhitespace() &&
+                    !inner.last().isWhitespace()
+                ) {
                     lastValid = i
                 }
             }
 
-            if (text[i] == '\n' || text[i] == '\r') return -1
-
+            if (text[i] == '\n' || text[i] == '\r') break
             i++
         }
 
@@ -306,6 +305,23 @@ class AppTextFormatter(private val text: String, val context: Context, imageInpu
                             continue
                         }
 
+                        val nextCharIndex = betterEnd + 1
+                        val nextStar = cleanText.indexOf('*', nextCharIndex)
+
+                        // block only if:
+                        // 1. next char is letter/digit
+                        // 2. AND no more '*' ahead (i.e. not chaining)
+                        if (
+                            nextCharIndex < cleanText.length &&
+                            cleanText[nextCharIndex].isLetterOrDigit() &&
+                            nextStar == -1
+                        ) {
+                            // e.g. "*test*ok" → INVALID
+                            out.append(content)
+                            last = match.range.last + 1
+                            continue
+                        }
+
                         val innerText = cleanText.substring(startIndex, betterEnd)
                         if (innerText.isBlank() ||
                             innerText.first().isWhitespace() ||
@@ -424,6 +440,23 @@ class AppTextFormatter(private val text: String, val context: Context, imageInpu
                         val betterEnd = findClosingChar(cleanText, startIndex, '_', match.range.last+1)
 
                         if (betterEnd == -1 || !isValidClosing(cleanText, betterEnd)) {
+                            out.append(content)
+                            last = match.range.last + 1
+                            continue
+                        }
+
+                        val nextCharIndex = betterEnd + 1
+                        val nextStar = cleanText.indexOf('_', nextCharIndex)
+
+                        // block only if:
+                        // 1. next char is letter/digit
+                        // 2. AND no more '_' ahead (i.e. not chaining)
+                        if (
+                            nextCharIndex < cleanText.length &&
+                            cleanText[nextCharIndex].isLetterOrDigit() &&
+                            nextStar == -1
+                        ) {
+                            // e.g. "_test_ok" → INVALID
                             out.append(content)
                             last = match.range.last + 1
                             continue
@@ -552,6 +585,23 @@ class AppTextFormatter(private val text: String, val context: Context, imageInpu
                             continue
                         }
 
+                        val nextCharIndex = betterEnd + 1
+                        val nextStar = cleanText.indexOf('~', nextCharIndex)
+
+                        // block only if:
+                        // 1. next char is letter/digit
+                        // 2. AND no more '~' ahead (i.e. not chaining)
+                        if (
+                            nextCharIndex < cleanText.length &&
+                            cleanText[nextCharIndex].isLetterOrDigit() &&
+                            nextStar == -1
+                        ) {
+                            // e.g. "~test~ok" → INVALID
+                            out.append(content)
+                            last = match.range.last + 1
+                            continue
+                        }
+
                         val innerText = cleanText.substring(startIndex, betterEnd)
                         if (innerText.isBlank() ||
                             innerText.first().isWhitespace() ||
@@ -601,6 +651,23 @@ class AppTextFormatter(private val text: String, val context: Context, imageInpu
                         val betterEnd = findClosingChar(cleanText, startIndex, '`', match.range.last+1)
 
                         if (betterEnd == -1 || !isValidClosing(cleanText, betterEnd)) {
+                            out.append(content)
+                            last = match.range.last + 1
+                            continue
+                        }
+
+                        val nextCharIndex = betterEnd + 1
+                        val nextStar = cleanText.indexOf('`', nextCharIndex)
+
+                        // block only if:
+                        // 1. next char is letter/digit
+                        // 2. AND no more '`' ahead (i.e. not chaining)
+                        if (
+                            nextCharIndex < cleanText.length &&
+                            cleanText[nextCharIndex].isLetterOrDigit() &&
+                            nextStar == -1
+                        ) {
+                            // e.g. "`test`ok" → INVALID
                             out.append(content)
                             last = match.range.last + 1
                             continue

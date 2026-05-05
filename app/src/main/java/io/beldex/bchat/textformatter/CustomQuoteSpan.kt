@@ -2,15 +2,12 @@ package io.beldex.bchat.textformatter
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.text.Layout
-import android.text.TextPaint
 import android.text.style.LeadingMarginSpan
 import androidx.core.content.ContextCompat
 import io.beldex.bchat.R
-import android.text.style.CharacterStyle
-import android.text.style.UpdateAppearance
+import android.text.style.ReplacementSpan
 
 class CustomQuoteSpan(
     context: Context
@@ -81,8 +78,29 @@ class QuoteIndentSpan(private val margin: Int) : LeadingMarginSpan {
     }
 }
 
-class QuoteMarkerHideSpan : CharacterStyle(), UpdateAppearance {
-    override fun updateDrawState(tp: TextPaint) {
-        tp.color = Color.TRANSPARENT
+class QuoteMarkerHideSpan : ReplacementSpan() {
+
+    override fun getSize(
+        paint: Paint,
+        text: CharSequence,
+        start: Int,
+        end: Int,
+        fm: Paint.FontMetricsInt?
+    ): Int {
+        return 0 // removes width completely
+    }
+
+    override fun draw(
+        canvas: Canvas,
+        text: CharSequence,
+        start: Int,
+        end: Int,
+        x: Float,
+        top: Int,
+        y: Int,
+        bottom: Int,
+        paint: Paint
+    ) {
+        // draw nothing (fully hidden)
     }
 }

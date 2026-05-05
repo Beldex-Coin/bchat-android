@@ -20,19 +20,6 @@
       "filters": [
         {
           "filterType": "ABI",
-          "value": "x86_64"
-        }
-      ],
-      "attributes": [],
-      "versionCode": 94,
-      "versionName": "2.9.5",
-      "outputFile": "Bchat-2.9.5-x86_64.apk"
-    },
-    {
-      "type": "ONE_OF_MANY",
-      "filters": [
-        {
-          "filterType": "ABI",
           "value": "arm64-v8a"
         }
       ],
@@ -53,6 +40,19 @@
       "versionCode": 94,
       "versionName": "2.9.5",
       "outputFile": "Bchat-2.9.5-armeabi-v7a.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "x86_64"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 94,
+      "versionName": "2.9.5",
+      "outputFile": "Bchat-2.9.5-x86_64.apk"
     }
   ],
   "elementType": "File",
@@ -62,9 +62,9 @@
       "maxApi": 30,
       "baselineProfiles": [
         "baselineProfiles/1/Bchat-2.9.5-universal.dm",
-        "baselineProfiles/1/Bchat-2.9.5-x86_64.dm",
         "baselineProfiles/1/Bchat-2.9.5-arm64-v8a.dm",
-        "baselineProfiles/1/Bchat-2.9.5-armeabi-v7a.dm"
+        "baselineProfiles/1/Bchat-2.9.5-armeabi-v7a.dm",
+        "baselineProfiles/1/Bchat-2.9.5-x86_64.dm"
       ]
     },
     {
@@ -72,9 +72,9 @@
       "maxApi": 2147483647,
       "baselineProfiles": [
         "baselineProfiles/0/Bchat-2.9.5-universal.dm",
-        "baselineProfiles/0/Bchat-2.9.5-x86_64.dm",
         "baselineProfiles/0/Bchat-2.9.5-arm64-v8a.dm",
-        "baselineProfiles/0/Bchat-2.9.5-armeabi-v7a.dm"
+        "baselineProfiles/0/Bchat-2.9.5-armeabi-v7a.dm",
+        "baselineProfiles/0/Bchat-2.9.5-x86_64.dm"
       ]
     }
   ],

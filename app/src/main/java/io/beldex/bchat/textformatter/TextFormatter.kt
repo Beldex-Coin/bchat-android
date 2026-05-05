@@ -972,6 +972,16 @@ object TextFormatter {
     ): Boolean {
 
         val text = builder.toString()
+        val trimmed = text.trim()
+        // Skip only full-line multi segments like "*hello* and *hi*"
+        val multiSegmentPattern = Regex(
+            """^(\Q$delimiter\E[^$delimiter]+\Q$delimiter\E)\s+.+\s+(\Q$delimiter\E[^$delimiter]+\Q$delimiter\E)$"""
+        )
+
+        if (multiSegmentPattern.matches(trimmed)) {
+            return false
+        }
+
         val length = builder.length
         if (length <= 2) return false
 

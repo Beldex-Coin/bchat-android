@@ -267,8 +267,6 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
             Log.i(TAG, "Installed AesGcmProvider: $aesPosition")
             if (aesPosition < 0) {
                 Log.e(TAG, "Failed to install AesGcmProvider()")
-                // Only throw if you truly can't proceed without it
-                // throw ProviderInitializationException()
             }
         } catch (e: ClassNotFoundException) {
             Log.e(TAG, "AesGcmCipher class not found - skipping AesGcmProvider", e)
@@ -276,10 +274,19 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
             Log.e(TAG, "Native libs not found - skipping AesGcmProvider", e)
         }
 
-        val conscryptPosition = Security.insertProviderAt(Conscrypt.newProvider(), 2)
-        Log.i(TAG, "Installed Conscrypt provider: $conscryptPosition")
-        if (conscryptPosition < 0) {
-            Log.w(TAG, "Did not install Conscrypt provider. May already be present.")
+        try {
+            Conscrypt.checkAvailability()
+            val conscryptPosition = Security.insertProviderAt(Conscrypt.newProvider(), 2)
+            Log.i(TAG, "Installed Conscrypt provider: $conscryptPosition")
+            if (conscryptPosition < 0) {
+                Log.w(TAG, "Did not install Conscrypt provider. May already be present.")
+            }
+        } catch (e: UnsatisfiedLinkError) {
+            Log.e(TAG, "Conscrypt native lib missing - skipping Conscrypt provider", e)
+            // App can still function without Conscrypt on most Android versions
+            // Android 10+ has native TLS 1.3 support built-in
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to initialize Conscrypt provider", e)
         }
     }
 

@@ -62,6 +62,7 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.ThreadUtils
+import com.beldex.libsignal.utilities.hexEncodedPublicKey
 import com.beldex.libsignal.utilities.toHexString
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
@@ -195,7 +196,19 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     private val callDurationFormat = "HH:mm:ss"
 
     private val publicKey: String
-        get() = TextSecurePreferences.getLocalNumber(this)!!
+        get() {
+            return getUserLocalPublicKey()
+        }
+
+    private fun getUserLocalPublicKey(): String {
+        TextSecurePreferences.getLocalNumber(this)?.takeIf { it.isNotBlank() }?.let {
+            return it
+        }
+
+        val userPublicKey = IdentityKeyUtil.getIdentityKeyPair(this).hexEncodedPublicKey
+        TextSecurePreferences.setLocalNumber(this, userPublicKey)
+        return userPublicKey
+    }
 
     /*Hales63*/
     private val homeAdapter: HomeAdapter by lazy {

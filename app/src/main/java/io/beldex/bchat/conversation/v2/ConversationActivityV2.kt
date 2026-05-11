@@ -432,7 +432,6 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     override fun onPause() {
         super.onPause()
         ApplicationContext.getInstance(this).messageNotifier.setVisibleThread(-1)
-        viewModel.saveDraft(binding.inputBar.text.trim())
         if (isAudioPlaying) {
             this.stopVoiceMessages(audioPlayingIndexInAdapter)
         }
@@ -466,6 +465,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     override fun onDestroy() {
         super.onDestroy()
         cancelVoiceMessage()
+        viewModel.saveDraft(binding.inputBar.text.trim())
         isNetworkAvailable=false
         networkChangedReceiver?.unregister(this)
         networkChangedReceiver=null

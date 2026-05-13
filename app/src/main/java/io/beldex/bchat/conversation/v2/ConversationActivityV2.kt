@@ -461,6 +461,8 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         if (getIsReactionOverlayVisible(this)) {
             setIsReactionOverlayVisible(this, false)
         }
+        actionMode?.finish()
+        this.actionMode=null
     }
 
     override fun onDestroy() {

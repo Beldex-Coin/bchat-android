@@ -269,7 +269,6 @@
     <string name="SmsMessageRecord_duplicate_message" translatable="false">Duplicate message.</string>
 
     <!-- ThreadRecord -->
-    <string name="ThreadRecord_group_updated" translatable="false">Group updated</string>
     <string name="ThreadRecord_left_the_group" translatable="false">Left the group</string>
     <string name="ThreadRecord_secure_bchat_reset" translatable="false">Secure bchat reset.</string>
     <string name="ThreadRecord_draft" translatable="false">Draft:</string>

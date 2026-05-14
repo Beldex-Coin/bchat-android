@@ -32,6 +32,8 @@ import androidx.annotation.Nullable;
 import io.beldex.bchat.database.MmsSmsColumns;
 import io.beldex.bchat.database.SmsDatabase;
 
+import com.beldex.libbchat.messaging.utilities.UpdateMessageBuilder;
+import com.beldex.libbchat.messaging.utilities.UpdateMessageData;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.utilities.ExpirationUtil;
@@ -92,7 +94,8 @@ public class ThreadRecord extends DisplayRecord implements Serializable {
   @Override
   public SpannableString getDisplayBody(@NonNull Context context) {
     if (isGroupUpdateMessage()) {
-      return emphasisAdded(context.getString(R.string.ThreadRecord_group_updated));
+      UpdateMessageData updateMessageData = UpdateMessageData.Companion.fromJSON(getBody());
+      return emphasisAdded(UpdateMessageBuilder.INSTANCE.buildGroupUpdateMessage(context, updateMessageData, lastMessage.getIndividualRecipient().getAddress().serialize(), isOutgoing()));
     } else if (isOpenGroupInvitation()) {
       return emphasisAdded(context.getString(R.string.ThreadRecord_open_group_invitation));
     } else if (isPayment()) { //Payment Tag
@@ -171,11 +174,11 @@ public class ThreadRecord extends DisplayRecord implements Serializable {
     }
   }
 
-  private SpannableString emphasisAdded(String sequence) {
+  private SpannableString emphasisAdded(CharSequence sequence) {
     return emphasisAdded(sequence, 0, sequence.length());
   }
 
-  private SpannableString emphasisAdded(String sequence, int start, int end) {
+  private SpannableString emphasisAdded(CharSequence sequence, int start, int end) {
     SpannableString spannable = new SpannableString(sequence);
     spannable.setSpan(new StyleSpan(android.graphics.Typeface.ITALIC),
                       start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

@@ -400,12 +400,12 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             MnemonicUtilities.loadFileContents(this, fileName)
         }
         MnemonicCodec(loadFileContents).encode(
-            hexEncodedSeed!!,
+            hexEncodedSeed,
             MnemonicCodec.Language.Configuration.english
         )
     }
 
-
+    private var lastProfileAvatar: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -460,6 +460,8 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         if (getIsReactionOverlayVisible(this)) {
             setIsReactionOverlayVisible(this, false)
         }
+        actionMode?.finish()
+        this.actionMode=null
     }
 
     override fun onDestroy() {
@@ -3584,9 +3586,16 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             updateSubtitle()
             showOrHideInputIfNeeded()
 
-            // Update profile picture
-            binding.profilePictureView.root.recycle()
-            binding.profilePictureView.root.update(threadRecipient)
+            // Compare avatar/profile value
+            val currentAvatar = threadRecipient.profileAvatar
+
+            if (lastProfileAvatar != currentAvatar) {
+                // Update profile picture
+                binding.profilePictureView.root.recycle()
+                binding.profilePictureView.root.update(threadRecipient)
+
+                lastProfileAvatar = currentAvatar
+            }
 
             // Update conversation title
             binding.conversationTitleView.text = when {

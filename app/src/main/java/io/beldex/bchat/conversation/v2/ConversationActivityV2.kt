@@ -3028,14 +3028,25 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         )
     }
 
-    override fun setConversationRecyclerViewLayout(status : Boolean) {
-        val layoutParams : RelativeLayout.LayoutParams=
-            binding.conversationRecyclerView.layoutParams as RelativeLayout.LayoutParams
-        if (status) {
-            layoutParams.addRule(RelativeLayout.ABOVE, R.id.inputBar)
-        } else {
-            layoutParams.addRule(RelativeLayout.ABOVE, R.id.typingIndicatorViewContainer)
+    override fun setConversationRecyclerViewLayout(status: Boolean) {
+        val layoutParams = binding.conversationRecyclerView.layoutParams
+                as RelativeLayout.LayoutParams
+
+        layoutParams.removeRule(RelativeLayout.ABOVE)
+
+        when {
+            binding.blockedBanner.isVisible -> {
+                layoutParams.addRule(RelativeLayout.ABOVE, R.id.blockedBanner)
+            }
+            status -> {
+                layoutParams.addRule(RelativeLayout.ABOVE, R.id.inputBar)
+            }
+            else -> {
+                layoutParams.addRule(RelativeLayout.ABOVE, R.id.typingIndicatorViewContainer)
+            }
         }
+
+        binding.conversationRecyclerView.layoutParams = layoutParams
     }
 
     override fun handleVoiceMessageUIHidden() {

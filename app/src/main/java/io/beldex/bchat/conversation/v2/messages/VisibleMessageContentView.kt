@@ -29,7 +29,6 @@ import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -48,7 +47,6 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.core.text.getSpans
-import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentTransferProgress
@@ -367,39 +365,55 @@ class VisibleMessageContentView : MaterialCardView {
                         message,
                         getTextColor(context, message)
                     )
-                    //New Line
                     binding.documentView.root.setOnClickListener {
-                        if (SystemClock.elapsedRealtime() - documentViewLastClickTime >= 500) {
-                            documentViewLastClickTime=SystemClock.elapsedRealtime()
-                            val documentSlide=message.slideDeck.documentSlide
-                            if (documentSlide != null && documentSlide.uri != null) {
-                                val intent=Intent(Intent.ACTION_VIEW).apply {
-                                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                                    setDataAndType(
-                                        PartAuthority.getAttachmentPublicUri(documentSlide.uri),
-                                        documentSlide.contentType
-                                    )
-                                }
-                                try {
-                                    context.startActivity(intent)
-                                } catch (anfe : ActivityNotFoundException) {
-                                    Log.w(
-                                        StickyHeaderGridLayoutManager.TAG,
-                                        "No activity existed to view the media."
-                                    )
-                                    Toast.makeText(
-                                        context,
-                                        R.string.ConversationItem_unable_to_open_media,
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    "Please wait until file downloaded",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                        if (SystemClock.elapsedRealtime() - documentViewLastClickTime < 500) {
+                            return@setOnClickListener
+                        }
+
+                        documentViewLastClickTime = SystemClock.elapsedRealtime()
+
+                        val documentSlide = message.slideDeck.documentSlide
+
+                        if (documentSlide?.uri == null) {
+                            Toast.makeText(
+                                context,
+                                "Please wait until file downloaded",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            return@setOnClickListener
+                        }
+
+                        try {
+                            val publicUri = PartAuthority.getAttachmentPublicUri(documentSlide.uri)
+
+                            val intent = Intent(Intent.ACTION_VIEW).apply {
+                                setDataAndType(publicUri, documentSlide.contentType)
+                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                             }
+
+                            context.startActivity(intent)
+
+                        } catch (e: ActivityNotFoundException) {
+
+                            Log.w(
+                                StickyHeaderGridLayoutManager.TAG,
+                                "No activity existed to view the media.",
+                                e
+                            )
+
+                            Toast.makeText(
+                                context,
+                                R.string.ConversationItem_unable_to_open_media,
+                                Toast.LENGTH_LONG
+                            ).show()
+
+                        } catch (e: Exception) {
+
+                            Log.e(
+                                StickyHeaderGridLayoutManager.TAG,
+                                "Failed to open document",
+                                e
+                            )
                         }
                     }
                 } else {

@@ -3773,7 +3773,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         val viewHolder =
             binding.conversationRecyclerView.findViewHolderForAdapterPosition(indexInAdapter) as? ConversationAdapter.VisibleMessageViewHolder ?: return
         val visibleMessageView = ViewVisibleMessageBinding.bind(viewHolder.view).visibleMessageView
-        visibleMessageView.playVoiceMessage()
+        visibleMessageView.playVoiceMessage(adapter.selectedItems.isNotEmpty())
     }
 
     override fun isAudioPlaying(isPlaying : Boolean, audioPlayingIndex : Int) {

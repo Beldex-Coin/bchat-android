@@ -120,7 +120,8 @@ class VisibleMessageContentView : MaterialCardView {
         visibleMessageView : VisibleMessageView,
         position : Int,
         messageSelected : () -> Boolean,
-        searchViewModel : SearchViewModel?
+        searchViewModel : SearchViewModel?,
+        isSelectionMode : Boolean = false
     ) {
         // Background
         val background = getBackground(message.isOutgoing, isStartOfMessageCluster, isEndOfMessageCluster)
@@ -330,13 +331,14 @@ class VisibleMessageContentView : MaterialCardView {
                         message,
                         isStartOfMessageCluster,
                         isEndOfMessageCluster,
-                        delegate
+                        delegate,
+                        isSelectionMode
                     )
                     // We have to use onContentClick (rather than a click listener directly on the voice
                     // message view) so as to not interfere with all the other gestures.
                     onContentClick.add {
                         if (message.quote == null) {
-                            binding.voiceMessageView.root.togglePlayback()
+                            binding.voiceMessageView.root.togglePlayback(isSelectionMode)
                         }
                     }
                     onContentDoubleTap={ binding.voiceMessageView.root.handleDoubleTap() }
@@ -800,12 +802,16 @@ class VisibleMessageContentView : MaterialCardView {
         ).forEach { view:View -> view.isVisible = false }
     }
 
-    fun playVoiceMessage() {
-        binding.voiceMessageView.root.togglePlayback()
+    fun playVoiceMessage(isSelectionMode : Boolean) {
+        binding.voiceMessageView.root.togglePlayback(isSelectionMode)
     }
 
     fun stopVoiceMessage(){
         binding.voiceMessageView.root.stoppedVoiceMessage()
+    }
+
+    fun voiceMessageViewRecycle() {
+        binding.voiceMessageView.root.recycle()
     }
 
     // endregion

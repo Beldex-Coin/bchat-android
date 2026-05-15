@@ -158,7 +158,7 @@ class ConversationAdapter(
                     }
                 }
                 val contact = contactCache[senderIdHash]
-                visibleMessageView.bind(message, messageBefore, getMessageAfter(position, cursor), glide, searchQuery, contact, senderId, onAttachmentNeedsDownload,{ selectedItems.size > 0 }, visibleMessageViewDelegate, position, searchViewModel)
+                visibleMessageView.bind(message, messageBefore, getMessageAfter(position, cursor), glide, searchQuery, contact, senderId, onAttachmentNeedsDownload,{ selectedItems.isNotEmpty() }, visibleMessageViewDelegate, position, searchViewModel, selectedItems.isNotEmpty())
                 if(isSelected) {
                     visibleMessageView.setOnMessageExpiredListener(object :
                         VisibleMessageView.OnMessageExpiredListener {

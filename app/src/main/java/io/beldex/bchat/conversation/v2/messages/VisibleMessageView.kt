@@ -135,7 +135,8 @@ class VisibleMessageView : LinearLayout {
         messageSelected : () -> Boolean,
         delegate : VisibleMessageViewDelegate?,
         position : Int,
-        searchViewModel : SearchViewModel?
+        searchViewModel : SearchViewModel?,
+        isSelectionMode : Boolean = false
     ) {
         val threadID = message.threadId
         val thread = threadDb.getRecipientForThreadId(threadID) ?: return
@@ -251,7 +252,7 @@ class VisibleMessageView : LinearLayout {
             )
         }
         binding.messageContentView.root.bind(message, isStartOfMessageCluster, isEndOfMessageCluster, glide, thread, searchQuery, message.isOutgoing || isGroupThread || (contact?.isTrusted ?: false),
-            onAttachmentNeedsDownload, thread.isOpenGroupRecipient,delegate!!, this, position,messageSelected, searchViewModel)
+            onAttachmentNeedsDownload, thread.isOpenGroupRecipient,delegate!!, this, position,messageSelected, searchViewModel, isSelectionMode)
         binding.messageContentView.root.delegate = delegate
         binding.messageContentView.root.chatWithContact = { ct ->
             if((message.expiresIn == 0L && message.expireStarted == 0L) || (message.expiresIn > 0 && message.expireStarted > 0) ) {
@@ -404,6 +405,7 @@ class VisibleMessageView : LinearLayout {
     fun recycle() {
         binding.profilePictureView.root.recycle()
         binding.messageContentView.root.recycle()
+        binding.messageContentView.root.voiceMessageViewRecycle()
     }
     // endregion
 
@@ -524,8 +526,8 @@ class VisibleMessageView : LinearLayout {
         ActivityDispatcher.get(context)?.showBottomSheetDialogWithBundle(UserDetailsBottomSheet(),userDetailsBottomSheet.tag,bundle)
     }
 
-    fun playVoiceMessage() {
-        binding.messageContentView.root.playVoiceMessage()
+    fun playVoiceMessage(isSelectionMode: Boolean) {
+        binding.messageContentView.root.playVoiceMessage(isSelectionMode)
     }
     fun stoppedVoiceMessage() {
         binding.messageContentView.root.stopVoiceMessage()

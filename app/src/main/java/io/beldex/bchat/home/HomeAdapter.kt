@@ -76,6 +76,7 @@ class HomeAdapter(private val context: Context, private val listener: Conversati
             // TODO: replace this with a diffed update or a partial change set with payloads
             notifyDataSetChanged()
         }
+    private var blockNextClick = false
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -122,10 +123,15 @@ class HomeAdapter(private val context: Context, private val listener: Conversati
             (holder as ViewHolder).view.apply {
                 bind(thread, isTyping, glide)
                 setOnClickListener {
+                    if (blockNextClick) {
+                        blockNextClick = false
+                        return@setOnClickListener
+                    }
                     listener.onConversationClick(thread)
                 }
 
                 setOnLongClickListener {
+                    blockNextClick = true
                     val adapterPosition = holder.bindingAdapterPosition
                     if (adapterPosition != RecyclerView.NO_POSITION) {
                         listener.onLongConversationClick(thread, this, adapterPosition)

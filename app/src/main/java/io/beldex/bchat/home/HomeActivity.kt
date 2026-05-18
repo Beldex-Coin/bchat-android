@@ -1540,6 +1540,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             Toast.makeText(this,getString(R.string.please_check_your_internet_connection),Toast.LENGTH_SHORT).show()
         }
         setupCallActionBar()
+        swipeHelper.attachToRecyclerView(null)
+        swipeHelper.attachToRecyclerView(binding.recyclerView)
         ApplicationContext.getInstance(this).messageNotifier.setHomeScreenVisible(false)
         if (TextSecurePreferences.getLocalNumber(this) == null) {
             return; } // This can be the case after a secondary device is auto-cleared
@@ -1577,6 +1579,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         if (bottomSheet is UserDetailsBottomSheet) {
             bottomSheet.dismissAllowingStateLoss()
         }
+        swipeHelper.attachToRecyclerView(null)
+        swipeHelper.attachToRecyclerView(binding.recyclerView)
     }
 
     private fun showSaveYourSeedDialog(){

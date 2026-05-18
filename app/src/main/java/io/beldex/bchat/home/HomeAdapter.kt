@@ -117,6 +117,7 @@ class HomeAdapter(private val context: Context, private val listener: Conversati
                 )
             }
         } else {
+            holder.itemView.translationX = 0f
             val offset = if (hasHeaderView()) position - 1 else position
             val thread = data[offset]
             val isTyping = typingThreadIDs.contains(thread.threadId)

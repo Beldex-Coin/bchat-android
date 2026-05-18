@@ -22,8 +22,8 @@ fun rememberMenuPosition(
     val screenWidthPx = with(density) { LocalConfiguration.current.screenWidthDp.dp.toPx() }
     val menuWidthPx = with(density) { menuWidthEstimate.toPx() }
 
-    val itemTop = menuPositionState.offset.y
-    val yOffset = itemTop.toInt()
+    val itemTop = menuPositionState.offset.y - menuPositionState.itemHeight / 2
+    val yOffset = itemTop.toInt() - menuPositionState.itemHeight / 2
     val xOffset = ((screenWidthPx - menuWidthPx) / 2).toInt()
 
     return IntOffset(

@@ -572,6 +572,12 @@ public class DefaultMessageNotifier implements MessageNotifier {
         if (messageRequest && (threadDatabase.getMessageCount(threadId) > 1 || !TextSecurePreferences.hasHiddenMessageRequests(context))) {
           continue;
         }
+
+        boolean isApproved = threadRecipients != null && threadRecipients.isApproved();
+        if (isApproved && (body == null || body.toString().trim().isEmpty())) {
+          Log.d(TAG, "Skipping empty body notification for approved thread: " + threadId);
+          continue;
+        }
       }
 
       if (shouldSuppressNotification(context, threadId)) {
@@ -636,6 +642,11 @@ public class DefaultMessageNotifier implements MessageNotifier {
           displayName = "No Name";
         }
           body = "👤 " + displayName;
+      }
+
+      if (body == null || body.toString().trim().isEmpty()) {
+        Log.d(TAG, "Skipping notification with empty body for thread: " + threadId);
+        continue;
       }
 
       if (threadRecipients == null || !threadRecipients.isMuted()) {

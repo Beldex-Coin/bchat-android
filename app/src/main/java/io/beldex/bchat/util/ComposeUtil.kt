@@ -16,5 +16,5 @@ fun shortNameAndAddress(name:String, address: String): String {
 
 fun isValidGroupName(name: String): Boolean {
     val groupNameRegex = Regex("^(?=.*[A-Za-z0-9])[A-Za-z0-9_\\-\\s]+$")
-    return !name.matches(groupNameRegex)
+    return name.matches(groupNameRegex)
 }

@@ -45,7 +45,7 @@ import java.io.IOException
 
 object ConversationMenuHelper {
 
-    fun onPrepareOptionsMenu(menu: Menu, inflater: MenuInflater, thread: Recipient, threadId: Long, context: Context, activityContext: ConversationActivityV2) {
+    fun onPrepareOptionsMenu(menu: Menu, inflater: MenuInflater, thread: Recipient, threadId: Long, context: Context, activityContext: ConversationActivityV2, onOptionsItemSelected: (MenuItem) -> Unit) {
         // Prepare
         menu.clear()
         val isOpenGroup = thread.isOpenGroupRecipient
@@ -64,6 +64,7 @@ object ConversationMenuHelper {
                 @ColorInt val color = activityContext.resources.getColorWithID(R.color.text, context.theme)
                 iconView?.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY)
                 badgeView?.text = ExpirationUtil.getExpirationAbbreviatedDisplayValue(context, thread.expireMessages)
+                actionView?.setOnClickListener { onOptionsItemSelected(item) }
             } else {
                 if (thread.isGroupRecipient && activityContext.isSecretGroupIsActive()) {
                     inflater.inflate(R.menu.menu_conversation_expiration_off, menu)

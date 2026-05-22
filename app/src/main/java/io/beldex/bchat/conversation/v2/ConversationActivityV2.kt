@@ -226,6 +226,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     private var selectedView: VisibleMessageView? = null
     private var selectedMessageRecord: MessageRecord? = null
 
+    private var menuItemLastClickTime = 0L
     private var unreadCount = 0
     private var isLockViewExpanded = false
     private var isShowingAttachmentOptions = false
@@ -402,7 +403,6 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         binding = ActivityConversationV2Binding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.conversationActivityToolbar)
-        setupMenu()
         // ---------- Network monitoring ----------
         networkChangedReceiver = NetworkChangeReceiver(::networkChange)
         networkChangedReceiver?.register(this)
@@ -463,87 +463,65 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
-    private var lastMenuClickTime = 0L
-
-    private fun isSafeMenuClick(): Boolean {
-        val current = SystemClock.elapsedRealtime()
-
-        return if (current - lastMenuClickTime > 800) {
-            lastMenuClickTime = current
-            true
-        } else {
-            false
+    override fun onPrepareOptionsMenu(menu : Menu) : Boolean {
+        val recipient=viewModel.recipient.value
+        recipient?.let {
+            if (!isMessageRequestThread()) {
+                callOnPrepareOptionsMenu(menu, recipient)
+            } else if (recipient.isLocalNumber) {
+                callOnPrepareOptionsMenu(menu, recipient)
+            }
         }
+        return super.onPrepareOptionsMenu(menu)
     }
 
-    private fun setupMenu() {
-        addMenuProvider(object : MenuProvider {
-
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.menu_conversation, menu)
-            }
-
-            override fun onPrepareMenu(menu: Menu) {
-                val recipient = viewModel.recipient.value ?: return
-
-                if (!isMessageRequestThread() || recipient.isLocalNumber) {
-                    ConversationMenuHelper.onPrepareOptionsMenu(
-                        menu,
-                        menuInflater,
-                        recipient,
-                        viewModel.threadId,
-                        this@ConversationActivityV2,
-                        this@ConversationActivityV2
-                    )
-                }
-            }
-
-            override fun onMenuItemSelected(item: MenuItem): Boolean {
-                if (!isSafeMenuClick()) {
-                    return true
-                }
-
-                return handleMenuItem(item)
-            }
-
-        }, this, Lifecycle.State.RESUMED)
-    }
-
-    private fun handleMenuItem(item: MenuItem): Boolean {
-        if (binding.inputBarRecordingView.isTimerRunning) {
-            return false
-        }
-
+    private fun callOnPrepareOptionsMenu(menu : Menu, recipient : Recipient) {
         hideAttachmentContainer()
+        ConversationMenuHelper.onPrepareOptionsMenu(
+            menu,
+            this.menuInflater,
+            recipient,
+            viewModel.threadId,
+            this,
+            this@ConversationActivityV2
+        ) {
+            onOptionsItemSelected(it)
+        }
+    }
 
-        val recipient = viewModel.recipient.value ?: return false
-
-        return when (item.itemId) {
-
-            android.R.id.home -> {
-                true
-            }
-
-            R.id.menu_call -> {
-                if (recipient.isContactRecipient && recipient.isBlocked) {
-                    unblock()
-                } else {
-                    call(this, recipient)
+    @Deprecated("Deprecated in Java")
+    override fun onOptionsItemSelected(item : MenuItem) : Boolean {
+        if (SystemClock.elapsedRealtime() - menuItemLastClickTime >= 1000) {
+            if (!binding.inputBarRecordingView.isTimerRunning) {
+                menuItemLastClickTime = SystemClock.elapsedRealtime()
+                if (item.itemId == android.R.id.home) {
+                    hideAttachmentContainer()
+                    return false
+                } else if (item.itemId == R.id.menu_call) {
+                    hideAttachmentContainer()
+                    val recipient=viewModel.recipient.value ?: return false
+                    if (recipient.isContactRecipient && recipient.isBlocked) {
+                        unblock()
+                    } else {
+                        viewModel.recipient.value?.let { recipients ->
+                            call(this, recipients)
+                        }
+                    }
                 }
-
-                true
-            }
-
-            else -> {
-                ConversationMenuHelper.onOptionItemSelected(
-                    this,
-                    this,
-                    item,
-                    recipient,
-                    supportFragmentManager
-                )
+                return viewModel.recipient.value?.let { recipient ->
+                    ConversationMenuHelper.onOptionItemSelected(
+                        this,
+                        this,
+                        item,
+                        recipient,
+                        supportFragmentManager
+                    )
+                } ?: false
+            } else {
+                return false
             }
         }
+        return false
     }
 
     private fun call(context : Context, thread : Recipient) {

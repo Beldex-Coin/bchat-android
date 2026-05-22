@@ -18,23 +18,23 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.core.graphics.toColorInt
-import com.beldex.libsignal.utilities.Log
+import androidx.core.content.ContextCompat
+import io.beldex.bchat.R
 
 
 object TextFormatter {
 
     @JvmStatic
-    fun formatAppText(input: CharSequence, context: Context): SpannableStringBuilder {
+    fun formatAppText(input: CharSequence, context: Context, imageInputBar: Boolean = false): SpannableStringBuilder {
         val rawText = input.toString()
         val out = SpannableStringBuilder()
-        val parser = AppTextFormatter(rawText, context)
+        val parser = AppTextFormatter(rawText, context, imageInputBar)
         parser.appendFormatted(out)
         return out.ifEmpty { SpannableStringBuilder(rawText) }
     }
 
     @JvmStatic
-    fun formatForSentMessage(rawText: CharSequence): SpannableStringBuilder {
+    fun formatForSentMessage(context: Context, rawText: CharSequence): SpannableStringBuilder {
         val sanitized = sanitizeLoneListMarkers(rawText.toString())
         val builder = SpannableStringBuilder(sanitized)
 
@@ -67,11 +67,11 @@ object TextFormatter {
 
             // ---- INLINE CODE ----
             applyRegexSpan(sub, Regex("`([^\\r\\n`]+?)`"), marker = '`') {
-                toUnicodeInlineCode(it.groupValues[1])
+                toUnicodeInlineCode(context, it.groupValues[1])
             }
 
             // ---- BOLD, ITALIC and STRIKETHROUGH ----
-            applyInlineFormatting(sub)
+            applyInlineFormatting(context, sub)
 
             // SAFE REPLACE
             builder.replace(index, lineEnd, sub)
@@ -85,12 +85,91 @@ object TextFormatter {
             }
         }
 
-        toUnicodeBlockQuote(builder)
+        toUnicodeBlockQuote(context, builder, removeMarker = true)
 
         return builder
     }
 
-    private fun applyInlineFormatting(builder: SpannableStringBuilder) {
+    private fun applyInlineFormatting(context: Context, builder: SpannableStringBuilder) {
+        if (handleFullLineFormat(
+                builder,
+                '*',
+                "**",
+                validateInner = {
+                    it.isNotBlank() &&
+                            !it.first().isWhitespace() &&
+                            !it.last().isWhitespace()
+                },
+                applySpan = { start, end ->
+                    builder.setSpan(
+                        StyleSpan(Typeface.BOLD),
+                        start,
+                        end,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+            )) return
+        if (handleFullLineFormat(
+                builder,
+                '_',
+                "__",
+                validateInner = {
+                    it.isNotBlank() &&
+                            !it.first().isWhitespace() &&
+                            !it.last().isWhitespace()
+                },
+                applySpan = { start, end ->
+                    builder.setSpan(
+                        StyleSpan(Typeface.ITALIC),
+                        start,
+                        end,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+            )) return
+        if (handleFullLineFormat(
+                builder,
+                '~',
+                "~~",
+                validateInner = {
+                    it.isNotBlank() &&
+                            !it.first().isWhitespace() &&
+                            !it.last().isWhitespace()
+                },
+                applySpan = { start, end ->
+                    builder.setSpan(
+                        StrikethroughSpan(),
+                        start,
+                        end,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+            )) return
+        if (handleFullLineFormat(
+                builder,
+                '`',
+                "``",
+                validateInner = {
+                    it.isNotBlank()
+                },
+                applySpan = { start, end ->
+                    builder.setSpan(
+                        TypefaceSpan("monospace"),
+                        start,
+                        end,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    builder.setSpan(
+                        BackgroundColorSpan(
+                            ContextCompat.getColor(context, R.color.background_color_span)
+                        ),
+                        start,
+                        end,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+            )) return
+
         var i = 0
 
         while (i < builder.length) {
@@ -136,10 +215,15 @@ object TextFormatter {
                                 end,
                                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                             )
+                            applyNestedFormatting(context, builder, start, end)
 
                             // Convert **text** -> *text*
-                            builder.replace(end, end + 2, "*")
-                            builder.replace(i, i + 2, "*")
+                            if (end + 2 <= builder.length) {
+                                builder.replace(end, end + 2, "*")
+                            }
+                            if (i + 2 <= builder.length) {
+                                builder.replace(i, i + 2, "*")
+                            }
 
                             // Move index forward instead of restarting
                             i = end
@@ -156,7 +240,8 @@ object TextFormatter {
                         if (inner.isNotBlank() &&
                             !inner.first().isWhitespace() &&
                             !inner.last().isWhitespace() &&
-                            !inner.contains("*") // prevent *test and *
+                            isValidOpening(builder.toString(), i) &&
+                            isValidClosing(builder, end)
                         ) {
                             builder.setSpan(
                                 StyleSpan(Typeface.BOLD),
@@ -165,10 +250,19 @@ object TextFormatter {
                                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                             )
 
-                            builder.delete(end, end + 1)
-                            builder.delete(i, i + 1)
+                            applyNestedFormatting(context, builder, start, end)
 
-                            i = 0
+                            // recompute safety
+                            val safeEnd = builder.indexOf("*", i + 1)
+
+                            if (safeEnd != -1) {
+                                builder.delete(safeEnd, safeEnd + 1)
+                            }
+                            if (i < builder.length) {
+                                builder.delete(i, i + 1)
+                            }
+
+                            i = (end - 1).coerceAtLeast(0)
                             continue
                         }
                     }
@@ -200,10 +294,15 @@ object TextFormatter {
                                 end,
                                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                             )
+                            applyNestedFormatting(context, builder, start, end)
 
                             // Convert __text__ -> _text_
-                            builder.replace(end, end + 2, "_")
-                            builder.replace(i, i + 2, "_")
+                            if (end + 2 <= builder.length) {
+                                builder.replace(end, end + 2, "_")
+                            }
+                            if (i + 2 <= builder.length) {
+                                builder.replace(i, i + 2, "_")
+                            }
 
                             // Move index forward instead of restarting
                             i = end
@@ -220,7 +319,8 @@ object TextFormatter {
                         if (inner.isNotBlank() &&
                             !inner.first().isWhitespace() &&
                             !inner.last().isWhitespace() &&
-                            !inner.contains("_") // prevent _test and _
+                            isValidOpening(builder.toString(), i) &&
+                            isValidClosing(builder, end)
                         ) {
                             builder.setSpan(
                                 StyleSpan(Typeface.ITALIC),
@@ -229,10 +329,19 @@ object TextFormatter {
                                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                             )
 
-                            builder.delete(end, end + 1)
-                            builder.delete(i, i + 1)
+                            applyNestedFormatting(context, builder, start, end)
 
-                            i = 0
+                            // recompute safety
+                            val safeEnd = builder.indexOf("_", i + 1)
+
+                            if (safeEnd != -1) {
+                                builder.delete(safeEnd, safeEnd + 1)
+                            }
+                            if (i < builder.length) {
+                                builder.delete(i, i + 1)
+                            }
+
+                            i = (end - 1).coerceAtLeast(0)
                             continue
                         }
                     }
@@ -264,10 +373,15 @@ object TextFormatter {
                                 end,
                                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                             )
+                            applyNestedFormatting(context, builder, start, end)
 
                             // Convert ~~text~~ -> ~text~
-                            builder.replace(end, end + 2, "~")
-                            builder.replace(i, i + 2, "~")
+                            if (end + 2 <= builder.length) {
+                                builder.replace(end, end + 2, "~")
+                            }
+                            if (i + 2 <= builder.length) {
+                                builder.replace(i, i + 2, "~")
+                            }
 
                             // Move index forward instead of restarting
                             i = end
@@ -284,7 +398,8 @@ object TextFormatter {
                         if (inner.isNotBlank() &&
                             !inner.first().isWhitespace() &&
                             !inner.last().isWhitespace() &&
-                            !inner.contains("~") // prevent ~test and ~
+                            isValidOpening(builder.toString(), i) &&
+                            isValidClosing(builder, end)
                         ) {
                             builder.setSpan(
                                 StrikethroughSpan(),
@@ -293,10 +408,19 @@ object TextFormatter {
                                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                             )
 
-                            builder.delete(end, end + 1)
-                            builder.delete(i, i + 1)
+                            applyNestedFormatting(context, builder, start, end)
 
-                            i = 0
+                            // recompute safety
+                            val safeEnd = builder.indexOf("~", i + 1)
+
+                            if (safeEnd != -1) {
+                                builder.delete(safeEnd, safeEnd + 1)
+                            }
+                            if (i < builder.length) {
+                                builder.delete(i, i + 1)
+                            }
+
+                            i = (end - 1).coerceAtLeast(0)
                             continue
                         }
                     }
@@ -479,31 +603,415 @@ object TextFormatter {
     @JvmStatic
     fun toUnicodeMonospace(text: String?): CharSequence =
         if (text.isNullOrEmpty()) "" else SpannableStringBuilder(text).apply {
-            applySpanSkippingEmoji(this) { TypefaceSpan("monospace") }
+            applySpanSkippingEmoji(this) { MonospaceSpan() }
         }
 
     @JvmStatic
-    fun toUnicodeInlineCode(text: String?): CharSequence =
+    fun toUnicodeInlineCode(context: Context, text: String?): CharSequence =
         if (text.isNullOrEmpty()) "" else SpannableStringBuilder(text).apply {
-            applySpanSkippingEmoji(this) { TypefaceSpan("monospace") }
-            applySpanSkippingEmoji(this) { BackgroundColorSpan("#797984".toColorInt()) }
+            applySpanSkippingEmoji(this) { MonospaceSpan() }
+            applySpanSkippingEmoji(this) { BackgroundColorSpan(ContextCompat.getColor(context, R.color.background_color_span)) }
         }
 
     @JvmStatic
     fun toUnicodeStrikethrough(text: String?): CharSequence =
         applyStyleSkippingEmoji(text) { StrikethroughSpan() }
 
+    fun toUnicodeBlockQuote(
+        context: Context,
+        builder: Editable,
+        removeMarker: Boolean = false
+    ) {
 
-    fun toUnicodeBlockQuote(builder: Editable) {
-        val spans = builder.getSpans(0, builder.length, CustomQuoteSpan::class.java)
-        spans.forEach { builder.removeSpan(it) }
-        Regex("(?m)^>\\s").findAll(builder).forEach { match ->
+        // Remove old spans
+        builder.getSpans(0, builder.length, CustomQuoteSpan::class.java)
+            .forEach { builder.removeSpan(it) }
+
+        builder.getSpans(0, builder.length, QuoteIndentSpan::class.java)
+            .forEach { builder.removeSpan(it) }
+
+        builder.getSpans(0, builder.length, QuoteMarkerHideSpan::class.java)
+            .forEach { builder.removeSpan(it) }
+
+        var i = 0
+
+        while (i < builder.length) {
+
+            val lineStart = i
+            var lineEnd = builder.indexOf('\n', i)
+            if (lineEnd == -1) lineEnd = builder.length
+
+            if (lineStart >= lineEnd) {
+                i = lineEnd + 1
+                continue
+            }
+
+            if (builder[lineStart] == '>') {
+
+                val valid =
+                    lineStart + 2 < lineEnd &&
+                            builder[lineStart + 1] == ' ' &&
+                            builder[lineStart + 2] != ' '
+
+                if (valid) {
+
+                    var contentStart = lineStart
+
+                    if (removeMarker) {
+                        // Remove "> "
+                        builder.delete(lineStart, lineStart + 2)
+                        lineEnd -= 2
+                        contentStart = lineStart
+
+                    } else {
+                        // Keep text, hide "> "
+                        contentStart = lineStart + 2
+
+                        builder.setSpan(
+                            QuoteMarkerHideSpan(),
+                            lineStart,
+                            contentStart,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+                    }
+
+                    // Quote bar
+                    builder.setSpan(
+                        CustomQuoteSpan(context),
+                        lineStart,
+                        lineEnd,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+
+                    // Alignment spacing
+                    builder.setSpan(
+                        QuoteIndentSpan(20),
+                        lineStart,
+                        lineEnd,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+
+                    // Text color
+                    builder.setSpan(
+                        android.text.style.ForegroundColorSpan(
+                            ContextCompat.getColor(context, R.color.quote_gray)
+                        ),
+                        contentStart,
+                        lineEnd,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+
+                    // Move index safely after mutation
+                    i = lineEnd + 1
+                    continue
+                }
+            }
+
+            i = lineEnd + 1
+        }
+    }
+
+    private fun isValidOpening(text: String, index: Int): Boolean {
+        if (index <= 0) return true
+
+        val prev = text[index - 1]
+
+        // normal case: space before *
+        if (prev == ' ') return true
+
+        // allow @username*text*
+        if (prev.isLetterOrDigit()) {
+            var i = index - 1
+
+            // walk backwards to find start of word
+            while (i >= 0 && text[i].isLetterOrDigit()) {
+                i--
+            }
+
+            // if word starts with '@', allow it
+            if (i >= 0 && text[i] == '@') {
+                return true
+            }
+
+            return false
+        }
+
+        // allow @ directly
+        if (prev == '@') return true
+
+        return true
+    }
+
+    private fun isValidClosing(text: CharSequence, index: Int): Boolean {
+        val prev = text.getOrNull(index - 1)
+        val next = text.getOrNull(index + 1)
+
+        // space before closing (*text *)
+        if (prev != null && prev.isWhitespace()) return false
+
+        // letter immediately after (bold*text)
+        if (next != null && next.isLetterOrDigit()) return false
+
+        return true
+    }
+
+    private fun applyNestedFormatting(
+        context: Context,
+        builder: SpannableStringBuilder,
+        start: Int,
+        endInput: Int
+    ) {
+        var i = start
+        var end = endInput
+
+        while (i < end && i < builder.length) {
+
+            // ========= BOLD (*text*) =========
+            if (builder[i] == '*' && (i + 1 >= end || builder[i + 1] != '*')) {
+                val s = i + 1
+                val e = builder.indexOf("*", s)
+
+                if (e != -1 && e < end) {
+                    val inner = builder.substring(s, e)
+
+                    if (inner.isNotBlank() &&
+                        !inner.first().isWhitespace() &&
+                        !inner.last().isWhitespace()
+                    ) {
+                        builder.setSpan(
+                            StyleSpan(Typeface.BOLD),
+                            s,
+                            e,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+
+                        if (e < builder.length) builder.delete(e, e + 1)
+                        if (i < builder.length) builder.delete(i, i + 1)
+
+                        end -= 2
+
+                        i = (e - 2).coerceAtLeast(start)
+                        continue
+                    }
+                }
+            }
+
+            // ========= ITALIC (_text_) =========
+            if (builder[i] == '_' && (i + 1 >= end || builder[i + 1] != '*')) {
+                val s = i + 1
+                val e = builder.indexOf("_", s)
+
+                if (e != -1 && e < end) {
+                    val inner = builder.substring(s, e)
+
+                    if (inner.isNotBlank() &&
+                        !inner.first().isWhitespace() &&
+                        !inner.last().isWhitespace()
+                    ) {
+                        builder.setSpan(
+                            StyleSpan(Typeface.ITALIC),
+                            s,
+                            e,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+
+                        if (e < builder.length) builder.delete(e, e + 1)
+                        if (i < builder.length) builder.delete(i, i + 1)
+
+                        end -= 2
+
+                        i = (e - 2).coerceAtLeast(start)
+                        continue
+                    }
+                }
+            }
+
+            // ========= STRIKE (~text~) =========
+            if (builder[i] == '~' && (i + 1 >= end || builder[i + 1] != '*')) {
+                val s = i + 1
+                val e = builder.indexOf("~", s)
+
+                if (e != -1 && e < end) {
+                    val inner = builder.substring(s, e)
+
+                    if (inner.isNotBlank() &&
+                        !inner.first().isWhitespace() &&
+                        !inner.last().isWhitespace()
+                    ) {
+                        builder.setSpan(
+                            StrikethroughSpan(),
+                            s,
+                            e,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+
+                        if (e < builder.length) builder.delete(e, e + 1)
+                        if (i < builder.length) builder.delete(i, i + 1)
+
+                        end -= 2
+
+                        i = (e - 2).coerceAtLeast(start)
+                        continue
+                    }
+                }
+            }
+
+            // ========= INLINE CODE (`text`) =========
+            if (builder[i] == '`' && (i + 1 >= end || builder[i + 1] != '*')) {
+                val s = i + 1
+                val e = builder.indexOf("`", s)
+
+                if (e != -1 && e < end) {
+                    val inner = builder.substring(s, e)
+
+                    if (inner.isNotBlank()) {
+                        builder.setSpan(
+                            TypefaceSpan("monospace"),
+                            s,
+                            e,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+
+                        builder.setSpan(
+                            BackgroundColorSpan(
+                                ContextCompat.getColor(context, R.color.background_color_span)
+                            ),
+                            s,
+                            e,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+
+                        if (e < builder.length) builder.delete(e, e + 1)
+                        if (i < builder.length) builder.delete(i, i + 1)
+
+                        end -= 2
+
+                        i = (e - 2).coerceAtLeast(start)
+                        continue
+                    }
+                }
+            }
+
+            i++
+        }
+    }
+
+    fun applyInlineBlockQuote(
+        context: Context,
+        builder: Editable,
+        attachmentRegex: Regex
+    ) {
+
+        var index = 0
+
+        while (index < builder.length) {
+
+            val lineStart = index
+            val lineEnd = builder.indexOf('\n', index).let {
+                if (it == -1) builder.length else it
+            }
+
+            val line = builder.substring(lineStart, lineEnd)
+
+            val attachmentMatch = attachmentRegex.find(line)
+            if (attachmentMatch == null) {
+                index = lineEnd + 1
+                continue
+            }
+
+            val attachmentEnd = lineStart + attachmentMatch.range.last + 1
+
+            val quoteIndex = builder.indexOf("> ", attachmentEnd)
+            if (quoteIndex == -1 || quoteIndex >= lineEnd) {
+                index = lineEnd + 1
+                continue
+            }
+
+            val quoteStart = quoteIndex
+
+            builder.replace(quoteStart, quoteStart + 2, "| ")
+
+            val pipeStart = quoteStart
+            val pipeEnd = quoteStart + 1
+
             builder.setSpan(
-                CustomQuoteSpan(),
-                match.range.first,
-                match.range.last + 1,
+                ForegroundColorSpan(
+                    ContextCompat.getColor(context, R.color.quote_gray)
+                ),
+                pipeStart,
+                pipeEnd,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
+
+            builder.setSpan(
+                StyleSpan(Typeface.BOLD),
+                pipeStart,
+                pipeEnd,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+
+            builder.setSpan(
+                ForegroundColorSpan(
+                    ContextCompat.getColor(context, R.color.quote_gray)
+                ),
+                pipeStart,
+                lineEnd,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+
+            index = lineEnd + 1
         }
+    }
+
+    private fun handleFullLineFormat(
+        builder: SpannableStringBuilder,
+        delimiter: Char,
+        invalidToken: String,
+        validateInner: (String) -> Boolean,
+        applySpan: (Int, Int) -> Unit
+    ): Boolean {
+
+        val text = builder.toString()
+        val trimmed = text.trim()
+        // Skip only full-line multi segments like "*hello* and *hi*"
+        val multiSegmentPattern = Regex(
+            """^(\Q$delimiter\E[^$delimiter]+\Q$delimiter\E)\s+.+\s+(\Q$delimiter\E[^$delimiter]+\Q$delimiter\E)$"""
+        )
+
+        if (multiSegmentPattern.matches(trimmed)) {
+            return false
+        }
+
+        val length = builder.length
+        if (length <= 2) return false
+
+        val innerStart = 1
+        val innerEnd = length - 1
+
+        if (
+            builder.first() == delimiter &&
+            builder.last() == delimiter &&
+
+            !text.startsWith(invalidToken) &&
+            !text.endsWith(invalidToken) &&
+            !text.contains(invalidToken) &&
+
+            builder.indexOf(delimiter, 1) != builder.lastIndexOf(delimiter)
+        ) {
+
+            val inner = builder.substring(innerStart, innerEnd)
+
+            if (validateInner(inner)) {
+
+                applySpan(innerStart, innerEnd)
+
+                builder.delete(innerEnd, innerEnd + 1)
+                builder.delete(0, 1)
+
+                return true
+            }
+        }
+
+        return false
     }
 }

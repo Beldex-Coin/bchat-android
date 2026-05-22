@@ -34,6 +34,8 @@ class ConversationView : LinearLayout {
     var isReportIssueID: Boolean = false
     private val reportIssueBChatID = BuildConfig.REPORT_ISSUE_ID
 
+    val attachmentRegex = Regex("""📷\s*Attachment:""")
+
     // region Lifecycle
     constructor(context: Context) : super(context) { initialize() }
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { initialize() }
@@ -125,12 +127,29 @@ class ConversationView : LinearLayout {
             val snippet = if (thread.isGroupUpdateMessage) {
                 rawSnippet
             } else {
-                val formatted = TextFormatter.formatForSentMessage(rawSnippet)
-                highlightMentionsSpannableString(
+                // Format basic styles (bold, italic, lists, etc.)
+                val formatted = TextFormatter.formatForSentMessage(context, rawSnippet)
+
+                // Apply mentions
+                val mentionFormatted = highlightMentionsSpannableString(
                     formatted,
                     thread.threadId,
                     context
                 )
+
+                // (optional) apply block quote again for attachments
+                val isAttachment = attachmentRegex
+                    .containsMatchIn(mentionFormatted.toString())
+
+                if (isAttachment) {
+                    TextFormatter.applyInlineBlockQuote(
+                        context,
+                        mentionFormatted,
+                        attachmentRegex
+                    )
+                }
+
+                mentionFormatted
             }
 
             binding.snippetTextView.text = snippet
@@ -163,11 +182,6 @@ class ConversationView : LinearLayout {
                 recipient.name // Internally uses the Contact API
             }
         }
-    }
-
-    private fun getActualDPsFromPixels(context: Context, pixels: Int): Float {
-        val resources = context.resources
-        return pixels / (resources.displayMetrics.densityDpi / 160f)
     }
     // endregion
 }

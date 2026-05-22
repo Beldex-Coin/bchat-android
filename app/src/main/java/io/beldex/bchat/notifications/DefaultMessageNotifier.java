@@ -558,7 +558,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
       Recipient    recipient             = record.getIndividualRecipient();
       Recipient    conversationRecipient = record.getRecipient();
       long         threadId              = record.getThreadId();
-      CharSequence body                  = TextFormatter.formatForSentMessage(record.getDisplayBody(context));
+      CharSequence body                  = TextFormatter.formatForSentMessage(context, record.getDisplayBody(context));
       Recipient    threadRecipients      = null;
       SlideDeck slideDeck             = null;
       long         timestamp             = record.getTimestamp();
@@ -598,7 +598,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
       } else if (record.isMms() && !record.isMmsNotification() && !((MmsMessageRecord) record).getSlideDeck().getSlides().isEmpty()) {
         slideDeck = ((MediaMmsMessageRecord)record).getSlideDeck();
         String message = slideDeck.getBody() + ": " + record.getBody();
-        body = TextFormatter.formatForSentMessage(message);
+        body = TextFormatter.formatForSentMessage(context, message);
         int italicLength = message.length() - record.getBody().length();
         body = SpanUtil.italic(body, italicLength);
       } else if (record.isOpenGroupInvitation()) {

@@ -283,8 +283,6 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
             }
         } catch (e: UnsatisfiedLinkError) {
             Log.e(TAG, "Conscrypt native lib missing - skipping Conscrypt provider", e)
-            // App can still function without Conscrypt on most Android versions
-            // Android 10+ has native TLS 1.3 support built-in
         } catch (e: Exception) {
             Log.e(TAG, "Failed to initialize Conscrypt provider", e)
         }

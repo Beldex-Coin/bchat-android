@@ -11,30 +11,72 @@
         android:layout_height="match_parent"
         app:cardBackgroundColor="@color/new_card_background">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/emptyStateContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/noteToSelfContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_margin="8dp"
+                android:padding="10dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="@drawable/user_view_background">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/no_contacts_yet"
-            android:textSize="@dimen/medium_font_size" />
+                <ImageView
+                    android:id="@+id/noteToSelfImage"
+                    android:layout_width="@dimen/small_profile_picture_size"
+                    android:layout_height="@dimen/small_profile_picture_size"
+                    android:src="@drawable/ic_note_to_self"
+                    android:contentDescription="" />
 
-    </LinearLayout>
+                <Space
+                    android:layout_width="12dp"
+                    android:layout_height="wrap_content" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:clipToPadding="false"
-        android:scrollbars="vertical"
-        tools:listitem="@layout/view_user"/>
+                <TextView
+                    android:id="@+id/noteToSelfText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/note_to_self"
+                    android:textSize="16sp"
+                    android:textColor="@color/text" />
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:scrollbars="vertical"
+                tools:listitem="@layout/view_user"/>
+
+            <LinearLayout
+                android:id="@+id/emptyStateContainer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_contacts_yet"
+                    android:textSize="@dimen/medium_font_size" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
     </com.google.android.material.card.MaterialCardView>
 
 </FrameLayout>

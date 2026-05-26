@@ -64,10 +64,10 @@ object MessageSender {
 
     // Convenience
     fun send(message: Message, destination: Destination): Promise<Unit, Exception> {
-        if (destination is Destination.OpenGroupV2) {
-            return sendToOpenGroupDestination(destination, message)
+        return if (destination is Destination.OpenGroupV2) {
+            sendToOpenGroupDestination(destination, message)
         } else {
-            return sendToMnodeDestination(destination, message)
+            sendToMnodeDestination(destination, message)
         }
     }
 

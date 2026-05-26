@@ -265,7 +265,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                                     threadID,
                                     context
                                 )
-                                TextFormatter.formatForSentMessage(bodyText)
+                                TextFormatter.formatForSentMessage(context, bodyText)
                             }
                         }
                     }else{
@@ -274,14 +274,14 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                             threadID,
                             context
                         )
-                        TextFormatter.formatForSentMessage(bodyText)
+                        TextFormatter.formatForSentMessage(context, bodyText)
                     }
                 }else{
                    bodyText = MentionUtilities.highlightMentions((body ?: "").toSpannable(), threadID, context)
-                    TextFormatter.formatForSentMessage(bodyText)
+                    TextFormatter.formatForSentMessage(context, bodyText)
                 }
 
-                TextFormatter.formatForSentMessage(bodyText)
+                TextFormatter.formatForSentMessage(context, bodyText)
             }
         }
         //binding.quoteViewBodyTextView.setTextColor(getTextColor(isOutgoingMessage))

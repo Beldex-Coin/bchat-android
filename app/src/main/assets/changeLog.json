@@ -611,6 +611,20 @@
           "description":"Minor bug fixes"
         }
       ]
+    },
+    {
+      "title": "2.9.6",
+      "descriptions": [
+        {
+          "description":"Crash and ANR fixes"
+        },
+        {
+          "description":"Text-formatting bug fixes"
+        },
+        {
+          "description":"Minor bug fixes"
+        }
+      ]
     }
   ]
 }

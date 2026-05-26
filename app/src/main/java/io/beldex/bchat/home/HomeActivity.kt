@@ -62,6 +62,7 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.ThreadUtils
+import com.beldex.libsignal.utilities.hexEncodedPublicKey
 import com.beldex.libsignal.utilities.toHexString
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
@@ -195,7 +196,19 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     private val callDurationFormat = "HH:mm:ss"
 
     private val publicKey: String
-        get() = TextSecurePreferences.getLocalNumber(this)!!
+        get() {
+            return getUserLocalPublicKey()
+        }
+
+    private fun getUserLocalPublicKey(): String {
+        TextSecurePreferences.getLocalNumber(this)?.takeIf { it.isNotBlank() }?.let {
+            return it
+        }
+
+        val userPublicKey = IdentityKeyUtil.getIdentityKeyPair(this).hexEncodedPublicKey
+        TextSecurePreferences.setLocalNumber(this, userPublicKey)
+        return userPublicKey
+    }
 
     /*Hales63*/
     private val homeAdapter: HomeAdapter by lazy {
@@ -1527,6 +1540,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             Toast.makeText(this,getString(R.string.please_check_your_internet_connection),Toast.LENGTH_SHORT).show()
         }
         setupCallActionBar()
+        swipeHelper.attachToRecyclerView(null)
+        swipeHelper.attachToRecyclerView(binding.recyclerView)
         ApplicationContext.getInstance(this).messageNotifier.setHomeScreenVisible(false)
         if (TextSecurePreferences.getLocalNumber(this) == null) {
             return; } // This can be the case after a secondary device is auto-cleared
@@ -1564,6 +1579,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         if (bottomSheet is UserDetailsBottomSheet) {
             bottomSheet.dismissAllowingStateLoss()
         }
+        swipeHelper.attachToRecyclerView(null)
+        swipeHelper.attachToRecyclerView(binding.recyclerView)
     }
 
     private fun showSaveYourSeedDialog(){

@@ -4,14 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import io.beldex.bchat.R
 import androidx.fragment.app.Fragment
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.bumptech.glide.Glide
 import io.beldex.bchat.databinding.ContactSelectionListFragmentBinding
+import io.beldex.bchat.util.UiMode
+import io.beldex.bchat.util.UiModeUtilities
 
 class ContactSelectionListFragment : Fragment(), LoaderManager.LoaderCallbacks<List<ContactSelectionListItem>>, ContactClickListener {
     private lateinit var binding: ContactSelectionListFragmentBinding
@@ -57,11 +62,19 @@ class ContactSelectionListFragment : Fragment(), LoaderManager.LoaderCallbacks<L
         super.onViewCreated(view, savedInstanceState)
         binding.recyclerView.layoutManager = LinearLayoutManager(activity)
         binding.recyclerView.adapter = listAdapter
+        val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
+        val icNoteToSelf : Int = if (isDarkTheme) R.drawable.ic_note_to_self else R.drawable.ic_note_to_self_light
+        binding.noteToSelfImage.setImageDrawable(ContextCompat.getDrawable(requireContext(), icNoteToSelf ))
+        binding.noteToSelfContainer.setOnClickListener { onLocalSend() }
     }
 
     override fun onStop() {
         super.onStop()
         LoaderManager.getInstance(this).destroyLoader(0)
+    }
+
+    fun onLocalSend() {
+        onContactSelectedListener?.onContactSelected(TextSecurePreferences.getLocalNumber(requireContext()))
     }
 
     fun setQueryFilter(filter: String?) {

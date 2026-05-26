@@ -93,6 +93,7 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libsignal.utilities.hexEncodedPublicKey
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
@@ -100,6 +101,7 @@ import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.service.WebRtcCallService
@@ -123,8 +125,19 @@ class WebRTCComposeActivity : ComponentActivity() {
 
     private val hexEncodedPublicKey: String
         get() {
-            return TextSecurePreferences.getLocalNumber(this)!!
+            return getUserLocalPublicKey()
         }
+
+    private fun getUserLocalPublicKey(): String {
+        TextSecurePreferences.getLocalNumber(this)?.takeIf { it.isNotBlank() }?.let {
+            return it
+        }
+
+        val userPublicKey = IdentityKeyUtil.getIdentityKeyPair(this).hexEncodedPublicKey
+        TextSecurePreferences.setLocalNumber(this, userPublicKey)
+        return userPublicKey
+    }
+
     private var pipBuilderParams: PictureInPictureParams.Builder? = null
 
     private fun isSystemPipEnabledAndAvailable(): Boolean {

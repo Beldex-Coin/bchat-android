@@ -29,21 +29,22 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
@@ -93,8 +94,9 @@ fun ArchiveChatScreen(
 
     val threadRecord = requestsList.find { it.threadId == selectedThreadId }
     var showMenu by remember { mutableStateOf(false) }
-    var offset by remember { mutableStateOf(Offset.Zero) }
-    val recipient=threadRecord?.recipient
+    val itemPositions = remember { mutableStateMapOf<Long, MenuPositionState>() }
+    var menuPositionState by remember { mutableStateOf(MenuPositionState()) }
+    val popupOffset = rememberMenuPosition(menuPositionState)
 
     var showBlockPopup by remember {
         mutableStateOf(false)
@@ -259,38 +261,32 @@ fun ArchiveChatScreen(
     if (showMenu) {
         threadRecord?.let { thread ->
             Popup(
-                offset=IntOffset(x=offset.x.toInt(), y=offset.y.toInt()),
-                onDismissRequest={
-                    showMenu=false
-                },
+                alignment = Alignment.TopStart,
+                offset = popupOffset,
+                onDismissRequest = { showMenu = false },
             ) {
-                Card(
-                    modifier=Modifier.width(200.dp)
-                ) {
+                Card(modifier = Modifier.width(200.dp)) {
                     Column(
-                        modifier=Modifier
+                        modifier = Modifier
                             .padding(16.dp)
                             .verticalScroll(rememberScrollState())
                     ) {
                         if (!thread.recipient.isBlocked) {
                             if (!thread.recipient.isGroupRecipient && !thread.recipient.isLocalNumber) {
                                 Row(
-                                    horizontalArrangement=Arrangement.Start,
-                                    verticalAlignment=Alignment.CenterVertically
+                                    horizontalArrangement = Arrangement.Start,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Icon(
-                                        painter=painterResource(id=R.drawable.ic_block),
-                                        contentDescription="",
-                                        tint=MaterialTheme.appColors.iconTint,
-
-                                        )
-                                    TextButton(onClick={
-                                        // Handle action
-                                        showMenu=false
-                                        showBlockPopup=true
-
+                                        painter = painterResource(id = R.drawable.ic_block),
+                                        contentDescription = "",
+                                        tint = MaterialTheme.appColors.iconTint,
+                                    )
+                                    TextButton(onClick = {
+                                        showMenu = false
+                                        showBlockPopup = true
                                     }) {
-                                        Text(stringResource(id=R.string.RecipientPreferenceActivity_block))
+                                        Text(stringResource(id = R.string.RecipientPreferenceActivity_block))
                                     }
                                 }
                             }
@@ -298,87 +294,74 @@ fun ArchiveChatScreen(
                         if (thread.recipient.isBlocked) {
                             if (!thread.recipient.isGroupRecipient && !thread.recipient.isLocalNumber) {
                                 Row(
-                                    horizontalArrangement=Arrangement.Start,
-                                    verticalAlignment=Alignment.CenterVertically
+                                    horizontalArrangement = Arrangement.Start,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Icon(
-                                        painter=painterResource(id=R.drawable.ic_unblock),
-                                        contentDescription="",
-                                        tint=MaterialTheme.appColors.iconTint,
+                                        painter = painterResource(id = R.drawable.ic_unblock),
+                                        contentDescription = "",
+                                        tint = MaterialTheme.appColors.iconTint,
                                     )
-                                    TextButton(onClick={
-                                        // Handle action
-                                        showMenu=false
-                                        showUnBlockPopup=true
+                                    TextButton(onClick = {
+                                        showMenu = false
+                                        showUnBlockPopup = true
                                     }) {
-                                        Text(stringResource(id=R.string.RecipientPreferenceActivity_unblock))
+                                        Text(stringResource(id = R.string.RecipientPreferenceActivity_unblock))
                                     }
                                 }
                             }
                         }
                         Row(
-                            horizontalArrangement=Arrangement.Start,
-                            verticalAlignment=Alignment.CenterVertically
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
-                                painter=painterResource(id=R.drawable.ic_unarchive_chats),
-                                contentDescription="",
-                                tint=MaterialTheme.appColors.iconTint,
-                                modifier=Modifier.size(14.dp)
+                                painter = painterResource(id = R.drawable.ic_unarchive_chats),
+                                contentDescription = "",
+                                tint = MaterialTheme.appColors.iconTint,
+                                modifier = Modifier.size(14.dp)
                             )
-                            TextButton(onClick={
-                                // Handle action
-                                showMenu=false
-                                archiveChatViewModel.onEvent(
-                                    ArchiveChatsEvents.UnArchiveChats(
-                                        thread
-                                    )
-                                )
+                            TextButton(onClick = {
+                                showMenu = false
+                                archiveChatViewModel.onEvent(ArchiveChatsEvents.UnArchiveChats(thread))
                             }) {
-                                Text(stringResource(id=R.string.un_archive_chat_title))
+                                Text(stringResource(id = R.string.un_archive_chat_title))
                             }
                         }
-
                         if (thread.unreadCount > 0) {
                             Row(
-                                horizontalArrangement=Arrangement.Start,
-                                verticalAlignment=Alignment.CenterVertically
+                                horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Icon(
-                                    painter=painterResource(id=R.drawable.ic_mark_as_read_menu),
-                                    contentDescription="",
-                                    tint=MaterialTheme.appColors.iconTint
+                                    painter = painterResource(id = R.drawable.ic_mark_as_read_menu),
+                                    contentDescription = "",
+                                    tint = MaterialTheme.appColors.iconTint
                                 )
-                                TextButton(onClick={
-                                    // Handle action
-                                    showMenu=false
-                                        archiveChatViewModel.onEvent(
-                                            ArchiveChatsEvents.MarkAsRead(thread)
-                                        )
+                                TextButton(onClick = {
+                                    showMenu = false
+                                    archiveChatViewModel.onEvent(ArchiveChatsEvents.MarkAsRead(thread))
                                 }) {
-                                    Text(stringResource(id=R.string.MessageNotifier_mark_all_as_read))
+                                    Text(stringResource(id = R.string.MessageNotifier_mark_all_as_read))
                                 }
                             }
                         }
                         Row(
-                            horizontalArrangement=Arrangement.Start,
-                            verticalAlignment=Alignment.CenterVertically
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
-                                painter=painterResource(id=R.drawable.ic_delete_menu),
-                                contentDescription="",
-                                tint=MaterialTheme.appColors.deleteOptionColor,
+                                painter = painterResource(id = R.drawable.ic_delete_menu),
+                                contentDescription = "",
+                                tint = MaterialTheme.appColors.deleteOptionColor,
                             )
-                            TextButton(onClick={
-                                // Handle action
-                                showMenu=false
-                                showDeletePopup=true
+                            TextButton(onClick = {
+                                showMenu = false
+                                showDeletePopup = true
                             }) {
                                 Text(
-                                    stringResource(
-                                        id=R.string.delete
-                                    ),
-                                    color=MaterialTheme.appColors.deleteOptionColor,
+                                    stringResource(id = R.string.delete),
+                                    color = MaterialTheme.appColors.deleteOptionColor,
                                 )
                             }
                         }
@@ -434,15 +417,24 @@ fun ArchiveChatScreen(
                         keepArchiveChat,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical=4.dp, horizontal=6.dp)
+                            .padding(vertical = 4.dp, horizontal = 6.dp)
+                            .onGloballyPositioned { coordinates ->
+                                itemPositions[archivedList.threadId] = MenuPositionState(
+                                    offset = coordinates.positionInWindow(),
+                                    itemHeight = coordinates.size.height
+                                )
+                            }
                             .pointerInput(Unit) {
-                                detectTapGestures(onTap={
-                                    onRequestClick(archivedList)
-                                }, onLongPress={
-                                    selectedThreadId=archivedList.threadId
-                                    offset=it
-                                    showMenu=true
-                                })
+                                detectTapGestures(
+                                    onTap = { onRequestClick(archivedList) },
+                                    onLongPress = {
+                                        itemPositions[archivedList.threadId]?.let { pos ->
+                                            menuPositionState = pos
+                                        }
+                                        selectedThreadId = archivedList.threadId
+                                        showMenu = true
+                                    }
+                                )
                             }
                     )
                 }
@@ -568,7 +560,7 @@ fun ArchiveChatItem(
                 }
             } else {
                 val snippet=MentionUtilities.highlightMentions(rawSnippet, thread.threadId, context)
-                val message = TextFormatter.formatForSentMessage(snippet)
+                val message = TextFormatter.formatForSentMessage(context, snippet)
                 Text(
                     text=message.toAnnotatedString(), style=MaterialTheme.typography.bodySmall.copy(
                         fontWeight=FontWeight(400), fontSize=12.sp

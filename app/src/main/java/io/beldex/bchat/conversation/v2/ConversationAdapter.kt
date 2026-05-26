@@ -83,6 +83,8 @@ class ConversationAdapter(
     private val updateQueue = Channel<String>(1024, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     private val contactCache = SparseArray<Contact>(100)
     private val contactLoadedCache = SparseBooleanArray(100)
+    private val matchedPositions = mutableSetOf<Int>()
+
     init {
         lifecycleCoroutineScope.launch(IO) {
             while (isActive) {
@@ -158,7 +160,7 @@ class ConversationAdapter(
                     }
                 }
                 val contact = contactCache[senderIdHash]
-                visibleMessageView.bind(message, messageBefore, getMessageAfter(position, cursor), glide, searchQuery, contact, senderId, onAttachmentNeedsDownload,{ selectedItems.size > 0 }, visibleMessageViewDelegate, position, searchViewModel)
+                visibleMessageView.bind(message, messageBefore, getMessageAfter(position, cursor), glide, searchQuery, contact, senderId, onAttachmentNeedsDownload,{ selectedItems.isNotEmpty() }, visibleMessageViewDelegate, position, searchViewModel, selectedItems.isNotEmpty())
                 if(isSelected) {
                     visibleMessageView.setOnMessageExpiredListener(object :
                         VisibleMessageView.OnMessageExpiredListener {
@@ -366,20 +368,53 @@ class ConversationAdapter(
     }
 
     fun onSearchQueryUpdated(query: String?) {
-        this.searchQuery = query
-        val cursor = this.cursor
-        if(!query.isNullOrEmpty() && cursor !=null && isActiveCursor) {
+        searchQuery = query
+
+        val cursor = this.cursor ?: return
+
+        val messageList = mutableListOf<Pair<Int, String>>()
+
+        if (!query.isNullOrEmpty() && isActiveCursor) {
+
+            val reader = messageDB.readerFor(cursor)
+
             for (i in 0 until itemCount) {
+
                 cursor.moveToPosition(i)
-                val message = messageDB.readerFor(cursor).current
-                if (message.body.lowercase(Locale.US).contains(searchQuery.toString().lowercase(Locale.US))) {
-                    notifyItemChanged(i)
-                } else {
-                    notifyDataSetChanged()
+
+                val message = reader.current
+
+                messageList.add(
+                    i to (message.body ?: "")
+                )
+            }
+        }
+
+        Thread {
+
+            val tempMatches = mutableSetOf<Int>()
+
+            val lowerQuery = query?.lowercase(Locale.US).orEmpty()
+
+            messageList.forEach { (position, body) ->
+
+                if (body.lowercase(Locale.US).contains(lowerQuery)) {
+                    tempMatches.add(position)
                 }
             }
-        }else{
-            notifyDataSetChanged()
-        }
+
+            (context as? android.app.Activity)?.runOnUiThread {
+
+                val oldMatches = matchedPositions.toSet()
+
+                matchedPositions.clear()
+                matchedPositions.addAll(tempMatches)
+
+                (oldMatches + matchedPositions).forEach {
+                    notifyItemChanged(it)
+                }
+            }
+
+        }.start()
     }
 }

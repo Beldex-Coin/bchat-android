@@ -55,7 +55,7 @@ class InputBarEditText : AppCompatEditText {
         }
 
         // Quotes
-        toUnicodeBlockQuote(text ?: return@Runnable)
+        toUnicodeBlockQuote(context, editable)
 
         // wait until ALL text mutations are done
         applyNumberSpan(editable)
@@ -159,7 +159,7 @@ class InputBarEditText : AppCompatEditText {
         val editable = this.text ?: return
         val cursorPos = selectionStart
         val rawText = editable.toString()
-        if (lengthAfter == 1 && text.endsWith(" ")) {
+        if (lengthAfter == 1) {
             if (cursorPos >= 3) {
                 val threeChars = rawText.substring(cursorPos - 3, cursorPos)
                 if (threeChars == "$bulletChar  ") {
@@ -209,6 +209,8 @@ class InputBarEditText : AppCompatEditText {
             } finally {
                 isFormatting = false
             }
+            removeCallbacks(reformatRunnable)
+            postDelayed(reformatRunnable, 80)
             return
         }
 

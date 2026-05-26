@@ -27,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -64,6 +65,8 @@ import io.beldex.bchat.imageeditor.model.EditorModel;
 import io.beldex.bchat.mediapreview.MediaRailAdapter;
 import io.beldex.bchat.providers.BlobProvider;
 import io.beldex.bchat.scribbles.ImageEditorFragment;
+import io.beldex.bchat.textformatter.CustomQuoteSpan;
+import io.beldex.bchat.textformatter.QuoteIndentSpan;
 import io.beldex.bchat.textformatter.TextFormatter;
 import io.beldex.bchat.util.CharacterCalculator;
 import io.beldex.bchat.util.PushCharacterCalculator;
@@ -594,7 +597,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
         return;
       }
 
-      if (count == 1 && text.toString().endsWith(" ")) {
+      if (count == 1) {
         if (cursorPos >= 3) {
           String lastThree = rawText.substring(cursorPos - 3, cursorPos);
           if (lastThree.equals(bulletChar + "  ")) {
@@ -605,9 +608,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
             return;
           }
         }
-      }
 
-      if (count == 1 && text.charAt(start) == ' ') {
         if (cursorPos >= 2) {
           int lineStart = rawText.lastIndexOf('\n', Math.max(0, cursorPos - 2));
           lineStart = (lineStart == -1) ? 0 : lineStart + 1;
@@ -656,6 +657,8 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
         } finally {
           isFormattingCompose = false;
         }
+        composeText.removeCallbacks(formatComposeRunnable);
+        composeText.postDelayed(formatComposeRunnable, 80);
         return;
       }
 
@@ -793,7 +796,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
 
     String raw = editable.toString();
     SpannableStringBuilder formatted =
-            new SpannableStringBuilder(TextFormatter.formatAppText(raw, requireContext()));
+            new SpannableStringBuilder(TextFormatter.formatAppText(raw, requireContext(), true));
 
     boolean textChanged = !formatted.toString().equals(raw);
     boolean spansChanged =
@@ -806,7 +809,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
     try {
       int cursorPos = Math.min(composeText.getSelectionStart(), raw.length());
       SpannableStringBuilder formattedBeforeCursor = new SpannableStringBuilder(
-              TextFormatter.formatAppText(raw.substring(0, cursorPos), requireContext()));
+              TextFormatter.formatAppText(raw.substring(0, cursorPos), requireContext(), true));
       int newCursor = Math.min(formattedBeforeCursor.length(), formatted.length());
 
       composeText.removeTextChangedListener(composeKeyPressedListener);
@@ -814,6 +817,9 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
 
       // get NEW editable after setText()
       Editable newEditable = composeText.getText();
+
+      //Quote formatting
+      toUnicodeBlockQuote(requireContext(), newEditable, false);
 
       // wait until ALL text mutations are done
       applyNumberSpan(newEditable);
@@ -874,6 +880,101 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
     }
   }
 
+  public static void toUnicodeBlockQuote(
+          Context context,
+          Editable builder,
+          boolean removeMarker
+  ) {
+
+    // Remove old spans
+    CustomQuoteSpan[] quoteSpans =
+            builder.getSpans(0, builder.length(), CustomQuoteSpan.class);
+    for (CustomQuoteSpan span : quoteSpans) {
+      builder.removeSpan(span);
+    }
+
+    QuoteIndentSpan[] indentSpans =
+            builder.getSpans(0, builder.length(), QuoteIndentSpan.class);
+    for (QuoteIndentSpan span : indentSpans) {
+      builder.removeSpan(span);
+    }
+
+    int i = 0;
+
+    while (i < builder.length()) {
+
+      int lineStart = i;
+      int lineEnd = builder.toString().indexOf('\n', i);
+      if (lineEnd == -1) lineEnd = builder.length();
+
+      if (lineStart >= lineEnd) {
+        i = lineEnd + 1;
+        continue;
+      }
+
+      if (builder.charAt(lineStart) == '>') {
+
+        boolean valid =
+                (lineStart + 2 < lineEnd) &&
+                        (builder.charAt(lineStart + 1) == ' ') &&
+                        (builder.charAt(lineStart + 2) != ' ');
+
+        if (valid) {
+
+          int contentStart;
+
+          if (removeMarker) {
+            // Remove "> "
+            builder.delete(lineStart, lineStart + 2);
+            lineEnd -= 2;
+            contentStart = lineStart;
+
+          } else {
+            // Keep text, hide "> "
+            contentStart = lineStart + 2;
+
+            builder.setSpan(
+                    new android.text.style.ScaleXSpan(0f),
+                    lineStart,
+                    contentStart,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            );
+          }
+
+          // Quote bar
+          builder.setSpan(
+                  new CustomQuoteSpan(context),
+                  lineStart,
+                  lineEnd,
+                  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+          );
+
+          // Alignment spacing
+          builder.setSpan(
+                  new QuoteIndentSpan(20),
+                  lineStart,
+                  lineEnd,
+                  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+          );
+
+          // Text color
+          builder.setSpan(
+                  new android.text.style.ForegroundColorSpan(
+                          ContextCompat.getColor(context, R.color.quote_gray)
+                  ),
+                  contentStart,
+                  lineEnd,
+                  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+          );
+
+          i = lineEnd + 1;
+          continue;
+        }
+      }
+
+      i = lineEnd + 1;
+    }
+  }
   public interface Controller {
     void onAddMediaClicked(@NonNull String bucketId);
     void onSendClicked(@NonNull List<Media> media, @NonNull String body);

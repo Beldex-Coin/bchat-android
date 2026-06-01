@@ -54,7 +54,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:text="User"
+                        android:text="@string/user"
                         android:textColor="@color/text"
                         android:textSize="@dimen/medium_font_size"
                         android:textStyle="bold" />
@@ -86,7 +86,7 @@
                             android:ellipsize="end"
                             android:fontFamily="@font/open_sans_regular"
                             android:maxLines="1"
-                            android:text="Muted"
+                            android:text="@string/ConversationActivity_muted_forever"
                             android:textColor="@color/text"
                             android:textSize="@dimen/very_small_font_size" />
 
@@ -141,7 +141,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_weight="1"
                         android:background="@null"
-                        android:hint="Search"
+                        android:hint="@string/SearchToolbar_search"
                         android:imeOptions="actionDone"
                         android:longClickable="false"
                         android:singleLine="true"
@@ -207,7 +207,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="7dp"
                     android:layout_marginTop="5dp"
-                    android:text="No Matches found!"
+                    android:text="@string/no_matches_found"
                     android:textColor="@color/text"
                     android:textSize="@dimen/very_small_font_size"
                     android:visibility="gone"
@@ -783,7 +783,7 @@
                             android:layout_marginTop="@dimen/small_spacing"
                             android:fontFamily="@font/open_sans_bold"
                             android:paddingHorizontal="@dimen/massive_spacing"
-                            android:text="@string/message_request"
+                            android:text="@string/activity_message_request_title"
                             android:textColor="@color/text"
                             android:textSize="16sp"
                             android:visibility="visible" />

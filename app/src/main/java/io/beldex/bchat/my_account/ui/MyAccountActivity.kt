@@ -417,7 +417,7 @@ fun MyAccountNavHost(
         if (displayName.isEmpty()) {
             Toast.makeText(
                 context,
-                R.string.activity_settings_display_name_missing_error,
+                R.string.activity_display_name_display_name_missing_error,
                 Toast.LENGTH_SHORT
             ).show()
             return false
@@ -425,7 +425,7 @@ fun MyAccountNavHost(
         if (displayName.toByteArray().size > SSKEnvironment.ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
             Toast.makeText(
                 context,
-                R.string.activity_settings_display_name_too_long_error,
+                R.string.activity_display_name_display_name_too_long_error,
                 Toast.LENGTH_SHORT
             ).show()
             return false
@@ -1240,7 +1240,7 @@ fun MyAccountNavHost(
                 }
             }
             MyAccountScreenContainer(
-                title = stringResource(R.string.recovery_seed),
+                title = stringResource(R.string.activity_settings_recovery_phrase_button_title),
                 wrapInCard = markedAsSafe,
                 onBackClick = {
                     (context as ComponentActivity).finish()

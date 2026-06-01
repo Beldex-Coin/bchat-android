@@ -75,7 +75,7 @@
             android:id="@+id/icNoContactFound"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/no_record_found"
+            android:contentDescription="@string/no_records_found"
             android:src="@drawable/ic_no_contact_found"
             />
 

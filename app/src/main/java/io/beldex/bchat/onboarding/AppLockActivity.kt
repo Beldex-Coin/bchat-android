@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import io.beldex.bchat.databinding.ActivityAppLockBinding
 import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.R
 import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
@@ -15,7 +16,7 @@ class AppLockActivity : BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAppLockBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setUpActionBarBchatLogo("App Lock",true)
+        setUpActionBarBchatLogo(getString(R.string.activity_settings_app_lock_button_title), true)
         with(binding) {
             laterButton.setOnClickListener(){
                 later()

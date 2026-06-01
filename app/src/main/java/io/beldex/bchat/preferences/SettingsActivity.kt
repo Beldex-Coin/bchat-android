@@ -397,7 +397,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
         if (displayName.isEmpty()) {
             Toast.makeText(
                 this,
-                R.string.activity_settings_display_name_missing_error,
+                R.string.activity_display_name_display_name_missing_error,
                 Toast.LENGTH_SHORT
             ).show()
             return false
@@ -405,7 +405,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
         if (displayName.toByteArray().size > ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
             Toast.makeText(
                 this,
-                R.string.activity_settings_display_name_too_long_error,
+                R.string.activity_display_name_display_name_too_long_error,
                 Toast.LENGTH_SHORT
             ).show()
             return false

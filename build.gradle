@@ -65,7 +65,7 @@ allprojects {
                 includeGroupByRegex "com\\.goterl.*"
             }
         }
-        jcenter()
+        //jcenter()
         maven { url "https://jitpack.io" }
     }
 

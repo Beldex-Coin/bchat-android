@@ -59,7 +59,7 @@
                         android:layout_width="12dp"
                         android:layout_height="12dp"
                         android:layout_marginEnd="4dp"
-                        android:contentDescription="Social Group Invitation"
+                        android:contentDescription="@string/ThreadRecord_open_group_invitation"
                         android:src="@drawable/ic_social_group_name"
                         android:visibility="visible" />
 

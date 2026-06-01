@@ -107,7 +107,7 @@ public class ThreadRecord extends DisplayRecord implements Serializable {
       }
       Boolean isOutGoing = MmsSmsColumns.Types.isOutgoingMessageType(type);
       if (isOutGoing) {
-        direction = context.getString(R.string.send);
+        direction = context.getString(R.string.conversation_activity__send);
       } else {
         direction = context.getString(R.string.message_details_header__received);
         ;

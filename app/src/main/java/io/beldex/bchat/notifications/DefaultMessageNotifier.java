@@ -609,7 +609,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
           e.printStackTrace();
         }
         if (record.isOutgoing()) {
-          direction = context.getString(R.string.send);
+          direction = context.getString(R.string.conversation_activity__send);
         } else {
           direction = context.getString(R.string.message_details_header__received);
         }

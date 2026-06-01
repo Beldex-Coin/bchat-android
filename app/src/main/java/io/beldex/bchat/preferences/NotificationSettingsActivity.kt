@@ -17,7 +17,7 @@ class NotificationSettingsActivity : PassphraseRequiredActionBarActivity() {
         setContentView(binding.root)
         with(binding) {
             back.setOnClickListener { finish() }
-            title.text = resources.getString(R.string.activity_notification_settings_title)
+            title.text = resources.getString(R.string.activity_settings_notifications_button_title)
         }
         val fragment = NotificationsPreferenceFragment()
         val transaction = supportFragmentManager.beginTransaction()

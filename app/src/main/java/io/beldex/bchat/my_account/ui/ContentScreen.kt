@@ -7,9 +7,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.R
 
 @Composable
 fun ContentScreen(
@@ -24,7 +26,7 @@ fun ContentScreen(
             )
     ) {
         Text(
-            text = content,
+            text = stringResource(R.string.about_content),
             style = MaterialTheme.typography.bodyMedium.copy(
                 color = MaterialTheme.appColors.editTextColor,
                 fontWeight = FontWeight(400),

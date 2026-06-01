@@ -51,7 +51,7 @@
                 android:textStyle="bold"
                 android:textColor="@color/text"
                 android:textAlignment="center"
-                android:text="Profile Name" />
+                android:text="@string/activity_settings_profile_name_title" />
 
             <ImageView
                 android:id="@+id/nameEditIcon"

@@ -54,9 +54,9 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
         if (isEnabled && !areNotificationsEnabled(requireActivity())) {
             // show a dialog saying that calls won't work properly if you don't have notifications on at a system level
             AlertDialog.Builder(requireActivity())
-                .setTitle(R.string.CallNotificationBuilder_system_notification_title)
+                .setTitle(R.string.activity_settings_notifications_button_title)
                 .setMessage(R.string.CallNotificationBuilder_system_notification_message)
-                .setPositiveButton(R.string.activity_notification_settings_title) { d, w ->
+                .setPositiveButton(R.string.activity_settings_notifications_button_title) { d, w ->
                     val settingsIntent =
                         Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

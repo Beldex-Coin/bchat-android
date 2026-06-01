@@ -15,8 +15,6 @@ import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
 import javax.inject.Inject
 import android.view.inputmethod.InputConnection
-
-import android.R
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Handler
@@ -30,6 +28,7 @@ import androidx.core.widget.addTextChangedListener
 import android.text.Editable
 
 import android.text.TextWatcher
+import io.beldex.bchat.R
 import org.w3c.dom.Text
 
 
@@ -44,7 +43,7 @@ class CreatePasswordActivity : BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityCreatePasswordBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setUpActionBarBchatLogo("Create Password", true)
+        setUpActionBarBchatLogo(getString(R.string.create_password), true)
         callPage = intent.extras!!.getInt("callPage")
         with(binding)
         {

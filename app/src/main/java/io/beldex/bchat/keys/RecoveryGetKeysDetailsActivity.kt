@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import io.beldex.bchat.databinding.ActivityRecoveryGetKeysDetailsBinding
 import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.R
 import io.beldex.bchat.onboarding.AppLockActivity
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
@@ -14,7 +15,7 @@ class RecoveryGetKeysDetailsActivity : BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding= ActivityRecoveryGetKeysDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setUpActionBarBchatLogo("Restore from Keys")
+        setUpActionBarBchatLogo(getString((R.string.restore_from_keys)))
         with(binding){
             restoreKeysRestoreButton.setOnClickListener {
                 val intent = Intent(this@RecoveryGetKeysDetailsActivity, AppLockActivity::class.java)

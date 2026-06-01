@@ -74,7 +74,7 @@
                         app:layout_constraintStart_toEndOf="@id/mnemonicEditText"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        android:text="0/25"
+                        android:text="@string/recoveryPhraseCount"
                         android:textColor="@color/text"
                         android:textSize="@dimen/very_small_font_size" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -93,7 +93,7 @@
                 app:iconTint="@color/version_color"
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp"
-                android:text="@string/message_requests_clear" />
+                android:text="@string/clear" />
 
         </LinearLayout>
 
@@ -107,7 +107,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="7dp"
-                android:text="Paste the seed to continue"
+                android:text="@string/paste_the_seed_to_continue"
                 android:textAlignment="center"
                 android:textColor="#A7A7BA"
                 android:textSize="14sp"

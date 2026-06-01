@@ -208,7 +208,7 @@ public class QuoteView extends FrameLayout implements RecipientModifiedListener 
       }
     }
 
-    authorView.setText(isOwnNumber ? getContext().getString(R.string.QuoteView_you) : quoteeDisplayName);
+    authorView.setText(isOwnNumber ? getContext().getString(R.string.MediaPreviewActivity_you) : quoteeDisplayName);
 
     // We use the raw color resource because Android 4.x was struggling with tints here
     int colorID = UiModeUtilities.isDayUiMode(getContext()) ? R.color.black : R.color.accent;

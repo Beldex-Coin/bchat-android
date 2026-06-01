@@ -56,11 +56,11 @@
         android:gravity="center"
         android:lineHeight="22dp"
         android:justificationMode="inter_word"
-        android:text="Yay! You made it here. Claim your airdrop. Submit your BChat ID and BDX wallet address in the link below"
+        android:text="@string/claim_your_airdrop"
         android:textColor="@color/white"
         android:textSize="12sp"
         android:visibility="gone"
-        tools:text="Yay! You made it here. Claim your airdrop. Submit your BChat ID and BDX wallet address in the link below" />
+        tools:text="@string/claim_your_airdrop" />
 
     <LinearLayout
         android:id="@+id/lottie_dialog_buttons_layout"

@@ -141,7 +141,7 @@ fun ArchiveChatScreen(
         ) {
             UnblockUserDialog(title=stringResource(id=R.string.unblock_contact),
                 message=stringResource(id=R.string.unblock_user_confirmation),
-                positiveButtonTitle=stringResource(id=R.string.unblock),
+                positiveButtonTitle=stringResource(id=R.string.ConversationActivity_unblock),
                 onAccept={
                     threadRecord?.let { thread ->
                         archiveChatViewModel.onEvent(
@@ -228,9 +228,9 @@ fun ArchiveChatScreen(
                 val group=groupDatabase.getGroup(thread.recipient.address.toString()).orNull()
                 if (group != null && group.admins.map { it.toString() }
                         .contains(TextSecurePreferences.getLocalNumber(context))) {
-                    "Because you are the creator of this group it will be deleted for everyone. This cannot be undone."
+                    context.getString(R.string.group_delete_confirmation_message)
                 } else {
-                    context.resources.getString(R.string.activity_home_leave_group_dialog_message)
+                    context.resources.getString(R.string.ConversationActivity_are_you_sure_you_want_to_leave_this_group)
                 }
             } else {
                 context.resources.getString(R.string.activity_home_delete_conversation_dialog_message)
@@ -311,7 +311,7 @@ fun ArchiveChatScreen(
                                         showMenu=false
                                         showUnBlockPopup=true
                                     }) {
-                                        Text(stringResource(id=R.string.RecipientPreferenceActivity_unblock))
+                                        Text(stringResource(id=R.string.ConversationActivity_unblock))
                                     }
                                 }
                             }

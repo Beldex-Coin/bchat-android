@@ -110,7 +110,7 @@ fun ChatSettingsScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 SettingsItem(
-                    settingTitle = "Conversation Length Limit",
+                    settingTitle = stringResource(R.string.preferences__conversation_length_limit),
                     painterResource(id = R.drawable.ic_conversation_length),
                     containsSwitch = false,
                     settingDesc = "500 messages per conversation",
@@ -121,7 +121,7 @@ fun ChatSettingsScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 SettingsItem(
-                    settingTitle = "Trim all conversations now",
+                    settingTitle = stringResource(R.string.preferences__trim_all_conversations_now),
                     painterResource(id = R.drawable.ic_trim_conversation),
                     containsSwitch = false,
                     modifier = Modifier

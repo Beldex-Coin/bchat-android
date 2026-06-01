@@ -97,7 +97,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         val localNumber = TextSecurePreferences.getLocalNumber(context)
         val quoteIsLocalUser = localNumber != null && authorPublicKey == localNumber
         val authorDisplayName =
-            if (quoteIsLocalUser) context.getString(R.string.QuoteView_you)
+            if (quoteIsLocalUser) context.getString(R.string.MediaPreviewActivity_you)
             else author?.displayName(Contact.contextForRecipient(thread)) ?: "${authorPublicKey.take(4)}...${authorPublicKey.takeLast(4)}"
         binding.quoteViewAuthorTextView.text = authorDisplayName.capitalizeFirstLetter()
         binding.quoteViewAuthorTextView.setTextColor(if(quoteIsLocalUser && !outgoing){

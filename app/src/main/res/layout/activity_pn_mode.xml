@@ -56,7 +56,7 @@
                 android:layout_marginTop="4dp"
                 android:textSize="@dimen/very_small_font_size"
                 android:textColor="@color/text"
-                android:text="@string/activity_pn_mode_fast_mode_explanation" />
+                android:text="@string/preferences_notifications_strategy_category_fast_mode_summary" />
 
             <TextView
                 android:layout_width="match_parent"

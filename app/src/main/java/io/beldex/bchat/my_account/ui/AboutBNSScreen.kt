@@ -33,13 +33,15 @@ fun AboutBNSScreen(
             fontSize = 16.sp,
             letterSpacing = 0.2.sp,
         )){
-            append("Pricing:")
+            append(stringResource(id = R.string.about_bns_pricing_label))
         }
         withStyle(style = SpanStyle(fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp,
             letterSpacing = 0.2.sp,)) {
-            append(" Users can register their BNS names for 1, 2, 5, and 10 years for as low as ")
+            append(" ")
+            append(stringResource(id = R.string.about_bns_pricing_text))
+            append(" ")
         }
         withStyle(style = SpanStyle(
             fontFamily = FontFamily.SansSerif,
@@ -47,13 +49,14 @@ fun AboutBNSScreen(
             fontSize = 16.sp,
             letterSpacing = 0.2.sp,
         )){
-            append("650 BDX, 1000 BDX, 2000 BDX, and 4000 BDX")
+            append(stringResource(id = R.string.about_bns_pricing_values))
         }
         withStyle(style = SpanStyle(fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp,
             letterSpacing = 0.2.sp,)) {
-            append(" respectively.")
+            append(" ")
+            append(stringResource(id = R.string.about_bns_pricing_suffix))
         }
     }
     Column(
@@ -63,21 +66,21 @@ fun AboutBNSScreen(
             )
     ) {
         Text(
-            text = "BNS: Your Decentralized Identity in the Beldex Ecosystem",
+            text = stringResource(id = R.string.about_bns_title),
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.SemiBold,
             ),
             modifier = Modifier.padding(bottom = 15.dp)
         )
         Text(
-            text = "BNS (Beldex Name Service) is your gateway to a seamless experience within the Beldex ecosystem. With BNS, you can create a unique, easy-to-remember name that links to your various Beldex identities.",
+            text = stringResource(id = R.string.about_bns_description_1),
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.Normal,
             ),
             modifier = Modifier.padding(bottom = 15.dp)
         )
         Text(
-            text = "Key Benefits:",
+            text = stringResource(id = R.string.about_bns_key_benefits),
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.SemiBold,
             ),
@@ -109,14 +112,14 @@ fun AboutBNSScreen(
             modifier = Modifier.padding(bottom = 15.dp)
         )
         Text(
-            text = "Using BNS names enhances your privacy, security, and convenience. Whether you're sending a message, making a transaction, or using decentralized services, your BNS name ensures a consistent and simplified experience.",
+            text = stringResource(id = R.string.about_bns_description_7),
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.Normal,
             ),
             modifier = Modifier.padding(bottom = 15.dp)
         )
         Text(
-            text = "Get started with your BNS name today and enjoy the benefits of a decentralized identity across all your Beldex services!",
+            text = stringResource(id = R.string.about_bns_description_8),
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.Normal,
             ),

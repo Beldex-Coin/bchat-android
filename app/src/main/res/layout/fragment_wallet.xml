@@ -355,7 +355,7 @@
                         android:layout_height="match_parent"
 
                         android:gravity="center_vertical"
-                        android:text="@string/send_title"
+                        android:text="@string/conversation_activity__send"
                         android:textColor="@color/send_button_disable_color"
                         android:textSize="18sp"
                         android:textStyle="bold"

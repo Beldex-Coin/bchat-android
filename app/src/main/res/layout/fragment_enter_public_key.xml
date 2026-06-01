@@ -82,7 +82,7 @@
             android:layout_marginStart="30dp"
             android:layout_marginTop="@dimen/large_spacing"
             android:layout_marginEnd="@dimen/large_spacing"
-            android:text="Chat ID"
+            android:text="@string/chatid"
             android:textColor="@color/text"
             android:textSize="@dimen/medium_font_size" />
 
@@ -136,7 +136,7 @@
                 android:paddingRight="15dp"
                 android:layout_marginBottom="15dp"
                 android:layout_marginStart="15dp"
-                android:text="Copy" />
+                android:text="@string/copy" />
 
             <Button
                 android:id="@+id/shareButton"

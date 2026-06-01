@@ -48,7 +48,7 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
                 restore()
             }
             else{
-                Toast.makeText(this,"Please enter valid seed",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,R.string.please_enter_valid_seed,Toast.LENGTH_SHORT).show()
             }
         }
 

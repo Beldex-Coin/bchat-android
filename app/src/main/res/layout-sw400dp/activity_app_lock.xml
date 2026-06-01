@@ -63,7 +63,7 @@
             android:layout_marginLeft="@dimen/massive_spacing"
             android:layout_marginRight="@dimen/massive_spacing"
             android:layout_marginBottom="30dp"
-            android:text="@string/enable" />
+            android:text="@string/dialog_link_preview_enable_button_title" />
 
     </LinearLayout>
 </ScrollView>

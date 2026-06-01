@@ -175,7 +175,7 @@
                             android:gravity="center_vertical"
                             android:textColor="#A7A7BA"
                             android:fontFamily="@font/open_sans_regular"
-                            android:text="You are not connected to the Hop. Check your internet connection or Restart the app!"
+                            android:text="@string/hop_connection_error_message"
                             android:textSize="12sp"/>
                     </LinearLayout>
 
@@ -215,7 +215,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginStart="55dp"
                             android:fontFamily="@font/open_sans_bold"
-                            android:text="Search"
+                            android:text="@string/SearchToolbar_search"
                             android:textSize="25sp"
                             android:textStyle="bold" />
                     </RelativeLayout>
@@ -284,7 +284,7 @@
                         android:visibility="gone"
                         android:background="@color/divider_line"
                         android:layout_below="@id/archiveChatCardView"
-                        android:contentDescription="Divider" />
+                        android:contentDescription="@string/divider" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerView"
@@ -326,7 +326,7 @@
                             android:alpha="0.2"
                             android:fontFamily="@font/open_sans_medium"
                             android:gravity="center"
-                            android:text="Much empty. Such wow.\nGo get some friends to BChat!"
+                            android:text="@string/bchat_empty_state_message"
                             android:textColor="@color/text"
                             android:textSize="@dimen/medium_font_size"
                             android:textStyle="bold"
@@ -352,7 +352,7 @@
                         android:layout_centerVertical="true"
                         android:fontFamily="@font/open_sans_medium"
                         android:gravity="center"
-                        android:text="Much empty. Such wow.\nGo get some friends to BChat!"
+                        android:text="@string/bchat_empty_state_message"
                         android:textColor="@color/empty_state_container_text"
                         android:textSize="@dimen/medium_font_size"
                         android:textStyle="bold"

@@ -268,7 +268,7 @@ private fun BlockedContactItem(
                 )
             } else {
                 Text(
-                    text = "Unblock",
+                    text = stringResource(R.string.ConversationActivity_unblock),
                     style = MaterialTheme.typography.labelMedium.copy(
                         fontWeight = FontWeight(600),
                         fontSize = 12.sp

@@ -108,7 +108,7 @@
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:textColor="@color/text"
-            android:text="Copy"
+            android:text="@string/copy"
             android:textSize="16sp" />
 
         <Button

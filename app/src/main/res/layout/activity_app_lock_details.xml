@@ -59,7 +59,7 @@
                 android:id="@+id/appLockDetailsScreenLockInActivityTimeOut"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="None"
+                android:text="@string/none"
                 android:textSize="@dimen/small_font_size"
                 android:alpha="0.8"
                 android:textStyle="normal" />

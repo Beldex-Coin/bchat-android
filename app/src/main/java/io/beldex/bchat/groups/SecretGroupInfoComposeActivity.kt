@@ -320,7 +320,7 @@ fun GroupDetailsScreen(
         val bchatID=getLocalNumber(context)
         val isCurrentUserAdmin=admins.any { it.toString() == bchatID }
         val message=if (isCurrentUserAdmin) {
-            "Because you are the creator of this group it will be deleted for everyone. This cannot be undone."
+            context.getString(R.string.group_delete_confirmation_message)
         } else {
             context.resources.getString(R.string.ConversationActivity_are_you_sure_you_want_to_leave_this_group)
         }
@@ -613,7 +613,7 @@ fun GroupDetailsScreen(
                     item {
                         if (membersToDisplay.isEmpty()) {
                             Text(
-                                text="No records found! ",
+                                text= stringResource(R.string.no_records_found),
                                 style=MaterialTheme.typography.bodyMedium.copy(
                                     fontSize=14.sp,
                                     color=MaterialTheme.appColors.textColor
@@ -695,7 +695,7 @@ fun GroupDetailsScreen(
                         )
                     ) {
                         NavigationItem(
-                            "All Media",
+                            stringResource(R.string.all_media),
                             painterResource(id=R.drawable.ic_all_media),
                             onItemClick={ listenerCallback?.showAllMedia(recipient) },
                             checked=false,
@@ -703,7 +703,7 @@ fun GroupDetailsScreen(
                             null
                         )
                         NavigationItem(
-                            "Disappearing Messages",
+                            stringResource(R.string.disappearing_messages),
                             painterResource(id=R.drawable.ic_disappearing_message),
                             onItemClick={
                                 if (isSecretGroupIsActive()) {

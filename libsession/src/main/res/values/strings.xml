@@ -33,8 +33,8 @@
     <string name="MessageRecord_you_marked_your_safety_number_with_s_verified_from_another_device">You marked your safety number with %s verified from another device</string>
     <string name="MessageRecord_you_marked_your_safety_number_with_s_unverified">You marked your safety number with %s unverified</string>
     <string name="MessageRecord_you_marked_your_safety_number_with_s_unverified_from_another_device">You marked your safety number with %s unverified from another device</string>
-    <string name="MessageRecord_message_requests_accepted" translatable="false">Your message request has been accepted.</string>
-    <string name="MessageRecord_message_request_you_have_accepted" translatable="false">You have accepted the message request from %s.</string>
+    <string name="MessageRecord_message_requests_accepted">Your message request has been accepted.</string>
+    <string name="MessageRecord_message_request_you_have_accepted">You have accepted the message request from %s.</string>
     <string name="MessageRecord_message_request_has_been_accepted">You have accepted the message request</string>
 
 
@@ -81,14 +81,12 @@
     <string name="RecipientProvider_unnamed_group">Unnamed group</string>
 
     <!-- New Line-->
-    <string name="none" translatable="false">None</string>
-    <string name="thirty_seconds" translatable="false">30 seconds</string>
-    <string name="one_minute" translatable="false">1 Minute</string>
-    <string name="two_minutes" translatable="false">2 Minutes</string>
-    <string name="five_minutes" translatable="false">5 Minutes</string>
-    <string name="fifteen_minutes" translatable="false">15 Minutes</string>
-    <string name="thirty_minutes" translatable="false">30 Minutes</string>
-
-    <string name="MessageRecord_is_blocked">You Blocked %s! Click here to Unblock</string>
+    <string name="none">None</string>
+    <string name="thirty_seconds">30 seconds</string>
+    <string name="one_minute">1 Minute</string>
+    <string name="two_minutes">2 Minutes</string>
+    <string name="five_minutes">5 Minutes</string>
+    <string name="fifteen_minutes">15 Minutes</string>
+    <string name="thirty_minutes">30 Minutes</string>
     <string name="deleteMessageDeletedGlobally">This message was deleted</string>
 </resources>

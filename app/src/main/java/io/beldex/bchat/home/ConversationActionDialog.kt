@@ -129,7 +129,7 @@ class ConversationActionDialog: DialogFragment() {
                             UnblockUserDialog(
                                 title = stringResource(id = R.string.unblock_contact),
                                 message = stringResource(id = R.string.unblock_user_confirmation),
-                                positiveButtonTitle = stringResource(id = R.string.unblock),
+                                positiveButtonTitle = stringResource(id = R.string.ConversationActivity_unblock),
                                 onAccept = {
                                     dismiss()
                                     listener?.onConfirm(dialogType, threadRecord, threadPosition)
@@ -147,7 +147,7 @@ class ConversationActionDialog: DialogFragment() {
                         ) {
                             val timesOption = context.resources.getStringArray(R.array.mute_durations)
                             LockOptionsDialog(
-                                title = stringResource(R.string.mute_notification),
+                                title = stringResource(R.string.conversation_unmuted__mute_notifications),
                                 options = timesOption.toList(),
                                 currentValue = timesOption[argument3],
                                 onDismiss = {

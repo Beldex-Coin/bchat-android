@@ -203,17 +203,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     }
 
     private lateinit var adapter: NavigationRVAdapter
-
-    private var items = arrayListOf(
-        NavigationItemModel(R.drawable.ic_settings_outline, "Settings"),
-        NavigationItemModel(R.drawable.ic_notification_outline, "Notification"),
-        NavigationItemModel(R.drawable.ic_msg_rqst_outline, "Message Requests"),
-        NavigationItemModel(R.drawable.ic_recovery_seed_outline, "Recovery Seed"),
-        NavigationItemModel(R.drawable.ic_report_issue_outline,"Report Issue"),
-        NavigationItemModel(R.drawable.ic_help_outline, "Help"),
-        NavigationItemModel(R.drawable.ic_invite_outline, "Invite"),
-        NavigationItemModel(R.drawable.ic_about_outline, "About")
-    )
     private val hexEncodedPublicKey: String
         get() {
             return TextSecurePreferences.getLocalNumber(this)!!
@@ -272,6 +261,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     @Inject
     lateinit var threadDb: ThreadDatabase
     private val reactWithAnyEmojiStartPage = -1
+    private lateinit var items: ArrayList<NavigationItemModel>
 
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
@@ -280,6 +270,17 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+
+        items = arrayListOf(
+            NavigationItemModel(R.drawable.ic_settings_outline, getString(R.string.activity_settings_title)),
+            NavigationItemModel(R.drawable.ic_notification_outline, getString(R.string.notification)),
+            NavigationItemModel(R.drawable.ic_msg_rqst_outline, getString(R.string.activity_message_requests_title)),
+            NavigationItemModel(R.drawable.ic_recovery_seed_outline, getString(R.string.activity_settings_recovery_phrase_button_title)),
+            NavigationItemModel(R.drawable.ic_report_issue_outline,getString(R.string.report_issue)),
+            NavigationItemModel(R.drawable.ic_help_outline, getString(R.string.help)),
+            NavigationItemModel(R.drawable.ic_invite_outline, getString(R.string.invite)),
+            NavigationItemModel(R.drawable.ic_about_outline, getString(R.string.about))
+        )
 
         glide = Glide.with(this)
         binding.profileButton.root.glide = glide
@@ -799,7 +800,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                     if (messageResults.isNotEmpty()) {
                         messageResults.add(
                             0,
-                            GlobalSearchAdapter.Model.Header(R.string.global_search_messages)
+                            GlobalSearchAdapter.Model.Header(R.string.NotificationChannel_group_messages)
                         )
                     }
 
@@ -1318,9 +1319,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             val group = groupDb.getGroup(recipient.address.toString()).orNull()
             if (group != null && group.admins.map { it.toString() }
                     .contains(TextSecurePreferences.getLocalNumber(this))) {
-                "Because you are the creator of this group it will be deleted for everyone. This cannot be undone."
+                resources.getString(R.string.group_delete_confirmation_message)
             } else {
-                resources.getString(R.string.activity_home_leave_group_dialog_message)
+                resources.getString(R.string.ConversationActivity_are_you_sure_you_want_to_leave_this_group)
             }
         } else {
             resources.getString(R.string.activity_home_delete_conversation_dialog_message)

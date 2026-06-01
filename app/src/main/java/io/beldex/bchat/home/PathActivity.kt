@@ -97,7 +97,7 @@ class PathActivity : PassphraseRequiredActionBarActivity() {
                 val isGuardMnode = (OnionRequestAPI.guardMnodes.contains(mnode))
                 getPathRow(mnode, LineView.Location.Middle, index.toLong() * 1000 + 2000, dotAnimationRepeatInterval, isGuardMnode)
             }
-            val youRow = getPathRow(resources.getString(R.string.activity_path_device_row_title), null, LineView.Location.Top, 1000, dotAnimationRepeatInterval)
+            val youRow = getPathRow(resources.getString(R.string.MediaPreviewActivity_you), null, LineView.Location.Top, 1000, dotAnimationRepeatInterval)
             val destinationRow = getPathRow(resources.getString(R.string.activity_path_destination_row_title), null, LineView.Location.Bottom, path.count().toLong() * 1000 + 2000, dotAnimationRepeatInterval)
             val rows = listOf( youRow ) + pathRows + listOf( destinationRow )
             for (row in rows) {

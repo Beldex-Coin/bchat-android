@@ -639,7 +639,7 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                             if (bChatId.isEmpty()) {
                                 Toast.makeText(
                                     context,
-                                    "Please enter BChat ID",
+                                    context.getString(R.string.bchat_id_warning_message),
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {

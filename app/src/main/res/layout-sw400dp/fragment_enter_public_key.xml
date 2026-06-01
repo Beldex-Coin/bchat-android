@@ -67,7 +67,7 @@
             android:layout_marginEnd="@dimen/large_spacing"
             android:textSize="@dimen/medium_font_size"
             android:textColor="@color/text"
-            android:text="BChat ID" />
+            android:text="@string/chatid" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -114,7 +114,7 @@
                 android:drawableStart="@drawable/ic_baseline_content_copy_24"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
-                android:text="Copy" />
+                android:text="@string/copy" />
 
             <Button
                 style="@style/Widget.Bchat.Button.Common.UnimportantFilled"

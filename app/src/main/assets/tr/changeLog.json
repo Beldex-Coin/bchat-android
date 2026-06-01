@@ -1,0 +1,614 @@
+{
+  "change_log": [
+    {
+      "title": "1.0.0",
+      "descriptions": [
+        {
+          "description": "İlk sürüm"
+        },
+        {
+          "description": "Değişiklik günlüğü eklendi"
+        }
+      ]
+    },
+    {
+      "title": "1.0.1",
+      "descriptions": [
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "1.0.2",
+      "descriptions": [
+        {
+          "description": "ScheduleReminder hata düzeltmeleri"
+        },
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "1.0.3",
+      "descriptions": [
+        {
+          "description": "Yazı tipi ailesi güncellendi"
+        },
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "1.0.4",
+      "descriptions": [
+        {
+          "description": "Yazı tipi ailesi güncellendi"
+        },
+        {
+          "description": "Airdrop açılır penceresi kaldırıldı"
+        },
+        {
+          "description": "Küçük içerik güncellemeleri"
+        }
+      ]
+    },
+    {
+      "title": "1.1.1",
+      "descriptions": [
+        {
+          "description": "Mesaj isteği özelliği eklendi"
+        },
+        {
+          "description": "Arayüz iyileştirmeleri"
+        },
+        {
+          "description": "Bağlantı önizlemesi varsayılan olarak ayarlandı"
+        },
+        {
+          "description": "Açılış ekranı güncellendi"
+        },
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "1.2.0",
+      "descriptions": [
+        {
+          "description": "Bire bir sesli arama özelliği eklendi"
+        },
+        {
+          "description": "Bire bir görüntülü arama özelliği eklendi"
+        },
+        {
+          "description": "Engellenen kişiler listesi özelliği eklendi"
+        },
+        {
+          "description": "Daha hızlı mesaj yanıtı"
+        },
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "1.2.1",
+      "descriptions": [
+        {
+          "description": "İlk gelen çağrıda oluşan çökme sorunu düzeltildi"
+        },
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "2.0.0",
+      "descriptions": [
+        {
+          "description": "Cüzdan entegrasyonu (Beta) sürümü yayınlandı"
+        },
+        {
+          "description": "Cüzdan için kişiler adres defteri eklendi"
+        },
+        {
+          "description": "Sorun bildir özelliği eklendi"
+        },
+        {
+          "description": "FAB üzerine metin etiketi eklendi"
+        },
+        {
+          "description": "Uygulama içeriği daha bilgilendirici hale getirildi"
+        },
+        {
+          "description": "Geri yükleme yüksekliği doğrulaması güncellendi"
+        },
+        {
+          "description": "Android 8.0 ve üzeri cihazlarda çökme önlemek için Foreground Service eklendi"
+        },
+        {
+          "description": "Arama ve mesaj hizmetleri çalışırken bellek yönetimi iyileştirildi"
+        },
+        {
+          "description": "Null nesne referansı kaynaklı çökmeler düzeltildi"
+        },
+        {
+          "description": "Medya önizleme sırasında oluşan çökme sorunu giderildi"
+        },
+        {
+          "description": "Android 12 için özel bildirimler iyileştirildi"
+        }
+      ]
+    },
+    {
+      "title": "2.0.1",
+      "descriptions": [
+        {
+          "description": "Cüzdanda bazı çökme sorunları düzeltildi"
+        },
+        {
+          "description": "Cüzdan senkronize olurken çağrı kesildiğinde oluşan çökme düzeltildi"
+        }
+      ]
+    },
+    {
+      "title": "2.0.2",
+      "descriptions": [
+        {
+          "description": "Cüzdandaki çökme sorunları düzeltildi"
+        },
+        {
+          "description": "Cüzdandaki ANR sorunları giderildi"
+        }
+      ]
+    },
+    {
+      "title": "2.0.3",
+      "descriptions": [
+        {
+          "description": "Sohbet için yazı tipi boyutu özelleştirme eklendi"
+        },
+        {
+          "description": "BChat yazı tipi tüm platformlarda Open Sans olarak değiştirildi"
+        },
+        {
+          "description": "Arama sırasında zil sesi ve çağrı bittiğinde uyarı sesi eklendi"
+        },
+        {
+          "description": "Kullanıcılar adres defterinde birden fazla kişiyi seçerek toplu engel kaldırabilir"
+        },
+        {
+          "description": "Engellenen kişiler aranamaz"
+        },
+        {
+          "description": "Mesaj isteği kabul edilmeden adres defterinde Beldex adresi görünmez"
+        },
+        {
+          "description": "Video aramalardaki çökme sorunları düzeltildi"
+        },
+        {
+          "description": "Sosyal gruplarda büyük ikon boyutundan kaynaklanan çökme giderildi"
+        },
+        {
+          "description": "Cüzdan beta sürümünden kaynaklanan çökmeler düzeltildi"
+        }
+      ]
+    },
+    {
+      "title": "2.0.4",
+      "descriptions": [
+        {
+          "description": "Sohbet içi ödeme kartı desteği eklendi"
+        },
+        {
+          "description": "Sosyal grup daveti yanıt önizlemesi düzeltildi"
+        }
+      ]
+    },
+    {
+      "title": "2.1.0",
+      "descriptions": [
+        {
+          "description": "Sohbet ederken öde (Pay as you chat) özelliği eklendi"
+        },
+        {
+          "description": "Node ekleme özelliğindeki sorun düzeltildi"
+        },
+        {
+          "description": "Birden fazla ANR ve çökme sorunu giderildi"
+        },
+        {
+          "description": "Medya eklerken oluşan çökme düzeltildi"
+        },
+        {
+          "description": "Farklı ekran boyutlarında arayüz hizalama sorunları düzeltildi"
+        },
+        {
+          "description": "Mesajlar geri yüklenirken bildirim açılınca oluşan çökme düzeltildi"
+        },
+        {
+          "description": "Gizli grup ayarları ve doğrulama güncellendi"
+        },
+        {
+          "description": "Arayüz ve içerik iyileştirildi"
+        }
+      ]
+    },
+    {
+      "title": "2.1.1",
+      "descriptions": [
+        {
+          "description": "Android 13 desteği eklendi"
+        },
+        {
+          "description": "ANR sorunları giderildi"
+        },
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "2.2.0",
+      "descriptions": [
+        {
+          "description": "Cüzdan isteğe bağlı özellik (Opt-in) olarak sunuldu"
+        },
+        {
+          "description": "Galeriden tarama özelliği eklendi"
+        },
+        {
+          "description": "Kullanıcılar artık profil fotoğrafını kaldırabilir"
+        },
+        {
+          "description": "İnternet olmadığında kullanıcı deneyimi iyileştirildi"
+        },
+        {
+          "description": "Kendime not profil resmi sorunu giderildi"
+        },
+        {
+          "description": "Tema değiştirirken uygulama çökmesi düzeltildi"
+        },
+        {
+          "description": "Node doğrulaması geliştirildi"
+        },
+        {
+          "description": "Çökme ve ANR sorunları giderildi"
+        },
+        {
+          "description": "Düşük internet hızında cüzdanda oluşan çökme düzeltildi"
+        },
+        {
+          "description": "Mesaj isteği sayısı sorunu düzeltildi"
+        }
+      ]
+    },
+    {
+      "title": "2.2.1",
+      "descriptions": [
+        {
+          "description": "Depolama sunucusu kimlik doğrulaması güncellendi"
+        },
+        {
+          "description": "Hesap silme kullanıcı deneyimi yenilendi"
+        }
+      ]
+    },
+    {
+      "title": "2.2.2",
+      "descriptions": [
+        {
+          "description": "Hizalama sorunları düzeltildi"
+        },
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "2.3.0",
+      "descriptions": [
+        {
+          "description": "Hardfork 18 güncellemesi"
+        },
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "2.4.0",
+      "descriptions": [
+        {
+          "description": "BNS entegrasyonu eklendi"
+        },
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "2.4.1",
+      "descriptions": [
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "2.5.0",
+      "descriptions": [
+        {
+          "description": "Mesaj gecikmesi sorunu giderildi"
+        },
+        {
+          "description": "Yeni sohbet başlatma ve fon gönderme için BNS özelliği eklendi"
+        },
+        {
+          "description": "Entegre adres işleminde eksik ödeme ID bilgisi düzeltildi"
+        },
+        {
+          "description": "Android 14 desteği eklendi"
+        },
+        {
+          "description": "Node listesi güncellendi"
+        },
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "2.5.1",
+      "descriptions": [
+        {
+          "description": "Google Play geliştirici kurallarına uygun olacak şekilde arama özellikleri güncellendi"
+        }
+      ]
+    },
+    {
+      "title": "2.5.2",
+      "descriptions": [
+        {
+          "description": "Arama özellikleri Google Play kurallarına göre güncellendi"
+        },
+        {
+          "description": "Uyumsuz SDK sürümleri kaldırıldı"
+        },
+        {
+          "description": "En son Android sürümü hedeflendi"
+        },
+        {
+          "description": "Google Play çekirdek kütüphaneleri güncellendi"
+        }
+      ]
+    },
+    {
+      "title": "2.5.3",
+      "descriptions": [
+        {
+          "description": "Uyumsuz SDK sürümleri kaldırıldı"
+        },
+        {
+          "description": "Arama özellikleri güncellendi"
+        },
+        {
+          "description": "En son Android sürümü hedeflendi"
+        },
+        {
+          "description": "Google Play çekirdek kütüphaneleri güncellendi"
+        }
+      ]
+    },
+    {
+      "title": "2.6.0",
+      "descriptions": [
+        {
+          "description": "Kullanıcı deneyimi yenilendi"
+        },
+        {
+          "description": "Kullanıcılar BNS adlarını bağlayıp doğrulanmış rozet alabilir"
+        },
+        {
+          "description": "Daha iyi senkronizasyon için node bağlantısı geliştirildi"
+        },
+        {
+          "description": "Uygulamanın genel performansı iyileştirildi"
+        },
+        {
+          "description": "Ana ekranda arama özelliği geliştirildi"
+        },
+        {
+          "description": "Mesaj isteğinde kullanıcı engelleme özelliği eklendi"
+        },
+        {
+          "description": "Sosyal gruplardaki küçük sorunlar giderildi"
+        },
+        {
+          "description": "Sohbet arşivleme özelliği eklendi"
+        },
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "2.6.1",
+      "descriptions": [
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "2.6.2",
+      "descriptions": [
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "2.6.3",
+      "descriptions": [
+        {
+          "description": "Push bildirim servisi iyileştirildi"
+        },
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "2.6.4",
+      "descriptions": [
+        {
+          "description": "Sohbete GIF özelliği eklendi"
+        },
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "2.6.5",
+      "descriptions": [
+        {
+          "description": "Arama fonksiyonları iyileştirildi"
+        },
+        {
+          "description": "Görüntülü aramada ekran değiştirme özelliği eklendi"
+        },
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "2.7.0",
+      "descriptions": [
+        {
+          "description": "Emoji tepki özelliği eklendi"
+        },
+        {
+          "description": "Sesli mesajlar geliştirildi"
+        },
+        {
+          "description": "Profil güncelleme sorunları düzeltildi"
+        },
+        {
+          "description": "Kaybolan mesajlarla ilgili sorunlar giderildi"
+        },
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "2.7.1",
+      "descriptions": [
+        {
+          "description": "Yeni Android sürümleri için arayüz düzeltmeleri"
+        },
+        {
+          "description": "En son Android sürümü hedeflendi"
+        },
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "2.7.2",
+      "descriptions": [
+        {
+          "description": "16 KB sayfa boyutu desteği eklendi"
+        },
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "2.8.0",
+      "descriptions": [
+        {
+          "description": "Kişi paylaşma özelliği eklendi"
+        },
+        {
+          "description": "Ekran görüntüsü bildirimi özelliği eklendi"
+        },
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "2.9.0",
+      "descriptions": [
+        {
+          "description": "Hardfork 20 güncellemesi"
+        },
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "2.9.1",
+      "descriptions": [
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "2.9.2",
+      "descriptions": [
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "2.9.3",
+      "descriptions": [
+        {
+          "description": "Cüzdan özelliği kaldırıldı"
+        },
+        {
+          "description": "Küçük hata düzeltmeleri"
+        }
+      ]
+    },
+    {
+      "title": "2.9.4",
+      "descriptions": [
+        {
+          "description":"Enhanced Archive chat feature"
+        },
+        {
+          "description":"Fixed UI issues"
+        },
+        {
+          "description":"Fixed few crash issues"
+        }
+      ]
+    },
+    {
+      "title": "2.9.5",
+      "descriptions": [
+        {
+          "description":"Introduced Text formatting feature"
+        },
+        {
+          "description":"Minor bug fixes"
+        }
+      ]
+    }
+  ]
+}

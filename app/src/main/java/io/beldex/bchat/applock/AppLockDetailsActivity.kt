@@ -30,7 +30,7 @@ class AppLockDetailsActivity : io.beldex.bchat.PassphraseRequiredActionBarActivi
         super.onCreate(savedInstanceState, isReady)
         binding = ActivityAppLockDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setUpActionBarBchatLogo("App Lock")
+        setUpActionBarBchatLogo(getString(R.string.activity_settings_app_lock_button_title))
         with(binding) {
             appLockDetailsScreenLockInActivityTimeOut.text = io.beldex.bchat.crypto.IdentityKeyUtil.retrieve(
                 this@AppLockDetailsActivity,

@@ -116,7 +116,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="@font/open_sans_bold"
-                android:text="Your Wallet Address"
+                android:text="@string/your_wallet_address"
                 android:textColor="@color/you_address_color"
                 android:textStyle="bold"
                 android:textSize="15sp" />

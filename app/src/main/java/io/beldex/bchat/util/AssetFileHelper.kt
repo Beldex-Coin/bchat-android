@@ -1,10 +1,10 @@
 package io.beldex.bchat.util
 
 import android.app.Application
-import android.content.Context
 import java.io.IOException
 import java.io.InputStream
 import java.nio.charset.Charset
+import java.util.Locale
 import javax.inject.Inject
 
 class AssetFileHelper @Inject constructor(
@@ -12,18 +12,29 @@ class AssetFileHelper @Inject constructor(
 ) {
 
     fun loadChangeLogsFromAsset(): String? {
-        val json: String? = try {
-            val `is`: InputStream = application.assets.open("changeLog.json")
-            val size: Int = `is`.available()
-            val buffer = ByteArray(size)
-            `is`.read(buffer)
-            `is`.close()
-            String(buffer, Charset.forName("UTF-8"))
-        } catch (ex: IOException) {
-            ex.printStackTrace()
-            return null
+        return try {
+            val folder = when (Locale.getDefault().language) {
+                "ar" -> "ar" // Arabic
+                "zh" -> "zh" // Chinese
+                "de" -> "de" // German
+                "ja" -> "ja" // Japanese
+                "ko" -> "ko" // Korean
+                "pt" -> "pt" // Portuguese
+                "ru" -> "ru" // Russian
+                "es" -> "es" // Spanish
+                "tr" -> "tr" // Turkish
+                "vi" -> "vi" // Vietnamese
+                else -> "en"
+            }
+
+            application.assets.open("changeLog/$folder/changeLog.json")
+                .bufferedReader(Charsets.UTF_8)
+                .use { it.readText() }
+
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
         }
-        return json
     }
 
     fun loadAboutContent(): String? {

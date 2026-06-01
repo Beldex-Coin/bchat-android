@@ -52,7 +52,7 @@
             android:gravity="center"
             android:textColor="@color/edit_text_title"
             android:justificationMode="inter_word"
-            android:text="You have scanned from the block height"
+            android:text="@string/you_have_scanned_from_the_block_height"
             android:textAlignment="center" />
         <TextView
             android:id="@+id/restoreFromHeight"

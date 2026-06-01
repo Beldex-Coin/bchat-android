@@ -1,0 +1,614 @@
+{
+  "change_log": [
+    {
+      "title": "1.0.0",
+      "descriptions": [
+        {
+          "description": "Phát hành ban đầu"
+        },
+        {
+          "description": "Thêm mục Changelog"
+        }
+      ]
+    },
+    {
+      "title": "1.0.1",
+      "descriptions": [
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "1.0.2",
+      "descriptions": [
+        {
+          "description": "Sửa lỗi ScheduleReminder"
+        },
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "1.0.3",
+      "descriptions": [
+        {
+          "description": "Cập nhật kiểu phông chữ"
+        },
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "1.0.4",
+      "descriptions": [
+        {
+          "description": "Cập nhật kiểu phông chữ"
+        },
+        {
+          "description": "Đã loại bỏ cửa sổ bật lên Airdrop"
+        },
+        {
+          "description": "Cập nhật nội dung nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "1.1.1",
+      "descriptions": [
+        {
+          "description": "Triển khai tính năng Yêu cầu tin nhắn"
+        },
+        {
+          "description": "Cải thiện giao diện người dùng"
+        },
+        {
+          "description": "Đặt xem trước liên kết làm mặc định"
+        },
+        {
+          "description": "Cập nhật màn hình khởi động"
+        },
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "1.2.0",
+      "descriptions": [
+        {
+          "description": "Giới thiệu tính năng gọi thoại 1-1"
+        },
+        {
+          "description": "Giới thiệu tính năng gọi video 1-1"
+        },
+        {
+          "description": "Thêm danh sách liên hệ bị chặn"
+        },
+        {
+          "description": "Phản hồi tin nhắn nhanh hơn"
+        },
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "1.2.1",
+      "descriptions": [
+        {
+          "description": "Sửa lỗi ứng dụng bị crash khi có cuộc gọi đến đầu tiên"
+        },
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "2.0.0",
+      "descriptions": [
+        {
+          "description": "Phát hành bản beta tích hợp ví"
+        },
+        {
+          "description": "Thêm sổ địa chỉ liên hệ trong Ví"
+        },
+        {
+          "description": "Thêm tính năng báo cáo sự cố"
+        },
+        {
+          "description": "Thêm nhãn văn bản trên nút FAB"
+        },
+        {
+          "description": "Làm nội dung ứng dụng mang tính thông tin hơn"
+        },
+        {
+          "description": "Cập nhật xác thực trong khôi phục chiều cao khối"
+        },
+        {
+          "description": "Thêm dịch vụ chạy nền để ngăn ứng dụng bị crash trên Android 8.0 trở lên"
+        },
+        {
+          "description": "Cải thiện quản lý bộ nhớ khi chạy dịch vụ gọi và nhắn tin"
+        },
+        {
+          "description": "Sửa lỗi crash do tham chiếu đối tượng null"
+        },
+        {
+          "description": "Sửa lỗi crash khi xem trước phương tiện"
+        },
+        {
+          "description": "Cải thiện thông báo tùy chỉnh cho Android 12"
+        }
+      ]
+    },
+    {
+      "title": "2.0.1",
+      "descriptions": [
+        {
+          "description": "Sửa một số lỗi crash trong ví"
+        },
+        {
+          "description": "Sửa lỗi crash khi cuộc gọi bị ngắt trong lúc ví đang đồng bộ"
+        }
+      ]
+    },
+    {
+      "title": "2.0.2",
+      "descriptions": [
+        {
+          "description": "Sửa lỗi crash trong ví"
+        },
+        {
+          "description": "Sửa lỗi ANR trong ví"
+        }
+      ]
+    },
+    {
+      "title": "2.0.3",
+      "descriptions": [
+        {
+          "description": "Thêm tùy chỉnh kích thước chữ trong chat"
+        },
+        {
+          "description": "Thay đổi phông chữ BChat sang phông tiêu chuẩn \"Open Sans\" trên tất cả nền tảng"
+        },
+        {
+          "description": "Thêm nhạc chuông khi gọi và âm báo khi cuộc gọi kết thúc"
+        },
+        {
+          "description": "Người dùng có thể chọn nhiều liên hệ trong sổ địa chỉ để bỏ chặn cùng lúc"
+        },
+        {
+          "description": "Không cho phép gọi cho liên hệ bị chặn"
+        },
+        {
+          "description": "Địa chỉ Beldex trong sổ địa chỉ chỉ hiển thị khi yêu cầu tin nhắn được chấp nhận"
+        },
+        {
+          "description": "Sửa lỗi crash trong cuộc gọi video"
+        },
+        {
+          "description": "Sửa lỗi crash do kích thước biểu tượng lớn trong nhóm xã hội"
+        },
+        {
+          "description": "Sửa lỗi crash từ bản beta ví"
+        }
+      ]
+    },
+    {
+      "title": "2.0.4",
+      "descriptions": [
+        {
+          "description": "Thêm hỗ trợ thẻ thanh toán trong chat"
+        },
+        {
+          "description": "Sửa lỗi xem trước trả lời lời mời nhóm xã hội"
+        }
+      ]
+    },
+    {
+      "title": "2.1.0",
+      "descriptions": [
+        {
+          "description": "Tính năng \"Thanh toán khi trò chuyện\""
+        },
+        {
+          "description": "Sửa lỗi trong tính năng thêm node"
+        },
+        {
+          "description": "Sửa nhiều lỗi ANR và crash"
+        },
+        {
+          "description": "Sửa lỗi crash khi thêm phương tiện"
+        },
+        {
+          "description": "Sửa lỗi căn chỉnh giao diện trên các kích thước màn hình khác nhau"
+        },
+        {
+          "description": "Sửa lỗi crash khi mở thông báo trong lúc tin nhắn đang được khôi phục"
+        },
+        {
+          "description": "Cập nhật cài đặt và xác thực trong nhóm bí mật"
+        },
+        {
+          "description": "Cải thiện giao diện và nội dung"
+        }
+      ]
+    },
+    {
+      "title": "2.1.1",
+      "descriptions": [
+        {
+          "description": "Thêm hỗ trợ Android 13"
+        },
+        {
+          "description": "Sửa lỗi ANR"
+        },
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "2.2.0",
+      "descriptions": [
+        {
+          "description": "Cung cấp ví như một tính năng tùy chọn"
+        },
+        {
+          "description": "Thêm tính năng quét từ thư viện"
+        },
+        {
+          "description": "Người dùng có thể xóa ảnh hồ sơ"
+        },
+        {
+          "description": "Cải thiện trải nghiệm khi không có internet"
+        },
+        {
+          "description": "Sửa lỗi ảnh hồ sơ trong \"Note to self\""
+        },
+        {
+          "description": "Sửa lỗi crash khi thay đổi giao diện"
+        },
+        {
+          "description": "Cải thiện xác thực node trong tính năng Add Node"
+        },
+        {
+          "description": "Sửa lỗi crash và ANR"
+        },
+        {
+          "description": "Sửa lỗi crash trong ví khi mạng chậm"
+        },
+        {
+          "description": "Sửa lỗi đếm yêu cầu tin nhắn"
+        }
+      ]
+    },
+    {
+      "title": "2.2.1",
+      "descriptions": [
+        {
+          "description": "Cập nhật xác thực máy chủ lưu trữ"
+        },
+        {
+          "description": "Cải tiến trải nghiệm người dùng cho quy trình xóa tài khoản"
+        }
+      ]
+    },
+    {
+      "title": "2.2.2",
+      "descriptions": [
+        {
+          "description": "Sửa lỗi căn chỉnh"
+        },
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "2.3.0",
+      "descriptions": [
+        {
+          "description": "Cập nhật cho Hardfork 18"
+        },
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "2.4.0",
+      "descriptions": [
+        {
+          "description": "Tích hợp BNS vào BChat"
+        },
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "2.4.1",
+      "descriptions": [
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "2.5.0",
+      "descriptions": [
+        {
+          "description": "Sửa lỗi trễ tin nhắn"
+        },
+        {
+          "description": "Giới thiệu tính năng BNS để bắt đầu chat mới và gửi tiền"
+        },
+        {
+          "description": "Sửa lỗi thiếu thông tin Payment ID cho giao dịch địa chỉ tích hợp"
+        },
+        {
+          "description": "Thêm hỗ trợ Android 14"
+        },
+        {
+          "description": "Cập nhật danh sách node"
+        },
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "2.5.1",
+      "descriptions": [
+        {
+          "description": "Cập nhật chức năng gọi để tuân thủ hướng dẫn nhà phát triển của Google Play"
+        }
+      ]
+    },
+    {
+      "title": "2.5.2",
+      "descriptions": [
+        {
+          "description": "Cập nhật chức năng gọi để tuân thủ hướng dẫn Google Play"
+        },
+        {
+          "description": "Loại bỏ phiên bản SDK không tuân thủ"
+        },
+        {
+          "description": "Nhắm mục tiêu phiên bản Android mới nhất"
+        },
+        {
+          "description": "Cập nhật thư viện Google Play Core"
+        }
+      ]
+    },
+    {
+      "title": "2.5.3",
+      "descriptions": [
+        {
+          "description": "Loại bỏ phiên bản SDK không tuân thủ"
+        },
+        {
+          "description": "Cập nhật chức năng gọi theo hướng dẫn Google Play"
+        },
+        {
+          "description": "Nhắm mục tiêu phiên bản Android mới nhất"
+        },
+        {
+          "description": "Cập nhật thư viện Google Play Core"
+        }
+      ]
+    },
+    {
+      "title": "2.6.0",
+      "descriptions": [
+        {
+          "description": "Cải tiến trải nghiệm người dùng"
+        },
+        {
+          "description": "Người dùng có thể liên kết tên BNS và nhận huy hiệu xác minh"
+        },
+        {
+          "description": "Cải thiện kết nối node để đồng bộ tốt hơn"
+        },
+        {
+          "description": "Cải thiện hiệu suất tổng thể của ứng dụng"
+        },
+        {
+          "description": "Cải thiện chức năng tìm kiếm trên màn hình chính"
+        },
+        {
+          "description": "Người dùng có thể chặn người dùng trong yêu cầu tin nhắn"
+        },
+        {
+          "description": "Sửa lỗi nhỏ trong nhóm xã hội"
+        },
+        {
+          "description": "Người dùng có thể lưu trữ (archive) các cuộc trò chuyện"
+        },
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "2.6.1",
+      "descriptions": [
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "2.6.2",
+      "descriptions": [
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "2.6.3",
+      "descriptions": [
+        {
+          "description": "Cải thiện dịch vụ thông báo đẩy"
+        },
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "2.6.4",
+      "descriptions": [
+        {
+          "description": "Thêm tính năng GIF trong chat"
+        },
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "2.6.5",
+      "descriptions": [
+        {
+          "description": "Cải thiện chức năng gọi"
+        },
+        {
+          "description": "Người dùng có thể hoán đổi góc nhìn trong cuộc gọi video"
+        },
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "2.7.0",
+      "descriptions": [
+        {
+          "description": "Giới thiệu tính năng phản ứng emoji"
+        },
+        {
+          "description": "Cải thiện tin nhắn âm thanh"
+        },
+        {
+          "description": "Sửa lỗi cập nhật hồ sơ"
+        },
+        {
+          "description": "Sửa lỗi tin nhắn tự hủy"
+        },
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "2.7.1",
+      "descriptions": [
+        {
+          "description": "Sửa lỗi giao diện cho các phiên bản Android mới nhất"
+        },
+        {
+          "description": "Nhắm mục tiêu phiên bản Android mới nhất"
+        },
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "2.7.2",
+      "descriptions": [
+        {
+          "description": "Thêm hỗ trợ kích thước trang 16 KB"
+        },
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "2.8.0",
+      "descriptions": [
+        {
+          "description": "Giới thiệu tính năng chia sẻ liên hệ"
+        },
+        {
+          "description": "Giới thiệu tính năng thông báo khi chụp màn hình"
+        },
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "2.9.0",
+      "descriptions": [
+        {
+          "description": "Cập nhật cho Hardfork 20"
+        },
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "2.9.1",
+      "descriptions": [
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "2.9.2",
+      "descriptions": [
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "2.9.3",
+      "descriptions": [
+        {
+          "description": "Loại bỏ tính năng ví."
+        },
+        {
+          "description": "Sửa lỗi nhỏ"
+        }
+      ]
+    },
+    {
+      "title": "2.9.4",
+      "descriptions": [
+        {
+          "description":"Enhanced Archive chat feature"
+        },
+        {
+          "description":"Fixed UI issues"
+        },
+        {
+          "description":"Fixed few crash issues"
+        }
+      ]
+    },
+    {
+      "title": "2.9.5",
+      "descriptions": [
+        {
+          "description":"Introduced Text formatting feature"
+        },
+        {
+          "description":"Minor bug fixes"
+        }
+      ]
+    }
+  ]
+}

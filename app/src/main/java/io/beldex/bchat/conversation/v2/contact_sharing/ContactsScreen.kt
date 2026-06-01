@@ -101,7 +101,7 @@ fun ContactsScreen(
                             .imePadding()
                     ) {
                         Text(
-                            text=stringResource(id=R.string.send),
+                            text=stringResource(id=R.string.conversation_activity__send),
                             style=MaterialTheme.typography.bodyMedium.copy(
                                 color=Color.White,
                                 fontWeight=FontWeight(400),

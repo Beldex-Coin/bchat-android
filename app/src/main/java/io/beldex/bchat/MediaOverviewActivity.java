@@ -408,10 +408,10 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
     private void handleDeleteMedia(@NonNull Collection<MediaDatabase.MediaRecord> mediaRecords) {
       int recordCount       = mediaRecords.size();
       Resources res         = getContext().getResources();
-      String confirmTitle   = res.getQuantityString(R.plurals.MediaOverviewActivity_Media_delete_confirm_title,
+      String confirmTitle   = res.getQuantityString(R.plurals.ConversationFragment_delete_selected_messages,
                                                     recordCount,
                                                     recordCount);
-      String confirmMessage = res.getQuantityString(R.plurals.MediaOverviewActivity_Media_delete_confirm_message,
+      String confirmMessage = res.getQuantityString(R.plurals.ConversationFragment_this_will_permanently_delete_all_n_selected_messages,
                                                     recordCount,
                                                     recordCount);
 

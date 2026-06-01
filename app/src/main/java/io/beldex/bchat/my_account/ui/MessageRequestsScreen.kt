@@ -103,7 +103,7 @@ fun MessageRequestsScreen(
             RequestBlockConfirmationDialog(
                 title = stringResource(id = R.string.block_request),
                 message = stringResource(id = R.string.message_requests_block_message),
-                actionTitle = stringResource(id = R.string.recipient_preferences__block),
+                actionTitle = stringResource(id = R.string.RecipientPreferenceActivity_block),
                 onConfirmation = {
                     threadRecord?.let {
                         onEvent(MessageRequestEvents.BlockRequest(it))

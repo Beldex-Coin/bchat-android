@@ -247,7 +247,7 @@ private fun SearchView(
                 leadingIcon = {
                     Icon(
                         Icons.Default.Search,
-                        contentDescription = "search",
+                        contentDescription = stringResource(R.string.SearchToolbar_search),
                         tint = MaterialTheme.appColors.iconTint
                     )
                 },
@@ -255,7 +255,7 @@ private fun SearchView(
                     if(searchQuery.isNotEmpty()) {
                         Icon(
                             Icons.Default.Close,
-                            contentDescription = "clear",
+                            contentDescription = stringResource(R.string.clear),
                             tint = MaterialTheme.appColors.iconTint,
                             modifier = Modifier.clickable(
                                 onClick = {

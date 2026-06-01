@@ -5,8 +5,7 @@
     android:id="@+id/sendFragment_Sub"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="io.beldex.bchat.wallet.send.SendFragment">
+    android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -39,12 +38,12 @@
                 android:layout_weight="2"
                 android:fontFamily="@font/open_sans_medium"
                 android:gravity="center"
-                android:text="@string/send"
+                android:text="@string/conversation_activity__send"
                 android:textColor="@color/text"
                 android:textSize="25sp"
                 android:textStyle="bold"
                 android:visibility="visible"
-                tools:text="@string/send" />
+                tools:text="@string/conversation_activity__send" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -268,7 +267,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="5dp"
-                            android:text="@string/usd"
+                            android:text="USD"
                             android:textAlignment="center"
                             android:textColor="@color/white"
                             android:textSize="16sp"
@@ -368,7 +367,7 @@
                     android:layout_marginTop="1dp"
                     android:layout_marginRight="50dp"
                     android:layout_marginBottom="@dimen/medium_spacing"
-                    android:text="@string/send" />
+                    android:text="@string/conversation_activity__send" />
 
                 <ImageButton
                     android:id="@+id/ibBDX"

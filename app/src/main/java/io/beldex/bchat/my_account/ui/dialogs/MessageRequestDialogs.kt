@@ -139,7 +139,7 @@ fun IgnoreRequestDialog(
                 .padding(16.dp)
         ) {
             Text(
-                text = stringResource(id = R.string.activity_message_request_title),
+                text = stringResource(id = R.string.activity_message_requests_title),
                 style = MaterialTheme.typography.titleMedium.copy(
                     color = MaterialTheme.appColors.secondaryContentColor,
                     fontWeight = FontWeight(700),

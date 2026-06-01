@@ -82,7 +82,7 @@ public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
       builder.setTitle(R.string.ApplicationPreferencesActivity_delete_all_old_messages_now);
       builder.setMessage(getResources().getQuantityString(R.plurals.ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages,
                                                           threadLengthLimit, threadLengthLimit));
-      builder.setPositiveButton(R.string.ApplicationPreferencesActivity_delete,
+      builder.setPositiveButton(R.string.delete,
         new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which) {

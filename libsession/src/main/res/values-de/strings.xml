@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- MessageRecord -->
+    <string name="MessageRecord_message_encrypted_with_a_legacy_protocol_version_that_is_no_longer_supported">Received a message encrypted using an old version of Bchat that is no longer supported. Please ask the sender to update to the most recent version and resend the message.</string>
+    <string name="MessageRecord_left_group">Du hast diese Gruppe verlassen</string>
+    <string name="MessageRecord_you_updated_group">You updated the group</string>
+    <string name="MessageRecord_you_created_a_new_group">Du hast eine neue Gruppe erstellt</string>
+    <string name="MessageRecord_s_added_you_to_the_group">%1$s hat dich zur Gruppe hinzugefügt</string>
+    <string name="MessageRecord_you_renamed_the_group_to_s">You renamed the group to %1$s</string>
+    <string name="MessageRecord_s_renamed_the_group_to_s">%1$s renamed the group to: %2$s</string>
+    <string name="MessageRecord_you_added_s_to_the_group">Du hast %1$s zur Gruppe hinzugefügt</string>
+    <string name="MessageRecord_s_added_s_to_the_group">%1$s hat %2$s zur Gruppe hinzugefügt</string>
+    <string name="MessageRecord_you_removed_s_from_the_group">Du hast %1$s aus der Gruppe entfernt</string>
+    <string name="MessageRecord_s_removed_s_from_the_group">%1$s hat %2$s aus der Gruppe entfernt</string>
+    <string name="MessageRecord_you_were_removed_from_the_group">Du wurdest aus der Gruppe entfernt</string>
+    <string name="MessageRecord_you">Du</string>
+    <string name="MessageRecord_you_called">You called</string>
+    <string name="MessageRecord_called_you">Contact called</string>
+    <string name="MessageRecord_missed_call">Missed call</string>
+    <string name="MessageRecord_s_updated_group">%s updated the group</string>
+    <string name="MessageRecord_received_call_from">Received call from %s</string>
+    <string name="MessageRecord_called_s">Called %s</string>
+    <string name="MessageRecord_missed_call_from">Missed call from %s</string>
+    <string name="MessageRecord_s_joined_signal">%s is on Bchat!</string>
+    <string name="MessageRecord_you_disabled_disappearing_messages">Du hast verschwindende Nachrichten deaktiviert</string>
+    <string name="MessageRecord_s_disabled_disappearing_messages">%1$s hat verschwindende Nachrichten deaktiviert</string>
+    <string name="MessageRecord_you_set_disappearing_message_time_to_s">Du hast den Timer für verschwindende Nachrichten auf %1$s gesetzt</string>
+    <string name="MessageRecord_s_set_disappearing_message_time_to_s">%1$s hat den Timer für verschwindende Nachrichten auf %2$s gesetzt</string>
+    <string name="MessageRecord_s_took_a_screenshot">%1$s hat einen Screenshot gemacht.</string>
+    <string name="MessageRecord_media_saved_by_s">Medien wurden von %1$s gespeichert.</string>
+    <string name="MessageRecord_your_safety_number_with_s_has_changed">Your safety number with %s has changed</string>
+    <string name="MessageRecord_you_marked_your_safety_number_with_s_verified">You marked your safety number with %s verified</string>
+    <string name="MessageRecord_you_marked_your_safety_number_with_s_verified_from_another_device">You marked your safety number with %s verified from another device</string>
+    <string name="MessageRecord_you_marked_your_safety_number_with_s_unverified">You marked your safety number with %s unverified</string>
+    <string name="MessageRecord_you_marked_your_safety_number_with_s_unverified_from_another_device">You marked your safety number with %s unverified from another device</string>
+    <string name="MessageRecord_message_requests_accepted" translatable="false">Your message request has been accepted.</string>
+    <string name="MessageRecord_message_request_you_have_accepted" translatable="false">You have accepted the message request from %s.</string>
+    <string name="MessageRecord_message_request_has_been_accepted">You have accepted the message request</string>
+
+
+    <!-- expiration -->
+    <string name="expiration_off">Aus</string>
+
+    <plurals name="expiration_seconds">
+        <item quantity="one">%d Sekunde</item>
+        <item quantity="other">%d Sekunden</item>
+    </plurals>
+
+    <string name="expiration_seconds_abbreviated">%ds</string>
+
+    <plurals name="expiration_minutes">
+        <item quantity="one">%d Minute</item>
+        <item quantity="other">%d Minuten</item>
+    </plurals>
+
+    <string name="expiration_minutes_abbreviated">%dm</string>
+
+    <plurals name="expiration_hours">
+        <item quantity="one">%d Stunde</item>
+        <item quantity="other">%d Stunden</item>
+    </plurals>
+
+    <string name="expiration_hours_abbreviated">%dh</string>
+
+    <plurals name="expiration_days">
+        <item quantity="one">%d Tag</item>
+        <item quantity="other">%d Tage</item>
+    </plurals>
+
+    <string name="expiration_days_abbreviated">%dd</string>
+
+    <plurals name="expiration_weeks">
+        <item quantity="one">%d Woche</item>
+        <item quantity="other">%d Wochen</item>
+    </plurals>
+
+    <string name="expiration_weeks_abbreviated">%dw</string>
+
+    <string name="ConversationItem_group_action_left">%1$s hat die Gruppe verlassen</string>
+    <!-- RecipientProvider -->
+    <string name="RecipientProvider_unnamed_group">Unnamed group</string>
+    <string name="deleteMessageDeletedGlobally">This message was deleted</string>
+</resources>

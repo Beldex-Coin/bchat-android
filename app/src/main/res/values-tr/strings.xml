@@ -366,17 +366,10 @@
 
     <!-- attachment_type_selector -->
     <string name="attachment_type_selector__audio">Audio</string>
-    <string name="attachment_type_selector__audio_description">Audio</string>
     <string name="attachment_type_selector__contact">Contact</string>
-    <string name="attachment_type_selector__contact_description">Contact</string>
     <string name="attachment_type_selector__camera">Camera</string>
-    <string name="attachment_type_selector__camera_description">Camera</string>
     <string name="attachment_type_selector__location">Location</string>
-    <string name="attachment_type_selector__location_description">Location</string>
     <string name="attachment_type_selector__gif">GIF</string>
-    <string name="attachment_type_selector__gif_description">Gif</string>
-    <string name="attachment_type_selector__gallery_description">Image or video</string>
-    <string name="attachment_type_selector__file_description">File</string>
     <string name="attachment_type_selector__gallery">Gallery</string>
     <string name="attachment_type_selector__file">File</string>
 
@@ -445,14 +438,12 @@
     <string name="message_recipients_list_item__resend">Resend</string>
 
     <!-- message_details_header -->
-    <string name="message_details_header__issues_need_your_attention">Some issues need your attention.</string>
     <string name="message_details_header__sent">Gönderildi</string>
     <string name="message_details_header__received">Received</string>
     <string name="message_details_header__disappears">Disappears</string>
 
     <!-- AndroidManifest.xml -->
     <string name="AndroidManifest__create_passphrase">Create passphrase</string>
-    <string name="AndroidManifest__select_contacts">Select contacts</string>
     <string name="AndroidManifest__media_preview">Media preview</string>
 
     <!-- arrays.xml -->
@@ -706,10 +697,8 @@
 
     <string name="activity_create_private_chat_title">Yeni sohbet</string>
     <string name="activity_create_private_chat_enter_bchat_id_tab_title">Enter BChat ID</string>
-    <string name="activity_create_private_chat_scan_qr_code_tab_title">Scan QR Code</string>
     <string name="activity_create_private_chat_scan_qr_code_explanation">Bir kullanıcıyla sohbet başlatmak için QR kodunu tarayın. QR kodları hesap ayarlarında QR kod simgesine dokunarak bulunabilir.</string>
 
-    <string name="fragment_enter_public_key_edit_text_hint">Enter BChat ID</string>
     <string name="fragment_enter_public_key_explanation">Users can share their BChat ID by going into their account settings and tapping "Share BChat ID", or by sharing their QR code.</string>
     <string name="fragment_enter_public_key_error_message">Lütfen BChat ID veya BNS adını kontrol edip tekrar deneyin</string>
 
@@ -779,7 +768,6 @@
     <string name="fragment_contact_selection_contacts_title">Kişiler</string>
     <string name="fragment_contact_selection_closed_groups_title">Gizli gruplar</string>
     <string name="fragment_contact_selection_open_groups_title">Sosyal gruplar</string>
-    <string name="fragment_contact_selection_empty_contacts">You don\'t have any contacts yet</string>
 
     <!-- Next round of translation -->
 
@@ -845,7 +833,6 @@
     <string name="dialog_open_url_title">URL açılsın mı</string>
     <string name="dialog_open_url_explanation">Açmak istediğinizden emin misiniz %s?</string>
     <string name="open">açık</string>
-    <string name="copy_link">Copy Link</string>
 
     <string name="dialog_link_preview_title">Enable Link Previews?</string>
     <string name="dialog_link_preview_explanation">Enabling link previews will show previews for URLs you send and receive. This can be useful, but BChat will need to contact linked websites to generate previews. You can always disable link previews in BChat\'s settings.</string>
@@ -998,7 +985,6 @@
     <string name="WebRtcCallActivity_Reconnecting">Reconnecting…</string>
     <string name="conversation_context__menu_call">Call</string>
     <string name="ConversationActivity_call_title">Call Permissions Required</string>
-    <string name="ConversationActivity_call_prompt">You missed a call because you need to enable the \'Voice and video calls\' permission in the privacy Settings.</string>
     <string name="dialog_voice_video_title">Sesli / Görüntülü Aramalar</string>
     <string name="dialog_voice_video_message">Sesli aramaların mevcut uygulaması, IP adresinizin Beldex sunucularına ve aramayı yapan / aranan kullanıcıya görünmesine neden olabilir.</string>
     <string name="CallNotificationBuilder_system_notification_message">Having notifications disabled will prevent you from receiving calls, go to Bchat notification settings?</string>
@@ -1622,6 +1608,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="view_all">View all</string>
     <string name="message">Message</string>
     <string name="nickname_special_char_not_allowed">Özel karakterlere izin verilmez</string>
+    <string name="hey_user_welcome_to_bchat">Merhaba %s, BChat\'e hoş geldin!</string>
     <string name="please_enter_valid_seed">Lütfen geçerli bir tohum girin</string>
     <string name="paste_the_seed_to_continue">Devam etmek için tohumu yapıştırın</string>
     <string name="help">Yardım</string>
@@ -1638,7 +1625,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="about_bns_pricing_suffix">.</string>
     <string name="about_bns_description_7">BNS isimleri kullanmak gizliliğinizi, güvenliğinizi ve kullanım kolaylığınızı artırır. İster mesaj gönderiyor olun, ister işlem yapıyor olun ya da merkeziyetsiz hizmetleri kullanıyor olun, BNS adınız tutarlı ve basitleştirilmiş bir deneyim sağlar.</string>
     <string name="about_bns_description_8">Bugün BNS adınızı oluşturun ve tüm Beldex hizmetlerinde merkeziyetsiz kimliğin avantajlarından yararlanmaya başlayın!</string>
-    <string name="default_value_messages_per_conversation">500 messages per conversation</string>
+    <string name="about_content"><![CDATA[BChat Beldex blok zinciri üzerinde çalışan merkeziyetsiz eşler arası bir mesajlaşma uygulamasıdır. BChat gizliliğinizi korur çünkü adınız, yaşınız, e-posta adresiniz, telefon numaranız, kullanıcı adınız, konumunuz, kişileriniz veya IP adresiniz gibi kişisel bilgileri toplamaz veya saklamaz. BChat hesabı oluşturmak için yalnızca internet gerekir.\n\nBChat’te hesap oluşturduğunuzda benzersiz bir BChat ID ve kurtarma ifadesi oluşturulur. BChat ID genel anahtarınızdır ve BChat’te diğer kişilerle sohbet etmek için kullanılır. BChat ID ayrıca her yeni hesap oluşturduğunuzda oluşturulan bir cüzdan adresine bağlıdır.\n\nKurtarma anahtarı özel anahtarınızdır ve hesabınızı herhangi bir cihazda geri yüklemek için kullanılabilir. Kurtarma anahtarı şifreniz gibidir. Kimseyle paylaşmayın. Dijital kopyasını saklamayın. Kağıda yazın ve güvenli bir yerde saklayın. Kurtarma anahtarınızı kaybederseniz hesabınıza erişiminizi kaybedersiniz.\n\nBChat’te mesajlarınız Beldex ağındaki node’lar üzerinden yönlendirilir ve yalnızca cihazınızda saklanır. Mesajlarınız ve bunlara ait meta veriler Beldex blok zincirinde veya masternode depolama sunucularında saklanmaz.\n\nVerilerinizin sahibi sizsiniz. İstediğiniz zaman verilerinizi silebilirsiniz. Verilerinizi temizlemek için sağ üst köşedeki profil simgesine tıklayın ve Hesabım > Verileri temizle > Sil > Tamam yolunu izleyin.\n\nBChat Beldex Vakfı tarafından geliştirilmekte ve sürdürülmektedir. Açık kaynaklıdır ve sansürsüzdür. Herkes geliştirilmesine katkıda bulunabilir. Beldex Vakfı merkeziyetsiz web için gizlilik odaklı uygulamalar geliştiren bir organizasyondur. Araştırılan ve geliştirilen ürünler arasında BChat, BelNet, Beldex Browser ve Beldex protokolü bulunmaktadır.\n\nBChat Beldex’in amiral gemisi ürünüdür. İlk sürüm gerçekten anonim mesajlar göndermenizi sağlayan bir mesajlaşma uygulaması olacaktır. Gizli ve sosyal gruplar oluşturabilirsiniz. Gizli gruplar en fazla 100 katılımcıya izin verirken sosyal grupların üst sınırı yoktur. Gizli grupları herkes oluşturabilir ancak yalnızca BChat kişileriniz eklenebilir. Sosyal gruplar oluşturucu tarafından yönetilen özel bir sunucu gerektirir.\n\nGelecek sürümlerde sesli ve görüntülü aramalar ile BDX gönderme ve alma özellikleri eklenebilir. Sohbet ederken öde özelliği kullanıcıların sohbet penceresinden doğrudan BDX transferi yapmasına olanak tanıyacaktır.\n\nBeldex Araştırma Laboratuvarları anonimliği artırmak için zk-SNARKs ve ölçeklenebilirliği artırmak için veri parçalama teknolojileri üzerinde çalışmaktadır. Bu gelişmeler BChat’i mevcut merkeziyetsiz uygulamalardan çok daha hızlı hale getirebilir ve küresel benimsenmeye katkı sağlayabilir.\n\nKatkılar\nBeldex ağı ve BChat Monero, Signal ve Session gibi açık kaynak projeleri tarafından geliştirilen çeşitli protokolleri kullanır.
+]]></string>
     <string name="contact_list">Kişi listesi</string>
     <string name="bchat_id_warning_message">Please enter BChat ID</string>
     <string name="bchat_empty_state_message">Çok boş. Çok wow.  Git birkaç arkadaş bul ve BChat yap</string>
@@ -1646,42 +1634,15 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="group_delete_confirmation_message">Bu grubun oluşturucusu olduğunuz için grup herkes için silinecektir. Bu işlem geri alınamaz.</string>
     <string name="call_missed_title">Cevapsız arama!</string>
     <string name="no_matches_found">Eşleşme bulunamadı</string>
-    <string name="notify_for_mention_only">Sadece bahsetmeler için bildirim al</string>
-    <string name="community_guidelines"><![CDATA[
-    BChat gizliliğinizi koruyan merkeziyetsiz bir mesajlaşma platformudur. BChat kullanırken sohbetlerinizin ve verilerinizin sahibi sizsiniz. BChat kişisel bilgilerinizi toplamaz veya saklamaz. BChat özgürce sohbet edebileceğiniz bir yerdir.
-BChat aynı zamanda sadece bir mesajlaşma uygulaması değildir. Sohbet kutunuzdan doğrudan BDX gönderip alabilirsiniz.
-BChat Beldex ağı üzerinde çalışır. Beldex ağındaki masternode’lar istemciler arasında şifrelenmiş mesajları saklar ve iletir. Beldex tarafından araştırılan veya geliştirilen diğer projeler arasında BelNet merkeziyetsiz VPN hizmeti, Beldex Browser reklamsız Web3 tarayıcısı ve Beldex Gizlilik Protokolü bulunmaktadır.
-Daha fazla bilgi için ziyaret edin
-https://www.beldex.io
-İş birlikleri veya pazarlama teklifleri için marketing@beldex.io adresiyle iletişime geçin.
-Yatırım için invest.bchat@beldex.io adresiyle iletişime geçin.
-Bu topluluğu korumak ve sürdürmek için lütfen grup kurallarına ve yönergelerine uyun.
-Saygılı olun. Görüşlerinizi ve yapıcı eleştirilerinizi paylaşabilirsiniz ancak tacize izin verilmez.
-Token veya proje tanıtımı yapmayın. Bu grup BChat ve Beldex ekosistemine adanmıştır.
-Spam yapanlar yasaklanacaktır.
-Uygunsuz içerik paylaşmayın veya küfürlü dil kullanmayın.
-Dolandırıcılara dikkat edin. Yöneticiler size ilk olarak özel mesaj göndermez.
+    <string name="notify_for_mentions_only">Sadece bahsetmeler için bildirim al</string>
+    <string name="community_guidelines"><![CDATA[BChat gizliliğinizi koruyan merkeziyetsiz bir mesajlaşma platformudur. BChat kullanırken sohbetlerinizin ve verilerinizin sahibi sizsiniz. BChat kişisel bilgilerinizi toplamaz veya saklamaz. BChat özgürce sohbet edebileceğiniz bir yerdir.\n\nBChat aynı zamanda sadece bir mesajlaşma uygulaması değildir. Sohbet kutunuzdan doğrudan BDX gönderip alabilirsiniz.\n\nBChat Beldex ağı üzerinde çalışır. Beldex ağındaki masternode’lar istemciler arasında şifrelenmiş mesajları saklar ve iletir. Beldex tarafından araştırılan veya geliştirilen diğer projeler arasında BelNet merkeziyetsiz VPN hizmeti, Beldex Browser reklamsız Web3 tarayıcısı ve Beldex Gizlilik Protokolü bulunmaktadır.\n\nDaha fazla bilgi için ziyaret edin https://www.beldex.io\nİş birlikleri veya pazarlama teklifleri için marketing@beldex.io adresiyle iletişime geçin.\nYatırım için invest.bchat@beldex.io adresiyle iletişime geçin.\n\nBu topluluğu korumak ve sürdürmek için lütfen grup kurallarına ve yönergelerine uyun.\n\nSaygılı olun. Görüşlerinizi ve yapıcı eleştirilerinizi paylaşabilirsiniz ancak tacize izin verilmez.\nToken veya proje tanıtımı yapmayın. Bu grup BChat ve Beldex ekosistemine adanmıştır.\nSpam yapanlar yasaklanacaktır.\nUygunsuz içerik paylaşmayın veya küfürlü dil kullanmayın.\n\nDolandırıcılara dikkat edin. Yöneticiler size ilk olarak özel mesaj göndermez.
 ]]></string>
     <string name="divider">Divider</string>
-    <string name="pull">pull</string>
-    <string name="your_wallet_address">Your Wallet Address</string>
     <string name="seed">Seed</string>
-    <string name="recoveryPhraseCount">0/25</string>
-    <string name="recovery_seed_instruction">Use the 25-word Mnemonic key or seed phrase to restore your wallet.</string>
-    <string name="restore_from_keys">Restore From Keys</string>
-    <string name="use_private_key_instruction">"Use the generated keystore saved from private keys to restore your wallet.</string>
-    <string name="personal">Personal</string>
     <string name="title">Title</string>
-    <string name="invalid_address">Invalid address</string>
     <string name="list">list</string>
-    <string name="usd">USD</string>
     <string name="claim_your_airdrop">Yay! You made it here. Claim your airdrop. Submit your BChat ID and BDX wallet address in the link below</string>
-    <string name="reset">Reset</string>
-    <string name="connection_fail">Connection fail</string>
-    <string name="you_have_scanned_from_the_block_height">You have scanned from the block height</string>
     <string name="txt">TXT</string>
-    <string name="beldex_full_balance">Beldex Full Balance</string>
-    <string name="pin_info">This is the PIN you set to your BChat account.</string>
     <string name="user">User</string>
-
+    <string name="default_value_messages_per_conversation">500 messages per conversation</string>
 </resources>

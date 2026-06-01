@@ -46,26 +46,4 @@ public class ExpirationUtil {
     }
   }
 
-  public static String getTimeOutDisplayValue(Context context, String expirationTime) {
-    if (expirationTime.equals("None")) {
-      return context.getResources().getString(R.string.none);
-    } else if (expirationTime.equals("30 seconds")) {
-      return context.getResources().getString(R.string.thirty_seconds);
-    }
-    else if (expirationTime.equals("1 Minute")) {
-      return context.getResources().getString(R.string.one_minute);
-    }
-    else if (expirationTime.equals("2 Minutes")) {
-      return context.getResources().getString(R.string.two_minutes);
-    }
-    else if (expirationTime.equals("5 Minutes")) {
-      return context.getResources().getString(R.string.five_minutes);
-    }
-    else if (expirationTime.equals("15 Minutes")) {
-      return context.getResources().getString(R.string.fifteen_minutes);
-    }else {
-      return context.getResources().getString(R.string.thirty_minutes);
-    }
-  }
-
 }

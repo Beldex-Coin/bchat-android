@@ -1,6 +1,7 @@
 package io.beldex.bchat.changelog
 
 import android.os.Bundle
+import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityChangeLogBinding
 import org.json.JSONException
 import org.json.JSONObject
@@ -20,7 +21,7 @@ class ChangeLogActivity : io.beldex.bchat.BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityChangeLogBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setUpActionBarBchatLogo("Changelog")
+        setUpActionBarBchatLogo(getString(R.string.changelog))
 
             // preparing list data
             prepareListData()
@@ -40,7 +41,7 @@ class ChangeLogActivity : io.beldex.bchat.BaseActionBarActivity() {
     private fun loadJSONFromAsset(): String? {
         var json: String? = null
         json = try {
-            val `is`: InputStream = this.assets.open("en/changeLog.json")
+            val `is`: InputStream = this.assets.open("changeLog/ar/changeLog.json")
             val size: Int = `is`.available()
             val buffer = ByteArray(size)
             `is`.read(buffer)

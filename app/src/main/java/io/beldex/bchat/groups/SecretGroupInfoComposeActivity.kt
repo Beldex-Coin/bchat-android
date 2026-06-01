@@ -320,7 +320,7 @@ fun GroupDetailsScreen(
         val bchatID=getLocalNumber(context)
         val isCurrentUserAdmin=admins.any { it.toString() == bchatID }
         val message=if (isCurrentUserAdmin) {
-            context.getString(R.string.group_delete_confirmation_message)
+            context.resources.getString(R.string.group_delete_confirmation_message)
         } else {
             context.resources.getString(R.string.ConversationActivity_are_you_sure_you_want_to_leave_this_group)
         }
@@ -721,7 +721,7 @@ fun GroupDetailsScreen(
                             subTitle=context.getString(R.string.disappearing_info)
                         )
                         NavigationItem(
-                            "Edit Group",
+                            stringResource(R.string.activity_edit_closed_group_title),
                             painterResource(id=R.drawable.ic_block_request),
                             onItemClick={
                                 if (isSecretGroupIsActive()) {
@@ -739,7 +739,7 @@ fun GroupDetailsScreen(
                             null
                         )
                         NavigationItem(
-                            "Notify for Mentions Only",
+                            stringResource(R.string.notify_for_mentions_only),
                             painterResource(id=R.drawable.ic_mention_only),
                             onItemClick={
                                 if (isSecretGroupIsActive()) {
@@ -753,7 +753,7 @@ fun GroupDetailsScreen(
                                 }
 
                             },
-                            checked=showNotificationSettingsItem == "Mentions",
+                            checked=showNotificationSettingsItem == context.getString(R.string.notify_type_mentions),
                             showSwitch=true,
                             subTitle=context.getString(R.string.notification_info)
                         )

@@ -161,7 +161,7 @@ class ArchiveChatActivity : ComponentActivity() {
                                 Box {
                                     Icon(
                                         imageVector=Icons.Default.MoreVert,
-                                        contentDescription="Menu",
+                                        contentDescription=stringResource(R.string.menu),
                                         tint=MaterialTheme.appColors.editTextColor,
                                         modifier=Modifier.clickable { expanded=true }
                                     )
@@ -171,7 +171,7 @@ class ArchiveChatActivity : ComponentActivity() {
                                         onDismissRequest={ expanded=false }
                                     ) {
                                         DropdownMenuItem(
-                                            text={ Text("Archive Settings") },
+                                            text={ Text(stringResource(R.string.archive_settings)) },
                                             onClick={
                                                 expanded=false
                                                 showSettings=true

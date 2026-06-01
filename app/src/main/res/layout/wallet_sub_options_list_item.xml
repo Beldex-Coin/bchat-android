@@ -25,7 +25,7 @@
             android:fontFamily="@font/open_sans_medium"
             android:layout_margin="12dp"
             android:textColor="@color/wallet_sub_options_list_item_color"
-            android:text="@string/beldex_full_balance"/>
+            android:text="Beldex Full Balance"/>
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

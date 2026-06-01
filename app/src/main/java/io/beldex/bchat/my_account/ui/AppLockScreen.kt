@@ -50,20 +50,26 @@ fun AppLockScreen() {
     var showLockOptionsDialog by remember {
         mutableStateOf(false)
     }
-    val lockOptions = remember {
-        ScreenTimeoutOptions.entries.map { it.displayValue }.toList()
+    val lockOptions = ScreenTimeoutOptions.entries
+    var selectedLockOption by remember {
+        mutableStateOf(
+            lockOptions.getOrNull(
+                IdentityKeyUtil.retrieve(
+                    context,
+                    IdentityKeyUtil.SCREEN_TIMEOUT_KEY
+                )?.toIntOrNull() ?: 0
+            ) ?: ScreenTimeoutOptions.None
+        )
     }
-    var selectedLockOptions by remember {
-        mutableStateOf(IdentityKeyUtil.retrieve(
-            context,
-            IdentityKeyUtil.SCREEN_TIMEOUT_VALUES_KEY
-        ) ?: "None")
-    }
-    val onLockTimerChanged: (String, Int) -> Unit = { value, index ->
+
+    val noTimeoutSeconds = 950400L
+
+    val onLockTimerChanged: (ScreenTimeoutOptions, Int) -> Unit = { option, index ->
         showLockOptionsDialog = false
+
         IdentityKeyUtil.save(context, IdentityKeyUtil.SCREEN_TIMEOUT_KEY, index.toString())
-        IdentityKeyUtil.save(context, IdentityKeyUtil.SCREEN_TIMEOUT_VALUES_KEY, value)
-        selectedLockOptions = value
+
+        selectedLockOption = option
 
         TextSecurePreferences.setScreenLockEnabled(context, true)
 
@@ -71,48 +77,37 @@ fun AppLockScreen() {
         intent.action = KeyCachingService.LOCK_TOGGLED_EVENT
         context.startService(intent)
 
-        when (value) {
-            "None" -> {
-                TextSecurePreferences.setScreenLockTimeout(context, 950400)
+        val timeoutSeconds =
+            if (option == ScreenTimeoutOptions.None) {
+                noTimeoutSeconds
+            } else {
+                TimeUnit.MILLISECONDS.toSeconds(option.timeoutMillis)
             }
-            "30 Seconds" -> {
-                val timeoutSeconds = TimeUnit.MILLISECONDS.toSeconds(30000)
-                TextSecurePreferences.setScreenLockTimeout(context, timeoutSeconds)
-            }
-            "1 Minute" -> {
-                val timeoutSeconds = TimeUnit.MILLISECONDS.toSeconds(60000)
-                TextSecurePreferences.setScreenLockTimeout(context, timeoutSeconds)
-            }
-            "2 Minutes" -> {
-                val timeoutSeconds = TimeUnit.MILLISECONDS.toSeconds(120000)
-                TextSecurePreferences.setScreenLockTimeout(context, timeoutSeconds)
-            }
-            "5 Minutes" -> {
-                val timeoutSeconds = TimeUnit.MILLISECONDS.toSeconds(300000)
-                TextSecurePreferences.setScreenLockTimeout(context, timeoutSeconds)
-            }
-            "15 Minutes" -> {
-                val timeoutSeconds = TimeUnit.MILLISECONDS.toSeconds(900000)
-                TextSecurePreferences.setScreenLockTimeout(context, timeoutSeconds)
-            }
-            "30 Minutes" -> {
-                val timeoutSeconds = TimeUnit.MILLISECONDS.toSeconds(1800000)
-                TextSecurePreferences.setScreenLockTimeout(context, timeoutSeconds)
-            }
-            else -> Unit
-        }
+
+        TextSecurePreferences.setScreenLockTimeout(
+            context,
+            timeoutSeconds
+        )
 
     }
     if (showLockOptionsDialog) {
         LockOptionsDialog(
             title = stringResource(R.string.screen_inactivity_timeout),
-            options = lockOptions,
-            currentValue = selectedLockOptions,
+
+            options = lockOptions.map {
+                stringResource(it.labelRes)
+            },
+
+            currentValue = stringResource(selectedLockOption.labelRes),
+
             onDismiss = {
                 showLockOptionsDialog = false
             },
+
             onValueChanged = { value, index ->
-                onLockTimerChanged(value, index)
+                lockOptions.getOrNull(index)?.let { option ->
+                    onLockTimerChanged(option, index)
+                }
             }
         )
     }
@@ -182,7 +177,7 @@ fun AppLockScreen() {
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_screen_lock),
-                    contentDescription = "",
+                    contentDescription = null,
                     tint = MaterialTheme.appColors.iconTint
                 )
 
@@ -199,7 +194,7 @@ fun AppLockScreen() {
                     )
 
                     Text(
-                        text = selectedLockOptions,
+                        text = stringResource(selectedLockOption.labelRes),
                         style = MaterialTheme.typography.bodySmall.copy(
                             color = MaterialTheme.appColors.lockTimerColor,
                             fontWeight = FontWeight(400),

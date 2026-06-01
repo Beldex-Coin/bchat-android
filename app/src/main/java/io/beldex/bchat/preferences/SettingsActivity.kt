@@ -132,7 +132,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
         super.onCreate(savedInstanceState, isReady)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setUpActionBarBchatLogo("My Account")
+        setUpActionBarBchatLogo(this.getString(R.string.my_account))
         val displayName = getDisplayName()
         glide = Glide.with(this)
 

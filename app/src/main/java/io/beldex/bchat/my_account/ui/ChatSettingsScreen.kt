@@ -76,7 +76,7 @@ fun ChatSettingsScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "Message Timing",
+            text = stringResource(R.string.preferences_chats__message_trimming),
             style = MaterialTheme.typography.titleMedium.copy(
                 color = MaterialTheme.appColors.textGreen,
                 fontWeight = FontWeight(600),
@@ -99,7 +99,7 @@ fun ChatSettingsScreen(
                     .padding(16.dp)
             ) {
                 SettingsItem(
-                    settingTitle = "Delete Old Messages",
+                    settingTitle = stringResource(R.string.preferences__delete_old_messages),
                     settingIcon = painterResource(id = R.drawable.ic_delete_old),
                     isEnabled = false,
                     onSwitchChanged = {},
@@ -113,7 +113,7 @@ fun ChatSettingsScreen(
                     settingTitle = stringResource(R.string.preferences__conversation_length_limit),
                     painterResource(id = R.drawable.ic_conversation_length),
                     containsSwitch = false,
-                    settingDesc = "500 messages per conversation",
+                    settingDesc = stringResource(R.string.default_value_messages_per_conversation),
                     modifier = Modifier
                         .fillMaxWidth(),
                 )

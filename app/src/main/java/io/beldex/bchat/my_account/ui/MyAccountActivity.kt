@@ -1181,8 +1181,6 @@ fun MyAccountNavHost(
         composable(
             route = MyAccountScreens.AboutScreen.route
         ) {
-            val aboutViewModel: ContentViewModel = hiltViewModel()
-            val content by aboutViewModel.content.collectAsState()
             MyAccountScreenContainer(
                 title = stringResource(R.string.about),
                 onBackClick = {
@@ -1190,7 +1188,6 @@ fun MyAccountNavHost(
                 }
             ) {
                 ContentScreen(
-                    content = content,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(16.dp)

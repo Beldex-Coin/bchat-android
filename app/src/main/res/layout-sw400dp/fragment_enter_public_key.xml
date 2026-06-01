@@ -29,7 +29,7 @@
         android:inputType="textMultiLine"
         android:maxLines="3"
         android:imeOptions="actionDone"
-        android:hint="@string/fragment_enter_public_key_edit_text_hint" />
+        android:hint="@string/activity_create_private_chat_enter_bchat_id_tab_title" />
 
     <TextView
         android:layout_width="match_parent"

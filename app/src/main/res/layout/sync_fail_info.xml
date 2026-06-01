@@ -34,7 +34,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="@string/connection_fail"
+                android:text="Connvetion fail"
                 android:textAlignment="viewStart"
                 android:textColor="@color/text"
                 android:textSize="15sp"

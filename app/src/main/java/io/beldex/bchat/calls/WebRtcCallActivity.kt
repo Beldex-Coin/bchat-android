@@ -331,7 +331,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                         if(binding.callActivityVideoStatus.isVisible){
                             binding.callActivityAudioStatus.text = ""
                         }else{
-                            binding.callActivityAudioStatus.text = "Call Muted"
+                            binding.callActivityAudioStatus.text = getString(R.string.call_muted)
                         }
                         Log.d("Remote Audio Enabled","false")
                     }else{

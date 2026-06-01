@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- MessageRecord -->
+    <string name="MessageRecord_message_encrypted_with_a_legacy_protocol_version_that_is_no_longer_supported">Received a message encrypted using an old version of Bchat that is no longer supported. Please ask the sender to update to the most recent version and resend the message.</string>
+    <string name="MessageRecord_left_group">이 그룹을 떠났습니다</string>
+    <string name="MessageRecord_you_updated_group">You updated the group</string>
+    <string name="MessageRecord_you_created_a_new_group">새 그룹을 만들었습니다</string>
+    <string name="MessageRecord_s_added_you_to_the_group">%1$s 님이 회원님을 그룹에 추가했습니다</string>
+    <string name="MessageRecord_you_renamed_the_group_to_s">You renamed the group to %1$s</string>
+    <string name="MessageRecord_s_renamed_the_group_to_s">%1$s renamed the group to: %2$s</string>
+    <string name="MessageRecord_you_added_s_to_the_group">%1$s 님을 그룹에 추가했습니다</string>
+    <string name="MessageRecord_s_added_s_to_the_group">%1$s 님이 %2$s 님을 그룹에 추가했습니다</string>
+    <string name="MessageRecord_you_removed_s_from_the_group">%1$s 님을 그룹에서 제거했습니다</string>
+    <string name="MessageRecord_s_removed_s_from_the_group">%1$s 님이 %2$s 님을 그룹에서 제거했습니다</string>
+    <string name="MessageRecord_you_were_removed_from_the_group">회원님이 그룹에서 제거되었습니다</string>
+    <string name="MessageRecord_you">사용자</string>
+    <string name="MessageRecord_you_called">You called</string>
+    <string name="MessageRecord_called_you">Contact called</string>
+    <string name="MessageRecord_missed_call">Missed call</string>
+    <string name="MessageRecord_s_updated_group">%s updated the group</string>
+    <string name="MessageRecord_received_call_from">Received call from %s</string>
+    <string name="MessageRecord_called_s">Called %s</string>
+    <string name="MessageRecord_missed_call_from">Missed call from %s</string>
+    <string name="MessageRecord_s_joined_signal">%s is on Bchat!</string>
+    <string name="MessageRecord_you_disabled_disappearing_messages">사라지는 메시지를 비활성화했습니다</string>
+    <string name="MessageRecord_s_disabled_disappearing_messages">%1$s 님이 사라지는 메시지를 비활성화했습니다</string>
+    <string name="MessageRecord_you_set_disappearing_message_time_to_s">사라지는 메시지 타이머를 %1$s(으)로 설정했습니다</string>
+    <string name="MessageRecord_s_set_disappearing_message_time_to_s">%1$s 님이 사라지는 메시지 타이머를 %2$s(으)로 설정했습니다</string>
+    <string name="MessageRecord_s_took_a_screenshot">%1$s 님이 스크린샷을 찍었습니다.</string>
+    <string name="MessageRecord_media_saved_by_s">%1$s 님이 미디어를 저장했습니다.</string>
+    <string name="MessageRecord_your_safety_number_with_s_has_changed">Your safety number with %s has changed</string>
+    <string name="MessageRecord_you_marked_your_safety_number_with_s_verified">You marked your safety number with %s verified</string>
+    <string name="MessageRecord_you_marked_your_safety_number_with_s_verified_from_another_device">You marked your safety number with %s verified from another device</string>
+    <string name="MessageRecord_you_marked_your_safety_number_with_s_unverified">You marked your safety number with %s unverified</string>
+    <string name="MessageRecord_you_marked_your_safety_number_with_s_unverified_from_another_device">You marked your safety number with %s unverified from another device</string>
+    <string name="MessageRecord_message_requests_accepted" translatable="false">Your message request has been accepted.</string>
+    <string name="MessageRecord_message_request_you_have_accepted" translatable="false">You have accepted the message request from %s.</string>
+    <string name="MessageRecord_message_request_has_been_accepted">You have accepted the message request</string>
+
+
+    <!-- expiration -->
+    <string name="expiration_off">オフ</string>
+
+    <plurals name="expiration_seconds">
+        <item quantity="other">%d초</item>
+    </plurals>
+
+    <string name="expiration_seconds_abbreviated">%ds</string>
+
+    <plurals name="expiration_minutes">
+        <item quantity="other">%d분</item>
+    </plurals>
+
+    <string name="expiration_minutes_abbreviated">%dm</string>
+
+    <plurals name="expiration_hours">
+        <item quantity="other">%d시간</item>
+    </plurals>
+
+    <string name="expiration_hours_abbreviated">%dh</string>
+
+    <plurals name="expiration_days">
+        <item quantity="other">%d일</item>
+    </plurals>
+
+    <string name="expiration_days_abbreviated">%dd</string>
+
+    <plurals name="expiration_weeks">
+        <item quantity="other">%d주</item>
+    </plurals>
+
+    <string name="expiration_weeks_abbreviated">%dw</string>
+
+    <string name="ConversationItem_group_action_left">%1$s 님이 그룹을 나갔습니다</string>
+    <!-- RecipientProvider -->
+    <string name="RecipientProvider_unnamed_group">Unnamed group</string>
+    <string name="deleteMessageDeletedGlobally">This message was deleted</string>
+</resources>

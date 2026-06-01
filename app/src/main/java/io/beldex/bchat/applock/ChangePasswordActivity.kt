@@ -30,7 +30,7 @@ class ChangePasswordActivity : BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityChangePasswordBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setUpActionBarBchatLogo("Change Password")
+        setUpActionBarBchatLogo(getString(R.string.change_password))
         val oldPassword = TextSecurePreferences.getMyPassword(this)
         with(binding)
         {

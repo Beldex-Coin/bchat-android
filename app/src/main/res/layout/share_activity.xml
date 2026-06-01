@@ -28,9 +28,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:fontFamily="@font/open_sans_medium"
-            android:text="@string/forward"
+            android:text="@string/media_preview__forward_title"
             android:textSize="18sp"
-            tools:text="@string/forward" />
+            tools:text="@string/media_preview__forward_title" />
 
     </LinearLayout>
 

@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -103,7 +104,7 @@ fun ShowQRDialog(
             Button(onClick={
                 onShare()
             }, colors= ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.primaryButtonColor)) {
-                Text(text="Share", style=MaterialTheme.typography.bodyMedium.copy(color=Color.White, fontWeight=FontWeight.Bold), modifier=Modifier.padding(start = 10.dp, end = 5.dp))
+                Text(text= stringResource(R.string.share), style=MaterialTheme.typography.bodyMedium.copy(color=Color.White, fontWeight=FontWeight.Bold), modifier=Modifier.padding(start = 10.dp, end = 5.dp))
                 Icon(painter=painterResource(id= R.drawable.ic_baseline_share_24), contentDescription="Refresh", tint=Color.White, modifier = Modifier.size(14.dp))
             }
 

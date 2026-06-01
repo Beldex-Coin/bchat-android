@@ -93,11 +93,7 @@ object UpdateMessageBuilder {
             }
             else -> Unit
         }
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Html.fromHtml(rawMessage, Html.FROM_HTML_MODE_LEGACY)
-        } else {
-            Html.fromHtml(rawMessage)
-        }
+        return Html.fromHtml(rawMessage, Html.FROM_HTML_MODE_LEGACY)
     }
 
     fun buildScreenShotMessage(
@@ -120,11 +116,7 @@ object UpdateMessageBuilder {
         }
         val rawMessage = context.getString(R.string.MessageRecord_s_took_a_screenshot, formattedName)
 
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Html.fromHtml(rawMessage, Html.FROM_HTML_MODE_LEGACY)
-        } else {
-            Html.fromHtml(rawMessage)
-        }
+        return Html.fromHtml(rawMessage, Html.FROM_HTML_MODE_LEGACY)
     }
 
     fun buildExpirationTimerMessage(context: Context, duration: Long, senderId: String? = null, isOutgoing: Boolean = false): CharSequence? {
@@ -142,10 +134,7 @@ object UpdateMessageBuilder {
             if (isOutgoing)context.getString(R.string.MessageRecord_you_set_disappearing_message_time_to_s, time)
             else context.getString(R.string.MessageRecord_s_set_disappearing_message_time_to_s, boldSenderName, time)
         }
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Html.fromHtml(rawMessage, Html.FROM_HTML_MODE_LEGACY)
-        } else {
-            Html.fromHtml(rawMessage)        }
+        return Html.fromHtml(rawMessage, Html.FROM_HTML_MODE_LEGACY)
     }
 
     fun buildDataExtractionMessage(
@@ -164,11 +153,7 @@ object UpdateMessageBuilder {
             DataExtractionNotificationInfoMessage.Kind.MEDIA_SAVED ->
                 context.getString(R.string.MessageRecord_media_saved_by_s, boldSenderName)
         }
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Html.fromHtml(rawMessage, Html.FROM_HTML_MODE_LEGACY)
-        } else {
-            Html.fromHtml(rawMessage)
-        }
+        return Html.fromHtml(rawMessage, Html.FROM_HTML_MODE_LEGACY)
     }
 
     fun buildCallMessage(context: Context, type: CallMessageType, senderId: String): String {

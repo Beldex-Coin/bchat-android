@@ -136,7 +136,7 @@ fun LandingScreen(
                     )
             ) {
                 Text(
-                    text = "Welcome to",
+                    text = stringResource(id = R.string.welcome_to),
                     style = BChatTypography.headlineSmall.copy(
                         color = MaterialTheme.appColors.onMainContainerTextColor,
                         fontWeight = FontWeight.ExtraBold

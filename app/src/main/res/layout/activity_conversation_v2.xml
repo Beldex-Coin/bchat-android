@@ -783,7 +783,7 @@
                             android:layout_marginTop="@dimen/small_spacing"
                             android:fontFamily="@font/open_sans_bold"
                             android:paddingHorizontal="@dimen/massive_spacing"
-                            android:text="@string/activity_message_request_title"
+                            android:text="@string/activity_message_requests_title"
                             android:textColor="@color/text"
                             android:textSize="16sp"
                             android:visibility="visible" />

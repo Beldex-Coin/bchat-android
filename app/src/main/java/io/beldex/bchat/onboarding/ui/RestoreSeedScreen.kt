@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -76,7 +77,7 @@ fun RestoreSeedScreen(
                     onValueChange = {
                         seed = it
                     },
-                    hintText = "Enter your seed",
+                    hintText = stringResource(R.string.mnemonic_edit_text_hint),
                     maxLines = 6,
                     textStyle = MaterialTheme.typography.titleMedium.copy(
                         color = MaterialTheme.appColors.editTextColor,
@@ -129,7 +130,7 @@ fun RestoreSeedScreen(
                 .fillMaxWidth()
         ) {
             Text(
-                text = "Continue",
+                text = stringResource(R.string.continue_2),
                 style = MaterialTheme.typography.titleMedium.copy(
                     color = Color.White
                 ),

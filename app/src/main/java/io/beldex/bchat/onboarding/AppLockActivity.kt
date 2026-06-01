@@ -16,7 +16,7 @@ class AppLockActivity : BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAppLockBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setUpActionBarBchatLogo(getString(R.string.activity_settings_app_lock_button_title), true)
+        setUpActionBarBchatLogo(getString(R.string.activity_settings_app_lock_button_title),true)
         with(binding) {
             laterButton.setOnClickListener(){
                 later()

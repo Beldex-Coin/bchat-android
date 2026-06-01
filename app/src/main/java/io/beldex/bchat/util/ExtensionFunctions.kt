@@ -60,7 +60,7 @@ fun Context.copyToClipBoard(label: String, content: String) {
   val clipBoard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
   val clip = ClipData.newPlainText(label, content)
   clipBoard.setPrimaryClip(clip)
-  Toast.makeText(this, this.getString(R.string.copied_to_clipboard),  Toast.LENGTH_SHORT).show()
+  Toast.makeText(this, R.string.copied_to_clipboard,  Toast.LENGTH_SHORT).show()
 }
 
 fun Context.toPx(dp: Int): Float = TypedValue.applyDimension(

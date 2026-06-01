@@ -15,7 +15,7 @@ class RecoveryGetKeysDetailsActivity : BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding= ActivityRecoveryGetKeysDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setUpActionBarBchatLogo(getString((R.string.restore_from_keys)))
+        setUpActionBarBchatLogo("Restore From Keys")
         with(binding){
             restoreKeysRestoreButton.setOnClickListener {
                 val intent = Intent(this@RecoveryGetKeysDetailsActivity, AppLockActivity::class.java)

@@ -5,11 +5,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
-import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.LOLLIPOP
-import android.os.Build.VERSION_CODES.N
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 
 internal object SlideToActIconUtil {
@@ -17,29 +12,21 @@ internal object SlideToActIconUtil {
     @SuppressLint("UseCompatLoadingForDrawables")
     internal fun loadIconCompat(context: Context, value: Int): Drawable {
         // Due to bug in the AVD implementation in the support library, we use it only for API < 21
-        return if (SDK_INT >= LOLLIPOP) {
-            context.resources.getDrawable(value, context.theme)
-        } else {
-            return AnimatedVectorDrawableCompat.create(context, value)
-                ?: ContextCompat.getDrawable(context, value)!!
-        }
+        return context.resources.getDrawable(value, context.theme)
     }
 
     internal fun tintIconCompat(icon: Drawable, color: Int) {
         // Tinting the tick with the proper implementation method
-        when {
-            SDK_INT >= LOLLIPOP -> icon.setTint(color)
-            else -> DrawableCompat.setTint(icon, color)
-        }
+        icon.setTint(color)
     }
 
     /**
      * Internal method to start the Icon AVD animation, with the proper library based on API level.
      */
     internal fun startIconAnimation(icon: Drawable) {
-        when {
-            SDK_INT >= LOLLIPOP && icon is AnimatedVectorDrawable -> icon.start()
-            icon is AnimatedVectorDrawableCompat -> icon.start()
+        when (icon) {
+            is AnimatedVectorDrawable -> icon.start()
+            is AnimatedVectorDrawableCompat -> icon.start()
             else -> {
                 // Do nothing as the icon can't be animated
             }
@@ -50,9 +37,9 @@ internal object SlideToActIconUtil {
      * Internal method to stop the Icon AVD animation, with the proper library based on API level.
      */
     internal fun stopIconAnimation(icon: Drawable) {
-        when {
-            SDK_INT >= LOLLIPOP && icon is AnimatedVectorDrawable -> icon.stop()
-            icon is AnimatedVectorDrawableCompat -> icon.stop()
+        when (icon) {
+            is AnimatedVectorDrawable -> icon.stop()
+            is AnimatedVectorDrawableCompat -> icon.stop()
             else -> {
                 // Do nothing as the icon can't be animated
             }
@@ -97,10 +84,7 @@ internal object SlideToActIconUtil {
      * Logic to decide if we should do a Fade or use the [AnimatedVectorDrawable] animation.
      */
     private fun fallbackToFadeAnimation(icon: Drawable) = when {
-        // We don't use AVD at all for <= N.
-        SDK_INT <= N -> true
-        SDK_INT >= LOLLIPOP && icon !is AnimatedVectorDrawable -> true
-        SDK_INT < LOLLIPOP && icon !is AnimatedVectorDrawableCompat -> true
+        icon !is AnimatedVectorDrawable -> true
         else -> false
     }
 }

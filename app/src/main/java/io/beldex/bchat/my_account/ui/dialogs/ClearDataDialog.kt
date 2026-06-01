@@ -193,7 +193,8 @@ fun ClearDataDialog(
                 text = when (step) {
                     Steps.INFO_PROMPT_DEFAULT,
                     Steps.INFO_PROMPT -> {
-                        stringResource(id = R.string.dialog_clear_all_data_title)
+                        stringResource(id = R.string.
+                        dialog_clear_all_data_title)
                     }
                     Steps.NETWORK_PROMPT -> {
                         stringResource(id = R.string.delete_entire_account)

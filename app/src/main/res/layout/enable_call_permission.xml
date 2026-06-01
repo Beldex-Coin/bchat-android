@@ -32,7 +32,7 @@
         android:fontFamily="@font/open_sans_bold"
         android:text="@string/dialog_voice_video_title"
         android:textColor="@color/text_green"
-        android:textSize="16sp"/>
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/description"
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:text="@string/cancel"
             android:textColor="@color/negative_green_button_text"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/callPermissionEnableButton"

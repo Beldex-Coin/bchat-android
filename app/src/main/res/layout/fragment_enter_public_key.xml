@@ -39,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
                 android:gravity="center_vertical"
-                android:hint="@string/fragment_enter_public_key_edit_text_hint"
+                android:hint="@string/activity_create_private_chat_enter_bchat_id_tab_title"
                 android:imeOptions="actionDone"
                 android:inputType="textMultiLine"
                 android:maxLines="3"

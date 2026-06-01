@@ -10,12 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.appColors
 
 @Composable
 fun ContentScreen(
-    content: String,
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()

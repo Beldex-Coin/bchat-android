@@ -145,7 +145,7 @@ fun LinkYourBNSDialog(
                         .padding(bottom=15.dp)
             )
             Text(
-                text = "Your BChat ID",
+                text = stringResource(R.string.your_bchat_id),
                 style = BChatTypography.titleMedium.copy(
                     color = MaterialTheme.appColors.editTextColor,
                     fontSize = 14.sp,

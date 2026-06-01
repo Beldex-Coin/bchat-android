@@ -28,9 +28,9 @@ public final class LanguageStringTest {
 
     /* Language and region */
     { new Locale("en", "US"), "en_US" },
-    { new Locale("es", "US"), "es_US" },
-    { new Locale("es", "MX"), "es_MX" },
-    { new Locale("es", "MX"), "es_mx" },
+    { new Locale("changeLog/es", "US"), "es_US" },
+    { new Locale("changeLog/es", "MX"), "es_MX" },
+    { new Locale("changeLog/es", "MX"), "es_mx" },
     { new Locale("de", "DE"), "de_DE" },
 
     /* Not parsable input */

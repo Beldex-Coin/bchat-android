@@ -311,7 +311,7 @@ fun NewChatScreen(
                     onClickScanQRCode = {}
                 )
                 Text(
-                    text = "Contact list",
+                    text = stringResource(R.string.contact_list),
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight(400),

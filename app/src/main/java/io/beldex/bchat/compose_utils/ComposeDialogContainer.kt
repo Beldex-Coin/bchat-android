@@ -147,7 +147,7 @@ class ComposeDialogContainer(
                         val bchatID = TextSecurePreferences.getLocalNumber(context)
                         val isCurrentUserAdmin = admins.any { it.toString() == bchatID }
                         val message = if (isCurrentUserAdmin) {
-                            context.getString(R.string.group_delete_confirmation_message)
+                            context.resources.getString(R.string.group_delete_confirmation_message)
                         } else {
                             context.resources.getString(R.string.ConversationActivity_are_you_sure_you_want_to_leave_this_group)
                         }

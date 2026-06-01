@@ -377,17 +377,10 @@
 
     <!-- attachment_type_selector -->
     <string name="attachment_type_selector__audio">Audio</string>
-    <string name="attachment_type_selector__audio_description">Audio</string>
     <string name="attachment_type_selector__contact">Contact</string>
-    <string name="attachment_type_selector__contact_description">Contact</string>
     <string name="attachment_type_selector__camera">Camera</string>
-    <string name="attachment_type_selector__camera_description">Camera</string>
     <string name="attachment_type_selector__location">Location</string>
-    <string name="attachment_type_selector__location_description">Location</string>
     <string name="attachment_type_selector__gif">GIF</string>
-    <string name="attachment_type_selector__gif_description">Gif</string>
-    <string name="attachment_type_selector__gallery_description">Image or video</string>
-    <string name="attachment_type_selector__file_description">File</string>
     <string name="attachment_type_selector__gallery">Gallery</string>
     <string name="attachment_type_selector__file">File</string>
 
@@ -456,14 +449,12 @@
     <string name="message_recipients_list_item__resend">Resend</string>
 
     <!-- message_details_header -->
-    <string name="message_details_header__issues_need_your_attention">Some issues need your attention.</string>
     <string name="message_details_header__sent">Отправлено</string>
     <string name="message_details_header__received">Received</string>
     <string name="message_details_header__disappears">Disappears</string>
 
     <!-- AndroidManifest.xml -->
     <string name="AndroidManifest__create_passphrase">Create passphrase</string>
-    <string name="AndroidManifest__select_contacts">Select contacts</string>
     <string name="AndroidManifest__media_preview">Media preview</string>
 
     <!-- arrays.xml -->
@@ -717,10 +708,8 @@
 
     <string name="activity_create_private_chat_title">Новый чат</string>
     <string name="activity_create_private_chat_enter_bchat_id_tab_title">Enter BChat ID</string>
-    <string name="activity_create_private_chat_scan_qr_code_tab_title">Scan QR Code</string>
     <string name="activity_create_private_chat_scan_qr_code_explanation">Сканируйте QR-код пользователя, чтобы начать BChat. QR-коды можно найти, нажав на иконку QR-кода в настройках аккаунта.</string>
 
-    <string name="fragment_enter_public_key_edit_text_hint">Enter BChat ID</string>
     <string name="fragment_enter_public_key_explanation">Users can share their BChat ID by going into their account settings and tapping "Share BChat ID", or by sharing their QR code.</string>
     <string name="fragment_enter_public_key_error_message">Пожалуйста, проверьте Chat ID или имя BNS и попробуйте снова</string>
 
@@ -790,7 +779,6 @@
     <string name="fragment_contact_selection_contacts_title">Контакты</string>
     <string name="fragment_contact_selection_closed_groups_title">Секретные группы</string>
     <string name="fragment_contact_selection_open_groups_title">Социальные группы</string>
-    <string name="fragment_contact_selection_empty_contacts">You don\'t have any contacts yet</string>
 
     <!-- Next round of translation -->
 
@@ -856,7 +844,6 @@
     <string name="dialog_open_url_title">Открыть URL?</string>
     <string name="dialog_open_url_explanation">Вы уверены, что хотите открыть %s?</string>
     <string name="open">Открыть</string>
-    <string name="copy_link">Copy Link</string>
 
     <string name="dialog_link_preview_title">Enable Link Previews?</string>
     <string name="dialog_link_preview_explanation">Enabling link previews will show previews for URLs you send and receive. This can be useful, but BChat will need to contact linked websites to generate previews. You can always disable link previews in BChat\'s settings.</string>
@@ -1008,7 +995,6 @@
     <string name="WebRtcCallActivity_Reconnecting">Reconnecting…</string>
     <string name="conversation_context__menu_call">Call</string>
     <string name="ConversationActivity_call_title">Call Permissions Required</string>
-    <string name="ConversationActivity_call_prompt">You missed a call because you need to enable the \'Voice and video calls\' permission in the privacy Settings.</string>
     <string name="dialog_voice_video_title">Голосовые/видео звонки</string>
     <string name="dialog_voice_video_message">Текущая реализация голосовых звонков может раскрыть ваш IP-адрес серверам Beldex и другому участнику.</string>
     <string name="CallNotificationBuilder_system_notification_message">Having notifications disabled will prevent you from receiving calls, go to Bchat notification settings?</string>
@@ -1632,6 +1618,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="view_all">View all</string>
     <string name="message">Message</string>
     <string name="nickname_special_char_not_allowed">Специальные символы не допускаются</string>
+    <string name="hey_user_welcome_to_bchat">Привет %s, Добро пожаловать в BChat!</string>
     <string name="please_enter_valid_seed">Пожалуйста, введите корректный seed</string>
     <string name="paste_the_seed_to_continue">Вставьте seed, чтобы продолжить</string>
     <string name="help">Помощь</string>
@@ -1648,7 +1635,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="about_bns_pricing_suffix">соответственно.</string>
     <string name="about_bns_description_7">Использование BNS повышает вашу конфиденциальность, безопасность и удобство. Будь то отправка сообщений, проведение транзакций или использование децентрализованных сервисов — ваше имя BNS обеспечивает согласованный и упрощённый опыт.</string>
     <string name="about_bns_description_8">Начните использовать ваше имя BNS сегодня и получите преимущества децентрализованной идентичности во всех сервисах Beldex!</string>
-    <string name="default_value_messages_per_conversation">500 messages per conversation</string>
+    <string name="about_content"><![CDATA[BChat — это децентрализованное приложение для обмена сообщениями между пользователями, построенное на блокчейне Beldex. BChat обеспечивает конфиденциальность ваших данных, поскольку не собирает и не хранит вашу личную информацию, такую ​​как ваше имя, возраст, адрес электронной почты, номер телефона, имя пользователя, местоположение, контакты, IP-адрес и т. д. Для создания учетной записи BChat вам нужен только интернет.\n\nПри создании учетной записи в BChat генерируется уникальный идентификатор BChat (BChat ID) и фраза восстановления (сид-ключ). BChat ID — это ваш открытый ключ, который вы можете использовать для общения с другими пользователями BChat. Ваш BChat ID также связан с адресом кошелька, который генерируется каждый раз при создании новой учетной записи.\n\nКлюч восстановления (сид-ключ) — это ваш закрытый ключ, который вы можете использовать для восстановления своей учетной записи на любом устройстве. Ваш ключ восстановления похож на ваш пароль. Не делитесь им ни с кем. Не храните его цифровую копию. Запишите его на бумаге и храните в безопасном месте. Если вы потеряете ключ восстановления, вы потеряете доступ к своей учетной записи.\n\nВ BChat ваши сообщения маршрутизируются через узлы сети Beldex и хранятся только локально на вашем устройстве. Ваши сообщения и связанные с ними метаданные не хранятся нигде в блокчейне Beldex, включая серверы хранения мастернод.\n\nВы являетесь владельцем своих данных. Вы можете удалить свои данные в любое время одним нажатием кнопки. Чтобы очистить данные, нажмите на значок профиля в правом верхнем углу, выберите «Мой аккаунт» > «Очистить данные» > «Удалить» > «ОК», и они будут удалены.\n\nBChat создан и поддерживается фондом Beldex. Он является проектом с открытым исходным кодом и не подвергается цензуре. Любой может внести свой вклад в его разработку. Фонд Beldex — это организация, создающая конфиденциальные приложения для децентрализованной сети. В настоящее время разрабатываются следующие продукты: BChat, BelNet (децентрализованный VPN-сервис), Beldex Browser (децентрализованный браузер без рекламы) и протокол Beldex (протокол для анонимизации транзакций других активов блокчейна).\n\nBChat — флагманский продукт Beldex. Первоначальная версия BChat будет мессенджером, позволяющим отправлять по-настоящему анонимные сообщения. Можно создавать секретные и социальные группы. В секретных группах может участвовать максимум 100 человек, в то время как в социальных группах верхнего предела нет. Создать секретную группу может любой, но добавлять в неё можно только контакты из BChat. Для социальных групп требуется выделенный сервер, который должен поддерживаться создателем. В будущих версиях BChat могут быть добавлены голосовые и видеозвонки, а также возможность отправки и получения BDX, собственной криптовалюты сети Beldex. Функция «оплата по мере использования» позволит любому пользователю переводить BDX своим контактам прямо из чата.\n\nИсследовательские лаборатории Beldex, исследовательское подразделение фонда Beldex, изучают возможность внедрения zk-SNARK (в качестве альтернативы кольцевым подписям) для повышения уровня анонимности и сегментирования данных для улучшения масштабируемости в сети Beldex, что может сделать BChat в несколько раз быстрее, чем существующие децентрализованные приложения, и вывести его на путь глобального распространения.\n\nБлагодарности:\nСеть Beldex и BChat используют несколько протоколов, разработанных проектами с открытым исходным кодом Monero, Signal и Session.
+]]></string>
     <string name="contact_list">Список контактов</string>
     <string name="bchat_id_warning_message">Please enter BChat ID</string>
     <string name="bchat_empty_state_message">"Очень пусто. Вот это да! Идите и найдите друзей для BChat! "</string>
@@ -1656,41 +1644,15 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="group_delete_confirmation_message">Поскольку вы являетесь создателем этой группы, она будет удалена для всех. Не подлежит отмене</string>
     <string name="call_missed_title">Вызов пропущен!</string>
     <string name="no_matches_found">Совпадений не найдено!</string>
-    <string name="notify_for_mention_only">Уведомлять только о упоминании</string>
-    <string name="community_guidelines"><![CDATA[
-    BChat — это децентрализованная платформа обмена сообщениями, которая защищает вашу конфиденциальность. Используя BChat, вы владеете своими разговорами и данными. Он не собирает и не хранит вашу личную информацию. BChat — это место, где вы общаетесь свободно.
-BChat — это также больше, чем просто приложение для обмена сообщениями. Вы можете отправлять и получать BDX прямо из своего чата.
-BChat построен на основе сети Beldex. Мастерноды в сети Beldex хранят и передают зашифрованные сообщения между клиентами. Другие проекты, которые в настоящее время исследуются или разрабатываются Beldex, включают BelNet (децентрализованный VPN-сервис), Beldex Browser (браузер Web3 без рекламы) и протокол конфиденциальности Beldex (для анонимизации всех остальных активов).
-
-Чтобы узнать больше, посетите: https://www.beldex.io
-Для сотрудничества или маркетинговых предложений обращайтесь по адресу marketing@beldex.io.
-Для инвестиций обращайтесь по адресу invest.bchat@beldex.io
-Для защиты и сохранения этого сообщества, пожалуйста, соблюдайте правила и рекомендации группы.
-Будьте вежливы. Вы можете делиться своим мнением и конструктивной критикой, но домогательства недопустимы.
-Не рекламируйте и не продвигайте свой токен/проект. Эта группа посвящена BChat и экосистеме Beldex.
-Спамеры будут забанены.
-Не делитесь контентом NSFW и не используйте нецензурную лексику.
-Остерегайтесь мошенников. Администраторы не будут писать вам в личные сообщения первыми.
+    <string name="notify_for_mentions_only">Уведомлять только об упоминаниях</string>
+    <string name="community_guidelines"><![CDATA[BChat — это децентрализованная платформа обмена сообщениями, которая защищает вашу конфиденциальность. Используя BChat, вы владеете своими разговорами и данными. Он не собирает и не хранит вашу личную информацию. BChat — это место, где вы общаетесь свободно.\n\nBChat — это также больше, чем просто приложение для обмена сообщениями. Вы можете отправлять и получать BDX прямо из своего чата.\nnBChat построен на основе сети Beldex. Мастерноды в сети Beldex хранят и передают зашифрованные сообщения между клиентами. Другие проекты, которые в настоящее время исследуются или разрабатываются Beldex, включают BelNet (децентрализованный VPN-сервис), Beldex Browser (браузер Web3 без рекламы) и протокол конфиденциальности Beldex (для анонимизации всех остальных активов).\n\nЧтобы узнать больше, посетите: https://www.beldex.io\nДля сотрудничества или маркетинговых предложений обращайтесь по адресу marketing@beldex.io.\nДля инвестиций обращайтесь по адресу invest.bchat@beldex.io\n\nДля защиты и сохранения этого сообщества, пожалуйста, соблюдайте правила и рекомендации группы.\n\nБудьте вежливы. Вы можете делиться своим мнением и конструктивной критикой, но домогательства недопустимы.\nНе рекламируйте и не продвигайте свой токен/проект. Эта группа посвящена BChat и экосистеме Beldex.\nСпамеры будут забанены.\nНе делитесь контентом NSFW и не используйте нецензурную лексику.\n\nОстерегайтесь мошенников. Администраторы не будут писать вам в личные сообщения первыми.
 ]]></string>
     <string name="divider">Divider</string>
-    <string name="pull">pull</string>
-    <string name="your_wallet_address">Your Wallet Address</string>
     <string name="seed">Seed</string>
-    <string name="recoveryPhraseCount">0/25</string>
-    <string name="recovery_seed_instruction">Use the 25-word Mnemonic key or seed phrase to restore your wallet.</string>
-    <string name="restore_from_keys">Restore From Keys</string>
-    <string name="use_private_key_instruction">"Use the generated keystore saved from private keys to restore your wallet.</string>
-    <string name="personal">Personal</string>
     <string name="title">Title</string>
-    <string name="invalid_address">Invalid address</string>
     <string name="list">list</string>
-    <string name="usd">USD</string>
     <string name="claim_your_airdrop">Yay! You made it here. Claim your airdrop. Submit your BChat ID and BDX wallet address in the link below</string>
-    <string name="reset">Reset</string>
-    <string name="connection_fail">Connection fail</string>
-    <string name="you_have_scanned_from_the_block_height">You have scanned from the block height</string>
     <string name="txt">TXT</string>
-    <string name="beldex_full_balance">Beldex Full Balance</string>
-    <string name="pin_info">This is the PIN you set to your BChat account.</string>
     <string name="user">User</string>
+    <string name="default_value_messages_per_conversation">500 messages per conversation</string>
 </resources>

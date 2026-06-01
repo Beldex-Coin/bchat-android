@@ -110,7 +110,6 @@ public class ThreadRecord extends DisplayRecord implements Serializable {
         direction = context.getString(R.string.conversation_activity__send);
       } else {
         direction = context.getString(R.string.message_details_header__received);
-        ;
       }
       return emphasisAdded(context.getString(R.string.ThreadRecord_payment ,amount,direction));
     } else if (SmsDatabase.Types.isFailedDecryptType(type)) {

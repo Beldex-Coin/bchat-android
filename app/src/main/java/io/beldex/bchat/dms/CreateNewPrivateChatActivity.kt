@@ -84,7 +84,7 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
                 if (publicKeyEditText.text.isEmpty()) {
                     Toast.makeText(
                         this@CreateNewPrivateChatActivity,
-                        getString(R.string.bchat_id_warning_message),
+                        R.string.bchat_id_warning_message,
                         Toast.LENGTH_SHORT
                     ).show()
                 } else {

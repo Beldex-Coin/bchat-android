@@ -323,7 +323,7 @@ class WebRTCComposeActivity : ComponentActivity() {
             mutableStateOf(context.getString(R.string.WebRtcCallActivity_Reconnecting))
         }
         var isStatusText by remember {
-            mutableStateOf("Voice Call")
+            mutableStateOf(context.getString(R.string.voice_call))
         }
 
         var isShowDialingStatus by remember {
@@ -547,7 +547,7 @@ class WebRTCComposeActivity : ComponentActivity() {
                             isStatusCallAudioText=if (isShowCallVideoStatus) {
                                 ""
                             } else {
-                                "Call Muted"
+                                getString(R.string.call_muted)
                             }
                         } else {
                             isShowCallAudioStatus=false
@@ -674,7 +674,7 @@ class WebRTCComposeActivity : ComponentActivity() {
                         isStatusText=if (state.userVideoEnabled) {
                             "Video Call"
                         } else {
-                            "Voice Call"
+                            context.getString(R.string.voice_call)
                         }
                         if (state.showFloatingVideo()) {
                             callViewModel.floatingRenderer?.let { sfView ->

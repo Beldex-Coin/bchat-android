@@ -48,7 +48,7 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
                 restore()
             }
             else{
-                Toast.makeText(this,R.string.please_enter_valid_seed,Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,getString(R.string.please_enter_valid_seed),Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -144,15 +144,6 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
             MnemonicUtilities.loadFileContents(this, fileName)
         }
         MnemonicCodec(loadFileContents).encode(hexEncodedSeed!!, MnemonicCodec.Language.Configuration.english)
-    }
-
-    private fun openURL(url: String) {
-        try {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            startActivity(intent)
-        } catch (e: Exception) {
-            Toast.makeText(this, R.string.invalid_url, Toast.LENGTH_SHORT).show()
-        }
     }
     // endregion
 }

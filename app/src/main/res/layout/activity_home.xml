@@ -127,7 +127,7 @@
                             android:layout_marginStart="16dp"
                             android:layout_toEndOf="@+id/profileButton"
                             android:fontFamily="@font/open_sans_semi_bold"
-                            android:text="@string/bchat"
+                            android:text="@string/activity_chat_settings_title"
                             android:textSize="24sp"/>
 
                         <!-- <RelativeLayout

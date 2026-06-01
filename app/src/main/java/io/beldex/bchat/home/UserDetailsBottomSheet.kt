@@ -112,7 +112,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
             publicKeyTextView.setOnLongClickListener {
                 val clipboard =
                     requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("Bchat ID", publicKey)
+                val clip = ClipData.newPlainText("BChat ID", publicKey)
                 clipboard.setPrimaryClip(clip)
                 Toast.makeText(requireContext(), R.string.copied_to_clipboard, Toast.LENGTH_SHORT)
                     .show()

@@ -41,7 +41,7 @@ class ChangeLogActivity : io.beldex.bchat.BaseActionBarActivity() {
     private fun loadJSONFromAsset(): String? {
         var json: String? = null
         json = try {
-            val `is`: InputStream = this.assets.open("changeLog/ar/changeLog.json")
+            val `is`: InputStream = this.assets.open("changeLog.json")
             val size: Int = `is`.available()
             val buffer = ByteArray(size)
             `is`.read(buffer)

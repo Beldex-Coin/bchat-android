@@ -1,19 +1,23 @@
 package io.beldex.bchat.my_account.ui
 
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.beldex.libbchat.mnode.OnionRequestAPI
 import com.beldex.libbchat.utilities.truncateIdForDisplay
+import dagger.hilt.android.lifecycle.HiltViewModel
+import io.beldex.bchat.R
 import io.beldex.bchat.my_account.domain.PathNodeModel
 import io.beldex.bchat.util.IP2Country
 import io.beldex.bchat.util.ResourceProvider
 import io.beldex.bchat.util.SharedPreferenceUtil
-import dagger.hilt.android.lifecycle.HiltViewModel
-import io.beldex.bchat.R
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,6 +44,22 @@ class MyAccountViewModel @Inject constructor(
 
     private val _showLoader = MutableLiveData<Boolean>()
     val showLoader: LiveData<Boolean> get () = _showLoader
+
+    private val _selectedLanguageCode = MutableStateFlow(
+        AppCompatDelegate.getApplicationLocales()[0]?.language
+            ?: Locale.getDefault().language
+    )
+
+    val selectedLanguageCode: StateFlow<String> =
+        _selectedLanguageCode.asStateFlow()
+
+    fun selectLanguage(code: String) {
+        _selectedLanguageCode.value = code
+
+        AppCompatDelegate.setApplicationLocales(
+            LocaleListCompat.forLanguageTags(code)
+        )
+    }
 
     init {
         val publicKey = preferenceUtil.getPublicKey()

@@ -129,6 +129,7 @@ import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.crypto.MnemonicUtilities
 import io.beldex.bchat.database.DatabaseContentProviders
 import io.beldex.bchat.database.GroupDatabase
+import io.beldex.bchat.home.ChooseLanguage
 import io.beldex.bchat.messagerequests.MessageRequestsViewModel
 import io.beldex.bchat.my_account.ui.dialogs.BNSNameVerifySuccessDialog
 import io.beldex.bchat.my_account.ui.dialogs.ClearDataDialog
@@ -1349,6 +1350,22 @@ fun MyAccountNavHost(
                 )
             }
         }
+        composable(
+            route = MyAccountScreens.LanguageChooseScreen.route
+        ) {
+            MyAccountScreenContainer(
+                title = stringResource(R.string.choose_language),
+                onBackClick = {
+                    (context as ComponentActivity).finish()
+                }) {
+                ChooseLanguage(
+                    viewModel,
+                    onBack = {
+                        (context as ComponentActivity).finish()
+                    }
+                )
+            }
+        }
     }
 }
 
@@ -1602,7 +1619,7 @@ fun ProfileCardKeyContainer(
 }
 
 @Composable
-private fun MyAccountScreenContainer(
+fun MyAccountScreenContainer(
     title: String,
     wrapInCard: Boolean = true,
     onBackClick: () -> Unit,

@@ -276,6 +276,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             NavigationItemModel(R.drawable.ic_notification_outline, getString(R.string.notification)),
             NavigationItemModel(R.drawable.ic_msg_rqst_outline, getString(R.string.activity_message_requests_title)),
             NavigationItemModel(R.drawable.ic_recovery_seed_outline, getString(R.string.activity_settings_recovery_phrase_button_title)),
+            NavigationItemModel(R.drawable.ic_language, getString(R.string.language)),
             NavigationItemModel(R.drawable.ic_report_issue_outline,getString(R.string.report_issue)),
             NavigationItemModel(R.drawable.ic_help_outline, getString(R.string.help)),
             NavigationItemModel(R.drawable.ic_invite_outline, getString(R.string.invite)),
@@ -310,19 +311,23 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                         showSeed()
                     }
                     4 -> {
+                        // # Choose Language Activity
+                        showChooseLanguage()
+                    }
+                    5 -> {
                         // # Support
                         sendMessageToSupport()
                         binding.drawerLayout.closeDrawer(GravityCompat.END)
                     }
-                    5 -> {
+                    6 -> {
                         // # Help Activity
                         help()
                     }
-                    6 -> {
+                    7 -> {
                         // # Invite Activity
                         sendInvitation(hexEncodedPublicKey)
                     }
-                    7 -> {
+                    8 -> {
                         // # About Activity
                         showAbout()
                     }
@@ -1176,6 +1181,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
 //        }
         Intent(this, MyAccountActivity::class.java).also {
             it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.RecoverySeedScreen.route)
+            startActivity(it)
+        }
+    }
+
+    private fun showChooseLanguage() {
+        Intent(this, MyAccountActivity::class.java).also {
+            it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.LanguageChooseScreen.route)
             startActivity(it)
         }
     }

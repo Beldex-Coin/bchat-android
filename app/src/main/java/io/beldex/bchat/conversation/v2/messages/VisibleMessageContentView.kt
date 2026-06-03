@@ -560,7 +560,7 @@ class VisibleMessageContentView : MaterialCardView {
             val isList= isListMessage(message.body)
 
             binding.bodyTextView.setPadding(
-                binding.bodyTextView.paddingLeft,
+                binding.bodyTextView.paddingStart,
                 binding.bodyTextView.paddingTop,
                 dpToPx(12),
                 if (isList) dpToPx(12) else dpToPx(6)

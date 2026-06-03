@@ -25,8 +25,8 @@
             app:cardBackgroundColor="@color/card_color"
             app:cardCornerRadius="10dp"
             app:layout_constraintBottom_toTopOf="@id/restoreKeysAddressCard"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -47,8 +47,8 @@
                     android:paddingBottom="0dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_weight="4"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -65,8 +65,8 @@
             app:cardBackgroundColor="@color/card_color"
             app:cardCornerRadius="10dp"
             app:layout_constraintBottom_toTopOf="@id/restoreKeysViewKeyCard"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/restoreKeysWalletNameCard">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -87,8 +87,8 @@
                     android:paddingBottom="0dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_weight="4"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -105,8 +105,8 @@
             app:cardBackgroundColor="@color/card_color"
             app:cardCornerRadius="10dp"
             app:layout_constraintBottom_toTopOf="@id/restoreKeysSpendKeyCard"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/restoreKeysAddressCard">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -127,8 +127,8 @@
                     android:paddingBottom="0dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_weight="4"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -144,8 +144,8 @@
             android:layout_marginBottom="10dp"
             app:cardBackgroundColor="@color/card_color"
             app:cardCornerRadius="10dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/restoreKeysViewKeyCard"
             app:layout_constraintBottom_toTopOf="@id/restoreKeysWalletRestoreHeightCard">
 
@@ -167,8 +167,8 @@
                     android:paddingBottom="0dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_weight="4"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -183,8 +183,8 @@
             android:layout_marginStart="20dp"
             app:cardBackgroundColor="@color/card_color"
             app:cardCornerRadius="10dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/restoreKeysSpendKeyCard"
             app:layout_constraintBottom_toTopOf="@id/restoreSeedOrText">
 
@@ -205,8 +205,8 @@
                     android:paddingBottom="0dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_weight="4"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -222,21 +222,21 @@
             android:textColor="@color/text"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/restoreKeysWalletRestoreDateCard"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/restoreKeysWalletRestoreHeightCard" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/restoreKeysWalletRestoreDateCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="30dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             app:cardBackgroundColor="@color/card_color"
             app:cardCornerRadius="10dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/restoreSeedOrText">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -256,8 +256,8 @@
                     android:paddingBottom="0dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_weight="4"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -270,12 +270,12 @@
             android:layout_height="@dimen/medium_button_height"
             android:layout_marginTop="30dp"
             android:layout_marginBottom="30dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:text="@string/restore"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/restoreKeysWalletRestoreDateCard" />
 
 

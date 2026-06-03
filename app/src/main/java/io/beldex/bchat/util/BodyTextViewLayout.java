@@ -54,7 +54,7 @@ public class BodyTextViewLayout extends RelativeLayout {
             return;
         }
 
-        int availableWidth = widthSize - getPaddingLeft() - getPaddingRight();
+        int availableWidth = widthSize - getPaddingStart() - getPaddingEnd();
         int availableHeight = heightSize - getPaddingTop() - getPaddingBottom();
 
         viewPartMessageLayoutParams = (LayoutParams) viewPartMessage.getLayoutParams();
@@ -68,7 +68,7 @@ public class BodyTextViewLayout extends RelativeLayout {
         int viewPartMessageLineCount = viewPartMessage.getLineCount();
         float viewPartMessageLastLineWidth = viewPartMessageLineCount > 0 ? viewPartMessage.getLayout().getLineWidth(viewPartMessageLineCount - 1) : 0;
 
-        widthSize = getPaddingLeft() + getPaddingRight();
+        widthSize = getPaddingStart() + getPaddingEnd();
         heightSize = getPaddingTop() + getPaddingBottom();
 
         if (viewPartMessageLineCount > 1 && !(viewPartMessageLastLineWidth + viewPartTimeWidth >= viewPartMessage.getMeasuredWidth())) {
@@ -98,15 +98,15 @@ public class BodyTextViewLayout extends RelativeLayout {
         }
 
         viewPartMessage.layout(
-                getPaddingLeft(),
+                getPaddingStart(),
                 getPaddingTop(),
-                viewPartMessage.getWidth() + getPaddingLeft(),
+                viewPartMessage.getWidth() + getPaddingStart(),
                 viewPartMessage.getHeight() + getPaddingTop());
 
         viewPartTime.layout(
-                right - left - viewPartTimeWidth - getPaddingRight(),
+                right - left - viewPartTimeWidth - getPaddingEnd(),
                 bottom - top - getPaddingBottom() - viewPartTimeHeight,
-                right - left - getPaddingRight(),
+                right - left - getPaddingEnd(),
                 bottom - top - getPaddingBottom());
     }
 }

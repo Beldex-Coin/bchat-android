@@ -116,8 +116,8 @@
                                 android:layout_marginEnd="15dp"
                                 android:drawableStart="@drawable/ic_baseline_share_24"
                                 android:gravity="center|end"
-                                android:paddingLeft="15dp"
-                                android:paddingRight="15dp"
+                                android:paddingStart="15dp"
+                                android:paddingEnd="15dp"
                                 android:text="@string/share"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
@@ -283,7 +283,7 @@
                                         android:textStyle="bold"
                                         android:layout_marginStart="15dp"
                                         app:layout_constraintBottom_toBottomOf="parent"
-                                        app:layout_constraintLeft_toLeftOf="parent"
+                                        app:layout_constraintStart_toStartOf="parent"
                                         app:layout_constraintTop_toTopOf="parent" />
 
                                     <ImageView
@@ -295,7 +295,7 @@
                                         android:textAlignment="textEnd"
                                         android:visibility="gone"
                                         app:layout_constraintBottom_toBottomOf="parent"
-                                        app:layout_constraintRight_toLeftOf="@id/shareButton"
+                                        app:layout_constraintEnd_toStartOf="@id/shareButton"
                                         app:layout_constraintTop_toTopOf="parent" />
 
                                     <ImageView
@@ -305,7 +305,7 @@
                                         android:src="@drawable/ic_baseline_share_24"
                                         android:visibility="gone"
                                         app:layout_constraintBottom_toBottomOf="parent"
-                                        app:layout_constraintRight_toRightOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
                                         app:layout_constraintTop_toTopOf="parent" />
                                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -364,7 +364,7 @@
                                         android:textStyle="bold"
                                         android:layout_marginStart="15dp"
                                         app:layout_constraintBottom_toBottomOf="parent"
-                                        app:layout_constraintLeft_toLeftOf="parent"
+                                        app:layout_constraintStart_toStartOf="parent"
                                         app:layout_constraintTop_toTopOf="parent" />
 
                                     <ImageView
@@ -376,7 +376,7 @@
                                         android:textAlignment="textEnd"
                                         android:visibility="gone"
                                         app:layout_constraintBottom_toBottomOf="parent"
-                                        app:layout_constraintRight_toLeftOf="@id/beldexAddressShareButton"
+                                        app:layout_constraintEnd_toStartOf="@id/beldexAddressShareButton"
                                         app:layout_constraintTop_toTopOf="parent" />
 
                                     <ImageView
@@ -386,7 +386,7 @@
                                         android:src="@drawable/ic_baseline_share_24"
                                         android:visibility="gone"
                                         app:layout_constraintBottom_toBottomOf="parent"
-                                        app:layout_constraintRight_toRightOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
                                         app:layout_constraintTop_toTopOf="parent" />
                                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -426,9 +426,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/large_spacing"
+                android:layout_marginStart="@dimen/large_spacing"
                 android:layout_marginTop="@dimen/large_spacing"
-                android:layout_marginRight="@dimen/large_spacing"
+                android:layout_marginEnd="@dimen/large_spacing"
                 android:orientation="horizontal"
                 android:visibility="gone">
 

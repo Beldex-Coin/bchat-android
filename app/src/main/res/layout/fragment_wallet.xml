@@ -100,8 +100,8 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/progressBar">
 
                 <TextView
@@ -141,8 +141,8 @@
                 android:layout_marginEnd="40dp"
                 android:layout_weight="1"
                 android:background="@drawable/wallet_bottom_card"
-                app:layout_constraintLeft_toLeftOf="@id/transactionLayoutCardView"
-                app:layout_constraintRight_toRightOf="@id/transactionLayoutCardView"
+                app:layout_constraintStart_toStartOf="@id/transactionLayoutCardView"
+                app:layout_constraintEnd_toEndOf="@id/transactionLayoutCardView"
                 app:layout_constraintTop_toBottomOf="@id/syncStatusLayout">
 
                 <LinearLayout
@@ -151,8 +151,8 @@
                     android:layout_margin="10dp"
                     android:orientation="vertical"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <LinearLayout
@@ -332,8 +332,8 @@
                 android:background="@drawable/wallet_bottom_card"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/sendCardViewButton"
@@ -359,8 +359,8 @@
                         android:textSize="18sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -396,8 +396,8 @@
                         android:textSize="18sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>

@@ -48,9 +48,9 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/medium_spacing"
+                    android:layout_marginStart="@dimen/medium_spacing"
                     android:layout_marginTop="20dp"
-                    android:layout_marginRight="@dimen/medium_spacing"
+                    android:layout_marginEnd="@dimen/medium_spacing"
                     android:fontFamily="@font/open_sans_bold"
                     android:text="@string/chatid"
                     android:textColor="@color/text_green"
@@ -61,9 +61,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/medium_spacing"
+                    android:layout_marginStart="@dimen/medium_spacing"
                     android:layout_marginTop="@dimen/small_spacing"
-                    android:layout_marginRight="@dimen/medium_spacing"
+                    android:layout_marginEnd="@dimen/medium_spacing"
                     android:layout_marginBottom="@dimen/small_spacing"
                     android:orientation="vertical">
 
@@ -130,9 +130,9 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/medium_spacing"
+                    android:layout_marginStart="@dimen/medium_spacing"
                     android:layout_marginTop="20dp"
-                    android:layout_marginRight="@dimen/medium_spacing"
+                    android:layout_marginEnd="@dimen/medium_spacing"
                     android:fontFamily="@font/open_sans_bold"
                     android:text="@string/beldex_address"
                     android:textColor="#0085FF"
@@ -143,9 +143,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/medium_spacing"
+                    android:layout_marginStart="@dimen/medium_spacing"
                     android:layout_marginTop="@dimen/small_spacing"
-                    android:layout_marginRight="@dimen/medium_spacing"
+                    android:layout_marginEnd="@dimen/medium_spacing"
                     android:layout_marginBottom="@dimen/small_spacing"
                     android:orientation="vertical">
 
@@ -201,8 +201,8 @@
             style="@style/Widget.Bchat.Button.Common.ProminentFilled"
             android:layout_width="match_parent"
             android:layout_height="@dimen/medium_button_height"
-            android:layout_marginLeft="@dimen/medium_spacing"
-            android:layout_marginRight="@dimen/medium_spacing"
+            android:layout_marginStart="@dimen/medium_spacing"
+            android:layout_marginEnd="@dimen/medium_spacing"
             android:layout_marginBottom="30dp"
             android:text="@string/continue_2" />
 
@@ -211,9 +211,9 @@
             style="@style/Widget.Bchat.Button.Common.ProminentOutline"
             android:layout_width="match_parent"
             android:layout_height="@dimen/medium_button_height"
-            android:layout_marginLeft="@dimen/massive_spacing"
+            android:layout_marginStart="@dimen/massive_spacing"
             android:layout_marginTop="@dimen/small_spacing"
-            android:layout_marginRight="@dimen/massive_spacing"
+            android:layout_marginEnd="@dimen/massive_spacing"
             android:text="@string/copy"
             android:visibility="gone" />
 
@@ -221,8 +221,8 @@
             android:id="@+id/termsTextView"
             android:layout_width="match_parent"
             android:layout_height="@dimen/onboarding_button_bottom_offset"
-            android:layout_marginLeft="@dimen/massive_spacing"
-            android:layout_marginRight="@dimen/massive_spacing"
+            android:layout_marginStart="@dimen/massive_spacing"
+            android:layout_marginEnd="@dimen/massive_spacing"
             android:gravity="center"
             android:text="By using this service, you agree to our Terms of Service and Privacy Policy"
             android:textColor="?android:textColorTertiary"

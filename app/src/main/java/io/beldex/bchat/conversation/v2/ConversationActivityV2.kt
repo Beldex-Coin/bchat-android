@@ -1068,7 +1068,11 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         }
 
         // ---------- Back button ----------
-        binding.backToHomeBtn.setOnClickListener {
+        binding.conversationActivityToolbar.setNavigationIcon(
+            R.drawable.ic_back_arrow
+        )
+
+        binding.conversationActivityToolbar.setNavigationOnClickListener {
             handleBackPressed()
             onBackPressedDispatcher.onBackPressed()
         }

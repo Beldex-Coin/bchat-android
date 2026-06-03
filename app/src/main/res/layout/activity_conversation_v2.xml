@@ -19,16 +19,9 @@
             android:id="@+id/conversationActivity_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"
             android:background="?colorPrimary">
-
-            <ImageButton
-                android:id="@+id/back_to_home_Btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:background="@android:color/transparent"
-                android:padding="3dp"
-                android:src="@drawable/ic_back_arrow" />
 
             <LinearLayout
                 android:id="@+id/layout_conversation"
@@ -610,8 +603,8 @@
                         android:background="@drawable/rounded_rectangle"
                         android:backgroundTint="@color/conversation_unread_count_indicator_background"
                         android:maxWidth="40dp"
-                        android:paddingLeft="4dp"
-                        android:paddingRight="4dp">
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp">
 
                         <TextView
                             android:id="@+id/unreadCountTextView"

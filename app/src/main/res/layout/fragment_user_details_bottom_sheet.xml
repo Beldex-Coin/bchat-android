@@ -8,8 +8,8 @@
     android:orientation="vertical"
     android:gravity="center_horizontal"
     android:background="@drawable/default_dialog_background"
-    android:paddingLeft="@dimen/large_spacing"
-    android:paddingRight="@dimen/large_spacing"
+    android:paddingStart="@dimen/large_spacing"
+    android:paddingEnd="@dimen/large_spacing"
     android:paddingBottom="@dimen/large_spacing"
     app:behavior_hideable="true"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
@@ -144,8 +144,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/medium_button_height"
         android:layout_marginTop="@dimen/medium_spacing"
-        android:paddingLeft="@dimen/large_spacing"
-        android:paddingRight="@dimen/large_spacing"
+        android:paddingStart="@dimen/large_spacing"
+        android:paddingEnd="@dimen/large_spacing"
         android:text="@string/ConversationActivity_message" />
 
 </LinearLayout>

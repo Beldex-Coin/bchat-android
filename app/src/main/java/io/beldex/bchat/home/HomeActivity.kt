@@ -1165,7 +1165,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     private fun sendInvitation(hexEncodedPublicKey:String) {
         val intent = Intent()
         intent.action = Intent.ACTION_SEND
-        val invitation = String.format(this.resources.getString(R.string.invitation_msg), hexEncodedPublicKey)
+        val invitation = getString(R.string.invitation_msg, hexEncodedPublicKey)
         intent.putExtra(Intent.EXTRA_TEXT, invitation)
         intent.type = "text/plain"
         val chooser = Intent.createChooser(intent, getString(R.string.activity_settings_invite_button_title))
@@ -1189,9 +1189,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     }
 
     private fun showSeed() {
-//        Intent(requireContext(), SeedPermissionActivity::class.java).also {
-//            show(it)
-//        }
         Intent(this, MyAccountActivity::class.java).also {
             it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.RecoverySeedScreen.route)
             startActivity(it)

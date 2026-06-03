@@ -169,9 +169,9 @@
                     style="@style/Widget.Bchat.Button.Common.ProminentFilled"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/medium_button_height"
-                    android:layout_marginLeft="@dimen/small_spacing"
+                    android:layout_marginStart="@dimen/small_spacing"
                     android:layout_marginTop="20dp"
-                    android:layout_marginRight="@dimen/small_spacing"
+                    android:layout_marginEnd="@dimen/small_spacing"
                     android:text="@string/enable_wallet" />
 
             </LinearLayout>

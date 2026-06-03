@@ -78,7 +78,7 @@ public class ComposeText extends EmojiEditText {
     private CharSequence ellipsizeToWidth(CharSequence text) {
         return TextUtils.ellipsize(text,
                 getPaint(),
-                getWidth() - getPaddingLeft() - getPaddingRight(),
+                getWidth() - getPaddingStart() - getPaddingEnd(),
                 TruncateAt.END);
     }
 

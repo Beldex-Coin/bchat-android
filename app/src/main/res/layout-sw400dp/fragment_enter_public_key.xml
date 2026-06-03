@@ -20,9 +20,9 @@
         android:id="@+id/publicKeyEditText"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:layout_marginLeft="@dimen/large_spacing"
+        android:layout_marginStart="@dimen/large_spacing"
         android:layout_marginTop="@dimen/large_spacing"
-        android:layout_marginRight="@dimen/large_spacing"
+        android:layout_marginEnd="@dimen/large_spacing"
         android:paddingTop="0dp"
         android:paddingBottom="0dp"
         android:gravity="center_vertical"
@@ -34,9 +34,9 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/large_spacing"
+        android:layout_marginStart="@dimen/large_spacing"
         android:layout_marginTop="@dimen/medium_spacing"
-        android:layout_marginRight="@dimen/large_spacing"
+        android:layout_marginEnd="@dimen/large_spacing"
         android:textSize="@dimen/very_small_font_size"
         android:textColor="@color/text"
         android:alpha="0.6"
@@ -53,9 +53,9 @@
             android:id="@+id/separatorView"
             android:layout_width="match_parent"
             android:layout_height="32dp"
-            android:layout_marginLeft="@dimen/large_spacing"
+            android:layout_marginStart="@dimen/large_spacing"
             android:layout_marginTop="@dimen/large_spacing"
-            android:layout_marginRight="@dimen/large_spacing"
+            android:layout_marginEnd="@dimen/large_spacing"
             android:visibility="gone"/>
 
         <TextView
@@ -74,9 +74,9 @@
             android:layout_height="wrap_content"
             app:cardBackgroundColor="@color/card_color"
             app:cardCornerRadius="10dp"
-            android:layout_marginLeft="@dimen/large_spacing"
+            android:layout_marginStart="@dimen/large_spacing"
             android:layout_marginTop="@dimen/large_spacing"
-            android:layout_marginRight="@dimen/large_spacing">
+            android:layout_marginEnd="@dimen/large_spacing">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -84,9 +84,9 @@
                     android:id="@+id/publicKeyTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/large_spacing"
+                    android:layout_marginStart="@dimen/large_spacing"
                     android:layout_marginTop="@dimen/large_spacing"
-                    android:layout_marginRight="@dimen/large_spacing"
+                    android:layout_marginEnd="@dimen/large_spacing"
                     android:layout_marginBottom="@dimen/large_spacing"
                     android:textSize="@dimen/medium_font_size"
                     android:textColor="@color/button_green"
@@ -100,9 +100,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/large_spacing"
+            android:layout_marginStart="@dimen/large_spacing"
             android:layout_marginTop="@dimen/large_spacing"
-            android:layout_marginRight="@dimen/large_spacing"
+            android:layout_marginEnd="@dimen/large_spacing"
             android:orientation="horizontal">
 
             <Button
@@ -112,8 +112,8 @@
                 android:layout_height="@dimen/medium_button_height"
                 android:layout_weight="1"
                 android:drawableStart="@drawable/ic_baseline_content_copy_24"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
                 android:text="@string/copy" />
 
             <Button
@@ -124,8 +124,8 @@
                 android:layout_weight="1"
                 android:layout_marginStart="@dimen/medium_spacing"
                 android:drawableStart="@drawable/ic_baseline_share_24"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
                 android:text="@string/share" />
 
         </LinearLayout>
@@ -141,8 +141,8 @@
         style="@style/Widget.Bchat.Button.Common.ProminentFilled"
         android:id="@+id/createPrivateChatButton"
         android:layout_width="match_parent"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
         android:layout_height="@dimen/medium_button_height"
         android:layout_marginBottom="@dimen/medium_spacing"
         android:text="@string/next" />

@@ -42,7 +42,7 @@ object TextUtilities {
         val textSpannable = text.toSpannable()
         return (0 until textLayout.lineCount).flatMap { line ->
             textLayout.getLineBounds(line, lineRect)
-            lineRect.offset(offset[0] + totalPaddingLeft, offset[1] + totalPaddingTop)
+            lineRect.offset(offset[0] + totalPaddingStart, offset[1] + totalPaddingTop)
             if (lineRect.contains(hitRect)) {
                 // calculate the url span intersected with (if any)
                 val off = textLayout.getOffsetForHorizontal(line, hitRect.left.toFloat()) // left and right will be the same

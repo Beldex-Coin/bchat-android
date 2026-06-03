@@ -19,8 +19,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="35dp"
-            android:layout_marginRight="@dimen/very_large_spacing"
+            android:layout_marginStart="35dp"
+            android:layout_marginEnd="@dimen/very_large_spacing"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@color/text"
@@ -29,9 +29,9 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="35dp"
+            android:layout_marginStart="35dp"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="@dimen/very_large_spacing"
+            android:layout_marginEnd="@dimen/very_large_spacing"
             android:layout_marginBottom="30dp"
             android:alpha="0.2"
             android:textSize="@dimen/small_font_size"
@@ -49,8 +49,8 @@
             android:id="@+id/laterButton"
             android:layout_width="match_parent"
             android:layout_height="@dimen/medium_button_height"
-            android:layout_marginLeft="@dimen/massive_spacing"
-            android:layout_marginRight="@dimen/massive_spacing"
+            android:layout_marginStart="@dimen/massive_spacing"
+            android:layout_marginEnd="@dimen/massive_spacing"
             android:layout_marginBottom="@dimen/small_spacing"
             android:visibility="visible"
             android:text="@string/later" />
@@ -60,8 +60,8 @@
             android:id="@+id/enableButton"
             android:layout_width="match_parent"
             android:layout_height="@dimen/medium_button_height"
-            android:layout_marginLeft="@dimen/massive_spacing"
-            android:layout_marginRight="@dimen/massive_spacing"
+            android:layout_marginStart="@dimen/massive_spacing"
+            android:layout_marginEnd="@dimen/massive_spacing"
             android:layout_marginBottom="30dp"
             android:text="@string/dialog_link_preview_enable_button_title" />
 

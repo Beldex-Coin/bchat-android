@@ -3,7 +3,6 @@ package io.beldex.bchat.conversation.v2
 import android.Manifest
 import android.animation.FloatEvaluator
 import android.animation.ValueAnimator
-import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -24,6 +23,7 @@ import android.util.Log
 import android.view.ActionMode
 import android.view.LayoutInflater
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
@@ -41,6 +41,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -218,7 +219,6 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     lateinit var binding: ActivityConversationV2Binding
 
     // -------------------- Simple fields ------------------
-    private var param2: String? = null
     private val screenWidth = Resources.getSystem().displayMetrics.widthPixels
 
     private var actionMode: ActionMode? = null
@@ -226,35 +226,20 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     private var selectedView: VisibleMessageView? = null
     private var selectedMessageRecord: MessageRecord? = null
 
+    private var menuItemLastClickTime = 0L
     private var unreadCount = 0
     private var isLockViewExpanded = false
     private var isShowingAttachmentOptions = false
     private var emojiLastClickTime: Long = 0
-
-    private var isResume = false
-    private var blockProgressBarVisible = false
-    private var dispatchTouched = false
     private var isNetworkAvailable = true
     private var isAudioPlaying = false
     private var audioPlayingIndexInAdapter = -1
-
-    private var menuItemLastClickTime = 0L
     private var unblockButtonLastClickTime = 0L
-    private var clearChatButtonLastClickTime = 0L
     private var networkChangedReceiver : NetworkChangeReceiver?=null
     private val layoutManager : LinearLayoutManager?
         get() {
             return binding.conversationRecyclerView.layoutManager as LinearLayoutManager?
         }
-
-    // -------------------- Intent extras -------------------
-    private val threadId: Long by lazy {
-        intent.getLongExtra(THREAD_ID, -1L)
-    }
-
-    private val address: Address? by lazy {
-        intent.getParcelableExtra(ADDRESS)
-    }
 
     private var uiJob : Job?=null
     private val callDurationFormat="HH:mm:ss"
@@ -279,7 +264,13 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         var id = intent.getLongExtra(THREAD_ID, -1L)
 
         if (id == -1L) {
-            val address = intent.getParcelableExtra<Address>(ADDRESS)
+            val address: Address? =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    intent.getParcelableExtra(ADDRESS, Address::class.java)
+                } else {
+                    @Suppress("DEPRECATION")
+                    intent.getParcelableExtra(ADDRESS)
+                }
             if (address != null) {
                 val recipient = Recipient.from(this, address, false)
                 id = threadDb.getOrCreateThreadIdFor(recipient)
@@ -327,7 +318,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     private var previousText: CharSequence = ""
     private var currentMentionStartIndex = -1
     private var isShowingMentionCandidatesView = false
-    private var clearChatButtonLastClickTiem: Long = 0
+    private var clearChatButtonLastClickTime: Long = 0
 
     // -------------------- RecyclerView -------------------
     private val glide by lazy { Glide.with(this) }
@@ -339,7 +330,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             cursor,
             searchViewModel,
             onItemPress={ message, position, view, event ->
-                if (!TextSecurePreferences.getIsReactionOverlayVisible(this)) {
+                if (!getIsReactionOverlayVisible(this)) {
                     handlePress(message, position, view, event)
                 }
             },
@@ -381,7 +372,6 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
 
     // -------------------- Other --------------------------
     private lateinit var screenshotDetector: ScreenshotDetector
-    private var amplitudeJob: Job? = null
     private var conversationApprovalJob: Job? = null
     private val messageToScrollTimestamp=AtomicLong(-1)
     private val messageToScrollAuthor=AtomicReference<Address?>(null)
@@ -400,12 +390,12 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             MnemonicUtilities.loadFileContents(this, fileName)
         }
         MnemonicCodec(loadFileContents).encode(
-            hexEncodedSeed!!,
+            hexEncodedSeed,
             MnemonicCodec.Language.Configuration.english
         )
     }
 
-
+    private var lastProfileAvatar: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -413,7 +403,6 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         binding = ActivityConversationV2Binding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.conversationActivityToolbar)
-
         // ---------- Network monitoring ----------
         networkChangedReceiver = NetworkChangeReceiver(::networkChange)
         networkChangedReceiver?.register(this)
@@ -432,7 +421,6 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     override fun onPause() {
         super.onPause()
         ApplicationContext.getInstance(this).messageNotifier.setVisibleThread(-1)
-        viewModel.saveDraft(binding.inputBar.text.trim())
         if (isAudioPlaying) {
             this.stopVoiceMessages(audioPlayingIndexInAdapter)
         }
@@ -461,11 +449,14 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         if (getIsReactionOverlayVisible(this)) {
             setIsReactionOverlayVisible(this, false)
         }
+        actionMode?.finish()
+        this.actionMode=null
     }
 
     override fun onDestroy() {
         super.onDestroy()
         cancelVoiceMessage()
+        viewModel.saveDraft(binding.inputBar.text.trim())
         isNetworkAvailable=false
         networkChangedReceiver?.unregister(this)
         networkChangedReceiver=null
@@ -491,7 +482,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             this.menuInflater,
             recipient,
             viewModel.threadId,
-           this,
+            this,
             this@ConversationActivityV2
         ) {
             onOptionsItemSelected(it)
@@ -536,7 +527,6 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     private fun call(context : Context, thread : Recipient) {
 
         if (!TextSecurePreferences.isCallNotificationsEnabled(context)) {
-            //SteveJosephh22
             val factory=LayoutInflater.from(this)
             val callPermissionDialogView : View=
                 factory.inflate(R.layout.call_permissions_dialog_box, null)
@@ -597,7 +587,15 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             intent.getLongExtra(SCROLL_MESSAGE_ID, -1L)
         )
         messageToScrollAuthor.set(
-            intent.getParcelableExtra(SCROLL_MESSAGE_AUTHOR)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                intent.getParcelableExtra(
+                    SCROLL_MESSAGE_AUTHOR,
+                    Address::class.java
+                )
+            } else {
+                @Suppress("DEPRECATION")
+                intent.getParcelableExtra(SCROLL_MESSAGE_AUTHOR)
+            }
         )
 
         binding.networkStatusLayout.visibility =
@@ -677,7 +675,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             uiJob=lifecycleScope.launch {
                 launch {
                     while (isActive) {
-                        val startTime=callViewModel!!.callStartTime
+                        val startTime=callViewModel.callStartTime
                         if (startTime == -1L) {
                             binding.callActionBarView.isVisible=false
                         } else {
@@ -936,7 +934,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
 
     private fun setUpSearchResultObserver() {
 
-        val vm = searchViewModel ?: return
+        val vm = searchViewModel
 
         vm.searchResults.observe(this@ConversationActivityV2) { result ->
             result ?: return@observe
@@ -951,9 +949,8 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
                 results.getOrNull(result.position)?.let { item ->
                     jumpToMessage(
                         item.messageRecipient.address,
-                        item.sentTimestampMs,
-                        Runnable { vm.onMissingResult() }
-                    )
+                        item.sentTimestampMs
+                    ) { vm.onMissingResult() }
                 }
 
                 updateSearchUi(
@@ -1155,7 +1152,13 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         }
 
         // ---------- Intent extras ----------
-        val mediaUri: Uri? = intent.getParcelableExtra(URI)
+        val mediaUri: Uri? =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                intent.getParcelableExtra(URI, Uri::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                intent.getParcelableExtra(URI)
+            }
         val mediaType = AttachmentManager.MediaType.from(
             intent.getStringExtra(TYPE)
         )
@@ -1202,15 +1205,13 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
 
             if (isVisualMedia) {
 
-                val media =mimeType?.let {
-                    Media(
-                        mediaUri,
-                        it,
-                        0, 0, 0, 0,
-                        Optional.absent(),
-                        Optional.absent()
-                    )
-                }
+                val media = Media(
+                    mediaUri,
+                    mimeType,
+                    0, 0, 0, 0,
+                    Optional.absent(),
+                    Optional.absent()
+                )
 
                 startActivityForResult(
                     MediaSendActivity.buildEditorIntent(
@@ -1429,8 +1430,8 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
 
     private fun setUpBlockedBannerActions() {
         binding.clearChat.setOnClickListener {
-            if(SystemClock.elapsedRealtime() - clearChatButtonLastClickTiem >= 1000) {
-                clearChatButtonLastClickTiem = SystemClock.elapsedRealtime()
+            if(SystemClock.elapsedRealtime() - clearChatButtonLastClickTime >= 1000) {
+                clearChatButtonLastClickTime = SystemClock.elapsedRealtime()
                 clearChatDialog()
             }
         }
@@ -1709,7 +1710,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
 
     private val contactActivityLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode != Activity.RESULT_OK) return@registerForActivityResult
+            if (result.resultCode != RESULT_OK) return@registerForActivityResult
 
             val contacts: List<ContactModel> =
                 result.data
@@ -2372,17 +2373,6 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         }
     }
 
-    fun showAllMediaScreen() {
-        val recipient=viewModel.recipient.value ?: return
-        if (recipient.isClosedGroupRecipient) {
-            callSecretGroupInfo(recipient)
-        } else {
-            val intent = Intent(this, MediaOverviewActivity::class.java)
-            intent.putExtra(MediaOverviewActivity.ADDRESS_EXTRA, recipient.address)
-            passSharedMessageToConversationScreen.launch(intent)
-        }
-    }
-
     fun showAllMediaView(thread : Recipient){
         val intent = Intent(this, MediaOverviewActivity::class.java)
         intent.putExtra(MediaOverviewActivity.ADDRESS_EXTRA, thread.address)
@@ -2390,7 +2380,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     }
 
     val passSharedMessageToConversationScreen = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
+        if (result.resultCode == RESULT_OK) {
             if(result.data!=null){
                 val extras = Bundle()
                 val address = intent.parcelable<Address>(ADDRESS)
@@ -2430,7 +2420,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     }
 
     fun hideKeyboard() {
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.searchQuery.windowToken, 0)
     }
 
@@ -2657,9 +2647,18 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             TAKE_PHOTO -> {
                 intent ?: return
                 val body=intent.getStringExtra(MediaSendActivity.EXTRA_MESSAGE)
-                val media=intent.getParcelableArrayListExtra<Media>(
-                    MediaSendActivity.EXTRA_MEDIA
-                ) ?: return
+                val media: ArrayList<Media> =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        intent.getParcelableArrayListExtra(
+                            MediaSendActivity.EXTRA_MEDIA,
+                            Media::class.java
+                        )
+                    } else {
+                        @Suppress("DEPRECATION")
+                        intent.getParcelableArrayListExtra(
+                            MediaSendActivity.EXTRA_MEDIA
+                        )
+                    } ?: return
                 val slideDeck=SlideDeck()
                 for (item in media) {
                     when {
@@ -2844,7 +2843,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             stopVoiceMessages(audioPlayingIndexInAdapter)
         }
 
-        val callStartTime = callViewModel?.callStartTime ?: -1L
+        val callStartTime = callViewModel.callStartTime ?: -1L
         if (callStartTime != -1L) {
             Toast.makeText(
                 this,
@@ -3026,14 +3025,25 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         )
     }
 
-    override fun setConversationRecyclerViewLayout(status : Boolean) {
-        val layoutParams : RelativeLayout.LayoutParams=
-            binding.conversationRecyclerView.layoutParams as RelativeLayout.LayoutParams
-        if (status) {
-            layoutParams.addRule(RelativeLayout.ABOVE, R.id.inputBar)
-        } else {
-            layoutParams.addRule(RelativeLayout.ABOVE, R.id.typingIndicatorViewContainer)
+    override fun setConversationRecyclerViewLayout(status: Boolean) {
+        val layoutParams = binding.conversationRecyclerView.layoutParams
+                as RelativeLayout.LayoutParams
+
+        layoutParams.removeRule(RelativeLayout.ABOVE)
+
+        when {
+            binding.blockedBanner.isVisible -> {
+                layoutParams.addRule(RelativeLayout.ABOVE, R.id.blockedBanner)
+            }
+            status -> {
+                layoutParams.addRule(RelativeLayout.ABOVE, R.id.inputBar)
+            }
+            else -> {
+                layoutParams.addRule(RelativeLayout.ABOVE, R.id.typingIndicatorViewContainer)
+            }
         }
+
+        binding.conversationRecyclerView.layoutParams = layoutParams
     }
 
     override fun handleVoiceMessageUIHidden() {
@@ -3322,7 +3332,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
 
         if (builder.isBlank()) return
 
-        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         clipboard.setPrimaryClip(
             ClipData.newPlainText("Message Content", builder.toString())
         )
@@ -3343,7 +3353,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             message.individualRecipient.address.toString()
         }
 
-        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("BChat ID", bchatID)
         clipboard.setPrimaryClip(clip)
 
@@ -3584,9 +3594,16 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             updateSubtitle()
             showOrHideInputIfNeeded()
 
-            // Update profile picture
-            binding.profilePictureView.root.recycle()
-            binding.profilePictureView.root.update(threadRecipient)
+            // Compare avatar/profile value
+            val currentAvatar = threadRecipient.profileAvatar
+
+            if (lastProfileAvatar != currentAvatar) {
+                // Update profile picture
+                binding.profilePictureView.root.recycle()
+                binding.profilePictureView.root.update(threadRecipient)
+
+                lastProfileAvatar = currentAvatar
+            }
 
             // Update conversation title
             binding.conversationTitleView.text = when {
@@ -3764,7 +3781,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         val viewHolder =
             binding.conversationRecyclerView.findViewHolderForAdapterPosition(indexInAdapter) as? ConversationAdapter.VisibleMessageViewHolder ?: return
         val visibleMessageView = ViewVisibleMessageBinding.bind(viewHolder.view).visibleMessageView
-        visibleMessageView.playVoiceMessage()
+        visibleMessageView.playVoiceMessage(adapter.selectedItems.isNotEmpty())
     }
 
     override fun isAudioPlaying(isPlaying : Boolean, audioPlayingIndex : Int) {

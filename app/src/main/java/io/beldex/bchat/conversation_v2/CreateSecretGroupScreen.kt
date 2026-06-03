@@ -80,6 +80,7 @@ import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.R
 import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
+import io.beldex.bchat.util.isValidGroupName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -439,7 +440,14 @@ private fun createClosedGroup(
             R.string.activity_create_closed_group_too_many_group_members_error,
             Toast.LENGTH_LONG
         ).show()
-    }else {
+    }
+    else if (!isValidGroupName(name)) {
+        Toast.makeText(
+            context,
+            R.string.nickname_special_char_not_allowed,
+            Toast.LENGTH_SHORT
+        ).show()
+    } else {
         showLoader(true)
         val userPublicKey = TextSecurePreferences.getLocalNumber(context)!!
         MessageSender.createClosedGroup(device, name, selected + setOf(userPublicKey))

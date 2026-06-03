@@ -60,19 +60,32 @@ class NewChatScreenViewModel@Inject constructor(
 
     init {
         viewModelScope.launch {
+            val recipients = mutableListOf<Recipient>()
             threadDb.conversationList.use { openCursor ->
                 val reader = threadDb.readerFor(openCursor)
-                val recipients = mutableListOf<Recipient>()
                 while (true) {
                     recipients += reader.next?.recipient ?: break
                 }
-                withContext(Dispatchers.Main) {
-                    _recipients.value = recipients
-                        .filter { recipient -> (!recipient.isGroupRecipient && recipient.hasApprovedMe() && recipient.isApproved && recipient.address.serialize() != textSecurePreferences.getLocalNumber()) || (recipient.address.isClosedGroup && DatabaseComponent.get(context)
-                            .groupDatabase().isActive(recipient.address.toGroupString())) }
-                    kotlinx.coroutines.delay(3000)
-                    readUserDisplayName()
+            }
+
+            threadDb.archivedConversationList.use { archivedCursor ->
+                val reader = threadDb.readerFor(archivedCursor)
+                while (true) {
+                    recipients += reader.next?.recipient ?: break
                 }
+            }
+
+            withContext(Dispatchers.Main) {
+                _recipients.value = recipients
+                    .distinctBy { it.address.serialize() } // avoid duplicates
+                    .filter { recipient ->
+                        (!recipient.isGroupRecipient && recipient.hasApprovedMe() && recipient.isApproved &&
+                                recipient.address.serialize() != textSecurePreferences.getLocalNumber()) ||
+                                (recipient.address.isClosedGroup && DatabaseComponent.get(context)
+                                    .groupDatabase().isActive(recipient.address.toGroupString()))
+                    }
+                kotlinx.coroutines.delay(3000)
+                readUserDisplayName()
             }
         }
     }

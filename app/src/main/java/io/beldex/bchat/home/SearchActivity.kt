@@ -430,7 +430,7 @@ private fun MessageView(
         )
 
         val annotatedText = remember(model.messageResult.bodySnippet, model.messageResult.messageRecipient) {
-            TextFormatter.formatForSentMessage(textSpannable).toAnnotatedString()
+            TextFormatter.formatForSentMessage(context, textSpannable).toAnnotatedString()
         }
 
         val address = recipient.address

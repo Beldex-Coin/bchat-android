@@ -29,7 +29,6 @@ import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -48,7 +47,6 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.core.text.getSpans
-import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentTransferProgress
@@ -120,7 +118,8 @@ class VisibleMessageContentView : MaterialCardView {
         visibleMessageView : VisibleMessageView,
         position : Int,
         messageSelected : () -> Boolean,
-        searchViewModel : SearchViewModel?
+        searchViewModel : SearchViewModel?,
+        isSelectionMode : Boolean = false
     ) {
         // Background
         val background = getBackground(message.isOutgoing, isStartOfMessageCluster, isEndOfMessageCluster)
@@ -330,13 +329,14 @@ class VisibleMessageContentView : MaterialCardView {
                         message,
                         isStartOfMessageCluster,
                         isEndOfMessageCluster,
-                        delegate
+                        delegate,
+                        isSelectionMode
                     )
                     // We have to use onContentClick (rather than a click listener directly on the voice
                     // message view) so as to not interfere with all the other gestures.
                     onContentClick.add {
                         if (message.quote == null) {
-                            binding.voiceMessageView.root.togglePlayback()
+                            binding.voiceMessageView.root.togglePlayback(isSelectionMode)
                         }
                     }
                     onContentDoubleTap={ binding.voiceMessageView.root.handleDoubleTap() }
@@ -365,39 +365,55 @@ class VisibleMessageContentView : MaterialCardView {
                         message,
                         getTextColor(context, message)
                     )
-                    //New Line
                     binding.documentView.root.setOnClickListener {
-                        if (SystemClock.elapsedRealtime() - documentViewLastClickTime >= 500) {
-                            documentViewLastClickTime=SystemClock.elapsedRealtime()
-                            val documentSlide=message.slideDeck.documentSlide
-                            if (documentSlide != null && documentSlide.uri != null) {
-                                val intent=Intent(Intent.ACTION_VIEW).apply {
-                                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                                    setDataAndType(
-                                        PartAuthority.getAttachmentPublicUri(documentSlide.uri),
-                                        documentSlide.contentType
-                                    )
-                                }
-                                try {
-                                    context.startActivity(intent)
-                                } catch (anfe : ActivityNotFoundException) {
-                                    Log.w(
-                                        StickyHeaderGridLayoutManager.TAG,
-                                        "No activity existed to view the media."
-                                    )
-                                    Toast.makeText(
-                                        context,
-                                        R.string.ConversationItem_unable_to_open_media,
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    "Please wait until file downloaded",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                        if (SystemClock.elapsedRealtime() - documentViewLastClickTime < 500) {
+                            return@setOnClickListener
+                        }
+
+                        documentViewLastClickTime = SystemClock.elapsedRealtime()
+
+                        val documentSlide = message.slideDeck.documentSlide
+
+                        if (documentSlide?.uri == null) {
+                            Toast.makeText(
+                                context,
+                                "Please wait until file downloaded",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            return@setOnClickListener
+                        }
+
+                        try {
+                            val publicUri = PartAuthority.getAttachmentPublicUri(documentSlide.uri)
+
+                            val intent = Intent(Intent.ACTION_VIEW).apply {
+                                setDataAndType(publicUri, documentSlide.contentType)
+                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                             }
+
+                            context.startActivity(intent)
+
+                        } catch (e: ActivityNotFoundException) {
+
+                            Log.w(
+                                StickyHeaderGridLayoutManager.TAG,
+                                "No activity existed to view the media.",
+                                e
+                            )
+
+                            Toast.makeText(
+                                context,
+                                R.string.ConversationItem_unable_to_open_media,
+                                Toast.LENGTH_LONG
+                            ).show()
+
+                        } catch (e: Exception) {
+
+                            Log.e(
+                                StickyHeaderGridLayoutManager.TAG,
+                                "Failed to open document",
+                                e
+                            )
                         }
                     }
                 } else {
@@ -551,7 +567,7 @@ class VisibleMessageContentView : MaterialCardView {
             )
 
             if (binding.bodyTextView.text.trim().length > 705) {
-                addReadMore(binding.bodyTextView.text.trim().toString(), binding.bodyTextView, message, delegate, visibleMessageView, position)
+                addReadMore(binding.bodyTextView.text.trim(), binding.bodyTextView, message, delegate, visibleMessageView, position)
             }
             onContentClick.add { e: MotionEvent ->
                 binding.bodyTextView.getIntersectedModalSpans(e).iterator().forEach { span ->
@@ -586,7 +602,7 @@ class VisibleMessageContentView : MaterialCardView {
             binding.quoteBodyTextView.text = body
             if (binding.quoteBodyTextView.text.trim().length > 705) {
                 addReadMore(
-                    binding.quoteBodyTextView.text.trim().toString(),
+                    binding.quoteBodyTextView.text.trim(),
                     binding.quoteBodyTextView,
                     message,
                     delegate,
@@ -800,12 +816,16 @@ class VisibleMessageContentView : MaterialCardView {
         ).forEach { view:View -> view.isVisible = false }
     }
 
-    fun playVoiceMessage() {
-        binding.voiceMessageView.root.togglePlayback()
+    fun playVoiceMessage(isSelectionMode : Boolean) {
+        binding.voiceMessageView.root.togglePlayback(isSelectionMode)
     }
 
     fun stopVoiceMessage(){
         binding.voiceMessageView.root.stoppedVoiceMessage()
+    }
+
+    fun voiceMessageViewRecycle() {
+        binding.voiceMessageView.root.recycle()
     }
 
     // endregion
@@ -817,9 +837,7 @@ class VisibleMessageContentView : MaterialCardView {
             message: MessageRecord,
             searchQuery: String?
         ): SpannableStringBuilder {
-            var formatted = TextFormatter.formatForSentMessage(message.body)
-
-            var linkLastClickTime: Long = 0
+            var formatted = TextFormatter.formatForSentMessage(context, message.body)
 
             formatted  = MentionUtilities.highlightMentions(
                 formatted ,
@@ -882,37 +900,54 @@ class VisibleMessageContentView : MaterialCardView {
     }
     // endregion
 
-    //New Line
     private fun addReadMore(
-        text : String,
-        textView : TextView,
-        message : MessageRecord,
-        delegate : VisibleMessageViewDelegate,
-        visibleMessageView : VisibleMessageView,
-        position : Int
+        fullText: CharSequence,
+        textView: TextView,
+        message: MessageRecord,
+        delegate: VisibleMessageViewDelegate,
+        visibleMessageView: VisibleMessageView,
+        position: Int
     ) {
-        val ss = SpannableString(text.substring(0, 705) + "... Read more")
-        val clickableSpan: ClickableSpan = object : ClickableSpan() {
+        val suffix = "... Read more"
+
+        val result = SpannableStringBuilder(fullText).let {
+            if (it.length <= 705) it
+            else SpannableStringBuilder(it.subSequence(0, 705)).append(suffix)
+        }
+
+        if (fullText.length <= 705) {
+            textView.text = result
+            return
+        }
+
+        val clickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
-                addReadLess(text, textView, message, delegate, visibleMessageView,position)
+                addReadLess(fullText, textView, message, delegate, visibleMessageView, position)
             }
 
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
                 ds.isFakeBoldText = true
+
                 val isDayUiMode = UiModeUtilities.isDayUiMode(context)
                 ds.color = if (message.isOutgoing) {
-                    if (isDayUiMode) {
-                        ContextCompat.getColor(context, R.color.black)
-                    } else ContextCompat.getColor(context, R.color.chat_id_card_background)
+                    if (isDayUiMode) ContextCompat.getColor(context, R.color.black)
+                    else ContextCompat.getColor(context, R.color.chat_id_card_background)
                 } else {
                     ContextCompat.getColor(context, R.color.send_message_background)
                 }
             }
         }
-        ss.setSpan(clickableSpan, ss.length - 10, ss.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textView.text = ss
+
+        result.setSpan(
+            clickableSpan,
+            result.length - 10,
+            result.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        textView.text = result
         textView.movementMethod = LinkMovementMethod.getInstance()
         textView.setOnLongClickListener {
             delegate.onItemLongPress(message, visibleMessageView, position)
@@ -920,29 +955,45 @@ class VisibleMessageContentView : MaterialCardView {
         }
     }
 
-    private fun addReadLess(text: String, textView: TextView, message: MessageRecord, delegate : VisibleMessageViewDelegate, visibleMessageView: VisibleMessageView, position:Int) {
-        val ss = SpannableString("$text Read less")
-        val clickableSpan: ClickableSpan = object : ClickableSpan() {
+    private fun addReadLess(
+        fullText: CharSequence,
+        textView: TextView,
+        message: MessageRecord,
+        delegate: VisibleMessageViewDelegate,
+        visibleMessageView: VisibleMessageView,
+        position: Int
+    ) {
+        val suffix = " Read less"
+        val result = SpannableStringBuilder(fullText).append(suffix)
+
+        val clickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
-                addReadMore(text, textView, message, delegate, visibleMessageView, position)
+                addReadMore(fullText, textView, message, delegate, visibleMessageView, position)
             }
 
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
                 ds.isFakeBoldText = true
+
                 val isDayUiMode = UiModeUtilities.isDayUiMode(context)
                 ds.color = if (message.isOutgoing) {
-                    if (isDayUiMode){
-                        ContextCompat.getColor(context,R.color.black)
-                    }else ContextCompat.getColor(context,R.color.chat_id_card_background)
+                    if (isDayUiMode) ContextCompat.getColor(context, R.color.black)
+                    else ContextCompat.getColor(context, R.color.chat_id_card_background)
                 } else {
-                    ContextCompat.getColor(context,R.color.send_message_background)
+                    ContextCompat.getColor(context, R.color.send_message_background)
                 }
             }
         }
-        ss.setSpan(clickableSpan, ss.length - 10, ss.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textView.text = ss
+
+        result.setSpan(
+            clickableSpan,
+            result.length - suffix.length,
+            result.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        textView.text = result
         textView.movementMethod = LinkMovementMethod.getInstance()
         textView.setOnLongClickListener {
             delegate.onItemLongPress(message, visibleMessageView, position)

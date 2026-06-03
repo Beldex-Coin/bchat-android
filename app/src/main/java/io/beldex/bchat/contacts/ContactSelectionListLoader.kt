@@ -20,18 +20,38 @@ class ContactSelectionListLoader(context: Context, val mode: Int, val filter: St
         const val FLAG_OPEN_GROUPS = 1 shl 2
         const val FLAG_ALL = FLAG_CONTACTS or FLAG_CLOSED_GROUPS or FLAG_OPEN_GROUPS
     }
+    private val threadDb = DatabaseComponent.get(context).threadDatabase()
 
     private fun isFlagSet(flag: Int): Boolean {
         return mode and flag > 0
     }
 
     override fun loadInBackground(): List<ContactSelectionListItem> {
-        val contacts = ContactUtilities.getAllContacts(context).filter {
-            if (filter.isNullOrEmpty()) return@filter true
-            it.toShortString().contains(filter.trim(), true) || it.address.serialize().contains(filter.trim(), true)
-        }.sortedBy {
-            it.toShortString()
+        val recipients = mutableListOf<Recipient>()
+
+        threadDb.approvedConversationList.use { cursor ->
+            val reader = threadDb.readerFor(cursor)
+            while (true) {
+                recipients += reader.next?.recipient ?: break
+            }
         }
+
+        threadDb.archivedConversationList.use { cursor ->
+            val reader = threadDb.readerFor(cursor)
+            while (true) {
+                recipients += reader.next?.recipient ?: break
+            }
+        }
+
+        val contacts = recipients
+            .distinctBy { it.address.serialize() }
+            .filter {
+                if (filter.isNullOrEmpty()) return@filter true
+                it.toShortString().contains(filter.trim(), true) ||
+                        it.address.serialize().contains(filter.trim(), true)
+            }
+            .sortedBy { it.toShortString() }
+
         val list = mutableListOf<ContactSelectionListItem>()
         if (isFlagSet(DisplayMode.FLAG_CLOSED_GROUPS)) {
             list.addAll(getClosedGroups(contacts))

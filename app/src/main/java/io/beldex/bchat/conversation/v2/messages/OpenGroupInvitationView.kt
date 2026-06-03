@@ -92,8 +92,4 @@ class OpenGroupInvitationView : LinearLayout {
             else -> R.color.text
         }
     }
-    fun joinOpenGroup() {
-        val data = data ?: return
-        ActivityDispatcher.get(context)?.showDialog(JoinOpenGroupDialog(data.groupName,data.groupUrl), VisibleMessageContentView.JOIN_SOCIAL_GROUP_POPUP)
-    }
 }

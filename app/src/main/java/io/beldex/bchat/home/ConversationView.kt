@@ -1,10 +1,8 @@
 package io.beldex.bchat.home
 
 import android.content.Context
-import android.content.res.Resources
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -32,10 +30,11 @@ import java.util.Locale
 
 class ConversationView : LinearLayout {
     private lateinit var binding: ViewConversationBinding
-    private val screenWidth = Resources.getSystem().displayMetrics.widthPixels
     var thread: ThreadRecord? = null
     var isReportIssueID: Boolean = false
     private val reportIssueBChatID = BuildConfig.REPORT_ISSUE_ID
+
+    val attachmentRegex = Regex("""📷\s*Attachment:""")
 
     // region Lifecycle
     constructor(context: Context) : super(context) { initialize() }
@@ -105,8 +104,8 @@ class ConversationView : LinearLayout {
         }
         binding.muteIcon.setImageResource(drawableRes)
         if (thread.isSharedContact || isSharedContact(thread.body)) {
-            binding.contactView.visibility = View.VISIBLE
-            binding.snippetTextViewLayout.visibility = View.GONE
+            binding.contactView.visibility = VISIBLE
+            binding.snippetTextViewLayout.visibility = GONE
 
             UpdateMessageData.fromJSON(thread.body)?.let {
                 val data = it.kind as UpdateMessageData.Kind.SharedContact
@@ -121,61 +120,47 @@ class ConversationView : LinearLayout {
                 binding.contactName.text = displayName
             }
         } else {
-            binding.contactView.visibility = View.GONE
-            binding.snippetTextViewLayout.visibility = View.VISIBLE
+            binding.contactView.visibility = GONE
+            binding.snippetTextViewLayout.visibility = VISIBLE
 
             val rawSnippet = thread.getDisplayBody(context)
-            val formatted = TextFormatter.formatForSentMessage(rawSnippet)
-            val snippet = highlightMentionsSpannableString(formatted,thread.threadId, context)
+            val snippet = if (thread.isGroupUpdateMessage) {
+                rawSnippet
+            } else {
+                // Format basic styles (bold, italic, lists, etc.)
+                val formatted = TextFormatter.formatForSentMessage(context, rawSnippet)
 
-            //SteveJosephh21-17 - if
-            /*val mmsSmsDatabase = get(context).mmsSmsDatabase()
-            var reader: MmsSmsDatabase.Reader? = null
-            try {
-                reader = mmsSmsDatabase.readerFor(mmsSmsDatabase.getConversationSnippet(thread.threadId))
-                var record: MessageRecord? = null
-                if (reader != null) {
-                    record = reader.next
-                    while (record != null && record.isDeleted) {
-                        record = reader.next
-                    }
-                    Log.d("ThreadDatabase- 1", "" + record)
-                    if(record==null){
-                        binding.snippetTextView.text = "This message has been deleted"
-                    }else{
-                        binding.snippetTextView.text = snippet
-                    }
+                // Apply mentions
+                val mentionFormatted = highlightMentionsSpannableString(
+                    formatted,
+                    thread.threadId,
+                    context
+                )
+
+                // (optional) apply block quote again for attachments
+                val isAttachment = attachmentRegex
+                    .containsMatchIn(mentionFormatted.toString())
+
+                if (isAttachment) {
+                    TextFormatter.applyInlineBlockQuote(
+                        context,
+                        mentionFormatted,
+                        attachmentRegex
+                    )
                 }
-            } finally {
-                if (reader != null)
-                reader.close()
-            }*/
-            //Important - else
+
+                mentionFormatted
+            }
+
             binding.snippetTextView.text = snippet
 
-            //binding.snippetTextView.typeface = if (unreadCount > 0 && !thread.isRead) Typeface.DEFAULT else Typeface.DEFAULT
-            binding.snippetTextView.visibility = if (isTyping) View.GONE else View.VISIBLE
+            binding.snippetTextView.visibility = if (isTyping) GONE else VISIBLE
             if (isTyping) {
                 binding.typingIndicatorView.root.startAnimation()
             } else {
                 binding.typingIndicatorView.root.stopAnimation()
             }
-            binding.typingIndicatorView.root.visibility = if (isTyping) View.VISIBLE else View.GONE
-//        binding.statusIndicatorImageView.visibility = View.VISIBLE
-//        when {
-//            !thread.isOutgoing -> binding.statusIndicatorImageView.visibility = View.GONE
-//            thread.isPending -> binding.statusIndicatorImageView.setImageResource(R.drawable.ic_circle_dot_dot_dot)
-//            thread.isRead -> binding.statusIndicatorImageView.setImageResource(R.drawable.ic_filled_circle_check)
-//            thread.isSent -> binding.statusIndicatorImageView.setImageResource(R.drawable.ic_circle_check)
-//            thread.isFailed -> {
-//                val drawable = ContextCompat.getDrawable(context, R.drawable.ic_error)?.mutate()
-//                drawable?.setTint(ContextCompat.getColor(context, R.color.destructive))
-//                binding.statusIndicatorImageView.setImageDrawable(drawable)
-//            }
-//
-//            else -> binding.statusIndicatorImageView.setImageResource(R.drawable.ic_circle_check)
-//
-//        }
+            binding.typingIndicatorView.root.visibility = if (isTyping) VISIBLE else GONE
         }
         binding.profilePictureView.root.update(thread.recipient)
     }
@@ -197,11 +182,6 @@ class ConversationView : LinearLayout {
                 recipient.name // Internally uses the Contact API
             }
         }
-    }
-
-    private fun getActualDPsFromPixels(context: Context, pixels: Int): Float {
-        val resources = context.resources
-        return pixels / (resources.displayMetrics.densityDpi / 160f)
     }
     // endregion
 }

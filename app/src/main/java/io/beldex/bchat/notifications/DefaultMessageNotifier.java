@@ -558,7 +558,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
       Recipient    recipient             = record.getIndividualRecipient();
       Recipient    conversationRecipient = record.getRecipient();
       long         threadId              = record.getThreadId();
-      CharSequence body                  = TextFormatter.formatForSentMessage(record.getDisplayBody(context));
+      CharSequence body                  = TextFormatter.formatForSentMessage(context, record.getDisplayBody(context));
       Recipient    threadRecipients      = null;
       SlideDeck slideDeck             = null;
       long         timestamp             = record.getTimestamp();
@@ -570,6 +570,12 @@ public class DefaultMessageNotifier implements MessageNotifier {
         messageRequest = threadRecipients != null && !threadRecipients.isGroupRecipient() &&
                 !threadRecipients.isApproved() && !threadDatabase.getLastSeenAndHasSent(threadId).second();
         if (messageRequest && (threadDatabase.getMessageCount(threadId) > 1 || !TextSecurePreferences.hasHiddenMessageRequests(context))) {
+          continue;
+        }
+
+        boolean isApproved = threadRecipients != null && threadRecipients.isApproved();
+        if (isApproved && (body == null || body.toString().trim().isEmpty())) {
+          Log.d(TAG, "Skipping empty body notification for approved thread: " + threadId);
           continue;
         }
       }
@@ -592,7 +598,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
       } else if (record.isMms() && !record.isMmsNotification() && !((MmsMessageRecord) record).getSlideDeck().getSlides().isEmpty()) {
         slideDeck = ((MediaMmsMessageRecord)record).getSlideDeck();
         String message = slideDeck.getBody() + ": " + record.getBody();
-        body = TextFormatter.formatForSentMessage(message);
+        body = TextFormatter.formatForSentMessage(context, message);
         int italicLength = message.length() - record.getBody().length();
         body = SpanUtil.italic(body, italicLength);
       } else if (record.isOpenGroupInvitation()) {
@@ -636,6 +642,11 @@ public class DefaultMessageNotifier implements MessageNotifier {
           displayName = "No Name";
         }
           body = "👤 " + displayName;
+      }
+
+      if (body == null || body.toString().trim().isEmpty()) {
+        Log.d(TAG, "Skipping notification with empty body for thread: " + threadId);
+        continue;
       }
 
       if (threadRecipients == null || !threadRecipients.isMuted()) {

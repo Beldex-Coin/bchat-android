@@ -44,7 +44,7 @@ class CreatePasswordActivity : BaseActionBarActivity() {
         binding = ActivityCreatePasswordBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUpActionBarBchatLogo(getString(R.string.create_password), true)
-        callPage = intent.extras!!.getInt("callPage")
+        callPage = intent?.extras?.getInt("callPage", 0) ?: 0
         with(binding)
         {
             keyboard1?.buttonEnter!!.setOnClickListener() {

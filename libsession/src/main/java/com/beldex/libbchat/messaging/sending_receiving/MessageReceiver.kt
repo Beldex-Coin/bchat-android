@@ -102,8 +102,11 @@ object MessageReceiver {
                 }
             }
         }
+
+        val isSecretGroupMessage = envelope.type == SignalServiceProtos.Envelope.Type.CLOSED_GROUP_MESSAGE
+
         // Don't process the envelope any further if the sender is blocked
-        if (isBlocked(sender!!)) {
+        if (isBlocked(sender!!) && !isSecretGroupMessage) {
             throw Error.SenderBlocked
         }
         // Parse the proto

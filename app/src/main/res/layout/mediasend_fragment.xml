@@ -106,7 +106,8 @@
                         android:nextFocusRight="@+id/send_button"
                         android:breakStrategy="high_quality"
                         android:hyphenationFrequency="full"
-                        tools:hint="Send TextSecure message" >
+                        tools:hint="Send TextSecure message"
+                        tools:ignore="NestedWeights">
                         <requestFocus />
                     </io.beldex.bchat.components.ComposeText>
 

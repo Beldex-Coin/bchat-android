@@ -37,6 +37,7 @@ class AppLockActivity : BaseActionBarActivity() {
     private fun enable()
     {
         val intent = Intent(this,CreatePasswordActivity::class.java)
+        intent.putExtra("callPage", 1)
         push(intent)
         finish()
     }

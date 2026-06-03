@@ -33,10 +33,10 @@ import io.beldex.bchat.R
 import io.beldex.bchat.contacts.SelectContactsActivity
 import io.beldex.bchat.databinding.ActivityEditClosedGroupBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.util.Helper
 import io.beldex.bchat.util.fadeIn
 import io.beldex.bchat.util.fadeOut
 import io.beldex.bchat.CheckOnline
+import io.beldex.bchat.util.isValidGroupName
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.failUi
@@ -62,7 +62,6 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
     private lateinit var name: String
     private lateinit var groupRecipientID: String
     private val glide by lazy { Glide.with(this) }
-    private val nicknameRegex = Regex("^[a-zA-Z0-9 ]+$")
 
     private var isEditingName = false
         set(value) {
@@ -339,7 +338,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         if(name == originalName){
             return Toast.makeText(this, R.string.activity_edit_closed_group_group_name_same_name_error,Toast.LENGTH_SHORT).show()
         }
-        if (!nicknameRegex.matches(name)) {
+        if (!isValidGroupName(name)) {
             return Toast.makeText(
                 this,
                 R.string.nickname_special_char_not_allowed,

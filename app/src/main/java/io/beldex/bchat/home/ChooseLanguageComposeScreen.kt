@@ -141,7 +141,7 @@ fun ChooseLanguage(
 
         LazyColumnScrollbar(
             listState = scrollState,
-            thumbColor = MaterialTheme.appColors.transactionSubTitle,
+            thumbColor = MaterialTheme.appColors.scrollBarColor,
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .padding(start = 8.dp, top = 16.dp, end = 2.dp, bottom = 8.dp)

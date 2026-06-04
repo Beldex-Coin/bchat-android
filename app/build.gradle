@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'witness'
 apply plugin: 'com.google.devtools.ksp'
 apply plugin: 'kotlin-parcelize'
@@ -194,9 +194,6 @@ android {
         viewBinding true
         compose true
         buildConfig = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
     }
     externalNativeBuild {
         cmake {

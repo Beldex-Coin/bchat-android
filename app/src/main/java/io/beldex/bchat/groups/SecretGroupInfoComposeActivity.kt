@@ -32,13 +32,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -77,6 +76,7 @@ import androidx.core.view.WindowCompat
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
@@ -180,8 +180,12 @@ class SecretGroupInfoComposeActivity : ComponentActivity() {
                             groupMembers = groupMembers,
                             listenerCallback = listenerCallback,
                             secretGroupInfoViewModel = secretGroupInfoViewModel,
-                            showSearchView = {
-                                tileName = context.getString(R.string.search_member_title)
+                            showSearchView = { show ->
+                                tileName = if(show) {
+                                    context.getString(R.string.search_member_title)
+                                } else {
+                                    context.getString(R.string.group_info)
+                                }
                             }
                         )
                     }
@@ -201,7 +205,7 @@ fun GroupDetailsScreen(
     groupMembers : GroupMembers?,
     listenerCallback : SecretGroupInfoComposeActivity.SocialGroupInfoInterface?,
     secretGroupInfoViewModel : SecretGroupInfoViewModel,
-    showSearchView : () -> Unit
+    showSearchView : (Boolean) -> Unit
 ) {
     lateinit var groupID : String
     val context=LocalContext.current
@@ -487,11 +491,6 @@ fun GroupDetailsScreen(
         return this.replaceFirstChar { it.uppercase() }
     }
 
-    val modalSheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded },
-        skipHalfExpanded = true
-    )
     var isShowSearchBottomSheet by remember {
         mutableStateOf(false)
     }
@@ -499,11 +498,20 @@ fun GroupDetailsScreen(
         isShowSearchBottomSheet = isVisible
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     if (isShowSearchBottomSheet) {
-        ModalBottomSheetLayout(
-            sheetState=modalSheetState,
-            sheetShape=RoundedCornerShape(topStart=12.dp, topEnd=12.dp),
-            sheetContent={}
+
+        val sheetState = rememberModalBottomSheetState(
+            skipPartiallyExpanded = true
+        )
+
+        ModalBottomSheet(
+            onDismissRequest = {
+                showSearchView(false)
+                secretGroupInfoViewModel.updateVisibleBottomSheet(false)
+            },
+            sheetState = sheetState,
+            shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
         ) {
             val focusRequester=remember { FocusRequester() }
             val coroutineScope=rememberCoroutineScope()
@@ -829,7 +837,7 @@ fun GroupDetailsScreen(
                             modifier=Modifier
                                 .size(20.dp)
                                 .clickable {
-                                    showSearchView()
+                                    showSearchView(true)
                                     secretGroupInfoViewModel.updateVisibleBottomSheet(true)
                                 }
                         )

@@ -33,9 +33,11 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.my_account.ui.MyAccountViewModel
 
@@ -47,6 +49,8 @@ fun ChooseLanguage(
 ) {
     val scrollState = rememberLazyListState()
     val selectedCode by viewModel.selectedLanguageCode.collectAsState()
+    val deviceLanguageCode by viewModel.deviceLanguageCode.collectAsState()
+    val context = LocalContext.current
 
     val onLanguageSelected: (String) -> Unit = { code ->
         if (code != selectedCode) {
@@ -56,18 +60,19 @@ fun ChooseLanguage(
     }
 
     val languages = listOf(
-        Language("Arabic", "ar"),
-        Language("Chinese", "zh"),
-        Language("English", "en"),
-        Language("German", "de"),
-        Language("Japanese", "ja"),
-        Language("Korean", "ko"),
-        Language("Portuguese", "pt"),
-        Language("Russian", "ru"),
-        Language("Spanish", "es"),
-        Language("Turkish", "tr"),
-        Language("Vietnamese", "vi"),
+        Language("Arabic", "العربية", "ar"),
+        Language("Chinese, Simplified", "简体中文", "zh"),
+        Language("English", "English", "en"),
+        Language("German", "Deutsch", "de"),
+        Language("Japanese", "日本語", "ja"),
+        Language("Korean", "한국어", "ko"),
+        Language("Portuguese (Brazil)", "Português (Brasil)", "pt"),
+        Language("Russian", "Русский", "ru"),
+        Language("Spanish", "Español", "es"),
+        Language("Turkish", "Türkçe", "tr"),
+        Language("Vietnamese", "Tiếng Việt", "vi")
     )
+
 
     Box(
         modifier =
@@ -101,6 +106,7 @@ fun ChooseLanguage(
                             color = if (selectedCode == language.code) MaterialTheme.appColors.contactCardBackground else MaterialTheme.appColors.editTextBackground
                         )
                         .clickable {
+                            TextSecurePreferences.setAppSelectedLanguage(context, language.code)
                             onLanguageSelected(language.code)
                         }
                         .padding(horizontal = 16.dp, vertical = 12.dp),
@@ -110,10 +116,10 @@ fun ChooseLanguage(
                     RadioButton(
                         selected = language.code == selectedCode,
                         onClick = {
-                            onLanguageSelected(language.code)
+                            // Add onClick() logic here
                         },
                         colors = RadioButtonDefaults.colors(
-                            selectedColor = Color(0xFF4CAF50),
+                            selectedColor = MaterialTheme.appColors.primaryButtonColor,
                             unselectedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
                         ),
                     )
@@ -123,13 +129,13 @@ fun ChooseLanguage(
                         modifier = Modifier.weight(1f)
                     ) {
                         Text(
-                            text = language.name,
+                            text = language.nativeName,
                             color = MaterialTheme.appColors.textColor,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Normal
                         )
                         Text(
-                            text = language.code,
+                            text = if (language.code.contains(deviceLanguageCode)) "(device's language)" else language.englishName,
                             color = MaterialTheme.appColors.transactionSubTitle,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Normal
@@ -208,4 +214,8 @@ fun LazyColumnScrollbar(
     }
 }
 
-data class Language(val name: String, val code: String)
+data class Language(
+    val englishName: String,
+    val nativeName: String,
+    val code: String
+)

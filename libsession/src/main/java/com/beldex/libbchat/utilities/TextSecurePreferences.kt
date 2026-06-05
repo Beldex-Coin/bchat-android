@@ -12,7 +12,9 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import com.beldex.libbchat.R
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.APP_SELECTED_LANGUAGE
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.CALL_NOTIFICATIONS_ENABLED
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.DEVICE_LANGUAGE
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_BNS_HOLDER
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_KEEP_ARCHIVE_CHAT
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_LOCAL_PROFILE
@@ -273,6 +275,10 @@ interface TextSecurePreferences {
     fun getRecordingStatus(): Boolean
     fun setKeepArchiveChat(isKeepChat: Boolean)
     fun getKeepArchiveChat(): Boolean
+    fun setAppSelectedLanguage(code : String?)
+    fun getAppSelectedLanguage(): String?
+    fun setDeviceLanguage(code : String?)
+    fun getDeviceLanguage(): String?
 
 
 
@@ -393,6 +399,8 @@ interface TextSecurePreferences {
         const val IS_REACTION_OVERLAY_VISIBLE = "is_reaction_overlay_visible"
         const val IS_VOICE_RECORDING = "is_voice_recording"
         const val IS_KEEP_ARCHIVE_CHAT = "is_keep_archive_chat"
+        const val APP_SELECTED_LANGUAGE = "app_selected_language"
+        const val DEVICE_LANGUAGE = "device_language"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1447,6 +1455,26 @@ interface TextSecurePreferences {
             return getBooleanPreference(context, IS_KEEP_ARCHIVE_CHAT, false)
         }
 
+        @JvmStatic
+        fun setAppSelectedLanguage(context: Context, code: String?) {
+            setStringPreference(context, APP_SELECTED_LANGUAGE, code)
+        }
+
+        @JvmStatic
+        fun getAppSelectedLanguage(context: Context):String? {
+            return getStringPreference(context, APP_SELECTED_LANGUAGE, "en")
+        }
+
+        @JvmStatic
+        fun setDeviceLanguage(context: Context, code: String?) {
+            setStringPreference(context, DEVICE_LANGUAGE, code)
+        }
+
+        @JvmStatic
+        fun getDeviceLanguage(context: Context):String? {
+            return getStringPreference(context, DEVICE_LANGUAGE, "en")
+        }
+
 
     }
 }
@@ -2359,5 +2387,21 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun getKeepArchiveChat() : Boolean {
         return getBooleanPreference(IS_KEEP_ARCHIVE_CHAT, false)
+    }
+
+    override fun setAppSelectedLanguage(code: String?) {
+        setStringPreference(APP_SELECTED_LANGUAGE, code)
+    }
+
+    override fun getAppSelectedLanguage(): String? {
+        return getStringPreference(APP_SELECTED_LANGUAGE,"en")
+    }
+
+    override fun setDeviceLanguage(code: String?) {
+        setStringPreference(DEVICE_LANGUAGE, code)
+    }
+
+    override fun getDeviceLanguage(): String? {
+        return getStringPreference(DEVICE_LANGUAGE,"en")
     }
 }

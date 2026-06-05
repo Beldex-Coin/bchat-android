@@ -8,6 +8,8 @@ import android.os.AsyncTask
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.PowerManager
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
@@ -179,6 +181,7 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
         init(this)
         configure(this)
         super<Application>.onCreate()
+        applyAppLanguages()
         messagingModuleConfiguration=MessagingModuleConfiguration(
             this,
             storage,
@@ -258,6 +261,13 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
 
     fun initializeLocaleParser() {
         configure(LocaleParseHelper())
+    }
+
+    fun applyAppLanguages(){
+        val selectedLanguageCode = TextSecurePreferences.getAppSelectedLanguage(this)
+        AppCompatDelegate.setApplicationLocales(
+            LocaleListCompat.forLanguageTags(selectedLanguageCode)
+        )
     }
 
     private fun initializeSecurityProvider() {

@@ -1319,7 +1319,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="record_voice_restriction">Can\'t record voice messages during a BChat call.</string>
     <string name="failed_to_connect">Failed to Connect</string>
     <string name="invalid_qr_code">Invalid QR Code</string>
-    <string name="invitation_msg"><string name="invitation_msg">Ei, Tenho usado o BChat para conversar de forma segura e confidencial. Junta-te a mim! Transfere a aplicação em https://play.google.com/store/apps/details?id=io.beldex.bchat. O meu ID de BChat é %1$s !</string></string>
+    <string name="invitation_msg">Ei, eu tenho usado o BChat para conversar de forma segura e confidencial. Venha se juntar a mim! Baixe-o em https://play.google.com/store/apps/details?id=io.beldex.bchat. Meu ID de Chat é %s</string>
     <string name="id_format">ID: %s</string>
     <string name="activity_settings_profile_picture">Foto de Perfil</string>
     <string name="activity_settings_upload">Enviar foto</string>
@@ -1614,7 +1614,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="paste_the_seed_to_continue">Cole a seed para continuar</string>
     <string name="help">Ajuda</string>
     <string name="notification">Notificações</string>
-    <string name="invite">" Venha se juntar a mim! Baixe em https://play.google.com/store/apps/details?id=io.beldex.bchat. Meu ID de chat é %s!"</string>
+    <string name="invite">Convidar</string>
     <string name="link_bns">Vincular BNS</string>
     <string name="bns_name">Nome BNS</string>
     <string name="about_bns_title">BNS: Sua Identidade Descentralizada no Ecossistema Beldex</string>
@@ -1646,6 +1646,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="txt">TXT</string>
     <string name="user">User</string>
     <string name="default_value_messages_per_conversation">500 messages per conversation</string>
-    <string name="language">Language</string>
-    <string name="choose_language">Choose Language</string>
+    <string name="language">Idioma</string>
+    <string name="choose_language">Escolher idioma</string>
 </resources>

@@ -1637,6 +1637,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="txt">TXT</string>
     <string name="user">User</string>
     <string name="default_value_messages_per_conversation">500 messages per conversation</string>
-    <string name="language">Language</string>
-    <string name="choose_language">Choose Language</string>
+    <string name="language">言語</string>
+    <string name="choose_language">言語を選択</string>
 </resources>

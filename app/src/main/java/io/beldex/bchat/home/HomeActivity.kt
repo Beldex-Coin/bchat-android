@@ -2,7 +2,6 @@ package io.beldex.bchat.home
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.LocaleManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -14,7 +13,6 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -29,7 +27,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.PopupMenu
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -37,8 +34,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.os.ConfigurationCompat
-import androidx.core.os.LocaleListCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
@@ -118,7 +113,6 @@ import io.beldex.bchat.home.search.GlobalSearchViewModel
 import io.beldex.bchat.home.search.RecyclerViewDivider
 import io.beldex.bchat.my_account.ui.MyAccountActivity
 import io.beldex.bchat.my_account.ui.MyAccountScreens
-import io.beldex.bchat.my_account.ui.MyAccountViewModel
 import io.beldex.bchat.notifications.PushRegistry
 import io.beldex.bchat.onboarding.SeedActivity
 import io.beldex.bchat.onboarding.SeedReminderViewDelegate
@@ -136,6 +130,7 @@ import io.beldex.bchat.util.SaveYourSeedDialogBox
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.disableClipping
+import io.beldex.bchat.util.getDeviceSettingsLanguage
 import io.beldex.bchat.util.getScreenWidth
 import io.beldex.bchat.util.parcelable
 import io.beldex.bchat.util.push
@@ -159,7 +154,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import java.io.IOException
-import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.jvm.java
@@ -539,19 +533,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             TextSecurePreferences.setAirdropAnimationStatus(this,false)
             launchSuccessLottieDialog()
         }*/
-    }
-
-    private fun getDeviceSettingsLanguage(): String {
-        val systemLocale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val systemLocales = getSystemService(LocaleManager::class.java).systemLocales
-            if (systemLocales.isEmpty) null else systemLocales.get(0)
-        } else {
-            ConfigurationCompat.getLocales(Resources.getSystem().configuration).get(0)
-        }
-
-        val currentLocale = systemLocale ?: Locale.getDefault()
-
-        return currentLocale.language
     }
 
     private fun networkChange(networkAvailable: Boolean) {
@@ -1565,7 +1546,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     override fun onResume() {
         super.onResume()
         Timber.d("onResume()-->")
-        val appSettingLanguage = getDeviceSettingsLanguage()
+        val appSettingLanguage = getDeviceSettingsLanguage(this)
         TextSecurePreferences.setDeviceLanguage(this, appSettingLanguage)
         //Important
         //if (!Ledger.isConnected()) attachLedger()

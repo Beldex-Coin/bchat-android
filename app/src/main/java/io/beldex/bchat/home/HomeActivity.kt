@@ -59,6 +59,8 @@ import com.beldex.libbchat.utilities.GroupRecord
 import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libbchat.utilities.ProfilePictureModifiedEvent
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getLanguage
+import com.beldex.libbchat.utilities.dynamiclanguage.LocaleParser.Companion.findBestMatchingLocaleForLanguage
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.ThreadUtils
@@ -130,7 +132,6 @@ import io.beldex.bchat.util.SaveYourSeedDialogBox
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.disableClipping
-import io.beldex.bchat.util.getDeviceSettingsLanguage
 import io.beldex.bchat.util.getScreenWidth
 import io.beldex.bchat.util.parcelable
 import io.beldex.bchat.util.push
@@ -1546,8 +1547,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     override fun onResume() {
         super.onResume()
         Timber.d("onResume()-->")
-        val appSettingLanguage = getDeviceSettingsLanguage(this)
-        TextSecurePreferences.setDeviceLanguage(this, appSettingLanguage)
+        val appSettingLanguage = findBestMatchingLocaleForLanguage(getLanguage(this))
+        TextSecurePreferences.setDeviceLanguage(this, appSettingLanguage?.language)
         //Important
         //if (!Ledger.isConnected()) attachLedger()
         if(!CheckOnline.isOnline(this)){

@@ -38,7 +38,7 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
   @Override
   protected void onResume() {
     super.onResume();
-    DynamicLanguageActivityHelper.recreateIfNotInCorrectLanguage(this, TextSecurePreferences.getLanguage(this));
+    DynamicLanguageActivityHelper.recreateIfNotInCorrectLanguage(this, TextSecurePreferences.getAppSelectedLanguage(this));
     String name = getResources().getString(R.string.app_name);
     Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_foreground);
     int color = getResources().getColor(R.color.app_icon_background);
@@ -55,7 +55,7 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
 
   @Override
   protected void attachBaseContext(Context newBase) {
-    super.attachBaseContext(DynamicLanguageContextWrapper.updateContext(newBase, TextSecurePreferences.getLanguage(newBase)));
+    super.attachBaseContext(DynamicLanguageContextWrapper.updateContext(newBase, TextSecurePreferences.getAppSelectedLanguage(newBase)));
   }
 
 

@@ -8,8 +8,6 @@ import android.os.AsyncTask
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.PowerManager
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
@@ -28,7 +26,7 @@ import com.beldex.libbchat.utilities.ProfilePictureUtilities.upload
 import com.beldex.libbchat.utilities.SSKEnvironment.Companion.configure
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.clearAll
-import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getLanguage
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getAppSelectedLanguage
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getLastProfilePictureUpload
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getLocalNumber
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getProfileKey
@@ -181,7 +179,6 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
         init(this)
         configure(this)
         super<Application>.onCreate()
-        applyAppLanguages()
         messagingModuleConfiguration=MessagingModuleConfiguration(
             this,
             storage,
@@ -261,13 +258,6 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
 
     fun initializeLocaleParser() {
         configure(LocaleParseHelper())
-    }
-
-    fun applyAppLanguages(){
-        val selectedLanguageCode = TextSecurePreferences.getAppSelectedLanguage(this)
-        AppCompatDelegate.setApplicationLocales(
-            LocaleListCompat.forLanguageTags(selectedLanguageCode)
-        )
     }
 
     private fun initializeSecurityProvider() {
@@ -366,11 +356,11 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
         }
     }
 
-    override fun attachBaseContext(base : Context?) {
+    override fun attachBaseContext(base: Context?) {
         initializeLocaleParser()
         super.attachBaseContext(
             DynamicLanguageContextWrapper.updateContext(
-                base, getLanguage(
+                base, getAppSelectedLanguage(
                     base!!
                 )
             )

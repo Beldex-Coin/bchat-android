@@ -97,16 +97,46 @@ public class BodyTextViewLayout extends RelativeLayout {
             return;
         }
 
-        viewPartMessage.layout(
-                getPaddingStart(),
-                getPaddingTop(),
-                viewPartMessage.getWidth() + getPaddingStart(),
-                viewPartMessage.getHeight() + getPaddingTop());
+        boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
 
-        viewPartTime.layout(
-                right - left - viewPartTimeWidth - getPaddingEnd(),
-                bottom - top - getPaddingBottom() - viewPartTimeHeight,
-                right - left - getPaddingEnd(),
-                bottom - top - getPaddingBottom());
+        int width = right - left;
+        int height = bottom - top;
+
+        if (isRtl) {
+
+            // Message aligned to end (right)
+            viewPartMessage.layout(
+                    width - getPaddingEnd() - viewPartMessage.getMeasuredWidth(),
+                    getPaddingTop(),
+                    width - getPaddingEnd(),
+                    getPaddingTop() + viewPartMessage.getMeasuredHeight()
+            );
+
+            // Time aligned to start (left)
+            viewPartTime.layout(
+                    getPaddingStart(),
+                    height - getPaddingBottom() - viewPartTimeHeight,
+                    getPaddingStart() + viewPartTimeWidth,
+                    height - getPaddingBottom()
+            );
+
+        } else {
+
+            // Message aligned to start (left)
+            viewPartMessage.layout(
+                    getPaddingStart(),
+                    getPaddingTop(),
+                    getPaddingStart() + viewPartMessage.getMeasuredWidth(),
+                    getPaddingTop() + viewPartMessage.getMeasuredHeight()
+            );
+
+            // Time aligned to end (right)
+            viewPartTime.layout(
+                    width - viewPartTimeWidth - getPaddingEnd(),
+                    height - getPaddingBottom() - viewPartTimeHeight,
+                    width - getPaddingEnd(),
+                    height - getPaddingBottom()
+            );
+        }
     }
 }

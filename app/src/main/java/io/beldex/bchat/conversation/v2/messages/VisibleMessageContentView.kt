@@ -516,32 +516,18 @@ class VisibleMessageContentView : MaterialCardView {
         }
 
         if(isRtl) {
-            binding.shortMessageTime.setPaddingRelative(
+            binding.quoteBodyTextView.setPaddingRelative(
                 dpToPx(12),
-                binding.shortMessageTime.paddingTop,
-                binding.shortMessageTime.paddingEnd,
-                dpToPx(4)
-            )
-
-            binding.quoteShortMessageTime.setPaddingRelative(
-                dpToPx(12),
-                binding.quoteShortMessageTime.paddingTop,
-                binding.quoteShortMessageTime.paddingEnd,
-                dpToPx(4)
+                binding.quoteBodyTextView.paddingTop,
+                dpToPx(4),
+                dpToPx(5)
             )
         } else {
-            binding.shortMessageTime.setPaddingRelative(
-                binding.shortMessageTime.paddingStart,
-                binding.shortMessageTime.paddingTop,
+            binding.quoteBodyTextView.setPaddingRelative(
                 dpToPx(12),
-                dpToPx(4)
-            )
-
-            binding.quoteShortMessageTime.setPaddingRelative(
-                binding.quoteShortMessageTime.paddingStart,
-                binding.quoteShortMessageTime.paddingTop,
-                binding.quoteShortMessageTime.paddingEnd,
-                dpToPx(4)
+                binding.quoteBodyTextView.paddingTop,
+                dpToPx(12),
+                dpToPx(5)
             )
         }
         binding.bodyTextView.isVisible = message.body.isNotEmpty() && !hideBody

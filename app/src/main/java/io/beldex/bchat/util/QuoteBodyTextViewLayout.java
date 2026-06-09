@@ -97,16 +97,46 @@ public class QuoteBodyTextViewLayout extends RelativeLayout {
             return;
         }
 
-        quoteViewPartMessage.layout(
-                getPaddingStart(),
-                getPaddingTop(),
-                quoteViewPartMessage.getWidth() + getPaddingStart(),
-                quoteViewPartMessage.getHeight() + getPaddingTop());
+        boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
 
-        quoteViewPartTime.layout(
-                right - left - quoteViewPartTimeWidth - getPaddingEnd(),
-                bottom - top - getPaddingBottom() - quoteViewPartTimeHeight,
-                right - left - getPaddingEnd(),
-                bottom - top - getPaddingBottom());
+        int width = right - left;
+        int height = bottom - top;
+
+        if (isRtl) {
+
+            // Message aligned to end (right)
+            quoteViewPartMessage.layout(
+                    width - getPaddingEnd() - quoteViewPartMessage.getMeasuredWidth(),
+                    getPaddingTop(),
+                    width - getPaddingEnd(),
+                    getPaddingTop() + quoteViewPartMessage.getMeasuredHeight()
+            );
+
+            // Time aligned to start (left)
+            quoteViewPartTime.layout(
+                    getPaddingStart(),
+                    height - getPaddingBottom() - quoteViewPartTimeHeight,
+                    getPaddingStart() + quoteViewPartTimeWidth,
+                    height - getPaddingBottom()
+            );
+
+        } else {
+
+            // Message aligned to start (left)
+            quoteViewPartMessage.layout(
+                    getPaddingStart(),
+                    getPaddingTop(),
+                    getPaddingStart() + quoteViewPartMessage.getMeasuredWidth(),
+                    getPaddingTop() + quoteViewPartMessage.getMeasuredHeight()
+            );
+
+            // Time aligned to end (right)
+            quoteViewPartTime.layout(
+                    width - quoteViewPartTimeWidth - getPaddingEnd(),
+                    height - getPaddingBottom() - quoteViewPartTimeHeight,
+                    width - getPaddingEnd(),
+                    height - getPaddingBottom()
+            );
+        }
     }
 }

@@ -119,7 +119,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
                 if (audioExtras.durationMs > 0) {
                     duration = audioExtras.durationMs
                     binding.voiceMessageViewDurationTextView.visibility = View.VISIBLE
-                    binding.voiceMessageViewDurationTextView.text = String.format("%01d:%02d",
+                    binding.voiceMessageViewDurationTextView.text = String.format(Locale.getDefault(),"%01d:%02d",
                         TimeUnit.MILLISECONDS.toMinutes(audioExtras.durationMs),
                         TimeUnit.MILLISECONDS.toSeconds(audioExtras.durationMs) % 60)
                 }
@@ -199,7 +199,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
 
     private fun handleProgressChanged(progress: Double) {
         this.progress = progress
-        binding.voiceMessageViewDurationTextView.text = String.format("%01d:%02d",
+        binding.voiceMessageViewDurationTextView.text = String.format(Locale.getDefault(),"%01d:%02d",
             TimeUnit.MILLISECONDS.toMinutes(duration - (progress * duration.toDouble()).roundToLong()),
             TimeUnit.MILLISECONDS.toSeconds(duration - (progress * duration.toDouble()).roundToLong()) % 60)
     }
@@ -275,7 +275,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
     private fun formatDuration(ms: Long): String {
         val minutes = TimeUnit.MILLISECONDS.toMinutes(ms)
         val seconds = TimeUnit.MILLISECONDS.toSeconds(ms) % 60
-        return String.format(Locale.ROOT, "%01d:%02d", minutes, seconds)
+        return String.format(Locale.getDefault(), "%01d:%02d", minutes, seconds)
     }
 
     fun recycle() {

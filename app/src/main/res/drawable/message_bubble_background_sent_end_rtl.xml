@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item
         android:bottom="10dp"
-        android:gravity="end">
+        android:gravity="fill">
+
         <shape android:shape="rectangle">
             <solid android:color="@color/white" />
+
             <corners
-                android:bottomLeftRadius="10dp"
-                android:bottomRightRadius="0dp"
+                android:bottomLeftRadius="0dp"
+                android:bottomRightRadius="10dp"
                 android:topLeftRadius="10dp"
                 android:topRightRadius="10dp" />
         </shape>
+
     </item>
+
     <item android:gravity="end">
         <vector
             android:width="24dp"
@@ -23,4 +28,5 @@
                 android:pathData="M24,15.394C24,12.44 20.907,10.505 18.25,11.797L5.5,18L24,24V15.394Z" />
         </vector>
     </item>
+
 </layer-list>

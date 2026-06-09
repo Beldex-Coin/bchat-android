@@ -121,8 +121,9 @@ class VisibleMessageContentView : MaterialCardView {
         searchViewModel : SearchViewModel?,
         isSelectionMode : Boolean = false
     ) {
+        val isRtl = resources.configuration.layoutDirection == LAYOUT_DIRECTION_RTL
         // Background
-        val background = getBackground(message.isOutgoing, isStartOfMessageCluster, isEndOfMessageCluster)
+        val background = getBackground(message.isOutgoing, isStartOfMessageCluster, isEndOfMessageCluster, isRtl,message.body)
         val colorID = if (message.isOutgoing) {
             R.attr.message_sent_background_color
         } else {
@@ -514,8 +515,35 @@ class VisibleMessageContentView : MaterialCardView {
             }
         }
 
+        if(isRtl) {
+            binding.shortMessageTime.setPaddingRelative(
+                dpToPx(12),
+                binding.shortMessageTime.paddingTop,
+                binding.shortMessageTime.paddingEnd,
+                dpToPx(4)
+            )
 
+            binding.quoteShortMessageTime.setPaddingRelative(
+                dpToPx(12),
+                binding.quoteShortMessageTime.paddingTop,
+                binding.quoteShortMessageTime.paddingEnd,
+                dpToPx(4)
+            )
+        } else {
+            binding.shortMessageTime.setPaddingRelative(
+                binding.shortMessageTime.paddingStart,
+                binding.shortMessageTime.paddingTop,
+                dpToPx(12),
+                dpToPx(4)
+            )
 
+            binding.quoteShortMessageTime.setPaddingRelative(
+                binding.quoteShortMessageTime.paddingStart,
+                binding.quoteShortMessageTime.paddingTop,
+                binding.quoteShortMessageTime.paddingEnd,
+                dpToPx(4)
+            )
+        }
         binding.bodyTextView.isVisible = message.body.isNotEmpty() && !hideBody
         binding.bodyTextViewLayout.isVisible = message.body.isNotEmpty() && !hideBody
         binding.shortMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
@@ -726,27 +754,39 @@ class VisibleMessageContentView : MaterialCardView {
     private fun getBackground(
         isOutgoing: Boolean,
         isStartOfMessageCluster: Boolean,
-        isEndOfMessageCluster: Boolean
+        isEndOfMessageCluster: Boolean,
+        isRtl: Boolean,
+        text: String
     ): Drawable {
         val isSingleMessage = (isStartOfMessageCluster && isEndOfMessageCluster)
         @DrawableRes val backgroundID = when {
             isSingleMessage -> {
                 if (isOutgoing) {
+                    Log.d("messages-> 1 ",text)
                     binding.tailSendView.visibility = VISIBLE
                     binding.tailReceiveView.visibility = GONE
-                    R.drawable.message_bubble_background_sent_end
+                    if (isRtl)
+                        R.drawable.message_bubble_background_sent_end_rtl
+                    else
+                        R.drawable.message_bubble_background_sent_end
                 } else {
+                    Log.d("messages-> 2 ",text)
                     binding.tailSendView.visibility = GONE
                     binding.tailReceiveView.visibility = VISIBLE
-                    R.drawable.message_bubble_background_received_end
+                    if (isRtl)
+                        R.drawable.message_bubble_background_received_end_rtl
+                    else
+                        R.drawable.message_bubble_background_received_end
                 }
             }
             isStartOfMessageCluster -> {
                 if (isOutgoing) {
+                    Log.d("messages-> 3 ",text)
                     binding.tailSendView.visibility = GONE
                     binding.tailReceiveView.visibility = GONE
                     R.drawable.message_bubble_background_sent_alone
                 } else {
+                    Log.d("messages-> 4 ",text)
                     binding.tailSendView.visibility = GONE
                     binding.tailReceiveView.visibility = GONE
                     R.drawable.message_bubble_background_sent_alone
@@ -754,21 +794,31 @@ class VisibleMessageContentView : MaterialCardView {
             }
             isEndOfMessageCluster -> {
                 if (isOutgoing) {
+                    Log.d("messages-> 5 ",text)
                     binding.tailSendView.visibility = VISIBLE
                     binding.tailReceiveView.visibility = GONE
-                    R.drawable.message_bubble_background_sent_end
+                    if (isRtl)
+                        R.drawable.message_bubble_background_sent_end_rtl
+                    else
+                        R.drawable.message_bubble_background_sent_end
                 } else {
+                    Log.d("messages-> 6 ",text)
                     binding.tailSendView.visibility = GONE
                     binding.tailReceiveView.visibility = VISIBLE
-                    R.drawable.message_bubble_background_received_end
+                    if (isRtl)
+                        R.drawable.message_bubble_background_received_end_rtl
+                    else
+                        R.drawable.message_bubble_background_received_end
                 }
             }
             else -> {
                 if (isOutgoing) {
+                    Log.d("messages-> 7 ",text)
                     binding.tailSendView.visibility = GONE
                     binding.tailReceiveView.visibility = GONE
                     R.drawable.message_bubble_background_sent_alone
                 } else {
+                    Log.d("messages-> 8 ",text)
                     binding.tailSendView.visibility = GONE
                     binding.tailReceiveView.visibility = GONE
                     R.drawable.message_bubble_background_sent_alone

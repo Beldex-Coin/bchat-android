@@ -84,6 +84,7 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
+                    android:textAlignment="viewStart"
                     android:textColor="@color/text"
                     android:textSize="@dimen/very_small_font_size"
                     tools:maxLines="1"

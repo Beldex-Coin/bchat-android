@@ -618,6 +618,10 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                     ),
                     modifier=Modifier
                         .weight(1f),
+                    contentPadding = PaddingValues(
+                        horizontal = 8.dp,
+                        vertical = 8.dp
+                    ),
                     border = BorderStroke(width = 0.5.dp, color = MaterialTheme.appColors.negativeGreenButtonBorder)
                 ) {
                     Text(
@@ -627,7 +631,7 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                             fontSize = 14.sp,
                             color = MaterialTheme.appColors.negativeGreenButtonText
                         ),
-                        modifier=Modifier.padding(10.dp)
+                        modifier=Modifier.padding(vertical = 10.dp)
                     )
                 }
 
@@ -658,7 +662,11 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                         disabledContentColor = MaterialTheme.appColors.disabledLetsBchatContent
                     ),
                     modifier=Modifier
-                        .weight(1f)
+                        .weight(1f),
+                    contentPadding = PaddingValues(
+                        horizontal = 8.dp,
+                        vertical = 8.dp
+                    )
                 ) {
                     Text(
                         text= stringResource(id = R.string.let_s_bchat),
@@ -671,7 +679,7 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                             fontWeight = FontWeight(400),
                             fontSize = 14.sp
                         ),
-                        modifier=Modifier.padding(10.dp)
+                        modifier=Modifier.padding(vertical = 10.dp)
                     )
                 }
             }

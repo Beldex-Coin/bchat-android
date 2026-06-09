@@ -1407,9 +1407,9 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="search_contact">بحث عن جهة اتصال</string>
     <string name="block_or_delete_request">Do you want to block or just delete this user?</string>
     <string name="or_join">أو انضم</string>
-    <string name="let_s_bchat">" هيا نتحادث على BChat"</string>
+    <string name="let_s_bchat">هيا نتحادث على BChat</string>
     <string name="your_chat_id">Your Chat ID</string>
-    <string name="enter_chat_id">" أدخل معرف الدردشة أو اسم BNS"</string>
+    <string name="enter_chat_id">أدخل معرف الدردشة أو اسم BNS</string>
     <string name="restore_account">Restore Account</string>
     <string name="hello">مرحبًا،</string>
     <string name="we_are_thrilled">نحن سعداء بانضمامك إلينا!</string>
@@ -1480,7 +1480,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="message_payment_status">Message Payment Status</string>
     <string name="link_your_bns">ربط BNS الخاص بك</string>
     <string name="read_more_about_bns">قراءة المزيد عن BNS</string>
-    <string name="show_qr">إظهار رمز الاستجابة السريعة (QR)</string>
+    <string name="show_qr">عرض رمز QR</string>
     <string name="about_bns">About BNS</string>
     <string name="scan_qr_code">مسح رمز الاستجابة السريعة (QR)</string>
     <string name="about_bns_description_4">" • الهوية الموحدة: اربط معرف BChat الخاص بك، وعنوان محفظة Beldex، ومعرف BelNet باسم BNS واحد. هذا يبسط تفاعلاتك عبر نظام Beldex البيئي."</string>

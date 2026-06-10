@@ -26,6 +26,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
@@ -84,7 +86,10 @@ fun ContactItem(
                     .weight(if (isSharing) 0.8f else 0.7f)
             ) {
                 Text((contact?.recipient?.name ?: contact?.recipient?.address.toString()).capitalizeFirstLetter(),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        textDirection = TextDirection.Content
+                    ),
+                    textAlign = TextAlign.Start,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )

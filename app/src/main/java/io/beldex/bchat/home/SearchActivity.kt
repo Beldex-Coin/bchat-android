@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.text.SpannableStringBuilder
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -71,6 +70,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
+import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.BaseComponentActivity
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
@@ -82,19 +84,17 @@ import io.beldex.bchat.home.search.GlobalSearchViewModel
 import io.beldex.bchat.home.search.getSearchName
 import io.beldex.bchat.search.SearchActivityResults
 import io.beldex.bchat.search.SearchResults
+import io.beldex.bchat.textformatter.TextFormatter
+import io.beldex.bchat.textformatter.TextFormatter.toAnnotatedString
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.R
-import io.beldex.bchat.textformatter.TextFormatter
-import io.beldex.bchat.textformatter.TextFormatter.toAnnotatedString
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
 
 @AndroidEntryPoint
-class SearchActivity : ComponentActivity() {
+class SearchActivity : BaseComponentActivity() {
 
     companion object {
         const val EXTRA_SEARCH_DATA = "io.beldex.bchat.EXTRA_SEARCH_DATA"

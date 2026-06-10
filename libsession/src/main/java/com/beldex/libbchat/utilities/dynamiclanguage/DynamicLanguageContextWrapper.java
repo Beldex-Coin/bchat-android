@@ -2,7 +2,6 @@ package com.beldex.libbchat.utilities.dynamiclanguage;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 
 import java.util.Locale;
 
@@ -12,22 +11,16 @@ import java.util.Locale;
 public final class DynamicLanguageContextWrapper {
 
   public static Context updateContext(Context context, String language) {
-    final Locale newLocale = LocaleParser.findBestMatchingLocaleForLanguage(language);
+    Locale locale = LocaleParser.findBestMatchingLocaleForLanguage(language);
 
-    Locale.setDefault(newLocale);
+    Locale.setDefault(locale);
 
-    final Resources     resources = context.getResources();
-    final Configuration config    = resources.getConfiguration();
-    final Configuration newConfig = copyWithNewLocale(config, newLocale);
+    Configuration configuration =
+            new Configuration(context.getResources().getConfiguration());
 
-    resources.updateConfiguration(newConfig, resources.getDisplayMetrics());
+    configuration.setLocale(locale);
+    configuration.setLayoutDirection(locale);
 
-    return context;
-  }
-
-  private static Configuration copyWithNewLocale(Configuration config, Locale locale) {
-    final Configuration copy = new Configuration(config);
-    copy.setLocale(locale);
-    return copy;
+    return context.createConfigurationContext(configuration);
   }
 }

@@ -3,7 +3,6 @@ package io.beldex.bchat.conversation_v2
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.SideEffect
@@ -15,13 +14,14 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import io.beldex.bchat.compose_utils.BChatTheme
-import io.beldex.bchat.util.UiMode
-import io.beldex.bchat.util.UiModeUtilities
 import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.BaseComponentActivity
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
+import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.dms.NewChatScreen
+import io.beldex.bchat.util.UiMode
+import io.beldex.bchat.util.UiModeUtilities
 
 enum class OpenActivity(val destination: String) {
     NewChat("new_chat"),
@@ -33,7 +33,7 @@ enum class OpenActivity(val destination: String) {
 }
 
 @AndroidEntryPoint
-class NewChatConversationActivity: ComponentActivity() {
+class NewChatConversationActivity: BaseComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

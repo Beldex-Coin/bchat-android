@@ -10,7 +10,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -18,7 +17,6 @@ import android.util.Log
 import android.util.Rational
 import android.view.SurfaceView
 import android.view.ViewGroup
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
@@ -95,6 +93,7 @@ import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.utilities.hexEncodedPublicKey
 import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.BaseComponentActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.BChatTypography
@@ -115,7 +114,7 @@ import org.apache.commons.lang3.time.DurationFormatUtils
 
 
 @AndroidEntryPoint
-class WebRTCComposeActivity : ComponentActivity() {
+class WebRTCComposeActivity : BaseComponentActivity() {
 
     private var hangupReceiver: BroadcastReceiver? = null
     val viewModel:CallViewModel by viewModels()
@@ -1076,7 +1075,7 @@ class WebRTCComposeActivity : ComponentActivity() {
                             tint = MaterialTheme.appColors.editTextColor,
                             modifier = Modifier
                                 .clickable {
-                                    (context as ComponentActivity).finish()
+                                    (context as BaseComponentActivity).finish()
                                 }
                         )
                     }

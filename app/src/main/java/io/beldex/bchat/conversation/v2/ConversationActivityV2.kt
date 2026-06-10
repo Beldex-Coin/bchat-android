@@ -23,7 +23,6 @@ import android.util.Log
 import android.view.ActionMode
 import android.view.LayoutInflater
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
@@ -38,10 +37,8 @@ import androidx.activity.viewModels
 import androidx.annotation.DimenRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -90,6 +87,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.ApplicationContext
+import io.beldex.bchat.BaseAppCompatActivity
 import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.MediaOverviewActivity
 import io.beldex.bchat.R
@@ -200,10 +198,9 @@ import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
-import kotlin.text.indexOfAny
 
 @AndroidEntryPoint
-class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
+class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
     InputBarRecordingViewDelegate, AttachmentManager.AttachmentListener,
     ConversationActionModeCallbackDelegate,
     RecipientModifiedListener,

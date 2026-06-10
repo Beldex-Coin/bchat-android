@@ -12,7 +12,6 @@ import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,16 +37,21 @@ import com.beldex.libbchat.utilities.SSKEnvironment
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.truncateIdForDisplay
 import com.beldex.libsignal.utilities.Log
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.canhub.cropper.CropImage
 import com.canhub.cropper.CropImageContract
+import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.BaseAppCompatActivity
+import io.beldex.bchat.CheckOnline
+import io.beldex.bchat.R
 import io.beldex.bchat.avatar.AvatarSelection
 import io.beldex.bchat.components.ProfilePictureView
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.ComposeDialogContainer
 import io.beldex.bchat.compose_utils.DialogType
 import io.beldex.bchat.compose_utils.appColors
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager
+import io.beldex.bchat.databinding.ActivityMyProfileBinding
 import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.profiles.ProfileMediaConstraints
 import io.beldex.bchat.util.BitmapDecodingException
@@ -56,10 +60,6 @@ import io.beldex.bchat.util.ConfigurationMessageUtilities
 import io.beldex.bchat.util.FileProviderUtil
 import io.beldex.bchat.util.QRCodeUtilities
 import io.beldex.bchat.util.toPx
-import io.beldex.bchat.CheckOnline
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityMyProfileBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -74,7 +74,7 @@ import java.util.Date
 import java.util.regex.Pattern
 
 @AndroidEntryPoint
-class MyProfileActivity: AppCompatActivity() {
+class MyProfileActivity: BaseAppCompatActivity() {
 
     private lateinit var glide: RequestManager
     private var tempFile: File? = null

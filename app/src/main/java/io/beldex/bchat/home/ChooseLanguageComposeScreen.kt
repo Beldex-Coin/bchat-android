@@ -77,19 +77,9 @@ fun ChooseLanguage(
         Language("Vietnamese", "Tiếng Việt", "vi")
     )
 
-
-    fun restartToHome(context: Context) {
-        val intent = Intent(context, HomeActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        context.startActivity(intent)
-        (context as? BaseComponentActivity)?.finish()
-    }
-
     fun updateSelectedLanguage(context: Context, language: Language) {
         TextSecurePreferences.setAppSelectedLanguage(context, language.code)
         onLanguageSelected(language.code)
-        restartToHome(context)
     }
 
     Box(

@@ -18,6 +18,7 @@
         app:cardBackgroundColor="@color/dialled_call_detail_background">
 
         <RelativeLayout
+            android:layoutDirection="ltr"
             android:layout_width="match_parent"
             android:paddingTop="6dp"
             android:paddingBottom="4dp"

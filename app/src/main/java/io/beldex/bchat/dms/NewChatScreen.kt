@@ -72,6 +72,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -495,9 +496,10 @@ private fun GroupContact(
 
         Text(
             text = if(recipient.name != null) recipient.name.toString().capitalizeFirstLetter() else recipient.address.toString().capitalizeFirstLetter(),
+            style = MaterialTheme.typography.titleMedium.copy(
+                textDirection = TextDirection.Content
+            ),
             textAlign = TextAlign.Start,
-            fontSize = 16.sp,
-            fontWeight = FontWeight(400),
             modifier = Modifier
                 .weight(1f)
                 .padding(start=if (recipient.isGroupRecipient) 5.dp else 15.dp, end=15.dp),

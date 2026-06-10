@@ -37,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -216,7 +217,7 @@ fun SharedContactContent(
 
                 Text(
                     text = annotatedDisplayName,
-                    style = MaterialTheme.typography.titleSmall.copy(color = titleColor, lineHeight = 15.0.sp),
+                    style = MaterialTheme.typography.titleSmall.copy(color = titleColor, lineHeight = 15.0.sp, textDirection = TextDirection.Content),
                     maxLines = if(contactList.size >= 2) 2 else 1,
                     overflow = TextOverflow.Ellipsis
                 )

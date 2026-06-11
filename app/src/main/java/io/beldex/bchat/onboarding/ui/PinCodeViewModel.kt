@@ -53,40 +53,47 @@ class PinCodeViewModel @Inject constructor(
         savedPassword = sharedPreferenceUtil.getSavedPassword()
         walletSavedPassword= sharedPreferenceUtil.getWalletSavePassword()
         action = savedStateHandle.get<Int>(EXTRA_PIN_CODE_ACTION) ?: PinCodeAction.VerifyPinCode.action
+        val savedPinLength = sharedPreferenceUtil.getPinLength()
         _state.update {
             when (action) {
                 PinCodeAction.CreatePinCode.action -> {
                     it.copy(
+                        pinLength = savedPinLength,
                         step = PinCodeSteps.EnterPin,
                         stepTitle = resourceProvider.getString(R.string.enter_your_pin)
                     )
                 }
                 PinCodeAction.VerifyPinCode.action -> {
                     it.copy(
+                        pinLength = savedPinLength,
                         step = PinCodeSteps.VerifyPin,
-                        stepTitle = resourceProvider.getString(R.string.enter_your_4_digit_bchat_pin)
+                        stepTitle = resourceProvider.getString(R.string.enter_your_4_digit_bchat_pin).format(savedPinLength)
                     )
                 }
                 PinCodeAction.ChangePinCode.action -> {
                     it.copy(
+                        pinLength = savedPinLength,
                         step = PinCodeSteps.OldPin,
                         stepTitle = resourceProvider.getString(R.string.enter_old_pin)
                     )
                 }
                 PinCodeAction.VerifyWalletPin.action -> {
                     it.copy(
+                        pinLength = savedPinLength,
                         step = PinCodeSteps.VerifyPin,
-                        stepTitle = resourceProvider.getString(R.string.enter_your_4_digit_wallet_pin)
+                        stepTitle = resourceProvider.getString(R.string.enter_your_4_digit_wallet_pin).format(savedPinLength)
                     )
                 }
                 PinCodeAction.CreateWalletPin.action -> {
                     it.copy(
+                        pinLength = savedPinLength,
                         step = PinCodeSteps.EnterPin,
                         stepTitle = resourceProvider.getString(R.string.enter_your_pin)
                     )
                 }
                 PinCodeAction.ChangeWalletPin.action -> {
                     it.copy(
+                        pinLength = savedPinLength,
                         step = PinCodeSteps.OldPin,
                         stepTitle = resourceProvider.getString(R.string.enter_old_pin)
                     )
@@ -128,7 +135,7 @@ class PinCodeViewModel @Inject constructor(
                                     pin  = event.pinCode
                                 )
                             }
-                            if (action != PinCodeAction.VerifyWalletPin.action && event.pinCode.length == 4) {
+                            if (action != PinCodeAction.VerifyWalletPin.action && event.pinCode.length == state.value.pinLength) {
                                 viewModelScope.launch {
                                     if (event.pinCode == savedPassword) {
                                         _successEvent.emit(false)
@@ -200,6 +207,8 @@ class PinCodeViewModel @Inject constructor(
                                 }
                             } else {
                                 sharedPreferenceUtil.setPassword(newPin)
+                                // Save selected PIN length here
+                                sharedPreferenceUtil.setPinLength(state.value.pinLength)
                                 viewModelScope.launch {
                                     val message = if (action == PinCodeAction.CreatePinCode.action) {
                                         resourceProvider.getString(R.string.pincode_created)
@@ -247,6 +256,26 @@ class PinCodeViewModel @Inject constructor(
                             )
                         }
                     }
+                }
+            }
+            PinCodeEvents.EnableSixDigitPin -> {
+                _state.update {
+                    it.copy(
+                        pinLength = 6,
+                        pin = "",
+                        newPin = "",
+                        reEnteredPin = ""
+                    )
+                }
+            }
+            PinCodeEvents.EnableFourDigitPin -> {
+                _state.update {
+                    it.copy(
+                        pinLength = 4,
+                        pin = "",
+                        newPin = "",
+                        reEnteredPin = ""
+                    )
                 }
             }
         }

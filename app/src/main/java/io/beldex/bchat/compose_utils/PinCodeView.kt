@@ -1,12 +1,15 @@
 package io.beldex.bchat.compose_utils
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -30,66 +33,86 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun PinCodeView(
     modifier: Modifier = Modifier,
-    length: Int = 4,
-    pin: String = "",
-    boxSize: Dp = 64.dp
+    pinLength: Int = 4,
+    pin: String = ""
 ) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
-        modifier = modifier
-    ) {
-        repeat(length) { i ->
-            val value = if (pin.length - 1 >= i) pin[i].toString() else ""
-            val pinCode: String
-            if(value.isNotEmpty()){
-                pinCode = when (value.length) {
-                    1 -> {
-                        "*"
+    BoxWithConstraints {
+        val spacing = if (pinLength == 6) 3.dp else 16.dp
+
+        val boxSize = (
+                (maxWidth - spacing * (pinLength - 1)) / pinLength
+                ).coerceIn(44.dp, 60.dp)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(
+                spacing,
+                Alignment.CenterHorizontally
+            ),
+            modifier = modifier
+        ) {
+            repeat(pinLength) { i ->
+                val value = if (pin.length - 1 >= i) pin[i].toString() else ""
+                val pinCode: String
+                if (value.isNotEmpty()) {
+                    pinCode = when (value.length) {
+                        1 -> {
+                            "*"
+                        }
+
+                        2 -> {
+                            "**"
+                        }
+
+                        3 -> {
+                            "***"
+                        }
+
+                        4 -> {
+                            "****"
+                        }
+
+                        5 -> {
+                            "*****"
+                        }
+
+                        else -> {
+                            "******"
+                        }
                     }
-                    2 -> {
-                        "**"
-                    }
-                    3 -> {
-                        "***"
-                    }
-                    else -> {
-                        "****"
-                    }
+                } else {
+                    pinCode = ""
                 }
-            }else{
-                pinCode = ""
-            }
-            Card(
-                border = BorderStroke(
-                    width = 1.dp,
-                    color = if (value.isNotEmpty())
-                        MaterialTheme.appColors.primaryButtonColor
-                    else
-                        MaterialTheme.colorScheme.outline
-                ),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.Transparent
-                ),
-                modifier = Modifier
-                    .size(boxSize)
-                    .background(
-                        color = Color.Transparent,
-                        shape = RoundedCornerShape(25)
-                    )
-            ) {
-                Box(
-                    contentAlignment = Alignment.Center,
+                Card(
+                    border = BorderStroke(
+                        width = 1.dp,
+                        color = if (value.isNotEmpty())
+                            MaterialTheme.appColors.primaryButtonColor
+                        else
+                            MaterialTheme.colorScheme.outline
+                    ),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.Transparent
+                    ),
                     modifier = Modifier
-                        .fillMaxSize()
+                        .size(boxSize)
+                        .background(
+                            color = Color.Transparent,
+                            shape = RoundedCornerShape(25)
+                        )
                 ) {
-                    Text(
-                        text = pinCode,
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold
-                        ),
-                        textAlign = TextAlign.Center
-                    )
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ) {
+                        Text(
+                            text = pinCode,
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
             }
         }

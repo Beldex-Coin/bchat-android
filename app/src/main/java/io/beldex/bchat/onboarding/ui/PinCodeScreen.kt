@@ -60,7 +60,8 @@ data class PinCodeState(
     val stepTitle: String = "",
     val pin: String = "",
     val newPin: String = "",
-    val reEnteredPin: String = ""
+    val reEnteredPin: String = "",
+    val pinLength: Int = 4
 )
 
 enum class PinCodeAction(val action: Int) {
@@ -76,6 +77,8 @@ sealed interface PinCodeEvents {
     data object Submit: PinCodeEvents
     data class PinCodeChanged(val pinCode: String): PinCodeEvents
     data object ResetPinCode: PinCodeEvents
+    data object EnableSixDigitPin : PinCodeEvents
+    data object EnableFourDigitPin : PinCodeEvents
 }
 
 @Composable
@@ -121,22 +124,39 @@ fun PinCodeScreen(
         ) {
             PinCodeView(
                 pin = pin,
+                pinLength = state.pinLength,
                 modifier = Modifier
                     .fillMaxWidth()
             )
 
-            Spacer(
-                modifier = Modifier
-                    .height(16.dp)
-            )
+            Spacer(modifier = Modifier.height(if(state.step == PinCodeSteps.EnterPin) 12.dp else 16.dp))
 
             Text(
                 text = state.stepTitle,
                 style = MaterialTheme.typography.titleMedium
             )
+
+            Spacer(modifier = Modifier.height(if(state.step == PinCodeSteps.EnterPin) 2.dp else 0.dp))
+
+            if (state.step == PinCodeSteps.EnterPin) {
+                Text(
+                    text = if (state.pinLength == 4)
+                        "Switch to 6-digit PIN >"
+                    else
+                        "Switch to 4-digit PIN >",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.clickable {
+                        if (state.pinLength == 4) {
+                            onEvent(PinCodeEvents.EnableSixDigitPin)
+                        } else {
+                            onEvent(PinCodeEvents.EnableFourDigitPin)
+                        }
+                    }
+                )
+            }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(if(state.step == PinCodeSteps.EnterPin) 12.dp else 16.dp))
 
         BoxWithConstraints(
             modifier = Modifier
@@ -199,7 +219,7 @@ fun PinCodeScreen(
                                         modifier = Modifier
                                             .height(cellHeight)
                                             .clickable {
-                                                if (pin.length < 4)
+                                                if (pin.length < state.pinLength)
                                                     onEvent(PinCodeEvents.PinCodeChanged(pin + "0"))
                                             }
                                     ) {
@@ -260,7 +280,7 @@ fun PinCodeScreen(
                                         modifier = Modifier
                                             .height(cellHeight)
                                             .clickable {
-                                                if (pin.length < 4)
+                                                if (pin.length < state.pinLength)
                                                     onEvent(PinCodeEvents.PinCodeChanged(pin + "$index"))
                                             }
                                     ) {
@@ -288,7 +308,7 @@ fun PinCodeScreen(
                         onClick = {
                             onEvent(PinCodeEvents.Submit)
                         },
-                        enabled = pin.length == 4,
+                        enabled = pin.length == state.pinLength,
                         modifier = Modifier
                             .fillMaxWidth().
                             padding(
@@ -306,7 +326,7 @@ fun PinCodeScreen(
                             text = stringResource(id = R.string.next),
                             style = BChatTypography.titleMedium.copy(
                                 fontWeight = FontWeight.Normal,
-                                color = if(pin.length == 4) Color.White else MaterialTheme.appColors.disabledNextButtonColor
+                                color = if(pin.length == state.pinLength) Color.White else MaterialTheme.appColors.disabledNextButtonColor
                             ),
                             modifier = Modifier
                                 .padding(8.dp)

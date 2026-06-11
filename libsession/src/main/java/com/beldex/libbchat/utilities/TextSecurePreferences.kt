@@ -273,6 +273,8 @@ interface TextSecurePreferences {
     fun getRecordingStatus(): Boolean
     fun setKeepArchiveChat(isKeepChat: Boolean)
     fun getKeepArchiveChat(): Boolean
+    fun setPinLength(pinLength: Int)
+    fun getPinLength(): Int
 
 
 
@@ -393,6 +395,7 @@ interface TextSecurePreferences {
         const val IS_REACTION_OVERLAY_VISIBLE = "is_reaction_overlay_visible"
         const val IS_VOICE_RECORDING = "is_voice_recording"
         const val IS_KEEP_ARCHIVE_CHAT = "is_keep_archive_chat"
+        const val PIN_LENGTH = "pin_length"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1447,6 +1450,16 @@ interface TextSecurePreferences {
             return getBooleanPreference(context, IS_KEEP_ARCHIVE_CHAT, false)
         }
 
+        @JvmStatic
+        fun getPinLength(context: Context): Int {
+            return getIntegerPreference(context, PIN_LENGTH, 4)
+        }
+
+        @JvmStatic
+        fun setPinLength(context: Context, pinLength: Int) {
+            setIntegerPreference(context, PIN_LENGTH, pinLength)
+        }
+
 
     }
 }
@@ -2359,5 +2372,13 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun getKeepArchiveChat() : Boolean {
         return getBooleanPreference(IS_KEEP_ARCHIVE_CHAT, false)
+    }
+
+    override fun setPinLength(pinLength: Int) {
+        setIntegerPreference(TextSecurePreferences.PIN_LENGTH, pinLength)
+    }
+
+    override fun getPinLength(): Int {
+        return getIntegerPreference(TextSecurePreferences.PIN_LENGTH,4)
     }
 }

@@ -1,6 +1,7 @@
 package io.beldex.bchat.onboarding.ui
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
@@ -20,10 +23,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Backspace
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,6 +49,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.coerceAtMost
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.PinCodeView
@@ -120,7 +126,9 @@ fun PinCodeScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
-                .weight(0.2f)
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(vertical = 8.dp)
         ) {
             PinCodeView(
                 pin = pin,
@@ -129,30 +137,44 @@ fun PinCodeScreen(
                     .fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(if(state.step == PinCodeSteps.EnterPin) 12.dp else 16.dp))
-
+            Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = state.stepTitle,
                 style = MaterialTheme.typography.titleMedium
             )
 
-            Spacer(modifier = Modifier.height(if(state.step == PinCodeSteps.EnterPin) 2.dp else 0.dp))
-
             if (state.step == PinCodeSteps.EnterPin) {
-                Text(
-                    text = if (state.pinLength == 4)
-                        "Switch to 6-digit PIN >"
-                    else
-                        "Switch to 4-digit PIN >",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.clickable {
+                Spacer(modifier = Modifier.height(8.dp))
+
+                OutlinedButton(
+                    onClick = {
                         if (state.pinLength == 4) {
                             onEvent(PinCodeEvents.EnableSixDigitPin)
                         } else {
                             onEvent(PinCodeEvents.EnableFourDigitPin)
                         }
-                    }
-                )
+                    },
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                    shape = RoundedCornerShape(50),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.appColors.secondaryButtonColor),
+                    border = BorderStroke(
+                        width = 1.dp,
+                        color = if (state.pinLength == 4) MaterialTheme.appColors.tertiaryButtonColor else MaterialTheme.appColors.primaryButtonColor
+                    )
+                ) {
+                    Text(
+                        text = stringResource(if (state.pinLength == 4) R.string.six_digit_pin else R.string.four_digit_pin),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Icon(
+                        painterResource(id = R.drawable.ic_arrow_pin),
+                        tint = MaterialTheme.appColors.textColor,
+                        contentDescription = "PIN digit change",
+                    )
+                }
             }
         }
 

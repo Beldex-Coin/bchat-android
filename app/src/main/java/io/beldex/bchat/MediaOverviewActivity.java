@@ -41,7 +41,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -56,14 +55,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.beldex.libbchat.messaging.messages.control.DataExtractionNotification;
+import com.beldex.libbchat.messaging.sending_receiving.MessageSender;
 import com.beldex.libbchat.mnode.MnodeAPI;
-import com.beldex.libsignal.utilities.Log;
+import com.beldex.libbchat.utilities.Address;
+import com.beldex.libbchat.utilities.Util;
+import com.beldex.libbchat.utilities.ViewUtil;
+import com.beldex.libbchat.utilities.recipients.Recipient;
+import com.beldex.libbchat.utilities.task.ProgressDialogAsyncTask;
+import com.bumptech.glide.Glide;
 import com.codewaves.stickyheadergrid.StickyHeaderGridLayoutManager;
 import com.google.android.material.tabs.TabLayout;
 
-import com.beldex.libbchat.messaging.messages.control.DataExtractionNotification;
-import com.beldex.libbchat.messaging.sending_receiving.MessageSender;
-import com.beldex.libbchat.utilities.Address;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 import io.beldex.bchat.conversation.v2.ConversationActivityV2;
 import io.beldex.bchat.database.CursorRecyclerViewAdapter;
@@ -71,22 +79,11 @@ import io.beldex.bchat.database.MediaDatabase;
 import io.beldex.bchat.database.loaders.BucketedThreadMediaLoader;
 import io.beldex.bchat.database.loaders.BucketedThreadMediaLoader.BucketedThreadMedia;
 import io.beldex.bchat.database.loaders.ThreadMediaLoader;
-import com.bumptech.glide.Glide;
 import io.beldex.bchat.permissions.Permissions;
-import com.beldex.libbchat.utilities.recipients.Recipient;
 import io.beldex.bchat.util.AttachmentUtil;
 import io.beldex.bchat.util.GridSpaceItemDecoration;
 import io.beldex.bchat.util.SaveAttachmentTask;
 import io.beldex.bchat.util.StickyHeaderDecoration;
-import com.beldex.libbchat.utilities.Util;
-import com.beldex.libbchat.utilities.ViewUtil;
-import com.beldex.libbchat.utilities.task.ProgressDialogAsyncTask;
-
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
 import kotlin.Unit;
 
 /**
@@ -475,7 +472,7 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
     }
 
     private void enterMultiSelect() {
-      actionMode = ((AppCompatActivity) getActivity()).startSupportActionMode(actionModeCallback);
+      actionMode = ((BaseAppCompatActivity) getActivity()).startSupportActionMode(actionModeCallback);
       ((MediaOverviewActivity) getActivity()).onEnterMultiSelect();
     }
 

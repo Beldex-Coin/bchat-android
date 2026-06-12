@@ -3,7 +3,6 @@ package io.beldex.bchat.conversation_v2
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,15 +30,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.utilities.recipients.Recipient
+import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.BaseComponentActivity
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.ui.ScreenContainer
 import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.util.State
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.R
 
 enum class NewGroupConversationType(val destination: String) {
     SecretGroup("secret_group"),
@@ -47,7 +47,7 @@ enum class NewGroupConversationType(val destination: String) {
 }
 
 @AndroidEntryPoint
-class NewGroupConversationActivity: ComponentActivity() {
+class NewGroupConversationActivity: BaseComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

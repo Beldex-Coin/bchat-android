@@ -1,18 +1,18 @@
 package io.beldex.bchat.my_account.ui
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.beldex.libbchat.mnode.OnionRequestAPI
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper
 import com.beldex.libbchat.utilities.truncateIdForDisplay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.beldex.bchat.R
 import io.beldex.bchat.my_account.domain.PathNodeModel
+import io.beldex.bchat.util.AppLanguageEvent
 import io.beldex.bchat.util.IP2Country
 import io.beldex.bchat.util.ResourceProvider
 import io.beldex.bchat.util.SharedPreferenceUtil
@@ -50,21 +50,15 @@ class MyAccountViewModel @Inject constructor(
     val showLoader: LiveData<Boolean> get () = _showLoader
 
     private val _selectedLanguageCode = MutableStateFlow(TextSecurePreferences.getAppSelectedLanguage(context) ?: Locale.getDefault().language)
-    private val _deviceLanguageCode = MutableStateFlow(TextSecurePreferences.getDeviceLanguage(context) ?: Locale.getDefault().language)
-
 
     val selectedLanguageCode: StateFlow<String> =
         _selectedLanguageCode.asStateFlow()
 
-    val deviceLanguageCode: StateFlow<String> =
-        _deviceLanguageCode.asStateFlow()
-
-    fun selectLanguage(code: String) {
+    fun selectLanguage(code: String, context: Context) {
         _selectedLanguageCode.value = code
 
-        AppCompatDelegate.setApplicationLocales(
-            LocaleListCompat.forLanguageTags(code)
-        )
+        DynamicLanguageContextWrapper.updateContext(
+            context, code)
     }
 
     init {
@@ -75,6 +69,7 @@ class MyAccountViewModel @Inject constructor(
                 publicKey = publicKey
             )
         }
+        AppLanguageEvent.deviceLanguage.value = TextSecurePreferences.getDeviceLanguage(context) ?: Locale.getDefault().language
     }
 
     fun getPathNodes() {

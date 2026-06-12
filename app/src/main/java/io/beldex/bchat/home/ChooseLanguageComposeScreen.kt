@@ -1,5 +1,7 @@
 package io.beldex.bchat.home
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -38,8 +40,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import io.beldex.bchat.BaseComponentActivity
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.my_account.ui.MyAccountViewModel
+import io.beldex.bchat.util.AppLanguageEvent
 
 
 @Composable
@@ -49,12 +53,12 @@ fun ChooseLanguage(
 ) {
     val scrollState = rememberLazyListState()
     val selectedCode by viewModel.selectedLanguageCode.collectAsState()
-    val deviceLanguageCode by viewModel.deviceLanguageCode.collectAsState()
+    val deviceLanguageCode = AppLanguageEvent.deviceLanguageState.collectAsState().value
     val context = LocalContext.current
 
     val onLanguageSelected: (String) -> Unit = { code ->
         if (code != selectedCode) {
-            viewModel.selectLanguage(code)
+            viewModel.selectLanguage(code, context)
         }
         onBack()
     }
@@ -73,6 +77,10 @@ fun ChooseLanguage(
         Language("Vietnamese", "Tiếng Việt", "vi")
     )
 
+    fun updateSelectedLanguage(context: Context, language: Language) {
+        TextSecurePreferences.setAppSelectedLanguage(context, language.code)
+        onLanguageSelected(language.code)
+    }
 
     Box(
         modifier =
@@ -106,8 +114,7 @@ fun ChooseLanguage(
                             color = if (selectedCode == language.code) MaterialTheme.appColors.contactCardBackground else MaterialTheme.appColors.editTextBackground
                         )
                         .clickable {
-                            TextSecurePreferences.setAppSelectedLanguage(context, language.code)
-                            onLanguageSelected(language.code)
+                            updateSelectedLanguage(context, language)
                         }
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -116,7 +123,7 @@ fun ChooseLanguage(
                     RadioButton(
                         selected = language.code == selectedCode,
                         onClick = {
-                            // Add onClick() logic here
+                            updateSelectedLanguage(context, language)
                         },
                         colors = RadioButtonDefaults.colors(
                             selectedColor = MaterialTheme.appColors.primaryButtonColor,

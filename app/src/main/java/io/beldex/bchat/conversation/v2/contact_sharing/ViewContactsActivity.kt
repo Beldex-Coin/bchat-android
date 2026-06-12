@@ -3,7 +3,6 @@ package io.beldex.bchat.conversation.v2.contact_sharing
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -47,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
+import io.beldex.bchat.BaseAppCompatActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.DialogContainer
@@ -62,7 +62,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 
-class ViewAllContactsActivity : AppCompatActivity() {
+class ViewAllContactsActivity : BaseAppCompatActivity() {
 
     private var contact: ContactModel? = null
 
@@ -231,7 +231,7 @@ fun ChatWithContactPopUp(name: String, address : String, onDismiss: () -> Unit){
         mutableStateOf(name)
     }
     val context=LocalContext.current
-    val activity = context as AppCompatActivity
+    val activity = context as BaseAppCompatActivity
 
     fun moveToChat(address: String) {
         val addressForThread = Address.fromSerialized(address)

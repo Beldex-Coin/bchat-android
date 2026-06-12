@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
@@ -25,12 +24,13 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.BaseComponentActivity
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 
 @AndroidEntryPoint
-class ContactSharingActivity: ComponentActivity() {
+class ContactSharingActivity: BaseComponentActivity() {
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {

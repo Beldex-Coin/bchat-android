@@ -15,7 +15,6 @@ import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -111,6 +110,7 @@ import com.beldex.libsignal.utilities.hexEncodedPrivateKey
 import com.canhub.cropper.CropImage
 import com.canhub.cropper.CropImageContract
 import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.BaseComponentActivity
 import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.R
@@ -165,7 +165,7 @@ import java.util.regex.Pattern
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MyAccountActivity : ComponentActivity() {
+class MyAccountActivity : BaseComponentActivity() {
 
     private var destination = MyAccountScreens.SettingsScreen.route
     @Inject
@@ -485,7 +485,7 @@ fun MyAccountNavHost(
             MyAccountScreenContainer(
                 title = stringResource(id = R.string.account_settings),
                 onBackClick = {
-                    (context as ComponentActivity).finish()
+                    (context as BaseComponentActivity).finish()
                 }
             ) {
                 val state by viewModel.uiState.collectAsState()
@@ -1185,7 +1185,7 @@ fun MyAccountNavHost(
             MyAccountScreenContainer(
                 title = stringResource(R.string.about),
                 onBackClick = {
-                    (context as ComponentActivity).finish()
+                    (context as BaseComponentActivity).finish()
                 }
             ) {
                 ContentScreen(
@@ -1241,7 +1241,7 @@ fun MyAccountNavHost(
                 title = stringResource(R.string.activity_settings_recovery_phrase_button_title),
                 wrapInCard = markedAsSafe,
                 onBackClick = {
-                    (context as ComponentActivity).finish()
+                    (context as BaseComponentActivity).finish()
                 }
             ) {
                 RecoverySeedScreen(
@@ -1272,7 +1272,7 @@ fun MyAccountNavHost(
             MyAccountScreenContainer(
                 title = stringResource(R.string.activity_message_requests_title),
                 onBackClick = {
-                    (context as ComponentActivity).finish()
+                    (context as BaseComponentActivity).finish()
                 }
             ) {
                 MessageRequestsScreen(
@@ -1327,7 +1327,7 @@ fun MyAccountNavHost(
             ArchiveChatScreenContainer(
                 title = stringResource(R.string.archive_chat),
                 onBackClick = {
-                    (context as ComponentActivity).finish()
+                    (context as BaseComponentActivity).finish()
                 }
             ) {
                 ArchiveChatScreen(
@@ -1356,12 +1356,12 @@ fun MyAccountNavHost(
             MyAccountScreenContainer(
                 title = stringResource(R.string.choose_language),
                 onBackClick = {
-                    (context as ComponentActivity).finish()
+                    (context as BaseComponentActivity).finish()
                 }) {
                 ChooseLanguage(
                     viewModel,
                     onBack = {
-                        (context as ComponentActivity).finish()
+                        (context as BaseComponentActivity).finish()
                     }
                 )
             }

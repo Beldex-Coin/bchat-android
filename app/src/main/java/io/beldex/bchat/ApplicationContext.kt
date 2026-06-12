@@ -4,6 +4,7 @@ import android.app.Application
 import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.AsyncTask
 import android.os.Handler
 import android.os.HandlerThread
@@ -27,6 +28,7 @@ import com.beldex.libbchat.utilities.SSKEnvironment.Companion.configure
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.clearAll
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getAppSelectedLanguage
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getLanguage
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getLastProfilePictureUpload
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getLocalNumber
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getProfileKey
@@ -39,6 +41,7 @@ import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setRefreshD
 import com.beldex.libbchat.utilities.Util.runOnMain
 import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper
 import com.beldex.libbchat.utilities.dynamiclanguage.LocaleParser.Companion.configure
+import com.beldex.libbchat.utilities.dynamiclanguage.LocaleParser.Companion.findBestMatchingLocaleForLanguage
 import com.beldex.libsignal.utilities.HTTP.isConnectedToNetwork
 import com.beldex.libsignal.utilities.JsonUtil
 import com.beldex.libsignal.utilities.Log
@@ -81,6 +84,7 @@ import io.beldex.bchat.service.KeyCachingService
 import io.beldex.bchat.sskenvironment.ProfileManager
 import io.beldex.bchat.sskenvironment.ReadReceiptManager
 import io.beldex.bchat.sskenvironment.TypingStatusRepository
+import io.beldex.bchat.util.AppLanguageEvent
 import io.beldex.bchat.util.Broadcaster
 import io.beldex.bchat.util.FirebaseRemoteConfigUtil
 import io.beldex.bchat.util.UiModeUtilities.setupUiModeToUserSelected
@@ -365,6 +369,15 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
                 )
             )
         )
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val appSettingLanguage = findBestMatchingLocaleForLanguage(getLanguage(this))
+        TextSecurePreferences.setDeviceLanguage(this, appSettingLanguage?.language)
+        appSettingLanguage?.let { it ->
+            AppLanguageEvent.update(it.language)
+        }
     }
 
 

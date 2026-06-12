@@ -9,7 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.ComponentActivity
+import io.beldex.bchat.BaseComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -117,7 +117,7 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 
 @AndroidEntryPoint
-class SecretGroupInfoComposeActivity : ComponentActivity() {
+class SecretGroupInfoComposeActivity : BaseComponentActivity() {
 
     companion object {
         const val secretGroupID = "secret_group_id"
@@ -572,13 +572,13 @@ fun GroupDetailsScreen(
                         Row(
                             modifier=Modifier
                                 .fillMaxWidth()
-                                .padding(vertical=8.dp)
+                                .padding(vertical = 8.dp)
                                 .clickable {
-                                if (getLocalNumber(context) != member) {
-                                    selectedItem=member
-                                    showMemberOptionDialog=true
-                                }
-                            },
+                                    if (getLocalNumber(context) != member) {
+                                        selectedItem = member
+                                        showMemberOptionDialog = true
+                                    }
+                                },
                             verticalAlignment=Alignment.CenterVertically
                         )
                         {
@@ -773,7 +773,7 @@ fun GroupDetailsScreen(
                                 .padding(16.dp)
                                 .clickable {
                                     if (isSecretGroupIsActive()) {
-                                        showLeaveGroupDialog=true
+                                        showLeaveGroupDialog = true
                                     } else {
                                         Toast
                                             .makeText(
@@ -855,8 +855,8 @@ fun GroupDetailsScreen(
                             .padding(8.dp)
                             .clickable {
                                 if (getLocalNumber(context) != member) {
-                                    selectedItem=member
-                                    showMemberOptionDialog=true
+                                    selectedItem = member
+                                    showMemberOptionDialog = true
                                 }
                             },
                         verticalAlignment=Alignment.CenterVertically,
@@ -980,7 +980,7 @@ fun NavigationItem(
                     ),
                     modifier=Modifier
                         .size(30.dp)
-                        .padding(end=4.dp)
+                        .padding(end = 4.dp)
                 )
             }
         }
@@ -1112,7 +1112,7 @@ fun MemberDetailsDialog(
             Column(
                 Modifier
                     .fillMaxWidth()
-                    .padding(start=20.dp, end=20.dp, top=25.dp, bottom=25.dp),
+                    .padding(start = 20.dp, end = 20.dp, top = 25.dp, bottom = 25.dp),
                 Arrangement.Center,
                 Alignment.CenterHorizontally
             ) {
@@ -1128,7 +1128,7 @@ fun MemberDetailsDialog(
                             Column(
                                 modifier=Modifier
                                     .fillMaxSize()
-                                    .padding(vertical=4.dp),
+                                    .padding(vertical = 4.dp),
                                 verticalArrangement=Arrangement.Center,
                                 horizontalAlignment=Alignment.Start,
                             ) {
@@ -1146,21 +1146,21 @@ fun MemberDetailsDialog(
                                         .clickable {
                                             when (index) {
                                                 0 -> {
-                                                    val recipient=Recipient.from(
+                                                    val recipient = Recipient.from(
                                                         context,
                                                         Address.fromSerialized(member),
                                                         false
                                                     )
-                                                    val existingThread=DatabaseComponent
+                                                    val existingThread = DatabaseComponent
                                                         .get(context)
                                                         .threadDatabase()
                                                         .getThreadIdIfExistsFor(recipient)
                                                     if (activity != null) {
                                                         createConversation(
-                                                            threadId=existingThread,
-                                                            address=recipient.address,
-                                                            activity=activity,
-                                                            context=context
+                                                            threadId = existingThread,
+                                                            address = recipient.address,
+                                                            activity = activity,
+                                                            context = context
                                                         )
                                                     }
                                                     onDismiss()
@@ -1181,7 +1181,7 @@ fun MemberDetailsDialog(
                         contentDescription="",
                         tint=MaterialTheme.appColors.editTextColor,
                         modifier=Modifier
-                            .padding(end=8.dp, bottom=16.dp)
+                            .padding(end = 8.dp, bottom = 16.dp)
                             .clickable {
                                 onDismiss()
                             }

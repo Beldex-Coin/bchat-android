@@ -2,11 +2,11 @@ package io.beldex.bchat.onboarding
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import io.beldex.bchat.BaseAppCompatActivity
 import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.databinding.ActivitySplashScreenBinding
 
-class SplashScreenActivity : AppCompatActivity() {
+class SplashScreenActivity : BaseAppCompatActivity() {
     private lateinit var binding: ActivitySplashScreenBinding
     private var nextPage: Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {

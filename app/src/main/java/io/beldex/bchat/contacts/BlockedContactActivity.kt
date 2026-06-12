@@ -1,13 +1,11 @@
 package io.beldex.bchat.contacts
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
-import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import com.bumptech.glide.Glide
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityBlockedContactBinding

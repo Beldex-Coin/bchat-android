@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -17,12 +16,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libsignal.utilities.guava.Optional;
 import com.bumptech.glide.Glide;
-
-import io.beldex.bchat.BaseAppCompatActivity;
 import io.beldex.bchat.R;
 
 /**
@@ -108,8 +104,8 @@ public class MediaPickerFolderFragment extends Fragment implements MediaPickerFo
   }
 
   private void initToolbar(Toolbar toolbar) {
-    ((BaseAppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
-    ActionBar actionBar = ((BaseAppCompatActivity) requireActivity()).getSupportActionBar();
+    ((MediaSendActivity) requireActivity()).setSupportActionBar(toolbar);
+    ActionBar actionBar = ((MediaSendActivity) requireActivity()).getSupportActionBar();
     actionBar.setTitle(getString(R.string.MediaPickerActivity_send_to, recipientName));
     actionBar.setHomeAsUpIndicator(R.drawable.ic_back);
     actionBar.setDisplayHomeAsUpEnabled(true);

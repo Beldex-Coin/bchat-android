@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -20,14 +19,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.beldex.libbchat.utilities.Util;
 import com.bumptech.glide.Glide;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import io.beldex.bchat.BaseAppCompatActivity;
 import io.beldex.bchat.R;
 
 /**
@@ -168,7 +163,7 @@ public class MediaPickerItemFragment extends Fragment implements MediaPickerItem
   }
 
   private void initToolbar(Toolbar toolbar) {
-    BaseAppCompatActivity activity = (BaseAppCompatActivity) requireActivity();
+    MediaSendActivity activity = (MediaSendActivity) requireActivity();
     activity.setSupportActionBar(toolbar);
     ActionBar actionBar = activity.getSupportActionBar();
     actionBar.setTitle(folderTitle);

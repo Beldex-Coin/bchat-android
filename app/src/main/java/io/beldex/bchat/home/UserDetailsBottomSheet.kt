@@ -19,18 +19,20 @@ import io.beldex.bchat.databinding.FragmentUserDetailsBottomSheetBinding
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.Address
+import com.beldex.libbchat.utilities.SSKEnvironment
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.dependencies.DatabaseComponent
 import com.bumptech.glide.Glide;
 import io.beldex.bchat.util.UiModeUtilities
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class UserDetailsBottomSheet : BottomSheetDialogFragment() {
 
     @Inject lateinit var threadDb: ThreadDatabase
-    private val nicknameRegex = Regex("^[a-zA-Z0-9 ]+$")
+    private val namePattern = Pattern.compile("[A-Za-z0-9\\s]+")
 
     private lateinit var binding: FragmentUserDetailsBottomSheetBinding
     companion object {
@@ -156,10 +158,18 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
                 ).show()
             }
 
-            !nicknameRegex.matches(nickname) -> {
+            nickname.toByteArray().size > SSKEnvironment.ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH -> {
                 Toast.makeText(
                     context,
-                    R.string.nickname_special_char_not_allowed,
+                    R.string.nick_name_too_long_error,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            !nickname.matches(namePattern.toRegex()) -> {
+                Toast.makeText(
+                    context,
+                    R.string.display_name_validation,
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -181,7 +191,13 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
                 contact.nickname = nickname
                 contactDB.setContact(contact)
 
+                val previousName = nameTextView.text.toString()
+
                 nameTextView.text = recipient.name ?: publicKey
+
+                if(previousName != nameTextView.text.toString()) {
+                    updateProfilePictureView(publicKey, recipient)
+                }
             }
         }
     }
@@ -196,5 +212,11 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
     fun hideSoftKeyboard() {
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         imm?.hideSoftInputFromWindow(binding.nicknameEditText.windowToken, 0)
+    }
+
+    private fun updateProfilePictureView(publicKey: String, recipient: Recipient) {
+        binding.profilePictureView.root.publicKey = publicKey
+        binding.profilePictureView.root.recycle()
+        binding.profilePictureView.root.update(recipient)
     }
 }

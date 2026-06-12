@@ -3,86 +3,94 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="io.beldex.bchat.giph.ui.GiphyActivity">
 
-    <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:orientation="horizontal"
-                  tools:layout_height="80dp"
-                  tools:theme="@style/Theme.TextSecure.DayNight.NoActionBar">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        tools:layout_height="80dp"
+        tools:theme="@style/Theme.TextSecure.DayNight.NoActionBar">
 
-        <ImageView android:id="@+id/action_icon"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:layout_gravity="center_vertical"
-                   android:gravity="center_vertical"
-                   android:clickable="false"
-                   android:background="@drawable/circle_touch_highlight_background"
-                   android:src="@drawable/ic_baseline_search_24" />
+        <ImageView
+            android:id="@+id/action_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/circle_touch_highlight_background"
+            android:clickable="false"
+            android:gravity="center_vertical"
+            android:src="@drawable/ic_baseline_search_24" />
 
-        <LinearLayout android:id="@+id/toggle_container"
-                      android:layout_width="match_parent"
-                      android:layout_height="match_parent"
-                      android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/toggle_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-            <EditText android:id="@+id/search_view"
-                      android:layout_height="wrap_content"
-                      android:layout_width="0px"
-                      android:layout_weight="1"
-                      android:layout_marginStart="6dp"
-                      android:layout_marginEnd="6dp"
-                      android:hint="@string/SearchToolbar_search"
-                      android:textColor="@color/text_hint"
-                      android:textColorHint="@color/text_hint"
-                      android:textCursorDrawable="@drawable/bchat_edit_text_cursor"
-                      android:textSize="@dimen/medium_font_size"
-                      android:maxLines="1"
-                      android:singleLine="true"
-                      android:ellipsize="end"
-                      android:imeOptions="actionSearch"
-                      android:background="@android:color/transparent"
-                      android:layout_gravity="center_vertical"
-                      android:gravity="center_vertical"/>
+            <EditText
+                android:id="@+id/search_view"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:ellipsize="end"
+                android:gravity="start|center_vertical"
+                android:hint="@string/SearchToolbar_search"
+                android:imeOptions="actionSearch"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textAlignment="viewStart"
+                android:textColor="@color/text_hint"
+                android:textColorHint="@color/text_hint"
+                android:textCursorDrawable="@drawable/bchat_edit_text_cursor"
+                android:textSize="@dimen/medium_font_size" />
 
-            <ImageView android:id="@+id/search_clear"
-                       android:layout_width="wrap_content"
-                       android:layout_height="wrap_content"
-                       android:layout_gravity="center_vertical"
-                       android:gravity="center_vertical"
-                       android:clickable="true"
-                       android:focusable="true"
-                       android:visibility="invisible"
-                       android:background="@drawable/circle_touch_highlight_background"
-                       android:src="@drawable/ic_baseline_clear_24" />
+            <ImageView
+                android:id="@+id/search_clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/circle_touch_highlight_background"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:src="@drawable/ic_baseline_clear_24"
+                android:visibility="invisible" />
 
             <io.beldex.bchat.components.AnimatingToggle
-                    android:id="@+id/button_toggle"
+                android:id="@+id/button_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp">
+
+                <ImageView
+                    android:id="@+id/view_grid"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:gravity="center">
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/circle_touch_highlight_background"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:src="@drawable/ic_baseline_dashboard_24"
+                    android:visibility="visible" />
 
-                <ImageView android:id="@+id/view_grid"
-                           android:layout_width="wrap_content"
-                           android:layout_height="wrap_content"
-                           android:layout_gravity="center_vertical"
-                           android:gravity="center_vertical"
-                           android:clickable="true"
-                           android:visibility="visible"
-                           android:focusable="true"
-                           android:background="@drawable/circle_touch_highlight_background"
-                           android:src="@drawable/ic_baseline_dashboard_24" />
-
-                <ImageView android:id="@+id/view_stream"
-                           android:layout_width="wrap_content"
-                           android:layout_height="wrap_content"
-                           android:layout_gravity="center_vertical"
-                           android:gravity="center_vertical"
-                           android:visibility="gone"
-                           android:clickable="true"
-                           android:focusable="true"
-                           android:background="@drawable/circle_touch_highlight_background"
-                           android:src="@drawable/ic_baseline_view_stream_24" />
+                <ImageView
+                    android:id="@+id/view_stream"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/circle_touch_highlight_background"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:src="@drawable/ic_baseline_view_stream_24"
+                    android:visibility="gone" />
 
             </io.beldex.bchat.components.AnimatingToggle>
 

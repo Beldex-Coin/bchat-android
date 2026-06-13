@@ -40,6 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,7 +51,6 @@ import io.beldex.bchat.BaseAppCompatActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.DialogContainer
-import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
@@ -194,10 +194,8 @@ private fun ViewContactItem(
             ) {
                 Text(
                     name.capitalizeFirstLetter().ifEmpty { formatAddresses(address).capitalizeFirstLetter() },
-                    color=MaterialTheme.appColors.textColor,
-                    fontFamily=OpenSans,
-                    fontWeight=FontWeight(600),
-                    fontSize=16.sp,
+                    style = MaterialTheme.typography.titleSmall.copy(color = MaterialTheme.appColors.textColor, textDirection = TextDirection.Content),
+                    textAlign = TextAlign.Start,
                     maxLines=1,
                     overflow=TextOverflow.Ellipsis
                 )
@@ -205,10 +203,7 @@ private fun ViewContactItem(
                 Text(
                     formatAddresses(address),
                     maxLines=1,
-                    fontFamily=OpenSans,
-                    fontWeight=FontWeight(400),
-                    fontSize=12.sp,
-                    color=MaterialTheme.appColors.secondaryTextColor,
+                    style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.appColors.secondaryTextColor),
                     overflow=TextOverflow.Ellipsis
                 )
             }

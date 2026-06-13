@@ -17,7 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Message
+import androidx.compose.material.icons.automirrored.filled.Message
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -130,7 +130,7 @@ fun ContactItem(
                             .fillMaxWidth()
                     ) {
                         Icon(
-                            Icons.Filled.Message,
+                            Icons.AutoMirrored.Filled.Message,
                             contentDescription = "",
                             modifier = Modifier
                                 .size(24.dp)

@@ -196,7 +196,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
                 nameTextView.text = recipient.name ?: publicKey
 
                 if(previousName != nameTextView.text.toString()) {
-                    updateProfilePictureView(publicKey, recipient)
+                    updateProfilePictureView(recipient)
                 }
             }
         }
@@ -214,8 +214,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
         imm?.hideSoftInputFromWindow(binding.nicknameEditText.windowToken, 0)
     }
 
-    private fun updateProfilePictureView(publicKey: String, recipient: Recipient) {
-        binding.profilePictureView.root.publicKey = publicKey
+    private fun updateProfilePictureView(recipient: Recipient) {
         binding.profilePictureView.root.recycle()
         binding.profilePictureView.root.update(recipient)
     }

@@ -1448,7 +1448,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="recovery_seed">Recovery Seed</string>
     <string name="create_password">Create Password</string>
     <string name="verify_pin">Verify PIN</string>
-    <string name="enter_your_4_digit_bchat_pin">Enter your 4 digit BChat PIN</string>
+    <string name="enter_your_4_digit_bchat_pin">Enter your %d Digit PIN</string>
     <string name="no_pending_requests">No Pending message Requests!</string>
     <string name="create_secret_group">Create Secret Group</string>
     <string name="enter_group_name">Enter Secret Group name</string>
@@ -1498,7 +1498,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="voice_call">Voice Call</string>
     <string name="missed_voice_call">Missed Voice Call</string>
     <string name="tap_to_callback">Tap to Callback</string>
-    <string name="enter_your_4_digit_wallet_pin">Enter your 4 digit Wallet PIN</string>
+    <string name="enter_your_4_digit_wallet_pin">Enter your %d digit Wallet PIN</string>
     <string name="clear_chat">Clear Chat</string>
     <string name="clear_chat_confirmation">Are you sure you want to clear all the chat from this contact?</string>
     <string name="unblock_contact">Unblock Contact</string>
@@ -1697,4 +1697,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="view_all" translatable="false">View all</string>
     <string name="message" translatable="false">Message</string>
     <string name="nickname_special_char_not_allowed" translatable="false">Special characters are not allowed</string>
+    <string name="four_digit_pin" translatable="false">4 Digit PIN</string>
+    <string name="six_digit_pin" translatable="false">6 Digit PIN</string>
 </resources>

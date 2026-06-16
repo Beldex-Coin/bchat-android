@@ -25,14 +25,13 @@ import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.dependencies.DatabaseComponent
 import com.bumptech.glide.Glide;
 import io.beldex.bchat.util.UiModeUtilities
-import java.util.regex.Pattern
+import io.beldex.bchat.util.unicodeNamePattern
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class UserDetailsBottomSheet : BottomSheetDialogFragment() {
 
     @Inject lateinit var threadDb: ThreadDatabase
-    private val namePattern = Pattern.compile("[A-Za-z0-9\\s]+")
 
     private lateinit var binding: FragmentUserDetailsBottomSheetBinding
     companion object {
@@ -166,7 +165,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
                 ).show()
             }
 
-            !nickname.matches(namePattern.toRegex()) -> {
+            !nickname.matches(unicodeNamePattern.toRegex()) -> {
                 Toast.makeText(
                     context,
                     R.string.display_name_validation,

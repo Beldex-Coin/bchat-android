@@ -60,6 +60,7 @@ import io.beldex.bchat.util.ConfigurationMessageUtilities
 import io.beldex.bchat.util.FileProviderUtil
 import io.beldex.bchat.util.QRCodeUtilities
 import io.beldex.bchat.util.toPx
+import io.beldex.bchat.util.unicodeNamePattern
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -71,7 +72,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.security.SecureRandom
 import java.util.Date
-import java.util.regex.Pattern
 
 @AndroidEntryPoint
 class MyProfileActivity: BaseAppCompatActivity() {
@@ -79,7 +79,6 @@ class MyProfileActivity: BaseAppCompatActivity() {
     private lateinit var glide: RequestManager
     private var tempFile: File? = null
     private lateinit var binding: ActivityMyProfileBinding
-    private val namePattern = Pattern.compile("[A-Za-z0-9\\s]+")
     private val hexEncodedPublicKey: String
         get() {
             return TextSecurePreferences.getLocalNumber(this)!!
@@ -381,7 +380,7 @@ class MyProfileActivity: BaseAppCompatActivity() {
             ).show()
             return false
         }
-        if (!displayName.matches(namePattern.toRegex())) {
+        if (!displayName.matches(unicodeNamePattern.toRegex())) {
             Toast.makeText(
                 this,
                 R.string.display_name_validation,

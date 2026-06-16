@@ -53,7 +53,6 @@ import io.beldex.bchat.profiles.ProfileMediaConstraints
 import io.beldex.bchat.showCustomDialog
 import io.beldex.bchat.CheckOnline
 import kotlinx.coroutines.Dispatchers
-import java.util.regex.Pattern
 import com.canhub.cropper.CropImage
 import com.canhub.cropper.CropImageContract
 import com.beldex.libsignal.utilities.Log
@@ -121,7 +120,6 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
     private lateinit var animation1: Animation
     private lateinit var animation2: Animation
     private var isFrontOfCardShowing = true
-    private val namePattern = Pattern.compile("[A-Za-z0-9\\s]+")
     private var shareButtonLastClickTime: Long = 0
 
     private fun getDisplayName(): String =
@@ -410,7 +408,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             ).show()
             return false
         }
-        if (!displayName.matches(namePattern.toRegex())) {
+        if (!displayName.matches(unicodeNamePattern.toRegex())) {
             Toast.makeText(
                     this,
                     R.string.display_name_validation,

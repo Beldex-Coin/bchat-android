@@ -29,6 +29,7 @@ import io.beldex.bchat.util.setUpActionBarBchatLogo
 import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityDisplayNameBinding
+import io.beldex.bchat.util.englishNamePattern
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -37,7 +38,6 @@ import java.io.File
 import java.util.Collections
 import java.util.UUID
 import java.util.concurrent.Executor
-import java.util.regex.Pattern
 
 
 class DisplayNameActivity : BaseActionBarActivity() {
@@ -50,7 +50,6 @@ class DisplayNameActivity : BaseActionBarActivity() {
     private val PREF_DAEMON_TESTNET = "daemon_testnet"
     private val PREF_DAEMON_STAGENET = "daemon_stagenet"
     private val PREF_DAEMON_MAINNET = "daemon_mainnet"
-    private val namePattern = Pattern.compile("[A-Za-z0-9\\s]+")
 
     private var node: NodeInfo? = null
 
@@ -340,7 +339,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
                 removeWallet()
             }
         }
-        if (!displayName.matches(namePattern.toRegex())) {
+        if (!displayName.matches(englishNamePattern.toRegex())) {
             return Toast.makeText(
                     this,
                     R.string.display_name_validation,

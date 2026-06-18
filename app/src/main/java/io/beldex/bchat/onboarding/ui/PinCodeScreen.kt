@@ -157,7 +157,7 @@ fun PinCodeScreen(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
                     shape = RoundedCornerShape(50),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.appColors.secondaryButtonColor),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.appColors.searchBackground),
                     border = BorderStroke(
                         width = 1.dp,
                         color = if (state.pinLength == 4) MaterialTheme.appColors.tertiaryButtonColor else MaterialTheme.appColors.primaryButtonColor

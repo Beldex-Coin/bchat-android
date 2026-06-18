@@ -165,10 +165,17 @@ fun SharedContactContent(
     } ?: emptyList()
 
     val displayName = when (contactList.size) {
-        0 -> "No Name"
+        0 -> context.getString(R.string.no_name)
         1 -> contactList[0].name.capitalizeFirstLetter()
-        2 -> "${shortNameAndAddress(contactList[0].name, contactList[0].address)} and ${contactList.size - 1} other"
-        else -> "${shortNameAndAddress(contactList[0].name, contactList[0].address)} and ${contactList.size - 1} others"
+        else -> {
+            val othersCount = contactList.size - 1
+            context.resources.getQuantityString(
+                R.plurals.contact_others,
+                othersCount,
+                shortNameAndAddress(contactList[0].name, contactList[0].address),
+                othersCount
+            )
+        }
     }
 
 

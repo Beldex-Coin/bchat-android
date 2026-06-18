@@ -1646,4 +1646,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="nick_name_too_long_error">Please pick a shorter nick name</string>
     <string name="four_digit_pin" translatable="false">4 Digit PIN</string>
     <string name="six_digit_pin" translatable="false">6 Digit PIN</string>
+    <plurals name="contact_others">
+        <item quantity="one">%1$s and %2$d other</item>
+        <item quantity="other">%1$s and %2$d others</item>
+    </plurals>
 </resources>

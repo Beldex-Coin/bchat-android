@@ -85,7 +85,7 @@ public class DateUtils extends android.text.format.DateUtils {
     if (isWithin(timestamp, 1, TimeUnit.MINUTES)) {
       return c.getString(R.string.DateUtils_just_now);
     } else if (isToday(timestamp)) {
-      return "Today";
+      return c.getString(R.string.DateUtils_today);
     } else if (isWithin(timestamp, 6, TimeUnit.DAYS)) {
       return getFormattedDateTime(timestamp, "EEEE", locale);
     } else if (isWithin(timestamp, 365, TimeUnit.DAYS)) {

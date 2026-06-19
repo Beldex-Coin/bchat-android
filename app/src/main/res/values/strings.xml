@@ -1644,10 +1644,32 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="language">Language</string>
     <string name="choose_language">Choose Language</string>
     <string name="nick_name_too_long_error">Please pick a shorter nick name</string>
-    <string name="four_digit_pin" translatable="false">4 Digit PIN</string>
-    <string name="six_digit_pin" translatable="false">6 Digit PIN</string>
+    <string name="four_digit_pin">4 Digit PIN</string>
+    <string name="six_digit_pin">6 Digit PIN</string>
     <plurals name="contact_others">
         <item quantity="one">%1$s and %2$d other</item>
         <item quantity="other">%1$s and %2$d others</item>
     </plurals>
+    <string name="unblocked_this_contact">UnBlocked this contact</string>
+    <string name="invalid_old_password">Invalid old password</string>
+    <string name="must_set_your_old_pin">Must set your Old PIN.</string>
+    <string name="both_are_same">Both are Same</string>
+    <string name="must_set_your_new_pin">Must set your New PIN.</string>
+    <string name="please_enter_4_digit_pin">Please enter 4 digit PIN.</string>
+    <string name="write_here">Write here...</string>
+    <string name="password">Password</string>
+    <string name="member_count">"%d" member</string>
+    <string name="text_limit_exceed_warnings">Text limit exceed: Maximum limit of messages is 4096 characters</string>
+    <string name="ban_message">This will ban the selected user from this room. It won\'t ban them from other rooms.</string>
+    <string name="ban_and_delete_message">This will ban the selected user from this room and delete all messages sent by them. It won\'t ban them from other rooms or delete the messages they sent there.</string>
+    <string name="delete_message_failed_with_error">Couldn\'t delete message due to error: %s</string>
+    <string name="must_set_your_four_digit_pin">Must set your 4 digit PIN.</string>
+    <string name="password_is_not_matched">Password is not matched</string>
+    <string name="group_leave_during_member_update_error">Can\'t leave while adding or removing other members.</string>
+    <string name="an_error_occurred">An error occurred</string>
+    <string name="update_canceled_by_user">Update canceled by user! Result Code: %d</string>
+    <string name="update_success">Update success! Result Code: "%d"</string>
+    <string name="update_failed">Update Failed! Result Code: "%d"</string>
+    <string name="hide_message_request">Hide message requests?</string>
+    <string name="message_requests_hidden_info">Once they are hidden, you can access them from Settings > Message Requests</string>
 </resources>

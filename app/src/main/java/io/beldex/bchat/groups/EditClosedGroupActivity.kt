@@ -392,7 +392,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         val userAsRecipient = Recipient.from(this, Address.fromSerialized(userPublicKey), false)
 
         if (!members.contains(userAsRecipient) && !members.map { it.address.toString() }.containsAll(originalMembers.minus(userPublicKey))) {
-            val message = "Can't leave while adding or removing other members."
+            val message = getString(R.string.group_leave_during_member_update_error)
             return Toast.makeText(this@EditClosedGroupActivity, message, Toast.LENGTH_LONG).show()
         }
 
@@ -422,7 +422,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
                 setResult(RESULT_OK, returnIntent)
                 finish()
             }.failUi { exception ->
-                val message = if (exception is MessageSender.Error) exception.description else "An error occurred"
+                val message = if (exception is MessageSender.Error) exception.description else getString(R.string.an_error_occurred)
                 Toast.makeText(this@EditClosedGroupActivity, message, Toast.LENGTH_LONG).show()
                 binding.loaderContainer.fadeOut()
                 isLoading = false

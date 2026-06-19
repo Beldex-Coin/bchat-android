@@ -695,7 +695,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                 )
             )
             binding.callActionBarView.isVisible=false
-            Toast.makeText(this, "Call ended", Toast.LENGTH_SHORT)
+            Toast.makeText(this, getString(R.string.call_ended), Toast.LENGTH_SHORT)
                 .show()
         }
         binding.callActionBarView.setOnClickListener {
@@ -1396,7 +1396,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                 val memberCount=members?.members?.size ?: 0
                 binding.conversationSubtitleView.isVisible=true
                 binding.conversationSubtitleView.text=
-                    if (memberCount > 1) "$memberCount members" else "$memberCount member"
+                    if (memberCount > 1) "$memberCount ${R.string.ConversationActivity_member_count}" else "$memberCount ${R.string.member_count}"
             } else {
                 binding.conversationSubtitleView.isVisible=false
             }
@@ -2365,7 +2365,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
         if (binding.inputBar.text.length > 4096) {
             Toast.makeText(
                 this,
-                "Text limit exceed: Maximum limit of messages is 4096 characters",
+                getString(R.string.text_limit_exceed_warnings),
                 Toast.LENGTH_SHORT
             ).show()
         } else {
@@ -3232,7 +3232,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
         AlertDialog.Builder(this, R.style.BChatAlertDialog_ForBan)
             .setTitle(R.string.ConversationFragment_ban_selected_user)
             .setMessage(
-                "This will ban the selected user from this room. It won't ban them from other rooms."
+                R.string.ban_message
             )
             .setCancelable(true)
             .setPositiveButton(R.string.ban) { _, _ ->

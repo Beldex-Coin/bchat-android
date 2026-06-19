@@ -34,4 +34,12 @@ class SharedPreferenceUtil(
         return TextSecurePreferences.getWalletEntryPassword(context)
     }
 
+    fun getPinLength(): Int {
+        return TextSecurePreferences.getPinLength(context)
+    }
+
+    fun setPinLength(pinLength: Int) {
+        TextSecurePreferences.setPinLength(context, pinLength)
+    }
+
 }

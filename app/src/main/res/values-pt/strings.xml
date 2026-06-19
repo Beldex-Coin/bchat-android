@@ -1649,4 +1649,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="language">Idioma</string>
     <string name="choose_language">Escolher idioma</string>
     <string name="nick_name_too_long_error">Por favor, escolha um apelido mais curto</string>
+    <string name="four_digit_pin" translatable="false">PIN de 4 dígitos</string>
+    <string name="six_digit_pin" translatable="false">PIN de 6 dígitos</string>
+    <plurals name="contact_others">
+        <item quantity="one">%1$s e mais %2$d pessoa</item>
+        <item quantity="other">%1$s e mais %2$d pessoas</item>
+    </plurals>
 </resources>

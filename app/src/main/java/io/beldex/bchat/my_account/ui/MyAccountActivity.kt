@@ -149,6 +149,7 @@ import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.copyToClipBoard
 import io.beldex.bchat.util.toPx
+import io.beldex.bchat.util.unicodeNamePattern
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -161,7 +162,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.security.SecureRandom
 import java.util.Date
-import java.util.regex.Pattern
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -414,7 +414,6 @@ fun MyAccountNavHost(
     }
 
     fun saveDisplayName(displayName: String, context : Context): Boolean {
-        val namePattern = Pattern.compile("[A-Za-z0-9\\s]+")
         if (displayName.isEmpty()) {
             Toast.makeText(
                 context,
@@ -431,7 +430,7 @@ fun MyAccountNavHost(
             ).show()
             return false
         }
-        if (!displayName.matches(namePattern.toRegex())) {
+        if (!displayName.matches(unicodeNamePattern.toRegex())) {
             Toast.makeText(
                 context,
                 R.string.display_name_validation,

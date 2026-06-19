@@ -1648,4 +1648,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="language">Dil</string>
     <string name="choose_language">Dil Seçin</string>
     <string name="nick_name_too_long_error">Lütfen daha kısa bir takma ad seçin</string>
+    <string name="four_digit_pin" translatable="false">4 Haneli PIN</string>
+    <string name="six_digit_pin" translatable="false">6 Haneli PIN</string>
+    <plurals name="contact_others">
+        <item quantity="one">%1$s ve %2$d kişi daha</item>
+        <item quantity="other">%1$s ve %2$d kişi daha</item>
+    </plurals>
 </resources>

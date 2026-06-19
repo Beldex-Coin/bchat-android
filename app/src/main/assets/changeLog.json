@@ -625,6 +625,17 @@
           "description":"Minor bug fixes"
         }
       ]
+    },
+    {
+      "title": "2.9.7",
+      "descriptions": [
+        {
+          "description":"Added 6 digits PIN support"
+        },
+        {
+          "description":"Minor bug fixes"
+        }
+      ]
     }
   ]
 }

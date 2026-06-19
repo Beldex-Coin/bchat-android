@@ -143,10 +143,17 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                             val addresses = flattenData(data.address)
                             val names = flattenData(data.name).ifEmpty { addresses }
                             val displayName = when(names.size) {
-                                0 -> "No Name"
+                                0 -> context.getString(R.string.no_name)
                                 1 -> names.first().capitalizeFirstLetter()
-                                2 -> "${shortNameAndAddress(names[0],addresses[0])} and ${names.size - 1} other"
-                                else -> "${shortNameAndAddress(names.first(), addresses.first())} and ${names.size - 1} others"
+                                else -> {
+                                    val othersCount = names.size - 1
+                                    context.resources.getQuantityString(
+                                        R.plurals.contact_others,
+                                        othersCount,
+                                        shortNameAndAddress(names.first(), addresses.first()),
+                                        othersCount
+                                    )
+                                }
                             }
                             binding.contactName.text = displayName
 

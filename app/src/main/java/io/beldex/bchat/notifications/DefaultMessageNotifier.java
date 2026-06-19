@@ -632,14 +632,18 @@ public class DefaultMessageNotifier implements MessageNotifier {
         }
 
         String displayName;
-        if (names.size() > 2) {
-          displayName = shortNameAndAddress(names.get(0), addresses.get(0)) + " and " + (names.size() - 1) + " others";
-        } else if (names.size() == 2) {
-          displayName = shortNameAndAddress(names.get(0), addresses.get(0)) + " and " + (names.size() - 1) + " other";
+        if (names.size() > 1) {
+          int othersCount = names.size() - 1;
+          displayName = context.getResources().getQuantityString(
+                  R.plurals.contact_others,
+                  othersCount,
+                  shortNameAndAddress(names.get(0), addresses.get(0)),
+                  othersCount
+          );
         } else if (names.size() == 1) {
           displayName = capitalizeFirstLetter(names.get(0));
         } else {
-          displayName = "No Name";
+          displayName = context.getString(R.string.no_name);
         }
           body = "👤 " + displayName;
       }

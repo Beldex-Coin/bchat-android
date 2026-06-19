@@ -1643,4 +1643,9 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="language">Ngôn ngữ</string>
     <string name="choose_language">Chọn ngôn ngữ</string>
     <string name="nick_name_too_long_error">Vui lòng chọn một biệt danh ngắn hơn</string>
+    <string name="four_digit_pin" translatable="false">Mã PIN 4 chữ số</string>
+    <string name="six_digit_pin" translatable="false">Mã PIN 6 chữ số</string>
+    <plurals name="contact_others">
+        <item quantity="other">%1$s và %2$d người khác</item>
+    </plurals>
 </resources>

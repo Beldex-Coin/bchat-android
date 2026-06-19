@@ -37,6 +37,7 @@ import io.beldex.bchat.util.setUpActionBarBchatLogo
 import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityRecoveryGetSeedDetailsBinding
+import io.beldex.bchat.util.englishNamePattern
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -47,7 +48,6 @@ import java.util.Collections
 import java.util.Locale
 import java.util.UUID
 import java.util.concurrent.Executor
-import java.util.regex.Pattern
 
 class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
     private lateinit var binding:ActivityRecoveryGetSeedDetailsBinding
@@ -67,7 +67,6 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
 
     private var restoreFromDateHeight = 0
     private val dateFormat = SimpleDateFormat("yyyy-MM", Locale.US)
-    private val namePattern = Pattern.compile("[A-Za-z0-9\\s]+")
     private val myFormat = "yyyy-MM-dd" // mention the format you need
     val sdf = SimpleDateFormat(myFormat, Locale.US)
 
@@ -152,7 +151,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
             return Toast.makeText(this, R.string.activity_display_name_display_name_too_long_error, Toast.LENGTH_SHORT).show()
         }
 
-        if (!displayName.matches(namePattern.toRegex())) {
+        if (!displayName.matches(englishNamePattern.toRegex())) {
             return Toast.makeText(
                     this,
                     R.string.display_name_validation,

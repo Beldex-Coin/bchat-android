@@ -1675,4 +1675,14 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="language">اللغة</string>
     <string name="choose_language">اختر اللغة</string>
     <string name="nick_name_too_long_error">يرجى اختيار اسم مستعار أقصر</string>
+    <string name="four_digit_pin" translatable="false">رمز PIN مكون من 4 أرقام</string>
+    <string name="six_digit_pin" translatable="false">رمز PIN مكون من 6 أرقام</string>
+    <plurals name="contact_others">
+        <item quantity="zero">%1$s ولا أحد آخر</item>
+        <item quantity="one">%1$s وشخص آخر</item>
+        <item quantity="two">%1$s وشخصان آخران</item>
+        <item quantity="few">%1$s و%2$d آخرين</item>
+        <item quantity="many">%1$s و%2$d آخرًا</item>
+        <item quantity="other">%1$s و%2$d آخر</item>
+    </plurals>
 </resources>

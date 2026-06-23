@@ -5,8 +5,8 @@
     <string name="MessageRecord_you_updated_group">You updated the group</string>
     <string name="MessageRecord_you_created_a_new_group">Has creado un nuevo grupo</string>
     <string name="MessageRecord_s_added_you_to_the_group">%1$s te agregó al grupo</string>
-    <string name="MessageRecord_you_renamed_the_group_to_s">Has cambiado el nombre del grupo a \"%1$s\"</string>
-    <string name="MessageRecord_s_renamed_the_group_to_s">%1$s ha cambiado el nombre del grupo a: \"%2$s\"</string>
+    <string name="MessageRecord_you_renamed_the_group_to_s">Has cambiado el nombre del grupo a %1$s</string>
+    <string name="MessageRecord_s_renamed_the_group_to_s">%1$s ha cambiado el nombre del grupo a: %2$s</string>
     <string name="MessageRecord_you_added_s_to_the_group">Has agregado a %1$s al grupo</string>
     <string name="MessageRecord_s_added_s_to_the_group">%1$s agregó a %2$s al grupo</string>
     <string name="MessageRecord_you_removed_s_from_the_group">Has eliminado a %1$s del grupo</string>
@@ -17,9 +17,9 @@
     <string name="MessageRecord_called_you">Contact called</string>
     <string name="MessageRecord_missed_call">Missed call</string>
     <string name="MessageRecord_s_updated_group">%s updated the group</string>
-    <string name="MessageRecord_received_call_from">Llamada recibida de \"%s\"</string>
-    <string name="MessageRecord_called_s">Llamaste a \"%s\"</string>
-    <string name="MessageRecord_missed_call_from">Llamada perdida de \"%s\"</string>
+    <string name="MessageRecord_received_call_from">Llamada recibida de %s</string>
+    <string name="MessageRecord_called_s">Llamaste a %s</string>
+    <string name="MessageRecord_missed_call_from">Llamada perdida de %s</string>
     <string name="MessageRecord_s_joined_signal">%s is on Bchat!</string>
     <string name="MessageRecord_you_disabled_disappearing_messages">Has desactivado los mensajes temporales</string>
     <string name="MessageRecord_s_disabled_disappearing_messages">%1$s desactivó los mensajes temporales</string>
@@ -75,7 +75,7 @@
 
     <string name="expiration_weeks_abbreviated">%ds</string>
 
-    <string name="ConversationItem_group_action_left">%1$s has left the group</string>
+    <string name="ConversationItem_group_action_left">%1$s ha salido del grupo</string>
     <!-- RecipientProvider -->
     <string name="RecipientProvider_unnamed_group">Grupo sin nombre</string>
 

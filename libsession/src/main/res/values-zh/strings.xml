@@ -6,8 +6,8 @@
     <string name="MessageRecord_you_updated_group">You updated the group</string>
     <string name="MessageRecord_you_created_a_new_group">您创建了一个新群组</string>
     <string name="MessageRecord_s_added_you_to_the_group">%1$s 已将你添加到群组</string>
-    <string name="MessageRecord_you_renamed_the_group_to_s">您已将群组名称更改为“%1$s”</string>
-    <string name="MessageRecord_s_renamed_the_group_to_s">“%1$s”已将群组名称更改为：“%2$s”</string>
+    <string name="MessageRecord_you_renamed_the_group_to_s">您已将群组名称更改为 %1$s</string>
+    <string name="MessageRecord_s_renamed_the_group_to_s">%1$s 已将群组名称更改为：%2$s</string>
     <string name="MessageRecord_you_added_s_to_the_group">你已将 %1$s 添加到群组</string>
     <string name="MessageRecord_s_added_s_to_the_group">%1$s 已将 %2$s 添加到群组</string>
     <string name="MessageRecord_you_removed_s_from_the_group">你已将 %1$s 从群组中移除</string>
@@ -18,9 +18,9 @@
     <string name="MessageRecord_called_you">Contact called</string>
     <string name="MessageRecord_missed_call">Missed call</string>
     <string name="MessageRecord_s_updated_group">%s updated the group</string>
-    <string name="MessageRecord_received_call_from">收到来自“%s”的来电</string>
-    <string name="MessageRecord_called_s">已呼叫“%s”</string>
-    <string name="MessageRecord_missed_call_from">错过了来自“%s”的来电</string>
+    <string name="MessageRecord_received_call_from">收到来自 %s 的来电</string>
+    <string name="MessageRecord_called_s">已呼叫 %s</string>
+    <string name="MessageRecord_missed_call_from">错过了来自 %s 的来电</string>
     <string name="MessageRecord_s_joined_signal">%s is on Bchat!</string>
     <string name="MessageRecord_you_disabled_disappearing_messages">你已关闭消息自动消失功能</string>
     <string name="MessageRecord_s_disabled_disappearing_messages">%1$s 已关闭消息自动消失功能</string>

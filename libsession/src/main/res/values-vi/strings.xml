@@ -75,7 +75,7 @@
 
     <string name="expiration_weeks_abbreviated">\"%d\" tuần</string>
 
-    <string name="ConversationItem_group_action_left">%1$s has left the group</string>
+    <string name="ConversationItem_group_action_left">%1$s đã rời khỏi nhóm</string>
     <!-- RecipientProvider -->
     <string name="RecipientProvider_unnamed_group">Nhóm chưa đặt tên</string>
 

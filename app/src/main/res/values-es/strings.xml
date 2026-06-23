@@ -825,11 +825,11 @@
 
     <string name="document">Documento</string>
 
-    <string name="dialog_blocked_title">Desbloquear \"%s\"?</string>
-    <string name="dialog_blocked_explanation">¿Seguro que quieres desbloquear \"%s\"?</string>
+    <string name="dialog_blocked_title">Desbloquear %s?</string>
+    <string name="dialog_blocked_explanation">¿Seguro que quieres desbloquear %s?</string>
 
-    <string name="dialog_join_open_group_title">¿Unirte a \"%s\"?</string>
-    <string name="dialog_join_open_group_explanation">¿Seguro que quieres unirte al grupo social \"%s\"?</string>
+    <string name="dialog_join_open_group_title">¿Unirte a %s?</string>
+    <string name="dialog_join_open_group_explanation">¿Seguro que quieres unirte al grupo social %s?</string>
 
     <string name="dialog_open_url_title">¿Abrir URL?</string>
     <string name="dialog_open_url_explanation">Estás seguro de que quieres abrir %s?</string>
@@ -1665,18 +1665,18 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="please_enter_4_digit_pin">Ingrese su PIN de 4 dígitos.</string>
     <string name="write_here">Escriba aquí...</string>
     <string name="password">Contraseña</string>
-    <string name="member_count">Miembro \"%d\"</string>
+    <string name="member_count">Miembro %d</string>
     <string name="text_limit_exceed_warnings">Se ha superado el límite de caracteres: El límite máximo de mensajes es de 4096 caracteres.</string>
     <string name="ban_message">Esto bloqueará al usuario seleccionado de esta sala. No lo bloqueará de otras salas.</string>
     <string name="ban_and_delete_message">Esto expulsará al usuario seleccionado de esta sala y eliminará todos los mensajes que haya enviado. No lo expulsará de otras salas ni eliminará los mensajes que haya enviado allí.</string>
-    <string name="delete_message_failed_with_error">No se pudo eliminar el mensaje debido a un error: \"%s\"</string>
+    <string name="delete_message_failed_with_error">No se pudo eliminar el mensaje debido a un error: %s</string>
     <string name="must_set_your_four_digit_pin">Debe establecer su PIN de 4 dígitos.</string>
     <string name="password_is_not_matched">La contraseña no coincide.</string>
     <string name="group_leave_during_member_update_error">No se puede salir mientras se agregan o eliminan otros miembros.</string>
     <string name="an_error_occurred">Se produjo un error</string>
-    <string name="update_canceled_by_user">Actualización cancelada por el usuario. Código de resultado: \"%d\"</string>
-    <string name="update_success">Actualización exitosa. Código de resultado: \"%d\"</string>
-    <string name="update_failed">Actualización fallida. Código de resultado: \"%d\"</string>
+    <string name="update_canceled_by_user">Actualización cancelada por el usuario. Código de resultado: %d</string>
+    <string name="update_success">Actualización exitosa. Código de resultado: %d</string>
+    <string name="update_failed">Actualización fallida. Código de resultado: %d</string>
     <string name="hide_message_request">¿Ocultar las solicitudes de mensajes?</string>
     <string name="message_requests_hidden_info">Una vez ocultas, puedes acceder a ellas desde Configuración > Solicitudes de mensajes</string>
     <string name="cannot_open_url">No se puede abrir la URL</string>

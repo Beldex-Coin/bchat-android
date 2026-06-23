@@ -73,7 +73,7 @@
     <string name="ConversationActivity_sorry_there_was_an_error_setting_your_attachment">Sorry, there was an error setting your attachment.</string>
     <string name="ConversationActivity_message">Escreva uma mensagem....</string>
     <string name="ConversationActivity_compose">Compose</string>
-    <string name="ConversationActivity_muted_until_date">Silenciado até \"%1$s\"</string>
+    <string name="ConversationActivity_muted_until_date">Silenciado até %1$s</string>
     <string name="ConversationActivity_muted_forever">Silenciado</string>
     <string name="ConversationActivity_member_count">%1$d membros</string>
     <string name="ConversationActivity_open_group_guidelines">Diretrizes da comunidade</string>
@@ -102,7 +102,7 @@
     <string name="ConversationActivity_signal_needs_camera_permissions_to_take_photos_or_video">O BChat precisa de acesso à câmera para tirar fotos ou gravar vídeos.</string>
 
     <string name="ConversationActivity_quoted_contact_message">%1$s %2$s</string>
-    <string name="ConversationActivity_search_position">%1$d de \"%2$d\"</string>
+    <string name="ConversationActivity_search_position">%1$d de %2$d</string>
     <string name="ConversationActivity_no_results">No results</string>
 
     <!-- ConversationAdapter -->
@@ -158,13 +158,13 @@
     <string name="CreateProfileActivity_profile_photo">Foto de perfil</string>
 
     <!-- CustomDefaultPreference -->
-    <string name="CustomDefaultPreference_using_custom">Usando personalizado: \"%s\"</string>
+    <string name="CustomDefaultPreference_using_custom">Usando personalizado: %s</string>
     <string name="CustomDefaultPreference_using_default">Using default: %s</string>
     <string name="CustomDefaultPreference_none">Nenhum</string>
 
     <!-- DateUtils -->
     <string name="DateUtils_just_now">Agora</string>
-    <string name="DateUtils_minutes_ago">\"%d\" min</string>
+    <string name="DateUtils_minutes_ago">%d min</string>
     <string name="DateUtils_today">Hoje</string>
     <string name="DateUtils_yesterday">Ontem</string>
 
@@ -189,7 +189,7 @@
 
     <!-- LongMessageActivity -->
     <string name="LongMessageActivity_unable_to_find_message">Não foi possível encontrar a mensagem</string>
-    <string name="LongMessageActivity_message_from_s">Mensagem de \"%1$s\"</string>
+    <string name="LongMessageActivity_message_from_s">Mensagem de %1$s</string>
     <string name="LongMessageActivity_your_message">Sua mensagem</string>
 
     <!-- MediaOverviewActivity -->
@@ -206,7 +206,7 @@
     <string name="NotificationMmsMessageRecord_error_downloading_mms_message">Erro ao baixar a mensagem MMS, toque para tentar novamente</string>
 
     <!-- MediaPickerActivity -->
-    <string name="MediaPickerActivity_send_to">Enviar para \"%s\"</string>
+    <string name="MediaPickerActivity_send_to">Enviar para %s</string>
 
     <!-- MediaSendActivity -->
     <string name="MediaSendActivity_add_a_caption">Adicionar uma legenda...</string>
@@ -230,7 +230,7 @@
     <!-- ExpirationDialog -->
     <string name="ExpirationDialog_disappearing_messages">Mensagens que desaparecem</string>
     <string name="ExpirationDialog_your_messages_will_not_expire">Suas mensagens não expirarão</string>
-    <string name="ExpirationDialog_your_messages_will_disappear_s_after_they_have_been_seen">As mensagens enviadas e recebidas nesta conversa desaparecerão \"%s\" após terem sido visualizadas.</string>
+    <string name="ExpirationDialog_your_messages_will_disappear_s_after_they_have_been_seen">As mensagens enviadas e recebidas nesta conversa desaparecerão %s após terem sido visualizadas.</string>
 
     <!-- PassphrasePromptActivity -->
     <string name="PassphrasePromptActivity_enter_passphrase">Digite a frase secreta.</string>
@@ -269,18 +269,18 @@
     <string name="ThreadRecord_called_you">Ligou para você</string>
     <string name="ThreadRecord_missed_call">Chamada perdida</string>
     <string name="ThreadRecord_media_message">Mensagem de mídia</string>
-    <string name="ThreadRecord_s_is_on_signal">\"%s\" está no BChat!</string>
+    <string name="ThreadRecord_s_is_on_signal">%s está no BChat!</string>
     <string name="ThreadRecord_disappearing_messages_disabled">Mensagens temporárias desativadas</string>
-    <string name="ThreadRecord_disappearing_message_time_updated_to_s">Tempo das mensagens temporárias definido para \"%s\"</string>
+    <string name="ThreadRecord_disappearing_message_time_updated_to_s">Tempo das mensagens temporárias definido para %s</string>
     <string name="ThreadRecord_s_took_a_screenshot">%1$s fez uma captura de tela.</string>
     <string name="ThreadRecord_media_saved_by_s">Mídia salva por %1$s.</string>
     <string name="ThreadRecord_safety_number_changed">Número de segurança alterado</string>
-    <string name="ThreadRecord_your_safety_number_with_s_has_changed">Seu número de segurança com \"%s\" foi alterado.</string>
+    <string name="ThreadRecord_your_safety_number_with_s_has_changed">Seu número de segurança com %s foi alterado.</string>
     <string name="ThreadRecord_you_marked_verified">Você marcou como verificado</string>
     <string name="ThreadRecord_you_marked_unverified">Você marcou como não verificado</string>
     <string name="ThreadRecord_empty_message">Esta conversa está vazia</string>
     <string name="ThreadRecord_open_group_invitation">Convite para grupo social</string>
-    <string name="ThreadRecord_payment">%s\" BDX \"%s</string>
+    <string name="ThreadRecord_payment">%s BDX %s</string>
 
     <!-- UpdateApkReadyListener -->
     <string name="UpdateApkReadyListener_Signal_update">Atualização do BChat</string>
@@ -313,8 +313,8 @@
     <string name="MediaPreviewActivity_media_delete_confirmation_message">This will permanently delete this message.</string>
 
     <!-- MessageNotifier -->
-    <string name="MessageNotifier_d_new_messages_in_d_conversations">%1$d novas mensagens em \"%2$d\" conversas</string>
-    <string name="MessageNotifier_most_recent_from_s">Mais recente de: \"%1$s\"</string>
+    <string name="MessageNotifier_d_new_messages_in_d_conversations">%1$d novas mensagens em %2$d conversas</string>
+    <string name="MessageNotifier_most_recent_from_s">Mais recente de: %1$s</string>
     <string name="MessageNotifier_locked_message">Mensagem trancado</string>
     <string name="MessageNotifier_message_delivery_failed">Falha na entrega da mensagem.</string>
     <string name="MessageNotifier_failed_to_deliver_message">Falha ao enviar mensagem.</string>
@@ -343,7 +343,7 @@
     <string name="QuickResponseService_problem_sending_message">Problema ao enviar mensagem!</string>
 
     <!-- SaveAttachmentTask -->
-    <string name="SaveAttachmentTask_saved_to">Salvo em \"%s\"</string>
+    <string name="SaveAttachmentTask_saved_to">Salvo em %s</string>
     <string name="SaveAttachmentTask_saved">Salvo</string>
 
     <!-- SearchToolbar -->
@@ -625,7 +625,7 @@
     <string name="BackupDialog_disable_and_delete_all_local_backups">Disable and delete all local backups?</string>
     <string name="BackupDialog_delete_backups_statement">Delete backups</string>
     <string name="LocalBackupJob_creating_backup">Criando backup...</string>
-    <string name="ProgressPreference_d_messages_so_far">\"%d\" mensagens até agora</string>
+    <string name="ProgressPreference_d_messages_so_far">%d mensagens até agora</string>
     <string name="BackupUtil_never">Nunca</string>
     <string name="preferences_app_protection__screen_lock">Bloqueio de tela</string>
     <string name="preferences_app_protection__lock_signal_access_with_android_screen_lock_or_fingerprint">Bloquear o acesso ao BChat com bloqueio de tela do Android ou impressão digital</string>
@@ -825,11 +825,11 @@
 
     <string name="document">Documento</string>
 
-    <string name="dialog_blocked_title">Desbloquear \"%s\"?</string>
-    <string name="dialog_blocked_explanation">Tem certeza de que deseja desbloquear \"%s\"?</string>
+    <string name="dialog_blocked_title">Desbloquear %s?</string>
+    <string name="dialog_blocked_explanation">Tem certeza de que deseja desbloquear %s?</string>
 
-    <string name="dialog_join_open_group_title">Entrar em \"%s\"?</string>
-    <string name="dialog_join_open_group_explanation">Tem certeza de que deseja entrar no grupo social \"%s\"?</string>
+    <string name="dialog_join_open_group_title">Entrar em %s?</string>
+    <string name="dialog_join_open_group_explanation">Tem certeza de que deseja entrar no grupo social %s?</string>
 
     <string name="dialog_open_url_title">Abrir URL?</string>
     <string name="dialog_open_url_explanation">Tem certeza de que deseja abrir %s?</string>
@@ -1665,18 +1665,18 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="please_enter_4_digit_pin">Por favor, insira um PIN de 4 dígitos.</string>
     <string name="write_here">Escreva aqui...</string>
     <string name="password">Senha</string>
-    <string name="member_count">\"%d\" membro</string>
+    <string name="member_count">%d membro</string>
     <string name="text_limit_exceed_warnings">Limite de texto excedido: o limite máximo de mensagens é de 4096 caracteres</string>
     <string name="ban_message">Isto banirá o usuário selecionado desta sala. Isso não o banirá de outras salas.</string>
     <string name="ban_and_delete_message">Isto banirá o usuário selecionado desta sala e excluirá todas as mensagens enviadas por ele. Isso não o banirá de outras salas nem excluirá mensagens enviadas em outras salas.</string>
-    <string name="delete_message_failed_with_error">Não foi possível excluir a mensagem devido a um erro: \"%s\"</string>
+    <string name="delete_message_failed_with_error">Não foi possível excluir a mensagem devido a um erro: %s</string>
     <string name="must_set_your_four_digit_pin">É necessário definir seu PIN de 4 dígitos.</string>
     <string name="password_is_not_matched">As senhas não coincidem</string>
     <string name="group_leave_during_member_update_error">Não é possível sair enquanto membros estão sendo adicionados ou removidos.</string>
     <string name="an_error_occurred">Ocorreu um erro</string>
-    <string name="update_canceled_by_user">Atualização cancelada pelo usuário! Código de resultado: \"%d\"</string>
-    <string name="update_success">Atualização bem-sucedida! Código de resultado: \"%d\"</string>
-    <string name="update_failed">Falha na atualização! Código de resultado: \"%d\"</string>
+    <string name="update_canceled_by_user">Atualização cancelada pelo usuário! Código de resultado: %d</string>
+    <string name="update_success">Atualização bem-sucedida! Código de resultado: %d</string>
+    <string name="update_failed">Falha na atualização! Código de resultado: %d</string>
     <string name="hide_message_request">Ocultar solicitações de mensagens?</string>
     <string name="message_requests_hidden_info">Depois de ocultas, você pode acessá-las em Configurações > Solicitações de mensagens</string>
     <string name="cannot_open_url">Não foi possível abrir o URL</string>

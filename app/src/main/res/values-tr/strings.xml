@@ -73,9 +73,9 @@
     <string name="ConversationActivity_sorry_there_was_an_error_setting_your_attachment">Sorry, there was an error setting your attachment.</string>
     <string name="ConversationActivity_message">Bir mesaj yazın....</string>
     <string name="ConversationActivity_compose">Compose</string>
-    <string name="ConversationActivity_muted_until_date">\"%1$s\" tarihine kadar sessize alındı</string>
+    <string name="ConversationActivity_muted_until_date">%1$s tarihine kadar sessize alındı</string>
     <string name="ConversationActivity_muted_forever">Sessize alındı</string>
-    <string name="ConversationActivity_member_count">\"%1$d\" üye</string>
+    <string name="ConversationActivity_member_count">%1$d üye</string>
     <string name="ConversationActivity_open_group_guidelines">Topluluk kuralları</string>
     <string name="ConversationActivity_social_group_welcome">Welcome to BChat</string>
 
@@ -102,7 +102,7 @@
     <string name="ConversationActivity_signal_needs_camera_permissions_to_take_photos_or_video">BChat\'in fotoğraf veya video çekebilmesi için Kamera erişimine ihtiyacı vardır.</string>
 
     <string name="ConversationActivity_quoted_contact_message">%1$s %2$s</string>
-    <string name="ConversationActivity_search_position">%1$d\" / \"%2$d</string>
+    <string name="ConversationActivity_search_position">%1$d / %2$d</string>
     <string name="ConversationActivity_no_results">No results</string>
 
     <!-- ConversationAdapter -->
@@ -157,13 +157,13 @@
     <string name="CreateProfileActivity_profile_photo">Profil fotoğrafı</string>
 
     <!-- CustomDefaultPreference -->
-    <string name="CustomDefaultPreference_using_custom">Özel kullanımda: \"%s\"</string>
+    <string name="CustomDefaultPreference_using_custom">Özel kullanımda: %s</string>
     <string name="CustomDefaultPreference_using_default">Using default: %s</string>
     <string name="CustomDefaultPreference_none">Hiçbiri</string>
 
     <!-- DateUtils -->
     <string name="DateUtils_just_now">Şimdi</string>
-    <string name="DateUtils_minutes_ago">\"%d\" dk</string>
+    <string name="DateUtils_minutes_ago">%d dk</string>
     <string name="DateUtils_today">Bugün</string>
     <string name="DateUtils_yesterday">Dün</string>
 
@@ -188,7 +188,7 @@
 
     <!-- LongMessageActivity -->
     <string name="LongMessageActivity_unable_to_find_message">Mesaj bulunamadı</string>
-    <string name="LongMessageActivity_message_from_s">\"%1$s\" adlı kişiden mesaj</string>
+    <string name="LongMessageActivity_message_from_s">%1$s adlı kişiden mesaj</string>
     <string name="LongMessageActivity_your_message">Mesajınız</string>
 
     <!-- MediaOverviewActivity -->
@@ -205,7 +205,7 @@
     <string name="NotificationMmsMessageRecord_error_downloading_mms_message">MMS mesajı indirilirken hata oluştu, yeniden denemek için dokunun</string>
 
     <!-- MediaPickerActivity -->
-    <string name="MediaPickerActivity_send_to">\"%s\" kişisine gönder</string>
+    <string name="MediaPickerActivity_send_to">%s kişisine gönder</string>
 
     <!-- MediaSendActivity -->
     <string name="MediaSendActivity_add_a_caption">Bir açıklama ekleyin...</string>
@@ -229,7 +229,7 @@
     <!-- ExpirationDialog -->
     <string name="ExpirationDialog_disappearing_messages">Kaybolan mesajlar</string>
     <string name="ExpirationDialog_your_messages_will_not_expire">Mesajlarınızın süresi dolmayacak.</string>
-    <string name="ExpirationDialog_your_messages_will_disappear_s_after_they_have_been_seen">Bu konuşmada gönderilen ve alınan mesajlar, görüldükten \"%s\" sonra kaybolacaktır.</string>
+    <string name="ExpirationDialog_your_messages_will_disappear_s_after_they_have_been_seen">Bu konuşmada gönderilen ve alınan mesajlar, görüldükten %s sonra kaybolacaktır.</string>
 
     <!-- PassphrasePromptActivity -->
     <string name="PassphrasePromptActivity_enter_passphrase">Parolayı girin</string>
@@ -268,18 +268,18 @@
     <string name="ThreadRecord_called_you">Sizi aradı</string>
     <string name="ThreadRecord_missed_call">Cevapsız arama</string>
     <string name="ThreadRecord_media_message">Multimedya mesajı</string>
-    <string name="ThreadRecord_s_is_on_signal">\"%s\" BChat\'te!</string>
+    <string name="ThreadRecord_s_is_on_signal">%s BChat\'te!</string>
     <string name="ThreadRecord_disappearing_messages_disabled">Kaybolan mesajlar devre dışı bırakıldı</string>
-    <string name="ThreadRecord_disappearing_message_time_updated_to_s">Kaybolan mesaj süresi \"%s\" olarak ayarlandı</string>
+    <string name="ThreadRecord_disappearing_message_time_updated_to_s">Kaybolan mesaj süresi %s olarak ayarlandı</string>
     <string name="ThreadRecord_s_took_a_screenshot">%1$s ekran görüntüsü aldı.</string>
     <string name="ThreadRecord_media_saved_by_s">Medya %1$s tarafından kaydedildi.</string>
     <string name="ThreadRecord_safety_number_changed">Güvenlik numarası değişti</string>
-    <string name="ThreadRecord_your_safety_number_with_s_has_changed">\"%s\" ile olan güvenlik numaranız değişti.</string>
+    <string name="ThreadRecord_your_safety_number_with_s_has_changed">%s ile olan güvenlik numaranız değişti.</string>
     <string name="ThreadRecord_you_marked_verified">Doğrulandı olarak işaretlediniz</string>
     <string name="ThreadRecord_you_marked_unverified">Doğrulanmadı olarak işaretlediniz</string>
     <string name="ThreadRecord_empty_message">Bu konuşma boş</string>
     <string name="ThreadRecord_open_group_invitation">Sosyal grup daveti</string>
-    <string name="ThreadRecord_payment">%s\" BDX \"%s</string>
+    <string name="ThreadRecord_payment">%s BDX %s</string>
 
     <!-- UpdateApkReadyListener -->
     <string name="UpdateApkReadyListener_Signal_update">BChat güncellemesi</string>
@@ -312,8 +312,8 @@
     <string name="MediaPreviewActivity_media_delete_confirmation_message">This will permanently delete this message.</string>
 
     <!-- MessageNotifier -->
-    <string name="MessageNotifier_d_new_messages_in_d_conversations">\"%1$d\" konuşmada \"%1$d\" yeni mesaj</string>
-    <string name="MessageNotifier_most_recent_from_s">En son mesaj gönderen: \"%1$s\"</string>
+    <string name="MessageNotifier_d_new_messages_in_d_conversations">%1$d konuşmada %1$d yeni mesaj</string>
+    <string name="MessageNotifier_most_recent_from_s">En son mesaj gönderen: %1$s</string>
     <string name="MessageNotifier_locked_message">Kilitli mesaj</string>
     <string name="MessageNotifier_message_delivery_failed">Mesaj teslim edilemedi.</string>
     <string name="MessageNotifier_failed_to_deliver_message">Mesaj gönderilemedi.</string>
@@ -342,7 +342,7 @@
     <string name="QuickResponseService_problem_sending_message">Mesaj gönderilirken sorun oluştu!</string>
 
     <!-- SaveAttachmentTask -->
-    <string name="SaveAttachmentTask_saved_to">\"%s\" konumuna kaydedildi</string>
+    <string name="SaveAttachmentTask_saved_to">%s konumuna kaydedildi</string>
     <string name="SaveAttachmentTask_saved">Kaydedildi</string>
 
     <!-- SearchToolbar -->
@@ -624,7 +624,7 @@
     <string name="BackupDialog_disable_and_delete_all_local_backups">Disable and delete all local backups?</string>
     <string name="BackupDialog_delete_backups_statement">Delete backups</string>
     <string name="LocalBackupJob_creating_backup">Yedek oluşturuluyor...</string>
-    <string name="ProgressPreference_d_messages_so_far">Şu ana kadar \"%d\" mesaj işlendi</string>
+    <string name="ProgressPreference_d_messages_so_far">Şu ana kadar %d mesaj işlendi</string>
     <string name="BackupUtil_never">Asla</string>
     <string name="preferences_app_protection__screen_lock">Ekran kilidi</string>
     <string name="preferences_app_protection__lock_signal_access_with_android_screen_lock_or_fingerprint">Android ekran kilidi veya parmak izi ile BChat erişimini kilitle</string>
@@ -824,11 +824,11 @@
 
     <string name="document">Belge</string>
 
-    <string name="dialog_blocked_title">\"%s\" kullanıcısının engeli kaldırılsın mı?</string>
-    <string name="dialog_blocked_explanation">\"%s\" kullanıcısının engelini kaldırmak istediğinizden emin misiniz?</string>
+    <string name="dialog_blocked_title">%s kullanıcısının engeli kaldırılsın mı?</string>
+    <string name="dialog_blocked_explanation">%s kullanıcısının engelini kaldırmak istediğinizden emin misiniz?</string>
 
-    <string name="dialog_join_open_group_title">\"%s\" grubuna katılınsın mı?</string>
-    <string name="dialog_join_open_group_explanation">\"%s\" sosyal grubuna katılmak istediğinizden emin misiniz?</string>
+    <string name="dialog_join_open_group_title">%s grubuna katılınsın mı?</string>
+    <string name="dialog_join_open_group_explanation">%s sosyal grubuna katılmak istediğinizden emin misiniz?</string>
 
     <string name="dialog_open_url_title">URL açılsın mı</string>
     <string name="dialog_open_url_explanation">Açmak istediğinizden emin misiniz %s?</string>
@@ -1664,18 +1664,18 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="please_enter_4_digit_pin">Lütfen 4 haneli PIN girin.</string>
     <string name="write_here">Buraya yazın...</string>
     <string name="password">Parola</string>
-    <string name="member_count">\"%d\" üye</string>
+    <string name="member_count">%d üye</string>
     <string name="text_limit_exceed_warnings">Metin sınırı aşıldı: Maksimum mesaj uzunluğu 4096 karakterdir</string>
     <string name="ban_message">Bu işlem seçilen kullanıcıyı bu odadan yasaklayacaktır. Diğer odalardan yasaklanmayacaktır.</string>
     <string name="ban_and_delete_message">Bu işlem seçilen kullanıcıyı bu odadan yasaklayacak ve gönderdiği tüm mesajları silecektir. Diğer odalardan yasaklanmayacak ve oralardaki mesajları silinmeyecektir.</string>
-    <string name="delete_message_failed_with_error">Mesaj hata nedeniyle silinemedi: \"%s\"</string>
+    <string name="delete_message_failed_with_error">Mesaj hata nedeniyle silinemedi: %s</string>
     <string name="must_set_your_four_digit_pin">4 haneli PIN\'inizi belirlemelisiniz.</string>
     <string name="password_is_not_matched">Parola eşleşmiyor</string>
     <string name="group_leave_during_member_update_error">Diğer üyeler eklenirken veya kaldırılırken gruptan ayrılamazsınız.</string>
     <string name="an_error_occurred">Bir hata oluştu</string>
-    <string name="update_canceled_by_user">Güncelleme kullanıcı tarafından iptal edildi! Sonuç Kodu: \"%d\"</string>
-    <string name="update_success">Güncelleme başarılı! Sonuç Kodu: \"%d\"</string>
-    <string name="update_failed">Güncelleme başarısız! Sonuç Kodu: \"%d\"</string>
+    <string name="update_canceled_by_user">Güncelleme kullanıcı tarafından iptal edildi! Sonuç Kodu: %d</string>
+    <string name="update_success">Güncelleme başarılı! Sonuç Kodu: %d</string>
+    <string name="update_failed">Güncelleme başarısız! Sonuç Kodu: %d</string>
     <string name="hide_message_request">Mesaj istekleri gizlensin mi?</string>
     <string name="message_requests_hidden_info">Gizlendikten sonra Ayarlar > Mesaj İstekleri bölümünden erişebilirsiniz.</string>
     <string name="cannot_open_url">URL açılamıyor</string>

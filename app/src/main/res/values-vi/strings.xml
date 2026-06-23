@@ -73,7 +73,7 @@
     <string name="ConversationActivity_sorry_there_was_an_error_setting_your_attachment">Sorry, there was an error setting your attachment.</string>
     <string name="ConversationActivity_message">Viết tin nhắn....</string>
     <string name="ConversationActivity_compose">Compose</string>
-    <string name="ConversationActivity_muted_until_date">Đã tắt thông báo đến \"%1$s\"</string>
+    <string name="ConversationActivity_muted_until_date">Đã tắt thông báo đến %1$s</string>
     <string name="ConversationActivity_muted_forever">Đã tắt thông báo</string>
     <string name="ConversationActivity_member_count">%1$d thành viên</string>
     <string name="ConversationActivity_open_group_guidelines">Quy tắc cộng đồng</string>
@@ -102,7 +102,7 @@
     <string name="ConversationActivity_signal_needs_camera_permissions_to_take_photos_or_video">BChat cần quyền truy cập camera để chụp ảnh hoặc quay video.</string>
 
     <string name="ConversationActivity_quoted_contact_message">%1$s %2$s</string>
-    <string name="ConversationActivity_search_position">%1$d trên \"%2$d\"</string>
+    <string name="ConversationActivity_search_position">%1$d trên %2$d</string>
     <string name="ConversationActivity_no_results">No results</string>
 
     <!-- ConversationAdapter -->
@@ -153,7 +153,7 @@
     <string name="CreateProfileActivity_profile_photo">Ảnh đại diện</string>
 
     <!-- CustomDefaultPreference -->
-    <string name="CustomDefaultPreference_using_custom">Đang dùng tùy chỉnh: \"%s\"</string>
+    <string name="CustomDefaultPreference_using_custom">Đang dùng tùy chỉnh: %s</string>
     <string name="CustomDefaultPreference_using_default">Using default: %s</string>
     <string name="CustomDefaultPreference_none">Không có</string>
 
@@ -184,7 +184,7 @@
 
     <!-- LongMessageActivity -->
     <string name="LongMessageActivity_unable_to_find_message">Không tìm thấy tin nhắn</string>
-    <string name="LongMessageActivity_message_from_s">Tin nhắn từ \"%1$s\"</string>
+    <string name="LongMessageActivity_message_from_s">Tin nhắn từ %1$s</string>
     <string name="LongMessageActivity_your_message">Tin nhắn của bạn</string>
 
     <!-- MediaOverviewActivity -->
@@ -201,7 +201,7 @@
     <string name="NotificationMmsMessageRecord_error_downloading_mms_message">Lỗi tải xuống tin nhắn MMS, chạm để thử lại</string>
 
     <!-- MediaPickerActivity -->
-    <string name="MediaPickerActivity_send_to">Gửi đến \"%s\"</string>
+    <string name="MediaPickerActivity_send_to">Gửi đến %s</string>
 
     <!-- MediaSendActivity -->
     <string name="MediaSendActivity_add_a_caption">Thêm chú thích...</string>
@@ -225,7 +225,7 @@
     <!-- ExpirationDialog -->
     <string name="ExpirationDialog_disappearing_messages">Tin nhắn tự hủy</string>
     <string name="ExpirationDialog_your_messages_will_not_expire">Tin nhắn của bạn sẽ không hết hạn.</string>
-    <string name="ExpirationDialog_your_messages_will_disappear_s_after_they_have_been_seen">Tin nhắn được gửi và nhận trong cuộc trò chuyện này sẽ biến mất sau \"%s\" kể từ khi được xem.</string>
+    <string name="ExpirationDialog_your_messages_will_disappear_s_after_they_have_been_seen">Tin nhắn được gửi và nhận trong cuộc trò chuyện này sẽ biến mất sau %s kể từ khi được xem.</string>
 
     <!-- PassphrasePromptActivity -->
     <string name="PassphrasePromptActivity_enter_passphrase">Nhập cụm mật khẩu</string>
@@ -266,16 +266,16 @@
     <string name="ThreadRecord_media_message">Tin nhắn đa phương tiện</string>
     <string name="ThreadRecord_s_is_on_signal">%s đang sử dụng BChat!</string>
     <string name="ThreadRecord_disappearing_messages_disabled">Tính năng tin nhắn tự hủy đã bị tắt</string>
-    <string name="ThreadRecord_disappearing_message_time_updated_to_s">Thời gian tin nhắn tự hủy được đặt là \"%s\"</string>
+    <string name="ThreadRecord_disappearing_message_time_updated_to_s">Thời gian tin nhắn tự hủy được đặt là %s</string>
     <string name="ThreadRecord_s_took_a_screenshot">%1$s đã chụp ảnh màn hình.</string>
     <string name="ThreadRecord_media_saved_by_s">Phương tiện đã được lưu bởi %1$s.</string>
     <string name="ThreadRecord_safety_number_changed">Mã bảo mật đã thay đổi</string>
-    <string name="ThreadRecord_your_safety_number_with_s_has_changed">Mã bảo mật của bạn với \"%s\" đã thay đổi.</string>
+    <string name="ThreadRecord_your_safety_number_with_s_has_changed">Mã bảo mật của bạn với %s đã thay đổi.</string>
     <string name="ThreadRecord_you_marked_verified">Bạn đã đánh dấu là đã xác minh</string>
     <string name="ThreadRecord_you_marked_unverified">Bạn đã đánh dấu là chưa xác minh</string>
     <string name="ThreadRecord_empty_message">Cuộc trò chuyện này trống</string>
     <string name="ThreadRecord_open_group_invitation">Lời mời tham gia nhóm</string>
-    <string name="ThreadRecord_payment">%s BDX \"%s\"</string>
+    <string name="ThreadRecord_payment">%s BDX %s</string>
 
     <!-- UpdateApkReadyListener -->
     <string name="UpdateApkReadyListener_Signal_update">Cập nhật BChat</string>
@@ -308,8 +308,8 @@
     <string name="MediaPreviewActivity_media_delete_confirmation_message">This will permanently delete this message.</string>
 
     <!-- MessageNotifier -->
-    <string name="MessageNotifier_d_new_messages_in_d_conversations">%1$d tin nhắn mới trong \"%2$d\" cuộc trò chuyện</string>
-    <string name="MessageNotifier_most_recent_from_s">Tin nhắn gần đây nhất từ: \"%1$s\"</string>
+    <string name="MessageNotifier_d_new_messages_in_d_conversations">%1$d tin nhắn mới trong %2$d cuộc trò chuyện</string>
+    <string name="MessageNotifier_most_recent_from_s">Tin nhắn gần đây nhất từ: %1$s</string>
     <string name="MessageNotifier_locked_message">Tin nhắn đã khóa</string>
     <string name="MessageNotifier_message_delivery_failed">Gửi tin nhắn thất bại.</string>
     <string name="MessageNotifier_failed_to_deliver_message">Không thể gửi tin nhắn.</string>
@@ -338,7 +338,7 @@
     <string name="QuickResponseService_problem_sending_message">Gặp lỗi khi gửi tin nhắn!</string>
 
     <!-- SaveAttachmentTask -->
-    <string name="SaveAttachmentTask_saved_to">Đã lưu vào \"%s\"</string>
+    <string name="SaveAttachmentTask_saved_to">Đã lưu vào %s</string>
     <string name="SaveAttachmentTask_saved">Đã lưu</string>
 
     <!-- SearchToolbar -->
@@ -819,11 +819,11 @@
 
     <string name="document">Tài liệu</string>
 
-    <string name="dialog_blocked_title">Bỏ chặn \"%s\"?</string>
-    <string name="dialog_blocked_explanation">Bạn có chắc chắn muốn bỏ chặn \"%s\" không?</string>
+    <string name="dialog_blocked_title">Bỏ chặn %s?</string>
+    <string name="dialog_blocked_explanation">Bạn có chắc chắn muốn bỏ chặn %s không?</string>
 
-    <string name="dialog_join_open_group_title">Tham gia \"%s\"?</string>
-    <string name="dialog_join_open_group_explanation">Bạn có chắc chắn muốn tham gia nhóm xã hội \"%s\" không?</string>
+    <string name="dialog_join_open_group_title">Tham gia %s?</string>
+    <string name="dialog_join_open_group_explanation">Bạn có chắc chắn muốn tham gia nhóm xã hội %s không?</string>
 
     <string name="dialog_open_url_title">Mở URL?</string>
     <string name="dialog_open_url_explanation">Bạn có chắc chắn muốn mở %s?</string>
@@ -1659,18 +1659,18 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="please_enter_4_digit_pin">Vui lòng nhập mã PIN 4 chữ số.</string>
     <string name="write_here">Nhập nội dung tại đây...</string>
     <string name="password">Mật khẩu</string>
-    <string name="member_count">\"%d\" thành viên</string>
+    <string name="member_count">%d thành viên</string>
     <string name="text_limit_exceed_warnings">Vượt quá giới hạn ký tự: Số ký tự tối đa của tin nhắn là 4096</string>
     <string name="ban_message">Thao tác này sẽ cấm người dùng đã chọn khỏi phòng này. Họ sẽ không bị cấm khỏi các phòng khác.</string>
     <string name="ban_and_delete_message">Thao tác này sẽ cấm người dùng đã chọn khỏi phòng này và xóa tất cả tin nhắn do họ gửi. Họ sẽ không bị cấm khỏi các phòng khác và các tin nhắn họ đã gửi ở đó sẽ không bị xóa.</string>
-    <string name="delete_message_failed_with_error">Không thể xóa tin nhắn do lỗi: \"%s\"</string>
+    <string name="delete_message_failed_with_error">Không thể xóa tin nhắn do lỗi: %s</string>
     <string name="must_set_your_four_digit_pin">Phải đặt mã PIN 4 chữ số của bạn.</string>
     <string name="password_is_not_matched">Mật khẩu không khớp</string>
     <string name="group_leave_during_member_update_error">Không thể rời khỏi khi đang thêm hoặc xóa thành viên khác.</string>
     <string name="an_error_occurred">Đã xảy ra lỗi</string>
-    <string name="update_canceled_by_user">Cập nhật đã bị hủy bởi người dùng! Mã kết quả: \"%d\"</string>
-    <string name="update_success">Cập nhật thành công! Mã kết quả: \"%d\"</string>
-    <string name="update_failed">Cập nhật thất bại! Mã kết quả: \"%d\"</string>
+    <string name="update_canceled_by_user">Cập nhật đã bị hủy bởi người dùng! Mã kết quả: %d</string>
+    <string name="update_success">Cập nhật thành công! Mã kết quả: %d</string>
+    <string name="update_failed">Cập nhật thất bại! Mã kết quả: %d</string>
     <string name="hide_message_request">Ẩn yêu cầu tin nhắn?</string>
     <string name="message_requests_hidden_info">Sau khi bị ẩn, bạn có thể truy cập tại Cài đặt > Yêu cầu tin nhắn</string>
     <string name="cannot_open_url">Không thể mở URL</string>

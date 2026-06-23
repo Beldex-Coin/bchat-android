@@ -135,8 +135,8 @@
         <item quantity="other">Сохранение %1$d медиафайлов в хранилище позволит другим приложениям на вашем устройстве получить к ним доступ.</item>
     </plurals>
     <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
-        <item quantity="one">Error while saving attachment to storage!</item>
-        <item quantity="other">Error while saving attachments to storage!</item>
+        <item quantity="one">Ошибка при сохранении вложения в хранилище!</item>
+        <item quantity="other">Ошибка при сохранении вложений в хранилище!</item>
     </plurals>
     <plurals name="ConversationFragment_saving_n_attachments">
         <item quantity="one">Сохранение %1$d вложения</item>
@@ -224,8 +224,8 @@
     <string name="MediaSendActivity_camera_unavailable">Камера недоступна.</string>
     <string name="MediaSendActivity_message_to_s">Отправить сообщение %s</string>
     <plurals name="MediaSendActivity_cant_share_more_than_n_items">
-        <item quantity="one">You can\'t share more than %d item.</item>
-        <item quantity="other">You can\'t share more than %d items.</item>
+        <item quantity="one">Вы не можете отправить более %d элемента.</item>
+        <item quantity="other">Вы не можете отправить более %d элементов.</item>
     </plurals>
 
     <!-- MediaRepository -->
@@ -368,8 +368,8 @@
 
     <!-- TransferControlView -->
     <plurals name="TransferControlView_n_items">
-        <item quantity="one">%d Item</item>
-        <item quantity="other">%d Items</item>
+        <item quantity="one">%d элемент</item>
+        <item quantity="other">%d элементов</item>
     </plurals>
 
     <!-- VideoPlayer -->
@@ -387,7 +387,7 @@
     <string name="attachment_type_selector__drawer_description">Переключить панель вложений</string>
 
     <!-- contact_selection_group_activity -->
-    <string name="contact_selection_group_activity__finding_contacts">Loading contacts&#8230;</string>
+    <string name="contact_selection_group_activity__finding_contacts">Загрузка контактов...</string>
 
     <!-- conversation_activity -->
     <string name="conversation_activity__send">Отправить</string>
@@ -495,8 +495,8 @@
 
     <!-- plurals.xml -->
     <plurals name="hours_ago">
-        <item quantity="one">%d hour</item>
-        <item quantity="other">%d hours</item>
+        <item quantity="one">%d час</item>
+        <item quantity="other">%d часа</item>
     </plurals>
 
     <!-- preferences.xml -->
@@ -1267,8 +1267,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="report_issue">Сообщить о проблеме</string>
     <string name="filter_applied">Filter applied</string>
     <string name="testing_the_node">Testing the node...</string>
-    <string name="str_start_date">start date</string>
-    <string name="str_end_date">end date</string>
+    <string name="str_start_date">Дата начала</string>
+    <string name="str_end_date">Дата окончания</string>
+    <string name="str_please_select_start_date">Пожалуйста, выберите дату начала</string>
+    <string name="str_please_select_end_date">Пожалуйста, выберите дату окончания</string>
     <string name="alert_from_date">Please enter from date</string>
     <string name="alert_to_date">Please enter to date</string>
     <string name="CallNotificationBuilder_screen_on">Видео возобновлено</string>
@@ -1280,8 +1282,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="Unblock_dialog__title_multiple">Разблокировать пользователей</string>
     <string name="Unblock_dialog__message">Вы уверены, что хотите разблокировать %s?</string>
     <plurals name="Unblock_dialog__message_multiple_overflow">
-        <item quantity="one">and %d other</item>
-        <item quantity="other">and %d others</item>
+        <item quantity="one">и ещё %d другой</item>
+        <item quantity="other">и ещё %d других</item>
     </plurals>
     <string name="unblock_selected">Разблокировать выбранные</string>
     <string name="call_alert">You\'re already on call</string>
@@ -1537,8 +1539,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="KeyboardPagerfragment_back_to_emoji">Back to emoji</string>
     <string name="KeyboardPagerfragment_clear_search_entry">Clear search entry</string>
     <plurals name="ReactionsRecipientAdapter_other_reactors">
-        <item quantity="one">And %1$d other has reacted %2$s to this message</item>
-        <item quantity="other">And %1$d others have reacted %2$s to this message</item>
+        <item quantity="one">И ещё %1$d пользователь отреагировал(а) %2$s на это сообщение.</item>
+        <item quantity="other">И ещё %1$d пользователей отреагировали %2$s на это сообщение.</item>
     </plurals>
 
     <string name="emojiAndSymbols">Emoji and Symbols</string>
@@ -1571,8 +1573,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="title_activity_secret_group_info_compose">SecretGroupInfoComposeActivity</string>
 
     <plurals name="deleteMessageDeleted">
-        <item quantity="one">Message deleted</item>
-        <item quantity="other">Messages deleted</item>
+        <item quantity="one">Сообщение удалено</item>
+        <item quantity="other">Сообщения удалены</item>
     </plurals>
     <plurals name="deleteMessageConfirm">
         <item quantity="one">Are you sure you want to delete this message?</item>
@@ -1648,12 +1650,12 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="community_guidelines"><![CDATA[BChat — это децентрализованная платформа обмена сообщениями, которая защищает вашу конфиденциальность. Используя BChat, вы владеете своими разговорами и данными. Он не собирает и не хранит вашу личную информацию. BChat — это место, где вы общаетесь свободно.\n\nBChat — это также больше, чем просто приложение для обмена сообщениями. Вы можете отправлять и получать BDX прямо из своего чата.\nnBChat построен на основе сети Beldex. Мастерноды в сети Beldex хранят и передают зашифрованные сообщения между клиентами. Другие проекты, которые в настоящее время исследуются или разрабатываются Beldex, включают BelNet (децентрализованный VPN-сервис), Beldex Browser (браузер Web3 без рекламы) и протокол конфиденциальности Beldex (для анонимизации всех остальных активов).\n\nЧтобы узнать больше, посетите: https://www.beldex.io\nДля сотрудничества или маркетинговых предложений обращайтесь по адресу marketing@beldex.io.\nДля инвестиций обращайтесь по адресу invest.bchat@beldex.io\n\nДля защиты и сохранения этого сообщества, пожалуйста, соблюдайте правила и рекомендации группы.\n\nБудьте вежливы. Вы можете делиться своим мнением и конструктивной критикой, но домогательства недопустимы.\nНе рекламируйте и не продвигайте свой токен/проект. Эта группа посвящена BChat и экосистеме Beldex.\nСпамеры будут забанены.\nНе делитесь контентом NSFW и не используйте нецензурную лексику.\n\nОстерегайтесь мошенников. Администраторы не будут писать вам в личные сообщения первыми.
 ]]></string>
     <string name="divider">Divider</string>
-    <string name="seed">Seed</string>
+    <string name="seed">Фраза восстановления</string>
     <string name="title">Title</string>
     <string name="list">list</string>
-    <string name="claim_your_airdrop">Yay! You made it here. Claim your airdrop. Submit your BChat ID and BDX wallet address in the link below</string>
+    <string name="claim_your_airdrop">Ура! Вы добрались сюда. Получите свой аирдроп. Отправьте свой ID BChat и адрес кошелька BDX по ссылке ниже.</string>
     <string name="txt">TXT</string>
-    <string name="user">User</string>
+    <string name="user">Пользователь</string>
     <string name="default_value_messages_per_conversation">500 сообщений на разговор</string>
     <string name="language">Язык</string>
     <string name="choose_language">Выберите язык</string>
@@ -1661,10 +1663,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="four_digit_pin">4-значный PIN-код</string>
     <string name="six_digit_pin">6-значный PIN-код</string>
     <plurals name="contact_others">
-        <item quantity="one">%1$s и ещё %2$d пользователь</item>
-        <item quantity="few">%1$s и ещё %2$d пользователя</item>
-        <item quantity="many">%1$s и ещё %2$d пользователей</item>
-        <item quantity="other">%1$s и ещё %2$d пользователей</item>
+        <item quantity="one">%s и ещё %d другой</item>
+        <item quantity="other">%s и ещё %d других</item>
     </plurals>
     <string name="unblocked_this_contact">Этот контакт разблокирован</string>
     <string name="invalid_old_password">Неверный старый пароль</string>
@@ -1688,4 +1688,24 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="update_failed">Ошибка обновления! Код результата: «%d»</string>
     <string name="hide_message_request">Скрыть запросы на переписку?</string>
     <string name="message_requests_hidden_info">После скрытия вы сможете получить к ним доступ через Настройки → Запросы на переписку</string>
+    <string name="cannot_open_url">Не удаётся открыть URL</string>
+    <string name="failed_to_authenticate">Ошибка аутентификации</string>
+    <string name="bns_verified">BNS подтверждён</string>
+    <string name="library_access_required">BChat требуется доступ к библиотеке для продолжения. Вы можете предоставить доступ на странице настроек.</string>
+    <string name="you_have_got_a_new_message">У вас новое сообщение.</string>
+    <string name="terms_and_privacy_message">Используя этот сервис, вы соглашаетесь с нашими Условиями использования и Политикой конфиденциальности</string>
+    <string name="paste_seed">Вставить фразу восстановления</string>
+    <string name="leave_group">Покинуть группу</string>
+    <string name="you_are_almost_finished">Вы почти закончили! 90%</string>
+    <string name="account_secured">Аккаунт защищён! 100%</string>
+    <string name="error_saving_logs">Ошибка сохранения журналов</string>
+    <string name="please_wait_until_file_downloaded">Пожалуйста, дождитесь завершения загрузки файла</string>
+    <string name="read_more_suffix">%s ... Читать далее</string>
+    <string name="read_less_suffix">%s Свернуть</string>
+    <string name="unable_to_play_audio_while_recording">Невозможно воспроизводить аудио во время записи.</string>
+    <string name="bchat_pin_description">Это PIN-код, который вы установили для своей учётной записи BChat.</string>
+    <string name="restore_wallet_using_seed">Используйте мнемонический ключ из 25 слов (seed-фразу) для восстановления вашего кошелька</string>
+    <string name="restore_from_keys">Восстановить из ключей</string>
+    <string name="restore_wallet_using_keystore">Используйте созданный файл хранилища ключей (keystore), сохранённый из приватных ключей, для восстановления вашего кошелька.</string>
+
 </resources>

@@ -224,7 +224,7 @@
             android:layout_marginStart="@dimen/massive_spacing"
             android:layout_marginEnd="@dimen/massive_spacing"
             android:gravity="center"
-            android:text="By using this service, you agree to our Terms of Service and Privacy Policy"
+            android:text="@string/terms_and_privacy_message"
             android:textColor="?android:textColorTertiary"
             android:textColorLink="?colorAccent"
             android:textSize="@dimen/very_small_font_size"

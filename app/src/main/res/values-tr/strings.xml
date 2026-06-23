@@ -128,8 +128,8 @@
         <item quantity="other">Tüm %1$d medyayı depolama alanına kaydetmek, cihazınızdaki diğer uygulamaların bunlara erişmesine izin verecektir.</item>
     </plurals>
     <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
-        <item quantity="one">Error while saving attachment to storage!</item>
-        <item quantity="other">Error while saving attachments to storage!</item>
+        <item quantity="one">Ek depolama alanına kaydedilirken hata oluştu!</item>
+        <item quantity="other">Ekler depolama alanına kaydedilirken hata oluştu!</item>
     </plurals>
     <plurals name="ConversationFragment_saving_n_attachments">
         <item quantity="one">Ek kaydediliyor</item>
@@ -213,8 +213,8 @@
     <string name="MediaSendActivity_camera_unavailable">Kamera kullanılamıyor.</string>
     <string name="MediaSendActivity_message_to_s">Mesaj gönder %s</string>
     <plurals name="MediaSendActivity_cant_share_more_than_n_items">
-        <item quantity="one">You can\'t share more than %d item.</item>
-        <item quantity="other">You can\'t share more than %d items.</item>
+        <item quantity="one">%d öğeden fazlasını paylaşamazsınız.</item>
+        <item quantity="other">%d öğeden fazlasını paylaşamazsınız.</item>
     </plurals>
 
     <!-- MediaRepository -->
@@ -357,8 +357,8 @@
 
     <!-- TransferControlView -->
     <plurals name="TransferControlView_n_items">
-        <item quantity="one">%d Item</item>
-        <item quantity="other">%d Items</item>
+        <item quantity="one">%d Öğe</item>
+        <item quantity="other">%d Öğe (çoğul kullanım için: %d Öğe)</item>
     </plurals>
 
     <!-- VideoPlayer -->
@@ -376,7 +376,7 @@
     <string name="attachment_type_selector__drawer_description">Ek panelini aç/kapat</string>
 
     <!-- contact_selection_group_activity -->
-    <string name="contact_selection_group_activity__finding_contacts">Loading contacts&#8230;</string>
+    <string name="contact_selection_group_activity__finding_contacts">Kişiler yükleniyor...</string>
 
     <!-- conversation_activity -->
     <string name="conversation_activity__send">Gönder</string>
@@ -484,8 +484,8 @@
 
     <!-- plurals.xml -->
     <plurals name="hours_ago">
-        <item quantity="one">%d hour</item>
-        <item quantity="other">%d hours</item>
+        <item quantity="one">%d saat</item>
+        <item quantity="other">%d saat (çoğul kullanım)</item>
     </plurals>
 
     <!-- preferences.xml -->
@@ -1257,8 +1257,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="report_issue">Sorun Bildir</string>
     <string name="filter_applied">Filter applied</string>
     <string name="testing_the_node">Testing the node...</string>
-    <string name="str_start_date">start date</string>
-    <string name="str_end_date">end date</string>
+    <string name="str_start_date">Başlangıç tarihi</string>
+    <string name="str_end_date">Bitiş tarihi</string>
+    <string name="str_please_select_start_date">Lütfen başlangıç tarihini seçin</string>
+    <string name="str_please_select_end_date">Lütfen bitiş tarihini seçin</string>
     <string name="alert_from_date">Please enter from date</string>
     <string name="alert_to_date">Please enter to date</string>
     <string name="CallNotificationBuilder_screen_on">Video Devam Etti</string>
@@ -1270,8 +1272,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="Unblock_dialog__title_multiple">Kullanıcıların Engelini Kaldır</string>
     <string name="Unblock_dialog__message">%s kullanıcısının engelini kaldırmak istediğinizden emin misiniz?</string>
     <plurals name="Unblock_dialog__message_multiple_overflow">
-        <item quantity="one">and %d other</item>
-        <item quantity="other">and %d others</item>
+        <item quantity="one">ve %d diğer kişi</item>
+        <item quantity="other">ve %d diğer kişi</item>
     </plurals>
     <string name="unblock_selected">Seçilenlerin engelini kaldır</string>
     <string name="call_alert">You\'re already on call</string>
@@ -1527,8 +1529,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="KeyboardPagerfragment_back_to_emoji">Back to emoji</string>
     <string name="KeyboardPagerfragment_clear_search_entry">Clear search entry</string>
     <plurals name="ReactionsRecipientAdapter_other_reactors">
-        <item quantity="one">And %1$d other has reacted %2$s to this message</item>
-        <item quantity="other">And %1$d others have reacted %2$s to this message</item>
+        <item quantity="one">Ve %1$d diğer kişi bu mesaja %2$s tepkisi verdi.</item>
+        <item quantity="other">Ve %1$d diğer kişi bu mesaja %2$s tepkisi verdi.</item>
     </plurals>
 
     <string name="emojiAndSymbols">Emoji and Symbols</string>
@@ -1561,8 +1563,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="title_activity_secret_group_info_compose">SecretGroupInfoComposeActivity</string>
 
     <plurals name="deleteMessageDeleted">
-        <item quantity="one">Message deleted</item>
-        <item quantity="other">Messages deleted</item>
+        <item quantity="one">Mesaj silindi</item>
+        <item quantity="other">Mesajlar silindi</item>
     </plurals>
     <plurals name="deleteMessageConfirm">
         <item quantity="one">Are you sure you want to delete this message?</item>
@@ -1638,12 +1640,12 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="community_guidelines"><![CDATA[BChat gizliliğinizi koruyan merkeziyetsiz bir mesajlaşma platformudur. BChat kullanırken sohbetlerinizin ve verilerinizin sahibi sizsiniz. BChat kişisel bilgilerinizi toplamaz veya saklamaz. BChat özgürce sohbet edebileceğiniz bir yerdir.\n\nBChat aynı zamanda sadece bir mesajlaşma uygulaması değildir. Sohbet kutunuzdan doğrudan BDX gönderip alabilirsiniz.\n\nBChat Beldex ağı üzerinde çalışır. Beldex ağındaki masternode’lar istemciler arasında şifrelenmiş mesajları saklar ve iletir. Beldex tarafından araştırılan veya geliştirilen diğer projeler arasında BelNet merkeziyetsiz VPN hizmeti, Beldex Browser reklamsız Web3 tarayıcısı ve Beldex Gizlilik Protokolü bulunmaktadır.\n\nDaha fazla bilgi için ziyaret edin https://www.beldex.io\nİş birlikleri veya pazarlama teklifleri için marketing@beldex.io adresiyle iletişime geçin.\nYatırım için invest.bchat@beldex.io adresiyle iletişime geçin.\n\nBu topluluğu korumak ve sürdürmek için lütfen grup kurallarına ve yönergelerine uyun.\n\nSaygılı olun. Görüşlerinizi ve yapıcı eleştirilerinizi paylaşabilirsiniz ancak tacize izin verilmez.\nToken veya proje tanıtımı yapmayın. Bu grup BChat ve Beldex ekosistemine adanmıştır.\nSpam yapanlar yasaklanacaktır.\nUygunsuz içerik paylaşmayın veya küfürlü dil kullanmayın.\n\nDolandırıcılara dikkat edin. Yöneticiler size ilk olarak özel mesaj göndermez.
 ]]></string>
     <string name="divider">Divider</string>
-    <string name="seed">Seed</string>
+    <string name="seed">Kurtarma Tohumu</string>
     <string name="title">Title</string>
     <string name="list">list</string>
-    <string name="claim_your_airdrop">Yay! You made it here. Claim your airdrop. Submit your BChat ID and BDX wallet address in the link below</string>
+    <string name="claim_your_airdrop">Harika! Buraya kadar geldiniz. Airdrop ödülünüzü talep edin. BChat Kimliğinizi ve BDX cüzdan adresinizi aşağıdaki bağlantıdan gönderin.</string>
     <string name="txt">TXT</string>
-    <string name="user">User</string>
+    <string name="user">Kullanıcı</string>
     <string name="default_value_messages_per_conversation">Konuşma başına 500 mesaj</string>
     <string name="language">Dil</string>
     <string name="choose_language">Dil Seçin</string>
@@ -1651,8 +1653,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="four_digit_pin">4 Haneli PIN</string>
     <string name="six_digit_pin">6 Haneli PIN</string>
     <plurals name="contact_others">
-        <item quantity="one">%1$s ve %2$d kişi daha</item>
-        <item quantity="other">%1$s ve %2$d kişi daha</item>
+        <item quantity="one">%s ve %d diğer kişi</item>
+        <item quantity="other">%s ve %d diğer kişiler</item>
     </plurals>
     <string name="unblocked_this_contact">Bu kişinin engeli kaldırıldı</string>
     <string name="invalid_old_password">Eski parola geçersiz</string>
@@ -1676,4 +1678,24 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="update_failed">Güncelleme başarısız! Sonuç Kodu: \"%d\"</string>
     <string name="hide_message_request">Mesaj istekleri gizlensin mi?</string>
     <string name="message_requests_hidden_info">Gizlendikten sonra Ayarlar > Mesaj İstekleri bölümünden erişebilirsiniz.</string>
+    <string name="cannot_open_url">URL açılamıyor</string>
+    <string name="failed_to_authenticate">Kimlik doğrulama başarısız oldu</string>
+    <string name="bns_verified">BNS Doğrulandı</string>
+    <string name="library_access_required">Devam etmek için BChat\'in medya kitaplığı erişimine ihtiyacı var. Erişimi Ayarlar sayfasından etkinleştirebilirsiniz.</string>
+    <string name="you_have_got_a_new_message">Yeni bir mesajınız var.</string>
+    <string name="terms_and_privacy_message">Bu hizmeti kullanarak Hizmet Şartlarımızı ve Gizlilik Politikamızı kabul etmiş olursunuz.</string>
+    <string name="paste_seed">Kurtarma Tohumunu Yapıştır</string>
+    <string name="leave_group">Gruptan Ayrıl</string>
+    <string name="you_are_almost_finished">Neredeyse tamamladınız! %90</string>
+    <string name="account_secured">Hesap güvence altına alındı! %100</string>
+    <string name="error_saving_logs">Günlükler kaydedilirken hata oluştu</string>
+    <string name="please_wait_until_file_downloaded">Lütfen dosya indirilene kadar bekleyin</string>
+    <string name="read_more_suffix">%s ... Devamını Oku</string>
+    <string name="read_less_suffix">%s Daha Az Göster</string>
+    <string name="unable_to_play_audio_while_recording">Kayıt sırasında ses oynatılamıyor</string>
+    <string name="bchat_pin_description">Bu, BChat hesabınız için belirlediğiniz PIN\'dir.</string>
+    <string name="restore_wallet_using_seed">Cüzdanınızı geri yüklemek için 25 kelimelik Anımsatıcı Anahtarı (Mnemonic Key) veya kurtarma ifadesini kullanın</string>
+    <string name="restore_from_keys">Anahtarlardan Geri Yükle</string>
+    <string name="restore_wallet_using_keystore">Cüzdanınızı geri yüklemek için özel anahtarlardan oluşturulmuş ve kaydedilmiş keystore dosyasını kullanın.</string>
+
 </resources>

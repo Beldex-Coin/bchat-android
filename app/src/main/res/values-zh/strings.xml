@@ -122,8 +122,8 @@
         <item quantity="other">将 %1$d 个媒体文件保存到存储空间后，设备上的其他应用也可以访问它们。</item>
     </plurals>
     <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
-        <item quantity="one">Error while saving attachment to storage!</item>
-        <item quantity="other">Error while saving attachments to storage!</item>
+        <item quantity="one">保存附件到存储时出错！</item>
+        <item quantity="other">保存附件到存储时出错！</item>
     </plurals>
     <plurals name="ConversationFragment_saving_n_attachments">
         <item quantity="other">正在保存 %1$d 个附件</item>
@@ -205,8 +205,8 @@
     <string name="MediaSendActivity_camera_unavailable">相机不可用。</string>
     <string name="MediaSendActivity_message_to_s">发送消息给 %s</string>
     <plurals name="MediaSendActivity_cant_share_more_than_n_items">
-        <item quantity="one">You can\'t share more than %d item.</item>
-        <item quantity="other">You can\'t share more than %d items.</item>
+        <item quantity="one">您一次不能分享超过 %d 个项目。</item>
+        <item quantity="other">您一次不能分享超过 %d 个项目。</item>
     </plurals>
 
     <!-- MediaRepository -->
@@ -349,8 +349,8 @@
 
     <!-- TransferControlView -->
     <plurals name="TransferControlView_n_items">
-        <item quantity="one">%d Item</item>
-        <item quantity="other">%d Items</item>
+        <item quantity="one">%d 个项目</item>
+        <item quantity="other">%d 个项目</item>
     </plurals>
 
     <!-- VideoPlayer -->
@@ -368,7 +368,7 @@
     <string name="attachment_type_selector__drawer_description">切换附件面板</string>
 
     <!-- contact_selection_group_activity -->
-    <string name="contact_selection_group_activity__finding_contacts">Loading contacts&#8230;</string>
+    <string name="contact_selection_group_activity__finding_contacts">正在加载联系人...</string>
 
     <!-- conversation_activity -->
     <string name="conversation_activity__send">发送</string>
@@ -476,8 +476,8 @@
 
     <!-- plurals.xml -->
     <plurals name="hours_ago">
-        <item quantity="one">%d hour</item>
-        <item quantity="other">%d hours</item>
+        <item quantity="one">%d 小时</item>
+        <item quantity="other">%d 小时</item>
     </plurals>
 
     <!-- preferences.xml -->
@@ -1249,8 +1249,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="report_issue">报告问题</string>
     <string name="filter_applied">Filter applied</string>
     <string name="testing_the_node">Testing the node...</string>
-    <string name="str_start_date">start date</string>
-    <string name="str_end_date">end date</string>
+    <string name="str_start_date">开始日期</string>
+    <string name="str_end_date">结束日期</string>
+    <string name="str_please_select_start_date">请选择开始日期</string>
+    <string name="str_please_select_end_date">请选择结束日期</string>
     <string name="alert_from_date">Please enter from date</string>
     <string name="alert_to_date">Please enter to date</string>
     <string name="CallNotificationBuilder_screen_on">视频已恢复</string>
@@ -1262,8 +1264,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="Unblock_dialog__title_multiple">解除屏蔽用户</string>
     <string name="Unblock_dialog__message">您确定要解除屏蔽 %s 吗？</string>
     <plurals name="Unblock_dialog__message_multiple_overflow">
-        <item quantity="one">and %d other</item>
-        <item quantity="other">and %d others</item>
+        <item quantity="one">以及另外 %d 位</item>
+        <item quantity="other">以及另外 %d 位</item>
     </plurals>
     <string name="unblock_selected">取消屏蔽所选联系人</string>
     <string name="call_alert">You\'re already on call</string>
@@ -1519,8 +1521,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="KeyboardPagerfragment_back_to_emoji">Back to emoji</string>
     <string name="KeyboardPagerfragment_clear_search_entry">Clear search entry</string>
     <plurals name="ReactionsRecipientAdapter_other_reactors">
-        <item quantity="one">And %1$d other has reacted %2$s to this message</item>
-        <item quantity="other">And %1$d others have reacted %2$s to this message</item>
+        <item quantity="one">还有 %1$d 位用户对这条消息作出了 %2$s 反应。</item>
+        <item quantity="other">还有 %1$d 位用户对这条消息作出了 %2$s 反应。</item>
     </plurals>
 
     <string name="emojiAndSymbols">Emoji and Symbols</string>
@@ -1553,8 +1555,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="title_activity_secret_group_info_compose">SecretGroupInfoComposeActivity</string>
 
     <plurals name="deleteMessageDeleted">
-        <item quantity="one">Message deleted</item>
-        <item quantity="other">Messages deleted</item>
+        <item quantity="one">消息已删除</item>
+        <item quantity="other">消息已删除</item>
     </plurals>
     <plurals name="deleteMessageConfirm">
         <item quantity="one">Are you sure you want to delete this message?</item>
@@ -1630,12 +1632,12 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="community_guidelines"><![CDATA[BChat 是一个注重隐私保护的去中心化消息平台。当您使用 BChat 时，您的对话和数据始终归您所有。BChat 不会收集或存储您的任何个人信息。在这里，您可以自由交流。\n\nBChat 不仅仅是一个消息应用程序。您还可以直接在聊天窗口中发送和接收 BDX。\n\nBChat 构建于 Beldex 网络之上。Beldex 网络中的主节点负责在客户端之间存储并转发加密消息。Beldex 当前正在研究和开发的其他项目包括 BelNet（去中心化 VPN 服务）、Beldex Browser（无广告的 Web3 浏览器）以及 Beldex Privacy Protocol（用于匿名化其他资产的协议）。\n\n了解更多信息，请访问：https://www.beldex.io\n合作或市场推广，请联系：marketing@beldex.io\n投资相关咨询，请联系：invest.bchat@beldex.io\n\n为了保护和维护本社区，请遵守群组规则和指南。\n\n请保持礼貌。您可以分享观点和建设性的意见，但禁止骚扰他人。\n请勿推广或宣传您的代币或项目。本群组仅用于讨论 BChat 和 Beldex 生态系统。\n垃圾信息发送者将被封禁。\n请勿分享 NSFW 内容或使用不文明语言。\n\n请警惕诈骗者。管理员不会主动向您发送私信。
 ]]></string>
     <string name="divider">Divider</string>
-    <string name="seed">Seed</string>
+    <string name="seed">助记词</string>
     <string name="title">Title</string>
     <string name="list">list</string>
-    <string name="claim_your_airdrop">Yay! You made it here. Claim your airdrop. Submit your BChat ID and BDX wallet address in the link below</string>
+    <string name="claim_your_airdrop">太棒了！您已成功到达这里。立即领取您的空投奖励。请在下方链接中提交您的 BChat ID 和 BDX 钱包地址。</string>
     <string name="txt">TXT</string>
-    <string name="user">User</string>
+    <string name="user">用户</string>
     <string name="default_value_messages_per_conversation">每个会话最多 500 条消息</string>
     <string name="language">语言</string>
     <string name="choose_language">选择语言</string>
@@ -1643,7 +1645,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="four_digit_pin">4位PIN码</string>
     <string name="six_digit_pin">6位PIN码</string>
     <plurals name="contact_others">
-        <item quantity="other">%1$s 和另外 %2$d 人</item>
+        <item quantity="one">“%s”和另外 %d 位</item>
+        <item quantity="other">“%s”和另外 %d 位</item>
     </plurals>
     <string name="unblocked_this_contact">已解除对此联系人的屏蔽</string>
     <string name="invalid_old_password">旧密码无效</string>
@@ -1667,4 +1670,24 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="update_failed">更新失败！结果代码：“%d”</string>
     <string name="hide_message_request">隐藏消息请求？</string>
     <string name="message_requests_hidden_info">隐藏后，您可以通过“设置 > 消息请求”访问它们。</string>
+    <string name="cannot_open_url">无法打开链接</string>
+    <string name="failed_to_authenticate">身份验证失败</string>
+    <string name="bns_verified">BNS 已认证</string>
+    <string name="library_access_required">BChat 需要媒体库访问权限才能继续。您可以在设置页面中启用该权限。</string>
+    <string name="you_have_got_a_new_message">您收到一条新消息。</string>
+    <string name="terms_and_privacy_message">使用本服务即表示您同意我们的服务条款和隐私政策。</string>
+    <string name="paste_seed">粘贴助记词</string>
+    <string name="leave_group">退出群组</string>
+    <string name="you_are_almost_finished">即将完成！90%</string>
+    <string name="account_secured">账户已安全保护！100%</string>
+    <string name="error_saving_logs">保存日志时出错</string>
+    <string name="please_wait_until_file_downloaded">请等待文件下载完成</string>
+    <string name="read_more_suffix">%s …阅读更多</string>
+    <string name="read_less_suffix">%s 收起</string>
+    <string name="unable_to_play_audio_while_recording">录音期间无法播放音频</string>
+    <string name="bchat_pin_description">这是您为 BChat 账户设置的 PIN 码。</string>
+    <string name="restore_wallet_using_seed">使用 25 个单词的助记词或种子短语恢复您的钱包</string>
+    <string name="restore_from_keys">从密钥恢复</string>
+    <string name="restore_wallet_using_keystore">使用由私钥生成并保存的密钥库文件来恢复您的钱包。</string>
+
 </resources>

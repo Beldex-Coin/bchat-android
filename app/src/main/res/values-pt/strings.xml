@@ -129,8 +129,8 @@
         <item quantity="other">Salvar todas as %1$d mídias no armazenamento permitirá que outros aplicativos no seu dispositivo as acessem.</item>
     </plurals>
     <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
-        <item quantity="one">Error while saving attachment to storage!</item>
-        <item quantity="other">Error while saving attachments to storage!</item>
+        <item quantity="one">Erro ao salvar o anexo no armazenamento!</item>
+        <item quantity="other">Erro ao salvar os anexos no armazenamento!</item>
     </plurals>
     <plurals name="ConversationFragment_saving_n_attachments">
         <item quantity="one">Salvando anexo</item>
@@ -214,8 +214,8 @@
     <string name="MediaSendActivity_camera_unavailable">Câmera indisponível.</string>
     <string name="MediaSendActivity_message_to_s">Mensagem para %s</string>
     <plurals name="MediaSendActivity_cant_share_more_than_n_items">
-        <item quantity="one">You can\'t share more than %d item.</item>
-        <item quantity="other">You can\'t share more than %d items.</item>
+        <item quantity="one">Você não pode compartilhar mais de %d item.</item>
+        <item quantity="other">Você não pode compartilhar mais de %d itens.</item>
     </plurals>
 
     <!-- MediaRepository -->
@@ -358,8 +358,8 @@
 
     <!-- TransferControlView -->
     <plurals name="TransferControlView_n_items">
-        <item quantity="one">%d Item</item>
-        <item quantity="other">%d Items</item>
+        <item quantity="one">%d item</item>
+        <item quantity="other">%d itens</item>
     </plurals>
 
     <!-- VideoPlayer -->
@@ -377,7 +377,7 @@
     <string name="attachment_type_selector__drawer_description">Alternar painel de anexos</string>
 
     <!-- contact_selection_group_activity -->
-    <string name="contact_selection_group_activity__finding_contacts">Loading contacts&#8230;</string>
+    <string name="contact_selection_group_activity__finding_contacts">Carregando contatos...</string>
 
     <!-- conversation_activity -->
     <string name="conversation_activity__send">Enviar</string>
@@ -485,8 +485,8 @@
 
     <!-- plurals.xml -->
     <plurals name="hours_ago">
-        <item quantity="one">%d hour</item>
-        <item quantity="other">%d hours</item>
+        <item quantity="one">%d hora</item>
+        <item quantity="other">%d horas</item>
     </plurals>
 
     <!-- preferences.xml -->
@@ -1258,8 +1258,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="report_issue">Reportar Problema</string>
     <string name="filter_applied">Filter applied</string>
     <string name="testing_the_node">Testing the node...</string>
-    <string name="str_start_date">start date</string>
-    <string name="str_end_date">end date</string>
+    <string name="str_start_date">data de início</string>
+    <string name="str_end_date">data de término</string>
+    <string name="str_please_select_start_date">Por favor, selecione a data de início</string>
+    <string name="str_please_select_end_date">Por favor, selecione a data de término</string>
     <string name="alert_from_date">Please enter from date</string>
     <string name="alert_to_date">Please enter to date</string>
     <string name="CallNotificationBuilder_screen_on">Vídeo retomado</string>
@@ -1271,8 +1273,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="Unblock_dialog__title_multiple">Desbloquear usuários</string>
     <string name="Unblock_dialog__message">Tem certeza de que deseja desbloquear %s?</string>
     <plurals name="Unblock_dialog__message_multiple_overflow">
-        <item quantity="one">and %d other</item>
-        <item quantity="other">and %d others</item>
+        <item quantity="one">e %d outro</item>
+        <item quantity="other">e %d outros</item>
     </plurals>
     <string name="unblock_selected">Desbloquear selecionados</string>
     <string name="call_alert">You\'re already on call</string>
@@ -1528,8 +1530,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="KeyboardPagerfragment_back_to_emoji">Back to emoji</string>
     <string name="KeyboardPagerfragment_clear_search_entry">Clear search entry</string>
     <plurals name="ReactionsRecipientAdapter_other_reactors">
-        <item quantity="one">And %1$d other has reacted %2$s to this message</item>
-        <item quantity="other">And %1$d others have reacted %2$s to this message</item>
+        <item quantity="one">E %1$d outro reagiu %2$s a esta mensagem.</item>
+        <item quantity="other">E %1$d outros reagiram %2$s a esta mensagem.</item>
     </plurals>
 
     <string name="emojiAndSymbols">Emoji and Symbols</string>
@@ -1562,8 +1564,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="title_activity_secret_group_info_compose">SecretGroupInfoComposeActivity</string>
 
     <plurals name="deleteMessageDeleted">
-        <item quantity="one">Message deleted</item>
-        <item quantity="other">Messages deleted</item>
+        <item quantity="one">Mensagem excluída</item>
+        <item quantity="other">Mensagens excluídas</item>
     </plurals>
     <plurals name="deleteMessageConfirm">
         <item quantity="one">Are you sure you want to delete this message?</item>
@@ -1642,9 +1644,9 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="seed">Seed</string>
     <string name="title">Title</string>
     <string name="list">list</string>
-    <string name="claim_your_airdrop">Yay! You made it here. Claim your airdrop. Submit your BChat ID and BDX wallet address in the link below</string>
+    <string name="claim_your_airdrop">Yay! Você chegou até aqui. Resgate seu airdrop. Envie seu ID do BChat e endereço da carteira BDX no link abaixo</string>
     <string name="txt">TXT</string>
-    <string name="user">User</string>
+    <string name="user">Usuário</string>
     <string name="default_value_messages_per_conversation">500 mensagens por conversa</string>
     <string name="language">Idioma</string>
     <string name="choose_language">Escolher idioma</string>
@@ -1652,8 +1654,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="four_digit_pin">PIN de 4 dígitos</string>
     <string name="six_digit_pin">PIN de 6 dígitos</string>
     <plurals name="contact_others">
-        <item quantity="one">%1$s e mais %2$d pessoa</item>
-        <item quantity="other">%1$s e mais %2$d pessoas</item>
+        <item quantity="one">%s e %d outro</item>
+        <item quantity="other">%s e %d outros</item>
     </plurals>
     <string name="unblocked_this_contact">Contato desbloqueado</string>
     <string name="invalid_old_password">Senha antiga inválida</string>
@@ -1677,4 +1679,24 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="update_failed">Falha na atualização! Código de resultado: \"%d\"</string>
     <string name="hide_message_request">Ocultar solicitações de mensagens?</string>
     <string name="message_requests_hidden_info">Depois de ocultas, você pode acessá-las em Configurações > Solicitações de mensagens</string>
+    <string name="cannot_open_url">Não foi possível abrir o URL</string>
+    <string name="failed_to_authenticate">Falha na autenticação</string>
+    <string name="bns_verified">BNS verificado</string>
+    <string name="library_access_required">O BChat precisa de acesso à biblioteca para continuar. Você pode habilitar o acesso na página de Configurações</string>
+    <string name="you_have_got_a_new_message">Você recebeu uma nova mensagem.</string>
+    <string name="terms_and_privacy_message">Ao usar este serviço, você concorda com nossos Termos de Serviço e Política de Privacidade</string>
+    <string name="paste_seed">Colar seed</string>
+    <string name="leave_group">Sair do grupo</string>
+    <string name="you_are_almost_finished">Você está quase terminando! 90%</string>
+    <string name="account_secured">Conta protegida! 100%</string>
+    <string name="error_saving_logs">Erro ao salvar logs</string>
+    <string name="please_wait_until_file_downloaded">Aguarde até o arquivo ser baixado</string>
+    <string name="read_more_suffix">%s ... Ler mais</string>
+    <string name="read_less_suffix">%s Ler menos</string>
+    <string name="unable_to_play_audio_while_recording">Não é possível reproduzir áudio durante a gravação</string>
+    <string name="bchat_pin_description">Este é o PIN que você definiu para sua conta BChat.</string>
+    <string name="restore_wallet_using_seed">Use a chave mnemônica de 25 palavras ou frase seed para restaurar sua carteira</string>
+    <string name="restore_from_keys">Restaurar a partir de chaves</string>
+    <string name="restore_wallet_using_keystore">Use o keystore gerado a partir de chaves privadas para restaurar sua carteira.</string>
+
 </resources>

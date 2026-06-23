@@ -793,7 +793,7 @@ fun GroupDetailsScreen(
                             )
                             Spacer(modifier=Modifier.width(16.dp))
                             Text(
-                                text="Leave Group",
+                                text= stringResource(R.string.leave_group),
                                 color=Color.Red,
                                 style=MaterialTheme.typography.titleSmall
                             )

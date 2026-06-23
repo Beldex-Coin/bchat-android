@@ -1255,6 +1255,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="testing_the_node">Testing the node...</string>
     <string name="str_start_date">start date</string>
     <string name="str_end_date">end date</string>
+    <string name="str_please_select_start_date">Please select start date</string>
+    <string name="str_please_select_end_date">Please select end date</string>
     <string name="alert_from_date">Please enter from date</string>
     <string name="alert_to_date">Please enter to date</string>
     <string name="CallNotificationBuilder_screen_on">Video Resumed</string>
@@ -1672,4 +1674,23 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="update_failed">Update Failed! Result Code: "%d"</string>
     <string name="hide_message_request">Hide message requests?</string>
     <string name="message_requests_hidden_info">Once they are hidden, you can access them from Settings > Message Requests</string>
+    <string name="cannot_open_url">Can\'t open URL</string>
+    <string name="failed_to_authenticate">Failed to authenticate</string>
+    <string name="bns_verified">BNS Verified</string>
+    <string name="library_access_required">BChat needs library access to continue. You can enable access in the Settings page</string>
+    <string name="you_have_got_a_new_message">You\'ve got a new message.</string>
+    <string name="terms_and_privacy_message">By using this service, you agree to our Terms of Service and Privacy Policy</string>
+    <string name="paste_seed">Paste Seed</string>
+    <string name="leave_group">Leave Group</string>
+    <string name="you_are_almost_finished">You\'re almost finished! 90%</string>"
+    <string name="account_secured">Account secured! 100%</string>
+    <string name="error_saving_logs">Error saving logs</string>
+    <string name="please_wait_until_file_downloaded">Please wait until file downloaded</string>
+    <string name="read_more_suffix">%s … Read more</string>
+    <string name="read_less_suffix">%s  Read less</string>
+    <string name="unable_to_play_audio_while_recording">Unable to play audio while recording</string>
+    <string name="bchat_pin_description">This is the PIN you set to your BChat account.</string>
+    <string name="restore_wallet_using_seed">Use the 25-word Mnemonic key or seed phrase to restore your wallet</string>
+    <string name="restore_from_keys">Restore From Keys</string>
+    <string name="restore_wallet_using_keystore">Use the generated keystore saved from private keys to restore your wallet.</string>
 </resources>

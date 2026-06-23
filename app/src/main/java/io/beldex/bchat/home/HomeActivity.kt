@@ -654,7 +654,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(intent)
         } catch (e: Exception) {
-            Toast.makeText(this, "Can't open URL", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.cannot_open_url), Toast.LENGTH_LONG).show()
         }
     }*/
     //New Line App Update

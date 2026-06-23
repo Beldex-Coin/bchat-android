@@ -236,7 +236,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         if (TextSecurePreferences.getRecordingStatus(context)) {
             Toast.makeText(
                 context,
-                "Unable to play audio while recording",
+                context.getString(R.string.unable_to_play_audio_while_recording),
                 Toast.LENGTH_SHORT
             ).show()
             return

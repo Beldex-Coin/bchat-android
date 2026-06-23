@@ -377,7 +377,7 @@ class VisibleMessageContentView : MaterialCardView {
                         if (documentSlide?.uri == null) {
                             Toast.makeText(
                                 context,
-                                "Please wait until file downloaded",
+                                context.getString(R.string.please_wait_until_file_downloaded),
                                 Toast.LENGTH_SHORT
                             ).show()
                             return@setOnClickListener
@@ -908,7 +908,7 @@ class VisibleMessageContentView : MaterialCardView {
         visibleMessageView: VisibleMessageView,
         position: Int
     ) {
-        val suffix = "... Read more"
+        val suffix = context.getString(R.string.read_more_suffix)
 
         val result = SpannableStringBuilder(fullText).let {
             if (it.length <= 705) it
@@ -963,7 +963,7 @@ class VisibleMessageContentView : MaterialCardView {
         visibleMessageView: VisibleMessageView,
         position: Int
     ) {
-        val suffix = " Read less"
+        val suffix = context.getString(R.string.read_less_suffix)
         val result = SpannableStringBuilder(fullText).append(suffix)
 
         val clickableSpan = object : ClickableSpan() {

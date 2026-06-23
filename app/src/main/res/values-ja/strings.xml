@@ -122,8 +122,8 @@
         <item quantity="other">%1$d 件のメディアをストレージに保存すると、デバイス上の他のアプリもアクセスできるようになります。</item>
     </plurals>
     <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
-        <item quantity="one">Error while saving attachment to storage!</item>
-        <item quantity="other">Error while saving attachments to storage!</item>
+        <item quantity="one">添付ファイルをストレージに保存中にエラーが発生しました。</item>
+        <item quantity="other">添付ファイルをストレージに保存中にエラーが発生しました。</item>
     </plurals>
     <plurals name="ConversationFragment_saving_n_attachments">
         <item quantity="other">%1$d 件の添付ファイルを保存中</item>
@@ -205,8 +205,8 @@
     <string name="MediaSendActivity_camera_unavailable">カメラが使用できません。</string>
     <string name="MediaSendActivity_message_to_s">メッセージ送信先 %s</string>
     <plurals name="MediaSendActivity_cant_share_more_than_n_items">
-        <item quantity="one">You can\'t share more than %d item.</item>
-        <item quantity="other">You can\'t share more than %d items.</item>
+        <item quantity="one">%d 個を超えるアイテムを共有することはできません。</item>
+        <item quantity="other">%d 個を超えるアイテムを共有することはできません。</item>
     </plurals>
 
     <!-- MediaRepository -->
@@ -349,8 +349,8 @@
 
     <!-- TransferControlView -->
     <plurals name="TransferControlView_n_items">
-        <item quantity="one">%d Item</item>
-        <item quantity="other">%d Items</item>
+        <item quantity="one">%d アイテム</item>
+        <item quantity="other">%d アイテム</item>
     </plurals>
 
     <!-- VideoPlayer -->
@@ -368,7 +368,7 @@
     <string name="attachment_type_selector__drawer_description">添付ファイルドロワーの切り替え</string>
 
     <!-- contact_selection_group_activity -->
-    <string name="contact_selection_group_activity__finding_contacts">Loading contacts&#8230;</string>
+    <string name="contact_selection_group_activity__finding_contacts">連絡先を読み込んでいます…</string>
 
     <!-- conversation_activity -->
     <string name="conversation_activity__send">送信</string>
@@ -476,8 +476,8 @@
 
     <!-- plurals.xml -->
     <plurals name="hours_ago">
-        <item quantity="one">%d hour</item>
-        <item quantity="other">%d hours</item>
+        <item quantity="one">%d 時間</item>
+        <item quantity="other">%d 時間</item>
     </plurals>
 
     <!-- preferences.xml -->
@@ -1249,8 +1249,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="report_issue">問題を報告</string>
     <string name="filter_applied">Filter applied</string>
     <string name="testing_the_node">Testing the node...</string>
-    <string name="str_start_date">start date</string>
-    <string name="str_end_date">end date</string>
+    <string name="str_start_date">開始日</string>
+    <string name="str_end_date">終了日</string>
+    <string name="str_please_select_start_date">開始日を選択してください</string>
+    <string name="str_please_select_end_date">終了日を選択してください</string>
     <string name="alert_from_date">Please enter from date</string>
     <string name="alert_to_date">Please enter to date</string>
     <string name="CallNotificationBuilder_screen_on">ビデオ再開</string>
@@ -1262,8 +1264,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="Unblock_dialog__title_multiple">ユーザーのブロック解除</string>
     <string name="Unblock_dialog__message">%sのブロックを解除してもよろしいですか？</string>
     <plurals name="Unblock_dialog__message_multiple_overflow">
-        <item quantity="one">and %d other</item>
-        <item quantity="other">and %d others</item>
+        <item quantity="one">および他 %d 件</item>
+        <item quantity="other">および他 %d 件</item>
     </plurals>
     <string name="unblock_selected">選択した連絡先をブロック解除</string>
     <string name="call_alert">You\'re already on call</string>
@@ -1519,8 +1521,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="KeyboardPagerfragment_back_to_emoji">Back to emoji</string>
     <string name="KeyboardPagerfragment_clear_search_entry">Clear search entry</string>
     <plurals name="ReactionsRecipientAdapter_other_reactors">
-        <item quantity="one">And %1$d other has reacted %2$s to this message</item>
-        <item quantity="other">And %1$d others have reacted %2$s to this message</item>
+        <item quantity="one">このメッセージに「他%1$d件」がリアクション %2$s をしました</item>
+        <item quantity="other">このメッセージに「他%1$d件のユーザー」がリアクション %2$s をしました</item>
     </plurals>
 
     <string name="emojiAndSymbols">Emoji and Symbols</string>
@@ -1553,8 +1555,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="title_activity_secret_group_info_compose">SecretGroupInfoComposeActivity</string>
 
     <plurals name="deleteMessageDeleted">
-        <item quantity="one">Message deleted</item>
-        <item quantity="other">Messages deleted</item>
+        <item quantity="one">通話中は音声メッセージを送信できません</item>
+        <item quantity="other">メッセージが削除されました</item>
     </plurals>
     <plurals name="deleteMessageConfirm">
         <item quantity="one">Are you sure you want to delete this message?</item>
@@ -1630,12 +1632,12 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="community_guidelines"><![CDATA[BChatは、プライバシー保護を重視した分散型メッセージングプラットフォームです。BChatでは、会話やデータの所有権は常にユーザー自身にあります。個人情報を収集または保存することはありません。BChatは、自由にコミュニケーションできる場所です。\n\nBChatは単なるメッセージアプリではありません。チャット画面から直接BDXを送受信することもできます。\n\nBChatはBeldexネットワーク上に構築されています。Beldexネットワーク上のマスターノードは、クライアント間で暗号化されたメッセージを保存・中継します。現在Beldexでは、BelNet（分散型VPNサービス）、Beldex Browser（広告なしのWeb3ブラウザ）、Beldex Privacy Protocol（他の資産を匿名化するプロトコル）などのプロジェクトも研究・開発されています。\n\n詳しくは以下をご覧ください：https://www.beldex.io\nコラボレーションやマーケティングに関するお問い合わせ：marketing@beldex.io\n投資に関するお問い合わせ：invest.bchat@beldex.io\n\nこのコミュニティを安全で快適な場所に保つため、以下のルールとガイドラインをお守りください。\n\n礼儀を持って交流してください。意見や建設的な批判は歓迎しますが、嫌がらせは禁止です。\nトークンやプロジェクトの宣伝はご遠慮ください。このグループはBChatおよびBeldexエコシステム専用です。\nスパム行為は禁止されています。\nNSFWコンテンツの共有や不適切な言葉遣いは禁止です。\n\n詐欺にはご注意ください。管理者から先にDMを送ることはありません。
 ]]></string>
     <string name="divider">Divider</string>
-    <string name="seed">Seed</string>
+    <string name="seed">シード</string>
     <string name="title">Title</string>
     <string name="list">list</string>
-    <string name="claim_your_airdrop">Yay! You made it here. Claim your airdrop. Submit your BChat ID and BDX wallet address in the link below</string>
+    <string name="claim_your_airdrop">やった！ここまで来ました。エアドロップを受け取りましょう。下のリンクにBChat IDとBDXウォレットアドレスを送信してください</string>
     <string name="txt">TXT</string>
-    <string name="user">User</string>
+    <string name="user">ユーザー</string>
     <string name="default_value_messages_per_conversation">1会話あたり500メッセージ</string>
     <string name="language">言語</string>
     <string name="choose_language">言語を選択</string>
@@ -1643,7 +1645,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="four_digit_pin">4桁のPIN</string>
     <string name="six_digit_pin">6桁のPIN</string>
     <plurals name="contact_others">
-        <item quantity="other">%1$s と他 %2$d 名</item>
+        <item quantity="one">%s と他 %d 件</item>
+        <item quantity="other">%s と他 %d 人</item>
     </plurals>
     <string name="unblocked_this_contact">この連絡先のブロックを解除しました</string>
     <string name="invalid_old_password">古いパスワードが無効です</string>
@@ -1667,4 +1670,23 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="update_failed">更新に失敗しました！結果コード：「%d」</string>
     <string name="hide_message_request">メッセージリクエストを非表示にしますか？</string>
     <string name="message_requests_hidden_info">非表示にすると、設定 > メッセージリクエストからアクセスできます</string>
+    <string name="cannot_open_url">URLを開けません</string>
+    <string name="failed_to_authenticate">認証に失敗しました</string>
+    <string name="bns_verified">BNS認証済み</string>
+    <string name="library_access_required">BChatは続行するためにライブラリアクセスが必要です。設定ページでアクセスを有効にできます</string>
+    <string name="you_have_got_a_new_message">新しいメッセージがあります</string>
+    <string name="terms_and_privacy_message">このサービスを利用することで、利用規約およびプライバシーポリシーに同意したものとみなされます</string>
+    <string name="paste_seed">シードを貼り付け</string>
+    <string name="leave_group">グループを退出</string>
+    <string name="you_are_almost_finished">あと少しです！90%</string>
+    <string name="account_secured">アカウント保護完了！100%</string>
+    <string name="error_saving_logs">ログの保存に失敗しました</string>
+    <string name="please_wait_until_file_downloaded">ファイルのダウンロードが完了するまでお待ちください</string>
+    <string name="read_more_suffix">%s …続きを読む</string>
+    <string name="read_less_suffix">%s 折りたたむ</string>
+    <string name="unable_to_play_audio_while_recording">録音中は音声を再生できません</string>
+    <string name="bchat_pin_description">これはあなたがBChatアカウントに設定したPINです。</string>
+    <string name="restore_wallet_using_seed">25語のニーモニックキー（シードフレーズ）を使用してウォレットを復元します</string>
+    <string name="restore_from_keys">キーから復元</string>
+    <string name="restore_wallet_using_keystore">生成されたキーストアまたはプライベートキーを使用してウォレットを復元します</string>
 </resources>

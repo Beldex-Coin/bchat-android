@@ -147,8 +147,8 @@
         <item quantity="other">سيؤدي حفظ %1$d من الوسائط في وحدة التخزين إلى السماح لأي تطبيقات أخرى على جهازك بالوصول إليها.</item>
     </plurals>
     <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
-        <item quantity="one">Error while saving attachment to storage!</item>
-        <item quantity="other">Error while saving attachments to storage!</item>
+        <item quantity="one">حدث خطأ أثناء حفظ المرفق في وحدة التخزين!</item>
+        <item quantity="other">حدث خطأ أثناء حفظ المرفقات في وحدة التخزين!</item>
     </plurals>
     <plurals name="ConversationFragment_saving_n_attachments">
         <item quantity="zero">جارٍ حفظ المرفقات</item>
@@ -241,8 +241,8 @@
     <string name="MediaSendActivity_camera_unavailable">الكاميرا غير متاحة.</string>
     <string name="MediaSendActivity_message_to_s">رسالة إلى %s</string>
     <plurals name="MediaSendActivity_cant_share_more_than_n_items">
-        <item quantity="one">You can\'t share more than %d item.</item>
-        <item quantity="other">You can\'t share more than %d items.</item>
+        <item quantity="one">لا يمكنك مشاركة أكثر من %d عنصر.</item>
+        <item quantity="other">لا يمكنك مشاركة أكثر من %d عناصر.</item>
     </plurals>
 
     <!-- MediaRepository -->
@@ -385,8 +385,8 @@
 
     <!-- TransferControlView -->
     <plurals name="TransferControlView_n_items">
-        <item quantity="one">%d Item</item>
-        <item quantity="other">%d Items</item>
+        <item quantity="one">%d عنصر</item>
+        <item quantity="other">%d عناصر</item>
     </plurals>
 
     <!-- VideoPlayer -->
@@ -404,7 +404,7 @@
     <string name="attachment_type_selector__drawer_description">تبديل لوحة المرفقات</string>
 
     <!-- contact_selection_group_activity -->
-    <string name="contact_selection_group_activity__finding_contacts">Loading contacts&#8230;</string>
+    <string name="contact_selection_group_activity__finding_contacts">جارٍ تحميل جهات الاتصال...</string>
 
     <!-- conversation_activity -->
     <string name="conversation_activity__send">إرسال</string>
@@ -512,8 +512,8 @@
 
     <!-- plurals.xml -->
     <plurals name="hours_ago">
-        <item quantity="one">%d hour</item>
-        <item quantity="other">%d hours</item>
+        <item quantity="one">%d ساعة</item>
+        <item quantity="other">%d ساعات</item>
     </plurals>
 
     <!-- preferences.xml -->
@@ -1285,8 +1285,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="report_issue">الإبلاغ عن مشكلة</string>
     <string name="filter_applied">Filter applied</string>
     <string name="testing_the_node">Testing the node...</string>
-    <string name="str_start_date">start date</string>
-    <string name="str_end_date">end date</string>
+    <string name="str_start_date">تاريخ البدء</string>
+    <string name="str_end_date">تاريخ الانتهاء</string>
+    <string name="str_please_select_start_date">يرجى اختيار تاريخ البدء</string>
+    <string name="str_please_select_end_date">يرجى اختيار تاريخ الانتهاء</string>
     <string name="alert_from_date">Please enter from date</string>
     <string name="alert_to_date">Please enter to date</string>
     <string name="CallNotificationBuilder_screen_on">تم استئناف الفيديو</string>
@@ -1298,8 +1300,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="Unblock_dialog__title_multiple">إلغاء حظر المستخدمين</string>
     <string name="Unblock_dialog__message">هل أنت متأكد أنك تريد إلغاء حظر %s؟</string>
     <plurals name="Unblock_dialog__message_multiple_overflow">
-        <item quantity="one">and %d other</item>
-        <item quantity="other">and %d others</item>
+        <item quantity="one">و%d آخرين</item>
+        <item quantity="other">و%d آخرين</item>
     </plurals>
     <string name="unblock_selected">إلغاء الحظر المحدد</string>
     <string name="call_alert">You\'re already on call</string>
@@ -1554,8 +1556,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="KeyboardPagerfragment_back_to_emoji">Back to emoji</string>
     <string name="KeyboardPagerfragment_clear_search_entry">Clear search entry</string>
     <plurals name="ReactionsRecipientAdapter_other_reactors">
-        <item quantity="one">And %1$d other has reacted %2$s to this message</item>
-        <item quantity="other">And %1$d others have reacted %2$s to this message</item>
+        <item quantity="one">وقد تفاعل %1$d مستخدمين آخرين بـ %2$s مع هذه الرسالة.</item>
+        <item quantity="other">وقد تفاعل %1$d مستخدمين آخرين بـ %2$s مع هذه الرسالة.</item>
     </plurals>
 
     <string name="emojiAndSymbols">Emoji and Symbols</string>
@@ -1588,8 +1590,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="title_activity_secret_group_info_compose">SecretGroupInfoComposeActivity</string>
 
     <plurals name="deleteMessageDeleted">
-        <item quantity="one">Message deleted</item>
-        <item quantity="other">Messages deleted</item>
+        <item quantity="one">تم حذف الرسالة</item>
+        <item quantity="other">تم حذف الرسائل</item>
     </plurals>
     <plurals name="deleteMessageConfirm">
         <item quantity="one">Are you sure you want to delete this message?</item>
@@ -1665,12 +1667,12 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="community_guidelines"><![CDATA[BChat هي منصة مراسلة لامركزية تحمي خصوصيتك. عند استخدامك لـ BChat، فإنك تملك محادثاتك وبياناتك بالكامل. لا يقوم BChat بجمع أو تخزين أي معلومات شخصية عنك. BChat هو المكان الذي يمكنك فيه الدردشة بحرية.\n\nBChat ليس مجرد تطبيق مراسلة فحسب، بل يمكنك أيضًا إرسال واستقبال BDX مباشرةً من صندوق الدردشة الخاص بك.\n\nتم بناء BChat على شبكة Beldex. تقوم العقد الرئيسية (Masternodes) في شبكة Beldex بتخزين الرسائل المشفرة وتمريرها بين المستخدمين. ومن المشاريع الأخرى التي تعمل Beldex حاليًا على تطويرها أو البحث فيها: BelNet (خدمة VPN لامركزية)، ومتصفح Beldex Browser (متصفح Web3 خالٍ من الإعلانات)، وبروتوكول Beldex Privacy Protocol (لإخفاء هوية الأصول الأخرى).\n\nلمعرفة المزيد، يرجى زيارة:https://www.beldex.io\nللتعاون أو العروض التسويقية:marketing@beldex.io\nللاستثمارات:invest.bchat@beldex.io\n\nللحفاظ على هذه المجتمع وحمايته، يُرجى الالتزام بقواعد وإرشادات المجموعة.\n\nكن مهذبًا. يمكنك مشاركة آرائك وانتقاداتك البناءة، لكن التحرش أو الإساءة غير مسموح بهما.\nيُرجى عدم الترويج أو التسويق لعملتك أو مشروعك. هذه المجموعة مخصصة لـ BChat ونظام Beldex البيئي فقط.\nسيتم حظر مرسلي الرسائل المزعجة (Spam).\nيُمنع مشاركة المحتوى غير اللائق (NSFW) أو استخدام ألفاظ مسيئة.\n\nاحذر من المحتالين. لن يقوم المشرفون بمراسلتك أولًا عبر الرسائل الخاصة.
 ]]></string>
     <string name="divider">Divider</string>
-    <string name="seed">Seed</string>
+    <string name="seed">عبارة الاسترداد</string>
     <string name="title">Title</string>
     <string name="list">list</string>
-    <string name="claim_your_airdrop">Yay! You made it here. Claim your airdrop. Submit your BChat ID and BDX wallet address in the link below</string>
+    <string name="claim_your_airdrop">يا هلا! لقد وصلت إلى هنا. اطلب الإسقاط الجوي (Airdrop). أرسل معرّف BChat وعنوان محفظة BDX عبر الرابط أدناه</string>
     <string name="txt">TXT</string>
-    <string name="user">User</string>
+    <string name="user">المستخدم</string>
     <string name="default_value_messages_per_conversation">500 رسالة لكل محادثة</string>
     <string name="language">اللغة</string>
     <string name="choose_language">اختر اللغة</string>
@@ -1678,12 +1680,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="four_digit_pin">رمز PIN مكون من 4 أرقام</string>
     <string name="six_digit_pin">رمز PIN مكون من 6 أرقام</string>
     <plurals name="contact_others">
-        <item quantity="zero">%1$s ولا أحد آخر</item>
-        <item quantity="one">%1$s وشخص آخر</item>
-        <item quantity="two">%1$s وشخصان آخران</item>
-        <item quantity="few">%1$s و%2$d آخرين</item>
-        <item quantity="many">%1$s و%2$d آخرًا</item>
-        <item quantity="other">%1$s و%2$d آخر</item>
+        <item quantity="one">%s و%d آخر</item>
+        <item quantity="other">%s و%d آخرين</item>
     </plurals>
     <string name="unblocked_this_contact">تم إلغاء حظر هذا الاتصال</string>
     <string name="invalid_old_password">كلمة المرور القديمة غير صحيحة</string>
@@ -1707,4 +1705,24 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="update_failed">فشل التحديث! رمز النتيجة: \"%d\"</string>
     <string name="hide_message_request">إخفاء طلبات الرسائل؟</string>
     <string name="message_requests_hidden_info">بمجرد إخفائها، يمكنك الوصول إليها من الإعدادات > طلبات الرسائل</string>
+    <string name="cannot_open_url">تعذر فتح الرابط</string>
+    <string name="failed_to_authenticate">فشل المصادقة</string>
+    <string name="bns_verified">تم التحقق من BNS</string>
+    <string name="library_access_required">يحتاج BChat إلى إذن الوصول إلى المكتبة للمتابعة. يمكنك تفعيل الوصول من صفحة الإعدادات</string>
+    <string name="you_have_got_a_new_message">لديك رسالة جديدة.</string>
+    <string name="terms_and_privacy_message">باستخدام هذه الخدمة، فإنك توافق على شروط الخدمة وسياسة الخصوصية</string>
+    <string name="paste_seed">لصق عبارة الاسترداد</string>
+    <string name="leave_group">مغادرة المجموعة</string>
+    <string name="you_are_almost_finished">أنت على وشك الانتهاء! 90٪</string>
+    <string name="account_secured">تم تأمين الحساب! 100٪</string>
+    <string name="error_saving_logs">خطأ أثناء حفظ السجلات</string>
+    <string name="please_wait_until_file_downloaded">يرجى الانتظار حتى يتم تنزيل الملف</string>
+    <string name="read_more_suffix">%s ... اقرأ المزيد</string>
+    <string name="read_less_suffix">%s ... اقرأ أقل</string>
+    <string name="unable_to_play_audio_while_recording">لا يمكن تشغيل الصوت أثناء التسجيل</string>
+    <string name="bchat_pin_description">هذا هو رمز PIN الذي قمت بتعيينه لحساب BChat الخاص بك.</string>
+    <string name="restore_wallet_using_seed">استخدم مفتاح الاستذكار المكوّن من 25 كلمة أو عبارة الاسترداد لاستعادة محفظتك</string>
+    <string name="restore_from_keys">الاستعادة من المفاتيح</string>
+    <string name="restore_wallet_using_keystore">استخدم ملف keystore المُنشأ والمحفوظ من المفاتيح الخاصة لاستعادة محفظتك.</string>
+
 </resources>

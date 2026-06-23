@@ -126,8 +126,8 @@
         <item quantity="other">Lưu tất cả %1$d phương tiện vào bộ nhớ sẽ cho phép các ứng dụng khác trên thiết bị của bạn truy cập chúng.</item>
     </plurals>
     <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
-        <item quantity="one">Error while saving attachment to storage!</item>
-        <item quantity="other">Error while saving attachments to storage!</item>
+        <item quantity="one">Lỗi khi lưu tệp đính kèm vào bộ nhớ!</item>
+        <item quantity="other">Lỗi khi lưu các tệp đính kèm vào bộ nhớ!</item>
     </plurals>
     <plurals name="ConversationFragment_saving_n_attachments">
         <item quantity="other">Đang lưu %1$d tệp đính kèm</item>
@@ -209,8 +209,8 @@
     <string name="MediaSendActivity_camera_unavailable">Không thể sử dụng máy ảnh.</string>
     <string name="MediaSendActivity_message_to_s">Nhắn tin tới %s</string>
     <plurals name="MediaSendActivity_cant_share_more_than_n_items">
-        <item quantity="one">You can\'t share more than %d item.</item>
-        <item quantity="other">You can\'t share more than %d items.</item>
+        <item quantity="one">Bạn không thể chia sẻ quá %d mục.</item>
+        <item quantity="other">Bạn không thể chia sẻ quá %d mục.</item>
     </plurals>
 
     <!-- MediaRepository -->
@@ -353,8 +353,8 @@
 
     <!-- TransferControlView -->
     <plurals name="TransferControlView_n_items">
-        <item quantity="one">%d Item</item>
-        <item quantity="other">%d Items</item>
+        <item quantity="one">%d mục</item>
+        <item quantity="other">%d mục</item>
     </plurals>
 
     <!-- VideoPlayer -->
@@ -372,7 +372,7 @@
     <string name="attachment_type_selector__drawer_description">Bật/tắt khay đính kèm</string>
 
     <!-- contact_selection_group_activity -->
-    <string name="contact_selection_group_activity__finding_contacts">Loading contacts&#8230;</string>
+    <string name="contact_selection_group_activity__finding_contacts">Đang tải danh bạ...</string>
 
     <!-- conversation_activity -->
     <string name="conversation_activity__send">Gửi</string>
@@ -481,8 +481,8 @@
 
     <!-- plurals.xml -->
     <plurals name="hours_ago">
-        <item quantity="one">%d hour</item>
-        <item quantity="other">%d hours</item>
+        <item quantity="one">%d giờ</item>
+        <item quantity="other">%d giờ</item>
     </plurals>
 
     <!-- preferences.xml -->
@@ -1252,8 +1252,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="report_issue">Báo cáo Sự cố</string>
     <string name="filter_applied">Filter applied</string>
     <string name="testing_the_node">Testing the node...</string>
-    <string name="str_start_date">start date</string>
-    <string name="str_end_date">end date</string>
+    <string name="str_start_date">Ngày bắt đầu</string>
+    <string name="str_end_date">Ngày kết thúc</string>
+    <string name="str_please_select_start_date">Vui lòng chọn ngày bắt đầu</string>
+    <string name="str_please_select_end_date">Vui lòng chọn ngày kết thúc</string>
     <string name="alert_from_date">Please enter from date</string>
     <string name="alert_to_date">Please enter to date</string>
     <string name="CallNotificationBuilder_screen_on">Video đã được tiếp tục phát</string>
@@ -1265,8 +1267,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="Unblock_dialog__title_multiple">Bỏ chặn người dùng</string>
     <string name="Unblock_dialog__message">Bạn có chắc chắn muốn bỏ chặn %s không?</string>
     <plurals name="Unblock_dialog__message_multiple_overflow">
-        <item quantity="one">and %d other</item>
-        <item quantity="other">and %d others</item>
+        <item quantity="one">và %d người khác</item>
+        <item quantity="other">và %d người khác</item>
     </plurals>
     <string name="unblock_selected">Bỏ chặn đã chọn</string>
     <string name="call_alert">You\'re already on call</string>
@@ -1522,8 +1524,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="KeyboardPagerfragment_back_to_emoji">Back to emoji</string>
     <string name="KeyboardPagerfragment_clear_search_entry">Clear search entry</string>
     <plurals name="ReactionsRecipientAdapter_other_reactors">
-        <item quantity="one">And %1$d other has reacted %2$s to this message</item>
-        <item quantity="other">And %1$d others have reacted %2$s to this message</item>
+        <item quantity="one">Và %1$d người khác đã phản ứng %2$s với tin nhắn này.</item>
+        <item quantity="other">Và %1$d người khác đã phản ứng %2$s với tin nhắn này.</item>
     </plurals>
 
     <string name="emojiAndSymbols">Emoji and Symbols</string>
@@ -1556,8 +1558,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="title_activity_secret_group_info_compose">SecretGroupInfoComposeActivity</string>
 
     <plurals name="deleteMessageDeleted">
-        <item quantity="one">Message deleted</item>
-        <item quantity="other">Messages deleted</item>
+        <item quantity="one">Tin nhắn đã bị xóa</item>
+        <item quantity="other">Tin nhắn đã bị xóa</item>
     </plurals>
     <plurals name="deleteMessageConfirm">
         <item quantity="one">Are you sure you want to delete this message?</item>
@@ -1633,12 +1635,12 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="community_guidelines"><![CDATA[BChat là một nền tảng nhắn tin phi tập trung bảo vệ quyền riêng tư của bạn. Khi sử dụng BChat, bạn sở hữu các cuộc trò chuyện và dữ liệu của mình. Ứng dụng không thu thập hoặc lưu trữ bất kỳ thông tin cá nhân nào của bạn. BChat là nơi bạn có thể trò chuyện một cách tự do.\n\nBChat không chỉ là một ứng dụng nhắn tin. Bạn còn có thể gửi và nhận BDX ngay trong hộp trò chuyện của mình.\n\nBChat được xây dựng trên mạng Beldex. Các masternode trên mạng Beldex lưu trữ và chuyển tiếp các tin nhắn được mã hóa giữa các người dùng. Các dự án khác hiện đang được Beldex nghiên cứu hoặc phát triển bao gồm BelNet (dịch vụ VPN phi tập trung), Beldex Browser (trình duyệt Web3 không quảng cáo), và Beldex Privacy Protocol (giao thức giúp ẩn danh các tài sản blockchain khác).\n\nĐể biết thêm thông tin, hãy truy cập:https://www.beldex.io\nĐối với hợp tác hoặc đề xuất marketing, liên hệ:marketing@beldex.io\nĐối với đầu tư, liên hệ:invest.bchat@beldex.io\n\nĐể bảo vệ và duy trì cộng đồng này, vui lòng tuân thủ các quy tắc và hướng dẫn của nhóm.\n\nHãy cư xử văn minh. Bạn có thể chia sẻ ý kiến và những góp ý mang tính xây dựng, nhưng hành vi quấy rối sẽ không được chấp nhận.\nKhông quảng bá hoặc quảng cáo token/dự án của bạn. Nhóm này dành riêng cho BChat và hệ sinh thái Beldex.\nNhững người gửi spam sẽ bị cấm.\nKhông chia sẻ nội dung NSFW hoặc sử dụng ngôn ngữ thô tục.\n\nHãy cẩn thận với những kẻ lừa đảo. Quản trị viên sẽ không bao giờ nhắn tin riêng trước cho bạn.
 ]]></string>
     <string name="divider">Divider</string>
-    <string name="seed">Seed</string>
+    <string name="seed">Cụm từ khôi phục</string>
     <string name="title">Title</string>
     <string name="list">list</string>
-    <string name="claim_your_airdrop">Yay! You made it here. Claim your airdrop. Submit your BChat ID and BDX wallet address in the link below</string>
+    <string name="claim_your_airdrop">Tuyệt vời! Bạn đã đến đây. Nhận airdrop của bạn. Gửi BChat ID và địa chỉ ví BDX của bạn trong liên kết bên dưới</string>
     <string name="txt">TXT</string>
-    <string name="user">User</string>
+    <string name="user">Người dùng</string>
     <string name="default_value_messages_per_conversation">500 tin nhắn mỗi cuộc trò chuyện</string>
     <string name="language">Ngôn ngữ</string>
     <string name="choose_language">Chọn ngôn ngữ</string>
@@ -1646,7 +1648,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="four_digit_pin">Mã PIN 4 chữ số</string>
     <string name="six_digit_pin">Mã PIN 6 chữ số</string>
     <plurals name="contact_others">
-        <item quantity="other">%1$s và %2$d người khác</item>
+        <item quantity="one">%s và %d người khác</item>
+        <item quantity="other">%s và %d người khác</item>
     </plurals>
     <string name="unblocked_this_contact">Đã bỏ chặn liên hệ này</string>
     <string name="invalid_old_password">Mật khẩu cũ không hợp lệ</string>
@@ -1670,4 +1673,24 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="update_failed">Cập nhật thất bại! Mã kết quả: \"%d\"</string>
     <string name="hide_message_request">Ẩn yêu cầu tin nhắn?</string>
     <string name="message_requests_hidden_info">Sau khi bị ẩn, bạn có thể truy cập tại Cài đặt > Yêu cầu tin nhắn</string>
+    <string name="cannot_open_url">Không thể mở URL</string>
+    <string name="failed_to_authenticate">Xác thực thất bại</string>
+    <string name="bns_verified">Đã xác minh BNS</string>
+    <string name="library_access_required">BChat cần quyền truy cập thư viện để tiếp tục. Bạn có thể bật quyền này trong trang Cài đặt</string>
+    <string name="you_have_got_a_new_message">Bạn có tin nhắn mới</string>
+    <string name="terms_and_privacy_message">Bằng việc sử dụng dịch vụ này, bạn đồng ý với Điều khoản Dịch vụ và Chính sách Bảo mật của chúng tôi</string>
+    <string name="paste_seed">Dán cụm từ khôi phục</string>
+    <string name="leave_group">Rời nhóm</string>
+    <string name="you_are_almost_finished">Bạn sắp hoàn tất rồi! 90%</string>
+    <string name="account_secured">Tài khoản đã được bảo mật! 100%</string>
+    <string name="error_saving_logs">Lỗi khi lưu nhật ký</string>
+    <string name="please_wait_until_file_downloaded">Vui lòng đợi cho đến khi tệp được tải xuống</string>
+    <string name="read_more_suffix">%s ... Xem thêm</string>
+    <string name="read_less_suffix">%s Thu gọn</string>
+    <string name="unable_to_play_audio_while_recording">Không thể phát âm thanh khi đang ghi âm</string>
+    <string name="bchat_pin_description">Đây là mã PIN bạn đã đặt cho tài khoản BChat của mình.</string>
+    <string name="restore_wallet_using_seed">Sử dụng khóa ghi nhớ 25 từ hoặc cụm từ khôi phục để khôi phục ví của bạn</string>
+    <string name="restore_from_keys">Khôi phục từ khóa</string>
+    <string name="restore_wallet_using_keystore">Sử dụng tệp keystore được tạo từ khóa riêng tư đã lưu để khôi phục ví của bạn</string>
+
 </resources>

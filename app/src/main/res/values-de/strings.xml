@@ -1696,5 +1696,9 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="restore_wallet_using_seed">Verwenden Sie den 25-Wörter-Mnemonic-Schlüssel oder die Startphrase, um Ihre Brieftasche wiederherzustellen</string>
     <string name="restore_from_keys">Von Schlüsseln wiederherstellen</string>
     <string name="restore_wallet_using_keystore">Verwenden Sie den generierten Keystore, der aus privaten Schlüsseln gespeichert wurde, um Ihr Wallet wiederherzustellen.</string>
+    <plurals name="group_member_count">
+        <item quantity="one">%d Mitglied</item>
+        <item quantity="other">%d Mitglieder</item>
+    </plurals>
 
 </resources>

@@ -18,8 +18,8 @@
 
     <!-- ApplicationPreferencesActivity -->
     <plurals name="ApplicationPreferencesActivity_messages_per_conversation">
-        <item quantity="one">%d message per conversation</item>
-        <item quantity="other">%d messages per conversation</item>
+        <item quantity="one">%d mensagem por conversa</item>
+        <item quantity="other">%d mensagens por conversa</item>
     </plurals>
     <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Excluir todas as mensagens antigas agora?</string>
     <plurals name="ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages">
@@ -1698,5 +1698,9 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="restore_wallet_using_seed">Use a chave mnemônica de 25 palavras ou frase seed para restaurar sua carteira</string>
     <string name="restore_from_keys">Restaurar a partir de chaves</string>
     <string name="restore_wallet_using_keystore">Use o keystore gerado a partir de chaves privadas para restaurar sua carteira.</string>
+    <plurals name="group_member_count">
+        <item quantity="one">%d membro</item>
+        <item quantity="other">%d membros</item>
+    </plurals>
 
 </resources>

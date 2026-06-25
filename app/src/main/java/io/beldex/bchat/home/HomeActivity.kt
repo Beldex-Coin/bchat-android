@@ -1002,7 +1002,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         popupMenu.gravity = Gravity.END
         popupMenu.setForceShowIcon(true)
         val item : MenuItem= popupMenu.menu.findItem(R.id.menu_delete)
-        val s=SpannableString("Delete")
+        val s=SpannableString(getString(R.string.delete))
         s.setSpan(ForegroundColorSpan(this.getColor(R.color.red)), 0, s.length, 0)
         item.setTitle(s)
         with(popupMenu.menu) {

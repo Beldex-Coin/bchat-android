@@ -1724,5 +1724,9 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="restore_wallet_using_seed">استخدم مفتاح الاستذكار المكوّن من 25 كلمة أو عبارة الاسترداد لاستعادة محفظتك</string>
     <string name="restore_from_keys">الاستعادة من المفاتيح</string>
     <string name="restore_wallet_using_keystore">استخدم ملف keystore المُنشأ والمحفوظ من المفاتيح الخاصة لاستعادة محفظتك.</string>
+    <plurals name="group_member_count">
+        <item quantity="one">%s عضو</item>
+        <item quantity="other">%s عضوًا</item>
+    </plurals>
 
 </resources>

@@ -821,7 +821,7 @@ fun GroupDetailsScreen(
                         modifier=Modifier.padding(16.dp)
                     ) {
                         Text(
-                            text="$memberCount members",
+                            text= stringResource(R.string.ConversationActivity_member_count, memberCount),
                             color=Color.Gray,
                             style=MaterialTheme.typography.titleSmall.copy(
                                 color=MaterialTheme.appColors.editTextHint,

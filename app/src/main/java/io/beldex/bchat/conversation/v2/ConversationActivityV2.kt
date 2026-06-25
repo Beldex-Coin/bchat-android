@@ -1394,9 +1394,12 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                 val groupID : String=recipient.address.toGroupString()
                 val members=groupRepository?.getGroupMembers(groupID)
                 val memberCount=members?.members?.size ?: 0
-                binding.conversationSubtitleView.isVisible=true
-                binding.conversationSubtitleView.text=
-                    if (memberCount > 1) "$memberCount ${R.string.ConversationActivity_member_count}" else "$memberCount ${R.string.member_count}"
+                binding.conversationSubtitleView.isVisible = true
+                binding.conversationSubtitleView.text = resources.getQuantityString(
+                    R.plurals.group_member_count,
+                    memberCount,
+                    memberCount
+                )
             } else {
                 binding.conversationSubtitleView.isVisible=false
             }

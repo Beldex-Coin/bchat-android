@@ -18,8 +18,10 @@
 
     <!-- ApplicationPreferencesActivity -->
     <plurals name="ApplicationPreferencesActivity_messages_per_conversation">
-        <item quantity="one">%d message per conversation</item>
-        <item quantity="other">%d messages per conversation</item>
+        <item quantity="one">%d сообщение на разговор</item>
+        <item quantity="few">%d сообщения на разговор</item>
+        <item quantity="many">%d сообщений на разговор</item>
+        <item quantity="other">%d сообщения на разговор</item>
     </plurals>
     <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Удалить все старые сообщения сейчас?</string>
     <plurals name="ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages">
@@ -1707,5 +1709,9 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="restore_wallet_using_seed">Используйте мнемонический ключ из 25 слов (seed-фразу) для восстановления вашего кошелька</string>
     <string name="restore_from_keys">Восстановить из ключей</string>
     <string name="restore_wallet_using_keystore">Используйте созданный файл хранилища ключей (keystore), сохранённый из приватных ключей, для восстановления вашего кошелька.</string>
+    <plurals name="group_member_count">
+        <item quantity="one">%d участник</item>
+        <item quantity="other">%d участников</item>
+    </plurals>
 
 </resources>

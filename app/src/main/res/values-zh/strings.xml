@@ -1689,5 +1689,9 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="restore_wallet_using_seed">使用 25 个单词的助记词或种子短语恢复您的钱包</string>
     <string name="restore_from_keys">从密钥恢复</string>
     <string name="restore_wallet_using_keystore">使用由私钥生成并保存的密钥库文件来恢复您的钱包。</string>
+    <plurals name="group_member_count">
+        <item quantity="one">%d 位成员</item>
+        <item quantity="other">%d 位成员</item>
+    </plurals>
 
 </resources>

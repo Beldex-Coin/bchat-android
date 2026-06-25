@@ -1689,5 +1689,9 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="restore_wallet_using_seed">25단어 니모닉 키 또는 시드 문구를 사용하여 지갑을 복원하세요.</string>
     <string name="restore_from_keys">키로 복원</string>
     <string name="restore_wallet_using_keystore">개인 키로 생성된 키스토어를 사용하여 지갑을 복원하세요.</string>
+    <plurals name="group_member_count">
+        <item quantity="one">%d 명의 멤버</item>
+        <item quantity="other">구성원 %d 명</item>
+    </plurals>
 
 </resources>

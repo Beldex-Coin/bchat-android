@@ -23,8 +23,8 @@
     </plurals>
     <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Excluir todas as mensagens antigas agora?</string>
     <plurals name="ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages">
-        <item quantity="one">This will immediately trim all conversations to the most recent message.</item>
-        <item quantity="other">This will immediately trim all conversations to the %d most recent messages.</item>
+        <item quantity="one">Isso reduzirá imediatamente todas as conversas para a mensagem mais recente.</item>
+        <item quantity="other">Isso reduzirá imediatamente todas as conversas para as %d mensagens mais recentes.</item>
     </plurals>
     <string name="ApplicationPreferencesActivity_On">On</string>
     <string name="ApplicationPreferencesActivity_Off">Off</string>
@@ -852,7 +852,7 @@
     <string name="dialog_send_seed_explanation">Esta é a sua seed de recuperação.</string>
     <string name="notify_type_all">Todas</string>
     <string name="notify_type_mentions">Menções</string>
-    <string name="deleted_message">This message has been deleted</string>
+    <string name="deleted_message">Esta mensagem foi excluída</string>
     <string name="delete_message_for_me">Excluir apenas para mim</string>
     <string name="delete_message_for_everyone">Apagar para todos</string>
     <string name="delete_message_for_me_and_recipient">Excluir para mim e para %s</string>
@@ -968,7 +968,7 @@
     <string name="message_request_empty_state_message">Nenhuma solicitação de mensagem pendente</string>
     <string name="message_requests_accept_all">Accept All</string>
     <string name="message_requests_accept_message">Tem certeza de que deseja aceitar esta solicitação?</string>
-    <string name="message_requests_decline_message">Declining this request will permanently block this user, are you sure?</string>
+    <string name="message_requests_decline_message">Ao recusar esta solicitação, este usuário será bloqueado permanentemente. Tem certeza?</string>
     <string name="no_blocked_contact">Nenhum contato bloqueado ainda</string>
     <string name="blocked_contacts">Contatos Bloqueados</string>
 
@@ -992,12 +992,12 @@
     <string name="dismiss">Dispensar</string>
     <string name="preferences__voice_video_calls">Chamadas de voz e vídeo</string>
     <string name="preferences__allow_access_voice_video">Permitir acesso para aceitar chamadas de voz e vídeo de outros usuários</string>
-    <string name="incoming_call">Incoming Call..</string>
+    <string name="incoming_call">Chamada recebida...</string>
     <string name="outgoing_call">Outgoing Call</string>
     <string name="calling">Chamando...</string>
     <string name="end_to_end_encrypted">Criptografado de ponta a ponta</string>
     <string name="call_duration">00:10:10</string>
-    <string name="hang_up">Hangup</string>
+    <string name="hang_up">Desligar</string>
     <string name="back_to_call">Back to call</string>
     <string name="call_in_progress">Chamada em andamento</string>
     <string name="call_muted">Chamada silenciada</string>
@@ -1609,7 +1609,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="no_name">Sem nome</string>
     <string name="title_activity_view_contact">ViewContactActivity</string>
     <string name="view_all">Ver tudo</string>
-    <string name="message">Message</string>
+    <string name="message">Mensagem</string>
     <string name="nickname_special_char_not_allowed">Caracteres especiais não são permitidos</string>
     <string name="hey_user_welcome_to_bchat">Olá %s, bem-vindo(a) ao BChat!</string>
     <string name="please_enter_valid_seed">Por favor, insira uma seed válida</string>
@@ -1624,8 +1624,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="about_bns_key_benefits">Principais Benefícios</string>
     <string name="about_bns_pricing_label">Preços:</string>
     <string name="about_bns_pricing_text">Os usuários podem registrar seus nomes BNS por 1, 2, 5 e 10 anos por apenas</string>
-    <string name="about_bns_pricing_values">650 BDX, 1000 BDX, 2000 BDX, and 4000 BDX</string>
-    <string name="about_bns_pricing_suffix">respectivamente</string>
+    <string name="about_bns_pricing_values">650 BDX, 1000 BDX, 2000 BDX e 4000 BDX</string>
+    <string name="about_bns_pricing_suffix">respectivamente.</string>
     <string name="about_bns_description_7">Usar nomes BNS melhora sua privacidade, segurança e conveniência. Seja para enviar uma mensagem, realizar uma transação ou usar serviços descentralizados, seu nome BNS garante uma experiência consistente e simplificada.</string>
     <string name="about_bns_description_8">Comece hoje mesmo com seu nome BNS e aproveite os benefícios de uma identidade descentralizada em todos os serviços Beldex!</string>
     <string name="about_content"><![CDATA[O BChat é um aplicativo de mensagens peer-to-peer descentralizado construído sobre a blockchain Beldex. O BChat preserva sua confidencialidade, pois não coleta nem armazena suas informações pessoais, como nome, idade, e-mail, número de telefone, nome de usuário, localização, contatos, endereço IP, etc. Tudo o que você precisa para criar uma conta no BChat é acesso à internet.\n\nQuando você cria uma conta no BChat, são gerados um BChat ID exclusivo e uma frase de recuperação (seed key). O BChat ID é sua chave pública, que você pode usar para conversar com outras pessoas no BChat. Seu BChat ID também está conectado a um endereço de carteira, que é gerado sempre que você cria uma nova conta.\n\nA chave de recuperação (seed key) é sua chave privada, que pode ser usada para restaurar sua conta em qualquer dispositivo. Sua chave de recuperação é semelhante à sua senha. Não a compartilhe com ninguém. Não armazene uma cópia digital dela. Escreva-a em papel e mantenha-a em um local seguro. Se você perder sua chave de recuperação, perderá o acesso à sua conta.\n\nNo BChat, suas mensagens são roteadas através dos nós da rede Beldex e são armazenadas apenas localmente no seu dispositivo. Suas mensagens e seus metadados associados não são armazenados em nenhum lugar da blockchain Beldex, incluindo os servidores de armazenamento dos masternodes.\n\nVocê é o dono dos seus dados. Pode escolher excluir seus dados a qualquer momento com apenas um clique. Para limpar seus dados, clique no ícone de perfil no canto superior direito, selecione “Minha Conta” > Limpar Dados > Excluir > OK, e eles serão removidos.\n\nO BChat é desenvolvido e mantido pela Beldex Foundation. Ele é open source e livre de censura. Qualquer pessoa pode contribuir para seu desenvolvimento. A Beldex Foundation é uma organização que constrói aplicações confidenciais para a web descentralizada. Os produtos que estão sendo pesquisados e desenvolvidos atualmente incluem BChat, BelNet (um serviço VPN descentralizado), Beldex Browser (um navegador descentralizado sem anúncios) e o protocolo Beldex (um protocolo para anonimizar as transações de outros ativos de blockchain).\n\nO BChat é o produto principal da Beldex. A versão inicial do BChat é um mensageiro que permite enviar mensagens verdadeiramente anônimas. Você pode criar grupos secretos e grupos sociais. Grupos secretos permitem até 100 participantes, enquanto grupos sociais não têm limite máximo. Qualquer pessoa pode criar um grupo secreto, mas você só pode adicionar contatos do seu BChat a ele. Grupos sociais exigem um servidor dedicado, que precisa ser mantido pelo criador. Versões futuras do BChat podem incorporar chamadas de voz e vídeo, além de permitir que os usuários enviem e recebam BDX, a criptomoeda nativa da rede Beldex. O recurso “pay as you chat” permitirá que qualquer pessoa transfira BDX para seus contatos diretamente pela janela de chat.\n\nO Beldex Research Labs, braço de pesquisa da Beldex Foundation, está estudando a possibilidade de implementar zk-SNARKs (como alternativa às ring signatures) para aumentar o conjunto de anonimato e utilizar data sharding para melhorar a escalabilidade da rede Beldex. Isso pode tornar o BChat várias vezes mais rápido do que os aplicativos descentralizados atuais e colocá-lo no caminho para adoção global.\n\nCréditos:\nA rede Beldex e o BChat utilizam vários protocolos desenvolvidos por projetos open source, como Monero, Signal e Session.

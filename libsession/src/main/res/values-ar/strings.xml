@@ -42,59 +42,59 @@
     <string name="expiration_off">إيقاف</string>
 
     <plurals name="expiration_seconds">
-        <item quantity="zero">%d ثانية</item>
-        <item quantity="one">%d ثانية</item>
-        <item quantity="two">%d ثوانٍ</item>
-        <item quantity="few">%d ثوانٍ</item>
-        <item quantity="many">%d ثوانٍ</item>
-        <item quantity="other">%d ثوانٍ</item>
+        <item quantity="zero">%s ثانية</item>
+        <item quantity="one">%s ثانية</item>
+        <item quantity="two">%s ثوانٍ</item>
+        <item quantity="few">%s ثوانٍ</item>
+        <item quantity="many">%s ثوانٍ</item>
+        <item quantity="other">%s ثوانٍ</item>
     </plurals>
 
-    <string name="expiration_seconds_abbreviated">%ds</string>
+    <string name="expiration_seconds_abbreviated">%ss</string>
 
     <plurals name="expiration_minutes">
-        <item quantity="zero">%d دقيقة</item>
-        <item quantity="one">%d دقيقة</item>
-        <item quantity="two">%d دقائق</item>
-        <item quantity="few">%d دقائق</item>
-        <item quantity="many">%d دقائق</item>
-        <item quantity="other">%d دقائق</item>
+        <item quantity="zero">%s دقيقة</item>
+        <item quantity="one">%sدقيقة</item>
+        <item quantity="two">%s دقائق</item>
+        <item quantity="few">%s دقائق</item>
+        <item quantity="many">%s دقائق</item>
+        <item quantity="other">%s دقائق</item>
     </plurals>
 
-    <string name="expiration_minutes_abbreviated">%dد</string>
+    <string name="expiration_minutes_abbreviated">%sد</string>
 
     <plurals name="expiration_hours">
-        <item quantity="zero">%d ساعة</item>
-        <item quantity="one">%d ساعة</item>
-        <item quantity="two">%d ساعات</item>
-        <item quantity="few">%d ساعات</item>
-        <item quantity="many">%d ساعات</item>
-        <item quantity="other">%d ساعات</item>
+        <item quantity="zero">%s ساعة</item>
+        <item quantity="one">%s ساعة</item>
+        <item quantity="two">%s ساعات</item>
+        <item quantity="few">%s ساعات</item>
+        <item quantity="many">%s ساعات</item>
+        <item quantity="other">%s ساعات</item>
     </plurals>
 
-    <string name="expiration_hours_abbreviated">\"%d\" س</string>
+    <string name="expiration_hours_abbreviated">%s س</string>
 
     <plurals name="expiration_days">
-        <item quantity="zero">%d يوم</item>
-        <item quantity="one">%d يوم</item>
-        <item quantity="two">%d أيام</item>
-        <item quantity="few">%d أيام</item>
-        <item quantity="many">%d أيام</item>
-        <item quantity="other">%d أيام</item>
+        <item quantity="zero">%s يوم</item>
+        <item quantity="one">%s يوم</item>
+        <item quantity="two">%s أيام</item>
+        <item quantity="few">%s أيام</item>
+        <item quantity="many">%s أيام</item>
+        <item quantity="other">%s أيام</item>
     </plurals>
 
-    <string name="expiration_days_abbreviated">\"%d\" ي</string>
+    <string name="expiration_days_abbreviated">%s ي</string>
 
     <plurals name="expiration_weeks">
-        <item quantity="zero">%d أسبوع</item>
-        <item quantity="one">%d أسبوع</item>
-        <item quantity="two">%d أسابيع</item>
-        <item quantity="few">%d أسابيع</item>
-        <item quantity="many">%d أسابيع</item>
-        <item quantity="other">%d أسابيع</item>
+        <item quantity="zero">%s أسبوع</item>
+        <item quantity="one">%s أسبوع</item>
+        <item quantity="two">%s أسابيع</item>
+        <item quantity="few">%s أسابيع</item>
+        <item quantity="many">%s أسابيع</item>
+        <item quantity="other">%s أسابيع</item>
     </plurals>
 
-    <string name="expiration_weeks_abbreviated">%d أ</string>
+    <string name="expiration_weeks_abbreviated">%s أ</string>
 
     <string name="ConversationItem_group_action_left">غادر %1$s المجموعة</string>
     <!-- RecipientProvider -->

@@ -14,25 +14,25 @@
     <string name="AbstractNotificationBuilder_new_message">رسالة جديدة</string>
 
     <!-- AlbumThumbnailView -->
-    <string name="AlbumThumbnailView_plus">\+%d</string>
+    <string name="AlbumThumbnailView_plus">\+%s</string>
 
     <!-- ApplicationPreferencesActivity -->
     <plurals name="ApplicationPreferencesActivity_messages_per_conversation">
-        <item quantity="zero">%d رسالة لكل محادثة</item>
-        <item quantity="one">%d رسالة لكل محادثة</item>
-        <item quantity="two">%d رسالتان لكل محادثة</item>
-        <item quantity="few">%d رسائل لكل محادثة</item>
-        <item quantity="many">%d رسالة لكل محادثة</item>
-        <item quantity="other">%d رسالة لكل محادثة</item>
+        <item quantity="zero">%s رسالة لكل محادثة</item>
+        <item quantity="one">%s رسالة لكل محادثة</item>
+        <item quantity="two">%s رسالتان لكل محادثة</item>
+        <item quantity="few">%s رسائل لكل محادثة</item>
+        <item quantity="many">%s رسالة لكل محادثة</item>
+        <item quantity="other">%s رسالة لكل محادثة</item>
     </plurals>
     <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">حذف جميع الرسائل القديمة الآن؟</string>
     <plurals name="ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages">
         <item quantity="zero">سيؤدي هذا إلى تقليص جميع المحادثات فورًا إلى أحدث 0 رسالة.</item>
         <item quantity="one">سيؤدي هذا إلى تقليص جميع المحادثات فورًا إلى أحدث رسالة.</item>
         <item quantity="two">سيؤدي هذا إلى تقليص جميع المحادثات فورًا إلى أحدث رسالتين.</item>
-        <item quantity="few">سيؤدي هذا إلى تقليص جميع المحادثات فورًا إلى أحدث %d رسائل.</item>
-        <item quantity="many">سيؤدي هذا إلى تقليص جميع المحادثات فورًا إلى أحدث %d رسالة.</item>
-        <item quantity="other">سيؤدي هذا إلى تقليص جميع المحادثات فورًا إلى أحدث %d رسالة.</item>
+        <item quantity="few">سيؤدي هذا إلى تقليص جميع المحادثات فورًا إلى أحدث %s رسائل.</item>
+        <item quantity="many">سيؤدي هذا إلى تقليص جميع المحادثات فورًا إلى أحدث %s رسالة.</item>
+        <item quantity="other">سيؤدي هذا إلى تقليص جميع المحادثات فورًا إلى أحدث %s رسالة.</item>
     </plurals>
     <string name="ApplicationPreferencesActivity_On">On</string>
     <string name="ApplicationPreferencesActivity_Off">Off</string>
@@ -83,7 +83,7 @@
     <string name="ConversationActivity_compose">Compose</string>
     <string name="ConversationActivity_muted_until_date">تم الكتم حتى %1$s</string>
     <string name="ConversationActivity_muted_forever">مكتوم</string>
-    <string name="ConversationActivity_member_count">%1$d عضوًا</string>
+    <string name="ConversationActivity_member_count">%s عضوًا</string>
     <string name="ConversationActivity_open_group_guidelines">إرشادات المجتمع</string>
     <string name="ConversationActivity_social_group_welcome">مرحبًا بك في BChat</string>
 
@@ -115,8 +115,8 @@
 
     <!-- ConversationAdapter -->
     <plurals name="ConversationAdapter_n_unread_messages">
-        <item quantity="one">%d unread message</item>
-        <item quantity="other">%d unread messages</item>
+        <item quantity="one">%s unread message</item>
+        <item quantity="other">%s unread messages</item>
     </plurals>
 
     <!-- ConversationFragment -->
@@ -191,7 +191,7 @@
 
     <!-- DateUtils -->
     <string name="DateUtils_just_now">الآن</string>
-    <string name="DateUtils_minutes_ago">%d دقيقة</string>
+    <string name="DateUtils_minutes_ago">%s دقيقة</string>
     <string name="DateUtils_today">اليوم</string>
     <string name="DateUtils_yesterday">أمس</string>
 
@@ -879,10 +879,10 @@
     <string name="dialog_send_seed_explanation">هذه هي عبارة الاسترداد الخاصة بك. إذا أرسلتها لشخص ما، سيكون لديه وصول كامل إلى حسابك</string>
     <string name="notify_type_all">الكل</string>
     <string name="notify_type_mentions">الإشارات</string>
-    <string name="deleted_message">This message has been deleted</string>
+    <string name="deleted_message">تم حذف هذه الرسالة</string>
     <string name="delete_message_for_me">حذف فقط لي</string>
     <string name="delete_message_for_everyone">حذف لدى الجميع</string>
-    <string name="delete_message_for_me_and_recipient">حذف لي و “%s”</string>
+    <string name="delete_message_for_me_and_recipient">حذف لي و %s</string>
     <string name="activity_settings_survey_feedback">الملاحظات</string>
     <string name="activity_settings_support">Debug Log</string>
     <string name="dialog_share_logs_title">Share Logs</string>
@@ -995,7 +995,7 @@
     <string name="message_request_empty_state_message">لا توجد طلبات رسائل معلقة</string>
     <string name="message_requests_accept_all">Accept All</string>
     <string name="message_requests_accept_message">هل أنت متأكد أنك تريد قبول هذا الطلب؟</string>
-    <string name="message_requests_decline_message">Declining this request will permanently block this user, are you sure?</string>
+    <string name="message_requests_decline_message">سيؤدي رفض هذا الطلب إلى حظر هذا المستخدم بشكل دائم. هل أنت متأكد؟</string>
     <string name="no_blocked_contact">لا توجد جهات محظورة حتى الآن</string>
     <string name="blocked_contacts">جهات الاتصال المحظورة</string>
 
@@ -1019,12 +1019,12 @@
     <string name="dismiss">تجاهل</string>
     <string name="preferences__voice_video_calls">المكالمات الصوتية والفيديو</string>
     <string name="preferences__allow_access_voice_video">" السماح بالوصول لقبول المكالمات الصوتية والفيديو من المستخدمين الآخرين"</string>
-    <string name="incoming_call">Incoming Call..</string>
+    <string name="incoming_call">مكالمة واردة...</string>
     <string name="outgoing_call">Outgoing Call</string>
     <string name="calling">جارٍ الاتصال...</string>
     <string name="end_to_end_encrypted">تشفير من طرف إلى طرف</string>
     <string name="call_duration">00:10:10</string>
-    <string name="hang_up">Hangup</string>
+    <string name="hang_up">إنهاء المكالمة</string>
     <string name="back_to_call">Back to call</string>
     <string name="call_in_progress">المكالمة قيد التقدم</string>
     <string name="call_muted">تم كتم المكالمة</string>
@@ -1064,9 +1064,9 @@
     <string name="button9_large_text">9</string>
     <string name="button11_large_text">0</string>
     <string name="pin_code_forgot_text">Forgot?</string>
-    <string name="pin_code_step_disable">Disable %d-digit Pincode</string>
+    <string name="pin_code_step_disable">Disable %s-digit Pincode</string>
     <string name="pin_code_step_create">Create Pin</string>
-    <string name="pin_code_step_change">Enter your current %d-digit Pincode</string>
+    <string name="pin_code_step_change">Enter your current %s-digit Pincode</string>
     <string name="pin_code_step_unlock">Enter Pin</string>
     <string name="pin_code_step_enable_confirm">Re-Enter Pin</string>
 
@@ -1109,10 +1109,10 @@
     <string name="node_test_error">CONNECTION ERROR %1$d</string>
     <string name="node_general_error">CONNECTION ERROR</string>
     <string name="node_auth_error">AUTHENTICATION FAILED</string>
-    <string name="node_updated_now">Last Block: %1$d seconds ago</string>
-    <string name="node_updated_mins">Last Block: %1$d minutes ago</string>
-    <string name="node_updated_hours">Last Block: %1$d hours ago</string>
-    <string name="node_updated_days">Last Block: %1$d days ago</string>
+    <string name="node_updated_now">Last Block: %1$s seconds ago</string>
+    <string name="node_updated_mins">Last Block: %1$s minutes ago</string>
+    <string name="node_updated_hours">Last Block: %1$s hours ago</string>
+    <string name="node_updated_days">Last Block: %1$s days ago</string>
     <string name="prompt_changepw">New Passphrase for %1$s</string>
     <string name="prompt_changepwB">Repeat Passphrase for %1$s</string>
     <string name="prompt_password">Password for %1$s</string>
@@ -1449,7 +1449,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="voice_call">مكالمة صوتية</string>
     <string name="missed_voice_call">Missed Voice Call</string>
     <string name="tap_to_callback">Tap to Callback</string>
-    <string name="enter_your_4_digit_wallet_pin">أدخل رمز PIN المكوّن من %d أرقام للمحفظة</string>
+    <string name="enter_your_4_digit_wallet_pin">أدخل رمز PIN المكوّن من %s أرقام للمحفظة</string>
     <string name="clear_chat">مسح الدردشة</string>
     <string name="clear_chat_confirmation">Are you sure you want to clear all the chat from this contact?</string>
     <string name="unblock_contact">إلغاء حظر جهة اتصال</string>
@@ -1635,7 +1635,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="no_name">لا يوجد اسم</string>
     <string name="title_activity_view_contact">ViewContactActivity</string>
     <string name="view_all">عرض الكل</string>
-    <string name="message">Message</string>
+    <string name="message">رسالة</string>
     <string name="nickname_special_char_not_allowed">لا يُسمح بالأحرف الخاصة</string>
     <string name="hey_user_welcome_to_bchat">مرحبًا%s، أهلاً بك في BChat!</string>
     <string name="paste_the_seed_to_continue">الصق العبارة للمتابعة</string>
@@ -1650,8 +1650,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="about_bns_key_benefits">الفوائد الرئيسية:</string>
     <string name="about_bns_pricing_label">التسعير:</string>
     <string name="about_bns_pricing_text">يمكن للمستخدمين تسجيل أسماء BNS الخاصة بهم لمدة 1، 2، 5، و10 سنوات مقابل 650 BDX، 1000 BDX، 2000 BDX، و4000 BDX على التوالي.</string>
-    <string name="about_bns_pricing_values">.</string>
-    <string name="about_bns_pricing_suffix">.</string>
+    <string name="about_bns_pricing_values">650 BDX، 1000 BDX، 2000 BDX، و4000 BDX</string>
+    <string name="about_bns_pricing_suffix">على التوالي</string>
     <string name="about_bns_description_7">استخدام أسماء BNS يعزز خصوصيتك وأمانك وسهولة استخدامك. سواء كنت ترسل رسالة، تجري معاملة، أو تستخدم خدمات لامركزية، يضمن اسم BNS تجربة متسقة ومبسطة.</string>
     <string name="about_bns_description_8">ابدأ باستخدام اسم BNS الخاص بك اليوم واستمتع بمزايا الهوية اللامركزية عبر جميع خدمات Beldex الخاصة بك!</string>
     <string name="about_content"><![CDATA[BChat هو تطبيق مراسلة لامركزي من نظير إلى نظير مبني على بلوكشين Beldex. يحافظ BChat على سرية معلوماتك لأنه لا يجمع أو يخزن معلوماتك الشخصية مثل الاسم، العمر، البريد الإلكتروني، رقم الهاتف، اسم المستخدم، الموقع، جهات الاتصال، عنوان IP، إلخ. كل ما تحتاجه لإنشاء حساب BChat هو الإنترنت.\n\nعند إنشاء حساب على BChat، يتم إنشاء معرف BChat فريد وعبارة استرداد (مفتاح البذرة). معرف BChat هو مفتاحك العام الذي يمكنك استخدامه للدردشة مع الآخرين على BChat. معرف BChat مرتبط أيضًا بعنوان محفظة يتم إنشاؤه في كل مرة تنشئ فيها حسابًا جديدًا.\n\nمفتاح الاسترداد (مفتاح البذرة) هو مفتاحك الخاص الذي يمكنك استخدامه لاستعادة حسابك على أي جهاز. مفتاح الاسترداد مشابه لكلمة المرور. لا تشاركه مع أي شخص. لا تخزن نسخة رقمية منه. اكتبه على ورقة واحفظه بأمان. إذا فقدت مفتاح الاسترداد، ستفقد الوصول إلى حسابك.\n\nعلى BChat، يتم توجيه رسائلك عبر العقد على شبكة Beldex وتخزينها فقط محليًا على جهازك. رسائلك وبياناتها الوصفية المرتبطة بها لا تُخزن في أي مكان على بلوكشين Beldex بما في ذلك خوادم تخزين الماسترنود.\n\nأنت مالك بياناتك. يمكنك اختيار حذف بياناتك في أي وقت بنقرة واحدة فقط. لمسح بياناتك، اضغط على أيقونة الملف الشخصي في أعلى الزاوية اليمنى، اختر "حسابي" > "مسح البيانات" > "حذف" > "موافق"، وستختفي البيانات.\n\nBChat مبني وصيانته تتم بواسطة مؤسسة Beldex. إنه مفتوح المصدر وخالٍ من الرقابة. يمكن لأي شخص المساهمة في تطويره. مؤسسة Beldex هي منظمة تبني تطبيقات سرية للويب اللامركزي. المنتجات التي يتم حاليًا البحث فيها وتطويرها تشمل BChat، BelNet (خدمة VPN لامركزية)، متصفح Beldex (متصفح لامركزي خالٍ من الإعلانات)، وبروتوكول Beldex (بروتوكول لإخفاء معاملات أصول البلوكشين الأخرى).\n\nBChat هو المنتج الرائد لمؤسسة Beldex. النسخة الأولية من BChat ستكون مراسلة تتيح لك إرسال رسائل مجهولة حقًا. يمكنك إنشاء مجموعات سرية واجتماعية. المجموعات السرية تسمح بما يصل إلى 100 مشارك، بينما المجموعات الاجتماعية ليس لها حد أعلى. يمكن لأي شخص إنشاء مجموعة سرية لكن يمكنك إضافة جهات اتصال BChat الخاصة بك فقط. المجموعات الاجتماعية تتطلب خادمًا مخصصًا يجب أن يحافظ عليه منشئها. قد تتضمن الإصدارات المستقبلية من BChat مكالمات صوتية وفيديو، وتمكن المستخدمين من إرسال واستلام BDX، العملة المشفرة الأصلية لشبكة Beldex. ميزة "الدفع أثناء الدردشة" ستتيح لأي شخص تحويل BDX إلى جهات الاتصال مباشرة من نافذة الدردشة.\n\nمختبرات أبحاث Beldex، الجناح البحثي لمؤسسة Beldex، تبحث في إمكانية تنفيذ zk-SNARKs (كبديل لتواقيع الحلقة) لزيادة مجموعة الخصوصية وتجزئة البيانات لتحسين القابلية للتوسع على شبكة Beldex، مما قد يجعل BChat أسرع عدة مرات من التطبيقات اللامركزية الحالية ويضعه على مسار الاعتماد العالمي.\n\nالاعتمادات:\nتستخدم شبكة Beldex وBChat عدة بروتوكولات تم تصميمها بواسطة مشاريع مفتوحة المصدر مثل Monero وSignal وSession.
@@ -1680,8 +1680,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="four_digit_pin">رمز PIN مكون من 4 أرقام</string>
     <string name="six_digit_pin">رمز PIN مكون من 6 أرقام</string>
     <plurals name="contact_others">
-        <item quantity="one">%s و%d آخر</item>
-        <item quantity="other">%s و%d آخرين</item>
+        <item quantity="one">%1$s وشخص آخر</item>
+        <item quantity="other">%1$s و%2$s آخرين</item>
     </plurals>
     <string name="unblocked_this_contact">تم إلغاء حظر هذا الاتصال</string>
     <string name="invalid_old_password">كلمة المرور القديمة غير صحيحة</string>
@@ -1691,7 +1691,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="please_enter_4_digit_pin">يرجى إدخال رمز PIN المكوّن من 4 أرقام.</string>
     <string name="write_here">اكتب هنا...</string>
     <string name="password">كلمة المرور</string>
-    <string name="member_count">%d عضو</string>
+    <string name="member_count">%s عضو</string>
     <string name="text_limit_exceed_warnings">تجاوز حد النص: الحد الأقصى للرسائل هو 4096 حرفًا</string>
     <string name="ban_message">سيؤدي هذا إلى حظر المستخدم المحدد من هذه الغرفة. لن يتم حظره من الغرف الأخرى.</string>
     <string name="ban_and_delete_message">سيؤدي هذا إلى حظر المستخدم المحدد من هذه الغرفة وحذف جميع الرسائل التي أرسلها. لن يتم حظره من الغرف الأخرى ولن يتم حذف رسائله هناك.</string>

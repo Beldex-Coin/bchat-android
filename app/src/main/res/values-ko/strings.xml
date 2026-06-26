@@ -843,10 +843,10 @@
     <string name="dialog_send_seed_explanation">이것은 복구 시드입니다. 이를 다른 사람에게 보내면 해당 사람이 계정에 완전히 접근할 수 있습니다.</string>
     <string name="notify_type_all">전체</string>
     <string name="notify_type_mentions">멘션만</string>
-    <string name="deleted_message">This message has been deleted</string>
+    <string name="deleted_message">이 메시지는 삭제되었습니다</string>
     <string name="delete_message_for_me">나에게서만 삭제</string>
     <string name="delete_message_for_everyone">모두에게서 삭제</string>
-    <string name="delete_message_for_me_and_recipient">나와 %s에 대해 삭제</string>
+    <string name="delete_message_for_me_and_recipient">나와 %s 에 대해 삭제</string>
     <string name="activity_settings_survey_feedback">피드백</string>
     <string name="activity_settings_support">Debug Log</string>
     <string name="dialog_share_logs_title">Share Logs</string>
@@ -959,7 +959,7 @@
     <string name="message_request_empty_state_message">대기 중인 메시지 요청이 없습니다</string>
     <string name="message_requests_accept_all">Accept All</string>
     <string name="message_requests_accept_message">이 요청을 수락하시겠습니까?</string>
-    <string name="message_requests_decline_message">Declining this request will permanently block this user, are you sure?</string>
+    <string name="message_requests_decline_message">이 요청을 거절하면 이 사용자가 영구적으로 차단됩니다. 계속하시겠습니까?</string>
     <string name="no_blocked_contact">차단된 연락처가 없습니다.</string>
     <string name="blocked_contacts">차단된 연락처</string>
 
@@ -983,12 +983,12 @@
     <string name="dismiss">닫기</string>
     <string name="preferences__voice_video_calls">음성 및 영상 통화</string>
     <string name="preferences__allow_access_voice_video">다른 사용자로부터 음성 및 영상 통화를 수락할 수 있도록 접근을 허용합니다.</string>
-    <string name="incoming_call">Incoming Call..</string>
+    <string name="incoming_call">수신 전화...</string>
     <string name="outgoing_call">Outgoing Call</string>
     <string name="calling">통화 중...</string>
     <string name="end_to_end_encrypted">종단간 암호화됨</string>
     <string name="call_duration">00:10:10</string>
-    <string name="hang_up">Hangup</string>
+    <string name="hang_up">통화 종료</string>
     <string name="back_to_call">Back to call</string>
     <string name="call_in_progress">통화 진행 중</string>
     <string name="call_muted">통화 음소거됨</string>
@@ -1600,7 +1600,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="no_name">이름 없음</string>
     <string name="title_activity_view_contact">ViewContactActivity</string>
     <string name="view_all">모두 보기</string>
-    <string name="message">Message</string>
+    <string name="message">메시지</string>
     <string name="nickname_special_char_not_allowed">특수 문자는 사용할 수 없습니다</string>
     <string name="hey_user_welcome_to_bchat">안녕하세요 %s, BChat에 오신 것을 환영합니다!</string>
     <string name="paste_the_seed_to_continue">계속하려면 시드를 붙여넣으세요</string>
@@ -1615,8 +1615,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="about_bns_key_benefits">주요 장점:</string>
     <string name="about_bns_pricing_label">가격:</string>
     <string name="about_bns_pricing_text">사용자는 BNS 이름을 1년, 2년, 5년, 10년 기간으로 등록할 수 있으며 각각 최소 650 BDX, 1000 BDX, 2000 BDX, 4000 BDX의 비용이 발생합니다</string>
-    <string name="about_bns_pricing_values">.</string>
-    <string name="about_bns_pricing_suffix">.</string>
+    <string name="about_bns_pricing_values">650 BDX, 1000 BDX, 2000 BDX 및 4000 BDX</string>
+    <string name="about_bns_pricing_suffix">각각.</string>
     <string name="about_bns_description_7">BNS 이름을 사용하면 개인정보 보호, 보안, 그리고 편의성이 향상됩니다. 메시지를 보내거나 거래를 하거나 탈중앙화 서비스를 이용할 때 BNS 이름을 통해 일관되고 간편한 경험을 제공받을 수 있습니다.</string>
     <string name="about_bns_description_8">지금 바로 BNS 이름을 시작하고 Beldex 서비스 전반에서 탈중앙화 신원의 이점을 경험해 보세요.</string>
     <string name="about_content"><![CDATA[BChat은 Beldex 블록체인 기반으로 구축된 탈중앙화 P2P 메시징 애플리케이션입니다. BChat은 이름, 나이, 이메일 주소, 전화번호, 사용자 이름, 위치, 연락처, IP 주소 등과 같은 개인 정보를 수집하거나 저장하지 않기 때문에 사용자의 개인정보를 보호합니다. BChat 계정을 생성하는 데 필요한 것은 인터넷뿐입니다.\n\nBChat에서 계정을 생성하면 고유한 BChat ID와 복구 구문(시드 키)이 생성됩니다. BChat ID는 공개 키로, 이를 통해 다른 BChat 사용자와 채팅할 수 있습니다. 또한 BChat ID는 새 계정을 생성할 때마다 생성되는 지갑 주소와 연결됩니다.\n\n복구 키(시드 키)는 개인 키로, 이를 사용하여 어떤 기기에서도 계정을 복구할 수 있습니다. 복구 키는 비밀번호와 같은 역할을 합니다. 이를 누구와도 공유하지 마세요. 디지털 사본으로 저장하지 마세요. 종이에 적어 안전한 곳에 보관하세요. 복구 키를 잃어버리면 계정에 접근할 수 없게 됩니다.\n\nBChat에서는 메시지가 Beldex 네트워크의 노드를 통해 전달되며, 사용자의 기기에만 로컬로 저장됩니다. 또한 메시지와 관련된 메타데이터는 마스터노드 저장 서버를 포함하여 Beldex 블록체인 어디에도 저장되지 않습니다.\n\n데이터의 소유권은 사용자에게 있습니다. 버튼 한 번의 클릭으로 언제든지 데이터를 삭제할 수 있습니다. 데이터를 삭제하려면 오른쪽 상단의 프로필 아이콘을 클릭한 후 **‘내 계정’ > ‘데이터 삭제’ > ‘삭제’ > ‘확인’**을 선택하면 됩니다.\n\nBChat은 Beldex 재단에 의해 개발되고 유지됩니다. 이는 오픈소스이며 검열이 없는 플랫폼입니다. 누구나 개발에 기여할 수 있습니다. Beldex 재단은 탈중앙화 웹을 위한 개인정보 보호 중심 애플리케이션을 구축하는 조직입니다. 현재 연구 및 개발 중인 제품에는 BChat, BelNet(탈중앙화 VPN 서비스), Beldex 브라우저(탈중앙화 광고 없는 브라우저), 그리고 Beldex 프로토콜(다른 블록체인 자산의 거래를 익명화하기 위한 프로토콜) 이 포함됩니다.\n\nBChat은 Beldex의 대표 제품입니다. BChat의 초기 버전은 사용자가 완전히 익명으로 메시지를 보낼 수 있는 메신저입니다. 사용자는 비밀 그룹과 소셜 그룹을 만들 수 있습니다. 비밀 그룹은 최대 100명의 참여자를 허용하며, 소셜 그룹은 인원 제한이 없습니다. 누구나 비밀 그룹을 만들 수 있지만 BChat 연락처에 있는 사람만 추가할 수 있습니다. 소셜 그룹은 생성자가 유지 관리해야 하는 전용 서버가 필요합니다. 향후 버전의 BChat에는 음성 및 영상 통화 기능이 추가될 수 있으며, 사용자가 Beldex 네트워크의 기본 암호화폐인 BDX를 송금하고 받을 수 있도록 지원할 예정입니다. “채팅하면서 결제” 기능을 통해 사용자는 채팅창에서 바로 자신의 연락처로 BDX를 전송할 수 있습니다.\n\nBeldex 재단의 연구 부서인 Beldex Research Labs는 익명성 범위를 확대하기 위해 링 서명(ring signatures)의 대안으로 zk-SNARKs를 도입하는 가능성과, Beldex 네트워크의 확장성을 향상시키기 위한 데이터 샤딩(data sharding) 기술을 연구하고 있습니다. 이러한 기술이 적용되면 BChat은 현재의 탈중앙화 애플리케이션보다 몇 배 더 빠르게 작동할 수 있으며, 전 세계적인 채택을 향해 나아갈 수 있습니다.\n\n크레딧:\nBeldex 네트워크와 BChat은 Monero, Signal, Session과 같은 오픈소스 프로젝트에서 설계된 여러 프로토콜을 사용합니다.

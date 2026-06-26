@@ -23,8 +23,8 @@
     </plurals>
     <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Delete All Old Messages Now?</string>
     <plurals name="ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages">
-        <item quantity="one">This will immediately trim all conversations to the most recent message.</item>
-        <item quantity="other">This will immediately trim all conversations to the %d most recent messages.</item>
+        <item quantity="one">Bu işlem tüm konuşmaları hemen en son mesaja indirecektir.</item>
+        <item quantity="other">Bu işlem tüm konuşmaları hemen en son %d mesaja indirecektir.</item>
     </plurals>
     <string name="ApplicationPreferencesActivity_On">On</string>
     <string name="ApplicationPreferencesActivity_Off">Off</string>
@@ -851,7 +851,7 @@
     <string name="dialog_send_seed_explanation">Bu sizin kurtarma seed’inizdir. Bunu birine gönderirseniz hesabınıza tam erişim sağlar</string>
     <string name="notify_type_all">Tümü</string>
     <string name="notify_type_mentions">Bahsetmeler</string>
-    <string name="deleted_message">This message has been deleted</string>
+    <string name="deleted_message">Bu mesaj silindiBu mesaj silindi</string>
     <string name="delete_message_for_me">Sadece benim için sil</string>
     <string name="delete_message_for_everyone">Herkes için sil</string>
     <string name="delete_message_for_me_and_recipient">Benim için ve %s için sil</string>
@@ -967,7 +967,7 @@
     <string name="message_request_empty_state_message">Bekleyen mesaj isteği yok</string>
     <string name="message_requests_accept_all">Accept All</string>
     <string name="message_requests_accept_message">Bu isteği kabul etmek istediğinizden emin misiniz?</string>
-    <string name="message_requests_decline_message">Declining this request will permanently block this user, are you sure?</string>
+    <string name="message_requests_decline_message">Bu isteği reddederseniz bu kullanıcı kalıcı olarak engellenecektir. Emin misiniz?</string>
     <string name="no_blocked_contact">Henüz engellenen kişi yok</string>
     <string name="blocked_contacts">Engellenen Kişiler</string>
 
@@ -991,12 +991,12 @@
     <string name="dismiss">Kapat</string>
     <string name="preferences__voice_video_calls">Sesli ve Görüntülü Aramalar</string>
     <string name="preferences__allow_access_voice_video">Diğer kullanıcılardan gelen sesli ve görüntülü arama isteklerini kabul etmek için erişime izin verin.</string>
-    <string name="incoming_call">Incoming Call..</string>
+    <string name="incoming_call">Gelen arama...</string>
     <string name="outgoing_call">Outgoing Call</string>
     <string name="calling">Aranıyor...</string>
     <string name="end_to_end_encrypted">Uçtan Uca Şifreli</string>
     <string name="call_duration">00:10:10</string>
-    <string name="hang_up">Hangup</string>
+    <string name="hang_up">Aramayı sonlandır</string>
     <string name="back_to_call">Back to call</string>
     <string name="call_in_progress">Arama devam ediyor</string>
     <string name="call_muted">Arama sessize alındı</string>
@@ -1608,7 +1608,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="no_name">İsimsiz</string>
     <string name="title_activity_view_contact">ViewContactActivity</string>
     <string name="view_all">Tümünü Gör</string>
-    <string name="message">Message</string>
+    <string name="message">Mesaj</string>
     <string name="nickname_special_char_not_allowed">Özel karakterlere izin verilmez</string>
     <string name="hey_user_welcome_to_bchat">Merhaba %s, BChat\'e hoş geldin!</string>
     <string name="please_enter_valid_seed">Lütfen geçerli bir tohum girin</string>
@@ -1621,10 +1621,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="about_bns_title">BNS: Beldex Ekosisteminde Merkeziyetsiz Kimliğiniz</string>
     <string name="about_bns_description_1">BNS (Beldex Name Service), Beldex ekosistemi içinde sorunsuz bir deneyim için giriş kapınızdır. BNS ile çeşitli Beldex kimliklerinize bağlanabilen benzersiz ve kolay hatırlanabilir bir isim oluşturabilirsiniz.</string>
     <string name="about_bns_key_benefits">Temel Avantajlar</string>
-    <string name="about_bns_pricing_label">.</string>
+    <string name="about_bns_pricing_label">Fiyatlandırma:</string>
     <string name="about_bns_pricing_text">Kullanıcılar BNS adlarını 1, 2, 5 veya 10 yıllık sürelerle, şu kadar düşük bir ücretle kaydedebilirler:</string>
-    <string name="about_bns_pricing_values">650 BDX, 1000 BDX, 2000 BDX, and 4000 BDX</string>
-    <string name="about_bns_pricing_suffix">.</string>
+    <string name="about_bns_pricing_values">650 BDX, 1000 BDX, 2000 BDX ve 4000 BDX</string>
+    <string name="about_bns_pricing_suffix">sırasıyla.</string>
     <string name="about_bns_description_7">BNS isimleri kullanmak gizliliğinizi, güvenliğinizi ve kullanım kolaylığınızı artırır. İster mesaj gönderiyor olun, ister işlem yapıyor olun ya da merkeziyetsiz hizmetleri kullanıyor olun, BNS adınız tutarlı ve basitleştirilmiş bir deneyim sağlar.</string>
     <string name="about_bns_description_8">Bugün BNS adınızı oluşturun ve tüm Beldex hizmetlerinde merkeziyetsiz kimliğin avantajlarından yararlanmaya başlayın!</string>
     <string name="about_content"><![CDATA[BChat Beldex blok zinciri üzerinde çalışan merkeziyetsiz eşler arası bir mesajlaşma uygulamasıdır. BChat gizliliğinizi korur çünkü adınız, yaşınız, e-posta adresiniz, telefon numaranız, kullanıcı adınız, konumunuz, kişileriniz veya IP adresiniz gibi kişisel bilgileri toplamaz veya saklamaz. BChat hesabı oluşturmak için yalnızca internet gerekir.\n\nBChat’te hesap oluşturduğunuzda benzersiz bir BChat ID ve kurtarma ifadesi oluşturulur. BChat ID genel anahtarınızdır ve BChat’te diğer kişilerle sohbet etmek için kullanılır. BChat ID ayrıca her yeni hesap oluşturduğunuzda oluşturulan bir cüzdan adresine bağlıdır.\n\nKurtarma anahtarı özel anahtarınızdır ve hesabınızı herhangi bir cihazda geri yüklemek için kullanılabilir. Kurtarma anahtarı şifreniz gibidir. Kimseyle paylaşmayın. Dijital kopyasını saklamayın. Kağıda yazın ve güvenli bir yerde saklayın. Kurtarma anahtarınızı kaybederseniz hesabınıza erişiminizi kaybedersiniz.\n\nBChat’te mesajlarınız Beldex ağındaki node’lar üzerinden yönlendirilir ve yalnızca cihazınızda saklanır. Mesajlarınız ve bunlara ait meta veriler Beldex blok zincirinde veya masternode depolama sunucularında saklanmaz.\n\nVerilerinizin sahibi sizsiniz. İstediğiniz zaman verilerinizi silebilirsiniz. Verilerinizi temizlemek için sağ üst köşedeki profil simgesine tıklayın ve Hesabım > Verileri temizle > Sil > Tamam yolunu izleyin.\n\nBChat Beldex Vakfı tarafından geliştirilmekte ve sürdürülmektedir. Açık kaynaklıdır ve sansürsüzdür. Herkes geliştirilmesine katkıda bulunabilir. Beldex Vakfı merkeziyetsiz web için gizlilik odaklı uygulamalar geliştiren bir organizasyondur. Araştırılan ve geliştirilen ürünler arasında BChat, BelNet, Beldex Browser ve Beldex protokolü bulunmaktadır.\n\nBChat Beldex’in amiral gemisi ürünüdür. İlk sürüm gerçekten anonim mesajlar göndermenizi sağlayan bir mesajlaşma uygulaması olacaktır. Gizli ve sosyal gruplar oluşturabilirsiniz. Gizli gruplar en fazla 100 katılımcıya izin verirken sosyal grupların üst sınırı yoktur. Gizli grupları herkes oluşturabilir ancak yalnızca BChat kişileriniz eklenebilir. Sosyal gruplar oluşturucu tarafından yönetilen özel bir sunucu gerektirir.\n\nGelecek sürümlerde sesli ve görüntülü aramalar ile BDX gönderme ve alma özellikleri eklenebilir. Sohbet ederken öde özelliği kullanıcıların sohbet penceresinden doğrudan BDX transferi yapmasına olanak tanıyacaktır.\n\nBeldex Araştırma Laboratuvarları anonimliği artırmak için zk-SNARKs ve ölçeklenebilirliği artırmak için veri parçalama teknolojileri üzerinde çalışmaktadır. Bu gelişmeler BChat’i mevcut merkeziyetsiz uygulamalardan çok daha hızlı hale getirebilir ve küresel benimsenmeye katkı sağlayabilir.\n\nKatkılar\nBeldex ağı ve BChat Monero, Signal ve Session gibi açık kaynak projeleri tarafından geliştirilen çeşitli protokolleri kullanır.

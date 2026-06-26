@@ -25,8 +25,10 @@
     </plurals>
     <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Удалить все старые сообщения сейчас?</string>
     <plurals name="ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages">
-        <item quantity="one">This will immediately trim all conversations to the most recent message.</item>
-        <item quantity="other">This will immediately trim all conversations to the %d most recent messages.</item>
+        <item quantity="one">Все беседы будут немедленно сокращены до последнего сообщения.</item>
+        <item quantity="few">Все беседы будут немедленно сокращены до %d последних сообщений.</item>
+        <item quantity="many">Все беседы будут немедленно сокращены до %d последних сообщений.</item>
+        <item quantity="other">Все беседы будут немедленно сокращены до %d последних сообщений.</item>
     </plurals>
     <string name="ApplicationPreferencesActivity_On">On</string>
     <string name="ApplicationPreferencesActivity_Off">Off</string>
@@ -864,7 +866,7 @@
     <string name="dialog_send_seed_explanation">Это ваш сид восстановления. Если вы отправите это кому-то, у него будет полный доступ к вашему аккаунту.</string>
     <string name="notify_type_all">Все</string>
     <string name="notify_type_mentions">Упоминания</string>
-    <string name="deleted_message">This message has been deleted</string>
+    <string name="deleted_message">Это сообщение было удалено</string>
     <string name="delete_message_for_me">Удалить только для меня</string>
     <string name="delete_message_for_everyone">Удалить для всех</string>
     <string name="delete_message_for_me_and_recipient">Удалить для меня и %s</string>
@@ -979,7 +981,7 @@
     <string name="message_request_empty_state_message">Нет ожидающих запросов на переписку</string>
     <string name="message_requests_accept_all">Accept All</string>
     <string name="message_requests_accept_message">Вы уверены, что хотите принять этот запрос?</string>
-    <string name="message_requests_decline_message">Declining this request will permanently block this user, are you sure?</string>
+    <string name="message_requests_decline_message">Отклонение этого запроса навсегда заблокирует этого пользователя. Вы уверены?</string>
     <string name="no_blocked_contact">Пока нет заблокированных контактов</string>
     <string name="blocked_contacts">Заблокированные контакты</string>
 
@@ -1003,12 +1005,12 @@
     <string name="dismiss">Закрыть</string>
     <string name="preferences__voice_video_calls">Голосовые и видеозвонки</string>
     <string name="preferences__allow_access_voice_video">Разрешить доступ для приема голосовых и видеозвонков от других пользователей</string>
-    <string name="incoming_call">Incoming Call..</string>
+    <string name="incoming_call">Входящий вызов...</string>
     <string name="outgoing_call">Outgoing Call</string>
     <string name="calling">Вызов…</string>
     <string name="end_to_end_encrypted">Сквозное шифрование</string>
     <string name="call_duration">00:10:10</string>
-    <string name="hang_up">Hangup</string>
+    <string name="hang_up">Завершить вызов</string>
     <string name="back_to_call">Back to call</string>
     <string name="call_in_progress">Звонок продолжается</string>
     <string name="call_muted">Микрофон отключён</string>
@@ -1620,7 +1622,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="no_name">Без имени</string>
     <string name="title_activity_view_contact">ViewContactActivity</string>
     <string name="view_all">Просмотреть все</string>
-    <string name="message">Message</string>
+    <string name="message">Сообщение</string>
     <string name="nickname_special_char_not_allowed">Специальные символы не допускаются</string>
     <string name="hey_user_welcome_to_bchat">Привет %s, Добро пожаловать в BChat!</string>
     <string name="please_enter_valid_seed">Пожалуйста, введите корректный seed</string>
@@ -1635,7 +1637,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="about_bns_key_benefits">Основные преимущества</string>
     <string name="about_bns_pricing_label">Цены:</string>
     <string name="about_bns_pricing_text">Пользователи могут зарегистрировать свои имена BNS на 1, 2, 5 или 10 лет по цене от</string>
-    <string name="about_bns_pricing_values">650 BDX, 1000 BDX, 2000 BDX, and 4000 BDX</string>
+    <string name="about_bns_pricing_values">650 BDX, 1000 BDX, 2000 BDX и 4000 BDX</string>
     <string name="about_bns_pricing_suffix">соответственно.</string>
     <string name="about_bns_description_7">Использование BNS повышает вашу конфиденциальность, безопасность и удобство. Будь то отправка сообщений, проведение транзакций или использование децентрализованных сервисов — ваше имя BNS обеспечивает согласованный и упрощённый опыт.</string>
     <string name="about_bns_description_8">Начните использовать ваше имя BNS сегодня и получите преимущества децентрализованной идентичности во всех сервисах Beldex!</string>

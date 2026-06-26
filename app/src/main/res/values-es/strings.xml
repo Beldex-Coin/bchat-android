@@ -23,8 +23,8 @@
     </plurals>
     <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Delete All Old Messages Now?</string>
     <plurals name="ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages">
-        <item quantity="one">This will immediately trim all conversations to the most recent message.</item>
-        <item quantity="other">This will immediately trim all conversations to the %d most recent messages.</item>
+        <item quantity="one">Esto reducirá inmediatamente todas las conversaciones al mensaje más reciente.</item>
+        <item quantity="other">Esto reducirá inmediatamente todas las conversaciones a los %d mensajes más recientes.</item>
     </plurals>
     <string name="ApplicationPreferencesActivity_On">On</string>
     <string name="ApplicationPreferencesActivity_Off">Off</string>
@@ -73,7 +73,7 @@
     <string name="ConversationActivity_sorry_there_was_an_error_setting_your_attachment">Sorry, there was an error setting your attachment.</string>
     <string name="ConversationActivity_message">Escribir un mensaje....</string>
     <string name="ConversationActivity_compose">Compose</string>
-    <string name="ConversationActivity_muted_until_date">Silenciado hasta \"%1$s\"</string>
+    <string name="ConversationActivity_muted_until_date">Silenciado hasta %1$s</string>
     <string name="ConversationActivity_muted_forever">Silenciado</string>
     <string name="ConversationActivity_member_count">%1$d miembros</string>
     <string name="ConversationActivity_open_group_guidelines">Directrices de la comunidad</string>
@@ -158,13 +158,13 @@
     <string name="CreateProfileActivity_profile_photo">Foto de perfil</string>
 
     <!-- CustomDefaultPreference -->
-    <string name="CustomDefaultPreference_using_custom">Usando personalizado: \"%s\"</string>
+    <string name="CustomDefaultPreference_using_custom">Usando personalizado: %s</string>
     <string name="CustomDefaultPreference_using_default">Using default: %s</string>
     <string name="CustomDefaultPreference_none">Ninguno</string>
 
     <!-- DateUtils -->
     <string name="DateUtils_just_now">Ahora</string>
-    <string name="DateUtils_minutes_ago">\"%d\" min</string>
+    <string name="DateUtils_minutes_ago">%d min</string>
     <string name="DateUtils_today">Hoy</string>
     <string name="DateUtils_yesterday">Ayer</string>
 
@@ -189,7 +189,7 @@
 
     <!-- LongMessageActivity -->
     <string name="LongMessageActivity_unable_to_find_message">No se puede encontrar el mensaje</string>
-    <string name="LongMessageActivity_message_from_s">Mensaje de \"%1$s\"</string>
+    <string name="LongMessageActivity_message_from_s">Mensaje de %1$s</string>
     <string name="LongMessageActivity_your_message">Tu mensaje</string>
 
     <!-- MediaOverviewActivity -->
@@ -206,7 +206,7 @@
     <string name="NotificationMmsMessageRecord_error_downloading_mms_message">Error al descargar el mensaje MMS. Toque para reintentar.</string>
 
     <!-- MediaPickerActivity -->
-    <string name="MediaPickerActivity_send_to">Enviar a \"%s\"</string>
+    <string name="MediaPickerActivity_send_to">Enviar a %s</string>
 
     <!-- MediaSendActivity -->
     <string name="MediaSendActivity_add_a_caption">Agregar un pie de foto...</string>
@@ -275,12 +275,12 @@
     <string name="ThreadRecord_s_took_a_screenshot">%1$s tomó una captura de pantalla.</string>
     <string name="ThreadRecord_media_saved_by_s">Contenido multimedia guardado por %1$s.</string>
     <string name="ThreadRecord_safety_number_changed">Número de seguridad cambiado</string>
-    <string name="ThreadRecord_your_safety_number_with_s_has_changed">Tu número de seguridad con \"%s\" ha cambiado.</string>
+    <string name="ThreadRecord_your_safety_number_with_s_has_changed">Tu número de seguridad con %s ha cambiado.</string>
     <string name="ThreadRecord_you_marked_verified">Marcaste como verificado</string>
     <string name="ThreadRecord_you_marked_unverified">Marcaste como no verificado</string>
     <string name="ThreadRecord_empty_message">Esta conversación está vacía</string>
     <string name="ThreadRecord_open_group_invitation">Invitación a grupo social</string>
-    <string name="ThreadRecord_payment">%s BDX \"%s\"</string>
+    <string name="ThreadRecord_payment">%s BDX %s</string>
 
     <!-- UpdateApkReadyListener -->
     <string name="UpdateApkReadyListener_Signal_update">Actualización de BChat</string>
@@ -313,8 +313,8 @@
     <string name="MediaPreviewActivity_media_delete_confirmation_message">This will permanently delete this message.</string>
 
     <!-- MessageNotifier -->
-    <string name="MessageNotifier_d_new_messages_in_d_conversations">%1$d mensajes nuevos en conversaciones \"%2$d\"</string>
-    <string name="MessageNotifier_most_recent_from_s">Más reciente de: \"%1$s\"</string>
+    <string name="MessageNotifier_d_new_messages_in_d_conversations">%1$d mensajes nuevos en conversaciones %2$d</string>
+    <string name="MessageNotifier_most_recent_from_s">Más reciente de: %1$s</string>
     <string name="MessageNotifier_locked_message">mensaje bloqueado</string>
     <string name="MessageNotifier_message_delivery_failed">La entrega del mensaje falló.</string>
     <string name="MessageNotifier_failed_to_deliver_message">No se pudo entregar el mensaje.</string>
@@ -343,7 +343,7 @@
     <string name="QuickResponseService_problem_sending_message">¡Problema al enviar el mensaje!</string>
 
     <!-- SaveAttachmentTask -->
-    <string name="SaveAttachmentTask_saved_to">Guardado en \"%s\"</string>
+    <string name="SaveAttachmentTask_saved_to">Guardado en %s</string>
     <string name="SaveAttachmentTask_saved">Guardado</string>
 
     <!-- SearchToolbar -->
@@ -852,7 +852,7 @@
     <string name="dialog_send_seed_explanation">Esta es tu semilla de recuperación. Si la envías a alguien, tendrá acceso completo a tu cuenta</string>
     <string name="notify_type_all">Todo</string>
     <string name="notify_type_mentions">Menciones</string>
-    <string name="deleted_message">This message has been deleted</string>
+    <string name="deleted_message">Este mensaje ha sido eliminado</string>
     <string name="delete_message_for_me">Eliminar solo para mí</string>
     <string name="delete_message_for_everyone">Eliminar para todos</string>
     <string name="delete_message_for_me_and_recipient">Eliminar para mí y %s</string>
@@ -968,7 +968,7 @@
     <string name="message_request_empty_state_message">Sin solicitudes de mensajes pendientes</string>
     <string name="message_requests_accept_all">Accept All</string>
     <string name="message_requests_accept_message">¿Estás seguro de que deseas aceptar esta solicitud?</string>
-    <string name="message_requests_decline_message">Declining this request will permanently block this user, are you sure?</string>
+    <string name="message_requests_decline_message">Si rechazas esta solicitud, este usuario será bloqueado permanentemente. ¿Estás seguro?</string>
     <string name="no_blocked_contact">Aún no hay contactos bloqueados</string>
     <string name="blocked_contacts">Contactos Bloqueados</string>
 
@@ -992,12 +992,12 @@
     <string name="dismiss">Rechazar</string>
     <string name="preferences__voice_video_calls">Llamadas de voz y video</string>
     <string name="preferences__allow_access_voice_video">Permitir acceso para aceptar llamadas de voz y video de otros usuarios.</string>
-    <string name="incoming_call">Incoming Call..</string>
+    <string name="incoming_call">Llamada entrante...</string>
     <string name="outgoing_call">Outgoing Call</string>
     <string name="calling">Llamando...</string>
     <string name="end_to_end_encrypted">Cifrado de extremo a extremo</string>
     <string name="call_duration">00:10:10</string>
-    <string name="hang_up">Hangup</string>
+    <string name="hang_up">Colgar</string>
     <string name="back_to_call">Back to call</string>
     <string name="call_in_progress">Llamada en curso</string>
     <string name="call_muted">Llamada silenciada</string>
@@ -1609,7 +1609,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="no_name">Sin nombre</string>
     <string name="title_activity_view_contact">ViewContactActivity</string>
     <string name="view_all">Ver todos</string>
-    <string name="message">Message</string>
+    <string name="message">Mensaje</string>
     <string name="nickname_special_char_not_allowed">No se permiten caracteres especiales</string>
     <string name="hey_user_welcome_to_bchat">¡Hola %s, bienvenido(a) a BChat!</string>
     <string name="please_enter_valid_seed">Por favor ingresa una semilla válida</string>
@@ -1624,7 +1624,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="about_bns_key_benefits">Beneficios Clave</string>
     <string name="about_bns_pricing_label">Precios:</string>
     <string name="about_bns_pricing_text">Los usuarios pueden registrar sus nombres de BNS por 1, 2, 5 y 10 años, con un mínimo de</string>
-    <string name="about_bns_pricing_values">650 BDX, 1000 BDX, 2000 BDX, and 4000 BDX</string>
+    <string name="about_bns_pricing_values">650 BDX, 1000 BDX, 2000 BDX y 4000 BDX</string>
     <string name="about_bns_pricing_suffix">respectivamente.</string>
     <string name="about_bns_description_7">Usar nombres BNS mejora tu privacidad, seguridad y comodidad. Ya sea que envíes un mensaje, realices una transacción o uses servicios descentralizados, tu nombre BNS garantiza una experiencia consistente y simplificada.</string>
     <string name="about_bns_description_8">¡Comienza hoy con tu nombre BNS y disfruta de los beneficios de una identidad descentralizada en todos tus servicios Beldex!</string>

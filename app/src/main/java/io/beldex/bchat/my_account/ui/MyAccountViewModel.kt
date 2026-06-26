@@ -1,6 +1,7 @@
 package io.beldex.bchat.my_account.ui
 
 import android.content.Context
+import android.content.res.Configuration
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -56,9 +57,17 @@ class MyAccountViewModel @Inject constructor(
 
     fun selectLanguage(code: String, context: Context) {
         _selectedLanguageCode.value = code
-
+        val localizedContext = getLocalizedContext(context, code)
         DynamicLanguageContextWrapper.updateContext(
             context, code)
+        resourceProvider.updateContext(localizedContext)
+    }
+
+    private fun getLocalizedContext(context: Context, code: String): Context {
+        val locale = Locale(code)
+        val config = Configuration(context.resources.configuration)
+        config.setLocale(locale)
+        return context.createConfigurationContext(config)
     }
 
     init {

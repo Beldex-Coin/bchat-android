@@ -695,7 +695,7 @@
     <string name="fragment_enter_public_key_error_message">BChat IDまたはBNS名を確認して、再試行してください</string>
 
     <string name="fragment_scan_qr_code_camera_access_explanation">BChat needs camera access to scan QR codes</string>
-    <string name="fragment_scan_qr_code_grant_camera_access_button_title">Grant Camera Access</string>
+    <string name="fragment_scan_qr_code_grant_camera_access_button_title">カメラへのアクセスを許可</string>
 
     <string name="activity_create_closed_group_title">新しい秘密グループ</string>
     <string name="activity_create_closed_group_edit_text_hint">Enter a group name</string>
@@ -888,7 +888,7 @@
     <string name="join_group">Join Social Group</string>
     <string name="group_url">Group URL</string>
     <string name="or_join_here">Or Join here</string>
-    <string name="camera_access_text">BChat needs camera access to scan QR codes</string>
+    <string name="camera_access_text">Bchat が QR コードをスキャンするにはカメラへのアクセスが必要です</string>
     <string name="remove_this_contact">Remove This Contacts ?</string>
     <string name="remove_message">Are you sure You want to Remove this contact from this group?</string>
     <string name="leave">退出</string>
@@ -1390,7 +1390,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="welcome_message">Hey %1$s, welcome to BChat!</string>
     <string name="copy_your_recovery_seed">リカバリーシードをコピーして安全に保管してください。</string>
     <string name="copy_seed">シードをコピー</string>
-    <string name="menu">Menu</string>
+    <string name="menu">メニュー</string>
     <string name="version_name">BChat v%s</string>
     <string name="dialog_title_send_failed">Create Transaction Error</string>
     <string name="title_for_beldex_address_or_name">Beldex address or BNS name</string>
@@ -1614,7 +1614,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="about_bns_description_1">BNS（Beldex Name Service）は、Beldex エコシステム内でシームレスに利用できるゲートウェイです。BNS を使うことで、さまざまな Beldex アイデンティティにリンクされた、ユニークで覚えやすい名前を作成できます。</string>
     <string name="about_bns_key_benefits">主なメリット:</string>
     <string name="about_bns_pricing_label">料金：</string>
-    <string name="about_bns_pricing_text">BNS 名は 1 年、2 年、5 年、10 年単位で登録可能で、料金はそれぞれ 650 BDX、1000 BDX、2000 BDX、4000 BDX です。</string>
+    <string name="about_bns_pricing_text">BNS 名は 1 年、2 年、5 年、または 10 年の期間で登録でき、料金は</string>
     <string name="about_bns_pricing_values">650 BDX、1000 BDX、2000 BDX、4000 BDX</string>
     <string name="about_bns_pricing_suffix">それぞれ。</string>
     <string name="about_bns_description_7">BNS 名を使用すると、プライバシー、セキュリティ、利便性が向上します。メッセージ送信、取引、分散型サービスの利用時にも、一貫性のあるシンプルな体験が可能です。</string>

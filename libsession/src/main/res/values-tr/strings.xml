@@ -12,7 +12,7 @@
     <string name="MessageRecord_you_removed_s_from_the_group">%1$s kişisini gruptan kaldırdınız</string>
     <string name="MessageRecord_s_removed_s_from_the_group">%1$s, %2$s kişisini gruptan kaldırdı</string>
     <string name="MessageRecord_you_were_removed_from_the_group">Gruptan kaldırıldınız</string>
-    <string name="MessageRecord_you">You</string>
+    <string name="MessageRecord_you">Siz</string>
     <string name="MessageRecord_you_called">You called</string>
     <string name="MessageRecord_called_you">Contact called</string>
     <string name="MessageRecord_missed_call">Missed call</string>
@@ -38,39 +38,39 @@
 
 
     <!-- expiration -->
-    <string name="expiration_off">Off</string>
+    <string name="expiration_off">Kapalı</string>
 
     <plurals name="expiration_seconds">
-        <item quantity="one">%d second</item>
-        <item quantity="other">%d seconds</item>
+        <item quantity="one">%d saniye</item>
+        <item quantity="other">%d saniye</item>
     </plurals>
 
     <string name="expiration_seconds_abbreviated">%ds</string>
 
     <plurals name="expiration_minutes">
-        <item quantity="one">%d minute</item>
-        <item quantity="other">%d minutes</item>
+        <item quantity="one">%d dakika</item>
+        <item quantity="other">%d dakika</item>
     </plurals>
 
     <string name="expiration_minutes_abbreviated">%d dk</string>
 
     <plurals name="expiration_hours">
-        <item quantity="one">%d hour</item>
-        <item quantity="other">%d hours</item>
+        <item quantity="one">%d saat</item>
+        <item quantity="other">%d saat</item>
     </plurals>
 
     <string name="expiration_hours_abbreviated">%d sa</string>
 
     <plurals name="expiration_days">
-        <item quantity="one">%d day</item>
-        <item quantity="other">%d days</item>
+        <item quantity="one">%d gün</item>
+        <item quantity="other">%d gün</item>
     </plurals>
 
     <string name="expiration_days_abbreviated">%d gün</string>
 
     <plurals name="expiration_weeks">
-        <item quantity="one">%d week</item>
-        <item quantity="other">%d weeks</item>
+        <item quantity="one">%d hafta</item>
+        <item quantity="other">%d hafta</item>
     </plurals>
 
     <string name="expiration_weeks_abbreviated">%d hf</string>
@@ -79,7 +79,6 @@
     <!-- RecipientProvider -->
     <string name="RecipientProvider_unnamed_group">Adsız grup</string>
 
-    <!-- New Line-->
     <string name="none">Yok</string>
     <string name="thirty_seconds">30 Saniye</string>
     <string name="one_minute">1 Dakika</string>

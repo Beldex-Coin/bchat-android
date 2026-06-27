@@ -698,8 +698,8 @@
     <string name="fragment_enter_public_key_explanation">Người dùng có thể chia sẻ BChat ID bằng cách vào phần cài đặt tài khoản và chọn \"Chia sẻ BChat ID\", hoặc chia sẻ mã QR của mình.</string>
     <string name="fragment_enter_public_key_error_message">Vui lòng kiểm tra BChat ID hoặc tên BNS và thử lại</string>
 
-    <string name="fragment_scan_qr_code_camera_access_explanation">BChat needs camera access to scan QR codes</string>
-    <string name="fragment_scan_qr_code_grant_camera_access_button_title">Grant Camera Access</string>
+    <string name="fragment_scan_qr_code_camera_access_explanation">Bchat cần quyền truy cập camera để quét mã QR</string>
+    <string name="fragment_scan_qr_code_grant_camera_access_button_title">Cấp quyền truy cập camera</string>
 
     <string name="activity_create_closed_group_title">Nhóm bí mật mới</string>
     <string name="activity_create_closed_group_edit_text_hint">Enter a group name</string>
@@ -891,7 +891,7 @@
     <string name="join_group">Join Social Group</string>
     <string name="group_url">Group URL</string>
     <string name="or_join_here">Or Join here</string>
-    <string name="camera_access_text">BChat needs camera access to scan QR codes</string>
+    <string name="camera_access_text">Bchat cần quyền truy cập camera để quét mã QR</string>
     <string name="remove_this_contact">Remove This Contacts ?</string>
     <string name="remove_message">Are you sure You want to Remove this contact from this group?</string>
     <string name="leave">Rời khỏi</string>

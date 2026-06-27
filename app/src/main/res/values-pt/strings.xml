@@ -704,7 +704,7 @@
     <string name="fragment_enter_public_key_error_message">Por favor, verifique o BChat ID ou o nome BNS e tente novamente</string>
 
     <string name="fragment_scan_qr_code_camera_access_explanation">BChat needs camera access to scan QR codes</string>
-    <string name="fragment_scan_qr_code_grant_camera_access_button_title">Grant Camera Access</string>
+    <string name="fragment_scan_qr_code_grant_camera_access_button_title">Conceder acesso à câmera</string>
 
     <string name="activity_create_closed_group_title">Novo grupo secreto</string>
     <string name="activity_create_closed_group_edit_text_hint">Enter a group name</string>
@@ -897,7 +897,7 @@
     <string name="join_group">Join Social Group</string>
     <string name="group_url">Group URL</string>
     <string name="or_join_here">Or Join here</string>
-    <string name="camera_access_text">BChat needs camera access to scan QR codes</string>
+    <string name="camera_access_text">O Bchat precisa de acesso à câmera para escanear códigos QR</string>
     <string name="remove_this_contact">Remove This Contacts ?</string>
     <string name="remove_message">Are you sure You want to Remove this contact from this group?</string>
     <string name="leave">Sair</string>

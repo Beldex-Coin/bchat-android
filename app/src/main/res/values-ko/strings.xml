@@ -695,7 +695,7 @@
     <string name="fragment_enter_public_key_error_message">BChat ID 또는 BNS 이름을 확인한 후 다시 시도하세요</string>
 
     <string name="fragment_scan_qr_code_camera_access_explanation">BChat needs camera access to scan QR codes</string>
-    <string name="fragment_scan_qr_code_grant_camera_access_button_title">Grant Camera Access</string>
+    <string name="fragment_scan_qr_code_grant_camera_access_button_title">카메라 접근 권한 허용</string>
 
     <string name="activity_create_closed_group_title">새 비밀 그룹</string>
     <string name="activity_create_closed_group_edit_text_hint">Enter a group name</string>
@@ -757,7 +757,7 @@
     <string name="fragment_view_my_qr_code_explanation">This is your QR code. Other users can scan it to start a BChat with you.</string>
     <string name="fragment_view_my_qr_code_share_title">상대방의 QR 코드를 스캔하여 대화를 시작하세요.</string>
 
-    <string name="fragment_contact_selection_contacts_title">Contacts</string>
+    <string name="fragment_contact_selection_contacts_title">연락처</string>
     <string name="fragment_contact_selection_closed_groups_title">비밀 그룹</string>
     <string name="fragment_contact_selection_open_groups_title">소셜 그룹</string>
 
@@ -888,7 +888,7 @@
     <string name="join_group">Join Social Group</string>
     <string name="group_url">Group URL</string>
     <string name="or_join_here">Or Join here</string>
-    <string name="camera_access_text">BChat needs camera access to scan QR codes</string>
+    <string name="camera_access_text">Bchat에서 QR 코드를 스캔하려면 카메라 접근 권한이 필요합니다</string>
     <string name="remove_this_contact">Remove This Contacts ?</string>
     <string name="remove_message">Are you sure You want to Remove this contact from this group?</string>
     <string name="leave">나가기</string>
@@ -1390,7 +1390,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="welcome_message">Hey %1$s, welcome to BChat!</string>
     <string name="copy_your_recovery_seed">복구 시드를 복사하여 안전하게 보관하세요</string>
     <string name="copy_seed">시드 복사</string>
-    <string name="menu">Menu</string>
+    <string name="menu">메뉴</string>
     <string name="version_name">BChat v%s</string>
     <string name="dialog_title_send_failed">Create Transaction Error</string>
     <string name="title_for_beldex_address_or_name">Beldex address or BNS name</string>
@@ -1614,7 +1614,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="about_bns_description_1">BNS (Beldex Name Service)는 Beldex 생태계에서 원활한 경험을 제공하는 관문입니다. BNS를 통해 다양한 Beldex 신원과 연결되는 고유하고 기억하기 쉬운 이름을 생성할 수 있습니다.</string>
     <string name="about_bns_key_benefits">주요 장점:</string>
     <string name="about_bns_pricing_label">가격:</string>
-    <string name="about_bns_pricing_text">사용자는 BNS 이름을 1년, 2년, 5년, 10년 기간으로 등록할 수 있으며 각각 최소 650 BDX, 1000 BDX, 2000 BDX, 4000 BDX의 비용이 발생합니다</string>
+    <string name="about_bns_pricing_text">사용자들은 BNS 이름을 1년, 2년, 5년, 또는 10년 동안 등록할 수 있고, 최소 비용은</string>
     <string name="about_bns_pricing_values">650 BDX, 1000 BDX, 2000 BDX 및 4000 BDX</string>
     <string name="about_bns_pricing_suffix">각각.</string>
     <string name="about_bns_description_7">BNS 이름을 사용하면 개인정보 보호, 보안, 그리고 편의성이 향상됩니다. 메시지를 보내거나 거래를 하거나 탈중앙화 서비스를 이용할 때 BNS 이름을 통해 일관되고 간편한 경험을 제공받을 수 있습니다.</string>

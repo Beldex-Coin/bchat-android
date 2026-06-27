@@ -74,5 +74,14 @@
     <string name="ConversationItem_group_action_left">%1$s がグループを退出しました</string>
     <!-- RecipientProvider -->
     <string name="RecipientProvider_unnamed_group">名前のないグループ</string>
+
+    <string name="none">なし</string>
+    <string name="thirty_seconds">30秒</string>
+    <string name="one_minute">1分</string>
+    <string name="two_minutes">2分</string>
+    <string name="five_minutes">5分</string>
+    <string name="fifteen_minutes">15分</string>
+    <string name="thirty_minutes">30分</string>
+
     <string name="deleteMessageDeletedGlobally">このメッセージは削除されました</string>
 </resources>

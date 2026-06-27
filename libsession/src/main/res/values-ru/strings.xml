@@ -12,7 +12,7 @@
     <string name="MessageRecord_you_removed_s_from_the_group">Вы удалили %1$s из группы</string>
     <string name="MessageRecord_s_removed_s_from_the_group">%1$s удалил(а) %2$s из группы</string>
     <string name="MessageRecord_you_were_removed_from_the_group">Вы были удалены из группы</string>
-    <string name="MessageRecord_you">You</string>
+    <string name="MessageRecord_you">Вы</string>
     <string name="MessageRecord_you_called">You called</string>
     <string name="MessageRecord_called_you">Contact called</string>
     <string name="MessageRecord_missed_call">Missed call</string>
@@ -38,39 +38,49 @@
 
 
     <!-- expiration -->
-    <string name="expiration_off">Off</string>
+    <string name="expiration_off">Выкл</string>
 
     <plurals name="expiration_seconds">
-        <item quantity="one">%d second</item>
-        <item quantity="other">%d seconds</item>
+        <item quantity="one">%d секунда</item>
+        <item quantity="few">%d секунды</item>
+        <item quantity="many">%d секунд</item>
+        <item quantity="other">%d секунды</item>
     </plurals>
 
     <string name="expiration_seconds_abbreviated">%ds</string>
 
     <plurals name="expiration_minutes">
-        <item quantity="one">%d minute</item>
-        <item quantity="other">%d minutes</item>
+        <item quantity="one">%d минута</item>
+        <item quantity="few">%d минуты</item>
+        <item quantity="many">%d минут</item>
+        <item quantity="other">%d минуты</item>
     </plurals>
 
     <string name="expiration_minutes_abbreviated">%dмин</string>
 
     <plurals name="expiration_hours">
-        <item quantity="one">%d hour</item>
-        <item quantity="other">%d hours</item>
+        <item quantity="one">%d час</item>
+        <item quantity="few">%d часа</item>
+        <item quantity="many">%d часов</item>
+        <item quantity="other">%d часа</item>
     </plurals>
 
     <string name="expiration_hours_abbreviated">%dч</string>
 
     <plurals name="expiration_days">
-        <item quantity="one">%d day</item>
-        <item quantity="other">%d days</item>
+        <item quantity="one">%d день</item>
+        <item quantity="few">%d дня</item>
+        <item quantity="many">%d дней</item>
+        <item quantity="other">%d дня</item>
     </plurals>
 
     <string name="expiration_days_abbreviated">%dд</string>
 
     <plurals name="expiration_weeks">
-        <item quantity="one">%d week</item>
-        <item quantity="other">%d weeks</item>
+        <item quantity="one">%d неделя</item>
+        <item quantity="few">%d недели</item>
+        <item quantity="many">%d недель</item>
+        <item quantity="other">%d недели</item>
     </plurals>
 
     <string name="expiration_weeks_abbreviated">%dнед</string>
@@ -79,7 +89,6 @@
     <!-- RecipientProvider -->
     <string name="RecipientProvider_unnamed_group">Группа без названия</string>
 
-    <!-- New Line-->
     <string name="none">Нет</string>
     <string name="thirty_seconds">30 секунд</string>
     <string name="one_minute">1 минута</string>

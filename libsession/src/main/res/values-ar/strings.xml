@@ -18,7 +18,7 @@
     <string name="MessageRecord_called_you">Contact called</string>
     <string name="MessageRecord_missed_call">Missed call</string>
     <string name="MessageRecord_s_updated_group">%s updated the group</string>
-    <string name="MessageRecord_received_call_from">مكالمة واردة من \"%s\"</string>
+    <string name="MessageRecord_received_call_from">مكالمة واردة من %s</string>
     <string name="MessageRecord_called_s">تم الاتصال بـ %s</string>
     <string name="MessageRecord_missed_call_from">مكالمة فائتة من %s</string>
     <string name="MessageRecord_s_joined_signal">%s is on Bchat!</string>
@@ -50,7 +50,7 @@
         <item quantity="other">%s ثوانٍ</item>
     </plurals>
 
-    <string name="expiration_seconds_abbreviated">%ss</string>
+    <string name="expiration_seconds_abbreviated">%ds</string>
 
     <plurals name="expiration_minutes">
         <item quantity="zero">%s دقيقة</item>
@@ -61,7 +61,7 @@
         <item quantity="other">%s دقائق</item>
     </plurals>
 
-    <string name="expiration_minutes_abbreviated">%sد</string>
+    <string name="expiration_minutes_abbreviated">%dد</string>
 
     <plurals name="expiration_hours">
         <item quantity="zero">%s ساعة</item>
@@ -72,7 +72,7 @@
         <item quantity="other">%s ساعات</item>
     </plurals>
 
-    <string name="expiration_hours_abbreviated">%s س</string>
+    <string name="expiration_hours_abbreviated">%d س</string>
 
     <plurals name="expiration_days">
         <item quantity="zero">%s يوم</item>
@@ -83,7 +83,7 @@
         <item quantity="other">%s أيام</item>
     </plurals>
 
-    <string name="expiration_days_abbreviated">%s ي</string>
+    <string name="expiration_days_abbreviated">%d ي</string>
 
     <plurals name="expiration_weeks">
         <item quantity="zero">%s أسبوع</item>
@@ -94,10 +94,18 @@
         <item quantity="other">%s أسابيع</item>
     </plurals>
 
-    <string name="expiration_weeks_abbreviated">%s أ</string>
+    <string name="expiration_weeks_abbreviated">%d أ</string>
 
     <string name="ConversationItem_group_action_left">غادر %1$s المجموعة</string>
     <!-- RecipientProvider -->
     <string name="RecipientProvider_unnamed_group">مجموعة بدون اسم</string>
+
+    <string name="none">لا شيء</string>
+    <string name="thirty_seconds">30 ثانية</string>
+    <string name="one_minute">1 دقيقة</string>
+    <string name="two_minutes">2 دقيقة</string>
+    <string name="five_minutes">5 دقائق</string>
+    <string name="fifteen_minutes">15 دقيقة</string>
+    <string name="thirty_minutes">30 دقيقة</string>
     <string name="deleteMessageDeletedGlobally">تم حذف هذه الرسالة</string>
 </resources>

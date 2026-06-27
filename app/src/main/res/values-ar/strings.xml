@@ -731,7 +731,7 @@
     <string name="fragment_enter_public_key_error_message">يرجى التحقق من معرف BChat أو اسم BNS والمحاولة مرة أخرى</string>
 
     <string name="fragment_scan_qr_code_camera_access_explanation">BChat needs camera access to scan QR codes</string>
-    <string name="fragment_scan_qr_code_grant_camera_access_button_title">Grant Camera Access</string>
+    <string name="fragment_scan_qr_code_grant_camera_access_button_title">منح إذن الوصول إلى الكاميرا</string>
 
     <string name="activity_create_closed_group_title">مجموعة سرية جديدة</string>
     <string name="activity_create_closed_group_edit_text_hint">أدخل اسمًا جديدًا للمجموعة</string>
@@ -924,7 +924,7 @@
     <string name="join_group">Join Social Group</string>
     <string name="group_url">Group URL</string>
     <string name="or_join_here">Or Join here</string>
-    <string name="camera_access_text">BChat needs camera access to scan QR codes</string>
+    <string name="camera_access_text">يحتاج Bchat إلى إذن الوصول إلى الكاميرا لمسح رموز QR</string>
     <string name="remove_this_contact">Remove This Contacts ?</string>
     <string name="remove_message">Are you sure You want to Remove this contact from this group?</string>
     <string name="leave">مغادرة</string>
@@ -1425,7 +1425,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="welcome_message">Hey %1$s, welcome to BChat!</string>
     <string name="copy_your_recovery_seed">انسخ عبارة الاسترداد واحفظها بأمان</string>
     <string name="copy_seed">نسخ العبارة</string>
-    <string name="menu">Menu</string>
+    <string name="menu">القائمة</string>
     <string name="version_name">BChat v%s</string>
     <string name="dialog_title_send_failed">Create Transaction Error</string>
     <string name="title_for_beldex_address_or_name">Beldex address or BNS name</string>
@@ -1649,9 +1649,9 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="about_bns_description_1">BNS (خدمة اسم Beldex) هي بوابتك لتجربة سلسة داخل نظام Beldex البيئي. من خلال BNS، يمكنك إنشاء اسم فريد وسهل التذكر يربط هوياتك المختلفة على Beldex.</string>
     <string name="about_bns_key_benefits">الفوائد الرئيسية:</string>
     <string name="about_bns_pricing_label">التسعير:</string>
-    <string name="about_bns_pricing_text">يمكن للمستخدمين تسجيل أسماء BNS الخاصة بهم لمدة 1، 2، 5، و10 سنوات مقابل 650 BDX، 1000 BDX، 2000 BDX، و4000 BDX على التوالي.</string>
+    <string name="about_bns_pricing_text">يمكن للمستخدمين تسجيل أسماء BNS الخاصة بهم لمدة 1، 2، 5، و10 سنوات مقابل</string>
     <string name="about_bns_pricing_values">650 BDX، 1000 BDX، 2000 BDX، و4000 BDX</string>
-    <string name="about_bns_pricing_suffix">على التوالي</string>
+    <string name="about_bns_pricing_suffix">على التوالي.</string>
     <string name="about_bns_description_7">استخدام أسماء BNS يعزز خصوصيتك وأمانك وسهولة استخدامك. سواء كنت ترسل رسالة، تجري معاملة، أو تستخدم خدمات لامركزية، يضمن اسم BNS تجربة متسقة ومبسطة.</string>
     <string name="about_bns_description_8">ابدأ باستخدام اسم BNS الخاص بك اليوم واستمتع بمزايا الهوية اللامركزية عبر جميع خدمات Beldex الخاصة بك!</string>
     <string name="about_content"><![CDATA[BChat هو تطبيق مراسلة لامركزي من نظير إلى نظير مبني على بلوكشين Beldex. يحافظ BChat على سرية معلوماتك لأنه لا يجمع أو يخزن معلوماتك الشخصية مثل الاسم، العمر، البريد الإلكتروني، رقم الهاتف، اسم المستخدم، الموقع، جهات الاتصال، عنوان IP، إلخ. كل ما تحتاجه لإنشاء حساب BChat هو الإنترنت.\n\nعند إنشاء حساب على BChat، يتم إنشاء معرف BChat فريد وعبارة استرداد (مفتاح البذرة). معرف BChat هو مفتاحك العام الذي يمكنك استخدامه للدردشة مع الآخرين على BChat. معرف BChat مرتبط أيضًا بعنوان محفظة يتم إنشاؤه في كل مرة تنشئ فيها حسابًا جديدًا.\n\nمفتاح الاسترداد (مفتاح البذرة) هو مفتاحك الخاص الذي يمكنك استخدامه لاستعادة حسابك على أي جهاز. مفتاح الاسترداد مشابه لكلمة المرور. لا تشاركه مع أي شخص. لا تخزن نسخة رقمية منه. اكتبه على ورقة واحفظه بأمان. إذا فقدت مفتاح الاسترداد، ستفقد الوصول إلى حسابك.\n\nعلى BChat، يتم توجيه رسائلك عبر العقد على شبكة Beldex وتخزينها فقط محليًا على جهازك. رسائلك وبياناتها الوصفية المرتبطة بها لا تُخزن في أي مكان على بلوكشين Beldex بما في ذلك خوادم تخزين الماسترنود.\n\nأنت مالك بياناتك. يمكنك اختيار حذف بياناتك في أي وقت بنقرة واحدة فقط. لمسح بياناتك، اضغط على أيقونة الملف الشخصي في أعلى الزاوية اليمنى، اختر "حسابي" > "مسح البيانات" > "حذف" > "موافق"، وستختفي البيانات.\n\nBChat مبني وصيانته تتم بواسطة مؤسسة Beldex. إنه مفتوح المصدر وخالٍ من الرقابة. يمكن لأي شخص المساهمة في تطويره. مؤسسة Beldex هي منظمة تبني تطبيقات سرية للويب اللامركزي. المنتجات التي يتم حاليًا البحث فيها وتطويرها تشمل BChat، BelNet (خدمة VPN لامركزية)، متصفح Beldex (متصفح لامركزي خالٍ من الإعلانات)، وبروتوكول Beldex (بروتوكول لإخفاء معاملات أصول البلوكشين الأخرى).\n\nBChat هو المنتج الرائد لمؤسسة Beldex. النسخة الأولية من BChat ستكون مراسلة تتيح لك إرسال رسائل مجهولة حقًا. يمكنك إنشاء مجموعات سرية واجتماعية. المجموعات السرية تسمح بما يصل إلى 100 مشارك، بينما المجموعات الاجتماعية ليس لها حد أعلى. يمكن لأي شخص إنشاء مجموعة سرية لكن يمكنك إضافة جهات اتصال BChat الخاصة بك فقط. المجموعات الاجتماعية تتطلب خادمًا مخصصًا يجب أن يحافظ عليه منشئها. قد تتضمن الإصدارات المستقبلية من BChat مكالمات صوتية وفيديو، وتمكن المستخدمين من إرسال واستلام BDX، العملة المشفرة الأصلية لشبكة Beldex. ميزة "الدفع أثناء الدردشة" ستتيح لأي شخص تحويل BDX إلى جهات الاتصال مباشرة من نافذة الدردشة.\n\nمختبرات أبحاث Beldex، الجناح البحثي لمؤسسة Beldex، تبحث في إمكانية تنفيذ zk-SNARKs (كبديل لتواقيع الحلقة) لزيادة مجموعة الخصوصية وتجزئة البيانات لتحسين القابلية للتوسع على شبكة Beldex، مما قد يجعل BChat أسرع عدة مرات من التطبيقات اللامركزية الحالية ويضعه على مسار الاعتماد العالمي.\n\nالاعتمادات:\nتستخدم شبكة Beldex وBChat عدة بروتوكولات تم تصميمها بواسطة مشاريع مفتوحة المصدر مثل Monero وSignal وSession.

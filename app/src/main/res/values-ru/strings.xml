@@ -718,7 +718,7 @@
     <string name="fragment_enter_public_key_error_message">Пожалуйста, проверьте Chat ID или имя BNS и попробуйте снова</string>
 
     <string name="fragment_scan_qr_code_camera_access_explanation">BChat needs camera access to scan QR codes</string>
-    <string name="fragment_scan_qr_code_grant_camera_access_button_title">Grant Camera Access</string>
+    <string name="fragment_scan_qr_code_grant_camera_access_button_title">Предоставить доступ к камере</string>
 
     <string name="activity_create_closed_group_title">Новая секретная группа</string>
     <string name="activity_create_closed_group_edit_text_hint">Enter a group name</string>
@@ -910,7 +910,7 @@
     <string name="join_group">Join Social Group</string>
     <string name="group_url">Group URL</string>
     <string name="or_join_here">Or Join here</string>
-    <string name="camera_access_text">BChat needs camera access to scan QR codes</string>
+    <string name="camera_access_text">Bchat требуется доступ к камере для сканирования QR-кодов</string>
     <string name="remove_this_contact">Remove This Contacts ?</string>
     <string name="remove_message">Are you sure You want to Remove this contact from this group?</string>
     <string name="leave">Покинуть</string>
@@ -1412,7 +1412,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="welcome_message">Hey %1$s, welcome to BChat!</string>
     <string name="copy_your_recovery_seed">Скопируйте вашу восстановительную фразу и сохраните её в безопасности.</string>
     <string name="copy_seed">Скопировать Seed</string>
-    <string name="menu">Menu</string>
+    <string name="menu">Меню</string>
     <string name="version_name">BChat v%s</string>
     <string name="dialog_title_send_failed">Create Transaction Error</string>
     <string name="title_for_beldex_address_or_name">Beldex address or BNS name</string>

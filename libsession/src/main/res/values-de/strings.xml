@@ -79,5 +79,13 @@
     <string name="ConversationItem_group_action_left">%1$s hat die Gruppe verlassen</string>
     <!-- RecipientProvider -->
     <string name="RecipientProvider_unnamed_group">Unbenannte Gruppe</string>
+
+    <string name="none">Keine</string>
+    <string name="thirty_seconds">30 Sekunden</string>
+    <string name="one_minute">1 Minute</string>
+    <string name="two_minutes">2 Minuten</string>
+    <string name="five_minutes">5 Minuten</string>
+    <string name="fifteen_minutes">15 Minuten</string>
+    <string name="thirty_minutes">30 Minuten</string>
     <string name="deleteMessageDeletedGlobally">Diese Nachricht wurde gelöscht</string>
 </resources>

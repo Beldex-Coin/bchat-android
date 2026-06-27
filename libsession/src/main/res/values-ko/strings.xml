@@ -18,7 +18,7 @@
     <string name="MessageRecord_called_you">Contact called</string>
     <string name="MessageRecord_missed_call">Missed call</string>
     <string name="MessageRecord_s_updated_group">%s updated the group</string>
-    <string name="MessageRecord_received_call_from">\"%s\"님에게서 전화를 받았습니다.</string>
+    <string name="MessageRecord_received_call_from">%s 님에게서 전화를 받았습니다.</string>
     <string name="MessageRecord_called_s">%s 님에게 전화를 걸었습니다.</string>
     <string name="MessageRecord_missed_call_from">%s 님의 부재중 전화</string>
     <string name="MessageRecord_s_joined_signal">%s is on Bchat!</string>
@@ -74,5 +74,13 @@
     <string name="ConversationItem_group_action_left">%1$s 님이 그룹을 나갔습니다</string>
     <!-- RecipientProvider -->
     <string name="RecipientProvider_unnamed_group">이름 없는 그룹</string>
+
+    <string name="none">이름 없음</string>
+    <string name="thirty_seconds">30초</string>
+    <string name="one_minute">1분</string>
+    <string name="two_minutes">2 분</string>
+    <string name="five_minutes">5 분</string>
+    <string name="fifteen_minutes">15분</string>
+    <string name="thirty_minutes">30분</string>
     <string name="deleteMessageDeletedGlobally">이 메시지는 삭제되었습니다.</string>
 </resources>

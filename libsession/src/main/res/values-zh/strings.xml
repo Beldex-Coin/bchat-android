@@ -74,5 +74,13 @@
     <string name="ConversationItem_group_action_left">%1$s 已离开群组</string>
     <!-- RecipientProvider -->
     <string name="RecipientProvider_unnamed_group">未命名群组</string>
+
+    <string name="none">Ninguno</string>
+    <string name="thirty_seconds">30 Segundos</string>
+    <string name="one_minute">1 Minuto</string>
+    <string name="two_minutes">2 Minutos</string>
+    <string name="five_minutes">5 Minutos</string>
+    <string name="fifteen_minutes">15 Minutos</string>
+    <string name="thirty_minutes">30 Minutos</string>
     <string name="deleteMessageDeletedGlobally">此消息已被删除</string>
 </resources>

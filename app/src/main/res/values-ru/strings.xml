@@ -140,6 +140,8 @@
     </plurals>
     <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
         <item quantity="one">Ошибка при сохранении вложения в хранилище!</item>
+        <item quantity="few">Ошибка при сохранении вложений в хранилище!</item>
+        <item quantity="many">Ошибка при сохранении вложений в хранилище!</item>
         <item quantity="other">Ошибка при сохранении вложений в хранилище!</item>
     </plurals>
     <plurals name="ConversationFragment_saving_n_attachments">
@@ -229,6 +231,8 @@
     <string name="MediaSendActivity_message_to_s">Отправить сообщение %s</string>
     <plurals name="MediaSendActivity_cant_share_more_than_n_items">
         <item quantity="one">Вы не можете отправить более %d элемента.</item>
+        <item quantity="few">Вы не можете отправить более %d элементов.</item>
+        <item quantity="many">Вы не можете отправить более %d элементов.</item>
         <item quantity="other">Вы не можете отправить более %d элементов.</item>
     </plurals>
 
@@ -373,7 +377,9 @@
     <!-- TransferControlView -->
     <plurals name="TransferControlView_n_items">
         <item quantity="one">%d элемент</item>
-        <item quantity="other">%d элементов</item>
+        <item quantity="few">%d элемента</item>
+        <item quantity="many">%d элементов</item>
+        <item quantity="other">%d элемента</item>
     </plurals>
 
     <!-- VideoPlayer -->
@@ -499,8 +505,10 @@
 
     <!-- plurals.xml -->
     <plurals name="hours_ago">
-        <item quantity="one">%d час</item>
-        <item quantity="other">%d часа</item>
+        <item quantity="one">%d час назад</item>
+        <item quantity="few">%d часа назад</item>
+        <item quantity="many">%d часов назад</item>
+        <item quantity="other">%d часа назад</item>
     </plurals>
 
     <!-- preferences.xml -->
@@ -1286,8 +1294,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="Unblock_dialog__title_multiple">Разблокировать пользователей</string>
     <string name="Unblock_dialog__message">Вы уверены, что хотите разблокировать %s?</string>
     <plurals name="Unblock_dialog__message_multiple_overflow">
-        <item quantity="one">и ещё %d другой</item>
-        <item quantity="other">и ещё %d других</item>
+        <item quantity="one">и ещё %d человек</item>
+        <item quantity="few">и ещё %d человека</item>
+        <item quantity="many">и ещё %d человек</item>
+        <item quantity="other">и ещё %d человека</item>
     </plurals>
     <string name="unblock_selected">Разблокировать выбранные</string>
     <string name="call_alert">You\'re already on call</string>
@@ -1544,7 +1554,9 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="KeyboardPagerfragment_clear_search_entry">Clear search entry</string>
     <plurals name="ReactionsRecipientAdapter_other_reactors">
         <item quantity="one">И ещё %1$d пользователь отреагировал(а) %2$s на это сообщение.</item>
-        <item quantity="other">И ещё %1$d пользователей отреагировали %2$s на это сообщение.</item>
+        <item quantity="few">И ещё %1$d пользователя отреагировали %2$s на это сообщение.</item>
+        <item quantity="many">И ещё %1$d пользователей отреагировали %2$s на это сообщение.</item>
+        <item quantity="other">И ещё %1$d пользователя отреагировали %2$s на это сообщение.</item>
     </plurals>
 
     <string name="emojiAndSymbols">Emoji and Symbols</string>
@@ -1578,6 +1590,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
 
     <plurals name="deleteMessageDeleted">
         <item quantity="one">Сообщение удалено</item>
+        <item quantity="few">Сообщения удалены</item>
+        <item quantity="many">Сообщения удалены</item>
         <item quantity="other">Сообщения удалены</item>
     </plurals>
     <plurals name="deleteMessageConfirm">
@@ -1667,8 +1681,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="four_digit_pin">4-значный PIN-код</string>
     <string name="six_digit_pin">6-значный PIN-код</string>
     <plurals name="contact_others">
-        <item quantity="one">%s и ещё %d другой</item>
-        <item quantity="other">%s и ещё %d других</item>
+        <item quantity="one">%1$s и ещё %2$d человек</item>
+        <item quantity="few">%1$s и ещё %2$d человека</item>
+        <item quantity="many">%1$s и ещё %2$d человек</item>
+        <item quantity="other">%1$s и ещё %2$d человека</item>
     </plurals>
     <string name="unblocked_this_contact">Этот контакт разблокирован</string>
     <string name="invalid_old_password">Неверный старый пароль</string>
@@ -1713,7 +1729,9 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="restore_wallet_using_keystore">Используйте созданный файл хранилища ключей (keystore), сохранённый из приватных ключей, для восстановления вашего кошелька.</string>
     <plurals name="group_member_count">
         <item quantity="one">%d участник</item>
-        <item quantity="other">%d участников</item>
+        <item quantity="few">%d участника</item>
+        <item quantity="many">%d участников</item>
+        <item quantity="other">%d участника</item>
     </plurals>
 
 </resources>

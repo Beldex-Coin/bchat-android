@@ -122,8 +122,7 @@
         <item quantity="other">%1$d개의 미디어를 저장소에 저장하면 기기의 다른 앱에서도 해당 항목에 접근할 수 있습니다.</item>
     </plurals>
     <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
-        <item quantity="one">첨부 파일을 저장소에 저장하는 중 오류가 발생했습니다!</item>
-        <item quantity="other">첨부 파일들을 저장소에 저장하는 중 오류가 발생했습니다!</item>
+        <item quantity="other">첨부 파일을 저장소에 저장하는 중 오류가 발생했습니다!</item>
     </plurals>
     <plurals name="ConversationFragment_saving_n_attachments">
         <item quantity="other">%1$d개의 첨부파일 저장 중</item>
@@ -205,8 +204,7 @@
     <string name="MediaSendActivity_camera_unavailable">카메라를 사용할 수 없습니다.</string>
     <string name="MediaSendActivity_message_to_s">메시지 보내기 %s</string>
     <plurals name="MediaSendActivity_cant_share_more_than_n_items">
-        <item quantity="one">%d 개 이상의 항목은 공유할 수 없습니다.</item>
-        <item quantity="other">%d 개 이상의 항목은 공유할 수 없습니다.</item>
+        <item quantity="other">%d개 이상의 항목은 공유할 수 없습니다.</item>
     </plurals>
 
     <!-- MediaRepository -->
@@ -349,8 +347,7 @@
 
     <!-- TransferControlView -->
     <plurals name="TransferControlView_n_items">
-        <item quantity="one">%d 개 항목</item>
-        <item quantity="other">%d 개 항목</item>
+        <item quantity="other">%d개 항목</item>
     </plurals>
 
     <!-- VideoPlayer -->
@@ -476,8 +473,7 @@
 
     <!-- plurals.xml -->
     <plurals name="hours_ago">
-        <item quantity="one">%d 시간</item>
-        <item quantity="other">%d 시간</item>
+        <item quantity="other">%d시간 전</item>
     </plurals>
 
     <!-- preferences.xml -->
@@ -1264,8 +1260,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="Unblock_dialog__title_multiple">사용자 차단 해제</string>
     <string name="Unblock_dialog__message">정말로 %s의 차단을 해제하시겠습니까?</string>
     <plurals name="Unblock_dialog__message_multiple_overflow">
-        <item quantity="one">외 %d 명</item>
-        <item quantity="other">외 %d 명</item>
+        <item quantity="other">외 %d명</item>
     </plurals>
     <string name="unblock_selected">선택한 연락처 차단 해제</string>
     <string name="call_alert">You\'re already on call</string>
@@ -1521,8 +1516,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="KeyboardPagerfragment_back_to_emoji">Back to emoji</string>
     <string name="KeyboardPagerfragment_clear_search_entry">Clear search entry</string>
     <plurals name="ReactionsRecipientAdapter_other_reactors">
-        <item quantity="one">외 %1$d 명이 이 메시지에 %2$s 반응을 남겼습니다.</item>
-        <item quantity="other">외 %1$d 명이 이 메시지에 %2$s 반응을 남겼습니다.</item>
+        <item quantity="other">외 %1$d명이 이 메시지에 %2$s 반응을 남겼습니다.</item>
     </plurals>
 
     <string name="emojiAndSymbols">Emoji and Symbols</string>
@@ -1555,7 +1549,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="title_activity_secret_group_info_compose">SecretGroupInfoComposeActivity</string>
 
     <plurals name="deleteMessageDeleted">
-        <item quantity="one">메시지가 삭제되었습니다.</item>
         <item quantity="other">메시지가 삭제되었습니다.</item>
     </plurals>
     <plurals name="deleteMessageConfirm">
@@ -1645,8 +1638,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="four_digit_pin">4자리 PIN</string>
     <string name="six_digit_pin">6자리 PIN</string>
     <plurals name="contact_others">
-        <item quantity="one">%s 님 외 %d 명</item>
-        <item quantity="other">%s 님 외 %d 명</item>
+        <item quantity="other">%1$s님 외 %2$d명</item>
     </plurals>
     <string name="unblocked_this_contact">이 연락처의 차단을 해제했습니다.</string>
     <string name="invalid_old_password">기존 비밀번호가 올바르지 않습니다.</string>
@@ -1690,8 +1682,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="restore_from_keys">키로 복원</string>
     <string name="restore_wallet_using_keystore">개인 키로 생성된 키스토어를 사용하여 지갑을 복원하세요.</string>
     <plurals name="group_member_count">
-        <item quantity="one">%d 명의 멤버</item>
-        <item quantity="other">구성원 %d 명</item>
+        <item quantity="other">구성원 %d명</item>
     </plurals>
 
 </resources>

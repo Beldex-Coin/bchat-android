@@ -122,7 +122,6 @@
         <item quantity="other">%1$d 件のメディアをストレージに保存すると、デバイス上の他のアプリもアクセスできるようになります。</item>
     </plurals>
     <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
-        <item quantity="one">添付ファイルをストレージに保存中にエラーが発生しました。</item>
         <item quantity="other">添付ファイルをストレージに保存中にエラーが発生しました。</item>
     </plurals>
     <plurals name="ConversationFragment_saving_n_attachments">
@@ -205,7 +204,6 @@
     <string name="MediaSendActivity_camera_unavailable">カメラが使用できません。</string>
     <string name="MediaSendActivity_message_to_s">メッセージ送信先 %s</string>
     <plurals name="MediaSendActivity_cant_share_more_than_n_items">
-        <item quantity="one">%d 個を超えるアイテムを共有することはできません。</item>
         <item quantity="other">%d 個を超えるアイテムを共有することはできません。</item>
     </plurals>
 
@@ -349,7 +347,6 @@
 
     <!-- TransferControlView -->
     <plurals name="TransferControlView_n_items">
-        <item quantity="one">%d アイテム</item>
         <item quantity="other">%d アイテム</item>
     </plurals>
 
@@ -476,8 +473,7 @@
 
     <!-- plurals.xml -->
     <plurals name="hours_ago">
-        <item quantity="one">%d 時間</item>
-        <item quantity="other">%d 時間</item>
+        <item quantity="other">%d 時間前</item>
     </plurals>
 
     <!-- preferences.xml -->
@@ -1264,7 +1260,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="Unblock_dialog__title_multiple">ユーザーのブロック解除</string>
     <string name="Unblock_dialog__message">%s のブロックを解除してもよろしいですか？</string>
     <plurals name="Unblock_dialog__message_multiple_overflow">
-        <item quantity="one">および他 %d 件</item>
         <item quantity="other">および他 %d 件</item>
     </plurals>
     <string name="unblock_selected">選択した連絡先をブロック解除</string>
@@ -1521,8 +1516,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="KeyboardPagerfragment_back_to_emoji">Back to emoji</string>
     <string name="KeyboardPagerfragment_clear_search_entry">Clear search entry</string>
     <plurals name="ReactionsRecipientAdapter_other_reactors">
-        <item quantity="one">このメッセージに 他 %1$d 件 がリアクション %2$s をしました</item>
-        <item quantity="other">このメッセージに 他 %1$d 件のユーザー」がリアクション %2$s をしました</item>
+        <item quantity="other">このメッセージに他 %1$d 人が %2$s でリアクションしました。</item>
     </plurals>
 
     <string name="emojiAndSymbols">Emoji and Symbols</string>
@@ -1555,7 +1549,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="title_activity_secret_group_info_compose">SecretGroupInfoComposeActivity</string>
 
     <plurals name="deleteMessageDeleted">
-        <item quantity="one">通話中は音声メッセージを送信できません</item>
         <item quantity="other">メッセージが削除されました</item>
     </plurals>
     <plurals name="deleteMessageConfirm">
@@ -1645,8 +1638,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="four_digit_pin">4桁のPIN</string>
     <string name="six_digit_pin">6桁のPIN</string>
     <plurals name="contact_others">
-        <item quantity="one">%s と他 %d 件</item>
-        <item quantity="other">%s と他 %d 人</item>
+        <item quantity="other">%1$s と他 %2$d 人</item>
     </plurals>
     <string name="unblocked_this_contact">この連絡先のブロックを解除しました</string>
     <string name="invalid_old_password">古いパスワードが無効です</string>
@@ -1690,7 +1682,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="restore_from_keys">キーから復元</string>
     <string name="restore_wallet_using_keystore">生成されたキーストアまたはプライベートキーを使用してウォレットを復元します</string>
     <plurals name="group_member_count">
-        <item quantity="one">%d メンバー</item>
         <item quantity="other">%d メンバー</item>
     </plurals>
 </resources>

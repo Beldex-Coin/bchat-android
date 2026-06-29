@@ -18,12 +18,10 @@
 
     <!-- ApplicationPreferencesActivity -->
     <plurals name="ApplicationPreferencesActivity_messages_per_conversation">
-        <item quantity="one">%d tin nhắn cho mỗi cuộc trò chuyện</item>
         <item quantity="other">%d tin nhắn cho mỗi cuộc trò chuyện</item>
     </plurals>
     <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Delete All Old Messages Now?</string>
     <plurals name="ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages">
-        <item quantity="one">Thao tác này sẽ ngay lập tức cắt giảm tất cả cuộc trò chuyện xuống còn tin nhắn gần đây nhất.</item>
         <item quantity="other">Thao tác này sẽ ngay lập tức cắt giảm tất cả cuộc trò chuyện xuống còn %d tin nhắn gần đây nhất.</item>
     </plurals>
     <string name="ApplicationPreferencesActivity_On">On</string>
@@ -126,7 +124,6 @@
         <item quantity="other">Lưu tất cả %1$d phương tiện vào bộ nhớ sẽ cho phép các ứng dụng khác trên thiết bị của bạn truy cập chúng.</item>
     </plurals>
     <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
-        <item quantity="one">Lỗi khi lưu tệp đính kèm vào bộ nhớ!</item>
         <item quantity="other">Lỗi khi lưu các tệp đính kèm vào bộ nhớ!</item>
     </plurals>
     <plurals name="ConversationFragment_saving_n_attachments">
@@ -209,7 +206,6 @@
     <string name="MediaSendActivity_camera_unavailable">Không thể sử dụng máy ảnh.</string>
     <string name="MediaSendActivity_message_to_s">Nhắn tin tới %s</string>
     <plurals name="MediaSendActivity_cant_share_more_than_n_items">
-        <item quantity="one">Bạn không thể chia sẻ quá %d mục.</item>
         <item quantity="other">Bạn không thể chia sẻ quá %d mục.</item>
     </plurals>
 
@@ -353,7 +349,6 @@
 
     <!-- TransferControlView -->
     <plurals name="TransferControlView_n_items">
-        <item quantity="one">%d mục</item>
         <item quantity="other">%d mục</item>
     </plurals>
 
@@ -481,8 +476,7 @@
 
     <!-- plurals.xml -->
     <plurals name="hours_ago">
-        <item quantity="one">%d giờ</item>
-        <item quantity="other">%d giờ</item>
+        <item quantity="other">%d giờ trước</item>
     </plurals>
 
     <!-- preferences.xml -->
@@ -1267,7 +1261,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="Unblock_dialog__title_multiple">Bỏ chặn người dùng</string>
     <string name="Unblock_dialog__message">Bạn có chắc chắn muốn bỏ chặn %s không?</string>
     <plurals name="Unblock_dialog__message_multiple_overflow">
-        <item quantity="one">và %d người khác</item>
         <item quantity="other">và %d người khác</item>
     </plurals>
     <string name="unblock_selected">Bỏ chặn đã chọn</string>
@@ -1524,7 +1517,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="KeyboardPagerfragment_back_to_emoji">Back to emoji</string>
     <string name="KeyboardPagerfragment_clear_search_entry">Clear search entry</string>
     <plurals name="ReactionsRecipientAdapter_other_reactors">
-        <item quantity="one">Và %1$d người khác đã phản ứng %2$s với tin nhắn này.</item>
         <item quantity="other">Và %1$d người khác đã phản ứng %2$s với tin nhắn này.</item>
     </plurals>
 
@@ -1558,7 +1550,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="title_activity_secret_group_info_compose">SecretGroupInfoComposeActivity</string>
 
     <plurals name="deleteMessageDeleted">
-        <item quantity="one">Tin nhắn đã bị xóa</item>
         <item quantity="other">Tin nhắn đã bị xóa</item>
     </plurals>
     <plurals name="deleteMessageConfirm">
@@ -1648,8 +1639,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="four_digit_pin">Mã PIN 4 chữ số</string>
     <string name="six_digit_pin">Mã PIN 6 chữ số</string>
     <plurals name="contact_others">
-        <item quantity="one">%s và %d người khác</item>
-        <item quantity="other">%s và %d người khác</item>
+        <item quantity="other">%1$s và %2$d người khác</item>
     </plurals>
     <string name="unblocked_this_contact">Đã bỏ chặn liên hệ này</string>
     <string name="invalid_old_password">Mật khẩu cũ không hợp lệ</string>
@@ -1693,7 +1683,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="restore_from_keys">Khôi phục từ khóa</string>
     <string name="restore_wallet_using_keystore">Sử dụng tệp keystore được tạo từ khóa riêng tư đã lưu để khôi phục ví của bạn</string>
     <plurals name="group_member_count">
-        <item quantity="one">%d thành viên</item>
         <item quantity="other">%d thành viên</item>
     </plurals>
 

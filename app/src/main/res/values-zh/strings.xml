@@ -122,7 +122,6 @@
         <item quantity="other">将 %1$d 个媒体文件保存到存储空间后，设备上的其他应用也可以访问它们。</item>
     </plurals>
     <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
-        <item quantity="one">保存附件到存储时出错！</item>
         <item quantity="other">保存附件到存储时出错！</item>
     </plurals>
     <plurals name="ConversationFragment_saving_n_attachments">
@@ -205,7 +204,6 @@
     <string name="MediaSendActivity_camera_unavailable">相机不可用。</string>
     <string name="MediaSendActivity_message_to_s">发送消息给 %s</string>
     <plurals name="MediaSendActivity_cant_share_more_than_n_items">
-        <item quantity="one">您一次不能分享超过 %d 个项目。</item>
         <item quantity="other">您一次不能分享超过 %d 个项目。</item>
     </plurals>
 
@@ -349,7 +347,6 @@
 
     <!-- TransferControlView -->
     <plurals name="TransferControlView_n_items">
-        <item quantity="one">%d 个项目</item>
         <item quantity="other">%d 个项目</item>
     </plurals>
 
@@ -476,8 +473,7 @@
 
     <!-- plurals.xml -->
     <plurals name="hours_ago">
-        <item quantity="one">%d 小时</item>
-        <item quantity="other">%d 小时</item>
+        <item quantity="other">%d 小时前</item>
     </plurals>
 
     <!-- preferences.xml -->
@@ -1264,7 +1260,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="Unblock_dialog__title_multiple">解除屏蔽用户</string>
     <string name="Unblock_dialog__message">您确定要解除屏蔽 %s 吗？</string>
     <plurals name="Unblock_dialog__message_multiple_overflow">
-        <item quantity="one">以及另外 %d 位</item>
         <item quantity="other">以及另外 %d 位</item>
     </plurals>
     <string name="unblock_selected">取消屏蔽所选联系人</string>
@@ -1521,7 +1516,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="KeyboardPagerfragment_back_to_emoji">Back to emoji</string>
     <string name="KeyboardPagerfragment_clear_search_entry">Clear search entry</string>
     <plurals name="ReactionsRecipientAdapter_other_reactors">
-        <item quantity="one">还有 %1$d 位用户对这条消息作出了 %2$s 反应。</item>
         <item quantity="other">还有 %1$d 位用户对这条消息作出了 %2$s 反应。</item>
     </plurals>
 
@@ -1555,7 +1549,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="title_activity_secret_group_info_compose">SecretGroupInfoComposeActivity</string>
 
     <plurals name="deleteMessageDeleted">
-        <item quantity="one">消息已删除</item>
         <item quantity="other">消息已删除</item>
     </plurals>
     <plurals name="deleteMessageConfirm">
@@ -1645,8 +1638,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="four_digit_pin">4位PIN码</string>
     <string name="six_digit_pin">6位PIN码</string>
     <plurals name="contact_others">
-        <item quantity="one">“%s”和另外 %d 位</item>
-        <item quantity="other">“%s”和另外 %d 位</item>
+        <item quantity="other">%1$s 和另外 %2$d 位</item>
     </plurals>
     <string name="unblocked_this_contact">已解除对此联系人的屏蔽</string>
     <string name="invalid_old_password">旧密码无效</string>
@@ -1690,7 +1682,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="restore_from_keys">从密钥恢复</string>
     <string name="restore_wallet_using_keystore">使用由私钥生成并保存的密钥库文件来恢复您的钱包。</string>
     <plurals name="group_member_count">
-        <item quantity="one">%d 位成员</item>
         <item quantity="other">%d 位成员</item>
     </plurals>
 

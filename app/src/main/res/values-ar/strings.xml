@@ -146,10 +146,16 @@
         <item quantity="many">سيؤدي حفظ %1$d من الوسائط في وحدة التخزين إلى السماح لأي تطبيقات أخرى على جهازك بالوصول إليها.</item>
         <item quantity="other">سيؤدي حفظ %1$d من الوسائط في وحدة التخزين إلى السماح لأي تطبيقات أخرى على جهازك بالوصول إليها.</item>
     </plurals>
+
     <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
+        <item quantity="zero">حدث خطأ أثناء حفظ المرفقات في وحدة التخزين!</item>
         <item quantity="one">حدث خطأ أثناء حفظ المرفق في وحدة التخزين!</item>
+        <item quantity="two">حدث خطأ أثناء حفظ المرفقين في وحدة التخزين!</item>
+        <item quantity="few">حدث خطأ أثناء حفظ المرفقات في وحدة التخزين!</item>
+        <item quantity="many">حدث خطأ أثناء حفظ المرفقات في وحدة التخزين!</item>
         <item quantity="other">حدث خطأ أثناء حفظ المرفقات في وحدة التخزين!</item>
     </plurals>
+
     <plurals name="ConversationFragment_saving_n_attachments">
         <item quantity="zero">جارٍ حفظ المرفقات</item>
         <item quantity="one">جارٍ حفظ المرفق</item>
@@ -241,8 +247,12 @@
     <string name="MediaSendActivity_camera_unavailable">الكاميرا غير متاحة.</string>
     <string name="MediaSendActivity_message_to_s">رسالة إلى %s</string>
     <plurals name="MediaSendActivity_cant_share_more_than_n_items">
-        <item quantity="one">لا يمكنك مشاركة أكثر من %d عنصر.</item>
-        <item quantity="other">لا يمكنك مشاركة أكثر من %d عناصر.</item>
+        <item quantity="zero">لا يمكنك مشاركة أكثر من %d عنصر.</item>
+        <item quantity="one">لا يمكنك مشاركة أكثر من عنصر واحد.</item>
+        <item quantity="two">لا يمكنك مشاركة أكثر من عنصرين.</item>
+        <item quantity="few">لا يمكنك مشاركة أكثر من %d عناصر.</item>
+        <item quantity="many">لا يمكنك مشاركة أكثر من %d عنصرًا.</item>
+        <item quantity="other">لا يمكنك مشاركة أكثر من %d عنصر.</item>
     </plurals>
 
     <!-- MediaRepository -->
@@ -385,8 +395,12 @@
 
     <!-- TransferControlView -->
     <plurals name="TransferControlView_n_items">
-        <item quantity="one">%d عنصر</item>
-        <item quantity="other">%d عناصر</item>
+        <item quantity="zero">0 عنصر</item>
+        <item quantity="one">عنصر واحد</item>
+        <item quantity="two">عنصران</item>
+        <item quantity="few">%d عناصر</item>
+        <item quantity="many">%d عنصرًا</item>
+        <item quantity="other">%d عنصر</item>
     </plurals>
 
     <!-- VideoPlayer -->
@@ -512,8 +526,12 @@
 
     <!-- plurals.xml -->
     <plurals name="hours_ago">
-        <item quantity="one">%d ساعة</item>
-        <item quantity="other">%d ساعات</item>
+        <item quantity="zero">الآن</item>
+        <item quantity="one">منذ ساعة</item>
+        <item quantity="two">منذ ساعتين</item>
+        <item quantity="few">منذ %d ساعات</item>
+        <item quantity="many">منذ %d ساعة</item>
+        <item quantity="other">منذ %d ساعة</item>
     </plurals>
 
     <!-- preferences.xml -->
@@ -1300,8 +1318,12 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="Unblock_dialog__title_multiple">إلغاء حظر المستخدمين</string>
     <string name="Unblock_dialog__message">هل أنت متأكد أنك تريد إلغاء حظر %s؟</string>
     <plurals name="Unblock_dialog__message_multiple_overflow">
-        <item quantity="one">و%d آخرين</item>
-        <item quantity="other">و%d آخرين</item>
+        <item quantity="zero">ولا أحد آخر</item>
+        <item quantity="one">وشخص آخر</item>
+        <item quantity="two">وشخصان آخران</item>
+        <item quantity="few">و%d آخرون</item>
+        <item quantity="many">و%d آخرًا</item>
+        <item quantity="other">و%d آخر</item>
     </plurals>
     <string name="unblock_selected">إلغاء الحظر المحدد</string>
     <string name="call_alert">You\'re already on call</string>
@@ -1590,7 +1612,11 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="title_activity_secret_group_info_compose">SecretGroupInfoComposeActivity</string>
 
     <plurals name="deleteMessageDeleted">
+        <item quantity="zero">لم يتم حذف أي رسالة</item>
         <item quantity="one">تم حذف الرسالة</item>
+        <item quantity="two">تم حذف الرسالتين</item>
+        <item quantity="few">تم حذف الرسائل</item>
+        <item quantity="many">تم حذف الرسائل</item>
         <item quantity="other">تم حذف الرسائل</item>
     </plurals>
     <plurals name="deleteMessageConfirm">
@@ -1680,8 +1706,12 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="four_digit_pin">رمز PIN مكون من 4 أرقام</string>
     <string name="six_digit_pin">رمز PIN مكون من 6 أرقام</string>
     <plurals name="contact_others">
+        <item quantity="zero">%1$s</item>
         <item quantity="one">%1$s وشخص آخر</item>
-        <item quantity="other">%1$s و%2$s آخرين</item>
+        <item quantity="two">%1$s وشخصان آخران</item>
+        <item quantity="few">%1$s و%2$s آخرون</item>
+        <item quantity="many">%1$s و%2$s آخرًا</item>
+        <item quantity="other">%1$s و%2$s آخر</item>
     </plurals>
     <string name="unblocked_this_contact">تم إلغاء حظر هذا الاتصال</string>
     <string name="invalid_old_password">كلمة المرور القديمة غير صحيحة</string>
@@ -1725,8 +1755,12 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="restore_from_keys">الاستعادة من المفاتيح</string>
     <string name="restore_wallet_using_keystore">استخدم ملف keystore المُنشأ والمحفوظ من المفاتيح الخاصة لاستعادة محفظتك.</string>
     <plurals name="group_member_count">
-        <item quantity="one">%s عضو</item>
-        <item quantity="other">%s عضوًا</item>
+        <item quantity="zero">لا يوجد أعضاء</item>
+        <item quantity="one">عضو واحد</item>
+        <item quantity="two">عضوان</item>
+        <item quantity="few">%s أعضاء</item>
+        <item quantity="many">%s عضوًا</item>
+        <item quantity="other">%s عضو</item>
     </plurals>
 
 </resources>

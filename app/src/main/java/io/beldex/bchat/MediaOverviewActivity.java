@@ -41,6 +41,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -472,7 +473,7 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
     }
 
     private void enterMultiSelect() {
-      actionMode = ((BaseAppCompatActivity) getActivity()).startSupportActionMode(actionModeCallback);
+      actionMode = ((AppCompatActivity) getActivity()).startSupportActionMode(actionModeCallback);
       ((MediaOverviewActivity) getActivity()).onEnterMultiSelect();
     }
 

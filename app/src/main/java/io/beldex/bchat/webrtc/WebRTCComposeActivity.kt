@@ -684,7 +684,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                         localVideoView= state.userVideoEnabled || state.remoteVideoEnabled
                         isSwitchCameraFlipEnabled=state.userVideoEnabled
                         isStatusText=if (state.userVideoEnabled) {
-                            "Video Call"
+                            context.getString(R.string.video_call)
                         } else {
                             context.getString(R.string.voice_call)
                         }

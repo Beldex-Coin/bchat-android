@@ -88,4 +88,5 @@
     <string name="fifteen_minutes">15 Minuten</string>
     <string name="thirty_minutes">30 Minuten</string>
     <string name="deleteMessageDeletedGlobally">Diese Nachricht wurde gelöscht</string>
+    <string name="report_issue">Problem melden</string>
 </resources>

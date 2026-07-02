@@ -985,6 +985,7 @@
     <string name="end_to_end_encrypted">端到端加密</string>
     <string name="call_duration">00:10:10</string>
     <string name="hang_up">挂断</string>
+    <string name="answer">接听</string>
     <string name="back_to_call">Back to call</string>
     <string name="call_in_progress">通话进行中</string>
     <string name="call_muted">通话已静音</string>
@@ -1407,6 +1408,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="no_addresses">No Addresses!</string>
     <string name="save_address_to_show">Save address to show!</string>
     <string name="voice_call">语音通话</string>
+    <string name="video_call">视频通话</string>
     <string name="missed_voice_call">Missed Voice Call</string>
     <string name="tap_to_callback">Tap to Callback</string>
     <string name="enter_your_4_digit_wallet_pin">请输入您的 %d 位钱包 PIN 码</string>

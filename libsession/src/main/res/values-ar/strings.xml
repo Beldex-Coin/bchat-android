@@ -108,4 +108,5 @@
     <string name="fifteen_minutes">15 دقيقة</string>
     <string name="thirty_minutes">30 دقيقة</string>
     <string name="deleteMessageDeletedGlobally">تم حذف هذه الرسالة</string>
+    <string name="report_issue">الإبلاغ عن مشكلة</string>
 </resources>

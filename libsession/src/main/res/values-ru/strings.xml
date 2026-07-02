@@ -97,4 +97,5 @@
     <string name="fifteen_minutes">15 минут</string>
     <string name="thirty_minutes">30 минут</string>
     <string name="deleteMessageDeletedGlobally">Это сообщение было удалено</string>
+    <string name="report_issue">Сообщить о проблеме</string>
 </resources>

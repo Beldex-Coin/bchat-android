@@ -81,11 +81,11 @@
     <string name="ConversationActivity_muted_forever">Без звука</string>
     <string name="ConversationActivity_member_count">%1$d участников</string>
     <string name="ConversationActivity_open_group_guidelines">Правила сообщества</string>
-    <string name="ConversationActivity_social_group_welcome">Welcome to BChat</string>
+    <string name="ConversationActivity_social_group_welcome">Добро пожаловать в BChat</string>
 
     <string name="ConversationActivity_invalid_recipient">Invalid recipient!</string>
     <string name="ConversationActivity_added_to_home_screen">Добавлено на главный экран</string>
-    <string name="ConversationActivity_leave_group">Leave group?</string>
+    <string name="ConversationActivity_leave_group">Покинуть группу?</string>
     <string name="ConversationActivity_are_you_sure_you_want_to_leave_this_group">Вы уверены, что хотите покинуть эту группу?</string>
     <string name="ConversationActivity_error_leaving_group">Ошибка при выходе из группы</string>
     <string name="ConversationActivity_unblock_this_contact_question">Unblock this contact?</string>
@@ -94,7 +94,7 @@
     <string name="ConversationActivity_attachment_exceeds_size_limits">Attachment exceeds size limits for the type of message you\'re sending.</string>
     <string name="ConversationActivity_unable_to_record_audio">Не удалось записать аудио!</string>
     <string name="ConversationActivity_there_is_no_app_available_to_handle_this_link_on_your_device">There is no app available to handle this link on your device.</string>
-    <string name="ConversationActivity_invite_to_open_group">Add members</string>
+    <string name="ConversationActivity_invite_to_open_group">Добавить участников</string>
     <string name="ConversationActivity_join_open_group">Join %s</string>
     <string name="ConversationActivity_join_open_group_confirmation_message">Are you sure you want to join the <b>%s</b> social group?</string>
 
@@ -557,7 +557,7 @@
     <string name="preferences__request_keyboard_to_disable_personalized_learning">Запросить клавиатуру, чтобы отключить персонализированное обучение.</string>
     <string name="preferences__light_theme">Light</string>
     <string name="preferences__dark_theme">Dark</string>
-    <string name="preferences_chats__message_trimming">Обрезка сообщений (Message Trimming)</string>
+    <string name="preferences_chats__message_trimming">Обрезка сообщений </string>
     <string name="preferences_advanced__use_system_emoji">Использовать системные эмодзи</string>
     <string name="preferences_advanced__disable_signal_built_in_emoji_support">Disable BChat\'s built-in emoji support</string>
     <string name="preferences_app_protection__app_access">Доступ к приложению</string>
@@ -605,7 +605,7 @@
     <string name="conversation_unmuted__mute_notifications">Отключить уведомления</string>
 
     <!-- conversation -->
-    <string name="conversation__menu_edit_group">Edit group</string>
+    <string name="conversation__menu_edit_group">Редактировать группу</string>
     <string name="conversation__menu_leave_group">Покинуть группу</string>
     <string name="conversation__menu_add_shortcut">Добавить на главный экран</string>
 
@@ -710,7 +710,7 @@
     <string name="view_seed_reminder_subtitle_2">Нажмите и удерживайте скрытые слова, чтобы увидеть свою фразу восстановления, затем сохраните её в безопасном месте для защиты вашего ID BChat.</string>
     <string name="view_seed_reminder_subtitle_3">Обязательно храните свою фразу восстановления в безопасном месте</string>
 
-    <string name="activity_path_title">Хопы (Hops)</string>
+    <string name="activity_path_title">Хопы</string>
     <string name="activity_path_explanation">BChat скрывает ваш IP-адрес, маршрутизируя сообщения через несколько мастернодов в децентрализованной сети Beldex.  В данный момент ваше соединение проходит через следующие мастерноды</string>
     <string name="activity_path_guard_node_row_title">Входной узел</string>
     <string name="activity_path_service_node_row_title">Мастернода</string>
@@ -761,7 +761,7 @@
 
     <string name="activity_privacy_settings_title">Конфиденциальность</string>
 
-    <string name="activity_chat_settings_title">Chats</string>
+    <string name="activity_chat_settings_title">Чаты</string>
 
     <string name="preferences_notifications_strategy_category_title">Стратегия уведомлений</string>
     <string name="preferences_notifications_strategy_category_fast_mode_title">Использовать быстрый режим</string>
@@ -773,7 +773,7 @@
     <string name="dialog_seed_title">Ваша фраза восстановления</string>
     <string name="dialog_seed_explanation">Это ваша фраза восстановления. С её помощью вы можете восстановить или перенести свой ID BChat на новое устройство.</string>
 
-    <string name="dialog_clear_all_data_title">Очистка всех данных (Clear all data)</string>
+    <string name="dialog_clear_all_data_title">Очистка всех данных</string>
     <string name="dialog_clear_all_data_explanation">Вы уверены, что хотите безвозвратно очистить все данные на этом устройстве?</string>
     <string name="dialog_clear_all_data_network_explanation">Вы уверены, что хотите безвозвратно удалить все данные из сети Beldex?</string>
     <string name="dialog_clear_all_data_local_only">Delete Only</string>
@@ -910,7 +910,7 @@
     <string name="close">Close</string>
     <string name="on">On</string>
     <string name="important">Важно</string>
-    <string name="activity_settings_app_lock_button_title">Блокировка приложения (App Lock)</string>
+    <string name="activity_settings_app_lock_button_title">Блокировка приложения</string>
     <string name="change_password">Изменить пароль</string>
     <string name="screenlock_inactivity_timeout">Тайм-аут блокировки экрана при бездействии</string>
     <string name="pin_not_matched">Entered pin not matched</string>
@@ -962,7 +962,7 @@
     <string name="join_social_group_description_content">Social groups are similar to public groups, however, you need an invite link to join. Join a social group using the group\'s URL.</string>
     <string name="if_you_don_t_know_the_restore_blockheight_you_can_skip_it">If you don\'t know the restore blockheight, you can skip it.</string>
     <string name="if_you_don_t_know_the_restore_date_you_can_skip_it">If you don\'t know the restore date, you can skip it.</string>
-    <string name="changelog">Список изменений (Changelog)</string>
+    <string name="changelog">Список изменений</string>
     <string name="enter_your_password">Enter your password</string>
     <string name="navigate_to_voice_message">Navigate to voice message </string>
     <string name="VoiceNotePlayerView__dot_s">· %1$s</string>
@@ -977,7 +977,7 @@
     <string name="activity_message_request_title">Запросы сообщений</string>
     <string name="message_requests_send_notice">Отправка сообщения этому пользователю автоматически примет его запрос и покажет ваш BChat ID.</string>
     <string name="accept">Принять</string>
-    <string name="decline">Decline</string>
+    <string name="decline">Отклонить</string>
     <string name="message_requests_clear_all">Очистить всё</string>
     <string name="message_requests_delete_message">Вы уверены, что хотите удалить этот запрос?</string>
     <string name="message_requests_deleted">Message request deleted</string>
@@ -1019,6 +1019,7 @@
     <string name="end_to_end_encrypted">Сквозное шифрование</string>
     <string name="call_duration">00:10:10</string>
     <string name="hang_up">Завершить вызов</string>
+    <string name="answer">Ответить</string>
     <string name="back_to_call">Back to call</string>
     <string name="call_in_progress">Звонок продолжается</string>
     <string name="call_muted">Микрофон отключён</string>
@@ -1375,9 +1376,9 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="back">Back</string>
     <string name="restore_from_block_height_hint">Enter Block height to Restore</string>
     <string name="restore_from_date_hint">Select Date</string>
-    <string name="restore_from_height_title">Выберите высоту восстановления (Restore Height)</string>
+    <string name="restore_from_height_title">Выберите высоту восстановления</string>
     <string name="restore_from_date_title">Pick a Date</string>
-    <string name="display_name">" Имя для отображения (Display Name)"</string>
+    <string name="display_name">Имя для отображения</string>
     <string name="enter_name">Enter name</string>
     <string name="copied">Copied!</string>
     <string name="my_account">My Account</string>
@@ -1397,10 +1398,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="title_activity_create_new_private_chat_screen">CreateNewPrivateChatScreen</string>
     <string name="title_activity_start_wallet_info_screen">StartWalletInfoScreen</string>
     <string name="about">О приложении</string>
-    <string name="create_password">Создание пароля (Create Password)</string>
+    <string name="create_password">Создание пароля</string>
     <string name="verify_pin">Проверка PIN</string>
     <string name="enter_your_4_digit_bchat_pin">Введите ваш 4-значный PIN</string>
-    <string name="no_pending_requests">No Pending message Requests!</string>
+    <string name="no_pending_requests">Нет ожидающих запросов на переписку!</string>
     <string name="create_secret_group">Create Secret Group</string>
     <string name="enter_group_name">Введите название секретной группы</string>
     <string name="search_contact">Поиск контакта</string>
@@ -1412,13 +1413,13 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="restore_account">Restore Account</string>
     <string name="hello">Здравствуйте,</string>
     <string name="we_are_thrilled">Мы рады приветствовать вас!</string>
-    <string name="restore_seed">Восстановление по Seed (Restore Seed)</string>
-    <string name="restore_from_seed">Восстановление из Seed (Restore from Seed)</string>
+    <string name="restore_seed">Восстановление по Seed</string>
+    <string name="restore_from_seed">Восстановление из Seed</string>
     <string name="restore">Restore</string>
     <string name="pincode_created">Пароль успешно создан</string>
     <string name="pincode_changed">Пароль успешно изменён</string>
     <string name="copy_and_save_the_seed_to_continue">Скопируйте и сохраните seed, чтобы продолжить</string>
-    <string name="register">Регистрация (Register)</string>
+    <string name="register">Регистрация</string>
     <string name="welcome_message">Hey %1$s, welcome to BChat!</string>
     <string name="copy_your_recovery_seed">Скопируйте вашу восстановительную фразу и сохраните её в безопасности.</string>
     <string name="copy_seed">Скопировать Seed</string>
@@ -1444,6 +1445,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="no_addresses">No Addresses!</string>
     <string name="save_address_to_show">Save address to show!</string>
     <string name="voice_call">Голосовой вызов</string>
+    <string name="video_call">Видеозвонок</string>
     <string name="missed_voice_call">Missed Voice Call</string>
     <string name="tap_to_callback">Tap to Callback</string>
     <string name="enter_your_4_digit_wallet_pin">Введите свой %d-значный PIN-код кошелька</string>
@@ -1480,7 +1482,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="link_your_bns">Привязать ваш BNS</string>
     <string name="read_more_about_bns">Подробнее о BNS</string>
     <string name="show_qr">Показать QR</string>
-    <string name="about_bns">О BNS (About BNS)</string>
+    <string name="about_bns">О BNS</string>
     <string name="scan_qr_code">Сканировать QR-код</string>
     <string name="about_bns_description_4">&#8226; Единая идентичность: Свяжите ваш BChat ID, адрес кошелька Beldex и BelNet ID с одним именем BNS. Это упрощает взаимодействие в экосистеме Beldex.</string>
     <string name="about_bns_description_5">&#8226; Простота использования: Забудьте о сложных алфавитно-цифровых строках. С именем BNS обмен сообщениями и транзакции становятся простыми и удобными.</string>

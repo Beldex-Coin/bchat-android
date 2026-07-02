@@ -993,6 +993,7 @@
     <string name="end_to_end_encrypted">End to End Encrypted</string>
     <string name="call_duration">00:10:10</string>
     <string name="hang_up">Hangup</string>
+    <string name="answer">Answer</string>
     <string name="back_to_call">Back to call</string>
     <string name="call_in_progress">Call in progress</string>
     <string name="call_muted">Call Muted</string>
@@ -1416,6 +1417,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="no_addresses">No Addresses!</string>
     <string name="save_address_to_show">Save address to show!</string>
     <string name="voice_call">Voice Call</string>
+    <string name="video_call">Video Call</string>
     <string name="missed_voice_call">Missed Voice Call</string>
     <string name="tap_to_callback">Tap to Callback</string>
     <string name="enter_your_4_digit_wallet_pin">Enter your %d digit Wallet PIN</string>
@@ -1429,7 +1431,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="password_mismatch">Both passwords should be same.</string>
     <string name="incorrect_password">Incorrect password.</string>
     <string name="dark_mode">Dark Mode</string>
-    <string name="call_permission_required_title">Call Permission Required!</string>
+    <string name="call_permission_required_title">需要通话权限！</string>
     <string name="call_permission_required_description">You can enable the <b>‘Voice and video calls\'</b> permission in the <b>Privacy Settings.</b></string>
     <string name="wallet_setup">Wallet Setup</string>
     <string name="message_status_icon_description">Message delivery status</string>

@@ -21,7 +21,7 @@
         <item quantity="one">%d mensaje por conversación</item>
         <item quantity="other">%d mensajes por conversación</item>
     </plurals>
-    <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Delete All Old Messages Now?</string>
+    <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">¿Eliminar todos los mensajes antiguos ahora?</string>
     <plurals name="ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages">
         <item quantity="one">Esto reducirá inmediatamente todas las conversaciones al mensaje más reciente.</item>
         <item quantity="other">Esto reducirá inmediatamente todas las conversaciones a los %d mensajes más recientes.</item>
@@ -77,11 +77,11 @@
     <string name="ConversationActivity_muted_forever">Silenciado</string>
     <string name="ConversationActivity_member_count">%1$d miembros</string>
     <string name="ConversationActivity_open_group_guidelines">Directrices de la comunidad</string>
-    <string name="ConversationActivity_social_group_welcome">Welcome to BChat</string>
+    <string name="ConversationActivity_social_group_welcome">Bienvenido a BChat</string>
 
     <string name="ConversationActivity_invalid_recipient">Invalid recipient!</string>
     <string name="ConversationActivity_added_to_home_screen">Añadido a la pantalla de inicio</string>
-    <string name="ConversationActivity_leave_group">Leave group?</string>
+    <string name="ConversationActivity_leave_group">¿Salir del grupo?</string>
     <string name="ConversationActivity_are_you_sure_you_want_to_leave_this_group">¿Estás seguro de que deseas salir de este grupo?</string>
     <string name="ConversationActivity_error_leaving_group">Error al salir del grupo</string>
     <string name="ConversationActivity_unblock_this_contact_question">Unblock this contact?</string>
@@ -90,7 +90,7 @@
     <string name="ConversationActivity_attachment_exceeds_size_limits">Attachment exceeds size limits for the type of message you\'re sending.</string>
     <string name="ConversationActivity_unable_to_record_audio">¡No se puede grabar el audio!</string>
     <string name="ConversationActivity_there_is_no_app_available_to_handle_this_link_on_your_device">There is no app available to handle this link on your device.</string>
-    <string name="ConversationActivity_invite_to_open_group">Add members</string>
+    <string name="ConversationActivity_invite_to_open_group">Agregar miembros</string>
     <string name="ConversationActivity_join_open_group">Join %s</string>
     <string name="ConversationActivity_join_open_group_confirmation_message">Are you sure you want to join the <b>%s</b> social group?</string>
 
@@ -583,7 +583,7 @@
     <string name="conversation_unmuted__mute_notifications">Silenciar notificación</string>
 
     <!-- conversation -->
-    <string name="conversation__menu_edit_group">Edit group</string>
+    <string name="conversation__menu_edit_group">Editar grupo</string>
     <string name="conversation__menu_leave_group">Salir del grupo</string>
     <string name="conversation__menu_add_shortcut">Añadir a la pantalla de inicio</string>
 
@@ -728,7 +728,7 @@
     <string name="activity_settings_notifications_button_title">Notificaciones</string>
     <string name="activity_settings_devices_button_title">Devices</string>
     <string name="activity_settings_invite_button_title">Invitar a un amigo</string>
-    <string name="activity_settings_faq_button_title">Preguntas Frecuentes (FAQ)</string>
+    <string name="activity_settings_faq_button_title">Preguntas Frecuentes</string>
     <string name="activity_settings_recovery_phrase_button_title">Semilla de Recuperación</string>
     <string name="activity_settings_clear_all_data_button_title">Borrar Datos</string>
     <string name="activity_settings_clear_all_data_and_network_button_title">Clear Data Including Network</string>
@@ -956,7 +956,7 @@
     <string name="activity_message_request_title">Solicitudes de Mensaje</string>
     <string name="message_requests_send_notice">Enviar un mensaje a este usuario aceptará automáticamente su solicitud de mensaje y revelará tu ID de BChat</string>
     <string name="accept">Aceptar</string>
-    <string name="decline">Decline</string>
+    <string name="decline">Rechazar</string>
     <string name="message_requests_clear_all">Borrar todo</string>
     <string name="message_requests_delete_message">¿Estás seguro de que deseas eliminar esta solicitud?</string>
     <string name="message_requests_deleted">Message request deleted</string>
@@ -998,6 +998,7 @@
     <string name="end_to_end_encrypted">Cifrado de extremo a extremo</string>
     <string name="call_duration">00:10:10</string>
     <string name="hang_up">Colgar</string>
+    <string name="answer">Responder</string>
     <string name="back_to_call">Back to call</string>
     <string name="call_in_progress">Llamada en curso</string>
     <string name="call_muted">Llamada silenciada</string>
@@ -1377,7 +1378,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="create_password">Crear Contraseña</string>
     <string name="verify_pin">Verificar PIN</string>
     <string name="enter_your_4_digit_bchat_pin">Ingresa tu PIN de 4 dígitos de BChat</string>
-    <string name="no_pending_requests">No Pending message Requests!</string>
+    <string name="no_pending_requests">¡Sin solicitudes de mensajes pendientes!</string>
     <string name="create_secret_group">Create Secret Group</string>
     <string name="enter_group_name">Ingrese el nombre del grupo secreto</string>
     <string name="search_contact">Buscar contacto</string>
@@ -1421,6 +1422,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="no_addresses">No Addresses!</string>
     <string name="save_address_to_show">Save address to show!</string>
     <string name="voice_call">Llamada de voz</string>
+    <string name="video_call">Videollamada</string>
     <string name="missed_voice_call">Missed Voice Call</string>
     <string name="tap_to_callback">Tap to Callback</string>
     <string name="enter_your_4_digit_wallet_pin">Ingrese su PIN de billetera de %d dígitos</string>

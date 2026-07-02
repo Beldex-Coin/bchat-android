@@ -78,20 +78,20 @@ class CallNotificationBuilder {
         fun getCallInProgressNotification(context: Context, type: Int, recipient: Recipient?): Notification {
             val contentIntent = Intent(context, WebRTCComposeActivity::class.java)
                 .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            val sizeInPX =context.resources.getDimensionPixelSize(R.dimen.extra_large_profile_picture_size)
+            val sizeInPX = context.resources.getDimensionPixelSize(R.dimen.extra_large_profile_picture_size)
 
-            val contentView=RemoteViews(context.packageName, R.layout.custom_call_notification)
+            val contentView = RemoteViews(context.packageName, R.layout.custom_call_notification)
             val signalProfilePicture = recipient?.contactPhoto
 
-            val bit=AvatarPlaceholderGenerator.generate(
-                    context,
-                    sizeInPX,
-                    recipient?.address.toString(),
-                    recipient?.name.toString()
+            val bit = AvatarPlaceholderGenerator.generate(
+                context,
+                sizeInPX,
+                recipient?.address.toString(),
+                recipient?.name.toString()
             )
             if (signalProfilePicture != null) {
-                val bitmap=decodeStream(signalProfilePicture.openInputStream(context,true))
-                if(bitmap != null) {
+                val bitmap = decodeStream(signalProfilePicture.openInputStream(context, true))
+                if (bitmap != null) {
                     val output = Bitmap.createBitmap(
                         bitmap.width,
                         bitmap.height, Bitmap.Config.ARGB_8888
@@ -135,28 +135,29 @@ class CallNotificationBuilder {
             }
             val pendingIntent = PendingIntent.getActivity(context, 0, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             val intent = Intent(context, WebRtcCallService::class.java)
-                    .setAction(WebRtcCallService.ACTION_DENY_CALL)
+                .setAction(WebRtcCallService.ACTION_DENY_CALL)
             val hangUpIntent = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
             val answerIntent = Intent(context, WebRTCComposeActivity::class.java)
-                    .setAction( if (type == TYPE_INCOMING_PRE_OFFER) WebRTCComposeActivity.ACTION_PRE_OFFER else WebRTCComposeActivity.ACTION_ANSWER)
+                .setAction(if (type == TYPE_INCOMING_PRE_OFFER) WebRTCComposeActivity.ACTION_PRE_OFFER else WebRTCComposeActivity.ACTION_ANSWER)
 
             val answerPendingIntent = PendingIntent.getActivity(context, 0, answerIntent, PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
             val builder = NotificationCompat.Builder(context, NotificationChannels.CALLS)
-                .setFullScreenIntent(getFullScreenPendingIntent(
-                    context
-                ), true)
+                .setFullScreenIntent(getFullScreenPendingIntent(context), true)
                 .setSound(null)
                 .setColor(context.getColor(R.color.call_notification_background))
                 .setSmallIcon(R.drawable.ic_baseline_call_24)
                 .setContentIntent(pendingIntent)
-                    .setOngoing(true)
-                    .setCustomContentView(contentView).build()
+                .setOngoing(true)
+                .setCustomContentView(contentView).build()
 
             recipient?.name?.let { name ->
                 contentView.setTextViewText(R.id.title, name)
             }
+
+            contentView.setTextViewText(R.id.hangUpButton, context.getString(R.string.hang_up))
+            contentView.setTextViewText(R.id.answerButton, context.getString(R.string.NotificationBarManager__answer_call))
 
             when (type) {
                 TYPE_INCOMING_CONNECTING -> {
@@ -167,7 +168,7 @@ class CallNotificationBuilder {
                 TYPE_INCOMING_PRE_OFFER,
                 TYPE_INCOMING_RINGING -> {
                     contentView.setTextViewText(R.id.text, context.getString(R.string.NotificationBarManager__incoming_signal_call))
-                    contentView.setOnClickPendingIntent(R.id.hangUpButton,hangUpIntent)
+                    contentView.setOnClickPendingIntent(R.id.hangUpButton, hangUpIntent)
                     contentView.setOnClickPendingIntent(R.id.answerButton, answerPendingIntent)
                     //builder.setFullScreenIntent(pendingIntent)
                    /* builder.addAction(getServiceNotificationAction(
@@ -190,11 +191,11 @@ class CallNotificationBuilder {
                 }
                 TYPE_OUTGOING_RINGING -> {
                     val intent = Intent(context, WebRtcCallService::class.java)
-                            .setAction(WebRtcCallService.ACTION_LOCAL_HANGUP)
+                        .setAction(WebRtcCallService.ACTION_LOCAL_HANGUP)
 
                     val establishCall = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                     contentView.setTextViewText(R.id.text, context.getString(R.string.NotificationBarManager__establishing_signal_call))
-                    contentView.setOnClickPendingIntent(R.id.text,establishCall )
+                    contentView.setOnClickPendingIntent(R.id.text, establishCall)
                     contentView.setViewVisibility(R.id.hangUpButton, View.GONE)
                     contentView.setViewVisibility(R.id.answerButton, View.GONE)
                 }
@@ -205,11 +206,11 @@ class CallNotificationBuilder {
                 }
                 else -> {
                     val intent = Intent(context, WebRtcCallService::class.java)
-                            .setAction(WebRtcCallService.ACTION_LOCAL_HANGUP)
+                        .setAction(WebRtcCallService.ACTION_LOCAL_HANGUP)
 
                     val establishCall = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                     contentView.setTextViewText(R.id.text, context.getString(R.string.NotificationBarManager_call_in_progress))
-                    contentView.setOnClickPendingIntent(R.id.text,establishCall)
+                    contentView.setOnClickPendingIntent(R.id.text, establishCall)
                     contentView.setViewVisibility(R.id.hangUpButton, View.GONE)
                     contentView.setViewVisibility(R.id.answerButton, View.GONE)
                 }

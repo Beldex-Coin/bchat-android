@@ -87,4 +87,5 @@
     <string name="fifteen_minutes">15 Dakika</string>
     <string name="thirty_minutes">30 Dakika</string>
     <string name="deleteMessageDeletedGlobally">Bu mesaj silindi</string>
+    <string name="report_issue">Sorun Bildir</string>
 </resources>

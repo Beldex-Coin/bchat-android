@@ -1043,6 +1043,7 @@
     <string name="end_to_end_encrypted">تشفير من طرف إلى طرف</string>
     <string name="call_duration">00:10:10</string>
     <string name="hang_up">إنهاء المكالمة</string>
+    <string name="answer">رد</string>
     <string name="back_to_call">Back to call</string>
     <string name="call_in_progress">المكالمة قيد التقدم</string>
     <string name="call_muted">تم كتم المكالمة</string>
@@ -1469,6 +1470,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="no_addresses">No Addresses!</string>
     <string name="save_address_to_show">Save address to show!</string>
     <string name="voice_call">مكالمة صوتية</string>
+    <string name="video_call">مكالمة فيديو</string>
     <string name="missed_voice_call">Missed Voice Call</string>
     <string name="tap_to_callback">Tap to Callback</string>
     <string name="enter_your_4_digit_wallet_pin">أدخل رمز PIN المكوّن من %s أرقام للمحفظة</string>

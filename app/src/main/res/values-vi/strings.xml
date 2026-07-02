@@ -20,7 +20,7 @@
     <plurals name="ApplicationPreferencesActivity_messages_per_conversation">
         <item quantity="other">%d tin nhắn cho mỗi cuộc trò chuyện</item>
     </plurals>
-    <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Delete All Old Messages Now?</string>
+    <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Xóa tất cả tin nhắn cũ ngay bây giờ?</string>
     <plurals name="ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages">
         <item quantity="other">Thao tác này sẽ ngay lập tức cắt giảm tất cả cuộc trò chuyện xuống còn %d tin nhắn gần đây nhất.</item>
     </plurals>
@@ -75,11 +75,11 @@
     <string name="ConversationActivity_muted_forever">Đã tắt thông báo</string>
     <string name="ConversationActivity_member_count">%1$d thành viên</string>
     <string name="ConversationActivity_open_group_guidelines">Quy tắc cộng đồng</string>
-    <string name="ConversationActivity_social_group_welcome">Welcome to BChat</string>
+    <string name="ConversationActivity_social_group_welcome">Chào mừng đến với BChat</string>
 
     <string name="ConversationActivity_invalid_recipient">Invalid recipient!</string>
     <string name="ConversationActivity_added_to_home_screen">Added to home screen</string>
-    <string name="ConversationActivity_leave_group">Leave group?</string>
+    <string name="ConversationActivity_leave_group">Rời khỏi nhóm?</string>
     <string name="ConversationActivity_are_you_sure_you_want_to_leave_this_group">Bạn có chắc chắn muốn rời khỏi nhóm này không?</string>
     <string name="ConversationActivity_error_leaving_group">Lỗi khi rời khỏi nhóm</string>
     <string name="ConversationActivity_unblock_this_contact_question">Unblock this contact?</string>
@@ -88,7 +88,7 @@
     <string name="ConversationActivity_attachment_exceeds_size_limits">Attachment exceeds size limits for the type of message you\'re sending.</string>
     <string name="ConversationActivity_unable_to_record_audio">Không thể ghi âm!</string>
     <string name="ConversationActivity_there_is_no_app_available_to_handle_this_link_on_your_device">There is no app available to handle this link on your device.</string>
-    <string name="ConversationActivity_invite_to_open_group">Add members</string>
+    <string name="ConversationActivity_invite_to_open_group">Thêm thành viên</string>
     <string name="ConversationActivity_join_open_group">Join %s</string>
     <string name="ConversationActivity_join_open_group_confirmation_message">Are you sure you want to join the <b>%s</b> social group?</string>
 
@@ -573,7 +573,7 @@
     <string name="conversation_unmuted__mute_notifications">Tắt thông báo</string>
 
     <!-- conversation -->
-    <string name="conversation__menu_edit_group">Edit group</string>
+    <string name="conversation__menu_edit_group">Chỉnh sửa nhóm</string>
     <string name="conversation__menu_leave_group">Rời khỏi nhóm</string>
     <string name="conversation__menu_add_shortcut">Thêm vào màn hình chính</string>
 
@@ -677,7 +677,7 @@
     <string name="view_seed_reminder_subtitle_2">Chạm và giữ vào các từ đang bị ẩn để xem cụm từ khôi phục, sau đó cất giữ cẩn thận để bảo vệ BChat ID của bạn.</string>
     <string name="view_seed_reminder_subtitle_3">Hãy đảm bảo lưu cụm từ khôi phục ở nơi an toàn</string>
 
-    <string name="activity_path_title">Số lần nhảy (Hops)</string>
+    <string name="activity_path_title">Số lần nhảy</string>
     <string name="activity_path_explanation">BChat che giấu địa chỉ IP của bạn bằng cách định tuyến các tin nhắn qua nhiều masternode trong mạng phi tập trung Beldex. Kết nối của bạn hiện đang được định tuyến qua các masternode sau</string>
     <string name="activity_path_guard_node_row_title">Nút nhập</string>
     <string name="activity_path_service_node_row_title">Nút chính</string>
@@ -717,7 +717,7 @@
     <string name="activity_settings_notifications_button_title">Thông báo</string>
     <string name="activity_settings_devices_button_title">Devices</string>
     <string name="activity_settings_invite_button_title">Mời bạn bè</string>
-    <string name="activity_settings_faq_button_title">Câu hỏi Thường gặp (FAQ)</string>
+    <string name="activity_settings_faq_button_title">Câu hỏi Thường gặp </string>
     <string name="activity_settings_recovery_phrase_button_title">Khóa Phục hồi</string>
     <string name="activity_settings_clear_all_data_button_title">Xóa Dữ liệu</string>
     <string name="activity_settings_clear_all_data_and_network_button_title">Clear Data Including Network</string>
@@ -727,7 +727,7 @@
 
     <string name="activity_privacy_settings_title">Quyền riêng tư</string>
 
-    <string name="activity_chat_settings_title">Chats</string>
+    <string name="activity_chat_settings_title">Trò chuyện</string>
 
     <string name="preferences_notifications_strategy_category_title">Chiến lược thông báo</string>
     <string name="preferences_notifications_strategy_category_fast_mode_title">Sử dụng chế độ nhanh</string>
@@ -914,7 +914,7 @@
     <string name="display_name_screen_description_content">Your display name is not your username and you can change it anytime.</string>
     <string name="register_screen_chat_id_description_content">ID BChat của bạn giống như tên người dùng. Bạn có thể chia sẻ nó với bạn bè để bắt đầu cuộc trò chuyện.</string>
     <string name="register_screen_beldex_address_description_content">Địa chỉ Beldex của bạn được kết nối với ID BChat. Bạn có thể sử dụng địa chỉ này để nhận BDX.</string>
-    <string name="create_password_screen_description_content">Nhập mã PIN gồm 4 chữ số để tăng cường lớp bảo mật cho tài khoản BChat của bạn. Mã PIN này cần thiết để mở khóa tài khoản hoặc xem các khóa khôi phục và chuỗi khôi phục (recovery seed) sau khi đã đăng nhập.</string>
+    <string name="create_password_screen_description_content">Nhập mã PIN gồm 4 chữ số để tăng cường lớp bảo mật cho tài khoản BChat của bạn. Mã PIN này cần thiết để mở khóa tài khoản hoặc xem các khóa khôi phục và chuỗi khôi phục sau khi đã đăng nhập.</string>
     <string name="recovery_phrase_screen_description_content"><font color='#FF0000'>Note: </font> Save your recovery seed! Only your recovery seed can be used to recover your account on another device. Copy the recovery seed to continue.</string>
     <string name="new_chat_screen_description_content">Share your BChat ID with your friends. You can find your BChat ID below.</string>
     <string name="never_share_your_seed_with_anyone">Không bao giờ chia sẻ seed của bạn với bất kỳ ai!</string>
@@ -923,13 +923,13 @@
     <string name="seed_permission_important_confirmButton">Có, tôi đang an toàn :)</string>
     <string name="mnemonic_edit_text_hint">Nhập Khóa của bạn</string>
     <string name="password_screen_description_content">Enter your four digit pin to unlock your account</string>
-    <string name="check_password_description_content_seed">Nhập mật khẩu để xem chuỗi khôi phục (seed) của bạn. Hãy ghi lại nó ra giấy.</string>
+    <string name="check_password_description_content_seed">Nhập mật khẩu để xem chuỗi khôi phục của bạn. Hãy ghi lại nó ra giấy.</string>
     <string name="check_password_description_content_keys">Enter your password to view your restore key. Write it down on paper.</string>
     <string name="closed_group_screen_description_content">Uh oh, you don\'t have any contacts yet.\nAdd some contacts first to start a secret group.</string>
     <string name="join_social_group_description_content">Social groups are similar to public groups, however, you need an invite link to join. Join a social group using the group\'s URL.</string>
     <string name="if_you_don_t_know_the_restore_blockheight_you_can_skip_it">If you don\'t know the restore blockheight, you can skip it.</string>
     <string name="if_you_don_t_know_the_restore_date_you_can_skip_it">If you don\'t know the restore date, you can skip it.</string>
-    <string name="changelog">Nhật ký Thay đổi (Changelog)</string>
+    <string name="changelog">Nhật ký Thay đổi</string>
     <string name="enter_your_password">Enter your password</string>
     <string name="navigate_to_voice_message">Navigate to voice message </string>
     <string name="VoiceNotePlayerView__dot_s">· %1$s</string>
@@ -944,7 +944,7 @@
     <string name="activity_message_request_title">Yêu cầu Tin nhắn</string>
     <string name="message_requests_send_notice">Gửi tin nhắn cho người dùng này sẽ tự động chấp nhận yêu cầu tin nhắn của họ và hiển thị BChat ID của bạn</string>
     <string name="accept">Chấp nhận</string>
-    <string name="decline">Decline</string>
+    <string name="decline">Từ chối</string>
     <string name="message_requests_clear_all">Xóa tất cả</string>
     <string name="message_requests_delete_message">Bạn có chắc chắn muốn xóa yêu cầu này không?</string>
     <string name="message_requests_deleted">Message request deleted</string>
@@ -986,6 +986,7 @@
     <string name="end_to_end_encrypted">Được mã hóa đầu-cuối</string>
     <string name="call_duration">00:10:10</string>
     <string name="hang_up">Kết thúc cuộc gọi</string>
+    <string name="answer">Trả lời</string>
     <string name="back_to_call">Back to call</string>
     <string name="call_in_progress">Cuộc gọi đang diễn ra</string>
     <string name="call_muted">Đã tắt tiếng cuộc gọi</string>
@@ -1339,7 +1340,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="back">Back</string>
     <string name="restore_from_block_height_hint">Enter Block height to Restore</string>
     <string name="restore_from_date_hint">Select Date</string>
-    <string name="restore_from_height_title">Chọn điểm khôi phục (restore height)</string>
+    <string name="restore_from_height_title">Chọn điểm khôi phục</string>
     <string name="restore_from_date_title">Pick a Date</string>
     <string name="display_name">Tên hiển thị</string>
     <string name="enter_name">Nhập tên</string>
@@ -1364,7 +1365,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="create_password">Tạo Mật khẩu</string>
     <string name="verify_pin">Xác minh PIN</string>
     <string name="enter_your_4_digit_bchat_pin">Nhập mã PIN BChat gồm 4 chữ số của bạn</string>
-    <string name="no_pending_requests">No Pending message Requests!</string>
+    <string name="no_pending_requests">Không có yêu cầu tin nhắn đang chờ xử lý!</string>
     <string name="create_secret_group">Create Secret Group</string>
     <string name="enter_group_name">Nhập tên nhóm bí mật</string>
     <string name="search_contact">Tìm kiếm liên hệ</string>
@@ -1408,6 +1409,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="no_addresses">No Addresses!</string>
     <string name="save_address_to_show">Save address to show!</string>
     <string name="voice_call">Cuộc gọi thoại</string>
+    <string name="video_call">Cuộc gọi video</string>
     <string name="missed_voice_call">Missed Voice Call</string>
     <string name="tap_to_callback">Tap to Callback</string>
     <string name="enter_your_4_digit_wallet_pin">Nhập mã PIN Ví %d chữ số của bạn</string>

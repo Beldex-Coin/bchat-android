@@ -83,4 +83,5 @@
     <string name="fifteen_minutes">15 Minutos</string>
     <string name="thirty_minutes">30 Minutos</string>
     <string name="deleteMessageDeletedGlobally">此消息已被删除</string>
+    <string name="report_issue">报告问题</string>
 </resources>

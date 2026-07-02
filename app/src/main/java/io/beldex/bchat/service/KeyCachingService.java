@@ -43,6 +43,8 @@ import io.beldex.bchat.BuildConfig;
 import io.beldex.bchat.DatabaseUpgradeActivity;
 import io.beldex.bchat.DummyActivity;
 import io.beldex.bchat.home.HomeActivity;
+
+import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper;
 import com.beldex.libsignal.utilities.Log;
 import io.beldex.bchat.notifications.NotificationChannels;
 import com.beldex.libbchat.utilities.ServiceUtil;
@@ -158,6 +160,12 @@ public class KeyCachingService extends Service {
     }
 
     return START_NOT_STICKY;
+  }
+
+  @Override
+  protected void attachBaseContext(Context newBase) {
+    String language = TextSecurePreferences.getAppSelectedLanguage(newBase);
+    super.attachBaseContext(DynamicLanguageContextWrapper.updateContext(newBase, language));
   }
 
   @Override

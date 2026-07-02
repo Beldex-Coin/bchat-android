@@ -87,4 +87,5 @@
     <string name="fifteen_minutes">15 phút</string>
     <string name="thirty_minutes">30 phút</string>
     <string name="deleteMessageDeletedGlobally">Tin nhắn này đã bị xóa.</string>
+    <string name="report_issue">Báo cáo sự cố</string>
 </resources>

@@ -1624,7 +1624,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="call_missed_title">未接来电！</string>
     <string name="no_matches_found">未找到匹配结果！</string>
     <string name="notify_for_mentions_only">仅在被提及时通知</string>
-    <string name="community_guidelines"><![CDATA[BChat 是一个注重隐私保护的去中心化消息平台。当您使用 BChat 时，您的对话和数据始终归您所有。BChat 不会收集或存储您的任何个人信息。在这里，您可以自由交流。\n\nBChat 不仅仅是一个消息应用程序。您还可以直接在聊天窗口中发送和接收 BDX。\n\nBChat 构建于 Beldex 网络之上。Beldex 网络中的主节点负责在客户端之间存储并转发加密消息。Beldex 当前正在研究和开发的其他项目包括 BelNet（去中心化 VPN 服务）、Beldex Browser（无广告的 Web3 浏览器）以及 Beldex Privacy Protocol（用于匿名化其他资产的协议）。\n\n了解更多信息，请访问：https://www.beldex.io\n合作或市场推广，请联系：marketing@beldex.io\n投资相关咨询，请联系：invest.bchat@beldex.io\n\n为了保护和维护本社区，请遵守群组规则和指南。\n\n请保持礼貌。您可以分享观点和建设性的意见，但禁止骚扰他人。\n请勿推广或宣传您的代币或项目。本群组仅用于讨论 BChat 和 Beldex 生态系统。\n垃圾信息发送者将被封禁。\n请勿分享 NSFW 内容或使用不文明语言。\n\n请警惕诈骗者。管理员不会主动向您发送私信。
+    <string name="community_guidelines"><![CDATA[BChat 是一个注重隐私保护的去中心化消息平台。当您使用 BChat 时，您的对话和数据始终归您所有。BChat 不会收集或存储您的任何个人信息。在这里，您可以自由交流。\n\nBChat 构建于 Beldex 网络之上。Beldex 网络中的主节点负责在客户端之间存储并转发加密消息。Beldex 当前正在研究和开发的其他项目包括 BelNet（去中心化 VPN 服务）、Beldex Browser（无广告的 Web3 浏览器）以及 Beldex Privacy Protocol（用于匿名化其他资产的协议）。\n\n了解更多信息，请访问：https://www.beldex.io\n合作或市场推广，请联系：marketing@beldex.io\n投资相关咨询，请联系：invest.bchat@beldex.io\n\n为了保护和维护本社区，请遵守群组规则和指南。\n\n请保持礼貌。您可以分享观点和建设性的意见，但禁止骚扰他人。\n请勿推广或宣传您的代币或项目。本群组仅用于讨论 BChat 和 Beldex 生态系统。\n垃圾信息发送者将被封禁。\n请勿分享 NSFW 内容或使用不文明语言。\n\n请警惕诈骗者。管理员不会主动向您发送私信。
 ]]></string>
     <string name="divider">Divider</string>
     <string name="seed">助记词</string>

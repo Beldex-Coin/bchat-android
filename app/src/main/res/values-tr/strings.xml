@@ -124,7 +124,7 @@
     <string name="ConversationFragment_ban_selected_user">Bu kullanıcı yasaklansın mı?</string>
     <string name="ConversationFragment_save_to_sd_card">Depolamaya kaydet?</string>
     <plurals name="ConversationFragment_saving_n_media_to_storage_warning">
-        <item quantity="one">Bu medyayı depolama alanına kaydetmek, cihazınızdaki diğer uygulamaların ona erişmesine izin verecektir.</item>
+        <item quantity="one">Bu medyayı depolamaya kaydetmek cihazınızdaki diğer uygulamaların da erişmesine izin verir</item>
         <item quantity="other">Tüm %1$d medyayı depolama alanına kaydetmek, cihazınızdaki diğer uygulamaların bunlara erişmesine izin verecektir.</item>
     </plurals>
     <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
@@ -541,7 +541,7 @@
     <string name="preferences_app_protection__communication">İletişim</string>
     <string name="preferences_chats__chats">Sohbet Ayarları</string>
     <string name="preferences_notifications__in_chat_sounds">Sohbet içi sesler</string>
-    <string name="preferences_notifications__show">Show</string>
+    <string name="preferences_notifications__show">Göster</string>
     <string name="preferences_notifications__priority">Öncelik</string>
     <string name="preferences_chats__font_size">Yazı tipi boyutu</string>
     <string name="preferences_chat_font_small">Small</string>

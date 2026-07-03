@@ -21,8 +21,8 @@
     <string name="MessageRecord_called_s">%s kişisini aradınız</string>
     <string name="MessageRecord_missed_call_from">%s kişisinden cevapsız arama</string>
     <string name="MessageRecord_s_joined_signal">%s is on Bchat!</string>
-    <string name="MessageRecord_you_disabled_disappearing_messages">You disabled disappearing messages</string>
-    <string name="MessageRecord_s_disabled_disappearing_messages">%1$s disabled disappearing messages</string>
+    <string name="MessageRecord_you_disabled_disappearing_messages">Kaybolan mesajları devre dışı bıraktınız</string>
+    <string name="MessageRecord_s_disabled_disappearing_messages">%1$s kaybolan mesajları devre dışı bıraktı</string>
     <string name="MessageRecord_you_set_disappearing_message_time_to_s">Kaybolan mesaj zamanlayıcısını %1$s olarak ayarladınız</string>
     <string name="MessageRecord_s_set_disappearing_message_time_to_s">%1$s kaybolan mesaj zamanlayıcısını %2$s olarak ayarladı</string>
     <string name="MessageRecord_s_took_a_screenshot">%1$s ekran görüntüsü aldı.</string>

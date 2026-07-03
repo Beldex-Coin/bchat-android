@@ -21,7 +21,7 @@
     <string name="MessageRecord_called_s">Đã gọi cho %s</string>
     <string name="MessageRecord_missed_call_from">Cuộc gọi nhỡ từ %s</string>
     <string name="MessageRecord_s_joined_signal">%s is on Bchat!</string>
-    <string name="MessageRecord_you_disabled_disappearing_messages">Bạn đã tắt tin nhắn biến mất</string>
+    <string name="MessageRecord_you_disabled_disappearing_messages">Bạn đã tắt tin nhắn tự hủy</string>
     <string name="MessageRecord_s_disabled_disappearing_messages">%1$s đã tắt tin nhắn biến mất</string>
     <string name="MessageRecord_you_set_disappearing_message_time_to_s">Bạn đã đặt bộ hẹn giờ tin nhắn biến mất thành %1$s</string>
     <string name="MessageRecord_s_set_disappearing_message_time_to_s">%1$s đã đặt bộ hẹn giờ tin nhắn biến mất thành %2$s</string>

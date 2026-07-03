@@ -121,7 +121,7 @@
     <string name="ConversationFragment_ban_selected_user">Chặn người dùng này?</string>
     <string name="ConversationFragment_save_to_sd_card">Lưu vào bộ nhớ?</string>
     <plurals name="ConversationFragment_saving_n_media_to_storage_warning">
-        <item quantity="other">Lưu tất cả %1$d phương tiện vào bộ nhớ sẽ cho phép các ứng dụng khác trên thiết bị của bạn truy cập chúng.</item>
+        <item quantity="other">Việc lưu %1$d phương tiện vào bộ nhớ sẽ cho phép các ứng dụng khác trên thiết bị của bạn truy cập chúng.</item>
     </plurals>
     <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
         <item quantity="other">Lỗi khi lưu các tệp đính kèm vào bộ nhớ!</item>
@@ -532,7 +532,7 @@
     <string name="preferences_app_protection__communication">Giao tiếp</string>
     <string name="preferences_chats__chats">Cài đặt Trò chuyện</string>
     <string name="preferences_notifications__in_chat_sounds">Âm thanh trong cuộc trò chuyện</string>
-    <string name="preferences_notifications__show">Show</string>
+    <string name="preferences_notifications__show">Hiển thị</string>
     <string name="preferences_notifications__priority">Ưu tiên</string>
     <string name="preferences_chats__font_size">Cỡ chữ</string>
     <string name="preferences_chat_font_small">Small</string>

@@ -198,7 +198,8 @@ private fun RecoveryWarningView(
                         fontWeight = FontWeight(700),
                         fontSize = 16.sp,
                         color = MaterialTheme.appColors.secondaryContentColor
-                    )
+                    ),
+                    textAlign = TextAlign.Center
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -209,7 +210,8 @@ private fun RecoveryWarningView(
                         color = MaterialTheme.appColors.editTextColor,
                         fontWeight = FontWeight(700),
                         fontSize = 16.sp
-                    )
+                    ),
+                    textAlign = TextAlign.Center
                 )
 
                 Text(
@@ -249,7 +251,8 @@ private fun RecoveryWarningView(
                             color = Color.White,
                             fontWeight = FontWeight(400),
                             fontSize = 14.sp
-                        )
+                        ),
+                        textAlign = TextAlign.Center
                     )
                 }
             }

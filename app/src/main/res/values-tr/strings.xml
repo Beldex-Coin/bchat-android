@@ -1703,5 +1703,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
         <item quantity="one">%d üye</item>
         <item quantity="other">%d üye</item>
     </plurals>
-
+    <string name="no_contact_found">İletişim Bulunamadı!</string>
 </resources>

@@ -1686,5 +1686,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <plurals name="group_member_count">
         <item quantity="other">%d 位成员</item>
     </plurals>
-
+    <string name="no_contact_found">未找到聯絡人！</string>
 </resources>

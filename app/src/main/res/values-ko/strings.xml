@@ -1686,5 +1686,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <plurals name="group_member_count">
         <item quantity="other">구성원 %d명</item>
     </plurals>
-
+    <string name="no_contact_found">연락처를 찾을 수 없습니다!</string>
 </resources>

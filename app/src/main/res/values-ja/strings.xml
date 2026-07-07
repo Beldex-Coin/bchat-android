@@ -1686,4 +1686,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <plurals name="group_member_count">
         <item quantity="other">%d メンバー</item>
     </plurals>
+    <string name="no_contact_found">連絡先が見つかりません！</string>
 </resources>

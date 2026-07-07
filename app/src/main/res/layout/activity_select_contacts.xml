@@ -79,6 +79,19 @@
             android:src="@drawable/ic_no_contact_found"
             />
 
+        <TextView
+            android:id="@+id/noContactFoundText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="@font/open_sans_semi_bold"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/no_contact_found"
+            android:textColor="@color/version_color"
+            android:padding="@dimen/small_spacing"
+            android:textSize="16sp" />
+
     </LinearLayout>
 
     <LinearLayout

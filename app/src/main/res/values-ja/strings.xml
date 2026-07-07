@@ -57,7 +57,7 @@
     <!-- ConversationItem -->
     <string name="ConversationItem_error_not_delivered">送信に失敗しました。タップして詳細を表示します</string>
     <string name="ConversationItem_received_key_exchange_message_tap_to_process">Received key exchange message, tap to process.</string>
-    <string name="ConversationItem_group_action_left">%1$s has left the group.</string>
+    <string name="ConversationItem_group_action_left">%1$s がグループを退出しました。</string>
     <string name="ConversationItem_click_to_approve_unencrypted">Send failed, tap for unsecured fallback</string>
     <string name="ConversationItem_unable_to_open_media">このメディアを開けるアプリが見つかりません。</string>
     <string name="ConversationItem_copied_text">Copied %s</string>
@@ -819,7 +819,7 @@
     <string name="dialog_join_open_group_explanation">%s ソーシャルグループに参加してもよろしいですか？</string>
 
     <string name="dialog_open_url_title">URLを開きますか？</string>
-    <string name="dialog_open_url_explanation">%s を開いてもよろしいですか？</string>
+    <string name="dialog_open_url_explanation">開いてもよろしいですか %s？</string>
     <string name="open">開く</string>
 
     <string name="dialog_link_preview_title">リンクプレビューを有効にしますか？</string>
@@ -1532,8 +1532,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="emojiReactsClearAll">Are you sure you want to clear all {emoji}?</string>
     <string name="emojiReactsCoolDown">Slow down! You\'ve sent too many emoji reacts. Try again soon</string>
     <plurals name="emojiReactsCountOthers">
-        <item quantity="one">And %1$d other has reacted %2$s to this message.</item>
-        <item quantity="other">And %1$d others have reacted %2$s to this message.</item>
+        <item quantity="one">また、%1$d 人が %2$s 件のリアクションをこのメッセージに返信しました。</item>
+        <item quantity="other">また、%1$d 人が %2$s 件のリアクションをこのメッセージに返信しました。</item>
     </plurals>
     <string name="emojiReactsHoverNameDesktop">{name} reacted with {emoji_name}</string>
     <string name="emojiReactsHoverNameTwoDesktop">{name} and {other_name} reacted with {emoji_name}</string>

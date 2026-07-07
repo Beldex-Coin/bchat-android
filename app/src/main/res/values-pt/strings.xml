@@ -59,7 +59,7 @@
     <!-- ConversationItem -->
     <string name="ConversationItem_error_not_delivered">Falha no envio, toque para ver os detalhes</string>
     <string name="ConversationItem_received_key_exchange_message_tap_to_process">Received key exchange message, tap to process.</string>
-    <string name="ConversationItem_group_action_left">%1$s has left the group.</string>
+    <string name="ConversationItem_group_action_left">%1$s saiu do grupo.</string>
     <string name="ConversationItem_click_to_approve_unencrypted">Send failed, tap for unsecured fallback</string>
     <string name="ConversationItem_unable_to_open_media">Não foi possível encontrar um aplicativo capaz de abrir esta mídia.</string>
     <string name="ConversationItem_copied_text">Copied %s</string>
@@ -691,7 +691,7 @@
     <string name="activity_path_title">Hops</string>
     <string name="activity_path_explanation">O BChat mascara seu endereço IP roteando as mensagens através de vários masternodes na rede descentralizada Beldex. Sua conexão atualmente está sendo roteada pelos seguintes masternodes</string>
     <string name="activity_path_guard_node_row_title">Nó de Entrada</string>
-    <string name="activity_path_service_node_row_title">Masternode</string>
+    <string name="activity_path_service_node_row_title">Nó Mestre</string>
     <string name="activity_path_destination_row_title">Destino</string>
     <string name="activity_path_learn_more_button_title">Saiba mais</string>
     <string name="activity_path_resolving_progress">Resolvendo…</string>
@@ -968,7 +968,7 @@
     <string name="message_request_empty_state_message">Nenhuma solicitação de mensagem pendente</string>
     <string name="message_requests_accept_all">Accept All</string>
     <string name="message_requests_accept_message">Tem certeza de que deseja aceitar esta solicitação?</string>
-    <string name="message_requests_decline_message">Ao recusar esta solicitação, este usuário será bloqueado permanentemente. Tem certeza?</string>
+    <string name="message_requests_decline_message">Recusar esta solicitação bloqueará permanentemente este usuário. Tem certeza?</string>
     <string name="no_blocked_contact">Nenhum contato bloqueado ainda</string>
     <string name="blocked_contacts">Contatos Bloqueados</string>
 
@@ -1547,8 +1547,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="emojiReactsClearAll">Are you sure you want to clear all {emoji}?</string>
     <string name="emojiReactsCoolDown">Slow down! You\'ve sent too many emoji reacts. Try again soon</string>
     <plurals name="emojiReactsCountOthers">
-        <item quantity="one">And %1$d other has reacted %2$s to this message.</item>
-        <item quantity="other">And %1$d others have reacted %2$s to this message.</item>
+        <item quantity="one">E %1$d outras pessoas reagiram %2$s a esta mensagem.</item>
+        <item quantity="other">E %1$d outras pessoas reagiram %2$s a esta mensagem.</item>
     </plurals>
     <string name="emojiReactsHoverNameDesktop">{name} reacted with {emoji_name}</string>
     <string name="emojiReactsHoverNameTwoDesktop">{name} and {other_name} reacted with {emoji_name}</string>

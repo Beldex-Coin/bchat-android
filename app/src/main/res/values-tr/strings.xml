@@ -24,7 +24,7 @@
     <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Tüm eski mesajlar şimdi silinsin mi?</string>
     <plurals name="ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages">
         <item quantity="one">Bu işlem tüm konuşmaları hemen en son mesaja indirecektir.</item>
-        <item quantity="other">Bu işlem tüm konuşmaları hemen en son %d mesaja indirecektir.</item>
+        <item quantity="other">Bu işlem, tüm konuşmaları hemen en son %d mesaja düşürecektir.</item>
     </plurals>
     <string name="ApplicationPreferencesActivity_On">On</string>
     <string name="ApplicationPreferencesActivity_Off">Off</string>
@@ -59,7 +59,7 @@
     <!-- ConversationItem -->
     <string name="ConversationItem_error_not_delivered">Gönderim başarısız oldu, ayrıntılar için dokunun.</string>
     <string name="ConversationItem_received_key_exchange_message_tap_to_process">Received key exchange message, tap to process.</string>
-    <string name="ConversationItem_group_action_left">%1$s has left the group.</string>
+    <string name="ConversationItem_group_action_left">%1$s gruptan ayrıldı.</string>
     <string name="ConversationItem_click_to_approve_unencrypted">Send failed, tap for unsecured fallback</string>
     <string name="ConversationItem_unable_to_open_media">Bu medyayı açabilecek bir uygulama bulunamadı.</string>
     <string name="ConversationItem_copied_text">Copied %s</string>
@@ -690,7 +690,7 @@
     <string name="activity_path_title">Hops</string>
     <string name="activity_path_explanation">BChat, mesajları Beldex merkeziyetsiz ağı üzerindeki birkaç masternode üzerinden yönlendirerek IP adresinizi gizler. Bağlantınız şu anda aşağıdaki masternodelar üzerinden yönlendirilmektedir</string>
     <string name="activity_path_guard_node_row_title">Giriş Düğümü</string>
-    <string name="activity_path_service_node_row_title">Masternode</string>
+    <string name="activity_path_service_node_row_title">Ana Düğüm</string>
     <string name="activity_path_destination_row_title">Hedef</string>
     <string name="activity_path_learn_more_button_title">Daha Fazla Bilgi Edinin</string>
     <string name="activity_path_resolving_progress">Çözümleniyor…</string>
@@ -967,7 +967,7 @@
     <string name="message_request_empty_state_message">Bekleyen mesaj isteği yok</string>
     <string name="message_requests_accept_all">Accept All</string>
     <string name="message_requests_accept_message">Bu isteği kabul etmek istediğinizden emin misiniz?</string>
-    <string name="message_requests_decline_message">Bu isteği reddederseniz bu kullanıcı kalıcı olarak engellenecektir. Emin misiniz?</string>
+    <string name="message_requests_decline_message">Bu isteği reddetmek bu kullanıcıyı kalıcı olarak engelleyecektir, emin misiniz?</string>
     <string name="no_blocked_contact">Henüz engellenen kişi yok</string>
     <string name="blocked_contacts">Engellenen Kişiler</string>
 
@@ -991,12 +991,12 @@
     <string name="dismiss">Kapat</string>
     <string name="preferences__voice_video_calls">Sesli ve Görüntülü Aramalar</string>
     <string name="preferences__allow_access_voice_video">Diğer kullanıcılardan gelen sesli ve görüntülü arama isteklerini kabul etmek için erişime izin verin.</string>
-    <string name="incoming_call">Gelen arama...</string>
+    <string name="incoming_call">Gelen Çağrı...</string>
     <string name="outgoing_call">Outgoing Call</string>
     <string name="calling">Aranıyor...</string>
     <string name="end_to_end_encrypted">Uçtan Uca Şifreli</string>
     <string name="call_duration">00:10:10</string>
-    <string name="hang_up">Aramayı sonlandır</string>
+    <string name="hang_up">Kapat</string>
     <string name="answer">Yanıtla</string>
     <string name="back_to_call">Back to call</string>
     <string name="call_in_progress">Arama devam ediyor</string>
@@ -1364,7 +1364,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="enter_your_pin">PIN’inizi girin</string>
     <string name="enter_old_pin">Eski PIN’i girin</string>
     <string name="enter_new_pin">Yeni PIN’i girin</string>
-    <string name="re_enter_your_pin">PIN’inizi tekrar girin</string>
+    <string name="re_enter_your_pin">Pin’i tekrar girin</string>
     <string name="incorrect_password_entered">Yanlış şifre girildi</string>
     <string name="old_new_password_same">Yeni şifre eski şifre ile aynı olmamalıdır</string>
     <string name="password_does_not_match">Şifreler eşleşmiyor</string>
@@ -1546,8 +1546,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="emojiReactsClearAll">Are you sure you want to clear all {emoji}?</string>
     <string name="emojiReactsCoolDown">Slow down! You\'ve sent too many emoji reacts. Try again soon</string>
     <plurals name="emojiReactsCountOthers">
-        <item quantity="one">And %1$d other has reacted %2$s to this message.</item>
-        <item quantity="other">And %1$d others have reacted %2$s to this message.</item>
+        <item quantity="one">Ve %1$d kişi bu mesaja %2$s tepki verdi.</item>
+        <item quantity="other">Ve %1$d kişi bu mesaja %2$s tepki verdi.</item>
     </plurals>
     <string name="emojiReactsHoverNameDesktop">{name} reacted with {emoji_name}</string>
     <string name="emojiReactsHoverNameTwoDesktop">{name} and {other_name} reacted with {emoji_name}</string>

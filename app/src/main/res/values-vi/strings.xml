@@ -57,7 +57,7 @@
     <!-- ConversationItem -->
     <string name="ConversationItem_error_not_delivered">Gửi thất bại, chạm để xem chi tiết</string>
     <string name="ConversationItem_received_key_exchange_message_tap_to_process">Received key exchange message, tap to process.</string>
-    <string name="ConversationItem_group_action_left">%1$s has left the group.</string>
+    <string name="ConversationItem_group_action_left">%1$s đã rời khỏi nhóm.</string>
     <string name="ConversationItem_click_to_approve_unencrypted">Send failed, tap for unsecured fallback</string>
     <string name="ConversationItem_unable_to_open_media">Không tìm thấy ứng dụng nào có thể mở tệp phương tiện này.</string>
     <string name="ConversationItem_copied_text">Copied %s</string>
@@ -956,7 +956,7 @@
     <string name="message_request_empty_state_message">Không có yêu cầu tin nhắn đang chờ xử lý</string>
     <string name="message_requests_accept_all">Accept All</string>
     <string name="message_requests_accept_message">Bạn có chắc chắn muốn chấp nhận yêu cầu này không?</string>
-    <string name="message_requests_decline_message">Nếu từ chối yêu cầu này, người dùng này sẽ bị chặn vĩnh viễn. Bạn có chắc chắn không?</string>
+    <string name="message_requests_decline_message">Từ chối yêu cầu này sẽ chặn vĩnh viễn người dùng này. Bạn có chắc chắn không?</string>
     <string name="no_blocked_contact">Chưa có liên hệ nào bị chặn</string>
     <string name="blocked_contacts">Danh bạ bị chặn</string>
 
@@ -1533,8 +1533,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="emojiReactsClearAll">Are you sure you want to clear all {emoji}?</string>
     <string name="emojiReactsCoolDown">Slow down! You\'ve sent too many emoji reacts. Try again soon</string>
     <plurals name="emojiReactsCountOthers">
-        <item quantity="one">And %1$d other has reacted %2$s to this message.</item>
-        <item quantity="other">And %1$d others have reacted %2$s to this message.</item>
+        <item quantity="one">Và %1$d người khác đã bày tỏ cảm xúc %2$s với tin nhắn này.</item>
+        <item quantity="other">Và %1$d người khác đã bày tỏ cảm xúc %2$s với tin nhắn này.</item>
     </plurals>
     <string name="emojiReactsHoverNameDesktop">{name} reacted with {emoji_name}</string>
     <string name="emojiReactsHoverNameTwoDesktop">{name} and {other_name} reacted with {emoji_name}</string>

@@ -59,7 +59,7 @@
     <!-- ConversationItem -->
     <string name="ConversationItem_error_not_delivered">Error al enviar. Toque para ver los detalles.</string>
     <string name="ConversationItem_received_key_exchange_message_tap_to_process">Received key exchange message, tap to process.</string>
-    <string name="ConversationItem_group_action_left">%1$s has left the group.</string>
+    <string name="ConversationItem_group_action_left">%1$s ha salido del grupo.</string>
     <string name="ConversationItem_click_to_approve_unencrypted">Send failed, tap for unsecured fallback</string>
     <string name="ConversationItem_unable_to_open_media">No se puede encontrar una aplicación capaz de abrir este archivo multimedia.</string>
     <string name="ConversationItem_copied_text">Copied %s</string>
@@ -968,7 +968,7 @@
     <string name="message_request_empty_state_message">Sin solicitudes de mensajes pendientes</string>
     <string name="message_requests_accept_all">Accept All</string>
     <string name="message_requests_accept_message">¿Estás seguro de que deseas aceptar esta solicitud?</string>
-    <string name="message_requests_decline_message">Si rechazas esta solicitud, este usuario será bloqueado permanentemente. ¿Estás seguro?</string>
+    <string name="message_requests_decline_message">Rechazar esta solicitud bloqueará permanentemente a este usuario. ¿Está seguro?</string>
     <string name="no_blocked_contact">Aún no hay contactos bloqueados</string>
     <string name="blocked_contacts">Contactos Bloqueados</string>
 
@@ -1547,8 +1547,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="emojiReactsClearAll">Are you sure you want to clear all {emoji}?</string>
     <string name="emojiReactsCoolDown">Slow down! You\'ve sent too many emoji reacts. Try again soon</string>
     <plurals name="emojiReactsCountOthers">
-        <item quantity="one">And %1$d other has reacted %2$s to this message.</item>
-        <item quantity="other">And %1$d others have reacted %2$s to this message.</item>
+        <item quantity="one">Y %1$d personas han reaccionado %2$s a este mensaje.</item>
+        <item quantity="other">Y %1$d personas han reaccionado %2$s a este mensaje.</item>
     </plurals>
     <string name="emojiReactsHoverNameDesktop">{name} reacted with {emoji_name}</string>
     <string name="emojiReactsHoverNameTwoDesktop">{name} and {other_name} reacted with {emoji_name}</string>

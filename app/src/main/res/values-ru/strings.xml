@@ -63,7 +63,7 @@
     <!-- ConversationItem -->
     <string name="ConversationItem_error_not_delivered">Не удалось отправить, нажмите для получения подробностей</string>
     <string name="ConversationItem_received_key_exchange_message_tap_to_process">Received key exchange message, tap to process.</string>
-    <string name="ConversationItem_group_action_left">%1$s has left the group.</string>
+    <string name="ConversationItem_group_action_left">%1$s покинул(а) группу.</string>
     <string name="ConversationItem_click_to_approve_unencrypted">Send failed, tap for unsecured fallback</string>
     <string name="ConversationItem_unable_to_open_media">Не удалось найти приложение, способное открыть этот медиафайл.</string>
     <string name="ConversationItem_copied_text">Copied %s</string>
@@ -989,7 +989,7 @@
     <string name="message_request_empty_state_message">Нет ожидающих запросов на переписку</string>
     <string name="message_requests_accept_all">Accept All</string>
     <string name="message_requests_accept_message">Вы уверены, что хотите принять этот запрос?</string>
-    <string name="message_requests_decline_message">Отклонение этого запроса навсегда заблокирует этого пользователя. Вы уверены?</string>
+    <string name="message_requests_decline_message">При отклонении этого запроса данный пользователь будет навсегда заблокирован. Вы уверены?</string>
     <string name="no_blocked_contact">Пока нет заблокированных контактов</string>
     <string name="blocked_contacts">Заблокированные контакты</string>
 
@@ -1379,7 +1379,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="restore_from_height_title">Выберите высоту восстановления</string>
     <string name="restore_from_date_title">Pick a Date</string>
     <string name="display_name">Имя для отображения</string>
-    <string name="enter_name">Enter name</string>
+    <string name="enter_name">Введите имя</string>
     <string name="copied">Copied!</string>
     <string name="my_account">My Account</string>
     <string name="clear_only_in_device">Clear only in device</string>
@@ -1572,8 +1572,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="emojiReactsClearAll">Are you sure you want to clear all {emoji}?</string>
     <string name="emojiReactsCoolDown">Slow down! You\'ve sent too many emoji reacts. Try again soon</string>
     <plurals name="emojiReactsCountOthers">
-        <item quantity="one">And %1$d other has reacted %2$s to this message.</item>
-        <item quantity="other">And %1$d others have reacted %2$s to this message.</item>
+        <item quantity="one">И ещё %1$d пользователь отреагировал(а) на это сообщение с помощью %2$s.</item>
+        <item quantity="other">И ещё %1$d пользователей отреагировали на это сообщение с помощью %2$s.</item>
     </plurals>
     <string name="emojiReactsHoverNameDesktop">{name} reacted with {emoji_name}</string>
     <string name="emojiReactsHoverNameTwoDesktop">{name} and {other_name} reacted with {emoji_name}</string>

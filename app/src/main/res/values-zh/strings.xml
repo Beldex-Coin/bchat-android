@@ -57,7 +57,7 @@
     <!-- ConversationItem -->
     <string name="ConversationItem_error_not_delivered">发送失败，点击查看详情</string>
     <string name="ConversationItem_received_key_exchange_message_tap_to_process">Received key exchange message, tap to process.</string>
-    <string name="ConversationItem_group_action_left">%1$s has left the group.</string>
+    <string name="ConversationItem_group_action_left">%1$s 已离开群组。</string>
     <string name="ConversationItem_click_to_approve_unencrypted">Send failed, tap for unsecured fallback</string>
     <string name="ConversationItem_unable_to_open_media">找不到可打开此媒体文件的应用。</string>
     <string name="ConversationItem_copied_text">Copied %s</string>
@@ -955,7 +955,7 @@
     <string name="message_request_empty_state_message">暂无待处理的消息请求</string>
     <string name="message_requests_accept_all">Accept All</string>
     <string name="message_requests_accept_message">您确定要接受此请求吗？</string>
-    <string name="message_requests_decline_message">拒绝此请求将永久屏蔽该用户，确定吗？</string>
+    <string name="message_requests_decline_message">拒绝此请求将永久屏蔽此用户，您确定嗎？</string>
     <string name="no_blocked_contact">暂无被屏蔽的联系人</string>
     <string name="blocked_contacts">已屏蔽联系人</string>
 
@@ -979,12 +979,12 @@
     <string name="dismiss">忽略</string>
     <string name="preferences__voice_video_calls">语音和视频通话</string>
     <string name="preferences__allow_access_voice_video">允许访问以接收其他用户的语音和视频通话。</string>
-    <string name="incoming_call">来电...</string>
+    <string name="incoming_call">來電中...</string>
     <string name="outgoing_call">Outgoing Call</string>
     <string name="calling">忽略</string>
     <string name="end_to_end_encrypted">端到端加密</string>
     <string name="call_duration">00:10:10</string>
-    <string name="hang_up">挂断</string>
+    <string name="hang_up">掛斷</string>
     <string name="answer">接听</string>
     <string name="back_to_call">Back to call</string>
     <string name="call_in_progress">通话进行中</string>
@@ -1532,8 +1532,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="emojiReactsClearAll">Are you sure you want to clear all {emoji}?</string>
     <string name="emojiReactsCoolDown">Slow down! You\'ve sent too many emoji reacts. Try again soon</string>
     <plurals name="emojiReactsCountOthers">
-        <item quantity="one">And %1$d other has reacted %2$s to this message.</item>
-        <item quantity="other">And %1$d others have reacted %2$s to this message.</item>
+        <item quantity="one">還有 %1$d 人對這條消息作出了 %2$s 反應。</item>
+        <item quantity="other">還有 %1$d 人對這條消息作出了 %2$s 反應。</item>
     </plurals>
     <string name="emojiReactsHoverNameDesktop">{name} reacted with {emoji_name}</string>
     <string name="emojiReactsHoverNameTwoDesktop">{name} and {other_name} reacted with {emoji_name}</string>

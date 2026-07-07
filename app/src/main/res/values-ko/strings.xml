@@ -57,7 +57,7 @@
     <!-- ConversationItem -->
     <string name="ConversationItem_error_not_delivered">전송에 실패했습니다. 자세한 내용을 보려면 탭하세요.</string>
     <string name="ConversationItem_received_key_exchange_message_tap_to_process">Received key exchange message, tap to process.</string>
-    <string name="ConversationItem_group_action_left">%1$s has left the group.</string>
+    <string name="ConversationItem_group_action_left">%1$s님이 그룹에서 나갔습니다.</string>
     <string name="ConversationItem_click_to_approve_unencrypted">Send failed, tap for unsecured fallback</string>
     <string name="ConversationItem_unable_to_open_media">이 미디어를 열 수 있는 앱을 찾을 수 없습니다.</string>
     <string name="ConversationItem_copied_text">Copied %s</string>
@@ -955,7 +955,7 @@
     <string name="message_request_empty_state_message">대기 중인 메시지 요청이 없습니다</string>
     <string name="message_requests_accept_all">Accept All</string>
     <string name="message_requests_accept_message">이 요청을 수락하시겠습니까?</string>
-    <string name="message_requests_decline_message">이 요청을 거절하면 이 사용자가 영구적으로 차단됩니다. 계속하시겠습니까?</string>
+    <string name="message_requests_decline_message">이 요청을 거부하면 이 사용자가 영구적으로 차단됩니다. 계속하시겠습니까?</string>
     <string name="no_blocked_contact">차단된 연락처가 없습니다.</string>
     <string name="blocked_contacts">차단된 연락처</string>
 
@@ -1532,8 +1532,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="emojiReactsClearAll">Are you sure you want to clear all {emoji}?</string>
     <string name="emojiReactsCoolDown">Slow down! You\'ve sent too many emoji reacts. Try again soon</string>
     <plurals name="emojiReactsCountOthers">
-        <item quantity="one">And %1$d other has reacted %2$s to this message.</item>
-        <item quantity="other">And %1$d others have reacted %2$s to this message.</item>
+        <item quantity="one">그리고 다른 %1$d 명이 이 메시지에 %2$s 반응을 남겼습니다.</item>
+        <item quantity="other">그리고 다른 %1$d 명이 이 메시지에 %2$s 반응을 남겼습니다.</item>
     </plurals>
     <string name="emojiReactsHoverNameDesktop">{name} reacted with {emoji_name}</string>
     <string name="emojiReactsHoverNameTwoDesktop">{name} and {other_name} reacted with {emoji_name}</string>

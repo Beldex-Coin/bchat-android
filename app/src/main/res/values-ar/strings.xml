@@ -67,7 +67,7 @@
     <!-- ConversationItem -->
     <string name="ConversationItem_error_not_delivered">فشل الإرسال، اضغط لعرض التفاصيل</string>
     <string name="ConversationItem_received_key_exchange_message_tap_to_process">Received key exchange message, tap to process.</string>
-    <string name="ConversationItem_group_action_left">%1$s has left the group.</string>
+    <string name="ConversationItem_group_action_left">%1$s غادر المجموعة.</string>
     <string name="ConversationItem_click_to_approve_unencrypted">Send failed, tap for unsecured fallback</string>
     <string name="ConversationItem_unable_to_open_media">تعذر العثور على تطبيق قادر على فتح هذه الوسائط.</string>
     <string name="ConversationItem_copied_text">Copied %s</string>
@@ -1013,7 +1013,7 @@
     <string name="message_request_empty_state_message">لا توجد طلبات رسائل معلقة</string>
     <string name="message_requests_accept_all">Accept All</string>
     <string name="message_requests_accept_message">هل أنت متأكد أنك تريد قبول هذا الطلب؟</string>
-    <string name="message_requests_decline_message">سيؤدي رفض هذا الطلب إلى حظر هذا المستخدم بشكل دائم. هل أنت متأكد؟</string>
+    <string name="message_requests_decline_message">رفض هذا الطلب سيؤدي إلى حظر هذا المستخدم نهائيًا، هل أنت متأكد؟</string>
     <string name="no_blocked_contact">لا توجد جهات محظورة حتى الآن</string>
     <string name="blocked_contacts">جهات الاتصال المحظورة</string>
 
@@ -1042,7 +1042,7 @@
     <string name="calling">جارٍ الاتصال...</string>
     <string name="end_to_end_encrypted">تشفير من طرف إلى طرف</string>
     <string name="call_duration">00:10:10</string>
-    <string name="hang_up">إنهاء المكالمة</string>
+    <string name="hang_up">تم إنهاء المكالمة</string>
     <string name="answer">رد</string>
     <string name="back_to_call">Back to call</string>
     <string name="call_in_progress">المكالمة قيد التقدم</string>
@@ -1595,8 +1595,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="emojiReactsClearAll">Are you sure you want to clear all {emoji}?</string>
     <string name="emojiReactsCoolDown">Slow down! You\'ve sent too many emoji reacts. Try again soon</string>
     <plurals name="emojiReactsCountOthers">
-        <item quantity="one">And %1$d other has reacted %2$s to this message.</item>
-        <item quantity="other">And %1$d others have reacted %2$s to this message.</item>
+        <item quantity="one">وقد تفاعل %1$d آخر مع هذه الرسالة بـ %2$s.</item>
+        <item quantity="other">وقد تفاعل %1$d آخرون مع هذه الرسالة بـ %2$s.</item>
     </plurals>
     <string name="emojiReactsHoverNameDesktop">{name} reacted with {emoji_name}</string>
     <string name="emojiReactsHoverNameTwoDesktop">{name} and {other_name} reacted with {emoji_name}</string>
@@ -1663,7 +1663,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="no_name">لا يوجد اسم</string>
     <string name="title_activity_view_contact">ViewContactActivity</string>
     <string name="view_all">عرض الكل</string>
-    <string name="message">رسالة</string>
+    <string name="message">الرسالة</string>
     <string name="nickname_special_char_not_allowed">لا يُسمح بالأحرف الخاصة</string>
     <string name="hey_user_welcome_to_bchat">مرحبًا%s، أهلاً بك في BChat!</string>
     <string name="paste_the_seed_to_continue">الصق العبارة للمتابعة</string>

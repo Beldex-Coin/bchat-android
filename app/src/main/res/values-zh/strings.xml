@@ -1676,8 +1676,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="account_secured">账户已安全保护！100%</string>
     <string name="error_saving_logs">保存日志时出错</string>
     <string name="please_wait_until_file_downloaded">请等待文件下载完成</string>
-    <string name="read_more_suffix">%s …阅读更多</string>
-    <string name="read_less_suffix">%s 收起</string>
+    <string name="read_more_suffix">… 阅读更多</string>
+    <string name="read_less_suffix"> 收起</string>
     <string name="unable_to_play_audio_while_recording">录音期间无法播放音频</string>
     <string name="bchat_pin_description">这是您为 BChat 账户设置的 PIN 码。</string>
     <string name="restore_wallet_using_seed">使用 25 个单词的助记词或种子短语恢复您的钱包</string>

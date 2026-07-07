@@ -910,15 +910,14 @@ class VisibleMessageContentView : MaterialCardView {
     ) {
         val suffix = context.getString(R.string.read_more_suffix)
 
-        val result = SpannableStringBuilder(fullText).let {
-            if (it.length <= 705) it
-            else SpannableStringBuilder(it.subSequence(0, 705)).append(suffix)
-        }
-
         if (fullText.length <= 705) {
-            textView.text = result
+            textView.text = fullText
             return
         }
+
+        val result = SpannableStringBuilder(fullText.subSequence(0, 705)).append(suffix)
+        val leadingSkip = suffix.indexOfFirst { it.isLetterOrDigit() }
+        val spanStart = result.length - suffix.length + (if (leadingSkip >= 0) leadingSkip else 0)
 
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
@@ -942,7 +941,7 @@ class VisibleMessageContentView : MaterialCardView {
 
         result.setSpan(
             clickableSpan,
-            result.length - 10,
+            spanStart,
             result.length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )

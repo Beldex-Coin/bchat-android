@@ -1676,8 +1676,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="account_secured">계정 보안 설정 완료! 100%</string>
     <string name="error_saving_logs">로그 저장 중 오류가 발생했습니다</string>
     <string name="please_wait_until_file_downloaded">파일 다운로드가 완료될 때까지 기다려 주세요.</string>
-    <string name="read_more_suffix">%s ... 더 보기</string>
-    <string name="read_less_suffix">%s 접기</string>
+    <string name="read_more_suffix">... 더 보기</string>
+    <string name="read_less_suffix"> 접기</string>
     <string name="unable_to_play_audio_while_recording">녹음 중에는 오디오를 재생할 수 없습니다.</string>
     <string name="bchat_pin_description">이것은 BChat 계정에 설정한 PIN입니다.</string>
     <string name="restore_wallet_using_seed">25단어 니모닉 키 또는 시드 문구를 사용하여 지갑을 복원하세요.</string>

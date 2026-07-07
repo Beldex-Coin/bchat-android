@@ -1691,8 +1691,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="account_secured">Konto gesichert! 100 %</string>
     <string name="error_saving_logs">Fehler beim Speichern der Protokolle</string>
     <string name="please_wait_until_file_downloaded">Bitte warten Sie, bis die Datei heruntergeladen wurde</string>
-    <string name="read_more_suffix">%s ... Weiterlesen</string>
-    <string name="read_less_suffix">%s Weniger lesen</string>
+    <string name="read_more_suffix">... Weiterlesen</string>
+    <string name="read_less_suffix"> Weniger lesen</string>
     <string name="unable_to_play_audio_while_recording">Während der Aufnahme kann kein Audio abgespielt werden</string>
     <string name="bchat_pin_description">Dies ist die PIN, die Sie für Ihr BChat-Konto festgelegt haben.</string>
     <string name="restore_wallet_using_seed">Verwenden Sie den 25-Wörter-Mnemonic-Schlüssel oder die Startphrase, um Ihre Brieftasche wiederherzustellen</string>

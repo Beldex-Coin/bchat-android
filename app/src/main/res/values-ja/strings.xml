@@ -1101,7 +1101,7 @@
     <string name="incoming">Incoming</string>
     <string name="outgoing">Outgoing</string>
     <string name="transactions_by_date">Transactions by Date</string>
-    <string name="tx_failed">Failed</string>
+    <string name="tx_failed">失敗</string>
     <string name="tx_pending">Pending</string>
     <string name="tx_status_received">Received</string>
     <string name="send_notes_hint">Private Notes (optional)</string>

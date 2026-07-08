@@ -58,9 +58,17 @@ public class DateUtils extends android.text.format.DateUtils {
     final String localizedPattern = getLocalizedPattern(template, locale);
     return new SimpleDateFormat(localizedPattern, locale).format(new Date(time));
   }
+  
+  private static boolean isExplicit24HourFormat(Context c) {
+    String value = android.provider.Settings.System.getString(
+            c.getContentResolver(),
+            android.provider.Settings.System.TIME_12_24
+    );
+    return "24".equals(value);
+  }
 
   public static String getHourFormat(Context c) {
-    return (DateFormat.is24HourFormat(c)) ? "HH:mm" : "hh:mm a";
+    return isExplicit24HourFormat(c) ? "Hm" : "hm";
   }
 
   public static String getDisplayFormattedTimeSpanString(final Context c, final Locale locale, final long timestamp) {
@@ -69,11 +77,11 @@ public class DateUtils extends android.text.format.DateUtils {
     } else if (isToday(timestamp)) {
       return getFormattedDateTime(timestamp, getHourFormat(c), locale);
     } else if (isWithin(timestamp, 6, TimeUnit.DAYS)) {
-      return getFormattedDateTime(timestamp, "EEE " + getHourFormat(c), locale);
+      return getFormattedDateTime(timestamp, "E" + getHourFormat(c), locale);
     } else if (isWithin(timestamp, 365, TimeUnit.DAYS)) {
-      return getFormattedDateTime(timestamp, "MMM d " + getHourFormat(c), locale);
+      return getFormattedDateTime(timestamp, "MMMd" + getHourFormat(c), locale);
     } else {
-      return getFormattedDateTime(timestamp, "MMM d " + getHourFormat(c) + ", yyyy", locale);
+      return getFormattedDateTime(timestamp, "MMMd" + getHourFormat(c) + "y", locale);
     }
   }
 
@@ -89,20 +97,22 @@ public class DateUtils extends android.text.format.DateUtils {
     } else if (isWithin(timestamp, 6, TimeUnit.DAYS)) {
       return getFormattedDateTime(timestamp, "EEEE", locale);
     } else if (isWithin(timestamp, 365, TimeUnit.DAYS)) {
-      return getFormattedDateTime(timestamp, "MMM d ", locale);
+      return getFormattedDateTime(timestamp, "MMMd", locale);
     } else {
-      return getFormattedDateTime(timestamp, "MMM d, yyyy", locale);
+      return getFormattedDateTime(timestamp, "MMMdy", locale);
     }
   }
 
   public static SimpleDateFormat getDetailedDateFormatter(Context context, Locale locale) {
-    String dateFormatPattern;
+    String skeleton;
 
-    if (DateFormat.is24HourFormat(context)) {
-      dateFormatPattern = getLocalizedPattern("MMM d, yyyy HH:mm:ss zzz", locale);
+    if (isExplicit24HourFormat(context)) {
+      skeleton = "MMMdyHmsz";
     } else {
-      dateFormatPattern = getLocalizedPattern("MMM d, yyyy hh:mm:ss a zzz", locale);
+      skeleton = "MMMdyhmsza";
     }
+
+    String dateFormatPattern = getLocalizedPattern(skeleton, locale);
 
     return new SimpleDateFormat(dateFormatPattern, locale);
   }
@@ -116,7 +126,7 @@ public class DateUtils extends android.text.format.DateUtils {
     } else if (isYesterday(timestamp)) {
       return context.getString(R.string.DateUtils_yesterday);
     } else {
-      return getFormattedDateTime(timestamp, "EEE, MMM d, yyyy", locale);
+      return getFormattedDateTime(timestamp, "EMMMdy", locale);
     }
   }
 
@@ -166,11 +176,11 @@ public class DateUtils extends android.text.format.DateUtils {
       int hours = convertDelta(timestamp, TimeUnit.HOURS);
       return c.getResources().getQuantityString(R.plurals.hours_ago, hours, hours);
     } else if (isWithin(timestamp, 6, TimeUnit.DAYS)) {
-      return getFormattedDateTime(timestamp, "EEE", locale);
+      return getFormattedDateTime(timestamp, "E", locale);
     } else if (isWithin(timestamp, 365, TimeUnit.DAYS)) {
-      return getFormattedDateTime(timestamp, "MMM d", locale);
+      return getFormattedDateTime(timestamp, "MMMd", locale);
     } else {
-      return getFormattedDateTime(timestamp, "MMM d, yyyy", locale);
+      return getFormattedDateTime(timestamp, "MMMdy", locale);
     }
   }
 
@@ -181,15 +191,14 @@ public class DateUtils extends android.text.format.DateUtils {
       int mins = (int)TimeUnit.MINUTES.convert(System.currentTimeMillis() - timestamp, TimeUnit.MILLISECONDS);
       return c.getResources().getString(R.string.DateUtils_minutes_ago, mins);
     } else {
-      StringBuilder format = new StringBuilder();
-      if      (isWithin(timestamp,   6, TimeUnit.DAYS)) format.append("EEE ");
-      else if (isWithin(timestamp, 365, TimeUnit.DAYS)) format.append("MMM d, ");
-      else                                              format.append("MMM d, yyyy, ");
+      StringBuilder skeleton = new StringBuilder();
+      if      (isWithin(timestamp,   6, TimeUnit.DAYS)) skeleton.append("E");
+      else if (isWithin(timestamp, 365, TimeUnit.DAYS)) skeleton.append("MMMd");
+      else                                              skeleton.append("MMMdy");
 
-      if (DateFormat.is24HourFormat(c)) format.append("HH:mm");
-      else                              format.append("hh:mm a");
+      skeleton.append(getHourFormat(c));
 
-      return getFormattedDateTime(timestamp, format.toString(), locale);
+      return getFormattedDateTime(timestamp, skeleton.toString(), locale);
     }
   }
   // endregion

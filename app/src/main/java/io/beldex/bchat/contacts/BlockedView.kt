@@ -8,8 +8,6 @@ import android.widget.LinearLayout
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.conversation.v2.utilities.MentionManagerUtilities
-import io.beldex.bchat.database.RecipientDatabase
-import io.beldex.bchat.database.model.ThreadRecord
 import io.beldex.bchat.dependencies.DatabaseComponent
 import com.bumptech.glide.RequestManager;
 import io.beldex.bchat.databinding.ActivityBlockedViewBinding
@@ -48,7 +46,8 @@ class BlockedView : LinearLayout {
         fun getUserDisplayName(publicKey: String): String {
             val contact = DatabaseComponent.get(context).bchatContactDatabase()
                 .getContactWithBchatID(publicKey)
-            return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
+            return contact?.displayName(Contact.ContactContext.REGULAR, context
+            ) ?: publicKey
         }
 
         val threadID =

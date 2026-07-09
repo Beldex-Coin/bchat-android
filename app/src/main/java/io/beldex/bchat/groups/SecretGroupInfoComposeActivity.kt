@@ -106,13 +106,11 @@ import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.conversation.v2.dialogs.LeaveGroupDialog
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.home.NotificationSettingDialog
 import io.beldex.bchat.my_account.ui.CardContainer
 import io.beldex.bchat.my_account.ui.dialogs.LockOptionsDialog
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -448,7 +446,7 @@ fun GroupDetailsScreen(
         } else {
             val contact=DatabaseComponent.get(context).bchatContactDatabase()
                 .getContactWithBchatID(publicKey)
-            contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
+            contact?.displayName(Contact.ContactContext.REGULAR, context) ?: publicKey
         }
     }
 
@@ -1094,7 +1092,7 @@ fun MemberDetailsDialog(
         } else {
             val contact=DatabaseComponent.get(context).bchatContactDatabase()
                 .getContactWithBchatID(publicKey)
-            contact?.displayName(Contact.ContactContext.REGULAR) ?: truncatedPublicKey(publicKey)
+            contact?.displayName(Contact.ContactContext.REGULAR, context) ?: truncatedPublicKey(publicKey)
         }
     }
 

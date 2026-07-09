@@ -202,7 +202,7 @@ public class QuoteView extends FrameLayout implements RecipientModifiedListener 
       Contact contact = contactDB.getContactWithBchatID(senderHexEncodedPublicKey);
       if (contact != null) {
         Contact.ContactContext context = (this.conversationRecipient.isOpenGroupRecipient()) ? Contact.ContactContext.OPEN_GROUP : Contact.ContactContext.REGULAR;
-        quoteeDisplayName = contact.displayName(context);
+        quoteeDisplayName = contact.displayName(context, getContext());
       } else {
         quoteeDisplayName = senderHexEncodedPublicKey;
       }

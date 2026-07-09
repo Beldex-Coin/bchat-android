@@ -50,6 +50,7 @@ import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.beldex.libbchat.BuildConfig
 import com.beldex.libbchat.messaging.jobs.AttachmentDownloadJob
 import com.beldex.libbchat.messaging.jobs.JobQueue
 import com.beldex.libbchat.messaging.mentions.Mention
@@ -1018,10 +1019,16 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
             profileManager.setName(applicationContext, recipient, bnsName)
         }
 
+        // ---------- Report issue title ----------
+        val isReportIssueRecipient = recipient.address.toString() == BuildConfig.REPORT_ISSUE_ID
+        val localizedReportIssueName = getString(R.string.report_issue).capitalizeFirstLetter()
+
         // ---------- Title ----------
         val title = when {
             recipient.isLocalNumber ->
                 getString(R.string.note_to_self).capitalizeFirstLetter()
+            isReportIssueRecipient ->
+                localizedReportIssueName
             else ->
                 recipient.toShortString().capitalizeFirstLetter()
         }
@@ -2160,7 +2167,8 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
         val candidates = MentionsManager.getMentionCandidates(
             query,
             viewModel.threadId,
-            recipient.isOpenGroupRecipient
+            recipient.isOpenGroupRecipient,
+            this
         )
 
         if (!isShowingMentionCandidatesView) {

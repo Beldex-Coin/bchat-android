@@ -645,7 +645,7 @@ fun ArchiveChatItem(
 private fun getDisplayName(context : Context, publicKey : String) : String {
     val contact=
         DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
-    return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
+    return contact?.displayName(Contact.ContactContext.REGULAR, context) ?: publicKey
 }
 
 private fun getUserDisplayName(context : Context, recipient : Recipient?) : String? {

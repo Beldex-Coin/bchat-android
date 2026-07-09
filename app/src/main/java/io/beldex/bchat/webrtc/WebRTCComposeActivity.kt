@@ -532,12 +532,12 @@ class WebRTCComposeActivity : BaseComponentActivity() {
 
         fun getUserDisplayName(publicKey : String) : String {
             val contact=DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
-            return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
+            return contact?.displayName(Contact.ContactContext.REGULAR, context) ?: publicKey
         }
 
         fun getUserDisplayNameOrShortestPublicKey(publicKey : String) : String {
             val contact=DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
-            return contact?.displayName(Contact.ContactContext.REGULAR) ?: "${publicKey.take(4)}...${publicKey.takeLast(4)}"
+            return contact?.displayName(Contact.ContactContext.REGULAR, context) ?: "${publicKey.take(4)}...${publicKey.takeLast(4)}"
         }
 
         fun showLocalUserDetailsInFullScreen() : Boolean {

@@ -5,11 +5,13 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
 import android.os.IBinder;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.ServiceCompat;
 import androidx.core.content.ContextCompat;
 
 import io.beldex.bchat.home.HomeActivity;
@@ -81,17 +83,18 @@ public class GenericForegroundService extends Service {
 
     if (foregroundCount == 0) {
       Log.d(TAG, "Last request. Ending foreground service.");
-      stopForeground(true);
+      ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
       stopSelf();
     }
   }
 
   private void postObligatoryForegroundNotification(String title, String channelId, @DrawableRes int iconRes) {
-    startForeground(NOTIFICATION_ID, new NotificationCompat.Builder(this, channelId)
+    ServiceCompat.startForeground(this, NOTIFICATION_ID, new NotificationCompat.Builder(this, channelId)
                                                            .setSmallIcon(iconRes)
                                                            .setContentTitle(title)
                                                            .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, HomeActivity.class), PendingIntent.FLAG_IMMUTABLE))
-                                                           .build());
+                                                           .build(),
+                                   ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
   }
 
   @Nullable

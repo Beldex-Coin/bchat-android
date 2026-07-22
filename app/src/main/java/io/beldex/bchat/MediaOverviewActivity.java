@@ -57,7 +57,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.beldex.libbchat.mnode.MnodeAPI;
-import com.beldex.libsignal.utilities.Log;
 import com.codewaves.stickyheadergrid.StickyHeaderGridLayoutManager;
 import com.google.android.material.tabs.TabLayout;
 
@@ -492,8 +491,10 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
         FragmentActivity activity = getActivity();
         if (activity == null) return false;
         Window window = activity.getWindow();
-        originalStatusBarColor = window.getStatusBarColor();
-        window.setStatusBarColor(ContextCompat.getColor(activity, R.color.action_mode_status_bar));
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+          originalStatusBarColor = window.getStatusBarColor();
+          window.setStatusBarColor(ContextCompat.getColor(activity, R.color.action_mode_status_bar));
+        }
 
         return true;
       }
@@ -548,7 +549,9 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
         MediaOverviewActivity activity = ((MediaOverviewActivity) getActivity());
         if(activity == null) return;
         activity.onExitMultiSelect();
-        activity.getWindow().setStatusBarColor(originalStatusBarColor);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+          activity.getWindow().setStatusBarColor(originalStatusBarColor);
+        }
       }
     }
   }

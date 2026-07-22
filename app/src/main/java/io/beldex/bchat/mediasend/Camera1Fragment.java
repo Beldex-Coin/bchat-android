@@ -34,7 +34,6 @@ import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
-import io.beldex.bchat.util.Stopwatch;
 
 import io.beldex.bchat.R;
 import com.beldex.libsignal.utilities.Log;
@@ -107,7 +106,7 @@ public class Camera1Fragment extends Fragment implements TextureView.SurfaceText
     GestureDetector gestureDetector = new GestureDetector(flipGestureListener);
     cameraPreview.setOnTouchListener((v, event) -> gestureDetector.onTouchEvent(event));
 
-    cameraCloseButton.setOnClickListener(v -> requireActivity().onBackPressed());
+    cameraCloseButton.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
   }
 
   @Override

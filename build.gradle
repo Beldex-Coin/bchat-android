@@ -70,7 +70,7 @@ allprojects {
 
     project.ext {
         androidMinimumSdkVersion = 26
-        androidTargetSdkVersion  = 35
-        androidCompileSdkVersion = 35
+        androidTargetSdkVersion  = 36
+        androidCompileSdkVersion = 36
     }
 }

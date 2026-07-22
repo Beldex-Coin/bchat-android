@@ -81,7 +81,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.app.PictureInPictureModeChangedInfo
 import androidx.core.content.ContextCompat
-import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -187,14 +186,15 @@ class WebRTCComposeActivity : ComponentActivity() {
         if (intent.action == ACTION_FULL_SCREEN_INTENT) {
             this.actionBar?.setDisplayHomeAsUpEnabled(false)
         }
-        WindowCompat.setDecorFitsSystemWindows(window, true)
         setContent {
             val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
             val view = LocalView.current
             val window = (view.context as Activity).window
             val statusBarColor = if (isDarkTheme) Color.Black else Color.White
             SideEffect {
-                window.statusBarColor = statusBarColor.toArgb()
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    window.statusBarColor = statusBarColor.toArgb()
+                }
                 WindowInsetsControllerCompat(window, view).isAppearanceLightStatusBars = !isDarkTheme
             }
             BChatTheme(darkTheme= isDarkTheme) {

@@ -174,7 +174,7 @@ public class MediaPickerItemFragment extends Fragment implements MediaPickerItem
     actionBar.setHomeAsUpIndicator(R.drawable.ic_back);
     actionBar.setDisplayHomeAsUpEnabled(true);
 
-    toolbar.setNavigationOnClickListener(v -> requireActivity().onBackPressed());
+    toolbar.setNavigationOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
   }
 
   private void initMediaObserver(@NonNull MediaSendViewModel viewModel) {

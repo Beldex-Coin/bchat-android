@@ -7,6 +7,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -73,7 +74,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.view.WindowCompat
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.asPaddingValues
@@ -130,14 +130,15 @@ class SecretGroupInfoComposeActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, true)
         setContent {
             val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
             val view = LocalView.current
             val window = (view.context as Activity).window
             val statusBarColor = if (isDarkTheme) Color.Black else Color.White
             SideEffect {
-                window.statusBarColor = statusBarColor.toArgb()
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    window.statusBarColor = statusBarColor.toArgb()
+                }
                 WindowInsetsControllerCompat(window, view).isAppearanceLightStatusBars = !isDarkTheme
             }
 

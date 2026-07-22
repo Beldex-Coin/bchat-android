@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.util.Log;
-import android.view.WindowManager;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageActivityHelper;
 import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper;
-
 import io.beldex.bchat.R;
 import timber.log.Timber;
 
@@ -47,10 +45,13 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
 
   @Override
   public boolean onSupportNavigateUp() {
-    if (super.onSupportNavigateUp()) return true;
+    if (handleNavigateUp()) return true;
 
-    onBackPressed();
+    getOnBackPressedDispatcher().onBackPressed();
     return true;
+  }
+  protected final boolean handleNavigateUp() {
+    return false;
   }
 
   @Override

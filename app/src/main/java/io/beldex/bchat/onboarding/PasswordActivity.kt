@@ -5,8 +5,10 @@ import android.app.KeyguardManager
 import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
+import androidx.activity.OnBackPressedCallback
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
@@ -70,7 +72,9 @@ class PasswordActivity : BaseActionBarActivity() {
             val window = (view.context as Activity).window
             val statusBarColor = if (isDarkTheme) Color.Black else Color.White
             SideEffect {
-                window.statusBarColor = statusBarColor.toArgb()
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    window.statusBarColor = statusBarColor.toArgb()
+                }
                 WindowInsetsControllerCompat(window, view).isAppearanceLightStatusBars = !isDarkTheme
             }
             BChatTheme {
@@ -100,7 +104,7 @@ class PasswordActivity : BaseActionBarActivity() {
                         ScreenContainer(
                             title = stringResource(R.string.verify_password),
                             onBackClick = {
-                                onBackPressed()
+                                onBackPressedDispatcher.onBackPressed()
                             },
                             modifier = Modifier.padding(it)
                         ) {
@@ -113,6 +117,10 @@ class PasswordActivity : BaseActionBarActivity() {
                 }
             }
         }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() { finish() }
+        })
 
         //  Start and bind to the KeyCachingService instance.
         val bindIntent = Intent(this, KeyCachingService::class.java)
@@ -284,10 +292,5 @@ class PasswordActivity : BaseActionBarActivity() {
         push(intent)
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-            super.onBackPressed()
-        //New Line
-        finish()
-    }
+
 }

@@ -23,7 +23,6 @@ import android.util.Log
 import android.view.ActionMode
 import android.view.LayoutInflater
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
@@ -33,6 +32,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.DimenRes
@@ -41,7 +41,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -408,6 +407,14 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         networkChangedReceiver?.register(this)
 
         initConversationScreen()
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                handleBackPressed()
+                isEnabled = false
+                onBackPressedDispatcher.onBackPressed()
+            }
+        })
     }
 
     override fun onResume() {
@@ -2751,11 +2758,6 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
 
     override fun onScreenCaptured() {
         sendScreenShotTakenNotification()
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        handleBackPressed()
     }
 
     private fun handleBackPressed() {

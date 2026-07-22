@@ -2,6 +2,7 @@ package io.beldex.bchat.onboarding.ui
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -51,7 +52,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
-import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -84,14 +84,15 @@ class OnBoardingActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         destination = intent?.getStringExtra(extraStartDestination) ?: OnBoardingScreens.RestoreSeedScreen.route
-        WindowCompat.setDecorFitsSystemWindows(window, true)
         setContent {
             val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
             val view = LocalView.current
             val window = (view.context as Activity).window
             val statusBarColor = if (isDarkTheme) Color.Black else Color.White
             SideEffect {
-                window.statusBarColor = statusBarColor.toArgb()
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    window.statusBarColor = statusBarColor.toArgb()
+                }
                 WindowInsetsControllerCompat(window, view).isAppearanceLightStatusBars = !isDarkTheme
             }
             BChatTheme {

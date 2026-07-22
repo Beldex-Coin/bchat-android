@@ -1,7 +1,6 @@
 package io.beldex.bchat.applock
 
 import android.app.AlertDialog
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -144,10 +143,6 @@ class ChangePasswordActivity : BaseActionBarActivity() {
                 }
             }
         })
-    }
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        super.onBackPressed()
     }
 
     private fun passwordChangedAlert(){

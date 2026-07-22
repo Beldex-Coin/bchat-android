@@ -9,6 +9,7 @@ import android.content.Context
 import android.graphics.PointF
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
+import android.os.Build
 import android.util.AttributeSet
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
@@ -298,9 +299,13 @@ class ConversationReactionOverlay : FrameLayout {
     private fun updateSystemUiOnShow(activity: Activity) {
         val window = activity.window
         val barColor = ContextCompat.getColor(context, R.color.transparent)
-        originalStatusBarColor = window.statusBarColor
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            originalStatusBarColor = window.statusBarColor
+        }
         WindowUtil.setStatusBarColor(window, barColor)
-        originalNavigationBarColor = window.navigationBarColor
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            originalNavigationBarColor = window.navigationBarColor
+        }
         WindowUtil.setNavigationBarColor(window, barColor)
     }
     fun hide() {
@@ -616,12 +621,19 @@ class ConversationReactionOverlay : FrameLayout {
         } + conversationItemAnimator {
             setProperty(Y)
             setFloatValues(selectedConversationModel.bubbleY - statusBarHeight)
-        } + ValueAnimator.ofArgb(activity.window.statusBarColor, originalStatusBarColor).apply {
-            setDuration(duration)
-            addUpdateListener { animation: ValueAnimator -> WindowUtil.setStatusBarColor(activity.window, animation.animatedValue as Int) }
-        } + ValueAnimator.ofArgb(activity.window.statusBarColor, originalNavigationBarColor).apply {
-            setDuration(duration)
-            addUpdateListener { animation: ValueAnimator -> WindowUtil.setNavigationBarColor(activity.window, animation.animatedValue as Int) }
+        } + if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            listOf(
+                ValueAnimator.ofArgb(activity.window.statusBarColor, originalStatusBarColor).apply {
+                    setDuration(duration)
+                    addUpdateListener { animation: ValueAnimator -> WindowUtil.setStatusBarColor(activity.window, animation.animatedValue as Int) }
+                },
+                ValueAnimator.ofArgb(activity.window.statusBarColor, originalNavigationBarColor).apply {
+                    setDuration(duration)
+                    addUpdateListener { animation: ValueAnimator -> WindowUtil.setNavigationBarColor(activity.window, animation.animatedValue as Int) }
+                }
+            )
+        } else {
+            emptyList()
         }
     }
     interface OnHideListener {

@@ -44,7 +44,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.view.WindowCompat
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.R
@@ -70,7 +69,6 @@ class ViewAllContactsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         contact = intent.getParcelableExtra(CONTACTMODEL)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
             BChatTheme {

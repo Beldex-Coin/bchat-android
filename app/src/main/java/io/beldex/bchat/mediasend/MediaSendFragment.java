@@ -225,7 +225,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
       emojiToggle.setOnClickListener(this::onEmojiToggleClicked);
     }
 
-    closeButton.setOnClickListener(v -> requireActivity().onBackPressed());
+    closeButton.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
   }
 
   @Override

@@ -5,12 +5,17 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -57,6 +62,7 @@ class PrivateChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
         setContentView(binding.root)
         // Set title
         supportActionBar!!.title = resources.getString(R.string.activity_qr_code_view_scan_qr_code_tab_title)
+        applyInsetsForOrientation()
         update()
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() { finish() }
@@ -70,6 +76,34 @@ class PrivateChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
                 Log.d("Beldex","Camera permission was denied by the user.")
             }
         }
+    }
+
+    private fun getActionBarHeight(): Int {
+        val tv = TypedValue()
+        return if (theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
+        } else {
+            0
+        }
+    }
+
+    private fun applyInsetsForOrientation() {
+        val actionBarH = getActionBarHeight()
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+            if (isLandscape) {
+                view.updatePadding(left = bars.left, right = bars.right, top = actionBarH)
+            } else {
+                view.updatePadding(top = bars.top)
+            }
+            insets
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        applyInsetsForOrientation()
     }
 
     private fun update() {

@@ -37,8 +37,10 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -292,6 +294,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         // Set content view
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        setupToolbarInsets()
         setSupportActionBar(binding.toolbar)
 
         glide = Glide.with(this)
@@ -485,14 +489,20 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             }
         }
 
-        binding.navigationMenu.menuContainer.run {
-            post {
-                val params = layoutParams as DrawerLayout.LayoutParams
+        fun updateDrawerWidth() {
+            binding.navigationMenu.menuContainer.post {
+                val params = binding.navigationMenu.menuContainer.layoutParams as DrawerLayout.LayoutParams
                 params.width = (getScreenWidth() * 0.7).toInt()
-                layoutParams = params
-                translationX = -(this@HomeActivity.toPx(16))
+                binding.navigationMenu.menuContainer.layoutParams = params
+                binding.navigationMenu.menuContainer.translationX = -(this@HomeActivity.toPx(16))
             }
         }
+        updateDrawerWidth()
+        binding.drawerLayout.addDrawerListener(object : DrawerLayout.SimpleDrawerListener() {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                updateDrawerWidth()
+            }
+        })
         binding.navigationMenu.version.text = resources.getString(R.string.version_name).format(BuildConfig.VERSION_NAME)
 
         networkChangedReceiver = NetworkChangeReceiver(::networkChange)

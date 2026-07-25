@@ -13,11 +13,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.beldex.bchat.BaseActionBarActivity
 import io.beldex.bchat.conversation.v2.utilities.BaseDialog
 import io.beldex.bchat.R
-
+import io.beldex.bchat.WindowInsetsUtil
 val defaultBchatRequestCode: Int
     get() = 42
 
-fun BaseActionBarActivity.setUpActionBarBchatLogo(title: String, hideBackButton: Boolean = false) {
+fun BaseActionBarActivity.setUpActionBarBchatLogo(
+    title: String,
+    hideBackButton: Boolean = false
+) {
 
     supportActionBar?.let { actionbar ->
         actionbar.setDisplayShowHomeEnabled(false)
@@ -28,9 +31,14 @@ fun BaseActionBarActivity.setUpActionBarBchatLogo(title: String, hideBackButton:
         actionbar.setCustomView(R.layout.bchat_logo_action_bar_content)
         actionbar.setDisplayShowCustomEnabled(true)
 
-        val rootView: Toolbar = actionbar.customView!!.parent as Toolbar
-        rootView.setPadding(0, 0, 0, 0)
-        rootView.setContentInsetsAbsolute(0, 0);
+        val rootView = actionbar.customView!!.parent as Toolbar
+
+        //rootView.setPadding(0, 0, 0, 0)
+        //rootView.setContentInsetsAbsolute(0, 0);
+
+
+        // Apply WindowInsets here
+        WindowInsetsUtil.applyToolbarInsets(rootView)
 
         val backButton = actionbar.customView!!.findViewById<View>(R.id.back_button)
         val titleName = actionbar.customView!!.findViewById<TextView>(R.id.title_name)

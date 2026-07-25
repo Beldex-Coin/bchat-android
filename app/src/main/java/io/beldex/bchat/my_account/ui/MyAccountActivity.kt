@@ -29,10 +29,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -85,6 +87,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.net.toUri
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
@@ -279,6 +282,7 @@ class MyAccountActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         destination =
             intent?.getStringExtra(extraStartDestination) ?: MyAccountScreens.SettingsScreen.route
         setContent {
@@ -286,11 +290,14 @@ class MyAccountActivity : ComponentActivity() {
             val view = LocalView.current
             val window = (view.context as Activity).window
             val statusBarColor = if (isDarkTheme) Color.Black else Color.White
+            val navBarColor = if (isDarkTheme) Color.Black else Color.White
             SideEffect {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                     window.statusBarColor = statusBarColor.toArgb()
+                    window.navigationBarColor = navBarColor.toArgb()
                 }
                 WindowInsetsControllerCompat(window, view).isAppearanceLightStatusBars = !isDarkTheme
+                WindowInsetsControllerCompat(window, view).isAppearanceLightNavigationBars = !isDarkTheme
             }
             BChatTheme(
                 darkTheme = isDarkTheme
@@ -299,8 +306,10 @@ class MyAccountActivity : ComponentActivity() {
                 val activity = (context as? Activity)
                 Surface {
                     Scaffold(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                    ) {
+                        contentWindowInsets = WindowInsets.safeDrawing,
+                        containerColor = MaterialTheme.colorScheme.primary
+                    ) { padding ->
+
                         val navController = rememberNavController()
                         MyAccountNavHost(
                             navController = navController,
@@ -312,8 +321,7 @@ class MyAccountActivity : ComponentActivity() {
                             removeAvatar = {
                                 removeAvatar()
                             },
-                            modifier = Modifier
-                                .padding(it)
+                            modifier = Modifier.padding(padding)
                         )
                     }
                 }
@@ -1621,7 +1629,8 @@ private fun MyAccountScreenContainer(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 16.dp)
         ) {
             Icon(
                 painterResource(id = R.drawable.ic_back_arrow),
@@ -1649,7 +1658,7 @@ private fun MyAccountScreenContainer(
             actionItems()
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         if (wrapInCard) {
             CardContainer(

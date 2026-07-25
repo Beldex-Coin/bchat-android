@@ -12,7 +12,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -48,10 +47,6 @@ class ScanQRCodeFragment : Fragment() {
 
     override fun onViewCreated(view: View, bundle: Bundle?) {
         super.onViewCreated(view, bundle)
-        when (resources.configuration.orientation) {
-            Configuration.ORIENTATION_LANDSCAPE -> binding.overlayView.orientation = LinearLayout.HORIZONTAL
-            else -> binding.overlayView.orientation = LinearLayout.VERTICAL
-        }
 
         val fromScreenValue = requireActivity().intent.extras!!.getBoolean("from_new_chat_screen")
         if (fromScreenValue) {
@@ -127,10 +122,6 @@ class ScanQRCodeFragment : Fragment() {
     override fun onConfigurationChanged(newConfiguration: Configuration) {
         super.onConfigurationChanged(newConfiguration)
         binding.cameraView.onPause()
-        when (newConfiguration.orientation) {
-            Configuration.ORIENTATION_LANDSCAPE -> binding.overlayView.orientation = LinearLayout.HORIZONTAL
-            else -> binding.overlayView.orientation = LinearLayout.VERTICAL
-        }
         binding.cameraView.onResume()
         binding.cameraView.setPreviewCallback(scanningThread)
     }

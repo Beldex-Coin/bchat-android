@@ -4,6 +4,7 @@ import android.os.Bundle
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityOpenGroupGuidelinesBinding
 import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.WindowInsetsUtil
 
 class OpenGroupGuidelinesActivity : BaseActionBarActivity() {
 
@@ -16,6 +17,8 @@ class OpenGroupGuidelinesActivity : BaseActionBarActivity() {
             back.setOnClickListener { finish() }
             title.text = getString(R.string.ConversationActivity_open_group_guidelines)
         }
+        WindowInsetsUtil.applyTopInset(binding.root)
+
         binding.communityGuidelinesTextView.text = """
 BChat is a decentralized messaging platform that protects your privacy. When you're using BChat, you own your conversations and data. It does not collect or store any of your personal information. BChat is where you chat with freedom.
 

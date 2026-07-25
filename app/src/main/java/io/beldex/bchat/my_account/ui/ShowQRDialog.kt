@@ -5,11 +5,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -57,6 +58,7 @@ fun ShowQRDialog(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxWidth()
+                .widthIn(max = 320.dp)
                 .padding(16.dp)
         ) {
             Text(
@@ -86,11 +88,8 @@ fun ShowQRDialog(
                         bitmap = bitMap.asImageBitmap(),
                         contentDescription = "",
                         modifier =Modifier
-                            .fillMaxWidth(0.5f)
-                            .aspectRatio(1f)
-                            .padding(
-                                5.dp
-                            )
+                            .sizeIn(maxWidth = 200.dp, maxHeight = 200.dp)
+                            .padding(5.dp)
                     )
                 } else {
                     Box(

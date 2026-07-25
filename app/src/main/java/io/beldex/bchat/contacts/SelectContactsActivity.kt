@@ -9,6 +9,8 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -49,6 +51,11 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
         super.onCreate(savedInstanceState, isReady)
         binding = ActivitySelectContactsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            v.setPadding(0, statusBar, 0, 0)
+            insets
+        }
         supportActionBar!!.title = resources.getString(R.string.activity_select_contacts_title)
 
         isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT

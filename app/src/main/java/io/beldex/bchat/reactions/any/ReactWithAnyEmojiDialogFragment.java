@@ -3,6 +3,7 @@ package io.beldex.bchat.reactions.any;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -91,7 +92,17 @@ public final class ReactWithAnyEmojiDialogFragment extends BottomSheetDialogFrag
   @Override
   public @NonNull Dialog onCreateDialog(Bundle savedInstanceState) {
     BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
-    dialog.getBehavior().setPeekHeight((int) (getResources().getDisplayMetrics().heightPixels * 0.50));
+    boolean isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+    int screenHeight = getResources().getDisplayMetrics().heightPixels;
+    dialog.getBehavior().setPeekHeight((int) (screenHeight * (isLandscape ? 0.90 : 0.50)));
+    dialog.getBehavior().setSkipCollapsed(true);
+    dialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
+    if (isLandscape) {
+      View bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+      if (bottomSheet != null) {
+        bottomSheet.getLayoutParams().height = (int) (screenHeight * 0.90);
+      }
+    }
 
     ShapeAppearanceModel shapeAppearanceModel = ShapeAppearanceModel.builder()
                                                                     .setTopLeftCorner(CornerFamily.ROUNDED, ViewUtil.dpToPx(requireContext(), 18))

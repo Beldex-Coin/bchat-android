@@ -38,6 +38,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import io.beldex.bchat.conversation.v2.ConversationActivityV2;
 import io.beldex.bchat.mms.PartAuthority;
@@ -104,6 +106,14 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
     getIntent().putExtra(ContactSelectionListFragment.REFRESHABLE, false);
 
     setContentView(R.layout.share_activity);
+
+    View topBar = findViewById(R.id.linearLayout);
+    ViewCompat.setOnApplyWindowInsetsListener(topBar, (v, windowInsets) -> {
+      int top = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()).top;
+      v.setPadding(v.getPaddingLeft(), top + 16, v.getPaddingRight(), v.getPaddingBottom());
+      return windowInsets;
+    });
+
     initializeResources();
     initializeMedia();
     handledFunctionalities();

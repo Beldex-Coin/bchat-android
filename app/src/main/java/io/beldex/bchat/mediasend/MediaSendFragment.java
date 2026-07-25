@@ -52,6 +52,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import io.beldex.bchat.R;
+import io.beldex.bchat.WindowInsetsUtil;
 import io.beldex.bchat.components.ComposeText;
 import io.beldex.bchat.components.ControllableViewPager;
 import io.beldex.bchat.components.InputAwareLayout;
@@ -226,6 +227,8 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
     }
 
     closeButton.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
+
+    WindowInsetsUtil.INSTANCE.applyTopInset(closeButton);
   }
 
   @Override

@@ -1,6 +1,7 @@
 package io.beldex.bchat.reactions;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import io.beldex.bchat.R;
@@ -152,4 +154,19 @@ public final class ReactionsDialogFragment extends BottomSheetDialogFragment imp
     void onClearAll(@NonNull String emoji, @NonNull MessageId messageId);
   }
 
+  @Override
+  public void onStart() {
+    super.onStart();
+    View bottomSheet = getDialog() != null ? getDialog().findViewById(com.google.android.material.R.id.design_bottom_sheet) : null;
+    if (bottomSheet != null) {
+      BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(bottomSheet);
+      behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+      behavior.setSkipCollapsed(true);
+      int orientation = getResources().getConfiguration().orientation;
+      if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        int displayHeight = getResources().getDisplayMetrics().heightPixels;
+        bottomSheet.getLayoutParams().height = (int) (displayHeight * 0.9);
+      }
+    }
+  }
 }

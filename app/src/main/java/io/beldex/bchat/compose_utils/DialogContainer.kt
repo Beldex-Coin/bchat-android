@@ -2,6 +2,7 @@ package io.beldex.bchat.compose_utils
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -40,6 +41,7 @@ fun DialogContainer(
             ),
             modifier = Modifier
                 .fillMaxWidth(0.9f)
+                .widthIn(max = 400.dp)
         ) {
             content()
         }

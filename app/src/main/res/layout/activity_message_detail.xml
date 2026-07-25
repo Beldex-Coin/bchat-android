@@ -4,10 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_weight="1"
     style="@style/CustomCardViewStyle"
     app:cardBackgroundColor="@color/page_background"
-    android:fitsSystemWindows="true"
     app:cardElevation="4dp">
 
     <LinearLayout
@@ -17,13 +15,13 @@
         android:layout_gravity="center_horizontal"
         android:background="@drawable/default_dialog_background_inset"
         android:gravity="center"
-        android:padding="@dimen/very_large_spacing"
-        >
+        android:padding="@dimen/very_large_spacing">
 
         <LinearLayout
+            android:id="@+id/sentRow"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <TextView
@@ -33,16 +31,17 @@
                 android:text="@string/message_details_header__sent"
                 android:textSize="16sp"
                 android:fontFamily="@font/open_sans_semi_bold"
-                android:gravity="end" />
+                android:gravity="start" />
 
             <TextView
                 android:id="@+id/sent_time"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:textColor="@color/input_quoted_text_color"
                 android:textSize="14sp"
-                android:gravity="end"
+                android:gravity="start"
                 tools:text="Jan 18, 2015, 12:29:37 AM GMT-08:00" />
 
         </LinearLayout>
@@ -50,8 +49,8 @@
         <LinearLayout
             android:id="@+id/expiresContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:layout_marginTop="@dimen/medium_spacing"
             android:orientation="horizontal">
 
@@ -62,25 +61,27 @@
                 android:textSize="16sp"
                 android:fontFamily="@font/open_sans_semi_bold"
                 android:textColor="@color/text"
-                android:gravity="end"
+                android:gravity="start"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/expires_in"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:textColor="@color/input_quoted_text_color"
                 android:textSize="14sp"
-                android:gravity="end"
-                tools:text="Jan 18, 2015, 12:29:37 AM GMT-08:00" />
+                android:gravity="start"
+                tools:text="5 minutes" />
 
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/errorContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:layout_marginTop="@dimen/medium_spacing"
             android:orientation="horizontal">
 
@@ -91,18 +92,19 @@
                 android:textSize="16sp"
                 android:fontFamily="@font/open_sans_semi_bold"
                 android:textColor="@color/text"
-                android:gravity="end"
+                android:gravity="start"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/error_message"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:textColor="@color/input_quoted_text_color"
                 android:textSize="14sp"
-                android:gravity="end"
-                tools:text="Jan 18, 2015, 12:29:37 AM GMT-08:00" />
+                android:gravity="start"
+                tools:text="Connection timeout" />
 
         </LinearLayout>
 

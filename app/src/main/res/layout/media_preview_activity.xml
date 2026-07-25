@@ -6,8 +6,7 @@
     android:id="@+id/media_preview_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/page_background"
-    android:fitsSystemWindows="true">
+    android:background="@color/page_background">
 
     <com.google.android.material.appbar.AppBarLayout
         style="@style/Widget.Bchat.AppBarLayout"

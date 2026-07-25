@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.R
+import io.beldex.bchat.WindowInsetsUtil
 import io.beldex.bchat.databinding.ActivityFragmentWrapperNewBinding
 
 class PrivacySettingsActivity : PassphraseRequiredActionBarActivity() {
@@ -16,6 +17,7 @@ class PrivacySettingsActivity : PassphraseRequiredActionBarActivity() {
             back.setOnClickListener { finish() }
             title.text = getString(R.string.activity_settings_title)
         }
+        WindowInsetsUtil.applyTopInset(binding.root)
         val fragment =
             AppProtectionPreferenceFragment()
         val transaction = supportFragmentManager.beginTransaction()

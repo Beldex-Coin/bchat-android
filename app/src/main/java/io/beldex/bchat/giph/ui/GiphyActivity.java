@@ -49,6 +49,16 @@ public class GiphyActivity extends PassphraseRequiredActionBarActivity
 
     initializeToolbar();
     initializeResources();
+
+    View coordinatorLayout = findViewById(R.id.giphy_toolbar).getParent().getParent() instanceof View
+            ? (View) findViewById(R.id.giphy_toolbar).getParent().getParent() : null;
+    if (coordinatorLayout != null) {
+      androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(coordinatorLayout, (v, insets) -> {
+        int top = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars()).top;
+        v.setPadding(v.getPaddingLeft(), top, v.getPaddingRight(), v.getPaddingBottom());
+        return insets;
+      });
+    }
   }
 
   private void initializeToolbar() {

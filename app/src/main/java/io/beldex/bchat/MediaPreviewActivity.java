@@ -47,6 +47,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.util.Pair;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
@@ -80,6 +82,7 @@ import com.bumptech.glide.RequestManager;
 import io.beldex.bchat.permissions.Permissions;
 import io.beldex.bchat.util.SaveAttachmentTask;
 import io.beldex.bchat.util.SaveAttachmentTask.Attachment;
+import io.beldex.bchat.WindowInsetsUtil;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -153,6 +156,15 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     viewModel = new ViewModelProvider(this).get(MediaPreviewViewModel.class);
 
     setContentView(R.layout.media_preview_activity);
+
+    View appBarLayout = findViewById(R.id.toolbar).getParent() instanceof View ? (View) ((android.view.ViewParent) findViewById(R.id.toolbar).getParent()) : null;
+    if (appBarLayout != null) {
+      ViewCompat.setOnApplyWindowInsetsListener(appBarLayout, (v, windowInsets) -> {
+        int top = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()).top;
+        v.setPadding(v.getPaddingLeft(), top, v.getPaddingRight(), v.getPaddingBottom());
+        return windowInsets;
+      });
+    }
 
     initializeViews();
     initializeResources();

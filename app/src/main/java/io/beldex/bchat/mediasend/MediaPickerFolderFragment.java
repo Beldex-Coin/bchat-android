@@ -24,6 +24,7 @@ import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libsignal.utilities.guava.Optional;
 
 import io.beldex.bchat.R;
+import io.beldex.bchat.WindowInsetsUtil;
 
 /**
  * Allows the user to select a media folder to explore.
@@ -90,6 +91,8 @@ public class MediaPickerFolderFragment extends Fragment implements MediaPickerFo
     viewModel.getFolders(requireContext()).observe(getViewLifecycleOwner(), adapter::setFolders);
 
     initToolbar(view.findViewById(R.id.mediapicker_toolbar));
+
+    WindowInsetsUtil.INSTANCE.applyTopInset(view);
   }
 
   @Override
@@ -106,7 +109,6 @@ public class MediaPickerFolderFragment extends Fragment implements MediaPickerFo
     super.onConfigurationChanged(newConfig);
     onScreenWidthChanged(getScreenWidth());
   }
-
   private void initToolbar(Toolbar toolbar) {
     ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
     ActionBar actionBar = ((AppCompatActivity) requireActivity()).getSupportActionBar();

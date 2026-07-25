@@ -45,6 +45,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.WindowCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -105,10 +106,11 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
 
   @Override
   protected void onCreate(Bundle bundle, boolean ready) {
+    WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
     setContentView(R.layout.media_overview_activity);
-
     initializeResources();
     initializeToolbar();
+    WindowInsetsUtil.INSTANCE.applyTopInset(this.toolbar);
 
     this.tabLayout.setupWithViewPager(viewPager);
     this.viewPager.setAdapter(new MediaOverviewPagerAdapter(getSupportFragmentManager()));

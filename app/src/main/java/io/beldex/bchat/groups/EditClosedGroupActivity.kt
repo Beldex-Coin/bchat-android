@@ -30,6 +30,7 @@ import com.beldex.libsignal.utilities.toHexString
 import com.bumptech.glide.Glide
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.R
+import io.beldex.bchat.WindowInsetsUtil
 import io.beldex.bchat.contacts.SelectContactsActivity
 import io.beldex.bchat.databinding.ActivityEditClosedGroupBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
@@ -99,6 +100,13 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         setContentView(binding.root)
         supportActionBar!!.setHomeAsUpIndicator(
                 ThemeUtil.getThemedDrawableResId(this, R.attr.actionModeCloseDrawable))
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.mainContentContainer) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val actionBarHeight = supportActionBar?.height ?: 0
+            view.setPadding(view.paddingLeft, systemBars.top + actionBarHeight, view.paddingRight, view.paddingBottom)
+            insets
+        }
 
         groupID = intent.getStringExtra(groupIDKey)!!
         val groupInfo = DatabaseComponent.get(this).groupDatabase().getGroup(groupID).get()

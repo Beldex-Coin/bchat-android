@@ -27,6 +27,7 @@ import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.LinearLayout
@@ -41,7 +42,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -92,6 +97,7 @@ import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.MediaOverviewActivity
 import io.beldex.bchat.R
+import io.beldex.bchat.WindowInsetsUtil
 import io.beldex.bchat.audio.AudioRecorder
 import io.beldex.bchat.compose_utils.ComposeDialogContainer
 import io.beldex.bchat.compose_utils.DialogType
@@ -397,10 +403,42 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     private var lastProfileAvatar: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
-
         binding = ActivityConversationV2Binding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // ---------- Edge-to-edge inset handling (required for API 36) ----------
+        // ConversationActivityV2 extends AppCompatActivity (not BaseActionBarActivity),
+        // so it replicates BaseActionBarActivity's inset pattern:
+        // 1. android.R.id.content gets nav bar padding on all sides (handles landscape side nav bars)
+        // 2. binding.root gets status bar top padding (for the toolbar)
+        // 3. inputBar only handles IME (keyboard) margin — nav bar already handled by content view
+        // 4. inputBarRecordingView handles nav bar margin (it overlays content, not inside normal flow)
+        ViewCompat.setOnApplyWindowInsetsListener(
+            window.decorView.findViewById(android.R.id.content)
+        ) { view, insets ->
+            val navBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            val statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+            view.setPadding(navBars.left, statusBars.top, navBars.right, navBars.bottom)
+            insets
+        }
+        val baseInputBarMargin = resources.getDimensionPixelSize(R.dimen.small_spacing)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.inputBar) { v, insets ->
+            val imeBottom = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
+            val lp = v.layoutParams as ViewGroup.MarginLayoutParams
+            lp.bottomMargin = baseInputBarMargin + imeBottom
+            v.layoutParams = lp
+            insets
+        }
+        ViewCompat.setOnApplyWindowInsetsListener(binding.inputBarRecordingView) { v, insets ->
+            val navBottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+            val lp = v.layoutParams as ViewGroup.MarginLayoutParams
+            lp.bottomMargin = baseInputBarMargin + navBottom
+            v.layoutParams = lp
+            insets
+        }
+
         setSupportActionBar(binding.conversationActivityToolbar)
         // ---------- Network monitoring ----------
         networkChangedReceiver = NetworkChangeReceiver(::networkChange)

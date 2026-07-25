@@ -12,6 +12,9 @@ import android.util.Log;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageActivityHelper;
@@ -24,6 +27,21 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
+    // Automatically apply navigation bar insets to the content view
+    // so all screens are protected from content being hidden behind the nav bar.
+    // Handles nav bar on bottom AND sides (landscape).
+    ViewCompat.setOnApplyWindowInsetsListener(
+            getWindow().getDecorView().findViewById(android.R.id.content),
+            (view, windowInsets) -> {
+              int left = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars()).left;
+              int right = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars()).right;
+              int bottom = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom;
+              view.setPadding(left, 0, right, bottom);
+              return windowInsets;
+            });
+
     ActionBar actionBar = getSupportActionBar();
     if (actionBar != null) {
       actionBar.setDisplayHomeAsUpEnabled(true);

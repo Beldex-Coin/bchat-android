@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.IntentSender
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Rect
@@ -1378,18 +1379,30 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     }
 
     private fun updateEmptyState() {
-        val threadCount=(binding.recyclerView.adapter)!!.itemCount
-        binding.emptyStateContainer.isVisible=
-            threadCount == 0 && binding.recyclerView.isVisible && threadDb.archivedConversationList.count == 0
-        binding.emptyStateContainerText.isVisible=
-            threadCount == 0 && binding.recyclerView.isVisible && threadDb.archivedConversationList.count == 0
+        val threadCount = binding.recyclerView.adapter!!.itemCount
 
-        val isDayUiMode=UiModeUtilities.isDayUiMode(this)
-        (if (isDayUiMode) R.drawable.ic_doodle_3_2 else R.drawable.ic_doodle_3_1).also {
-            binding.emptyStateImageView.setImageResource(
-                it
-            )
+        binding.emptyStateContainer.isVisible =
+            threadCount == 0 &&
+                    binding.recyclerView.isVisible &&
+                    threadDb.archivedConversationList.count == 0
+
+        binding.emptyStateContainerText.isVisible =
+            threadCount == 0 &&
+                    binding.recyclerView.isVisible &&
+                    threadDb.archivedConversationList.count == 0
+
+        val isDayUiMode = UiModeUtilities.isDayUiMode(this)
+        val isLandscape =
+            resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+        val imageRes = when {
+            isLandscape && isDayUiMode -> R.drawable.doodle_white_land
+            isLandscape && !isDayUiMode -> R.drawable.doodle_dark_land
+            !isLandscape && isDayUiMode -> R.drawable.ic_doodle_3_2
+            else -> R.drawable.ic_doodle_3_1
         }
+
+        binding.emptyStateImageView.setImageResource(imageRes)
     }
 
     private fun registerObservers() {

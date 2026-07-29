@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,6 +40,7 @@ import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
+import io.beldex.bchat.util.copySeedToClipboard
 import io.beldex.bchat.util.copyToClipBoard
 import io.beldex.bchat.R
 
@@ -70,9 +72,14 @@ fun RecoverySeedView(
     val context = LocalContext.current
     val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(LocalContext.current) == UiMode.NIGHT
     val activity = (context as? Activity)
-    activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+    DisposableEffect(activity) {
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        onDispose {
+            activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        }
+    }
     val copyToClipBoard: () -> Unit = {
-        context.copyToClipBoard("Seed", seed)
+        context.copySeedToClipboard(seed)
     }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

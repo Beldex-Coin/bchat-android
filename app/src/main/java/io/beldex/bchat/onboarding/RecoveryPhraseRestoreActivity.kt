@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
+import android.view.WindowManager
 import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.View
@@ -41,6 +42,7 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
         }
         binding = ActivityRecoveryPhraseRestoreBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         setUpActionBarBchatLogo(getString(R.string.restore_seed),false)
         binding.mnemonicEditText.imeOptions = binding.mnemonicEditText.imeOptions or 16777216 // Always use incognito keyboard
         binding.restoreButton.setOnClickListener {

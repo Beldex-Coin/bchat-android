@@ -1,9 +1,8 @@
 package io.beldex.bchat.onboarding
 
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
+import android.view.WindowManager
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -18,6 +17,7 @@ import com.beldex.libsignal.utilities.hexEncodedPrivateKey
 import io.beldex.bchat.BaseActionBarActivity
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.crypto.MnemonicUtilities
+import io.beldex.bchat.util.copySeedToClipboard
 import io.beldex.bchat.util.getColorWithID
 
 class SeedActivity : BaseActionBarActivity() {
@@ -38,6 +38,7 @@ class SeedActivity : BaseActionBarActivity() {
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         binding = ActivitySeedBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar!!.title = resources.getString(R.string.activity_seed_title)
@@ -86,10 +87,7 @@ class SeedActivity : BaseActionBarActivity() {
     // region Interaction
     private fun copySeed() {
         revealSeed()
-        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("Seed", seed)
-        clipboard.setPrimaryClip(clip)
-        Toast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+        copySeedToClipboard(seed)
     }
     // endregion
 }

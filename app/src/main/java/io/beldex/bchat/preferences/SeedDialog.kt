@@ -1,9 +1,9 @@
 package io.beldex.bchat.preferences
 
-import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import io.beldex.bchat.R
@@ -13,6 +13,7 @@ import com.beldex.libsignal.utilities.hexEncodedPrivateKey
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.crypto.MnemonicUtilities
 import io.beldex.bchat.conversation.v2.utilities.BaseDialog
+import io.beldex.bchat.util.copySeedToClipboard
 
 class SeedDialog : BaseDialog() {
 
@@ -29,6 +30,7 @@ class SeedDialog : BaseDialog() {
 
     override fun setContentView(builder: AlertDialog.Builder) {
         val binding = DialogSeedBinding.inflate(LayoutInflater.from(requireContext()))
+        requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         binding.seedTextView.text = seed
         binding.cancelButton.setOnClickListener { dismiss() }
         binding.copyButton.setOnClickListener { copySeed() }
@@ -36,10 +38,7 @@ class SeedDialog : BaseDialog() {
     }
 
     private fun copySeed() {
-        val clipboard = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("Seed", seed)
-        clipboard.setPrimaryClip(clip)
-        Toast.makeText(requireContext(), R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+        requireActivity().copySeedToClipboard(seed)
         dismiss()
     }
 }

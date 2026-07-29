@@ -1,14 +1,11 @@
 package io.beldex.bchat.onboarding
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.crypto.MnemonicCodec
@@ -19,6 +16,7 @@ import io.beldex.bchat.crypto.MnemonicUtilities
 import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
+import io.beldex.bchat.util.copySeedToClipboard
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
 import io.beldex.bchat.R
@@ -32,6 +30,7 @@ class RecoveryPhraseActivity : BaseActionBarActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         binding = ActivityRecoveryPhraseBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUpActionBarBchatLogo(getString(R.string.activity_settings_recovery_phrase_button_title), false)
@@ -103,11 +102,7 @@ class RecoveryPhraseActivity : BaseActionBarActivity() {
 
     private fun copySeed() {
         TextSecurePreferences.setCopiedSeed(this,true)
-        val seed = binding.bChatSeedTextView?.text.toString()
-        val clipboard = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("Seed", seed)
-        clipboard.setPrimaryClip(clip)
-        Toast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+        copySeedToClipboard(binding.bChatSeedTextView?.text.toString())
         binding.registerButton.isEnabled = true
         binding.hint.visibility = View.GONE
         binding.registerButton.setTextColor(ContextCompat.getColor(this, R.color.white))

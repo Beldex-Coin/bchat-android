@@ -2,7 +2,7 @@ package com.beldex.libbchat.messaging.open_groups
 
 import com.beldex.libbchat.BuildConfig
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.databind.PropertyNamingStrategy
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import com.fasterxml.jackson.databind.type.TypeFactory
 import kotlinx.coroutines.*
@@ -72,7 +72,7 @@ object OpenGroupAPIV2 {
 
     data class Info(val id: String, val name: String, val imageID: String?)
 
-    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
     data class CompactPollRequest(val roomID: String, val authToken: String, val fromDeletionServerID: Long?, val fromMessageServerID: Long?)
     data class CompactPollResult(val messages: List<OpenGroupMessageV2>, val deletions: List<MessageDeletion>, val moderators: List<String>)
 

@@ -19,7 +19,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.crypto.MnemonicCodec
 import com.beldex.libsignal.crypto.ecc.ECKeyPair
@@ -35,6 +34,8 @@ import io.beldex.bchat.crypto.MnemonicUtilities
 import io.beldex.bchat.model.AsyncTaskCoroutine
 import io.beldex.bchat.model.Wallet
 import io.beldex.bchat.model.WalletManager
+import io.beldex.bchat.onboarding.ui.OnBoardingActivity
+import io.beldex.bchat.onboarding.ui.OnBoardingScreens
 import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.service.KeyCachingService
 import io.beldex.bchat.util.BChatThreadPoolExecutor
@@ -416,7 +417,11 @@ class RegisterActivity : BaseActionBarActivity() {
         TextSecurePreferences.setLocalNumber(this, userHexEncodedPublicKey)
         TextSecurePreferences.setRestorationTime(this, 0)
         TextSecurePreferences.setHasViewedSeed(this, false)
-        val intent = Intent(Intent.ACTION_VIEW, "onboarding://manage_pin?finish=true&action=${PinCodeAction.CreatePinCode.action}".toUri())
+        val intent = Intent(this, OnBoardingActivity::class.java).apply {
+            putExtra(OnBoardingActivity.extraStartDestination, OnBoardingScreens.EnterPinCode.route)
+            putExtra(OnBoardingActivity.extraPinAction, PinCodeAction.CreatePinCode.action)
+            putExtra(OnBoardingActivity.extraPinFinish, true)
+        }
         pinCodeLauncher.launch(intent)
     }
 

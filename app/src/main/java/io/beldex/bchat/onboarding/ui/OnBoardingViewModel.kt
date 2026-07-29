@@ -24,6 +24,16 @@ class OnBoardingViewModel @Inject constructor(): ViewModel() {
     private val _uiState = MutableStateFlow(State())
     val uiState = _uiState.asStateFlow()
 
+    var pendingPinCodeAction: Int = PinCodeAction.VerifyPinCode.action
+        private set
+    var pendingPinCodeFinish: Boolean = false
+        private set
+
+    fun setPendingPinCode(action: Int, finish: Boolean) {
+        pendingPinCodeAction = action
+        pendingPinCodeFinish = finish
+    }
+
 
     fun onEvent(event: OnBoardingEvents) {
         when(event) {

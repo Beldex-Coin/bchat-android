@@ -29,12 +29,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.my_account.ui.dialogs.LockOptionsDialog
+import io.beldex.bchat.onboarding.ui.OnBoardingActivity
+import io.beldex.bchat.onboarding.ui.OnBoardingScreens
 import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.service.KeyCachingService
 import io.beldex.bchat.R
@@ -44,7 +45,11 @@ import java.util.concurrent.TimeUnit
 fun AppLockScreen() {
     val context = LocalContext.current
     val changePin: () -> Unit  = {
-        val intent = Intent(Intent.ACTION_VIEW, "onboarding://manage_pin?finish=true&action=${PinCodeAction.ChangePinCode.action}".toUri())
+        val intent = Intent(context, OnBoardingActivity::class.java).apply {
+            putExtra(OnBoardingActivity.extraStartDestination, OnBoardingScreens.EnterPinCode.route)
+            putExtra(OnBoardingActivity.extraPinAction, PinCodeAction.ChangePinCode.action)
+            putExtra(OnBoardingActivity.extraPinFinish, true)
+        }
         context.startActivity(intent)
     }
     var showLockOptionsDialog by remember {

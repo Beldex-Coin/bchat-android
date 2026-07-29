@@ -83,7 +83,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -135,6 +134,8 @@ import io.beldex.bchat.my_account.ui.dialogs.ClearDataDialog
 import io.beldex.bchat.my_account.ui.dialogs.CopyContentDialog
 import io.beldex.bchat.my_account.ui.dialogs.LinkYourBNSDialog
 import io.beldex.bchat.my_account.ui.dialogs.ProfilePicturePopup
+import io.beldex.bchat.onboarding.ui.OnBoardingActivity
+import io.beldex.bchat.onboarding.ui.OnBoardingScreens
 import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.preferences.ChatSettingsActivity
@@ -1214,10 +1215,11 @@ fun MyAccountNavHost(
                     }
                 }
             val verifyPin: () -> Unit = {
-                val intent = Intent(
-                    Intent.ACTION_VIEW,
-                    "onboarding://manage_pin?finish=true&action=${PinCodeAction.VerifyPinCode.action}".toUri()
-                )
+                val intent = Intent(context, OnBoardingActivity::class.java).apply {
+                    putExtra(OnBoardingActivity.extraStartDestination, OnBoardingScreens.EnterPinCode.route)
+                    putExtra(OnBoardingActivity.extraPinAction, PinCodeAction.VerifyPinCode.action)
+                    putExtra(OnBoardingActivity.extraPinFinish, true)
+                }
                 resultLauncher.launch(intent)
             }
             val seed by lazy {

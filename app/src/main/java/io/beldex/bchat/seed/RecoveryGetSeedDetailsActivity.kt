@@ -11,7 +11,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.beldex.libbchat.utilities.SSKEnvironment
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -27,6 +26,8 @@ import io.beldex.bchat.model.NetworkType
 import io.beldex.bchat.model.Wallet
 import io.beldex.bchat.model.WalletManager
 import io.beldex.bchat.onboarding.AppLockActivity
+import io.beldex.bchat.onboarding.ui.OnBoardingActivity
+import io.beldex.bchat.onboarding.ui.OnBoardingScreens
 import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.service.KeyCachingService
 import io.beldex.bchat.util.BChatThreadPoolExecutor
@@ -175,7 +176,11 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         TextSecurePreferences.setHasViewedSeed(this, false)
 */
         binding.restoreSeedRestoreButton.isEnabled = true
-        val intent = Intent(Intent.ACTION_VIEW, "onboarding://manage_pin?finish=true&action=${PinCodeAction.CreatePinCode.action}".toUri())
+        val intent = Intent(this, OnBoardingActivity::class.java).apply {
+            putExtra(OnBoardingActivity.extraStartDestination, OnBoardingScreens.EnterPinCode.route)
+            putExtra(OnBoardingActivity.extraPinAction, PinCodeAction.CreatePinCode.action)
+            putExtra(OnBoardingActivity.extraPinFinish, true)
+        }
         pinCodeLauncher.launch(intent)
 //        val intent = Intent(this, CreatePasswordActivity::class.java)
 //        intent.putExtra("callPage",2)

@@ -48,11 +48,23 @@ class PinCodeViewModel @Inject constructor(
     private var savedPassword: String? = null
     private var walletSavedPassword: String? = null
     private var action: Int = -1
+    private var initialized = false
 
     init {
         savedPassword = sharedPreferenceUtil.getSavedPassword()
         walletSavedPassword= sharedPreferenceUtil.getWalletSavePassword()
         action = savedStateHandle.get<Int>(EXTRA_PIN_CODE_ACTION) ?: PinCodeAction.VerifyPinCode.action
+        initializeState(action)
+    }
+
+    fun reinitialize(action: Int) {
+        if (initialized && this.action == action) return
+        this.action = action
+        initializeState(action)
+    }
+
+    private fun initializeState(action: Int) {
+        initialized = true
         val savedPinLength = sharedPreferenceUtil.getPinLength()
         _state.update {
             when (action) {

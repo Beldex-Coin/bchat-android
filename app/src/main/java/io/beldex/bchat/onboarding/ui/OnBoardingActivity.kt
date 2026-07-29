@@ -50,17 +50,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -83,7 +80,14 @@ class OnBoardingActivity: ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        destination = intent?.getStringExtra(extraStartDestination) ?: OnBoardingScreens.RestoreSeedScreen.route
+        val rawDestination = intent?.getStringExtra(extraStartDestination) ?: OnBoardingScreens.RestoreSeedScreen.route
+        val pinAction = intent?.getIntExtra(extraPinAction, -1) ?: -1
+        val pinFinish = intent?.getBooleanExtra(extraPinFinish, false) ?: false
+        destination = if (rawDestination == OnBoardingScreens.EnterPinCode.route && pinAction >= 0) {
+            OnBoardingScreens.EnterPinCode.route
+        } else {
+            rawDestination
+        }
         WindowCompat.setDecorFitsSystemWindows(window, true)
         setContent {
             val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
@@ -103,6 +107,8 @@ class OnBoardingActivity: ComponentActivity() {
                         OnBoardingNavHost(
                             navController = navController,
                             startDestination = destination,
+                            initialPinAction = pinAction,
+                            initialPinFinish = pinFinish,
                             modifier = Modifier
                                 .padding(it)
                         )
@@ -114,6 +120,8 @@ class OnBoardingActivity: ComponentActivity() {
 
     companion object {
         const val extraStartDestination = "io.beldex.EXTRA_START_DESTINATION"
+        const val extraPinAction = "io.beldex.EXTRA_PIN_ACTION"
+        const val extraPinFinish = "io.beldex.EXTRA_PIN_FINISH"
     }
 }
 
@@ -121,10 +129,15 @@ class OnBoardingActivity: ComponentActivity() {
 fun OnBoardingNavHost(
     navController: NavHostController,
     startDestination: String,
+    initialPinAction: Int = -1,
+    initialPinFinish: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val viewModel: OnBoardingViewModel = hiltViewModel()
+    if (initialPinAction >= 0) {
+        viewModel.setPendingPinCode(initialPinAction, initialPinFinish)
+    }
     NavHost(
         navController = navController,
         startDestination = startDestination,
@@ -158,6 +171,7 @@ fun OnBoardingNavHost(
             ) {
                 RestoreFromSeedScreen(
                     navigateToPinCode = {
+                        viewModel.setPendingPinCode(PinCodeAction.VerifyPinCode.action, false)
                         navController.navigate(OnBoardingScreens.EnterPinCode.route)
                     }
                 )
@@ -166,26 +180,26 @@ fun OnBoardingNavHost(
 
         composable(
             route = OnBoardingScreens.EnterPinCode.route,
-            arguments = listOf(
-                navArgument("action") {
-                    type = NavType.IntType
-                    defaultValue = PinCodeAction.VerifyPinCode.action
-                },
-                navArgument("finish") {
-                    type = NavType.BoolType
-                    defaultValue = false
-                }
-            ),
             deepLinks = listOf(
                 navDeepLink {
-                    uriPattern = "onboarding://manage_pin?finish={finish}&action={action}"
+                    uriPattern = "onboarding://manage_pin?finish={finish}"
                 }
             )
         ) {
             val finish = it.arguments?.getBoolean("finish") ?: false
-            val pinCodeAction = it.arguments?.getInt("action")
-            val viewModel: PinCodeViewModel = hiltViewModel()
-            val state by viewModel.state.collectAsStateWithLifecycle()
+            val rawAction = viewModel.pendingPinCodeAction
+            val isExternalDeepLink = (context as? Activity)?.intent?.action == Intent.ACTION_VIEW
+            val pinCodeAction = if (isExternalDeepLink && rawAction in listOf(
+                    PinCodeAction.CreatePinCode.action,
+                    PinCodeAction.CreateWalletPin.action
+                )
+            ) PinCodeAction.VerifyPinCode.action else rawAction
+            val pinFinish = if (isExternalDeepLink) finish else viewModel.pendingPinCodeFinish
+            val pinCodeViewModel: PinCodeViewModel = hiltViewModel()
+            LaunchedEffect(pinCodeAction) {
+                pinCodeViewModel.reinitialize(pinCodeAction)
+            }
+            val state by pinCodeViewModel.state.collectAsStateWithLifecycle()
             var showPinChangedPopup by remember {
                 mutableStateOf(false)
             }
@@ -197,7 +211,7 @@ fun OnBoardingNavHost(
                 PassWordChangedPopup(
                         onDismiss={
                             showPinChangedPopup=false
-                            if (finish) {
+                            if (pinFinish) {
                                 (context as Activity).apply {
                                     val data=Intent().apply {
                                         putExtra("success", true)
@@ -214,16 +228,16 @@ fun OnBoardingNavHost(
             }
             LaunchedEffect(key1 = true) {
                 launch {
-                    viewModel.errorMessage.collectLatest { message ->
+                    pinCodeViewModel.errorMessage.collectLatest { message ->
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                     }
                 }
                 launch {
-                    viewModel.successEvent.collectLatest { success ->
+                    pinCodeViewModel.successEvent.collectLatest { success ->
                         if (success) {
                             showPinChangedPopup = true
                         }else{
-                            if (finish) {
+                            if (pinFinish) {
                                 (context as Activity).apply {
                                     val data=Intent().apply {
                                         putExtra("success", true)
@@ -238,7 +252,7 @@ fun OnBoardingNavHost(
                     }
                 }
                 launch {
-                    viewModel.successContent.collectLatest { message ->
+                    pinCodeViewModel.successContent.collectLatest { message ->
                         if (message != null) {
                             showPinChangedPopupTitle =message
                         }
@@ -254,7 +268,7 @@ fun OnBoardingNavHost(
                 },
                 wrapInCard = false,
                 onBackClick = {
-                    if (finish) {
+                    if (pinFinish) {
                         (context as Activity).apply {
                             finish()
                         }
@@ -264,7 +278,7 @@ fun OnBoardingNavHost(
             ) {
                 PinCodeScreen(
                     state = state,
-                    onEvent = viewModel::onEvent
+                    onEvent = pinCodeViewModel::onEvent
                 )
             }
         }
@@ -300,8 +314,8 @@ fun OnBoardingNavHost(
             ) {
                 KeyGenerationScreen(
                     proceed = {
-                        val intent = Intent(Intent.ACTION_VIEW, "onboarding://manage_pin?finish=false&action=${PinCodeAction.CreatePinCode.action}".toUri())
-                        context.startActivity(intent)
+                        viewModel.setPendingPinCode(PinCodeAction.CreatePinCode.action, false)
+                        navController.navigate(OnBoardingScreens.EnterPinCode.route)
                     }
                 )
             }

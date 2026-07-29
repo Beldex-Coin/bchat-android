@@ -141,11 +141,47 @@
                 android:value="io.beldex.bchat.home.HomeActivity" />
         </activity>
         <activity
-            android:name=".conversation.v2.ConversationActivityV2"
-            android:exported="false"
+            android:name="io.beldex.bchat.conversation.v2.ConversationActivityV2"
+            android:exported="true"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
+            <intent-filter >
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="chat"
+                    android:scheme="bchat"/>
+            </intent-filter>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="https"
+                    android:host="beldex.io"
+                    android:path="/chat" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http" android:host="social.beldex.io" android:pathPrefix="/" />
+            </intent-filter>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="https" android:host="social.beldex.io" android:pathPrefix="/" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".conversation.v2.contact_sharing.ViewAllContactsActivity"
             android:exported="false"

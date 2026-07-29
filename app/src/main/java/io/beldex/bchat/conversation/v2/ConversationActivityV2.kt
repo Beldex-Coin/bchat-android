@@ -23,7 +23,6 @@ import android.util.Log
 import android.view.ActionMode
 import android.view.LayoutInflater
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
@@ -38,10 +37,8 @@ import androidx.activity.viewModels
 import androidx.annotation.DimenRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -53,6 +50,7 @@ import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.jobs.AttachmentDownloadJob
 import com.beldex.libbchat.messaging.jobs.JobQueue
 import com.beldex.libbchat.messaging.mentions.Mention
@@ -72,6 +70,8 @@ import com.beldex.libbchat.messaging.sending_receiving.quotes.QuoteModel
 import com.beldex.libbchat.messaging.utilities.UpdateMessageBuilder.capitalizeFirstLetter
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.Address
+import com.beldex.libbchat.utilities.Address.Companion.fromSerialized
+import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libbchat.utilities.MediaTypes
 import com.beldex.libbchat.utilities.SSKEnvironment
 import com.beldex.libbchat.utilities.Stub
@@ -92,6 +92,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.MediaOverviewActivity
+import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.audio.AudioRecorder
 import io.beldex.bchat.compose_utils.ComposeDialogContainer
@@ -138,6 +139,8 @@ import io.beldex.bchat.databinding.ActivityConversationV2Binding
 import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.giph.ui.GiphyActivity
+import io.beldex.bchat.groups.GroupManager
+import io.beldex.bchat.groups.OpenGroupManager
 import io.beldex.bchat.groups.SecretGroupInfoComposeActivity
 import io.beldex.bchat.groups.SecretGroupInfoRepository
 import io.beldex.bchat.home.ConversationActionDialog
@@ -200,10 +203,9 @@ import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
-import kotlin.text.indexOfAny
 
 @AndroidEntryPoint
-class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
+class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDelegate,
     InputBarRecordingViewDelegate, AttachmentManager.AttachmentListener,
     ConversationActionModeCallbackDelegate,
     RecipientModifiedListener,
@@ -396,9 +398,21 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     }
 
     private var lastProfileAvatar: String? = null
+    private var isResolvingSocialOpenGroupDeepLink = false
+    private val isConversationInitialized: Boolean
+        get() = ::binding.isInitialized
+
+    private enum class DeepLinkResult {
+        NOT_HANDLED,
+        READY,
+        RESOLVING_SOCIAL_GROUP
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (isFinishing) return
+
+        if (handleDeepLink() == DeepLinkResult.RESOLVING_SOCIAL_GROUP) return
 
         binding = ActivityConversationV2Binding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -410,8 +424,109 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         initConversationScreen()
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        when (handleDeepLink()) {
+            DeepLinkResult.READY -> {
+                viewModelStore.clear()
+                recreate()
+            }
+            DeepLinkResult.NOT_HANDLED,
+            DeepLinkResult.RESOLVING_SOCIAL_GROUP -> Unit
+        }
+    }
+
+    /** Resolves normal conversation links and joins the supported default social groups. */
+    private fun handleDeepLink(): DeepLinkResult {
+        if (intent.action != Intent.ACTION_VIEW) {
+            return DeepLinkResult.NOT_HANDLED
+        }
+
+        val uri = intent.data
+        val room = uri?.path
+            ?.trim('/')
+            ?.takeIf { it.isNotBlank() && '/' !in it }
+            ?.lowercase(Locale.ROOT)
+
+        val isSocialOpenGroupLink = room != null &&
+            uri?.host?.lowercase(Locale.ROOT) == SOCIAL_OPEN_GROUP_HOST &&
+            uri?.scheme?.lowercase(Locale.ROOT) in SOCIAL_OPEN_GROUP_SCHEMES &&
+            room.isNotBlank()
+
+        if (!isSocialOpenGroupLink) {
+            if (intent.hasExtra(THREAD_ID)) return DeepLinkResult.READY
+            val deepLinkUri = uri ?: return DeepLinkResult.NOT_HANDLED
+
+            val threadId = deepLinkUri.getQueryParameter(DEEP_LINK_THREAD_ID_PARAM)?.toLongOrNull()
+                ?: deepLinkUri.lastPathSegment?.toLongOrNull()
+
+            val extras = intent.extras ?: Bundle()
+            if (threadId != null && threadId > 0L) {
+                extras.putLong(THREAD_ID, threadId)
+            } else {
+                val address = deepLinkUri.getQueryParameter(DEEP_LINK_ADDRESS_PARAM)
+                    ?: deepLinkUri.lastPathSegment
+                    ?: return DeepLinkResult.NOT_HANDLED
+                extras.putParcelable(ADDRESS, fromSerialized(address))
+            }
+            intent.putExtras(extras)
+            return DeepLinkResult.READY
+        }
+
+        val socialRoom = checkNotNull(room)
+        isResolvingSocialOpenGroupDeepLink = true
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val server = OpenGroupAPIV2.defaultServer.removeSuffix("/")
+                val publicKey = OpenGroupAPIV2.defaultServerPublicKey
+                val openGroupId = "$server.$socialRoom"
+
+                OpenGroupManager.add(server, socialRoom, publicKey, this@ConversationActivityV2)
+                MessagingModuleConfiguration.shared.storage.onOpenGroupAdded(
+                    "$server/$socialRoom?public_key=$publicKey"
+                )
+                ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(
+                    this@ConversationActivityV2
+                )
+
+                val threadId = GroupManager.getOpenGroupThreadID(
+                    openGroupId,
+                    this@ConversationActivityV2
+                )
+                val groupId = GroupUtil.getEncodedOpenGroupID(openGroupId.toByteArray())
+                check(threadId > 0L) { "Could not resolve a thread for social group $socialRoom." }
+
+                withContext(Dispatchers.Main) {
+                    setIntent(Intent(this@ConversationActivityV2, ConversationActivityV2::class.java).apply {
+                        putExtra(THREAD_ID, threadId)
+                        putExtra(ADDRESS, fromSerialized(groupId))
+                    })
+                    // recreate() retains ViewModels by default. Clear the previous conversation's
+                    // ViewModelStore so resolveThreadId() reads the deep-link extras on recreation.
+                    viewModelStore.clear()
+                    recreate()
+                }
+            } catch (e: Exception) {
+                Log.e(javaClass.simpleName, "Couldn't join social group from deep link.", e)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        this@ConversationActivityV2,
+                        R.string.activity_join_public_chat_error,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    finish()
+                }
+            }
+        }
+
+        return DeepLinkResult.RESOLVING_SOCIAL_GROUP
+    }
+
     override fun onResume() {
         super.onResume()
+        if (!isConversationInitialized || isResolvingSocialOpenGroupDeepLink) return
+
         setupCallActionBar()
         ApplicationContext.getInstance(this).messageNotifier.setVisibleThread(viewModel.threadId)
         if (!viewModel.markAllRead())
@@ -420,6 +535,8 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
 
     override fun onPause() {
         super.onPause()
+        if (!isConversationInitialized || isResolvingSocialOpenGroupDeepLink) return
+
         ApplicationContext.getInstance(this).messageNotifier.setVisibleThread(-1)
         if (isAudioPlaying) {
             this.stopVoiceMessages(audioPlayingIndexInAdapter)
@@ -428,13 +545,19 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
 
     override fun onStart() {
         super.onStart()
+        if (!isConversationInitialized) return
+
         screenshotDetector = ScreenshotDetector(this, this)
         screenshotDetector.register()
     }
 
     override fun onStop() {
         super.onStop()
+        if (!isConversationInitialized) return
+
         screenshotDetector.unregister()
+        if (isResolvingSocialOpenGroupDeepLink) return
+
         binding.inputBar.clearFocus()
         Helper.hideKeyboard(this)
         dismissDialogsIfExist(ComposeDialogContainer.TAG)
@@ -455,6 +578,8 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
 
     override fun onDestroy() {
         super.onDestroy()
+        if (!isConversationInitialized || isResolvingSocialOpenGroupDeepLink) return
+
         cancelVoiceMessage()
         viewModel.saveDraft(binding.inputBar.text.trim())
         isNetworkAvailable=false
@@ -1784,7 +1909,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             val quotedAttachments=
                 (it as? MmsMessageRecord)?.slideDeck?.asAttachments() ?: listOf()
             val sender=
-                if (it.isOutgoing) Address.fromSerialized(
+                if (it.isOutgoing) fromSerialized(
                     textSecurePreferences.getLocalNumber()!!
                 ) else it.individualRecipient.address
             //Payment Tag
@@ -2719,7 +2844,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
                 val selectedContacts=
                     extras.getStringArray(SelectContactsActivity.selectedContactsKey)!!
                 val recipients=selectedContacts.map { contact ->
-                    Recipient.from(this, Address.fromSerialized(contact), true)
+                    Recipient.from(this, fromSerialized(contact), true)
                 }
                 viewModel.inviteContacts(recipients)
             }
@@ -3892,7 +4017,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             dialogType = DialogType.ChatWithContactConfirmation,
             onConfirm = {
                 val addressForThread =
-                    Address.fromSerialized(addresses.first())
+                    fromSerialized(addresses.first())
 
                 val recipient =
                     Recipient.from(
@@ -4127,6 +4252,10 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         // Extras
         const val THREAD_ID="thread_id"
         const val ADDRESS="address"
+        const val DEEP_LINK_ADDRESS_PARAM = "address"
+        const val DEEP_LINK_THREAD_ID_PARAM = "id"
+        private const val SOCIAL_OPEN_GROUP_HOST = "social.beldex.io"
+        private val SOCIAL_OPEN_GROUP_SCHEMES = setOf("http", "https")
         const val SCROLL_MESSAGE_ID="scroll_message_id"
         const val SCROLL_MESSAGE_AUTHOR="scroll_message_author"
         const val HEX_ENCODED_PUBLIC_KEY="hex_encode_public_key"
@@ -4152,4 +4281,3 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         const val REACT_ANY_EMOJI_FRAGMENT = "react_any_emoji_fragment"
     }
 }
-

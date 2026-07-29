@@ -30,21 +30,21 @@ import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.isScreenLoc
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setScreenLockEnabled
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setScreenLockTimeout
 import com.beldex.libsignal.utilities.Log
+import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.ui.ScreenContainer
+import io.beldex.bchat.databinding.ActivityPasswordBinding
 import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.keyboard.CustomKeyboardView
 import io.beldex.bchat.onboarding.ui.PinCodeScreen
 import io.beldex.bchat.onboarding.ui.PinCodeViewModel
 import io.beldex.bchat.service.KeyCachingService
 import io.beldex.bchat.service.KeyCachingService.KeySetBinder
-import io.beldex.bchat.util.push
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityPasswordBinding
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
+import io.beldex.bchat.util.parcelable
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -235,14 +235,18 @@ class PasswordActivity : BaseActionBarActivity() {
 
     private fun handleAuthenticated() {
 
-        //TODO Replace with a proper call.
-        if (keyCachingService != null) {
-            keyCachingService!!.setMasterSecret(Any())
-        }
+        // The service binding can still be pending when a PIN is entered. Set the
+        // process-wide cached secret before resuming the pending deep link.
+        KeyCachingService.setMasterSecret(applicationContext, Any())
 
-        // Finish and proceed with the next intent.
-        val nextIntent = intent.getParcelableExtra<Intent>("next_intent")
-        nextIntent?.let { startActivity(it) }
+        // Resume the pending deep link, or go Home when this was a normal unlock.
+        val nextIntent = intent.parcelable<Intent>("next_intent")
+        val destination = nextIntent?.let(::Intent)?.apply {
+            // This flag came from the external app that opened the link. Reusing it
+            // after authentication can restore a stale task instead of this target.
+            flags = flags and Intent.FLAG_ACTIVITY_NEW_TASK.inv()
+        } ?: Intent(this, HomeActivity::class.java)
+        startActivity(destination)
         finish()
     }
 
@@ -279,9 +283,7 @@ class PasswordActivity : BaseActionBarActivity() {
         // TextSecurePreferences.setScreenLockEnabled(this,false)
         TextSecurePreferences.setHasSeenWelcomeScreen(this, true)
         resumeScreenLock()
-        handleAuthenticated()
-        val intent = Intent(this, HomeActivity::class.java)
-        push(intent)
+        if (!isFinishing) handleAuthenticated()
     }
 
     @Deprecated("Deprecated in Java")

@@ -46,12 +46,31 @@ class ModalUrlBottomSheet(private val url: String): BottomSheetDialogFragment(),
 
     private fun open() {
         try {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            val uri = Uri.parse(url)
+            val intent = if (uri.isBChatDeepLink()) {
+                Intent(requireContext(), ConversationActivityV2::class.java).apply {
+                    action = Intent.ACTION_VIEW
+                    data = uri
+                }
+            } else {
+                Intent(Intent.ACTION_VIEW, uri)
+            }
             requireContext().startActivity(intent)
         } catch (e: Exception) {
             Toast.makeText(context, R.string.invalid_url, Toast.LENGTH_SHORT).show()
         }
         dismiss()
+    }
+
+    private fun Uri.isBChatDeepLink(): Boolean {
+        val host = host?.lowercase() ?: return false
+        val room = path
+            ?.trim('/')
+            ?.takeIf { it.isNotBlank() && '/' !in it }
+            ?.lowercase()
+
+        return (host == "social.beldex.io" && !room.isNullOrBlank()) ||
+            (host == "beldex.io" && path == "/chat")
     }
 
     private fun copy() {

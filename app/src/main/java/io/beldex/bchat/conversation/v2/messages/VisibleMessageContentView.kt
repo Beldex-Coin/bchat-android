@@ -857,7 +857,7 @@ class VisibleMessageContentView : MaterialCardView {
 
             // replace URLSpans with ModalURLSpans
             formatted.getSpans<URLSpan>(0, formatted.length).toList().forEach { urlSpan ->
-                val updatedUrl = urlSpan.url.let { it.toHttpUrlOrNull().toString() }
+                val updatedUrl = urlSpan.url.toHttpUrlOrNull()?.toString() ?: urlSpan.url
                 val replacementSpan = ModalURLSpan(updatedUrl) { url ->
                     ActivityDispatcher.get(context)?.showBottomSheetDialog(ModalUrlBottomSheet(url),
                         OPEN_URL_DIALOG)

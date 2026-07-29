@@ -3,8 +3,9 @@ package io.beldex.bchat.onboarding
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.databinding.ActivitySplashScreenBinding
+import io.beldex.bchat.onboarding.ui.PinCodeAction
+import io.beldex.bchat.util.parcelable
 
 class SplashScreenActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySplashScreenBinding
@@ -17,6 +18,9 @@ class SplashScreenActivity : AppCompatActivity() {
         if (nextPage) {
             startActivity(Intent(this, PasswordActivity::class.java).apply {
                 putExtra("action", PinCodeAction.VerifyPinCode.action)
+                intent.parcelable<Intent>("next_intent")?.let {
+                    putExtra("next_intent", it)
+                }
             })
             finish()
         } else {

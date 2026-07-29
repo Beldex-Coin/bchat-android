@@ -82,6 +82,12 @@ public class KeyCachingService extends Service {
    * without explicitly binding to the service.
    */
   public static void setMasterSecret(Context context, Object masterSecret) {
+    // isLocked() reads this static value. Set it before the asynchronous service
+    // bind so activities resumed after authentication cannot be routed to PIN again.
+    synchronized (KeyCachingService.class) {
+      KeyCachingService.masterSecret = masterSecret;
+    }
+
     // Start and bind to the KeyCachingService instance.
     Intent bindIntent = new Intent(context, KeyCachingService.class);
     try { context.startService(bindIntent); }

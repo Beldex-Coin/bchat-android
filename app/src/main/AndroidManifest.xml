@@ -726,7 +726,7 @@
         </receiver>
         <receiver
             android:name=".notifications.DeleteNotificationReceiver"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="io.beldex.securesms.DELETE_NOTIFICATION" />
             </intent-filter>

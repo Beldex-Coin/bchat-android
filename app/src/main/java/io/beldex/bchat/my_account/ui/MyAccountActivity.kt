@@ -1497,7 +1497,7 @@ fun ProfileCard(
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             ProfileCardKeyContainer(
                 isBnsHolder = isBnsHolder,
@@ -1512,8 +1512,6 @@ fun ProfileCard(
                 }
             )
 
-            Spacer(modifier = Modifier.padding(start = 3.dp))
-
             ProfileCardKeyContainer(
                 isBnsHolder = isBnsHolder,
                 title = stringResource(id = R.string.chatid),
@@ -1525,7 +1523,6 @@ fun ProfileCard(
                     onShowDialog(1)
                 }
             )
-            Spacer(modifier = Modifier.padding(start = 3.dp))
 
             ProfileCardKeyContainer(
                 isBnsHolder = isBnsHolder,
@@ -1630,7 +1627,7 @@ private fun MyAccountScreenContainer(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
-                .padding(bottom = 16.dp)
+                .padding(top = 8.dp, bottom = 16.dp)
         ) {
             Icon(
                 painterResource(id = R.drawable.ic_back_arrow),
@@ -1658,7 +1655,7 @@ private fun MyAccountScreenContainer(
             actionItems()
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         if (wrapInCard) {
             CardContainer(

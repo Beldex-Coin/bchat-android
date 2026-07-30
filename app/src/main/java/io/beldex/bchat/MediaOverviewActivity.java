@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
@@ -231,13 +232,25 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
     private ActionMode                    actionMode;
     private ActionModeCallback            actionModeCallback = new ActionModeCallback();
 
+    private static int getColumnCount(@NonNull Resources resources) {
+      if (resources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        int screenWidthDp = resources.getConfiguration().screenWidthDp;
+        int portraitWidthDp = resources.getConfiguration().smallestScreenWidthDp;
+        int portraitCols = resources.getInteger(R.integer.media_overview_cols);
+        int targetColWidth = portraitWidthDp / portraitCols;
+        return Math.max(portraitCols, screenWidthDp / targetColWidth);
+      }
+      return resources.getInteger(R.integer.media_overview_cols);
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
       View view = inflater.inflate(R.layout.media_overview_gallery_fragment, container, false);
 
       this.recyclerView = ViewUtil.findById(view, R.id.media_grid);
       this.noMedia      = ViewUtil.findById(view, R.id.no_images);
-      this.gridManager  = new StickyHeaderGridLayoutManager(getResources().getInteger(R.integer.media_overview_cols));
+      int columns = getColumnCount(getResources());
+      this.gridManager  = new StickyHeaderGridLayoutManager(columns);
 
       this.recyclerView.setAdapter(new MediaGalleryAdapter(getContext(),
                                                            Glide.with(this),
@@ -256,7 +269,8 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
     public void onConfigurationChanged(Configuration newConfig) {
       super.onConfigurationChanged(newConfig);
       if (gridManager != null) {
-        this.gridManager = new StickyHeaderGridLayoutManager(getResources().getInteger(R.integer.media_overview_cols));
+        int columns = getColumnCount(getResources());
+        this.gridManager = new StickyHeaderGridLayoutManager(columns);
         this.recyclerView.setLayoutManager(gridManager);
       }
     }

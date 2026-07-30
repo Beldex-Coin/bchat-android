@@ -29,7 +29,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
@@ -208,6 +210,7 @@ fun NewChatScreen(
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.primary)
                     .padding(it)
+                    .verticalScroll(rememberScrollState())
             )
             {
                 if(showSearchOption) {
@@ -331,16 +334,15 @@ fun NewChatScreen(
                     },
                     onClickScanQRCode = {}
                 )
-                LazyColumn(
+                Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(
                             horizontal=16.dp
                         )
-                        .weight(1f)
                 ) {
-                    items(contacts) {
+                    contacts.forEach {
                         GroupContact(
                             recipient = it,
                             modifier = Modifier

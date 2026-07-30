@@ -125,6 +125,9 @@ public final class ImageEditorFragment extends Fragment implements ImageEditorHu
 
     imageEditorHud.setEventListener(this);
 
+    View scribbleCloseButton = view.findViewById(R.id.scribble_close_button);
+    scribbleCloseButton.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
+
     imageEditorView.setTapListener(selectionListener);
     imageEditorView.setDrawingChangedListener(this::refreshUniqueColors);
     imageEditorView.setUndoRedoStackListener(this::onUndoRedoAvailabilityChanged);

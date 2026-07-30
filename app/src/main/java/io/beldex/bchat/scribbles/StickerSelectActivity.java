@@ -18,7 +18,12 @@ package io.beldex.bchat.scribbles;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.tabs.TabLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -46,7 +51,15 @@ public class StickerSelectActivity extends FragmentActivity implements StickerSe
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
     setContentView(R.layout.scribble_select_sticker_activity);
+
+    View contentView = getWindow().getDecorView().findViewById(android.R.id.content);
+    ViewCompat.setOnApplyWindowInsetsListener(contentView, (v, windowInsets) -> {
+      Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+      v.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+      return windowInsets;
+    });
 
     ViewPager viewPager = (ViewPager) findViewById(R.id.camera_sticker_pager);
     viewPager.setAdapter(new StickerPagerAdapter(getSupportFragmentManager(), this));

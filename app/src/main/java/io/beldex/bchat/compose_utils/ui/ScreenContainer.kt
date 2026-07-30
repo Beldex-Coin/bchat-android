@@ -53,7 +53,7 @@ fun ScreenContainer(
                     }
             )
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(12.dp))
 
             Text(
                 text = title,

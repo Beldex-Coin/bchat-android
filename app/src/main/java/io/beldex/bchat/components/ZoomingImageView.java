@@ -20,13 +20,13 @@ import com.beldex.libsignal.utilities.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.Target;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.davemorrissey.labs.subscaleview.decoder.DecoderFactory;
-import com.bumptech.glide.RequestManager;
 import com.github.chrisbanes.photoview.PhotoView;
 import io.beldex.bchat.R;
 
@@ -57,6 +57,9 @@ public class ZoomingImageView extends FrameLayout {
     this.photoView            = findViewById(R.id.image_view);
     this.subsamplingImageView = findViewById(R.id.subsampling_image_view);
 
+    this.photoView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+    this.photoView.setMinimumScale(0.1f);
+    this.subsamplingImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE);
     this.subsamplingImageView.setOrientation(SubsamplingScaleImageView.ORIENTATION_USE_EXIF);
   }
 
@@ -103,7 +106,6 @@ public class ZoomingImageView extends FrameLayout {
     glideRequests.load(new DecryptableStreamUriLoader.DecryptableUri(uri))
                  .diskCacheStrategy(DiskCacheStrategy.NONE)
                  .dontTransform()
-                 .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                  .into(photoView);
   }
 

@@ -179,13 +179,14 @@ private fun PortraitPinCodeScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
+            .padding(bottom = 24.dp)
             .verticalScroll(rememberScrollState())
     ) {
         Image(
             painter = painterResource(id = if(isDarkTheme) R.drawable.ic_password_dark else R.drawable.ic_password_light),
             contentDescription = "",
             modifier = Modifier.height(
-                if (isTablet) 180.dp else 110.dp
+                if (isTablet) 140.dp else 80.dp
             )
         )
 
@@ -252,7 +253,7 @@ private fun PortraitPinCodeScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(if(state.step == PinCodeSteps.EnterPin) 12.dp else 16.dp))
+        Spacer(modifier = Modifier.height(if(state.step == PinCodeSteps.EnterPin) 8.dp else 10.dp))
 
         Box(
             modifier = Modifier
@@ -446,6 +447,7 @@ private fun LandscapePinCodeScreen(
     Row(
         modifier = Modifier
             .fillMaxSize()
+            .padding(bottom = 24.dp)
             .background(MaterialTheme.appColors.backgroundColor)
     ) {
         val density = LocalDensity.current

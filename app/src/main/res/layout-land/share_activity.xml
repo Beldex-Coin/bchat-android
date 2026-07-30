@@ -33,70 +33,57 @@
 
     </LinearLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.cardview.widget.CardView
+        android:id="@+id/searchCardView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/linearLayout"
-        android:fillViewport="true">
+        android:layout_marginLeft="@dimen/medium_spacing"
+        android:layout_marginTop="@dimen/small_spacing"
+        android:layout_marginRight="@dimen/medium_spacing"
+        android:layout_marginBottom="@dimen/medium_spacing"
+        app:cardBackgroundColor="@color/your_bchat_id_bg"
+        app:cardCornerRadius="30dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/searchCardView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/medium_spacing"
-                android:layout_marginTop="@dimen/small_spacing"
-                android:layout_marginRight="@dimen/medium_spacing"
-                android:layout_marginBottom="@dimen/medium_spacing"
-                app:cardBackgroundColor="@color/your_bchat_id_bg"
-                app:cardCornerRadius="30dp">
+            <EditText
+                android:id="@+id/searchContact"
+                style="@style/BchatSearchEditText"
+                android:layout_width="0dp"
+                android:layout_height="54dp"
+                android:layout_weight="1"
+                android:background="@color/transparent"
+                android:gravity="center_vertical"
+                android:hint="@string/search_contact"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLines="1"
+                android:singleLine="true" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <EditText
-                        android:id="@+id/searchContact"
-                        style="@style/BchatSearchEditText"
-                        android:layout_width="0dp"
-                        android:layout_height="54dp"
-                        android:layout_weight="1"
-                        android:background="@color/transparent"
-                        android:gravity="center_vertical"
-                        android:hint="@string/search_contact"
-                        android:imeOptions="actionDone"
-                        android:inputType="text"
-                        android:maxLines="1"
-                        android:singleLine="true" />
-
-                    <ImageView
-                        android:id="@+id/searchAndClearImageview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="15dp"
-                        android:backgroundTint="@color/text_hint"
-                        android:contentDescription="@string/search_contact"
-                        android:gravity="center_vertical"
-                        android:src="@drawable/ic_search_contact" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/contact_selection_list_fragment"
-                android:name="io.beldex.bchat.contacts.ContactSelectionListFragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+            <ImageView
+                android:id="@+id/searchAndClearImageview"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="15dp"
+                android:backgroundTint="@color/text_hint"
+                android:contentDescription="@string/search_contact"
+                android:gravity="center_vertical"
+                android:src="@drawable/ic_search_contact" />
 
         </LinearLayout>
 
-    </androidx.core.widget.NestedScrollView>
+    </androidx.cardview.widget.CardView>
+
+    <fragment
+        android:id="@+id/contact_selection_list_fragment"
+        android:name="io.beldex.bchat.contacts.ContactSelectionListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/searchCardView" />
 
     <io.beldex.bchat.components.SearchToolbar
         android:id="@+id/search_toolbar"

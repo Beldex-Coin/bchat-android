@@ -1,7 +1,6 @@
 package io.beldex.bchat.reactions;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -162,11 +161,6 @@ public final class ReactionsDialogFragment extends BottomSheetDialogFragment imp
       BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(bottomSheet);
       behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
       behavior.setSkipCollapsed(true);
-      int orientation = getResources().getConfiguration().orientation;
-      if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-        int displayHeight = getResources().getDisplayMetrics().heightPixels;
-        bottomSheet.getLayoutParams().height = (int) (displayHeight * 0.9);
-      }
     }
   }
 }

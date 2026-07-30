@@ -41,7 +41,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -490,14 +489,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             }
         }
 
-        fun updateDrawerWidth() {
-            binding.navigationMenu.menuContainer.post {
-                val params = binding.navigationMenu.menuContainer.layoutParams as DrawerLayout.LayoutParams
-                params.width = (getScreenWidth() * 0.7).toInt()
-                binding.navigationMenu.menuContainer.layoutParams = params
-                binding.navigationMenu.menuContainer.translationX = -(this@HomeActivity.toPx(16))
-            }
-        }
         updateDrawerWidth()
         binding.drawerLayout.addDrawerListener(object : DrawerLayout.SimpleDrawerListener() {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
@@ -505,6 +496,15 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             }
         })
         binding.navigationMenu.version.text = resources.getString(R.string.version_name).format(BuildConfig.VERSION_NAME)
+
+        val statusBarHeight = resources.getDimensionPixelSize(resources.getIdentifier("status_bar_height", "dimen", "android"))
+        binding.navigationMenu.menuContainer.apply {
+            val lp = layoutParams as? DrawerLayout.LayoutParams
+            lp?.let {
+                it.topMargin += statusBarHeight
+                layoutParams = it
+            }
+        }
 
         networkChangedReceiver = NetworkChangeReceiver(::networkChange)
         networkChangedReceiver!!.register(this)
@@ -1553,6 +1553,23 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         return super.getSystemService(name)
     }
 
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        updateEmptyState()
+        updateDrawerWidth()
+    }
+
+    private fun updateDrawerWidth() {
+        binding.navigationMenu.menuContainer.post {
+            val params = binding.navigationMenu.menuContainer.layoutParams as DrawerLayout.LayoutParams
+            val screenWidthDp = resources.displayMetrics.widthPixels / resources.displayMetrics.density
+            val drawerWidthFactor = if (screenWidthDp >= 600) 0.25f else 0.7f
+            params.width = (getScreenWidth() * drawerWidthFactor).toInt()
+            binding.navigationMenu.menuContainer.layoutParams = params
+            binding.navigationMenu.menuContainer.translationX = -(this@HomeActivity.toPx(16))
+        }
+    }
 
     override fun onResume() {
         super.onResume()

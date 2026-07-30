@@ -26,6 +26,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.content.res.Configuration;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -73,6 +74,7 @@ import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.utilities.recipients.RecipientModifiedListener;
 import com.beldex.libsignal.utilities.Log;
 import io.beldex.bchat.components.MediaView;
+import io.beldex.bchat.components.ZoomingImageView;
 import io.beldex.bchat.database.MediaDatabase.MediaRecord;
 import io.beldex.bchat.mediapreview.MediaPreviewViewModel;
 import io.beldex.bchat.mediapreview.MediaRailAdapter;
@@ -207,6 +209,17 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     throw new UnsupportedOperationException("Callback unsupported.");
   }
 
+  @Override
+  public void onConfigurationChanged(@NonNull Configuration newConfig) {
+    int currentItem = mediaPager.getCurrentItem();
+    super.onConfigurationChanged(newConfig);
+    if (adapter != null) {
+      mediaPager.setAdapter(null);
+      mediaPager.setAdapter(adapter);
+      mediaPager.setCurrentItem(currentItem);
+    }
+  }
+
   @SuppressWarnings("ConstantConditions")
   private void updateActionBar() {
     MediaItem mediaItem = getCurrentMediaItem();
@@ -323,6 +336,13 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
       public boolean onSingleTapUp(MotionEvent e) {
         if (e.getY() < detailsContainer.getTop()) {
           detailsContainer.setVisibility(detailsContainer.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+          if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+              if (actionBar.isShowing()) actionBar.hide();
+              else                     actionBar.show();
+            }
+          }
         }
         return super.onSingleTapUp(e);
       }

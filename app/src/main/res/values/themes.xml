@@ -40,6 +40,7 @@
 
         <item name="statusBarBackground">@color/accent</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/ic_baseline_clear_24</item>
         <item name="actionModeBackground">@color/compose_view_background</item>
@@ -138,8 +139,8 @@
     </style>
 
     <style name="OverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
-        <!-- Required for Lollipop. -->
-        <item name="android:overlapAnchor">false</item>
+        <item name="android:overlapAnchor">true</item>
+        <item name="android:dropDownVerticalOffset">0dp</item>
         <item name="android:popupBackground">@drawable/overflow_menu_background</item>
     </style>
 

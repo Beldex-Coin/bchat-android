@@ -8,6 +8,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.database.Cursor
 import android.graphics.Rect
@@ -21,6 +22,7 @@ import android.os.SystemClock
 import android.text.Editable
 import android.util.Log
 import android.view.ActionMode
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -408,13 +410,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         binding = ActivityConversationV2Binding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // ---------- Edge-to-edge inset handling (required for API 36) ----------
-        // ConversationActivityV2 extends AppCompatActivity (not BaseActionBarActivity),
-        // so it replicates BaseActionBarActivity's inset pattern:
-        // 1. android.R.id.content gets nav bar padding on all sides (handles landscape side nav bars)
-        // 2. binding.root gets status bar top padding (for the toolbar)
-        // 3. inputBar only handles IME (keyboard) margin — nav bar already handled by content view
-        // 4. inputBarRecordingView handles nav bar margin (it overlays content, not inside normal flow)
+        // ---------- Edge-to-edge inset handling ----------
         ViewCompat.setOnApplyWindowInsetsListener(
             window.decorView.findViewById(android.R.id.content)
         ) { view, insets ->
@@ -426,15 +422,16 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         val baseInputBarMargin = resources.getDimensionPixelSize(R.dimen.small_spacing)
         ViewCompat.setOnApplyWindowInsetsListener(binding.inputBar) { v, insets ->
             val imeBottom = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
+            val navBottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+            val keyboardInset = if (imeBottom > navBottom) imeBottom - navBottom else imeBottom
             val lp = v.layoutParams as ViewGroup.MarginLayoutParams
-            lp.bottomMargin = baseInputBarMargin + imeBottom
+            lp.bottomMargin = baseInputBarMargin + keyboardInset
             v.layoutParams = lp
             insets
         }
         ViewCompat.setOnApplyWindowInsetsListener(binding.inputBarRecordingView) { v, insets ->
-            val navBottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
             val lp = v.layoutParams as ViewGroup.MarginLayoutParams
-            lp.bottomMargin = baseInputBarMargin + navBottom
+            lp.bottomMargin = baseInputBarMargin
             v.layoutParams = lp
             insets
         }
@@ -463,12 +460,20 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             return
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val quoteMessage = binding.inputBar.quote
+        if (quoteMessage != null) {
+            val recipient = viewModel.recipient.value
+            if (recipient != null) {
+                binding.inputBar.draftQuote(recipient, quoteMessage, glide)
+            }
+        }
+    }
+
     override fun onPause() {
         super.onPause()
         ApplicationContext.getInstance(this).messageNotifier.setVisibleThread(-1)
-        if (isAudioPlaying) {
-            this.stopVoiceMessages(audioPlayingIndexInAdapter)
-        }
     }
 
     override fun onStart() {
@@ -493,6 +498,9 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         }
         if (getIsReactionOverlayVisible(this)) {
             setIsReactionOverlayVisible(this, false)
+        }
+        if (isAudioPlaying) {
+            this.stopVoiceMessages(audioPlayingIndexInAdapter)
         }
         actionMode?.finish()
         this.actionMode=null
@@ -1086,7 +1094,9 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         val sizePx = resources.getDimension(sizeRes).roundToInt()
 
         binding.profilePictureView.root.layoutParams =
-            LinearLayout.LayoutParams(sizePx, sizePx)
+            LinearLayout.LayoutParams(sizePx, sizePx).apply {
+                gravity = Gravity.CENTER_VERTICAL
+            }
 
         // ---------- Profile picture binding ----------
         binding.profilePictureView.root.glide = glide

@@ -23,10 +23,13 @@
             android:fontFamily="@font/open_sans_medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginLeft="@dimen/very_large_spacing"
             android:layout_marginRight="@dimen/very_large_spacing"
             android:layout_marginTop="@dimen/medium_spacing"
-            android:layout_marginBottom="@dimen/medium_spacing"
+            android:layout_marginBottom="@dimen/large_spacing"
+            android:maxHeight="80dp"
+            android:scaleType="fitCenter"
             android:src="@drawable/ic_restore_seed_dark" />
         <TextView
             android:fontFamily="@font/open_sans_medium"
@@ -138,11 +141,6 @@
                 tools:ignore="RtlHardcoded" />
 
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
 
         <TextView
             android:fontFamily="@font/open_sans_regular"

@@ -41,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -70,6 +71,9 @@ fun MessageRequestsView(
     openChat: (ThreadRecord) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
     Column(
         modifier = modifier
     ) {
@@ -167,20 +171,37 @@ fun MessageRequestsView(
                 label = "MessageRequests"
             ) {
                 if (it) {
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        items(
-                            items = requests,
-                            key = { it.recipient.address.toString() }
-                        ) { record ->
-                            RequestItem(
-                                request = record,
-                                onClick = openChat,
-                                onCancel = ignoreRequest
-                            )
+                    if (isLandscape) {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            requests.forEach { record ->
+                                RequestItem(
+                                    request = record,
+                                    onClick = openChat,
+                                    onCancel = ignoreRequest,
+                                    horizontal = true
+                                )
+                            }
+                        }
+                    } else {
+                        LazyRow(
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            items(
+                                items = requests,
+                                key = { it.recipient.address.toString() }
+                            ) { record ->
+                                RequestItem(
+                                    request = record,
+                                    onClick = openChat,
+                                    onCancel = ignoreRequest
+                                )
+                            }
                         }
                     }
                 }
@@ -196,70 +217,134 @@ fun RequestItem(
     request: ThreadRecord,
     onCancel: (ThreadRecord) -> Unit,
     onClick: (ThreadRecord) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    horizontal: Boolean = false
 ) {
     val context = LocalContext.current
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-    ) {
-        Box(
-            modifier = Modifier
+    if (horizontal) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = modifier
+                .fillMaxWidth()
         ) {
-            key(request.recipient.address.toString()) {
-                ProfilePictureComponent(
-                    publicKey=request.recipient.address.toString(),
-                    displayName=getDisplayName(context, request.recipient.address.toString()),
-                    containerSize=ProfilePictureMode.SmallPicture.size,
-                    pictureMode=ProfilePictureMode.SmallPicture,
-                    modifier=Modifier
-                        .padding(
-                            end=8.dp,
-                            top=8.dp
-                        )
-                        .clickable {
-                            onClick(request)
-                        }
-                )
-
-                Card(
-                    elevation=CardDefaults.cardElevation(
-                        defaultElevation=4.dp
-                    ),
-                    colors=CardDefaults.cardColors(
-                        containerColor=Color.White
-                    ),
-                    shape=CircleShape,
-                    modifier=Modifier
-                        .align(Alignment.TopEnd)
-                        .size(24.dp)
-                        .clickable {
-                            onCancel(request)
-                        }
-                ) {
-                    Icon(
-                        Icons.Default.Close,
-                        contentDescription="",
+            Box(
+                modifier = Modifier
+            ) {
+                key(request.recipient.address.toString()) {
+                    ProfilePictureComponent(
+                        publicKey=request.recipient.address.toString(),
+                        displayName=getDisplayName(context, request.recipient.address.toString()),
+                        containerSize=ProfilePictureMode.SmallPicture.size,
+                        pictureMode=ProfilePictureMode.SmallPicture,
                         modifier=Modifier
-                            .padding(4.dp)
-                            .size(16.dp)
+                            .padding(
+                                end=8.dp,
+                                top=8.dp
+                            )
+                            .clickable {
+                                onClick(request)
+                            }
                     )
+
+                    Card(
+                        elevation=CardDefaults.cardElevation(
+                            defaultElevation=4.dp
+                        ),
+                        colors=CardDefaults.cardColors(
+                            containerColor=Color.White
+                        ),
+                        shape=CircleShape,
+                        modifier=Modifier
+                            .align(Alignment.TopEnd)
+                            .size(24.dp)
+                            .clickable {
+                                onCancel(request)
+                            }
+                    ) {
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription="",
+                            modifier=Modifier
+                                .padding(4.dp)
+                                .size(16.dp)
+                        )
+                    }
                 }
             }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text(
+                text = request.recipient.name?.capitalizeFirstLetter() ?: "",
+                style = MaterialTheme.typography.bodyMedium,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
+                modifier = Modifier.weight(1f)
+            )
         }
+    } else {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier
+        ) {
+            Box(
+                modifier = Modifier
+            ) {
+                key(request.recipient.address.toString()) {
+                    ProfilePictureComponent(
+                        publicKey=request.recipient.address.toString(),
+                        displayName=getDisplayName(context, request.recipient.address.toString()),
+                        containerSize=ProfilePictureMode.SmallPicture.size,
+                        pictureMode=ProfilePictureMode.SmallPicture,
+                        modifier=Modifier
+                            .padding(
+                                end=8.dp,
+                                top=8.dp
+                            )
+                            .clickable {
+                                onClick(request)
+                            }
+                    )
 
-        Spacer(modifier = Modifier.height(8.dp))
+                    Card(
+                        elevation=CardDefaults.cardElevation(
+                            defaultElevation=4.dp
+                        ),
+                        colors=CardDefaults.cardColors(
+                            containerColor=Color.White
+                        ),
+                        shape=CircleShape,
+                        modifier=Modifier
+                            .align(Alignment.TopEnd)
+                            .size(24.dp)
+                            .clickable {
+                                onCancel(request)
+                            }
+                    ) {
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription="",
+                            modifier=Modifier
+                                .padding(4.dp)
+                                .size(16.dp)
+                        )
+                    }
+                }
+            }
 
-        Text(
-            text = request.recipient.name?.capitalizeFirstLetter() ?: "",
-            style = MaterialTheme.typography.bodyMedium,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1,
-            modifier = Modifier
-                .width(48.dp),
-            textAlign = TextAlign.Center
-        )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = request.recipient.name?.capitalizeFirstLetter() ?: "",
+                style = MaterialTheme.typography.bodyMedium,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
+                modifier = Modifier
+                    .width(48.dp),
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 

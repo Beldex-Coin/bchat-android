@@ -877,7 +877,7 @@ class WebRTCComposeActivity : ComponentActivity() {
                                     )
                                 }
                                 Column(
-                                    horizontalAlignment = Alignment.End,
+                                    horizontalAlignment = Alignment.CenterHorizontally,
                                     verticalArrangement = Arrangement.Center,
                                     modifier = Modifier.weight(1f)
                                 ) {

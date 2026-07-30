@@ -84,10 +84,11 @@ fun RecoverySeedView(
     ) {
         Image(
             painter = painterResource(id = if(isDarkTheme) R.drawable.ic_warning_lock else R.drawable.ic_warning_lock_light),
-            contentDescription = ""
+            contentDescription = "",
+            modifier = Modifier.height(80.dp)
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
         Text(
             text = stringResource(id = R.string.copy_your_recovery_seed),

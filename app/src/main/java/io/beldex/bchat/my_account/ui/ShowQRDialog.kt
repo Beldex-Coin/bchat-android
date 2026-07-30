@@ -1,5 +1,6 @@
 package io.beldex.bchat.my_account.ui
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,21 +46,29 @@ fun ShowQRDialog(
     onShare: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
     DialogContainer(
         dismissOnBackPress = true,
         dismissOnClickOutside = true,
         onDismissRequest = {
             onDismissRequest()
         },
-        containerColor = MaterialTheme.appColors.bnsDialogBackground
+        containerColor = MaterialTheme.appColors.bnsDialogBackground,
+        wrapContentWidth = isLandscape
     ) {
         val context = LocalContext.current
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
-                .fillMaxWidth()
-                .widthIn(max = 320.dp)
+                .then(
+                    if (isLandscape)
+                        Modifier.fillMaxWidth(0.7F).widthIn(max = 320.dp)
+                    else
+                        Modifier.fillMaxWidth().widthIn(max = 260.dp)
+                )
                 .padding(16.dp)
         ) {
             Text(
@@ -77,7 +87,7 @@ fun ShowQRDialog(
                 )
             ) {
                 if (uiState.publicKey.isValidString()) {
-                    val size = toPx(280, context.resources)
+                    val size = toPx(220, context.resources)
                     val bitMap = QRCodeUtilities.encode(
                         uiState.publicKey,
                         size,
@@ -88,7 +98,7 @@ fun ShowQRDialog(
                         bitmap = bitMap.asImageBitmap(),
                         contentDescription = "",
                         modifier =Modifier
-                            .sizeIn(maxWidth = 200.dp, maxHeight = 200.dp)
+                            .sizeIn(maxWidth = 180.dp, maxHeight = 180.dp)
                             .padding(5.dp)
                     )
                 } else {

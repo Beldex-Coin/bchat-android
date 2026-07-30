@@ -21,7 +21,7 @@ class NotificationSettingsActivity : PassphraseRequiredActionBarActivity() {
             back.setOnClickListener { finish() }
             title.text = resources.getString(R.string.activity_notification_settings_title)
         }
-        WindowInsetsUtil.applyTopInset(binding.chatSettingsToolbar)
+        WindowInsetsUtil.applyTopInset(binding.root)
         val fragment = NotificationsPreferenceFragment()
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.fragmentContainer, fragment)

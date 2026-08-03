@@ -9,6 +9,7 @@ import android.content.IntentFilter
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Rect
@@ -132,7 +133,6 @@ import io.beldex.bchat.util.SaveYourSeedDialogBox
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.disableClipping
-import io.beldex.bchat.util.getScreenWidth
 import io.beldex.bchat.util.parcelable
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.show
@@ -347,9 +347,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                 if (position != 4 && position != 3) {
                     updateAdapter(position)
                 }
-                Handler(Looper.getMainLooper()).postDelayed({
-                    binding.drawerLayout.closeDrawer(GravityCompat.END)
-                }, 200)
+                binding.drawerLayout.closeDrawer(GravityCompat.END, false)
             }
         }))
 
@@ -493,6 +491,15 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         binding.drawerLayout.addDrawerListener(object : DrawerLayout.SimpleDrawerListener() {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                 updateDrawerWidth()
+                binding.navigationMenu.menuContainer.translationX = -this@HomeActivity.toPx(16) * slideOffset
+            }
+
+            override fun onDrawerOpened(drawerView: View) {
+                binding.navigationMenu.menuContainer.translationX = -this@HomeActivity.toPx(16)
+            }
+
+            override fun onDrawerClosed(drawerView: View) {
+                binding.navigationMenu.menuContainer.translationX = 0f
             }
         })
         binding.navigationMenu.version.text = resources.getString(R.string.version_name).format(BuildConfig.VERSION_NAME)
@@ -698,6 +705,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             val statusBarHeight =
                 insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
             view.setPadding(0, statusBarHeight, 0, 0)
+            insets
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.contentView) { view, insets ->
+            val cutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
+            view.setPadding(cutout.left, 0, cutout.right, 0)
             insets
         }
     }
@@ -1558,22 +1571,30 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         super.onConfigurationChanged(newConfig)
         updateEmptyState()
         updateDrawerWidth()
+        binding.drawerLayout.closeDrawer(GravityCompat.END, false)
     }
 
     private fun updateDrawerWidth() {
         binding.navigationMenu.menuContainer.post {
             val params = binding.navigationMenu.menuContainer.layoutParams as DrawerLayout.LayoutParams
-            val screenWidthDp = resources.displayMetrics.widthPixels / resources.displayMetrics.density
-            val drawerWidthFactor = if (screenWidthDp >= 600) 0.25f else 0.7f
-            params.width = (getScreenWidth() * drawerWidthFactor).toInt()
+            val isLandscape = resources.configuration.orientation == ORIENTATION_LANDSCAPE
+            val drawerWidthFactor = when {
+                isLandscape -> 0.4f
+                resources.displayMetrics.widthPixels >= 600 * resources.displayMetrics.density -> 0.25f
+                else -> 0.7f
+            }
+            params.width = (resources.displayMetrics.widthPixels * drawerWidthFactor).toInt()
             binding.navigationMenu.menuContainer.layoutParams = params
-            binding.navigationMenu.menuContainer.translationX = -(this@HomeActivity.toPx(16))
         }
     }
 
     override fun onResume() {
         super.onResume()
         Timber.d("onResume()-->")
+        updateDrawerWidth()
+        if (binding.drawerLayout.isDrawerVisible(GravityCompat.END)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.END, false)
+        }
         //Important
         //if (!Ledger.isConnected()) attachLedger()
         if(!CheckOnline.isOnline(this)){
@@ -1611,6 +1632,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
 
     override fun onPause() {
         super.onPause()
+        binding.drawerLayout.closeDrawer(GravityCompat.END, false)
         val dialog = supportFragmentManager.findFragmentByTag(ConversationActionDialog.TAG)
         if (dialog is DialogFragment) {
             dialog.dismissAllowingStateLoss()

@@ -24,6 +24,15 @@ object WindowInsetsUtil {
         }
     }
 
+    fun applyTopAndImeInsets(view: View) {
+        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
+            val top = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top
+            val imeBottom = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
+            v.updatePadding(top = top, bottom = imeBottom)
+            insets
+        }
+    }
+
     fun applyToolbarInsets(toolbar: Toolbar) {
 
         val left = toolbar.paddingLeft

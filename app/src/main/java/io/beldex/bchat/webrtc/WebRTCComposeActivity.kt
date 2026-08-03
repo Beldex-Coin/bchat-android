@@ -254,6 +254,8 @@ class WebRTCComposeActivity : ComponentActivity() {
         val context=LocalContext.current
         val lifecycleOwner=LocalLifecycleOwner.current
         val profileSize=132.dp
+        val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+        val answerDeclineButtonsOffset = if (isLandscape) 0.dp else (-50).dp
 
         var wantsToAnswer by remember {
             mutableStateOf(wantToAnswer)
@@ -786,7 +788,6 @@ class WebRTCComposeActivity : ComponentActivity() {
 
                     if (!remoteVideoView) {
 
-                        val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
                         val callProfileSize = if (isLandscape) 120 else 194
                         val callInnerProfileSize = if (isLandscape) 96 else 152
 
@@ -1377,7 +1378,7 @@ class WebRTCComposeActivity : ComponentActivity() {
                     Row(
                         horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier
                             .fillMaxWidth()
-                            .offset(y=(-50).dp)
+                            .offset(y = answerDeclineButtonsOffset)
                     ) {
                         if (isShowAnswerOption) {
                             Box(

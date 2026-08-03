@@ -36,6 +36,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 
 import io.beldex.bchat.R;
+import io.beldex.bchat.WindowInsetsUtil;
 import com.beldex.libsignal.utilities.Log;
 import com.bumptech.glide.Glide;
 import com.beldex.libbchat.utilities.ServiceUtil;
@@ -99,6 +100,8 @@ public class Camera1Fragment extends Fragment implements TextureView.SurfaceText
     controlsContainer = view.findViewById(R.id.camera_controls_container);
     cameraCloseButton = view.findViewById(R.id.camera_close_button);
 
+    WindowInsetsUtil.INSTANCE.applyTopInset(view);
+
     onOrientationChanged(getResources().getConfiguration().orientation);
 
     cameraPreview.setSurfaceTextureListener(this);
@@ -130,7 +133,7 @@ public class Camera1Fragment extends Fragment implements TextureView.SurfaceText
 
     orderEnforcer.run(Stage.CAMERA_PROPERTIES_AVAILABLE, this::updatePreviewScale);
 
-    requireActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
   }
 

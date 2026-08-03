@@ -141,18 +141,32 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
         val isLightMode = UiModeUtilities.isDayUiMode(requireContext())
         window.setDimAmount(if (isLightMode) 0.1f else 0.75f)
 
+        applyLandscapeSizing()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        applyLandscapeSizing()
+    }
+
+    private fun applyLandscapeSizing() {
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
         val bottomSheet = dialog?.findViewById<View>(
             com.google.android.material.R.id.design_bottom_sheet
         ) ?: return
         val behavior = BottomSheetBehavior.from(bottomSheet)
         behavior.state = BottomSheetBehavior.STATE_EXPANDED
         behavior.skipCollapsed = true
-
-        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
         if (isLandscape) {
             val displayMetrics = resources.displayMetrics
-            val maxHeight = (displayMetrics.heightPixels * 0.85).toInt()
-            behavior.maxHeight = maxHeight
+            behavior.maxHeight = -1
+            bottomSheet.layoutParams.width = (displayMetrics.widthPixels * 0.55).toInt()
+            bottomSheet.requestLayout()
+        } else {
+            behavior.maxHeight = -1
+            bottomSheet.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+            bottomSheet.setPadding(0, 0, 0, 0)
+            bottomSheet.requestLayout()
         }
     }
 

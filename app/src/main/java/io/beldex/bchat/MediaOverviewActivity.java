@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.Resources;
+import android.util.TypedValue;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
@@ -128,6 +129,13 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
     return false;
   }
 
+  @Override
+  public void onConfigurationChanged(Configuration newConfig) {
+    super.onConfigurationChanged(newConfig);
+    updateToolbarTitleAppearance();
+    WindowInsetsUtil.INSTANCE.applyTopInset(this.toolbar);
+  }
+
   private void initializeResources() {
     Address address = getIntent().getParcelableExtra(ADDRESS_EXTRA);
 
@@ -138,8 +146,9 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
   }
 
   private void initializeToolbar() {
-    toolbar.setTitle(R.string.all_media);
     setSupportActionBar(toolbar);
+    toolbar.setTitle(R.string.all_media);
+    updateToolbarTitleAppearance();
     ActionBar actionBar = getSupportActionBar();
     if (actionBar != null) {
       actionBar.setDisplayHomeAsUpEnabled(true);
@@ -148,6 +157,13 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
     this.recipient.addListener(recipient -> {
       Util.runOnMain(() -> toolbar.setTitle(recipient.toShortString()));
     });
+  }
+
+  private void updateToolbarTitleAppearance() {
+    int titleAppearance = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
+        ? R.style.TextAppearance_Bchat_Toolbar_Title_Large
+        : R.style.TextAppearance_Bchat_Toolbar_Title;
+    toolbar.setTitleTextAppearance(this, titleAppearance);
   }
 
   public void onEnterMultiSelect() {

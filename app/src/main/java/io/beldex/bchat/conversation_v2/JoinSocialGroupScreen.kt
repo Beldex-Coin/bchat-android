@@ -18,6 +18,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -60,6 +61,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -321,13 +323,18 @@ private fun GroupsSection(
                 contentPadding = PaddingValues(8.dp)
             ) {
                 items(groups.size) { i ->
+                    val groupImage = groups[i].image?.let {
+                        convertImageByteArrayToBitmap(it).asImageBitmap()
+                    }
                     Column(
                         modifier = Modifier
+                            .fillMaxWidth()
+                            .height(116.dp)
                             .background(
                                 color = MaterialTheme.appColors.disabledButtonContainerColor,
                                 shape = RoundedCornerShape(8.dp)
                             )
-                            .padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 14.dp)
+                            .padding(start = 8.dp, end = 8.dp, top = 10.dp, bottom = 10.dp)
                             .clickable {
                                 showLoader = true
                                 joinPublicChatIfPossible(
@@ -339,11 +346,9 @@ private fun GroupsSection(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        groups[i].image?.let {
-                            convertImageByteArrayToBitmap(it).asImageBitmap()
-                        }?.let { bitmap ->
+                        if (groupImage != null) {
                             Image(
-                                bitmap = bitmap,
+                                bitmap = groupImage,
                                 contentDescription = "",
                                 modifier = Modifier
                                     .width(52.dp)
@@ -351,12 +356,32 @@ private fun GroupsSection(
                                     .clip(shape = RoundedCornerShape(6.dp)),
                                 alignment = Alignment.Center
                             )
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .width(52.dp)
+                                    .height(52.dp)
+                                    .clip(shape = RoundedCornerShape(6.dp))
+                                    .background(MaterialTheme.appColors.iconColor.copy(alpha = 0.3f)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = groups[i].name.take(1).uppercase(),
+                                    style = BChatTypography.bodySmall.copy(
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = MaterialTheme.appColors.textFieldTextColor
+                                    )
+                                )
+                            }
                         }
 
                         Spacer(modifier = Modifier.height(8.dp))
 
                         Text(
                             text = groups[i].name,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
                             textAlign = TextAlign.Center,
                             style = BChatTypography.bodySmall.copy(
                                 fontSize = 12.sp,

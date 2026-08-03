@@ -191,7 +191,10 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
   }
 
   private void setFullscreenIfPossible() {
-    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+    getWindow().getDecorView().setSystemUiVisibility(
+        View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+    );
   }
 
   @Override
@@ -211,12 +214,15 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
 
   @Override
   public void onConfigurationChanged(@NonNull Configuration newConfig) {
-    int currentItem = mediaPager.getCurrentItem();
     super.onConfigurationChanged(newConfig);
     if (adapter != null) {
-      mediaPager.setAdapter(null);
-      mediaPager.setAdapter(adapter);
-      mediaPager.setCurrentItem(currentItem);
+      View playbackControls = adapter.getPlaybackControls(mediaPager.getCurrentItem());
+      if (playbackControls != null) {
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        playbackControls.setLayoutParams(params);
+        playbackControlsContainer.removeAllViews();
+        playbackControlsContainer.addView(playbackControls);
+      }
     }
   }
 

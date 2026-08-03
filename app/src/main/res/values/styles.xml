@@ -61,6 +61,15 @@
 
     </style>
 
+    <style name="TextAppearance_Bchat_Toolbar_Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="TextAppearance_Bchat_Toolbar_Title_Large" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
+        <item name="android:textSize">26sp</item>
+    </style>
+
     <style name="Widget.Bchat.TabBar" parent="Widget.AppCompat.ActionBar.TabBar">
         <item name="android:fontFamily">@font/open_sans_medium</item>
         <item name="elevation">1dp</item>

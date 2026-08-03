@@ -179,7 +179,6 @@ private fun PortraitPinCodeScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 24.dp)
             .verticalScroll(rememberScrollState())
     ) {
         Image(
@@ -258,7 +257,7 @@ private fun PortraitPinCodeScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.6f)
+                .weight(1f)
         ) {
             val density = LocalDensity.current
             var buttonSize by remember {
@@ -286,6 +285,7 @@ private fun PortraitPinCodeScreen(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier
                         .fillMaxWidth()
+                        .weight(1f)
                         .padding(
                             horizontal = if (isTablet) 48.dp else 24.dp,
                             vertical = if (isTablet) 32.dp else 16.dp
@@ -395,7 +395,7 @@ private fun PortraitPinCodeScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.height(12.dp))
 
                 if (state.step != PinCodeSteps.VerifyPin) {
                     PrimaryButton(
@@ -408,6 +408,7 @@ private fun PortraitPinCodeScreen(
                             padding(
                                 start = 16.dp,
                                 end = 16.dp,
+                                bottom = 16.dp
                             )
                             .align(Alignment.CenterHorizontally)
                             .onSizeChanged {
@@ -427,8 +428,6 @@ private fun PortraitPinCodeScreen(
                         )
                     }
                 }
-
-                Spacer(modifier = Modifier.weight(1f))
             }
         }
     }
@@ -447,7 +446,6 @@ private fun LandscapePinCodeScreen(
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 24.dp)
             .background(MaterialTheme.appColors.backgroundColor)
     ) {
         val density = LocalDensity.current
@@ -467,7 +465,7 @@ private fun LandscapePinCodeScreen(
                 .fillMaxHeight()
                 .padding(if (isTablet) 24.dp else 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Top
         ) {
 
             Image(
@@ -699,6 +697,7 @@ private fun LandscapePinCodeScreen(
                                 padding(
                                     start = 16.dp,
                                     end = 16.dp,
+                                    bottom = 16.dp
                                 )
                                 .align(Alignment.CenterHorizontally)
                                 .onSizeChanged {

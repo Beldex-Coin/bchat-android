@@ -68,8 +68,11 @@ class InputBarRecordingView : RelativeLayout {
     }
 
     fun show() {
+        val wasTimerRunning = isTimerRunning
         isTimerRunning = true
-        startTimestamp = Date().time
+        if (!wasTimerRunning) {
+            startTimestamp = Date().time
+        }
         binding.recordButtonOverlayImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_filled_microphone, context.theme))
 //        binding.inputBarCancelButton.alpha = 0.0f
         binding.inputBarMiddleContentContainer.alpha = 1.0f

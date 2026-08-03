@@ -234,7 +234,8 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
 
     closeButton.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
 
-    WindowInsetsUtil.INSTANCE.applyTopInset(closeButton);
+    /*WindowInsetsUtil.INSTANCE.applyTopInset(closeButton);
+    WindowInsetsUtil.INSTANCE.applyTopInset(playbackControlsContainer);*/
   }
 
   @Override
@@ -380,6 +381,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
         playbackControlsContainer.addView(playbackControls);
       } else {
         playbackControlsContainer.removeAllViews();
+        attachPlaybackControlsWhenReady(position);
       }
     });
 
@@ -387,6 +389,20 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
       if (bucketId == null) return;
 
       mediaRailAdapter.setAddButtonListener(() -> controller.onAddMediaClicked(bucketId));
+    });
+  }
+
+  private void attachPlaybackControlsWhenReady(int position) {
+    fragmentPager.post(() -> {
+      if (fragmentPager.getCurrentItem() != position) return;
+
+      View playbackControls = fragmentPagerAdapter.getPlaybackControls(position);
+      if (playbackControls != null) {
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        playbackControls.setLayoutParams(params);
+        playbackControlsContainer.removeAllViews();
+        playbackControlsContainer.addView(playbackControls);
+      }
     });
   }
 

@@ -416,7 +416,13 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         ) { view, insets ->
             val navBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
             val statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            view.setPadding(navBars.left, statusBars.top, navBars.right, navBars.bottom)
+            val cutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
+            view.setPadding(
+                maxOf(navBars.left, cutout.left),
+                statusBars.top,
+                maxOf(navBars.right, cutout.right),
+                navBars.bottom
+            )
             insets
         }
         val baseInputBarMargin = resources.getDimensionPixelSize(R.dimen.small_spacing)
@@ -467,6 +473,11 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             val recipient = viewModel.recipient.value
             if (recipient != null) {
                 binding.inputBar.draftQuote(recipient, quoteMessage, glide)
+            }
+        }
+        if (binding.inputBarRecordingView.isTimerRunning) {
+            binding.inputBarRecordingView.post {
+                binding.inputBarRecordingView.show()
             }
         }
     }

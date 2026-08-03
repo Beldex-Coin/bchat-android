@@ -12,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import io.beldex.bchat.R;
 import io.beldex.bchat.imageeditor.ColorableRenderer;
@@ -157,6 +158,17 @@ public final class ImageEditorFragment extends Fragment implements ImageEditorHu
       v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
       return insets;
     });
+
+    ViewCompat.setOnApplyWindowInsetsListener(imageEditorView, (v, insets) -> {
+      int topMargin = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top / 2;
+      FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) v.getLayoutParams();
+      if (layoutParams.topMargin != topMargin) {
+        layoutParams.topMargin = topMargin;
+        v.setLayoutParams(layoutParams);
+      }
+      return insets;
+    });
+    ViewCompat.requestApplyInsets(imageEditorView);
   }
 
   @Override

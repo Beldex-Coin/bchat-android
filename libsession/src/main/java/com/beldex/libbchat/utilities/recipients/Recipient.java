@@ -20,7 +20,6 @@ package com.beldex.libbchat.utilities.recipients;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -324,7 +323,7 @@ public class Recipient implements RecipientModifiedListener {
     } else {
       Contact contact = storage.getContactWithBchatID(bchatID);
       if (contact == null) { return bchatID; }
-      return contact.displayName(Contact.ContactContext.REGULAR);
+      return contact.displayName(Contact.ContactContext.REGULAR, context);
     }
   }
 

@@ -79,5 +79,15 @@
     <string name="ConversationItem_group_action_left">%1$s has left the group</string>
     <!-- RecipientProvider -->
     <string name="RecipientProvider_unnamed_group">Unnamed group</string>
+
+    <string name="none">None</string>
+    <string name="thirty_seconds">30 seconds</string>
+    <string name="one_minute">1 Minute</string>
+    <string name="two_minutes">2 Minutes</string>
+    <string name="five_minutes">5 Minutes</string>
+    <string name="fifteen_minutes">15 Minutes</string>
+    <string name="thirty_minutes">30 Minutes</string>
     <string name="deleteMessageDeletedGlobally">This message was deleted</string>
+    <string name="deleteMessageDeletedGloballyDefault" translatable="false">This message was deleted</string>
+    <string name="report_issue">Report Issue</string>
 </resources>

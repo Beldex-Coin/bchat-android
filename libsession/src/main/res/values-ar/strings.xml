@@ -6,8 +6,8 @@
     <string name="MessageRecord_you_updated_group">You updated the group</string>
     <string name="MessageRecord_you_created_a_new_group">لقد أنشأت مجموعة جديدة</string>
     <string name="MessageRecord_s_added_you_to_the_group">قام %1$s بإضافتك إلى المجموعة</string>
-    <string name="MessageRecord_you_renamed_the_group_to_s">You renamed the group to %1$s</string>
-    <string name="MessageRecord_s_renamed_the_group_to_s">%1$s renamed the group to: %2$s</string>
+    <string name="MessageRecord_you_renamed_the_group_to_s">لقد قمت بإعادة تسمية المجموعة إلى %1$s</string>
+    <string name="MessageRecord_s_renamed_the_group_to_s">قام %1$s بإعادة تسمية المجموعة إلى: %2$s</string>
     <string name="MessageRecord_you_added_s_to_the_group">لقد قمت بإضافة %1$s إلى المجموعة</string>
     <string name="MessageRecord_s_added_s_to_the_group">قام %1$s بإضافة %2$s إلى المجموعة</string>
     <string name="MessageRecord_you_removed_s_from_the_group">لقد قمت بإزالة %1$s من المجموعة</string>
@@ -18,9 +18,9 @@
     <string name="MessageRecord_called_you">Contact called</string>
     <string name="MessageRecord_missed_call">Missed call</string>
     <string name="MessageRecord_s_updated_group">%s updated the group</string>
-    <string name="MessageRecord_received_call_from">Received call from %s</string>
-    <string name="MessageRecord_called_s">Called %s</string>
-    <string name="MessageRecord_missed_call_from">Missed call from %s</string>
+    <string name="MessageRecord_received_call_from">مكالمة واردة من %s</string>
+    <string name="MessageRecord_called_s">تم الاتصال بـ %s</string>
+    <string name="MessageRecord_missed_call_from">مكالمة فائتة من %s</string>
     <string name="MessageRecord_s_joined_signal">%s is on Bchat!</string>
     <string name="MessageRecord_you_disabled_disappearing_messages">لقد قمت بتعطيل الرسائل المختفية</string>
     <string name="MessageRecord_s_disabled_disappearing_messages">قام %1$s بتعطيل الرسائل المختفية</string>
@@ -42,62 +42,71 @@
     <string name="expiration_off">إيقاف</string>
 
     <plurals name="expiration_seconds">
-        <item quantity="zero">%d ثانية</item>
-        <item quantity="one">%d ثانية</item>
-        <item quantity="two">%d ثوانٍ</item>
-        <item quantity="few">%d ثوانٍ</item>
-        <item quantity="many">%d ثوانٍ</item>
-        <item quantity="other">%d ثوانٍ</item>
+        <item quantity="zero">%s ثانية</item>
+        <item quantity="one">%s ثانية</item>
+        <item quantity="two">%s ثوانٍ</item>
+        <item quantity="few">%s ثوانٍ</item>
+        <item quantity="many">%s ثوانٍ</item>
+        <item quantity="other">%s ثوانٍ</item>
     </plurals>
 
     <string name="expiration_seconds_abbreviated">%ds</string>
 
     <plurals name="expiration_minutes">
-        <item quantity="zero">%d دقيقة</item>
-        <item quantity="one">%d دقيقة</item>
-        <item quantity="two">%d دقائق</item>
-        <item quantity="few">%d دقائق</item>
-        <item quantity="many">%d دقائق</item>
-        <item quantity="other">%d دقائق</item>
+        <item quantity="zero">%s دقيقة</item>
+        <item quantity="one">%sدقيقة</item>
+        <item quantity="two">%s دقائق</item>
+        <item quantity="few">%s دقائق</item>
+        <item quantity="many">%s دقائق</item>
+        <item quantity="other">%s دقائق</item>
     </plurals>
 
-    <string name="expiration_minutes_abbreviated">%dm</string>
+    <string name="expiration_minutes_abbreviated">%dد</string>
 
     <plurals name="expiration_hours">
-        <item quantity="zero">%d ساعة</item>
-        <item quantity="one">%d ساعة</item>
-        <item quantity="two">%d ساعات</item>
-        <item quantity="few">%d ساعات</item>
-        <item quantity="many">%d ساعات</item>
-        <item quantity="other">%d ساعات</item>
+        <item quantity="zero">%s ساعة</item>
+        <item quantity="one">%s ساعة</item>
+        <item quantity="two">%s ساعات</item>
+        <item quantity="few">%s ساعات</item>
+        <item quantity="many">%s ساعات</item>
+        <item quantity="other">%s ساعات</item>
     </plurals>
 
-    <string name="expiration_hours_abbreviated">%dh</string>
+    <string name="expiration_hours_abbreviated">%d س</string>
 
     <plurals name="expiration_days">
-        <item quantity="zero">%d يوم</item>
-        <item quantity="one">%d يوم</item>
-        <item quantity="two">%d أيام</item>
-        <item quantity="few">%d أيام</item>
-        <item quantity="many">%d أيام</item>
-        <item quantity="other">%d أيام</item>
+        <item quantity="zero">%s يوم</item>
+        <item quantity="one">%s يوم</item>
+        <item quantity="two">%s أيام</item>
+        <item quantity="few">%s أيام</item>
+        <item quantity="many">%s أيام</item>
+        <item quantity="other">%s أيام</item>
     </plurals>
 
-    <string name="expiration_days_abbreviated">%dd</string>
+    <string name="expiration_days_abbreviated">%d ي</string>
 
     <plurals name="expiration_weeks">
-        <item quantity="zero">%d أسبوع</item>
-        <item quantity="one">%d أسبوع</item>
-        <item quantity="two">%d أسابيع</item>
-        <item quantity="few">%d أسابيع</item>
-        <item quantity="many">%d أسابيع</item>
-        <item quantity="other">%d أسابيع</item>
+        <item quantity="zero">%s أسبوع</item>
+        <item quantity="one">%s أسبوع</item>
+        <item quantity="two">%s أسابيع</item>
+        <item quantity="few">%s أسابيع</item>
+        <item quantity="many">%s أسابيع</item>
+        <item quantity="other">%s أسابيع</item>
     </plurals>
 
-    <string name="expiration_weeks_abbreviated">%dw</string>
+    <string name="expiration_weeks_abbreviated">%d أ</string>
 
     <string name="ConversationItem_group_action_left">غادر %1$s المجموعة</string>
     <!-- RecipientProvider -->
-    <string name="RecipientProvider_unnamed_group">Unnamed group</string>
-    <string name="deleteMessageDeletedGlobally">This message was deleted</string>
+    <string name="RecipientProvider_unnamed_group">مجموعة بدون اسم</string>
+
+    <string name="none">لا شيء</string>
+    <string name="thirty_seconds">30 ثانية</string>
+    <string name="one_minute">1 دقيقة</string>
+    <string name="two_minutes">2 دقيقة</string>
+    <string name="five_minutes">5 دقائق</string>
+    <string name="fifteen_minutes">15 دقيقة</string>
+    <string name="thirty_minutes">30 دقيقة</string>
+    <string name="deleteMessageDeletedGlobally">تم حذف هذه الرسالة</string>
+    <string name="report_issue">الإبلاغ عن مشكلة</string>
 </resources>

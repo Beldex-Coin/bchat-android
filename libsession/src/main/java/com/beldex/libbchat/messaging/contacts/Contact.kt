@@ -1,6 +1,8 @@
 package com.beldex.libbchat.messaging.contacts
 
+import android.content.Context
 import com.beldex.libbchat.BuildConfig
+import com.beldex.libbchat.R
 import com.beldex.libbchat.utilities.recipients.Recipient
 
 class Contact(val bchatID: String) {
@@ -49,10 +51,10 @@ class Contact(val bchatID: String) {
     /**
      * The name to display in the UI. For local use only.
      */
-    fun displayName(context: ContactContext): String? {
+    fun displayName(context: ContactContext, appContext: Context): String? {
         if(context != ContactContext.OPEN_GROUP) {
             if (bchatID == reportIssueBChatID) {
-                name = "Report Issue"
+                name = appContext.getString(R.string.report_issue)
                 return name
             }
         }

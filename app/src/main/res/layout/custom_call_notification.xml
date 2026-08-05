@@ -61,8 +61,8 @@
             android:layout_weight="1"
             android:layout_height="40dp"
             android:layout_marginStart="5dp"
-            android:text="Answer"
-            android:textSize="11sp" />
+            android:textSize="11sp"
+            tools:text="@string/answer"/>
     </LinearLayout>
 
 </LinearLayout>

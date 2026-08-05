@@ -1,7 +1,6 @@
 package com.beldex.libbchat.messaging.utilities
 
 import android.content.Context
-import android.os.Build
 import android.text.Html
 import android.text.SpannableString
 import android.text.Spanned
@@ -11,7 +10,6 @@ import com.beldex.libbchat.messaging.calls.CallMessageType
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.messaging.sending_receiving.data_extraction.DataExtractionNotificationInfoMessage
 import com.beldex.libbchat.utilities.ExpirationUtil
-import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.truncateIdForDisplay
 
 object UpdateMessageBuilder {
@@ -27,7 +25,7 @@ object UpdateMessageBuilder {
         if (!isOutgoing && senderId == null) return SpannableString("")
         val storage = MessagingModuleConfiguration.shared.storage
         val senderName: String = if (!isOutgoing) {
-            storage.getContactWithBchatID(senderId!!)?.displayName(Contact.ContactContext.REGULAR)
+            storage.getContactWithBchatID(senderId!!)?.displayName(Contact.ContactContext.REGULAR, context)
                 ?: truncateIdForDisplay(senderId)
         } else {
             context.getString(R.string.MessageRecord_you)
@@ -53,7 +51,7 @@ object UpdateMessageBuilder {
             }
             is UpdateMessageData.Kind.GroupMemberAdded -> {
                 val members = updateData.updatedMembers.joinToString(", ") {
-                    "<b>" + (storage.getContactWithBchatID(it)?.displayName(Contact.ContactContext.REGULAR) ?: it) + "</b>"
+                    "<b>" + (storage.getContactWithBchatID(it)?.displayName(Contact.ContactContext.REGULAR, context) ?: it) + "</b>"
                 }
                 rawMessage = if (isOutgoing) {
                     context.getString(R.string.MessageRecord_you_added_s_to_the_group, members)
@@ -74,7 +72,7 @@ object UpdateMessageBuilder {
                 } else {
                     // 2nd case: you are not part of the removed members
                     val members = updateData.updatedMembers.joinToString(", ") {
-                        val name = storage.getContactWithBchatID(it)?.displayName(Contact.ContactContext.REGULAR) ?: it
+                        val name = storage.getContactWithBchatID(it)?.displayName(Contact.ContactContext.REGULAR, context) ?: it
                         "<b>$name</b>"
                     }
                     if (isOutgoing) {
@@ -104,7 +102,7 @@ object UpdateMessageBuilder {
         val storage = MessagingModuleConfiguration.shared.storage
 
         val senderName: String = if (!isOutgoing) {
-            storage.getContactWithBchatID(senderId!!)?.displayName(Contact.ContactContext.REGULAR)
+            storage.getContactWithBchatID(senderId!!)?.displayName(Contact.ContactContext.REGULAR, context)
                 ?: truncateIdForDisplay(senderId)
         } else {
             context.getString(R.string.MessageRecord_you)
@@ -123,7 +121,7 @@ object UpdateMessageBuilder {
         if (!isOutgoing && senderId == null) return ""
         val storage = MessagingModuleConfiguration.shared.storage
         val senderName: String= if (!isOutgoing) {
-            storage.getContactWithBchatID(senderId!!)?.displayName(Contact.ContactContext.REGULAR) ?: truncateIdForDisplay(senderId)
+            storage.getContactWithBchatID(senderId!!)?.displayName(Contact.ContactContext.REGULAR, context) ?: truncateIdForDisplay(senderId)
         } else { context.getString(R.string.MessageRecord_you) }
         val boldSenderName = "<b>$senderName</b>"
         val rawMessage =  if (duration <= 0) {
@@ -144,7 +142,7 @@ object UpdateMessageBuilder {
     ) : Spanned? {
         val storage=MessagingModuleConfiguration.shared.storage
         val senderName=
-            storage.getContactWithBchatID(senderId!!)?.displayName(Contact.ContactContext.REGULAR)
+            storage.getContactWithBchatID(senderId!!)?.displayName(Contact.ContactContext.REGULAR, context)
                 ?: truncateIdForDisplay(senderId)
         val boldSenderName="<b>$senderName</b>"
         val rawMessage=when (kind) {
@@ -158,7 +156,7 @@ object UpdateMessageBuilder {
 
     fun buildCallMessage(context: Context, type: CallMessageType, senderId: String): String {
         val storage = MessagingModuleConfiguration.shared.storage
-        val senderName = storage.getContactWithBchatID(senderId)?.displayName(Contact.ContactContext.REGULAR) ?: truncateIdForDisplay(senderId)
+        val senderName = storage.getContactWithBchatID(senderId)?.displayName(Contact.ContactContext.REGULAR, context) ?: truncateIdForDisplay(senderId)
         return when (type) {
             CallMessageType.CALL_MISSED ->
                 context.getString(R.string.MessageRecord_missed_call_from, senderName)

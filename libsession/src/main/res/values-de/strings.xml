@@ -6,8 +6,8 @@
     <string name="MessageRecord_you_updated_group">You updated the group</string>
     <string name="MessageRecord_you_created_a_new_group">Du hast eine neue Gruppe erstellt</string>
     <string name="MessageRecord_s_added_you_to_the_group">%1$s hat dich zur Gruppe hinzugefügt</string>
-    <string name="MessageRecord_you_renamed_the_group_to_s">You renamed the group to %1$s</string>
-    <string name="MessageRecord_s_renamed_the_group_to_s">%1$s renamed the group to: %2$s</string>
+    <string name="MessageRecord_you_renamed_the_group_to_s">Sie haben die Gruppe in %1$s umbenannt.</string>
+    <string name="MessageRecord_s_renamed_the_group_to_s">%1$s hat die Gruppe umbenannt in: %2$s</string>
     <string name="MessageRecord_you_added_s_to_the_group">Du hast %1$s zur Gruppe hinzugefügt</string>
     <string name="MessageRecord_s_added_s_to_the_group">%1$s hat %2$s zur Gruppe hinzugefügt</string>
     <string name="MessageRecord_you_removed_s_from_the_group">Du hast %1$s aus der Gruppe entfernt</string>
@@ -18,9 +18,9 @@
     <string name="MessageRecord_called_you">Contact called</string>
     <string name="MessageRecord_missed_call">Missed call</string>
     <string name="MessageRecord_s_updated_group">%s updated the group</string>
-    <string name="MessageRecord_received_call_from">Received call from %s</string>
-    <string name="MessageRecord_called_s">Called %s</string>
-    <string name="MessageRecord_missed_call_from">Missed call from %s</string>
+    <string name="MessageRecord_received_call_from">Anruf von %s erhalten</string>
+    <string name="MessageRecord_called_s">Mit Namen %s</string>
+    <string name="MessageRecord_missed_call_from">Verpasster Anruf von %s</string>
     <string name="MessageRecord_s_joined_signal">%s is on Bchat!</string>
     <string name="MessageRecord_you_disabled_disappearing_messages">Du hast verschwindende Nachrichten deaktiviert</string>
     <string name="MessageRecord_s_disabled_disappearing_messages">%1$s hat verschwindende Nachrichten deaktiviert</string>
@@ -60,24 +60,33 @@
         <item quantity="other">%d Stunden</item>
     </plurals>
 
-    <string name="expiration_hours_abbreviated">%dh</string>
+    <string name="expiration_hours_abbreviated">%d h</string>
 
     <plurals name="expiration_days">
         <item quantity="one">%d Tag</item>
         <item quantity="other">%d Tage</item>
     </plurals>
 
-    <string name="expiration_days_abbreviated">%dd</string>
+    <string name="expiration_days_abbreviated">%d d</string>
 
     <plurals name="expiration_weeks">
         <item quantity="one">%d Woche</item>
         <item quantity="other">%d Wochen</item>
     </plurals>
 
-    <string name="expiration_weeks_abbreviated">%dw</string>
+    <string name="expiration_weeks_abbreviated">%d w</string>
 
     <string name="ConversationItem_group_action_left">%1$s hat die Gruppe verlassen</string>
     <!-- RecipientProvider -->
-    <string name="RecipientProvider_unnamed_group">Unnamed group</string>
-    <string name="deleteMessageDeletedGlobally">This message was deleted</string>
+    <string name="RecipientProvider_unnamed_group">Unbenannte Gruppe</string>
+
+    <string name="none">Keine</string>
+    <string name="thirty_seconds">30 Sekunden</string>
+    <string name="one_minute">1 Minute</string>
+    <string name="two_minutes">2 Minuten</string>
+    <string name="five_minutes">5 Minuten</string>
+    <string name="fifteen_minutes">15 Minuten</string>
+    <string name="thirty_minutes">30 Minuten</string>
+    <string name="deleteMessageDeletedGlobally">Diese Nachricht wurde gelöscht</string>
+    <string name="report_issue">Problem melden</string>
 </resources>

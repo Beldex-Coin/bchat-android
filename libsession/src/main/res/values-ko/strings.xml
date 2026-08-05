@@ -6,8 +6,8 @@
     <string name="MessageRecord_you_updated_group">You updated the group</string>
     <string name="MessageRecord_you_created_a_new_group">새 그룹을 만들었습니다</string>
     <string name="MessageRecord_s_added_you_to_the_group">%1$s 님이 회원님을 그룹에 추가했습니다</string>
-    <string name="MessageRecord_you_renamed_the_group_to_s">You renamed the group to %1$s</string>
-    <string name="MessageRecord_s_renamed_the_group_to_s">%1$s renamed the group to: %2$s</string>
+    <string name="MessageRecord_you_renamed_the_group_to_s">그룹 이름을 %1$s (으)로 변경했습니다</string>
+    <string name="MessageRecord_s_renamed_the_group_to_s">%1$s 님이 그룹 이름을 %2$s (으)로 변경했습니다.</string>
     <string name="MessageRecord_you_added_s_to_the_group">%1$s 님을 그룹에 추가했습니다</string>
     <string name="MessageRecord_s_added_s_to_the_group">%1$s 님이 %2$s 님을 그룹에 추가했습니다</string>
     <string name="MessageRecord_you_removed_s_from_the_group">%1$s 님을 그룹에서 제거했습니다</string>
@@ -18,9 +18,9 @@
     <string name="MessageRecord_called_you">Contact called</string>
     <string name="MessageRecord_missed_call">Missed call</string>
     <string name="MessageRecord_s_updated_group">%s updated the group</string>
-    <string name="MessageRecord_received_call_from">Received call from %s</string>
-    <string name="MessageRecord_called_s">Called %s</string>
-    <string name="MessageRecord_missed_call_from">Missed call from %s</string>
+    <string name="MessageRecord_received_call_from">%s 님에게서 전화를 받았습니다.</string>
+    <string name="MessageRecord_called_s">%s 님에게 전화를 걸었습니다.</string>
+    <string name="MessageRecord_missed_call_from">%s 님의 부재중 전화</string>
     <string name="MessageRecord_s_joined_signal">%s is on Bchat!</string>
     <string name="MessageRecord_you_disabled_disappearing_messages">사라지는 메시지를 비활성화했습니다</string>
     <string name="MessageRecord_s_disabled_disappearing_messages">%1$s 님이 사라지는 메시지를 비활성화했습니다</string>
@@ -51,28 +51,37 @@
         <item quantity="other">%d분</item>
     </plurals>
 
-    <string name="expiration_minutes_abbreviated">%dm</string>
+    <string name="expiration_minutes_abbreviated">%d분</string>
 
     <plurals name="expiration_hours">
         <item quantity="other">%d시간</item>
     </plurals>
 
-    <string name="expiration_hours_abbreviated">%dh</string>
+    <string name="expiration_hours_abbreviated">%d시간</string>
 
     <plurals name="expiration_days">
         <item quantity="other">%d일</item>
     </plurals>
 
-    <string name="expiration_days_abbreviated">%dd</string>
+    <string name="expiration_days_abbreviated">%d일</string>
 
     <plurals name="expiration_weeks">
         <item quantity="other">%d주</item>
     </plurals>
 
-    <string name="expiration_weeks_abbreviated">%dw</string>
+    <string name="expiration_weeks_abbreviated">%d주</string>
 
     <string name="ConversationItem_group_action_left">%1$s 님이 그룹을 나갔습니다</string>
     <!-- RecipientProvider -->
-    <string name="RecipientProvider_unnamed_group">Unnamed group</string>
-    <string name="deleteMessageDeletedGlobally">This message was deleted</string>
+    <string name="RecipientProvider_unnamed_group">이름 없는 그룹</string>
+
+    <string name="none">이름 없음</string>
+    <string name="thirty_seconds">30초</string>
+    <string name="one_minute">1분</string>
+    <string name="two_minutes">2 분</string>
+    <string name="five_minutes">5 분</string>
+    <string name="fifteen_minutes">15분</string>
+    <string name="thirty_minutes">30분</string>
+    <string name="deleteMessageDeletedGlobally">이 메시지는 삭제되었습니다.</string>
+    <string name="report_issue">문제 신고</string>
 </resources>

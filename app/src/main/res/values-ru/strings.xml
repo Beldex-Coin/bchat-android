@@ -5,26 +5,30 @@
     <string name="no">Нет</string>
     <string name="delete">Удалить</string>
     <string name="ban">Ban</string>
-    <string name="please_wait">Please wait...</string>
+    <string name="please_wait">Пожалуйста, подождите...</string>
     <string name="save">Сохранить</string>
     <string name="note_to_self">Заметка для себя</string>
     <string name="version_s">Version %s</string>
 
     <!-- AbstractNotificationBuilder -->
-    <string name="AbstractNotificationBuilder_new_message">New message</string>
+    <string name="AbstractNotificationBuilder_new_message">Новое сообщение</string>
 
     <!-- AlbumThumbnailView -->
     <string name="AlbumThumbnailView_plus">\+%d</string>
 
     <!-- ApplicationPreferencesActivity -->
     <plurals name="ApplicationPreferencesActivity_messages_per_conversation">
-        <item quantity="one">%d message per conversation</item>
-        <item quantity="other">%d messages per conversation</item>
+        <item quantity="one">%d сообщение на разговор</item>
+        <item quantity="few">%d сообщения на разговор</item>
+        <item quantity="many">%d сообщений на разговор</item>
+        <item quantity="other">%d сообщения на разговор</item>
     </plurals>
     <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Удалить все старые сообщения сейчас?</string>
     <plurals name="ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages">
-        <item quantity="one">This will immediately trim all conversations to the most recent message.</item>
-        <item quantity="other">This will immediately trim all conversations to the %d most recent messages.</item>
+        <item quantity="one">Все беседы будут немедленно сокращены до последнего сообщения.</item>
+        <item quantity="few">Все беседы будут немедленно сокращены до %d последних сообщений.</item>
+        <item quantity="many">Все беседы будут немедленно сокращены до %d последних сообщений.</item>
+        <item quantity="other">Все беседы будут немедленно сокращены до %d последних сообщений.</item>
     </plurals>
     <string name="ApplicationPreferencesActivity_On">On</string>
     <string name="ApplicationPreferencesActivity_Off">Off</string>
@@ -36,32 +40,32 @@
     <string name="DraftDatabase_Draft_quote_snippet">(reply)</string>
 
     <!-- AttachmentManager -->
-    <string name="AttachmentManager_cant_open_media_selection">Can\'t find an app to select media.</string>
-    <string name="AttachmentManager_signal_requires_the_external_storage_permission_in_order_to_attach_photos_videos_or_audio">BChat requires the Storage permission in order to attach photos, videos, or audio, but it has been permanently denied. Please continue to the app settings menu, select \"Permissions\", and enable \"Storage\".</string>
+    <string name="AttachmentManager_cant_open_media_selection">Не удалось найти приложение для выбора медиафайлов.</string>
+    <string name="AttachmentManager_signal_requires_the_external_storage_permission_in_order_to_attach_photos_videos_or_audio">BChat требуется разрешение на доступ к хранилищу для прикрепления фотографий, видео или аудио, но оно было навсегда запрещено. Пожалуйста, перейдите в настройки приложения, выберите «Разрешения» и включите «Хранилище».</string>
     <string name="AttachmentManager_signal_requires_contacts_permission_in_order_to_attach_contact_information">BChat requires Contacts permission in order to attach contact information, but it has been permanently denied. Please continue to the app settings menu, select \"Permissions\", and enable \"Contacts\".</string>
-    <string name="AttachmentManager_signal_requires_the_camera_permission_in_order_to_take_photos_but_it_has_been_permanently_denied">BChat requires the Camera permission in order to take photos, but it has been permanently denied. Please continue to the app settings menu, select \"Permissions\", and enable \"Camera\".</string>
+    <string name="AttachmentManager_signal_requires_the_camera_permission_in_order_to_take_photos_but_it_has_been_permanently_denied">BChat требуется разрешение на доступ к камере для съемки фотографий, но оно было навсегда запрещено. Пожалуйста, перейдите в настройки приложения, выберите «Разрешения» и включите «Камера».</string>
 
     <!-- AudioSlidePlayer -->
     <string name="AudioSlidePlayer_error_playing_audio">Error playing audio!</string>
 
     <!-- BucketedThreadMedia -->
-    <string name="BucketedThreadMedia_Today">Today</string>
-    <string name="BucketedThreadMedia_Yesterday">Yesterday</string>
-    <string name="BucketedThreadMedia_This_week">This week</string>
-    <string name="BucketedThreadMedia_This_month">This month</string>
+    <string name="BucketedThreadMedia_Today">Сегодня</string>
+    <string name="BucketedThreadMedia_Yesterday">Вчера</string>
+    <string name="BucketedThreadMedia_This_week">На этой неделе</string>
+    <string name="BucketedThreadMedia_This_month">В этом месяце</string>
 
     <!-- CommunicationActions -->
-    <string name="CommunicationActions_no_browser_found">No web browser found.</string>
+    <string name="CommunicationActions_no_browser_found">Веб-браузер не найден.</string>
 
     <!-- ContactsCursorLoader -->
-    <string name="ContactsCursorLoader_groups">Groups</string>
+    <string name="ContactsCursorLoader_groups">Группы</string>
 
     <!-- ConversationItem -->
-    <string name="ConversationItem_error_not_delivered">Send failed, tap for details</string>
+    <string name="ConversationItem_error_not_delivered">Не удалось отправить, нажмите для получения подробностей</string>
     <string name="ConversationItem_received_key_exchange_message_tap_to_process">Received key exchange message, tap to process.</string>
-    <string name="ConversationItem_group_action_left">%1$s has left the group.</string>
+    <string name="ConversationItem_group_action_left">%1$s покинул(а) группу.</string>
     <string name="ConversationItem_click_to_approve_unencrypted">Send failed, tap for unsecured fallback</string>
-    <string name="ConversationItem_unable_to_open_media">Can\'t find an app able to open this media.</string>
+    <string name="ConversationItem_unable_to_open_media">Не удалось найти приложение, способное открыть этот медиафайл.</string>
     <string name="ConversationItem_copied_text">Copied %s</string>
     <string name="ConversationItem_read_more">Read More</string>
     <string name="ConversationItem_download_more">&#160; Download More</string>
@@ -73,36 +77,36 @@
     <string name="ConversationActivity_sorry_there_was_an_error_setting_your_attachment">Sorry, there was an error setting your attachment.</string>
     <string name="ConversationActivity_message">Написать сообщение....</string>
     <string name="ConversationActivity_compose">Compose</string>
-    <string name="ConversationActivity_muted_until_date">Muted until %1$s</string>
-    <string name="ConversationActivity_muted_forever">Muted</string>
-    <string name="ConversationActivity_member_count">%1$d members</string>
+    <string name="ConversationActivity_muted_until_date">Без звука до %1$s</string>
+    <string name="ConversationActivity_muted_forever">Без звука</string>
+    <string name="ConversationActivity_member_count">%1$d участников</string>
     <string name="ConversationActivity_open_group_guidelines">Правила сообщества</string>
-    <string name="ConversationActivity_social_group_welcome">Welcome to BChat</string>
+    <string name="ConversationActivity_social_group_welcome">Добро пожаловать в BChat</string>
 
     <string name="ConversationActivity_invalid_recipient">Invalid recipient!</string>
     <string name="ConversationActivity_added_to_home_screen">Добавлено на главный экран</string>
-    <string name="ConversationActivity_leave_group">Leave group?</string>
+    <string name="ConversationActivity_leave_group">Покинуть группу?</string>
     <string name="ConversationActivity_are_you_sure_you_want_to_leave_this_group">Вы уверены, что хотите покинуть эту группу?</string>
-    <string name="ConversationActivity_error_leaving_group">Error leaving group</string>
+    <string name="ConversationActivity_error_leaving_group">Ошибка при выходе из группы</string>
     <string name="ConversationActivity_unblock_this_contact_question">Unblock this contact?</string>
     <string name="ConversationActivity_you_will_once_again_be_able_to_receive_messages_and_calls_from_this_contact">You will once again be able to receive messages and calls from this contact.</string>
     <string name="ConversationActivity_unblock">Разблокировать</string>
     <string name="ConversationActivity_attachment_exceeds_size_limits">Attachment exceeds size limits for the type of message you\'re sending.</string>
-    <string name="ConversationActivity_unable_to_record_audio">Unable to record audio!</string>
+    <string name="ConversationActivity_unable_to_record_audio">Не удалось записать аудио!</string>
     <string name="ConversationActivity_there_is_no_app_available_to_handle_this_link_on_your_device">There is no app available to handle this link on your device.</string>
-    <string name="ConversationActivity_invite_to_open_group">Add members</string>
+    <string name="ConversationActivity_invite_to_open_group">Добавить участников</string>
     <string name="ConversationActivity_join_open_group">Join %s</string>
     <string name="ConversationActivity_join_open_group_confirmation_message">Are you sure you want to join the <b>%s</b> social group?</string>
 
     <string name="ConversationActivity_to_send_audio_messages_allow_signal_access_to_your_microphone">Разрешить диктофону доступ к записи голоса?</string>
-    <string name="ConversationActivity_signal_requires_the_microphone_permission_in_order_to_send_audio_messages">BChat needs microphone access to send audio messages, but it has been permanently denied. Please continue to app settings, select \"Permissions\", and enable \"Microphone\".</string>
-    <string name="ConversationActivity_to_capture_photos_and_video_allow_signal_access_to_the_camera">BChat needs camera access to take photos and videos.</string>
-    <string name="ConversationActivity_to_send_photos_and_video_allow_signal_access_to_storage">Allow attachment to access Photos and videos on this Device?</string>
-    <string name="ConversationActivity_signal_needs_the_camera_permission_to_take_photos_or_video">BChat needs camera access to take photos and videos, but it has been permanently denied. Please continue to app settings, select \"Permissions\", and enable \"Camera\".</string>
-    <string name="ConversationActivity_signal_needs_camera_permissions_to_take_photos_or_video">BChat needs camera access to take photos or videos.</string>
+    <string name="ConversationActivity_signal_requires_the_microphone_permission_in_order_to_send_audio_messages">BChat требуется доступ к микрофону для отправки голосовых сообщений, но он был навсегда запрещён. Пожалуйста, перейдите в настройки приложения, выберите «Разрешения» и включите «Микрофон».</string>
+    <string name="ConversationActivity_to_capture_photos_and_video_allow_signal_access_to_the_camera">BChat требуется доступ к камере для съёмки фотографий и видео.</string>
+    <string name="ConversationActivity_to_send_photos_and_video_allow_signal_access_to_storage">Разрешить вложениям доступ к фотографиям и видео на этом устройстве?</string>
+    <string name="ConversationActivity_signal_needs_the_camera_permission_to_take_photos_or_video">BChat требуется доступ к камере для съёмки фотографий и видео, но он был навсегда запрещён. Пожалуйста, перейдите в настройки приложения, выберите «Разрешения» и включите «Камера».</string>
+    <string name="ConversationActivity_signal_needs_camera_permissions_to_take_photos_or_video">BChat требуется доступ к камере для съёмки фотографий или видео.</string>
 
     <string name="ConversationActivity_quoted_contact_message">%1$s %2$s</string>
-    <string name="ConversationActivity_search_position">%1$d of %2$d</string>
+    <string name="ConversationActivity_search_position">%1$d из %2$d</string>
     <string name="ConversationActivity_no_results">No results</string>
 
     <!-- ConversationAdapter -->
@@ -126,7 +130,7 @@
         <item quantity="other">Это навсегда удалит %1$d выбранных сообщений.</item>
     </plurals>
 
-    <string name="ConversationFragment_ban_selected_user">Ban this user?</string>
+    <string name="ConversationFragment_ban_selected_user">Заблокировать этого пользователя?</string>
     <string name="ConversationFragment_save_to_sd_card">Сохранить в хранилище?</string>
     <plurals name="ConversationFragment_saving_n_media_to_storage_warning">
         <item quantity="one">Сохранение %1$d медиафайла в хранилище позволит другим приложениям на вашем устройстве получить к нему доступ.</item>
@@ -135,8 +139,10 @@
         <item quantity="other">Сохранение %1$d медиафайлов в хранилище позволит другим приложениям на вашем устройстве получить к ним доступ.</item>
     </plurals>
     <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
-        <item quantity="one">Error while saving attachment to storage!</item>
-        <item quantity="other">Error while saving attachments to storage!</item>
+        <item quantity="one">Ошибка при сохранении вложения в хранилище!</item>
+        <item quantity="few">Ошибка при сохранении вложений в хранилище!</item>
+        <item quantity="many">Ошибка при сохранении вложений в хранилище!</item>
+        <item quantity="other">Ошибка при сохранении вложений в хранилище!</item>
     </plurals>
     <plurals name="ConversationFragment_saving_n_attachments">
         <item quantity="one">Сохранение %1$d вложения</item>
@@ -165,88 +171,90 @@
     <string name="ConversationListItem_key_exchange_message">Key exchange message</string>
 
     <!-- CreateProfileActivity -->
-    <string name="CreateProfileActivity_profile_photo">Profile photo</string>
+    <string name="CreateProfileActivity_profile_photo">Фото профиля</string>
 
     <!-- CustomDefaultPreference -->
-    <string name="CustomDefaultPreference_using_custom">Using custom: %s</string>
+    <string name="CustomDefaultPreference_using_custom">Используется пользовательский вариант: %s</string>
     <string name="CustomDefaultPreference_using_default">Using default: %s</string>
-    <string name="CustomDefaultPreference_none">None</string>
+    <string name="CustomDefaultPreference_none">Нет</string>
 
     <!-- DateUtils -->
-    <string name="DateUtils_just_now">Now</string>
-    <string name="DateUtils_minutes_ago">%d min</string>
-    <string name="DateUtils_today">Today</string>
-    <string name="DateUtils_yesterday">Yesterday</string>
+    <string name="DateUtils_just_now">Сейчас</string>
+    <string name="DateUtils_minutes_ago">%d мин</string>
+    <string name="DateUtils_today">Сегодня</string>
+    <string name="DateUtils_yesterday">Вчера</string>
 
     <!-- DeviceListItem -->
-    <string name="DeviceListItem_today">Today</string>
+    <string name="DeviceListItem_today">Сегодня</string>
 
     <!-- DocumentView -->
-    <string name="DocumentView_unknown_file">Unknown file</string>
+    <string name="DocumentView_unknown_file">Неизвестный файл</string>
 
     <!-- GiphyActivity -->
-    <string name="GiphyActivity_error_while_retrieving_full_resolution_gif">Error while retrieving full resolution GIF</string>
+    <string name="GiphyActivity_error_while_retrieving_full_resolution_gif">Ошибка при получении GIF в полном разрешении</string>
 
     <!-- GiphyFragmentPageAdapter -->
-    <string name="GiphyFragmentPagerAdapter_gifs">GIFs</string>
-    <string name="GiphyFragmentPagerAdapter_stickers">Stickers</string>
+    <string name="GiphyFragmentPagerAdapter_gifs">GIF-файлы</string>
+    <string name="GiphyFragmentPagerAdapter_stickers">Стикеры</string>
 
     <!-- CropImageActivity -->
-    <string name="CropImageActivity_profile_avatar">Photo</string>
+    <string name="CropImageActivity_profile_avatar">Фото</string>
 
     <!-- InputPanel -->C
     <string name="InputPanel_tap_and_hold_to_record_a_voice_message_release_to_send">Tap and hold to record a voice message, release to send</string>
 
     <!-- LongMessageActivity -->
-    <string name="LongMessageActivity_unable_to_find_message">Unable to find message</string>
-    <string name="LongMessageActivity_message_from_s">Message from %1$s</string>
-    <string name="LongMessageActivity_your_message">Your message</string>
+    <string name="LongMessageActivity_unable_to_find_message">Не удалось найти сообщение</string>
+    <string name="LongMessageActivity_message_from_s">Сообщение от %1$s</string>
+    <string name="LongMessageActivity_your_message">Ваше сообщение</string>
 
     <!-- MediaOverviewActivity -->
     <string name="MediaOverviewActivity_Media">Медиафайлы</string>
-    <string name="MediaOverviewActivity_Media_delete_progress_title">Deleting</string>
-    <string name="MediaOverviewActivity_Media_delete_progress_message">Deleting messages...</string>
-    <string name="MediaOverviewActivity_Documents">Documents</string>
-    <string name="MediaOverviewActivity_Select_all">Select all</string>
-    <string name="MediaOverviewActivity_collecting_attachments">Collecting attachments...</string>
+    <string name="MediaOverviewActivity_Media_delete_progress_title">Удаление</string>
+    <string name="MediaOverviewActivity_Media_delete_progress_message">Удаление сообщений...</string>
+    <string name="MediaOverviewActivity_Documents">Документы</string>
+    <string name="MediaOverviewActivity_Select_all">Выбрать всё</string>
+    <string name="MediaOverviewActivity_collecting_attachments">Сбор вложений...</string>
 
     <!-- NotificationMmsMessageRecord -->
-    <string name="NotificationMmsMessageRecord_multimedia_message">Multimedia message</string>
-    <string name="NotificationMmsMessageRecord_downloading_mms_message">Downloading MMS message</string>
-    <string name="NotificationMmsMessageRecord_error_downloading_mms_message">Error downloading MMS message, tap to retry</string>
+    <string name="NotificationMmsMessageRecord_multimedia_message">Мультимедийное сообщение</string>
+    <string name="NotificationMmsMessageRecord_downloading_mms_message">Загрузка MMS-сообщения</string>
+    <string name="NotificationMmsMessageRecord_error_downloading_mms_message">Ошибка загрузки MMS-сообщения, нажмите для повторной попытки</string>
 
     <!-- MediaPickerActivity -->
-    <string name="MediaPickerActivity_send_to">Send to %s</string>
+    <string name="MediaPickerActivity_send_to">Отправить %s</string>
 
     <!-- MediaSendActivity -->
-    <string name="MediaSendActivity_add_a_caption">Add a caption...</string>
-    <string name="MediaSendActivity_an_item_was_removed_because_it_exceeded_the_size_limit">An item was removed. Files must be less than 10MB.</string>
-    <string name="MediaSendActivity_camera_unavailable">Camera unavailable.</string>
+    <string name="MediaSendActivity_add_a_caption">Добавить подпись...</string>
+    <string name="MediaSendActivity_an_item_was_removed_because_it_exceeded_the_size_limit">Один элемент был удалён. Размер файлов должен быть менее 10 МБ.</string>
+    <string name="MediaSendActivity_camera_unavailable">Камера недоступна.</string>
     <string name="MediaSendActivity_message_to_s">Отправить сообщение %s</string>
     <plurals name="MediaSendActivity_cant_share_more_than_n_items">
-        <item quantity="one">You can\'t share more than %d item.</item>
-        <item quantity="other">You can\'t share more than %d items.</item>
+        <item quantity="one">Вы не можете отправить более %d элемента.</item>
+        <item quantity="few">Вы не можете отправить более %d элементов.</item>
+        <item quantity="many">Вы не можете отправить более %d элементов.</item>
+        <item quantity="other">Вы не можете отправить более %d элементов.</item>
     </plurals>
 
     <!-- MediaRepository -->
     <string name="MediaRepository_all_media">Все медиафайлы</string>
 
     <!-- MessageRecord -->
-    <string name="MessageRecord_message_encrypted_with_a_legacy_protocol_version_that_is_no_longer_supported">Received a message encrypted using an old version of BChat that is no longer supported. Please ask the sender to update to the most recent version and resend the message.</string>
+    <string name="MessageRecord_message_encrypted_with_a_legacy_protocol_version_that_is_no_longer_supported">Получено сообщение, зашифрованное с использованием старой версии BChat, которая больше не поддерживается. Пожалуйста, попросите отправителя обновиться до последней версии и отправить сообщение повторно.</string>
     <string name="MessageRecord_left_group">Вы покинули эту группу</string>
     <string name="MessageRecord_you_updated_group">You updated the group</string>
     <string name="MessageRecord_s_updated_group">%s updated the group</string>
 
     <!-- ExpirationDialog -->
     <string name="ExpirationDialog_disappearing_messages">Исчезающие сообщения</string>
-    <string name="ExpirationDialog_your_messages_will_not_expire">Your messages will not expire</string>
-    <string name="ExpirationDialog_your_messages_will_disappear_s_after_they_have_been_seen">Messages sent and received in this conversation will disappear %s after they have been seen.</string>
+    <string name="ExpirationDialog_your_messages_will_not_expire">Ваши сообщения не будут удаляться автоматически</string>
+    <string name="ExpirationDialog_your_messages_will_disappear_s_after_they_have_been_seen">Сообщения, отправленные и полученные в этом разговоре, исчезнут через %s после того, как будут просмотрены.</string>
 
     <!-- PassphrasePromptActivity -->
-    <string name="PassphrasePromptActivity_enter_passphrase">Enter passphrase</string>
+    <string name="PassphrasePromptActivity_enter_passphrase">Введите парольную фразу</string>
 
     <!-- RecipientPreferencesActivity -->
-    <string name="RecipientPreferenceActivity_block_this_contact_question">Block this contact?</string>
+    <string name="RecipientPreferenceActivity_block_this_contact_question">Заблокировать этот контакт?</string>
     <string name="RecipientPreferenceActivity_you_will_no_longer_receive_messages_and_calls_from_this_contact">You will no longer receive messages and calls from this contact.</string>
     <string name="RecipientPreferenceActivity_block">Заблокировать</string>
     <string name="RecipientPreferenceActivity_unblock_this_contact_question">Unblock this contact?</string>
@@ -254,9 +262,9 @@
     <string name="RecipientPreferenceActivity_notification_settings">Настройки уведомлений</string>
 
     <!-- Slide -->
-    <string name="Slide_image">Image</string>
-    <string name="Slide_audio">Audio</string>
-    <string name="Slide_video">Video</string>
+    <string name="Slide_image">Изображение</string>
+    <string name="Slide_audio">Аудио</string>
+    <string name="Slide_video">Видео</string>
 
     <!-- SmsMessageRecord -->
     <string name="SmsMessageRecord_received_corrupted_key_exchange_message">Received corrupted key
@@ -268,131 +276,133 @@
     <string name="SmsMessageRecord_received_message_with_new_safety_number_tap_to_process">Received message with new safety number. Tap to process and display.</string>
     <string name="SmsMessageRecord_secure_bchat_reset">You reset the secure bchat.</string>
     <string name="SmsMessageRecord_secure_bchat_reset_s">%s reset the secure bchat.</string>
-    <string name="SmsMessageRecord_duplicate_message">Duplicate message.</string>
+    <string name="SmsMessageRecord_duplicate_message">Дубликат сообщения.</string>
 
     <!-- ThreadRecord -->
-    <string name="ThreadRecord_group_updated">Group updated</string>
+    <string name="ThreadRecord_group_updated">Группа обновлена</string>
     <string name="ThreadRecord_left_the_group">Left the group</string>
-    <string name="ThreadRecord_secure_bchat_reset">Secure bchat reset.</string>
-    <string name="ThreadRecord_draft">Draft:</string>
-    <string name="ThreadRecord_called">You called</string>
-    <string name="ThreadRecord_called_you">Called you</string>
+    <string name="ThreadRecord_secure_bchat_reset">Безопасный сброс BChat.</string>
+    <string name="ThreadRecord_draft">Черновик:</string>
+    <string name="ThreadRecord_called">Вы позвонили</string>
+    <string name="ThreadRecord_called_you">Вам позвонили</string>
     <string name="ThreadRecord_missed_call">Пропущенный вызов</string>
-    <string name="ThreadRecord_media_message">Media message</string>
-    <string name="ThreadRecord_s_is_on_signal">%s is on BChat!</string>
-    <string name="ThreadRecord_disappearing_messages_disabled">Disappearing messages disabled</string>
-    <string name="ThreadRecord_disappearing_message_time_updated_to_s">Disappearing message time set to %s</string>
+    <string name="ThreadRecord_media_message">Мультимедийное сообщение</string>
+    <string name="ThreadRecord_s_is_on_signal">%s есть в BChat!</string>
+    <string name="ThreadRecord_disappearing_messages_disabled">Исчезающие сообщения отключены</string>
+    <string name="ThreadRecord_disappearing_message_time_updated_to_s">Время исчезновения сообщений установлено на %s</string>
     <string name="ThreadRecord_s_took_a_screenshot">%1$s сделал(а) снимок экрана.</string>
     <string name="ThreadRecord_media_saved_by_s">Медиафайл сохранён пользователем %1$s.</string>
-    <string name="ThreadRecord_safety_number_changed">Safety number changed</string>
-    <string name="ThreadRecord_your_safety_number_with_s_has_changed">Your safety number with %s has changed.</string>
-    <string name="ThreadRecord_you_marked_verified">You marked verified</string>
-    <string name="ThreadRecord_you_marked_unverified">You marked unverified</string>
-    <string name="ThreadRecord_empty_message">This conversation is empty</string>
-    <string name="ThreadRecord_open_group_invitation">Social group invitation</string>
+    <string name="ThreadRecord_safety_number_changed">Номер безопасности изменился</string>
+    <string name="ThreadRecord_your_safety_number_with_s_has_changed">Ваш номер безопасности для %s изменился.</string>
+    <string name="ThreadRecord_you_marked_verified">Вы отметили как проверенный</string>
+    <string name="ThreadRecord_you_marked_unverified">Вы отметили как непроверенный</string>
+    <string name="ThreadRecord_empty_message">Этот разговор пуст</string>
+    <string name="ThreadRecord_open_group_invitation">Приглашение в социальную группу</string>
     <string name="ThreadRecord_payment">%s BDX %s</string>
 
     <!-- UpdateApkReadyListener -->
-    <string name="UpdateApkReadyListener_Signal_update">BChat update</string>
-    <string name="UpdateApkReadyListener_a_new_version_of_signal_is_available_tap_to_update">A new version of BChat is available, tap to update</string>
+    <string name="UpdateApkReadyListener_Signal_update">Обновление BChat</string>
+    <string name="UpdateApkReadyListener_a_new_version_of_signal_is_available_tap_to_update">Доступна новая версия BChat, нажмите для обновления</string>
 
     <!-- MessageDisplayHelper -->
-    <string name="MessageDisplayHelper_bad_encrypted_message">Bad encrypted message</string>
-    <string name="MessageDisplayHelper_message_encrypted_for_non_existing_bchat">Message encrypted for non-existing bchat</string>
+    <string name="MessageDisplayHelper_bad_encrypted_message">Некорректное зашифрованное сообщение</string>
+    <string name="MessageDisplayHelper_message_encrypted_for_non_existing_bchat">Сообщение зашифровано для несуществующего BChat</string>
 
     <!-- MmsMessageRecord -->
-    <string name="MmsMessageRecord_bad_encrypted_mms_message">Bad encrypted MMS message</string>
-    <string name="MmsMessageRecord_mms_message_encrypted_for_non_existing_bchat">MMS message encrypted for non-existing bchat</string>
+    <string name="MmsMessageRecord_bad_encrypted_mms_message">Некорректное зашифрованное MMS-сообщение</string>
+    <string name="MmsMessageRecord_mms_message_encrypted_for_non_existing_bchat">MMS-сообщение зашифровано для несуществующего BChat</string>
 
     <!-- MuteDialog -->
-    <string name="MuteDialog_mute_notifications">Mute notifications</string>
+    <string name="MuteDialog_mute_notifications">Отключить уведомления</string>
 
     <!-- KeyCachingService -->
-    <string name="KeyCachingService_signal_passphrase_cached">Touch to open.</string>
-    <string name="KeyCachingService_passphrase_cached">BChat is unlocked</string>
-    <string name="KeyCachingService_lock">Lock BChat</string>
+    <string name="KeyCachingService_signal_passphrase_cached">Нажмите, чтобы открыть.</string>
+    <string name="KeyCachingService_passphrase_cached">BChat разблокирован</string>
+    <string name="KeyCachingService_lock">Заблокировать BChat</string>
 
     <!-- MediaPreviewActivity -->
     <string name="MediaPreviewActivity_you">Вы</string>
-    <string name="MediaPreviewActivity_unssuported_media_type">Unsupported media type</string>
-    <string name="MediaPreviewActivity_draft">Draft</string>
-    <string name="MediaPreviewActivity_signal_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied">BChat needs storage access in order to save to external storage, but it has been permanently denied. Please continue to app settings, select \"Permissions\", and enable \"Storage\".</string>
-    <string name="MediaPreviewActivity_unable_to_write_to_external_storage_without_permission">Unable to save to external storage without permissions</string>
+    <string name="MediaPreviewActivity_unssuported_media_type">Неподдерживаемый тип медиафайла</string>
+    <string name="MediaPreviewActivity_draft">Черновик</string>
+    <string name="MediaPreviewActivity_signal_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied">BChat требуется доступ к хранилищу для сохранения данных во внешнее хранилище, но он был навсегда запрещён. Пожалуйста, перейдите в настройки приложения, выберите «Разрешения» и включите «Хранилище».</string>
+    <string name="MediaPreviewActivity_unable_to_write_to_external_storage_without_permission">Невозможно сохранить во внешнее хранилище без необходимых разрешений</string>
     <string name="conversation_activity__wait_until_attachment_has_finished_downloading">Пожалуйста, подождите, пока завершится загрузка вложения</string>
     <string name="MediaPreviewActivity_media_delete_confirmation_title">Delete message?</string>
     <string name="MediaPreviewActivity_media_delete_confirmation_message">This will permanently delete this message.</string>
 
     <!-- MessageNotifier -->
-    <string name="MessageNotifier_d_new_messages_in_d_conversations">%1$d new messages in %2$d conversations</string>
-    <string name="MessageNotifier_most_recent_from_s">Most recent from: %1$s</string>
-    <string name="MessageNotifier_locked_message">Locked message</string>
-    <string name="MessageNotifier_message_delivery_failed">Message delivery failed.</string>
-    <string name="MessageNotifier_failed_to_deliver_message">Failed to deliver message.</string>
-    <string name="MessageNotifier_error_delivering_message">Error delivering message.</string>
+    <string name="MessageNotifier_d_new_messages_in_d_conversations">%1$d новых сообщений в %2$d разговорах</string>
+    <string name="MessageNotifier_most_recent_from_s">Последнее сообщение от: %1$s</string>
+    <string name="MessageNotifier_locked_message">Заблокированное сообщение</string>
+    <string name="MessageNotifier_message_delivery_failed">Не удалось доставить сообщение.</string>
+    <string name="MessageNotifier_failed_to_deliver_message">Сбой доставки сообщения.</string>
+    <string name="MessageNotifier_error_delivering_message">Ошибка при доставке сообщения.</string>
     <string name="MessageNotifier_mark_all_as_read">Отметить все как прочитанные</string>
-    <string name="MessageNotifier_mark_read">Mark read</string>
+    <string name="MessageNotifier_mark_read">Отметить как прочитанное</string>
     <string name="MessageNotifier_reply">Ответить</string>
-    <string name="MessageNotifier_pending_signal_messages">Pending BChat messages</string>
-    <string name="MessageNotifier_you_have_pending_signal_messages">You have pending BChat messages, tap to open and retrieve</string>
+    <string name="MessageNotifier_pending_signal_messages">Ожидающие сообщения BChat</string>
+    <string name="MessageNotifier_you_have_pending_signal_messages">У вас есть ожидающие сообщения BChat, нажмите, чтобы открыть и получить их</string>
     <string name="MessageNotifier_contact_message">%1$s %2$s</string>
-    <string name="MessageNotifier_unknown_contact_message">Contact</string>
+    <string name="MessageNotifier_unknown_contact_message">Контакт</string>
 
     <!-- Notification Channels -->
-    <string name="NotificationChannel_messages">Default</string>
-    <string name="NotificationChannel_calls">Calls</string>
-    <string name="NotificationChannel_failures">Failures</string>
-    <string name="NotificationChannel_backups">Backups</string>
-    <string name="NotificationChannel_locked_status">Lock status</string>
-    <string name="NotificationChannel_app_updates">App updates</string>
-    <string name="NotificationChannel_other">Other</string>
+    <string name="NotificationChannel_messages">По умолчанию</string>
+    <string name="NotificationChannel_calls">Звонки</string>
+    <string name="NotificationChannel_failures">Сбои</string>
+    <string name="NotificationChannel_backups">Резервные копии</string>
+    <string name="NotificationChannel_locked_status">Статус блокировки</string>
+    <string name="NotificationChannel_app_updates">Обновления приложения</string>
+    <string name="NotificationChannel_other">Другое</string>
     <string name="NotificationChannel_group_messages">Сообщения</string>
-    <string name="NotificationChannel_missing_display_name">Unknown</string>
+    <string name="NotificationChannel_missing_display_name">Неизвестно</string>
 
     <!-- QuickResponseService -->
-    <string name="QuickResponseService_quick_response_unavailable_when_Signal_is_locked">Quick response unavailable when BChat is locked!</string>
-    <string name="QuickResponseService_problem_sending_message">Problem sending message!</string>
+    <string name="QuickResponseService_quick_response_unavailable_when_Signal_is_locked">Быстрый ответ недоступен, когда BChat заблокирован!</string>
+    <string name="QuickResponseService_problem_sending_message">Проблема при отправке сообщения!</string>
 
     <!-- SaveAttachmentTask -->
-    <string name="SaveAttachmentTask_saved_to">Saved to %s</string>
-    <string name="SaveAttachmentTask_saved">Saved</string>
+    <string name="SaveAttachmentTask_saved_to">Сохранено в %s</string>
+    <string name="SaveAttachmentTask_saved">Сохранено</string>
 
     <!-- SearchToolbar -->
     <string name="SearchToolbar_search">Поиск</string>
 
     <!-- ShortcutLauncherActivity -->
-    <string name="ShortcutLauncherActivity_invalid_shortcut">Invalid shortcut</string>
+    <string name="ShortcutLauncherActivity_invalid_shortcut">Недопустимый ярлык</string>
 
     <!-- SingleRecipientNotificationBuilder -->
     <string name="SingleRecipientNotificationBuilder_signal">BChat</string>
-    <string name="SingleRecipientNotificationBuilder_new_message">New message</string>
+    <string name="SingleRecipientNotificationBuilder_new_message">Новое сообщение</string>
 
     <!-- TransferControlView -->
     <plurals name="TransferControlView_n_items">
-        <item quantity="one">%d Item</item>
-        <item quantity="other">%d Items</item>
+        <item quantity="one">%d элемент</item>
+        <item quantity="few">%d элемента</item>
+        <item quantity="many">%d элементов</item>
+        <item quantity="other">%d элемента</item>
     </plurals>
 
     <!-- VideoPlayer -->
-    <string name="VideoPlayer_error_playing_video">Error playing video</string>
+    <string name="VideoPlayer_error_playing_video">Ошибка воспроизведения видео</string>
 
     <!-- attachment_type_selector -->
-    <string name="attachment_type_selector__audio">Audio</string>
-    <string name="attachment_type_selector__contact">Contact</string>
-    <string name="attachment_type_selector__camera">Camera</string>
-    <string name="attachment_type_selector__location">Location</string>
+    <string name="attachment_type_selector__audio">Аудио</string>
+    <string name="attachment_type_selector__contact">Контакт</string>
+    <string name="attachment_type_selector__camera">Камера</string>
+    <string name="attachment_type_selector__location">Местоположение</string>
     <string name="attachment_type_selector__gif">GIF</string>
-    <string name="attachment_type_selector__gallery">Gallery</string>
-    <string name="attachment_type_selector__file">File</string>
+    <string name="attachment_type_selector__gallery">Галерея</string>
+    <string name="attachment_type_selector__file">Файл</string>
 
-    <string name="attachment_type_selector__drawer_description">Toggle attachment drawer</string>
+    <string name="attachment_type_selector__drawer_description">Переключить панель вложений</string>
 
     <!-- contact_selection_group_activity -->
-    <string name="contact_selection_group_activity__finding_contacts">Loading contacts&#8230;</string>
+    <string name="contact_selection_group_activity__finding_contacts">Загрузка контактов...</string>
 
     <!-- conversation_activity -->
     <string name="conversation_activity__send">Отправить</string>
-    <string name="conversation_activity__compose_description">Message composition</string>
-    <string name="conversation_activity__emoji_toggle_description">Toggle emoji keyboard</string>
+    <string name="conversation_activity__compose_description">Создание сообщения</string>
+    <string name="conversation_activity__emoji_toggle_description">Переключить клавиатуру эмодзи</string>
     <string name="conversation_activity__attachment_thumbnail">Attachment Thumbnail</string>
     <string name="conversation_activity__quick_attachment_drawer_toggle_camera_description">Toggle quick camera attachment drawer</string>
     <string name="conversation_activity__quick_attachment_drawer_record_and_send_audio_description">Record and send audio attachment</string>
@@ -403,14 +413,14 @@
     <string name="conversation_input_panel__slide_to_cancel">Сдвиньте, чтобы отменить</string>
 
     <!-- conversation_item -->
-    <string name="conversation_item__mms_image_description">Media message</string>
-    <string name="conversation_item__secure_message_description">Secure message</string>
+    <string name="conversation_item__mms_image_description">Мультимедийное сообщение</string>
+    <string name="conversation_item__secure_message_description">Защищённое сообщение</string>
 
     <!-- conversation_item_sent -->
-    <string name="conversation_item_sent__send_failed_indicator_description">Send Failed</string>
-    <string name="conversation_item_sent__pending_approval_description">Pending Approval</string>
-    <string name="conversation_item_sent__delivered_description">Delivered</string>
-    <string name="conversation_item_sent__message_read">Message read</string>
+    <string name="conversation_item_sent__send_failed_indicator_description">Не удалось отправить</string>
+    <string name="conversation_item_sent__pending_approval_description">Ожидает подтверждения</string>
+    <string name="conversation_item_sent__delivered_description">Доставлено</string>
+    <string name="conversation_item_sent__message_read">Сообщение прочитано</string>
 
     <!-- conversation_item_received -->
     <string name="conversation_item_received__contact_photo_description">Contact photo</string>
@@ -421,22 +431,22 @@
     <string name="audio_view__download_accessibility_description">Загрузить</string>
 
     <!-- open_group_invitation_view -->
-    <string name="open_group_invitation_view__join_accessibility_description">Join</string>
-    <string name="open_group_invitation_view__open_group_invitation">Social group invitation</string>
+    <string name="open_group_invitation_view__join_accessibility_description">Присоединиться</string>
+    <string name="open_group_invitation_view__open_group_invitation">Приглашение в социальную группу</string>
     <string name="open_group_guidelines_pinned_message">Pinned message</string>
     <string name="open_group_guidelines_read">Читать</string>
 
     <!-- QuoteView -->
-    <string name="QuoteView_audio">Audio</string>
-    <string name="QuoteView_video">Video</string>
-    <string name="QuoteView_photo">Photo</string>
-    <string name="QuoteView_original_missing">Original message not found</string>
+    <string name="QuoteView_audio">Аудио</string>
+    <string name="QuoteView_video">Видео</string>
+    <string name="QuoteView_photo">Фото</string>
+    <string name="QuoteView_original_missing">Исходное сообщение не найдено</string>
 
     <!-- conversation_fragment -->
     <string name="conversation_fragment__scroll_to_the_bottom_content_description">Scroll to the bottom</string>
 
     <!-- giphy_fragment -->
-    <string name="giphy_fragment__nothing_found">Nothing found</string>
+    <string name="giphy_fragment__nothing_found">Ничего не найдено</string>
 
     <!-- load_more_header -->
     <string name="load_more_header__see_full_conversation">See full conversation</string>
@@ -446,20 +456,20 @@
     <string name="media_overview_activity__no_media">Нет элементов медиафайлов для отображения!</string>
 
     <!-- message_recipients_list_item -->
-    <string name="message_recipients_list_item__resend">Resend</string>
+    <string name="message_recipients_list_item__resend">Отправить повторно</string>
 
     <!-- message_details_header -->
     <string name="message_details_header__sent">Отправлено</string>
-    <string name="message_details_header__received">Received</string>
-    <string name="message_details_header__disappears">Disappears</string>
+    <string name="message_details_header__received">Получено</string>
+    <string name="message_details_header__disappears">Исчезает</string>
 
     <!-- AndroidManifest.xml -->
     <string name="AndroidManifest__create_passphrase">Create passphrase</string>
-    <string name="AndroidManifest__media_preview">Media preview</string>
+    <string name="AndroidManifest__media_preview">Предпросмотр медиафайла</string>
 
     <!-- arrays.xml -->
-    <string name="arrays__use_default">Use default</string>
-    <string name="arrays__use_custom">Use custom</string>
+    <string name="arrays__use_default">Использовать по умолчанию</string>
+    <string name="arrays__use_custom">Использовать пользовательский вариант</string>
 
     <string name="arrays__mute_for_one_hour">Отключить на 1 час</string>
     <string name="arrays__mute_for_two_hours">Отключить на 2 часа</string>
@@ -471,7 +481,7 @@
     <string name="arrays__enabled">Enabled</string>
     <string name="arrays__disabled">Disabled</string>
 
-    <string name="arrays__name_and_message">Name and Content</string>
+    <string name="arrays__name_and_message">Имя и содержимое</string>
     <string name="arrays__name_only">Только имя</string>
     <string name="arrays__no_name_or_message">Без имени и содержимого</string>
 
@@ -485,18 +495,20 @@
     <string name="arrays__large">Large</string>
     <string name="arrays__extra_large">Extra large</string>
 
-    <string name="arrays__default">Default</string>
-    <string name="arrays__high">High</string>
-    <string name="arrays__max">Max</string>
+    <string name="arrays__default">По умолчанию</string>
+    <string name="arrays__high">Высокий</string>
+    <string name="arrays__max">Максимальный</string>
 
-    <string name="arrays_small_font_size">Small</string>
-    <string name="arrays_medium_font_size">Medium</string>
-    <string name="arrays_large_font_size">Large</string>
+    <string name="arrays_small_font_size">Маленький</string>
+    <string name="arrays_medium_font_size">Средний</string>
+    <string name="arrays_large_font_size">Большой</string>
 
     <!-- plurals.xml -->
     <plurals name="hours_ago">
-        <item quantity="one">%d hour</item>
-        <item quantity="other">%d hours</item>
+        <item quantity="one">%d час назад</item>
+        <item quantity="few">%d часа назад</item>
+        <item quantity="many">%d часов назад</item>
+        <item quantity="other">%d часа назад</item>
     </plurals>
 
     <!-- preferences.xml -->
@@ -507,30 +519,30 @@
     <string name="preferences__screen_security">Screen security</string>
     <string name="preferences__disable_screen_security_to_allow_screen_shots">Block screenshots in the recents list and inside the app</string>
     <string name="preferences__notifications">Все уведомления</string>
-    <string name="preferences__led_color">LED color</string>
-    <string name="preferences__led_color_unknown">Unknown</string>
-    <string name="preferences__pref_led_blink_title">LED blink pattern</string>
+    <string name="preferences__led_color">Цвет светодиодного индикатора</string>
+    <string name="preferences__led_color_unknown">Неизвестно</string>
+    <string name="preferences__pref_led_blink_title">Шаблон мигания светодиода</string>
     <string name="preferences__sound">Звук</string>
-    <string name="preferences__silent">Silent</string>
-    <string name="preferences__repeat_alerts">Repeat alerts</string>
-    <string name="preferences__never">Never</string>
-    <string name="preferences__one_time">One time</string>
-    <string name="preferences__two_times">Two times</string>
-    <string name="preferences__three_times">Three times</string>
-    <string name="preferences__five_times">Five times</string>
-    <string name="preferences__ten_times">Ten times</string>
+    <string name="preferences__silent">Без звука</string>
+    <string name="preferences__repeat_alerts">Повтор уведомлений</string>
+    <string name="preferences__never">Никогда</string>
+    <string name="preferences__one_time">Один раз</string>
+    <string name="preferences__two_times">Два раза</string>
+    <string name="preferences__three_times">Три раза</string>
+    <string name="preferences__five_times">Пять раз</string>
+    <string name="preferences__ten_times">Десять раз</string>
     <string name="preferences__vibrate">Вибрация</string>
-    <string name="preferences__green">Green</string>
-    <string name="preferences__red">Red</string>
-    <string name="preferences__blue">Blue</string>
-    <string name="preferences__orange">Orange</string>
-    <string name="preferences__cyan">Cyan</string>
-    <string name="preferences__magenta">Magenta</string>
-    <string name="preferences__white">White</string>
-    <string name="preferences__none">None</string>
-    <string name="preferences__fast">Fast</string>
-    <string name="preferences__normal">Normal</string>
-    <string name="preferences__slow">Slow</string>
+    <string name="preferences__green">Зелёный</string>
+    <string name="preferences__red">Красный</string>
+    <string name="preferences__blue">Синий</string>
+    <string name="preferences__orange">Оранжевый</string>
+    <string name="preferences__cyan">Голубой</string>
+    <string name="preferences__magenta">Пурпурный</string>
+    <string name="preferences__white">Белый</string>
+    <string name="preferences__none">Нет</string>
+    <string name="preferences__fast">Быстро</string>
+    <string name="preferences__normal">Обычный</string>
+    <string name="preferences__slow">Медленно</string>
     <string name="preferences__automatically_delete_older_messages_once_a_conversation_exceeds_a_specified_length">Automatically delete older messages once a conversation exceeds a specified length</string>
     <string name="preferences__delete_old_messages">Удалять старые сообщения</string>
     <string name="preferences__conversation_length_limit">Ограничение длины переписки</string>
@@ -545,8 +557,8 @@
     <string name="preferences__request_keyboard_to_disable_personalized_learning">Запросить клавиатуру, чтобы отключить персонализированное обучение.</string>
     <string name="preferences__light_theme">Light</string>
     <string name="preferences__dark_theme">Dark</string>
-    <string name="preferences_chats__message_trimming">Обрезка сообщений (Message Trimming)</string>
-    <string name="preferences_advanced__use_system_emoji">Use system emoji</string>
+    <string name="preferences_chats__message_trimming">Обрезка сообщений </string>
+    <string name="preferences_advanced__use_system_emoji">Использовать системные эмодзи</string>
     <string name="preferences_advanced__disable_signal_built_in_emoji_support">Disable BChat\'s built-in emoji support</string>
     <string name="preferences_app_protection__app_access">Доступ к приложению</string>
     <string name="preferences_app_protection__communication">Общение</string>
@@ -554,7 +566,7 @@
     <string name="preferences_notifications__in_chat_sounds">Звуки в чате</string>
     <string name="preferences_notifications__show">Показать</string>
     <string name="preferences_notifications__priority">Приоритет</string>
-    <string name="preferences_chats__font_size">Font Size</string>
+    <string name="preferences_chats__font_size">Размер шрифта</string>
     <string name="preferences_chat_font_small">Small</string>
     <string name="preferences_chat_font_medium">Medium</string>
     <string name="preferences_chat_font_large">large</string>
@@ -569,22 +581,22 @@
     <!-- **************************************** -->
 
     <!-- contact_selection_list -->
-    <string name="contact_selection_list__unknown_contact">New message to...</string>
+    <string name="contact_selection_list__unknown_contact">Новое сообщение для…</string>
 
     <!-- conversation_context -->
     <string name="conversation_context__menu_message_details">Подробности сообщения</string>
     <string name="conversation_context__menu_copy_text">Скопировать текст</string>
     <string name="conversation_context__menu_delete_message">Удалить сообщение</string>
-    <string name="conversation_context__menu_ban_user">Ban user</string>
-    <string name="conversation_context__menu_ban_and_delete_all">Ban and delete all</string>
-    <string name="conversation_context__menu_resend_message">Resend message</string>
-    <string name="conversation_context__menu_reply_to_message">Reply to message</string>
+    <string name="conversation_context__menu_ban_user">Заблокировать пользователя</string>
+    <string name="conversation_context__menu_ban_and_delete_all">Заблокировать пользователя и удалить всё</string>
+    <string name="conversation_context__menu_resend_message">Повторно отправить сообщение</string>
+    <string name="conversation_context__menu_reply_to_message">Ответить на сообщение</string>
 
     <!-- conversation_context_image -->
-    <string name="conversation_context_image__save_attachment">Save attachment</string>
+    <string name="conversation_context_image__save_attachment">Сохранить вложение</string>
 
     <!-- conversation_expiring_on -->
-    <string name="menu_conversation_expiring_on__messages_expiring">Messages expiring</string>
+    <string name="menu_conversation_expiring_on__messages_expiring">Исчезающие сообщения</string>
 
     <!-- conversation_muted -->
     <string name="conversation_muted__unmute">Включить уведомления</string>
@@ -593,7 +605,7 @@
     <string name="conversation_unmuted__mute_notifications">Отключить уведомления</string>
 
     <!-- conversation -->
-    <string name="conversation__menu_edit_group">Edit group</string>
+    <string name="conversation__menu_edit_group">Редактировать группу</string>
     <string name="conversation__menu_leave_group">Покинуть группу</string>
     <string name="conversation__menu_add_shortcut">Добавить на главный экран</string>
 
@@ -612,19 +624,19 @@
     <string name="media_overview_documents_fragment__no_documents_found">Нет элементов документа для отображения!</string>
 
     <!-- media_preview_activity -->
-    <string name="media_preview_activity__media_content_description">Media preview</string>
+    <string name="media_preview_activity__media_content_description">Предпросмотр медиафайлов</string>
 
     <!-- Trimmer -->
-    <string name="trimmer__deleting">Deleting</string>
-    <string name="trimmer__deleting_old_messages">Deleting old messages...</string>
-    <string name="trimmer__old_messages_successfully_deleted">Old messages successfully deleted</string>
+    <string name="trimmer__deleting">Удаление</string>
+    <string name="trimmer__deleting_old_messages">Удаление старых сообщений...</string>
+    <string name="trimmer__old_messages_successfully_deleted">Старые сообщения успешно удалены</string>
 
     <!-- transport_selection_list_item -->
-    <string name="Permissions_permission_required">Permission Required!</string>
+    <string name="Permissions_permission_required">Требуется разрешение!</string>
     <string name="Permissions_allow">Разрешить</string>
     <string name="Permissions_deny">Запретить</string>
-    <string name="backup_enable_dialog__backups_will_be_saved_to_external_storage_and_encrypted_with_the_passphrase_below_you_must_have_this_passphrase_in_order_to_restore_a_backup">Backups will be saved to external storage and encrypted with the passphrase below. You must have this passphrase in order to restore a backup.</string>
-    <string name="backup_enable_dialog__i_have_written_down_this_passphrase">I have written down this passphrase. Without it, I will be unable to restore a backup.</string>
+    <string name="backup_enable_dialog__backups_will_be_saved_to_external_storage_and_encrypted_with_the_passphrase_below_you_must_have_this_passphrase_in_order_to_restore_a_backup">Резервные копии будут сохранены во внешнее хранилище и зашифрованы с помощью приведённой ниже парольной фразы. Эта парольная фраза понадобится вам для восстановления резервной копии.</string>
+    <string name="backup_enable_dialog__i_have_written_down_this_passphrase">Я записал(а) эту парольную фразу. Без неё я не смогу восстановить резервную копию.</string>
     <string name="registration_activity__skip">Skip</string>
     <string name="RegistrationActivity_backup_failure_downgrade">Cannot import backups from newer versions of BChat</string>
     <string name="RegistrationActivity_incorrect_backup_passphrase">Incorrect backup passphrase</string>
@@ -634,13 +646,13 @@
     <string name="BackupDialog_delete_backups">Delete backups?</string>
     <string name="BackupDialog_disable_and_delete_all_local_backups">Disable and delete all local backups?</string>
     <string name="BackupDialog_delete_backups_statement">Delete backups</string>
-    <string name="LocalBackupJob_creating_backup">Creating backup...</string>
-    <string name="ProgressPreference_d_messages_so_far">%d messages so far</string>
-    <string name="BackupUtil_never">Never</string>
-    <string name="preferences_app_protection__screen_lock">Screen lock</string>
-    <string name="preferences_app_protection__lock_signal_access_with_android_screen_lock_or_fingerprint">Lock BChat access with Android screen lock or fingerprint</string>
-    <string name="preferences_app_protection__screen_lock_inactivity_timeout">Тайм-аут бездействия экрана (Screen Inactivity Timeout)</string>
-    <string name="AppProtectionPreferenceFragment_none">None</string>
+    <string name="LocalBackupJob_creating_backup">Создание резервной копии...</string>
+    <string name="ProgressPreference_d_messages_so_far">На данный момент: %d сообщений</string>
+    <string name="BackupUtil_never">Никогда</string>
+    <string name="preferences_app_protection__screen_lock">Блокировка экрана</string>
+    <string name="preferences_app_protection__lock_signal_access_with_android_screen_lock_or_fingerprint">Защитить доступ к BChat с помощью блокировки экрана Android или отпечатка пальца</string>
+    <string name="preferences_app_protection__screen_lock_inactivity_timeout">Тайм-аут блокировки экрана при бездействии</string>
+    <string name="AppProtectionPreferenceFragment_none">Нет</string>
     <!-- Conversation activity -->
     <string name="activity_conversation_copy_public_key_button_title">Copy public key</string>
 
@@ -651,7 +663,7 @@
     <string name="copied_to_clipboard">Скопировано в буфер обмена</string>
     <string name="next">Далее</string>
     <string name="share">Поделиться</string>
-    <string name="invalid_bchat_id">Invalid BChat ID</string>
+    <string name="invalid_bchat_id">Недопустимый ID BChat</string>
     <string name="cancel">Отменить</string>
     <string name="ok">Ок</string>
     <string name="your_bchat_id">Ваш BChat ID</string>
@@ -660,11 +672,11 @@
     <string name="activity_landing_register_button_title">Создать аккаунт</string>
     <string name="activity_landing_restore_button_title">Восстановить аккаунт</string>
 
-    <string name="view_fake_chat_bubble_1">What\'s BChat?</string>
-    <string name="view_fake_chat_bubble_2">It\'s a decentralized, encrypted messaging app</string>
-    <string name="view_fake_chat_bubble_3">So it doesn\'t collect my personal information or my conversation metadata? How does it work?</string>
-    <string name="view_fake_chat_bubble_4">Using a combination of advanced anonymous routing and end-to-end encryption technologies.</string>
-    <string name="view_fake_chat_bubble_5">Friends don\'t let friends use compromised messengers. You\'re welcome.</string>
+    <string name="view_fake_chat_bubble_1">Что такое BChat?</string>
+    <string name="view_fake_chat_bubble_2">Это децентрализованное зашифрованное приложение для обмена сообщениями.</string>
+    <string name="view_fake_chat_bubble_3">Значит, оно не собирает мою личную информацию или метаданные моих разговоров? Как это работает?</string>
+    <string name="view_fake_chat_bubble_4">С использованием сочетания передовых технологий анонимной маршрутизации и сквозного шифрования.</string>
+    <string name="view_fake_chat_bubble_5">Друзья не позволяют друзьям пользоваться скомпрометированными мессенджерами. Пожалуйста.</string>
 
     <string name="activity_register_title">Say hello to your BChat ID</string>
     <string name="activity_register_explanation">Your BChat ID is the unique address people can use to contact you on BChat. With no connection to your real identity, your BChat ID is totally anonymous and private by design.</string>
@@ -679,62 +691,62 @@
     <string name="activity_display_name_display_name_too_long_error">Пожалуйста, выберите более короткое имя для отображения</string>
     <string name="activity_display_name_hint">Вы можете изменить его в любое время :)</string>
 
-    <string name="activity_pn_mode_recommended_option_tag">Recommended</string>
-    <string name="activity_pn_mode_no_option_picked_dialog_title">Please Pick an Option</string>
+    <string name="activity_pn_mode_recommended_option_tag">Рекомендуется</string>
+    <string name="activity_pn_mode_no_option_picked_dialog_title">Пожалуйста, выберите вариант</string>
 
-    <string name="activity_home_empty_state_message">You don\'t have any contacts yet</string>
-    <string name="activity_home_empty_state_button_title">Start a BChat</string>
+    <string name="activity_home_empty_state_message">У вас пока нет контактов</string>
+    <string name="activity_home_empty_state_button_title">Начать чат в BChat</string>
     <string name="activity_home_leaving_group_failed_message">"Couldn\'t leave group"</string>
     <string name="activity_home_delete_conversation_dialog_message">Вы уверены, что хотите удалить эту переписку?</string>
-    <string name="activity_home_conversation_deleted_message">Conversation deleted</string>
+    <string name="activity_home_conversation_deleted_message">Разговор удалён</string>
 
-    <string name="activity_seed_title">Your Recovery Seed</string>
-    <string name="activity_seed_title_2">Meet your recovery phrase</string>
-    <string name="activity_seed_explanation">Your recovery phrase is the master key to your BChat ID — you can use it to restore your BChat ID if you lose access to your device. Store your recovery phrase in a safe place, and don\'t give it to anyone.</string>
-    <string name="activity_seed_reveal_button_title">Hold to reveal</string>
+    <string name="activity_seed_title">Ваша фраза восстановления</string>
+    <string name="activity_seed_title_2">Познакомьтесь со своей фразой восстановления</string>
+    <string name="activity_seed_explanation">Ваша фраза восстановления — это главный ключ к вашему ID BChat. С её помощью вы можете восстановить свой ID BChat, если потеряете доступ к устройству. Храните её в безопасном месте и никому не передавайте.</string>
+    <string name="activity_seed_reveal_button_title">Нажмите и удерживайте, чтобы показать</string>
 
-    <string name="view_seed_reminder_title">You\'re almost finished! 80%</string>
-    <string name="view_seed_reminder_subtitle_1">Secure your account by saving your recovery phrase</string>
-    <string name="view_seed_reminder_subtitle_2">Tap and hold the redacted words to reveal your recovery phrase, then store it safely to secure your BChat ID.</string>
-    <string name="view_seed_reminder_subtitle_3">Make sure to store your recovery phrase in a safe place</string>
+    <string name="view_seed_reminder_title">Вы почти закончили! 80%</string>
+    <string name="view_seed_reminder_subtitle_1">Защитите свою учётную запись, сохранив фразу восстановления</string>
+    <string name="view_seed_reminder_subtitle_2">Нажмите и удерживайте скрытые слова, чтобы увидеть свою фразу восстановления, затем сохраните её в безопасном месте для защиты вашего ID BChat.</string>
+    <string name="view_seed_reminder_subtitle_3">Обязательно храните свою фразу восстановления в безопасном месте</string>
 
-    <string name="activity_path_title">Хопы (Hops)</string>
+    <string name="activity_path_title">Хопы</string>
     <string name="activity_path_explanation">BChat скрывает ваш IP-адрес, маршрутизируя сообщения через несколько мастернодов в децентрализованной сети Beldex.  В данный момент ваше соединение проходит через следующие мастерноды</string>
     <string name="activity_path_guard_node_row_title">Входной узел</string>
     <string name="activity_path_service_node_row_title">Мастернода</string>
     <string name="activity_path_destination_row_title">Назначение</string>
-    <string name="activity_path_learn_more_button_title">Learn More</string>
-    <string name="activity_path_resolving_progress">Resolving…</string>
+    <string name="activity_path_learn_more_button_title">Узнать больше</string>
+    <string name="activity_path_resolving_progress">Разрешение…</string>
 
     <string name="activity_create_private_chat_title">Новый чат</string>
-    <string name="activity_create_private_chat_enter_bchat_id_tab_title">Enter BChat ID</string>
+    <string name="activity_create_private_chat_enter_bchat_id_tab_title">Введите ID BChat</string>
     <string name="activity_create_private_chat_scan_qr_code_explanation">Сканируйте QR-код пользователя, чтобы начать BChat. QR-коды можно найти, нажав на иконку QR-кода в настройках аккаунта.</string>
 
-    <string name="fragment_enter_public_key_explanation">Users can share their BChat ID by going into their account settings and tapping "Share BChat ID", or by sharing their QR code.</string>
+    <string name="fragment_enter_public_key_explanation">Пользователи могут поделиться своим ID BChat, перейдя в настройки учётной записи и нажав «Поделиться ID BChat», либо поделившись своим QR-кодом.</string>
     <string name="fragment_enter_public_key_error_message">Пожалуйста, проверьте Chat ID или имя BNS и попробуйте снова</string>
 
     <string name="fragment_scan_qr_code_camera_access_explanation">BChat needs camera access to scan QR codes</string>
-    <string name="fragment_scan_qr_code_grant_camera_access_button_title">Grant Camera Access</string>
+    <string name="fragment_scan_qr_code_grant_camera_access_button_title">Предоставить доступ к камере</string>
 
-    <string name="activity_create_closed_group_title">New Secret Group</string>
+    <string name="activity_create_closed_group_title">Новая секретная группа</string>
     <string name="activity_create_closed_group_edit_text_hint">Enter a group name</string>
     <string name="activity_create_closed_group_empty_state_message">Пока нет контактов</string>
     <string name="activity_create_closed_group_empty_state_button_title">Start a Chat</string>
     <string name="activity_create_closed_group_group_name_missing_error">Пожалуйста, введите название группы</string>
     <string name="activity_create_closed_group_group_name_too_long_error">Пожалуйста, введите более короткое название группы</string>
     <string name="activity_create_closed_group_not_enough_group_members_error">Пожалуйста, выберите хотя бы 1 участника группы</string>
-    <string name="activity_create_closed_group_too_many_group_members_error">A secret group cannot have more than 100 members</string>
+    <string name="activity_create_closed_group_too_many_group_members_error">Секретная группа не может содержать более 100 участников</string>
 
     <string name="activity_join_public_chat_title">Присоединиться к социальной группе</string>
-    <string name="activity_join_public_chat_error">Couldn\'t join social group</string>
-    <string name="activity_join_public_chat_enter_group_url_tab_title">Social Group URL</string>
+    <string name="activity_join_public_chat_error">Не удалось присоединиться к социальной группе</string>
+    <string name="activity_join_public_chat_enter_group_url_tab_title">URL социальной группы</string>
     <string name="activity_join_public_chat_scan_qr_code_explanation">Scan the QR code of the social group you\'d like to join</string>
 
     <string name="fragment_enter_chat_url_edit_text_hint">Введите URL социальной группы</string>
 
     <string name="activity_settings_title">Настройки</string>
-    <string name="activity_settings_display_name_edit_text_hint">Enter a display name</string>
-    <string name="activity_settings_privacy_button_title">Privacy</string>
+    <string name="activity_settings_display_name_edit_text_hint">Введите отображаемое имя</string>
+    <string name="activity_settings_privacy_button_title">Конфиденциальность</string>
     <string name="activity_settings_notifications_button_title">Уведомления</string>
     <string name="activity_settings_devices_button_title">Devices</string>
     <string name="activity_settings_invite_button_title">Пригласить друга</string>
@@ -742,39 +754,39 @@
     <string name="activity_settings_recovery_phrase_button_title">Восстановительная фраза</string>
     <string name="activity_settings_clear_all_data_button_title">Очистить данные</string>
     <string name="activity_settings_clear_all_data_and_network_button_title">Clear Data Including Network</string>
-    <string name="activity_settings_help_translate_bchat">Help us Translate BChat</string>
+    <string name="activity_settings_help_translate_bchat">Помогите нам перевести BChat</string>
 
     <string name="activity_notification_settings_style_section_title">Стиль уведомлений</string>
     <string name="activity_notification_settings_content_section_title">Содержимое уведомлений</string>
 
-    <string name="activity_privacy_settings_title">Privacy</string>
+    <string name="activity_privacy_settings_title">Конфиденциальность</string>
 
-    <string name="activity_chat_settings_title">Chats</string>
+    <string name="activity_chat_settings_title">Чаты</string>
 
     <string name="preferences_notifications_strategy_category_title">Стратегия уведомлений</string>
     <string name="preferences_notifications_strategy_category_fast_mode_title">Использовать быстрый режим</string>
     <string name="preferences_notifications_strategy_category_fast_mode_summary">Вы будете получать уведомления о новых сообщениях надёжно и мгновенно через серверы Google.</string>
 
-    <string name="fragment_device_list_bottom_sheet_change_name_button_title">Change name</string>
-    <string name="fragment_device_list_bottom_sheet_unlink_device_button_title">Unlink device</string>
+    <string name="fragment_device_list_bottom_sheet_change_name_button_title">Изменить имя</string>
+    <string name="fragment_device_list_bottom_sheet_unlink_device_button_title">Отвязать устройство</string>
 
-    <string name="dialog_seed_title">Your Recovery Seed</string>
-    <string name="dialog_seed_explanation">This is your recovery seed. With it, you can restore or migrate your BChat ID to a new device.</string>
+    <string name="dialog_seed_title">Ваша фраза восстановления</string>
+    <string name="dialog_seed_explanation">Это ваша фраза восстановления. С её помощью вы можете восстановить или перенести свой ID BChat на новое устройство.</string>
 
-    <string name="dialog_clear_all_data_title">Очистка всех данных (Clear all data)</string>
+    <string name="dialog_clear_all_data_title">Очистка всех данных</string>
     <string name="dialog_clear_all_data_explanation">Вы уверены, что хотите безвозвратно очистить все данные на этом устройстве?</string>
     <string name="dialog_clear_all_data_network_explanation">Вы уверены, что хотите безвозвратно удалить все данные из сети Beldex?</string>
     <string name="dialog_clear_all_data_local_only">Delete Only</string>
     <string name="dialog_clear_all_data_clear_network">Entire Account</string>
 
-    <string name="activity_qr_code_title">QR Code</string>
-    <string name="activity_qr_code_view_my_qr_code_tab_title">My QR Code</string>
+    <string name="activity_qr_code_title">QR-код</string>
+    <string name="activity_qr_code_view_my_qr_code_tab_title">Мой QR-код</string>
     <string name="activity_qr_code_view_scan_qr_code_tab_title">Сканировать QR</string>
-    <string name="activity_qr_code_view_scan_qr_code_explanation">Scan someone\'s QR code to start a conversation with them</string>
+    <string name="activity_qr_code_view_scan_qr_code_explanation">Отсканируйте чей-либо QR-код, чтобы начать с ним разговор</string>
     <string name="fragment_view_my_qr_code_title">Scan Me</string>
 
     <string name="fragment_view_my_qr_code_explanation">This is your QR code. Other users can scan it to start a BChat with you.</string>
-    <string name="fragment_view_my_qr_code_share_title">Share QR Code</string>
+    <string name="fragment_view_my_qr_code_share_title">Поделиться QR-кодом</string>
 
     <string name="fragment_contact_selection_contacts_title">Контакты</string>
     <string name="fragment_contact_selection_closed_groups_title">Секретные группы</string>
@@ -782,7 +794,7 @@
 
     <!-- Next round of translation -->
 
-    <string name="menu_apply_button">Apply</string>
+    <string name="menu_apply_button">Применить</string>
     <string name="menu_done_button">Готово</string>
 
     <string name="activity_edit_closed_group_title">Редактировать группу</string>
@@ -798,15 +810,15 @@
 
     <string name="view_reset_secure_bchat_done_message">Secure BChat reset done</string>
 
-    <string name="dialog_ui_mode_title">Theme</string>
-    <string name="dialog_ui_mode_option_day">Day</string>
-    <string name="dialog_ui_mode_option_night">Night</string>
-    <string name="dialog_ui_mode_option_system_default">System default</string>
+    <string name="dialog_ui_mode_title">Тема</string>
+    <string name="dialog_ui_mode_option_day">Дневная</string>
+    <string name="dialog_ui_mode_option_night">Ночная</string>
+    <string name="dialog_ui_mode_option_system_default">Системная по умолчанию</string>
 
     <string name="activity_conversation_menu_copy_bchat_id">Скопировать ID BChat</string>
 
-    <string name="attachment">Attachment</string>
-    <string name="attachment_type_voice_message">Voice Message</string>
+    <string name="attachment">Вложение</string>
+    <string name="attachment_type_voice_message">Голосовое сообщение</string>
     <string name="details">Подробности</string>
 
     <string name="dialog_backup_activation_failed">Failed to activate backups. Please try again or contact support.</string>
@@ -819,34 +831,34 @@
     <string name="activity_link_device_skip_prompt">This is taking a while, would you like to skip?</string>
     <string name="activity_link_device_link_device">Link a Device</string>
     <string name="activity_link_device_qr_message">Navigate to Settings → Recovery Seed on your other device to show your QR code.</string>
-    <string name="activity_join_public_chat_join_rooms">Or join one of these…</string>
+    <string name="activity_join_public_chat_join_rooms">Или присоединитесь к одной из этих групп…</string>
 
-    <string name="activity_pn_mode_message_notifications">Message Notifications</string>
-    <string name="activity_pn_mode_explanation">There are two ways BChat can notify you of new messages.</string>
-    <string name="activity_pn_mode_fast_mode">Fast Mode</string>
-    <string name="activity_pn_mode_slow_mode">Slow Mode</string>
-    <string name="activity_pn_mode_slow_mode_explanation">BChat will occasionally check for new messages in the background.</string>
+    <string name="activity_pn_mode_message_notifications">Уведомления о сообщениях</string>
+    <string name="activity_pn_mode_explanation">Есть два способа, с помощью которых BChat может уведомлять вас о новых сообщениях.</string>
+    <string name="activity_pn_mode_fast_mode">Быстрый режим</string>
+    <string name="activity_pn_mode_slow_mode">Медленный режим</string>
+    <string name="activity_pn_mode_slow_mode_explanation">BChat будет периодически проверять наличие новых сообщений в фоновом режиме.</string>
 
-    <string name="activity_prompt_passphrase_bchat_locked">BChat is Locked</string>
-    <string name="activity_prompt_passphrase_tap_to_unlock">Tap to Unlock</string>
+    <string name="activity_prompt_passphrase_bchat_locked">BChat заблокирован</string>
+    <string name="activity_prompt_passphrase_tap_to_unlock">Нажмите, чтобы разблокировать</string>
 
     <string name="fragment_user_details_bottom_sheet_edit_text_hint">Введите никнейм</string>
-    <string name="invalid_public_key">Invalid public key</string>
+    <string name="invalid_public_key">Недопустимый открытый ключ</string>
 
     <string name="document">Документ</string>
 
-    <string name="dialog_blocked_title">Unblock %s?</string>
-    <string name="dialog_blocked_explanation">Are you sure you want to unblock %s?</string>
+    <string name="dialog_blocked_title">Разблокировать %s?</string>
+    <string name="dialog_blocked_explanation">Вы уверены, что хотите разблокировать %s?</string>
 
-    <string name="dialog_join_open_group_title">Join %s?</string>
-    <string name="dialog_join_open_group_explanation">Are you sure you want to join the %s social group?</string>
+    <string name="dialog_join_open_group_title">Присоединиться к %s?</string>
+    <string name="dialog_join_open_group_explanation">Вы уверены, что хотите присоединиться к социальной группе %s?</string>
 
     <string name="dialog_open_url_title">Открыть URL?</string>
     <string name="dialog_open_url_explanation">Вы уверены, что хотите открыть %s?</string>
     <string name="open">Открыть</string>
 
-    <string name="dialog_link_preview_title">Enable Link Previews?</string>
-    <string name="dialog_link_preview_explanation">Enabling link previews will show previews for URLs you send and receive. This can be useful, but BChat will need to contact linked websites to generate previews. You can always disable link previews in BChat\'s settings.</string>
+    <string name="dialog_link_preview_title">Включить предпросмотр ссылок?</string>
+    <string name="dialog_link_preview_explanation">При включении предпросмотра ссылок будут отображаться предварительные просмотры URL-адресов, которые вы отправляете и получаете. Это может быть полезно, однако BChat потребуется обращаться к связанным веб-сайтам для создания предпросмотров. Вы всегда можете отключить предпросмотр ссылок в настройках BChat.</string>
     <string name="dialog_link_preview_enable_button_title">Включить</string>
 
     <string name="dialog_download_title">Доверие %s?</string>
@@ -854,17 +866,17 @@
 
     <string name="activity_conversation_blocked_banner_text">%s is blocked. Unblock them?</string>
 
-    <string name="activity_conversation_attachment_prep_failed">Failed to prepare attachment for sending.</string>
+    <string name="activity_conversation_attachment_prep_failed">Не удалось подготовить вложение для отправки.</string>
     <string name="UntrustedAttachmentView_download_attachment">Tap to download %s</string>
-    <string name="message_details_header__error">Error</string>
+    <string name="message_details_header__error">Ошибка</string>
 
     <string name="dialog_send_seed_title">Предупреждение</string>
     <string name="dialog_send_seed_explanation">Это ваш сид восстановления. Если вы отправите это кому-то, у него будет полный доступ к вашему аккаунту.</string>
     <string name="notify_type_all">Все</string>
     <string name="notify_type_mentions">Упоминания</string>
-    <string name="deleted_message">This message has been deleted</string>
+    <string name="deleted_message">Это сообщение было удалено</string>
     <string name="delete_message_for_me">Удалить только для меня</string>
-    <string name="delete_message_for_everyone">Delete for everyone</string>
+    <string name="delete_message_for_everyone">Удалить для всех</string>
     <string name="delete_message_for_me_and_recipient">Удалить для меня и %s</string>
     <string name="activity_settings_survey_feedback">Обратная связь</string>
     <string name="activity_settings_support">Debug Log</string>
@@ -872,7 +884,7 @@
     <string name="dialog_share_logs_explanation">Would you like to export your application logs to be able to share for troubleshooting?</string>
     <string name="conversation_pin">Закрепить</string>
     <string name="conversation_unpin">Открепить</string>
-    <string name="global_search_contacts_groups">Contacts and Groups</string>
+    <string name="global_search_contacts_groups">Контакты и группы</string>
     <!-- New Strings-->
 
     <string name="terms_and_conditions">Условия и положения</string>
@@ -898,7 +910,7 @@
     <string name="close">Close</string>
     <string name="on">On</string>
     <string name="important">Важно</string>
-    <string name="activity_settings_app_lock_button_title">Блокировка приложения (App Lock)</string>
+    <string name="activity_settings_app_lock_button_title">Блокировка приложения</string>
     <string name="change_password">Изменить пароль</string>
     <string name="screenlock_inactivity_timeout">Тайм-аут блокировки экрана при бездействии</string>
     <string name="pin_not_matched">Entered pin not matched</string>
@@ -906,15 +918,15 @@
     <string name="join_group">Join Social Group</string>
     <string name="group_url">Group URL</string>
     <string name="or_join_here">Or Join here</string>
-    <string name="camera_access_text">BChat needs camera access to scan QR codes</string>
+    <string name="camera_access_text">Bchat требуется доступ к камере для сканирования QR-кодов</string>
     <string name="remove_this_contact">Remove This Contacts ?</string>
     <string name="remove_message">Are you sure You want to Remove this contact from this group?</string>
     <string name="leave">Покинуть</string>
     <string name="create">Создать</string>
     <string name="change">Change</string>
-    <string name="enter_new_password"> Enter a New Password</string>
-    <string name="enter_old_password"> Enter Your Old Password</string>
-    <string name="change_password_content">BChat app lock password adds an additional layer of security to users. Enter your old password and new password to update your password in app lock.</string>
+    <string name="enter_new_password">Введите новый пароль</string>
+    <string name="enter_old_password">Введите старый пароль</string>
+    <string name="change_password_content">Пароль блокировки приложения BChat добавляет дополнительный уровень безопасности. Введите старый и новый пароль, чтобы обновить пароль блокировки приложения.</string>
 
     <!-- Screenlock InActivity -->
     <string name="none">Нет</string>
@@ -935,7 +947,7 @@
     <string name="display_name_screen_description_content">Your display name is not your username and you can change it anytime.</string>
     <string name="register_screen_chat_id_description_content">Ваш BChat ID — это как ваше имя пользователя. Вы можете делиться им с друзьями, чтобы начать переписку.</string>
     <string name="register_screen_beldex_address_description_content">Ваш адрес Beldex связан с вашим BChat ID. Вы можете использовать этот адрес для получения BDX.</string>
-    <string name="create_password_screen_description_content">Enter a four digit pin to add an additional layer of security to your BChat account. Your pin is required to unlock your account or view your recovery keys and recovery seed once you\'re logged in.</string>
+    <string name="create_password_screen_description_content">Введите четырёхзначный PIN-код, чтобы добавить дополнительный уровень безопасности вашей учётной записи BChat. Этот PIN-код потребуется для разблокировки вашей учётной записи, а также для просмотра ключей восстановления и фразы восстановления после входа в систему.</string>
     <string name="recovery_phrase_screen_description_content"><font color='#FF0000'>Note: </font> Save your recovery seed! Only your recovery seed can be used to recover your account on another device. Copy the recovery seed to continue.</string>
     <string name="new_chat_screen_description_content">Share your BChat ID with your friends. You can find your BChat ID below.</string>
     <string name="never_share_your_seed_with_anyone">Никогда не делитесь своим seed с кем-либо!</string>
@@ -944,29 +956,29 @@
     <string name="seed_permission_important_confirmButton">Да, безопасно</string>
     <string name="mnemonic_edit_text_hint">Введите ваш Seed</string>
     <string name="password_screen_description_content">Enter your four digit pin to unlock your account</string>
-    <string name="check_password_description_content_seed">Enter your password to view your seed. Write it down on paper.</string>
+    <string name="check_password_description_content_seed">Введите пароль, чтобы просмотреть свою фразу восстановления. Запишите её на бумаге.</string>
     <string name="check_password_description_content_keys">Enter your password to view your restore key. Write it down on paper.</string>
     <string name="closed_group_screen_description_content">Uh oh, you don\'t have any contacts yet.\nAdd some contacts first to start a secret group.</string>
     <string name="join_social_group_description_content">Social groups are similar to public groups, however, you need an invite link to join. Join a social group using the group\'s URL.</string>
     <string name="if_you_don_t_know_the_restore_blockheight_you_can_skip_it">If you don\'t know the restore blockheight, you can skip it.</string>
     <string name="if_you_don_t_know_the_restore_date_you_can_skip_it">If you don\'t know the restore date, you can skip it.</string>
-    <string name="changelog">Список изменений (Changelog)</string>
+    <string name="changelog">Список изменений</string>
     <string name="enter_your_password">Enter your password</string>
     <string name="navigate_to_voice_message">Navigate to voice message </string>
     <string name="VoiceNotePlayerView__dot_s">· %1$s</string>
     <string name="AudioView_duration">%1$d:%2$02d</string>
     <string name="VoiceNotePlayerView__pause_voice_message">Pause voice message</string>
     <string name="VoiceNotePlayerView__play_voice_message">Play voice message</string>
-    <string name="activity_settings_profile_name_title">Profile Name</string>
-    <string name="bchat_id_clipboard">Your BChat ID is copied to clipboard</string>
-    <string name="beldex_address_clipboard">Your Beldex Address is copied to clipboard</string>
-    <string name="message_requests_notification">You have a new message request</string>
+    <string name="activity_settings_profile_name_title">Имя профиля</string>
+    <string name="bchat_id_clipboard">Ваш ID BChat скопирован в буфер обмена</string>
+    <string name="beldex_address_clipboard">Ваш адрес Beldex скопирован в буфер обмена</string>
+    <string name="message_requests_notification">У вас новый запрос на переписку</string>
     <string name="activity_message_requests_title">Запросы сообщений</string>
     <string name="activity_message_request_title">Запросы сообщений</string>
     <string name="message_requests_send_notice">Отправка сообщения этому пользователю автоматически примет его запрос и покажет ваш BChat ID.</string>
     <string name="accept">Принять</string>
-    <string name="decline">Decline</string>
-    <string name="message_requests_clear_all">Clear All</string>
+    <string name="decline">Отклонить</string>
+    <string name="message_requests_clear_all">Очистить всё</string>
     <string name="message_requests_delete_message">Вы уверены, что хотите удалить этот запрос?</string>
     <string name="message_requests_deleted">Message request deleted</string>
     <string name="message_requests_clear_all_message">Are you sure you want to clear all message requests?</string>
@@ -974,47 +986,48 @@
     <string name="message_requests_accepted">Ваш запрос на сообщение принят</string>
     <string name="message_request_you_have_accepted">Вы приняли запрос на сообщение от %s.</string>
     <string name="message_requests_pending">Your message request is currently pending.</string>
-    <string name="message_request_empty_state_message">Нет ожидающих запросов!</string>
+    <string name="message_request_empty_state_message">Нет ожидающих запросов на переписку</string>
     <string name="message_requests_accept_all">Accept All</string>
     <string name="message_requests_accept_message">Вы уверены, что хотите принять этот запрос?</string>
-    <string name="message_requests_decline_message">Declining this request will permanently block this user, are you sure?</string>
-    <string name="no_blocked_contact">No blocked contacts yet</string>
+    <string name="message_requests_decline_message">При отклонении этого запроса данный пользователь будет навсегда заблокирован. Вы уверены?</string>
+    <string name="no_blocked_contact">Пока нет заблокированных контактов</string>
     <string name="blocked_contacts">Заблокированные контакты</string>
 
     <string name="CallNotificationBuilder_first_call_title">Вызов пропущен</string>
-    <string name="CallNotificationBuilder_first_call_message">You missed a call because you need to enable the \'Voice and video calls\' permission in the Privacy Settings.</string>
-    <string name="CallNotificationBuilder_connecting">Connecting…</string>
-    <string name="NotificationBarManager__incoming_signal_call">Incoming call</string>
-    <string name="NotificationBarManager__deny_call">Deny call</string>
-    <string name="NotificationBarManager__answer_call">Answer call</string>
-    <string name="NotificationBarManager__establishing_signal_call">Establishing call</string>
+    <string name="CallNotificationBuilder_first_call_message">Вы пропустили звонок, потому что необходимо включить разрешение «Голосовые и видеозвонки» в настройках конфиденциальности.</string>
+    <string name="CallNotificationBuilder_connecting">Подключение…</string>
+    <string name="NotificationBarManager__incoming_signal_call">Входящий звонок</string>
+    <string name="NotificationBarManager__deny_call">Отклонить звонок</string>
+    <string name="NotificationBarManager__answer_call">Ответить на звонок</string>
+    <string name="NotificationBarManager__establishing_signal_call">Установка соединения</string>
     <string name="NotificationBarManager__cancel_call">Cancel call</string>
-    <string name="NotificationBarManager_call_in_progress">Person in call</string>
-    <string name="NotificationBarManager__end_call">End call</string>
-    <string name="WebRtcCallActivity_Bchat_Call">Bchat Call</string>
-    <string name="WebRtcCallActivity_Reconnecting">Reconnecting…</string>
-    <string name="conversation_context__menu_call">Call</string>
+    <string name="NotificationBarManager_call_in_progress">Участник в звонке</string>
+    <string name="NotificationBarManager__end_call">Завершить звонок</string>
+    <string name="WebRtcCallActivity_Bchat_Call">Звонок BChat</string>
+    <string name="WebRtcCallActivity_Reconnecting">Повторное подключение...</string>
+    <string name="conversation_context__menu_call">Звонок</string>
     <string name="ConversationActivity_call_title">Call Permissions Required</string>
     <string name="dialog_voice_video_title">Голосовые/видео звонки</string>
     <string name="dialog_voice_video_message">Текущая реализация голосовых звонков может раскрыть ваш IP-адрес серверам Beldex и другому участнику.</string>
-    <string name="CallNotificationBuilder_system_notification_message">Having notifications disabled will prevent you from receiving calls, go to Bchat notification settings?</string>
-    <string name="dismiss">Dismiss</string>
+    <string name="CallNotificationBuilder_system_notification_message">Отключённые уведомления не позволят вам получать звонки. Перейти к настройкам уведомлений BChat?</string>
+    <string name="dismiss">Закрыть</string>
     <string name="preferences__voice_video_calls">Голосовые и видеозвонки</string>
     <string name="preferences__allow_access_voice_video">Разрешить доступ для приема голосовых и видеозвонков от других пользователей</string>
-    <string name="incoming_call">Incoming Call..</string>
+    <string name="incoming_call">Входящий вызов...</string>
     <string name="outgoing_call">Outgoing Call</string>
-    <string name="calling">Calling..</string>
-    <string name="end_to_end_encrypted">End to End Encrypted</string>
+    <string name="calling">Вызов…</string>
+    <string name="end_to_end_encrypted">Сквозное шифрование</string>
     <string name="call_duration">00:10:10</string>
-    <string name="hang_up">Hangup</string>
+    <string name="hang_up">Завершить вызов</string>
+    <string name="answer">Ответить</string>
     <string name="back_to_call">Back to call</string>
-    <string name="call_in_progress">Call in progress</string>
-    <string name="call_muted">Call Muted</string>
-    <string name="video_paused">Video Paused</string>
-    <string name="video_paused_and_microphone_off">Video paused and microphone off</string>
+    <string name="call_in_progress">Звонок продолжается</string>
+    <string name="call_muted">Микрофон отключён</string>
+    <string name="video_paused">Видео приостановлено</string>
+    <string name="video_paused_and_microphone_off">Видео приостановлено, микрофон выключен</string>
     <string name="call_declined">Call Declined</string>
     <string name="dialing">Dialing…</string>
-    <string name="call_ended">Call Ended</string>
+    <string name="call_ended">Звонок завершён</string>
     <string name="activity_receive_page_title">Receive</string>
     <string name="activity_rescan_page_title">Rescan</string>
     <string name="enter_amount">Enter amount</string>
@@ -1122,7 +1135,7 @@
     <string name="incoming">Incoming</string>
     <string name="outgoing">Outgoing</string>
     <string name="transactions_by_date">Transactions by Date</string>
-    <string name="tx_failed">Failed</string>
+    <string name="tx_failed">Ошибка</string>
     <string name="tx_pending">Pending</string>
     <string name="tx_status_received">Received</string>
     <string name="send_notes_hint">Private Notes (optional)</string>
@@ -1267,21 +1280,25 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="report_issue">Сообщить о проблеме</string>
     <string name="filter_applied">Filter applied</string>
     <string name="testing_the_node">Testing the node...</string>
-    <string name="str_start_date">start date</string>
-    <string name="str_end_date">end date</string>
+    <string name="str_start_date">Дата начала</string>
+    <string name="str_end_date">Дата окончания</string>
+    <string name="str_please_select_start_date">Пожалуйста, выберите дату начала</string>
+    <string name="str_please_select_end_date">Пожалуйста, выберите дату окончания</string>
     <string name="alert_from_date">Please enter from date</string>
     <string name="alert_to_date">Please enter to date</string>
-    <string name="CallNotificationBuilder_screen_on">Video Resumed</string>
-    <string name="activity_conversation_block_user">Block User</string>
+    <string name="CallNotificationBuilder_screen_on">Видео возобновлено</string>
+    <string name="activity_conversation_block_user">Заблокировать пользователя</string>
     <string name="message_requests_decline_messages">Are you sure you want to decline this message request?</string>
     <string name="message_requests_block_message">Вы уверены, что хотите заблокировать этот запрос?</string>
 
-    <string name="Unblock_dialog__title_single">Unblock %s</string>
-    <string name="Unblock_dialog__title_multiple">Unblock Users</string>
-    <string name="Unblock_dialog__message">Are you sure you want to unblock %s?</string>
+    <string name="Unblock_dialog__title_single">Разблокировать %s</string>
+    <string name="Unblock_dialog__title_multiple">Разблокировать пользователей</string>
+    <string name="Unblock_dialog__message">Вы уверены, что хотите разблокировать %s?</string>
     <plurals name="Unblock_dialog__message_multiple_overflow">
-        <item quantity="one">and %d other</item>
-        <item quantity="other">and %d others</item>
+        <item quantity="one">и ещё %d человек</item>
+        <item quantity="few">и ещё %d человека</item>
+        <item quantity="many">и ещё %d человек</item>
+        <item quantity="other">и ещё %d человека</item>
     </plurals>
     <string name="unblock_selected">Разблокировать выбранные</string>
     <string name="call_alert">You\'re already on call</string>
@@ -1300,12 +1317,12 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="payment_sent">Payment Sent</string>
     <string name="payment_received">Payment Received</string>
     <string name="reply_payment_card_message">%1s : %2s BDX</string>
-    <string name="open_link">Open Link</string>
+    <string name="open_link">Открыть ссылку</string>
     <string name="initiating_transaction">Initiating Transaction..</string>
     <string name="invalid_destination_address">Invalid destination address</string>
     <string name="search_people_and_groups">Поиск людей и групп</string>
     <string name="you_can_t_send_messages_to_this_group_because_you_re_no_longer_a_participant">Вы не можете отправлять сообщения в эту группу, потому что вы больше не являетесь участником</string>
-    <string name="empty_message_toast">Can\'t send empty message</string>
+    <string name="empty_message_toast">Невозможно отправить пустое сообщение</string>
     <string name="swipe_to_send_bdx">Swipe to send BDX</string>
     <string name="search_currency">Search Currency</string>
     <string name="enter_a_valid_nickname">Введите допустимый никнейм</string>
@@ -1315,15 +1332,15 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="hold_to_enable_option">Hold to Enable Pay as you chat</string>
     <string name="connected">Подключено</string>
     <string name="no_connection">Нет подключения</string>
-    <string name="please_enter_your_four_digit_pin">Please enter your 4 digit PIN.</string>
+    <string name="please_enter_your_four_digit_pin">Пожалуйста, введите свой 4-значный PIN-код</string>
     <string name="invalid_password">Неверный пароль</string>
-    <string name="please_copy_and_save_your_seed">Please copy and save your seed</string>
-    <string name="please_copy_the_seed_and_save_it">Please copy the seed and save it</string>
+    <string name="please_copy_and_save_your_seed">Пожалуйста, скопируйте и сохраните свою фразу восстановления</string>
+    <string name="please_copy_the_seed_and_save_it">Пожалуйста, скопируйте фразу восстановления и сохраните её</string>
     <string name="dialog_title_setup_pin_">Setup Pin</string>
     <string name="dialog_setup_button">Setup</string>
     <string name="dialog_message_for_set_wallet_pin">Please set up wallet pin to enable pay as you chat feature.</string>
-    <string name="save_your_seed">Save your seed</string>
-    <string name="save_your_seed_message">You haven\'t copied the seed phrase. Kindly copy and save the seed. Only your seed can be used to recover your account.</string>
+    <string name="save_your_seed">Сохраните свою фразу восстановления</string>
+    <string name="save_your_seed_message">Вы ещё не скопировали фразу восстановления. Пожалуйста, скопируйте и сохраните её. Только с помощью этой фразы можно восстановить вашу учётную запись.</string>
     <string name="joined_social_group_successfully">Joined %s successfully</string>
     <string name="record_voice_restriction">Can\'t record voice messages during a BChat call.</string>
     <string name="failed_to_connect">Failed to Connect</string>
@@ -1338,7 +1355,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="restored_via_seed">You restored via Seed!</string>
     <string name="display_name_validation">Пожалуйста, введите корректное имя</string>
     <string name="sync_fail_content">It seems there is an issue with connecting to the node, please try to reconnect or switch the node.</string>
-    <string name="notification_enable_content">We recommend you to allow permission for notifications for BChat app to notify you for new messages and calls.</string>
+    <string name="notification_enable_content">Мы рекомендуем разрешить уведомления для приложения BChat, чтобы получать уведомления о новых сообщениях и звонках.</string>
     <string name="invalid_qr_code_image">Не удалось распознать действительный код на загруженном изображении</string>
     <string name="upload_from_gallery">Загрузить из галереи</string>
     <string name="join_social_group_content">Отсканируйте QR-код социальной группы, чтобы присоединиться к ней. QR-коды можно найти по ссылке на веб-сайте социальной группы.</string>
@@ -1354,15 +1371,15 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="yes_i_understand">Yes, I Understand</string>
     <string name="enable_wallet">Enable Wallet</string>
     <string name="validation_for_empty_node_host">Please enter a node address</string>
-    <string name="dialog_clear_all_data_clear_device_only_subtitle">Clear only in device</string>
-    <string name="dialog_clear_all_data_clear_device_and_network_subtitle">Delete account from Network</string>
+    <string name="dialog_clear_all_data_clear_device_only_subtitle">Очистить только на этом устройстве</string>
+    <string name="dialog_clear_all_data_clear_device_and_network_subtitle">Удалить аккаунт из сети</string>
     <string name="back">Back</string>
     <string name="restore_from_block_height_hint">Enter Block height to Restore</string>
     <string name="restore_from_date_hint">Select Date</string>
-    <string name="restore_from_height_title">Выберите высоту восстановления (Restore Height)</string>
+    <string name="restore_from_height_title">Выберите высоту восстановления</string>
     <string name="restore_from_date_title">Pick a Date</string>
-    <string name="display_name">" Имя для отображения (Display Name)"</string>
-    <string name="enter_name">Enter name</string>
+    <string name="display_name">Имя для отображения</string>
+    <string name="enter_name">Введите имя</string>
     <string name="copied">Copied!</string>
     <string name="my_account">My Account</string>
     <string name="clear_only_in_device">Clear only in device</string>
@@ -1375,20 +1392,20 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="incorrect_password_entered">Введён неверный пароль</string>
     <string name="old_new_password_same">Новый пароль не должен совпадать со старым</string>
     <string name="password_does_not_match">Пароли не совпадают</string>
-    <string name="screen_inactivity_timeout">Screen Inactivity Timeout</string>
+    <string name="screen_inactivity_timeout">Тайм-аут бездействия экрана</string>
     <string name="title_activity_join_public_new_chat_screen">JoinPublicNewChatScreen</string>
     <string name="title_activity_create_secret_group_screen">CreateSecretGroupScreen</string>
     <string name="title_activity_create_new_private_chat_screen">CreateNewPrivateChatScreen</string>
     <string name="title_activity_start_wallet_info_screen">StartWalletInfoScreen</string>
     <string name="about">О приложении</string>
-    <string name="create_password">Создание пароля (Create Password)</string>
+    <string name="create_password">Создание пароля</string>
     <string name="verify_pin">Проверка PIN</string>
     <string name="enter_your_4_digit_bchat_pin">Введите ваш 4-значный PIN</string>
-    <string name="no_pending_requests">No Pending message Requests!</string>
+    <string name="no_pending_requests">Нет ожидающих запросов на переписку!</string>
     <string name="create_secret_group">Create Secret Group</string>
     <string name="enter_group_name">Введите название секретной группы</string>
     <string name="search_contact">Поиск контакта</string>
-    <string name="block_or_delete_request">Do you want to block or just delete this user?</string>
+    <string name="block_or_delete_request">Вы хотите заблокировать этого пользователя или просто удалить его?</string>
     <string name="or_join">Или присоединиться</string>
     <string name="let_s_bchat">Давайте BChat</string>
     <string name="your_chat_id">Your Chat ID</string>
@@ -1396,17 +1413,17 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="restore_account">Restore Account</string>
     <string name="hello">Здравствуйте,</string>
     <string name="we_are_thrilled">Мы рады приветствовать вас!</string>
-    <string name="restore_seed">Восстановление по Seed (Restore Seed)</string>
-    <string name="restore_from_seed">Восстановление из Seed (Restore from Seed)</string>
+    <string name="restore_seed">Восстановление по Seed</string>
+    <string name="restore_from_seed">Восстановление из Seed</string>
     <string name="restore">Restore</string>
     <string name="pincode_created">Пароль успешно создан</string>
     <string name="pincode_changed">Пароль успешно изменён</string>
     <string name="copy_and_save_the_seed_to_continue">Скопируйте и сохраните seed, чтобы продолжить</string>
-    <string name="register">Регистрация (Register)</string>
+    <string name="register">Регистрация</string>
     <string name="welcome_message">Hey %1$s, welcome to BChat!</string>
     <string name="copy_your_recovery_seed">Скопируйте вашу восстановительную фразу и сохраните её в безопасности.</string>
     <string name="copy_seed">Скопировать Seed</string>
-    <string name="menu">Menu</string>
+    <string name="menu">Меню</string>
     <string name="version_name">BChat v%s</string>
     <string name="dialog_title_send_failed">Create Transaction Error</string>
     <string name="title_for_beldex_address_or_name">Beldex address or BNS name</string>
@@ -1428,9 +1445,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="no_addresses">No Addresses!</string>
     <string name="save_address_to_show">Save address to show!</string>
     <string name="voice_call">Голосовой вызов</string>
+    <string name="video_call">Видеозвонок</string>
     <string name="missed_voice_call">Missed Voice Call</string>
     <string name="tap_to_callback">Tap to Callback</string>
-    <string name="enter_your_4_digit_wallet_pin">Enter your 4 digit Wallet PIN</string>
+    <string name="enter_your_4_digit_wallet_pin">Введите свой %d-значный PIN-код кошелька</string>
     <string name="clear_chat">Очистить чат</string>
     <string name="clear_chat_confirmation">Вы уверены, что хотите очистить весь чат этого контакта?</string>
     <string name="unblock_contact">Разблокировать контакт</string>
@@ -1445,8 +1463,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="call_permission_required_description">Вы можете включить разрешение <b>«Голосовые и видеозвонки»</b> в <b>настройках конфиденциальности.</b></string>
     <string name="wallet_setup">Wallet Setup</string>
     <string name="message_status_icon_description">Message delivery status</string>
-    <string name="delete_item">Delete Item?</string>
-    <string name="delete_item_description">Are you sure you want to delete the media from device?</string>
+    <string name="delete_item">Удалить элемент?</string>
+    <string name="delete_item_description">Вы уверены, что хотите удалить этот медиафайл с устройства?</string>
     <string name="all_media">Все медиафайлы</string>
     <string name="verify_bns">Проверка...</string>
     <string name="no_contacts">No Contacts</string>
@@ -1454,48 +1472,48 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="sync_reconnect">Reconnect</string>
     <string name="sync_rescan">Rescan</string>
     <string name="bns_name_warning_message">Неверный BNS</string>
-    <string name="account_settings">Account Settings</string>
+    <string name="account_settings">Настройки аккаунта</string>
     <string name="delete_conversation">Удалить беседу?</string>
     <string name="accept_request">Принять запрос?</string>
-    <string name="decline_request">Decline Request?</string>
-    <string name="activity_public_chat_success_message">Joined %1$s Social Group Successfully</string>
-    <string name="open_url_icon_description">open url</string>
+    <string name="decline_request">Отклонить запрос?</string>
+    <string name="activity_public_chat_success_message">Вы успешно присоединились к социальной группе %1$s</string>
+    <string name="open_url_icon_description">Открыть URL</string>
     <string name="message_payment_status">Message Payment Status</string>
     <string name="link_your_bns">Привязать ваш BNS</string>
     <string name="read_more_about_bns">Подробнее о BNS</string>
     <string name="show_qr">Показать QR</string>
-    <string name="about_bns">О BNS (About BNS)</string>
+    <string name="about_bns">О BNS</string>
     <string name="scan_qr_code">Сканировать QR-код</string>
     <string name="about_bns_description_4">&#8226; Единая идентичность: Свяжите ваш BChat ID, адрес кошелька Beldex и BelNet ID с одним именем BNS. Это упрощает взаимодействие в экосистеме Beldex.</string>
     <string name="about_bns_description_5">&#8226; Простота использования: Забудьте о сложных алфавитно-цифровых строках. С именем BNS обмен сообщениями и транзакции становятся простыми и удобными.</string>
     <string name="about_bns_description_6">&#8226; Знак доверия: Привяжите ваш BChat ID к имени BNS и пройдите проверку, чтобы получить значок BNS. Этот значок добавляет уровень доверия и признания в сообществе.</string>
     <string name="bns_textfield_hint">Введите имя BNS</string>
     <string name="verify">Проверить</string>
-    <string name="verified">Verified</string>
+    <string name="verified">Подтверждено</string>
     <string name="link">Привязать</string>
-    <string name="invalid_bns_warning_message">Your BNS name and ID does not match.Try again</string>
+    <string name="invalid_bns_warning_message">Ваше имя BNS и ID не совпадают. Попробуйте снова.</string>
     <string name="bns_linked_successfully">BNS успешно привязан</string>
-    <string name="bns_verified_tag">BNS verified tag</string>
-    <string name="bns_name_changed_warning_message"><b>BNS name changed!</b>>\nRe-verify your BNS name to proceed.</string>
-    <string name="apply_changes">Apply Changes</string>
+    <string name="bns_verified_tag">Значок подтверждения BNS</string>
+    <string name="bns_name_changed_warning_message"><b>Имя BNS изменилось!</b>\\nДля продолжения повторно подтвердите своё имя BNS.</string>
+    <string name="apply_changes">Применить изменения</string>
     <string name="activity_edit_closed_group_group_name_same_name_error">Пожалуйста, введите другое имя</string>
     <string name="edit_group_name">Edit Group Name</string>
     <string name="verify_password">Проверка пароля</string>
     <string name="incorrect_pin">Incorrect PIN.</string>
     <string name="pin_mismatch">Both PINs should be same.</string>
     <string name="create_pin">Create PIN</string>
-    <string name="old_new_pin_same">New PIN should not be same as old PIN.</string>
-    <string name="dialog_title_full_screen_intent">Full Screen Notification</string>
-    <string name="dialog_content_full_screen_intent">Allow BChat to show full screen notifications for incoming calls and other notifications when the device is locked</string>
+    <string name="old_new_pin_same">Новый PIN-код не должен совпадать со старым PIN-кодом.</string>
+    <string name="dialog_title_full_screen_intent">Полноэкранные уведомления</string>
+    <string name="dialog_content_full_screen_intent">Разрешить BChat показывать полноэкранные уведомления о входящих звонках и других уведомлениях, когда устройство заблокировано</string>
     <string name="archive_chat">Архивированные чаты</string>
-    <string name="archive_settings">Archive Settings</string>
+    <string name="archive_settings">Настройки архива</string>
     <string name="archive_chat_title">Архивировать чат</string>
     <string name="un_archive_chat_title">Разархивировать чат</string>
-    <string name="keep_chats_archived">Keep chats archived</string>
-    <string name="keep_chats_archived_subtitle">Archived chats will remain archived when you receive a new message</string>
-    <string name="archive_chat_content">These chats stay archived when new messages are received. Tap to change</string>
-    <string name="unarchive_chat_content">These chats stay unarchived when new messages are received. Tap to change</string>
-    <string name="un_archive_chat">Un Archived Chats</string>
+    <string name="keep_chats_archived">Сохранять чаты в архиве</string>
+    <string name="keep_chats_archived_subtitle">Архивированные чаты будут оставаться в архиве при получении нового сообщения</string>
+    <string name="archive_chat_content">Эти чаты останутся в архиве при получении новых сообщений. Нажмите, чтобы изменить.</string>
+    <string name="unarchive_chat_content">Эти чаты будут автоматически разархивироваться при получении новых сообщений. Нажмите, чтобы изменить.</string>
+    <string name="un_archive_chat">Разархивированные чаты</string>
     <string name="block_request">Заблокировать запрос?</string>
     <string name="delete_request">Удалить запрос?</string>
     <string name="call_missed_description">Вызов пропущен от %1$s потому что вам нужно было включить разрешение «голосовые и видеозвонки» в настройках конфиденциальности.</string>
@@ -1506,14 +1524,14 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="message_details">Подробности сообщения</string>
     <string name="wallet_synced_text">Wallet is fully synchronized</string>
     <string name="change_pin_title">Change PIN</string>
-    <string name="warning_message_of_voice_recording">You can\'t send an audio message while you\'re on a call</string>
+    <string name="warning_message_of_voice_recording">Вы не можете отправлять голосовые сообщения во время звонка</string>
     <string name="camera_option">Camera Option</string>
     <string name="gallery_option">Gallery Option</string>
     <string name="document_option">Document Option</string>
     <string name="gif_option">Gif Option</string>
-    <string name="gif_dialog_title">Search GIFs?</string>
-    <string name="gif_dialog_message">You will not have full metadata protection when sending GIFs.</string>
-    <string name="permissionsCameraDenied">%s needs camera access to take photos and videos, but it has been permanently denied. Tap Settings → Permissions, and turn \"Camera\" on.</string>
+    <string name="gif_dialog_title">Поиск GIF-файлов?</string>
+    <string name="gif_dialog_message">При отправке GIF-файлов полная защита метаданных не обеспечивается.</string>
+    <string name="permissionsCameraDenied">%s требуется доступ к камере для съёмки фото и видео, но он был навсегда запрещён. Нажмите «Настройки → Разрешения» и включите «Камера».</string>
     <string name="ReactWithAnyEmojiBottomSheetDialogFragment__this_message">This Message</string>
     <string name="ReactWithAnyEmojiBottomSheetDialogFragment__recently_used">Недавно использованные</string>
     <string name="ReactWithAnyEmojiBottomSheetDialogFragment__smileys_and_people">Смайлики и люди</string>
@@ -1537,8 +1555,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="KeyboardPagerfragment_back_to_emoji">Back to emoji</string>
     <string name="KeyboardPagerfragment_clear_search_entry">Clear search entry</string>
     <plurals name="ReactionsRecipientAdapter_other_reactors">
-        <item quantity="one">And %1$d other has reacted %2$s to this message</item>
-        <item quantity="other">And %1$d others have reacted %2$s to this message</item>
+        <item quantity="one">И ещё %1$d пользователь отреагировал(а) %2$s на это сообщение.</item>
+        <item quantity="few">И ещё %1$d пользователя отреагировали %2$s на это сообщение.</item>
+        <item quantity="many">И ещё %1$d пользователей отреагировали %2$s на это сообщение.</item>
+        <item quantity="other">И ещё %1$d пользователя отреагировали %2$s на это сообщение.</item>
     </plurals>
 
     <string name="emojiAndSymbols">Emoji and Symbols</string>
@@ -1552,8 +1572,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="emojiReactsClearAll">Are you sure you want to clear all {emoji}?</string>
     <string name="emojiReactsCoolDown">Slow down! You\'ve sent too many emoji reacts. Try again soon</string>
     <plurals name="emojiReactsCountOthers">
-        <item quantity="one">And %1$d other has reacted %2$s to this message.</item>
-        <item quantity="other">And %1$d others have reacted %2$s to this message.</item>
+        <item quantity="one">И ещё %1$d пользователь отреагировал(а) на это сообщение с помощью %2$s.</item>
+        <item quantity="other">И ещё %1$d пользователей отреагировали на это сообщение с помощью %2$s.</item>
     </plurals>
     <string name="emojiReactsHoverNameDesktop">{name} reacted with {emoji_name}</string>
     <string name="emojiReactsHoverNameTwoDesktop">{name} and {other_name} reacted with {emoji_name}</string>
@@ -1561,7 +1581,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="emojiReactsHoverYouNameDesktop">You reacted with {emoji_name}</string>
     <string name="emojiReactsHoverYouNameMultipleDesktop">You and <span>{count} others</span> reacted with {emoji_name}</string>
     <string name="emojiReactsHoverYouNameTwoDesktop">You and {name} reacted with {emoji_name}</string>
-    <string name="emojiReactsNotification">Reacted to your message {emoji}</string>
+    <string name="emojiReactsNotification">Отреагировал(а) на ваше сообщение {emoji}</string>
     <string name="showLess">Show Less</string>
     <string name="AccessibilityId_emojiSearch">Back to emoji</string>
     <string name="AccessibilityId_emojiSearchClear">Clear search entry</string>
@@ -1571,14 +1591,16 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="title_activity_secret_group_info_compose">SecretGroupInfoComposeActivity</string>
 
     <plurals name="deleteMessageDeleted">
-        <item quantity="one">Message deleted</item>
-        <item quantity="other">Messages deleted</item>
+        <item quantity="one">Сообщение удалено</item>
+        <item quantity="few">Сообщения удалены</item>
+        <item quantity="many">Сообщения удалены</item>
+        <item quantity="other">Сообщения удалены</item>
     </plurals>
     <plurals name="deleteMessageConfirm">
         <item quantity="one">Are you sure you want to delete this message?</item>
         <item quantity="other">Are you sure you want to delete these messages?</item>
     </plurals>
-    <string name="deleteMessageDeletedGlobally">This message was deleted</string>
+    <string name="deleteMessageDeletedGlobally">Это сообщение было удалено</string>
     <plurals name="deleteMessageNoteToSelfWarning">
         <item quantity="one">This message cannot be deleted from all your devices</item>
         <item quantity="other">Some of the messages you have selected cannot be deleted from all your devices</item>
@@ -1593,30 +1615,30 @@ Your wallet password can be used to access your wallet within BChat and authenti
     </plurals>
     <string name="displayNameVisible">Your Display Name is visible to users, groups and communities you interact with.</string>
     <string name="errorUnknown">An unknown error occurred.</string>
-    <string name="banUserBanned">User banned</string>
-    <string name="banErrorFailed">Ban failed</string>
+    <string name="banUserBanned">Пользователь заблокирован</string>
+    <string name="banErrorFailed">Не удалось заблокировать пользователя</string>
     <string name="deleteMessageDeletedLocally">This message was deleted on this device</string>
     <string name="deleteMessageEveryone">Delete for everyone</string>
     <string name="deleteMessageDevicesAll">Delete on all my devices</string>
     <string name="accessibilityId_select">Выбрать</string>
-    <string name="disappearingMessagesCountdownBigMobile">Auto-deletes in {time_large}</string>
-    <string name="conversationsDeleted">Conversation deleted</string>
+    <string name="disappearingMessagesCountdownBigMobile">Автоматическое удаление через {time_large}</string>
+    <string name="conversationsDeleted">Разговор удалён</string>
     <string name="group_info">Информация о группе</string>
     <string name="notification_info">Если включено, вы будете получать уведомления только о сообщениях, в которых упоминается ваше имя</string>
     <string name="disappearing_info">Если включено, сообщения между вами и группой будут исчезать после просмотра</string>
-    <string name="no_participate_content">You’re no longer participant of this group</string>
+    <string name="no_participate_content">Вы больше не являетесь участником этой группы</string>
     <string name="search_member_title">Поиск участников</string>
     <string name="members_option_message">Отправить сообщение</string>
     <string name="zero_time_durationMs">0:00</string>
     <string name="attachmentsErrorSize">Files must be less than 10MB</string>
-    <string name="view_contacts">View Contacts</string>
+    <string name="view_contacts">Просмотреть контакты</string>
     <string name="share_contacts">Поделиться контактами</string>
-    <string name="chat_with_contact_confirmation">Do you want to chat with this contact now?</string>
+    <string name="chat_with_contact_confirmation">Хотите начать чат с этим контактом сейчас?</string>
     <string name="contact_received">Contact Received: %s</string>
-    <string name="no_name">No Name</string>
+    <string name="no_name">Без имени</string>
     <string name="title_activity_view_contact">ViewContactActivity</string>
-    <string name="view_all">View all</string>
-    <string name="message">Message</string>
+    <string name="view_all">Просмотреть все</string>
+    <string name="message">Сообщение</string>
     <string name="nickname_special_char_not_allowed">Специальные символы не допускаются</string>
     <string name="hey_user_welcome_to_bchat">Привет %s, Добро пожаловать в BChat!</string>
     <string name="please_enter_valid_seed">Пожалуйста, введите корректный seed</string>
@@ -1630,40 +1652,88 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="about_bns_description_1">BNS (Beldex Name Service) открывает вам путь к бесшовному использованию всей экосистемы Beldex. С помощью BNS вы можете создать уникальное, легко запоминающееся имя, которое связывает ваши различные Beldex идентичности.</string>
     <string name="about_bns_key_benefits">Основные преимущества</string>
     <string name="about_bns_pricing_label">Цены:</string>
-    <string name="about_bns_pricing_text">Users can register their BNS names for 1, 2, 5, and 10 years for as low as</string>
-    <string name="about_bns_pricing_values">650 BDX, 1000 BDX, 2000 BDX, and 4000 BDX</string>
+    <string name="about_bns_pricing_text">Пользователи могут зарегистрировать свои имена BNS на 1, 2, 5 или 10 лет по цене от</string>
+    <string name="about_bns_pricing_values">650 BDX, 1000 BDX, 2000 BDX и 4000 BDX</string>
     <string name="about_bns_pricing_suffix">соответственно.</string>
     <string name="about_bns_description_7">Использование BNS повышает вашу конфиденциальность, безопасность и удобство. Будь то отправка сообщений, проведение транзакций или использование децентрализованных сервисов — ваше имя BNS обеспечивает согласованный и упрощённый опыт.</string>
     <string name="about_bns_description_8">Начните использовать ваше имя BNS сегодня и получите преимущества децентрализованной идентичности во всех сервисах Beldex!</string>
     <string name="about_content"><![CDATA[BChat — это децентрализованное приложение для обмена сообщениями между пользователями, построенное на блокчейне Beldex. BChat обеспечивает конфиденциальность ваших данных, поскольку не собирает и не хранит вашу личную информацию, такую ​​как ваше имя, возраст, адрес электронной почты, номер телефона, имя пользователя, местоположение, контакты, IP-адрес и т. д. Для создания учетной записи BChat вам нужен только интернет.\n\nПри создании учетной записи в BChat генерируется уникальный идентификатор BChat (BChat ID) и фраза восстановления (сид-ключ). BChat ID — это ваш открытый ключ, который вы можете использовать для общения с другими пользователями BChat. Ваш BChat ID также связан с адресом кошелька, который генерируется каждый раз при создании новой учетной записи.\n\nКлюч восстановления (сид-ключ) — это ваш закрытый ключ, который вы можете использовать для восстановления своей учетной записи на любом устройстве. Ваш ключ восстановления похож на ваш пароль. Не делитесь им ни с кем. Не храните его цифровую копию. Запишите его на бумаге и храните в безопасном месте. Если вы потеряете ключ восстановления, вы потеряете доступ к своей учетной записи.\n\nВ BChat ваши сообщения маршрутизируются через узлы сети Beldex и хранятся только локально на вашем устройстве. Ваши сообщения и связанные с ними метаданные не хранятся нигде в блокчейне Beldex, включая серверы хранения мастернод.\n\nВы являетесь владельцем своих данных. Вы можете удалить свои данные в любое время одним нажатием кнопки. Чтобы очистить данные, нажмите на значок профиля в правом верхнем углу, выберите «Мой аккаунт» > «Очистить данные» > «Удалить» > «ОК», и они будут удалены.\n\nBChat создан и поддерживается фондом Beldex. Он является проектом с открытым исходным кодом и не подвергается цензуре. Любой может внести свой вклад в его разработку. Фонд Beldex — это организация, создающая конфиденциальные приложения для децентрализованной сети. В настоящее время разрабатываются следующие продукты: BChat, BelNet (децентрализованный VPN-сервис), Beldex Browser (децентрализованный браузер без рекламы) и протокол Beldex (протокол для анонимизации транзакций других активов блокчейна).\n\nBChat — флагманский продукт Beldex. Первоначальная версия BChat будет мессенджером, позволяющим отправлять по-настоящему анонимные сообщения. Можно создавать секретные и социальные группы. В секретных группах может участвовать максимум 100 человек, в то время как в социальных группах верхнего предела нет. Создать секретную группу может любой, но добавлять в неё можно только контакты из BChat. Для социальных групп требуется выделенный сервер, который должен поддерживаться создателем. В будущих версиях BChat могут быть добавлены голосовые и видеозвонки, а также возможность отправки и получения BDX, собственной криптовалюты сети Beldex. Функция «оплата по мере использования» позволит любому пользователю переводить BDX своим контактам прямо из чата.\n\nИсследовательские лаборатории Beldex, исследовательское подразделение фонда Beldex, изучают возможность внедрения zk-SNARK (в качестве альтернативы кольцевым подписям) для повышения уровня анонимности и сегментирования данных для улучшения масштабируемости в сети Beldex, что может сделать BChat в несколько раз быстрее, чем существующие децентрализованные приложения, и вывести его на путь глобального распространения.\n\nБлагодарности:\nСеть Beldex и BChat используют несколько протоколов, разработанных проектами с открытым исходным кодом Monero, Signal и Session.
 ]]></string>
     <string name="contact_list">Список контактов</string>
-    <string name="bchat_id_warning_message">Please enter BChat ID</string>
+    <string name="bchat_id_warning_message">Пожалуйста, введите ID BChat</string>
     <string name="bchat_empty_state_message">"Очень пусто. Вот это да! Идите и найдите друзей для BChat! "</string>
     <string name="hop_connection_error_message">Вы не подключены к чату. Проверьте подключение к интернету или перезапустите приложение!</string>
     <string name="group_delete_confirmation_message">Поскольку вы являетесь создателем этой группы, она будет удалена для всех. Не подлежит отмене</string>
     <string name="call_missed_title">Вызов пропущен!</string>
     <string name="no_matches_found">Совпадений не найдено!</string>
     <string name="notify_for_mentions_only">Уведомлять только об упоминаниях</string>
-    <string name="community_guidelines"><![CDATA[BChat — это децентрализованная платформа обмена сообщениями, которая защищает вашу конфиденциальность. Используя BChat, вы владеете своими разговорами и данными. Он не собирает и не хранит вашу личную информацию. BChat — это место, где вы общаетесь свободно.\n\nBChat — это также больше, чем просто приложение для обмена сообщениями. Вы можете отправлять и получать BDX прямо из своего чата.\nnBChat построен на основе сети Beldex. Мастерноды в сети Beldex хранят и передают зашифрованные сообщения между клиентами. Другие проекты, которые в настоящее время исследуются или разрабатываются Beldex, включают BelNet (децентрализованный VPN-сервис), Beldex Browser (браузер Web3 без рекламы) и протокол конфиденциальности Beldex (для анонимизации всех остальных активов).\n\nЧтобы узнать больше, посетите: https://www.beldex.io\nДля сотрудничества или маркетинговых предложений обращайтесь по адресу marketing@beldex.io.\nДля инвестиций обращайтесь по адресу invest.bchat@beldex.io\n\nДля защиты и сохранения этого сообщества, пожалуйста, соблюдайте правила и рекомендации группы.\n\nБудьте вежливы. Вы можете делиться своим мнением и конструктивной критикой, но домогательства недопустимы.\nНе рекламируйте и не продвигайте свой токен/проект. Эта группа посвящена BChat и экосистеме Beldex.\nСпамеры будут забанены.\nНе делитесь контентом NSFW и не используйте нецензурную лексику.\n\nОстерегайтесь мошенников. Администраторы не будут писать вам в личные сообщения первыми.
+    <string name="community_guidelines"><![CDATA[BChat — это децентрализованная платформа обмена сообщениями, которая защищает вашу конфиденциальность. Используя BChat, вы владеете своими разговорами и данными. Он не собирает и не хранит вашу личную информацию. BChat — это место, где вы общаетесь свободно.\n\nBChat построен на основе сети Beldex. Мастерноды в сети Beldex хранят и передают зашифрованные сообщения между клиентами. Другие проекты, которые в настоящее время исследуются или разрабатываются Beldex, включают BelNet (децентрализованный VPN-сервис), Beldex Browser (браузер Web3 без рекламы) и протокол конфиденциальности Beldex (для анонимизации всех остальных активов).\n\nЧтобы узнать больше, посетите: https://www.beldex.io\nДля сотрудничества или маркетинговых предложений обращайтесь по адресу marketing@beldex.io.\nДля инвестиций обращайтесь по адресу invest.bchat@beldex.io\n\nДля защиты и сохранения этого сообщества, пожалуйста, соблюдайте правила и рекомендации группы.\n\nБудьте вежливы. Вы можете делиться своим мнением и конструктивной критикой, но домогательства недопустимы.\nНе рекламируйте и не продвигайте свой токен/проект. Эта группа посвящена BChat и экосистеме Beldex.\nСпамеры будут забанены.\nНе делитесь контентом NSFW и не используйте нецензурную лексику.\n\nОстерегайтесь мошенников. Администраторы не будут писать вам в личные сообщения первыми.
 ]]></string>
     <string name="divider">Divider</string>
-    <string name="seed">Seed</string>
+    <string name="seed">Фраза восстановления</string>
     <string name="title">Title</string>
     <string name="list">list</string>
-    <string name="claim_your_airdrop">Yay! You made it here. Claim your airdrop. Submit your BChat ID and BDX wallet address in the link below</string>
+    <string name="claim_your_airdrop">Ура! Вы добрались сюда. Получите свой аирдроп. Отправьте свой ID BChat и адрес кошелька BDX по ссылке ниже.</string>
     <string name="txt">TXT</string>
-    <string name="user">User</string>
-    <string name="default_value_messages_per_conversation">500 messages per conversation</string>
+    <string name="user">Пользователь</string>
+    <string name="default_value_messages_per_conversation">500 сообщений на разговор</string>
     <string name="language">Язык</string>
     <string name="choose_language">Выберите язык</string>
     <string name="nick_name_too_long_error">Пожалуйста, выберите более короткий никнейм</string>
-    <string name="four_digit_pin" translatable="false">4-значный PIN-код</string>
-    <string name="six_digit_pin" translatable="false">6-значный PIN-код</string>
+    <string name="four_digit_pin">4-значный PIN-код</string>
+    <string name="six_digit_pin">6-значный PIN-код</string>
     <plurals name="contact_others">
-        <item quantity="one">%1$s и ещё %2$d пользователь</item>
-        <item quantity="few">%1$s и ещё %2$d пользователя</item>
-        <item quantity="many">%1$s и ещё %2$d пользователей</item>
-        <item quantity="other">%1$s и ещё %2$d пользователей</item>
+        <item quantity="one">%1$s и ещё %2$d человек</item>
+        <item quantity="few">%1$s и ещё %2$d человека</item>
+        <item quantity="many">%1$s и ещё %2$d человек</item>
+        <item quantity="other">%1$s и ещё %2$d человека</item>
     </plurals>
+    <string name="unblocked_this_contact">Этот контакт разблокирован</string>
+    <string name="invalid_old_password">Неверный старый пароль</string>
+    <string name="must_set_your_old_pin">Необходимо указать старый PIN-код.</string>
+    <string name="both_are_same">Оба значения одинаковы</string>
+    <string name="must_set_your_new_pin">Необходимо указать новый PIN-код.</string>
+    <string name="please_enter_4_digit_pin">Пожалуйста, введите 4-значный PIN-код.</string>
+    <string name="write_here">Напишите здесь...</string>
+    <string name="password">Пароль</string>
+    <string name="member_count">%d участник</string>
+    <string name="text_limit_exceed_warnings">Превышен лимит текста: максимальная длина сообщения составляет 4096 символов</string>
+    <string name="ban_message">Это заблокирует выбранного пользователя в этой комнате. Блокировка не будет применена к другим комнатам.</string>
+    <string name="ban_and_delete_message">Это заблокирует выбранного пользователя в этой комнате и удалит все отправленные им сообщения. Блокировка не будет применена к другим комнатам, а его сообщения в них удалены не будут.</string>
+    <string name="delete_message_failed_with_error">Не удалось удалить сообщение из-за ошибки: %s</string>
+    <string name="must_set_your_four_digit_pin">Необходимо установить 4-значный PIN-код.</string>
+    <string name="password_is_not_matched">Пароли не совпадают</string>
+    <string name="group_leave_during_member_update_error">Невозможно выйти во время добавления или удаления других участников.</string>
+    <string name="an_error_occurred">Произошла ошибка</string>
+    <string name="update_canceled_by_user">Обновление отменено пользователем! Код результата: %d</string>
+    <string name="update_success">Обновление успешно завершено! Код результата: %d</string>
+    <string name="update_failed">Ошибка обновления! Код результата: %d</string>
+    <string name="hide_message_request">Скрыть запросы на переписку?</string>
+    <string name="message_requests_hidden_info">После скрытия вы сможете получить к ним доступ через Настройки → Запросы на переписку</string>
+    <string name="cannot_open_url">Не удаётся открыть URL</string>
+    <string name="failed_to_authenticate">Ошибка аутентификации</string>
+    <string name="bns_verified">BNS подтверждён</string>
+    <string name="library_access_required">BChat требуется доступ к библиотеке для продолжения. Вы можете предоставить доступ на странице настроек.</string>
+    <string name="you_have_got_a_new_message">У вас новое сообщение.</string>
+    <string name="terms_and_privacy_message">Используя этот сервис, вы соглашаетесь с нашими Условиями использования и Политикой конфиденциальности</string>
+    <string name="paste_seed">Вставить фразу восстановления</string>
+    <string name="leave_group">Покинуть группу</string>
+    <string name="you_are_almost_finished">Вы почти закончили! 90%</string>
+    <string name="account_secured">Аккаунт защищён! 100%</string>
+    <string name="error_saving_logs">Ошибка сохранения журналов</string>
+    <string name="please_wait_until_file_downloaded">Пожалуйста, дождитесь завершения загрузки файла</string>
+    <string name="read_more_suffix">... Читать далее</string>
+    <string name="read_less_suffix"> Свернуть</string>
+    <string name="unable_to_play_audio_while_recording">Невозможно воспроизводить аудио во время записи.</string>
+    <string name="bchat_pin_description">Это PIN-код, который вы установили для своей учётной записи BChat.</string>
+    <string name="restore_wallet_using_seed">Используйте мнемонический ключ из 25 слов (seed-фразу) для восстановления вашего кошелька</string>
+    <string name="restore_from_keys">Восстановить из ключей</string>
+    <string name="restore_wallet_using_keystore">Используйте созданный файл хранилища ключей (keystore), сохранённый из приватных ключей, для восстановления вашего кошелька.</string>
+    <plurals name="group_member_count">
+        <item quantity="one">%d участник</item>
+        <item quantity="few">%d участника</item>
+        <item quantity="many">%d участников</item>
+        <item quantity="other">%d участника</item>
+    </plurals>
+    <string name="no_contact_found">Контакт не найден!</string>
 </resources>

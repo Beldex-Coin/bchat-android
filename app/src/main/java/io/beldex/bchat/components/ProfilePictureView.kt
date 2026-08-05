@@ -56,7 +56,7 @@ class ProfilePictureView @JvmOverloads constructor(
     fun update(recipient: Recipient,groupImage: Boolean = false, fromEditGroup : Boolean= false) {
         fun getUserDisplayName(publicKey: String): String {
             val contact = DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
-            return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
+            return contact?.displayName(Contact.ContactContext.REGULAR, context) ?: publicKey
         }
 
         fun isOpenGroupWithProfilePicture(recipient: Recipient): Boolean {

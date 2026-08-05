@@ -104,7 +104,7 @@ fun RestoreSeedScreen(
                     .align(Alignment.End)
             ) {
                 Text(
-                    text = "Paste Seed",
+                    text = stringResource(R.string.paste_seed),
                     style = MaterialTheme.typography.titleSmall.copy(
                         color = Color.White
                     ),

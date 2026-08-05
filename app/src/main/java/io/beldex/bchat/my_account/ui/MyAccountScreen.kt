@@ -156,7 +156,7 @@ fun MyAccountScreen(
     }
     if (showPermissionDialog) {
         PermissionSettingDialog(
-            message = "BChat needs library access to continue. You can enable access in the Settings page",
+            message = stringResource(R.string.library_access_required),
             onDismissRequest = {},
             gotoSettings = {}
         )

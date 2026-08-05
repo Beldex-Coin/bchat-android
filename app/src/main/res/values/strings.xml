@@ -993,6 +993,7 @@
     <string name="end_to_end_encrypted">End to End Encrypted</string>
     <string name="call_duration">00:10:10</string>
     <string name="hang_up">Hangup</string>
+    <string name="answer">Answer</string>
     <string name="back_to_call">Back to call</string>
     <string name="call_in_progress">Call in progress</string>
     <string name="call_muted">Call Muted</string>
@@ -1255,6 +1256,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="testing_the_node">Testing the node...</string>
     <string name="str_start_date">start date</string>
     <string name="str_end_date">end date</string>
+    <string name="str_please_select_start_date">Please select start date</string>
+    <string name="str_please_select_end_date">Please select end date</string>
     <string name="alert_from_date">Please enter from date</string>
     <string name="alert_to_date">Please enter to date</string>
     <string name="CallNotificationBuilder_screen_on">Video Resumed</string>
@@ -1414,6 +1417,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="no_addresses">No Addresses!</string>
     <string name="save_address_to_show">Save address to show!</string>
     <string name="voice_call">Voice Call</string>
+    <string name="video_call">Video Call</string>
     <string name="missed_voice_call">Missed Voice Call</string>
     <string name="tap_to_callback">Tap to Callback</string>
     <string name="enter_your_4_digit_wallet_pin">Enter your %d digit Wallet PIN</string>
@@ -1631,7 +1635,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="call_missed_title">Call Missed!</string>
     <string name="no_matches_found">No Matches found!</string>
     <string name="notify_for_mentions_only">Notify for Mentions Only</string>
-    <string name="community_guidelines"><![CDATA[BChat is a decentralized messaging platform that protects your privacy. When you\'re using BChat, you own your conversations and data. It does not collect or store any of your personal information. BChat is where you chat with freedom.\n\nBChat is also more than a messaging application. You can send and receive BDX right from your chat box.\n\nBChat is built on top of the Beldex network. Masternodes on the Beldex network store and relay encrypted messages between clients. Other projects that are currently being researched or developed by Beldex include BelNet (a decentralized VPN service), Beldex Browser (an ad-free Web3 browser), and the Beldex Privacy Protocol (to anonymize every other asset).\n\nTo know more, visit: https://www.beldex.io\nFor collabs or marketing proposals, contact marketing@beldex.io.\nFor investments, contact invest.bchat@beldex.io\n\nTo protect and preserve this community, kindly follow the group rules and guidelines.\n\nTo protect and preserve this community, kindly follow the group rules and guidelines.\n\nBe civil. You can share your opinions and constructive criticisms but harassment is not permitted.\nDon\'t promote or shill your token/project. This group is dedicated to BChat and the Beldex ecosystem.\nSpammers will be banned.\nDo not share NSFW content or use profane language.\n\nBeware of scammers. Admins will not DM you first.
+    <string name="community_guidelines"><![CDATA[BChat is a decentralized messaging platform that protects your privacy. When you\'re using BChat, you own your conversations and data. It does not collect or store any of your personal information. BChat is where you chat with freedom.\n\nBChat is built on top of the Beldex network. Masternodes on the Beldex network store and relay encrypted messages between clients. Other projects that are currently being researched or developed by Beldex include BelNet (a decentralized VPN service), Beldex Browser (an ad-free Web3 browser), and the Beldex Privacy Protocol (to anonymize every other asset).\n\nTo know more, visit: https://www.beldex.io\nFor collabs or marketing proposals, contact marketing@beldex.io.\nFor investments, contact invest.bchat@beldex.io\n\nTo protect and preserve this community, kindly follow the group rules and guidelines.\n\nTo protect and preserve this community, kindly follow the group rules and guidelines.\n\nBe civil. You can share your opinions and constructive criticisms but harassment is not permitted.\nDon\'t promote or shill your token/project. This group is dedicated to BChat and the Beldex ecosystem.\nSpammers will be banned.\nDo not share NSFW content or use profane language.\n\nBeware of scammers. Admins will not DM you first.
 ]]></string>
     <string name="divider">Divider</string>
     <string name="seed">Seed</string>
@@ -1644,10 +1648,56 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="language">Language</string>
     <string name="choose_language">Choose Language</string>
     <string name="nick_name_too_long_error">Please pick a shorter nick name</string>
-    <string name="four_digit_pin" translatable="false">4 Digit PIN</string>
-    <string name="six_digit_pin" translatable="false">6 Digit PIN</string>
+    <string name="four_digit_pin">4 Digit PIN</string>
+    <string name="six_digit_pin">6 Digit PIN</string>
     <plurals name="contact_others">
         <item quantity="one">%1$s and %2$d other</item>
         <item quantity="other">%1$s and %2$d others</item>
     </plurals>
+    <string name="unblocked_this_contact">UnBlocked this contact</string>
+    <string name="invalid_old_password">Invalid old password</string>
+    <string name="must_set_your_old_pin">Must set your Old PIN.</string>
+    <string name="both_are_same">Both are Same</string>
+    <string name="must_set_your_new_pin">Must set your New PIN.</string>
+    <string name="please_enter_4_digit_pin">Please enter 4 digit PIN.</string>
+    <string name="write_here">Write here...</string>
+    <string name="password">Password</string>
+    <string name="member_count">"%d" member</string>
+    <string name="text_limit_exceed_warnings">Text limit exceed: Maximum limit of messages is 4096 characters</string>
+    <string name="ban_message">This will ban the selected user from this room. It won\'t ban them from other rooms.</string>
+    <string name="ban_and_delete_message">This will ban the selected user from this room and delete all messages sent by them. It won\'t ban them from other rooms or delete the messages they sent there.</string>
+    <string name="delete_message_failed_with_error">Couldn\'t delete message due to error: %s</string>
+    <string name="must_set_your_four_digit_pin">Must set your 4 digit PIN.</string>
+    <string name="password_is_not_matched">Password is not matched</string>
+    <string name="group_leave_during_member_update_error">Can\'t leave while adding or removing other members.</string>
+    <string name="an_error_occurred">An error occurred</string>
+    <string name="update_canceled_by_user">Update canceled by user! Result Code: %d</string>
+    <string name="update_success">Update success! Result Code: "%d"</string>
+    <string name="update_failed">Update Failed! Result Code: "%d"</string>
+    <string name="hide_message_request">Hide message requests?</string>
+    <string name="message_requests_hidden_info">Once they are hidden, you can access them from Settings > Message Requests</string>
+    <string name="cannot_open_url">Can\'t open URL</string>
+    <string name="failed_to_authenticate">Failed to authenticate</string>
+    <string name="bns_verified">BNS Verified</string>
+    <string name="library_access_required">BChat needs library access to continue. You can enable access in the Settings page</string>
+    <string name="you_have_got_a_new_message">You\'ve got a new message.</string>
+    <string name="terms_and_privacy_message">By using this service, you agree to our Terms of Service and Privacy Policy</string>
+    <string name="paste_seed">Paste Seed</string>
+    <string name="leave_group">Leave Group</string>
+    <string name="you_are_almost_finished">You\'re almost finished! 90%</string>"
+    <string name="account_secured">Account secured! 100%</string>
+    <string name="error_saving_logs">Error saving logs</string>
+    <string name="please_wait_until_file_downloaded">Please wait until file downloaded</string>
+    <string name="read_more_suffix">… Read more</string>
+    <string name="read_less_suffix"> Read less</string>
+    <string name="unable_to_play_audio_while_recording">Unable to play audio while recording</string>
+    <string name="bchat_pin_description">This is the PIN you set to your BChat account.</string>
+    <string name="restore_wallet_using_seed">Use the 25-word Mnemonic key or seed phrase to restore your wallet</string>
+    <string name="restore_from_keys">Restore From Keys</string>
+    <string name="restore_wallet_using_keystore">Use the generated keystore saved from private keys to restore your wallet.</string>
+    <plurals name="group_member_count">
+        <item quantity="one">%d member</item>
+        <item quantity="other">%d members</item>
+    </plurals>
+    <string name="no_contact_found">No Contact Found!</string>
 </resources>

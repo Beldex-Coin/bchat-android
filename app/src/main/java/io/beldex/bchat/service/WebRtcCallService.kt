@@ -56,6 +56,7 @@ import io.beldex.bchat.webrtc.data.State as CallState
 import android.content.pm.ServiceInfo
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
+import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.service.WebRtcCallService.Companion.ACTION_ICE_CONNECTED
 
@@ -309,6 +310,11 @@ class WebRtcCallService: LifecycleService(), CallManager.WebRtcListener {
             }
         }
         return START_NOT_STICKY
+    }
+
+    override fun attachBaseContext(newBase: Context) {
+        val language = TextSecurePreferences.getAppSelectedLanguage(newBase)
+        super.attachBaseContext(DynamicLanguageContextWrapper.updateContext(newBase, language))
     }
 
     override fun onCreate() {

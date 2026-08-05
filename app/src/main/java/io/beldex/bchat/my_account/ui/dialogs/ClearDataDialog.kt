@@ -359,8 +359,7 @@ fun DeleteOption(
                     color = MaterialTheme.appColors.clearDataSubTitle,
                     fontWeight = FontWeight.Normal,
                     fontSize = 14.sp
-                ),
-                textAlign = TextAlign.Center
+                )
             )
         }
     }

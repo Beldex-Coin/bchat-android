@@ -84,7 +84,7 @@ class RegisterActivity : BaseActionBarActivity() {
         binding.registerButton.setOnClickListener { register() }
         binding.copyButton.setOnClickListener { copyPublicKey() }
         val termsExplanation =
-            SpannableStringBuilder("By using this service, you agree to our Terms of Service and Privacy Policy")
+            SpannableStringBuilder(getString(R.string.terms_and_privacy_message))
         termsExplanation.setSpan(
             StyleSpan(Typeface.BOLD),
             40,

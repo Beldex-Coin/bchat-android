@@ -654,7 +654,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(intent)
         } catch (e: Exception) {
-            Toast.makeText(this, "Can't open URL", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.cannot_open_url), Toast.LENGTH_LONG).show()
         }
     }*/
     //New Line App Update
@@ -709,21 +709,21 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                 RESULT_CANCELED -> {
                     Toast.makeText(
                         applicationContext,
-                        "Update canceled by user! Result Code: $resultCode", Toast.LENGTH_LONG
+                        getString(R.string.update_canceled_by_user), Toast.LENGTH_LONG
                     ).show()
                     finish()
                 }
                 RESULT_OK -> {
                     Toast.makeText(
                         applicationContext,
-                        "Update success! Result Code: $resultCode",
+                        getString(R.string.update_success),
                         Toast.LENGTH_LONG
                     ).show()
                 }
                 else -> {
                     Toast.makeText(
                         applicationContext,
-                        "Update Failed! Result Code: $resultCode",
+                        getString(R.string.update_failed),
                         Toast.LENGTH_LONG
                     ).show()
                     checkUpdate()
@@ -1002,7 +1002,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         popupMenu.gravity = Gravity.END
         popupMenu.setForceShowIcon(true)
         val item : MenuItem= popupMenu.menu.findItem(R.id.menu_delete)
-        val s=SpannableString("Delete")
+        val s=SpannableString(getString(R.string.delete))
         s.setSpan(ForegroundColorSpan(this.getColor(R.color.red)), 0, s.length, 0)
         item.setTitle(s)
         with(popupMenu.menu) {
@@ -1044,8 +1044,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
 
     override fun hideMessageRequests() {
         val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog_New)
-            .setTitle("Hide message requests?")
-            .setMessage("Once they are hidden, you can access them from Settings > Message Requests")
+            .setTitle(R.string.hide_message_request)
+            .setMessage(R.string.message_requests_hidden_info)
             .setPositiveButton(R.string.yes) { _, _ ->
                textSecurePreferences.setHasHiddenMessageRequests()
                 homeViewModel.tryUpdateChannel()
@@ -1469,7 +1469,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         binding.hanUpCall.setOnClickListener {
             this.startService(WebRtcCallService.hangupIntent(this))
             binding.toolbarCall.isVisible = false
-            Toast.makeText(this, "Call ended", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.call_ended), Toast.LENGTH_SHORT).show()
         }
         binding.toolbarCall.setOnClickListener {
             toolBarCall()

@@ -45,6 +45,7 @@ import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.Contact;
 import com.beldex.libbchat.utilities.ServiceUtil;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
+import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libsignal.utilities.Log;
 import com.beldex.libsignal.utilities.Util;
@@ -343,13 +344,16 @@ public class DefaultMessageNotifier implements MessageNotifier {
   {
     Log.i(TAG, "sendSingleThreadNotification()  signal: " + signal + "  bundled: " + bundled);
 
+    String language = TextSecurePreferences.getAppSelectedLanguage(context);
+    Context localizedContext = DynamicLanguageContextWrapper.updateContext(context, language);
+
     if (notificationState.getNotifications().isEmpty()) {
       if (!bundled) cancelActiveNotifications(context);
       Log.i(TAG, "Empty notification state. Skipping.");
       return;
     }
 
-    SingleRecipientNotificationBuilder builder        = new SingleRecipientNotificationBuilder(context, TextSecurePreferences.getNotificationPrivacy(context));
+    SingleRecipientNotificationBuilder builder        = new SingleRecipientNotificationBuilder(localizedContext, TextSecurePreferences.getNotificationPrivacy(context));
     List<NotificationItem>             notifications  = notificationState.getNotifications();
     Recipient                          messageOriginator = notifications.get(0).getRecipient();
     int                                notificationId = (int) (SUMMARY_NOTIFICATION_ID + (bundled ? notifications.get(0).getThreadId() : 0));
@@ -444,7 +448,10 @@ public class DefaultMessageNotifier implements MessageNotifier {
   {
     Log.i(TAG, "sendMultiThreadNotification()  signal: " + signal);
 
-    MultipleRecipientNotificationBuilder builder       = new MultipleRecipientNotificationBuilder(context, TextSecurePreferences.getNotificationPrivacy(context));
+    String language = TextSecurePreferences.getAppSelectedLanguage(context);
+    Context localizedContext = DynamicLanguageContextWrapper.updateContext(context, language);
+
+    MultipleRecipientNotificationBuilder builder       = new MultipleRecipientNotificationBuilder(localizedContext, TextSecurePreferences.getNotificationPrivacy(context));
     List<NotificationItem>               notifications = notificationState.getNotifications();
 
     builder.setMessageCount(notificationState.getNotificationCount(), notificationState.getThreadCount());

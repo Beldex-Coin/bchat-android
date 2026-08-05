@@ -1021,7 +1021,7 @@ fun MyAccountNavHost(
                                         } catch (e: Exception) {
                                             Toast.makeText(
                                                 context,
-                                                "Can't open URL",
+                                                context.getString(R.string.cannot_open_url),
                                                 Toast.LENGTH_LONG
                                             ).show()
                                         }
@@ -1207,7 +1207,7 @@ fun MyAccountNavHost(
                         markedAsSafe = true
                     } else {
                         markedAsSafe = false
-                        Toast.makeText(context, "Failed to authenticate", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, context.getString(R.string.failed_to_authenticate), Toast.LENGTH_SHORT).show()
                     }
                 }
             val verifyPin: () -> Unit = {
@@ -1485,7 +1485,7 @@ fun ProfileCard(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "BNS Verified",
+                    text = stringResource(R.string.bns_verified),
                     style = MaterialTheme.typography.titleSmall.copy(
                         color = MaterialTheme.appColors.primaryButtonColor,
                         fontWeight = FontWeight(700),

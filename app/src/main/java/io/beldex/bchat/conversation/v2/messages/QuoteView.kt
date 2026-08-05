@@ -8,7 +8,6 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
-import androidx.compose.ui.res.colorResource
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.content.res.use
@@ -98,7 +97,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         val quoteIsLocalUser = localNumber != null && authorPublicKey == localNumber
         val authorDisplayName =
             if (quoteIsLocalUser) context.getString(R.string.MediaPreviewActivity_you)
-            else author?.displayName(Contact.contextForRecipient(thread)) ?: "${authorPublicKey.take(4)}...${authorPublicKey.takeLast(4)}"
+            else author?.displayName(Contact.contextForRecipient(thread), context) ?: "${authorPublicKey.take(4)}...${authorPublicKey.takeLast(4)}"
         binding.quoteViewAuthorTextView.text = authorDisplayName.capitalizeFirstLetter()
         binding.quoteViewAuthorTextView.setTextColor(if(quoteIsLocalUser && !outgoing){
             ResourcesCompat.getColor(resources, R.color.button_green, context.theme)

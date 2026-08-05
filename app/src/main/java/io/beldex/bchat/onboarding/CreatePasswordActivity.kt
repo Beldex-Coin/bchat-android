@@ -57,29 +57,29 @@ class CreatePasswordActivity : BaseActionBarActivity() {
                     enterPinEditTxtLayout!!.isErrorEnabled = false
                     Toast.makeText(
                         this@CreatePasswordActivity,
-                        "Must set your 4 digit PIN.",
+                        getString(R.string.must_set_your_four_digit_pin),
                         Toast.LENGTH_LONG
                     ).show()
                     //enterPinEditTxtLayout!!.error = "Must set your 4 digit PIN."
                 } else if (enteredPIN.length < 4) {
                     enterPinEditTxtLayout!!.isErrorEnabled = true
-                    enterPinEditTxtLayout.error = "Please enter 4 digit PIN."
+                    enterPinEditTxtLayout.error = getString(R.string.please_enter_4_digit_pin)
                 } else if (reEnterPIN.isEmpty()) {
                     enterPinEditTxtLayout!!.isErrorEnabled = false
                     reEnterPinEditTxtLayout!!.isErrorEnabled = false
                     Toast.makeText(
                         this@CreatePasswordActivity,
-                        "Must set your 4 digit PIN.",
+                        getString(R.string.must_set_your_four_digit_pin),
                         Toast.LENGTH_LONG
                     ).show()
                     //reEnterPinEditTxtLayout!!.error = "Must set your 4 digit PIN."
                 } else if (reEnterPIN.length < 4) {
                     enterPinEditTxtLayout!!.isErrorEnabled = false
                     reEnterPinEditTxtLayout!!.isErrorEnabled = true
-                    reEnterPinEditTxtLayout.error = "Please enter 4 digit PIN."
+                    reEnterPinEditTxtLayout.error = getString(R.string.please_enter_4_digit_pin)
                 } else if (enteredPIN != reEnterPIN) {
                     reEnterPinEditTxtLayout!!.isErrorEnabled = true
-                    reEnterPinEditTxtLayout!!.error = "Password is not matched"
+                    reEnterPinEditTxtLayout!!.error = getString(R.string.password_is_not_matched)
                 } else if (enteredPIN == reEnterPIN) {
                     callPage(callPage)
                 }

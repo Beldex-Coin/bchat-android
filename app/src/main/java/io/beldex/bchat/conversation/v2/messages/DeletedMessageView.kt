@@ -23,7 +23,11 @@ class DeletedMessageView : LinearLayout {
     fun bind(message: MessageRecord, @ColorInt textColor: Int) {
         assert(message.isDeleted)
         // set the text to the message's body if it is set, else use a fallback
-        binding.deleteTitleTextView.text = message.body.ifEmpty { context.resources.getQuantityString(R.plurals.deleteMessageDeleted, 1, 1) }
+        binding.deleteTitleTextView.text = when {
+            message.body == context.getString(R.string.deleteMessageDeletedGloballyDefault) -> context.getString(R.string.deleteMessageDeletedGlobally)
+            message.body.isEmpty() -> context.resources.getQuantityString(R.plurals.deleteMessageDeleted, 1, 1)
+            else -> message.body
+        }
         binding.deleteTitleTextView.setTextColor(textColor)
         binding.deletedMessageViewIconImageView.imageTintList = ColorStateList.valueOf(textColor)
 

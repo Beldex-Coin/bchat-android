@@ -5,24 +5,24 @@
     <string name="MessageRecord_you_updated_group">You updated the group</string>
     <string name="MessageRecord_you_created_a_new_group">Yeni bir grup oluşturdunuz</string>
     <string name="MessageRecord_s_added_you_to_the_group">%1$s sizi gruba ekledi</string>
-    <string name="MessageRecord_you_renamed_the_group_to_s">You renamed the group to %1$s</string>
-    <string name="MessageRecord_s_renamed_the_group_to_s">%1$s renamed the group to: %2$s</string>
+    <string name="MessageRecord_you_renamed_the_group_to_s">Grubun adını %1$s olarak değiştirdiniz</string>
+    <string name="MessageRecord_s_renamed_the_group_to_s">%1$s grubun adını şu şekilde değiştirdi: %2$s</string>
     <string name="MessageRecord_you_added_s_to_the_group">%1$s kişisini gruba eklediniz</string>
     <string name="MessageRecord_s_added_s_to_the_group">%1$s, %2$s kişisini gruba ekledi</string>
     <string name="MessageRecord_you_removed_s_from_the_group">%1$s kişisini gruptan kaldırdınız</string>
     <string name="MessageRecord_s_removed_s_from_the_group">%1$s, %2$s kişisini gruptan kaldırdı</string>
     <string name="MessageRecord_you_were_removed_from_the_group">Gruptan kaldırıldınız</string>
-    <string name="MessageRecord_you">You</string>
+    <string name="MessageRecord_you">Siz</string>
     <string name="MessageRecord_you_called">You called</string>
     <string name="MessageRecord_called_you">Contact called</string>
     <string name="MessageRecord_missed_call">Missed call</string>
     <string name="MessageRecord_s_updated_group">%s updated the group</string>
-    <string name="MessageRecord_received_call_from">Received call from %s</string>
-    <string name="MessageRecord_called_s">Called %s</string>
-    <string name="MessageRecord_missed_call_from">Missed call from %s</string>
+    <string name="MessageRecord_received_call_from">%s kişisinden arama alındı</string>
+    <string name="MessageRecord_called_s">%s kişisini aradınız</string>
+    <string name="MessageRecord_missed_call_from">%s kişisinden cevapsız arama</string>
     <string name="MessageRecord_s_joined_signal">%s is on Bchat!</string>
-    <string name="MessageRecord_you_disabled_disappearing_messages">You disabled disappearing messages</string>
-    <string name="MessageRecord_s_disabled_disappearing_messages">%1$s disabled disappearing messages</string>
+    <string name="MessageRecord_you_disabled_disappearing_messages">Kaybolan mesajları devre dışı bıraktınız</string>
+    <string name="MessageRecord_s_disabled_disappearing_messages">%1$s kaybolan mesajları devre dışı bıraktı</string>
     <string name="MessageRecord_you_set_disappearing_message_time_to_s">Kaybolan mesaj zamanlayıcısını %1$s olarak ayarladınız</string>
     <string name="MessageRecord_s_set_disappearing_message_time_to_s">%1$s kaybolan mesaj zamanlayıcısını %2$s olarak ayarladı</string>
     <string name="MessageRecord_s_took_a_screenshot">%1$s ekran görüntüsü aldı.</string>
@@ -38,48 +38,47 @@
 
 
     <!-- expiration -->
-    <string name="expiration_off">Off</string>
+    <string name="expiration_off">Kapalı</string>
 
     <plurals name="expiration_seconds">
-        <item quantity="one">%d second</item>
-        <item quantity="other">%d seconds</item>
+        <item quantity="one">%d saniye</item>
+        <item quantity="other">%d saniye</item>
     </plurals>
 
     <string name="expiration_seconds_abbreviated">%ds</string>
 
     <plurals name="expiration_minutes">
-        <item quantity="one">%d minute</item>
-        <item quantity="other">%d minutes</item>
+        <item quantity="one">%d dakika</item>
+        <item quantity="other">%d dakika</item>
     </plurals>
 
-    <string name="expiration_minutes_abbreviated">%dm</string>
+    <string name="expiration_minutes_abbreviated">%d dk</string>
 
     <plurals name="expiration_hours">
-        <item quantity="one">%d hour</item>
-        <item quantity="other">%d hours</item>
+        <item quantity="one">%d saat</item>
+        <item quantity="other">%d saat</item>
     </plurals>
 
-    <string name="expiration_hours_abbreviated">%dh</string>
+    <string name="expiration_hours_abbreviated">%d sa</string>
 
     <plurals name="expiration_days">
-        <item quantity="one">%d day</item>
-        <item quantity="other">%d days</item>
+        <item quantity="one">%d gün</item>
+        <item quantity="other">%d gün</item>
     </plurals>
 
-    <string name="expiration_days_abbreviated">%dd</string>
+    <string name="expiration_days_abbreviated">%d gün</string>
 
     <plurals name="expiration_weeks">
-        <item quantity="one">%d week</item>
-        <item quantity="other">%d weeks</item>
+        <item quantity="one">%d hafta</item>
+        <item quantity="other">%d hafta</item>
     </plurals>
 
-    <string name="expiration_weeks_abbreviated">%dw</string>
+    <string name="expiration_weeks_abbreviated">%d hf</string>
 
-    <string name="ConversationItem_group_action_left">%1$s has left the group</string>
+    <string name="ConversationItem_group_action_left">%1$s gruptan ayrıldı</string>
     <!-- RecipientProvider -->
-    <string name="RecipientProvider_unnamed_group">Unnamed group</string>
+    <string name="RecipientProvider_unnamed_group">Adsız grup</string>
 
-    <!-- New Line-->
     <string name="none">Yok</string>
     <string name="thirty_seconds">30 Saniye</string>
     <string name="one_minute">1 Dakika</string>
@@ -87,5 +86,6 @@
     <string name="five_minutes">5 Dakika</string>
     <string name="fifteen_minutes">15 Dakika</string>
     <string name="thirty_minutes">30 Dakika</string>
-    <string name="deleteMessageDeletedGlobally">This message was deleted</string>
+    <string name="deleteMessageDeletedGlobally">Bu mesaj silindi</string>
+    <string name="report_issue">Sorun Bildir</string>
 </resources>

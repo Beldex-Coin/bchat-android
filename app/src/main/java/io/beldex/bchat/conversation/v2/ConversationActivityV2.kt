@@ -50,6 +50,7 @@ import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.beldex.libbchat.BuildConfig
 import com.beldex.libbchat.messaging.jobs.AttachmentDownloadJob
 import com.beldex.libbchat.messaging.jobs.JobQueue
 import com.beldex.libbchat.messaging.mentions.Mention
@@ -695,7 +696,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                 )
             )
             binding.callActionBarView.isVisible=false
-            Toast.makeText(this, "Call ended", Toast.LENGTH_SHORT)
+            Toast.makeText(this, getString(R.string.call_ended), Toast.LENGTH_SHORT)
                 .show()
         }
         binding.callActionBarView.setOnClickListener {
@@ -1018,10 +1019,16 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
             profileManager.setName(applicationContext, recipient, bnsName)
         }
 
+        // ---------- Report issue title ----------
+        val isReportIssueRecipient = recipient.address.toString() == BuildConfig.REPORT_ISSUE_ID
+        val localizedReportIssueName = getString(R.string.report_issue).capitalizeFirstLetter()
+
         // ---------- Title ----------
         val title = when {
             recipient.isLocalNumber ->
                 getString(R.string.note_to_self).capitalizeFirstLetter()
+            isReportIssueRecipient ->
+                localizedReportIssueName
             else ->
                 recipient.toShortString().capitalizeFirstLetter()
         }
@@ -1394,9 +1401,12 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                 val groupID : String=recipient.address.toGroupString()
                 val members=groupRepository?.getGroupMembers(groupID)
                 val memberCount=members?.members?.size ?: 0
-                binding.conversationSubtitleView.isVisible=true
-                binding.conversationSubtitleView.text=
-                    if (memberCount > 1) "$memberCount members" else "$memberCount member"
+                binding.conversationSubtitleView.isVisible = true
+                binding.conversationSubtitleView.text = resources.getQuantityString(
+                    R.plurals.group_member_count,
+                    memberCount,
+                    memberCount
+                )
             } else {
                 binding.conversationSubtitleView.isVisible=false
             }
@@ -2157,7 +2167,8 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
         val candidates = MentionsManager.getMentionCandidates(
             query,
             viewModel.threadId,
-            recipient.isOpenGroupRecipient
+            recipient.isOpenGroupRecipient,
+            this
         )
 
         if (!isShowingMentionCandidatesView) {
@@ -2365,7 +2376,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
         if (binding.inputBar.text.length > 4096) {
             Toast.makeText(
                 this,
-                "Text limit exceed: Maximum limit of messages is 4096 characters",
+                getString(R.string.text_limit_exceed_warnings),
                 Toast.LENGTH_SHORT
             ).show()
         } else {
@@ -3232,7 +3243,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
         AlertDialog.Builder(this, R.style.BChatAlertDialog_ForBan)
             .setTitle(R.string.ConversationFragment_ban_selected_user)
             .setMessage(
-                "This will ban the selected user from this room. It won't ban them from other rooms."
+                R.string.ban_message
             )
             .setCancelable(true)
             .setPositiveButton(R.string.ban) { _, _ ->

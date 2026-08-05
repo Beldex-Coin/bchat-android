@@ -374,7 +374,6 @@
         <activity
             android:name=".groups.EditClosedGroupActivity"
             android:exported="false"
-            android:label="@string/activity_edit_closed_group_title"
             android:screenOrientation="portrait" />
         <activity
             android:name=".groups.JoinPublicChatActivity"

@@ -5,13 +5,13 @@
     <string name="no">いいえ</string>
     <string name="delete">削除</string>
     <string name="ban">Ban</string>
-    <string name="please_wait">Please wait...</string>
+    <string name="please_wait">お待ちください...</string>
     <string name="save">保存</string>
     <string name="note_to_self">自分へのメモ</string>
     <string name="version_s">Version %s</string>
 
     <!-- AbstractNotificationBuilder -->
-    <string name="AbstractNotificationBuilder_new_message">New message</string>
+    <string name="AbstractNotificationBuilder_new_message">新しいメッセージ</string>
 
     <!-- AlbumThumbnailView -->
     <string name="AlbumThumbnailView_plus">\+%d</string>
@@ -34,32 +34,32 @@
     <string name="DraftDatabase_Draft_quote_snippet">(reply)</string>
 
     <!-- AttachmentManager -->
-    <string name="AttachmentManager_cant_open_media_selection">Can\'t find an app to select media.</string>
-    <string name="AttachmentManager_signal_requires_the_external_storage_permission_in_order_to_attach_photos_videos_or_audio">BChat requires the Storage permission in order to attach photos, videos, or audio, but it has been permanently denied. Please continue to the app settings menu, select \"Permissions\", and enable \"Storage\".</string>
+    <string name="AttachmentManager_cant_open_media_selection">メディアを選択するアプリが見つかりません。</string>
+    <string name="AttachmentManager_signal_requires_the_external_storage_permission_in_order_to_attach_photos_videos_or_audio">BChat では写真、ビデオ、またはオーディオを添付するためにストレージ権限が必要ですが、これは永久に拒否されています。アプリ設定メニューに進み、「権限」を選択し、「ストレージ」を有効にしてください。</string>
     <string name="AttachmentManager_signal_requires_contacts_permission_in_order_to_attach_contact_information">BChat requires Contacts permission in order to attach contact information, but it has been permanently denied. Please continue to the app settings menu, select \"Permissions\", and enable \"Contacts\".</string>
-    <string name="AttachmentManager_signal_requires_the_camera_permission_in_order_to_take_photos_but_it_has_been_permanently_denied">BChat requires the Camera permission in order to take photos, but it has been permanently denied. Please continue to the app settings menu, select \"Permissions\", and enable \"Camera\".</string>
+    <string name="AttachmentManager_signal_requires_the_camera_permission_in_order_to_take_photos_but_it_has_been_permanently_denied">BChat では写真を撮るためにカメラの許可が必要ですが、それは永久に拒否されています。アプリ設定メニューに進み、「権限」を選択し、「カメラ」を有効にしてください。</string>
 
     <!-- AudioSlidePlayer -->
     <string name="AudioSlidePlayer_error_playing_audio">Error playing audio!</string>
 
     <!-- BucketedThreadMedia -->
-    <string name="BucketedThreadMedia_Today">Today</string>
-    <string name="BucketedThreadMedia_Yesterday">Yesterday</string>
-    <string name="BucketedThreadMedia_This_week">This week</string>
-    <string name="BucketedThreadMedia_This_month">This month</string>
+    <string name="BucketedThreadMedia_Today">今日</string>
+    <string name="BucketedThreadMedia_Yesterday">昨日</string>
+    <string name="BucketedThreadMedia_This_week">今週</string>
+    <string name="BucketedThreadMedia_This_month">今月</string>
 
     <!-- CommunicationActions -->
-    <string name="CommunicationActions_no_browser_found">No web browser found.</string>
+    <string name="CommunicationActions_no_browser_found">Web ブラウザが見つかりません。</string>
 
     <!-- ContactsCursorLoader -->
-    <string name="ContactsCursorLoader_groups">Groups</string>
+    <string name="ContactsCursorLoader_groups">グループ</string>
 
     <!-- ConversationItem -->
-    <string name="ConversationItem_error_not_delivered">Send failed, tap for details</string>
+    <string name="ConversationItem_error_not_delivered">送信に失敗しました。タップして詳細を表示します</string>
     <string name="ConversationItem_received_key_exchange_message_tap_to_process">Received key exchange message, tap to process.</string>
-    <string name="ConversationItem_group_action_left">%1$s has left the group.</string>
+    <string name="ConversationItem_group_action_left">%1$s がグループを退出しました。</string>
     <string name="ConversationItem_click_to_approve_unencrypted">Send failed, tap for unsecured fallback</string>
-    <string name="ConversationItem_unable_to_open_media">Can\'t find an app able to open this media.</string>
+    <string name="ConversationItem_unable_to_open_media">このメディアを開けるアプリが見つかりません。</string>
     <string name="ConversationItem_copied_text">Copied %s</string>
     <string name="ConversationItem_read_more">Read More</string>
     <string name="ConversationItem_download_more">&#160; Download More</string>
@@ -71,9 +71,9 @@
     <string name="ConversationActivity_sorry_there_was_an_error_setting_your_attachment">Sorry, there was an error setting your attachment.</string>
     <string name="ConversationActivity_message">メッセージを書く....</string>
     <string name="ConversationActivity_compose">Compose</string>
-    <string name="ConversationActivity_muted_until_date">Muted until %1$s</string>
-    <string name="ConversationActivity_muted_forever">Muted</string>
-    <string name="ConversationActivity_member_count">%1$d members</string>
+    <string name="ConversationActivity_muted_until_date">%1$s までミュートされます</string>
+    <string name="ConversationActivity_muted_forever">ミュート</string>
+    <string name="ConversationActivity_member_count">%1$d メンバー</string>
     <string name="ConversationActivity_open_group_guidelines">コミュニティガイドライン</string>
     <string name="ConversationActivity_social_group_welcome">BChatへようこそ</string>
 
@@ -81,26 +81,26 @@
     <string name="ConversationActivity_added_to_home_screen">ホーム画面に追加</string>
     <string name="ConversationActivity_leave_group">グループを退出?</string>
     <string name="ConversationActivity_are_you_sure_you_want_to_leave_this_group">このグループを退出してもよろしいですか？</string>
-    <string name="ConversationActivity_error_leaving_group">Error leaving group</string>
+    <string name="ConversationActivity_error_leaving_group">グループ脱退エラー</string>
     <string name="ConversationActivity_unblock_this_contact_question">Unblock this contact?</string>
     <string name="ConversationActivity_you_will_once_again_be_able_to_receive_messages_and_calls_from_this_contact">You will once again be able to receive messages and calls from this contact.</string>
     <string name="ConversationActivity_unblock">ブロック解除</string>
     <string name="ConversationActivity_attachment_exceeds_size_limits">Attachment exceeds size limits for the type of message you\'re sending.</string>
-    <string name="ConversationActivity_unable_to_record_audio">Unable to record audio!</string>
+    <string name="ConversationActivity_unable_to_record_audio">音声を録音できません!</string>
     <string name="ConversationActivity_there_is_no_app_available_to_handle_this_link_on_your_device">There is no app available to handle this link on your device.</string>
     <string name="ConversationActivity_invite_to_open_group">メンバーを追加</string>
     <string name="ConversationActivity_join_open_group">Join %s</string>
     <string name="ConversationActivity_join_open_group_confirmation_message">Are you sure you want to join the <b>%s</b> social group?</string>
 
     <string name="ConversationActivity_to_send_audio_messages_allow_signal_access_to_your_microphone">レコーダーに音声録音へのアクセスを許可しますか？</string>
-    <string name="ConversationActivity_signal_requires_the_microphone_permission_in_order_to_send_audio_messages">BChat needs microphone access to send audio messages, but it has been permanently denied. Please continue to app settings, select \"Permissions\", and enable \"Microphone\".</string>
-    <string name="ConversationActivity_to_capture_photos_and_video_allow_signal_access_to_the_camera">BChat needs camera access to take photos and videos.</string>
-    <string name="ConversationActivity_to_send_photos_and_video_allow_signal_access_to_storage">Allow attachment to access Photos and videos on this Device?</string>
-    <string name="ConversationActivity_signal_needs_the_camera_permission_to_take_photos_or_video">BChat needs camera access to take photos and videos, but it has been permanently denied. Please continue to app settings, select \"Permissions\", and enable \"Camera\".</string>
-    <string name="ConversationActivity_signal_needs_camera_permissions_to_take_photos_or_video">BChat needs camera access to take photos or videos.</string>
+    <string name="ConversationActivity_signal_requires_the_microphone_permission_in_order_to_send_audio_messages">BChat は音声メッセージを送信するためにマイクへのアクセスを必要としますが、それは永久に拒否されています。アプリの設定に進み、「権限」を選択し、「マイク」を有効にしてください。</string>
+    <string name="ConversationActivity_to_capture_photos_and_video_allow_signal_access_to_the_camera">BChat で写真やビデオを撮影するにはカメラへのアクセスが必要です。</string>
+    <string name="ConversationActivity_to_send_photos_and_video_allow_signal_access_to_storage">添付ファイルによるこのデバイス上の写真とビデオへのアクセスを許可しますか?</string>
+    <string name="ConversationActivity_signal_needs_the_camera_permission_to_take_photos_or_video">BChat は写真やビデオを撮影するためにカメラへのアクセスを必要としますが、それは永久に拒否されています。アプリの設定に進み、「権限」を選択し、「カメラ」を有効にしてください。</string>
+    <string name="ConversationActivity_signal_needs_camera_permissions_to_take_photos_or_video">BChat で写真やビデオを撮影するにはカメラへのアクセスが必要です。</string>
 
     <string name="ConversationActivity_quoted_contact_message">%1$s %2$s</string>
-    <string name="ConversationActivity_search_position">%1$d of %2$d</string>
+    <string name="ConversationActivity_search_position">%1$d / %2$d</string>
     <string name="ConversationActivity_no_results">No results</string>
 
     <!-- ConversationAdapter -->
@@ -116,14 +116,13 @@
     <plurals name="ConversationFragment_this_will_permanently_delete_all_n_selected_messages">
         <item quantity="other">選択した%1$d件のメッセージは完全に削除されます。</item>
     </plurals>
-    <string name="ConversationFragment_ban_selected_user">Ban this user?</string>
+    <string name="ConversationFragment_ban_selected_user">このユーザーを禁止しますか?</string>
     <string name="ConversationFragment_save_to_sd_card">ストレージに保存?</string>
     <plurals name="ConversationFragment_saving_n_media_to_storage_warning">
         <item quantity="other">%1$d 件のメディアをストレージに保存すると、デバイス上の他のアプリもアクセスできるようになります。</item>
     </plurals>
     <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
-        <item quantity="one">Error while saving attachment to storage!</item>
-        <item quantity="other">Error while saving attachments to storage!</item>
+        <item quantity="other">添付ファイルをストレージに保存中にエラーが発生しました。</item>
     </plurals>
     <plurals name="ConversationFragment_saving_n_attachments">
         <item quantity="other">%1$d 件の添付ファイルを保存中</item>
@@ -146,88 +145,87 @@
     <string name="ConversationListItem_key_exchange_message">Key exchange message</string>
 
     <!-- CreateProfileActivity -->
-    <string name="CreateProfileActivity_profile_photo">Profile photo</string>
+    <string name="CreateProfileActivity_profile_photo">プロフィール写真</string>
 
     <!-- CustomDefaultPreference -->
-    <string name="CustomDefaultPreference_using_custom">Using custom: %s</string>
+    <string name="CustomDefaultPreference_using_custom">カスタムの使用: %s</string>
     <string name="CustomDefaultPreference_using_default">Using default: %s</string>
-    <string name="CustomDefaultPreference_none">None</string>
+    <string name="CustomDefaultPreference_none">なし</string>
 
     <!-- DateUtils -->
-    <string name="DateUtils_just_now">Now</string>
-    <string name="DateUtils_minutes_ago">%d min</string>
-    <string name="DateUtils_today">Today</string>
-    <string name="DateUtils_yesterday">Yesterday</string>
+    <string name="DateUtils_just_now">今</string>
+    <string name="DateUtils_minutes_ago">%d 分</string>
+    <string name="DateUtils_today">今日</string>
+    <string name="DateUtils_yesterday">昨日</string>
 
     <!-- DeviceListItem -->
-    <string name="DeviceListItem_today">Today</string>
+    <string name="DeviceListItem_today">今日</string>
 
     <!-- DocumentView -->
-    <string name="DocumentView_unknown_file">Unknown file</string>
+    <string name="DocumentView_unknown_file">不明なファイル</string>
 
     <!-- GiphyActivity -->
-    <string name="GiphyActivity_error_while_retrieving_full_resolution_gif">Error while retrieving full resolution GIF</string>
+    <string name="GiphyActivity_error_while_retrieving_full_resolution_gif">フル解像度の GIF を取得中にエラーが発生しました</string>
 
     <!-- GiphyFragmentPageAdapter -->
-    <string name="GiphyFragmentPagerAdapter_gifs">GIFs</string>
-    <string name="GiphyFragmentPagerAdapter_stickers">Stickers</string>
+    <string name="GiphyFragmentPagerAdapter_gifs">GIF</string>
+    <string name="GiphyFragmentPagerAdapter_stickers">ステッカー</string>
 
     <!-- CropImageActivity -->
-    <string name="CropImageActivity_profile_avatar">Photo</string>
+    <string name="CropImageActivity_profile_avatar">写真</string>
 
     <!-- InputPanel -->C
     <string name="InputPanel_tap_and_hold_to_record_a_voice_message_release_to_send">Tap and hold to record a voice message, release to send</string>
 
     <!-- LongMessageActivity -->
-    <string name="LongMessageActivity_unable_to_find_message">Unable to find message</string>
-    <string name="LongMessageActivity_message_from_s">Message from %1$s</string>
-    <string name="LongMessageActivity_your_message">Your message</string>
+    <string name="LongMessageActivity_unable_to_find_message">メッセージが見つかりません</string>
+    <string name="LongMessageActivity_message_from_s">%1$s からのメッセージ</string>
+    <string name="LongMessageActivity_your_message">あなたのメッセージ</string>
 
     <!-- MediaOverviewActivity -->
     <string name="MediaOverviewActivity_Media">メディア</string>
-    <string name="MediaOverviewActivity_Media_delete_progress_title">Deleting</string>
-    <string name="MediaOverviewActivity_Media_delete_progress_message">Deleting messages...</string>
+    <string name="MediaOverviewActivity_Media_delete_progress_title">削除中</string>
+    <string name="MediaOverviewActivity_Media_delete_progress_message">メッセージを削除しています...</string>
     <string name="MediaOverviewActivity_Documents">ドキュメント</string>
-    <string name="MediaOverviewActivity_Select_all">Select all</string>
-    <string name="MediaOverviewActivity_collecting_attachments">Collecting attachments...</string>
+    <string name="MediaOverviewActivity_Select_all">すべて選択</string>
+    <string name="MediaOverviewActivity_collecting_attachments">添付ファイルを収集しています...</string>
 
     <!-- NotificationMmsMessageRecord -->
-    <string name="NotificationMmsMessageRecord_multimedia_message">Multimedia message</string>
-    <string name="NotificationMmsMessageRecord_downloading_mms_message">Downloading MMS message</string>
-    <string name="NotificationMmsMessageRecord_error_downloading_mms_message">Error downloading MMS message, tap to retry</string>
+    <string name="NotificationMmsMessageRecord_multimedia_message">マルチメディアメッセージ</string>
+    <string name="NotificationMmsMessageRecord_downloading_mms_message">MMS メッセージをダウンロードしています</string>
+    <string name="NotificationMmsMessageRecord_error_downloading_mms_message">MMS メッセージのダウンロード中にエラーが発生しました。タップして再試行してください</string>
 
     <!-- MediaPickerActivity -->
-    <string name="MediaPickerActivity_send_to">Send to %s</string>
+    <string name="MediaPickerActivity_send_to">%s に送信</string>
 
     <!-- MediaSendActivity -->
-    <string name="MediaSendActivity_add_a_caption">Add a caption...</string>
-    <string name="MediaSendActivity_an_item_was_removed_because_it_exceeded_the_size_limit">An item was removed. Files must be less than 10MB.</string>
-    <string name="MediaSendActivity_camera_unavailable">Camera unavailable.</string>
+    <string name="MediaSendActivity_add_a_caption">キャプションを追加...</string>
+    <string name="MediaSendActivity_an_item_was_removed_because_it_exceeded_the_size_limit">項目が削除されました。ファイルは 10MB 未満である必要があります。</string>
+    <string name="MediaSendActivity_camera_unavailable">カメラが使用できません。</string>
     <string name="MediaSendActivity_message_to_s">メッセージ送信先 %s</string>
     <plurals name="MediaSendActivity_cant_share_more_than_n_items">
-        <item quantity="one">You can\'t share more than %d item.</item>
-        <item quantity="other">You can\'t share more than %d items.</item>
+        <item quantity="other">%d 個を超えるアイテムを共有することはできません。</item>
     </plurals>
 
     <!-- MediaRepository -->
     <string name="MediaRepository_all_media">すべてのメディア</string>
 
     <!-- MessageRecord -->
-    <string name="MessageRecord_message_encrypted_with_a_legacy_protocol_version_that_is_no_longer_supported">Received a message encrypted using an old version of BChat that is no longer supported. Please ask the sender to update to the most recent version and resend the message.</string>
+    <string name="MessageRecord_message_encrypted_with_a_legacy_protocol_version_that_is_no_longer_supported">サポートされなくなった古いバージョンの BChat を使用して暗号化されたメッセージを受信しました。送信者に最新バージョンに更新してメッセージを再送信するよう依頼してください。</string>
     <string name="MessageRecord_left_group">あなたはこのグループを退出しました</string>
     <string name="MessageRecord_you_updated_group">You updated the group</string>
     <string name="MessageRecord_s_updated_group">%s updated the group</string>
 
     <!-- ExpirationDialog -->
     <string name="ExpirationDialog_disappearing_messages">消えるメッセージ</string>
-    <string name="ExpirationDialog_your_messages_will_not_expire">Your messages will not expire</string>
-    <string name="ExpirationDialog_your_messages_will_disappear_s_after_they_have_been_seen">Messages sent and received in this conversation will disappear %s after they have been seen.</string>
+    <string name="ExpirationDialog_your_messages_will_not_expire">メッセージに有効期限はありません</string>
+    <string name="ExpirationDialog_your_messages_will_disappear_s_after_they_have_been_seen">この会話で送受信されたメッセージは、閲覧されると %s 表示されなくなります。</string>
 
     <!-- PassphrasePromptActivity -->
-    <string name="PassphrasePromptActivity_enter_passphrase">Enter passphrase</string>
+    <string name="PassphrasePromptActivity_enter_passphrase">パスフレーズを入力してください</string>
 
     <!-- RecipientPreferencesActivity -->
-    <string name="RecipientPreferenceActivity_block_this_contact_question">Block this contact?</string>
+    <string name="RecipientPreferenceActivity_block_this_contact_question">この連絡先をブロックしますか?</string>
     <string name="RecipientPreferenceActivity_you_will_no_longer_receive_messages_and_calls_from_this_contact">You will no longer receive messages and calls from this contact.</string>
     <string name="RecipientPreferenceActivity_block">ブロック</string>
     <string name="RecipientPreferenceActivity_unblock_this_contact_question">Unblock this contact?</string>
@@ -235,9 +233,9 @@
     <string name="RecipientPreferenceActivity_notification_settings">通知設定</string>
 
     <!-- Slide -->
-    <string name="Slide_image">Image</string>
-    <string name="Slide_audio">Audio</string>
-    <string name="Slide_video">Video</string>
+    <string name="Slide_image">画像</string>
+    <string name="Slide_audio">オーディオ</string>
+    <string name="Slide_video">ビデオ</string>
 
     <!-- SmsMessageRecord -->
     <string name="SmsMessageRecord_received_corrupted_key_exchange_message">Received corrupted key
@@ -249,131 +247,130 @@
     <string name="SmsMessageRecord_received_message_with_new_safety_number_tap_to_process">Received message with new safety number. Tap to process and display.</string>
     <string name="SmsMessageRecord_secure_bchat_reset">You reset the secure bchat.</string>
     <string name="SmsMessageRecord_secure_bchat_reset_s">%s reset the secure bchat.</string>
-    <string name="SmsMessageRecord_duplicate_message">Duplicate message.</string>
+    <string name="SmsMessageRecord_duplicate_message">メッセージが重複しています。</string>
 
     <!-- ThreadRecord -->
-    <string name="ThreadRecord_group_updated">Group updated</string>
+    <string name="ThreadRecord_group_updated">グループが更新されました</string>
     <string name="ThreadRecord_left_the_group">Left the group</string>
-    <string name="ThreadRecord_secure_bchat_reset">Secure bchat reset.</string>
-    <string name="ThreadRecord_draft">Draft:</string>
-    <string name="ThreadRecord_called">You called</string>
-    <string name="ThreadRecord_called_you">Called you</string>
+    <string name="ThreadRecord_secure_bchat_reset">安全なbチャットのリセット。</string>
+    <string name="ThreadRecord_draft">草案:</string>
+    <string name="ThreadRecord_called">あなたが電話した</string>
+    <string name="ThreadRecord_called_you">あなたに電話しました</string>
     <string name="ThreadRecord_missed_call">不在着信</string>
-    <string name="ThreadRecord_media_message">Media message</string>
-    <string name="ThreadRecord_s_is_on_signal">%s is on BChat!</string>
-    <string name="ThreadRecord_disappearing_messages_disabled">Disappearing messages disabled</string>
-    <string name="ThreadRecord_disappearing_message_time_updated_to_s">Disappearing message time set to %s</string>
+    <string name="ThreadRecord_media_message">メディアメッセージ</string>
+    <string name="ThreadRecord_s_is_on_signal">%s は BChat にいます!</string>
+    <string name="ThreadRecord_disappearing_messages_disabled">消えるメッセージの無効化</string>
+    <string name="ThreadRecord_disappearing_message_time_updated_to_s">メッセージが消える時間を %s に設定しました</string>
     <string name="ThreadRecord_s_took_a_screenshot">%1$s がスクリーンショットを撮影しました。</string>
     <string name="ThreadRecord_media_saved_by_s">%s がメディアを保存しました。</string>
-    <string name="ThreadRecord_safety_number_changed">Safety number changed</string>
-    <string name="ThreadRecord_your_safety_number_with_s_has_changed">Your safety number with %s has changed.</string>
-    <string name="ThreadRecord_you_marked_verified">You marked verified</string>
-    <string name="ThreadRecord_you_marked_unverified">You marked unverified</string>
-    <string name="ThreadRecord_empty_message">This conversation is empty</string>
-    <string name="ThreadRecord_open_group_invitation">Social group invitation</string>
+    <string name="ThreadRecord_safety_number_changed">安全番号が変更されました</string>
+    <string name="ThreadRecord_your_safety_number_with_s_has_changed">%s が付いた安全番号が変更されました。</string>
+    <string name="ThreadRecord_you_marked_verified">確認済みとマークしました</string>
+    <string name="ThreadRecord_you_marked_unverified">未確認とマークしました</string>
+    <string name="ThreadRecord_empty_message">この会話は空です</string>
+    <string name="ThreadRecord_open_group_invitation">ソーシャルグループへの招待</string>
     <string name="ThreadRecord_payment">%s BDX %s</string>
 
     <!-- UpdateApkReadyListener -->
-    <string name="UpdateApkReadyListener_Signal_update">BChat update</string>
-    <string name="UpdateApkReadyListener_a_new_version_of_signal_is_available_tap_to_update">A new version of BChat is available, tap to update</string>
+    <string name="UpdateApkReadyListener_Signal_update">Bチャットの更新</string>
+    <string name="UpdateApkReadyListener_a_new_version_of_signal_is_available_tap_to_update">BChat の新しいバージョンが利用可能です。タップして更新してください</string>
 
     <!-- MessageDisplayHelper -->
-    <string name="MessageDisplayHelper_bad_encrypted_message">Bad encrypted message</string>
-    <string name="MessageDisplayHelper_message_encrypted_for_non_existing_bchat">Message encrypted for non-existing bchat</string>
+    <string name="MessageDisplayHelper_bad_encrypted_message">不正な暗号化メッセージ</string>
+    <string name="MessageDisplayHelper_message_encrypted_for_non_existing_bchat">存在しない bchat に対してメッセージが暗号化されました</string>
 
     <!-- MmsMessageRecord -->
-    <string name="MmsMessageRecord_bad_encrypted_mms_message">Bad encrypted MMS message</string>
-    <string name="MmsMessageRecord_mms_message_encrypted_for_non_existing_bchat">MMS message encrypted for non-existing bchat</string>
+    <string name="MmsMessageRecord_bad_encrypted_mms_message">不正な暗号化 MMS メッセージ</string>
+    <string name="MmsMessageRecord_mms_message_encrypted_for_non_existing_bchat">存在しない bchat 用に暗号化された MMS メッセージ</string>
 
     <!-- MuteDialog -->
     <string name="MuteDialog_mute_notifications">通知をミュート</string>
 
     <!-- KeyCachingService -->
-    <string name="KeyCachingService_signal_passphrase_cached">Touch to open.</string>
-    <string name="KeyCachingService_passphrase_cached">BChat is unlocked</string>
-    <string name="KeyCachingService_lock">Lock BChat</string>
+    <string name="KeyCachingService_signal_passphrase_cached">タッチして開きます。</string>
+    <string name="KeyCachingService_passphrase_cached">Bチャットのロックが解除されました</string>
+    <string name="KeyCachingService_lock">Bチャットをロックする</string>
 
     <!-- MediaPreviewActivity -->
     <string name="MediaPreviewActivity_you">あなた</string>
-    <string name="MediaPreviewActivity_unssuported_media_type">Unsupported media type</string>
-    <string name="MediaPreviewActivity_draft">Draft</string>
-    <string name="MediaPreviewActivity_signal_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied">BChat needs storage access in order to save to external storage, but it has been permanently denied. Please continue to app settings, select \"Permissions\", and enable \"Storage\".</string>
-    <string name="MediaPreviewActivity_unable_to_write_to_external_storage_without_permission">Unable to save to external storage without permissions</string>
+    <string name="MediaPreviewActivity_unssuported_media_type">サポートされていないメディア タイプ</string>
+    <string name="MediaPreviewActivity_draft">草案</string>
+    <string name="MediaPreviewActivity_signal_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied">BChat は外部ストレージに保存するためにストレージ アクセスが必要ですが、永久に拒否されています。アプリの設定に進み、「権限」を選択し、「ストレージ」を有効にしてください。</string>
+    <string name="MediaPreviewActivity_unable_to_write_to_external_storage_without_permission">許可がなければ外部ストレージに保存できません</string>
     <string name="conversation_activity__wait_until_attachment_has_finished_downloading">添付ファイルのダウンロードが完了するまでお待ちください</string>
     <string name="MediaPreviewActivity_media_delete_confirmation_title">Delete message?</string>
     <string name="MediaPreviewActivity_media_delete_confirmation_message">This will permanently delete this message.</string>
 
     <!-- MessageNotifier -->
-    <string name="MessageNotifier_d_new_messages_in_d_conversations">%1$d new messages in %2$d conversations</string>
-    <string name="MessageNotifier_most_recent_from_s">Most recent from: %1$s</string>
-    <string name="MessageNotifier_locked_message">Locked message</string>
-    <string name="MessageNotifier_message_delivery_failed">Message delivery failed.</string>
-    <string name="MessageNotifier_failed_to_deliver_message">Failed to deliver message.</string>
-    <string name="MessageNotifier_error_delivering_message">Error delivering message.</string>
+    <string name="MessageNotifier_d_new_messages_in_d_conversations">%2$d 件の会話に %1$d 件の新しいメッセージが含まれています</string>
+    <string name="MessageNotifier_most_recent_from_s">最新のもの: %1$s</string>
+    <string name="MessageNotifier_locked_message">ロックされたメッセージ</string>
+    <string name="MessageNotifier_message_delivery_failed">メッセージの配信に失敗しました。</string>
+    <string name="MessageNotifier_failed_to_deliver_message">メッセージの配信に失敗しました。</string>
+    <string name="MessageNotifier_error_delivering_message">メッセージ配信中にエラーが発生しました。</string>
     <string name="MessageNotifier_mark_all_as_read">すべて既読にする</string>
-    <string name="MessageNotifier_mark_read">Mark read</string>
+    <string name="MessageNotifier_mark_read">既読マークを付ける</string>
     <string name="MessageNotifier_reply">返信</string>
-    <string name="MessageNotifier_pending_signal_messages">Pending BChat messages</string>
-    <string name="MessageNotifier_you_have_pending_signal_messages">You have pending BChat messages, tap to open and retrieve</string>
+    <string name="MessageNotifier_pending_signal_messages">保留中の BChat メッセージ</string>
+    <string name="MessageNotifier_you_have_pending_signal_messages">保留中の BChat メッセージがあります。タップして開いて取得します</string>
     <string name="MessageNotifier_contact_message">%1$s %2$s</string>
-    <string name="MessageNotifier_unknown_contact_message">Contact</string>
+    <string name="MessageNotifier_unknown_contact_message">お問い合わせ</string>
 
     <!-- Notification Channels -->
-    <string name="NotificationChannel_messages">Default</string>
-    <string name="NotificationChannel_calls">Calls</string>
-    <string name="NotificationChannel_failures">Failures</string>
-    <string name="NotificationChannel_backups">Backups</string>
-    <string name="NotificationChannel_locked_status">Lock status</string>
-    <string name="NotificationChannel_app_updates">App updates</string>
-    <string name="NotificationChannel_other">Other</string>
+    <string name="NotificationChannel_messages">デフォルト</string>
+    <string name="NotificationChannel_calls">電話</string>
+    <string name="NotificationChannel_failures">失敗</string>
+    <string name="NotificationChannel_backups">バックアップ</string>
+    <string name="NotificationChannel_locked_status">ロック状態</string>
+    <string name="NotificationChannel_app_updates">アプリのアップデート</string>
+    <string name="NotificationChannel_other">その他</string>
     <string name="NotificationChannel_group_messages">メッセージ</string>
-    <string name="NotificationChannel_missing_display_name">Unknown</string>
+    <string name="NotificationChannel_missing_display_name">不明</string>
 
     <!-- QuickResponseService -->
-    <string name="QuickResponseService_quick_response_unavailable_when_Signal_is_locked">Quick response unavailable when BChat is locked!</string>
-    <string name="QuickResponseService_problem_sending_message">Problem sending message!</string>
+    <string name="QuickResponseService_quick_response_unavailable_when_Signal_is_locked">BChatがロックされている場合、クイック応答は利用できません。</string>
+    <string name="QuickResponseService_problem_sending_message">メッセージの送信中に問題が発生しました!</string>
 
     <!-- SaveAttachmentTask -->
-    <string name="SaveAttachmentTask_saved_to">Saved to %s</string>
-    <string name="SaveAttachmentTask_saved">Saved</string>
+    <string name="SaveAttachmentTask_saved_to">%s に保存されました</string>
+    <string name="SaveAttachmentTask_saved">保存されました</string>
 
     <!-- SearchToolbar -->
     <string name="SearchToolbar_search">検索</string>
 
     <!-- ShortcutLauncherActivity -->
-    <string name="ShortcutLauncherActivity_invalid_shortcut">Invalid shortcut</string>
+    <string name="ShortcutLauncherActivity_invalid_shortcut">無効なショートカット</string>
 
     <!-- SingleRecipientNotificationBuilder -->
     <string name="SingleRecipientNotificationBuilder_signal">BChat</string>
-    <string name="SingleRecipientNotificationBuilder_new_message">New message</string>
+    <string name="SingleRecipientNotificationBuilder_new_message">新しいメッセージ</string>
 
     <!-- TransferControlView -->
     <plurals name="TransferControlView_n_items">
-        <item quantity="one">%d Item</item>
-        <item quantity="other">%d Items</item>
+        <item quantity="other">%d アイテム</item>
     </plurals>
 
     <!-- VideoPlayer -->
-    <string name="VideoPlayer_error_playing_video">Error playing video</string>
+    <string name="VideoPlayer_error_playing_video">動画再生エラー</string>
 
     <!-- attachment_type_selector -->
-    <string name="attachment_type_selector__audio">Audio</string>
-    <string name="attachment_type_selector__contact">Contact</string>
-    <string name="attachment_type_selector__camera">Camera</string>
-    <string name="attachment_type_selector__location">Location</string>
+    <string name="attachment_type_selector__audio">音声</string>
+    <string name="attachment_type_selector__contact">連絡先</string>
+    <string name="attachment_type_selector__camera">カメラ</string>
+    <string name="attachment_type_selector__location">位置情報</string>
     <string name="attachment_type_selector__gif">GIF</string>
-    <string name="attachment_type_selector__gallery">Gallery</string>
-    <string name="attachment_type_selector__file">File</string>
+    <string name="attachment_type_selector__gallery">ギャラリー</string>
+    <string name="attachment_type_selector__file">ファイル</string>
 
-    <string name="attachment_type_selector__drawer_description">Toggle attachment drawer</string>
+    <string name="attachment_type_selector__drawer_description">添付ファイルドロワーの切り替え</string>
 
     <!-- contact_selection_group_activity -->
-    <string name="contact_selection_group_activity__finding_contacts">Loading contacts&#8230;</string>
+    <string name="contact_selection_group_activity__finding_contacts">連絡先を読み込んでいます…</string>
 
     <!-- conversation_activity -->
     <string name="conversation_activity__send">送信</string>
-    <string name="conversation_activity__compose_description">Message composition</string>
-    <string name="conversation_activity__emoji_toggle_description">Toggle emoji keyboard</string>
+    <string name="conversation_activity__compose_description">メッセージ作成</string>
+    <string name="conversation_activity__emoji_toggle_description">絵文字キーボードの切り替え</string>
     <string name="conversation_activity__attachment_thumbnail">Attachment Thumbnail</string>
     <string name="conversation_activity__quick_attachment_drawer_toggle_camera_description">Toggle quick camera attachment drawer</string>
     <string name="conversation_activity__quick_attachment_drawer_record_and_send_audio_description">Record and send audio attachment</string>
@@ -384,14 +381,14 @@
     <string name="conversation_input_panel__slide_to_cancel">スライドしてキャンセル</string>
 
     <!-- conversation_item -->
-    <string name="conversation_item__mms_image_description">Media message</string>
-    <string name="conversation_item__secure_message_description">Secure message</string>
+    <string name="conversation_item__mms_image_description">メディアメッセージ</string>
+    <string name="conversation_item__secure_message_description">セキュアメッセージ</string>
 
     <!-- conversation_item_sent -->
-    <string name="conversation_item_sent__send_failed_indicator_description">Send Failed</string>
-    <string name="conversation_item_sent__pending_approval_description">Pending Approval</string>
-    <string name="conversation_item_sent__delivered_description">Delivered</string>
-    <string name="conversation_item_sent__message_read">Message read</string>
+    <string name="conversation_item_sent__send_failed_indicator_description">送信失敗</string>
+    <string name="conversation_item_sent__pending_approval_description">承認待ち</string>
+    <string name="conversation_item_sent__delivered_description">配信済み</string>
+    <string name="conversation_item_sent__message_read">メッセージ既読</string>
 
     <!-- conversation_item_received -->
     <string name="conversation_item_received__contact_photo_description">Contact photo</string>
@@ -402,22 +399,22 @@
     <string name="audio_view__download_accessibility_description">ダウンロード</string>
 
     <!-- open_group_invitation_view -->
-    <string name="open_group_invitation_view__join_accessibility_description">Join</string>
-    <string name="open_group_invitation_view__open_group_invitation">Social group invitation</string>
+    <string name="open_group_invitation_view__join_accessibility_description">参加</string>
+    <string name="open_group_invitation_view__open_group_invitation">ソーシャルグループへの招待</string>
     <string name="open_group_guidelines_pinned_message">Pinned message</string>
     <string name="open_group_guidelines_read">読む</string>
 
     <!-- QuoteView -->
-    <string name="QuoteView_audio">Audio</string>
-    <string name="QuoteView_video">Video</string>
-    <string name="QuoteView_photo">Photo</string>
-    <string name="QuoteView_original_missing">Original message not found</string>
+    <string name="QuoteView_audio">音声</string>
+    <string name="QuoteView_video">動画</string>
+    <string name="QuoteView_photo">写真</string>
+    <string name="QuoteView_original_missing">元のメッセージが見つかりません</string>
 
     <!-- conversation_fragment -->
     <string name="conversation_fragment__scroll_to_the_bottom_content_description">Scroll to the bottom</string>
 
     <!-- giphy_fragment -->
-    <string name="giphy_fragment__nothing_found">Nothing found</string>
+    <string name="giphy_fragment__nothing_found">何も見つかりません</string>
 
     <!-- load_more_header -->
     <string name="load_more_header__see_full_conversation">See full conversation</string>
@@ -427,20 +424,20 @@
     <string name="media_overview_activity__no_media">表示するメディア項目がありません!</string>
 
     <!-- message_recipients_list_item -->
-    <string name="message_recipients_list_item__resend">Resend</string>
+    <string name="message_recipients_list_item__resend">再送信</string>
 
     <!-- message_details_header -->
     <string name="message_details_header__sent">送信済み</string>
-    <string name="message_details_header__received">Received</string>
-    <string name="message_details_header__disappears">Disappears</string>
+    <string name="message_details_header__received">受信済み</string>
+    <string name="message_details_header__disappears">消える</string>
 
     <!-- AndroidManifest.xml -->
     <string name="AndroidManifest__create_passphrase">Create passphrase</string>
-    <string name="AndroidManifest__media_preview">Media preview</string>
+    <string name="AndroidManifest__media_preview">メディアプレビュー</string>
 
     <!-- arrays.xml -->
-    <string name="arrays__use_default">Use default</string>
-    <string name="arrays__use_custom">Use custom</string>
+    <string name="arrays__use_default">デフォルトを使用</string>
+    <string name="arrays__use_custom">カスタムを使用</string>
 
     <string name="arrays__mute_for_one_hour">1時間ミュート</string>
     <string name="arrays__mute_for_two_hours">2時間ミュート</string>
@@ -466,18 +463,17 @@
     <string name="arrays__large">Large</string>
     <string name="arrays__extra_large">Extra large</string>
 
-    <string name="arrays__default">Default</string>
-    <string name="arrays__high">High</string>
-    <string name="arrays__max">Max</string>
+    <string name="arrays__default">デフォルト</string>
+    <string name="arrays__high">高</string>
+    <string name="arrays__max">最大</string>
 
-    <string name="arrays_small_font_size">Small</string>
-    <string name="arrays_medium_font_size">Medium</string>
-    <string name="arrays_large_font_size">Large</string>
+    <string name="arrays_small_font_size">小</string>
+    <string name="arrays_medium_font_size">中</string>
+    <string name="arrays_large_font_size">大</string>
 
     <!-- plurals.xml -->
     <plurals name="hours_ago">
-        <item quantity="one">%d hour</item>
-        <item quantity="other">%d hours</item>
+        <item quantity="other">%d 時間前</item>
     </plurals>
 
     <!-- preferences.xml -->
@@ -488,30 +484,30 @@
     <string name="preferences__screen_security">Screen security</string>
     <string name="preferences__disable_screen_security_to_allow_screen_shots">Block screenshots in the recents list and inside the app</string>
     <string name="preferences__notifications">すべての通知</string>
-    <string name="preferences__led_color">LED color</string>
-    <string name="preferences__led_color_unknown">Unknown</string>
-    <string name="preferences__pref_led_blink_title">LED blink pattern</string>
+    <string name="preferences__led_color">LEDカラー</string>
+    <string name="preferences__led_color_unknown">不明</string>
+    <string name="preferences__pref_led_blink_title">LED点滅パターン</string>
     <string name="preferences__sound">音</string>
-    <string name="preferences__silent">Silent</string>
-    <string name="preferences__repeat_alerts">Repeat alerts</string>
-    <string name="preferences__never">Never</string>
-    <string name="preferences__one_time">One time</string>
-    <string name="preferences__two_times">Two times</string>
-    <string name="preferences__three_times">Three times</string>
-    <string name="preferences__five_times">Five times</string>
-    <string name="preferences__ten_times">Ten times</string>
+    <string name="preferences__silent">サイレント</string>
+    <string name="preferences__repeat_alerts">アラートの繰り返し</string>
+    <string name="preferences__never">なし</string>
+    <string name="preferences__one_time">1回</string>
+    <string name="preferences__two_times">2回</string>
+    <string name="preferences__three_times">3回</string>
+    <string name="preferences__five_times">5回</string>
+    <string name="preferences__ten_times">10回</string>
     <string name="preferences__vibrate">振動</string>
-    <string name="preferences__green">Green</string>
-    <string name="preferences__red">Red</string>
-    <string name="preferences__blue">Blue</string>
-    <string name="preferences__orange">Orange</string>
-    <string name="preferences__cyan">Cyan</string>
-    <string name="preferences__magenta">Magenta</string>
-    <string name="preferences__white">White</string>
-    <string name="preferences__none">None</string>
-    <string name="preferences__fast">Fast</string>
-    <string name="preferences__normal">Normal</string>
-    <string name="preferences__slow">Slow</string>
+    <string name="preferences__green">緑</string>
+    <string name="preferences__red">赤</string>
+    <string name="preferences__blue">青</string>
+    <string name="preferences__orange">オレンジ</string>
+    <string name="preferences__cyan">シアン</string>
+    <string name="preferences__magenta">マゼンタ</string>
+    <string name="preferences__white">白</string>
+    <string name="preferences__none">なし</string>
+    <string name="preferences__fast">高速</string>
+    <string name="preferences__normal">標準</string>
+    <string name="preferences__slow">低速</string>
     <string name="preferences__automatically_delete_older_messages_once_a_conversation_exceeds_a_specified_length">Automatically delete older messages once a conversation exceeds a specified length</string>
     <string name="preferences__delete_old_messages">古いメッセージを削除</string>
     <string name="preferences__conversation_length_limit">会話の長さ制限</string>
@@ -527,7 +523,7 @@
     <string name="preferences__light_theme">Light</string>
     <string name="preferences__dark_theme">Dark</string>
     <string name="preferences_chats__message_trimming">メッセージのトリミング</string>
-    <string name="preferences_advanced__use_system_emoji">Use system emoji</string>
+    <string name="preferences_advanced__use_system_emoji">システム絵文字を使用</string>
     <string name="preferences_advanced__disable_signal_built_in_emoji_support">Disable BChat\'s built-in emoji support</string>
     <string name="preferences_app_protection__app_access">アプリアクセス</string>
     <string name="preferences_app_protection__communication">通信</string>
@@ -535,7 +531,7 @@
     <string name="preferences_notifications__in_chat_sounds">チャット内の音</string>
     <string name="preferences_notifications__show">表示</string>
     <string name="preferences_notifications__priority">優先度</string>
-    <string name="preferences_chats__font_size">Font Size</string>
+    <string name="preferences_chats__font_size">フォントサイズ</string>
     <string name="preferences_chat_font_small">Small</string>
     <string name="preferences_chat_font_medium">Medium</string>
     <string name="preferences_chat_font_large">large</string>
@@ -550,22 +546,22 @@
     <!-- **************************************** -->
 
     <!-- contact_selection_list -->
-    <string name="contact_selection_list__unknown_contact">New message to…</string>
+    <string name="contact_selection_list__unknown_contact">新しいメッセージを送る</string>
 
     <!-- conversation_context -->
     <string name="conversation_context__menu_message_details">メッセージの詳細</string>
     <string name="conversation_context__menu_copy_text">テキストをコピー</string>
     <string name="conversation_context__menu_delete_message">メッセージを削除</string>
-    <string name="conversation_context__menu_ban_user">Ban user</string>
-    <string name="conversation_context__menu_ban_and_delete_all">Ban and delete all</string>
-    <string name="conversation_context__menu_resend_message">Resend message</string>
-    <string name="conversation_context__menu_reply_to_message">Reply to message</string>
+    <string name="conversation_context__menu_ban_user">ユーザーをブロック</string>
+    <string name="conversation_context__menu_ban_and_delete_all">ブロックしてすべて削除</string>
+    <string name="conversation_context__menu_resend_message">メッセージを再送信</string>
+    <string name="conversation_context__menu_reply_to_message">メッセージに返信</string>
 
     <!-- conversation_context_image -->
-    <string name="conversation_context_image__save_attachment">Save attachment</string>
+    <string name="conversation_context_image__save_attachment">添付ファイルを保存</string>
 
     <!-- conversation_expiring_on -->
-    <string name="menu_conversation_expiring_on__messages_expiring">Messages expiring</string>
+    <string name="menu_conversation_expiring_on__messages_expiring">メッセージの有効期限切れ</string>
 
     <!-- conversation_muted -->
     <string name="conversation_muted__unmute">ミュート解除</string>
@@ -593,19 +589,19 @@
     <string name="media_overview_documents_fragment__no_documents_found">表示するドキュメント項目がありません!</string>
 
     <!-- media_preview_activity -->
-    <string name="media_preview_activity__media_content_description">Media preview</string>
+    <string name="media_preview_activity__media_content_description">メディアプレビュー</string>
 
     <!-- Trimmer -->
-    <string name="trimmer__deleting">Deleting</string>
-    <string name="trimmer__deleting_old_messages">Deleting old messages...</string>
-    <string name="trimmer__old_messages_successfully_deleted">Old messages successfully deleted</string>
+    <string name="trimmer__deleting">削除中</string>
+    <string name="trimmer__deleting_old_messages">古いメッセージを削除しています…</string>
+    <string name="trimmer__old_messages_successfully_deleted">古いメッセージは正常に削除されました</string>
 
     <!-- transport_selection_list_item -->
-    <string name="Permissions_permission_required">Permission Required!</string>
+    <string name="Permissions_permission_required">権限が必要です！</string>
     <string name="Permissions_allow">許可</string>
     <string name="Permissions_deny">拒否</string>
-    <string name="backup_enable_dialog__backups_will_be_saved_to_external_storage_and_encrypted_with_the_passphrase_below_you_must_have_this_passphrase_in_order_to_restore_a_backup">Backups will be saved to external storage and encrypted with the passphrase below. You must have this passphrase in order to restore a backup.</string>
-    <string name="backup_enable_dialog__i_have_written_down_this_passphrase">I have written down this passphrase. Without it, I will be unable to restore a backup.</string>
+    <string name="backup_enable_dialog__backups_will_be_saved_to_external_storage_and_encrypted_with_the_passphrase_below_you_must_have_this_passphrase_in_order_to_restore_a_backup">バックアップは外部ストレージに保存され、下記のパスフレーズで暗号化されます。バックアップを復元するには、このパスフレーズが必要です。</string>
+    <string name="backup_enable_dialog__i_have_written_down_this_passphrase">このパスフレーズをメモしました。これがないと、バックアップを復元できません。</string>
     <string name="registration_activity__skip">Skip</string>
     <string name="RegistrationActivity_backup_failure_downgrade">Cannot import backups from newer versions of BChat</string>
     <string name="RegistrationActivity_incorrect_backup_passphrase">Incorrect backup passphrase</string>
@@ -615,13 +611,13 @@
     <string name="BackupDialog_delete_backups">Delete backups?</string>
     <string name="BackupDialog_disable_and_delete_all_local_backups">Disable and delete all local backups?</string>
     <string name="BackupDialog_delete_backups_statement">Delete backups</string>
-    <string name="LocalBackupJob_creating_backup">Creating backup...</string>
-    <string name="ProgressPreference_d_messages_so_far">%d messages so far</string>
-    <string name="BackupUtil_never">Never</string>
-    <string name="preferences_app_protection__screen_lock">Screen lock</string>
-    <string name="preferences_app_protection__lock_signal_access_with_android_screen_lock_or_fingerprint">Lock BChat access with Android screen lock or fingerprint</string>
-    <string name="preferences_app_protection__screen_lock_inactivity_timeout">Screen lock inactivity timeout</string>
-    <string name="AppProtectionPreferenceFragment_none">None</string>
+    <string name="LocalBackupJob_creating_backup">バックアップを作成中…</string>
+    <string name="ProgressPreference_d_messages_so_far">これまでのメッセージ数：%d</string>
+    <string name="BackupUtil_never">なし</string>
+    <string name="preferences_app_protection__screen_lock">画面ロック</string>
+    <string name="preferences_app_protection__lock_signal_access_with_android_screen_lock_or_fingerprint">Androidの画面ロックまたは指紋認証でBChatへのアクセスをロックする</string>
+    <string name="preferences_app_protection__screen_lock_inactivity_timeout">画面ロックの非アクティブタイムアウト</string>
+    <string name="AppProtectionPreferenceFragment_none">なし</string>
     <!-- Conversation activity -->
     <string name="activity_conversation_copy_public_key_button_title">Copy public key</string>
 
@@ -632,7 +628,7 @@
     <string name="copied_to_clipboard">クリップボードにコピーしました</string>
     <string name="next">次へ</string>
     <string name="share">共有</string>
-    <string name="invalid_bchat_id">Invalid BChat ID</string>
+    <string name="invalid_bchat_id">無効なBChat ID</string>
     <string name="cancel">キャンセル</string>
     <string name="ok">OK</string>
     <string name="your_bchat_id">あなたの BChat ID</string>
@@ -641,11 +637,11 @@
     <string name="activity_landing_register_button_title">アカウントを作成</string>
     <string name="activity_landing_restore_button_title">アカウントを復元</string>
 
-    <string name="view_fake_chat_bubble_1">What\'s BChat?</string>
-    <string name="view_fake_chat_bubble_2">It\'s a decentralized, encrypted messaging app</string>
-    <string name="view_fake_chat_bubble_3">So it doesn\'t collect my personal information or my conversation metadata? How does it work?</string>
-    <string name="view_fake_chat_bubble_4">Using a combination of advanced anonymous routing and end-to-end encryption technologies.</string>
-    <string name="view_fake_chat_bubble_5">Friends don\'t let friends use compromised messengers. You\'re welcome.</string>
+    <string name="view_fake_chat_bubble_1">BChatとは？</string>
+    <string name="view_fake_chat_bubble_2">分散型で暗号化されたメッセージングアプリです。</string>
+    <string name="view_fake_chat_bubble_3">つまり、個人情報や会話のメタデータは収集されないということですか？どのように動作するのですか？</string>
+    <string name="view_fake_chat_bubble_4">高度な匿名ルーティングとエンドツーエンド暗号化技術を組み合わせて使用​​します。</string>
+    <string name="view_fake_chat_bubble_5">友達なら、友達にセキュリティ侵害されたメッセンジャーを使わせません。どういたしまして。</string>
 
     <string name="activity_register_title">Say hello to your BChat ID</string>
     <string name="activity_register_explanation">Your BChat ID is the unique address people can use to contact you on BChat. With no connection to your real identity, your BChat ID is totally anonymous and private by design.</string>
@@ -660,62 +656,62 @@
     <string name="activity_display_name_display_name_too_long_error">もっと短い表示名を選択してください</string>
     <string name="activity_display_name_hint">いつでも変更できます :)</string>
 
-    <string name="activity_pn_mode_recommended_option_tag">Recommended</string>
-    <string name="activity_pn_mode_no_option_picked_dialog_title">Please Pick an Option</string>
+    <string name="activity_pn_mode_recommended_option_tag">おすすめ</string>
+    <string name="activity_pn_mode_no_option_picked_dialog_title">オプションを選択してください</string>
 
-    <string name="activity_home_empty_state_message">You don\'t have any contacts yet</string>
-    <string name="activity_home_empty_state_button_title">Start a BChat</string>
+    <string name="activity_home_empty_state_message">まだ連絡先がありません</string>
+    <string name="activity_home_empty_state_button_title">BChatを始める</string>
     <string name="activity_home_leaving_group_failed_message">"Couldn\'t leave group"</string>
     <string name="activity_home_delete_conversation_dialog_message">この会話を削除してもよろしいですか？</string>
-    <string name="activity_home_conversation_deleted_message">Conversation deleted</string>
+    <string name="activity_home_conversation_deleted_message">会話が削除されました</string>
 
-    <string name="activity_seed_title">Your Recovery Seed</string>
-    <string name="activity_seed_title_2">Meet your recovery phrase</string>
-    <string name="activity_seed_explanation">Your recovery phrase is the master key to your BChat ID — you can use it to restore your BChat ID if you lose access to your device. Store your recovery phrase in a safe place, and don\'t give it to anyone.</string>
-    <string name="activity_seed_reveal_button_title">Hold to reveal</string>
+    <string name="activity_seed_title">リカバリーシード</string>
+    <string name="activity_seed_title_2">リカバリーフレーズをご紹介します</string>
+    <string name="activity_seed_explanation">リカバリーフレーズはBChat IDのマスターキーです。デバイスにアクセスできなくなった場合、これを使ってBChat IDを復元できます。リカバリーフレーズは安全な場所に保管し、誰にも教えないでください。</string>
+    <string name="activity_seed_reveal_button_title">長押しして表示</string>
 
-    <string name="view_seed_reminder_title">You\'re almost finished! 80%</string>
-    <string name="view_seed_reminder_subtitle_1">Secure your account by saving your recovery phrase</string>
-    <string name="view_seed_reminder_subtitle_2">Tap and hold the redacted words to reveal your recovery phrase, then store it safely to secure your BChat ID.</string>
-    <string name="view_seed_reminder_subtitle_3">Make sure to store your recovery phrase in a safe place</string>
+    <string name="view_seed_reminder_title">もうすぐ完了です！80%</string>
+    <string name="view_seed_reminder_subtitle_1">リカバリーフレーズを保存してアカウントを保護してください</string>
+    <string name="view_seed_reminder_subtitle_2">赤く隠された単語を長押ししてリカバリーフレーズを表示し、安全な場所に保管してBChat IDを保護してください</string>
+    <string name="view_seed_reminder_subtitle_3">リカバリーフレーズは安全な場所に保存してください</string>
 
     <string name="activity_path_title">ホップ</string>
     <string name="activity_path_explanation">BChat は、メッセージを Beldex 分散型ネットワーク内の複数のマスターノードを経由させることで、あなたの IP アドレスを隠します。現在、接続は以下のマスターノードを経由しています。</string>
     <string name="activity_path_guard_node_row_title">エントリーノード</string>
     <string name="activity_path_service_node_row_title">マスターノード</string>
     <string name="activity_path_destination_row_title">宛先</string>
-    <string name="activity_path_learn_more_button_title">Learn More</string>
-    <string name="activity_path_resolving_progress">Resolving…</string>
+    <string name="activity_path_learn_more_button_title">詳細を見る</string>
+    <string name="activity_path_resolving_progress">処理中…</string>
 
     <string name="activity_create_private_chat_title">新しいチャット</string>
-    <string name="activity_create_private_chat_enter_bchat_id_tab_title">Enter BChat ID</string>
+    <string name="activity_create_private_chat_enter_bchat_id_tab_title">BChat IDを入力</string>
     <string name="activity_create_private_chat_scan_qr_code_explanation">ユーザーのQRコードをスキャンしてBChatを開始します。QRコードはアカウント設定のQRコードアイコンをタップすると見つかります。</string>
 
-    <string name="fragment_enter_public_key_explanation">Users can share their BChat ID by going into their account settings and tapping "Share BChat ID", or by sharing their QR code.</string>
+    <string name="fragment_enter_public_key_explanation">ユーザーはアカウント設定から「BChat IDを共有」をタップするか、QRコードを共有することでBChat IDを共有できます</string>
     <string name="fragment_enter_public_key_error_message">BChat IDまたはBNS名を確認して、再試行してください</string>
 
     <string name="fragment_scan_qr_code_camera_access_explanation">BChat needs camera access to scan QR codes</string>
-    <string name="fragment_scan_qr_code_grant_camera_access_button_title">Grant Camera Access</string>
+    <string name="fragment_scan_qr_code_grant_camera_access_button_title">カメラへのアクセスを許可</string>
 
-    <string name="activity_create_closed_group_title">New Secret Group</string>
+    <string name="activity_create_closed_group_title">新しい秘密グループ</string>
     <string name="activity_create_closed_group_edit_text_hint">Enter a group name</string>
     <string name="activity_create_closed_group_empty_state_message">連絡先がまだありません.</string>
     <string name="activity_create_closed_group_empty_state_button_title">Start a Chat</string>
     <string name="activity_create_closed_group_group_name_missing_error">グループ名を入力してください</string>
     <string name="activity_create_closed_group_group_name_too_long_error">短いグループ名を入力してください</string>
     <string name="activity_create_closed_group_not_enough_group_members_error">少なくとも1人のメンバーを選択してください</string>
-    <string name="activity_create_closed_group_too_many_group_members_error">A secret group cannot have more than 100 members</string>
+    <string name="activity_create_closed_group_too_many_group_members_error">秘密グループのメンバーは100人を超えることはできません</string>
 
     <string name="activity_join_public_chat_title">ソーシャルグループに参加</string>
-    <string name="activity_join_public_chat_error">Couldn\'t join social group</string>
-    <string name="activity_join_public_chat_enter_group_url_tab_title">Social Group URL</string>
+    <string name="activity_join_public_chat_error">ソーシャルグループに参加できませんでした</string>
+    <string name="activity_join_public_chat_enter_group_url_tab_title">ソーシャルグループURL</string>
     <string name="activity_join_public_chat_scan_qr_code_explanation">Scan the QR code of the social group you\'d like to join</string>
 
     <string name="fragment_enter_chat_url_edit_text_hint">ソーシャルグループのURLを入力</string>
 
     <string name="activity_settings_title">設定</string>
-    <string name="activity_settings_display_name_edit_text_hint">Enter a display name</string>
-    <string name="activity_settings_privacy_button_title">Privacy</string>
+    <string name="activity_settings_display_name_edit_text_hint">表示名を入力</string>
+    <string name="activity_settings_privacy_button_title">プライバシー</string>
     <string name="activity_settings_notifications_button_title">通知</string>
     <string name="activity_settings_devices_button_title">Devices</string>
     <string name="activity_settings_invite_button_title">友達を招待</string>
@@ -723,12 +719,12 @@
     <string name="activity_settings_recovery_phrase_button_title">リカバリーシード</string>
     <string name="activity_settings_clear_all_data_button_title">データを消去</string>
     <string name="activity_settings_clear_all_data_and_network_button_title">Clear Data Including Network</string>
-    <string name="activity_settings_help_translate_bchat">Help us Translate BChat</string>
+    <string name="activity_settings_help_translate_bchat">BChatの翻訳にご協力ください</string>
 
     <string name="activity_notification_settings_style_section_title">通知スタイル</string>
     <string name="activity_notification_settings_content_section_title">通知内容</string>
 
-    <string name="activity_privacy_settings_title">Privacy</string>
+    <string name="activity_privacy_settings_title">プライバシー</string>
 
     <string name="activity_chat_settings_title">チャット</string>
 
@@ -736,11 +732,11 @@
     <string name="preferences_notifications_strategy_category_fast_mode_title">高速モードを使用</string>
     <string name="preferences_notifications_strategy_category_fast_mode_summary">Google の通知サーバーを使用して、新しいメッセージを確実かつ即時に通知します。</string>
 
-    <string name="fragment_device_list_bottom_sheet_change_name_button_title">Change name</string>
-    <string name="fragment_device_list_bottom_sheet_unlink_device_button_title">Unlink device</string>
+    <string name="fragment_device_list_bottom_sheet_change_name_button_title">名前を変更</string>
+    <string name="fragment_device_list_bottom_sheet_unlink_device_button_title">デバイスのリンク解除</string>
 
-    <string name="dialog_seed_title">Your Recovery Seed</string>
-    <string name="dialog_seed_explanation">This is your recovery seed. With it, you can restore or migrate your BChat ID to a new device.</string>
+    <string name="dialog_seed_title">リカバリシード</string>
+    <string name="dialog_seed_explanation">これがあなたのリカバリシードです。このシードを使用すると、新しいデバイスでBChat IDを復元または移行できます</string>
 
     <string name="dialog_clear_all_data_title">データ全削除</string>
     <string name="dialog_clear_all_data_explanation">このデバイスからすべてのデータを完全に削除してもよろしいですか？</string>
@@ -748,14 +744,14 @@
     <string name="dialog_clear_all_data_local_only">Delete Only</string>
     <string name="dialog_clear_all_data_clear_network">Entire Account</string>
 
-    <string name="activity_qr_code_title">QR Code</string>
-    <string name="activity_qr_code_view_my_qr_code_tab_title">My QR Code</string>
+    <string name="activity_qr_code_title">QRコード</string>
+    <string name="activity_qr_code_view_my_qr_code_tab_title">マイQRコード</string>
     <string name="activity_qr_code_view_scan_qr_code_tab_title">QRをスキャン</string>
-    <string name="activity_qr_code_view_scan_qr_code_explanation">Scan someone\'s QR code to start a conversation with them</string>
+    <string name="activity_qr_code_view_scan_qr_code_explanation">誰かのQRコードをスキャンして会話を開始します</string>
     <string name="fragment_view_my_qr_code_title">Scan Me</string>
 
     <string name="fragment_view_my_qr_code_explanation">This is your QR code. Other users can scan it to start a BChat with you.</string>
-    <string name="fragment_view_my_qr_code_share_title">Share QR Code</string>
+    <string name="fragment_view_my_qr_code_share_title">QRコードを共有</string>
 
     <string name="fragment_contact_selection_contacts_title">連絡先</string>
     <string name="fragment_contact_selection_closed_groups_title">シークレットグループ</string>
@@ -763,7 +759,7 @@
 
     <!-- Next round of translation -->
 
-    <string name="menu_apply_button">Apply</string>
+    <string name="menu_apply_button">適用</string>
     <string name="menu_done_button">完了</string>
 
     <string name="activity_edit_closed_group_title">グループを編集</string>
@@ -779,15 +775,15 @@
 
     <string name="view_reset_secure_bchat_done_message">Secure BChat reset done</string>
 
-    <string name="dialog_ui_mode_title">Theme</string>
-    <string name="dialog_ui_mode_option_day">Day</string>
-    <string name="dialog_ui_mode_option_night">Night</string>
-    <string name="dialog_ui_mode_option_system_default">System default</string>
+    <string name="dialog_ui_mode_title">テーマ</string>
+    <string name="dialog_ui_mode_option_day">昼</string>
+    <string name="dialog_ui_mode_option_night">夜</string>
+    <string name="dialog_ui_mode_option_system_default">システムデフォルト</string>
 
     <string name="activity_conversation_menu_copy_bchat_id">BChat ID をコピー</string>
 
-    <string name="attachment">Attachment</string>
-    <string name="attachment_type_voice_message">Voice Message</string>
+    <string name="attachment">添付</string>
+    <string name="attachment_type_voice_message">音声メッセージ</string>
     <string name="details">詳細</string>
 
     <string name="dialog_backup_activation_failed">Failed to activate backups. Please try again or contact support.</string>
@@ -800,34 +796,34 @@
     <string name="activity_link_device_skip_prompt">This is taking a while, would you like to skip?</string>
     <string name="activity_link_device_link_device">Link a Device</string>
     <string name="activity_link_device_qr_message">Navigate to Settings → Recovery Seed on your other device to show your QR code.</string>
-    <string name="activity_join_public_chat_join_rooms">Or join one of these…</string>
+    <string name="activity_join_public_chat_join_rooms">または、次のいずれかに参加…</string>
 
-    <string name="activity_pn_mode_message_notifications">Message Notifications</string>
-    <string name="activity_pn_mode_explanation">There are two ways BChat can notify you of new messages.</string>
-    <string name="activity_pn_mode_fast_mode">Fast Mode</string>
-    <string name="activity_pn_mode_slow_mode">Slow Mode</string>
-    <string name="activity_pn_mode_slow_mode_explanation">BChat will occasionally check for new messages in the background.</string>
+    <string name="activity_pn_mode_message_notifications">メッセージ通知</string>
+    <string name="activity_pn_mode_explanation">BChatは新しいメッセージの通知方法を2種類提供しています</string>
+    <string name="activity_pn_mode_fast_mode">高速モード</string>
+    <string name="activity_pn_mode_slow_mode">低速モード</string>
+    <string name="activity_pn_mode_slow_mode_explanation">BChatはバックグラウンドで定期的に新しいメッセージを確認します</string>
 
-    <string name="activity_prompt_passphrase_bchat_locked">BChat is Locked</string>
-    <string name="activity_prompt_passphrase_tap_to_unlock">Tap to Unlock</string>
+    <string name="activity_prompt_passphrase_bchat_locked">BChatはロックされています</string>
+    <string name="activity_prompt_passphrase_tap_to_unlock">タップして解除</string>
 
     <string name="fragment_user_details_bottom_sheet_edit_text_hint">ニックネームを入力</string>
-    <string name="invalid_public_key">Invalid public key</string>
+    <string name="invalid_public_key">無効な公開鍵</string>
 
-    <string name="document">Document</string>
+    <string name="document">ドキュメント</string>
 
-    <string name="dialog_blocked_title">Unblock %s?</string>
-    <string name="dialog_blocked_explanation">Are you sure you want to unblock %s?</string>
+    <string name="dialog_blocked_title">%s をブロック解除しますか？</string>
+    <string name="dialog_blocked_explanation">%s をブロック解除してもよろしいですか？</string>
 
-    <string name="dialog_join_open_group_title">Join %s?</string>
-    <string name="dialog_join_open_group_explanation">Are you sure you want to join the %s social group?</string>
+    <string name="dialog_join_open_group_title">%s に参加しますか？</string>
+    <string name="dialog_join_open_group_explanation">%s ソーシャルグループに参加してもよろしいですか？</string>
 
     <string name="dialog_open_url_title">URLを開きますか？</string>
-    <string name="dialog_open_url_explanation">「%s」を開いてもよろしいですか？</string>
+    <string name="dialog_open_url_explanation">開いてもよろしいですか %s？</string>
     <string name="open">開く</string>
 
-    <string name="dialog_link_preview_title">Enable Link Previews?</string>
-    <string name="dialog_link_preview_explanation">Enabling link previews will show previews for URLs you send and receive. This can be useful, but BChat will need to contact linked websites to generate previews. You can always disable link previews in BChat\'s settings.</string>
+    <string name="dialog_link_preview_title">リンクプレビューを有効にしますか？</string>
+    <string name="dialog_link_preview_explanation">リンクプレビューを有効にすると、送受信したURLのプレビューが表示されます。便利ですが、プレビュー生成のためにBChatはリンク先のウェブサイトにアクセスする必要があります。リンクプレビューはBChatの設定からいつでも無効にできます。</string>
     <string name="dialog_link_preview_enable_button_title">有効化</string>
 
     <string name="dialog_download_title">信頼 %s?</string>
@@ -835,25 +831,25 @@
 
     <string name="activity_conversation_blocked_banner_text">%s is blocked. Unblock them?</string>
 
-    <string name="activity_conversation_attachment_prep_failed">Failed to prepare attachment for sending.</string>
+    <string name="activity_conversation_attachment_prep_failed">添付ファイルの送信準備に失敗しました。</string>
     <string name="UntrustedAttachmentView_download_attachment">Tap to download %s</string>
-    <string name="message_details_header__error">Error</string>
+    <string name="message_details_header__error">エラー</string>
 
     <string name="dialog_send_seed_title">警告</string>
     <string name="dialog_send_seed_explanation">これはあなたのリカバリーシードです。これを誰かに送信すると、その人はあなたのアカウントに完全にアクセスできるようになります。</string>
     <string name="notify_type_all">すべて</string>
     <string name="notify_type_mentions">メンション</string>
-    <string name="deleted_message">This message has been deleted</string>
+    <string name="deleted_message">このメッセージは削除されました</string>
     <string name="delete_message_for_me">自分だけを削除</string>
-    <string name="delete_message_for_everyone">Delete for everyone</string>
-    <string name="delete_message_for_me_and_recipient">自分と「%s」を削除</string>
+    <string name="delete_message_for_everyone">全員から削除</string>
+    <string name="delete_message_for_me_and_recipient">自分と %s を削除</string>
     <string name="activity_settings_survey_feedback">フィードバック</string>
     <string name="activity_settings_support">Debug Log</string>
     <string name="dialog_share_logs_title">Share Logs</string>
     <string name="dialog_share_logs_explanation">Would you like to export your application logs to be able to share for troubleshooting?</string>
     <string name="conversation_pin">固定</string>
     <string name="conversation_unpin">固定解除</string>
-    <string name="global_search_contacts_groups">Contacts and Groups</string>
+    <string name="global_search_contacts_groups">連絡先とグループ</string>
 
     <!-- New Strings-->
 
@@ -888,24 +884,24 @@
     <string name="join_group">Join Social Group</string>
     <string name="group_url">Group URL</string>
     <string name="or_join_here">Or Join here</string>
-    <string name="camera_access_text">BChat needs camera access to scan QR codes</string>
+    <string name="camera_access_text">Bchat が QR コードをスキャンするにはカメラへのアクセスが必要です</string>
     <string name="remove_this_contact">Remove This Contacts ?</string>
     <string name="remove_message">Are you sure You want to Remove this contact from this group?</string>
     <string name="leave">退出</string>
     <string name="create">作成</string>
     <string name="change">Change</string>
-    <string name="enter_new_password"> Enter a New Password</string>
-    <string name="enter_old_password"> Enter Your Old Password</string>
-    <string name="change_password_content">BChat app lock password adds an additional layer of security to users. Enter your old password and new password to update your password in app lock.</string>
+    <string name="enter_new_password">新しいパスワードを入力</string>
+    <string name="enter_old_password">古いパスワードを入力</string>
+    <string name="change_password_content">BChatアプリロックのパスワードは、ユーザーに追加のセキュリティ層を提供します。アプリロックのパスワードを更新するには、現在のパスワードと新しいパスワードを入力してください。</string>
 
     <!-- Screenlock InActivity -->
-    <string name="none">None</string>
-    <string name="thirty_seconds">30 seconds</string>
-    <string name="one_minute">1 Minute</string>
-    <string name="two_minutes">2 Minutes</string>
-    <string name="five_minutes">5 Minutes</string>
-    <string name="fifteen_minutes">15 Minutes</string>
-    <string name="thirty_minutes">30 Minutes</string>
+    <string name="none">なし</string>
+    <string name="thirty_seconds">30秒</string>
+    <string name="one_minute">1分</string>
+    <string name="two_minutes">2分</string>
+    <string name="five_minutes">5分</string>
+    <string name="fifteen_minutes">15分</string>
+    <string name="thirty_minutes">30分</string>
 
     <string name="generate_wallet_creating">イェイ！あなたの BChat が設定されています！</string>
     <string name="scan_qrcode_text">Scan</string>
@@ -917,7 +913,7 @@
     <string name="display_name_screen_description_content">Your display name is not your username and you can change it anytime.</string>
     <string name="register_screen_chat_id_description_content">あなたの BChat ID はユーザー名のようなものです。友達と共有して会話を始めましょう。</string>
     <string name="register_screen_beldex_address_description_content">あなたの Beldex アドレスは BChat ID に接続されています。このアドレスを使って BDX を受け取れます。</string>
-    <string name="create_password_screen_description_content">Enter a four digit pin to add an additional layer of security to your BChat account. Your pin is required to unlock your account or view your recovery keys and recovery seed once you\'re logged in.</string>
+    <string name="create_password_screen_description_content">BChatアカウントに追加のセキュリティ層を設定するため、4桁のPINを入力してください。このPINは、ログイン後にアカウントのロック解除やリカバリーキーおよびリカバリーシードの表示に必要になります。</string>
     <string name="recovery_phrase_screen_description_content"><font color='#FF0000'>Note: </font> Save your recovery seed! Only your recovery seed can be used to recover your account on another device. Copy the recovery seed to continue.</string>
     <string name="new_chat_screen_description_content">Share your BChat ID with your friends. You can find your BChat ID below.</string>
     <string name="never_share_your_seed_with_anyone">保留中のメッセージリクエストはありません！</string>
@@ -926,7 +922,7 @@
     <string name="seed_permission_important_confirmButton">はい、安全です :)</string>
     <string name="mnemonic_edit_text_hint">シードを入力</string>
     <string name="password_screen_description_content">Enter your four digit pin to unlock your account</string>
-    <string name="check_password_description_content_seed">Enter your password to view your seed. Write it down on paper.</string>
+    <string name="check_password_description_content_seed">シードを表示するにはパスワードを入力してください。紙に書き留めてください。</string>
     <string name="check_password_description_content_keys">Enter your password to view your restore key. Write it down on paper.</string>
     <string name="closed_group_screen_description_content">Uh oh, you don\'t have any contacts yet.\nAdd some contacts first to start a secret group.</string>
     <string name="join_social_group_description_content">Social groups are similar to public groups, however, you need an invite link to join. Join a social group using the group\'s URL.</string>
@@ -939,64 +935,65 @@
     <string name="AudioView_duration">%1$d:%2$02d</string>
     <string name="VoiceNotePlayerView__pause_voice_message">Pause voice message</string>
     <string name="VoiceNotePlayerView__play_voice_message">Play voice message</string>
-    <string name="activity_settings_profile_name_title">Profile Name</string>
-    <string name="bchat_id_clipboard">Your BChat ID is copied to clipboard</string>
-    <string name="beldex_address_clipboard">Your Beldex Address is copied to clipboard</string>
-    <string name="message_requests_notification">You have a new message request</string>
+    <string name="activity_settings_profile_name_title">プロフィール名</string>
+    <string name="bchat_id_clipboard">あなたのBChat IDはクリップボードにコピーされました</string>
+    <string name="beldex_address_clipboard">あなたのBeldexアドレスはクリップボードにコピーされました</string>
+    <string name="message_requests_notification">新しいメッセージリクエストがあります</string>
     <string name="activity_message_requests_title">メッセージリクエスト</string>
     <string name="activity_message_request_title">メッセージリクエスト</string>
     <string name="message_requests_send_notice">このユーザーにメッセージを送信すると、自動的にメッセージリクエストが承認され、あなたのBChat IDが公開されます</string>
     <string name="accept">承認</string>
     <string name="decline">拒否</string>
-    <string name="message_requests_clear_all">Clear All</string>
+    <string name="message_requests_clear_all">すべてクリア</string>
     <string name="message_requests_delete_message">このリクエストを削除してもよろしいですか？</string>
     <string name="message_requests_deleted">Message request deleted</string>
     <string name="message_requests_clear_all_message">Are you sure you want to clear all message requests?</string>
     <string name="message_requests_cleared">Message requests deleted</string>
     <string name="message_requests_accepted">あなたのメッセージリクエストが承認されました</string>
-    <string name="message_request_you_have_accepted">あなたは「%s」からのメッセージリクエストを承認しました</string>
+    <string name="message_request_you_have_accepted">あなたは %s からのメッセージリクエストを承認しました</string>
     <string name="message_requests_pending">Your message request is currently pending.</string>
-    <string name="message_request_empty_state_message">No pending message requests</string>
+    <string name="message_request_empty_state_message">保留中のメッセージリクエストはありません</string>
     <string name="message_requests_accept_all">Accept All</string>
     <string name="message_requests_accept_message">このリクエストを承認してもよろしいですか？</string>
-    <string name="message_requests_decline_message">Declining this request will permanently block this user, are you sure?</string>
-    <string name="no_blocked_contact">No blocked contacts yet</string>
+    <string name="message_requests_decline_message">このリクエストを拒否すると、このユーザーは永久にブロックされます。よろしいですか？</string>
+    <string name="no_blocked_contact">ブロックされた連絡先はまだありません</string>
     <string name="blocked_contacts">ブロックした連絡先</string>
 
     <string name="CallNotificationBuilder_first_call_title">不在着信</string>
-    <string name="CallNotificationBuilder_first_call_message">You missed a call because you need to enable the \'Voice and video calls\' permission in the Privacy Settings.</string>
-    <string name="CallNotificationBuilder_connecting">Connecting…</string>
-    <string name="NotificationBarManager__incoming_signal_call">Incoming call</string>
-    <string name="NotificationBarManager__deny_call">Deny call</string>
-    <string name="NotificationBarManager__answer_call">Answer call</string>
-    <string name="NotificationBarManager__establishing_signal_call">Establishing call</string>
+    <string name="CallNotificationBuilder_first_call_message">「音声およびビデオ通話」権限をプライバシー設定で有効にする必要があるため、通話を取り逃しました</string>
+    <string name="CallNotificationBuilder_connecting">接続中…</string>
+    <string name="NotificationBarManager__incoming_signal_call">着信通話</string>
+    <string name="NotificationBarManager__deny_call">通話を拒否</string>
+    <string name="NotificationBarManager__answer_call">通話に応答</string>
+    <string name="NotificationBarManager__establishing_signal_call">通話を確立中</string>
     <string name="NotificationBarManager__cancel_call">Cancel call</string>
-    <string name="NotificationBarManager_call_in_progress">Person in call</string>
-    <string name="NotificationBarManager__end_call">End call</string>
-    <string name="WebRtcCallActivity_Bchat_Call">Bchat Call</string>
-    <string name="WebRtcCallActivity_Reconnecting">Reconnecting…</string>
-    <string name="conversation_context__menu_call">Call</string>
+    <string name="NotificationBarManager_call_in_progress">通話中の相手</string>
+    <string name="NotificationBarManager__end_call">通話を終了</string>
+    <string name="WebRtcCallActivity_Bchat_Call">BChat通話</string>
+    <string name="WebRtcCallActivity_Reconnecting">再接続中...</string>
+    <string name="conversation_context__menu_call">通話</string>
     <string name="ConversationActivity_call_title">Call Permissions Required</string>
     <string name="dialog_voice_video_title">音声/ビデオ通話</string>
     <string name="dialog_voice_video_message">現在の音声通話の実装では、あなたの IP アドレスが Beldex サーバーおよび通話相手に公開されます。</string>
-    <string name="CallNotificationBuilder_system_notification_message">Having notifications disabled will prevent you from receiving calls, go to Bchat notification settings?</string>
-    <string name="dismiss">Dismiss</string>
+    <string name="CallNotificationBuilder_system_notification_message">通知が無効になっていると通話を受け取ることができません。BChatの通知設定に移動しますか？</string>
+    <string name="dismiss">閉じる</string>
     <string name="preferences__voice_video_calls">音声・ビデオ通話</string>
     <string name="preferences__allow_access_voice_video">他のユーザーからの音声・ビデオ通話を受け入れるアクセスを許可</string>
-    <string name="incoming_call">Incoming Call..</string>
+    <string name="incoming_call">着信中...</string>
     <string name="outgoing_call">Outgoing Call</string>
-    <string name="calling">Calling..</string>
-    <string name="end_to_end_encrypted">End to End Encrypted</string>
+    <string name="calling">発信中…</string>
+    <string name="end_to_end_encrypted">エンドツーエンド暗号化</string>
     <string name="call_duration">00:10:10</string>
-    <string name="hang_up">Hangup</string>
+    <string name="hang_up">通話終了</string>
+    <string name="answer">応答</string>
     <string name="back_to_call">Back to call</string>
-    <string name="call_in_progress">Call in progress</string>
-    <string name="call_muted">Call Muted</string>
-    <string name="video_paused">Video Paused</string>
-    <string name="video_paused_and_microphone_off">Video paused and microphone off</string>
+    <string name="call_in_progress">通話中</string>
+    <string name="call_muted">マイクオフ</string>
+    <string name="video_paused">ビデオ一時停止</string>
+    <string name="video_paused_and_microphone_off">ビデオ一時停止・マイクオフ</string>
     <string name="call_declined">Call Declined</string>
     <string name="dialing">Dialing…</string>
-    <string name="call_ended">Call Ended</string>
+    <string name="call_ended">通話終了</string>
     <string name="activity_receive_page_title">Receive</string>
     <string name="activity_rescan_page_title">Rescan</string>
     <string name="enter_amount">Enter amount</string>
@@ -1104,7 +1101,7 @@
     <string name="incoming">Incoming</string>
     <string name="outgoing">Outgoing</string>
     <string name="transactions_by_date">Transactions by Date</string>
-    <string name="tx_failed">Failed</string>
+    <string name="tx_failed">失敗</string>
     <string name="tx_pending">Pending</string>
     <string name="tx_status_received">Received</string>
     <string name="send_notes_hint">Private Notes (optional)</string>
@@ -1249,21 +1246,22 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="report_issue">問題を報告</string>
     <string name="filter_applied">Filter applied</string>
     <string name="testing_the_node">Testing the node...</string>
-    <string name="str_start_date">start date</string>
-    <string name="str_end_date">end date</string>
+    <string name="str_start_date">開始日</string>
+    <string name="str_end_date">終了日</string>
+    <string name="str_please_select_start_date">開始日を選択してください</string>
+    <string name="str_please_select_end_date">終了日を選択してください</string>
     <string name="alert_from_date">Please enter from date</string>
     <string name="alert_to_date">Please enter to date</string>
-    <string name="CallNotificationBuilder_screen_on">Video Resumed</string>
-    <string name="activity_conversation_block_user">Block User</string>
+    <string name="CallNotificationBuilder_screen_on">ビデオ再開</string>
+    <string name="activity_conversation_block_user">ユーザーをブロック</string>
     <string name="message_requests_decline_messages">Are you sure you want to decline this message request?</string>
     <string name="message_requests_block_message">このリクエストをブロックしてもよろしいですか？</string>
 
-    <string name="Unblock_dialog__title_single">Unblock %s</string>
-    <string name="Unblock_dialog__title_multiple">Unblock Users</string>
-    <string name="Unblock_dialog__message">Are you sure you want to unblock %s?</string>
+    <string name="Unblock_dialog__title_single">%sをブロック解除</string>
+    <string name="Unblock_dialog__title_multiple">ユーザーのブロック解除</string>
+    <string name="Unblock_dialog__message">%s のブロックを解除してもよろしいですか？</string>
     <plurals name="Unblock_dialog__message_multiple_overflow">
-        <item quantity="one">and %d other</item>
-        <item quantity="other">and %d others</item>
+        <item quantity="other">および他 %d 件</item>
     </plurals>
     <string name="unblock_selected">選択した連絡先をブロック解除</string>
     <string name="call_alert">You\'re already on call</string>
@@ -1282,12 +1280,12 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="payment_sent">Payment Sent</string>
     <string name="payment_received">Payment Received</string>
     <string name="reply_payment_card_message">%1s : %2s BDX</string>
-    <string name="open_link">Open Link</string>
+    <string name="open_link">リンクを開く</string>
     <string name="initiating_transaction">Initiating Transaction..</string>
     <string name="invalid_destination_address">Invalid destination address</string>
     <string name="search_people_and_groups">人やグループを検索</string>
     <string name="you_can_t_send_messages_to_this_group_because_you_re_no_longer_a_participant">あなたはこのグループの参加者ではないため、メッセージを送信できません</string>
-    <string name="empty_message_toast">Can\'t send empty message</string>
+    <string name="empty_message_toast">空のメッセージは送信できません</string>
     <string name="swipe_to_send_bdx">Swipe to send BDX</string>
     <string name="search_currency">Search Currency</string>
     <string name="enter_a_valid_nickname">有効なニックネームを入力してください</string>
@@ -1297,15 +1295,15 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="hold_to_enable_option">Hold to Enable Pay as you chat</string>
     <string name="connected">接続済み</string>
     <string name="no_connection">接続なし</string>
-    <string name="please_enter_your_four_digit_pin">Please enter your 4 digit PIN.</string>
+    <string name="please_enter_your_four_digit_pin">4桁のPINを入力してください</string>
     <string name="invalid_password">パスワードが無効です</string>
-    <string name="please_copy_and_save_your_seed">Please copy and save your seed</string>
-    <string name="please_copy_the_seed_and_save_it">Please copy the seed and save it</string>
+    <string name="please_copy_and_save_your_seed">シードをコピーして保存してください</string>
+    <string name="please_copy_the_seed_and_save_it">シードをコピーして保存してください</string>
     <string name="dialog_title_setup_pin_">Setup Pin</string>
     <string name="dialog_setup_button">Setup</string>
     <string name="dialog_message_for_set_wallet_pin">Please set up wallet pin to enable pay as you chat feature.</string>
-    <string name="save_your_seed">Save your seed</string>
-    <string name="save_your_seed_message">You haven\'t copied the seed phrase. Kindly copy and save the seed. Only your seed can be used to recover your account.</string>
+    <string name="save_your_seed">シードを保存</string>
+    <string name="save_your_seed_message">シードフレーズをコピーしていません。コピーして保存してください。アカウントを復元できるのはシードのみです。</string>
     <string name="joined_social_group_successfully">Joined %s successfully</string>
     <string name="record_voice_restriction">Can\'t record voice messages during a BChat call.</string>
     <string name="failed_to_connect">Failed to Connect</string>
@@ -1320,7 +1318,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="restored_via_seed">You restored via Seed!</string>
     <string name="display_name_validation">有効な名前を入力してください</string>
     <string name="sync_fail_content">It seems there is an issue with connecting to the node, please try to reconnect or switch the node.</string>
-    <string name="notification_enable_content">We recommend you to allow permission for notifications for BChat app to notify you for new messages and calls.</string>
+    <string name="notification_enable_content">新しいメッセージや通話の通知を受け取るために、BChatアプリの通知権限を許可することをおすすめします。</string>
     <string name="invalid_qr_code_image">アップロードした画像から有効なコードを認識できません</string>
     <string name="upload_from_gallery">ギャラリーからアップロード</string>
     <string name="join_social_group_content">ソーシャルグループに参加するため、QRコードをスキャンします。QRコードはソーシャルグループのウェブサイトリンクで確認できます。</string>
@@ -1336,8 +1334,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="yes_i_understand">Yes, I Understand</string>
     <string name="enable_wallet">Enable Wallet</string>
     <string name="validation_for_empty_node_host">Please enter a node address</string>
-    <string name="dialog_clear_all_data_clear_device_only_subtitle">Clear only in device</string>
-    <string name="dialog_clear_all_data_clear_device_and_network_subtitle">Delete account from Network</string>
+    <string name="dialog_clear_all_data_clear_device_only_subtitle">デバイス上のみクリア</string>
+    <string name="dialog_clear_all_data_clear_device_and_network_subtitle">ネットワークからアカウントを削除</string>
     <string name="back">Back</string>
     <string name="restore_from_block_height_hint">Enter Block height to Restore</string>
     <string name="restore_from_date_hint">Select Date</string>
@@ -1370,7 +1368,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="create_secret_group">Create Secret Group</string>
     <string name="enter_group_name">シークレットグループ名を入力</string>
     <string name="search_contact">連絡先を検索</string>
-    <string name="block_or_delete_request">Do you want to block or just delete this user?</string>
+    <string name="block_or_delete_request">このユーザーをブロックしますか、それとも削除のみ行いますか？</string>
     <string name="or_join">または参加</string>
     <string name="let_s_bchat">BChatを始めよう</string>
     <string name="your_chat_id">Your Chat ID</string>
@@ -1388,7 +1386,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="welcome_message">Hey %1$s, welcome to BChat!</string>
     <string name="copy_your_recovery_seed">リカバリーシードをコピーして安全に保管してください。</string>
     <string name="copy_seed">シードをコピー</string>
-    <string name="menu">Menu</string>
+    <string name="menu">メニュー</string>
     <string name="version_name">BChat v%s</string>
     <string name="dialog_title_send_failed">Create Transaction Error</string>
     <string name="title_for_beldex_address_or_name">Beldex address or BNS name</string>
@@ -1410,9 +1408,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="no_addresses">No Addresses!</string>
     <string name="save_address_to_show">Save address to show!</string>
     <string name="voice_call">音声通話</string>
+    <string name="video_call">ビデオ通話</string>
     <string name="missed_voice_call">Missed Voice Call</string>
     <string name="tap_to_callback">Tap to Callback</string>
-    <string name="enter_your_4_digit_wallet_pin">Enter your 4 digit Wallet PIN</string>
+    <string name="enter_your_4_digit_wallet_pin">%d 桁のウォレットPINを入力してください</string>
     <string name="clear_chat">チャットをクリア</string>
     <string name="clear_chat_confirmation">この連絡先とのすべてのチャットを削除してもよろしいですか？</string>
     <string name="unblock_contact">連絡先のブロック解除</string>
@@ -1427,8 +1426,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="call_permission_required_description"><b>「音声通話とビデオ通話」</b> の権限は <b>プライバシー設定</b> で有効にできます。</string>
     <string name="wallet_setup">Wallet Setup</string>
     <string name="message_status_icon_description">Message delivery status</string>
-    <string name="delete_item">Delete Item?</string>
-    <string name="delete_item_description">Are you sure you want to delete the media from device?</string>
+    <string name="delete_item">アイテムを削除しますか？</string>
+    <string name="delete_item_description">このメディアをデバイスから削除してもよろしいですか？</string>
     <string name="all_media">すべてのメディア</string>
     <string name="verify_bns">確認中</string>
     <string name="no_contacts">No Contacts</string>
@@ -1439,9 +1438,9 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="account_settings">アカウント設定</string>
     <string name="delete_conversation">チャット削除?</string>
     <string name="accept_request">リクエストを承認しますか？</string>
-    <string name="decline_request">Decline Request?</string>
-    <string name="activity_public_chat_success_message">Joined %1$s Social Group Successfully</string>
-    <string name="open_url_icon_description">open url</string>
+    <string name="decline_request">リクエストを拒否しますか？</string>
+    <string name="activity_public_chat_success_message">%1$s ソーシャルグループに正常に参加しました</string>
+    <string name="open_url_icon_description">URLを開く</string>
     <string name="message_payment_status">Message Payment Status</string>
     <string name="link_your_bns">BNS をリンク</string>
     <string name="read_more_about_bns">BNS について詳しく読む</string>
@@ -1453,13 +1452,13 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="about_bns_description_6">&#8226; 信頼のバッジ：BChat ID を BNS 名にリンクし、認証プロセスを完了することで BNS バッジを取得可能。コミュニティ内で信頼と認識のレイヤーを追加できます。</string>
     <string name="bns_textfield_hint">BNS 名を入力</string>
     <string name="verify">確認</string>
-    <string name="verified">Verified</string>
+    <string name="verified">認証済み</string>
     <string name="link">リンク</string>
-    <string name="invalid_bns_warning_message">Your BNS name and ID does not match.Try again</string>
+    <string name="invalid_bns_warning_message">あなたのBNS名とIDが一致しません。もう一度お試しください</string>
     <string name="bns_linked_successfully">BNS が正常にリンクされました</string>
-    <string name="bns_verified_tag">BNS verified tag</string>
-    <string name="bns_name_changed_warning_message"><b>BNS name changed!</b>>\nRe-verify your BNS name to proceed.</string>
-    <string name="apply_changes">Apply Changes</string>
+    <string name="bns_verified_tag">BNS認証タグ</string>
+    <string name="bns_name_changed_warning_message">BNS名が変更されました！</string>
+    <string name="apply_changes">変更を適用</string>
     <string name="activity_edit_closed_group_group_name_same_name_error">別の名前を入力してください</string>
     <string name="edit_group_name">Edit Group Name</string>
     <string name="verify_password">パスワードを確認</string>
@@ -1467,20 +1466,20 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="pin_mismatch">両方の PIN は同じである必要があります</string>
     <string name="create_pin">Create PIN</string>
     <string name="old_new_pin_same">新しい PIN は古い PIN と同じにできません</string>
-    <string name="dialog_title_full_screen_intent">Full Screen Notification</string>
-    <string name="dialog_content_full_screen_intent">Allow BChat to show full screen notifications for incoming calls and other notifications when the device is locked</string>
+    <string name="dialog_title_full_screen_intent">フルスクリーン通知</string>
+    <string name="dialog_content_full_screen_intent">デバイスがロックされているときでも、着信通話やその他の通知のためにBChatがフルスクリーン通知を表示できるように許可します</string>
     <string name="archive_chat">アーカイブ済みチャット</string>
-    <string name="archive_settings">Archive Settings</string>
+    <string name="archive_settings">アーカイブ設定</string>
     <string name="archive_chat_title">チャットをアーカイブ</string>
     <string name="un_archive_chat_title">カイブ解除されます</string>
-    <string name="keep_chats_archived">Keep chats archived</string>
-    <string name="keep_chats_archived_subtitle">Archived chats will remain archived when you receive a new message</string>
-    <string name="archive_chat_content">These chats stay archived when new messages are received. Tap to change</string>
-    <string name="unarchive_chat_content">These chats stay unarchived when new messages are received. Tap to change</string>
-    <string name="un_archive_chat">Un Archived Chats</string>
+    <string name="keep_chats_archived">チャットをアーカイブに保持する</string>
+    <string name="keep_chats_archived_subtitle">アーカイブされたチャットは、新しいメッセージを受信してもアーカイブのまま保持されます</string>
+    <string name="archive_chat_content">これらのチャットは新しいメッセージを受信してもアーカイブのままです。タップして変更</string>
+    <string name="unarchive_chat_content">これらのチャットは新しいメッセージを受信するとアーカイブ解除されます。タップして変更</string>
+    <string name="un_archive_chat">アーカイブ解除されたチャット</string>
     <string name="block_request">リクエストをブロックしますか？</string>
     <string name="delete_request">リクエストを削除しますか？</string>
-    <string name="call_missed_description">プライバシー設定で「音声通話とビデオ通話」の権限を有効にする必要があったため、「%1$s」からの着信を不在着信としました</string>
+    <string name="call_missed_description">プライバシー設定で「音声通話とビデオ通話」の権限を有効にする必要があったため、%1$s からの着信を不在着信としました</string>
     <string name="disappearing_messages">消えるメッセージ</string>
     <string name="Permissions_record_permission_required">録音の許可が必要です!</string>
     <string name="edit_title">編集</string>
@@ -1488,14 +1487,14 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="message_details">メッセージの詳細</string>
     <string name="wallet_synced_text">Wallet is fully synchronized</string>
     <string name="change_pin_title">Change PIN</string>
-    <string name="warning_message_of_voice_recording">You can\'t send an audio message while you\'re on a call</string>
+    <string name="warning_message_of_voice_recording">通話中は音声メッセージを送信できません</string>
     <string name="camera_option">Camera Option</string>
     <string name="gallery_option">Gallery Option</string>
     <string name="document_option">Document Option</string>
     <string name="gif_option">Gif Option</string>
-    <string name="gif_dialog_title">Search GIFs?</string>
-    <string name="gif_dialog_message">You will not have full metadata protection when sending GIFs.</string>
-    <string name="permissionsCameraDenied">%s needs camera access to take photos and videos, but it has been permanently denied. Tap Settings → Permissions, and turn \"Camera\" on.</string>
+    <string name="gif_dialog_title">GIFを検索しますか？</string>
+    <string name="gif_dialog_message">GIFを送信すると、メタデータ保護が完全には適用されません</string>
+    <string name="permissionsCameraDenied">%s は写真や動画を撮影するためにカメラへのアクセスが必要ですが、永続的に拒否されています。設定 → 権限を開き、「カメラ」を有効にしてください</string>
     <string name="ReactWithAnyEmojiBottomSheetDialogFragment__this_message">This Message</string>
     <string name="ReactWithAnyEmojiBottomSheetDialogFragment__recently_used">最近使用した絵文字</string>
     <string name="ReactWithAnyEmojiBottomSheetDialogFragment__smileys_and_people">スマイリーと人</string>
@@ -1519,8 +1518,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="KeyboardPagerfragment_back_to_emoji">Back to emoji</string>
     <string name="KeyboardPagerfragment_clear_search_entry">Clear search entry</string>
     <plurals name="ReactionsRecipientAdapter_other_reactors">
-        <item quantity="one">And %1$d other has reacted %2$s to this message</item>
-        <item quantity="other">And %1$d others have reacted %2$s to this message</item>
+        <item quantity="other">このメッセージに他 %1$d 人が %2$s でリアクションしました。</item>
     </plurals>
 
     <string name="emojiAndSymbols">Emoji and Symbols</string>
@@ -1534,8 +1532,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="emojiReactsClearAll">Are you sure you want to clear all {emoji}?</string>
     <string name="emojiReactsCoolDown">Slow down! You\'ve sent too many emoji reacts. Try again soon</string>
     <plurals name="emojiReactsCountOthers">
-        <item quantity="one">And %1$d other has reacted %2$s to this message.</item>
-        <item quantity="other">And %1$d others have reacted %2$s to this message.</item>
+        <item quantity="one">また、%1$d 人が %2$s 件のリアクションをこのメッセージに返信しました。</item>
+        <item quantity="other">また、%1$d 人が %2$s 件のリアクションをこのメッセージに返信しました。</item>
     </plurals>
     <string name="emojiReactsHoverNameDesktop">{name} reacted with {emoji_name}</string>
     <string name="emojiReactsHoverNameTwoDesktop">{name} and {other_name} reacted with {emoji_name}</string>
@@ -1543,7 +1541,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="emojiReactsHoverYouNameDesktop">You reacted with {emoji_name}</string>
     <string name="emojiReactsHoverYouNameMultipleDesktop">You and <span>{count} others</span> reacted with {emoji_name}</string>
     <string name="emojiReactsHoverYouNameTwoDesktop">You and {name} reacted with {emoji_name}</string>
-    <string name="emojiReactsNotification">Reacted to your message {emoji}</string>
+    <string name="emojiReactsNotification">あなたのメッセージにリアクションしました {emoji}</string>
     <string name="showLess">Show Less</string>
     <string name="AccessibilityId_emojiSearch">Back to emoji</string>
     <string name="AccessibilityId_emojiSearchClear">Clear search entry</string>
@@ -1553,14 +1551,13 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="title_activity_secret_group_info_compose">SecretGroupInfoComposeActivity</string>
 
     <plurals name="deleteMessageDeleted">
-        <item quantity="one">Message deleted</item>
-        <item quantity="other">Messages deleted</item>
+        <item quantity="other">メッセージが削除されました</item>
     </plurals>
     <plurals name="deleteMessageConfirm">
         <item quantity="one">Are you sure you want to delete this message?</item>
         <item quantity="other">Are you sure you want to delete these messages?</item>
     </plurals>
-    <string name="deleteMessageDeletedGlobally">This message was deleted</string>
+    <string name="deleteMessageDeletedGlobally">このメッセージは削除されました</string>
     <plurals name="deleteMessageNoteToSelfWarning">
         <item quantity="one">This message cannot be deleted from all your devices</item>
         <item quantity="other">Some of the messages you have selected cannot be deleted from all your devices</item>
@@ -1575,30 +1572,30 @@ Your wallet password can be used to access your wallet within BChat and authenti
     </plurals>
     <string name="displayNameVisible">Your Display Name is visible to users, groups and communities you interact with.</string>
     <string name="errorUnknown">An unknown error occurred.</string>
-    <string name="banUserBanned">User banned</string>
-    <string name="banErrorFailed">Ban failed</string>
+    <string name="banUserBanned">ユーザーが禁止されました</string>
+    <string name="banErrorFailed">禁止に失敗しました</string>
     <string name="deleteMessageDeletedLocally">This message was deleted on this device</string>
     <string name="deleteMessageEveryone">Delete for everyone</string>
     <string name="deleteMessageDevicesAll">Delete on all my devices</string>
     <string name="accessibilityId_select">選択</string>
-    <string name="disappearingMessagesCountdownBigMobile">Auto-deletes in {time_large}</string>
-    <string name="conversationsDeleted">Conversation deleted</string>
+    <string name="disappearingMessagesCountdownBigMobile">自動削除まで {time_large}</string>
+    <string name="conversationsDeleted">会話が削除されました</string>
     <string name="group_info">グループ情報</string>
     <string name="notification_info">有効にすると、あなたにメンションされたメッセージのみ通知されます</string>
     <string name="disappearing_info">有効にすると、あなたとグループの間のメッセージは閲覧後に消えます</string>
-    <string name="no_participate_content">You’re no longer participant of this group</string>
+    <string name="no_participate_content">あなたはこのグループの参加者ではなくなりました</string>
     <string name="search_member_title">メンバーを検索</string>
     <string name="members_option_message">メッセージ送信先</string>
     <string name="zero_time_durationMs">0:00</string>
     <string name="attachmentsErrorSize">Files must be less than 10MB</string>
-    <string name="view_contacts">View Contacts</string>
+    <string name="view_contacts">連絡先を表示</string>
     <string name="share_contacts">連絡先を共有</string>
-    <string name="chat_with_contact_confirmation">Do you want to chat with this contact now?</string>
+    <string name="chat_with_contact_confirmation">この連絡先と今すぐチャットしますか？</string>
     <string name="contact_received">Contact Received: %s</string>
-    <string name="no_name">No Name</string>
+    <string name="no_name">名前なし</string>
     <string name="title_activity_view_contact">ViewContactActivity</string>
-    <string name="view_all">View all</string>
-    <string name="message">Message</string>
+    <string name="view_all">すべて表示</string>
+    <string name="message">メッセージ</string>
     <string name="nickname_special_char_not_allowed">特殊文字は使用できません</string>
     <string name="hey_user_welcome_to_bchat">こんにちは %s、BChat へようこそ！</string>
     <string name="paste_the_seed_to_continue">シードを貼り付けて続行</string>
@@ -1612,37 +1609,82 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="about_bns_description_1">BNS（Beldex Name Service）は、Beldex エコシステム内でシームレスに利用できるゲートウェイです。BNS を使うことで、さまざまな Beldex アイデンティティにリンクされた、ユニークで覚えやすい名前を作成できます。</string>
     <string name="about_bns_key_benefits">主なメリット:</string>
     <string name="about_bns_pricing_label">料金：</string>
-    <string name="about_bns_pricing_text">BNS 名は 1 年、2 年、5 年、10 年単位で登録可能で、料金はそれぞれ 650 BDX、1000 BDX、2000 BDX、4000 BDX です。</string>
-    <string name="about_bns_pricing_values">.</string>
-    <string name="about_bns_pricing_suffix">.</string>
+    <string name="about_bns_pricing_text">BNS 名は 1 年、2 年、5 年、または 10 年の期間で登録でき、料金は</string>
+    <string name="about_bns_pricing_values">650 BDX、1000 BDX、2000 BDX、4000 BDX</string>
+    <string name="about_bns_pricing_suffix">それぞれ。</string>
     <string name="about_bns_description_7">BNS 名を使用すると、プライバシー、セキュリティ、利便性が向上します。メッセージ送信、取引、分散型サービスの利用時にも、一貫性のあるシンプルな体験が可能です。</string>
     <string name="about_bns_description_8">今日から BNS 名を使い始め、Beldex のすべてのサービスで分散型アイデンティティのメリットを体験しましょう！</string>
     <string name="about_content"><![CDATA[BChatは、Beldexブロックチェーン上に構築された分散型ピアツーピアメッセージングアプリケーションです。BChatは、名前、年齢、メールID、電話番号、ユーザー名、位置情報、連絡先、IPアドレスなどの個人情報を収集・保存しないため、あなたの機密性を保護します。BChatアカウントを作成するために必要なのはインターネットだけです。\n\nBChatでアカウントを作成すると、ユニークなBChat IDとリカバリーフレーズ（シードキー）が生成されます。BChat IDはあなたの公開鍵で、BChat上で他のユーザーとチャットする際に使用できます。BChat IDはウォレットアドレスとも紐付けられており、新しいアカウントを作成するたびにウォレットアドレスが生成されます。\n\nリカバリーキー（シードキー）はあなたの秘密鍵で、任意のデバイスでアカウントを復元するために使用できます。リカバリーキーはパスワードと同様です。誰とも共有せず、デジタルコピーを保存しないでください。紙に書き、安全な場所に保管してください。リカバリーキーを紛失すると、アカウントへのアクセスを失います。\n\nBChatでは、メッセージはBeldexネットワーク上のノードを経由して送信され、デバイス上にのみローカル保存されます。メッセージや関連メタデータは、マスターノードストレージサーバーを含むBeldexブロックチェーン上には一切保存されません。\n\nあなたのデータはあなたのものです。データはいつでもワンクリックで削除できます。データを消去するには、右上のプロフィールアイコンをクリックし、「マイアカウント」 > 「データ削除」 > 「削除」 > 「OK」を選択してください。データは完全に削除されます。\n\nBChatはBeldex財団によって開発および維持されています。オープンソースで検閲フリーです。誰でも開発に貢献できます。Beldex財団は、分散型Web向けの機密性アプリケーションを開発する組織であり、現在研究・開発中の製品にはBChat、BelNet（分散型VPNサービス）、Beldex Browser（分散型広告フリーブラウザ）、Beldexプロトコル（他のブロックチェーン資産のトランザクションを匿名化するプロトコル）が含まれます。\n\nBChatはBeldexのフラッグシップ製品です。BChatの初期バージョンは、完全に匿名のメッセージを送信できるメッセンジャーです。シークレットグループとソーシャルグループを作成できます。シークレットグループは最大100人まで参加可能で、ソーシャルグループには上限はありません。シークレットグループは誰でも作成できますが、自分のBChat連絡先のみ追加できます。ソーシャルグループは専用サーバーが必要で、作成者が維持管理する必要があります。将来的には、音声通話・ビデオ通話の機能や、Beldexネットワークのネイティブ暗号通貨BDXの送受信機能が追加される予定です。「チャットしながら支払い（Pay as you chat）」機能では、チャット画面から直接BDXを連絡先に送信できます。\n\nBeldex財団の研究部門であるBeldex Research Labsでは、匿名性セットを拡大するためのzk-SNARKs（リング署名の代替案）や、Beldexネットワークのスケーラビリティ向上のためのデータシャーディングの実装可能性を研究しています。これにより、BChatは既存の分散型アプリケーションより数倍高速化され、グローバルな普及に向けて前進する可能性があります。\n\nクレジット\nBeldexネットワークとBChatは、オープンソースプロジェクトであるMonero、Signal、Sessionによって設計された複数のプロトコルを使用しています。
 ]]></string>
     <string name="contact_list">連絡先リスト</string>
-    <string name="bchat_id_warning_message">Please enter BChat ID</string>
+    <string name="bchat_id_warning_message">BChat IDを入力してください</string>
     <string name="bchat_empty_state_message">何もない…さみしいね。\n友達をBChatに招待しよう！</string>
     <string name="hop_connection_error_message">ホップに接続されていません。インターネット接続を確認するか、アプリを再起動してください！</string>
     <string name="group_delete_confirmation_message">あなたがこのグループの作成者なので、削除すると全員に影響します。この操作は元に戻せません。</string>
     <string name="call_missed_title">不在着信！</string>
     <string name="no_matches_found">一致する結果が見つかりません！</string>
     <string name="notify_for_mentions_only">メンションのみ通知</string>
-    <string name="community_guidelines"><![CDATA[BChatは、プライバシー保護を重視した分散型メッセージングプラットフォームです。BChatでは、会話やデータの所有権は常にユーザー自身にあります。個人情報を収集または保存することはありません。BChatは、自由にコミュニケーションできる場所です。\n\nBChatは単なるメッセージアプリではありません。チャット画面から直接BDXを送受信することもできます。\n\nBChatはBeldexネットワーク上に構築されています。Beldexネットワーク上のマスターノードは、クライアント間で暗号化されたメッセージを保存・中継します。現在Beldexでは、BelNet（分散型VPNサービス）、Beldex Browser（広告なしのWeb3ブラウザ）、Beldex Privacy Protocol（他の資産を匿名化するプロトコル）などのプロジェクトも研究・開発されています。\n\n詳しくは以下をご覧ください：https://www.beldex.io\nコラボレーションやマーケティングに関するお問い合わせ：marketing@beldex.io\n投資に関するお問い合わせ：invest.bchat@beldex.io\n\nこのコミュニティを安全で快適な場所に保つため、以下のルールとガイドラインをお守りください。\n\n礼儀を持って交流してください。意見や建設的な批判は歓迎しますが、嫌がらせは禁止です。\nトークンやプロジェクトの宣伝はご遠慮ください。このグループはBChatおよびBeldexエコシステム専用です。\nスパム行為は禁止されています。\nNSFWコンテンツの共有や不適切な言葉遣いは禁止です。\n\n詐欺にはご注意ください。管理者から先にDMを送ることはありません。
+    <string name="community_guidelines"><![CDATA[BChatは、プライバシー保護を重視した分散型メッセージングプラットフォームです。BChatでは、会話やデータの所有権は常にユーザー自身にあります。個人情報を収集または保存することはありません。BChatは、自由にコミュニケーションできる場所です。\n\nBChatはBeldexネットワーク上に構築されています。Beldexネットワーク上のマスターノードは、クライアント間で暗号化されたメッセージを保存・中継します。現在Beldexでは、BelNet（分散型VPNサービス）、Beldex Browser（広告なしのWeb3ブラウザ）、Beldex Privacy Protocol（他の資産を匿名化するプロトコル）などのプロジェクトも研究・開発されています。\n\n詳しくは以下をご覧ください：https://www.beldex.io\nコラボレーションやマーケティングに関するお問い合わせ：marketing@beldex.io\n投資に関するお問い合わせ：invest.bchat@beldex.io\n\nこのコミュニティを安全で快適な場所に保つため、以下のルールとガイドラインをお守りください。\n\n礼儀を持って交流してください。意見や建設的な批判は歓迎しますが、嫌がらせは禁止です。\nトークンやプロジェクトの宣伝はご遠慮ください。このグループはBChatおよびBeldexエコシステム専用です。\nスパム行為は禁止されています。\nNSFWコンテンツの共有や不適切な言葉遣いは禁止です。\n\n詐欺にはご注意ください。管理者から先にDMを送ることはありません。
 ]]></string>
     <string name="divider">Divider</string>
-    <string name="seed">Seed</string>
+    <string name="seed">シード</string>
     <string name="title">Title</string>
     <string name="list">list</string>
-    <string name="claim_your_airdrop">Yay! You made it here. Claim your airdrop. Submit your BChat ID and BDX wallet address in the link below</string>
+    <string name="claim_your_airdrop">やった！ここまで来ました。エアドロップを受け取りましょう。下のリンクにBChat IDとBDXウォレットアドレスを送信してください</string>
     <string name="txt">TXT</string>
-    <string name="user">User</string>
-    <string name="default_value_messages_per_conversation">500 messages per conversation</string>
+    <string name="user">ユーザー</string>
+    <string name="default_value_messages_per_conversation">1会話あたり500メッセージ</string>
     <string name="language">言語</string>
     <string name="choose_language">言語を選択</string>
     <string name="nick_name_too_long_error">もっと短いニックネームを選んでください</string>
-    <string name="four_digit_pin" translatable="false">4桁のPIN</string>
-    <string name="six_digit_pin" translatable="false">6桁のPIN</string>
+    <string name="four_digit_pin">4桁のPIN</string>
+    <string name="six_digit_pin">6桁のPIN</string>
     <plurals name="contact_others">
-        <item quantity="other">%1$s と他 %2$d 名</item>
+        <item quantity="other">%1$s と他 %2$d 人</item>
     </plurals>
+    <string name="unblocked_this_contact">この連絡先のブロックを解除しました</string>
+    <string name="invalid_old_password">古いパスワードが無効です</string>
+    <string name="must_set_your_old_pin">旧PINを設定してください</string>
+    <string name="both_are_same">両方同じです</string>
+    <string name="must_set_your_new_pin">新しいPINを設定してください</string>
+    <string name="please_enter_4_digit_pin">4桁のPINを入力してください</string>
+    <string name="write_here">ここに入力…</string>
+    <string name="password">パスワード</string>
+    <string name="member_count">%d メンバー</string>
+    <string name="text_limit_exceed_warnings">テキスト制限超過：メッセージの最大文字数は4096文字です</string>
+    <string name="ban_message">選択したユーザーをこのルームからBANします。他のルームからはBANされません</string>
+    <string name="ban_and_delete_message">選択したユーザーをこのルームからBANし、そのユーザーが送信したすべてのメッセージを削除します。他のルームからはBANされず、他のルームのメッセージも削除されません</string>
+    <string name="delete_message_failed_with_error">エラーのためメッセージを削除できませんでした：%s</string>
+    <string name="must_set_your_four_digit_pin">4桁のPINを設定してください</string>
+    <string name="password_is_not_matched">パスワードが一致しません</string>
+    <string name="group_leave_during_member_update_error">他のメンバーを追加または削除している間は退出できません</string>
+    <string name="an_error_occurred">エラーが発生しました</string>
+    <string name="update_canceled_by_user">ユーザーによって更新がキャンセルされました！結果コード：%d</string>
+    <string name="update_success">更新成功！結果コード： %d</string>
+    <string name="update_failed">更新に失敗しました！結果コード： %d</string>
+    <string name="hide_message_request">メッセージリクエストを非表示にしますか？</string>
+    <string name="message_requests_hidden_info">非表示にすると、設定 > メッセージリクエストからアクセスできます</string>
+    <string name="cannot_open_url">URLを開けません</string>
+    <string name="failed_to_authenticate">認証に失敗しました</string>
+    <string name="bns_verified">BNS認証済み</string>
+    <string name="library_access_required">BChatは続行するためにライブラリアクセスが必要です。設定ページでアクセスを有効にできます</string>
+    <string name="you_have_got_a_new_message">新しいメッセージがあります</string>
+    <string name="terms_and_privacy_message">このサービスを利用することで、利用規約およびプライバシーポリシーに同意したものとみなされます</string>
+    <string name="paste_seed">シードを貼り付け</string>
+    <string name="leave_group">グループを退出</string>
+    <string name="you_are_almost_finished">あと少しです！90%</string>
+    <string name="account_secured">アカウント保護完了！100%</string>
+    <string name="error_saving_logs">ログの保存に失敗しました</string>
+    <string name="please_wait_until_file_downloaded">ファイルのダウンロードが完了するまでお待ちください</string>
+    <string name="read_more_suffix">… 続きを読む</string>
+    <string name="read_less_suffix"> 折りたたむ</string>
+    <string name="unable_to_play_audio_while_recording">録音中は音声を再生できません</string>
+    <string name="bchat_pin_description">これはあなたがBChatアカウントに設定したPINです。</string>
+    <string name="restore_wallet_using_seed">25語のニーモニックキー（シードフレーズ）を使用してウォレットを復元します</string>
+    <string name="restore_from_keys">キーから復元</string>
+    <string name="restore_wallet_using_keystore">生成されたキーストアまたはプライベートキーを使用してウォレットを復元します</string>
+    <plurals name="group_member_count">
+        <item quantity="other">%d メンバー</item>
+    </plurals>
+    <string name="no_contact_found">連絡先が見つかりません！</string>
 </resources>

@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -149,18 +150,29 @@ fun ContactsScreen(
             Spacer(modifier = Modifier.height(16.dp))
             if (contacts.isEmpty()) {
                 Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+                    modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
                 ) {
-                    Image(
-                        painter = painterResource(
-                            id = if (isDarkTheme)
-                                R.drawable.ic_no_contact_found
-                            else
-                                R.drawable.ic_no_contact_found_white
-                        ),
-                        contentDescription = "no contact found",
-                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(
+                                id = if (isDarkTheme) R.drawable.ic_no_contact_found
+                                else R.drawable.ic_no_contact_found_white
+                            ),
+                            contentDescription = stringResource(id = R.string.no_contact_found),
+                        )
+                        Text(
+                            text = stringResource(id = R.string.no_contact_found),
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.appColors.editTextPlaceholder
+                            ),
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
             } else {
                 LazyColumn(

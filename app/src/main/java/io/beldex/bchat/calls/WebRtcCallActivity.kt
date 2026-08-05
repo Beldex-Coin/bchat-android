@@ -550,7 +550,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
     private fun getUserDisplayName(publicKey: String): String {
         val contact =
             DatabaseComponent.get(this).bchatContactDatabase().getContactWithBchatID(publicKey)
-        return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
+        return contact?.displayName(Contact.ContactContext.REGULAR, this) ?: publicKey
     }
 
     override fun onStop() {

@@ -27,7 +27,7 @@ class DeleteOptionsBottomSheet : BottomSheetDialogFragment(), View.OnClickListen
         val senderId = recipient.address.serialize()
         // this dialog won't show for social group contacts
         contactDatabase.getContactWithBchatID(senderId)
-            ?.displayName(Contact.ContactContext.REGULAR)
+            ?.displayName(Contact.ContactContext.REGULAR, requireContext())
     }
 
     var onDeleteForMeTapped: (() -> Unit?)? = null

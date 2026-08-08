@@ -832,16 +832,6 @@
         <item name="colorAccent">@color/accent</item>
     </style>
 
-    <style name="SlideToActView">
-        <item name="text">@string/swipe_to_send_bdx</item>
-        <item name="text_size">@dimen/slidetoact_default_text_size</item>
-        <item name="area_margin">@dimen/slidetoact_default_area_margin</item>
-        <item name="inner_color">?android:colorBackground</item>
-        <item name="outer_color">?colorAccent</item>
-        <item name="slider_locked">false</item>
-        <item name="image_color">@color/green_color</item>
-    </style>
-
     <style name="Widget.Bchat.Button.Dialog.UnimportantText">
         <item name="android:background">@drawable/unimportant_dialog_text_button_background</item>
     </style>

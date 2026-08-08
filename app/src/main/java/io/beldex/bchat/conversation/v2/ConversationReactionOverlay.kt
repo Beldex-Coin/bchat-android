@@ -508,7 +508,7 @@ class ConversationReactionOverlay : FrameLayout {
         }
         // Copy message text
         if (!containsControlMessage && hasText && !isSharedContact) {
-            items += ActionItem(R.attr.menu_copy_icon, context.resources.getString(R.string.copy), { handleActionItemClicked(Action.COPY_MESSAGE) })
+            items += ActionItem(R.attr.menu_copy_icon, context.resources.getString(R.string.copy_bchat), { handleActionItemClicked(Action.COPY_MESSAGE) })
         }
         // Copy BChat ID
         if (recipient.isGroupRecipient && !recipient.isOpenGroupRecipient && message.recipient.address.toString() != userPublicKey && !isDeleteOnly) {

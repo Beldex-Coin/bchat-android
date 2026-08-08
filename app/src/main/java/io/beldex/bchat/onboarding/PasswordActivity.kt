@@ -34,7 +34,6 @@ import io.beldex.bchat.BaseActionBarActivity
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.ui.ScreenContainer
 import io.beldex.bchat.home.HomeActivity
-import io.beldex.bchat.keyboard.CustomKeyboardView
 import io.beldex.bchat.onboarding.ui.PinCodeScreen
 import io.beldex.bchat.onboarding.ui.PinCodeViewModel
 import io.beldex.bchat.service.KeyCachingService
@@ -42,7 +41,6 @@ import io.beldex.bchat.service.KeyCachingService.KeySetBinder
 import io.beldex.bchat.util.push
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityPasswordBinding
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import kotlinx.coroutines.flow.collectLatest
@@ -50,20 +48,13 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PasswordActivity : BaseActionBarActivity() {
-
-    private lateinit var binding: ActivityPasswordBinding
     private var keyCachingService: KeyCachingService? = null
     private var failure = false
     private val authenticated = false
-    private val TAG = PasswordActivity::class.java.simpleName
-    private lateinit var keyboard: CustomKeyboardView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        binding = ActivityPasswordBinding.inflate(layoutInflater)
-//        setContentView(binding.root)
-//        setUpActionBarBchatLogo("Password")
         setContent {
             val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
             val view = LocalView.current
@@ -131,97 +122,6 @@ class PasswordActivity : BaseActionBarActivity() {
                 keyCachingService = null
             }
         }, BIND_AUTO_CREATE)
-
-//        with(binding) {
-//            userPinEditTxt.addTextChangedListener(object : TextWatcher {
-//                override fun afterTextChanged(s: Editable?) {
-//                }
-//
-//                override fun beforeTextChanged(
-//                    s: CharSequence?,
-//                    start: Int,
-//                    count: Int,
-//                    after: Int
-//                ) {
-//                }
-//
-//                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                    validatePassword(s.toString(),false)
-//                }
-//            })
-//
-//            binding.userPinEditTxt.requestFocus()
-//            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
-//            val ic: InputConnection = binding.userPinEditTxt.onCreateInputConnection(EditorInfo())
-//            binding.keyboard1?.setInputConnection(ic)
-//
-//            binding.userPinEditTxt.setOnTouchListener { _: View, event: MotionEvent ->
-//                binding.userPinEditTxt.onTouchEvent(event) // call native handler
-//
-//                true
-//            }
-//
-//            binding.userPinEditTxt.showSoftInputOnFocus = false
-//
-//            binding.keyboard1.buttonEnter!!.setOnClickListener() {
-//                validatePassword(userPinEditTxt.text.toString(),true)
-//            }
-//        }
-    }
-
-    private fun validatePassword(pin: String, validation: Boolean) {
-        val userPassword = TextSecurePreferences.getMyPassword(this@PasswordActivity)
-        when {
-            pin.isEmpty() -> {
-                binding.userPinEditTxtLayout.isErrorEnabled=false
-                if(validation) {
-                    Toast.makeText(
-                        this,
-                        getString(R.string.please_enter_your_four_digit_pin),
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
-            pin.length<4 -> {
-                if(validation) {
-                    binding.userPinEditTxtLayout.isErrorEnabled=true
-                    binding.userPinEditTxtLayout.error = getString(R.string.invalid_password)
-                }else{
-                    binding.userPinEditTxtLayout.isErrorEnabled=false
-                }
-            }
-            userPassword != pin -> {
-                binding.userPinEditTxtLayout.isErrorEnabled=true
-                binding.userPinEditTxtLayout.error = getString(R.string.invalid_password)
-            }
-            userPassword == pin -> {
-                validateSuccess()
-            }
-            else -> {}
-        }
-        if(pin.isEmpty()){
-            binding.userPinEditTxtLayout.isErrorEnabled=false
-            if(validation) {
-                Toast.makeText(
-                    this,
-                    getString(R.string.please_enter_your_four_digit_pin),
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        }
-        else if(pin.length<4){
-            if(validation) {
-                binding.userPinEditTxtLayout.isErrorEnabled=true
-                binding.userPinEditTxtLayout.error = getString(R.string.invalid_password)
-            }else{
-                binding.userPinEditTxtLayout.isErrorEnabled=false
-            }
-        }else if (userPassword != pin) {
-            binding.userPinEditTxtLayout.isErrorEnabled=true
-            binding.userPinEditTxtLayout.error = getString(R.string.invalid_password)
-        }else if (userPassword == pin) {
-            validateSuccess()
-        }
     }
 
     override fun onResume() {
@@ -287,7 +187,6 @@ class PasswordActivity : BaseActionBarActivity() {
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
             super.onBackPressed()
-        //New Line
         finish()
     }
 }

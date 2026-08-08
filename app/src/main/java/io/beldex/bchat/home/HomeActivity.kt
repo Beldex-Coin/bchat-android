@@ -107,7 +107,6 @@ import io.beldex.bchat.drawer.ClickListener
 import io.beldex.bchat.drawer.NavigationItemModel
 import io.beldex.bchat.drawer.NavigationRVAdapter
 import io.beldex.bchat.drawer.RecyclerTouchListener
-import io.beldex.bchat.groups.CreateClosedGroupActivity
 import io.beldex.bchat.groups.OpenGroupManager
 import io.beldex.bchat.home.search.GlobalSearchAdapter
 import io.beldex.bchat.home.search.GlobalSearchInputLayout
@@ -260,6 +259,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
 
         var REQUEST_URI = "uri"
         const val reportIssueBChatID = BuildConfig.REPORT_ISSUE_ID
+        const val closedGroupCreatedResultCode = 100
     }
     @Inject
     lateinit var remoteConfig: FirebaseRemoteConfigUtil
@@ -1130,7 +1130,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             intent.putExtras(extras)
             startActivity(intent)
         }
-        if (result.resultCode == CreateClosedGroupActivity.closedGroupCreatedResultCode) {
+        if (result.resultCode == closedGroupCreatedResultCode) {
             openNewConversationChat()
         }
     }

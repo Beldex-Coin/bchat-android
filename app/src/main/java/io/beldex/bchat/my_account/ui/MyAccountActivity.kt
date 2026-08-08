@@ -462,22 +462,6 @@ fun MyAccountNavHost(
         startDestination = startDestination,
         modifier = modifier
     ) {
-//        composable(
-//            route = MyAccountScreens.MyAccountScreen.route
-//        ) {
-//            val uiState by viewModel.uiState.collectAsState()
-//            MyAccountScreenContainer(
-//                title = stringResource(R.string.my_account),
-//                onBackClick = {
-//                    (context as ComponentActivity).finish()
-//                }
-//            ) {
-//                MyAccountScreen(
-//                    uiState = uiState
-//                )
-//            }
-//        }
-
         composable(
             route = MyAccountScreens.SettingsScreen.route
         ) {
@@ -1493,7 +1477,7 @@ fun ProfileCard(
                     ),
                     modifier = Modifier.padding(end = 5.dp)
                 )
-                Image(painter = painterResource(id = R.drawable.ic_bns_verified), contentDescription = "Bns verified", modifier = Modifier.size(14.dp))
+                Image(painter = painterResource(id = R.drawable.ic_bns_verified), contentDescription = stringResource(R.string.bns_verified), modifier = Modifier.size(14.dp))
             }
         }else {
             Spacer(modifier = Modifier.height(16.dp))

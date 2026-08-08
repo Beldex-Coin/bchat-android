@@ -106,6 +106,7 @@ import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.conversation.v2.dialogs.LeaveGroupDialog
 import io.beldex.bchat.dependencies.DatabaseComponent
+import io.beldex.bchat.database.RecipientDatabase
 import io.beldex.bchat.home.NotificationSettingDialog
 import io.beldex.bchat.my_account.ui.CardContainer
 import io.beldex.bchat.my_account.ui.dialogs.LockOptionsDialog
@@ -301,15 +302,11 @@ fun GroupDetailsScreen(
     }
 
     var showNotificationSettingsItem by remember {
-        mutableStateOf(option[recipient.notifyType])
+        mutableStateOf(recipient.notifyType)
     }
 
     var showExpirationItem by remember {
         mutableIntStateOf(timesOption.indexOf(recipient.expireMessages))
-    }
-
-    secretGroupInfoViewModel.isEnableNotification.observe(lifecycleOwner) { item ->
-        showNotificationSettingsItem=item
     }
 
     secretGroupInfoViewModel.isExpirationItem.observe(lifecycleOwner) { item ->
@@ -390,7 +387,7 @@ fun GroupDetailsScreen(
                 onValueChanged={ _, index ->
                     DatabaseComponent.get(context).recipientDatabase()
                         .setNotifyType(recipient, index.toString().toInt())
-                    secretGroupInfoViewModel.updateNotificationType(option[index])
+                    showNotificationSettingsItem = index
                     showNotificationSettingsDialog=false
                 }
             )
@@ -759,7 +756,7 @@ fun GroupDetailsScreen(
                                 }
 
                             },
-                            checked=showNotificationSettingsItem == context.getString(R.string.notify_type_mentions),
+                            checked=showNotificationSettingsItem == RecipientDatabase.NOTIFY_TYPE_MENTIONS,
                             showSwitch=true,
                             subTitle=context.getString(R.string.notification_info)
                         )

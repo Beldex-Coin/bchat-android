@@ -132,8 +132,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/small_font_size"
         android:textIsSelectable="true"
-        android:padding="16dp"
-        tools:text="@string/dummy_bchat_id" />
+        android:padding="16dp" />
 
         </androidx.cardview.widget.CardView>
     </androidx.cardview.widget.CardView>

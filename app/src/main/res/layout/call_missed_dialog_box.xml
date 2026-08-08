@@ -51,7 +51,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/test"
+            android:text="@string/ok"
             android:textAlignment="center"
             android:visibility="invisible"/>
     </LinearLayout>

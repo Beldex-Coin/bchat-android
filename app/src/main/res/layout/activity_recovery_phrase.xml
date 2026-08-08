@@ -123,7 +123,7 @@
                 android:drawableStart="@drawable/ic_baseline_content_copy_24"
                 android:paddingStart="30dp"
                 android:paddingEnd="30dp"
-                android:text="@string/copy" />
+                android:text="@string/copy_bchat" />
 
             <Button
                 android:id="@+id/shareBtn"

@@ -43,7 +43,6 @@ class UntrustedAttachmentView: LinearLayout {
         }
         val iconDrawable = ContextCompat.getDrawable(context,iconRes)!!
         iconDrawable.mutate().setTint(textColor)
-//        val text = context.getString(R.string.UntrustedAttachmentView_download_attachment, context.getString(stringRes).toLowerCase(Locale.ROOT))
         val text = context.getString(stringRes).lowercase(Locale.ROOT)
 
         binding.untrustedAttachmentIcon.setImageDrawable(iconDrawable)

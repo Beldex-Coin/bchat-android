@@ -326,7 +326,7 @@ fun LinkYourBNSDialog(
                             )
                     )
                     if(isVerified){
-                        Image(painter = painterResource(id = R.drawable.ic_message_sent), contentDescription = "Bns verified", modifier =Modifier
+                        Image(painter = painterResource(id = R.drawable.ic_message_sent), contentDescription = stringResource(R.string.bns_verified), modifier =Modifier
                                 .size(20.dp)
                                 .align(Alignment.CenterVertically)
                                 .padding(start=5.dp))

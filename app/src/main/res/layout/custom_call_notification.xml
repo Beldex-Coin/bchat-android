@@ -13,7 +13,7 @@
         android:layout_height="36dp"
         android:layout_marginEnd="10dp"
         android:layout_gravity="center_vertical"
-        android:contentDescription="recipient_profile"
+        android:contentDescription="@string/user"
         android:src="@mipmap/ic_launcher" />
     <LinearLayout
         android:layout_width="0dp"
@@ -25,7 +25,7 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/test"
+            android:text="@string/user"
             android:textColor="@color/icon_tint"
             android:textSize="13sp" />
 
@@ -33,7 +33,7 @@
             android:id="@+id/text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Testing SubTitle"
+            android:text="@string/user"
             android:textColor="@color/version_color"
             android:textSize="13sp" />
     </LinearLayout>

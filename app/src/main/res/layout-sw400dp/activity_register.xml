@@ -27,7 +27,7 @@
             android:textColor="@color/text"
             android:textSize="20sp"
             android:textStyle="bold"
-            tools:text="@string/activity_register_content" />
+            tools:text="@string/hey_user_welcome_to_bchat" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/chatIdCard"
@@ -76,8 +76,7 @@
                         android:textColor="@color/text"
                         android:textSize="12sp"
                         android:paddingBottom="10dp"
-                        android:visibility="gone"
-                        tools:text="@string/dummy_bchat_id" />
+                        android:visibility="gone" />
 
                     <com.airbnb.lottie.LottieAnimationView
                         android:id="@+id/publicKeyAnimation"
@@ -157,8 +156,7 @@
                         android:textAlignment="viewStart"
                         android:textSize="12sp"
                         android:paddingBottom="10dp"
-                        android:visibility="gone"
-                        tools:text="@string/dummy_beldex_address" />
+                        android:visibility="gone"/>
 
                     <com.airbnb.lottie.LottieAnimationView
                         android:id="@+id/beldexAddressAnimation"
@@ -214,7 +212,7 @@
             android:layout_marginStart="@dimen/massive_spacing"
             android:layout_marginTop="@dimen/small_spacing"
             android:layout_marginEnd="@dimen/massive_spacing"
-            android:text="@string/copy"
+            android:text="@string/copy_bchat"
             android:visibility="gone" />
 
         <TextView

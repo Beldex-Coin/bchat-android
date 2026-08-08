@@ -8,7 +8,6 @@
     <string name="please_wait">Please wait...</string>
     <string name="save">Save</string>
     <string name="note_to_self">Note to Self</string>
-    <string name="version_s">Version %s</string>
 
     <!-- AbstractNotificationBuilder -->
     <string name="AbstractNotificationBuilder_new_message">New message</string>
@@ -26,8 +25,6 @@
         <item quantity="one">This will immediately trim all conversations to the most recent message.</item>
         <item quantity="other">This will immediately trim all conversations to the %d most recent messages.</item>
     </plurals>
-    <string name="ApplicationPreferencesActivity_On">On</string>
-    <string name="ApplicationPreferencesActivity_Off">Off</string>
 
     <!-- DraftDatabase -->
     <string name="DraftDatabase_Draft_image_snippet">(image)</string>
@@ -38,11 +35,7 @@
     <!-- AttachmentManager -->
     <string name="AttachmentManager_cant_open_media_selection">Can\'t find an app to select media.</string>
     <string name="AttachmentManager_signal_requires_the_external_storage_permission_in_order_to_attach_photos_videos_or_audio">BChat requires the Storage permission in order to attach photos, videos, or audio, but it has been permanently denied. Please continue to the app settings menu, select \"Permissions\", and enable \"Storage\".</string>
-    <string name="AttachmentManager_signal_requires_contacts_permission_in_order_to_attach_contact_information">BChat requires Contacts permission in order to attach contact information, but it has been permanently denied. Please continue to the app settings menu, select \"Permissions\", and enable \"Contacts\".</string>
     <string name="AttachmentManager_signal_requires_the_camera_permission_in_order_to_take_photos_but_it_has_been_permanently_denied">BChat requires the Camera permission in order to take photos, but it has been permanently denied. Please continue to the app settings menu, select \"Permissions\", and enable \"Camera\".</string>
-
-    <!-- AudioSlidePlayer -->
-    <string name="AudioSlidePlayer_error_playing_audio">Error playing audio!</string>
 
     <!-- BucketedThreadMedia -->
     <string name="BucketedThreadMedia_Today">Today</string>
@@ -58,41 +51,23 @@
 
     <!-- ConversationItem -->
     <string name="ConversationItem_error_not_delivered">Send failed, tap for details</string>
-    <string name="ConversationItem_received_key_exchange_message_tap_to_process">Received key exchange message, tap to process.</string>
-    <string name="ConversationItem_group_action_left">%1$s has left the group.</string>
-    <string name="ConversationItem_click_to_approve_unencrypted">Send failed, tap for unsecured fallback</string>
     <string name="ConversationItem_unable_to_open_media">Can\'t find an app able to open this media.</string>
-    <string name="ConversationItem_copied_text">Copied %s</string>
-    <string name="ConversationItem_read_more">Read More</string>
-    <string name="ConversationItem_download_more">&#160; Download More</string>
-    <string name="ConversationItem_pending">&#160; Pending</string>
 
     <!-- ConversationActivity -->
-    <string name="ConversationActivity_add_attachment">Add attachment</string>
-    <string name="ConversationActivity_select_contact_info">Select contact info</string>
-    <string name="ConversationActivity_sorry_there_was_an_error_setting_your_attachment">Sorry, there was an error setting your attachment.</string>
     <string name="ConversationActivity_message">Write a message....</string>
-    <string name="ConversationActivity_compose">Compose</string>
     <string name="ConversationActivity_muted_until_date">Muted until %1$s</string>
     <string name="ConversationActivity_muted_forever">Muted</string>
     <string name="ConversationActivity_member_count">%1$d members</string>
     <string name="ConversationActivity_open_group_guidelines">Community Guidelines</string>
     <string name="ConversationActivity_social_group_welcome">Welcome to BChat</string>
 
-    <string name="ConversationActivity_invalid_recipient">Invalid recipient!</string>
     <string name="ConversationActivity_added_to_home_screen">Added to home screen</string>
     <string name="ConversationActivity_leave_group">Leave group?</string>
     <string name="ConversationActivity_are_you_sure_you_want_to_leave_this_group">Are you sure you want to leave this group?</string>
     <string name="ConversationActivity_error_leaving_group">Error leaving group</string>
-    <string name="ConversationActivity_unblock_this_contact_question">Unblock this contact?</string>
-    <string name="ConversationActivity_you_will_once_again_be_able_to_receive_messages_and_calls_from_this_contact">You will once again be able to receive messages and calls from this contact.</string>
     <string name="ConversationActivity_unblock">Unblock</string>
-    <string name="ConversationActivity_attachment_exceeds_size_limits">Attachment exceeds size limits for the type of message you\'re sending.</string>
     <string name="ConversationActivity_unable_to_record_audio">Unable to record audio!</string>
-    <string name="ConversationActivity_there_is_no_app_available_to_handle_this_link_on_your_device">There is no app available to handle this link on your device.</string>
     <string name="ConversationActivity_invite_to_open_group">Add members</string>
-    <string name="ConversationActivity_join_open_group">Join %s</string>
-    <string name="ConversationActivity_join_open_group_confirmation_message">Are you sure you want to join the <b>%s</b> social group?</string>
 
     <string name="ConversationActivity_to_send_audio_messages_allow_signal_access_to_your_microphone">Allow Recorder to access voice recording?</string>
     <string name="ConversationActivity_signal_requires_the_microphone_permission_in_order_to_send_audio_messages">BChat needs microphone access to send audio messages, but it has been permanently denied. Please continue to app settings, select \"Permissions\", and enable \"Microphone\".</string>
@@ -103,13 +78,6 @@
 
     <string name="ConversationActivity_quoted_contact_message">%1$s %2$s</string>
     <string name="ConversationActivity_search_position">%1$d of %2$d</string>
-    <string name="ConversationActivity_no_results">No results</string>
-
-    <!-- ConversationAdapter -->
-    <plurals name="ConversationAdapter_n_unread_messages">
-        <item quantity="one">%d unread message</item>
-        <item quantity="other">%d unread messages</item>
-    </plurals>
 
     <!-- ConversationFragment -->
     <plurals name="ConversationFragment_delete_selected_messages">
@@ -138,19 +106,6 @@
         <item quantity="one">Saving attachment to storage...</item>
         <item quantity="other">Saving %1$d attachments to storage...</item>
     </plurals>
-    <string name="ConversationFragment_pending">Pending...</string>
-    <string name="ConversationFragment_push">Data (BChat)</string>
-    <string name="ConversationFragment_mms">MMS</string>
-    <string name="ConversationFragment_sms">SMS</string>
-    <string name="ConversationFragment_deleting">Deleting</string>
-    <string name="ConversationFragment_deleting_messages">Deleting messages...</string>
-    <string name="ConversationFragment_banning">Banning</string>
-    <string name="ConversationFragment_banning_user">Banning user…</string>
-    <string name="ConversationFragment_quoted_message_not_found">Original message not found</string>
-    <string name="ConversationFragment_quoted_message_no_longer_available">Original message no longer available</string>
-
-    <!-- ConversationListItem -->
-    <string name="ConversationListItem_key_exchange_message">Key exchange message</string>
 
     <!-- CreateProfileActivity -->
     <string name="CreateProfileActivity_profile_photo">Profile photo</string>
@@ -166,9 +121,6 @@
     <string name="DateUtils_today">Today</string>
     <string name="DateUtils_yesterday">Yesterday</string>
 
-    <!-- DeviceListItem -->
-    <string name="DeviceListItem_today">Today</string>
-
     <!-- DocumentView -->
     <string name="DocumentView_unknown_file">Unknown file</string>
 
@@ -181,9 +133,6 @@
 
     <!-- CropImageActivity -->
     <string name="CropImageActivity_profile_avatar">Photo</string>
-
-    <!-- InputPanel -->C
-    <string name="InputPanel_tap_and_hold_to_record_a_voice_message_release_to_send">Tap and hold to record a voice message, release to send</string>
 
     <!-- LongMessageActivity -->
     <string name="LongMessageActivity_unable_to_find_message">Unable to find message</string>
@@ -222,8 +171,6 @@
     <!-- MessageRecord -->
     <string name="MessageRecord_message_encrypted_with_a_legacy_protocol_version_that_is_no_longer_supported">Received a message encrypted using an old version of BChat that is no longer supported. Please ask the sender to update to the most recent version and resend the message.</string>
     <string name="MessageRecord_left_group">You left this group</string>
-    <string name="MessageRecord_you_updated_group">You updated the group</string>
-    <string name="MessageRecord_s_updated_group">%s updated the group</string>
 
     <!-- ExpirationDialog -->
     <string name="ExpirationDialog_disappearing_messages">Disappearing messages</string>
@@ -235,10 +182,7 @@
 
     <!-- RecipientPreferencesActivity -->
     <string name="RecipientPreferenceActivity_block_this_contact_question">Block this contact?</string>
-    <string name="RecipientPreferenceActivity_you_will_no_longer_receive_messages_and_calls_from_this_contact">You will no longer receive messages and calls from this contact.</string>
     <string name="RecipientPreferenceActivity_block">Block</string>
-    <string name="RecipientPreferenceActivity_unblock_this_contact_question">Unblock this contact?</string>
-    <string name="RecipientPreferenceActivity_you_will_once_again_be_able_to_receive_messages_and_calls_from_this_contact">You will once again be able to receive messages and calls from this contact.</string>
     <string name="RecipientPreferenceActivity_notification_settings">Notification settings</string>
 
     <!-- Slide -->
@@ -247,20 +191,10 @@
     <string name="Slide_video">Video</string>
 
     <!-- SmsMessageRecord -->
-    <string name="SmsMessageRecord_received_corrupted_key_exchange_message">Received corrupted key
-        exchange message!
-    </string>
-    <string name="SmsMessageRecord_received_key_exchange_message_for_invalid_protocol_version">
-        Received key exchange message for invalid protocol version.
-    </string>
-    <string name="SmsMessageRecord_received_message_with_new_safety_number_tap_to_process">Received message with new safety number. Tap to process and display.</string>
-    <string name="SmsMessageRecord_secure_bchat_reset">You reset the secure bchat.</string>
-    <string name="SmsMessageRecord_secure_bchat_reset_s">%s reset the secure bchat.</string>
     <string name="SmsMessageRecord_duplicate_message">Duplicate message.</string>
 
     <!-- ThreadRecord -->
     <string name="ThreadRecord_group_updated">Group updated</string>
-    <string name="ThreadRecord_left_the_group">Left the group</string>
     <string name="ThreadRecord_secure_bchat_reset">Secure bchat reset.</string>
     <string name="ThreadRecord_draft">Draft:</string>
     <string name="ThreadRecord_called">You called</string>
@@ -307,8 +241,6 @@
     <string name="MediaPreviewActivity_signal_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied">BChat needs storage access in order to save to external storage, but it has been permanently denied. Please continue to app settings, select \"Permissions\", and enable \"Storage\".</string>
     <string name="MediaPreviewActivity_unable_to_write_to_external_storage_without_permission">Unable to save to external storage without permissions</string>
     <string name="conversation_activity__wait_until_attachment_has_finished_downloading">Please wait until attachment has finished downloading</string>
-    <string name="MediaPreviewActivity_media_delete_confirmation_title">Delete message?</string>
-    <string name="MediaPreviewActivity_media_delete_confirmation_message">This will permanently delete this message.</string>
 
     <!-- MessageNotifier -->
     <string name="MessageNotifier_d_new_messages_in_d_conversations">%1$d new messages in %2$d conversations</string>
@@ -381,11 +313,6 @@
     <string name="conversation_activity__send">Send</string>
     <string name="conversation_activity__compose_description">Message composition</string>
     <string name="conversation_activity__emoji_toggle_description">Toggle emoji keyboard</string>
-    <string name="conversation_activity__attachment_thumbnail">Attachment Thumbnail</string>
-    <string name="conversation_activity__quick_attachment_drawer_toggle_camera_description">Toggle quick camera attachment drawer</string>
-    <string name="conversation_activity__quick_attachment_drawer_record_and_send_audio_description">Record and send audio attachment</string>
-    <string name="conversation_activity__quick_attachment_drawer_lock_record_description">Lock recording of audio attachment</string>
-    <string name="conversation_activity__enable_signal_for_sms">Enable BChat for SMS</string>
 
     <!-- conversation_input_panel -->
     <string name="conversation_input_panel__slide_to_cancel">Slide to cancel</string>
@@ -399,19 +326,12 @@
     <string name="conversation_item_sent__pending_approval_description">Pending Approval</string>
     <string name="conversation_item_sent__delivered_description">Delivered</string>
     <string name="conversation_item_sent__message_read">Message read</string>
-
-    <!-- conversation_item_received -->
-    <string name="conversation_item_received__contact_photo_description">Contact photo</string>
-
     <!-- audio_view -->
-    <string name="audio_view__play_accessibility_description">Play</string>
-    <string name="audio_view__pause_accessibility_description">Pause</string>
     <string name="audio_view__download_accessibility_description">Download</string>
 
     <!-- open_group_invitation_view -->
     <string name="open_group_invitation_view__join_accessibility_description">Join</string>
     <string name="open_group_invitation_view__open_group_invitation">Social group invitation</string>
-    <string name="open_group_guidelines_pinned_message">Pinned message</string>
     <string name="open_group_guidelines_read">Read</string>
 
     <!-- QuoteView -->
@@ -419,17 +339,8 @@
     <string name="QuoteView_video">Video</string>
     <string name="QuoteView_photo">Photo</string>
     <string name="QuoteView_original_missing">Original message not found</string>
-
-    <!-- conversation_fragment -->
-    <string name="conversation_fragment__scroll_to_the_bottom_content_description">Scroll to the bottom</string>
-
     <!-- giphy_fragment -->
     <string name="giphy_fragment__nothing_found">Nothing found</string>
-
-    <!-- load_more_header -->
-    <string name="load_more_header__see_full_conversation">See full conversation</string>
-    <string name="load_more_header__loading">Loading</string>
-
     <!-- media_overview_activity -->
     <string name="media_overview_activity__no_media">No Media items to show!</string>
 
@@ -442,7 +353,6 @@
     <string name="message_details_header__disappears">Disappears</string>
 
     <!-- AndroidManifest.xml -->
-    <string name="AndroidManifest__create_passphrase">Create passphrase</string>
     <string name="AndroidManifest__media_preview">Media preview</string>
 
     <!-- arrays.xml -->
@@ -454,25 +364,9 @@
     <string name="arrays__mute_for_one_day">Mute for 1 day</string>
     <string name="arrays__mute_for_seven_days">Mute for 7 days</string>
     <string name="arrays__mute_forever">Mute forever</string>
-
-    <string name="arrays__settings_default">Settings default</string>
-    <string name="arrays__enabled">Enabled</string>
-    <string name="arrays__disabled">Disabled</string>
-
     <string name="arrays__name_and_message">Name and Content</string>
     <string name="arrays__name_only">Name Only</string>
     <string name="arrays__no_name_or_message">No Name or Content</string>
-
-    <string name="arrays__images">Images</string>
-    <string name="arrays__audio">Audio</string>
-    <string name="arrays__video">Video</string>
-    <string name="arrays__documents">Documents</string>
-
-    <string name="arrays__small">Small</string>
-    <string name="arrays__normal">Normal</string>
-    <string name="arrays__large">Large</string>
-    <string name="arrays__extra_large">Extra large</string>
-
     <string name="arrays__default">Default</string>
     <string name="arrays__high">High</string>
     <string name="arrays__max">Max</string>
@@ -489,11 +383,8 @@
 
     <!-- preferences.xml -->
     <string name="preferences__pref_enter_sends_title">Enter Key sends</string>
-    <string name="preferences__pressing_the_enter_key_will_send_text_messages">Pressing the Enter key will send text messages</string>
     <string name="preferences__send_link_previews">Send link previews</string>
     <string name="preferences__previews_are_supported_for">Previews are supported for Imgur, Instagram, Pinterest, Reddit, and YouTube links</string>
-    <string name="preferences__screen_security">Screen security</string>
-    <string name="preferences__disable_screen_security_to_allow_screen_shots">Block screenshots in the recents list and inside the app</string>
     <string name="preferences__notifications">All Notifications</string>
     <string name="preferences__led_color">LED color</string>
     <string name="preferences__led_color_unknown">Unknown</string>
@@ -519,11 +410,9 @@
     <string name="preferences__fast">Fast</string>
     <string name="preferences__normal">Normal</string>
     <string name="preferences__slow">Slow</string>
-    <string name="preferences__automatically_delete_older_messages_once_a_conversation_exceeds_a_specified_length">Automatically delete older messages once a conversation exceeds a specified length</string>
     <string name="preferences__delete_old_messages">Delete old messages</string>
     <string name="preferences__conversation_length_limit">Conversation length limit</string>
     <string name="preferences__trim_all_conversations_now">Trim all conversations now</string>
-    <string name="preferences__scan_through_all_conversations_and_enforce_conversation_length_limits">Scan through all conversations and enforce conversation length limits</string>
     <string name="preferences__default">Default</string>
     <string name="preferences__incognito_keyboard">Incognito keyboard</string>
     <string name="preferences__read_receipts">Read receipts</string>
@@ -531,11 +420,8 @@
     <string name="preferences__typing_indicators">Typing indicators</string>
     <string name="preferences__if_typing_indicators_are_disabled_you_wont_be_able_to_see_typing_indicators">If typing indicators are disabled, you won\'t be able to see typing indicators from others.</string>
     <string name="preferences__request_keyboard_to_disable_personalized_learning">Request keyboard to disable personalized learning</string>
-    <string name="preferences__light_theme">Light</string>
-    <string name="preferences__dark_theme">Dark</string>
     <string name="preferences_chats__message_trimming">Message Trimming</string>
     <string name="preferences_advanced__use_system_emoji">Use system emoji</string>
-    <string name="preferences_advanced__disable_signal_built_in_emoji_support">Disable BChat\'s built-in emoji support</string>
     <string name="preferences_app_protection__app_access">App Access</string>
     <string name="preferences_app_protection__communication">Communication</string>
     <string name="preferences_chats__chats">Chat Settings</string>
@@ -543,18 +429,6 @@
     <string name="preferences_notifications__show">Show</string>
     <string name="preferences_notifications__priority">Priority</string>
     <string name="preferences_chats__font_size">Font Size</string>
-    <string name="preferences_chat_font_small">Small</string>
-    <string name="preferences_chat_font_medium">Medium</string>
-    <string name="preferences_chat_font_large">large</string>
-    <string name="preferences_chat_pay_as_you_chat_title">Pay as you chat</string>
-    <string name="preferences_wallet_title">Wallet</string>
-    <string name="preferences_start_wallet_subtitle">Enabling wallet will allow you to send and receive BDX</string>
-    <string name="preferences_pay_as_you_chat_subTitle">Enabling \‘Pay As You Chat\’ will allow you to send and receive BDX right from the chat window</string>
-
-
-    <!-- **************************************** -->
-    <!-- menus -->
-    <!-- **************************************** -->
 
     <!-- contact_selection_list -->
     <string name="contact_selection_list__unknown_contact">New message to...</string>
@@ -584,15 +458,6 @@
     <string name="conversation__menu_edit_group">Edit group</string>
     <string name="conversation__menu_leave_group">Leave group</string>
     <string name="conversation__menu_add_shortcut">Add to home screen</string>
-
-    <!-- conversation_popup -->
-    <string name="conversation_popup__menu_expand_popup">Expand popup</string>
-
-    <!-- conversation_group_options -->
-    <string name="conversation_group_options__delivery">Delivery</string>
-    <string name="conversation_group_options__conversation">Conversation</string>
-    <string name="conversation_group_options__broadcast">Broadcast</string>
-
     <!-- media_preview -->
     <string name="media_preview__forward_title">Forward</string>
     <!-- media_overview -->
@@ -612,15 +477,6 @@
     <string name="Permissions_deny">Deny</string>
     <string name="backup_enable_dialog__backups_will_be_saved_to_external_storage_and_encrypted_with_the_passphrase_below_you_must_have_this_passphrase_in_order_to_restore_a_backup">Backups will be saved to external storage and encrypted with the passphrase below. You must have this passphrase in order to restore a backup.</string>
     <string name="backup_enable_dialog__i_have_written_down_this_passphrase">I have written down this passphrase. Without it, I will be unable to restore a backup.</string>
-    <string name="registration_activity__skip">Skip</string>
-    <string name="RegistrationActivity_backup_failure_downgrade">Cannot import backups from newer versions of BChat</string>
-    <string name="RegistrationActivity_incorrect_backup_passphrase">Incorrect backup passphrase</string>
-    <string name="BackupDialog_enable_local_backups">Enable local backups?</string>
-    <string name="BackupDialog_enable_backups">Enable backups</string>
-    <string name="BackupDialog_please_acknowledge_your_understanding_by_marking_the_confirmation_check_box">Please acknowledge your understanding by marking the confirmation check box.</string>
-    <string name="BackupDialog_delete_backups">Delete backups?</string>
-    <string name="BackupDialog_disable_and_delete_all_local_backups">Disable and delete all local backups?</string>
-    <string name="BackupDialog_delete_backups_statement">Delete backups</string>
     <string name="LocalBackupJob_creating_backup">Creating backup...</string>
     <string name="ProgressPreference_d_messages_so_far">%d messages so far</string>
     <string name="BackupUtil_never">Never</string>
@@ -628,12 +484,9 @@
     <string name="preferences_app_protection__lock_signal_access_with_android_screen_lock_or_fingerprint">Lock BChat access with Android screen lock or fingerprint</string>
     <string name="preferences_app_protection__screen_lock_inactivity_timeout">Screen lock inactivity timeout</string>
     <string name="AppProtectionPreferenceFragment_none">None</string>
-    <!-- Conversation activity -->
-    <string name="activity_conversation_copy_public_key_button_title">Copy public key</string>
-
     <!-- BChat -->
     <string name="continue_2">Continue</string>
-    <string name="copy">Copy</string>
+    <string name="copy_bchat">Copy</string>
     <string name="invalid_url">Invalid URL</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>
     <string name="next">Next</string>
@@ -642,8 +495,6 @@
     <string name="cancel">Cancel</string>
     <string name="ok">Ok</string>
     <string name="your_bchat_id">Your BChat ID</string>
-
-    <string name="activity_landing_title_2">Your BChat begins here...</string>
     <string name="activity_landing_register_button_title">Create Account</string>
     <string name="activity_landing_restore_button_title">Restore Account</string>
 
@@ -652,16 +503,6 @@
     <string name="view_fake_chat_bubble_3">So it doesn\'t collect my personal information or my conversation metadata? How does it work?</string>
     <string name="view_fake_chat_bubble_4">Using a combination of advanced anonymous routing and end-to-end encryption technologies.</string>
     <string name="view_fake_chat_bubble_5">Friends don\'t let friends use compromised messengers. You\'re welcome.</string>
-
-    <string name="activity_register_title">Say hello to your BChat ID</string>
-    <string name="activity_register_explanation">Your BChat ID is the unique address people can use to contact you on BChat. With no connection to your real identity, your BChat ID is totally anonymous and private by design.</string>
-
-    <string name="activity_restore_title">Restore your account</string>
-    <string name="activity_restore_explanation">Enter the recovery phrase that was given to you when you signed up to restore your account.</string>
-    <string name="activity_restore_seed_edit_text_hint">Enter your recovery phrase</string>
-
-    <string name="activity_display_name_title_2">Pick your display name</string>
-    <string name="activity_display_name_explanation">This will be your name when you use BChat. It can be your real name, an alias, or anything else you like.</string>
     <string name="activity_display_name_display_name_missing_error">Please pick a display name</string>
     <string name="activity_display_name_display_name_too_long_error">Please pick a shorter display name</string>
     <string name="activity_display_name_hint">You can change it anytime :)</string>
@@ -671,7 +512,6 @@
 
     <string name="activity_home_empty_state_message">You don\'t have any contacts yet</string>
     <string name="activity_home_empty_state_button_title">Start a BChat</string>
-    <string name="activity_home_leaving_group_failed_message">"Couldn\'t leave group"</string>
     <string name="activity_home_delete_conversation_dialog_message">Are you sure you want to delete this conversation?</string>
     <string name="activity_home_conversation_deleted_message">Conversation deleted</string>
 
@@ -700,13 +540,10 @@
     <string name="fragment_enter_public_key_explanation">Users can share their BChat ID by going into their account settings and tapping "Share BChat ID", or by sharing their QR code.</string>
     <string name="fragment_enter_public_key_error_message">Please check the BChat ID or BNS name and try again.</string>
 
-    <string name="fragment_scan_qr_code_camera_access_explanation">BChat needs camera access to scan QR codes</string>
     <string name="fragment_scan_qr_code_grant_camera_access_button_title">Grant Camera Access</string>
 
     <string name="activity_create_closed_group_title">New Secret Group</string>
-    <string name="activity_create_closed_group_edit_text_hint">Enter a group name</string>
     <string name="activity_create_closed_group_empty_state_message">No Contacts yet.</string>
-    <string name="activity_create_closed_group_empty_state_button_title">Start a Chat</string>
     <string name="activity_create_closed_group_group_name_missing_error">Please enter a group name</string>
     <string name="activity_create_closed_group_group_name_too_long_error">Please enter a shorter group name</string>
     <string name="activity_create_closed_group_not_enough_group_members_error">Please pick at least 1 group member</string>
@@ -715,26 +552,19 @@
     <string name="activity_join_public_chat_title">Join a Social Group</string>
     <string name="activity_join_public_chat_error">Couldn\'t join social group</string>
     <string name="activity_join_public_chat_enter_group_url_tab_title">Social Group URL</string>
-    <string name="activity_join_public_chat_scan_qr_code_explanation">Scan the QR code of the social group you\'d like to join</string>
-
     <string name="fragment_enter_chat_url_edit_text_hint">Enter a social group URL</string>
 
     <string name="activity_settings_title">Settings</string>
     <string name="activity_settings_display_name_edit_text_hint">Enter a display name</string>
     <string name="activity_settings_privacy_button_title">Privacy</string>
     <string name="activity_settings_notifications_button_title">Notifications</string>
-    <string name="activity_settings_devices_button_title">Devices</string>
     <string name="activity_settings_invite_button_title">Invite a Friend</string>
     <string name="activity_settings_faq_button_title">FAQ</string>
     <string name="activity_settings_recovery_phrase_button_title">Recovery Seed</string>
     <string name="activity_settings_clear_all_data_button_title">Clear Data</string>
-    <string name="activity_settings_clear_all_data_and_network_button_title">Clear Data Including Network</string>
     <string name="activity_settings_help_translate_bchat">Help us Translate BChat</string>
     <string name="activity_notification_settings_style_section_title">Notification Style</string>
     <string name="activity_notification_settings_content_section_title">Notification Content</string>
-
-    <string name="activity_privacy_settings_title">Privacy</string>
-
     <string name="activity_chat_settings_title">Chats</string>
 
     <string name="preferences_notifications_strategy_category_title">Notification Strategy</string>
@@ -750,16 +580,10 @@
     <string name="dialog_clear_all_data_title">Clear all data</string>
     <string name="dialog_clear_all_data_explanation">Are you sure you want to Permanently clear all data from this device?</string>
     <string name="dialog_clear_all_data_network_explanation">Are you sure you want to Permanently clear all data from the Beldex Network?</string>
-    <string name="dialog_clear_all_data_local_only">Delete Only</string>
-    <string name="dialog_clear_all_data_clear_network">Entire Account</string>
-
     <string name="activity_qr_code_title">QR Code</string>
     <string name="activity_qr_code_view_my_qr_code_tab_title">My QR Code</string>
     <string name="activity_qr_code_view_scan_qr_code_tab_title">Scan QR</string>
     <string name="activity_qr_code_view_scan_qr_code_explanation">Scan someone\'s QR code to start a conversation with them</string>
-    <string name="fragment_view_my_qr_code_title">Scan Me</string>
-
-    <string name="fragment_view_my_qr_code_explanation">This is your QR code. Other users can scan it to start a BChat with you.</string>
     <string name="fragment_view_my_qr_code_share_title">Share QR Code</string>
 
     <string name="fragment_contact_selection_contacts_title">Contacts</string>
@@ -780,9 +604,6 @@
     <string name="fragment_edit_group_bottom_sheet_remove">Remove user from group</string>
 
     <string name="activity_select_contacts_title">Select Contacts</string>
-
-    <string name="view_reset_secure_bchat_done_message">Secure BChat reset done</string>
-
     <string name="dialog_ui_mode_title">Theme</string>
     <string name="dialog_ui_mode_option_day">Day</string>
     <string name="dialog_ui_mode_option_night">Night</string>
@@ -793,17 +614,6 @@
     <string name="attachment">Attachment</string>
     <string name="attachment_type_voice_message">Voice Message</string>
     <string name="details">Details</string>
-
-    <string name="dialog_backup_activation_failed">Failed to activate backups. Please try again or contact support.</string>
-
-    <string name="activity_backup_restore_title">Restore backup</string>
-    <string name="activity_backup_restore_select_file">Select a file</string>
-    <string name="activity_backup_restore_explanation_1">Select a backup file and enter the passphrase it was created with.</string>
-    <string name="activity_backup_restore_passphrase">30-digit passphrase</string>
-
-    <string name="activity_link_device_skip_prompt">This is taking a while, would you like to skip?</string>
-    <string name="activity_link_device_link_device">Link a Device</string>
-    <string name="activity_link_device_qr_message">Navigate to Settings → Recovery Seed on your other device to show your QR code.</string>
     <string name="activity_join_public_chat_join_rooms">Or join one of these…</string>
 
     <string name="activity_pn_mode_message_notifications">Message Notifications</string>
@@ -837,10 +647,7 @@
     <string name="dialog_download_title">Trust %s?</string>
     <string name="dialog_download_explanation">Are you sure you want to download media sent by <b>%s</b>?</string>
 
-    <string name="activity_conversation_blocked_banner_text">%s is blocked. Unblock them?</string>
-
     <string name="activity_conversation_attachment_prep_failed">Failed to prepare attachment for sending.</string>
-    <string name="UntrustedAttachmentView_download_attachment">Tap to download %s</string>
     <string name="message_details_header__error">Error</string>
 
     <string name="dialog_send_seed_title">Warning</string>
@@ -852,52 +659,20 @@
     <string name="delete_message_for_everyone">Delete for everyone</string>
     <string name="delete_message_for_me_and_recipient">Delete for me and %s</string>
     <string name="activity_settings_survey_feedback">Feedback</string>
-    <string name="activity_settings_support">Debug Log</string>
-    <string name="dialog_share_logs_title">Share Logs</string>
-    <string name="dialog_share_logs_explanation">Would you like to export your application logs to be able to share for troubleshooting?</string>
     <string name="conversation_pin">Pin</string>
     <string name="conversation_unpin">Unpin</string>
     <string name="global_search_contacts_groups">Contacts and Groups</string>
-
-    <!-- New Strings-->
-
     <string name="terms_and_conditions">Terms &amp; Conditions</string>
-    <string name="hey_you">Hey there!</string>
-    <string name="chat_anonymously_now">Chat Anonymously Now.</string>
-    <string name="dummy_content">Ut Commodo venenatis diam id accumsan. Morbi ut pur us egestas, facilisis mi ac, rhoncus. Morbi ut purus egtas.</string>
-    <string name="title_activity_app_lock">AppLockActivity</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-    <string name="activity_register_content">Hey User, Welcome to BChat!</string>
     <string name="chatid">BChat ID</string>
-    <string name="enable_app_lock">Enable App Lock</string>
-    <string name="later">Later</string>
-    <string name="enter_pin_hint">Eg.0089</string>
-    <string name="dummy_bchat_id">bd00f9b10ec366631ba25a9c6a0279e12d93c260134fce646d4c425356da5c9b48</string>
-    <string name="dummy_notes"><font color='#FF0000'>Note: </font> Ut Commodo venenatis diam id accumsan. Morbi ut pur us egestas, facilisis mi ac, rhoncus. Morbi ut</string>
-    <string name="re_enter_pin">Re-enter your password</string>
     <string name="close">Close</string>
-    <string name="on">On</string>
     <string name="important">IMPORTANT</string>
     <string name="activity_settings_app_lock_button_title">App Lock</string>
     <string name="change_password">Change Password</string>
     <string name="screenlock_inactivity_timeout">Screenlock Inactivity Timeout</string>
-    <string name="pin_not_matched">Entered pin not matched</string>
-    <string name="start_a_chat">Start a Chat</string>
-    <string name="join_group">Join Social Group</string>
-    <string name="group_url">Group URL</string>
-    <string name="or_join_here">Or Join here</string>
     <string name="camera_access_text">BChat needs camera access to scan QR codes</string>
-    <string name="remove_this_contact">Remove This Contacts ?</string>
-    <string name="remove_message">Are you sure You want to Remove this contact from this group?</string>
     <string name="leave">Leave</string>
     <string name="create">Create</string>
-    <string name="change">Change</string>
     <string name="enter_new_password"> Enter a New Password</string>
     <string name="enter_old_password"> Enter Your Old Password</string>
     <string name="change_password_content">BChat app lock password adds an additional layer of security to users. Enter your old password and new password to update your password in app lock.</string>
@@ -912,37 +687,20 @@
     <string name="thirty_minutes">30 Minutes</string>
 
     <string name="generate_wallet_creating">Yippie! Your BChat is being set up!</string>
-    <string name="scan_qrcode_text">Scan</string>
     <string name="beldex_address">Beldex Address</string>
-    <string name="dummy_beldex_address">bx00f9b10ec366631ba25a9c6a0279e12d93c260134fce646d4c425356da5c9b480987654321a7b8c9e7a4d1b6f9e9e8</string>
     <string name="landing_screen_content">Welcome to BChat, your private haven for seamless communication and connection.</string>
     <string name="welcome_to">Welcome to</string>
     <string name="display_name_screen_title_content">Set your Display Name</string>
-    <string name="display_name_screen_description_content">Your display name is not your username and you can change it anytime.</string>
     <string name="register_screen_chat_id_description_content">Your BChat ID is like your username. You can share it with your friends to begin a conversation.</string>
     <string name="register_screen_beldex_address_description_content">Your Beldex address is connected to your BChat ID. You can use this address to receive BDX.</string>
     <string name="create_password_screen_description_content">Enter a four digit pin to add an additional layer of security to your BChat account. Your pin is required to unlock your account or view your recovery keys and recovery seed once you\'re logged in.</string>
-    <string name="recovery_phrase_screen_description_content"><font color='#FF0000'>Note: </font> Save your recovery seed! Only your recovery seed can be used to recover your account on another device. Copy the recovery seed to continue.</string>
-    <string name="new_chat_screen_description_content">Share your BChat ID with your friends. You can find your BChat ID below.</string>
     <string name="never_share_your_seed_with_anyone">Never share your seed with anyone!</string>
     <string name="seed_permission_important_description">Your seed can be used to restore your account. Never share it with anyone or store a digital copy of it. Never enter your seed in any other website or application other than BChat or the Beldex official wallet.</string>
     <string name="seed_permission_important_confirmTitle">Check your surroundings to ensure no one is overlooking. Do you want to proceed?</string>
     <string name="seed_permission_important_confirmButton">Yes, I\'m Safe :)</string>
     <string name="mnemonic_edit_text_hint">Enter your Seed</string>
-    <string name="password_screen_description_content">Enter your four digit pin to unlock your account</string>
     <string name="check_password_description_content_seed">Enter your password to view your seed. Write it down on paper.</string>
-    <string name="check_password_description_content_keys">Enter your password to view your restore key. Write it down on paper.</string>
-    <string name="closed_group_screen_description_content">Uh oh, you don\'t have any contacts yet.\nAdd some contacts first to start a secret group.</string>
-    <string name="join_social_group_description_content">Social groups are similar to public groups, however, you need an invite link to join. Join a social group using the group\'s URL.</string>
-    <string name="if_you_don_t_know_the_restore_blockheight_you_can_skip_it">If you don\'t know the restore blockheight, you can skip it.</string>
-    <string name="if_you_don_t_know_the_restore_date_you_can_skip_it">If you don\'t know the restore date, you can skip it.</string>
     <string name="changelog">Changelog</string>
-    <string name="enter_your_password">Enter your password</string>
-    <string name="navigate_to_voice_message">Navigate to voice message </string>
-    <string name="VoiceNotePlayerView__dot_s">· %1$s</string>
-    <string name="AudioView_duration">%1$d:%2$02d</string>
-    <string name="VoiceNotePlayerView__pause_voice_message">Pause voice message</string>
-    <string name="VoiceNotePlayerView__play_voice_message">Play voice message</string>
     <string name="activity_settings_profile_name_title">Profile Name</string>
     <string name="bchat_id_clipboard">Your BChat ID is copied to clipboard</string>
     <string name="beldex_address_clipboard">Your Beldex Address is copied to clipboard</string>
@@ -954,14 +712,9 @@
     <string name="decline">Decline</string>
     <string name="message_requests_clear_all">Clear All</string>
     <string name="message_requests_delete_message">Are you sure you want to delete this request?</string>
-    <string name="message_requests_deleted">Message request deleted</string>
-    <string name="message_requests_clear_all_message">Are you sure you want to clear all message requests?</string>
-    <string name="message_requests_cleared">Message requests deleted</string>
     <string name="message_requests_accepted">Your message request has been accepted.</string>
     <string name="message_request_you_have_accepted">You have accepted the message request from %s.</string>
-    <string name="message_requests_pending">Your message request is currently pending.</string>
     <string name="message_request_empty_state_message">No pending message requests</string>
-    <string name="message_requests_accept_all">Accept All</string>
     <string name="message_requests_accept_message">Are you sure you want to accept this request?</string>
     <string name="message_requests_decline_message">Declining this request will permanently block this user, are you sure?</string>
     <string name="no_blocked_contact">No blocked contacts yet</string>
@@ -974,13 +727,11 @@
     <string name="NotificationBarManager__deny_call">Deny call</string>
     <string name="NotificationBarManager__answer_call">Answer call</string>
     <string name="NotificationBarManager__establishing_signal_call">Establishing call</string>
-    <string name="NotificationBarManager__cancel_call">Cancel call</string>
     <string name="NotificationBarManager_call_in_progress">Person in call</string>
     <string name="NotificationBarManager__end_call">End call</string>
     <string name="WebRtcCallActivity_Bchat_Call">Bchat Call</string>
     <string name="WebRtcCallActivity_Reconnecting">Reconnecting…</string>
     <string name="conversation_context__menu_call">Call</string>
-    <string name="ConversationActivity_call_title">Call Permissions Required</string>
     <string name="dialog_voice_video_title">Voice/Video Calls</string>
     <string name="dialog_voice_video_message">The current implementation of voice / video calls will expose your IP address to the Beldex servers and the calling / called user</string>
     <string name="CallNotificationBuilder_system_notification_message">Having notifications disabled will prevent you from receiving calls, go to Bchat notification settings?</string>
@@ -988,281 +739,32 @@
     <string name="preferences__voice_video_calls">Voice and video calls</string>
     <string name="preferences__allow_access_voice_video">Allow access to accept voice and video calls from other users</string>
     <string name="incoming_call">Incoming Call..</string>
-    <string name="outgoing_call">Outgoing Call</string>
     <string name="calling">Calling..</string>
     <string name="end_to_end_encrypted">End to End Encrypted</string>
-    <string name="call_duration">00:10:10</string>
     <string name="hang_up">Hangup</string>
     <string name="answer">Answer</string>
-    <string name="back_to_call">Back to call</string>
     <string name="call_in_progress">Call in progress</string>
     <string name="call_muted">Call Muted</string>
     <string name="video_paused">Video Paused</string>
     <string name="video_paused_and_microphone_off">Video paused and microphone off</string>
-    <string name="call_declined">Call Declined</string>
-    <string name="dialing">Dialing…</string>
     <string name="call_ended">Call Ended</string>
-    <string name="activity_receive_page_title">Receive</string>
-    <string name="activity_rescan_page_title">Rescan</string>
-    <string name="enter_amount">Enter amount</string>
-    <string name="current_blockheight">Current Blockheight </string>
     <string name="restore_from_height">Restore from height</string>
     <string name="restore_from_date"> Restore from date</string>
-    <string name="activity_new_node_page_title">New Node</string>
-    <string name="node_address">Node address</string>
-    <string name="node_port">Node port</string>
-    <string name="node_login">Username (Optional)</string>
-    <string name="node_name">Node name (Optional)</string>
-    <string name="node_password">Password (Optional)</string>
     <string name="clear">Clear</string>
-    <string name="activity_node_page_title">Node</string>
-    <string name="activity_address_book_page_title">Address Book</string>
-    <string name="estimated_fee_description">%1$s priority is set as the default fee.\nGo to setting to change the transaction priority.</string>
-    <string name="hint">0.0000</string>
-    <string name="beldex">Beldex</string>
-
-
-    <string name="button1_large_text">1</string>
-    <string name="button2_large_text">2</string>
-    <string name="button3_large_text">3</string>
-    <string name="button4_large_text">4</string>
-    <string name="button5_large_text">5</string>
-    <string name="button6_large_text">6</string>
-    <string name="button7_large_text">7</string>
-    <string name="button8_large_text">8</string>
-    <string name="button9_large_text">9</string>
-    <string name="button11_large_text">0</string>
-    <string name="pin_code_forgot_text">Forgot?</string>
-    <string name="pin_code_step_disable">Disable %d-digit Pincode</string>
-    <string name="pin_code_step_create">Create Pin</string>
-    <string name="pin_code_step_change">Enter your current %d-digit Pincode</string>
-    <string name="pin_code_step_unlock">Enter Pin</string>
-    <string name="pin_code_step_enable_confirm">Re-Enter Pin</string>
-
-    <string name="pin_code_fingerprint_text">Fingerprint</string>
-    <string name="pin_code_fingerprint_success">Fingerprint recognized</string>
-    <string name="pin_code_fingerprint_not_recognized">Fingerprint not recognized. Try again</string>
-
-    <string name="tx_item_transition_name">tx_transition_%1$s</string>
-    <string name="tx_list_amount_negative">%1$s</string>
-    <string name="tx_list_amount_positive">%1$s</string>
-    <string name="tx_list_fee">%1$s</string>
-    <string name="tx_list_amount_failed">(%1$s)</string>
-    <string name="tx_list_failed_text">failed</string>
-    <string name="tx_details_notes">&lt;span style=\"background-color: #%1$s; color: #%2$s;\"&gt;&nbsp;%3$s&nbsp;&lt;/span&gt;%4$s</string>
-    <string name="service_description">BChat Wallet Service</string>
-    <string name="status_wallet_loading">Loading Wallet &#8230;</string>
-    <string name="status_wallet_connecting">Connecting &#8230;</string>
-    <string name="status_wallet_disconnected">Disconnected</string>
-
-    <string name="receive_transition_name">receive_transition</string>
-    <string name="send_transition_name">send_transition</string>
-    <string name="scan_transition_name">scan_transition</string>
-    <string name="nfc_tag_read_what">I don\'t know what you want!</string>
-    <string name="message_camera_not_permitted">No camera = No QR scanning!</string>
-    <string name="send_qr_address_invalid">Not a valid payment QR code</string>
-    <string name="send_qr_invalid">Not a QR Code</string>
-    <string name="status_wallet_unloaded">Wallet saved</string>
-    <string name="status_wallet_unload_failed">Wallet save failed!</string>
-    <string name="status_transaction_failed">Transaction failed: %1$s</string>
-    <string name="status_wallet_connect_failed">Node connection failed!\nCheck username/password</string>
-    <string name="status_wallet_connect_wrong_version">Node version incompatible - please upgrade!</string>
-    <string name="status_syncing">Scanning:</string>
-    <string name="bdx_unconfirmed_amount">+ %1$s BDX Ledger balance</string>
-    <string name="status_remaining">Blocks remaining</string>
-    <string name="status_synced">Synced:</string>
-    <string name="menu_rescan">Rescan</string>
-    <string name="service_busy">I am still busy with your last wallet &#8230;</string>
-    <string name="service_progress">Wallets are loading &#8230;\nPlease wait...</string>
-
-    <string name="node_test_error">CONNECTION ERROR %1$d</string>
-    <string name="node_general_error">CONNECTION ERROR</string>
-    <string name="node_auth_error">AUTHENTICATION FAILED</string>
-    <string name="node_updated_now">Last Block: %1$d seconds ago</string>
-    <string name="node_updated_mins">Last Block: %1$d minutes ago</string>
-    <string name="node_updated_hours">Last Block: %1$d hours ago</string>
-    <string name="node_updated_days">Last Block: %1$d days ago</string>
-    <string name="prompt_changepw">New Passphrase for %1$s</string>
-    <string name="prompt_changepwB">Repeat Passphrase for %1$s</string>
-    <string name="prompt_password">Password for %1$s</string>
-    <string name="prompt_fingerprint_auth">You can also open wallet using fingerprint.\nPlease touch sensor.</string>
-    <string name="prompt_open_wallet">Opening the wallet&#8230;</string>
-    <string name="bad_fingerprint">Fingerprint not recognized. Try again.</string>
-    <string name="bad_password">Incorrect password!</string>
-    <string name="bad_saved_password">Saved password is incorrect.\nPlease enter password manually.</string>
-    <string name="bad_wallet">Wallet does not exist!</string>
-    <string name="prompt_daemon_missing">Node must be set!</string>
-    <string name="prompt_wrong_net">Wallet does not match selected net</string>
-    <string name="node_testing">Testing IP: %1$s &#8230;</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="node_result">Height: %1$s (v%2$d), Ping: %3$.0fms, IP: %4$s</string>
-    <string name="info_bdxto_enabled">Non-BDX payments enabled, tap for more info.</string>
-    <string name="info_ledger_enabled">Ledger enabled, tap for more info.</string>
-    <string name="toast_default_nodes">Restoring already in progress…</string>
-    <string name="node_wrong_net">Node scanning only for mainnet!</string>
-    <string name="switch_node">Switch Node</string>
-    <string name="switch_node_alert"> Are you sure you want to Switch to another node? </string>
-    <string name="title_activity_send_new">SendActivityNew</string>
-
-    <string name="filter_by">Filter By</string>
-    <string name="incoming">Incoming</string>
-    <string name="outgoing">Outgoing</string>
-    <string name="transactions_by_date">Transactions by Date</string>
     <string name="tx_failed">Failed</string>
-    <string name="tx_pending">Pending</string>
-    <string name="tx_status_received">Received</string>
-    <string name="send_notes_hint">Private Notes (optional)</string>
-    <string name="send_generate_paymentid_hint">Generate</string>
-    <string name="send_qr_hint">Scan</string>
-    <string name="send_send_label">Spend my sweet Beldex</string>
-    <string name="send_send_timed_label">Spend my sweet Beldex (%1$s)</string>
-    <string name="send_address_invalid">Not a valid address</string>
-    <string name="send_address_not_openalias">OpenAlias address not available</string>
-    <string name="send_address_openalias">OpenAlias secure &#x2714;</string>
-    <string name="send_address_resolve_openalias">Resolving OpenAlias&#8230;</string>
-    <string name="send_address_no_dnssec">OpenAlias without DNSSEC - address may be spoofed</string>
-    <string name="send_available">%1$s BDX</string>
-    <string name="send_address_title">Address</string>
-    <string name="send_amount_title">Amount</string>
-    <string name="send_confirm_title">Confirm</string>
-    <string name="accounts_balance">%1$s BDX</string>
-    <string name="my_wallet">My Wallet</string>
-    <string name="status_synchronized">Synchronized</string>
-    <string name="send_btn_transition_name">send_btn_transition</string>
-    <string name="receive_btn_transition_name">receive_btn_transition</string>
-    <string name="test">Test</string>
-    <string name="test_result_title">Test result :</string>
-    <string name="test_result">Height 1,500,500 (V17),Ping: 500ms, IP: 15.222.187.192</string>
-
-    <string name="info_nodes_enabled">Node-o-matiC enabled, tap for more info.</string>
-    <string name="node_height">Last block updated: %1$s</string>
-    <string name="label_nodes">Nodes</string>
-    <string name="node_name_hint">Node Name (Optional)</string>
-    <string name="node_address_hint">Hostname</string>
-    <string name="node_port_hint">Port</string>
-    <string name="node_user_hint">Username (Optional)</string>
-    <string name="node_pass_hint">Password (Optional)</string>
-    <string name="node_host_unresolved">Cannot resolve host</string>
-    <string name="node_host_empty">We need this!</string>
-    <string name="node_port_numeric">Must be numeric</string>
-    <string name="node_port_range">Must be 1&#8211;65535</string>
-    <string name="node_fab_add">Add Node</string>
-    <string name="node_refresh_hint">Touch to refresh!</string>
-    <string name="node_result_label">Test Result:</string>
-    <string name="node_refresh_wait">Please wait for scan to finish</string>
-    <string name="node_create_hint">Touch to select or add nodes</string>
-    <string name="node_pull_hint">Add nodes manually or pull down to scan</string>
-    <string name="node_scanning">Scanning network&#8230;</string>
-    <string name="node_nobookmark">Automatically bookmarked best %1$d nodes</string>
-    <string name="label_test">Test</string><!--note: as in "Test a network connection"-->
-    <string name="wallet_info_important_subTitle">Info about <font color='#128D15'>Wallet Password</font> generation</string>
-    <string name="wallet_info_important_description">To access your wallet, you will first need to generate a wallet password.
-Your wallet password can be used to access your wallet within BChat and authenticate your transactions.</string>
-    <string name="wallet_info_important_descriptions">You can generate a wallet password only by restoring your account.</string>
-    <string name="wallet_info_important_confirmTitle">If you wish to continue, click “proceed.”</string>
-    <string name="wallet_info_important_confirmButton">Proceed</string>
-
-    <string name="wallet_info_seed_screen_description_content"><font color='#FF0000'>Note: </font> Copy your Recovery Seed and save it. You will need the Recovery Seed to restore your account and generate a wallet password. \nIf you lose your seed, you will permanently lose access to your account.</string>
-    <string name="confirmation_alert_dialog_box_message">Do you wish to continue to sign-in and restore your account?</string>
-    <string name="checkPasswordDescriptionsTextView">This is the PIN you set to your <font color='#128D15'>BChat account.</font></string>
-    <string name="checkPasswordDescriptionTextView">Enter your PIN to verify</string>
-    <string name="please_pick_a_restore_height">Please pick a restore height</string>
-    <string name="please_pick_a_restore_from_date">Please pick a restore from date</string>
-
-    <string name="send_create_tx_error_title">Create Transaction Error</string>
-    <string name="transaction_successful">Transaction Successful!</string>
-    <string name="info_paymentid_integrated">&#x2714; Payment ID integrated</string>
-    <string name="beldex_address_error_message">Enter wallet address</string>
-    <string name="beldex_amount_error_message">Enter the BDX amount to send</string>
-    <string name="confirm_sending">Confirm Sending</string>
-    <string name="address">Address :</string>
-    <string name="commit_transaction">Commit Transaction</string>
-    <string name="amount">Amount :</string>
-    <string name="fee">Fee :</string>
-    <string name="estimated_fee">Estimated Fee: %1$s BDX</string>
-    <string name="fiat_currency">%1$.2f %2$s</string>
-    <string name="beldex_amount_valid_error_message">Enter a valid amount</string>
-    <string name="no_node_connection">Can\'t connect to nodes. Check your internet</string>
     <string name="home_screen_secret_groups_title">Secret Group</string>
     <string name="home_screen_social_groups_title">Social Group</string>
-    <string name="display_balance_as">Display Balance As</string>
-    <string name="current_node">Current Node</string>
-    <string name="wallets">Wallet</string>
-    <string name="decimals">Decimals</string>
-    <string name="enable_fiat_currency_conversion">Enable Fiat Currency Conversion</string>
-    <string name="currency">Currency</string>
-    <string name="fee_priority">Fee Priority</string>
-    <string name="save_recipient_address">Save Recipient Address</string>
-    <string name="change_pin">Change Pin</string>
     <string name="no_records_found">No records found!</string>
-    <string name="no_address_found">No address found</string>
-    <string name="transaction_id">Transaction ID</string>
-    <string name="payment_id">Payment ID</string>
-    <string name="date_amp_time"><![CDATA[Date & Time :]]></string>
-    <string name="height">Height :</string>
-    <string name="transaction_fee">Transaction Fee :</string>
-    <string name="recipient_address">Recipient Address :</string>
     <string name="please_check_your_internet_connection">Please check your internet connection</string>
-    <string name="or">OR</string>
-    <string name="restore_from_blockheight">Restore from Blockheight</string>
-    <string name="restore_from_date_">Restore from Date</string>
-    <string name="wallet_name">Wallet Name</string>
-    <string name="view_key_private">View Key (private)</string>
-    <string name="spend_key_private">Spend Key (private)</string>
-    <string name="activity_scan_page_title">Scan</string>
-    <string name="activity_wallet_password_page_title">Wallet Password</string>
-    <string name="show_seed_content">Your Recovery Seed can be used to recover your account. If you lose your Recovery Seed, you will lose access to your account. Restoring your account will only restore the messages and BChat contacts from the last 14 days.</string>
-    <string name="add_node_success">Success</string>
-    <string name="add_node_connection_error">Connection error</string>
-    <string name="exit">Exit</string>
-    <string name="app_exit_alert">Are you sure you want to exit the wallet?</string>
-    <string name="transaction_send_title">Transaction Initiated Successfully</string>
-    <string name="dialog_block_height_title">Enter the block height or date at which you created the wallet.</string>
-    <string name="block_height"> Block Height</string>
-    <string name="block_height_info">Blockheight is the block number in a blockchain at a given time. Enter the block height at which you created the wallet for fast synchronization.</string>
-    <string name="enter_address">Enter Address or BNS name</string>
-    <string name="enter_bdx_amount">Enter BDX Amount</string>
-    <string name="amount_hint">Amount</string>
-    <string name="restore_height_error_message">Enter a valid blockheight</string>
-    <string name="restore_height_excess_error_message">Enter blockheight less than current blockheight.</string>
-    <string name="change_pin_confirmation_message">New pin and old pin can\'t be same, Please enter a different pin</string>
-    <string name="failed_connected_to_the_node">Failed to connect to the node</string>
-    <string name="reconnecting">Reconnecting...</string>
-    <string name="switching_node">Switching Node… Once its finished please reopen the wallet!</string>
     <string name="no_copied_seed">Make sure you have copied the seed!</string>
-    <string name="your_pin_has_been_set_up_successfully">Your PIN has been set up successfully!</string>
-    <string name="sync_info">Sync Info</string>
-    <string name="sync_info_description">However we recommend to scan the blockchain from the block height at which you created the wallet, to get all the transactions and correct balance</string>
-    <string name="cannot_rescan_while_wallet_is_syncing">Can\'t rescan while wallet is syncing</string>
-    <string name="enter_a_valid_height">Enter a valid height</string>
-    <string name="beldex_amount_valid_not_enough_money_error_message">Not enough money</string>
-    <string name="make_sure_you_test_the_node_before_adding_it">Make sure you test the node before adding it.</string>
-    <string name="unable_to_connect_test_failed">Unable to connect. Test failed.</string>
-    <string name="search_by_name_hint">Search by Name...</string>
-    <string name="please_add_a_mainnet_node">Please add a mainnet node</string>
-    <string name="wallet_syncing_alert_title">Wallet Syncing..</string>
-    <string name="wallet_syncing_alert_message">If you close the wallet, synchronization will be paused. Are you sure you want to exit the wallet?</string>
     <string name="your_pin_has_been_changed_successfully">Your PIN has been changed successfully!</string>
-    <string name="transaction_details_title">Transaction Details</string>
-    <string name="please_try_again_later">Please try again later</string>
-    <string name="no_transactions_yet">No Transactions yet!</string>
-    <string name="after_your_first_transaction_nyou_will_be_able_to_view_it_here">After your first transaction,\nyou will be able to view it here.</string>
-    <string name="waiting_for_network">Waiting for network..</string>
-    <string name="waiting_for_connection"> Waiting for connection..</string>
-    <string name="fetching_balance">Fetching Balance</string>
     <string name="report_issue">Report Issue</string>
-    <string name="filter_applied">Filter applied</string>
-    <string name="testing_the_node">Testing the node...</string>
     <string name="str_start_date">start date</string>
     <string name="str_end_date">end date</string>
     <string name="str_please_select_start_date">Please select start date</string>
     <string name="str_please_select_end_date">Please select end date</string>
-    <string name="alert_from_date">Please enter from date</string>
-    <string name="alert_to_date">Please enter to date</string>
     <string name="CallNotificationBuilder_screen_on">Video Resumed</string>
     <string name="activity_conversation_block_user">Block User</string>
-    <string name="message_requests_decline_messages">Are you sure you want to decline this message request?</string>
     <string name="message_requests_block_message">Are you sure you want to block this request?</string>
 
     <string name="Unblock_dialog__title_single">Unblock %s</string>
@@ -1273,16 +775,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
         <item quantity="other">and %d others</item>
     </plurals>
     <string name="unblock_selected">Unblock selected</string>
-    <string name="call_alert">You\'re already on call</string>
-    <string name="please_connect_to_other_node">Please connect to other node</string>
-    <string name="please_try_after_some_time">Please try after some time</string>
-    <string name="conversation_transition_name">conversation_transition</string>
-    <string name="in_chat_payment">In-Chat Payment</string>
-    <string name="pay_as_you_chat">Pay as you chat</string>
-    <string name="subtitle_balance">Balance :</string>
-    <string name="subtitle_unlocked_balance">Unlocked Balance :</string>
-    <string name="subtitle_current_height">Current Height :</string>
-    <string name="subtitle_wallet">Wallet :</string>
     <string name="bdx">BDX</string>
     <string name="payment_success_message">Sent Successfully</string>
     <string name="payment_received_message">Received Successfully</string>
@@ -1290,59 +782,28 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="payment_received">Payment Received</string>
     <string name="reply_payment_card_message">%1s : %2s BDX</string>
     <string name="open_link">Open Link</string>
-    <string name="initiating_transaction">Initiating Transaction..</string>
-    <string name="invalid_destination_address">Invalid destination address</string>
     <string name="search_people_and_groups">Search people and groups</string>
     <string name="you_can_t_send_messages_to_this_group_because_you_re_no_longer_a_participant">You can\'t send messages to this group because you\'re no longer a participant.</string>
     <string name="empty_message_toast">Can\'t send empty message</string>
-    <string name="swipe_to_send_bdx">Swipe to send BDX</string>
-    <string name="search_currency">Search Currency</string>
     <string name="enter_a_valid_nickname">Enter a valid nickname</string>
-    <string name="in_chat_amount">Amount</string>
-    <string name="failed_to_connect_to_node">Failed to connect to node</string>
-    <string name="receiver_address_is_not_available">Receiver address is not available</string>
-    <string name="hold_to_enable_option">Hold to Enable Pay as you chat</string>
     <string name="connected">Connected</string>
     <string name="no_connection">No connection</string>
     <string name="please_enter_your_four_digit_pin">Please enter your 4 digit PIN.</string>
     <string name="invalid_password">Invalid Password.</string>
     <string name="please_copy_and_save_your_seed">Please copy and save your seed</string>
     <string name="please_copy_the_seed_and_save_it">Please copy the seed and save it</string>
-    <string name="dialog_title_setup_pin_">Setup Pin</string>
-    <string name="dialog_setup_button">Setup</string>
-    <string name="dialog_message_for_set_wallet_pin">Please set up wallet pin to enable pay as you chat feature.</string>
     <string name="save_your_seed">Save your seed</string>
     <string name="save_your_seed_message">You haven\'t copied the seed phrase. Kindly copy and save the seed. Only your seed can be used to recover your account.</string>
-    <string name="joined_social_group_successfully">Joined %s successfully</string>
-    <string name="record_voice_restriction">Can\'t record voice messages during a BChat call.</string>
-    <string name="failed_to_connect">Failed to Connect</string>
-    <string name="invalid_qr_code">Invalid QR Code</string>
     <string name="invitation_msg">Hey, I\'ve been using BChat to chat securely and confidentially. Come join me! Download it at https://play.google.com/store/apps/details?id=io.beldex.bchat. My Chat ID is %s !</string>
     <string name="id_format">ID: %s</string>
     <string name="activity_settings_profile_picture">Profile Picture</string>
     <string name="activity_settings_upload">Upload</string>
     <string name="activity_settings_remove">Remove Picture</string>
-    <string name="activity_restore_from_height_missing_error">Please enter a restore height or Select a restore date</string>
-    <string name="activity_restore_from_date_missing_error">Please pick a restore date</string>
-    <string name="restored_via_seed">You restored via Seed!</string>
     <string name="display_name_validation">Please enter a valid name</string>
-    <string name="sync_fail_content">It seems there is an issue with connecting to the node, please try to reconnect or switch the node.</string>
     <string name="notification_enable_content">We recommend you to allow permission for notifications for BChat app to notify you for new messages and calls.</string>
     <string name="invalid_qr_code_image">Unable to recognized a valid code from uploaded image</string>
     <string name="upload_from_gallery">Upload from gallery</string>
     <string name="join_social_group_content">Scan a Social group\'s QR code for Joining a social group. QR Codes can be found on the social group website link.</string>
-    <string name="wallet_scan_qr_content">Scan a receiver\'s QR code to send BDX. QR Codes can be found by clicking on receiver button in Wallet Dashboard.</string>
-    <string name="cannot_access_sync_option">Can\'t rescan or reconnect while wallet is syncing</string>
-    <string name="validation_for_balance">You don\'t have enough balance</string>
-    <string name="validation_for_start_wallet">Enable wallet start option in My Account</string>
-    <string name="wallet_setup_loading_content">Home screen is restarting for the wallet setup process... Please wait until it is complete</string>
-    <string name="wallet_setup_content_first">You can Send and Receive BDX with the BChat integrated wallet.</string>
-    <string name="wallet_setup_content_second">The ‘Pay as you Chat’ feature is an easy-pay feature. You can send BDX to your friends right from the chat window</string>
-    <string name="wallet_setup_content_third">The BChat wallet is beta. Constant updates are released in newer versions of the app to enhance the integrated wallet functionality.</string>
-    <string name="wallet_setup_content_fourth">You can enable or disable the wallet using the Start wallet feature under Settings > Wallet settings.</string>
-    <string name="yes_i_understand">Yes, I Understand</string>
-    <string name="enable_wallet">Enable Wallet</string>
-    <string name="validation_for_empty_node_host">Please enter a node address</string>
     <string name="dialog_clear_all_data_clear_device_only_subtitle">Clear only in device</string>
     <string name="dialog_clear_all_data_clear_device_and_network_subtitle">Delete account from Network</string>
     <string name="back">Back</string>
@@ -1352,11 +813,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="restore_from_date_title">Pick a Date</string>
     <string name="display_name">Display Name</string>
     <string name="enter_name">Enter name</string>
-    <string name="copied">Copied!</string>
-    <string name="my_account">My Account</string>
-    <string name="clear_only_in_device">Clear only in device</string>
     <string name="delete_entire_account">Delete Entire Account</string>
-    <string name="delete_account_from_network">Delete account from network</string>
     <string name="enter_your_pin">Enter your PIN</string>
     <string name="enter_old_pin">Enter Old PIN</string>
     <string name="enter_new_pin">Enter New PIN</string>
@@ -1365,24 +822,17 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="old_new_password_same">New password should not be same as old password.</string>
     <string name="password_does_not_match">Password does not match.</string>
     <string name="screen_inactivity_timeout">Screen Inactivity Timeout</string>
-    <string name="title_activity_join_public_new_chat_screen">JoinPublicNewChatScreen</string>
-    <string name="title_activity_create_secret_group_screen">CreateSecretGroupScreen</string>
-    <string name="title_activity_create_new_private_chat_screen">CreateNewPrivateChatScreen</string>
-    <string name="title_activity_start_wallet_info_screen">StartWalletInfoScreen</string>
     <string name="about">About</string>
     <string name="create_password">Create Password</string>
     <string name="verify_pin">Verify PIN</string>
     <string name="enter_your_4_digit_bchat_pin">Enter your %d Digit PIN</string>
     <string name="no_pending_requests">No Pending message Requests!</string>
-    <string name="create_secret_group">Create Secret Group</string>
     <string name="enter_group_name">Enter Secret Group name</string>
     <string name="search_contact">Search Contact</string>
     <string name="block_or_delete_request">Do you want to block or just delete this user?</string>
     <string name="or_join">Or Join</string>
     <string name="let_s_bchat">Let\'s BChat</string>
-    <string name="your_chat_id">Your Chat ID</string>
     <string name="enter_chat_id">Enter Chat ID or BNS Name</string>
-    <string name="restore_account">Restore Account</string>
     <string name="hello">Hello,</string>
     <string name="we_are_thrilled">We\'re thrilled to have you on board!</string>
     <string name="restore_seed">Restore Seed</string>
@@ -1392,34 +842,17 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="pincode_changed">Password changed successfully.</string>
     <string name="copy_and_save_the_seed_to_continue">Copy and save the seed to continue</string>
     <string name="register">Register</string>
-    <string name="welcome_message">Hey %1$s, welcome to BChat!</string>
     <string name="copy_your_recovery_seed">Copy your Recovery Seed and keep it safe.</string>
     <string name="copy_seed">Copy Seed</string>
     <string name="menu">Menu</string>
     <string name="version_name">BChat v%s</string>
-    <string name="dialog_title_send_failed">Create Transaction Error</string>
-    <string name="title_for_beldex_address_or_name">Beldex address or BNS name</string>
-    <string name="hint_for_enter_beldex_address_or_name">Enter Address or BNS name</string>
-    <string name="description_for_paste_icon">This allows user to paste their seed from clipboard</string>
-    <string name="transaction_progress_attention"> Please don\'t close this window or attend calls or navigate to another app until the transaction gets initiated</string>
-    <string name="select_date_range">Select Date Range</string>
-    <string name="wallet_settings">Wallet settings</string>
-    <string name="transactions">Transactions</string>
-    <string name="transaction_filter">Transaction Filter</string>
     <string name="chat">Chat</string>
     <string name="clear_data_from_device">Clear Data From Device</string>
     <string name="delete_data_on_this_device">Delete data on this device</string>
     <string name="delete_data_from_the_network">Delete data from the network</string>
     <string name="add">Add</string>
-    <string name="refresh_nodes">Refresh nodes</string>
-    <string name="refresh_node_alert">Are your sure you want to refresh the nodes?</string>
-    <string name="by_date">By date</string>
-    <string name="no_addresses">No Addresses!</string>
-    <string name="save_address_to_show">Save address to show!</string>
     <string name="voice_call">Voice Call</string>
     <string name="video_call">Video Call</string>
-    <string name="missed_voice_call">Missed Voice Call</string>
-    <string name="tap_to_callback">Tap to Callback</string>
     <string name="enter_your_4_digit_wallet_pin">Enter your %d digit Wallet PIN</string>
     <string name="clear_chat">Clear Chat</string>
     <string name="clear_chat_confirmation">Are you sure you want to clear all the chat from this contact?</string>
@@ -1428,21 +861,14 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="block_user_confirmation">Are you sure you want to Block this contact?</string>
     <string name="block_contact">Block contact</string>
     <string name="blocked_user_message">You Blocked Person! Click here to Unblock.</string>
-    <string name="password_mismatch">Both passwords should be same.</string>
-    <string name="incorrect_password">Incorrect password.</string>
     <string name="dark_mode">Dark Mode</string>
     <string name="call_permission_required_title">Call Permission Required!</string>
     <string name="call_permission_required_description">You can enable the <b>‘Voice and video calls\'</b> permission in the <b>Privacy Settings.</b></string>
-    <string name="wallet_setup">Wallet Setup</string>
     <string name="message_status_icon_description">Message delivery status</string>
     <string name="delete_item">Delete Item?</string>
     <string name="delete_item_description">Are you sure you want to delete the media from device?</string>
     <string name="all_media">All Media</string>
     <string name="verify_bns">Verifying...</string>
-    <string name="no_contacts">No Contacts</string>
-    <string name="sync_option">Syncing Option</string>
-    <string name="sync_reconnect">Reconnect</string>
-    <string name="sync_rescan">Rescan</string>
     <string name="bns_name_warning_message">Invalid BNS</string>
     <string name="account_settings">Account Settings</string>
     <string name="delete_conversation">Delete Conversation?</string>
@@ -1473,7 +899,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="verify_password">Verify Password</string>
     <string name="incorrect_pin">Incorrect PIN.</string>
     <string name="pin_mismatch">Both PINs should be same.</string>
-    <string name="create_pin">Create PIN</string>
     <string name="old_new_pin_same">New PIN should not be same as old PIN.</string>
     <string name="dialog_title_full_screen_intent">Full Screen Notification</string>
     <string name="dialog_content_full_screen_intent">Allow BChat to show full screen notifications for incoming calls and other notifications when the device is locked</string>
@@ -1494,8 +919,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="edit_title">Edit</string>
     <string name="new_chat_screen_title">New</string>
     <string name="message_details">Message Details</string>
-    <string name="wallet_synced_text">Wallet is fully synchronized</string>
-    <string name="change_pin_title">Change PIN</string>
     <string name="warning_message_of_voice_recording">You can\'t send an audio message while you\'re on a call</string>
     <string name="camera_option">Camera Option</string>
     <string name="gallery_option">Gallery Option</string>
@@ -1504,34 +927,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="gif_dialog_title">Search GIFs?</string>
     <string name="gif_dialog_message">You will not have full metadata protection when sending GIFs.</string>
     <string name="permissionsCameraDenied">%s needs camera access to take photos and videos, but it has been permanently denied. Tap Settings → Permissions, and turn \"Camera\" on.</string>
-    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__this_message">This Message</string>
     <string name="ReactWithAnyEmojiBottomSheetDialogFragment__recently_used">Recently Used</string>
     <string name="ReactWithAnyEmojiBottomSheetDialogFragment__smileys_and_people">Smileys &amp; People</string>
-    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__nature">Nature</string>
-    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__food">Food</string>
-    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__activities">Activities</string>
-    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__places">Places</string>
-    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__objects">Objects</string>
-    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__symbols">Symbols</string>
-    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__flags">Flags</string>
-    <string name="ReactWithAnyEmojiBottomSheetDialogFragment__emoticons">Emoticons</string>
     <string name="ReactWithAnyEmojiBottomSheetDialogFragment__no_results_found">No results found</string>
-    <!-- ReactionsBottomSheetDialogFragment -->
-    <string name="ReactionsBottomSheetDialogFragment_all">All &#183; %1$d</string>
-    <!-- ReactionsConversationView -->
-    <string name="ReactionsConversationView_plus">+%1$d</string>
-    <!-- ReactionsRecipientAdapter -->
-    <string name="reaction_notification">%1$s reacted to a message %2$s</string>
-    <string name="ReactionsConversationView_show_less">Show less</string>
     <string name="KeyboardPagerFragment_search_emoji">Search emoji</string>
-    <string name="KeyboardPagerfragment_back_to_emoji">Back to emoji</string>
-    <string name="KeyboardPagerfragment_clear_search_entry">Clear search entry</string>
-    <plurals name="ReactionsRecipientAdapter_other_reactors">
-        <item quantity="one">And %1$d other has reacted %2$s to this message</item>
-        <item quantity="other">And %1$d others have reacted %2$s to this message</item>
-    </plurals>
-
-    <string name="emojiAndSymbols">Emoji and Symbols</string>
     <string name="emojiCategoryActivities">Activities</string>
     <string name="emojiCategoryAnimals">Animals and Nature</string>
     <string name="emojiCategoryFlags">Flags</string>
@@ -1539,55 +938,22 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="emojiCategoryObjects">Objects</string>
     <string name="emojiCategorySymbols">Symbols</string>
     <string name="emojiCategoryTravel">Travel and Places</string>
-    <string name="emojiReactsClearAll">Are you sure you want to clear all {emoji}?</string>
-    <string name="emojiReactsCoolDown">Slow down! You\'ve sent too many emoji reacts. Try again soon</string>
     <plurals name="emojiReactsCountOthers">
         <item quantity="one">And %1$d other has reacted %2$s to this message.</item>
         <item quantity="other">And %1$d others have reacted %2$s to this message.</item>
     </plurals>
-    <string name="emojiReactsHoverNameDesktop">{name} reacted with {emoji_name}</string>
-    <string name="emojiReactsHoverNameTwoDesktop">{name} and {other_name} reacted with {emoji_name}</string>
-    <string name="emojiReactsHoverTwoNameMultipleDesktop">{name} and <span>{count} others</span> reacted with {emoji_name}</string>
-    <string name="emojiReactsHoverYouNameDesktop">You reacted with {emoji_name}</string>
-    <string name="emojiReactsHoverYouNameMultipleDesktop">You and <span>{count} others</span> reacted with {emoji_name}</string>
-    <string name="emojiReactsHoverYouNameTwoDesktop">You and {name} reacted with {emoji_name}</string>
     <string name="emojiReactsNotification">Reacted to your message {emoji}</string>
-    <string name="showLess">Show Less</string>
     <string name="AccessibilityId_emojiSearch">Back to emoji</string>
     <string name="AccessibilityId_emojiSearchClear">Clear search entry</string>
-    <string name="andMore">+{count}</string>
     <string name="tap_to_remove">Tap to remove</string>
     <string name="reaction">Reactions</string>
-    <string name="title_activity_secret_group_info_compose">SecretGroupInfoComposeActivity</string>
-
     <plurals name="deleteMessageDeleted">
         <item quantity="one">Message deleted</item>
         <item quantity="other">Messages deleted</item>
     </plurals>
-    <plurals name="deleteMessageConfirm">
-        <item quantity="one">Are you sure you want to delete this message?</item>
-        <item quantity="other">Are you sure you want to delete these messages?</item>
-    </plurals>
     <string name="deleteMessageDeletedGlobally">This message was deleted</string>
-    <plurals name="deleteMessageNoteToSelfWarning">
-        <item quantity="one">This message cannot be deleted from all your devices</item>
-        <item quantity="other">Some of the messages you have selected cannot be deleted from all your devices</item>
-    </plurals>
-    <plurals name="deleteMessageWarning">
-        <item quantity="one">This message cannot be deleted for everyone</item>
-        <item quantity="other">Some of the messages you have selected cannot be deleted for everyone</item>
-    </plurals>
-    <plurals name="deleteMessageFailed">
-        <item quantity="one">Failed to delete message</item>
-        <item quantity="other">Failed to delete messages</item>
-    </plurals>
-    <string name="displayNameVisible">Your Display Name is visible to users, groups and communities you interact with.</string>
-    <string name="errorUnknown">An unknown error occurred.</string>
     <string name="banUserBanned">User banned</string>
     <string name="banErrorFailed">Ban failed</string>
-    <string name="deleteMessageDeletedLocally">This message was deleted on this device</string>
-    <string name="deleteMessageEveryone">Delete for everyone</string>
-    <string name="deleteMessageDevicesAll">Delete on all my devices</string>
     <string name="accessibilityId_select">Select</string>
     <string name="disappearingMessagesCountdownBigMobile">Auto-deletes in {time_large}</string>
     <string name="conversationsDeleted">Conversation deleted</string>
@@ -1598,13 +964,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="search_member_title">Search Members</string>
     <string name="members_option_message">Message to </string>
     <string name="zero_time_durationMs">0:00</string>
-    <string name="attachmentsErrorSize">Files must be less than 10MB</string>
     <string name="view_contacts">View Contacts</string>
     <string name="share_contacts">Share Contacts</string>
     <string name="chat_with_contact_confirmation">Do you want to chat with this contact now?</string>
-    <string name="contact_received">Contact Received: %s</string>
     <string name="no_name">No Name</string>
-    <string name="title_activity_view_contact">ViewContactActivity</string>
     <string name="view_all">View all</string>
     <string name="message">Message</string>
     <string name="nickname_special_char_not_allowed">Special characters are not allowed</string>
@@ -1639,10 +1002,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
 ]]></string>
     <string name="divider">Divider</string>
     <string name="seed">Seed</string>
-    <string name="title">Title</string>
-    <string name="list">list</string>
     <string name="claim_your_airdrop">Yay! You made it here. Claim your airdrop. Submit your BChat ID and BDX wallet address in the link below</string>
-    <string name="txt">TXT</string>
     <string name="user">User</string>
     <string name="default_value_messages_per_conversation">500 messages per conversation</string>
     <string name="language">Language</string>

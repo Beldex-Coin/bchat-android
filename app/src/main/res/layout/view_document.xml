@@ -46,7 +46,6 @@
                 android:layout_centerVertical="true"
                 android:fontFamily="@font/open_sans_regular"
                 android:gravity="center"
-                android:text="@string/txt"
                 android:textColor="@color/document_text"
                 android:textSize="6sp" />
 

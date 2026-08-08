@@ -102,7 +102,7 @@ fun CopySeedScreen(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = stringResource(id = R.string.copy),
+                    text = stringResource(id = R.string.copy_bchat),
                     style = MaterialTheme.typography.titleMedium.copy(
                         color = Color.White
                     ),

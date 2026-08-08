@@ -15,8 +15,6 @@ import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.beldex.libbchat.utilities.SSKEnvironment
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.beldex.libsignal.crypto.ecc.ECKeyPair
-import com.goterl.lazysodium.utils.KeyPair
 import io.beldex.bchat.BaseActionBarActivity
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.data.NetworkNodes
@@ -26,7 +24,6 @@ import io.beldex.bchat.model.AsyncTaskCoroutine
 import io.beldex.bchat.model.NetworkType
 import io.beldex.bchat.model.Wallet
 import io.beldex.bchat.model.WalletManager
-import io.beldex.bchat.onboarding.AppLockActivity
 import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.service.KeyCachingService
 import io.beldex.bchat.util.BChatThreadPoolExecutor
@@ -43,11 +40,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
-import java.text.SimpleDateFormat
 import java.util.Collections
-import java.util.Locale
 import java.util.UUID
 import java.util.concurrent.Executor
+import androidx.core.content.edit
 
 class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
     private lateinit var binding:ActivityRecoveryGetSeedDetailsBinding
@@ -64,12 +60,6 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
     private var favouriteNodes: MutableSet<NodeInfo> = HashSet<NodeInfo>()
 
     private var getSeed:String?=null
-
-    private var restoreFromDateHeight = 0
-    private val dateFormat = SimpleDateFormat("yyyy-MM", Locale.US)
-    private val myFormat = "yyyy-MM-dd" // mention the format you need
-    val sdf = SimpleDateFormat(myFormat, Locale.US)
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,25 +100,19 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
             restoreSeedRestoreButton.setOnClickListener { register() }
         }
 
-
-        //New Line load favourites with network function
+        //Load favourites with network function
         if (CheckOnline.isOnline(this)) {
             loadFavouritesWithNetwork()
         }
-    }
-    private fun updateDateInView() {
-        binding.restoreSeedRestoreButton.isEnabled =
-            (binding.restoreSeedWalletName.text.trim().isNotEmpty())
     }
 
     private val pinCodeLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
             TextSecurePreferences.setCopiedSeed(this,true)
-            //New Line AirDrop
+            //AirDrop
             TextSecurePreferences.setAirdropAnimationStatus(this,true)
 
             TextSecurePreferences.setScreenLockEnabled(this, true)
-            /*Hales63*/
 
             TextSecurePreferences.setScreenLockTimeout(this, 950400)
             TextSecurePreferences.setHasSeenWelcomeScreen(this, true)
@@ -167,49 +151,15 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         binding.restoreSeedRestoreButton.isEnabled = false
         _recoveryWallet(displayName, password, getSeed, 0L)
     }
-    // region Updating
+
     private fun updateKeyPair() {
-        /*Hales63*/
-       /* TextSecurePreferences.setRestorationTime(this, 0)
-        TextSecurePreferences.setHasViewedSeed(this, false)
-*/
         binding.restoreSeedRestoreButton.isEnabled = true
         val intent = Intent(Intent.ACTION_VIEW, "onboarding://manage_pin?finish=true&action=${PinCodeAction.CreatePinCode.action}".toUri())
         pinCodeLauncher.launch(intent)
-//        val intent = Intent(this, CreatePasswordActivity::class.java)
-//        intent.putExtra("callPage",2)
-
-        //Old Code
-       /* val keyPairGenerationResult = KeyPairUtilities.generate()
-        seed = keyPairGenerationResult.seed
-        ed25519KeyPair = keyPairGenerationResult.ed25519KeyPair
-        x25519KeyPair = keyPairGenerationResult.x25519KeyPair
-        callAppLockActivity(seed!!,ed25519KeyPair!!,x25519KeyPair!!)*/
-    }
-
-    // region Interaction
-    private fun callAppLockActivity(
-        seed: ByteArray,
-        ed25519KeyPair: KeyPair,
-        x25519KeyPair: ECKeyPair
-    ) {
-        /*KeyPairUtilities.store(this, seed, ed25519KeyPair, x25519KeyPair)
-        val userHexEncodedPublicKey = x25519KeyPair.hexEncodedPublicKey
-        val registrationID = KeyHelper.generateRegistrationId(false)
-        TextSecurePreferences.setLocalRegistrationId(this, registrationID)
-        TextSecurePreferences.setLocalNumber(this, userHexEncodedPublicKey)*/
-        TextSecurePreferences.setRestorationTime(this, 0)
-        TextSecurePreferences.setHasViewedSeed(this, false)
-        //New Line
-        TextSecurePreferences.setHasSeenWelcomeScreen(this, true)
-
-        val intent = Intent(this, AppLockActivity::class.java)
-        push(intent)
     }
 
     override fun onResume() {
         super.onResume()
-        //New Line
         pingSelectedNode()
     }
 
@@ -264,7 +214,6 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
 
     companion object {
         const val PING_SELECTED = 0
-        const val FIND_BEST = 1
     }
 
     private class AsyncFindBestNode(val recoveryGetSeedDetailsActivity: RecoveryGetSeedDetailsActivity) :
@@ -274,17 +223,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         }
 
         override fun onPostExecute(result: NodeInfo?) {
-            if (result != null) {
-                Timber.d("found a good node %s", result.toString())
-                Timber.d("Connected", result.address.toString())
-                /*Toast.makeText(
-                  this,
-                   ""+result.getName().toString() + " connected\n",
-                   Toast.LENGTH_SHORT
-               ).show()*/
-            } else {
-                Timber.d("Not Connected", "sdf")
-            }
+            super.onPostExecute(result)
         }
 
         companion object {
@@ -344,8 +283,6 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
             }
             this.node = node
             for (nodeInfo in favouriteNodes) {
-                Timber.d("Testing-->14 ${node.toString()}")
-                //Important
                 nodeInfo.isSelected = nodeInfo === node
             }
             WalletManager.getInstance().setDaemon(node)
@@ -491,7 +428,6 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
             // check if the wallet we want to create already exists
             val walletFolder: File = recoveryGetSeedDetailsActivity.getStorageRoot()
             if (!walletFolder.isDirectory) {
-                Timber.e("Wallet dir " + walletFolder.absolutePath + "is not a directory")
                 return false
             }
             val cacheFile = File(walletFolder, walletName)
@@ -505,12 +441,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
             }
             newWalletFile = File(walletFolder, walletName)
             val success = walletCreator.createWallet(newWalletFile, walletPassword)
-            return if (success) {
-                true
-            } else {
-                Timber.e("Could not create new wallet in %s", newWalletFile!!.absolutePath)
-                false
-            }
+            return success
         }
     }
 
@@ -528,7 +459,6 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
     private fun addFavourite(nodeString: String): NodeInfo? {
         val nodeInfo = NodeInfo.fromString(nodeString)
         if (nodeInfo != null) {
-            //Important
             nodeInfo.setFavourite(true)
             favouriteNodes.add(nodeInfo)
         } else Timber.w("nodeString invalid: %s", nodeString)
@@ -606,8 +536,9 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
                             null
                         )
                     )
-                    sharedPref.edit().remove(PREF_DAEMON_TESTNET)
-                        .apply()
+                    sharedPref.edit {
+                        remove(PREF_DAEMON_TESTNET)
+                    }
                 }
                 else -> throw IllegalStateException("unsupported net " + WalletManager.getInstance().networkType)
             }

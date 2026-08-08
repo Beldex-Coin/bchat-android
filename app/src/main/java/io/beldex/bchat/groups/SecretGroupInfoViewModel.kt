@@ -22,9 +22,6 @@ class SecretGroupInfoViewModel @Inject constructor(private val groupID: String,
     private val _groupMembers = MutableStateFlow<GroupMembers?>(null)
     val groupMembers: StateFlow<GroupMembers?> = _groupMembers.asStateFlow()
 
-    private val _isEnableNotification = MutableLiveData<String>()
-    val isEnableNotification: LiveData<String> get () = _isEnableNotification
-
     private val _isExpirationItem = MutableLiveData<Int>()
     val isExpirationItem: LiveData<Int> get () = _isExpirationItem
 
@@ -52,9 +49,6 @@ class SecretGroupInfoViewModel @Inject constructor(private val groupID: String,
         return contact?.displayName(Contact.ContactContext.REGULAR, context) ?: publicKey
     }
 
-    fun updateNotificationType(selectOption: String) {
-        _isEnableNotification.value = selectOption
-    }
     fun updateExpirationItem(selectOption: Int) {
         _isExpirationItem.value = selectOption
     }

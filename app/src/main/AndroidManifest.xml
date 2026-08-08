@@ -115,18 +115,6 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".calls.WebRtcCallActivity"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:parentActivityName=".home.HomeActivity"
-            android:screenOrientation="portrait"
-            android:showForAllUsers="true"
-            android:theme="@style/Theme.Bchat.CallActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="io.beldex.bchat.home.HomeActivity" />
-        </activity>
-        <activity
             android:name=".webrtc.WebRTCComposeActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout"
             android:exported="false"
@@ -163,31 +151,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
-            android:name=".onboarding.CheckPasswordActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity
             android:name=".groups.JoinPublicChatScanQRCodeActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".groups.JoinPublicChatNewActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name=".dms.PrivateChatScanQRCodeActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".dms.CreateNewPrivateChatActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
@@ -205,12 +175,6 @@
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".applock.ChangePasswordActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity
             android:name=".onboarding.SplashScreenHomeActivtity"
             android:exported="false"
             android:screenOrientation="portrait" />
@@ -226,36 +190,11 @@
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name=".applock.AppLockDetailsActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
-        <activity
-            android:name=".seed.ShowSeedActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
-        <activity
-            android:name=".seed.SeedPermissionActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
-        <activity
-            android:name=".keys.RecoveryGetKeysDetailsActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
-        <activity
             android:name=".seed.RecoveryGetSeedDetailsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".seedorkeysrestore.SeedOrKeysRestoreActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" /> <!-- Disable all analytics -->
         <meta-data
             android:name="firebase_analytics_collection_deactivated"
             android:value="false" /> <!-- <meta-data -->
@@ -299,17 +238,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
-            android:name=".onboarding.AppLockActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
-        <activity
-            android:name=".onboarding.CreatePasswordActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
             android:name=".onboarding.RecoveryPhraseActivity"
             android:exported="false"
             android:screenOrientation="portrait"
@@ -341,17 +269,6 @@
                 android:name="com.sec.minimode.icon.landscape.normal"
                 android:resource="@mipmap/ic_launcher" />
         </activity-alias>
-
-        <activity
-            android:name=".messagerequests.MessageRequestsActivity"
-            android:exported="false"
-            android:label="@string/activity_message_requests_title"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".preferences.SettingsActivity"
-            android:exported="false"
-            android:label="@string/activity_settings_title"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".home.PathActivity"
             android:exported="false"
@@ -362,25 +279,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
-            android:name=".dms.CreatePrivateChatActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".groups.CreateClosedGroupActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".groups.EditClosedGroupActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".groups.JoinPublicChatActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
-            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".onboarding.SeedActivity"
             android:exported="false"
@@ -557,12 +458,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
-            android:name=".my_account.ui.MyProfileActivity"
-            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
-        <activity
             android:name=".conversation.v2.contact_sharing.ContactSharingActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true"
@@ -579,7 +474,7 @@
             android:name=".conversation_v2.NewGroupConversationActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
-            android:label="@string/title_activity_create_secret_group_screen"
+            android:label="@string/home_screen_secret_groups_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
             android:windowSoftInputMode="adjustResize" />

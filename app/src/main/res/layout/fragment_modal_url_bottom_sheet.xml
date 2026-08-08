@@ -83,7 +83,7 @@
                 android:layout_height="20dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_copy_link"
-                android:contentDescription="@string/copy" />
+                android:contentDescription="@string/copy_bchat" />
 
             <TextView
                 style="@style/BottomSheetActionItem"
@@ -91,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="@font/open_sans_regular"
-                android:text="@string/copy"
+                android:text="@string/copy_bchat"
                 android:textAlignment="center"
                 android:textSize="14sp"/>
 

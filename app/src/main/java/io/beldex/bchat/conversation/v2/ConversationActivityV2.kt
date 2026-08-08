@@ -1579,7 +1579,6 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
 //        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
 //        params.bottomMargin = 16
         val recipient=viewModel.recipient.value ?: return
-        binding.slideToPayButton.visibility=View.GONE
         binding.inputBar.draftQuote(recipient, message, glide)
         setConversationRecyclerViewLayout(true)
     }
@@ -3262,7 +3261,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
     override fun banAndDeleteAll(messages : Set<MessageRecord>) {
         val builder=AlertDialog.Builder(this, R.style.BChatAlertDialog_ForBan)
         builder.setTitle(R.string.ConversationFragment_ban_selected_user)
-        builder.setMessage("This will ban the selected user from this room and delete all messages sent by them. It won't ban them from other rooms or delete the messages they sent there.")
+        builder.setMessage(R.string.ban_and_delete_message)
         builder.setCancelable(true)
         builder.setPositiveButton(R.string.ban) { _, _ ->
             viewModel.banAndDeleteAll(messages.first().individualRecipient)
@@ -3471,7 +3470,6 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
     override fun reply(messages : Set<MessageRecord>) {
         val recipient=viewModel.recipient.value ?: return
         if (messages.isNotEmpty()) {
-            binding.slideToPayButton.visibility=View.GONE
             binding.inputBar.draftQuote(recipient, messages.first(), glide)
             setConversationRecyclerViewLayout(true)
         }

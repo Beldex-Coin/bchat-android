@@ -86,42 +86,6 @@ class ConversationActionDialog: DialogFragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 when (dialogType) {
-                    /*HomeDialogType.DeleteRequest -> {
-                        BChatTheme(
-                            darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
-                        ) {
-                            RequestBlockConfirmationDialog(
-                                message = stringResource(id = R.string.message_requests_block_message),
-                                actionTitle = stringResource(id = R.string.yes),
-                                onConfirmation = {
-                                    dismiss()
-                                    listener?.onConfirm(dialogType, threadRecord)
-                                },
-                                onDismissRequest = {
-                                    dismiss()
-                                    listener?.onCancel(dialogType, threadRecord)
-                                }
-                            )
-                        }
-                    }
-                    HomeDialogType.BlockRequest -> {
-                        BChatTheme(
-                            darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
-                        ) {
-                            RequestBlockConfirmationDialog(
-                                message = stringResource(id = R.string.message_requests_decline_messages),
-                                actionTitle = stringResource(id = R.string.yes),
-                                onConfirmation = {
-                                    dismiss()
-                                    listener?.onConfirm(dialogType, threadRecord)
-                                },
-                                onDismissRequest = {
-                                    dismiss()
-                                    listener?.onCancel(dialogType, threadRecord)
-                                }
-                            )
-                        }
-                    }*/
                     HomeDialogType.UnblockUser -> {
                         BChatTheme(
                             darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT

@@ -455,7 +455,7 @@
                     android:id="@+id/attachment_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_above="@id/slideToPayButton"
+                    android:layout_alignParentBottom="true"
                     android:layout_alignParentStart="true"
                     android:layout_marginStart="@dimen/small_spacing"
                     android:layout_marginBottom="8dp"
@@ -527,46 +527,6 @@
                     </LinearLayout>
 
                 </com.google.android.material.card.MaterialCardView>
-
-                <!--            <LinearLayout-->
-                <!--                android:id="@+id/attachmentOptionsContainer"-->
-                <!--                android:layout_width="wrap_content"-->
-                <!--                android:layout_height="wrap_content"-->
-                <!--                android:layout_above="@id/slideToPayButton"-->
-                <!--                android:layout_alignParentStart="true"-->
-                <!--                android:layout_marginStart="@dimen/small_spacing"-->
-                <!--                android:layout_marginBottom="16dp"-->
-                <!--                android:orientation="horizontal">-->
-
-                <!--                <RelativeLayout-->
-                <!--                    android:id="@+id/cameraButtonContainer"-->
-                <!--                    android:layout_width="@dimen/input_bar_button_expanded_size"-->
-                <!--                    android:layout_height="@dimen/input_bar_button_expanded_size"-->
-                <!--                    android:layout_marginStart="15dp"-->
-                <!--                    android:alpha="0" />-->
-
-                <!--                <RelativeLayout-->
-                <!--                    android:id="@+id/libraryButtonContainer"-->
-                <!--                    android:layout_width="@dimen/input_bar_button_expanded_size"-->
-                <!--                    android:layout_height="@dimen/input_bar_button_expanded_size"-->
-                <!--                    android:layout_marginStart="8dp"-->
-                <!--                    android:alpha="0" />-->
-
-                <!--                <RelativeLayout-->
-                <!--                    android:id="@+id/documentButtonContainer"-->
-                <!--                    android:layout_width="@dimen/input_bar_button_expanded_size"-->
-                <!--                    android:layout_height="@dimen/input_bar_button_expanded_size"-->
-                <!--                    android:layout_marginStart="8dp"-->
-                <!--                    android:alpha="0" />-->
-
-                <!--                <RelativeLayout-->
-                <!--                    android:id="@+id/gifButtonContainer"-->
-                <!--                    android:layout_width="@dimen/input_bar_button_expanded_size"-->
-                <!--                    android:layout_height="@dimen/input_bar_button_expanded_size"-->
-                <!--                    android:layout_marginStart="8dp"-->
-                <!--                    android:alpha="0"-->
-                <!--                    android:visibility="gone" />-->
-                <!--            </LinearLayout>-->
 
                 <RelativeLayout
                     android:id="@+id/scrollToBottomButton"
@@ -839,30 +799,6 @@
                     </LinearLayout>
 
                 </com.google.android.material.card.MaterialCardView>
-
-                <io.beldex.bchat.util.slidetoact.SlideToActView
-                    android:id="@+id/slideToPayButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_above="@id/inputBar"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginStart="70dp"
-                    android:layout_marginEnd="70dp"
-                    android:layout_marginBottom="70dp"
-                    android:visibility="gone"
-                    app:area_margin="8dp"
-                    app:icon_margin="0dp"
-                    app:image_color="@color/cancel_button_text"
-                    app:inner_color="@color/cancel_button_text"
-                    app:outer_color="@color/input_bar_background"
-                    app:send_icon_margin="12dp"
-                    app:slider_height="50dp"
-                    app:slider_icon_color="@color/text"
-                    app:slider_locked="false"
-                    app:text="@string/swipe_to_send_bdx"
-                    app:text_size="14sp" />
 
             </RelativeLayout>
 

@@ -16,14 +16,12 @@ import io.beldex.bchat.home.NotificationSettingDialog
 import io.beldex.bchat.my_account.ui.dialogs.DeleteChatConfirmationDialog
 import io.beldex.bchat.my_account.ui.dialogs.PermissionSettingDialog
 import io.beldex.bchat.my_account.ui.dialogs.ProfilePicturePopup
-import io.beldex.bchat.my_account.ui.dialogs.WalletSyncingDialog
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 
 enum class DialogType {
     PermissionDialog,
     UploadProfile,
-    WalletSyncing,
     DeleteChat,
     LeaveGroup,
     NotificationSettings,
@@ -105,21 +103,6 @@ class ComposeDialogContainer(
                                     onConfirm()
                                     dismiss()
                                 }
-                            )
-                        }
-                    }
-                    DialogType.WalletSyncing -> {
-                        BChatTheme(
-                                darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
-                        ) {
-                            WalletSyncingDialog(
-                                    onDismissRequest = {
-                                        dismiss()
-                                    },
-                                    exit = {
-                                        onConfirm()
-                                        dismiss()
-                                    }
                             )
                         }
                     }

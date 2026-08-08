@@ -34,7 +34,10 @@ class ConversationView : LinearLayout {
     var isReportIssueID: Boolean = false
     private val reportIssueBChatID = BuildConfig.REPORT_ISSUE_ID
 
-    val attachmentRegex = Regex("""📷\s*Attachment:""")
+    private val attachmentRegex: Regex by lazy {
+        val label = Regex.escape(context.getString(R.string.attachment))
+        Regex("📷\\s*${label}:")
+    }
 
     // region Lifecycle
     constructor(context: Context) : super(context) { initialize() }

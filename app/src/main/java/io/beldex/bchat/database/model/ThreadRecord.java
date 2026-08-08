@@ -168,7 +168,7 @@ public class ThreadRecord extends DisplayRecord implements Serializable {
       if (TextUtils.isEmpty(getBody())) {
         return new SpannableString(emphasisAdded(context.getString(R.string.ThreadRecord_media_message)));
       } else {
-        return new SpannableString(getBody());
+        return localizeAttachmentBody(context, getBody());
       }
     }
   }
@@ -182,6 +182,30 @@ public class ThreadRecord extends DisplayRecord implements Serializable {
     spannable.setSpan(new StyleSpan(android.graphics.Typeface.ITALIC),
                       start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     return spannable;
+  }
+
+  /**
+   * Attachment snippets store the localized attachment label (e.g. "Attachment") in the database
+   * at the time the message was received. Rebuild the label from the current locale so the snippet
+   * follows the app language when it changes.
+   */
+  private SpannableString localizeAttachmentBody(@NonNull Context context, @NonNull String body) {
+    String[] attachmentEmojis = { "📷", "🎥", "🎧", "📎", "🎡", "🎤" };
+    for (String emoji : attachmentEmojis) {
+      if (body.startsWith(emoji + " ")) {
+        boolean isVoiceNote = emoji.equals("🎤");
+        String label = context.getString(isVoiceNote
+                ? R.string.attachment_type_voice_message
+                : R.string.attachment);
+        String rest = body.substring(emoji.length() + 1);
+        int captionIndex = rest.indexOf(": ");
+        if (captionIndex >= 0) {
+          return new SpannableString(emoji + " " + label + rest.substring(captionIndex));
+        }
+        return new SpannableString(emoji + " " + label);
+      }
+    }
+    return new SpannableString(body);
   }
 
   public long getCount() {

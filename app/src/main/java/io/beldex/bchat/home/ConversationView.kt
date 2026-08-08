@@ -84,7 +84,7 @@ class ConversationView : LinearLayout {
 
         val formattedUnreadCount = if (unreadCount < 100) unreadCount.toString() else "99+"
         binding.unreadCountTextView.text = formattedUnreadCount
-        binding.unreadCountIndicator.isVisible = (unreadCount != 0 && !thread.isRead)
+        binding.unreadCountTextView.isVisible = (unreadCount != 0 && !thread.isRead)
         val senderDisplayName = getUserDisplayName(thread.recipient)
                 ?: thread.recipient.address.toString()
         val recipientName : String=senderDisplayName.substring(0, 1).uppercase(Locale.ROOT) + senderDisplayName.substring(1).lowercase(Locale.ROOT)

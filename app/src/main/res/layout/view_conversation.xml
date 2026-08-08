@@ -121,29 +121,21 @@
 
         </LinearLayout>
 
-        <RelativeLayout
-            android:id="@+id/unreadCountIndicator"
+        <TextView
+            android:id="@+id/unreadCountTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_indicator"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:gravity="center"
+            android:paddingHorizontal="8dp"
+            android:minHeight="18dp"
+            android:minWidth="18dp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/very_small_font_size"
+            android:textStyle="bold"
             android:layout_marginEnd="16dp"
-            >
-
-            <TextView
-                android:id="@+id/unreadCountTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:textSize="@dimen/very_small_font_size"
-                android:textStyle="bold"
-                android:minHeight="18dp"
-                android:minWidth="18dp"/>
-
-        </RelativeLayout>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <TextView
             android:fontFamily="@font/open_sans_regular"
@@ -169,7 +161,7 @@
             app:srcCompat="@drawable/ic_mute_home"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/timestampTextView"
-            app:layout_constraintEnd_toStartOf="@id/unreadCountIndicator"
+            app:layout_constraintEnd_toStartOf="@id/unreadCountTextView"
             android:layout_marginEnd="5dp"
 
 

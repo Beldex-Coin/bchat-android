@@ -129,7 +129,7 @@
         </activity>
         <activity
             android:name=".conversation.v2.ConversationActivityV2"
-            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize"
             android:exported="false"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
@@ -244,6 +244,7 @@
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name=".onboarding.RegisterActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
@@ -253,6 +254,7 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".onboarding.DisplayNameActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
@@ -271,6 +273,7 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".onboarding.RecoveryPhraseActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
@@ -325,6 +328,7 @@
             android:exported="false" />
         <activity
             android:name=".groups.EditClosedGroupActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false"
             android:label="@string/activity_edit_closed_group_title" />
         <activity
@@ -345,10 +349,12 @@
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name=".preferences.NotificationSettingsActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name=".preferences.ChatSettingsActivity"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity

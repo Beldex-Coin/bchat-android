@@ -14,13 +14,42 @@
         android:layout_height="match_parent" />
 
     <FrameLayout
-        android:id="@+id/mediasend_playback_controls_container"
+        android:id="@+id/mediasend_top_controls"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        android:layout_marginStart="48dp"
-        android:layout_marginEnd="48dp"
-        android:layout_gravity="top|center_horizontal"/>
+        android:layout_marginTop="@dimen/small_spacing"
+        android:paddingStart="@dimen/small_spacing"
+        android:paddingEnd="@dimen/small_spacing"
+        android:paddingTop="@dimen/small_spacing"
+        android:paddingBottom="@dimen/small_spacing">
+
+        <FrameLayout
+            android:id="@+id/mediasend_close_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/small_spacing"
+            android:background="@drawable/circle_touch_highlight_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_gravity="start|center_vertical">
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_baseline_clear_24"
+                app:tint="@android:color/white"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/mediasend_playback_controls_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginStart="52dp"/>
+
+    </FrameLayout>
 
     <io.beldex.bchat.components.InputAwareLayout
         android:id="@+id/mediasend_hud"
@@ -155,23 +184,5 @@
         </LinearLayout>
 
     </io.beldex.bchat.components.InputAwareLayout>
-
-    <FrameLayout
-        android:id="@+id/mediasend_close_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/small_spacing"
-        android:padding="@dimen/small_spacing"
-        android:background="@drawable/circle_touch_highlight_background"
-        android:clickable="true"
-        android:focusable="true">
-
-        <ImageView
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:src="@drawable/ic_baseline_clear_24"
-            app:tint="@android:color/white"/>
-
-    </FrameLayout>
 
 </FrameLayout>

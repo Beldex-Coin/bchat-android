@@ -32,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -103,9 +104,9 @@ class ViewAllContactsActivity : AppCompatActivity() {
 @Composable
 fun ViewContactScreen(contact : ContactModel) {
 
-    var showPopup by remember { mutableStateOf(false) }
-    var selectedName by remember { mutableStateOf("") }
-    var selectedAddress by remember { mutableStateOf("") }
+    var showPopup by rememberSaveable { mutableStateOf(false) }
+    var selectedName by rememberSaveable { mutableStateOf("") }
+    var selectedAddress by rememberSaveable { mutableStateOf("") }
 
     if(showPopup){
         ChatWithContactPopUp(selectedName,selectedAddress, onDismiss = {

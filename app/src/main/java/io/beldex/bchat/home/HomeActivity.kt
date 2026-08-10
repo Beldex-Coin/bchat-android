@@ -29,7 +29,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.widget.PopupMenu
+import androidx.appcompat.view.menu.MenuAdapter
+import androidx.appcompat.view.menu.MenuBuilder
+import androidx.appcompat.widget.ListPopupWindow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
@@ -932,22 +934,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             actionState: Int,
             isCurrentlyActive: Boolean
         ) {
-            val width = Resources.getSystem().displayMetrics.widthPixels
             val deleteIcon = ResourcesCompat.getDrawable(resources, R.drawable.ic_delete_24, null)
-            when {
-                abs(dX) < width / 3 -> {
-                    println(">>>>>swipe1")
-                }
-                dX > width / 3 -> {
-                    println(">>>>>swipe2")
-                }
-                else -> {
-                    println(">>>>>swipe3")
-                }
-            }
-            val textMargin = resources.getDimension(R.dimen.fab_margin).roundToInt()
             deleteIcon ?: return
+            val textMargin = resources.getDimension(R.dimen.fab_margin).roundToInt()
             val top = viewHolder.itemView.top + (viewHolder.itemView.bottom - viewHolder.itemView.top) / 2 - deleteIcon.intrinsicHeight / 2
+            val width = viewHolder.itemView.right
             deleteIcon.bounds = Rect(
                 width - textMargin - deleteIcon.intrinsicWidth,
                 top,
@@ -1010,17 +1001,16 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         onConversationClick(thread.threadId)
     }
 
-    override fun onLongConversationClick(thread : ThreadRecord, view : View, position: Int) {
+    override fun onLongConversationClick(thread : ThreadRecord, view : View, position: Int, touchX: Float, touchY: Float) {
+        Log.d("HomeMenuDebug", "onLongConversationClick called, touch=($touchX,$touchY)")
         val recipient = thread.recipient
-        val popupMenu = PopupMenu(this, view, R.style.PopupMenu)
-        popupMenu.menuInflater.inflate(R.menu.menu_conversation_v2, popupMenu.menu)
-        popupMenu.gravity = Gravity.END
-        popupMenu.setForceShowIcon(true)
-        val item : MenuItem= popupMenu.menu.findItem(R.id.menu_delete)
+        val menu = MenuBuilder(this)
+        menuInflater.inflate(R.menu.menu_conversation_v2, menu)
+        val item : MenuItem= menu.findItem(R.id.menu_delete)
         val s=SpannableString("Delete")
         s.setSpan(ForegroundColorSpan(this.getColor(R.color.red)), 0, s.length, 0)
         item.setTitle(s)
-        with(popupMenu.menu) {
+        with(menu) {
             if (recipient.isGroupRecipient && !recipient.isLocalNumber) {
                 findItem(R.id.menu_details).setVisible(false)
                 findItem(R.id.menu_unblock).setVisible(false)
@@ -1043,11 +1033,43 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             findItem(R.id.menu_unpin).setVisible(thread.isPinned)
             findItem(R.id.menu_archive_chat).setVisible(true)
         }
-        popupMenu.setOnMenuItemClickListener {
-            handlePopUpMenuClickListener(it, thread, position)
-            return@setOnMenuItemClickListener true
+
+        // Show the menu as a dropdown anchored directly to the long-pressed row so it starts right
+        // below the clicked item instead of appearing at the top-right of the screen. Its height is
+        // limited to the space left below the row, so the menu scrolls inside that space instead of
+        // growing over the views above (e.g. the global search box) when there is not enough room.
+        val menuAdapter = MenuAdapter(menu, layoutInflater, true, androidx.appcompat.R.layout.abc_popup_menu_item_layout)
+        var maxItemWidth = 0
+        for (i in 0 until menuAdapter.count) {
+            val itemView = menuAdapter.getView(i, null, null)
+            itemView.measure(
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            )
+            maxItemWidth = maxOf(maxItemWidth, itemView.measuredWidth)
         }
-        popupMenu.show()
+        val listPopup = ListPopupWindow(this, null, androidx.appcompat.R.attr.popupMenuStyle)
+        listPopup.setAnchorView(view)
+        listPopup.setAdapter(menuAdapter)
+        listPopup.setDropDownGravity(Gravity.END)
+        listPopup.setContentWidth(maxItemWidth)
+        val rowScreenLocation = IntArray(2)
+        view.getLocationOnScreen(rowScreenLocation)
+        val spaceBelowRow = resources.displayMetrics.heightPixels - (rowScreenLocation[1] + view.height)
+        val density = resources.displayMetrics.density
+        val menuItemHeight = (48f * density).roundToInt()
+        val estimatedPopupHeight = menuAdapter.count * menuItemHeight + (4f * density).roundToInt()
+        val popupHeight = minOf(spaceBelowRow, estimatedPopupHeight).coerceAtLeast(0)
+        if (popupHeight > 0) {
+            listPopup.setHeight(popupHeight)
+        }
+        Log.d("HomeMenuDebug", "maxItemWidth=$maxItemWidth spaceBelowRow=$spaceBelowRow count=${menuAdapter.count} popupHeight=$popupHeight rowScreen=${rowScreenLocation[0]},${rowScreenLocation[1]}")
+        listPopup.setOnItemClickListener { _, _, itemPosition, _ ->
+            val selectedItem = menuAdapter.getItem(itemPosition)
+            listPopup.dismiss()
+            handlePopUpMenuClickListener(selectedItem, thread, position)
+        }
+        listPopup.show()
     }
 
     override fun showMessageRequests() {
@@ -1578,12 +1600,15 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         binding.navigationMenu.menuContainer.post {
             val params = binding.navigationMenu.menuContainer.layoutParams as DrawerLayout.LayoutParams
             val isLandscape = resources.configuration.orientation == ORIENTATION_LANDSCAPE
+            val density = resources.displayMetrics.density
+            val screenWidth = resources.displayMetrics.widthPixels
             val drawerWidthFactor = when {
                 isLandscape -> 0.4f
-                resources.displayMetrics.widthPixels >= 600 * resources.displayMetrics.density -> 0.25f
+                screenWidth >= 600 * density -> 0.25f
                 else -> 0.7f
             }
-            params.width = (resources.displayMetrics.widthPixels * drawerWidthFactor).toInt()
+            val minDrawerWidth = (300 * density).toInt()
+            params.width = maxOf((screenWidth * drawerWidthFactor).toInt(), minDrawerWidth)
             binding.navigationMenu.menuContainer.layoutParams = params
         }
     }

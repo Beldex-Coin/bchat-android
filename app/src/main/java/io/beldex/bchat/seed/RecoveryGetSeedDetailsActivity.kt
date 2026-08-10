@@ -77,8 +77,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRecoveryGetSeedDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        WindowInsetsUtil.applyTopInset(binding.root)
-        WindowInsetsUtil.applyBottomInset(binding.buttonContainer)
+        WindowInsetsUtil.applySafeDrawingInsets(binding.root)
         setUpActionBarBchatLogo(getString(R.string.restore_from_seed), false)
         getSeed = intent.extras?.getString("seed")
 

@@ -2,6 +2,7 @@ package io.beldex.bchat.home
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -131,11 +132,21 @@ class HomeAdapter(private val context: Context, private val listener: Conversati
                     listener.onConversationClick(thread)
                 }
 
+                var lastTouchX = 0f
+                var lastTouchY = 0f
+                setOnTouchListener { _, event ->
+                    if (event.actionMasked == MotionEvent.ACTION_DOWN) {
+                        lastTouchX = event.x
+                        lastTouchY = event.y
+                    }
+                    false
+                }
+
                 setOnLongClickListener {
                     blockNextClick = true
                     val adapterPosition = holder.bindingAdapterPosition
                     if (adapterPosition != RecyclerView.NO_POSITION) {
-                        listener.onLongConversationClick(thread, this, adapterPosition)
+                        listener.onLongConversationClick(thread, this, adapterPosition, lastTouchX, lastTouchY)
                     }
                     true
                 }

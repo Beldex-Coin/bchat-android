@@ -26,6 +26,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.content.res.Configuration;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -36,6 +38,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -132,6 +136,31 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
 
   private int restartItem = -1;
 
+  private static final int UI_ANIMATION_DELAY = 300;
+
+  private boolean isFullscreen = false;
+  private final Handler hideHandler = new Handler(Looper.myLooper());
+  private View rootContainer;
+  private final Runnable showRunnable = () -> {
+    ActionBar actionBar = getSupportActionBar();
+    if (actionBar != null) actionBar.show();
+  };
+  private final Runnable hideRunnable = () -> {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+      rootContainer.getWindowInsetsController().hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
+      rootContainer.getWindowInsetsController().setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+    } else {
+      rootContainer.setSystemUiVisibility(
+          View.SYSTEM_UI_FLAG_LOW_PROFILE |
+          View.SYSTEM_UI_FLAG_FULLSCREEN |
+          View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+          View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+          View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+          View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+      );
+    }
+  };
+
   private MediaItemAdapter adapter;
 
   public static Intent getPreviewIntent(Context context, Slide slide, MmsMessageRecord mms, Recipient threadRecipient) {
@@ -190,11 +219,31 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
   }
 
-  private void setFullscreenIfPossible() {
-    getWindow().getDecorView().setSystemUiVisibility(
-        View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
-        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-    );
+  private void toggleFullscreen() {
+    if (isFullscreen) {
+      exitFullscreen();
+    } else {
+      enterFullscreen();
+    }
+  }
+
+  private void enterFullscreen() {
+    ActionBar actionBar = getSupportActionBar();
+    if (actionBar != null) actionBar.hide();
+    isFullscreen = true;
+    hideHandler.removeCallbacks(showRunnable);
+    hideHandler.postDelayed(hideRunnable, UI_ANIMATION_DELAY);
+  }
+
+  private void exitFullscreen() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+      rootContainer.getWindowInsetsController().show(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
+    } else {
+      rootContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+    }
+    isFullscreen = false;
+    hideHandler.removeCallbacks(hideRunnable);
+    hideHandler.postDelayed(showRunnable, UI_ANIMATION_DELAY);
   }
 
   @Override
@@ -268,7 +317,8 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
   }
 
   private void initializeViews() {
-    mediaPager = findViewById(R.id.media_pager);
+    rootContainer = findViewById(R.id.media_preview_root);
+    mediaPager     = findViewById(R.id.media_pager);
     mediaPager.setOffscreenPageLimit(1);
 
     albumRail        = findViewById(R.id.media_preview_album_rail);
@@ -349,6 +399,11 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
               else                     actionBar.show();
             }
           }
+
+          MediaItem mediaItem = getCurrentMediaItem();
+          if (mediaItem != null && mediaItem.type.startsWith("video/")) {
+            toggleFullscreen();
+          }
         }
         return super.onSingleTapUp(e);
       }
@@ -363,6 +418,10 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     }
 
     Log.i(TAG, "Loading Part URI: " + initialMediaUri);
+
+    if (initialMediaType != null && initialMediaType.startsWith("video/")) {
+      enterFullscreen();
+    }
 
     if (conversationRecipient != null) {
       getSupportLoaderManager().restartLoader(0, null, this);
@@ -593,6 +652,12 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
       if (item.recipient != null) item.recipient.addListener(MediaPreviewActivity.this);
       viewModel.setActiveAlbumRailItem(MediaPreviewActivity.this, position);
       updateActionBar();
+
+      if (item.type.startsWith("video/")) {
+        if (!isFullscreen) enterFullscreen();
+      } else {
+        if (isFullscreen) exitFullscreen();
+      }
     }
 
 

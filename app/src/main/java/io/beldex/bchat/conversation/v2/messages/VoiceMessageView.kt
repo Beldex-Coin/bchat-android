@@ -286,7 +286,9 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
 
         binding.seekbarAudio.progress = 0
 
-        player?.stop()
+        if (!isActivityChangingConfigurations()) {
+            player?.stop()
+        }
         player = null
     }
 
@@ -305,8 +307,21 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
             formatDuration(duration)
 
         // Remove old player
-        player?.stop()
+        if (!isActivityChangingConfigurations()) {
+            player?.stop()
+        }
         player = null
+    }
+
+    private fun isActivityChangingConfigurations(): Boolean {
+        var ctx: Context? = context
+        while (ctx is android.content.ContextWrapper) {
+            if (ctx is android.app.Activity) {
+                return ctx.isChangingConfigurations
+            }
+            ctx = ctx.baseContext
+        }
+        return false
     }
 
     fun stoppedVoiceMessage() {

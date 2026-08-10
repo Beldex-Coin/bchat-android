@@ -480,6 +480,9 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
                 binding.inputBarRecordingView.show()
             }
         }
+        if (reactionDelegate.isShowing) {
+            reactionDelegate.reposition()
+        }
     }
 
     override fun onPause() {

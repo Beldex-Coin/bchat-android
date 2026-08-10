@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.core.view.WindowCompat
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -107,7 +107,7 @@ class OnBoardingActivity: ComponentActivity() {
                 Surface {
                     Scaffold(
                         containerColor = MaterialTheme.colorScheme.primary,
-                        contentWindowInsets = WindowInsets.systemBars
+                        contentWindowInsets = WindowInsets.safeDrawing
                     ) {
                         val navController = rememberNavController()
                         OnBoardingNavHost(

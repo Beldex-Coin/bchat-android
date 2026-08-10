@@ -234,8 +234,9 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
 
     closeButton.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
 
-    /*WindowInsetsUtil.INSTANCE.applyTopInset(closeButton);
-    WindowInsetsUtil.INSTANCE.applyTopInset(playbackControlsContainer);*/
+    WindowInsetsUtil.INSTANCE.applyTopInset(closeButton);
+    WindowInsetsUtil.INSTANCE.applyTopInset(playbackControlsContainer);
+    WindowInsetsUtil.INSTANCE.applyTopInset(fragmentPager);
   }
 
   @Override

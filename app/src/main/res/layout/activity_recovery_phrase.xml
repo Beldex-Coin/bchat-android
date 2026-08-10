@@ -81,6 +81,7 @@
             android:layout_marginStart="@dimen/medium_spacing"
             android:layout_marginTop="@dimen/large_spacing"
             android:layout_marginEnd="@dimen/medium_spacing"
+            android:layout_marginBottom="@dimen/large_spacing"
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
@@ -142,6 +143,11 @@
                 tools:ignore="RtlHardcoded" />
 
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <TextView
             android:fontFamily="@font/open_sans_regular"

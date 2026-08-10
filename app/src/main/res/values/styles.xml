@@ -81,7 +81,7 @@
         <item name="tabIndicatorColor">?colorAccent</item>
         <item name="tabSelectedTextColor">@color/text</item>
         <item name="tabTextColor">#8D8D8D</item>
-        <item name="tabIndicatorFullWidth">false</item>
+        <item name="tabIndicatorFullWidth">true</item>
         <item name="tabIndicatorHeight">2dp</item>
         <item name="tabRippleColor">@color/cell_selected</item>
         <item name="tabTextAppearance">@style/TextAppearance.Bchat.Tab</item>
@@ -512,6 +512,7 @@
     </style>
 
     <style name="popupOverflowMenu" parent="@style/Widget.MaterialComponents.PopupMenu.Overflow">
+        <item name="android:overlapAnchor">false</item>
         <item name="android:fontFamily">@font/open_sans_medium</item>
         <item name="android:popupBackground">@drawable/bchat_id_text_view_background</item>
     </style>

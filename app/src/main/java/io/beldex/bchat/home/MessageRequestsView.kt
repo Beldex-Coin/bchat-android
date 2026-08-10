@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -172,12 +173,15 @@ fun MessageRequestsView(
             ) {
                 if (it) {
                     if (isLandscape) {
-                        Column(
+                        LazyColumn(
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {
-                            requests.forEach { record ->
+                            items(
+                                items = requests,
+                                key = { it.recipient.address.toString() }
+                            ) { record ->
                                 RequestItem(
                                     request = record,
                                     onClick = openChat,

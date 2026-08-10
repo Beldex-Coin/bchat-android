@@ -44,6 +44,7 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
     companion object {
         val usersToExcludeKey = "usersToExcludeKey"
         val selectedContactsKey = "selectedContactsKey"
+        val savedSelectedMembersKey = "savedSelectedMembersKey"
     }
 
     // region Lifecycle
@@ -103,6 +104,16 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
                     }
                 }
             }
+
+        savedInstanceState?.getStringArray(savedSelectedMembersKey)?.let { saved ->
+            selectContactsAdapter.selectedMembers.addAll(saved)
+            selectContactsAdapter.selectionChangedListener?.onSelectionChanged(saved.size)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putStringArray(savedSelectedMembersKey, selectContactsAdapter.selectedMembers.toTypedArray())
     }
     fun filter(text: String?, arrayList: List<String>) {
         val query = text?.lowercase()?.trim().orEmpty()

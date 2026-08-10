@@ -139,7 +139,7 @@
     </style>
 
     <style name="OverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
-        <item name="android:overlapAnchor">true</item>
+        <item name="android:overlapAnchor">false</item>
         <item name="android:dropDownVerticalOffset">0dp</item>
         <item name="android:popupBackground">@drawable/overflow_menu_background</item>
     </style>

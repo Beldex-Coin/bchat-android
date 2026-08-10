@@ -80,7 +80,7 @@ class SelectContactsAdapter(
             selectedMembers.add(member)
         }
         val index = members.indexOf(member)
-        notifyItemChanged(index, Payload.MEMBER_CLICKED)
+        if (index >= 0) notifyItemChanged(index, Payload.MEMBER_CLICKED)
         selectionChangedListener?.onSelectionChanged(selectedMembers.size)
     }
 

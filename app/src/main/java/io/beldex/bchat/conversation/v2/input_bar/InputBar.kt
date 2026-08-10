@@ -114,7 +114,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         binding.inputBarEditText.imeOptions = binding.inputBarEditText.imeOptions or incognitoFlag
         if(TextSecurePreferences.isEnterSendsEnabled(context)) {
             //Log.d("Beldex","is enter send enable if ${TextSecurePreferences.isEnterSendsEnabled(context)}")
-            binding.inputBarEditText.inputType = (EditorInfo.TYPE_CLASS_TEXT)
+            binding.inputBarEditText.inputType = binding.inputBarEditText.inputType or EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE
             binding.inputBarEditText.imeOptions = (EditorInfo.IME_ACTION_SEND)
             binding.inputBarEditText.setOnKeyListener(OnKeyListener { v, keyCode, event -> // If the event is a key-down event on the "enter" button
                 if (event.action == KeyEvent.ACTION_DOWN &&

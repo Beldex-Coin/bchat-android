@@ -65,7 +65,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDisplayNameBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        WindowInsetsUtil.applyTopAndImeInsets(binding.root)
+        WindowInsetsUtil.applySafeDrawingAndImeInsets(binding.root)
         setUpActionBarBchatLogo(getString(R.string.display_name),false)
         with(binding) {
             displayNameEditText.imeOptions =

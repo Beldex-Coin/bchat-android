@@ -116,6 +116,21 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
 
         name = originalName
 
+        if (savedInstanceState != null && savedInstanceState.containsKey("name")) {
+            savedInstanceState.getString("name")?.let { name = it }
+            hasNameChanged = savedInstanceState.getBoolean("hasNameChanged", false)
+            isEditingName = savedInstanceState.getBoolean("isEditingName", false)
+            savedInstanceState.getString("editingText")?.let { editingText ->
+                if (isEditingName) binding.edtGroupName.setText(editingText)
+            }
+            savedInstanceState.getStringArray("members")?.let { members.addAll(it) }
+            savedInstanceState.getStringArray("zombies")?.let { zombies.addAll(it) }
+            savedInstanceState.getStringArray("originalMembers")?.let { originalMembers.addAll(it) }
+            if (hasNameChanged || allMembers != originalMembers) {
+                showApplyChangesButton(true)
+            }
+        }
+
         val secretGroupInfoViewModelFactory=
             SecretGroupViewModelFactory(groupID, this)
          secretGroupInfoViewModel= ViewModelProvider(
@@ -138,7 +153,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         binding.profilePictureView.root.update(recipient, fromEditGroup = true)
 
 
-        binding.lblGroupNameDisplay.text = originalName
+        binding.lblGroupNameDisplay.text = name
         binding.lblGroupNameDisplay.setOnClickListener {
             if (checkIsOnline()) {
                 isEditingName = true
@@ -175,30 +190,34 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
             }
         }
 
-        LoaderManager.getInstance(this).initLoader(loaderID, null, object : LoaderManager.LoaderCallbacks<GroupMembers> {
+        if (savedInstanceState != null && savedInstanceState.getStringArray("members") != null) {
+            updateMembers()
+        } else {
+            LoaderManager.getInstance(this).initLoader(loaderID, null, object : LoaderManager.LoaderCallbacks<GroupMembers> {
 
-            override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<GroupMembers> {
-                return EditClosedGroupLoader(this@EditClosedGroupActivity, groupID)
-            }
+                override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<GroupMembers> {
+                    return EditClosedGroupLoader(this@EditClosedGroupActivity, groupID)
+                }
 
-            override fun onLoadFinished(loader: Loader<GroupMembers>, groupMembers: GroupMembers) {
-                // We no longer need any subsequent loading events
-                // (they will occur on every activity resume).
-                LoaderManager.getInstance(this@EditClosedGroupActivity).destroyLoader(loaderID)
+                override fun onLoadFinished(loader: Loader<GroupMembers>, groupMembers: GroupMembers) {
+                    // We no longer need any subsequent loading events
+                    // (they will occur on every activity resume).
+                    LoaderManager.getInstance(this@EditClosedGroupActivity).destroyLoader(loaderID)
 
-                members.clear()
-                members.addAll(groupMembers.members.toHashSet())
-                zombies.clear()
-                zombies.addAll(groupMembers.zombieMembers.toHashSet())
-                originalMembers.clear()
-                originalMembers.addAll(members)
-                updateMembers()
-            }
+                    members.clear()
+                    members.addAll(groupMembers.members.toHashSet())
+                    zombies.clear()
+                    zombies.addAll(groupMembers.zombieMembers.toHashSet())
+                    originalMembers.clear()
+                    originalMembers.addAll(members)
+                    updateMembers()
+                }
 
-            override fun onLoaderReset(loader: Loader<GroupMembers>) {
-                updateMembers()
-            }
-        })
+                override fun onLoaderReset(loader: Loader<GroupMembers>) {
+                    updateMembers()
+                }
+            })
+        }
     }
 
     private fun showApplyChangesButton(isVisible: Boolean) {
@@ -221,6 +240,21 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
     override fun onPause() {
         super.onPause()
         hideKeyboard()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        if (this::name.isInitialized) outState.putString("name", name)
+        outState.putBoolean("hasNameChanged", hasNameChanged)
+        outState.putBoolean("isEditingName", isEditingName)
+        if (this::binding.isInitialized) {
+            outState.putString("editingText", binding.edtGroupName.text.toString())
+        }
+        if (originalMembers.isNotEmpty()) {
+            outState.putStringArray("members", members.toTypedArray())
+            outState.putStringArray("zombies", zombies.toTypedArray())
+            outState.putStringArray("originalMembers", originalMembers.toTypedArray())
+        }
     }
 
     override fun onDestroy() {

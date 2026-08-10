@@ -23,10 +23,12 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.util.TypedValue;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -80,7 +82,6 @@ import io.beldex.bchat.util.AttachmentUtil;
 import io.beldex.bchat.util.GridSpaceItemDecoration;
 import io.beldex.bchat.util.SaveAttachmentTask;
 import io.beldex.bchat.util.StickyHeaderDecoration;
-import com.beldex.libbchat.utilities.Util;
 import com.beldex.libbchat.utilities.ViewUtil;
 import com.beldex.libbchat.utilities.task.ProgressDialogAsyncTask;
 
@@ -114,8 +115,8 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
     initializeToolbar();
     WindowInsetsUtil.INSTANCE.applyTopInset(this.toolbar);
 
-    this.tabLayout.setupWithViewPager(viewPager);
     this.viewPager.setAdapter(new MediaOverviewPagerAdapter(getSupportFragmentManager()));
+    this.tabLayout.setupWithViewPager(viewPager);
   }
 
   @Override
@@ -132,7 +133,6 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
   @Override
   public void onConfigurationChanged(Configuration newConfig) {
     super.onConfigurationChanged(newConfig);
-    updateToolbarTitleAppearance();
     WindowInsetsUtil.INSTANCE.applyTopInset(this.toolbar);
   }
 
@@ -147,23 +147,13 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
 
   private void initializeToolbar() {
     setSupportActionBar(toolbar);
-    toolbar.setTitle(R.string.all_media);
-    updateToolbarTitleAppearance();
     ActionBar actionBar = getSupportActionBar();
     if (actionBar != null) {
+      actionBar.setTitle(R.string.all_media);
       actionBar.setDisplayHomeAsUpEnabled(true);
       actionBar.setHomeAsUpIndicator(R.drawable.ic_back_arrow);
     }
-    this.recipient.addListener(recipient -> {
-      Util.runOnMain(() -> toolbar.setTitle(recipient.toShortString()));
-    });
-  }
-
-  private void updateToolbarTitleAppearance() {
-    int titleAppearance = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
-        ? R.style.TextAppearance_Bchat_Toolbar_Title_Large
-        : R.style.TextAppearance_Bchat_Toolbar_Title;
-    toolbar.setTitleTextAppearance(this, titleAppearance);
+    setTitle(R.string.all_media);
   }
 
   public void onEnterMultiSelect() {

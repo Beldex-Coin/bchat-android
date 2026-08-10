@@ -150,24 +150,32 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun applyLandscapeSizing() {
-        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        val isLandscape =
+            resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
         val bottomSheet = dialog?.findViewById<View>(
             com.google.android.material.R.id.design_bottom_sheet
         ) ?: return
+
         val behavior = BottomSheetBehavior.from(bottomSheet)
-        behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        behavior.skipCollapsed = true
+
         if (isLandscape) {
             val displayMetrics = resources.displayMetrics
-            behavior.maxHeight = -1
-            bottomSheet.layoutParams.width = (displayMetrics.widthPixels * 0.55).toInt()
-            bottomSheet.requestLayout()
+
+            bottomSheet.layoutParams.width = (displayMetrics.widthPixels * 0.55f).toInt()
+            bottomSheet.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+
+            behavior.skipCollapsed = true
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
         } else {
-            behavior.maxHeight = -1
             bottomSheet.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-            bottomSheet.setPadding(0, 0, 0, 0)
-            bottomSheet.requestLayout()
+            bottomSheet.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+
+            behavior.skipCollapsed = true
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
+
+        bottomSheet.requestLayout()
     }
 
     override fun onDestroy() {

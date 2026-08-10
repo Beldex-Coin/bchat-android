@@ -1,6 +1,7 @@
 package io.beldex.bchat.my_account.ui.dialogs
 
 import android.content.Context
+import android.content.res.Configuration
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
@@ -53,6 +54,7 @@ import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.R
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -66,7 +68,6 @@ import kotlinx.coroutines.delay
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
 import java.util.Locale
-
 @Composable
 fun LinkYourBNSDialog(
     state: MyAccountViewModel.UIState,
@@ -129,11 +130,14 @@ fun LinkYourBNSDialog(
                     (bnsName.endsWith(".bdx") || bnsName.endsWith(".BDX"))
         }
 
+        val configuration = LocalConfiguration.current
+        val isLandscape =
+            configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
         Column(
-            modifier =Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .verticalScroll(rememberScrollState())
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(if (isLandscape) 10.dp else 16.dp)
         ) {
             Text(
                 text = "Link BNS",
@@ -214,7 +218,7 @@ fun LinkYourBNSDialog(
                 modifier = if(showErrorMessage) {
                     Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 15.dp)
+                        .padding(bottom = if (isLandscape) 8.dp else 15.dp)
                         .border(
                             1.dp,
                             color = MaterialTheme.appColors.negativeRedButtonBorder,
@@ -224,7 +228,7 @@ fun LinkYourBNSDialog(
                     if (isVerified) {
                         Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 15.dp)
+                        .padding(bottom = if (isLandscape) 8.dp else 15.dp)
                         .border(
                             1.dp,
                             color = MaterialTheme.appColors.negativeGreenButtonBorder,
@@ -270,7 +274,7 @@ fun LinkYourBNSDialog(
                         color = MaterialTheme.appColors.negativeGreenButtonBorder
                     ),
                     contentPadding = PaddingValues(
-                        vertical = 14.dp
+                        vertical = if (isLandscape) 10.dp else 14.dp
                     ),
                     modifier = Modifier.weight(1F)
                 ) {

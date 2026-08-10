@@ -348,9 +348,9 @@ private fun ScreenContainer(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier =Modifier
+            modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
             Icon(
                 painterResource(id = R.drawable.ic_back_arrow),
@@ -375,7 +375,7 @@ private fun ScreenContainer(
             )
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         if (wrapInCard) {
             CardContainer(

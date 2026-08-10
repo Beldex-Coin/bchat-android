@@ -330,7 +330,8 @@
             android:name=".groups.EditClosedGroupActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false"
-            android:label="@string/activity_edit_closed_group_title" />
+            android:label="@string/activity_edit_closed_group_title"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name=".groups.JoinPublicChatActivity"
             android:exported="false"

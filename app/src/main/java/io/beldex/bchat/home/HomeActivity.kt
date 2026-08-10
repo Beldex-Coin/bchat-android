@@ -21,10 +21,10 @@ import android.os.Looper
 import android.provider.Settings
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.view.Gravity
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -176,6 +176,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     private val callViewModel by viewModels<CallViewModel>()
     private val homeViewModel: HomeFragmentViewModel by viewModels()
     private val globalSearchAdapter = GlobalSearchAdapter {model ->  }
+
+    private var chatOptionsPopup: ListPopupWindow? = null
+    private var chatOptionsAnchor: View? = null
+    private var chatOptionsMenuAdapter: MenuAdapter? = null
+    private var chatOptionsThread: ThreadRecord? = null
+    private var chatOptionsPosition: Int = -1
 
 
     @Inject
@@ -1034,11 +1040,17 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             findItem(R.id.menu_archive_chat).setVisible(true)
         }
 
-        // Show the menu as a dropdown anchored directly to the long-pressed row so it starts right
-        // below the clicked item instead of appearing at the top-right of the screen. Its height is
-        // limited to the space left below the row, so the menu scrolls inside that space instead of
-        // growing over the views above (e.g. the global search box) when there is not enough room.
+        // Show the menu as a dropdown anchored to the long-pressed row. It drops below the row when
+        // there is room; otherwise it is shown above the row. Its height is always bounded by the
+        // space available inside the chat list area, so it never grows over the views above (e.g.
+        // the global search box) nor past the bottom of the screen.
         val menuAdapter = MenuAdapter(menu, layoutInflater, true, androidx.appcompat.R.layout.abc_popup_menu_item_layout)
+        showChatOptionsMenu(menuAdapter, view, thread, position)
+    }
+
+    private fun showChatOptionsMenu(menuAdapter: MenuAdapter, anchor: View, thread: ThreadRecord, position: Int) {
+        chatOptionsPopup?.dismiss()
+
         var maxItemWidth = 0
         for (i in 0 until menuAdapter.count) {
             val itemView = menuAdapter.getView(i, null, null)
@@ -1048,28 +1060,114 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             )
             maxItemWidth = maxOf(maxItemWidth, itemView.measuredWidth)
         }
-        val listPopup = ListPopupWindow(this, null, androidx.appcompat.R.attr.popupMenuStyle)
-        listPopup.setAnchorView(view)
-        listPopup.setAdapter(menuAdapter)
-        listPopup.setDropDownGravity(Gravity.END)
-        listPopup.setContentWidth(maxItemWidth)
-        val rowScreenLocation = IntArray(2)
-        view.getLocationOnScreen(rowScreenLocation)
-        val spaceBelowRow = resources.displayMetrics.heightPixels - (rowScreenLocation[1] + view.height)
+
+        val screenWidth = resources.displayMetrics.widthPixels
         val density = resources.displayMetrics.density
         val menuItemHeight = (48f * density).roundToInt()
         val estimatedPopupHeight = menuAdapter.count * menuItemHeight + (4f * density).roundToInt()
-        val popupHeight = minOf(spaceBelowRow, estimatedPopupHeight).coerceAtLeast(0)
-        if (popupHeight > 0) {
-            listPopup.setHeight(popupHeight)
+
+        // The menu is bounded to the chat list area: everything above it is the header / search box.
+        val listLocation = IntArray(2)
+        binding.recyclerView.getLocationOnScreen(listLocation)
+        val contentTop = listLocation[1]
+        val contentBottom = listLocation[1] + binding.recyclerView.height
+
+        val rowLocation = IntArray(2)
+        anchor.getLocationOnScreen(rowLocation)
+        val rowLeft = rowLocation[0]
+        val rowRight = rowLeft + anchor.width
+        val rowTop = rowLocation[1]
+        val rowBottom = rowTop + anchor.height
+
+        val spaceBelow = contentBottom - rowBottom
+        val spaceAbove = rowTop - contentTop
+        val chatHeight = (contentBottom - contentTop).coerceAtLeast(0)
+
+        // Choose where to place the menu and how tall it can be. The menu is kept inside the chat
+        // list area so it never overlaps the header / search box above or the bottom of the screen.
+        val popupHeight: Int
+        val popupTop: Int
+        when {
+            estimatedPopupHeight <= spaceBelow -> {
+                popupHeight = estimatedPopupHeight
+                popupTop = rowBottom
+            }
+            estimatedPopupHeight <= spaceAbove -> {
+                popupHeight = estimatedPopupHeight
+                popupTop = rowTop - popupHeight
+            }
+            else -> {
+                // Not enough room on either side (e.g. landscape). Use the full height of the chat
+                // list area, centered on it, so the menu uses all the available space.
+                popupHeight = minOf(estimatedPopupHeight, chatHeight)
+                popupTop = contentTop + (chatHeight - popupHeight) / 2
+            }
         }
-        Log.d("HomeMenuDebug", "maxItemWidth=$maxItemWidth spaceBelowRow=$spaceBelowRow count=${menuAdapter.count} popupHeight=$popupHeight rowScreen=${rowScreenLocation[0]},${rowScreenLocation[1]}")
+
+        val menuWidth = maxItemWidth.coerceIn(0, screenWidth)
+        val popupLeft = (rowRight - menuWidth).coerceIn(0, screenWidth - menuWidth)
+
+        val listPopup = ListPopupWindow(this, null, androidx.appcompat.R.attr.popupMenuStyle)
+        listPopup.setAnchorView(anchor)
+        listPopup.setAdapter(menuAdapter)
+        listPopup.setContentWidth(menuWidth)
+        listPopup.setHeight(popupHeight)
+        listPopup.setHorizontalOffset(popupLeft - rowLeft)
+        listPopup.setVerticalOffset(popupTop - rowBottom)
+
+        Log.d("HomeMenuDebug", "maxItemWidth=$menuWidth spaceBelow=$spaceBelow spaceAbove=$spaceAbove chatHeight=$chatHeight count=${menuAdapter.count} popupHeight=$popupHeight popupTop=$popupTop rowScreen=$rowLeft,$rowTop")
         listPopup.setOnItemClickListener { _, _, itemPosition, _ ->
             val selectedItem = menuAdapter.getItem(itemPosition)
             listPopup.dismiss()
             handlePopUpMenuClickListener(selectedItem, thread, position)
         }
         listPopup.show()
+
+        chatOptionsPopup = listPopup
+        chatOptionsAnchor = anchor
+        chatOptionsMenuAdapter = menuAdapter
+        chatOptionsThread = thread
+        chatOptionsPosition = position
+    }
+
+    private fun repositionChatOptionsMenu() {
+        val popup = chatOptionsPopup ?: return
+        val adapter = chatOptionsMenuAdapter ?: return
+        val thread = chatOptionsThread ?: return
+        val position = chatOptionsPosition
+        if (!popup.isShowing) return
+
+        popup.dismiss()
+
+        // The view hierarchy is re-laid out after the configuration change, so wait for the new
+        // layout before re-showing, otherwise the popup would use stale coordinates and could end
+        // up off-screen (e.g. portrait -> landscape). When the long-pressed row scrolled off-screen
+        // after the rotation (the chat list is shorter in landscape), the menu is shown centered on
+        // the chat list area instead, so it never disappears.
+        binding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                binding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                if (isFinishing) return
+                val anchor = resolveChatOptionsAnchor() ?: binding.recyclerView
+                if (anchor.isAttachedToWindow) {
+                    showChatOptionsMenu(adapter, anchor, thread, position)
+                }
+            }
+        })
+    }
+
+    private fun resolveChatOptionsAnchor(): View? {
+        val rowView = binding.recyclerView.findViewHolderForAdapterPosition(chatOptionsPosition)?.itemView
+        if (rowView != null && rowView.isAttachedToWindow) {
+            chatOptionsAnchor = rowView
+            return rowView
+        }
+        val current = chatOptionsAnchor
+        if (current != null && current.isAttachedToWindow) {
+            return current
+        }
+        chatOptionsAnchor = null
+        return null
     }
 
     override fun showMessageRequests() {
@@ -1592,8 +1690,14 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         updateEmptyState()
+        val wasDrawerOpen = binding.drawerLayout.isDrawerVisible(GravityCompat.END)
         updateDrawerWidth()
-        binding.drawerLayout.closeDrawer(GravityCompat.END, false)
+        repositionChatOptionsMenu()
+        if (wasDrawerOpen) {
+            binding.navigationMenu.menuContainer.post {
+                binding.drawerLayout.openDrawer(GravityCompat.END)
+            }
+        }
     }
 
     private fun updateDrawerWidth() {

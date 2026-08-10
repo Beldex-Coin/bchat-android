@@ -19,7 +19,7 @@ class ChatSettingsActivity : PassphraseRequiredActionBarActivity() {
             back.setOnClickListener { finish() }
             title.text = resources.getString(R.string.preferences_chats__chats)
         }
-        WindowInsetsUtil.applyTopInset(binding.chatSettingsToolbar)
+        WindowInsetsUtil.applyTopInset(binding.root)
         val fragment = ChatsPreferenceFragment()
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.fragmentContainer, fragment)

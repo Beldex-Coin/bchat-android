@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import com.beldex.libbchat.utilities.SSKEnvironment
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.components.RtlAwareEditText
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.data.NetworkNodes
 import io.beldex.bchat.data.NodeInfo
@@ -69,6 +70,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         getSeed = intent.extras?.getString("seed")
 
         with(binding){
+            RtlAwareEditText.applyDirectionHandling(restoreSeedWalletName)
             restoreSeedWalletName.imeOptions = restoreSeedWalletName.imeOptions or 16777216 // Always use incognito keyboard
             restoreSeedWalletName.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable) {

@@ -22,7 +22,7 @@ fun MultilineTextField(
         value = value,
         onValueChange = onValueChange,
         maxLines = maxLines,
-        textStyle = textStyle,
+        textStyle = textStyle.copy(textDirection = value.inputTextDirection()),
         decorationBox = { innerTextField ->
             Box(
                 modifier = modifier

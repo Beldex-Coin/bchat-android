@@ -123,6 +123,7 @@ import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.checkAndRequestPermissions
+import io.beldex.bchat.compose_utils.inputTextDirection
 import io.beldex.bchat.contacts.blocked.BlockedContactsViewModel
 import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.crypto.IdentityKeyUtil
@@ -1450,7 +1451,8 @@ fun ProfileCard(
                 textStyle = MaterialTheme.typography.bodyMedium.copy(
                     fontSize = 16.sp,
                     fontWeight = FontWeight(400),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    textDirection = textFieldValueState.inputTextDirection()
                 ),
                 colors = TextFieldDefaults.colors(
                     focusedIndicatorColor = MaterialTheme.appColors.textColor,

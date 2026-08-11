@@ -31,6 +31,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -74,6 +75,7 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.PrimaryButton
+import io.beldex.bchat.compose_utils.inputTextDirection
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
@@ -158,6 +160,7 @@ fun CreateSecretGroup(
                     },
                     enabled = !showLoader,
                     singleLine = true,
+                    textStyle = LocalTextStyle.current.copy(textDirection = groupName.inputTextDirection()),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Done
@@ -195,6 +198,7 @@ fun CreateSecretGroup(
                 },
                 singleLine = true,
                 enabled = !showLoader,
+                textStyle = LocalTextStyle.current.copy(textDirection = searchQuery.inputTextDirection()),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done

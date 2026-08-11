@@ -150,6 +150,7 @@ fun BChatOutlinedTextField(
             fontWeight = fontWeight,
             color = textColor,
             textAlign = textAlign,
+            textDirection = value.inputTextDirection(),
         ),
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = focusedBorderColor,

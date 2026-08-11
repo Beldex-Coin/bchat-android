@@ -47,6 +47,7 @@ import com.beldex.libbchat.utilities.ViewUtil;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libsignal.utilities.Log;
 import io.beldex.bchat.components.SearchToolbar;
+import io.beldex.bchat.components.RtlAwareEditText;
 import io.beldex.bchat.contacts.ContactSelectionListFragment;
 import io.beldex.bchat.contacts.ContactSelectionListLoader.DisplayMode;
 import io.beldex.bchat.dependencies.DatabaseComponent;
@@ -197,6 +198,7 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
     back             = findViewById(R.id.back);
     searchField      = findViewById(R.id.searchContact);
     searchAndClearImageview = findViewById(R.id.searchAndClearImageview);
+    RtlAwareEditText.applyDirectionHandling(searchField);
   }
 
   private void initializeSearch() {

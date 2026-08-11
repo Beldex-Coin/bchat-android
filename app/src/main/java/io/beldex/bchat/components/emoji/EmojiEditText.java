@@ -7,15 +7,15 @@ import android.text.InputFilter;
 import android.util.AttributeSet;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatEditText;
 
 import io.beldex.bchat.R;
+import io.beldex.bchat.components.RtlAwareEditText;
 
 import com.beldex.libsignal.utilities.Log;
 
 import io.beldex.bchat.components.emoji.EmojiProvider.EmojiDrawable;
 
-public class EmojiEditText extends AppCompatEditText {
+public class EmojiEditText extends RtlAwareEditText {
   private static final String TAG = Log.tag(EmojiEditText.class);
 
   public EmojiEditText(Context context) {

@@ -38,6 +38,7 @@ import io.beldex.bchat.keyboard.emoji.KeyboardPageSearchView;
 import io.beldex.bchat.util.LifecycleDisposable;
 
 import io.beldex.bchat.R;
+import io.beldex.bchat.components.RtlAwareEditText;
 
 public final class ReactWithAnyEmojiDialogFragment extends BottomSheetDialogFragment implements EmojiEventListener,
         EmojiPageViewGridAdapter.VariationSelectorListener,KeyboardPageSearchView.Callbacks
@@ -122,6 +123,7 @@ public final class ReactWithAnyEmojiDialogFragment extends BottomSheetDialogFrag
     emojiPageView.initialize(this, this, true);
 
     searchEdit = view.findViewById(R.id.searchEditText);
+    RtlAwareEditText.applyDirectionHandling(searchEdit);
     backToEmoji = view.findViewById(R.id.back_to_emoji_icon);
     clearSearch = view.findViewById(R.id.clear_search_icon);
 

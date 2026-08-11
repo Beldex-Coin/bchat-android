@@ -15,6 +15,7 @@ import androidx.core.view.isVisible
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
+import io.beldex.bchat.components.RtlAwareEditText
 import io.beldex.bchat.databinding.FragmentUserDetailsBottomSheetBinding
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.contacts.Contact
@@ -74,6 +75,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
         layouts.rightMargin = 32
         layouts.bottomMargin = 24
         view.layoutParams = layouts
+        RtlAwareEditText.applyDirectionHandling(binding.nicknameEditText)
         with(binding) {
             profilePictureView.root.publicKey = publicKey
             profilePictureView.root.glide = Glide.with(this@UserDetailsBottomSheet)

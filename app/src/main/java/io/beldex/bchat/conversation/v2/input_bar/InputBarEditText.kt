@@ -13,12 +13,13 @@ import android.view.inputmethod.InputConnection
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.core.view.inputmethod.InputConnectionCompat
+import io.beldex.bchat.components.RtlAwareEditText
 import io.beldex.bchat.textformatter.TextFormatter
 import io.beldex.bchat.textformatter.TextFormatter.toUnicodeBlockQuote
 import kotlin.math.max
 import kotlin.math.min
 
-class InputBarEditText : AppCompatEditText {
+class InputBarEditText : RtlAwareEditText {
     var delegate: InputBarEditTextDelegate? = null
     var showMediaControls: Boolean = true
 

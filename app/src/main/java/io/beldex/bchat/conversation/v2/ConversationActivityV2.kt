@@ -95,6 +95,7 @@ import io.beldex.bchat.R
 import io.beldex.bchat.audio.AudioRecorder
 import io.beldex.bchat.compose_utils.ComposeDialogContainer
 import io.beldex.bchat.compose_utils.DialogType
+import io.beldex.bchat.components.RtlAwareEditText
 import io.beldex.bchat.contacts.SelectContactsActivity
 import io.beldex.bchat.contactshare.SimpleTextWatcher
 import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
@@ -1494,6 +1495,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
 
         binding.closeSearch.setOnClickListener { onSearchClosed() }
         binding.searchClose.setOnClickListener { onSearchClosed() }
+        RtlAwareEditText.applyDirectionHandling(binding.searchQuery)
         binding.searchQuery.post {
             binding.searchQuery.setText("")
         }

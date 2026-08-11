@@ -14,6 +14,7 @@ import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beldex.libbchat.messaging.contacts.Contact
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
+import io.beldex.bchat.components.RtlAwareEditText
 import io.beldex.bchat.dependencies.DatabaseComponent
 import com.bumptech.glide.Glide
 import io.beldex.bchat.R
@@ -64,6 +65,7 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
 
         binding.addButton.setOnClickListener { closeAndReturnSelected() }
 
+        RtlAwareEditText.applyDirectionHandling(binding.searchContact)
         binding.searchContact.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
                 filter(s.toString(), members)

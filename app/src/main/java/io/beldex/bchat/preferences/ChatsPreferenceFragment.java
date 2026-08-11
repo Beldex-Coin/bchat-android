@@ -18,6 +18,7 @@ import androidx.preference.Preference;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libsignal.utilities.Log;
 import io.beldex.bchat.R;
+import io.beldex.bchat.components.RtlAwareEditText;
 import io.beldex.bchat.permissions.Permissions;
 import io.beldex.bchat.util.Trimmer;
 
@@ -130,6 +131,7 @@ public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
         @Override
         public void onBindEditText(@NonNull EditText editText) {
           editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
+          RtlAwareEditText.applyDirectionHandling(editText);
         }
       });
       onPreferenceChange(preference, preference.getText());

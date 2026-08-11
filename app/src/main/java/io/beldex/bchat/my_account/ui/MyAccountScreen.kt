@@ -61,6 +61,7 @@ import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.checkAndRequestPermissions
+import io.beldex.bchat.compose_utils.inputTextDirection
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.my_account.ui.dialogs.PermissionSettingDialog
 import io.beldex.bchat.my_account.ui.dialogs.ProfilePicturePopup
@@ -350,7 +351,8 @@ fun AccountHeader(
                     textStyle = MaterialTheme.typography.bodyMedium.copy(
                         fontSize = 18.sp,
                         fontWeight = FontWeight(700),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        textDirection = textFieldValueState.text.inputTextDirection()
                     ),
                     cursorBrush = SolidColor(MaterialTheme.appColors.primaryButtonColor),
                     decorationBox = { innerTextField ->

@@ -31,6 +31,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -78,6 +79,7 @@ import io.beldex.bchat.compose_utils.BChatOutlinedTextField
 import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.inputTextDirection
 import io.beldex.bchat.compose_utils.ui.BChatPreviewContainer
 import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.groups.GroupManager
@@ -178,6 +180,7 @@ fun JoinSocialGroupScreen(
                 },
                 shape = RoundedCornerShape(16.dp),
                 singleLine = true,
+                textStyle = LocalTextStyle.current.copy(textDirection = uiState.groupUrl.inputTextDirection()),
                 trailingIcon = {
                     Image(
                         painter = painterResource(id = R.drawable.ic_qr_code),

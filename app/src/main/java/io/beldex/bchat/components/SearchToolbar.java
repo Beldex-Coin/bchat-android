@@ -65,6 +65,8 @@ public class SearchToolbar extends LinearLayout {
     if (searchText != null) searchText.setHint(R.string.SearchToolbar_search);
     else                    searchView.setQueryHint(getResources().getString(R.string.SearchToolbar_search));
 
+    RtlAwareEditText.applyDirectionHandling(searchText);
+
     searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
       @Override
       public boolean onQueryTextSubmit(String query) {

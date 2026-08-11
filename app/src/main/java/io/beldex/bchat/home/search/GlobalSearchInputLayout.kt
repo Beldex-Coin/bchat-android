@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import io.beldex.bchat.components.RtlAwareEditText
 import io.beldex.bchat.databinding.ViewGlobalSearchInputBinding
 
 class GlobalSearchInputLayout @JvmOverloads constructor(
@@ -32,6 +33,7 @@ class GlobalSearchInputLayout @JvmOverloads constructor(
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
+        RtlAwareEditText.applyDirectionHandling(binding.searchInput)
         binding.searchInput.onFocusChangeListener = this
         binding.searchInput.addTextChangedListener(this)
         binding.searchInput.setOnEditorActionListener(this)

@@ -45,6 +45,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -88,6 +89,7 @@ import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.inputTextDirection
 import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 import io.beldex.bchat.conversation_v2.NewChatScreenViewModel
 import io.beldex.bchat.conversation_v2.OpenActivity
@@ -221,6 +223,7 @@ fun NewChatScreen(
                             )
                         },
                         singleLine = true,
+                        textStyle = LocalTextStyle.current.copy(textDirection = searchQuery.inputTextDirection()),
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Done
@@ -591,6 +594,7 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                         .height(115.dp)
                         .padding(end=10.dp),
                     shape = RoundedCornerShape(16.dp),
+                    textStyle = LocalTextStyle.current.copy(textDirection = bChatId.inputTextDirection()),
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = MaterialTheme.appColors.editTextBackground,
                         focusedContainerColor = MaterialTheme.appColors.editTextBackground,

@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import io.beldex.bchat.R;
 import io.beldex.bchat.components.AnimatingToggle;
+import io.beldex.bchat.components.RtlAwareEditText;
 
 public class GiphyActivityToolbar extends Toolbar {
 
@@ -53,6 +54,7 @@ public class GiphyActivityToolbar extends Toolbar {
     this.searchText       = findViewById(R.id.search_view);
     this.toggle           = findViewById(R.id.button_toggle);
     this.clearToggle      = findViewById(R.id.search_clear);
+    RtlAwareEditText.applyDirectionHandling(searchText);
     this.toggleContainer  = findViewById(R.id.toggle_container);
     this.listLayoutToggle = findViewById(R.id.view_stream);
     this.gridLayoutToggle = findViewById(R.id.view_grid);

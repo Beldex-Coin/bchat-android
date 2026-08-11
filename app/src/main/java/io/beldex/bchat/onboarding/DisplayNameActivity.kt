@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import com.beldex.libbchat.utilities.SSKEnvironment.ProfileManagerProtocol
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.components.RtlAwareEditText
 import io.beldex.bchat.data.NetworkNodes
 import io.beldex.bchat.data.NodeInfo
 import io.beldex.bchat.model.AsyncTaskCoroutine
@@ -64,6 +65,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
         setContentView(binding.root)
         setUpActionBarBchatLogo(getString(R.string.display_name),false)
         with(binding) {
+            RtlAwareEditText.applyDirectionHandling(displayNameEditText)
             displayNameEditText.imeOptions =
                 displayNameEditText.imeOptions or 16777216 // Always use incognito keyboard
             displayNameEditText.setOnEditorActionListener(

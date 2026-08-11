@@ -71,7 +71,8 @@ fun ChatTextField(
                     message = it
                 },
                 textStyle = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.appColors.editTextColor
+                    color = MaterialTheme.appColors.editTextColor,
+                    textDirection = message.inputTextDirection()
                 ),
                 decorationBox = { innerTextField ->
                     TextFieldDefaults.DecorationBox(

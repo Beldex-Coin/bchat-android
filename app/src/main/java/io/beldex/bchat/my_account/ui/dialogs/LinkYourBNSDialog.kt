@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.sp
 import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.inputTextDirection
 import io.beldex.bchat.R
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
@@ -188,7 +189,8 @@ fun LinkYourBNSDialog(
             TextField(
                 value = bnsName,
                 textStyle = TextStyle(
-                    color = if(isVerified) MaterialTheme.appColors.negativeGreenButtonBorder else MaterialTheme.appColors.secondaryContentColor
+                    color = if(isVerified) MaterialTheme.appColors.negativeGreenButtonBorder else MaterialTheme.appColors.secondaryContentColor,
+                    textDirection = bnsName.inputTextDirection()
                 ),
                 placeholder = {
                     Text(

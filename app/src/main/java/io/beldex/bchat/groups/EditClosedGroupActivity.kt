@@ -30,6 +30,7 @@ import com.beldex.libsignal.utilities.toHexString
 import com.bumptech.glide.Glide
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.R
+import io.beldex.bchat.components.RtlAwareEditText
 import io.beldex.bchat.contacts.SelectContactsActivity
 import io.beldex.bchat.databinding.ActivityEditClosedGroupBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
@@ -155,6 +156,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
             }
         }
 
+        RtlAwareEditText.applyDirectionHandling(binding.edtGroupName)
         binding.edtGroupName.setImeActionLabel(getString(R.string.save), EditorInfo.IME_ACTION_DONE)
         binding.edtGroupName.setOnEditorActionListener { _, actionId, _ ->
             when (actionId) {

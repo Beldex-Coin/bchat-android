@@ -17,6 +17,7 @@ import com.beldex.libsignal.utilities.KeyHelper
 import com.beldex.libsignal.utilities.hexEncodedPrivateKey
 import com.beldex.libsignal.utilities.hexEncodedPublicKey
 import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.components.RtlAwareEditText
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.crypto.KeyPairUtilities
 import io.beldex.bchat.crypto.MnemonicUtilities
@@ -42,6 +43,7 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
         binding = ActivityRecoveryPhraseRestoreBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUpActionBarBchatLogo(getString(R.string.restore_seed),false)
+        RtlAwareEditText.applyDirectionHandling(binding.mnemonicEditText)
         binding.mnemonicEditText.imeOptions = binding.mnemonicEditText.imeOptions or 16777216 // Always use incognito keyboard
         binding.restoreButton.setOnClickListener {
             if(binding.recoveryPhraseCountWord.text!=null && binding.recoveryPhraseCountWord.text=="25/25") {

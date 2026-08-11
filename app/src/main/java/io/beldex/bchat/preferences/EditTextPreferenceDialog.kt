@@ -7,6 +7,7 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.utilities.Log
 import io.beldex.bchat.conversation.v2.utilities.BaseDialog
 import io.beldex.bchat.R
+import io.beldex.bchat.components.RtlAwareEditText
 import io.beldex.bchat.databinding.DialogEditTextPreferenceBinding
 
 class EditTextPreferenceDialog(
@@ -16,6 +17,7 @@ class EditTextPreferenceDialog(
 
     override fun setContentView(builder : AlertDialog.Builder) {
         binding=DialogEditTextPreferenceBinding.inflate(LayoutInflater.from(requireContext()))
+        RtlAwareEditText.applyDirectionHandling(binding.edit)
         binding.edit.setText(TextSecurePreferences.getThreadTrimLength(requireContext()).toString())
         binding.okButton.setOnClickListener {
             onPreferenceChange(preference, binding.edit.text.toString())

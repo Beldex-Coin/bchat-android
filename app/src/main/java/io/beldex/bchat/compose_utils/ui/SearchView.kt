@@ -9,6 +9,7 @@ import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -23,6 +24,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.inputTextDirection
 
 @Composable
 fun SearchView(
@@ -59,6 +61,7 @@ fun SearchView(
                 )
             },
             singleLine = true,
+            textStyle = LocalTextStyle.current.copy(textDirection = searchQuery.inputTextDirection()),
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Done

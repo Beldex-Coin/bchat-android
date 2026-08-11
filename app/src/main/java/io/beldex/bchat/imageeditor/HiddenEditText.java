@@ -12,12 +12,13 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
+import io.beldex.bchat.components.RtlAwareEditText;
 import io.beldex.bchat.imageeditor.renderers.TextRenderer;
 
 /**
  * Invisible {@link android.widget.EditText} that is used during in-image text editing.
  */
-final class HiddenEditText extends androidx.appcompat.widget.AppCompatEditText {
+final class HiddenEditText extends RtlAwareEditText {
 
   @SuppressLint("InlinedApi")
   private static final int INCOGNITO_KEYBOARD_IME = EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING;

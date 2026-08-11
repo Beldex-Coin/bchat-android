@@ -5,11 +5,12 @@ import android.graphics.Color
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.ViewGroup
+import io.beldex.bchat.components.RtlAwareEditText
 import io.beldex.bchat.keyboard.CustomKeyboardView
 import io.beldex.bchat.keyboard.utils.ComponentUtils
 
 
-class CustomTextField(context: Context): androidx.appcompat.widget.AppCompatEditText(context) {
+class CustomTextField(context: Context): RtlAwareEditText(context) {
     var keyboardType: CustomKeyboardView.KeyboardType =
         CustomKeyboardView.KeyboardType.QWERTY
 

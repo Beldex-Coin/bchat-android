@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import io.beldex.bchat.R;
 import io.beldex.bchat.components.CustomDefaultPreference.CustomDefaultPreferenceDialogFragmentCompat.CustomPreferenceValidator;
+import io.beldex.bchat.components.RtlAwareEditText;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -132,6 +133,7 @@ public class CustomDefaultPreference extends DialogPreference {
       this.defaultLabel = (TextView) view.findViewById(R.id.default_label);
       this.customText   = (EditText) view.findViewById(R.id.custom_edit);
 
+      RtlAwareEditText.applyDirectionHandling(customText);
       this.customText.setInputType(preference.inputType);
       this.customText.addTextChangedListener(new TextValidator());
       this.customText.setText(preference.getCustomValue());

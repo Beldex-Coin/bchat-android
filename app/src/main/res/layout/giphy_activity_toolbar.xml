@@ -44,7 +44,7 @@
                 android:textAlignment="viewStart"
                 android:textColor="@color/text_hint"
                 android:textColorHint="@color/text_hint"
-                android:textCursorDrawable="@drawable/bchat_edit_text_cursor"
+                android:textCursorDrawable="@drawable/bchat_edit_text_cursor_drawable"
                 android:textSize="@dimen/medium_font_size" />
 
             <ImageView

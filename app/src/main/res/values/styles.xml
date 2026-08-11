@@ -265,7 +265,7 @@
         <item name="android:contentDescription">@string/conversation_activity__compose_description</item>
         <item name="android:textColorHint">?android:textColorHint</item>
         <item name="android:textSize">@dimen/small_font_size</item>
-        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
+        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor_drawable</item>
         <item name="android:textAlignment">viewStart</item>
     </style>
 
@@ -309,7 +309,7 @@
         <item name="android:paddingBottom">30dp</item>
         <item name="android:textSize">@dimen/small_font_size</item>
         <item name="android:textColor">@color/text</item>
-        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
+        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor_drawable</item>
         <item name="android:textAlignment">viewStart</item>
         <item name="android:maxLines">1</item>
     </style>
@@ -323,7 +323,7 @@
         <item name="android:paddingBottom">@dimen/medium_spacing</item>
         <item name="android:textSize">@dimen/small_font_size</item>
         <item name="android:textColor">@color/text</item>
-        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
+        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor_drawable</item>
         <item name="android:textAlignment">viewStart</item>
         <item name="android:maxLines">1</item>
     </style>
@@ -337,7 +337,7 @@
         <item name="android:paddingBottom">@dimen/medium_spacing</item>
         <item name="android:textSize">@dimen/small_font_size</item>
         <item name="android:textColor">@color/text</item>
-        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
+        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor_drawable</item>
         <item name="android:textAlignment">viewStart</item>
         <item name="android:maxLines">1</item>
     </style>
@@ -351,7 +351,7 @@
         <item name="android:paddingBottom">@dimen/medium_spacing</item>
         <item name="android:textSize">@dimen/small_font_size</item>
         <item name="android:textColor">@color/text</item>
-        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
+        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor_drawable</item>
         <item name="android:textAlignment">viewStart</item>
         <item name="android:maxLines">1</item>
     </style>
@@ -365,7 +365,7 @@
         <item name="android:paddingBottom">@dimen/medium_spacing</item>
         <item name="android:textSize">@dimen/small_font_size</item>
         <item name="android:textColor">@color/text</item>
-        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
+        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor_drawable</item>
         <item name="android:textAlignment">viewStart</item>
         <item name="android:maxLines">1</item>
     </style>
@@ -379,7 +379,7 @@
         <item name="android:paddingBottom">@dimen/medium_spacing</item>
         <item name="android:textSize">@dimen/small_font_size</item>
         <item name="android:textColor">@color/text</item>
-        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
+        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor_drawable</item>
         <item name="android:textAlignment">viewStart</item>
         <item name="android:maxLines">1</item>
     </style>
@@ -392,7 +392,7 @@
         <item name="android:paddingBottom">@dimen/medium_spacing</item>
         <item name="android:textSize">@dimen/small_font_size</item>
         <item name="android:textColor">@color/text</item>
-        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
+        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor_drawable</item>
         <item name="android:textAlignment">viewStart</item>
        <item name="android:maxLines">4</item>
     </style>
@@ -406,7 +406,7 @@
         <item name="android:paddingBottom">@dimen/medium_spacing</item>
         <item name="android:textSize">@dimen/very_small_font_size</item>
         <item name="android:textColor">@color/text</item>
-        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
+        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor_drawable</item>
         <item name="android:textAlignment">viewStart</item>
         <item name="android:maxLines">1</item>
     </style>
@@ -419,7 +419,7 @@
         <item name="android:paddingBottom">@dimen/medium_spacing</item>
         <item name="android:textSize">@dimen/medium_font_size</item>
         <item name="android:textColor">@color/text</item>
-        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
+        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor_drawable</item>
         <item name="android:textAlignment">viewStart</item>
         <item name="android:maxLines">1</item>
     </style>
@@ -1025,7 +1025,7 @@
         <item name="android:paddingBottom">@dimen/medium_spacing</item>
         <item name="android:textSize">@dimen/small_font_size</item>
         <item name="android:textColor">@color/text</item>
-        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
+        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor_drawable</item>
         <item name="android:textAlignment">viewStart</item>
         <item name="android:maxLines">1</item>
     </style>

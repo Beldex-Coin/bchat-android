@@ -52,6 +52,7 @@
             android:textSize="@dimen/small_font_size"
             android:textStyle="bold"
             tools:text="User Name"
+            android:textAlignment="viewStart"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/quoteStartBarrier"
             app:layout_constraintTop_toTopOf="parent"

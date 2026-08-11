@@ -61,6 +61,7 @@
                 android:visibility="visible"
                 tools:text="User Name"
                 tools:visibility="visible"
+                android:textAlignment="viewStart"
                 android:layout_marginBottom="4dp"/>
 
             <LinearLayout

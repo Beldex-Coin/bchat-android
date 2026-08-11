@@ -669,7 +669,7 @@
     <string name="global_search_contacts_groups">Contatos e Grupos</string>
     <string name="terms_and_conditions">Termos e Condições</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="chatid">BChat ID</string>
+    <string name="chatid">ID do BChat</string>
     <string name="close">Fechar</string>
     <string name="important">Importante</string>
     <string name="activity_settings_app_lock_button_title">Bloqueio do Aplicativo</string>

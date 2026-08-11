@@ -657,7 +657,7 @@
     <string name="global_search_contacts_groups">Danh bạ và Nhóm</string>
     <string name="terms_and_conditions">Điều khoản &amp; Điều kiện</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="chatid">BChat ID</string>
+    <string name="chatid">ID BChat</string>
     <string name="close">Đóng</string>
     <string name="important">Quan trọng</string>
     <string name="activity_settings_app_lock_button_title">Khóa Ứng dụng</string>

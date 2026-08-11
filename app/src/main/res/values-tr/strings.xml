@@ -668,7 +668,7 @@
     <string name="global_search_contacts_groups">Kişiler ve Gruplar</string>
     <string name="terms_and_conditions">Şartlar ve Koşullar</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="chatid">BChat ID</string>
+    <string name="chatid">BChat Kimliği</string>
     <string name="close">Kapat</string>
     <string name="important">Önemli</string>
     <string name="activity_settings_app_lock_button_title">Uygulama Kilidi</string>

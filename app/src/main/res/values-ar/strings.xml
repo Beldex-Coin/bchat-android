@@ -713,7 +713,7 @@
     <string name="global_search_contacts_groups">جهات الاتصال والمجموعات</string>
     <string name="terms_and_conditions">الشروط والأحكام</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="chatid">BChat ID</string>
+    <string name="chatid">معرّف BChat</string>
     <string name="close">يغلق</string>
     <string name="important">هام</string>
     <string name="activity_settings_app_lock_button_title">قفل التطبيق</string>

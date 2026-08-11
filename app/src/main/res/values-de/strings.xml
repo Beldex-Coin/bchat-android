@@ -667,7 +667,7 @@
     <string name="global_search_contacts_groups">Kontakte und Gruppen</string>
     <string name="terms_and_conditions">Geschäftsbedingungen</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="chatid">BChat ID</string>
+    <string name="chatid">BChat-ID</string>
     <string name="close">Schließen</string>
     <string name="important">Wichtig</string>
     <string name="activity_settings_app_lock_button_title">App-Sperre</string>

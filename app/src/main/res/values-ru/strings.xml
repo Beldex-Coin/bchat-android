@@ -691,7 +691,7 @@
     <string name="global_search_contacts_groups">Контакты и группы</string>
     <string name="terms_and_conditions">Условия и положения</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="chatid">BChat ID</string>
+    <string name="chatid">ID BChat</string>
     <string name="close">Закрыть</string>
     <string name="important">Важно</string>
     <string name="activity_settings_app_lock_button_title">Блокировка приложения</string>

@@ -15,12 +15,19 @@
         app:cardBackgroundColor="@color/text_green">
 
         <LinearLayout
-            android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/document_view_background"
-            android:orientation="horizontal"
-            android:padding="@dimen/small_spacing">
+            android:baselineAligned="false"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/document_view_background"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:padding="@dimen/small_spacing">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -54,6 +61,7 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:baselineAligned="false"
                     android:gravity="center_vertical">
 
                     <ImageView
@@ -74,6 +82,7 @@
                         android:maxWidth="140dp"
                         android:maxLines="1"
                         android:minWidth="100dp"
+                        android:textAlignment="viewStart"
                         android:textColor="@color/incoming_reply_message_icon"
                         android:textSize="@dimen/very_small_font_size"
                         tools:maxLines="1"
@@ -113,18 +122,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginTop="70dp"
+            android:layout_marginTop="@dimen/small_spacing"
+            android:baselineAligned="false"
             android:gravity="bottom"
             android:orientation="vertical">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/social_group_url"
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="16dp"
-                android:layout_weight="1"
                 android:ellipsize="end"
                 android:fontFamily="@font/open_sans_regular"
                 android:maxLines="1"
@@ -134,7 +142,6 @@
                 android:textSize="12sp"
                 android:visibility="visible"
                 tools:text="http://social.beldex.io/crypto" />
-
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/social_group_message_time"
@@ -146,6 +153,8 @@
                 android:textSize="11sp"
                 android:visibility="visible"
                 tools:text="12:00 pm" />
+
+        </LinearLayout>
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

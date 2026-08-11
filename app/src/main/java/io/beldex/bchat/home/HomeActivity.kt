@@ -1711,8 +1711,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                 screenWidth >= 600 * density -> 0.25f
                 else -> 0.7f
             }
-            val minDrawerWidth = (300 * density).toInt()
-            params.width = maxOf((screenWidth * drawerWidthFactor).toInt(), minDrawerWidth)
+            params.width = (screenWidth * drawerWidthFactor).toInt()
             binding.navigationMenu.menuContainer.layoutParams = params
         }
     }

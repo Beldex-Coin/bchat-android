@@ -20,7 +20,6 @@ import io.beldex.bchat.BaseActionBarActivity
 import io.beldex.bchat.util.setUpActionBarBchatLogo
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityChangePasswordBinding
-import java.util.Objects
 
 class ChangePasswordActivity : BaseActionBarActivity() {
     private lateinit var binding: ActivityChangePasswordBinding
@@ -157,7 +156,7 @@ class ChangePasswordActivity : BaseActionBarActivity() {
         title.setText(R.string.your_pin_has_been_changed_successfully)
 
         val alert=dialog.create()
-        Objects.requireNonNull<Window?>(alert.window).setBackgroundDrawableResource(R.color.transparent)
+        alert.window?.setBackgroundDrawableResource(R.color.transparent)
         alert.setCanceledOnTouchOutside(false)
         alert.show()
 

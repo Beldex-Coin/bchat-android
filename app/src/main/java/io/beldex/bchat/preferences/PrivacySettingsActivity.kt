@@ -18,10 +18,12 @@ class PrivacySettingsActivity : PassphraseRequiredActionBarActivity() {
             title.text = getString(R.string.activity_settings_title)
         }
         WindowInsetsUtil.applyTopInset(binding.root)
-        val fragment =
-            AppProtectionPreferenceFragment()
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragmentContainer, fragment)
-        transaction.commit()
+        if (savedInstanceState == null) {
+            val fragment =
+                AppProtectionPreferenceFragment()
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragmentContainer, fragment)
+            transaction.commit()
+        }
     }
 }

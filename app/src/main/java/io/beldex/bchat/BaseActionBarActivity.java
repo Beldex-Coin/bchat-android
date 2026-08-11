@@ -12,6 +12,7 @@ import android.util.Log;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -32,13 +33,16 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
     // Automatically apply navigation bar insets to the content view
     // so all screens are protected from content being hidden behind the nav bar.
     // Handles nav bar on bottom AND sides (landscape).
+    // Also includes the display cutout so content isn't hidden behind the camera
+    // notch in landscape.
     ViewCompat.setOnApplyWindowInsetsListener(
             getWindow().getDecorView().findViewById(android.R.id.content),
             (view, windowInsets) -> {
-              int left = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars()).left;
-              int right = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars()).right;
-              int bottom = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom;
-              view.setPadding(left, 0, right, bottom);
+              Insets insets =
+                  windowInsets.getInsets(
+                      WindowInsetsCompat.Type.systemBars()
+                          | WindowInsetsCompat.Type.displayCutout());
+              view.setPadding(insets.left, 0, insets.right, insets.bottom);
               return windowInsets;
             });
 

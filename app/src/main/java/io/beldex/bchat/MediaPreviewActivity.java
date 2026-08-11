@@ -38,8 +38,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowInsets;
-import android.view.WindowInsetsController;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -140,25 +138,9 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
 
   private boolean isFullscreen = false;
   private final Handler hideHandler = new Handler(Looper.myLooper());
-  private View rootContainer;
   private final Runnable showRunnable = () -> {
     ActionBar actionBar = getSupportActionBar();
     if (actionBar != null) actionBar.show();
-  };
-  private final Runnable hideRunnable = () -> {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-      rootContainer.getWindowInsetsController().hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
-      rootContainer.getWindowInsetsController().setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-    } else {
-      rootContainer.setSystemUiVisibility(
-          View.SYSTEM_UI_FLAG_LOW_PROFILE |
-          View.SYSTEM_UI_FLAG_FULLSCREEN |
-          View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
-          View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
-          View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
-          View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-      );
-    }
   };
 
   private MediaItemAdapter adapter;
@@ -232,17 +214,11 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     if (actionBar != null) actionBar.hide();
     isFullscreen = true;
     hideHandler.removeCallbacks(showRunnable);
-    hideHandler.postDelayed(hideRunnable, UI_ANIMATION_DELAY);
   }
 
   private void exitFullscreen() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-      rootContainer.getWindowInsetsController().show(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
-    } else {
-      rootContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-    }
     isFullscreen = false;
-    hideHandler.removeCallbacks(hideRunnable);
+    hideHandler.removeCallbacks(showRunnable);
     hideHandler.postDelayed(showRunnable, UI_ANIMATION_DELAY);
   }
 
@@ -317,7 +293,6 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
   }
 
   private void initializeViews() {
-    rootContainer = findViewById(R.id.media_preview_root);
     mediaPager     = findViewById(R.id.media_pager);
     mediaPager.setOffscreenPageLimit(1);
 
@@ -363,7 +338,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
 
       View playbackControls = ((MediaItemAdapter) mediaPager.getAdapter()).getPlaybackControls(mediaPager.getCurrentItem());
 
-      if (previewData.getAlbumThumbnails().isEmpty() && previewData.getCaption() == null && playbackControls == null) {
+      if (isFullscreen || (previewData.getAlbumThumbnails().isEmpty() && previewData.getCaption() == null && playbackControls == null)) {
         detailsContainer.setVisibility(View.GONE);
       } else {
         detailsContainer.setVisibility(View.VISIBLE);
@@ -390,20 +365,19 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     clickDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
       @Override
       public boolean onSingleTapUp(MotionEvent e) {
-        if (e.getY() < detailsContainer.getTop()) {
-          detailsContainer.setVisibility(detailsContainer.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
-          if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            ActionBar actionBar = getSupportActionBar();
-            if (actionBar != null) {
-              if (actionBar.isShowing()) actionBar.hide();
-              else                     actionBar.show();
+        MediaItem mediaItem = getCurrentMediaItem();
+        if (mediaItem != null && mediaItem.type.startsWith("video/")) {
+          if (isFullscreen) {
+            exitFullscreen();
+            if (detailsContainer.getVisibility() == View.GONE) {
+              detailsContainer.setVisibility(View.VISIBLE);
             }
+          } else {
+            enterFullscreen();
+            detailsContainer.setVisibility(View.GONE);
           }
-
-          MediaItem mediaItem = getCurrentMediaItem();
-          if (mediaItem != null && mediaItem.type.startsWith("video/")) {
-            toggleFullscreen();
-          }
+        } else if (e.getY() < detailsContainer.getTop()) {
+          detailsContainer.setVisibility(detailsContainer.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
         }
         return super.onSingleTapUp(e);
       }
@@ -418,10 +392,6 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     }
 
     Log.i(TAG, "Loading Part URI: " + initialMediaUri);
-
-    if (initialMediaType != null && initialMediaType.startsWith("video/")) {
-      enterFullscreen();
-    }
 
     if (conversationRecipient != null) {
       getSupportLoaderManager().restartLoader(0, null, this);
@@ -609,13 +579,14 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
 
     mediaPager.removeOnPageChangeListener(viewPagerListener);
 
+    int item = restartItem >= 0 && restartItem < data.first.getCount()
+               ? restartItem
+               : Math.max(Math.min(data.second, data.first.getCount() - 1), 0);
 
-    adapter = new CursorPagerAdapter(this, Glide.with(this), getWindow(), data.first, data.second, leftIsRecent);
+    adapter = new CursorPagerAdapter(this, Glide.with(this), getWindow(), data.first, item, leftIsRecent);
     mediaPager.setAdapter(adapter);
 
     viewModel.setCursor(this, data.first, leftIsRecent);
-
-    int item = restartItem >= 0  && restartItem < adapter.getCount() ? restartItem : Math.max(Math.min(data.second, adapter.getCount() - 1), 0);
 
     viewPagerListener = new ViewPagerListener();
     mediaPager.addOnPageChangeListener(viewPagerListener);
@@ -653,10 +624,8 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
       viewModel.setActiveAlbumRailItem(MediaPreviewActivity.this, position);
       updateActionBar();
 
-      if (item.type.startsWith("video/")) {
-        if (!isFullscreen) enterFullscreen();
-      } else {
-        if (isFullscreen) exitFullscreen();
+      if (!item.type.startsWith("video/") && isFullscreen) {
+        exitFullscreen();
       }
     }
 

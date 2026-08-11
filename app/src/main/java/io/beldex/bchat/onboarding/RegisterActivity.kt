@@ -74,7 +74,7 @@ class RegisterActivity : BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        WindowInsetsUtil.applySafeDrawingInsets(binding.root)
+        WindowInsetsUtil.applyTopInset(binding.root)
         setUpActionBarBchatLogo(getString(R.string.register), false)
 
         TextSecurePreferences.apply {

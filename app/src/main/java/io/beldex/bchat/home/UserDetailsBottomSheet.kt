@@ -165,6 +165,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
             bottomSheet.layoutParams.width = (displayMetrics.widthPixels * 0.55f).toInt()
             bottomSheet.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
 
+            behavior.maxHeight = (displayMetrics.heightPixels * 0.9f).toInt()
             behavior.skipCollapsed = true
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
         } else {

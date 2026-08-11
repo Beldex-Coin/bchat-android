@@ -42,7 +42,7 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
         }
         binding = ActivityRecoveryPhraseRestoreBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        WindowInsetsUtil.applySafeDrawingInsets(binding.root)
+        WindowInsetsUtil.applyTopAndImeInsets(binding.root)
         setUpActionBarBchatLogo(getString(R.string.restore_seed),false)
         binding.mnemonicEditText.imeOptions = binding.mnemonicEditText.imeOptions or 16777216 // Always use incognito keyboard
         binding.restoreButton.setOnClickListener {

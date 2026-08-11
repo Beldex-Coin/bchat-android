@@ -15,15 +15,16 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -134,9 +135,12 @@ fun LinkYourBNSDialog(
         val isLandscape =
             configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
+        val dialogMaxHeight = (configuration.screenHeightDp * 0.9f).dp
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .heightIn(max = dialogMaxHeight)
+                .verticalScroll(rememberScrollState())
                 .padding(if (isLandscape) 10.dp else 16.dp)
         ) {
             Text(
@@ -316,7 +320,7 @@ fun LinkYourBNSDialog(
                         color = if (verifyBNSName(bnsName)) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.contactCardBackground
                     ),
                     contentPadding = PaddingValues(
-                        vertical = 14.dp
+                        vertical = if (isLandscape) 10.dp else 14.dp
                     ),
                     modifier = Modifier.weight(1F)
                 ) {

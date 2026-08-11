@@ -36,7 +36,7 @@ class RecoveryPhraseActivity : BaseActionBarActivity() {
             ?: TextSecurePreferences.isCopiedSeed(this)
         binding = ActivityRecoveryPhraseBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        WindowInsetsUtil.applySafeDrawingInsets(binding.root)
+        WindowInsetsUtil.applyTopInset(binding.root)
         setUpActionBarBchatLogo(getString(R.string.activity_settings_recovery_phrase_button_title), false)
         val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
         with(binding)

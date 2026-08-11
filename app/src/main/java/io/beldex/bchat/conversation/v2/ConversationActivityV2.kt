@@ -477,7 +477,11 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         }
         if (binding.inputBarRecordingView.isTimerRunning) {
             binding.inputBarRecordingView.post {
-                binding.inputBarRecordingView.show()
+                if (binding.inputBarRecordingView.isLocked) {
+                    binding.inputBarRecordingView.restoreLockedState()
+                } else {
+                    binding.inputBarRecordingView.show()
+                }
             }
         }
         if (reactionDelegate.isShowing) {

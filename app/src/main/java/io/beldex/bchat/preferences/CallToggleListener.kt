@@ -31,6 +31,14 @@ internal class CallToggleListener(
             .execute()
     }
 
+    fun reattachCallbackIfNeeded() {
+        val dialog = context.childFragmentManager
+            .findFragmentByTag(CallPermissionDialog.TAG) as? CallPermissionDialog
+        if (dialog != null && dialog.onEnableClick == null) {
+            dialog.onEnableClick = { requestMicrophonePermission() }
+        }
+    }
+
     @SuppressLint("MissingInflatedId")
     override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
         if (!(newValue as Boolean)) return true

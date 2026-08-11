@@ -59,6 +59,7 @@ dependencies {
     implementation("com.google.dagger:hilt-android:$daggerHiltVersion")
     ksp("com.google.dagger:hilt-compiler:$daggerHiltVersion")
     ksp("androidx.hilt:hilt-compiler:$jetpackHiltVersion")
+    ksp("org.jetbrains.kotlin:kotlin-metadata-jvm:$kotlinVersion")
 
     implementation 'com.goterl:lazysodium-android:5.2.0@aar'
     implementation "net.java.dev.jna:jna:5.17.0@aar"

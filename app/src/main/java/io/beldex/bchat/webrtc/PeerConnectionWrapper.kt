@@ -36,10 +36,10 @@ class PeerConnectionWrapper(private val context: Context,
 
     private fun initPeerConnection() {
         val random = SecureRandom().asKotlinRandom()
-        val iceServers = listOf("turn.call","turn.call1","turn.call2","turn.call3").shuffled(random).take(2).map { sub ->
+        val iceServers = listOf("turn.communication","turn.communication1","turn.communication2","turn.communication3").shuffled(random).take(2).map { sub ->
             PeerConnection.IceServer.builder("turn:$sub.beldex.io")
-                .setUsername("test")
-                .setPassword("test@123")
+                .setUsername("communication")
+                .setPassword("communication@123")
                 .createIceServer()
         }
 

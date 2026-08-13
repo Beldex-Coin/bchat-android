@@ -11,7 +11,12 @@ import android.os.IBinder
 import androidx.activity.OnBackPressedCallback
 import android.widget.Toast
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -44,11 +49,13 @@ import io.beldex.bchat.service.KeyCachingService.KeySetBinder
 import io.beldex.bchat.util.push
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.databinding.ActivityPasswordBinding
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.sql.DriverManager.println
 
 @AndroidEntryPoint
 class PasswordActivity : BaseActionBarActivity() {
@@ -67,47 +74,90 @@ class PasswordActivity : BaseActionBarActivity() {
 //        setContentView(binding.root)
 //        setUpActionBarBchatLogo("Password")
         setContent {
-            val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
+
+            val isDarkTheme =
+                UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
+
             val view = LocalView.current
             val window = (view.context as Activity).window
-            val statusBarColor = if (isDarkTheme) Color.Black else Color.White
+            val backgroundColor = MaterialTheme.appColors.backgroundColor
             SideEffect {
+
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                    window.statusBarColor = statusBarColor.toArgb()
+                    window.statusBarColor = backgroundColor.toArgb()
                 }
-                WindowInsetsControllerCompat(window, view).isAppearanceLightStatusBars = !isDarkTheme
+
+                // Let the app background draw behind the navigation bar.
+                window.navigationBarColor = Color.Transparent.toArgb()
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    window.isNavigationBarContrastEnforced = false
+                }
+
+                val windowInsetsController =
+                    WindowInsetsControllerCompat(window, view)
+
+                windowInsetsController.isAppearanceLightStatusBars =
+                    !isDarkTheme
+
+                windowInsetsController.isAppearanceLightNavigationBars =
+                    !isDarkTheme
             }
+
             BChatTheme {
-                Surface {
+
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.appColors.backgroundColor
+                ) {
+
                     Scaffold(
-                        containerColor = MaterialTheme.colorScheme.primary
-                    ) {
+                        modifier = Modifier.fillMaxSize(),
+                        containerColor = MaterialTheme.appColors.backgroundColor,
+                        contentWindowInsets =
+                            WindowInsets.safeDrawing.only(
+                                WindowInsetsSides.Top
+                            )
+                    ) { paddingValues ->
+
                         val context = LocalContext.current
-                        val viewModel: PinCodeViewModel = hiltViewModel()
+
+                        val viewModel: PinCodeViewModel =
+                            hiltViewModel()
+
                         val state by viewModel.state.collectAsState()
+
                         LaunchedEffect(key1 = true) {
+
                             launch {
                                 viewModel.errorMessage.collectLatest { message ->
-                                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        context,
+                                        message,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
+
                             launch {
                                 viewModel.successEvent.collectLatest { success ->
                                     if (success) {
                                         validateSuccess()
-                                    }else{
+                                    } else {
                                         validateSuccess()
                                     }
                                 }
                             }
                         }
+
                         ScreenContainer(
                             title = stringResource(R.string.verify_password),
                             onBackClick = {
                                 onBackPressedDispatcher.onBackPressed()
                             },
-                            modifier = Modifier.padding(it)
+                            modifier = Modifier.padding(paddingValues)
                         ) {
+
                             PinCodeScreen(
                                 state = state,
                                 onEvent = viewModel::onEvent

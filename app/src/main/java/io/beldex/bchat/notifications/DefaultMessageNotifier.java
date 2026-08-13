@@ -553,6 +553,9 @@ public class DefaultMessageNotifier implements MessageNotifier {
   private NotificationState constructNotificationState(@NonNull  Context context,
                                                        @NonNull  Cursor cursor)
   {
+    String                language          = TextSecurePreferences.getAppSelectedLanguage(context);
+    context                                   = DynamicLanguageContextWrapper.updateContext(context, language);
+
     NotificationState     notificationState = new NotificationState();
     MmsSmsDatabase.Reader reader            = DatabaseComponent.get(context).mmsSmsDatabase().readerFor(cursor);
     ThreadDatabase        threadDatabase    = DatabaseComponent.get(context).threadDatabase();

@@ -68,21 +68,25 @@ public class QuoteBodyTextViewLayout extends RelativeLayout {
         int quoteViewPartMessageLineCount = quoteViewPartMessage.getLineCount();
         float quoteViewPartMessageLastLineWidth = quoteViewPartMessageLineCount > 0 ? quoteViewPartMessage.getLayout().getLineWidth(quoteViewPartMessageLineCount - 1) : 0;
 
+        // The time view sits on the side opposite to the message start. It may only share the last
+        // line's row if the card is wide enough to fit both message and time, otherwise the last
+        // line (whose left/right edge can carry Latin words in an RTL layout) would overlap the time.
+        boolean timeFitsBeside;
+        if (quoteViewPartMessageLineCount > 1) {
+            timeFitsBeside = quoteViewPartMessageLastLineWidth + quoteViewPartTimeWidth <= availableWidth
+                    && quoteViewPartMessageWidth + quoteViewPartTimeWidth <= availableWidth;
+        } else {
+            timeFitsBeside = quoteViewPartMessageWidth + quoteViewPartTimeWidth <= availableWidth;
+        }
+
         widthSize = getPaddingStart() + getPaddingEnd();
         heightSize = getPaddingTop() + getPaddingBottom();
 
-        if (quoteViewPartMessageLineCount > 1 && !(quoteViewPartMessageLastLineWidth + quoteViewPartTimeWidth >= quoteViewPartMessage.getMeasuredWidth())) {
-            widthSize += availableWidth;
+        widthSize += availableWidth;
+        if (timeFitsBeside) {
             heightSize += quoteViewPartMessageHeight;
-        } else if (quoteViewPartMessageLineCount > 1 && (quoteViewPartMessageLastLineWidth + quoteViewPartTimeWidth >= availableWidth)) {
-            widthSize += availableWidth;
-            heightSize += quoteViewPartMessageHeight + quoteViewPartTimeHeight;
-        } else if (quoteViewPartMessageLineCount == 1 && (quoteViewPartMessageWidth + quoteViewPartTimeWidth >= availableWidth)) {
-            widthSize += availableWidth;
-            heightSize += quoteViewPartMessageHeight + quoteViewPartTimeHeight;
         } else {
-            widthSize += availableWidth;
-            heightSize += quoteViewPartMessageHeight;
+            heightSize += quoteViewPartMessageHeight + quoteViewPartTimeHeight;
         }
 
         this.setMeasuredDimension(widthSize, heightSize);

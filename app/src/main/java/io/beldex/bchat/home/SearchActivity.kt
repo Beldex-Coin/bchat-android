@@ -89,11 +89,11 @@ import io.beldex.bchat.search.SearchResults
 import io.beldex.bchat.textformatter.TextFormatter
 import io.beldex.bchat.textformatter.TextFormatter.toAnnotatedString
 import io.beldex.bchat.util.DateUtils
+import io.beldex.bchat.util.LocalHelper
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 @AndroidEntryPoint
 class SearchActivity : BaseComponentActivity() {
@@ -421,7 +421,7 @@ private fun MessageView(
             }
     ) {
         val recipient = model.messageResult.conversationRecipient
-        val messageDate = DateUtils.getDisplayFormattedTimeSpanString(context, Locale.getDefault(), model.messageResult.sentTimestampMs)
+        val messageDate = DateUtils.getDisplayFormattedTimeSpanString(context, LocalHelper.getPreferredLocale(context), model.messageResult.sentTimestampMs)
         val textSpannable = SpannableStringBuilder()
         if (model.messageResult.conversationRecipient != model.messageResult.messageRecipient) {
             // group chat, bind

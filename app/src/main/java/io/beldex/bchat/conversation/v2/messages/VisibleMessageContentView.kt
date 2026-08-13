@@ -70,6 +70,7 @@ import io.beldex.bchat.mms.PartAuthority
 import com.bumptech.glide.RequestManager
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.util.DateUtils
+import io.beldex.bchat.util.LocalHelper
 import io.beldex.bchat.util.SearchUtil
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.getColorWithID
@@ -444,7 +445,7 @@ class VisibleMessageContentView : MaterialCardView {
                     // bind after add view because views are inflated and calculated during bind
                     binding.albumMessageTime.isVisible=message.body.isEmpty()
                     binding.albumMessageTime.text=
-                        DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+                        DateUtils.getTimeStamp(context, LocalHelper.getPreferredLocale(context), message.timestamp)
                     binding.albumMessageTime.setTextColor(
                         getTimeTextColor(
                             context,
@@ -532,11 +533,11 @@ class VisibleMessageContentView : MaterialCardView {
         }
         binding.bodyTextView.isVisible = message.body.isNotEmpty() && !hideBody
         binding.bodyTextViewLayout.isVisible = message.body.isNotEmpty() && !hideBody
-        binding.shortMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+        binding.shortMessageTime.text = DateUtils.getTimeStamp(context, LocalHelper.getPreferredLocale(context), message.timestamp)
         binding.shortMessageTime.setTextColor(getTimeTextColor(context, message.isOutgoing))
         binding.quoteBodyTextView.isVisible = message.body.isNotEmpty() && showQuoteBody
         binding.quoteBodyTextViewLayout.isVisible = message.body.isNotEmpty() && showQuoteBody
-        binding.quoteShortMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+        binding.quoteShortMessageTime.text = DateUtils.getTimeStamp(context, LocalHelper.getPreferredLocale(context), message.timestamp)
         binding.quoteShortMessageTime.setTextColor(getTimeTextColor(context, message.isOutgoing))
 
 
@@ -681,7 +682,7 @@ class VisibleMessageContentView : MaterialCardView {
                         backgroundColor=colorResource(cardBackgroundColor),
                         timeStamp=DateUtils.getTimeStamp(
                             context,
-                            Locale.getDefault(),
+                            LocalHelper.getPreferredLocale(context),
                             message.timestamp
                         ),
                         isQuoted=isQuoteView,

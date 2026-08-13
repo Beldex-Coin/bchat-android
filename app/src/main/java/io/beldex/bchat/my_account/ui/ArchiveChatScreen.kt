@@ -72,11 +72,11 @@ import io.beldex.bchat.my_account.ui.dialogs.LockOptionsDialog
 import io.beldex.bchat.textformatter.TextFormatter
 import io.beldex.bchat.textformatter.TextFormatter.toAnnotatedString
 import io.beldex.bchat.util.DateUtils
+import io.beldex.bchat.util.LocalHelper
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.shortNameAndAddress
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 
 @Composable
@@ -506,7 +506,7 @@ fun ArchiveChatItem(
 
         val senderName= getUserDisplayName(context, thread.recipient) ?: thread.recipient.address.toString()
         val rawSnippet=thread.getDisplayBody(context)
-        val timeStamp= DateUtils.getDisplayFormattedTimeSpanString(context, Locale.getDefault(), thread.date)
+        val timeStamp= DateUtils.getDisplayFormattedTimeSpanString(context, LocalHelper.getPreferredLocale(context), thread.date)
 
         Column(
             verticalArrangement=Arrangement.SpaceEvenly,

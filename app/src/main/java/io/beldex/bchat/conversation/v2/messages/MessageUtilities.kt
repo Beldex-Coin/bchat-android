@@ -5,7 +5,7 @@ import androidx.core.view.isVisible
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.isSameDayMessage
-import java.util.Locale
+import io.beldex.bchat.util.LocalHelper
 
 private const val maxTimeBetweenBreaks = 5 * 60 * 1000L // 5 minutes
 
@@ -13,5 +13,5 @@ fun TextView.showDateBreak(message: MessageRecord, previous: MessageRecord?) {
 //    val showDateBreak = (previous == null || message.timestamp - previous.timestamp > maxTimeBetweenBreaks)
     val showDateBreak = (previous == null || !isSameDayMessage(message, previous))
     isVisible = showDateBreak
-    text = if (showDateBreak) DateUtils.getCoversationDisplayFormattedTimeSpanString(context, Locale.getDefault(), message.timestamp) else ""
+    text = if (showDateBreak) DateUtils.getCoversationDisplayFormattedTimeSpanString(context, LocalHelper.getPreferredLocale(context), message.timestamp) else ""
 }

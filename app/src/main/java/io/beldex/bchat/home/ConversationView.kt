@@ -24,6 +24,7 @@ import io.beldex.bchat.database.model.ThreadRecord
 import io.beldex.bchat.databinding.ViewConversationBinding
 import io.beldex.bchat.textformatter.TextFormatter
 import io.beldex.bchat.util.DateUtils
+import io.beldex.bchat.util.LocalHelper
 import io.beldex.bchat.util.isSharedContact
 import io.beldex.bchat.util.shortNameAndAddress
 import java.util.Locale
@@ -93,7 +94,7 @@ class ConversationView : LinearLayout {
         val recipientName : String=senderDisplayName.substring(0, 1).uppercase(Locale.ROOT) + senderDisplayName.substring(1).lowercase(Locale.ROOT)
 
         binding.conversationViewDisplayNameTextView.text = recipientName
-        binding.timestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(context, Locale.getDefault(), thread.date)
+        binding.timestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(context, LocalHelper.getPreferredLocale(context), thread.date)
         if(unreadCount !=0 && !thread.isRead) {
             binding.timestampTextView.setTextColor(context.getColor(R.color.text_green))
         } else{

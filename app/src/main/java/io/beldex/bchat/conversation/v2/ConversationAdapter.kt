@@ -59,6 +59,7 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import io.beldex.bchat.util.LocalHelper
 import java.util.Locale
 
 class ConversationAdapter(
@@ -268,7 +269,7 @@ class ConversationAdapter(
                                 contact
                             ),
                             backgroundColor = colorResource(cardBackgroundColor),
-                            timeStamp = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp),
+                            timeStamp = DateUtils.getTimeStamp(context, LocalHelper.getPreferredLocale(context), message.timestamp),
                             titleColor = colorResource(
                                 if (message.isOutgoing) {
                                     R.color.white

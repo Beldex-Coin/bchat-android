@@ -83,6 +83,7 @@ import io.beldex.bchat.database.loaders.ThreadMediaLoader;
 import io.beldex.bchat.permissions.Permissions;
 import io.beldex.bchat.util.AttachmentUtil;
 import io.beldex.bchat.util.GridSpaceItemDecoration;
+import io.beldex.bchat.util.LocalHelper;
 import io.beldex.bchat.util.SaveAttachmentTask;
 import io.beldex.bchat.util.StickyHeaderDecoration;
 import kotlin.Unit;
@@ -172,7 +173,7 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
 
       Bundle args = new Bundle();
       args.putString(MediaOverviewGalleryFragment.ADDRESS_EXTRA, recipient.getAddress().serialize());
-      args.putSerializable(MediaOverviewGalleryFragment.LOCALE_EXTRA, Locale.getDefault());
+      args.putSerializable(MediaOverviewGalleryFragment.LOCALE_EXTRA, LocalHelper.getPreferredLocale(MediaOverviewActivity.this));
 
       fragment.setArguments(args);
 

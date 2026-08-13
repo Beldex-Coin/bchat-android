@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 
+import com.beldex.libbchat.utilities.TextSecurePreferences;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -76,8 +78,10 @@ public class LocalHelper {
     }
 
     public static String getPreferredLanguageTag(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(PREFERRED_LOCALE_KEY, "");
+        // The language selected by the user is stored in app_selected_language
+        // (default "en") by the language picker via TextSecurePreferences.
+        String languageTag = TextSecurePreferences.getAppSelectedLanguage(context);
+        return (languageTag == null) ? "" : languageTag;
     }
 
     @SuppressLint("ApplySharedPref")

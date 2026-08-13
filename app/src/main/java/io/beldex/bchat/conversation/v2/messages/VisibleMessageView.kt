@@ -52,7 +52,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Date
-import java.util.Locale
+import io.beldex.bchat.util.LocalHelper
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.min
@@ -192,7 +192,7 @@ class VisibleMessageView : LinearLayout {
         // Date break
         val showDateBreak =  (isStartOfMessageCluster || snIsSelected) && !isSameDayMessage(message, previous)
         if (showDateBreak) {
-            binding.dateBreakTextView.text = DateUtils.getCoversationDisplayFormattedTimeSpanString(context, Locale.getDefault(), message.timestamp)
+            binding.dateBreakTextView.text = DateUtils.getCoversationDisplayFormattedTimeSpanString(context, LocalHelper.getPreferredLocale(context), message.timestamp)
             binding.dateBreakTextView.isVisible = true
             binding.dateBreakTextView.textSize = fontSize.toFloat()
         } else {

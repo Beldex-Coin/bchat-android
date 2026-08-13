@@ -16,7 +16,7 @@ import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewControlMessageBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
-import java.util.Locale
+import io.beldex.bchat.util.LocalHelper
 
 
 class ControlMessageView : LinearLayout {
@@ -126,7 +126,7 @@ class ControlMessageView : LinearLayout {
                     )
 
                     messageBody = ""
-                    binding.dialledMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+                    binding.dialledMessageTime.text = DateUtils.getTimeStamp(context, LocalHelper.getPreferredLocale(context), message.timestamp)
                 }else{
                     binding.receivedCallCardView.visibility = View.VISIBLE
                     binding.receivedCallCardView.background=ContextCompat.getDrawable(
@@ -142,7 +142,7 @@ class ControlMessageView : LinearLayout {
                     )
 
                     messageBody = ""
-                    binding.receivedMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+                    binding.receivedMessageTime.text = DateUtils.getTimeStamp(context, LocalHelper.getPreferredLocale(context), message.timestamp)
                 }
             }
             message.isMessageRequestResponse -> {

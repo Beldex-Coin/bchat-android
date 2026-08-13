@@ -22,6 +22,7 @@ import io.beldex.bchat.R
 import io.beldex.bchat.conversation.v2.messages.VisibleMessageContentView.Companion.getTimeTextColor
 import io.beldex.bchat.databinding.ViewVoiceMessageBinding
 import io.beldex.bchat.util.DateUtils
+import io.beldex.bchat.util.LocalHelper
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -73,7 +74,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         resetViewState()
         this.isSelectionMode = isSelectionMode
         this.delegate = delegate
-        binding.voiceMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+        binding.voiceMessageTime.text = DateUtils.getTimeStamp(context, LocalHelper.getPreferredLocale(context), message.timestamp)
         binding.voiceMessageTime.setTextColor(getTimeTextColor(context, message.isOutgoing))
         val audio = message.slideDeck.audioSlide!!
         binding.voiceMessageViewLoader.isVisible = audio.isInProgress

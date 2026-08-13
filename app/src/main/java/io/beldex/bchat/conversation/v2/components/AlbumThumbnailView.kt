@@ -22,10 +22,7 @@ import com.bumptech.glide.RequestManager
 import io.beldex.bchat.mms.Slide
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.R
-import io.beldex.bchat.conversation.v2.messages.VisibleMessageContentView
 import io.beldex.bchat.databinding.AlbumThumbnailViewBinding
-import io.beldex.bchat.util.DateUtils
-import java.util.Locale
 
 class AlbumThumbnailView : RelativeLayout {
 

@@ -13,9 +13,10 @@ import io.beldex.bchat.conversation.v2.utilities.ResendMessageUtilities
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.util.DateUtils
+import io.beldex.bchat.util.LocalHelper
 import io.beldex.bchat.databinding.ActivityMessageDetailBinding
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
 class MessageDetailActivity: PassphraseRequiredActionBarActivity() {
     private lateinit var binding: ActivityMessageDetailBinding
@@ -49,7 +50,7 @@ class MessageDetailActivity: PassphraseRequiredActionBarActivity() {
     }
 
     fun updateContent() {
-        val dateLocale = Locale.getDefault()
+        val dateLocale = LocalHelper.getPreferredLocale(this)
         val dateFormatter: SimpleDateFormat = DateUtils.getDetailedDateFormatter(this, dateLocale)
         binding.sentTime.text = dateFormatter.format(Date(messageRecord!!.dateSent))
 

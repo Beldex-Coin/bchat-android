@@ -165,6 +165,7 @@ import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.util.ConfigurationMessageUtilities
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.Helper
+import io.beldex.bchat.util.LocalHelper
 import io.beldex.bchat.util.MediaUtil
 import io.beldex.bchat.util.SaveAttachmentTask
 import io.beldex.bchat.util.drawToBitmap
@@ -190,7 +191,6 @@ import org.apache.commons.lang3.time.DurationFormatUtils
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
-import java.util.Locale
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
@@ -1363,7 +1363,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                             DateUtils.getFormattedDateTime(
                                 recipient.mutedUntil,
                                 "EEE, MMM d, yyyy HH:mm",
-                                Locale.getDefault()
+                                LocalHelper.getPreferredLocale(this)
                             )
                         )
                     } else {
@@ -3330,7 +3330,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
             if (messageCount > 1) {
                 val timestamp = DateUtils.getDisplayFormattedTimeSpanString(
                     this,
-                    Locale.getDefault(),
+                    LocalHelper.getPreferredLocale(this),
                     message.timestamp
                 )
                 builder.append("$timestamp: ")

@@ -9,7 +9,7 @@ import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewDeletedMessageBinding
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.util.DateUtils
-import java.util.Locale
+import io.beldex.bchat.util.LocalHelper
 
 class DeletedMessageView : LinearLayout {
     private val binding: ViewDeletedMessageBinding by lazy { ViewDeletedMessageBinding.bind(this) }
@@ -31,7 +31,7 @@ class DeletedMessageView : LinearLayout {
         binding.deleteTitleTextView.setTextColor(textColor)
         binding.deletedMessageViewIconImageView.imageTintList = ColorStateList.valueOf(textColor)
 
-        binding.deleteMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+        binding.deleteMessageTime.text = DateUtils.getTimeStamp(context, LocalHelper.getPreferredLocale(context), message.timestamp)
         binding.deleteMessageTime.setTextColor(
             VisibleMessageContentView.getTimeTextColor(
                 context,

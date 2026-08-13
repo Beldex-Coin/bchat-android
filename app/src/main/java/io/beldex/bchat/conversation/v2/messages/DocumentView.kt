@@ -13,7 +13,7 @@ import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewDocumentBinding
 import io.beldex.bchat.database.model.MmsMessageRecord
 import io.beldex.bchat.util.DateUtils
-import java.util.Locale
+import io.beldex.bchat.util.LocalHelper
 
 class DocumentView : LinearLayout {
     private val binding: ViewDocumentBinding by lazy { ViewDocumentBinding.bind(this) }
@@ -83,7 +83,7 @@ class DocumentView : LinearLayout {
             )
         }
 
-        binding.documentViewMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+        binding.documentViewMessageTime.text = DateUtils.getTimeStamp(context, LocalHelper.getPreferredLocale(context), message.timestamp)
         binding.documentViewMessageTime.setTextColor(
             VisibleMessageContentView.getTimeTextColor(
                 context,

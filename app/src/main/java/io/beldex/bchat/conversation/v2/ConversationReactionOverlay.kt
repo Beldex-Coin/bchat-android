@@ -41,7 +41,6 @@ import io.beldex.bchat.database.model.ReactionRecord
 import io.beldex.bchat.dependencies.DatabaseComponent.Companion.get
 import io.beldex.bchat.repository.ConversationRepository
 import io.beldex.bchat.util.AnimationCompleteListener
-import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.isSharedContact
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -49,7 +48,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Locale
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 

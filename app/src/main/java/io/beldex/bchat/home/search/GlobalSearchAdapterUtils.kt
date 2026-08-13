@@ -14,6 +14,7 @@ import io.beldex.bchat.home.search.GlobalSearchAdapter.Model.GroupConversation
 import io.beldex.bchat.home.search.GlobalSearchAdapter.Model.Message
 import io.beldex.bchat.home.search.GlobalSearchAdapter.Model.SavedMessages
 import io.beldex.bchat.util.DateUtils
+import io.beldex.bchat.util.LocalHelper
 import io.beldex.bchat.util.SearchUtil
 import io.beldex.bchat.R
 import java.util.Locale
@@ -134,7 +135,7 @@ fun ContentView.bindModel(query: String?, model: Message) {
 //    if (hasUnreads) {
 //        binding.unreadCountTextView.text = model.unread.toString()
 //    }
-    binding.searchResultTimestamp.text = DateUtils.getDisplayFormattedTimeSpanString(binding.root.context, Locale.getDefault(), model.messageResult.sentTimestampMs)
+    binding.searchResultTimestamp.text = DateUtils.getDisplayFormattedTimeSpanString(binding.root.context, LocalHelper.getPreferredLocale(binding.root.context), model.messageResult.sentTimestampMs)
     binding.searchResultProfilePicture.root.update(model.messageResult.conversationRecipient)
     val textSpannable = SpannableStringBuilder()
     if (model.messageResult.conversationRecipient != model.messageResult.messageRecipient) {

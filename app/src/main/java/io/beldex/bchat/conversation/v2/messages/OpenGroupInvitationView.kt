@@ -15,7 +15,7 @@ import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.util.DateUtils
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.Locale
+import io.beldex.bchat.util.LocalHelper
 
 class OpenGroupInvitationView : LinearLayout {
     private val binding: ViewOpenGroupInvitationBinding by lazy { ViewOpenGroupInvitationBinding.bind(this) }
@@ -51,7 +51,7 @@ class OpenGroupInvitationView : LinearLayout {
             val trimmedURL : Array<String> = groupUrl?.split("?")!!.toTypedArray()
             groupNameTextView.text = groupName
             socialGroupUrl.text= trimmedURL[0]
-            socialGroupMessageTime.text =  DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+            socialGroupMessageTime.text =  DateUtils.getTimeStamp(context, LocalHelper.getPreferredLocale(context), message.timestamp)
             val backgroundColorID = if (message.isOutgoing) {
                 R.color.outgoing_call_background
             } else {

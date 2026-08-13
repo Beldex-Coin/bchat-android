@@ -13,6 +13,7 @@ import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.database.model.Quote
 import io.beldex.bchat.databinding.ViewUntrustedAttachmentBinding
 import io.beldex.bchat.util.DateUtils
+import io.beldex.bchat.util.LocalHelper
 import java.util.Locale
 
 class UntrustedAttachmentView: LinearLayout {
@@ -48,7 +49,7 @@ class UntrustedAttachmentView: LinearLayout {
         binding.untrustedAttachmentIcon.setImageDrawable(iconDrawable)
         binding.untrustedAttachmentTitle.text = text
 
-        binding.untrustedAttachmentMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+        binding.untrustedAttachmentMessageTime.text = DateUtils.getTimeStamp(context, LocalHelper.getPreferredLocale(context), message.timestamp)
         binding.untrustedAttachmentMessageTime.setTextColor(
             VisibleMessageContentView.getTimeTextColor(
                 context,

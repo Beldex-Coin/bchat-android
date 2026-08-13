@@ -21,7 +21,7 @@ import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewPaymentCardBinding
 import io.beldex.bchat.util.DateUtils
-import java.util.Locale
+import io.beldex.bchat.util.LocalHelper
 
 
 class PaymentCardView : LinearLayout {
@@ -91,7 +91,7 @@ class PaymentCardView : LinearLayout {
                 }
             }
 
-            paymentCardViewMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+            paymentCardViewMessageTime.text = DateUtils.getTimeStamp(context, LocalHelper.getPreferredLocale(context), message.timestamp)
             paymentCardViewMessageTime.setTextColor(
                 VisibleMessageContentView.getTimeTextColor(
                     context,

@@ -12,8 +12,8 @@ import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.database.model.ThreadRecord
 import com.bumptech.glide.RequestManager
 import io.beldex.bchat.util.DateUtils
+import io.beldex.bchat.util.LocalHelper
 import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
-import java.util.Locale
 
 class HomeAdapter(private val context: Context, private val listener: ConversationClickListener,
     private val threadDB: ThreadDatabase
@@ -102,7 +102,7 @@ class HomeAdapter(private val context: Context, private val listener: Conversati
                 unreadCountTextView.text = item.messageRequestCount.toString()
                 timestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(
                     context,
-                    Locale.getDefault(),
+                    LocalHelper.getPreferredLocale(context),
                     threadDB.latestUnapprovedConversationTimestamp
                 )
                 root.setOnClickListener { listener.showMessageRequests() }

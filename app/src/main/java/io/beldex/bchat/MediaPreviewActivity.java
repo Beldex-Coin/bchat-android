@@ -61,6 +61,7 @@ import io.beldex.bchat.database.model.MmsMessageRecord;
 import io.beldex.bchat.mms.Slide;
 import io.beldex.bchat.util.AttachmentUtil;
 import io.beldex.bchat.util.DateUtils;
+import io.beldex.bchat.util.LocalHelper;
 import com.beldex.libbchat.messaging.messages.control.DataExtractionNotification;
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachment;
@@ -82,7 +83,6 @@ import io.beldex.bchat.util.SaveAttachmentTask;
 import io.beldex.bchat.util.SaveAttachmentTask.Attachment;
 
 import java.io.IOException;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.WeakHashMap;
 
@@ -203,7 +203,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
       CharSequence relativeTimeSpan;
 
       if (mediaItem.date > 0) {
-        relativeTimeSpan = DateUtils.getDisplayFormattedTimeSpanString(this, Locale.getDefault(), mediaItem.date);
+        relativeTimeSpan = DateUtils.getDisplayFormattedTimeSpanString(this, LocalHelper.getPreferredLocale(this), mediaItem.date);
       } else {
         relativeTimeSpan = getString(R.string.MediaPreviewActivity_draft);
       }

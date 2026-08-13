@@ -2,7 +2,9 @@ package io.beldex.bchat.textformatter
 
 import android.content.Context
 import android.graphics.Typeface
+import android.text.BidiFormatter
 import android.text.Editable
+import android.view.View
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -37,6 +39,8 @@ object TextFormatter {
     fun formatForSentMessage(context: Context, rawText: CharSequence): SpannableStringBuilder {
         val sanitized = sanitizeLoneListMarkers(rawText.toString())
         val builder = SpannableStringBuilder(sanitized)
+        val forceListMarkersToRtl = context.resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL
+                && sanitized.any { it.isRtlCharacter() }
 
         var index = 0
 
@@ -48,11 +52,16 @@ object TextFormatter {
 
             val line = builder.substring(index, lineEnd)
             val isBulletList = Regex("""^\s*[\u2022\-\*]\s""").containsMatchIn(line)
+            val isNumberedList = Regex("""^\s*\d{1,3}\.\s""").containsMatchIn(line)
 
             var sub = SpannableStringBuilder(line)
 
             if (isBulletList) {
                 sub = convertBulletMarkers(sub)
+            }
+
+            if (isBulletList || isNumberedList) {
+                alignListMarkerToRtl(sub, forceListMarkersToRtl)
             }
 
             // ---- CODE BLOCK ----
@@ -449,6 +458,27 @@ object TextFormatter {
         }
 
         return text
+    }
+
+    /**
+     * In an RTL layout the list marker is only drawn on the right when the item's first strong
+     * character is RTL. Mixed lists (Arabic + English items) then show markers on alternating sides.
+     * Prefixing a non-RTL item with a Right-To-Left Mark keeps every marker aligned on the right.
+     * Only applied when the app is in an RTL locale AND the message contains RTL text, so purely
+     * English messages keep their previous rendering.
+     */
+    private fun alignListMarkerToRtl(text: SpannableStringBuilder, forceRtl: Boolean) {
+        if (!forceRtl) return
+        if (text.isEmpty() || BidiFormatter.getInstance().isRtl(text)) return
+        text.insert(0, "\u200F")
+    }
+
+    private fun Char.isRtlCharacter(): Boolean {
+        return when (Character.getDirectionality(this)) {
+            Character.DIRECTIONALITY_RIGHT_TO_LEFT,
+            Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC -> true
+            else -> false
+        }
     }
 
     fun SpannableStringBuilder.toAnnotatedString(): AnnotatedString {

@@ -537,6 +537,7 @@ class VisibleMessageContentView : MaterialCardView {
         binding.shortMessageTime.setTextColor(getTimeTextColor(context, message.isOutgoing))
         binding.quoteBodyTextView.isVisible = message.body.isNotEmpty() && showQuoteBody
         binding.quoteBodyTextViewLayout.isVisible = message.body.isNotEmpty() && showQuoteBody
+        binding.quoteBodyTextView.textAlignment = if (isListMessage(message.body)) View.TEXT_ALIGNMENT_TEXT_START else View.TEXT_ALIGNMENT_VIEW_START
         binding.quoteShortMessageTime.text = DateUtils.getTimeStamp(context, LocalHelper.getPreferredLocale(context), message.timestamp)
         binding.quoteShortMessageTime.setTextColor(getTimeTextColor(context, message.isOutgoing))
 
@@ -573,6 +574,11 @@ class VisibleMessageContentView : MaterialCardView {
             binding.bodyTextView.setText(body, TextView.BufferType.SPANNABLE)
 
             val isList= isListMessage(message.body)
+
+            // In an RTL layout viewStart is the right edge, which right-aligns every line and
+            // staggers list markers of varying line widths. Aligning to the text's own start keeps
+            // each list's markers in a single column (left for English content, right for Arabic).
+            binding.bodyTextView.textAlignment = if (isList) View.TEXT_ALIGNMENT_TEXT_START else View.TEXT_ALIGNMENT_VIEW_START
 
             binding.bodyTextView.setPadding(
                 binding.bodyTextView.paddingStart,

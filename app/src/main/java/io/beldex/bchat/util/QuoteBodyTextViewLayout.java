@@ -69,12 +69,12 @@ public class QuoteBodyTextViewLayout extends RelativeLayout {
         float quoteViewPartMessageLastLineWidth = quoteViewPartMessageLineCount > 0 ? quoteViewPartMessage.getLayout().getLineWidth(quoteViewPartMessageLineCount - 1) : 0;
 
         // The time view sits on the side opposite to the message start. It may only share the last
-        // line's row if the card is wide enough to fit both message and time, otherwise the last
-        // line (whose left/right edge can carry Latin words in an RTL layout) would overlap the time.
+        // line's row if the last line is short enough to accommodate both the text and time,
+        // otherwise the last line (whose left/right edge can carry Latin words in an RTL layout)
+        // would overlap the time.
         boolean timeFitsBeside;
         if (quoteViewPartMessageLineCount > 1) {
-            timeFitsBeside = quoteViewPartMessageLastLineWidth + quoteViewPartTimeWidth <= availableWidth
-                    && quoteViewPartMessageWidth + quoteViewPartTimeWidth <= availableWidth;
+            timeFitsBeside = quoteViewPartMessageLastLineWidth + quoteViewPartTimeWidth <= availableWidth;
         } else {
             timeFitsBeside = quoteViewPartMessageWidth + quoteViewPartTimeWidth <= availableWidth;
         }

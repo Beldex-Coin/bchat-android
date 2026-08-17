@@ -68,35 +68,21 @@ public class BodyTextViewLayout extends RelativeLayout {
         int viewPartMessageLineCount = viewPartMessage.getLineCount();
         float viewPartMessageLastLineWidth = viewPartMessageLineCount > 0 ? viewPartMessage.getLayout().getLineWidth(viewPartMessageLineCount - 1) : 0;
 
-        // The time view sits on the side opposite to the message start. It may only share the last
-        // line's row if the last line is short enough to accommodate both the text and time,
-        // otherwise the last line (whose left/right edge can carry Latin words in an RTL layout)
-        // would overlap the time.
-        boolean timeFitsBeside;
-        if (viewPartMessageLineCount > 1) {
-            timeFitsBeside = viewPartMessageLastLineWidth + viewPartTimeWidth <= availableWidth;
-        } else {
-            timeFitsBeside = viewPartMessageWidth + viewPartTimeWidth <= availableWidth;
-        }
-
         widthSize = getPaddingStart() + getPaddingEnd();
         heightSize = getPaddingTop() + getPaddingBottom();
 
-        if (timeFitsBeside) {
-            // For multi-line messages, if the time fits within the message's own width
-            // (short last line), the layout only needs the message width — the time sits
-            // in the whitespace of the last line. For single-line messages, we need the
-            // combined width of both views side by side.
-            if (viewPartMessageLineCount > 1
-                    && viewPartMessageLastLineWidth + viewPartTimeWidth <= viewPartMessage.getMeasuredWidth()) {
-                widthSize += viewPartMessageWidth;
-            } else {
-                widthSize += viewPartMessageWidth + viewPartTimeWidth;
-            }
+        if (viewPartMessageLineCount > 1 && !(viewPartMessageLastLineWidth + viewPartTimeWidth >= viewPartMessage.getMeasuredWidth())) {
+            widthSize += viewPartMessageWidth;
             heightSize += viewPartMessageHeight;
-        } else {
+        } else if (viewPartMessageLineCount > 1 && (viewPartMessageLastLineWidth + viewPartTimeWidth >= availableWidth)) {
             widthSize += viewPartMessageWidth;
             heightSize += viewPartMessageHeight + viewPartTimeHeight;
+        } else if (viewPartMessageLineCount == 1 && (viewPartMessageWidth + viewPartTimeWidth >= availableWidth)) {
+            widthSize += viewPartMessage.getMeasuredWidth();
+            heightSize += viewPartMessageHeight + viewPartTimeHeight;
+        } else {
+            widthSize += viewPartMessageWidth + viewPartTimeWidth;
+            heightSize += viewPartMessageHeight;
         }
 
         this.setMeasuredDimension(widthSize, heightSize);

@@ -155,6 +155,10 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
     var fullscreenRenderer: SurfaceViewRenderer? = null
     private var peerConnectionFactory: PeerConnectionFactory? = null
 
+    private val defaultVideoAspect = MutableStateFlow(1f)
+    val remoteVideoDisplayAspect: kotlinx.coroutines.flow.StateFlow<Float>
+        get() = remoteRotationSink?.displayAspect ?: defaultVideoAspect
+
     fun clearPendingIceUpdates() {
         pendingOutgoingIceUpdates.clear()
         pendingIncomingIceUpdates.clear()

@@ -96,6 +96,15 @@ open class RtlAwareEditText : AppCompatEditText {
                 changed = true
             }
 
+            val scrollbarPos = when (direction) {
+                View.TEXT_DIRECTION_RTL -> View.SCROLLBAR_POSITION_LEFT
+                else -> View.SCROLLBAR_POSITION_RIGHT
+            }
+            if (editText.verticalScrollbarPosition != scrollbarPos) {
+                editText.verticalScrollbarPosition = scrollbarPos
+                changed = true
+            }
+
             if (changed) refreshCursorPosition(editText)
         }
 

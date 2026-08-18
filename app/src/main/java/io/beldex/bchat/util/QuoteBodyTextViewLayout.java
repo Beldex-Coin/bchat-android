@@ -2,6 +2,7 @@ package io.beldex.bchat.util;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.text.Layout;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -68,10 +69,12 @@ public class QuoteBodyTextViewLayout extends RelativeLayout {
         int quoteViewPartMessageLineCount = quoteViewPartMessage.getLineCount();
         float quoteViewPartMessageLastLineWidth = quoteViewPartMessageLineCount > 0 ? quoteViewPartMessage.getLayout().getLineWidth(quoteViewPartMessageLineCount - 1) : 0;
 
+        boolean timeFitsBesideLastLine = isTimeFitsBesideLastLine(quoteViewPartMessageLineCount);
+
         widthSize = getPaddingStart() + getPaddingEnd();
         heightSize = getPaddingTop() + getPaddingBottom();
 
-        if (quoteViewPartMessageLineCount > 1 && !(quoteViewPartMessageLastLineWidth + quoteViewPartTimeWidth >= quoteViewPartMessage.getMeasuredWidth())) {
+        if (quoteViewPartMessageLineCount > 1 && timeFitsBesideLastLine) {
             widthSize += availableWidth;
             heightSize += quoteViewPartMessageHeight;
         } else if (quoteViewPartMessageLineCount > 1 && (quoteViewPartMessageLastLineWidth + quoteViewPartTimeWidth >= availableWidth)) {
@@ -87,6 +90,31 @@ public class QuoteBodyTextViewLayout extends RelativeLayout {
 
         this.setMeasuredDimension(widthSize, heightSize);
         super.onMeasure(MeasureSpec.makeMeasureSpec(widthSize, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(heightSize, MeasureSpec.EXACTLY));
+    }
+
+    private boolean isTimeFitsBesideLastLine(int quoteViewPartMessageLineCount) {
+        boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
+        boolean timeFitsBesideLastLine = false;
+
+        if (quoteViewPartMessageLineCount > 1) {
+            Layout messageLayout = quoteViewPartMessage.getLayout();
+            int lastLineIndex = quoteViewPartMessageLineCount - 1;
+            float lastLineLeft = messageLayout.getLineLeft(lastLineIndex);
+            float lastLineRight = messageLayout.getLineRight(lastLineIndex);
+            int messageContentWidth = quoteViewPartMessage.getMeasuredWidth() - quoteViewPartMessage.getPaddingStart() - quoteViewPartMessage.getPaddingEnd();
+
+            // The timestamp sits against the bubble's start edge (left in an RTL layout, right in
+            // LTR), so it may only share the last line's row when that line's rendered text stays
+            // clear of the timestamp's zone. Depending on the paragraph direction the last line can
+            // be drawn from either edge, so the line's actual left/right extent is checked instead
+            // of assuming it always starts at the same edge as the message.
+            if (isRtl) {
+                timeFitsBesideLastLine = lastLineLeft + quoteViewPartMessage.getPaddingStart() >= quoteViewPartTimeWidth;
+            } else {
+                timeFitsBesideLastLine = lastLineRight <= messageContentWidth - quoteViewPartTimeWidth + quoteViewPartMessage.getPaddingEnd();
+            }
+        }
+        return timeFitsBesideLastLine;
     }
 
     @Override

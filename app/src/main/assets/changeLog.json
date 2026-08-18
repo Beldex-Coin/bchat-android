@@ -636,6 +636,17 @@
           "description":"Minor bug fixes"
         }
       ]
+    },
+    {
+      "title": "2.9.8",
+      "descriptions": [
+        {
+          "description":"Targeted latest android version"
+        },
+        {
+          "description":"Minor bug fixes"
+        }
+      ]
     }
   ]
 }

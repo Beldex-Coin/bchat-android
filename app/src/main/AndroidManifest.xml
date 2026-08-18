@@ -525,19 +525,8 @@
         <activity
             android:name=".onboarding.ui.OnBoardingActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
-            android:exported="true"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="manage_pin"
-                    android:scheme="onboarding" />
-            </intent-filter>
-        </activity>
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".home.ArchiveChatActivity"
@@ -609,7 +598,7 @@
             android:name=".service.KeyCachingService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="specialUse"></service>
+            android:foregroundServiceType="specialUse" />
         <service
             android:name=".service.DirectShareService"
             android:exported="true"
@@ -751,8 +740,7 @@
             android:name=".jobmanager.JobSchedulerScheduler$SystemService"
             android:enabled="@bool/enable_job_service"
             android:exported="false"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            tools:targetApi="26" />
+            android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".jobmanager.KeepAliveService"
             android:enabled="@bool/enable_alarm_manager"

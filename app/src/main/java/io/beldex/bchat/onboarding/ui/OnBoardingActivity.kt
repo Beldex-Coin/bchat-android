@@ -58,7 +58,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navDeepLink
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
@@ -180,24 +179,12 @@ fun OnBoardingNavHost(
 
         composable(
             route = OnBoardingScreens.EnterPinCode.route,
-            deepLinks = listOf(
-                navDeepLink {
-                    uriPattern = "onboarding://manage_pin?finish={finish}"
-                }
-            )
         ) {
-            val finish = it.arguments?.getBoolean("finish") ?: false
             val rawAction = viewModel.pendingPinCodeAction
-            val isExternalDeepLink = (context as? Activity)?.intent?.action == Intent.ACTION_VIEW
-            val pinCodeAction = if (isExternalDeepLink && rawAction in listOf(
-                    PinCodeAction.CreatePinCode.action,
-                    PinCodeAction.CreateWalletPin.action
-                )
-            ) PinCodeAction.VerifyPinCode.action else rawAction
-            val pinFinish = if (isExternalDeepLink) finish else viewModel.pendingPinCodeFinish
+            val pinFinish = viewModel.pendingPinCodeFinish
             val pinCodeViewModel: PinCodeViewModel = hiltViewModel()
-            LaunchedEffect(pinCodeAction) {
-                pinCodeViewModel.reinitialize(pinCodeAction)
+            LaunchedEffect(rawAction) {
+                pinCodeViewModel.reinitialize(rawAction)
             }
             val state by pinCodeViewModel.state.collectAsStateWithLifecycle()
             var showPinChangedPopup by remember {
@@ -261,7 +248,7 @@ fun OnBoardingNavHost(
                 }
             }
             ScreenContainer(
-                title =when (pinCodeAction) {
+                title = when (rawAction) {
                     PinCodeAction.VerifyPinCode.action -> stringResource(R.string.verify_pin)
                     PinCodeAction.ChangePinCode.action -> stringResource(R.string.change_password)
                     else -> stringResource(R.string.create_password)

@@ -33,7 +33,7 @@ public class DigestingRequestBody extends RequestBody {
 
   @Override
   public MediaType contentType() {
-    return MediaType.parse(contentType);
+    return MediaType.get(contentType);
   }
 
   @Override

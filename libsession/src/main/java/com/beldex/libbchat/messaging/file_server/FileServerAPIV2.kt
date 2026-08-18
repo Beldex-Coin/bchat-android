@@ -19,6 +19,7 @@ import okhttp3.Headers.Companion.toHeaders
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 
 object FileServerAPIV2 {
 
@@ -61,7 +62,7 @@ object FileServerAPIV2 {
     private fun createBody(parameters: Any?): RequestBody? {
         if (parameters == null) return null
         val parametersAsJSON = JsonUtil.toJson(parameters)
-        return RequestBody.create("application/json".toMediaType(), parametersAsJSON)
+        return parametersAsJSON.toRequestBody("application/json".toMediaType())
     }
 
     private fun send(request: Request): Promise<OnionResponse, Exception> {

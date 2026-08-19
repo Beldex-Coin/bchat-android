@@ -166,19 +166,12 @@
 <!--                    android:host="beldex.io"-->
 <!--                    android:path="/chat" />-->
 <!--            </intent-filter>-->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="http" android:host="social.beldex.io" android:pathPrefix="/" />
-            </intent-filter>
-
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
+                <data android:scheme="http" android:host="social.beldex.io" android:pathPrefix="/" />
                 <data android:scheme="https" android:host="social.beldex.io" android:pathPrefix="/" />
             </intent-filter>
         </activity>

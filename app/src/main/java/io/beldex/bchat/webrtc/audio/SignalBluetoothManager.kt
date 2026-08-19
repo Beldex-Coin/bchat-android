@@ -12,6 +12,7 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.media.AudioManager
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.beldex.libsignal.utilities.Log
 import io.beldex.bchat.webrtc.AudioManagerCommand
 import java.util.concurrent.TimeUnit
@@ -81,7 +82,7 @@ class SignalBluetoothManager(
         }
 
         bluetoothReceiver = BluetoothHeadsetBroadcastReceiver()
-        context.registerReceiver(bluetoothReceiver, bluetoothHeadsetFilter)
+        ContextCompat.registerReceiver(context, bluetoothReceiver, bluetoothHeadsetFilter, ContextCompat.RECEIVER_NOT_EXPORTED)
 
         Log.i(TAG, "Bluetooth proxy for headset profile has started")
         state = State.AVAILABLE

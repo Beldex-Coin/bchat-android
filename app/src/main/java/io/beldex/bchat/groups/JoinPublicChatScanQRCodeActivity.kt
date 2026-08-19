@@ -6,12 +6,18 @@ import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +29,7 @@ import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.GroupUtil
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.PublicKeyValidation
@@ -59,7 +66,11 @@ class JoinPublicChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
         setContentView(binding.root)
         // Set title
         supportActionBar!!.title = resources.getString(R.string.activity_qr_code_view_scan_qr_code_tab_title)
+        applyInsetsForOrientation()
         update()
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() { finish() }
+        })
         requestPermissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
@@ -69,6 +80,34 @@ class JoinPublicChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
                 Log.d("Beldex","Camera permission was denied by the user.")
             }
         }
+    }
+
+    private fun getActionBarHeight(): Int {
+        val tv = TypedValue()
+        return if (theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
+        } else {
+            0
+        }
+    }
+
+    private fun applyInsetsForOrientation() {
+        val actionBarH = getActionBarHeight()
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+            if (isLandscape) {
+                view.updatePadding(left = bars.left, right = bars.right, top = actionBarH)
+            } else {
+                view.updatePadding(top = bars.top)
+            }
+            insets
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        applyInsetsForOrientation()
     }
 
     private fun update() {
@@ -111,11 +150,7 @@ class JoinPublicChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
         }
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
-    }
+
 
     // region Updating
     private fun showLoader() {

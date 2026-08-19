@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -35,25 +36,31 @@ fun ScreenContainer(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
-        modifier = modifier
+        modifier = modifier.fillMaxSize()
     ) {
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(
+                    vertical = 8.dp,
+                    horizontal = 16.dp
+                )
         ) {
+
             Icon(
-                painterResource(id = R.drawable.ic_back_arrow),
+                painter = painterResource(id = R.drawable.ic_back_arrow),
                 contentDescription = stringResource(R.string.back),
                 tint = MaterialTheme.appColors.editTextColor,
-                modifier = Modifier
-                    .clickable {
-                        onBackClick()
-                    }
+                modifier = Modifier.clickable {
+                    onBackClick()
+                }
             )
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(
+                modifier = Modifier.width(12.dp)
+            )
 
             Text(
                 text = title,
@@ -68,7 +75,13 @@ fun ScreenContainer(
             actionItems()
         }
 
-        content()
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            content()
+        }
     }
 }
 

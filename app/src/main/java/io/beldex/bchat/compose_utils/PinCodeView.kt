@@ -1,5 +1,6 @@
 package io.beldex.bchat.compose_utils
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,6 +42,9 @@ fun PinCodeView(
     pin: String = ""
 ) {
 
+    val configuration = LocalConfiguration.current
+    val isLandscape =
+        configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     var cursorVisible by remember { mutableStateOf(true) }
     LaunchedEffect(Unit) {
         while (true) {
@@ -49,11 +54,23 @@ fun PinCodeView(
     }
 
     BoxWithConstraints {
-        val spacing = if (pinLength == 6) 6.dp else 12.dp
+        val spacing =
+            when {
+                isLandscape && pinLength == 6 -> 2.dp
+                isLandscape -> 4.dp
+                pinLength == 6 -> 4.dp
+                else -> 12.dp
+            }
 
-        val boxSize = (
-                (maxWidth - spacing * (pinLength - 1) - if (pinLength == 6) 24.dp else 0.dp) / pinLength
-                ).coerceIn(40.dp, 60.dp)
+        val separatorWidth = if (pinLength == 6) 14.dp else 0.dp
+        val boxSize =
+            (
+                    (maxWidth - spacing * (pinLength - 1) - separatorWidth)
+                            / pinLength
+                    ).coerceIn(
+                    if (isLandscape) 24.dp else 36.dp,
+                    if (isLandscape && pinLength == 6) 32.dp else if (isLandscape) 40.dp else 56.dp
+                )
 
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -66,16 +83,17 @@ fun PinCodeView(
                 val isActiveBox = i == pin.length && pin.isNotEmpty() && pin.length < pinLength
 
                 if (pinLength == 6 && i == 3) {
-                    Spacer(modifier = Modifier.width(4.dp))
+                    Spacer(modifier = Modifier.width(if (isLandscape) 1.dp else 2.dp))
                     Text(
                         text = "-",
                         style = MaterialTheme.typography.titleLarge.copy(
                             color = MaterialTheme.appColors.restoreDescColor,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            fontSize = if (isLandscape) 14.sp else 20.sp
                         ),
-                        modifier = Modifier.padding(horizontal = 2.dp)
+                        modifier = Modifier.padding(horizontal = if (isLandscape) 1.dp else 2.dp)
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
+                    Spacer(modifier = Modifier.width(if (isLandscape) 1.dp else 2.dp))
                 }
 
                 if (i > 0 && !(pinLength == 6 && i == 3)) {

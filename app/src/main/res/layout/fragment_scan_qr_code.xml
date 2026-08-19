@@ -22,7 +22,8 @@
         <io.beldex.bchat.components.ShapeScrim
             android:layout_weight="3"
             android:layout_width="match_parent"
-            android:layout_height="0dp" />
+            android:layout_height="0dp"
+            app:radius="0.45" />
 
         <LinearLayout
             android:id="@+id/uploadFromGallery_Layout"

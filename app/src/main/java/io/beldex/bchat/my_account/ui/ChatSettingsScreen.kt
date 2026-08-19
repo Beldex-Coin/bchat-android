@@ -11,13 +11,19 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.R
@@ -26,6 +32,10 @@ import io.beldex.bchat.R
 fun ChatSettingsScreen(
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    var enterKeySends by remember {
+        mutableStateOf(TextSecurePreferences.isEnterSendsEnabled(context))
+    }
     Column(
         modifier = modifier
     ) {
@@ -55,8 +65,11 @@ fun ChatSettingsScreen(
                 SettingsItem(
                     settingTitle = stringResource(id = R.string.preferences__pref_enter_sends_title),
                     settingIcon = painterResource(id = R.drawable.ic_enter_key),
-                    isEnabled = true,
-                    onSwitchChanged = {},
+                    isEnabled = enterKeySends,
+                    onSwitchChanged = { checked ->
+                        enterKeySends = checked
+                        TextSecurePreferences.setEnterSendsEnabled(context, checked)
+                    },
                     modifier = Modifier
                         .fillMaxWidth(),
                 )

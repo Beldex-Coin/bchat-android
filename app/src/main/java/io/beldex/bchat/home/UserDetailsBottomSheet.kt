@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.view.isVisible
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
@@ -138,6 +140,43 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
         val window = dialog?.window ?: return
         val isLightMode = UiModeUtilities.isDayUiMode(requireContext())
         window.setDimAmount(if (isLightMode) 0.1f else 0.75f)
+
+        applyLandscapeSizing()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        applyLandscapeSizing()
+    }
+
+    private fun applyLandscapeSizing() {
+        val isLandscape =
+            resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+        val bottomSheet = dialog?.findViewById<View>(
+            com.google.android.material.R.id.design_bottom_sheet
+        ) ?: return
+
+        val behavior = BottomSheetBehavior.from(bottomSheet)
+
+        if (isLandscape) {
+            val displayMetrics = resources.displayMetrics
+
+            bottomSheet.layoutParams.width = (displayMetrics.widthPixels * 0.55f).toInt()
+            bottomSheet.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+
+            behavior.maxHeight = (displayMetrics.heightPixels * 0.9f).toInt()
+            behavior.skipCollapsed = true
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        } else {
+            bottomSheet.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+            bottomSheet.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+
+            behavior.skipCollapsed = true
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+        bottomSheet.requestLayout()
     }
 
     override fun onDestroy() {

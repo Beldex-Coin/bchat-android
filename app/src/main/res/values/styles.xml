@@ -61,6 +61,15 @@
 
     </style>
 
+    <style name="TextAppearance_Bchat_Toolbar_Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="TextAppearance_Bchat_Toolbar_Title_Large" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
+        <item name="android:textSize">26sp</item>
+    </style>
+
     <style name="Widget.Bchat.TabBar" parent="Widget.AppCompat.ActionBar.TabBar">
         <item name="android:fontFamily">@font/open_sans_medium</item>
         <item name="elevation">1dp</item>
@@ -72,7 +81,7 @@
         <item name="tabIndicatorColor">?colorAccent</item>
         <item name="tabSelectedTextColor">@color/text</item>
         <item name="tabTextColor">#8D8D8D</item>
-        <item name="tabIndicatorFullWidth">false</item>
+        <item name="tabIndicatorFullWidth">true</item>
         <item name="tabIndicatorHeight">2dp</item>
         <item name="tabRippleColor">@color/cell_selected</item>
         <item name="tabTextAppearance">@style/TextAppearance.Bchat.Tab</item>
@@ -82,6 +91,7 @@
         <item name="android:fontFamily">@font/open_sans_medium</item>
         <item name="android:textSize">@dimen/medium_font_size</item>
         <item name="textAllCaps">false</item>
+        <item name="android:gravity">center</item>
     </style>
 
     <!--  TODO These button styles require proper background selectors for up/down visual state.  -->
@@ -502,6 +512,7 @@
     </style>
 
     <style name="popupOverflowMenu" parent="@style/Widget.MaterialComponents.PopupMenu.Overflow">
+        <item name="android:overlapAnchor">false</item>
         <item name="android:fontFamily">@font/open_sans_medium</item>
         <item name="android:popupBackground">@drawable/bchat_id_text_view_background</item>
     </style>

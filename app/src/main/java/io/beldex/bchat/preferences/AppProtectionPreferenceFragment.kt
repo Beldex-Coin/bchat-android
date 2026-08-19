@@ -23,6 +23,8 @@ import java.util.concurrent.TimeUnit
 
 class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
 
+    private var callToggleListener: CallToggleListener? = null
+
     override fun onCreate(paramBundle: Bundle?) {
         super.onCreate(paramBundle)
         findPreference<Preference>(TextSecurePreferences.SCREEN_LOCK)!!.onPreferenceChangeListener =
@@ -37,8 +39,9 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
             LinkPreviewToggleListener()
 
         //New Line
+        callToggleListener = CallToggleListener(this) { setCall(it) }
         findPreference<Preference>(TextSecurePreferences.CALL_NOTIFICATIONS_ENABLED)!!.onPreferenceChangeListener =
-            CallToggleListener(this) { setCall(it) }
+            callToggleListener
         initializeVisibility()
     }
 
@@ -116,6 +119,7 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
         if (isPasswordDisabled(requireContext())) {
             initializeScreenLockTimeoutSummary()
         }
+        callToggleListener?.reattachCallbackIfNeeded()
     }
 
     private fun initializeScreenLockTimeoutSummary() {

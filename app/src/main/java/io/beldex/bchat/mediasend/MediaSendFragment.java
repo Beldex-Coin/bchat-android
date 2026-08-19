@@ -21,6 +21,7 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -29,6 +30,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -52,6 +55,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import io.beldex.bchat.R;
+import io.beldex.bchat.WindowInsetsUtil;
+import io.beldex.bchat.util.MediaUtil;
 import io.beldex.bchat.components.ComposeText;
 import io.beldex.bchat.components.ControllableViewPager;
 import io.beldex.bchat.components.InputAwareLayout;
@@ -199,6 +204,8 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
     hud.addOnKeyboardShownListener(this);
     hud.addOnKeyboardHiddenListener(this);
 
+    view.getViewTreeObserver().addOnGlobalLayoutListener(this);
+
     captionText.addTextChangedListener(new SimpleTextWatcher() {
       @Override
       public void onTextChanged(String text) {
@@ -225,7 +232,11 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
       emojiToggle.setOnClickListener(this::onEmojiToggleClicked);
     }
 
-    closeButton.setOnClickListener(v -> requireActivity().onBackPressed());
+    closeButton.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
+
+    WindowInsetsUtil.INSTANCE.applyTopInset(closeButton);
+    WindowInsetsUtil.INSTANCE.applyTopInset(playbackControlsContainer);
+    WindowInsetsUtil.INSTANCE.applyTopInset(fragmentPager);
   }
 
   @Override
@@ -268,10 +279,10 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
     int currentVisibleHeight = visibleBounds.height();
 
     if (currentVisibleHeight != visibleHeight) {
-      hud.getLayoutParams().height = currentVisibleHeight;
-      hud.layout(visibleBounds.left, visibleBounds.top, visibleBounds.right, visibleBounds.bottom);
-      hud.requestLayout();
-
+      FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) hud.getLayoutParams();
+      params.height = currentVisibleHeight;
+      params.setMargins(0, visibleBounds.top, 0, 0);
+      hud.setLayoutParams(params);
       visibleHeight = currentVisibleHeight;
     }
   }
@@ -341,6 +352,14 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
       mediaRail.setVisibility(View.VISIBLE);
       captionText.setVisibility((media.size() > 1 || media.get(0).getCaption().isPresent()) ? View.VISIBLE : View.GONE);
       mediaRailAdapter.setMedia(media);
+
+      int currentItem = fragmentPager.getCurrentItem();
+      if (currentItem < media.size()) {
+        Media mediaItem = media.get(currentItem);
+        closeButton.setVisibility(
+            MediaUtil.isImageType(mediaItem.getMimeType()) && !MediaUtil.isGif(mediaItem.getMimeType())
+                ? View.GONE : View.VISIBLE);
+      }
     });
 
     viewModel.getPosition().observe(this, position -> {
@@ -363,6 +382,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
         playbackControlsContainer.addView(playbackControls);
       } else {
         playbackControlsContainer.removeAllViews();
+        attachPlaybackControlsWhenReady(position);
       }
     });
 
@@ -370,6 +390,20 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
       if (bucketId == null) return;
 
       mediaRailAdapter.setAddButtonListener(() -> controller.onAddMediaClicked(bucketId));
+    });
+  }
+
+  private void attachPlaybackControlsWhenReady(int position) {
+    fragmentPager.post(() -> {
+      if (fragmentPager.getCurrentItem() != position) return;
+
+      View playbackControls = fragmentPagerAdapter.getPlaybackControls(position);
+      if (playbackControls != null) {
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        playbackControls.setLayoutParams(params);
+        playbackControlsContainer.removeAllViews();
+        playbackControlsContainer.addView(playbackControls);
+      }
     });
   }
 
@@ -513,6 +547,13 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
     @Override
     public void onPageSelected(int position) {
       viewModel.onPageChanged(position);
+      List<Media> mediaList = fragmentPagerAdapter.getAllMedia();
+      if (position < mediaList.size()) {
+        Media mediaItem = mediaList.get(position);
+        closeButton.setVisibility(
+            MediaUtil.isImageType(mediaItem.getMimeType()) && !MediaUtil.isGif(mediaItem.getMimeType())
+                ? View.GONE : View.VISIBLE);
+      }
     }
   }
 

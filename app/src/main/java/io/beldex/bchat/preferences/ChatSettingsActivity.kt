@@ -2,9 +2,11 @@ package io.beldex.bchat.preferences
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import androidx.fragment.app.DialogFragment
 import io.beldex.bchat.R
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
+import io.beldex.bchat.WindowInsetsUtil
 import io.beldex.bchat.databinding.ActivityFragmentWrapperNewBinding
 
 class ChatSettingsActivity : PassphraseRequiredActionBarActivity() {
@@ -17,6 +19,7 @@ class ChatSettingsActivity : PassphraseRequiredActionBarActivity() {
             back.setOnClickListener { finish() }
             title.text = resources.getString(R.string.preferences_chats__chats)
         }
+        WindowInsetsUtil.applyTopInset(binding.root)
         val fragment = ChatsPreferenceFragment()
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.fragmentContainer, fragment)

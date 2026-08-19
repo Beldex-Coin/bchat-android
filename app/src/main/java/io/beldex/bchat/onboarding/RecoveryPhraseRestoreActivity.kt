@@ -24,6 +24,7 @@ import io.beldex.bchat.seed.RecoveryGetSeedDetailsActivity
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
 import io.beldex.bchat.R
+import io.beldex.bchat.WindowInsetsUtil
 import io.beldex.bchat.databinding.ActivityRecoveryPhraseRestoreBinding
 
 
@@ -41,6 +42,7 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
         }
         binding = ActivityRecoveryPhraseRestoreBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        WindowInsetsUtil.applyTopAndImeInsets(binding.root)
         setUpActionBarBchatLogo(getString(R.string.restore_seed),false)
         binding.mnemonicEditText.imeOptions = binding.mnemonicEditText.imeOptions or 16777216 // Always use incognito keyboard
         binding.restoreButton.setOnClickListener {

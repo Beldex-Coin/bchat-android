@@ -8,7 +8,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -46,6 +50,8 @@ fun DisplayNameScreen(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp)
+            .imePadding()
+            .verticalScroll(rememberScrollState())
     ) {
         Column(
             modifier = Modifier
@@ -69,6 +75,7 @@ fun DisplayNameScreen(
                     onEvent(OnBoardingEvents.CreateAccountEvents.DisplayNameChanged(it))
                 },
                 placeHolder = stringResource(id = R.string.enter_name),
+                keyboardActions = KeyboardActions(onDone = { proceed() }),
                 modifier = Modifier
                     .fillMaxWidth()
             )

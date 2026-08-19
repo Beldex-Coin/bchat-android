@@ -2,6 +2,7 @@ package com.beldex.libsignal.utilities
 
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -113,7 +114,7 @@ object HTTP {
                 if (body == null) { throw Exception("Invalid request body.") }
                 val contentType = "application/json; charset=utf-8".toMediaType()
                 Log.d("Beldex","contentType in HTTP execute fun $contentType")
-                @Suppress("NAME_SHADOWING") val body = RequestBody.create(contentType, body)
+                @Suppress("NAME_SHADOWING") val body = body.toRequestBody(contentType)
                 if (verb == Verb.PUT) request.put(body) else request.post(body)
             }
             Verb.DELETE -> request.delete()

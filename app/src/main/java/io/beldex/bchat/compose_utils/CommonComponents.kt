@@ -217,7 +217,7 @@ fun ImageView(
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
             .data(data)
-            .crossfade(true)
+            .crossfade(600)
             .build(),
         contentDescription = contentDescription,
         modifier = modifier

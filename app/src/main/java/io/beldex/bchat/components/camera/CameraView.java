@@ -311,6 +311,7 @@ public class CameraView extends ViewGroup {
         } else {
           previewSize = parameters.getPreviewSize();
         }
+        setPreviewSurfaceSize(previewSize);
         long previewStartMillis = System.currentTimeMillis();
         camera.startPreview();
         Log.i(TAG, "camera.startPreview() -> " + (System.currentTimeMillis() - previewStartMillis) + "ms");
@@ -347,6 +348,18 @@ public class CameraView extends ViewGroup {
                                                getMeasuredWidth(),
                                                getMeasuredHeight(),
                                                parameters);
+  }
+
+  private void setPreviewSurfaceSize(@NonNull Size previewSize) {
+    try {
+      if (displayOrientation % 180 == 90) {
+        surface.getHolder().setFixedSize(previewSize.height, previewSize.width);
+      } else {
+        surface.getHolder().setFixedSize(previewSize.width, previewSize.height);
+      }
+    } catch (Exception e) {
+      Log.w(TAG, "couldn't set preview surface size", e);
+    }
   }
 
   private int getCameraPictureOrientation() {

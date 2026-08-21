@@ -172,7 +172,8 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
 
       Bundle args = new Bundle();
       args.putString(MediaOverviewGalleryFragment.ADDRESS_EXTRA, recipient.getAddress().serialize());
-      args.putSerializable(MediaOverviewGalleryFragment.LOCALE_EXTRA, Locale.getDefault());
+      Locale appLocale = getResources().getConfiguration().getLocales().get(0);
+      args.putSerializable(MediaOverviewGalleryFragment.LOCALE_EXTRA, appLocale);
 
       fragment.setArguments(args);
 

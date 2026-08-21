@@ -71,15 +71,15 @@ public class BodyTextViewLayout extends RelativeLayout {
         widthSize = getPaddingStart() + getPaddingEnd();
         heightSize = getPaddingTop() + getPaddingBottom();
 
-        if (viewPartMessageLineCount > 1 && !(viewPartMessageLastLineWidth + viewPartTimeWidth >= viewPartMessage.getMeasuredWidth())) {
-            widthSize += viewPartMessageWidth;
-            heightSize += viewPartMessageHeight;
-        } else if (viewPartMessageLineCount > 1 && (viewPartMessageLastLineWidth + viewPartTimeWidth >= availableWidth)) {
+        if (viewPartMessageLineCount > 1 && (viewPartMessageLastLineWidth + viewPartTimeWidth >= viewPartMessage.getMeasuredWidth())) {
             widthSize += viewPartMessageWidth;
             heightSize += viewPartMessageHeight + viewPartTimeHeight;
         } else if (viewPartMessageLineCount == 1 && (viewPartMessageWidth + viewPartTimeWidth >= availableWidth)) {
             widthSize += viewPartMessage.getMeasuredWidth();
             heightSize += viewPartMessageHeight + viewPartTimeHeight;
+        } else if (viewPartMessageLineCount > 1) {
+            widthSize += viewPartMessageWidth;
+            heightSize += viewPartMessageHeight;
         } else {
             widthSize += viewPartMessageWidth + viewPartTimeWidth;
             heightSize += viewPartMessageHeight;

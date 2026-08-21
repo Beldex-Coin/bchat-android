@@ -71,15 +71,15 @@ public class QuoteBodyTextViewLayout extends RelativeLayout {
         widthSize = getPaddingStart() + getPaddingEnd();
         heightSize = getPaddingTop() + getPaddingBottom();
 
-        if (quoteViewPartMessageLineCount > 1 && !(quoteViewPartMessageLastLineWidth + quoteViewPartTimeWidth >= quoteViewPartMessage.getMeasuredWidth())) {
-            widthSize += availableWidth;
-            heightSize += quoteViewPartMessageHeight;
-        } else if (quoteViewPartMessageLineCount > 1 && (quoteViewPartMessageLastLineWidth + quoteViewPartTimeWidth >= availableWidth)) {
+        if (quoteViewPartMessageLineCount > 1 && (quoteViewPartMessageLastLineWidth + quoteViewPartTimeWidth >= quoteViewPartMessage.getMeasuredWidth())) {
             widthSize += availableWidth;
             heightSize += quoteViewPartMessageHeight + quoteViewPartTimeHeight;
         } else if (quoteViewPartMessageLineCount == 1 && (quoteViewPartMessageWidth + quoteViewPartTimeWidth >= availableWidth)) {
             widthSize += availableWidth;
             heightSize += quoteViewPartMessageHeight + quoteViewPartTimeHeight;
+        } else if (quoteViewPartMessageLineCount > 1) {
+            widthSize += availableWidth;
+            heightSize += quoteViewPartMessageHeight;
         } else {
             widthSize += availableWidth;
             heightSize += quoteViewPartMessageHeight;

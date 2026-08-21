@@ -133,72 +133,70 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/profile_container"
-            app:layout_constraintBottom_toTopOf="@id/darkModeLayout"
+            app:layout_constraintBottom_toTopOf="@id/bottomBarLayout"
             tools:itemCount="10"
             tools:listitem="@layout/row_nav_drawer" />
 
-        <TextView
-            android:id="@+id/version"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:fontFamily="@font/open_sans_medium"
-            android:textAlignment="viewEnd"
-            android:textColor="@color/version_color"
-            android:textStyle="normal"
-            android:textSize="12sp"
-            android:clickable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:text="BChat V2.9.7"
-            android:padding="12dp"
-            android:focusable="true" />
-
         <LinearLayout
-            android:id="@+id/darkModeLayout"
-            android:layout_width="wrap_content"
+            android:id="@+id/bottomBarLayout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingVertical="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="12dp"
-            android:layout_margin="16dp"
-            android:padding="8dp"
-            android:gravity="center_vertical"
-            tools:ignore="MissingConstraints">
+            app:layout_constraintEnd_toEndOf="parent">
 
+            <LinearLayout
+                android:id="@+id/darkModeLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="8dp">
 
+                <TextView
+                    android:id="@+id/ui_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="@font/open_sans_semi_bold"
+                    android:textColor="@color/edit_text_title"
+                    android:textStyle="normal"
+                    android:textSize="12sp"
+                    android:clickable="true"
+                    android:text="@string/dark_mode"
+                    tools:text="Dark Mode"
+                    android:focusable="true" />
 
-        <TextView
-            android:id="@+id/ui_mode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:fontFamily="@font/open_sans_semi_bold"
-            android:textAlignment="viewEnd"
-            android:textColor="@color/edit_text_title"
-            android:textStyle="normal"
-            android:textSize="12sp"
-            android:clickable="true"
-            android:text="@string/dark_mode"
-            app:layout_constraintBottom_toBottomOf="@id/drawer_appearance_toggle_button"
-            app:layout_constraintEnd_toStartOf="@id/drawer_appearance_toggle_button"
-            app:layout_constraintTop_toTopOf="@id/drawer_appearance_toggle_button"
-            tools:text="Dark Mode"
-            android:focusable="true" />
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/drawer_appearance_toggle_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:track="@drawable/track"
+                    android:thumb="@drawable/thumb"
+                    android:checked="true" />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/drawer_appearance_toggle_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            app:track="@drawable/track"
-            android:thumb="@drawable/thumb"
-            android:checked="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/version"
-            app:layout_constraintBottom_toBottomOf="@id/version"
-            android:layout_marginEnd="8dp"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/version"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/open_sans_medium"
+                android:textAlignment="viewEnd"
+                android:textColor="@color/version_color"
+                android:textStyle="normal"
+                android:textSize="12sp"
+                android:clickable="true"
+                tools:text="BChat V2.9.7"
+                android:padding="8dp"
+                android:focusable="true" />
+
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

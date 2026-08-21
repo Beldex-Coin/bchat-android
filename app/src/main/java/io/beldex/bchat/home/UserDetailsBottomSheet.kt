@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentUserDetailsBottomSheetBinding
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
@@ -105,7 +106,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
                     else -> return@setOnEditorActionListener false
                 }
             }
-            nameTextView.text = recipient.name ?: publicKey // Uses the Contact API internally
+            nameTextView.text = if (publicKey == BuildConfig.REPORT_ISSUE_ID) getString(R.string.report_issue) else recipient.name ?: publicKey // Uses the Contact API internally
 
             publicKeyTextView.isVisible = !threadRecipient.isOpenGroupRecipient
             messageButton.isVisible = !threadRecipient.isOpenGroupRecipient

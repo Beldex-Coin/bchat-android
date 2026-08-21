@@ -33,6 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/medium_spacing"
+            android:layout_marginEnd="@dimen/small_spacing"
             android:ellipsize="end"
             android:fontFamily="@font/open_sans_regular"
             android:maxWidth="260dp"

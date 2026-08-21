@@ -1422,7 +1422,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="password_mismatch">Both passwords should be same.</string>
     <string name="incorrect_password">Incorrect password.</string>
     <string name="dark_mode">深色模式</string>
-    <string name="call_permission_required_title">Call Permission Required!</string>
+    <string name="call_permission_required_title">通話の許可が必要です!</string>
     <string name="call_permission_required_description">你可以在<b>隐私设置</b>中启用 <b>“语音和视频通话”</b> 权限。</string>
     <string name="wallet_setup">Wallet Setup</string>
     <string name="message_status_icon_description">Message delivery status</string>

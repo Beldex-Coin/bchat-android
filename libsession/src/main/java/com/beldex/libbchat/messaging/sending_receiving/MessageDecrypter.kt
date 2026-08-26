@@ -93,11 +93,15 @@ object MessageDecrypter {
                 ?: throw MessageReceiver.Error.DecryptionFailed
             try {
                 val plaintext = PostQuantumCrypto.decrypt(ciphertext, x25519KeyPair.privateKey.serialize(), pqPrivateKey)
+                Log.d("BchatCrypto", "Received direct message with hybrid post-quantum encryption (0x02).")
                 return verifyAndUnwrap(plaintext, x25519KeyPair)
             } catch (exception: Exception) {
                 // A legacy sealed box can coincidentally start with 0x02. Preserve old traffic.
+                Log.w("BchatCrypto", "0x02 message did not decrypt as a PQ envelope; trying the legacy path.")
             }
         }
+
+        Log.d("BchatCrypto", "Decrypting direct message with the legacy encryption path.")
 
         //Log.d("@--> beldexWalletaddress ",String(beldexWalletAddress, StandardCharsets.UTF_8))
         //-Log.d("messageDecryption ", ciphertext.toHexString())

@@ -1,6 +1,7 @@
 package com.beldex.libbchat.messaging.sending_receiving
 
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
+import com.beldex.libbchat.BuildConfig
 import com.beldex.libbchat.messaging.jobs.JobQueue
 import com.beldex.libbchat.messaging.jobs.MessageSendJob
 import com.beldex.libbchat.messaging.jobs.NotifyPNServerJob
@@ -130,10 +131,15 @@ object MessageSender {
             val senderBeldexAddress = storage.getSenderBeldexAddress()!!
             when (destination) {
                 is Destination.Contact -> {
+                    if (BuildConfig.DEBUG && message is VisibleMessage) {
+                        Log.d("BchatCrypto", "DEBUG plaintext before direct-message encryption: ${message.text}")
+                    }
                     val peerPqKey = storage.getPostQuantumPublicKey(destination.publicKey)
                     ciphertext = if (peerPqKey != null) {
-                        MessageEncrypter.encryptPostQuantum(plaintext, destination.publicKey, peerPqKey)
+                        Log.d("BchatCrypto", "Sending direct message with hybrid post-quantum encryption (0x02).")
+                        MessageEncrypter.encryptPostQuantum(plaintext, destination.publicKey, peerPqKey, senderBeldexAddress)
                     } else {
+                        Log.d("BchatCrypto", "Sending direct message with legacy encryption; no peer PQ key is available yet.")
                         MessageEncrypter.encrypt(plaintext, destination.publicKey, senderBeldexAddress)
                     }
                 }

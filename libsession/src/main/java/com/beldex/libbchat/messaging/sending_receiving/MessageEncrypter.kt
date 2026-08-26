@@ -19,15 +19,28 @@ object MessageEncrypter {
     internal fun encryptPostQuantum(
         plaintext: ByteArray,
         recipientHexEncodedX25519PublicKey: String,
-        recipientMlKemPublicKey: ByteArray
+        recipientMlKemPublicKey: ByteArray,
+        senderBeldexAddress: String
     ): ByteArray {
         val recipientX25519PublicKey = Hex.fromStringCondensed(
             recipientHexEncodedX25519PublicKey.removingbdPrefixIfNeeded()
         )
         return try {
-            PostQuantumCrypto.encrypt(plaintext, recipientX25519PublicKey, recipientMlKemPublicKey)
+            // Keep the inner plaintext layout identical to the legacy path. The receiver
+            // authenticates this signature and then removes the Beldex address prefix.
+            val plaintextWithBeldexAddress = senderBeldexAddress.toByteArray() + plaintext
+            val userED25519KeyPair = MessagingModuleConfiguration.shared.getUserED25519KeyPair()
+                ?: throw Error.NoUserED25519KeyPair
+            val verificationData = plaintextWithBeldexAddress + userED25519KeyPair.publicKey.asBytes + recipientX25519PublicKey
+            val signature = ByteArray(Sign.BYTES)
+            if (!sodium.cryptoSignDetached(signature, verificationData, verificationData.size.toLong(), userED25519KeyPair.secretKey.asBytes)) {
+                throw Error.SigningFailed
+            }
+            val plaintextWithMetadata = plaintextWithBeldexAddress + userED25519KeyPair.publicKey.asBytes + signature
+            PostQuantumCrypto.encrypt(plaintextWithMetadata, recipientX25519PublicKey, recipientMlKemPublicKey)
         } catch (exception: Exception) {
             Log.d("Beldex", "Couldn't encrypt PQ message due to error: $exception.")
+            if (exception is Error) throw exception
             throw Error.EncryptionFailed
         }
     }

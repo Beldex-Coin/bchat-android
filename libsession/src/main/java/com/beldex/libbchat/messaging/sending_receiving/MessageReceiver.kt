@@ -2,6 +2,7 @@ package com.beldex.libbchat.messaging.sending_receiving
 
 
 import android.util.Log
+import com.beldex.libbchat.BuildConfig
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.messages.Message
 import com.beldex.libbchat.messaging.messages.control.*
@@ -140,6 +141,10 @@ object MessageReceiver {
         message.groupPublicKey = groupPublicKey
         if (!isSecretGroupMessage && message is VisibleMessage && message.postQuantumPublicKey != null) {
             storage.setPostQuantumPublicKey(sender, message.postQuantumPublicKey!!)
+            Log.d("BchatCrypto", "Stored a peer post-quantum public key; future direct messages can use encryption version 0x02.")
+        }
+        if (BuildConfig.DEBUG && !isSecretGroupMessage && message is VisibleMessage) {
+            Log.d("BchatCrypto", "DEBUG plaintext after direct-message decryption: ${message.text}")
         }
         message.openGroupServerMessageID = openGroupServerID
         // Validate

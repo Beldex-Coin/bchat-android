@@ -41,6 +41,7 @@ import io.beldex.bchat.util.BChatThreadPoolExecutor
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
 import io.beldex.bchat.R
+import io.beldex.bchat.WindowInsetsUtil
 import io.beldex.bchat.databinding.ActivityRegisterBinding
 import java.util.Locale
 import java.util.concurrent.Executor
@@ -73,6 +74,7 @@ class RegisterActivity : BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        WindowInsetsUtil.applyTopInset(binding.root)
         setUpActionBarBchatLogo(getString(R.string.register), false)
 
         TextSecurePreferences.apply {

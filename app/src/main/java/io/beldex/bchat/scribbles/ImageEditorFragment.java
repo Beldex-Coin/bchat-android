@@ -7,9 +7,12 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import io.beldex.bchat.R;
 import io.beldex.bchat.imageeditor.ColorableRenderer;
@@ -123,6 +126,9 @@ public final class ImageEditorFragment extends Fragment implements ImageEditorHu
 
     imageEditorHud.setEventListener(this);
 
+    View scribbleCloseButton = view.findViewById(R.id.scribble_close_button);
+    scribbleCloseButton.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
+
     imageEditorView.setTapListener(selectionListener);
     imageEditorView.setDrawingChangedListener(this::refreshUniqueColors);
     imageEditorView.setUndoRedoStackListener(this::onUndoRedoAvailabilityChanged);
@@ -146,6 +152,23 @@ public final class ImageEditorFragment extends Fragment implements ImageEditorHu
     imageEditorView.setModel(editorModel);
 
     refreshUniqueColors();
+
+    ViewCompat.setOnApplyWindowInsetsListener(imageEditorHud, (v, insets) -> {
+      androidx.core.graphics.Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+      v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+      return insets;
+    });
+
+    ViewCompat.setOnApplyWindowInsetsListener(imageEditorView, (v, insets) -> {
+      int topMargin = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top / 2;
+      FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) v.getLayoutParams();
+      if (layoutParams.topMargin != topMargin) {
+        layoutParams.topMargin = topMargin;
+        v.setLayoutParams(layoutParams);
+      }
+      return insets;
+    });
+    ViewCompat.requestApplyInsets(imageEditorView);
   }
 
   @Override

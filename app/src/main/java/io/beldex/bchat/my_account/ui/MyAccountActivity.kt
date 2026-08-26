@@ -9,6 +9,7 @@ import android.graphics.BlurMaskFilter
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
@@ -27,10 +28,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -280,17 +283,22 @@ class MyAccountActivity : BaseComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         destination =
             intent?.getStringExtra(extraStartDestination) ?: MyAccountScreens.SettingsScreen.route
-        WindowCompat.setDecorFitsSystemWindows(window, true)
         setContent {
             val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
             val view = LocalView.current
             val window = (view.context as Activity).window
             val statusBarColor = if (isDarkTheme) Color.Black else Color.White
+            val navBarColor = if (isDarkTheme) Color.Black else Color.White
             SideEffect {
-                window.statusBarColor = statusBarColor.toArgb()
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    window.statusBarColor = statusBarColor.toArgb()
+                    window.navigationBarColor = navBarColor.toArgb()
+                }
                 WindowInsetsControllerCompat(window, view).isAppearanceLightStatusBars = !isDarkTheme
+                WindowInsetsControllerCompat(window, view).isAppearanceLightNavigationBars = !isDarkTheme
             }
             BChatTheme(
                 darkTheme = isDarkTheme
@@ -299,8 +307,10 @@ class MyAccountActivity : BaseComponentActivity() {
                 val activity = (context as? Activity)
                 Surface {
                     Scaffold(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                    ) {
+                        contentWindowInsets = WindowInsets.safeDrawing,
+                        containerColor = MaterialTheme.colorScheme.primary
+                    ) { padding ->
+
                         val navController = rememberNavController()
                         MyAccountNavHost(
                             navController = navController,
@@ -312,8 +322,7 @@ class MyAccountActivity : BaseComponentActivity() {
                             removeAvatar = {
                                 removeAvatar()
                             },
-                            modifier = Modifier
-                                .padding(it)
+                            modifier = Modifier.padding(padding)
                         )
                     }
                 }
@@ -1501,7 +1510,7 @@ fun ProfileCard(
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             ProfileCardKeyContainer(
                 isBnsHolder = isBnsHolder,
@@ -1516,8 +1525,6 @@ fun ProfileCard(
                 }
             )
 
-            Spacer(modifier = Modifier.padding(start = 3.dp))
-
             ProfileCardKeyContainer(
                 isBnsHolder = isBnsHolder,
                 title = stringResource(id = R.string.chatid),
@@ -1529,7 +1536,6 @@ fun ProfileCard(
                     onShowDialog(1)
                 }
             )
-            Spacer(modifier = Modifier.padding(start = 3.dp))
 
             ProfileCardKeyContainer(
                 isBnsHolder = isBnsHolder,
@@ -1633,7 +1639,8 @@ fun MyAccountScreenContainer(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(horizontal = 16.dp)
+                .padding(top = 8.dp, bottom = 16.dp)
         ) {
             Icon(
                 painterResource(id = R.drawable.ic_back_arrow),
@@ -1661,7 +1668,7 @@ fun MyAccountScreenContainer(
             actionItems()
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         if (wrapInCard) {
             CardContainer(

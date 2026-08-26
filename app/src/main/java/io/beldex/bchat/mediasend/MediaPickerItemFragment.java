@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
 import io.beldex.bchat.R;
+import io.beldex.bchat.WindowInsetsUtil;
 
 /**
  * Allows the user to select a set of media items from a specified folder.
@@ -95,6 +96,8 @@ public class MediaPickerItemFragment extends Fragment implements MediaPickerItem
 
     initToolbar(view.findViewById(R.id.mediapicker_toolbar));
     onScreenWidthChanged(getScreenWidth());
+
+    WindowInsetsUtil.INSTANCE.applyTopInset(view);
 
     if (!Util.isEmpty(viewModel.getSelectedMedia().getValue())) {
       adapter.setSelected(viewModel.getSelectedMedia().getValue());
@@ -170,7 +173,7 @@ public class MediaPickerItemFragment extends Fragment implements MediaPickerItem
     actionBar.setHomeAsUpIndicator(R.drawable.ic_back);
     actionBar.setDisplayHomeAsUpEnabled(true);
 
-    toolbar.setNavigationOnClickListener(v -> requireActivity().onBackPressed());
+    toolbar.setNavigationOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
   }
 
   private void initMediaObserver(@NonNull MediaSendViewModel viewModel) {

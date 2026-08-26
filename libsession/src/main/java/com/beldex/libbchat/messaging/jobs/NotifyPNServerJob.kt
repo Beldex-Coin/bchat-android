@@ -17,6 +17,7 @@ import com.beldex.libsignal.utilities.Log
 
 import com.beldex.libsignal.utilities.retryIfNeeded
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class NotifyPNServerJob(val message: MnodeMessage) : Job {
     override var delegate: JobDelegate? = null
@@ -35,7 +36,7 @@ class NotifyPNServerJob(val message: MnodeMessage) : Job {
         val server = Server.LEGACY
         val parameters = mapOf( "data" to message.data, "send_to" to message.recipient )
         val url = "${server.url}/notify"
-        val body = RequestBody.create("application/json".toMediaType(), JsonUtil.toJson(parameters))
+        val body = JsonUtil.toJson(parameters).toRequestBody("application/json".toMediaType())
         val request = Request.Builder().url(url).post(body).build()
         retryIfNeeded(4) {
             OnionRequestAPI.sendOnionRequest(request, server.url, server.publicKey, Version.V2) success { response ->

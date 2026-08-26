@@ -7,8 +7,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
-import io.beldex.bchat.jobmanager.ConstraintObserver;
 import io.beldex.bchat.jobmanager.ConstraintObserver;
 
 public class NetworkConstraintObserver implements ConstraintObserver {
@@ -23,7 +23,7 @@ public class NetworkConstraintObserver implements ConstraintObserver {
 
     @Override
     public void register(@NonNull Notifier notifier) {
-        application.registerReceiver(new BroadcastReceiver() {
+        ContextCompat.registerReceiver(application, new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 NetworkConstraint constraint = new NetworkConstraint.Factory(application).create();
@@ -32,6 +32,6 @@ public class NetworkConstraintObserver implements ConstraintObserver {
                     notifier.onConstraintMet(REASON);
                 }
             }
-        }, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        }, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION), ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 }

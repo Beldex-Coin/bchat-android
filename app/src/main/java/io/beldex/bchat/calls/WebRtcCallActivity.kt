@@ -229,7 +229,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
             startService(WebRtcCallService.hangupIntent(this))
         }
         binding.backArrow.setOnClickListener {
-            onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
         }
 
     }

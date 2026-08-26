@@ -2,6 +2,7 @@ package io.beldex.bchat.onboarding
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.core.view.WindowCompat
 import io.beldex.bchat.BaseAppCompatActivity
 import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.databinding.ActivitySplashScreenBinding
@@ -13,6 +14,7 @@ class SplashScreenActivity : BaseAppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         nextPage = intent.getBooleanExtra("nextPage", false)
         if (nextPage) {
             startActivity(Intent(this, PasswordActivity::class.java).apply {

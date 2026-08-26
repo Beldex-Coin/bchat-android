@@ -22,9 +22,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.content.res.Resources;
+import android.graphics.Typeface;
+import android.util.TypedValue;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,6 +49,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.WindowCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -85,6 +90,14 @@ import io.beldex.bchat.util.AttachmentUtil;
 import io.beldex.bchat.util.GridSpaceItemDecoration;
 import io.beldex.bchat.util.SaveAttachmentTask;
 import io.beldex.bchat.util.StickyHeaderDecoration;
+import com.beldex.libbchat.utilities.ViewUtil;
+import com.beldex.libbchat.utilities.task.ProgressDialogAsyncTask;
+
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 import kotlin.Unit;
 
 /**
@@ -104,13 +117,14 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
 
   @Override
   protected void onCreate(Bundle bundle, boolean ready) {
+    WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
     setContentView(R.layout.media_overview_activity);
-
     initializeResources();
     initializeToolbar();
+    WindowInsetsUtil.INSTANCE.applyTopInset(this.toolbar);
 
-    this.tabLayout.setupWithViewPager(viewPager);
     this.viewPager.setAdapter(new MediaOverviewPagerAdapter(getSupportFragmentManager()));
+    this.tabLayout.setupWithViewPager(viewPager);
   }
 
   @Override
@@ -124,6 +138,12 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
     return false;
   }
 
+  @Override
+  public void onConfigurationChanged(Configuration newConfig) {
+    super.onConfigurationChanged(newConfig);
+    WindowInsetsUtil.INSTANCE.applyTopInset(this.toolbar);
+  }
+
   private void initializeResources() {
     Address address = getIntent().getParcelableExtra(ADDRESS_EXTRA);
 
@@ -134,16 +154,14 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
   }
 
   private void initializeToolbar() {
-    toolbar.setTitle(R.string.all_media);
     setSupportActionBar(toolbar);
     ActionBar actionBar = getSupportActionBar();
     if (actionBar != null) {
+      actionBar.setTitle(R.string.all_media);
       actionBar.setDisplayHomeAsUpEnabled(true);
       actionBar.setHomeAsUpIndicator(R.drawable.ic_back_arrow);
     }
-    this.recipient.addListener(recipient -> {
-      Util.runOnMain(() -> toolbar.setTitle(recipient.toShortString()));
-    });
+    setTitle(R.string.all_media);
   }
 
   public void onEnterMultiSelect() {
@@ -229,13 +247,25 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
     private ActionMode                    actionMode;
     private ActionModeCallback            actionModeCallback = new ActionModeCallback();
 
+    private static int getColumnCount(@NonNull Resources resources) {
+      if (resources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        int screenWidthDp = resources.getConfiguration().screenWidthDp;
+        int portraitWidthDp = resources.getConfiguration().smallestScreenWidthDp;
+        int portraitCols = resources.getInteger(R.integer.media_overview_cols);
+        int targetColWidth = portraitWidthDp / portraitCols;
+        return Math.max(portraitCols, screenWidthDp / targetColWidth);
+      }
+      return resources.getInteger(R.integer.media_overview_cols);
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
       View view = inflater.inflate(R.layout.media_overview_gallery_fragment, container, false);
 
       this.recyclerView = ViewUtil.findById(view, R.id.media_grid);
       this.noMedia      = ViewUtil.findById(view, R.id.no_images);
-      this.gridManager  = new StickyHeaderGridLayoutManager(getResources().getInteger(R.integer.media_overview_cols));
+      int columns = getColumnCount(getResources());
+      this.gridManager  = new StickyHeaderGridLayoutManager(columns);
 
       this.recyclerView.setAdapter(new MediaGalleryAdapter(getContext(),
                                                            Glide.with(this),
@@ -254,7 +284,8 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
     public void onConfigurationChanged(Configuration newConfig) {
       super.onConfigurationChanged(newConfig);
       if (gridManager != null) {
-        this.gridManager = new StickyHeaderGridLayoutManager(getResources().getInteger(R.integer.media_overview_cols));
+        int columns = getColumnCount(getResources());
+        this.gridManager = new StickyHeaderGridLayoutManager(columns);
         this.recyclerView.setLayoutManager(gridManager);
       }
     }
@@ -491,8 +522,10 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
         FragmentActivity activity = getActivity();
         if (activity == null) return false;
         Window window = activity.getWindow();
-        originalStatusBarColor = window.getStatusBarColor();
-        window.setStatusBarColor(ContextCompat.getColor(activity, R.color.action_mode_status_bar));
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+          originalStatusBarColor = window.getStatusBarColor();
+          window.setStatusBarColor(ContextCompat.getColor(activity, R.color.action_mode_status_bar));
+        }
 
         return true;
       }
@@ -547,7 +580,9 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
         MediaOverviewActivity activity = ((MediaOverviewActivity) getActivity());
         if(activity == null) return;
         activity.onExitMultiSelect();
-        activity.getWindow().setStatusBarColor(originalStatusBarColor);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+          activity.getWindow().setStatusBarColor(originalStatusBarColor);
+        }
       }
     }
   }

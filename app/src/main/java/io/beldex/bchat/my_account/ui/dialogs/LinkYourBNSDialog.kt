@@ -1,6 +1,7 @@
 package io.beldex.bchat.my_account.ui.dialogs
 
 import android.content.Context
+import android.content.res.Configuration
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
@@ -14,13 +15,16 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -51,6 +55,7 @@ import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.R
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -64,7 +69,6 @@ import kotlinx.coroutines.delay
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
 import java.util.Locale
-
 @Composable
 fun LinkYourBNSDialog(
     state: MyAccountViewModel.UIState,
@@ -127,10 +131,17 @@ fun LinkYourBNSDialog(
                     (bnsName.endsWith(".bdx") || bnsName.endsWith(".BDX"))
         }
 
+        val configuration = LocalConfiguration.current
+        val isLandscape =
+            configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+        val dialogMaxHeight = (configuration.screenHeightDp * 0.9f).dp
         Column(
-            modifier =Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(max = dialogMaxHeight)
+                .verticalScroll(rememberScrollState())
+                .padding(if (isLandscape) 10.dp else 16.dp)
         ) {
             Text(
                 text = stringResource(R.string.link_bns),
@@ -211,7 +222,7 @@ fun LinkYourBNSDialog(
                 modifier = if(showErrorMessage) {
                     Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 15.dp)
+                        .padding(bottom = if (isLandscape) 8.dp else 15.dp)
                         .border(
                             1.dp,
                             color = MaterialTheme.appColors.negativeRedButtonBorder,
@@ -221,7 +232,7 @@ fun LinkYourBNSDialog(
                     if (isVerified) {
                         Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 15.dp)
+                        .padding(bottom = if (isLandscape) 8.dp else 15.dp)
                         .border(
                             1.dp,
                             color = MaterialTheme.appColors.negativeGreenButtonBorder,
@@ -267,7 +278,7 @@ fun LinkYourBNSDialog(
                         color = MaterialTheme.appColors.negativeGreenButtonBorder
                     ),
                     contentPadding = PaddingValues(
-                        vertical = 14.dp
+                        vertical = if (isLandscape) 10.dp else 14.dp
                     ),
                     modifier = Modifier.weight(1F)
                 ) {
@@ -309,7 +320,7 @@ fun LinkYourBNSDialog(
                         color = if (verifyBNSName(bnsName)) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.contactCardBackground
                     ),
                     contentPadding = PaddingValues(
-                        vertical = 14.dp
+                        vertical = if (isLandscape) 10.dp else 14.dp
                     ),
                     modifier = Modifier.weight(1F)
                 ) {

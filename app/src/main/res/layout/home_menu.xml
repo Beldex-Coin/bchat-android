@@ -149,6 +149,10 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="BChat V2.9.8"
+            android:padding="12dp"
+            android:focusable="true" />
 
             <LinearLayout
                 android:id="@+id/darkModeLayout"

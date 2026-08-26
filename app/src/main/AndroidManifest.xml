@@ -29,7 +29,6 @@
         android:required="false" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission
@@ -40,16 +39,10 @@
         android:usesPermissionFlags="neverForLocation"
         tools:targetApi="s" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
-    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
-    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission
         android:name="android.permission.CHANGE_NETWORK_STATE"
         tools:node="remove" />
-    <uses-permission
-        android:name="android.permission.CHANGE_NETWORK_STATE"
-        tools:node="remove" />
-    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
@@ -58,8 +51,6 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
-    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.INTERNET" />
     <!--
  Google may (potentially) insist we implement `ConnectionService` to request MANAGE_OWN_CALLS - see:
@@ -69,9 +60,7 @@
     <uses-permission android:name="android.permission.MANAGE_OWN_CALLS" />
     <uses-permission android:name="android.app.role.DIALER" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.RAISED_THREAD_PRIORITY" />
     <uses-permission android:name="android.permission.RAISED_THREAD_PRIORITY" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -82,6 +71,7 @@
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
@@ -108,18 +98,16 @@
         <activity
             android:name=".contacts.blocked.BlockedContactsActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name=".contacts.BlockedContactActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+            android:exported="false" />
         <activity
             android:name=".calls.WebRtcCallActivity"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
             android:launchMode="singleTop"
             android:parentActivityName=".home.HomeActivity"
-            android:screenOrientation="portrait"
             android:showForAllUsers="true"
             android:theme="@style/Theme.Bchat.CallActivity">
             <meta-data
@@ -128,11 +116,10 @@
         </activity>
         <activity
             android:name=".webrtc.WebRTCComposeActivity"
-            android:configChanges="screenSize|smallestScreenSize|screenLayout"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboardHidden|layoutDirection"
             android:exported="false"
             android:launchMode="singleTop"
             android:parentActivityName=".home.HomeActivity"
-            android:screenOrientation="portrait"
             android:showForAllUsers="true"
             android:supportsPictureInPicture="true"
             android:theme="@style/Theme.Bchat.CallActivity">
@@ -142,119 +129,99 @@
         </activity>
         <activity
             android:name=".conversation.v2.ConversationActivityV2"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
             android:name=".conversation.v2.contact_sharing.ViewAllContactsActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
             android:name=".onboarding.AboutActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name=".changelog.ChangeLogActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name=".onboarding.CheckPasswordActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".groups.JoinPublicChatScanQRCodeActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".groups.JoinPublicChatNewActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".dms.PrivateChatScanQRCodeActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".dms.CreateNewPrivateChatActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".preferences.ScanQRCodeActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".preferences.ShowQRCodeWithScanQRCodeActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".applock.ChangePasswordActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".onboarding.SplashScreenHomeActivtity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+            android:exported="false" />
         <activity
             android:name=".onboarding.SplashScreenActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name=".onboarding.PasswordActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".applock.AppLockDetailsActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name=".seed.ShowSeedActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name=".seed.SeedPermissionActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name=".keys.RecoveryGetKeysDetailsActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name=".seed.RecoveryGetSeedDetailsActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".seedorkeysrestore.SeedOrKeysRestoreActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" /> <!-- Disable all analytics -->
         <meta-data
             android:name="firebase_analytics_collection_deactivated"
@@ -274,52 +241,46 @@
         <activity
             android:name=".onboarding.LandingActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name=".onboarding.RegisterActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name=".onboarding.RecoveryPhraseRestoreActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".onboarding.DisplayNameActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".onboarding.PNModeActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name=".onboarding.AppLockActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name=".onboarding.CreatePasswordActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".onboarding.RecoveryPhraseActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name=".home.HomeActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
 
@@ -345,71 +306,62 @@
         <activity
             android:name=".messagerequests.MessageRequestsActivity"
             android:exported="false"
-            android:label="@string/activity_message_requests_title"
-            android:screenOrientation="portrait" />
+            android:label="@string/activity_message_requests_title" />
         <activity
             android:name=".preferences.SettingsActivity"
             android:exported="false"
-            android:label="@string/activity_settings_title"
-            android:screenOrientation="portrait" />
+            android:label="@string/activity_settings_title" />
         <activity
             android:name=".home.PathActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+            android:exported="false" />
         <activity
             android:name=".preferences.QRCodeActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name=".dms.CreatePrivateChatActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".groups.CreateClosedGroupActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+            android:exported="false" />
         <activity
             android:name=".groups.EditClosedGroupActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:label="@string/activity_edit_closed_group_title"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name=".groups.JoinPublicChatActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".onboarding.SeedActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+            android:exported="false" />
         <activity
             android:name=".contacts.SelectContactsActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".preferences.PrivacySettingsActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name=".preferences.NotificationSettingsActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name=".preferences.ChatSettingsActivity"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name=".ShareActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.TextSecure.DayNight.NoActionBar"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
@@ -432,18 +384,16 @@
         </activity>
         <activity
             android:name=".conversation.v2.MessageDetailActivity"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.TextSecure.DayNight" />
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name=".groups.OpenGroupGuidelinesActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.TextSecure.DayNight" />
         <activity
             android:name=".longmessage.LongMessageActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.TextSecure.DayNight" />
         <activity
             android:name=".DatabaseUpgradeActivity"
@@ -461,23 +411,20 @@
             android:name=".giph.ui.GiphyActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.TextSecure.DayNight.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".mediasend.MediaSendActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.TextSecure.DayNight.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".MediaPreviewActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
             android:label="@string/AndroidManifest__media_preview"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
@@ -485,7 +432,6 @@
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
@@ -524,8 +470,7 @@
         <activity
             android:name=".onboarding.ui.OnBoardingActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
-            android:exported="true"
-            android:screenOrientation="portrait">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -542,45 +487,38 @@
             android:name=".home.ArchiveChatActivity"
             android:exported="true"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name=".my_account.ui.MyAccountActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name=".groups.SecretGroupInfoComposeActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name=".my_account.ui.MyProfileActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name=".conversation.v2.contact_sharing.ContactSharingActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".home.SearchActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name=".conversation_v2.NewGroupConversationActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
             android:label="@string/title_activity_create_secret_group_screen"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
@@ -588,7 +526,6 @@
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
             android:label="@string/new_chat_screen_title"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
 
         <service
@@ -619,7 +556,8 @@
         </service>
         <service
             android:name=".service.GenericForegroundService"
-            android:exported="false" />
+            android:exported="false"
+            android:foregroundServiceType="specialUse" />
 
         <receiver
             android:name=".notifications.MarkReadReceiver"
@@ -704,7 +642,7 @@
         </receiver>
         <receiver
             android:name=".service.LocalBackupListener"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>

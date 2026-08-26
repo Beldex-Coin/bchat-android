@@ -20,11 +20,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
@@ -95,29 +95,15 @@ fun CreateSecretGroup(
     onEvent: (SecretGroupEvents) -> Unit,
     activity: NewGroupConversationActivity
 ) {
-    var groupName by remember {
-        mutableStateOf("")
-    }
+    var groupName by remember { mutableStateOf("") }
     val context = LocalContext.current
     val device: Device = Device.ANDROID
     val keyboardController = LocalSoftwareKeyboardController.current
-    var showLoader by remember {
-        mutableStateOf(false)
-    }
-    val composition by rememberLottieComposition(
-        LottieCompositionSpec
-            .RawRes(R.raw.load_animation)
-    )
-    val isPlaying by remember {
-        mutableStateOf(true)
-    }
-    // for speed
-    val speed by remember {
-        mutableFloatStateOf(1f)
-    }
-    var isButtonEnabled by remember {
-        mutableStateOf(true)
-    }
+    var showLoader by remember { mutableStateOf(false) }
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.load_animation))
+    val isPlaying by remember { mutableStateOf(true) }
+    val speed by remember { mutableFloatStateOf(1f) }
+    var isButtonEnabled by remember { mutableStateOf(true) }
     val scope = rememberCoroutineScope()
 
     val progress by animateLottieCompositionAsState(
@@ -133,190 +119,62 @@ fun CreateSecretGroup(
             .fillMaxSize()
             .padding(WindowInsets.ime.asPaddingValues())
     ) {
-
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            Box(
+        Column(modifier = Modifier.fillMaxSize()) {
+            Column(
                 modifier = Modifier
-                    .padding(bottom = 5.dp, start = 16.dp, end = 16.dp)
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
             ) {
-                TextField(
-                    value = groupName,
-                    placeholder = {
-                        Text(
-                            text = stringResource(R.string.enter_group_name),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    },
-                    onValueChange = {
-                        groupName = it
-                    },
-                    enabled = !showLoader,
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Done
-                    ),
+                GroupNameField(
+                    groupName = groupName,
+                    onGroupNameChange = { groupName = it },
+                    showLoader = showLoader
+                )
+                Divider(
+                    color = colorResource(id = R.color.divider_color),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
-                        focusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
-                        cursorColor = colorResource(id = R.color.button_green)
-                    )
+                        .height(0.5.dp)
                 )
-            }
-
-            Divider(
-                color = colorResource(id = R.color.divider_color),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(0.5.dp)
-            )
-
-            TextField(
-                value = searchQuery,
-                placeholder = {
-                    Text(
-                        text = stringResource(R.string.search_contact),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                },
-                singleLine = true,
-                enabled = !showLoader,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
-                ),
-                onValueChange = {
-                    onEvent(SecretGroupEvents.SearchQueryChanged(it))
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.appColors.textFiledBorderColor,
-                        shape = RoundedCornerShape(36.dp)
-                    ),
-                shape = RoundedCornerShape(36.dp),
-                trailingIcon = {
-                    Icon(
-                        imageVector = if (searchQuery.isNotEmpty()) Icons.Default.Clear else Icons.Default.Search,
-                        contentDescription = "search contact and clear search text",
-                        tint = MaterialTheme.appColors.iconTint,
-                        modifier = Modifier.clickable {
-                            if(searchQuery.isNotEmpty()){
-                                onEvent(SecretGroupEvents.SearchQueryChanged(""))
-                            }
-                        }
-                    )
-                },
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
-                    focusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
-                    cursorColor = colorResource(id = R.color.button_green)
+                SearchField(
+                    searchQuery = searchQuery,
+                    onSearchQueryChange = { onEvent(SecretGroupEvents.SearchQueryChanged(it)) },
+                    showLoader = showLoader
                 )
-            )
-            LazyColumn(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .weight(1f)
-            ) {
-                items(
-                    items = contacts,
-                    key = { it.address.toString() }
-                ) { recipient ->
+                contacts.forEach { recipient ->
                     GroupContact(
                         recipient = recipient,
                         isSelected = selectedContact.contains(recipient.address.toString()),
                         onSelectionChanged = { contact, isSelected ->
                             onEvent(SecretGroupEvents.RecipientSelectionChanged(contact, isSelected))
                         },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp)
-                    .background(
-                        color = MaterialTheme.appColors.createButtonBackground
-                    ),
-                contentAlignment = Alignment.Center,
-            ) {
-                PrimaryButton(
-                    onClick = {
-                        if(isButtonEnabled) {
-                            keyboardController?.hide()
-                            isButtonEnabled = false
-                            scope.launch(Dispatchers.Main) {
-                                if(CheckOnline.isOnline(context)) {
-                                    createClosedGroup(device, groupName.trim(), context, activity, selectedContact, showLoader={
-                                        showLoader=it
-                                    })
-                                }else {
-                                    Toast.makeText(context, context.getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
-                                }
-                                delay(2000)
-                                isButtonEnabled = true
-                            }
-                        }
-
-
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    enabled = groupName.isNotEmpty(),
-                    disabledContainerColor = MaterialTheme.appColors.disabledCreateButtonContainer,
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.create),
-                        style = BChatTypography.bodyLarge.copy(
-                            color = if (groupName.isNotEmpty()) {
-                                Color.White
-                            } else {
-                                MaterialTheme.appColors.disabledButtonContent
-                            },
-                            fontWeight = FontWeight(400),
-                            fontSize = 16.sp
-                        ),
                         modifier = Modifier
-                            .padding(8.dp)
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
                     )
                 }
             }
+            CreateGroupButton(
+                groupName = groupName,
+                showLoader = showLoader,
+                context = context,
+                scope = scope,
+                device = device,
+                keyboardController = keyboardController,
+                selectedContact = selectedContact,
+                activity = activity,
+                isButtonEnabled = isButtonEnabled,
+                onButtonEnabledChange = { isButtonEnabled = it },
+                onShowLoaderChange = { showLoader = it }
+            )
         }
+
         if (showLoader) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(color = MaterialTheme.appColors.loaderBackground.copy(alpha = 0.5f))
-                    .clickable(
-                        enabled = true,
-                        onClick = {
-
-                        }
-                    ),
+                    .clickable(enabled = true, onClick = {}),
                 contentAlignment = Alignment.Center
             ) {
                 LottieAnimation(
@@ -325,6 +183,158 @@ fun CreateSecretGroup(
                     modifier = Modifier.size(70.dp)
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun GroupNameField(
+    groupName: String,
+    onGroupNameChange: (String) -> Unit,
+    showLoader: Boolean
+) {
+    Box(
+        modifier = Modifier.padding(bottom = 5.dp, start = 16.dp, end = 16.dp)
+    ) {
+        TextField(
+            value = groupName,
+            placeholder = {
+                Text(
+                    text = stringResource(R.string.enter_group_name),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
+            onValueChange = onGroupNameChange,
+            enabled = !showLoader,
+            singleLine = true,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = TextFieldDefaults.colors(
+                unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+                focusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
+                selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
+                cursorColor = colorResource(id = R.color.button_green)
+            )
+        )
+    }
+}
+
+@Composable
+private fun SearchField(
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
+    showLoader: Boolean
+) {
+    TextField(
+        value = searchQuery,
+        placeholder = {
+            Text(
+                text = stringResource(R.string.search_contact),
+                style = MaterialTheme.typography.bodyMedium
+            )
+        },
+        singleLine = true,
+        enabled = !showLoader,
+        keyboardOptions = KeyboardOptions.Default.copy(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Done
+        ),
+        onValueChange = onSearchQueryChange,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.appColors.textFiledBorderColor,
+                shape = RoundedCornerShape(36.dp)
+            ),
+        shape = RoundedCornerShape(36.dp),
+        trailingIcon = {
+            Icon(
+                imageVector = if (searchQuery.isNotEmpty()) Icons.Default.Clear else Icons.Default.Search,
+                contentDescription = "search contact and clear search text",
+                tint = MaterialTheme.appColors.iconTint,
+                modifier = Modifier.clickable {
+                    if (searchQuery.isNotEmpty()) {
+                        onSearchQueryChange("")
+                    }
+                }
+            )
+        },
+        colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+            focusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+            selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
+            cursorColor = colorResource(id = R.color.button_green)
+        )
+    )
+}
+
+@Composable
+private fun CreateGroupButton(
+    groupName: String,
+    showLoader: Boolean,
+    context: Context,
+    scope: kotlinx.coroutines.CoroutineScope,
+    device: Device,
+    keyboardController: androidx.compose.ui.platform.SoftwareKeyboardController?,
+    selectedContact: List<String>,
+    activity: NewGroupConversationActivity,
+    isButtonEnabled: Boolean,
+    onButtonEnabledChange: (Boolean) -> Unit,
+    onShowLoaderChange: (Boolean) -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp)
+            .background(color = MaterialTheme.appColors.createButtonBackground),
+        contentAlignment = Alignment.Center
+    ) {
+        PrimaryButton(
+            onClick = {
+                if (isButtonEnabled) {
+                    keyboardController?.hide()
+                    onButtonEnabledChange(false)
+                    scope.launch(Dispatchers.Main) {
+                        if (CheckOnline.isOnline(context)) {
+                            createClosedGroup(device, groupName.trim(), context, activity, selectedContact, showLoader = onShowLoaderChange)
+                        } else {
+                            Toast.makeText(context, context.getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
+                        }
+                        delay(2000)
+                        onButtonEnabledChange(true)
+                    }
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            shape = RoundedCornerShape(12.dp),
+            enabled = groupName.isNotEmpty(),
+            disabledContainerColor = MaterialTheme.appColors.disabledCreateButtonContainer
+        ) {
+            Text(
+                text = stringResource(id = R.string.create),
+                style = BChatTypography.bodyLarge.copy(
+                    color = if (groupName.isNotEmpty()) Color.White else MaterialTheme.appColors.disabledButtonContent,
+                    fontWeight = FontWeight(400),
+                    fontSize = 16.sp
+                ),
+                modifier = Modifier.padding(8.dp)
+            )
         }
     }
 }

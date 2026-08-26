@@ -13,6 +13,7 @@ import android.view.inputmethod.InputConnection
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.core.view.inputmethod.InputConnectionCompat
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.textformatter.TextFormatter
 import io.beldex.bchat.textformatter.TextFormatter.toUnicodeBlockQuote
 import kotlin.math.max
@@ -381,6 +382,9 @@ class InputBarEditText : AppCompatEditText {
 
     override fun onCreateInputConnection(editorInfo: EditorInfo): InputConnection? {
         val ic = super.onCreateInputConnection(editorInfo) ?: return null
+        if (TextSecurePreferences.isEnterSendsEnabled(context)) {
+            editorInfo.imeOptions = editorInfo.imeOptions and EditorInfo.IME_FLAG_NO_ENTER_ACTION.inv()
+        }
         EditorInfoCompat.setContentMimeTypes(
             editorInfo,
             if (showMediaControls) arrayOf("image/png", "image/gif", "image/jpg") else null

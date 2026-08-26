@@ -12,7 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -26,7 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -35,12 +35,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.copyToClipBoard
-import io.beldex.bchat.R
 
 @Composable
 fun RecoverySeedScreen(
@@ -77,16 +77,18 @@ fun RecoverySeedView(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
+            .verticalScroll(rememberScrollState())
             .padding(
                 top = 48.dp
             )
     ) {
         Image(
             painter = painterResource(id = if(isDarkTheme) R.drawable.ic_warning_lock else R.drawable.ic_warning_lock_light),
-            contentDescription = ""
+            contentDescription = "",
+            modifier = Modifier.height(80.dp)
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
         Text(
             text = stringResource(id = R.string.copy_your_recovery_seed),
@@ -169,6 +171,7 @@ private fun RecoveryWarningView(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
                     .padding(
                         horizontal = 16.dp,
                         vertical = 24.dp

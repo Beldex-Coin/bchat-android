@@ -16,6 +16,7 @@ import io.beldex.bchat.audio.AudioSlidePlayer
 import io.beldex.bchat.components.CornerMask
 import io.beldex.bchat.conversation.v2.utilities.MessageBubbleUtilities
 import io.beldex.bchat.database.AttachmentDatabase
+import io.beldex.bchat.mms.AudioSlide
 import io.beldex.bchat.database.model.MmsMessageRecord
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
@@ -46,6 +47,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
     private var progress = 0.0
     private var duration = 0L
     private var player: AudioSlidePlayer? = null
+    private var audioSlide: AudioSlide? = null
     var delegate: VisibleMessageViewDelegate? = null
     var indexInAdapter = -1
     private var isSelectionMode = false
@@ -76,6 +78,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         binding.voiceMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
         binding.voiceMessageTime.setTextColor(getTimeTextColor(context, message.isOutgoing))
         val audio = message.slideDeck.audioSlide!!
+        this.audioSlide = audio
         binding.voiceMessageViewLoader.isVisible = audio.isInProgress
         binding.voiceMessagePlaybackImageView.isVisible = !audio.isInProgress
         //The duration value is displayed only for the voice message loader
@@ -126,6 +129,13 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
             }
         }
 
+        setupSeekBar(player)
+        binding.voiceMessagePlaybackImageView.setOnClickListener {
+            togglePlayback(isSelectionMode)
+        }
+    }
+
+    private fun setupSeekBar(player: AudioSlidePlayer) {
         binding.seekbarAudio.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
@@ -149,9 +159,6 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
                 player.seekTo(progressValue.toDouble())
             }
         })
-        binding.voiceMessagePlaybackImageView.setOnClickListener {
-            togglePlayback(isSelectionMode)
-        }
     }
 
     override fun onPlayerStart(player: AudioSlidePlayer) {
@@ -231,7 +238,10 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
 
     fun togglePlayback(isSelectionMode: Boolean) {
 
-        val player = this.player ?: return
+        var player = this.player
+        if (player == null) {
+            player = recreatePlayer() ?: return
+        }
 
         if (TextSecurePreferences.getRecordingStatus(context)) {
             Toast.makeText(
@@ -262,6 +272,14 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         }
     }
 
+    private fun recreatePlayer(): AudioSlidePlayer? {
+        val slide = audioSlide ?: return null
+        val player = AudioSlidePlayer.createFor(context.applicationContext, slide, this)
+        this.player = player
+        setupSeekBar(player)
+        return player
+    }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         recycle()
@@ -286,7 +304,9 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
 
         binding.seekbarAudio.progress = 0
 
-        player?.stop()
+        if (!isActivityChangingConfigurations()) {
+            player?.stop()
+        }
         player = null
     }
 
@@ -305,8 +325,21 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
             formatDuration(duration)
 
         // Remove old player
-        player?.stop()
+        if (!isActivityChangingConfigurations()) {
+            player?.stop()
+        }
         player = null
+    }
+
+    private fun isActivityChangingConfigurations(): Boolean {
+        var ctx: Context? = context
+        while (ctx is android.content.ContextWrapper) {
+            if (ctx is android.app.Activity) {
+                return ctx.isChangingConfigurations
+            }
+            ctx = ctx.baseContext
+        }
+        return false
     }
 
     fun stoppedVoiceMessage() {

@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:background="@color/action_bar_background"
     android:fillViewport="true"
-    android:fitsSystemWindows="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
@@ -24,10 +23,13 @@
             android:fontFamily="@font/open_sans_medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginStart="@dimen/very_large_spacing"
             android:layout_marginEnd="@dimen/very_large_spacing"
             android:layout_marginTop="@dimen/medium_spacing"
-            android:layout_marginBottom="@dimen/medium_spacing"
+            android:layout_marginBottom="@dimen/large_spacing"
+            android:maxHeight="80dp"
+            android:scaleType="fitCenter"
             android:src="@drawable/ic_restore_seed_dark" />
 
         <TextView
@@ -79,6 +81,7 @@
             android:layout_marginStart="@dimen/medium_spacing"
             android:layout_marginTop="@dimen/large_spacing"
             android:layout_marginEnd="@dimen/medium_spacing"
+            android:layout_marginBottom="@dimen/large_spacing"
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton

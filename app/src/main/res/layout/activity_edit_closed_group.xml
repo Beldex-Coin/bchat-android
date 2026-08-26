@@ -5,20 +5,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/transparent"
-    android:fitsSystemWindows="true"
     tools:context="io.beldex.bchat.groups.EditClosedGroupActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        app:contentInsetStart="0dp"
+        app:elevation="1dp"
+        app:titleTextAppearance="@style/TextAppearance.Bchat.DarkActionBar.TitleTextStyle" />
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         app:cardBackgroundColor="@color/new_card_background"
         style="@style/CustomCardViewStyle"
         >
 
     <LinearLayout
-        android:id="@+id/mainContentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+    <LinearLayout
+        android:id="@+id/mainContentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <!--<androidx.cardview.widget.CardView
@@ -179,22 +204,31 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvUserList"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
             tools:listitem="@layout/view_user"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/small_spacing">
+    </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/applyChangesBtn"
+    </androidx.core.widget.NestedScrollView>
+
+        <LinearLayout
+            android:id="@+id/applyChangesContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/apply_changes"
             android:visibility="gone"
-            style="@style/PrimaryContainedPositiveButton"/>
+            tools:visibility="gone">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/applyChangesBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/small_spacing"
+                android:layout_marginEnd="@dimen/small_spacing"
+                android:layout_marginTop="@dimen/small_spacing"
+                android:layout_marginBottom="@dimen/small_spacing"
+                android:text="@string/apply_changes"
+                style="@style/PrimaryContainedPositiveButton"/>
         </LinearLayout>
 
     </LinearLayout>
@@ -243,5 +277,6 @@
 
     </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

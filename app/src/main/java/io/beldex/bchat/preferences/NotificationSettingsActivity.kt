@@ -8,6 +8,8 @@ import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.databinding.ActivityFragmentWrapperNewBinding
 
 import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.WindowInsetsUtil
+
 @AndroidEntryPoint
 class NotificationSettingsActivity : PassphraseRequiredActionBarActivity() {
 
@@ -19,6 +21,7 @@ class NotificationSettingsActivity : PassphraseRequiredActionBarActivity() {
             back.setOnClickListener { finish() }
             title.text = resources.getString(R.string.activity_settings_notifications_button_title)
         }
+        WindowInsetsUtil.applyTopInset(binding.root)
         val fragment = NotificationsPreferenceFragment()
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.fragmentContainer, fragment)

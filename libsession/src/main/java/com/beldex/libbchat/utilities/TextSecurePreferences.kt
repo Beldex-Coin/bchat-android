@@ -810,6 +810,11 @@ interface TextSecurePreferences {
         }
 
         @JvmStatic
+        fun setEnterSendsEnabled(context: Context, enabled: Boolean) {
+            setBooleanPreference(context, ENTER_SENDS_PREF, enabled)
+        }
+
+        @JvmStatic
         fun isPasswordDisabled(context: Context): Boolean {
             return getBooleanPreference(context, DISABLE_PASSPHRASE_PREF, true)
         }

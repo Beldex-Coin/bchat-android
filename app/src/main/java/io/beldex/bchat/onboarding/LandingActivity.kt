@@ -14,6 +14,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.BaseAppCompatActivity
 import io.beldex.bchat.R
@@ -30,8 +34,17 @@ class LandingActivity : BaseAppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         val binding = ActivityLandingBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+            )
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
         TextSecurePreferences.setCopiedSeed(this, false)
         with(binding) {
             registerButton.setOnClickListener() { register() }

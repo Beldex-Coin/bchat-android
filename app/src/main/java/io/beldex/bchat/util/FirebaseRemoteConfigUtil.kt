@@ -1,7 +1,7 @@
 package io.beldex.bchat.util
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import io.beldex.bchat.BuildConfig
 
 class FirebaseRemoteConfigUtil {
@@ -9,12 +9,13 @@ class FirebaseRemoteConfigUtil {
     private val instance = FirebaseRemoteConfig.getInstance()
 
     fun init() {
-        val configSettings = remoteConfigSettings {
-            minimumFetchIntervalInSeconds = if (BuildConfig.DEBUG)
+        val configSettings = FirebaseRemoteConfigSettings.Builder()
+            .setMinimumFetchIntervalInSeconds(if (BuildConfig.DEBUG)
                 0 // Kept 0 for quick debug
             else
                 60 * 60 * 24// Change this based on your requirement
-        }
+            )
+            .build()
         instance.setConfigSettingsAsync(configSettings)
         instance.setDefaultsAsync(DEFAULT_DATA)
         instance.fetchAndActivate().addOnCompleteListener { task ->

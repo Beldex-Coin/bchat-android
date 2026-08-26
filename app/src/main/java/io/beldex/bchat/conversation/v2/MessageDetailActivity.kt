@@ -1,8 +1,10 @@
 package io.beldex.bchat.conversation.v2
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.appcompat.widget.Toolbar
 import com.beldex.libbchat.mnode.MnodeAPI
 import io.beldex.bchat.R
 import com.beldex.libbchat.utilities.Address
@@ -14,6 +16,7 @@ import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.databinding.ActivityMessageDetailBinding
+import io.beldex.bchat.WindowInsetsUtil
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -32,7 +35,10 @@ class MessageDetailActivity: PassphraseRequiredActionBarActivity() {
         super.onCreate(savedInstanceState, ready)
         binding = ActivityMessageDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        title = resources.getString(R.string.message_details)
+        WindowInsetsUtil.applyTopInset(binding.root)
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.toolbar.title = resources.getString(R.string.message_details)
         val timestamp = intent.getLongExtra(MESSAGE_TIMESTAMP, -1L)
         // We only show this screen for messages fail to send,
         // so the author of the messages must be the current user.
@@ -77,5 +83,13 @@ class MessageDetailActivity: PassphraseRequiredActionBarActivity() {
             val duration = ExpirationUtil.getExpirationDisplayValue(this, Math.max((remaining / 1000).toInt(), 1))
             binding.expiresIn.text = duration
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

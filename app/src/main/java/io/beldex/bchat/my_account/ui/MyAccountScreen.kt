@@ -19,7 +19,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -466,8 +468,7 @@ fun AccountHeader(
                     bitmap = bitMap.asImageBitmap(),
                     contentDescription = "",
                     modifier =Modifier
-                            .fillMaxWidth(0.5f)
-                            .aspectRatio(1f)
+                            .sizeIn(maxWidth = 200.dp, maxHeight = 200.dp)
                             .padding(
                                     16.dp
                             ).clip(RoundedCornerShape(8.dp))

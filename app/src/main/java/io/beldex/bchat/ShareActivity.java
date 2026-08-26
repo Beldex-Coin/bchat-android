@@ -33,10 +33,13 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import io.beldex.bchat.conversation.v2.ConversationActivityV2;
 import io.beldex.bchat.mms.PartAuthority;
@@ -103,9 +106,28 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
     getIntent().putExtra(ContactSelectionListFragment.REFRESHABLE, false);
 
     setContentView(R.layout.share_activity);
+
+    View topBar = findViewById(R.id.linearLayout);
+    ViewCompat.setOnApplyWindowInsetsListener(topBar, (v, windowInsets) -> {
+      int top = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()).top;
+      v.setPadding(v.getPaddingLeft(), top + 16, v.getPaddingRight(), v.getPaddingBottom());
+      return windowInsets;
+    });
+
     initializeResources();
     initializeMedia();
     handledFunctionalities();
+
+    getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+      @Override
+      public void handleOnBackPressed() {
+        if (searchToolbar.isVisible()) searchToolbar.collapse();
+        else {
+          setEnabled(false);
+          getOnBackPressedDispatcher().onBackPressed();
+        }
+      }
+    });
   }
 
   private void handledFunctionalities() {
@@ -167,16 +189,10 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case android.R.id.home:
-        onBackPressed();
+        getOnBackPressedDispatcher().onBackPressed();
         return true;
     }
     return super.onOptionsItemSelected(item);
-  }
-
-  @Override
-  public void onBackPressed() {
-    if (searchToolbar.isVisible()) searchToolbar.collapse();
-    else                           super.onBackPressed();
   }
 
   private void initializeToolbar() {

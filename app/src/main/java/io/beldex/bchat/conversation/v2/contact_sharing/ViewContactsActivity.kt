@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +44,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.view.WindowCompat
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.BaseAppCompatActivity
@@ -70,7 +70,6 @@ class ViewAllContactsActivity : BaseAppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         contact = intent.getParcelableExtra(CONTACTMODEL)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
             BChatTheme {
@@ -105,9 +104,9 @@ class ViewAllContactsActivity : BaseAppCompatActivity() {
 @Composable
 fun ViewContactScreen(contact : ContactModel) {
 
-    var showPopup by remember { mutableStateOf(false) }
-    var selectedName by remember { mutableStateOf("") }
-    var selectedAddress by remember { mutableStateOf("") }
+    var showPopup by rememberSaveable { mutableStateOf(false) }
+    var selectedName by rememberSaveable { mutableStateOf("") }
+    var selectedAddress by rememberSaveable { mutableStateOf("") }
 
     if(showPopup){
         ChatWithContactPopUp(selectedName,selectedAddress, onDismiss = {

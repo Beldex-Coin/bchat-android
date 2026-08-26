@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.beldex.libbchat.utilities.SSKEnvironment.ProfileManagerProtocol
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -28,6 +29,7 @@ import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
 import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.R
+import io.beldex.bchat.WindowInsetsUtil
 import io.beldex.bchat.databinding.ActivityDisplayNameBinding
 import io.beldex.bchat.util.englishNamePattern
 import kotlinx.coroutines.Dispatchers
@@ -62,6 +64,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDisplayNameBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        WindowInsetsUtil.applyTopAndImeInsets(binding.root)
         setUpActionBarBchatLogo(getString(R.string.display_name),false)
         with(binding) {
             displayNameEditText.imeOptions =

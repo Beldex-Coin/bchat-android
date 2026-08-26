@@ -36,6 +36,7 @@ import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
 import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.R
+import io.beldex.bchat.WindowInsetsUtil
 import io.beldex.bchat.databinding.ActivityRecoveryGetSeedDetailsBinding
 import io.beldex.bchat.util.englishNamePattern
 import kotlinx.coroutines.Dispatchers
@@ -75,6 +76,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRecoveryGetSeedDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        WindowInsetsUtil.applyTopAndImeInsets(binding.root)
         setUpActionBarBchatLogo(getString(R.string.restore_from_seed), false)
         getSeed = intent.extras?.getString("seed")
 

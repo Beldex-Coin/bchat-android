@@ -5,11 +5,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
-import io.beldex.bchat.databinding.ActivityCreatePasswordBinding
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.databinding.ActivityCreatePasswordBinding
 import io.beldex.bchat.home.HomeActivity
-import io.beldex.bchat.keyboard.CustomKeyboardView
 import io.beldex.bchat.service.KeyCachingService
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
@@ -206,8 +205,4 @@ class CreatePasswordActivity : BaseActionBarActivity() {
             super.onBackPressed()
         }
     }*/
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-            super.onBackPressed()
-    }
 }

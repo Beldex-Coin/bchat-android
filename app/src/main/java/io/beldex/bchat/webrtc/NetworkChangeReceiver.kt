@@ -56,7 +56,7 @@ class NetworkChangeReceiver(private val onNetworkChangedCallback: (Boolean)->Uni
 
     fun register(context: Context) {
         val intentFilter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
-        context.registerReceiver(broadcastDelegate, intentFilter)
+        ContextCompat.registerReceiver(context, broadcastDelegate, intentFilter, ContextCompat.RECEIVER_NOT_EXPORTED)
         //val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         //cm.registerDefaultNetworkCallback(defaultObserver)
     }

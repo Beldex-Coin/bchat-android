@@ -2,9 +2,14 @@ package io.beldex.bchat.onboarding.ui
 
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.core.view.WindowCompat
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -40,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
@@ -50,7 +56,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
-import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -83,21 +88,26 @@ class OnBoardingActivity: BaseComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         destination = intent?.getStringExtra(extraStartDestination) ?: OnBoardingScreens.RestoreSeedScreen.route
-        WindowCompat.setDecorFitsSystemWindows(window, true)
         setContent {
             val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
             val view = LocalView.current
             val window = (view.context as Activity).window
             val statusBarColor = if (isDarkTheme) Color.Black else Color.White
             SideEffect {
-                window.statusBarColor = statusBarColor.toArgb()
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    window.statusBarColor = statusBarColor.toArgb()
+                }
+                window.navigationBarColor = Color.Transparent.toArgb()
                 WindowInsetsControllerCompat(window, view).isAppearanceLightStatusBars = !isDarkTheme
+                WindowInsetsControllerCompat(window, view).isAppearanceLightNavigationBars = !isDarkTheme
             }
             BChatTheme {
                 Surface {
                     Scaffold(
-                        containerColor = MaterialTheme.colorScheme.primary
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentWindowInsets = WindowInsets.safeDrawing
                     ) {
                         val navController = rememberNavController()
                         OnBoardingNavHost(
@@ -338,9 +348,9 @@ private fun ScreenContainer(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier =Modifier
+            modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
             Icon(
                 painterResource(id = R.drawable.ic_back_arrow),
@@ -365,7 +375,7 @@ private fun ScreenContainer(
             )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         if (wrapInCard) {
             CardContainer(
@@ -395,10 +405,12 @@ fun PassWordChangedPopup(onDismiss : () -> Unit, showPinChangedPopupTitle : Stri
         mutableFloatStateOf(1f)
     }
     val progress by animateLottieCompositionAsState(composition, isPlaying = isPlaying, speed = speed, restartOnPlay = false)
+    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     DialogContainer(
             dismissOnBackPress = false,
             dismissOnClickOutside = false,
             onDismissRequest = onDismiss,
+            wrapContentWidth = isLandscape,
     ) {
 
         OutlinedCard(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.dialogBackground), elevation=CardDefaults.cardElevation(defaultElevation=4.dp), modifier=Modifier.fillMaxWidth()) {

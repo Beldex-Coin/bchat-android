@@ -13,8 +13,8 @@ apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 configurations.all {
     exclude module: "commons-logging"
 }
-def canonicalVersionCode = 96
-def canonicalVersionName = "2.9.7"
+def canonicalVersionCode = 99
+def canonicalVersionName = "2.9.8"
 
 def postFixSize = 10
 def abiPostFix = ['armeabi-v7a' : 1,
@@ -39,6 +39,7 @@ android {
     packagingOptions {
         resources {
             excludes += ['LICENSE.txt', 'LICENSE', 'NOTICE', 'asm-license.txt', 'META-INF/LICENSE', 'META-INF/NOTICE', 'META-INF/proguard/androidx-annotations.pro']
+            pickFirsts += ['messages.properties']
             jniLibs {
                 useLegacyPackaging = true
             }

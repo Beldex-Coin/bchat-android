@@ -8,6 +8,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.IntentSender
 import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Rect
@@ -19,15 +21,17 @@ import android.os.Looper
 import android.provider.Settings
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.view.Gravity
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.widget.PopupMenu
+import androidx.appcompat.view.menu.MenuAdapter
+import androidx.appcompat.view.menu.MenuBuilder
+import androidx.appcompat.widget.ListPopupWindow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
@@ -37,6 +41,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
@@ -132,7 +137,6 @@ import io.beldex.bchat.util.SaveYourSeedDialogBox
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.disableClipping
-import io.beldex.bchat.util.getScreenWidth
 import io.beldex.bchat.util.parcelable
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.show
@@ -175,6 +179,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     private val callViewModel by viewModels<CallViewModel>()
     private val homeViewModel: HomeFragmentViewModel by viewModels()
     private val globalSearchAdapter = GlobalSearchAdapter {model ->  }
+
+    private var chatOptionsPopup: ListPopupWindow? = null
+    private var chatOptionsAnchor: View? = null
+    private var chatOptionsMenuAdapter: MenuAdapter? = null
+    private var chatOptionsThread: ThreadRecord? = null
+    private var chatOptionsPosition: Int = -1
 
 
     @Inject
@@ -285,6 +295,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         // Set content view
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        setupToolbarInsets()
         setSupportActionBar(binding.toolbar)
 
         items = arrayListOf(
@@ -352,9 +364,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                 if (position != 4 && position != 3) {
                     updateAdapter(position)
                 }
-                Handler(Looper.getMainLooper()).postDelayed({
-                    binding.drawerLayout.closeDrawer(GravityCompat.END)
-                }, 200)
+                binding.drawerLayout.closeDrawer(GravityCompat.END, false)
             }
         }))
 
@@ -494,15 +504,31 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             }
         }
 
-        binding.navigationMenu.menuContainer.run {
-            post {
-                val params = layoutParams as DrawerLayout.LayoutParams
-                params.width = (getScreenWidth() * 0.7).toInt()
-                layoutParams = params
-                translationX = -(this@HomeActivity.toPx(16))
+        updateDrawerWidth()
+        binding.drawerLayout.addDrawerListener(object : DrawerLayout.SimpleDrawerListener() {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                updateDrawerWidth()
+                binding.navigationMenu.menuContainer.translationX = -this@HomeActivity.toPx(16) * slideOffset
+            }
+
+            override fun onDrawerOpened(drawerView: View) {
+                binding.navigationMenu.menuContainer.translationX = -this@HomeActivity.toPx(16)
+            }
+
+            override fun onDrawerClosed(drawerView: View) {
+                binding.navigationMenu.menuContainer.translationX = 0f
+            }
+        })
+        binding.navigationMenu.version.text = resources.getString(R.string.version_name).format(BuildConfig.VERSION_NAME)
+
+        val statusBarHeight = resources.getDimensionPixelSize(resources.getIdentifier("status_bar_height", "dimen", "android"))
+        binding.navigationMenu.menuContainer.apply {
+            val lp = layoutParams as? DrawerLayout.LayoutParams
+            lp?.let {
+                it.topMargin += statusBarHeight
+                layoutParams = it
             }
         }
-        binding.navigationMenu.version.text = resources.getString(R.string.version_name).format(BuildConfig.VERSION_NAME)
 
         networkChangedReceiver = NetworkChangeReceiver(::networkChange)
         networkChangedReceiver!!.register(this)
@@ -696,6 +722,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             val statusBarHeight =
                 insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
             view.setPadding(0, statusBarHeight, 0, 0)
+            insets
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.contentView) { view, insets ->
+            val cutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
+            view.setPadding(cutout.left, 0, cutout.right, 0)
             insets
         }
     }
@@ -917,22 +949,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             actionState: Int,
             isCurrentlyActive: Boolean
         ) {
-            val width = Resources.getSystem().displayMetrics.widthPixels
             val deleteIcon = ResourcesCompat.getDrawable(resources, R.drawable.ic_delete_24, null)
-            when {
-                abs(dX) < width / 3 -> {
-                    println(">>>>>swipe1")
-                }
-                dX > width / 3 -> {
-                    println(">>>>>swipe2")
-                }
-                else -> {
-                    println(">>>>>swipe3")
-                }
-            }
-            val textMargin = resources.getDimension(R.dimen.fab_margin).roundToInt()
             deleteIcon ?: return
+            val textMargin = resources.getDimension(R.dimen.fab_margin).roundToInt()
             val top = viewHolder.itemView.top + (viewHolder.itemView.bottom - viewHolder.itemView.top) / 2 - deleteIcon.intrinsicHeight / 2
+            val width = viewHolder.itemView.right
             deleteIcon.bounds = Rect(
                 width - textMargin - deleteIcon.intrinsicWidth,
                 top,
@@ -995,17 +1016,16 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         onConversationClick(thread.threadId)
     }
 
-    override fun onLongConversationClick(thread : ThreadRecord, view : View, position: Int) {
+    override fun onLongConversationClick(thread : ThreadRecord, view : View, position: Int, touchX: Float, touchY: Float) {
+        Log.d("HomeMenuDebug", "onLongConversationClick called, touch=($touchX,$touchY)")
         val recipient = thread.recipient
-        val popupMenu = PopupMenu(this, view, R.style.PopupMenu)
-        popupMenu.menuInflater.inflate(R.menu.menu_conversation_v2, popupMenu.menu)
-        popupMenu.gravity = Gravity.END
-        popupMenu.setForceShowIcon(true)
-        val item : MenuItem= popupMenu.menu.findItem(R.id.menu_delete)
+        val menu = MenuBuilder(this)
+        menuInflater.inflate(R.menu.menu_conversation_v2, menu)
+        val item : MenuItem= menu.findItem(R.id.menu_delete)
         val s=SpannableString(getString(R.string.delete))
         s.setSpan(ForegroundColorSpan(this.getColor(R.color.red)), 0, s.length, 0)
         item.setTitle(s)
-        with(popupMenu.menu) {
+        with(menu) {
             if (recipient.isGroupRecipient && !recipient.isLocalNumber) {
                 findItem(R.id.menu_details).setVisible(false)
                 findItem(R.id.menu_unblock).setVisible(false)
@@ -1028,11 +1048,135 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             findItem(R.id.menu_unpin).setVisible(thread.isPinned)
             findItem(R.id.menu_archive_chat).setVisible(true)
         }
-        popupMenu.setOnMenuItemClickListener {
-            handlePopUpMenuClickListener(it, thread, position)
-            return@setOnMenuItemClickListener true
+
+        // Show the menu as a dropdown anchored to the long-pressed row. It drops below the row when
+        // there is room; otherwise it is shown above the row. Its height is always bounded by the
+        // space available inside the chat list area, so it never grows over the views above (e.g.
+        // the global search box) nor past the bottom of the screen.
+        val menuAdapter = MenuAdapter(menu, layoutInflater, true, androidx.appcompat.R.layout.abc_popup_menu_item_layout)
+        showChatOptionsMenu(menuAdapter, view, thread, position)
+    }
+
+    private fun showChatOptionsMenu(menuAdapter: MenuAdapter, anchor: View, thread: ThreadRecord, position: Int) {
+        chatOptionsPopup?.dismiss()
+
+        var maxItemWidth = 0
+        for (i in 0 until menuAdapter.count) {
+            val itemView = menuAdapter.getView(i, null, null)
+            itemView.measure(
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            )
+            maxItemWidth = maxOf(maxItemWidth, itemView.measuredWidth)
         }
-        popupMenu.show()
+
+        val screenWidth = resources.displayMetrics.widthPixels
+        val density = resources.displayMetrics.density
+        val menuItemHeight = (48f * density).roundToInt()
+        val estimatedPopupHeight = menuAdapter.count * menuItemHeight + (4f * density).roundToInt()
+
+        // The menu is bounded to the chat list area: everything above it is the header / search box.
+        val listLocation = IntArray(2)
+        binding.recyclerView.getLocationOnScreen(listLocation)
+        val contentTop = listLocation[1]
+        val contentBottom = listLocation[1] + binding.recyclerView.height
+
+        val rowLocation = IntArray(2)
+        anchor.getLocationOnScreen(rowLocation)
+        val rowLeft = rowLocation[0]
+        val rowRight = rowLeft + anchor.width
+        val rowTop = rowLocation[1]
+        val rowBottom = rowTop + anchor.height
+
+        val spaceBelow = contentBottom - rowBottom
+        val spaceAbove = rowTop - contentTop
+        val chatHeight = (contentBottom - contentTop).coerceAtLeast(0)
+
+        // Choose where to place the menu and how tall it can be. The menu is kept inside the chat
+        // list area so it never overlaps the header / search box above or the bottom of the screen.
+        val popupHeight: Int
+        val popupTop: Int
+        when {
+            estimatedPopupHeight <= spaceBelow -> {
+                popupHeight = estimatedPopupHeight
+                popupTop = rowBottom
+            }
+            estimatedPopupHeight <= spaceAbove -> {
+                popupHeight = estimatedPopupHeight
+                popupTop = rowTop - popupHeight
+            }
+            else -> {
+                // Not enough room on either side (e.g. landscape). Use the full height of the chat
+                // list area, centered on it, so the menu uses all the available space.
+                popupHeight = minOf(estimatedPopupHeight, chatHeight)
+                popupTop = contentTop + (chatHeight - popupHeight) / 2
+            }
+        }
+
+        val menuWidth = maxItemWidth.coerceIn(0, screenWidth)
+        val popupLeft = (rowRight - menuWidth).coerceIn(0, screenWidth - menuWidth)
+
+        val listPopup = ListPopupWindow(this, null, androidx.appcompat.R.attr.popupMenuStyle)
+        listPopup.setAnchorView(anchor)
+        listPopup.setAdapter(menuAdapter)
+        listPopup.setContentWidth(menuWidth)
+        listPopup.setHeight(popupHeight)
+        listPopup.setHorizontalOffset(popupLeft - rowLeft)
+        listPopup.setVerticalOffset(popupTop - rowBottom)
+
+        Log.d("HomeMenuDebug", "maxItemWidth=$menuWidth spaceBelow=$spaceBelow spaceAbove=$spaceAbove chatHeight=$chatHeight count=${menuAdapter.count} popupHeight=$popupHeight popupTop=$popupTop rowScreen=$rowLeft,$rowTop")
+        listPopup.setOnItemClickListener { _, _, itemPosition, _ ->
+            val selectedItem = menuAdapter.getItem(itemPosition)
+            listPopup.dismiss()
+            handlePopUpMenuClickListener(selectedItem, thread, position)
+        }
+        listPopup.show()
+
+        chatOptionsPopup = listPopup
+        chatOptionsAnchor = anchor
+        chatOptionsMenuAdapter = menuAdapter
+        chatOptionsThread = thread
+        chatOptionsPosition = position
+    }
+
+    private fun repositionChatOptionsMenu() {
+        val popup = chatOptionsPopup ?: return
+        val adapter = chatOptionsMenuAdapter ?: return
+        val thread = chatOptionsThread ?: return
+        val position = chatOptionsPosition
+        if (!popup.isShowing) return
+
+        popup.dismiss()
+
+        // The view hierarchy is re-laid out after the configuration change, so wait for the new
+        // layout before re-showing, otherwise the popup would use stale coordinates and could end
+        // up off-screen (e.g. portrait -> landscape). When the long-pressed row scrolled off-screen
+        // after the rotation (the chat list is shorter in landscape), the menu is shown centered on
+        // the chat list area instead, so it never disappears.
+        binding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                binding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                if (isFinishing) return
+                val anchor = resolveChatOptionsAnchor() ?: binding.recyclerView
+                if (anchor.isAttachedToWindow) {
+                    showChatOptionsMenu(adapter, anchor, thread, position)
+                }
+            }
+        })
+    }
+
+    private fun resolveChatOptionsAnchor(): View? {
+        val rowView = binding.recyclerView.findViewHolderForAdapterPosition(chatOptionsPosition)?.itemView
+        if (rowView != null && rowView.isAttachedToWindow) {
+            chatOptionsAnchor = rowView
+            return rowView
+        }
+        val current = chatOptionsAnchor
+        if (current != null && current.isAttachedToWindow) {
+            return current
+        }
+        chatOptionsAnchor = null
+        return null
     }
 
     override fun showMessageRequests() {
@@ -1381,18 +1525,30 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     }
 
     private fun updateEmptyState() {
-        val threadCount=(binding.recyclerView.adapter)!!.itemCount
-        binding.emptyStateContainer.isVisible=
-            threadCount == 0 && binding.recyclerView.isVisible && threadDb.archivedConversationList.count == 0
-        binding.emptyStateContainerText.isVisible=
-            threadCount == 0 && binding.recyclerView.isVisible && threadDb.archivedConversationList.count == 0
+        val threadCount = binding.recyclerView.adapter!!.itemCount
 
-        val isDayUiMode=UiModeUtilities.isDayUiMode(this)
-        (if (isDayUiMode) R.drawable.ic_doodle_3_2 else R.drawable.ic_doodle_3_1).also {
-            binding.emptyStateImageView.setImageResource(
-                it
-            )
+        binding.emptyStateContainer.isVisible =
+            threadCount == 0 &&
+                    binding.recyclerView.isVisible &&
+                    threadDb.archivedConversationList.count == 0
+
+        binding.emptyStateContainerText.isVisible =
+            threadCount == 0 &&
+                    binding.recyclerView.isVisible &&
+                    threadDb.archivedConversationList.count == 0
+
+        val isDayUiMode = UiModeUtilities.isDayUiMode(this)
+        val isLandscape =
+            resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+        val imageRes = when {
+            isLandscape && isDayUiMode -> R.drawable.doodle_white_land
+            isLandscape && !isDayUiMode -> R.drawable.doodle_dark_land
+            !isLandscape && isDayUiMode -> R.drawable.ic_doodle_3_2
+            else -> R.drawable.ic_doodle_3_1
         }
+
+        binding.emptyStateImageView.setImageResource(imageRes)
     }
 
     private fun registerObservers() {
@@ -1544,11 +1700,44 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     }
 
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        updateEmptyState()
+        val wasDrawerOpen = binding.drawerLayout.isDrawerVisible(GravityCompat.END)
+        updateDrawerWidth()
+        repositionChatOptionsMenu()
+        if (wasDrawerOpen) {
+            binding.navigationMenu.menuContainer.post {
+                binding.drawerLayout.openDrawer(GravityCompat.END)
+            }
+        }
+    }
+
+    private fun updateDrawerWidth() {
+        binding.navigationMenu.menuContainer.post {
+            val params = binding.navigationMenu.menuContainer.layoutParams as DrawerLayout.LayoutParams
+            val isLandscape = resources.configuration.orientation == ORIENTATION_LANDSCAPE
+            val density = resources.displayMetrics.density
+            val screenWidth = resources.displayMetrics.widthPixels
+            val drawerWidthFactor = when {
+                isLandscape -> 0.4f
+                screenWidth >= 600 * density -> 0.25f
+                else -> 0.7f
+            }
+            params.width = (screenWidth * drawerWidthFactor).toInt()
+            binding.navigationMenu.menuContainer.layoutParams = params
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         Timber.d("onResume()-->")
         val appSettingLanguage = findBestMatchingLocaleForLanguage(getLanguage(this))
         TextSecurePreferences.setDeviceLanguage(this, appSettingLanguage?.language)
+        updateDrawerWidth()
+        if (binding.drawerLayout.isDrawerVisible(GravityCompat.END)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.END, false)
+        }
         //Important
         //if (!Ledger.isConnected()) attachLedger()
         if(!CheckOnline.isOnline(this)){
@@ -1586,6 +1775,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
 
     override fun onPause() {
         super.onPause()
+        binding.drawerLayout.closeDrawer(GravityCompat.END, false)
         val dialog = supportFragmentManager.findFragmentByTag(ConversationActionDialog.TAG)
         if (dialog is DialogFragment) {
             dialog.dismissAllowingStateLoss()

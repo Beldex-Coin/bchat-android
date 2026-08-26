@@ -8,6 +8,7 @@ import android.media.AudioManager
 import android.media.SoundPool
 import android.os.Build
 import android.os.HandlerThread
+import androidx.core.content.ContextCompat
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.ThreadUtils
 import io.beldex.bchat.webrtc.AudioManagerCommand
@@ -100,7 +101,7 @@ class SignalAudioManager(private val context: Context,
             updateAudioDeviceState()
 
             wiredHeadsetReceiver = WiredHeadsetReceiver()
-            context.registerReceiver(wiredHeadsetReceiver, IntentFilter(AudioManager.ACTION_HEADSET_PLUG))
+            ContextCompat.registerReceiver(context, wiredHeadsetReceiver, IntentFilter(AudioManager.ACTION_HEADSET_PLUG), ContextCompat.RECEIVER_NOT_EXPORTED)
 
             state = State.PREINITIALIZED
 

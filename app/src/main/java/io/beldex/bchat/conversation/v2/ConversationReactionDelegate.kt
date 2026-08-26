@@ -37,6 +37,11 @@ internal class ConversationReactionDelegate(private val overlayStub: Stub<Conver
     fun hide() {
         overlayStub.get().hide()
     }
+    fun reposition() {
+        if (isShowing) {
+            overlayStub.get().reposition()
+        }
+    }
     fun hideForReactWithAny() {
         overlayStub.get().hideForReactWithAny()
     }

@@ -90,7 +90,7 @@ class PushRegistryV2 @Inject constructor(private val pushReceiver: PushReceiver)
     private inline fun <reified T: Response> getResponseBody(path: String, requestParameters: String): Promise<T, Exception> {
         val server = Server.LATEST
         val url = "${server.url}/$path"
-        val body = RequestBody.create("application/json".toMediaType(), requestParameters)
+        val body = requestParameters.toRequestBody("application/json".toMediaType())
         val request = Request.Builder().url(url).post(body).build()
         return OnionRequestAPI.sendOnionRequest(
             request,

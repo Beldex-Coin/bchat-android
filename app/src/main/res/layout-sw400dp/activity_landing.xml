@@ -1,39 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/action_bar_background"
     android:orientation="vertical">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="vertical"
-        android:paddingHorizontal="24dp"
         android:layout_weight="1">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:paddingVertical="24dp"
-            android:layout_weight="1"
-            tools:ignore="NestedWeights">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_landing_bubble"
+            android:layout_gravity="center|end"
+            android:paddingBottom="28dp"/>
 
-            <ImageView
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="24dp"
+            android:layout_gravity="center">
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_landing_bubble"
-                android:layout_gravity="center|end"
-                android:paddingBottom="28dp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_gravity="center">
-
+                android:fontFamily="@font/open_sans_bold"
+                android:text="Welcome to"
+                android:textSize="@dimen/very_large_font_size"
+                android:textStyle="bold"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -42,62 +41,69 @@
                     android:textSize="@dimen/very_large_font_size"
                     android:textStyle="bold"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:src="@drawable/ic_bchat_logo" />
 
-                    <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center_vertical"
-                        android:src="@drawable/ic_bchat_logo" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:src="@drawable/bchat" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/title_first"
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans_bold"
-                    android:text="@string/hello"
-                    android:textAlignment="viewStart"
-                    android:textSize="@dimen/very_large_font_size"
-                    android:textStyle="bold"
-                    android:layout_marginTop="36dp"/>
-
-                <TextView
-                    android:id="@+id/sub_title_first"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans_bold"
-                    android:text="@string/we_are_thrilled"
-                    android:textSize="@dimen/very_large_font_size"
-                    android:textStyle="bold"
-                    android:layout_marginTop="12dp"/>
-
-                <TextView
-                    android:id="@+id/sub_title_second"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans_regular"
-                    android:text="@string/landing_screen_content"
-                    android:textAlignment="textStart"
-                    android:textSize="@dimen/small_font_size"
-                    android:textColor="@color/text_hint"
-                    android:textStyle="normal"
-                    android:layout_marginTop="20dp"/>
+                    android:layout_marginStart="10dp"
+                    android:src="@drawable/bchat" />
 
             </LinearLayout>
 
-        </FrameLayout>
+            <TextView
+                android:id="@+id/title_first"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans_bold"
+                android:text="@string/hello"
+                android:textAlignment="viewStart"
+                android:textSize="@dimen/very_large_font_size"
+                android:textStyle="bold"
+                android:layout_marginTop="36dp"/>
+
+            <TextView
+                android:id="@+id/sub_title_first"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans_bold"
+                android:text="@string/we_are_thrilled"
+                android:textSize="@dimen/very_large_font_size"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp"/>
+
+            <TextView
+                android:id="@+id/sub_title_second"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans_regular"
+                android:text="@string/landing_screen_content"
+                android:textAlignment="textStart"
+                android:textSize="@dimen/small_font_size"
+                android:textColor="@color/text_hint"
+                android:textStyle="normal"
+                android:layout_marginTop="20dp"/>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingBottom="16dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/registerButton"

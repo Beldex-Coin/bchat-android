@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -14,6 +15,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentModalUrlBottomSheetBinding
@@ -30,11 +33,14 @@ class ModalUrlBottomSheet(private val url: String): BottomSheetDialogFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val explanation = resources.getString(R.string.dialog_open_url_explanation, url)
-        val layouts= view.layoutParams as ViewGroup.MarginLayoutParams
-        layouts.leftMargin = 32
-        layouts.rightMargin = 32
-        layouts.bottomMargin = 24
-        view.layoutParams = layouts
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        if (!isLandscape) {
+            val layouts = view.layoutParams as ViewGroup.MarginLayoutParams
+            layouts.leftMargin = 32
+            layouts.rightMargin = 32
+            layouts.bottomMargin = 24
+            view.layoutParams = layouts
+        }
         val spannable = SpannableStringBuilder(explanation)
         val startIndex = explanation.indexOf(url)
         spannable.setSpan(StyleSpan(Typeface.BOLD), startIndex, startIndex + url.count(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -67,6 +73,19 @@ class ModalUrlBottomSheet(private val url: String): BottomSheetDialogFragment(),
         val window = dialog?.window ?: return
         val isLightMode = UiModeUtilities.isDayUiMode(requireContext())
         window.setDimAmount(if (isLightMode) 0.1f else 0.75f)
+
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        val bottomSheet = dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+        if (bottomSheet != null && bottomSheet.parent is CoordinatorLayout) {
+            val behavior = BottomSheetBehavior.from(bottomSheet)
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            behavior.isHideable = true
+            behavior.skipCollapsed = true
+            if (isLandscape) {
+                val displayHeight = resources.displayMetrics.heightPixels
+                behavior.maxHeight = (displayHeight * 0.9).toInt()
+            }
+        }
     }
 
     override fun onClick(v: View?) {

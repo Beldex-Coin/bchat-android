@@ -343,7 +343,7 @@ class WebRtcCallService: LifecycleService(), CallManager.WebRtcListener {
 
     private fun registerIncomingPstnCallReceiver() {
         callReceiver = IncomingPstnCallReceiver()
-        registerReceiver(callReceiver, IntentFilter("android.intent.action.PHONE_STATE"))
+        ContextCompat.registerReceiver(this, callReceiver, IntentFilter("android.intent.action.PHONE_STATE"), ContextCompat.RECEIVER_NOT_EXPORTED)
     }
 
     private fun registerWantsToAnswerReceiver() {
@@ -358,7 +358,7 @@ class WebRtcCallService: LifecycleService(), CallManager.WebRtcListener {
 
     private fun registerWiredHeadsetStateReceiver() {
         wiredHeadsetStateReceiver = WiredHeadsetStateReceiver()
-        registerReceiver(wiredHeadsetStateReceiver, IntentFilter(AudioManager.ACTION_HEADSET_PLUG))
+        ContextCompat.registerReceiver(this, wiredHeadsetStateReceiver, IntentFilter(AudioManager.ACTION_HEADSET_PLUG), ContextCompat.RECEIVER_NOT_EXPORTED)
     }
 
     private fun handleBusyCall(intent: Intent) {
@@ -683,7 +683,7 @@ class WebRtcCallService: LifecycleService(), CallManager.WebRtcListener {
         if (powerButtonReceiver == null) {
             powerButtonReceiver = PowerButtonReceiver()
             Log.d("Beldex", "Notification issue ACTION_SCREEN_OFF Called ")
-            registerReceiver(powerButtonReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF))
+            ContextCompat.registerReceiver(this, powerButtonReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF), ContextCompat.RECEIVER_NOT_EXPORTED)
         }
     }
 

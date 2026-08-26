@@ -61,6 +61,8 @@ dependencies {
     ksp("androidx.hilt:hilt-compiler:$jetpackHiltVersion")
 
     implementation 'com.goterl:lazysodium-android:5.2.0@aar'
+    // Lightweight ML-KEM API; do not register Bouncy Castle as a JCE provider.
+    implementation 'org.bouncycastle:bcprov-jdk18on:1.79'
     implementation "net.java.dev.jna:jna:5.17.0@aar"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     implementation "androidx.core:core-ktx:$coreVersion"

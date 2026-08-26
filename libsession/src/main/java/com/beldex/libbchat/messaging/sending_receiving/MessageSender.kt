@@ -129,7 +129,14 @@ object MessageSender {
             val ciphertext: ByteArray
             val senderBeldexAddress = storage.getSenderBeldexAddress()!!
             when (destination) {
-                is Destination.Contact -> ciphertext = MessageEncrypter.encrypt(plaintext, destination.publicKey,senderBeldexAddress)
+                is Destination.Contact -> {
+                    val peerPqKey = storage.getPostQuantumPublicKey(destination.publicKey)
+                    ciphertext = if (peerPqKey != null) {
+                        MessageEncrypter.encryptPostQuantum(plaintext, destination.publicKey, peerPqKey)
+                    } else {
+                        MessageEncrypter.encrypt(plaintext, destination.publicKey, senderBeldexAddress)
+                    }
+                }
                 is Destination.ClosedGroup -> {
                     val encryptionKeyPair = MessagingModuleConfiguration.shared.storage.getLatestClosedGroupEncryptionKeyPair(destination.groupPublicKey)!!
                     ciphertext = MessageEncrypter.encrypt(

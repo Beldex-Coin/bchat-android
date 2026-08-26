@@ -23,6 +23,7 @@ class BchatContactDatabase(context: Context, helper: SQLCipherOpenHelper) : Data
         const val isTrusted = "is_trusted"
         const val beldexAddress = "beldex_address"
         const val isBnsHolder = "is_bns_holder"
+        const val postQuantumPublicKey = "post_quantum_public_key"
         @JvmStatic val createBchatContactTableCommand =
             "CREATE TABLE $bchatContactTable " +
                 "($bchatID STRING PRIMARY KEY, " +
@@ -34,10 +35,13 @@ class BchatContactDatabase(context: Context, helper: SQLCipherOpenHelper) : Data
                 "$threadID INTEGER DEFAULT -1, " +
                 "$isTrusted INTEGER DEFAULT 0, " +
                 "$beldexAddress STRING DEFAULT NULL, " +
-                "$isBnsHolder INTEGER DEFAULT 0);"
+                "$isBnsHolder INTEGER DEFAULT 0, " +
+                "$postQuantumPublicKey BLOB DEFAULT NULL);"
 
         @JvmStatic val createIsBnsHolderCommand = "ALTER TABLE " + bchatContactTable + " " +
                 "ADD COLUMN " + isBnsHolder + " INTEGER DEFAULT 0;"
+        @JvmStatic val createPostQuantumPublicKeyCommand = "ALTER TABLE " + bchatContactTable + " " +
+                "ADD COLUMN " + postQuantumPublicKey + " BLOB DEFAULT NULL;"
     }
 
     fun getContactWithBchatID(bchatID: String): Contact? {
@@ -116,6 +120,7 @@ class BchatContactDatabase(context: Context, helper: SQLCipherOpenHelper) : Data
         contentValues.put(isTrusted, if (contact.isTrusted) 1 else 0)
         contentValues.put(beldexAddress,contact.beldexAddress)
         contentValues.put(isBnsHolder,if(contact.isBnsHolder) 1 else 0)
+        contact.postQuantumPublicKey?.let { contentValues.put(postQuantumPublicKey, it) }
         database.insertOrUpdate(bchatContactTable, contentValues, "$bchatID = ?", arrayOf( contact.bchatID ))
         notifyConversationListListeners()
     }
@@ -134,6 +139,9 @@ class BchatContactDatabase(context: Context, helper: SQLCipherOpenHelper) : Data
         contact.isTrusted = cursor.getInt(cursor.getColumnIndexOrThrow(isTrusted)) != 0
         contact.beldexAddress   = cursor.getStringOrNull(cursor.getColumnIndexOrThrow(beldexAddress))
         contact.isBnsHolder = cursor.getInt(cursor.getColumnIndexOrThrow(isBnsHolder)) != 0
+        if (!cursor.isNull(cursor.getColumnIndexOrThrow(postQuantumPublicKey))) {
+            contact.postQuantumPublicKey = cursor.getBlob(cursor.getColumnIndexOrThrow(postQuantumPublicKey))
+        }
         return contact
     }
 

@@ -138,6 +138,9 @@ object MessageReceiver {
         message.sentTimestamp = envelope.timestamp
         message.receivedTimestamp = if (envelope.hasServerTimestamp()) envelope.serverTimestamp else MnodeAPI.nowWithOffset
         message.groupPublicKey = groupPublicKey
+        if (!isSecretGroupMessage && message is VisibleMessage && message.postQuantumPublicKey != null) {
+            storage.setPostQuantumPublicKey(sender, message.postQuantumPublicKey!!)
+        }
         message.openGroupServerMessageID = openGroupServerID
         // Validate
         var isValid = message.isValid()

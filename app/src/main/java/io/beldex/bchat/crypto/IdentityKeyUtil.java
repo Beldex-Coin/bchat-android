@@ -53,6 +53,7 @@ public class IdentityKeyUtil {
   public static final String ED25519_PUBLIC_KEY                          = "pref_ed25519_public_key";
   public static final String ED25519_SECRET_KEY                          = "pref_ed25519_secret_key";
   public static final String NOTIFICATION_KEY                            = "pref_notification_key";
+  public static final String POST_QUANTUM_PRIVATE_KEY                    = "pref_ml_kem_768_private_key";
 
   public static final String BELDEX_SEED                                 = "beldex_seed";
   public static final String HAS_MIGRATED_KEY                            = "has_migrated_keys";

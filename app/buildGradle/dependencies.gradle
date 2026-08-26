@@ -177,6 +177,6 @@ dependencies {
 
     implementation 'androidx.compose.foundation:foundation:1.7.6'
 
-    implementation 'org.bouncycastle:bcprov-jdk15to18:1.70'
+    implementation 'org.bouncycastle:bcprov-jdk18on:1.79'
 
 }

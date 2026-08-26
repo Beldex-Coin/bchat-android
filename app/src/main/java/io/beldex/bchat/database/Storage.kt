@@ -53,6 +53,8 @@ import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.database.helpers.SQLCipherOpenHelper
 import io.beldex.bchat.database.model.MessageId
 import io.beldex.bchat.database.model.ReactionRecord
+import io.beldex.bchat.crypto.IdentityKeyUtil
+import com.beldex.libsignal.utilities.Base64
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.groups.OpenGroupManager
 import io.beldex.bchat.jobs.RetrieveProfileAvatarJob
@@ -67,6 +69,23 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
 
     override fun getUserX25519KeyPair(): ECKeyPair {
         return DatabaseComponent.get(context).beldexAPIDatabase().getUserX25519KeyPair()
+    }
+
+    override fun getPostQuantumPrivateKey(): ByteArray? =
+        IdentityKeyUtil.retrieve(context, IdentityKeyUtil.POST_QUANTUM_PRIVATE_KEY)?.let { Base64.decode(it) }
+
+    override fun setPostQuantumPrivateKey(privateKey: ByteArray) {
+        IdentityKeyUtil.save(context, IdentityKeyUtil.POST_QUANTUM_PRIVATE_KEY, Base64.encodeBytes(privateKey))
+    }
+
+    override fun getPostQuantumPublicKey(bchatID: String): ByteArray? =
+        DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(bchatID)?.postQuantumPublicKey
+
+    override fun setPostQuantumPublicKey(bchatID: String, publicKey: ByteArray) {
+        val contactDB = DatabaseComponent.get(context).bchatContactDatabase()
+        val contact = contactDB.getContactWithBchatID(bchatID) ?: Contact(bchatID)
+        contact.postQuantumPublicKey = publicKey.copyOf()
+        contactDB.setContact(contact)
     }
 
     override fun getUserProfile(): Profile {

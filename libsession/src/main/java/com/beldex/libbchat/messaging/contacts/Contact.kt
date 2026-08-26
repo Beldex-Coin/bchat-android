@@ -42,6 +42,8 @@ class Contact(val bchatID: String) {
      * The flag is used to verify the BNS holder
      */
     var isBnsHolder = false
+    /** ML-KEM-768 public key advertised by this contact in a signed message. */
+    var postQuantumPublicKey: ByteArray? = null
     /**
      * The report issue's BChat ID, set by default.
      */

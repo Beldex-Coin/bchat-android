@@ -8,6 +8,9 @@ import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.protos.SignalServiceProtos
+import com.google.protobuf.ByteString
+import com.google.protobuf.UnknownFieldSet
+import com.beldex.libbchat.messaging.sending_receiving.PostQuantumCrypto
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment as SignalAttachment
 
@@ -28,6 +31,8 @@ class VisibleMessage : Message()  {
     var payment: Payment? = null
     var reaction: Reaction? = null
     var sharedContact: SharedContact? = null
+    /** Present only on direct-message protobufs; old clients ignore this unknown field. */
+    var postQuantumPublicKey: ByteArray? = null
 
     override val isSelfSendValid: Boolean = true
 
@@ -48,6 +53,7 @@ class VisibleMessage : Message()  {
     // region Proto Conversion
     companion object {
         const val TAG = "VisibleMessage"
+        private const val POST_QUANTUM_PUBLIC_KEY_FIELD = 108
 
         fun fromProto(proto: SignalServiceProtos.Content, bAddress: String): VisibleMessage? {
             val dataMessage = proto.dataMessage ?: return null
@@ -57,6 +63,10 @@ class VisibleMessage : Message()  {
 
             if (dataMessage.hasSyncTarget()) { result.syncTarget = dataMessage.syncTarget }
             result.text = dataMessage.body
+            dataMessage.unknownFields.getField(POST_QUANTUM_PUBLIC_KEY_FIELD)
+                .lengthDelimitedList.firstOrNull()?.let { key ->
+                    if (key.size() == 1184) result.postQuantumPublicKey = key.toByteArray()
+                }
             // Attachments are handled in MessageReceiver
             val quoteProto = if (dataMessage.hasQuote()) dataMessage.quote else null
             if (quoteProto != null) {
@@ -181,6 +191,17 @@ class VisibleMessage : Message()  {
         // Sync target
         if (syncTarget != null) {
             dataMessage.syncTarget = syncTarget
+        }
+        // Key advertisements are authenticated by the message's existing Ed25519 signature.
+        // They retain wire compatibility because proto2 readers ignore unknown fields.
+        if (!storage.isClosedGroup(recipient!!)) {
+            val pqPublicKey = PostQuantumCrypto.localKeyPair(storage).publicKey
+            val field = UnknownFieldSet.Field.newBuilder()
+                .addLengthDelimited(ByteString.copyFrom(pqPublicKey))
+                .build()
+            dataMessage.mergeUnknownFields(
+                UnknownFieldSet.newBuilder().addField(POST_QUANTUM_PUBLIC_KEY_FIELD, field).build()
+            )
         }
         // Build
         return try {

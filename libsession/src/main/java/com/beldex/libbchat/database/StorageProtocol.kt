@@ -35,6 +35,12 @@ interface StorageProtocol {
     // General
     fun getUserPublicKey(): String?
     fun getUserX25519KeyPair(): ECKeyPair
+    /** ML-KEM-768 private key, encrypted at rest by the platform keystore. */
+    fun getPostQuantumPrivateKey(): ByteArray?
+    fun setPostQuantumPrivateKey(privateKey: ByteArray)
+    /** A peer key is present only after a signed legacy message advertised it. */
+    fun getPostQuantumPublicKey(bchatID: String): ByteArray?
+    fun setPostQuantumPublicKey(bchatID: String, publicKey: ByteArray)
     fun getUserProfile(): Profile
     fun setUserProfilePictureURL(newProfilePicture: String)
     // Signal

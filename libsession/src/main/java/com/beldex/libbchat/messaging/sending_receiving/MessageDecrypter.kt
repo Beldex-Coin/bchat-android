@@ -2,6 +2,7 @@ package com.beldex.libbchat.messaging.sending_receiving
 
 import android.content.SharedPreferences
 import android.util.Log
+import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libsignal.crypto.ecc.ECKeyPair
 import com.beldex.libsignal.utilities.Hex
 import com.goterl.lazysodium.LazySodiumAndroid
@@ -50,11 +51,14 @@ object MessageDecrypter {
 
         // 1. ) Decrypt the message
         Log.d("D--> cipherText ",ciphertext.toHexString())
+        if (ciphertext.size <= Box.SEALBYTES) throw MessageReceiver.Error.DecryptionFailed
         val plaintextWithMetadata = ByteArray(ciphertext.size - Box.SEALBYTES)
         Log.d("D--> plaintextWithMetadata ",plaintextWithMetadata.toHexString())
 
         try {
-            sodium.cryptoBoxSealOpen(plaintextWithMetadata, ciphertext, ciphertext.size.toLong(), recipientX25519PublicKey, recipientX25519PrivateKey)
+            if (!sodium.cryptoBoxSealOpen(plaintextWithMetadata, ciphertext, ciphertext.size.toLong(), recipientX25519PublicKey, recipientX25519PrivateKey)) {
+                throw MessageReceiver.Error.DecryptionFailed
+            }
             Log.d("D--> plaintextWithMetadata decrypt",plaintextWithMetadata.toHexString())
         } catch (exception: Exception) {
             Log.d("Beldex", "Couldn't decrypt message due to error: $exception.")
@@ -84,6 +88,17 @@ object MessageDecrypter {
     //Sub Function
     public fun decrypt(ciphertext: ByteArray, x25519KeyPair: ECKeyPair): Triple<ByteArray, String,String> {
 
+        if (ciphertext.firstOrNull() == PostQuantumCrypto.VERSION) {
+            val pqPrivateKey = MessagingModuleConfiguration.shared.storage.getPostQuantumPrivateKey()
+                ?: throw MessageReceiver.Error.DecryptionFailed
+            try {
+                val plaintext = PostQuantumCrypto.decrypt(ciphertext, x25519KeyPair.privateKey.serialize(), pqPrivateKey)
+                return verifyAndUnwrap(plaintext, x25519KeyPair)
+            } catch (exception: Exception) {
+                // A legacy sealed box can coincidentally start with 0x02. Preserve old traffic.
+            }
+        }
+
         //Log.d("@--> beldexWalletaddress ",String(beldexWalletAddress, StandardCharsets.UTF_8))
         //-Log.d("messageDecryption ", ciphertext.toHexString())
 
@@ -101,17 +116,28 @@ object MessageDecrypter {
 
         // 1. ) Decrypt the message
         //-Log.d("D--> cipherText ",ciphertext.toHexString())
+        if (ciphertext.size <= Box.SEALBYTES) throw MessageReceiver.Error.DecryptionFailed
         val plaintextWithMetadata = ByteArray(ciphertext.size - Box.SEALBYTES)
         //-Log.d("D--> plaintextWithMetadata ",plaintextWithMetadata.toHexString())
 
         try {
-            sodium.cryptoBoxSealOpen(plaintextWithMetadata, ciphertext, ciphertext.size.toLong(), recipientX25519PublicKey, recipientX25519PrivateKey)
+            if (!sodium.cryptoBoxSealOpen(plaintextWithMetadata, ciphertext, ciphertext.size.toLong(), recipientX25519PublicKey, recipientX25519PrivateKey)) {
+                throw MessageReceiver.Error.DecryptionFailed
+            }
             //-Log.d("D--> plaintextWithMetadata decrypt",plaintextWithMetadata.toHexString())
         } catch (exception: Exception) {
             Log.d("Beldex", "Couldn't decrypt message due to error: $exception.")
             throw MessageReceiver.Error.DecryptionFailed
         }
         if (plaintextWithMetadata.size <= (signatureSize + ed25519PublicKeySize)) { throw MessageReceiver.Error.DecryptionFailed }
+        return verifyAndUnwrap(plaintextWithMetadata, x25519KeyPair)
+    }
+
+    private fun verifyAndUnwrap(plaintextWithMetadata: ByteArray, x25519KeyPair: ECKeyPair): Triple<ByteArray, String, String> {
+        val recipientX25519PublicKey = Hex.fromStringCondensed(x25519KeyPair.hexEncodedPublicKey.removingbdPrefixIfNeeded())
+        val signatureSize = Sign.BYTES
+        val ed25519PublicKeySize = Sign.PUBLICKEYBYTES
+        if (plaintextWithMetadata.size <= (signatureSize + ed25519PublicKeySize)) throw MessageReceiver.Error.DecryptionFailed
         // 2. ) Get the message parts
         val signature = plaintextWithMetadata.sliceArray(plaintextWithMetadata.size - signatureSize until plaintextWithMetadata.size)
         val senderED25519PublicKey = plaintextWithMetadata.sliceArray(plaintextWithMetadata.size - (signatureSize + ed25519PublicKeySize) until plaintextWithMetadata.size - signatureSize)
@@ -139,13 +165,15 @@ object MessageDecrypter {
 
          return Triple(newPlainText, "bd" + senderX25519PublicKey.toHexString(),receiveradd)*/
 
+        if (plaintext.isEmpty()) throw MessageReceiver.Error.DecryptionFailed
         var beldexWalletAddress = plaintext.sliceArray(0 until 1)
         var receiveradd = String(beldexWalletAddress, StandardCharsets.UTF_8)
-        var newPlainText = plaintext.sliceArray(97 until plaintext.size)
+        var newPlainText = byteArrayOf()
 
         //Log.d("messageDecryption beldexWalletAddress ", receiveradd.toString())
         //-Log.d("@--> beldexWalletaddress before if ",String(beldexWalletAddress, StandardCharsets.UTF_8))
         if(receiveradd != "b"){
+            if (plaintext.size < 95) throw MessageReceiver.Error.DecryptionFailed
             beldexWalletAddress = plaintext.sliceArray(0 until 95)
             newPlainText = plaintext.sliceArray(95 until plaintext.size)
             receiveradd = String(beldexWalletAddress, StandardCharsets.UTF_8)
@@ -155,6 +183,7 @@ object MessageDecrypter {
             return Triple(newPlainText, "bd" + senderX25519PublicKey.toHexString(),receiveradd)
         }
          else{
+            if (plaintext.size < 97) throw MessageReceiver.Error.DecryptionFailed
             beldexWalletAddress = plaintext.sliceArray(0 until 97)
             newPlainText = plaintext.sliceArray( 97 until plaintext.size)
             receiveradd = String(beldexWalletAddress, StandardCharsets.UTF_8)

@@ -15,6 +15,23 @@ object MessageEncrypter {
 
     private val sodium by lazy { LazySodiumAndroid(SodiumAndroid()) }
 
+    /** Encrypts using the versioned hybrid X25519 + ML-KEM-768 envelope. */
+    internal fun encryptPostQuantum(
+        plaintext: ByteArray,
+        recipientHexEncodedX25519PublicKey: String,
+        recipientMlKemPublicKey: ByteArray
+    ): ByteArray {
+        val recipientX25519PublicKey = Hex.fromStringCondensed(
+            recipientHexEncodedX25519PublicKey.removingbdPrefixIfNeeded()
+        )
+        return try {
+            PostQuantumCrypto.encrypt(plaintext, recipientX25519PublicKey, recipientMlKemPublicKey)
+        } catch (exception: Exception) {
+            Log.d("Beldex", "Couldn't encrypt PQ message due to error: $exception.")
+            throw Error.EncryptionFailed
+        }
+    }
+
     /**
      * Encrypts `plaintext` using the Bchat protocol for `hexEncodedX25519PublicKey`.
      *

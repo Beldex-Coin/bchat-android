@@ -38,7 +38,7 @@ android {
     }
     packagingOptions {
         resources {
-            excludes += ['LICENSE.txt', 'LICENSE', 'NOTICE', 'asm-license.txt', 'META-INF/LICENSE', 'META-INF/NOTICE', 'META-INF/proguard/androidx-annotations.pro']
+            excludes += ['LICENSE.txt', 'LICENSE', 'NOTICE', 'asm-license.txt', 'META-INF/LICENSE', 'META-INF/NOTICE', 'META-INF/proguard/androidx-annotations.pro', 'META-INF/versions/9/OSGI-INF/MANIFEST.MF']
             jniLibs {
                 useLegacyPackaging = true
             }

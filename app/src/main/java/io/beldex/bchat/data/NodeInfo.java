@@ -250,8 +250,8 @@ public class  NodeInfo extends Node implements Serializable {
                     .addPathSegment("json_rpc")
                     .build();
             final RequestBody reqBody_1 = RequestBody
-                    .create(MediaType.parse("application/json"),
-                            "{\"jsonrpc\":\"2.0\",\"id\":\"0\",\"method\":\"get_info\"}");
+                    .create("{\"jsonrpc\":\"2.0\",\"id\":\"0\",\"method\":\"get_info\"}",
+                            MediaType.get("application/json"));
             Request request_1 = OkHttpHelper.getPostRequest(url, reqBody_1);
             long ta = System.nanoTime();
             try  (Response response = client.newCall(request_1).execute()) {
@@ -301,8 +301,8 @@ public class  NodeInfo extends Node implements Serializable {
                     .addPathSegment("json_rpc")
                     .build();
             final RequestBody reqBody = RequestBody
-                    .create(MediaType.parse("application/json"),
-                            "{\"jsonrpc\":\"2.0\",\"id\":\"0\",\"method\":\"getlastblockheader\"}");
+                    .create("{\"jsonrpc\":\"2.0\",\"id\":\"0\",\"method\":\"getlastblockheader\"}",
+                            MediaType.get("application/json"));
             Request request = OkHttpHelper.getPostRequest(url, reqBody);
             long ta = System.nanoTime();
             try (Response response = client.newCall(request).execute()) {

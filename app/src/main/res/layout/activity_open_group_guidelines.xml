@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/screen_background"
-    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <LinearLayout
@@ -39,7 +38,7 @@
             style="@style/CustomCardViewStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="4dp"
             app:cardBackgroundColor="@color/new_card_background">
 
             <LinearLayout
@@ -52,7 +51,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/large_spacing"
-                    android:layout_marginTop="@dimen/large_spacing"
+                    android:layout_marginTop="@dimen/medium_spacing"
                     android:layout_marginRight="@dimen/large_spacing"
                     android:fontFamily="@font/open_sans_bold"
                     android:text="@string/ConversationActivity_social_group_welcome"

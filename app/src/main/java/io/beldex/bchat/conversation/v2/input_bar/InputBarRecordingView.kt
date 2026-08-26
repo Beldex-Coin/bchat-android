@@ -45,6 +45,7 @@ class InputBarRecordingView : RelativeLayout {
         get() = binding.recordButtonOverlay
 
     var isTimerRunning = false
+    var isLocked = false
 
     constructor(context: Context) : super(context) { initialize() }
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { initialize() }
@@ -68,9 +69,20 @@ class InputBarRecordingView : RelativeLayout {
     }
 
     fun show() {
+        val wasTimerRunning = isTimerRunning
         isTimerRunning = true
-        startTimestamp = Date().time
+        isLocked = false
+        if (!wasTimerRunning) {
+            startTimestamp = Date().time
+        }
+        dotViewAnimation?.cancel()
+        pulseAnimation?.cancel()
         binding.recordButtonOverlayImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_filled_microphone, context.theme))
+        binding.recordButtonOverlay.setOnClickListener(null)
+        binding.microphoneOrSendButtonContainer.isVisible = false
+        binding.audioWaveForm.visibility = View.GONE
+        binding.dotView.visibility = View.VISIBLE
+        binding.deleteView.visibility = View.GONE
 //        binding.inputBarCancelButton.alpha = 0.0f
         binding.inputBarMiddleContentContainer.alpha = 1.0f
         binding.lockView.alpha = 1.0f
@@ -105,6 +117,7 @@ class InputBarRecordingView : RelativeLayout {
         animation.start()
         delegate?.handleVoiceMessageUIHidden()
         isTimerRunning = false
+        isLocked = false
     }
 
     private fun animateDotView() {
@@ -161,6 +174,7 @@ class InputBarRecordingView : RelativeLayout {
     }
 
     fun lock() {
+        isLocked = true
         val fadeOutAnimation = ValueAnimator.ofObject(FloatEvaluator(), 1.0f, 0.0f)
         fadeOutAnimation.duration = 250L
         fadeOutAnimation.addUpdateListener { animator ->
@@ -177,6 +191,21 @@ class InputBarRecordingView : RelativeLayout {
             binding.inputBarCancelButton.alpha = animator.animatedValue as Float
         }*/
         fadeInAnimation.start()
+        applyLockedVisualState()
+    }
+
+    fun restoreLockedState() {
+        isLocked = true
+        isTimerRunning = true
+        binding.inputBarMiddleContentContainer.alpha = 0.0f
+        binding.lockView.alpha = 0.0f
+        binding.pulseView.alpha = 0.5f
+        isVisible = true
+        alpha = 1.0f
+        applyLockedVisualState()
+    }
+
+    private fun applyLockedVisualState() {
         binding.recordButtonOverlayImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.send, context.theme))
         binding.pulseView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.button_green)
         binding.recordButtonOverlay.backgroundTintList = ContextCompat.getColorStateList(context, R.color.button_green)

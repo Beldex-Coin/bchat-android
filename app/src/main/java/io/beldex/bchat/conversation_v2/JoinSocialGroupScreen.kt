@@ -9,17 +9,21 @@ import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.view.WindowManager
 import android.widget.Toast
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -47,6 +51,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -56,6 +61,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -74,7 +80,6 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.PublicKeyValidation
-import io.beldex.bchat.compose_utils.BChatOutlinedTextField
 import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.appColors
@@ -102,28 +107,6 @@ fun JoinSocialGroupScreen(
     val activity = (context as? Activity)
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    var showLoader by remember { mutableStateOf(false) }
-
-    val composition by rememberLottieComposition(
-        LottieCompositionSpec
-            .RawRes(R.raw.load_animation)
-    )
-    val isPlaying by remember {
-        mutableStateOf(true)
-    }
-    // for speed
-    val speed by remember {
-        mutableStateOf(1f)
-    }
-
-    val progress by animateLottieCompositionAsState(
-        composition,
-        iterations = LottieConstants.IterateForever,
-        isPlaying = isPlaying,
-        speed = speed,
-        restartOnPlay = false
-    )
-
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
@@ -141,107 +124,178 @@ fun JoinSocialGroupScreen(
         }
     }
 
-    Column(
-        modifier =Modifier
+    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    if (isLandscape) {
+        Row(
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
-    ) {
+        ) {
+            JoinSection(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
+                uiState = uiState,
+                onEvent = onEvent,
+                lifecycleOwner = lifecycleOwner,
+                context = context,
+                launcher = joinPublicChatScanQRCodeActivityResultLauncher
+            )
 
-        OutlinedCard(
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.appColors.contactCardBackground
+            Spacer(modifier = Modifier.width(16.dp))
+
+            GroupsSection(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
+                groups = groups,
+                lifecycleOwner = lifecycleOwner,
+                context = context
+            )
+        }
+    } else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            JoinSection(
+                modifier = Modifier.fillMaxWidth(),
+                uiState = uiState,
+                onEvent = onEvent,
+                lifecycleOwner = lifecycleOwner,
+                context = context,
+                launcher = joinPublicChatScanQRCodeActivityResultLauncher
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            GroupsSection(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                groups = groups,
+                lifecycleOwner = lifecycleOwner,
+                context = context
+            )
+        }
+    }
+}
+
+@Composable
+private fun JoinSection(
+    modifier: Modifier,
+    uiState: DefaultGroupsViewModel.UIState,
+    onEvent: (OpenGroupEvents) -> Unit,
+    lifecycleOwner: LifecycleOwner,
+    context: Context,
+    launcher: ManagedActivityResultLauncher<Intent, ActivityResult>
+) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+
+    OutlinedCard(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.appColors.contactCardBackground
+        ),
+        modifier = modifier
+    ) {
+        Text(
+            text = stringResource(R.string.activity_join_public_chat_title),
+            style = MaterialTheme.typography.titleMedium.copy(
+                color = MaterialTheme.appColors.secondaryTextColor,
+                fontSize = 14.sp,
+                fontWeight = FontWeight(400)
             ),
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+        )
+
+        TextField(
+            value = uiState.groupUrl,
+            placeholder = {
+                Text(
+                    text = stringResource(R.string.fragment_enter_chat_url_edit_text_hint),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
+            onValueChange = { url ->
+                onEvent(OpenGroupEvents.GroupUrlChanged(url))
+            },
+            shape = RoundedCornerShape(16.dp),
+            singleLine = true,
+            trailingIcon = {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_qr_code),
+                    contentDescription = "",
+                    colorFilter = ColorFilter.tint(color = MaterialTheme.appColors.iconTint),
+                    modifier = Modifier.clickable {
+                        focusManager.clearFocus()
+                        keyboardController?.hide()
+                        launcher.launch(
+                            Intent(context, JoinPublicChatScanQRCodeActivity::class.java)
+                        )
+                    }
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            colors = TextFieldDefaults.colors(
+                unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+                focusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
+                selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
+                cursorColor = colorResource(id = R.color.button_green)
+            )
+        )
+
+        PrimaryButton(
+            onClick = {
+                joinPublicChatIfPossible(uiState.groupUrl, lifecycleOwner, context)
+            },
+            shape = RoundedCornerShape(12.dp),
+            enabled = uiState.groupUrl.isNotEmpty(),
+            disabledContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
         ) {
             Text(
-                text = stringResource(R.string.activity_join_public_chat_title),
-                style = MaterialTheme.typography.titleMedium.copy(
-                    color = MaterialTheme.appColors.secondaryTextColor,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight(400)
-                ),
-                modifier =Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-            )
-
-            TextField(
-                    value=uiState.groupUrl,
-                    placeholder={
-                        Text(text=stringResource(R.string.fragment_enter_chat_url_edit_text_hint),
-                                style=MaterialTheme.typography.bodyMedium
-                        )
-                    },
-                onValueChange = { url ->
-                    onEvent(OpenGroupEvents.GroupUrlChanged(url))
-                },
-                shape = RoundedCornerShape(16.dp),
-                singleLine = true,
-                trailingIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_qr_code),
-                        contentDescription = "",
-                        colorFilter = ColorFilter.tint(
-                            color = MaterialTheme.appColors.iconTint
-                        ),
-                        modifier = Modifier.clickable {
-                            focusManager.clearFocus()
-                            keyboardController?.hide()
-                            val intent = Intent(
-                                context,
-                                JoinPublicChatScanQRCodeActivity::class.java
-                            )
-                            joinPublicChatScanQRCodeActivityResultLauncher.launch(intent)
-                        })
-                },
-                modifier =Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                        colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
-                    focusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
-                    cursorColor = colorResource(id = R.color.button_green)
-            )
-            )
-
-            PrimaryButton(
-                onClick = {
-                    joinPublicChatIfPossible(uiState.groupUrl, lifecycleOwner, context)
-                },
-                shape = RoundedCornerShape(12.dp),
-                enabled = uiState.groupUrl.isNotEmpty(),
-                disabledContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
-                modifier =Modifier
-                        .fillMaxWidth()
-                        .padding(
-                                start=16.dp,
-                                end=16.dp,
-                                bottom=16.dp
-                        )
-            ) {
-                Text(
-                    text = stringResource(id = R.string.next),
-                    modifier = Modifier
-                        .padding(8.dp),
-                    style = BChatTypography.titleMedium.copy(
-                        fontWeight = FontWeight(400),
-                        fontSize = 16.sp,
-                        color = if (uiState.groupUrl.isNotEmpty()) {
-                            Color.White
-                        } else {
-                            MaterialTheme.appColors.disabledButtonContent
-                        }
-                    )
+                text = stringResource(id = R.string.next),
+                modifier = Modifier.padding(8.dp),
+                style = BChatTypography.titleMedium.copy(
+                    fontWeight = FontWeight(400),
+                    fontSize = 16.sp,
+                    color = if (uiState.groupUrl.isNotEmpty()) Color.White else MaterialTheme.appColors.disabledButtonContent
                 )
-            }
-
+            )
         }
+    }
+}
 
+@Composable
+private fun GroupsSection(
+    modifier: Modifier,
+    groups: List<OpenGroupAPIV2.DefaultGroup>,
+    lifecycleOwner: LifecycleOwner,
+    context: Context
+) {
+    var showLoader by remember { mutableStateOf(false) }
+
+    val lottieComposition by rememberLottieComposition(
+        LottieCompositionSpec.RawRes(R.raw.load_animation)
+    )
+    val lottieProgress by animateLottieCompositionAsState(
+        lottieComposition,
+        iterations = LottieConstants.IterateForever
+    )
+
+    Column(modifier) {
         Text(
             text = stringResource(id = R.string.or_join),
             style = MaterialTheme.typography.titleMedium.copy(
@@ -254,67 +308,90 @@ fun JoinSocialGroupScreen(
 
         if (groups.isEmpty()) {
             LottieAnimation(
-                composition,
-                progress,
-                modifier =Modifier
-                        .size(70.dp)
-                        .align(Alignment.CenterHorizontally)
+                lottieComposition,
+                lottieProgress,
+                modifier = Modifier
+                    .size(70.dp)
+                    .align(Alignment.CenterHorizontally)
             )
         } else {
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(80.dp),
+                modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(space = 16.dp),
-                contentPadding = PaddingValues(all = 8.dp),
-                content = {
-                    items(groups.size) { i ->
-                        Column(
-                            modifier =Modifier
-                                    .background(
-                                            color=MaterialTheme.appColors.disabledButtonContainerColor,
-                                            shape=RoundedCornerShape(8.dp)
-                                    )
-                                    .padding(start=16.dp, end=16.dp, top=14.dp, bottom=14.dp)
-                                    .clickable {
-                                        showLoader=true
-                                        joinPublicChatIfPossible(
-                                                groups[i].joinURL,
-                                                lifecycleOwner,
-                                                context
-                                        )
-                                    },
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(8.dp)
+            ) {
+                items(groups.size) { i ->
+                    val groupImage = groups[i].image?.let {
+                        convertImageByteArrayToBitmap(it).asImageBitmap()
+                    }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(116.dp)
+                            .background(
+                                color = MaterialTheme.appColors.disabledButtonContainerColor,
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .padding(start = 8.dp, end = 8.dp, top = 10.dp, bottom = 10.dp)
+                            .clickable {
+                                showLoader = true
+                                joinPublicChatIfPossible(
+                                    groups[i].joinURL,
+                                    lifecycleOwner,
+                                    context
+                                )
+                            },
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        if (groupImage != null) {
+                            Image(
+                                bitmap = groupImage,
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .width(52.dp)
+                                    .height(52.dp)
+                                    .clip(shape = RoundedCornerShape(6.dp)),
+                                alignment = Alignment.Center
+                            )
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .width(52.dp)
+                                    .height(52.dp)
+                                    .clip(shape = RoundedCornerShape(6.dp))
+                                    .background(MaterialTheme.appColors.iconColor.copy(alpha = 0.3f)),
+                                contentAlignment = Alignment.Center
                             ) {
-                            groups[i].image?.let {
-                                convertImageByteArrayToBitmap(it).asImageBitmap()
-                            }?.let { bitmap ->
-                                Image(
-                                    bitmap = bitmap,
-                                    contentDescription = "",
-                                    modifier =Modifier
-                                            .width(52.dp)
-                                            .height(52.dp)
-                                            .clip(shape=RoundedCornerShape(6.dp)),
-                                    alignment = Alignment.Center
+                                Text(
+                                    text = groups[i].name.take(1).uppercase(),
+                                    style = BChatTypography.bodySmall.copy(
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = MaterialTheme.appColors.textFieldTextColor
+                                    )
                                 )
                             }
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            Text(
-                                text = groups[i].name,
-                                textAlign = TextAlign.Center,
-                                style = BChatTypography.bodySmall.copy(
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.appColors.textFieldTextColor
-                                )
-                            )
                         }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(
+                            text = groups[i].name,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            textAlign = TextAlign.Center,
+                            style = BChatTypography.bodySmall.copy(
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.appColors.textFieldTextColor
+                            )
+                        )
                     }
                 }
-            )
+            }
         }
     }
 }

@@ -2,13 +2,10 @@ package io.beldex.bchat.contacts.blocked
 
 import android.graphics.Typeface
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
@@ -18,7 +15,7 @@ import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityBlockedContactsBinding
 
 @AndroidEntryPoint
-class BlockedContactsActivity: io.beldex.bchat.PassphraseRequiredActionBarActivity(), View.OnClickListener {
+class BlockedContactsActivity: PassphraseRequiredActionBarActivity(), View.OnClickListener {
 
     lateinit var binding: ActivityBlockedContactsBinding
 
@@ -105,7 +102,7 @@ class BlockedContactsActivity: io.beldex.bchat.PassphraseRequiredActionBarActivi
         binding.unblockButton.setOnClickListener(this)
 
         binding.backPressIcon.setOnClickListener {
-            onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
         }
 
         binding.selectAll.setOnClickListener {

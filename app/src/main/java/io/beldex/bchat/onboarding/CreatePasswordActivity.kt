@@ -2,35 +2,24 @@ package io.beldex.bchat.onboarding
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.MotionEvent
+import android.view.View
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputConnection
 import android.widget.Toast
-import io.beldex.bchat.databinding.ActivityCreatePasswordBinding
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.databinding.ActivityCreatePasswordBinding
 import io.beldex.bchat.home.HomeActivity
-import io.beldex.bchat.keyboard.CustomKeyboardView
 import io.beldex.bchat.service.KeyCachingService
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
 import javax.inject.Inject
-import android.view.inputmethod.InputConnection
-
-import android.R
-import android.annotation.SuppressLint
-import android.os.Build
-import android.os.Handler
-import android.os.Looper
-import android.text.InputType
-import android.view.View
-import android.view.WindowManager
-import android.view.MotionEvent
-import android.view.View.OnTouchListener
-import androidx.core.widget.addTextChangedListener
-import android.text.Editable
-
-import android.text.TextWatcher
-import org.w3c.dom.Text
 
 
 class CreatePasswordActivity : BaseActionBarActivity() {
@@ -207,8 +196,4 @@ class CreatePasswordActivity : BaseActionBarActivity() {
             super.onBackPressed()
         }
     }*/
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-            super.onBackPressed()
-    }
 }

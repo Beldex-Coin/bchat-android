@@ -2,6 +2,7 @@ package io.beldex.bchat.components;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -98,13 +99,23 @@ public class ShapeScrim extends View {
   }
 
   private void drawSquare(Canvas canvas, float radius, Paint eraser) {
-    float left   = (getWidth() / 2 ) - radius;
-    float top    = (getHeight() / 2) - radius;
-    float right  = left + (radius * 2);
-    float bottom = top + (radius * 2);
+    float centerX = getWidth() / 2f;
+    float centerY = getHeight() / 2f;
 
-    RectF square = new RectF(left, top, right, bottom);
+    if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+      radius *= 0.85f;           // Reduce size by 15%
+      centerY += dpToPx(30);     // Move down slightly
+    }
 
-    canvas.drawRoundRect(square, 25, 25, eraser);
+    float left = centerX - radius;
+    float top = centerY - radius;
+    float right = centerX + radius;
+    float bottom = centerY + radius;
+
+    canvas.drawRoundRect(new RectF(left, top, right, bottom), 25, 25, eraser);
+  }
+
+  private float dpToPx(float dp) {
+    return dp * getResources().getDisplayMetrics().density;
   }
 }

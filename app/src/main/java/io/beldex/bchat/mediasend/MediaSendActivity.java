@@ -15,6 +15,7 @@ import android.view.animation.ScaleAnimation;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -167,6 +168,24 @@ public class MediaSendActivity extends PassphraseRequiredActionBarActivity imple
     initializeCameraButtonObserver();
     initializeErrorObserver();
 
+    getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+      @Override
+      public void handleOnBackPressed() {
+        MediaSendFragment sendFragment =
+                (MediaSendFragment) getSupportFragmentManager().findFragmentByTag(TAG_SEND);
+
+        if (sendFragment == null || !sendFragment.isVisible() || !sendFragment.handleBackPress()) {
+          if (getIntent().getBooleanExtra(KEY_IS_CAMERA, false)
+                  && getSupportFragmentManager().getBackStackEntryCount() == 0
+                  && viewModel != null) {
+            viewModel.onImageCaptureUndo(MediaSendActivity.this);
+          }
+          setEnabled(false);
+          getOnBackPressedDispatcher().onBackPressed();
+        }
+      }
+    });
+
     cameraButton.setOnClickListener(v -> {
       int maxSelection = viewModel.getMaxSelection();
 
@@ -176,24 +195,6 @@ public class MediaSendActivity extends PassphraseRequiredActionBarActivity imple
         navigateToCamera();
       }
     });
-  }
-
-  @Override
-  public void onBackPressed() {
-    MediaSendFragment sendFragment =
-            (MediaSendFragment) getSupportFragmentManager().findFragmentByTag(TAG_SEND);
-
-    if (sendFragment == null || !sendFragment.isVisible() || !sendFragment.handleBackPress()) {
-
-      if (getIntent().getBooleanExtra(KEY_IS_CAMERA, false)
-              && getSupportFragmentManager().getBackStackEntryCount() == 0
-              && viewModel != null) {
-
-        viewModel.onImageCaptureUndo(this);
-      }
-
-      super.onBackPressed();
-    }
   }
 
   @Override

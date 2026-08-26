@@ -2,7 +2,7 @@ package com.beldex.libbchat.messaging.open_groups
 
 import com.beldex.libbchat.BuildConfig
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.databind.PropertyNamingStrategy
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import com.fasterxml.jackson.databind.type.TypeFactory
 import kotlinx.coroutines.*
@@ -28,6 +28,7 @@ import com.beldex.libsignal.utilities.HTTP.Verb.*
 import okhttp3.Headers.Companion.toHeaders
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.whispersystems.curve25519.Curve25519
 import java.util.*
 
@@ -72,7 +73,7 @@ object OpenGroupAPIV2 {
 
     data class Info(val id: String, val name: String, val imageID: String?)
 
-    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
     data class CompactPollRequest(val roomID: String, val authToken: String, val fromDeletionServerID: Long?, val fromMessageServerID: Long?)
     data class CompactPollResult(val messages: List<OpenGroupMessageV2>, val deletions: List<MessageDeletion>, val moderators: List<String>)
 
@@ -134,7 +135,7 @@ object OpenGroupAPIV2 {
     private fun createBody(parameters: Any?): RequestBody? {
         if (parameters == null) return null
         val parametersAsJSON = JsonUtil.toJson(parameters)
-        return RequestBody.create("application/json".toMediaType(), parametersAsJSON)
+        return parametersAsJSON.toRequestBody("application/json".toMediaType())
     }
 
     private fun send(request: Request): Promise<OnionResponse, Exception> {

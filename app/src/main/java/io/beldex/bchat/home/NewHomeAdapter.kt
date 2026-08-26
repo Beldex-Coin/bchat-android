@@ -1,6 +1,7 @@
 package io.beldex.bchat.home
 
 import android.content.Context
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -87,8 +88,17 @@ class NewHomeAdapter(private val context: Context, private val listener: Convers
             val isTyping = typingThreadIDs.contains(thread.threadId)
             holder.view.bind(thread, isTyping, glide)
             holder.view.setOnClickListener { holder.view.thread?.let { listener.onConversationClick(it) } }
+            var lastTouchX = 0f
+            var lastTouchY = 0f
+            holder.view.setOnTouchListener { _, event ->
+                if (event.actionMasked == MotionEvent.ACTION_DOWN) {
+                    lastTouchX = event.x
+                    lastTouchY = event.y
+                }
+                false
+            }
             holder.view.setOnLongClickListener {
-                holder.view.thread?.let { listener.onLongConversationClick(it, holder.view, position) }
+                holder.view.thread?.let { listener.onLongConversationClick(it, holder.view, position, lastTouchX, lastTouchY) }
                 true
             }
         }

@@ -91,7 +91,8 @@ public final class ReactWithAnyEmojiDialogFragment extends BottomSheetDialogFrag
   @Override
   public @NonNull Dialog onCreateDialog(Bundle savedInstanceState) {
     BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
-    dialog.getBehavior().setPeekHeight((int) (getResources().getDisplayMetrics().heightPixels * 0.50));
+    dialog.getBehavior().setSkipCollapsed(true);
+    dialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
 
     ShapeAppearanceModel shapeAppearanceModel = ShapeAppearanceModel.builder()
                                                                     .setTopLeftCorner(CornerFamily.ROUNDED, ViewUtil.dpToPx(requireContext(), 18))

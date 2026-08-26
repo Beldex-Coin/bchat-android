@@ -8,6 +8,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.database.Cursor
 import android.graphics.Rect
@@ -21,18 +22,20 @@ import android.os.SystemClock
 import android.text.Editable
 import android.util.Log
 import android.view.ActionMode
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.DimenRes
@@ -41,8 +44,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.MenuProvider
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -93,6 +99,7 @@ import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.MediaOverviewActivity
 import io.beldex.bchat.R
+import io.beldex.bchat.WindowInsetsUtil
 import io.beldex.bchat.audio.AudioRecorder
 import io.beldex.bchat.compose_utils.ComposeDialogContainer
 import io.beldex.bchat.compose_utils.DialogType
@@ -398,16 +405,57 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
     private var lastProfileAvatar: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
-
         binding = ActivityConversationV2Binding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // ---------- Edge-to-edge inset handling ----------
+        ViewCompat.setOnApplyWindowInsetsListener(
+            window.decorView.findViewById(android.R.id.content)
+        ) { view, insets ->
+            val navBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            val statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+            val cutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
+            view.setPadding(
+                maxOf(navBars.left, cutout.left),
+                statusBars.top,
+                maxOf(navBars.right, cutout.right),
+                navBars.bottom
+            )
+            insets
+        }
+        val baseInputBarMargin = resources.getDimensionPixelSize(R.dimen.small_spacing)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.inputBar) { v, insets ->
+            val imeBottom = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
+            val navBottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+            val keyboardInset = if (imeBottom > navBottom) imeBottom - navBottom else imeBottom
+            val lp = v.layoutParams as ViewGroup.MarginLayoutParams
+            lp.bottomMargin = baseInputBarMargin + keyboardInset
+            v.layoutParams = lp
+            insets
+        }
+        ViewCompat.setOnApplyWindowInsetsListener(binding.inputBarRecordingView) { v, insets ->
+            val lp = v.layoutParams as ViewGroup.MarginLayoutParams
+            lp.bottomMargin = baseInputBarMargin
+            v.layoutParams = lp
+            insets
+        }
+
         setSupportActionBar(binding.conversationActivityToolbar)
         // ---------- Network monitoring ----------
         networkChangedReceiver = NetworkChangeReceiver(::networkChange)
         networkChangedReceiver?.register(this)
 
         initConversationScreen()
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                handleBackPressed()
+                isEnabled = false
+                onBackPressedDispatcher.onBackPressed()
+            }
+        })
     }
 
     override fun onResume() {
@@ -418,12 +466,32 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             return
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val quoteMessage = binding.inputBar.quote
+        if (quoteMessage != null) {
+            val recipient = viewModel.recipient.value
+            if (recipient != null) {
+                binding.inputBar.draftQuote(recipient, quoteMessage, glide)
+            }
+        }
+        if (binding.inputBarRecordingView.isTimerRunning) {
+            binding.inputBarRecordingView.post {
+                if (binding.inputBarRecordingView.isLocked) {
+                    binding.inputBarRecordingView.restoreLockedState()
+                } else {
+                    binding.inputBarRecordingView.show()
+                }
+            }
+        }
+        if (reactionDelegate.isShowing) {
+            reactionDelegate.reposition()
+        }
+    }
+
     override fun onPause() {
         super.onPause()
         ApplicationContext.getInstance(this).messageNotifier.setVisibleThread(-1)
-        if (isAudioPlaying) {
-            this.stopVoiceMessages(audioPlayingIndexInAdapter)
-        }
     }
 
     override fun onStart() {
@@ -448,6 +516,9 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         }
         if (getIsReactionOverlayVisible(this)) {
             setIsReactionOverlayVisible(this, false)
+        }
+        if (isAudioPlaying) {
+            this.stopVoiceMessages(audioPlayingIndexInAdapter)
         }
         actionMode?.finish()
         this.actionMode=null
@@ -1041,7 +1112,9 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         val sizePx = resources.getDimension(sizeRes).roundToInt()
 
         binding.profilePictureView.root.layoutParams =
-            LinearLayout.LayoutParams(sizePx, sizePx)
+            LinearLayout.LayoutParams(sizePx, sizePx).apply {
+                gravity = Gravity.CENTER_VERTICAL
+            }
 
         // ---------- Profile picture binding ----------
         binding.profilePictureView.root.glide = glide
@@ -2751,11 +2824,6 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
 
     override fun onScreenCaptured() {
         sendScreenShotTakenNotification()
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        handleBackPressed()
     }
 
     private fun handleBackPressed() {

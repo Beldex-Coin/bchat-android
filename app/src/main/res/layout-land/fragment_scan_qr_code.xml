@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:background="@color/page_background"
+    android:layout_height="match_parent">
+
+    <io.beldex.bchat.components.camera.CameraView
+        android:id="@+id/cameraView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:camera="0" />
+
+    <LinearLayout
+        android:id="@+id/overlayView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <io.beldex.bchat.components.ShapeScrim
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <LinearLayout
+                android:id="@+id/uploadFromGallery_Layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/upload_from_gallery_background"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:src="@drawable/gallery_upload"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans_regular"
+                    android:padding="5dp"
+                    android:text="@string/upload_from_gallery"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/small_font_size" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/messageTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="30dp"
+                android:background="@drawable/scan_qr_content_background"
+                android:fontFamily="@font/open_sans_medium"
+                android:gravity="center"
+                android:padding="@dimen/large_spacing"
+                android:text="@string/activity_create_private_chat_scan_qr_code_explanation"
+                android:textColor="@color/white"
+                android:textSize="@dimen/small_font_size"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

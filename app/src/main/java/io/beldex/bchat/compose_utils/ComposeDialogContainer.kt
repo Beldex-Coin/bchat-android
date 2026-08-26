@@ -1,9 +1,11 @@
 package io.beldex.bchat.compose_utils
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.DialogFragment
@@ -54,6 +56,17 @@ class ComposeDialogContainer(
 
             if(it.containsKey(EXTRA_ARGUMENT_3))
                 argument3 = it.getInt(EXTRA_ARGUMENT_3)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        if (isLandscape) {
+            dialog?.window?.setLayout(
+                (resources.displayMetrics.widthPixels * 0.55).toInt(),
+                WindowManager.LayoutParams.WRAP_CONTENT
+            )
         }
     }
 

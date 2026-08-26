@@ -1,5 +1,6 @@
 package io.beldex.bchat.conversation.v2.contact_sharing
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -66,6 +68,8 @@ fun SharedContactView(
     hasResult: Boolean = false
 ) {
     val numberOfContacts = flattenData(contacts[0].address.serialize())
+    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val cardWidth = if (isLandscape) 0.35f else 0.7f
 
     Column(
         horizontalAlignment = Alignment.End,
@@ -77,7 +81,7 @@ fun SharedContactView(
                 containerColor = backgroundColor
             ),
             modifier=Modifier
-                .fillMaxWidth(0.7f)
+                .fillMaxWidth(cardWidth)
                 .padding(
                     start=if (isQuoted) 2.dp else 8.dp,
                     top=if (isQuoted) 4.dp else 0.dp,
@@ -101,7 +105,7 @@ fun SharedContactView(
 
         Column(
             modifier=Modifier
-                .fillMaxWidth(0.7f)
+                .fillMaxWidth(cardWidth)
                 .padding(
                     top = if (isQuoted) 3.dp else 0.dp,
                     bottom = 3.dp

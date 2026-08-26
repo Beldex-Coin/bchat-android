@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/page_background"
+    android:orientation="vertical"
+    android:paddingHorizontal="24dp"
+    android:paddingBottom="16dp"
+    tools:context="io.beldex.bchat.seed.RecoveryGetSeedDetailsActivity">
+
+    <TextView
+        android:id="@+id/restoreFromSeedWalletNameTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/open_sans_medium"
+        android:text="@string/display_name"
+        android:textColor="@color/edit_text_title" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/restoreSeedWalletNameCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:cardBackgroundColor="@color/card_color"
+        app:cardCornerRadius="10dp">
+
+        <EditText
+            android:id="@+id/restoreSeedWalletName"
+            style="@style/SeedBchatEditText"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:gravity="center_vertical"
+            android:hint="@string/enter_name"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingTop="0dp"
+            android:paddingBottom="0dp"
+            android:singleLine="true" />
+
+    </androidx.cardview.widget.CardView>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:id="@+id/buttonContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="16dp">
+
+        <Button
+            android:id="@+id/restoreSeedRestoreButton"
+            style="@style/Widget.Bchat.Button.Common.ProminentFilledState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="@string/restore"
+            android:textAllCaps="false"
+            app:cornerRadius="8dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

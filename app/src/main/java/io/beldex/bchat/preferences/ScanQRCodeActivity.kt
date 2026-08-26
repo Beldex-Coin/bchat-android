@@ -3,12 +3,18 @@ package io.beldex.bchat.preferences
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityScanQrcodeBinding
@@ -51,7 +57,11 @@ class ScanQRCodeActivity : PassphraseRequiredActionBarActivity(), ScanQRCodePlac
         setContentView(binding.root)
         // Set title
         supportActionBar!!.title = resources.getString(R.string.activity_qr_code_view_scan_qr_code_tab_title)
+        applyInsetsForOrientation()
         update()
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() { finish() }
+        })
         requestPermissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
@@ -61,6 +71,35 @@ class ScanQRCodeActivity : PassphraseRequiredActionBarActivity(), ScanQRCodePlac
                 Log.d("Beldex","Camera permission was denied by the user.")
             }
         }
+    }
+
+    private fun getActionBarHeight(): Int {
+        val tv = TypedValue()
+        return if (theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
+        } else {
+            0
+        }
+    }
+
+    private fun applyInsetsForOrientation() {
+        val actionBarH = getActionBarHeight()
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            if (isLandscape) {
+                view.setPadding(bars.left, actionBarH, bars.right, 0)
+            } else {
+                view.setPadding(0, bars.top, 0, 0)
+            }
+            insets
+        }
+        ViewCompat.requestApplyInsets(binding.root)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        applyInsetsForOrientation()
     }
 
     private fun update() {
@@ -102,13 +141,7 @@ class ScanQRCodeActivity : PassphraseRequiredActionBarActivity(), ScanQRCodePlac
         }
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        super.onBackPressed()
-        /*val intent = Intent(this,ShowQRCodeWithScanQRCodeActivity::class.java)
-        push(intent)*/
-        finish()
-    }
+
 
     // region Interaction
     fun handleQRCodeScanned(hexEncodedPublicKey: String) {

@@ -21,7 +21,6 @@
         <item name="android:textColorHint">@color/gray27</item>
         <item name="android:windowBackground">@drawable/default_bchat_background</item>
         <item name="android:colorBackground">@color/default_background_start</item>
-        <item name="android:navigationBarColor">@color/compose_view_background</item>
         <!--        <item name="android:popupBackground">@drawable/menu_item_style</item>-->
         <!--        <item name="popupMenuBackground">@drawable/menu_item_style</item>-->
         <item name="actionOverflowMenuStyle">@style/popupOverflowMenu</item>
@@ -41,6 +40,7 @@
 
         <item name="statusBarBackground">@color/accent</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/ic_baseline_clear_24</item>
         <item name="actionModeBackground">@color/compose_view_background</item>
@@ -135,13 +135,12 @@
         <item name="android:popupMenuStyle">@style/PopupMenu</item>
         <item name="popupMenuStyle">@style/PopupMenu</item>
         <item name="actionOverflowMenuStyle">@style/OverflowMenu</item>
-        <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="OverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
-        <!-- Required for Lollipop. -->
         <item name="android:overlapAnchor">false</item>
+        <item name="android:dropDownVerticalOffset">0dp</item>
         <item name="android:popupBackground">@drawable/overflow_menu_background</item>
     </style>
 
@@ -167,8 +166,6 @@
         <item name="colorControlNormal">?android:textColorPrimary</item>
         <item name="android:colorBackground">#24242f</item>
         <item name="android:windowBackground">?android:colorBackground</item>
-        <item name="android:navigationBarColor">?android:colorBackground</item>
-        <item name="android:statusBarColor">@color/transparent</item>
 
         <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
         <item name="actionBarWidgetTheme">@null</item>
@@ -206,7 +203,6 @@
         <item name="media_overview_header_foreground">@color/text</item>
 
         <item name="theme_type">dark</item>
-        <item name="android:navigationBarColor">@color/compose_view_background</item>
 
         <item name="attachment_document_icon_small">@drawable/ic_document_small_dark</item>
         <item name="attachment_document_icon_large">@drawable/ic_document_large_dark</item>
@@ -353,7 +349,6 @@
         <!-- in case we want to add customisation like no title -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:windowLightStatusBar">false</item>
     </style>
 

@@ -26,6 +26,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.content.res.Configuration;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -47,6 +50,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.util.Pair;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
@@ -71,6 +76,7 @@ import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.utilities.recipients.RecipientModifiedListener;
 import com.beldex.libsignal.utilities.Log;
 import io.beldex.bchat.components.MediaView;
+import io.beldex.bchat.components.ZoomingImageView;
 import io.beldex.bchat.database.MediaDatabase.MediaRecord;
 import io.beldex.bchat.mediapreview.MediaPreviewViewModel;
 import io.beldex.bchat.mediapreview.MediaRailAdapter;
@@ -80,6 +86,7 @@ import com.bumptech.glide.RequestManager;
 import io.beldex.bchat.permissions.Permissions;
 import io.beldex.bchat.util.SaveAttachmentTask;
 import io.beldex.bchat.util.SaveAttachmentTask.Attachment;
+import io.beldex.bchat.WindowInsetsUtil;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -127,6 +134,15 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
 
   private int restartItem = -1;
 
+  private static final int UI_ANIMATION_DELAY = 300;
+
+  private boolean isFullscreen = false;
+  private final Handler hideHandler = new Handler(Looper.myLooper());
+  private final Runnable showRunnable = () -> {
+    ActionBar actionBar = getSupportActionBar();
+    if (actionBar != null) actionBar.show();
+  };
+
   private MediaItemAdapter adapter;
 
   public static Intent getPreviewIntent(Context context, Slide slide, MmsMessageRecord mms, Recipient threadRecipient) {
@@ -154,6 +170,15 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
 
     setContentView(R.layout.media_preview_activity);
 
+    View appBarLayout = findViewById(R.id.toolbar).getParent() instanceof View ? (View) ((android.view.ViewParent) findViewById(R.id.toolbar).getParent()) : null;
+    if (appBarLayout != null) {
+      ViewCompat.setOnApplyWindowInsetsListener(appBarLayout, (v, windowInsets) -> {
+        int top = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()).top;
+        v.setPadding(v.getPaddingLeft(), top, v.getPaddingRight(), v.getPaddingBottom());
+        return windowInsets;
+      });
+    }
+
     initializeViews();
     initializeResources();
     initializeObservers();
@@ -176,8 +201,25 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
   }
 
-  private void setFullscreenIfPossible() {
-    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+  private void toggleFullscreen() {
+    if (isFullscreen) {
+      exitFullscreen();
+    } else {
+      enterFullscreen();
+    }
+  }
+
+  private void enterFullscreen() {
+    ActionBar actionBar = getSupportActionBar();
+    if (actionBar != null) actionBar.hide();
+    isFullscreen = true;
+    hideHandler.removeCallbacks(showRunnable);
+  }
+
+  private void exitFullscreen() {
+    isFullscreen = false;
+    hideHandler.removeCallbacks(showRunnable);
+    hideHandler.postDelayed(showRunnable, UI_ANIMATION_DELAY);
   }
 
   @Override
@@ -193,6 +235,20 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
   @Override
   public void onRailItemDeleteClicked(int distanceFromActive) {
     throw new UnsupportedOperationException("Callback unsupported.");
+  }
+
+  @Override
+  public void onConfigurationChanged(@NonNull Configuration newConfig) {
+    super.onConfigurationChanged(newConfig);
+    if (adapter != null) {
+      View playbackControls = adapter.getPlaybackControls(mediaPager.getCurrentItem());
+      if (playbackControls != null) {
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        playbackControls.setLayoutParams(params);
+        playbackControlsContainer.removeAllViews();
+        playbackControlsContainer.addView(playbackControls);
+      }
+    }
   }
 
   @SuppressWarnings("ConstantConditions")
@@ -237,7 +293,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
   }
 
   private void initializeViews() {
-    mediaPager = findViewById(R.id.media_pager);
+    mediaPager     = findViewById(R.id.media_pager);
     mediaPager.setOffscreenPageLimit(1);
 
     albumRail        = findViewById(R.id.media_preview_album_rail);
@@ -282,7 +338,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
 
       View playbackControls = ((MediaItemAdapter) mediaPager.getAdapter()).getPlaybackControls(mediaPager.getCurrentItem());
 
-      if (previewData.getAlbumThumbnails().isEmpty() && previewData.getCaption() == null && playbackControls == null) {
+      if (isFullscreen || (previewData.getAlbumThumbnails().isEmpty() && previewData.getCaption() == null && playbackControls == null)) {
         detailsContainer.setVisibility(View.GONE);
       } else {
         detailsContainer.setVisibility(View.VISIBLE);
@@ -309,7 +365,18 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     clickDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
       @Override
       public boolean onSingleTapUp(MotionEvent e) {
-        if (e.getY() < detailsContainer.getTop()) {
+        MediaItem mediaItem = getCurrentMediaItem();
+        if (mediaItem != null && mediaItem.type.startsWith("video/")) {
+          if (isFullscreen) {
+            exitFullscreen();
+            if (detailsContainer.getVisibility() == View.GONE) {
+              detailsContainer.setVisibility(View.VISIBLE);
+            }
+          } else {
+            enterFullscreen();
+            detailsContainer.setVisibility(View.GONE);
+          }
+        } else if (e.getY() < detailsContainer.getTop()) {
           detailsContainer.setVisibility(detailsContainer.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
         }
         return super.onSingleTapUp(e);
@@ -512,13 +579,14 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
 
     mediaPager.removeOnPageChangeListener(viewPagerListener);
 
+    int item = restartItem >= 0 && restartItem < data.first.getCount()
+               ? restartItem
+               : Math.max(Math.min(data.second, data.first.getCount() - 1), 0);
 
-    adapter = new CursorPagerAdapter(this, Glide.with(this), getWindow(), data.first, data.second, leftIsRecent);
+    adapter = new CursorPagerAdapter(this, Glide.with(this), getWindow(), data.first, item, leftIsRecent);
     mediaPager.setAdapter(adapter);
 
     viewModel.setCursor(this, data.first, leftIsRecent);
-
-    int item = restartItem >= 0  && restartItem < adapter.getCount() ? restartItem : Math.max(Math.min(data.second, adapter.getCount() - 1), 0);
 
     viewPagerListener = new ViewPagerListener();
     mediaPager.addOnPageChangeListener(viewPagerListener);
@@ -555,6 +623,10 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
       if (item.recipient != null) item.recipient.addListener(MediaPreviewActivity.this);
       viewModel.setActiveAlbumRailItem(MediaPreviewActivity.this, position);
       updateActionBar();
+
+      if (!item.type.startsWith("video/") && isFullscreen) {
+        exitFullscreen();
+      }
     }
 
 

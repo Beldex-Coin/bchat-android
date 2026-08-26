@@ -67,7 +67,7 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
         powerButtonReceiver = new PowerButtonReceiver();
       }
       if (powerButtonReceiver != null) {
-        registerReceiver(powerButtonReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
+        ContextCompat.registerReceiver(this, powerButtonReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF), ContextCompat.RECEIVER_NOT_EXPORTED);
       }
     } else {
       if (powerButtonReceiver != null) {
@@ -88,7 +88,7 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
         powerButtonReceiver = new PowerButtonReceiver();
       }
       if (powerButtonReceiver != null) {
-        registerReceiver(powerButtonReceiver, new IntentFilter(Intent.ACTION_USER_PRESENT));
+        ContextCompat.registerReceiver(this, powerButtonReceiver, new IntentFilter(Intent.ACTION_USER_PRESENT), ContextCompat.RECEIVER_NOT_EXPORTED);
       }
     } else {
       if (powerButtonReceiver != null) {

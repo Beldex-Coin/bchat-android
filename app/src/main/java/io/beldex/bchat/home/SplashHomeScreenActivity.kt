@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import io.beldex.bchat.databinding.ActivitySplashScreenBinding
 
 class SplashHomeScreenActivity : AppCompatActivity() {
@@ -13,6 +14,7 @@ class SplashHomeScreenActivity : AppCompatActivity() {
             super.onCreate(savedInstanceState)
             binding= ActivitySplashScreenBinding.inflate(layoutInflater)
             setContentView(binding.root)
+            WindowCompat.setDecorFitsSystemWindows(window, false)
             Handler(Looper.getMainLooper()).postDelayed({
                 startActivity(Intent(this, HomeActivity::class.java))
                 finish()

@@ -38,6 +38,9 @@ public class CallViewModel @Inject constructor(private val callManager: CallMana
     val fullscreenRenderer: SurfaceViewRenderer?
         get() = callManager.fullscreenRenderer
 
+    val remoteVideoDisplayAspect: StateFlow<Float>
+        get() = callManager.remoteVideoDisplayAspect
+
     var microphoneEnabled: Boolean = true
         private set
 

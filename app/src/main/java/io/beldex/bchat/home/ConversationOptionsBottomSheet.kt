@@ -1,10 +1,12 @@
 package io.beldex.bchat.home
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.beldex.bchat.databinding.FragmentConversationBottomSheetBinding
 import io.beldex.bchat.database.model.ThreadRecord
@@ -82,5 +84,19 @@ class ConversationOptionsBottomSheet : BottomSheetDialogFragment(), View.OnClick
         val window = dialog?.window ?: return
         val isLightMode = UiModeUtilities.isDayUiMode(requireContext())
         window.setDimAmount(if (isLightMode) 0.1f else 0.75f)
+
+        val bottomSheet = dialog?.findViewById<View>(
+            com.google.android.material.R.id.design_bottom_sheet
+        ) ?: return
+        val behavior = BottomSheetBehavior.from(bottomSheet)
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        behavior.skipCollapsed = true
+
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        if (isLandscape) {
+            val displayMetrics = resources.displayMetrics
+            bottomSheet.layoutParams.width = (displayMetrics.widthPixels * 0.55).toInt()
+            bottomSheet.requestLayout()
+        }
     }
 }

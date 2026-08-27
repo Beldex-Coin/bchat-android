@@ -18,6 +18,7 @@ import android.util.Log
 import android.util.Rational
 import android.view.SurfaceView
 import android.view.ViewGroup
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
@@ -98,7 +99,6 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.utilities.hexEncodedPublicKey
 import com.google.android.gms.common.util.CollectionUtils.listOf
 import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.BaseComponentActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.BChatTypography
@@ -121,7 +121,7 @@ import org.webrtc.SurfaceViewRenderer
 
 
 @AndroidEntryPoint
-class WebRTCComposeActivity : BaseComponentActivity() {
+class WebRTCComposeActivity : ComponentActivity() {
 
     private var hangupReceiver: BroadcastReceiver? = null
     val viewModel:CallViewModel by viewModels()
@@ -730,9 +730,9 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                 .fillMaxSize()
                 .paint(
                     if (isDarkTheme)
-                        painterResource(id=R.drawable.call_background)
+                        painterResource(if(isLandscape) R.drawable.land_call_background_dark else R.drawable.call_background)
                     else
-                        painterResource(id=R.drawable.call_background_white),
+                        painterResource(id= if(isLandscape) R.drawable.land_call_background_white else R.drawable.call_background_white),
                     contentScale=ContentScale.FillBounds
                 )
         ) {
@@ -796,121 +796,125 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                     if (!remoteVideoView) {
 
                         if (isLandscape) {
-                            // === LANDSCAPE: unchanged from original ===
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .padding(horizontal = 24.dp)
                             ) {
-                                Spacer(modifier = Modifier.weight(0.6f))
-
-                                Text(
-                                    text = isStatusText,
-                                    style = BChatTypography.titleMedium.copy(
-                                        color = MaterialTheme.appColors.textColor,
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight(700)
-                                    ),
-                                    textAlign = TextAlign.Center
-                                )
+                                Spacer(modifier = Modifier.height(12.dp))
 
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center,
-                                    modifier = Modifier.padding(top = 8.dp)
+                                    modifier = Modifier.fillMaxWidth()
                                 ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.ic_lock_call),
-                                        contentDescription = lockDescription,
-                                        tint = MaterialTheme.appColors.textColor,
-                                        modifier = Modifier.padding(horizontal = 5.dp)
-                                    )
-                                    Text(
-                                        text = stringResource(id = R.string.end_to_end_encrypted),
-                                        style = BChatTypography.titleMedium.copy(
-                                            color = MaterialTheme.appColors.textColor,
-                                            fontSize = 12.sp,
-                                            fontWeight = FontWeight(400)
-                                        ),
-                                        modifier = Modifier.padding(horizontal = 5.dp)
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.weight(0.6f))
-
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(profilePictureSize)
-                                            .border(
-                                                width = 1.dp,
-                                                color = MaterialTheme.appColors.switchTrackColor,
-                                                shape = CircleShape
-                                            )
-                                            .background(
-                                                color = MaterialTheme.appColors.backgroundColor,
-                                                shape = CircleShape
-                                            ),
-                                        contentAlignment = Alignment.Center
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier.weight(1f)
                                     ) {
-                                        Box(
-                                            modifier = Modifier.size(profilePictureInnerSize),
-                                            contentAlignment = Alignment.Center
-                                        ) {
-                                            ProfilePictureComponent(
-                                                publicKey = if (showLocalUserDetailsInFullScreen()) localUserPublicKey else recipientPublicKey,
-                                                displayName = getUserDisplayName(if (showLocalUserDetailsInFullScreen()) localUserPublicKey else recipientPublicKey),
-                                                containerSize = profileSize,
-                                                pictureMode = ProfilePictureMode.LargePicture
-                                            )
-                                        }
-                                    }
-                                    Spacer(modifier = Modifier.width(24.dp))
-                                    Column(
-                                        horizontalAlignment = Alignment.Start,
-                                        verticalArrangement = Arrangement.Center
-                                    ) {
+                                        Icon(
+                                            painterResource(id = R.drawable.ic_back_call),
+                                            contentDescription = stringResource(R.string.back),
+                                            tint = MaterialTheme.appColors.editTextColor,
+                                            modifier = Modifier
+                                                .clickable {
+                                                    (context as ComponentActivity).finish()
+                                                }
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
                                         Text(
-                                            text = if (showLocalUserDetailsInFullScreen()) localUserName else isPersonNameText,
+                                            text = isStatusText,
                                             style = BChatTypography.titleMedium.copy(
                                                 color = MaterialTheme.appColors.textColor,
-                                                fontSize = 20.sp,
+                                                fontSize = 22.sp,
                                                 fontWeight = FontWeight(700)
-                                            ),
-                                            textAlign = TextAlign.Start,
-                                            maxLines = 1
+                                            )
                                         )
                                     }
-                                }
 
-                                Spacer(modifier = Modifier.weight(0.6f))
+                                    // Center: Person name
+                                    Text(
+                                        text = if (showLocalUserDetailsInFullScreen()) localUserName else isPersonNameText,
+                                        style = BChatTypography.titleMedium.copy(
+                                            color = MaterialTheme.appColors.textColor,
+                                            fontSize = 24.sp,
+                                            fontWeight = FontWeight(700)
+                                        ),
+                                        textAlign = TextAlign.Center,
+                                        maxLines = 1,
+                                        modifier = Modifier.weight(1f)
+                                    )
 
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.Bottom
-                                ) {
-                                    if (isShowDialingStatus) {
+                                    // Right: Lock icon + E2E encryption text
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.End,
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_lock_call),
+                                            contentDescription = lockDescription,
+                                            tint = MaterialTheme.appColors.textColor,
+                                            modifier = Modifier.padding(horizontal = 5.dp)
+                                        )
                                         Text(
-                                            isStatusDialingText,
-                                            Modifier.padding(vertical = 6.dp),
+                                            text = stringResource(id = R.string.end_to_end_encrypted),
                                             style = BChatTypography.titleMedium.copy(
                                                 color = MaterialTheme.appColors.textColor,
-                                                fontSize = 16.sp,
+                                                fontSize = 12.sp,
                                                 fontWeight = FontWeight(400)
                                             )
                                         )
                                     }
-                                    if (isShowIncomingStatus) {
+                                }
+
+                                Spacer(modifier = Modifier.height(12.dp))
+
+                                // ---- Profile picture centered ----
+                                Box(
+                                    modifier = Modifier
+                                        .size(profilePictureSize)
+                                        .border(
+                                            width = 1.dp,
+                                            color = MaterialTheme.appColors.switchTrackColor,
+                                            shape = CircleShape
+                                        )
+                                        .background(
+                                            color = MaterialTheme.appColors.backgroundColor,
+                                            shape = CircleShape
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(4.dp)
+                                            .size(profilePictureInnerSize),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        ProfilePictureComponent(
+                                            publicKey = if (showLocalUserDetailsInFullScreen()) localUserPublicKey else recipientPublicKey,
+                                            displayName = getUserDisplayName(if (showLocalUserDetailsInFullScreen()) localUserPublicKey else recipientPublicKey),
+                                            containerSize = profileSize,
+                                            pictureMode = ProfilePictureMode.LargePicture
+                                        )
+                                    }
+                                }
+
+                                Spacer(modifier = Modifier.weight(1f))
+
+                                // ---- Calling text + Animation at bottom ----
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Bottom,
+                                    modifier = Modifier.padding(bottom = 24.dp)
+                                ) {
+                                    if (isShowDialingStatus) {
                                         Text(
-                                            isStatusInComingText,
-                                            Modifier.padding(vertical = 6.dp),
+                                            isStatusDialingText,
+                                            Modifier.padding(vertical = 4.dp),
                                             style = BChatTypography.titleMedium.copy(
                                                 color = MaterialTheme.appColors.textColor,
-                                                fontSize = 16.sp,
+                                                fontSize = 14.sp,
                                                 fontWeight = FontWeight(400)
                                             )
                                         )
@@ -920,26 +924,26 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                             text = isStatusReConnectingText,
                                             style = BChatTypography.titleMedium.copy(
                                                 color = MaterialTheme.appColors.textColor,
-                                                fontSize = 16.sp,
+                                                fontSize = 14.sp,
                                                 fontWeight = FontWeight(400)
                                             ),
-                                            modifier = Modifier.padding(vertical = 6.dp)
+                                            modifier = Modifier.padding(vertical = 4.dp)
                                         )
                                     }
                                     if (callLoading) {
                                         LottieAnimation(
                                             composition,
                                             progress,
-                                            modifier = Modifier.size(52.dp)
+                                            modifier = Modifier.size(48.dp)
                                         )
                                     }
                                     if (isShowCallAudioStatus) {
                                         Text(
                                             isStatusCallAudioText,
-                                            Modifier.padding(vertical = 6.dp),
+                                            Modifier.padding(vertical = 4.dp),
                                             style = BChatTypography.titleMedium.copy(
                                                 color = MaterialTheme.appColors.textColor,
-                                                fontSize = 12.sp,
+                                                fontSize = 11.sp,
                                                 fontWeight = FontWeight(400)
                                             )
                                         )
@@ -947,10 +951,10 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                     if (isShowCallVideoStatus) {
                                         Text(
                                             isStatusCallVideoText,
-                                            Modifier.padding(vertical = 6.dp),
+                                            Modifier.padding(vertical = 4.dp),
                                             style = BChatTypography.titleMedium.copy(
                                                 color = MaterialTheme.appColors.textColor,
-                                                fontSize = 12.sp,
+                                                fontSize = 11.sp,
                                                 fontWeight = FontWeight(400)
                                             )
                                         )
@@ -958,19 +962,17 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                     if (isShowCallDurationStatus) {
                                         Text(
                                             isStatusCallDurationText,
-                                            Modifier.padding(vertical = 6.dp),
+                                            Modifier.padding(vertical = 4.dp),
                                             style = BChatTypography.titleMedium.copy(
                                                 color = MaterialTheme.appColors.textColor,
-                                                fontSize = 16.sp,
+                                                fontSize = 14.sp,
                                                 fontWeight = FontWeight(400)
                                             )
                                         )
                                     }
                                 }
 
-                                Spacer(modifier = Modifier.height(48.dp))
-
-                                Spacer(modifier = Modifier.weight(1f))
+                                Spacer(modifier = Modifier.height(8.dp))
                             }
                         } else {
                             // === PORTRAIT: top group + bottom group ===
@@ -1082,17 +1084,6 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                             )
                                         )
                                     }
-                                    if (isShowIncomingStatus) {
-                                        Text(
-                                            isStatusInComingText,
-                                            Modifier.padding(vertical = 6.dp),
-                                            style = BChatTypography.titleMedium.copy(
-                                                color = MaterialTheme.appColors.textColor,
-                                                fontSize = 18.sp,
-                                                fontWeight = FontWeight(400)
-                                            )
-                                        )
-                                    }
                                     if (isShowReConnecting) {
                                         Text(
                                             text = isStatusReConnectingText,
@@ -1158,8 +1149,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                             ) {
                                 Surface(
                                     color = Color.Black,
-                                    shape = RoundedCornerShape(12.dp),
-                                    modifier = Modifier.aspectRatio(remoteVideoAspect)
+                                    modifier = Modifier.fillMaxSize()
                                 ) {
                                     isRemoteSurfaceView?.let {
                                         VideoCallSurfaceView(
@@ -1167,16 +1157,128 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                         )
                                     }
                                 }
+
+                                // Top bar overlay on remote video
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .align(Alignment.TopCenter)
+                                        .padding(top = 12.dp, start = 16.dp, end = 16.dp)
+                                ) {
+                                    Icon(
+                                        painterResource(id = R.drawable.ic_back_call),
+                                        contentDescription = stringResource(R.string.back),
+                                        tint = Color.White,
+                                        modifier = Modifier
+                                            .clickable {
+                                                (context as ComponentActivity).finish()
+                                            }
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(
+                                        text = isStatusText,
+                                        style = BChatTypography.titleMedium.copy(
+                                            color = Color.White,
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight(700)
+                                        )
+                                    )
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    Text(
+                                        text = if (isSwitchCameraFlipEnabled && videoSwapped) localUserName else isPersonNameText,
+                                        style = BChatTypography.titleMedium.copy(
+                                            color = Color.White,
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight(700)
+                                        ),
+                                        textAlign = TextAlign.Center,
+                                        maxLines = 1
+                                    )
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_lock_call),
+                                        contentDescription = lockDescription,
+                                        tint = Color.White,
+                                        modifier = Modifier.padding(horizontal = 5.dp)
+                                    )
+                                    Text(
+                                        text = stringResource(id = R.string.end_to_end_encrypted),
+                                        style = BChatTypography.titleMedium.copy(
+                                            color = Color.White,
+                                            fontSize = 11.sp,
+                                            fontWeight = FontWeight(400)
+                                        )
+                                    )
+                                }
                             }
                         } else {
-                            Surface(
-                                color = Color.Black,
-                                shape = RoundedCornerShape(12.dp),
+                            Box(
                                 modifier = Modifier.fillMaxSize()
                             ) {
-                                isRemoteSurfaceView?.let {
-                                    VideoCallSurfaceView(
-                                        surfaceView = it
+                                Surface(
+                                    color = Color.Black,
+                                    shape = RoundedCornerShape(12.dp),
+                                    modifier = Modifier.fillMaxSize()
+                                ) {
+                                    isRemoteSurfaceView?.let {
+                                        VideoCallSurfaceView(
+                                            surfaceView = it
+                                        )
+                                    }
+                                }
+
+                                // Top bar overlay on portrait remote video
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .align(Alignment.TopCenter)
+                                        .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                                ) {
+                                    Icon(
+                                        painterResource(id = R.drawable.ic_back_call),
+                                        contentDescription = stringResource(R.string.back),
+                                        tint = Color.White,
+                                        modifier = Modifier
+                                            .clickable {
+                                                (context as ComponentActivity).finish()
+                                            }
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(
+                                        text = isStatusText,
+                                        style = BChatTypography.titleMedium.copy(
+                                            color = Color.White,
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight(700)
+                                        )
+                                    )
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    Text(
+                                        text = if (isSwitchCameraFlipEnabled && videoSwapped) localUserName else isPersonNameText,
+                                        style = BChatTypography.titleMedium.copy(
+                                            color = Color.White,
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight(700)
+                                        ),
+                                        textAlign = TextAlign.Center,
+                                        maxLines = 1
+                                    )
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_lock_call),
+                                        contentDescription = lockDescription,
+                                        tint = Color.White,
+                                        modifier = Modifier.padding(horizontal = 5.dp)
+                                    )
+                                    Text(
+                                        text = stringResource(id = R.string.end_to_end_encrypted),
+                                        style = BChatTypography.titleMedium.copy(
+                                            color = Color.White,
+                                            fontSize = 11.sp,
+                                            fontWeight = FontWeight(400)
+                                        )
                                     )
                                 }
                             }
@@ -1192,18 +1294,6 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                     Modifier
                                         .padding(all=12.dp)
                                         .offset(y=(-50).dp),
-                                    style = BChatTypography.titleMedium.copy(
-                                        color = MaterialTheme.appColors.textColor,
-                                        fontSize = 18.sp, fontWeight = FontWeight(400)
-                                    )
-                                )
-                            }
-                            if (isShowIncomingStatus) {
-                                Text(
-                                    isStatusInComingText,
-                                    Modifier
-                                        .padding(all=12.dp)
-                                        .offset(y=(-60).dp),
                                     style = BChatTypography.titleMedium.copy(
                                         color = MaterialTheme.appColors.textColor,
                                         fontSize = 18.sp, fontWeight = FontWeight(400)
@@ -1235,19 +1325,6 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                 )
                             }
 
-                            Text(
-                                text = if (isSwitchCameraFlipEnabled && videoSwapped) localUserName else isPersonNameText,
-                                style = BChatTypography.titleMedium.copy(
-                                    color = MaterialTheme.appColors.textColor,
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight(700)
-                                ),
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier
-                                    .padding(top=12.dp, start=12.dp, end=12.dp)
-                                    .offset(y=(-50).dp),
-                            )
-
                             if (isShowCallDurationStatus) {
                                 Text(
                                     isStatusCallDurationText,
@@ -1277,22 +1354,24 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                             }
                         }
                     }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.TopCenter)
-                            .padding(top=16.dp, start=16.dp)
-                    ) {
-                        Icon(
-                            painterResource(id = R.drawable.ic_back_call),
-                            contentDescription = stringResource(R.string.back),
-                            tint = MaterialTheme.appColors.editTextColor,
+                    if (!isLandscape) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                                .clickable {
-                                    (context as BaseComponentActivity).finish()
-                                }
-                        )
+                                .fillMaxWidth()
+                                .align(Alignment.TopCenter)
+                                .padding(top=16.dp, start=16.dp)
+                        ) {
+                            Icon(
+                                painterResource(id = R.drawable.ic_back_call),
+                                contentDescription = stringResource(R.string.back),
+                                tint = MaterialTheme.appColors.editTextColor,
+                                modifier = Modifier
+                                    .clickable {
+                                        (context as ComponentActivity).finish()
+                                    }
+                            )
+                        }
                     }
 
                     if (localVideoView) {
@@ -1438,58 +1517,76 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                 }
                 if (isShowAnswerOption && isShowDeclineOption) {
 
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Bottom,
+                        modifier = Modifier
                             .fillMaxWidth()
                             .offset(y=(-50).dp)
                     ) {
-                        if (isShowAnswerOption) {
-                            Box(
-                                modifier = Modifier
-                                    .height(65.dp)
-                                    .width(65.dp)
-                                    .background(
-                                        MaterialTheme.appColors.walletDashboardReceiveButtonBackground,
-                                        shape=CircleShape
-                                    )
-                                    .clickable {
-                                        if (callViewModel.currentCallState == CallViewModel.State.CALL_PRE_INIT) {
-                                            wantsToAnswer=true
-                                            updateControls()
-                                        }
-                                        answerCall(context)
-                                    }, contentAlignment = Alignment.Center
-
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.ic_incoming_call),
-                                    contentDescription = answerCallDescription,
-                                    modifier = Modifier.padding(10.dp)
+                        if (isShowIncomingStatus) {
+                            Text(
+                                isStatusInComingText,
+                                Modifier.padding(bottom = 24.dp),
+                                style = BChatTypography.titleMedium.copy(
+                                    color = MaterialTheme.appColors.textColor,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight(400)
                                 )
-                            }
+                            )
                         }
-                        if (isShowDeclineOption) {
-                            Box(
-                                modifier = Modifier
-                                    .height(65.dp)
-                                    .width(65.dp)
-                                    .background(
-                                        MaterialTheme.appColors.errorMessageColor,
-                                        shape=CircleShape
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(50.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            if (isShowAnswerOption) {
+                                Box(
+                                    modifier = Modifier
+                                        .height(65.dp)
+                                        .width(65.dp)
+                                        .background(
+                                            MaterialTheme.appColors.walletDashboardReceiveButtonBackground,
+                                            shape=CircleShape
+                                        )
+                                        .clickable {
+                                            if (callViewModel.currentCallState == CallViewModel.State.CALL_PRE_INIT) {
+                                                wantsToAnswer=true
+                                                updateControls()
+                                            }
+                                            answerCall(context)
+                                        }, contentAlignment = Alignment.Center
+
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.ic_incoming_call),
+                                        contentDescription = answerCallDescription,
+                                        modifier = Modifier.padding(10.dp)
                                     )
-                                    .clickable {
-                                        val declineIntent=
-                                            WebRtcCallService.denyCallIntent(context)
-                                        context.startService(declineIntent)
-                                    }, contentAlignment = Alignment.Center
+                                }
+                            }
+                            if (isShowDeclineOption) {
+                                Box(
+                                    modifier = Modifier
+                                        .height(65.dp)
+                                        .width(65.dp)
+                                        .background(
+                                            MaterialTheme.appColors.errorMessageColor,
+                                            shape=CircleShape
+                                        )
+                                        .clickable {
+                                            val declineIntent=
+                                                WebRtcCallService.denyCallIntent(context)
+                                            context.startService(declineIntent)
+                                        }, contentAlignment = Alignment.Center
 
-                            ) {
+                                ) {
 
-                                Image(
-                                    painter = painterResource(id = R.drawable.ic_decline_call),
-                                    contentDescription = declineCallDescription,
-                                    modifier = Modifier.padding(10.dp)
-                                )
+                                    Image(
+                                        painter = painterResource(id = R.drawable.ic_decline_call),
+                                        contentDescription = declineCallDescription,
+                                        modifier = Modifier.padding(10.dp)
+                                    )
+                                }
                             }
                         }
                     }
@@ -1507,7 +1604,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                             modifier = Modifier
                                 .wrapContentSize()
                                 .paint(
-                                    painterResource(id=R.drawable.call_bottom_background_white),
+                                    painterResource(id= if (isLandscape) R.drawable.land_call_bottom_background else R.drawable.call_bottom_background_white),
                                     contentScale=ContentScale.FillBounds,
                                     colorFilter=ColorFilter.tint(MaterialTheme.appColors.callBottomBackground)
                                 ),
@@ -1520,361 +1617,386 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                     .padding(vertical=20.dp)
                             ) {
                                 if (isLandscape) {
-                                    if (isShowSpeakerOption) {
-                                        Box(
-                                            modifier = Modifier
-                                                .height(42.dp)
-                                                .width(42.dp)
-                                                .background(
-                                                    MaterialTheme.appColors.qrCodeBackground,
-                                                    shape=CircleShape
-                                                )
-                                                .clickable {
-                                                    if (isBluetoothIsConnected) {
-                                                        expanded=!expanded
-                                                    } else {
-                                                        val command=
-                                                            AudioManagerCommand.SetUserDevice(if (callViewModel.isSpeaker) SignalAudioManager.AudioDevice.EARPIECE else SignalAudioManager.AudioDevice.SPEAKER_PHONE)
-                                                        WebRtcCallService.sendAudioManagerCommand(
-                                                            context,
-                                                            command
-                                                        )
-                                                    }
-
-
-                                                }, contentAlignment = Alignment.Center
-
-                                        ) {
-                                            if (isBluetoothIsSelected && isBluetoothIsConnected) {
-
-                                                Image(
-                                                    painter = if (isDarkTheme) {
-                                                        painterResource(id = R.drawable.ic_bluetooth_call)
-                                                    } else {
-                                                        painterResource(id = R.drawable.ic_bluetooth_call)
-                                                    },
-                                                    colorFilter = ColorFilter.tint(
-                                                        color = MaterialTheme.appColors.primaryButtonColor
-                                                    ),
-                                                    contentDescription = speakerDescription,
-                                                    modifier = Modifier.align(Alignment.Center)
-
-                                                )
-                                            } else {
-                                                Image(
-                                                    painter = if (isDarkTheme) {
-                                                        painterResource(id = R.drawable.ic_speaker_call)
-                                                    } else {
-                                                        painterResource(id = R.drawable.ic_speaker_call_white)
-                                                    },
-                                                    colorFilter = ColorFilter.tint(
-                                                        color = (if (isSpeakerIsSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.iconTint)
-                                                    ),
-                                                    contentDescription = speakerDescription,
-                                                    modifier = Modifier.align(Alignment.Center)
-
-                                                )
-                                            }
-
-                                            if (isBluetoothIsConnected) {
-                                                Image(
-                                                    painter = if (isDarkTheme) {
-                                                        painterResource(id = R.drawable.ic_switch_speaker_call)
-                                                    } else {
-                                                        painterResource(id = R.drawable.ic_switch_speaker_call_white)
-                                                    },
-                                                    contentDescription = speakerDescription,
-                                                    modifier = Modifier
-                                                        .align(Alignment.BottomEnd)
-                                                        .offset(x=((0).dp), y=((5).dp))
-                                                )
+                                    // LEFT group: Speaker + Mute (SpaceEvenly)
+                                    Row(
+                                        horizontalArrangement = Arrangement.SpaceEvenly,
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        if (isShowSpeakerOption) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .height(42.dp)
+                                                    .width(42.dp)
+                                                    .background(
+                                                        MaterialTheme.appColors.qrCodeBackground,
+                                                        shape=CircleShape
+                                                    )
+                                                    .clickable {
+                                                        if (isBluetoothIsConnected) {
+                                                            expanded=!expanded
+                                                        } else {
+                                                            val command=
+                                                                AudioManagerCommand.SetUserDevice(if (callViewModel.isSpeaker) SignalAudioManager.AudioDevice.EARPIECE else SignalAudioManager.AudioDevice.SPEAKER_PHONE)
+                                                            WebRtcCallService.sendAudioManagerCommand(
+                                                                context,
+                                                                command
+                                                            )
+                                                        }
+                                                    }, contentAlignment = Alignment.Center
+                                            ) {
+                                                if (isBluetoothIsSelected && isBluetoothIsConnected) {
+                                                    Image(
+                                                        painter = painterResource(id = R.drawable.ic_bluetooth_call),
+                                                        colorFilter = ColorFilter.tint(
+                                                            color = MaterialTheme.appColors.primaryButtonColor
+                                                        ),
+                                                        contentDescription = speakerDescription,
+                                                        modifier = Modifier.align(Alignment.Center)
+                                                    )
+                                                } else {
+                                                    Image(
+                                                        painter = if (isDarkTheme) {
+                                                            painterResource(id = R.drawable.ic_speaker_call)
+                                                        } else {
+                                                            painterResource(id = R.drawable.ic_speaker_call_white)
+                                                        },
+                                                        colorFilter = ColorFilter.tint(
+                                                            color = (if (isSpeakerIsSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.iconTint)
+                                                        ),
+                                                        contentDescription = speakerDescription,
+                                                        modifier = Modifier.align(Alignment.Center)
+                                                    )
+                                                }
+                                                if (isBluetoothIsConnected) {
+                                                    Image(
+                                                        painter = if (isDarkTheme) {
+                                                            painterResource(id = R.drawable.ic_switch_speaker_call)
+                                                        } else {
+                                                            painterResource(id = R.drawable.ic_switch_speaker_call_white)
+                                                        },
+                                                        contentDescription = speakerDescription,
+                                                        modifier = Modifier
+                                                            .align(Alignment.BottomEnd)
+                                                            .offset(x=0.dp, y=5.dp)
+                                                    )
+                                                }
                                             }
                                         }
-                                    }
-                                    if (isShowMuteOption) {
-                                        Box(
-                                            modifier = Modifier
-                                                .height(42.dp)
-                                                .width(42.dp)
-                                                .background(
-                                                    MaterialTheme.appColors.qrCodeBackground,
-                                                    shape=CircleShape
+                                        if (isShowMuteOption) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .height(42.dp)
+                                                    .width(42.dp)
+                                                    .background(
+                                                        MaterialTheme.appColors.qrCodeBackground,
+                                                        shape=CircleShape
+                                                    )
+                                                    .clickable(isMuteOptionClickable) { enableMuteOption() },
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Image(
+                                                    painter =
+                                                        if (isMuteOptionIconChange) {
+                                                            if (isDarkTheme) {
+                                                                painterResource(id = R.drawable.ic_unmute_call)
+                                                            } else {
+                                                                painterResource(id = R.drawable.ic_unmute_call_white)
+                                                            }
+                                                        } else {
+                                                            if (isDarkTheme) {
+                                                                painterResource(id = R.drawable.ic_mute_call)
+                                                            } else {
+                                                                painterResource(id = R.drawable.ic_mute_call_white)
+                                                            }
+                                                        },
+                                                    contentDescription = muteDescription,
+                                                    modifier = Modifier.padding(10.dp)
                                                 )
-                                                .clickable(isMuteOptionClickable) { enableMuteOption() },
-                                            contentAlignment = Alignment.Center
-
-                                        ) {
-                                            Image(
-                                                painter =
-                                                    if (isMuteOptionIconChange) {
-                                                        if (isDarkTheme) {
-                                                            painterResource(id = R.drawable.ic_unmute_call)
-                                                        } else {
-                                                            painterResource(id = R.drawable.ic_unmute_call_white)
-                                                        }
-                                                    } else {
-                                                        if (isDarkTheme) {
-                                                            painterResource(id = R.drawable.ic_mute_call)
-                                                        } else {
-                                                            painterResource(id = R.drawable.ic_mute_call_white)
-                                                        }
-                                                    },
-                                                contentDescription = muteDescription,
-                                                modifier = Modifier.padding(10.dp)
-                                            )
+                                            }
                                         }
                                     }
-                                    if (isShowSwitchCameraOption) {
+
+                                    // CENTER: End call button
+                                    if (!isLandscape && isShowEndCallOption) {
                                         Box(
                                             modifier = Modifier
-                                                .height(42.dp)
-                                                .width(42.dp)
+                                                .height(65.dp)
+                                                .width(65.dp)
                                                 .background(
-                                                    MaterialTheme.appColors.qrCodeBackground,
-                                                    shape=CircleShape
-                                                )
-                                                .clickable(enabled=isSwitchCameraFlipEnabled) {
-                                                    switchCamera()
-                                                }, contentAlignment = Alignment.Center
-
-                                        ) {
-
-                                            Image(
-                                                painter = painterResource(
-                                                    id = if (isDarkTheme && isSwitchCameraFlipEnabled) R.drawable.ic_switch_camera_call
-                                                    else if (!isDarkTheme && isSwitchCameraFlipEnabled) R.drawable.ic_switch_camera_call_white
-                                                    else R.drawable.ic_switch_camera_disable_call
-                                                ),
-                                                contentDescription = switchCamDescription,
-                                                modifier = Modifier.padding(10.dp)
-                                            )
-                                        }
-                                    }
-                                    if (isShowVideoOption) {
-                                        Box(
-                                            modifier = Modifier
-                                                .height(42.dp)
-                                                .width(42.dp)
-                                                .background(
-                                                    MaterialTheme.appColors.qrCodeBackground,
+                                                    MaterialTheme.appColors.errorMessageColor,
                                                     shape = CircleShape
                                                 )
                                                 .clickable {
-                                                    if (isShowCallDurationStatus) {
-                                                        enableCamera()
-                                                    }
-                                                }, contentAlignment = Alignment.Center
-
+                                                    context.startService(
+                                                        WebRtcCallService.hangupIntent(
+                                                            context
+                                                        )
+                                                    )
+                                                },
+                                            contentAlignment = Alignment.Center
                                         ) {
-
                                             Image(
-                                                painter =
-                                                    if (isSelectedVideoOption) {
-                                                        if (isDarkTheme) {
-                                                            painterResource(id = R.drawable.ic_video_disabled_call)
-                                                        } else {
-                                                            painterResource(id = R.drawable.ic_video_disable_call_white)
-                                                        }
-                                                    } else {
-                                                        if (isDarkTheme) {
-                                                            painterResource(id = R.drawable.ic_video_call)
-                                                        } else {
-                                                            painterResource(id = R.drawable.ic_video_call_white)
-                                                        }
-                                                    },
-                                                contentDescription = enableVideoDescription,
-                                                modifier = Modifier.padding(10.dp)
+                                                painter = painterResource(id = R.drawable.ic_decline_call),
+                                                contentDescription = endCallDescription
                                             )
+                                        }
+                                    }
+
+                                    // RIGHT group: Switch Camera + Video (SpaceEvenly)
+                                    Row(
+                                        horizontalArrangement = Arrangement.SpaceEvenly,
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        if (isShowSwitchCameraOption) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .height(42.dp)
+                                                    .width(42.dp)
+                                                    .background(
+                                                        MaterialTheme.appColors.qrCodeBackground,
+                                                        shape=CircleShape
+                                                    )
+                                                    .clickable(enabled=isSwitchCameraFlipEnabled) {
+                                                        switchCamera()
+                                                    }, contentAlignment = Alignment.Center
+                                            ) {
+                                                Image(
+                                                    painter = painterResource(
+                                                        id = if (isDarkTheme && isSwitchCameraFlipEnabled) R.drawable.ic_switch_camera_call
+                                                        else if (!isDarkTheme && isSwitchCameraFlipEnabled) R.drawable.ic_switch_camera_call_white
+                                                        else R.drawable.ic_switch_camera_disable_call
+                                                    ),
+                                                    contentDescription = switchCamDescription,
+                                                    modifier = Modifier.padding(10.dp)
+                                                )
+                                            }
+                                        }
+                                        if (isShowVideoOption) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .height(42.dp)
+                                                    .width(42.dp)
+                                                    .background(
+                                                        MaterialTheme.appColors.qrCodeBackground,
+                                                        shape = CircleShape
+                                                    )
+                                                    .clickable {
+                                                        if (isShowCallDurationStatus) {
+                                                            enableCamera()
+                                                        }
+                                                    }, contentAlignment = Alignment.Center
+                                            ) {
+                                                Image(
+                                                    painter =
+                                                        if (isSelectedVideoOption) {
+                                                            if (isDarkTheme) {
+                                                                painterResource(id = R.drawable.ic_video_disabled_call)
+                                                            } else {
+                                                                painterResource(id = R.drawable.ic_video_disable_call_white)
+                                                            }
+                                                        } else {
+                                                            if (isDarkTheme) {
+                                                                painterResource(id = R.drawable.ic_video_call)
+                                                            } else {
+                                                                painterResource(id = R.drawable.ic_video_call_white)
+                                                            }
+                                                        },
+                                                    contentDescription = enableVideoDescription,
+                                                    modifier = Modifier.padding(10.dp)
+                                                )
+                                            }
                                         }
                                     }
                                 } else {
-                                Row(
+                                    Row(
 
-                                    modifier = Modifier.wrapContentWidth()
+                                        modifier = Modifier.wrapContentWidth()
 
-                                ) {
-                                    if (isShowSpeakerOption) {
-                                        Box(
-                                            modifier = Modifier
-                                                .height(42.dp)
-                                                .width(42.dp)
-                                                .background(
-                                                    MaterialTheme.appColors.qrCodeBackground,
-                                                    shape=CircleShape
-                                                )
-                                                .clickable {
-                                                    if (isBluetoothIsConnected) {
-                                                        expanded=!expanded
-                                                    } else {
-                                                        val command=
-                                                            AudioManagerCommand.SetUserDevice(if (callViewModel.isSpeaker) SignalAudioManager.AudioDevice.EARPIECE else SignalAudioManager.AudioDevice.SPEAKER_PHONE)
-                                                        WebRtcCallService.sendAudioManagerCommand(
-                                                            context,
-                                                            command
-                                                        )
-                                                    }
+                                    ) {
+                                        if (isShowSpeakerOption) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .height(42.dp)
+                                                    .width(42.dp)
+                                                    .background(
+                                                        MaterialTheme.appColors.qrCodeBackground,
+                                                        shape=CircleShape
+                                                    )
+                                                    .clickable {
+                                                        if (isBluetoothIsConnected) {
+                                                            expanded=!expanded
+                                                        } else {
+                                                            val command=
+                                                                AudioManagerCommand.SetUserDevice(if (callViewModel.isSpeaker) SignalAudioManager.AudioDevice.EARPIECE else SignalAudioManager.AudioDevice.SPEAKER_PHONE)
+                                                            WebRtcCallService.sendAudioManagerCommand(
+                                                                context,
+                                                                command
+                                                            )
+                                                        }
 
 
-                                                }, contentAlignment = Alignment.Center
+                                                    }, contentAlignment = Alignment.Center
 
-                                        ) {
-                                            if (isBluetoothIsSelected && isBluetoothIsConnected) {
+                                            ) {
+                                                if (isBluetoothIsSelected && isBluetoothIsConnected) {
 
+                                                    Image(
+                                                        painter = if (isDarkTheme) {
+                                                            painterResource(id = R.drawable.ic_bluetooth_call)
+                                                        } else {
+                                                            painterResource(id = R.drawable.ic_bluetooth_call)
+                                                        },
+                                                        colorFilter = ColorFilter.tint(
+                                                            color = MaterialTheme.appColors.primaryButtonColor
+                                                        ),
+                                                        contentDescription = speakerDescription,
+                                                        modifier = Modifier.align(Alignment.Center)
+
+                                                    )
+                                                } else {
+                                                    Image(
+                                                        painter = if (isDarkTheme) {
+                                                            painterResource(id = R.drawable.ic_speaker_call)
+                                                        } else {
+                                                            painterResource(id = R.drawable.ic_speaker_call_white)
+                                                        },
+                                                        colorFilter = ColorFilter.tint(
+                                                            color = (if (isSpeakerIsSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.iconTint)
+                                                        ),
+                                                        contentDescription = speakerDescription,
+                                                        modifier = Modifier.align(Alignment.Center)
+
+                                                    )
+                                                }
+
+                                                if (isBluetoothIsConnected) {
+                                                    Image(
+                                                        painter = if (isDarkTheme) {
+                                                            painterResource(id = R.drawable.ic_switch_speaker_call)
+                                                        } else {
+                                                            painterResource(id = R.drawable.ic_switch_speaker_call_white)
+                                                        },
+                                                        contentDescription = speakerDescription,
+                                                        modifier = Modifier
+                                                            .align(Alignment.BottomEnd)
+                                                            .offset(x=((0).dp), y=((5).dp))
+                                                    )
+                                                }
+                                            }
+                                        }
+
+                                        Spacer(modifier = Modifier.width(20.dp))
+
+                                        if (isShowMuteOption) {
+
+                                            Box(
+                                                modifier = Modifier
+                                                    .height(42.dp)
+                                                    .width(42.dp)
+                                                    .background(
+                                                        MaterialTheme.appColors.qrCodeBackground,
+                                                        shape=CircleShape
+                                                    )
+                                                    .clickable(isMuteOptionClickable) { enableMuteOption() },
+                                                contentAlignment = Alignment.Center
+
+                                            ) {
                                                 Image(
-                                                    painter = if (isDarkTheme) {
-                                                        painterResource(id = R.drawable.ic_bluetooth_call)
-                                                    } else {
-                                                        painterResource(id = R.drawable.ic_bluetooth_call)
-                                                    },
-                                                    colorFilter = ColorFilter.tint(
-                                                        color = MaterialTheme.appColors.primaryButtonColor
-                                                    ),
-                                                    contentDescription = speakerDescription,
-                                                    modifier = Modifier.align(Alignment.Center)
-
-                                                )
-                                            } else {
-                                                Image(
-                                                    painter = if (isDarkTheme) {
-                                                        painterResource(id = R.drawable.ic_speaker_call)
-                                                    } else {
-                                                        painterResource(id = R.drawable.ic_speaker_call_white)
-                                                    },
-                                                    colorFilter = ColorFilter.tint(
-                                                        color = (if (isSpeakerIsSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.iconTint)
-                                                    ),
-                                                    contentDescription = speakerDescription,
-                                                    modifier = Modifier.align(Alignment.Center)
-
+                                                    painter =
+                                                        if (isMuteOptionIconChange) {
+                                                            if (isDarkTheme) {
+                                                                painterResource(id = R.drawable.ic_unmute_call)
+                                                            } else {
+                                                                painterResource(id = R.drawable.ic_unmute_call_white)
+                                                            }
+                                                        } else {
+                                                            if (isDarkTheme) {
+                                                                painterResource(id = R.drawable.ic_mute_call)
+                                                            } else {
+                                                                painterResource(id = R.drawable.ic_mute_call_white)
+                                                            }
+                                                        },
+                                                    contentDescription = muteDescription,
+                                                    modifier = Modifier.padding(10.dp)
                                                 )
                                             }
+                                        }
+                                    }
+                                    Row(
+                                        //horizontalArrangement=Arrangement.SpaceAround,
+                                        modifier = Modifier.wrapContentWidth()
 
-                                            if (isBluetoothIsConnected) {
+                                    ) {
+                                        // Options within the second box
+                                        if (isShowSwitchCameraOption) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .height(42.dp)
+                                                    .width(42.dp)
+                                                    .background(
+                                                        MaterialTheme.appColors.qrCodeBackground,
+                                                        shape=CircleShape
+                                                    )
+                                                    .clickable(enabled=isSwitchCameraFlipEnabled) {
+                                                        switchCamera()
+                                                    }, contentAlignment = Alignment.Center
+
+                                            ) {
+
                                                 Image(
-                                                    painter = if (isDarkTheme) {
-                                                        painterResource(id = R.drawable.ic_switch_speaker_call)
-                                                    } else {
-                                                        painterResource(id = R.drawable.ic_switch_speaker_call_white)
-                                                    },
-                                                    contentDescription = speakerDescription,
-                                                    modifier = Modifier
-                                                        .align(Alignment.BottomEnd)
-                                                        .offset(x=((0).dp), y=((5).dp))
+                                                    painter = painterResource(
+                                                        id = if (isDarkTheme && isSwitchCameraFlipEnabled) R.drawable.ic_switch_camera_call
+                                                        else if (!isDarkTheme && isSwitchCameraFlipEnabled) R.drawable.ic_switch_camera_call_white
+                                                        else R.drawable.ic_switch_camera_disable_call
+                                                    ),
+                                                    contentDescription = switchCamDescription,
+                                                    modifier = Modifier.padding(10.dp)
+                                                )
+                                            }
+                                        }
+
+                                        Spacer(modifier = Modifier.width(20.dp))
+
+                                        if (isShowVideoOption) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .height(42.dp)
+                                                    .width(42.dp)
+                                                    .background(
+                                                        MaterialTheme.appColors.qrCodeBackground,
+                                                        shape = CircleShape
+                                                    )
+                                                    .clickable {
+                                                        if (isShowCallDurationStatus) {
+                                                            enableCamera()
+                                                        }
+                                                    }, contentAlignment = Alignment.Center
+
+                                            ) {
+
+                                                Image(
+                                                    painter =
+                                                        if (isSelectedVideoOption) {
+                                                            if (isDarkTheme) {
+                                                                painterResource(id = R.drawable.ic_video_disabled_call)
+                                                            } else {
+                                                                painterResource(id = R.drawable.ic_video_disable_call_white)
+                                                            }
+                                                        } else {
+                                                            if (isDarkTheme) {
+                                                                painterResource(id = R.drawable.ic_video_call)
+                                                            } else {
+                                                                painterResource(id = R.drawable.ic_video_call_white)
+                                                            }
+                                                        },
+                                                    contentDescription = enableVideoDescription,
+                                                    modifier = Modifier.padding(10.dp)
                                                 )
                                             }
                                         }
                                     }
-
-                                    Spacer(modifier = Modifier.width(20.dp))
-
-                                    if (isShowMuteOption) {
-
-                                        Box(
-                                            modifier = Modifier
-                                                .height(42.dp)
-                                                .width(42.dp)
-                                                .background(
-                                                    MaterialTheme.appColors.qrCodeBackground,
-                                                    shape=CircleShape
-                                                )
-                                                .clickable(isMuteOptionClickable) { enableMuteOption() },
-                                            contentAlignment = Alignment.Center
-
-                                        ) {
-                                            Image(
-                                                painter =
-                                                    if (isMuteOptionIconChange) {
-                                                        if (isDarkTheme) {
-                                                            painterResource(id = R.drawable.ic_unmute_call)
-                                                        } else {
-                                                            painterResource(id = R.drawable.ic_unmute_call_white)
-                                                        }
-                                                    } else {
-                                                        if (isDarkTheme) {
-                                                            painterResource(id = R.drawable.ic_mute_call)
-                                                        } else {
-                                                            painterResource(id = R.drawable.ic_mute_call_white)
-                                                        }
-                                                    },
-                                                contentDescription = muteDescription,
-                                                modifier = Modifier.padding(10.dp)
-                                            )
-                                        }
-                                    }
-                                }
-                                Row(
-                                    //horizontalArrangement=Arrangement.SpaceAround,
-                                    modifier = Modifier.wrapContentWidth()
-
-                                ) {
-                                    // Options within the second box
-                                    if (isShowSwitchCameraOption) {
-                                        Box(
-                                            modifier = Modifier
-                                                .height(42.dp)
-                                                .width(42.dp)
-                                                .background(
-                                                    MaterialTheme.appColors.qrCodeBackground,
-                                                    shape=CircleShape
-                                                )
-                                                .clickable(enabled=isSwitchCameraFlipEnabled) {
-                                                    switchCamera()
-                                                }, contentAlignment = Alignment.Center
-
-                                        ) {
-
-                                            Image(
-                                                painter = painterResource(
-                                                    id = if (isDarkTheme && isSwitchCameraFlipEnabled) R.drawable.ic_switch_camera_call
-                                                    else if (!isDarkTheme && isSwitchCameraFlipEnabled) R.drawable.ic_switch_camera_call_white
-                                                    else R.drawable.ic_switch_camera_disable_call
-                                                ),
-                                                contentDescription = switchCamDescription,
-                                                modifier = Modifier.padding(10.dp)
-                                            )
-                                        }
-                                    }
-
-                                    Spacer(modifier = Modifier.width(20.dp))
-
-                                    if (isShowVideoOption) {
-                                        Box(
-                                            modifier = Modifier
-                                                .height(42.dp)
-                                                .width(42.dp)
-                                                .background(
-                                                    MaterialTheme.appColors.qrCodeBackground,
-                                                    shape = CircleShape
-                                                )
-                                                .clickable {
-                                                    if (isShowCallDurationStatus) {
-                                                        enableCamera()
-                                                    }
-                                                }, contentAlignment = Alignment.Center
-
-                                        ) {
-
-                                            Image(
-                                                painter =
-                                                    if (isSelectedVideoOption) {
-                                                        if (isDarkTheme) {
-                                                            painterResource(id = R.drawable.ic_video_disabled_call)
-                                                        } else {
-                                                            painterResource(id = R.drawable.ic_video_disable_call_white)
-                                                        }
-                                                    } else {
-                                                        if (isDarkTheme) {
-                                                            painterResource(id = R.drawable.ic_video_call)
-                                                        } else {
-                                                            painterResource(id = R.drawable.ic_video_call_white)
-                                                        }
-                                                    },
-                                                contentDescription = enableVideoDescription,
-                                                modifier = Modifier.padding(10.dp)
-                                            )
-                                        }
-                                    }
-                                }
                                 }
                             }
 

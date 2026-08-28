@@ -596,8 +596,7 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(115.dp)
-                        .padding(end=10.dp),
+                        .height(115.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = MaterialTheme.appColors.editTextBackground,
@@ -634,10 +633,10 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                         text=stringResource(id=R.string.cancel),
                         style=MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight(400),
-                            fontSize = 14.sp,
+                            fontSize = 12.sp,
                             color = MaterialTheme.appColors.negativeGreenButtonText
                         ),
-                        modifier=Modifier.padding(10.dp)
+                        modifier=Modifier.padding(top = 4.dp, bottom = 4.dp)
                     )
                 }
 
@@ -679,9 +678,9 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                                 MaterialTheme.appColors.disabledLetsBchatContent
                             },
                             fontWeight = FontWeight(400),
-                            fontSize = 14.sp
+                            fontSize = 12.sp
                         ),
-                        modifier=Modifier.padding(10.dp)
+                        modifier=Modifier.padding(top = 4.dp, bottom = 4.dp)
                     )
                 }
             }

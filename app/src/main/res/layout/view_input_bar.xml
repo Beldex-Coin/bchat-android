@@ -79,14 +79,15 @@
         android:id="@+id/noLongerParticipantTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:textColor="@color/text"
-        android:textAlignment="center"
+        android:gravity="center"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp"
         android:layout_margin="5dp"
-        android:visibility="gone"
+        android:visibility="visible"
         android:text="@string/you_can_t_send_messages_to_this_group_because_you_re_no_longer_a_participant"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"/>
+    />
 
     <RelativeLayout
         android:id="@+id/microphoneOrSendButtonContainer"

@@ -28,7 +28,7 @@
     <TextView
         android:fontFamily="@font/open_sans_regular"
         android:id="@+id/openURLExplanationTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/medium_spacing"
         android:text="@string/dialog_send_seed_explanation"

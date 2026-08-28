@@ -1363,7 +1363,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="about">アプリについて</string>
     <string name="create_password">パスワード作成</string>
     <string name="verify_pin">PIN の確認</string>
-    <string name="enter_your_4_digit_bchat_pin">4 桁の BChat PIN を入力</string>
+    <string name="enter_your_4_digit_bchat_pin">%d 桁の BChat PIN を入力</string>
     <string name="no_pending_requests">保留中のメッセージリクエストはありません！</string>
     <string name="create_secret_group">Create Secret Group</string>
     <string name="enter_group_name">シークレットグループ名を入力</string>

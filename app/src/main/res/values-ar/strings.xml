@@ -1425,7 +1425,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="about">حول</string>
     <string name="create_password">إنشاء كلمة المرور</string>
     <string name="verify_pin">التحقق من PIN</string>
-    <string name="enter_your_4_digit_bchat_pin">" أدخل رقم PIN المكون من 4 أرقام الخاص بـ BChat"</string>
+    <string name="enter_your_4_digit_bchat_pin">أدخل رقم PIN المكون من %d أرقام الخاص بـ BChat</string>
     <string name="no_pending_requests">لا توجد طلبات رسائل معلقة!</string>
     <string name="create_secret_group">Create Secret Group</string>
     <string name="enter_group_name">أدخل اسم المجموعة السرية</string>

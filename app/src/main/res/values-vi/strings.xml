@@ -1364,14 +1364,14 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="about">Giới thiệu</string>
     <string name="create_password">Tạo Mật khẩu</string>
     <string name="verify_pin">Xác minh PIN</string>
-    <string name="enter_your_4_digit_bchat_pin">Nhập mã PIN BChat gồm 4 chữ số của bạn</string>
+    <string name="enter_your_4_digit_bchat_pin">Nhập mã PIN BChat gồm %d chữ số của bạn</string>
     <string name="no_pending_requests">Không có yêu cầu tin nhắn đang chờ xử lý!</string>
     <string name="create_secret_group">Create Secret Group</string>
     <string name="enter_group_name">Nhập tên nhóm bí mật</string>
     <string name="search_contact">Tìm kiếm liên hệ</string>
     <string name="block_or_delete_request">Bạn muốn chặn hay chỉ xóa người dùng này?</string>
     <string name="or_join">Hoặc tham gia</string>
-    <string name="let_s_bchat">Hãy bắt đầu BChat</string>
+    <string name="let_s_bchat">Hãy BChat</string>
     <string name="your_chat_id">Your Chat ID</string>
     <string name="enter_chat_id">Nhập Chat ID hoặc tên BNS</string>
     <string name="restore_account">Restore Account</string>

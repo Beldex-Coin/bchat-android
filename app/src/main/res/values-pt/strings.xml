@@ -849,7 +849,7 @@
     <string name="message_details_header__error">Erro</string>
 
     <string name="dialog_send_seed_title">Aviso</string>
-    <string name="dialog_send_seed_explanation">Esta é a sua seed de recuperação.</string>
+    <string name="dialog_send_seed_explanation">Esta é a sua seed de recuperação. Se você enviá-la para alguém, essa pessoa terá acesso total à sua conta.</string>
     <string name="notify_type_all">Todas</string>
     <string name="notify_type_mentions">Menções</string>
     <string name="deleted_message">Esta mensagem foi excluída</string>
@@ -1377,7 +1377,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="about">Sobre</string>
     <string name="create_password">Criar Senha</string>
     <string name="verify_pin">Verificar PIN</string>
-    <string name="enter_your_4_digit_bchat_pin">Digite seu PIN BChat de 4 dígitos</string>
+    <string name="enter_your_4_digit_bchat_pin">Digite seu PIN BChat de %d dígitos</string>
     <string name="no_pending_requests">Nenhuma solicitação de mensagem pendente!</string>
     <string name="create_secret_group">Create Secret Group</string>
     <string name="enter_group_name">Digite o nome do grupo secreto</string>

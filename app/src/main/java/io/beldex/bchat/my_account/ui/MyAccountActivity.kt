@@ -1157,7 +1157,8 @@ fun MyAccountNavHost(
                     ) {
                         Text(
                             text = stringResource(id = R.string.no_blocked_contact),
-                            style = MaterialTheme.typography.titleLarge
+                            style = MaterialTheme.typography.titleLarge,
+                            textAlign = TextAlign.Center
                         )
                     }
                 } else {

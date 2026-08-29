@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -182,12 +183,15 @@ fun IgnoreRequestDialog(
                         style = MaterialTheme.typography.bodyMedium.copy(
                             color = MaterialTheme.appColors.negativeRedButtonBorder,
                             fontWeight = FontWeight(400),
-                            fontSize = 14.sp
-                        )
+                            fontSize = 12.sp
+                        ),
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Visible
                     )
                 }
 
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(8.dp))
 
                 Button(
                     onClick ={
@@ -204,9 +208,12 @@ fun IgnoreRequestDialog(
                         text = stringResource(id = R.string.delete),
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight(400),
-                            fontSize = 14.sp,
+                            fontSize = 12.sp,
                             color = Color.White
                         ),
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Visible
                     )
                 }
             }

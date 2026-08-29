@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -96,7 +98,7 @@ fun ArchiveChatScreen(
     var showMenu by remember { mutableStateOf(false) }
     val itemPositions = remember { mutableStateMapOf<Long, MenuPositionState>() }
     var menuPositionState by remember { mutableStateOf(MenuPositionState()) }
-    val popupOffset = rememberMenuPosition(menuPositionState)
+    val popupOffset = rememberMenuPosition(menuPositionState, 320.dp)
 
     var showBlockPopup by remember {
         mutableStateOf(false)
@@ -265,7 +267,7 @@ fun ArchiveChatScreen(
                 offset = popupOffset,
                 onDismissRequest = { showMenu = false },
             ) {
-                Card(modifier = Modifier.width(200.dp)) {
+                Card(modifier = Modifier.wrapContentWidth().widthIn(max = 320.dp)) {
                     Column(
                         modifier = Modifier
                             .padding(16.dp)

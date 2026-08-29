@@ -853,8 +853,10 @@ fun MyAccountNavHost(
                             )
                         }
                         Box(
-                            contentAlignment=Alignment.CenterEnd,
-                            modifier=Modifier.align(alignment=Alignment.TopCenter)
+                            contentAlignment = Alignment.BottomEnd,
+                            modifier = Modifier
+                                .size(ProfilePictureMode.LargePicture.size)
+                                .align(alignment = Alignment.TopCenter)
                         ) {
                             if(isProfileChanged) {
                                 ProfilePictureComponent(
@@ -862,7 +864,7 @@ fun MyAccountNavHost(
                                     displayName = state.profileName ?: state.publicKey,
                                     containerSize = ProfilePictureMode.LargePicture.size,
                                     pictureMode = ProfilePictureMode.LargePicture,
-                                    modifier = Modifier.align(alignment = Alignment.TopCenter)
+                                    modifier = Modifier.fillMaxSize()
                                 )
                                 isProfileChanged = false
                             }else{
@@ -871,14 +873,15 @@ fun MyAccountNavHost(
                                     displayName = state.profileName ?: state.publicKey,
                                     containerSize = ProfilePictureMode.LargePicture.size,
                                     pictureMode = ProfilePictureMode.LargePicture,
-                                    modifier = Modifier.align(alignment = Alignment.TopCenter)
+                                    modifier = Modifier.fillMaxSize()
                                 )
                             }
                             if (showEditNameTextField) {
                                 Box(
                                     contentAlignment=Alignment.Center,
                                     modifier= Modifier
-                                        .padding(start = 150.dp)
+                                        .align(Alignment.BottomEnd)
+                                        .padding(end = 4.dp, bottom = 4.dp)
                                         .size(32.dp)
                                         .clip(CircleShape)
                                         .background(

@@ -1702,6 +1702,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
+        if (!::binding.isInitialized) return
         updateEmptyState()
         val wasDrawerOpen = binding.drawerLayout.isDrawerVisible(GravityCompat.END)
         updateDrawerWidth()

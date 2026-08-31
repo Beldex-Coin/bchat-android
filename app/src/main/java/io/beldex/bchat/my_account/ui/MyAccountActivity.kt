@@ -36,6 +36,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -767,6 +768,7 @@ fun MyAccountNavHost(
                         Box(
                             modifier = Modifier
                                 .padding(start = 24.dp, top = 16.dp, end = 0.dp, bottom = 16.dp)
+                                .widthIn(max = 120.dp)
                                 .background(
                                     color = if (showEditNameTextField) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.listItemBackground,
                                     shape = RoundedCornerShape(16.dp)
@@ -797,6 +799,7 @@ fun MyAccountNavHost(
                                     fontWeight = FontWeight(600),
                                     fontSize = 12.sp,
                                 ),
+                                textAlign = TextAlign.Center,
                                 modifier = Modifier.padding(start = 12.dp, top = 4.dp, end = 12.dp, bottom = 4.dp)
 
                             )

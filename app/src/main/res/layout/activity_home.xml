@@ -29,13 +29,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="visible"
+                android:minHeight="0dp"
                 android:background="@color/button_green"
-                app:contentInsetStart="0dp">
+                app:contentInsetStart="0dp"
+                app:contentInsetEnd="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
                     android:orientation="vertical">
 
                     <RelativeLayout
@@ -61,12 +65,10 @@
                             android:id="@+id/callInProgress_Call"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
                             android:layout_centerVertical="true"
-                            android:layout_marginStart="20dp"
-                            android:layout_marginEnd="10dp"
                             android:textColor="@color/white"
                             android:fontFamily="@font/open_sans_bold"
-                            android:layout_toEndOf="@id/callDuration_Call"
                             android:text="@string/call_in_progress"
                             android:textSize="11sp"
                             android:textStyle="bold" />

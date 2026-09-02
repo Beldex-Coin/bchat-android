@@ -39,6 +39,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -678,8 +679,15 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                                 MaterialTheme.appColors.disabledLetsBchatContent
                             },
                             fontWeight = FontWeight(400),
-                            fontSize = 12.sp
+                            fontSize = 12.sp,
+                            textAlign = TextAlign.Center
                         ),
+                        autoSize = TextAutoSize.StepBased(
+                            minFontSize = 8.sp,
+                            maxFontSize = 12.sp
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Clip,
                         modifier=Modifier.padding(top = 4.dp, bottom = 4.dp)
                     )
                 }

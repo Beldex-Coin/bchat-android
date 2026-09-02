@@ -24,6 +24,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.TextView
 import android.widget.Toast
@@ -1054,6 +1055,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         // space available inside the chat list area, so it never grows over the views above (e.g.
         // the global search box) nor past the bottom of the screen.
         val menuAdapter = MenuAdapter(menu, layoutInflater, true, androidx.appcompat.R.layout.abc_popup_menu_item_layout)
+        menuAdapter.setForceShowIcon(true)
         showChatOptionsMenu(menuAdapter, view, thread, position)
     }
 
@@ -1063,6 +1065,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         var maxItemWidth = 0
         for (i in 0 until menuAdapter.count) {
             val itemView = menuAdapter.getView(i, null, null)
+            itemView.layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
             itemView.measure(
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)

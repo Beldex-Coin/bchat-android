@@ -30,6 +30,6 @@
         android:maxLines="1"
         android:textColor="@color/text"
         tools:text="Custom Navigation Row"
-        android:textSize="14sp" />
+        android:textSize="12sp" />
 
 </LinearLayout>

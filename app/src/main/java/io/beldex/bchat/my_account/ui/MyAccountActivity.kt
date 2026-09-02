@@ -797,10 +797,10 @@ fun MyAccountNavHost(
                                 style = BChatTypography.bodySmall.copy(
                                     color = if(showEditNameTextField) Color.White  else MaterialTheme.appColors.primaryButtonColor,
                                     fontWeight = FontWeight(600),
-                                    fontSize = 12.sp,
+                                    fontSize = 11.sp,
                                 ),
                                 textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(start = 12.dp, top = 4.dp, end = 12.dp, bottom = 4.dp)
+                                modifier = Modifier.padding(start = 6.dp, top = 4.dp, end = 6.dp, bottom = 4.dp)
 
                             )
                         }
@@ -1517,7 +1517,7 @@ fun ProfileCard(
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             ProfileCardKeyContainer(
                 isBnsHolder = isBnsHolder,
@@ -1529,7 +1529,8 @@ fun ProfileCard(
                 isBeldex = true,
                 onShowDialog = {
                     onShowDialog(0)
-                }
+                },
+                modifier = Modifier.weight(1f)
             )
 
             ProfileCardKeyContainer(
@@ -1541,7 +1542,8 @@ fun ProfileCard(
                 },
                 onShowDialog = {
                     onShowDialog(1)
-                }
+                },
+                modifier = Modifier.weight(1f)
             )
 
             ProfileCardKeyContainer(
@@ -1553,7 +1555,8 @@ fun ProfileCard(
                 showCopyIcon = false,
                 onShowDialog = {
                     onShowDialog(2)
-                }
+                },
+                modifier = Modifier.weight(1f)
             )
         }
     }
@@ -1567,9 +1570,11 @@ fun ProfileCardKeyContainer(
     onCopy: () -> Unit,
     showCopyIcon: Boolean = true,
     isBeldex: Boolean = false,
-    onShowDialog: () -> Unit
+    onShowDialog: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
+        modifier = modifier,
         elevation = CardDefaults.cardElevation(
             defaultElevation = if(!isBnsHolder.isNullOrEmpty()) 2.dp else 0.dp
         ),

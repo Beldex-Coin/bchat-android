@@ -288,7 +288,10 @@ fun ArchiveChatScreen(
                                         showMenu = false
                                         showBlockPopup = true
                                     }) {
-                                        Text(stringResource(id = R.string.RecipientPreferenceActivity_block))
+                                        Text(
+                                            stringResource(id = R.string.RecipientPreferenceActivity_block),
+                                            fontSize = 12.sp
+                                        )
                                     }
                                 }
                             }
@@ -308,7 +311,10 @@ fun ArchiveChatScreen(
                                         showMenu = false
                                         showUnBlockPopup = true
                                     }) {
-                                        Text(stringResource(id=R.string.ConversationActivity_unblock))
+                                        Text(
+                                            stringResource(id=R.string.ConversationActivity_unblock),
+                                            fontSize = 12.sp
+                                        )
                                     }
                                 }
                             }
@@ -327,7 +333,10 @@ fun ArchiveChatScreen(
                                 showMenu = false
                                 archiveChatViewModel.onEvent(ArchiveChatsEvents.UnArchiveChats(thread))
                             }) {
-                                Text(stringResource(id = R.string.un_archive_chat_title))
+                                Text(
+                                    stringResource(id = R.string.un_archive_chat_title),
+                                    fontSize = 12.sp
+                                )
                             }
                         }
                         if (thread.unreadCount > 0) {
@@ -344,7 +353,10 @@ fun ArchiveChatScreen(
                                     showMenu = false
                                     archiveChatViewModel.onEvent(ArchiveChatsEvents.MarkAsRead(thread))
                                 }) {
-                                    Text(stringResource(id = R.string.MessageNotifier_mark_all_as_read))
+                                    Text(
+                                        stringResource(id = R.string.MessageNotifier_mark_all_as_read),
+                                        fontSize = 12.sp
+                                    )
                                 }
                             }
                         }
@@ -364,6 +376,7 @@ fun ArchiveChatScreen(
                                 Text(
                                     stringResource(id = R.string.delete),
                                     color = MaterialTheme.appColors.deleteOptionColor,
+                                    fontSize = 12.sp,
                                 )
                             }
                         }

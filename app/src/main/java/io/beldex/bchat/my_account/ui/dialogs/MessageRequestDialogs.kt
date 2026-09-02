@@ -92,7 +92,7 @@ fun RequestBlockConfirmationDialog(
                         style = MaterialTheme.typography.bodyMedium.copy(
                             color = MaterialTheme.appColors.negativeGreenButtonText,
                             fontWeight = FontWeight(400),
-                            fontSize = 14.sp
+                            fontSize = 12.sp
                         )
                     )
                 }
@@ -112,7 +112,7 @@ fun RequestBlockConfirmationDialog(
                         text = actionTitle,
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight(400),
-                            fontSize = 14.sp,
+                            fontSize = 12.sp,
                             color = Color.White
                         ),
                     )

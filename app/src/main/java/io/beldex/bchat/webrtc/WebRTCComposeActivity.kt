@@ -99,6 +99,7 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.utilities.hexEncodedPublicKey
 import com.google.android.gms.common.util.CollectionUtils.listOf
 import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.BaseComponentActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.BChatTypography
@@ -121,7 +122,7 @@ import org.webrtc.SurfaceViewRenderer
 
 
 @AndroidEntryPoint
-class WebRTCComposeActivity : ComponentActivity() {
+class WebRTCComposeActivity : BaseComponentActivity() {
 
     private var hangupReceiver: BroadcastReceiver? = null
     val viewModel:CallViewModel by viewModels()
@@ -1226,60 +1227,6 @@ class WebRTCComposeActivity : ComponentActivity() {
                                             surfaceView = it
                                         )
                                     }
-                                }
-
-                                // Top bar overlay on portrait remote video
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .align(Alignment.TopCenter)
-                                        .padding(top = 16.dp, start = 16.dp, end = 16.dp)
-                                ) {
-                                    Icon(
-                                        painterResource(id = R.drawable.ic_back_call),
-                                        contentDescription = stringResource(R.string.back),
-                                        tint = Color.White,
-                                        modifier = Modifier
-                                            .clickable {
-                                                (context as ComponentActivity).finish()
-                                            }
-                                    )
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text(
-                                        text = isStatusText,
-                                        style = BChatTypography.titleMedium.copy(
-                                            color = Color.White,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight(700)
-                                        )
-                                    )
-                                    Spacer(modifier = Modifier.weight(1f))
-                                    Text(
-                                        text = if (isSwitchCameraFlipEnabled && videoSwapped) localUserName else isPersonNameText,
-                                        style = BChatTypography.titleMedium.copy(
-                                            color = Color.White,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight(700)
-                                        ),
-                                        textAlign = TextAlign.Center,
-                                        maxLines = 1
-                                    )
-                                    Spacer(modifier = Modifier.weight(1f))
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.ic_lock_call),
-                                        contentDescription = lockDescription,
-                                        tint = Color.White,
-                                        modifier = Modifier.padding(horizontal = 5.dp)
-                                    )
-                                    Text(
-                                        text = stringResource(id = R.string.end_to_end_encrypted),
-                                        style = BChatTypography.titleMedium.copy(
-                                            color = Color.White,
-                                            fontSize = 11.sp,
-                                            fontWeight = FontWeight(400)
-                                        )
-                                    )
                                 }
                             }
                         }

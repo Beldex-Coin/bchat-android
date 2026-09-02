@@ -23,6 +23,7 @@ import io.beldex.bchat.database.*
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.database.model.ThreadRecord
 import kotlinx.coroutines.flow.Flow
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import app.cash.copper.Query
 import app.cash.copper.flow.observeQuery
 import javax.inject.Inject
@@ -100,11 +101,14 @@ class DefaultConversationRepository @Inject constructor(
 ) : ConversationRepository {
 
     override fun isBeldexHostedOpenGroup(threadId: Long): Boolean {
-        val openGroup = beldexThreadDb.getOpenGroupChat(threadId)
+        val openGroup = beldexThreadDb.getOpenGroupChat(threadId) ?: return false
         Log.d("Beldex","open group $openGroup")
         /*return openGroup?.room == "bchat" || openGroup?.room == "beldex"
                 || openGroup?.room == "crypto"  || openGroup?.room == "masternode" || openGroup?.room == "belnet"*/
-        return openGroup?.publicKey == OpenGroupAPIV2.defaultServerPublicKey
+        val serverHost = openGroup.server.toHttpUrlOrNull()?.host
+        val defaultServerHost = OpenGroupAPIV2.defaultServer.toHttpUrlOrNull()?.host
+        return serverHost != null && serverHost == defaultServerHost
+                || openGroup.publicKey == OpenGroupAPIV2.defaultServerPublicKey
     }
 
     override fun getRecipientForThreadId(threadId: Long): Recipient? {

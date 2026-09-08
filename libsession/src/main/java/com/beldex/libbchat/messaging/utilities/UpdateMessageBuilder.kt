@@ -10,9 +10,18 @@ import com.beldex.libbchat.messaging.calls.CallMessageType
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.messaging.sending_receiving.data_extraction.DataExtractionNotificationInfoMessage
 import com.beldex.libbchat.utilities.ExpirationUtil
+import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper
 import com.beldex.libbchat.utilities.truncateIdForDisplay
+import java.util.Locale
 
 object UpdateMessageBuilder {
+
+    private fun localizedContext(context: Context): Context {
+        val language = TextSecurePreferences.getAppSelectedLanguage(context)
+            ?: Locale.getDefault().language
+        return DynamicLanguageContextWrapper.updateContext(context, language)
+    }
 
     fun buildGroupUpdateMessage(
         context: Context,
@@ -24,29 +33,30 @@ object UpdateMessageBuilder {
         val updateData = updateMessageData.kind ?: return SpannableString("")
         if (!isOutgoing && senderId == null) return SpannableString("")
         val storage = MessagingModuleConfiguration.shared.storage
+        val lc = localizedContext(context)
         val senderName: String = if (!isOutgoing) {
             storage.getContactWithBchatID(senderId!!)?.displayName(Contact.ContactContext.REGULAR, context)
                 ?: truncateIdForDisplay(senderId)
         } else {
-            context.getString(R.string.MessageRecord_you)
+            lc.getString(R.string.MessageRecord_you)
         }
         val boldSenderName = "<b>$senderName</b>"
 
         when (updateData) {
             is UpdateMessageData.Kind.GroupCreation -> {
                 rawMessage = if (isOutgoing) {
-                    context.getString(R.string.MessageRecord_you_created_a_new_group)
+                    lc.getString(R.string.MessageRecord_you_created_a_new_group)
                 } else {
-                    context.getString(R.string.MessageRecord_s_added_you_to_the_group, boldSenderName)
+                    lc.getString(R.string.MessageRecord_s_added_you_to_the_group, boldSenderName)
                 }
             }
             is UpdateMessageData.Kind.GroupNameChange -> {
                 val boldName = "<b>${updateData.name}</b>"
 
                 rawMessage = if (isOutgoing) {
-                    context.getString(R.string.MessageRecord_you_renamed_the_group_to_s, boldName)
+                    lc.getString(R.string.MessageRecord_you_renamed_the_group_to_s, boldName)
                 } else {
-                    context.getString(R.string.MessageRecord_s_renamed_the_group_to_s, boldSenderName, boldName)
+                    lc.getString(R.string.MessageRecord_s_renamed_the_group_to_s, boldSenderName, boldName)
                 }
             }
             is UpdateMessageData.Kind.GroupMemberAdded -> {
@@ -54,9 +64,9 @@ object UpdateMessageBuilder {
                     "<b>" + (storage.getContactWithBchatID(it)?.displayName(Contact.ContactContext.REGULAR, context) ?: it) + "</b>"
                 }
                 rawMessage = if (isOutgoing) {
-                    context.getString(R.string.MessageRecord_you_added_s_to_the_group, members)
+                    lc.getString(R.string.MessageRecord_you_added_s_to_the_group, members)
                 } else {
-                    context.getString(R.string.MessageRecord_s_added_s_to_the_group, boldSenderName, members)
+                    lc.getString(R.string.MessageRecord_s_added_s_to_the_group, boldSenderName, members)
                 }
             }
             is UpdateMessageData.Kind.GroupMemberRemoved -> {
@@ -65,9 +75,9 @@ object UpdateMessageBuilder {
                 // 1st case: you are part of the removed members
                 rawMessage = if (userPublicKey in updateData.updatedMembers) {
                     if (isOutgoing) {
-                        context.getString(R.string.MessageRecord_left_group)
+                        lc.getString(R.string.MessageRecord_left_group)
                     } else {
-                        context.getString(R.string.MessageRecord_you_were_removed_from_the_group)
+                        lc.getString(R.string.MessageRecord_you_were_removed_from_the_group)
                     }
                 } else {
                     // 2nd case: you are not part of the removed members
@@ -76,17 +86,17 @@ object UpdateMessageBuilder {
                         "<b>$name</b>"
                     }
                     if (isOutgoing) {
-                        context.getString(R.string.MessageRecord_you_removed_s_from_the_group, members)
+                        lc.getString(R.string.MessageRecord_you_removed_s_from_the_group, members)
                     } else {
-                        context.getString(R.string.MessageRecord_s_removed_s_from_the_group, boldSenderName, members)
+                        lc.getString(R.string.MessageRecord_s_removed_s_from_the_group, boldSenderName, members)
                     }
                 }
             }
             is UpdateMessageData.Kind.GroupMemberLeft -> {
                 rawMessage = if (isOutgoing) {
-                    context.getString(R.string.MessageRecord_left_group)
+                    lc.getString(R.string.MessageRecord_left_group)
                 } else {
-                    context.getString(R.string.ConversationItem_group_action_left, boldSenderName)
+                    lc.getString(R.string.ConversationItem_group_action_left, boldSenderName)
                 }
             }
             else -> Unit
@@ -100,19 +110,20 @@ object UpdateMessageBuilder {
         isOutgoing: Boolean = false
     ): Spanned? {
         val storage = MessagingModuleConfiguration.shared.storage
+        val lc = localizedContext(context)
 
         val senderName: String = if (!isOutgoing) {
             storage.getContactWithBchatID(senderId!!)?.displayName(Contact.ContactContext.REGULAR, context)
                 ?: truncateIdForDisplay(senderId)
         } else {
-            context.getString(R.string.MessageRecord_you)
+            lc.getString(R.string.MessageRecord_you)
         }
         val formattedName = if (isOutgoing) {
             senderName
         } else {
             "<b>${senderName.capitalizeFirstLetter()}</b>"
         }
-        val rawMessage = context.getString(R.string.MessageRecord_s_took_a_screenshot, formattedName)
+        val rawMessage = lc.getString(R.string.MessageRecord_s_took_a_screenshot, formattedName)
 
         return Html.fromHtml(rawMessage, Html.FROM_HTML_MODE_LEGACY)
     }
@@ -120,17 +131,18 @@ object UpdateMessageBuilder {
     fun buildExpirationTimerMessage(context: Context, duration: Long, senderId: String? = null, isOutgoing: Boolean = false): CharSequence? {
         if (!isOutgoing && senderId == null) return ""
         val storage = MessagingModuleConfiguration.shared.storage
+        val lc = localizedContext(context)
         val senderName: String= if (!isOutgoing) {
             storage.getContactWithBchatID(senderId!!)?.displayName(Contact.ContactContext.REGULAR, context) ?: truncateIdForDisplay(senderId)
-        } else { context.getString(R.string.MessageRecord_you) }
+        } else { lc.getString(R.string.MessageRecord_you) }
         val boldSenderName = "<b>$senderName</b>"
         val rawMessage =  if (duration <= 0) {
-            if (isOutgoing) context.getString(R.string.MessageRecord_you_disabled_disappearing_messages)
-            else context.getString(R.string.MessageRecord_s_disabled_disappearing_messages, boldSenderName)
+            if (isOutgoing) lc.getString(R.string.MessageRecord_you_disabled_disappearing_messages)
+            else lc.getString(R.string.MessageRecord_s_disabled_disappearing_messages, boldSenderName)
         } else {
-            val time = ExpirationUtil.getExpirationDisplayValue(context, duration.toInt())
-            if (isOutgoing)context.getString(R.string.MessageRecord_you_set_disappearing_message_time_to_s, time)
-            else context.getString(R.string.MessageRecord_s_set_disappearing_message_time_to_s, boldSenderName, time)
+            val time = ExpirationUtil.getExpirationDisplayValue(lc, duration.toInt())
+            if (isOutgoing)lc.getString(R.string.MessageRecord_you_set_disappearing_message_time_to_s, time)
+            else lc.getString(R.string.MessageRecord_s_set_disappearing_message_time_to_s, boldSenderName, time)
         }
         return Html.fromHtml(rawMessage, Html.FROM_HTML_MODE_LEGACY)
     }
@@ -141,31 +153,33 @@ object UpdateMessageBuilder {
         senderId : String?=null
     ) : Spanned? {
         val storage=MessagingModuleConfiguration.shared.storage
+        val lc = localizedContext(context)
         val senderName=
             storage.getContactWithBchatID(senderId!!)?.displayName(Contact.ContactContext.REGULAR, context)
                 ?: truncateIdForDisplay(senderId)
         val boldSenderName="<b>$senderName</b>"
         val rawMessage=when (kind) {
             DataExtractionNotificationInfoMessage.Kind.SCREENSHOT ->
-                context.getString(R.string.MessageRecord_s_took_a_screenshot, boldSenderName)
+                lc.getString(R.string.MessageRecord_s_took_a_screenshot, boldSenderName)
             DataExtractionNotificationInfoMessage.Kind.MEDIA_SAVED ->
-                context.getString(R.string.MessageRecord_media_saved_by_s, boldSenderName)
+                lc.getString(R.string.MessageRecord_media_saved_by_s, boldSenderName)
         }
         return Html.fromHtml(rawMessage, Html.FROM_HTML_MODE_LEGACY)
     }
 
     fun buildCallMessage(context: Context, type: CallMessageType, senderId: String): String {
+        val localized = localizedContext(context)
         val storage = MessagingModuleConfiguration.shared.storage
-        val senderName = storage.getContactWithBchatID(senderId)?.displayName(Contact.ContactContext.REGULAR, context) ?: truncateIdForDisplay(senderId)
+        val senderName = storage.getContactWithBchatID(senderId)?.displayName(Contact.ContactContext.REGULAR, localized) ?: truncateIdForDisplay(senderId)
         return when (type) {
             CallMessageType.CALL_MISSED ->
-                context.getString(R.string.MessageRecord_missed_call_from, senderName)
+                localized.getString(R.string.MessageRecord_missed_call_from, senderName)
             CallMessageType.CALL_INCOMING ->
-                context.getString(R.string.MessageRecord_received_call_from, senderName)
+                localized.getString(R.string.MessageRecord_received_call_from, senderName)
             CallMessageType.CALL_OUTGOING ->
-                context.getString(R.string.MessageRecord_called_s, senderName)
+                localized.getString(R.string.MessageRecord_called_s, senderName)
             CallMessageType.CALL_FIRST_MISSED ->
-                context.getString(R.string.MessageRecord_missed_call_from, senderName)
+                localized.getString(R.string.MessageRecord_missed_call_from, senderName)
         }
     }
 

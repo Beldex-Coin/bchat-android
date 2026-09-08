@@ -25,17 +25,21 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/test"
             android:textColor="@color/icon_tint"
-            android:textSize="13sp" />
+            android:textSize="13sp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            tools:text="Title" />
 
         <TextView
             android:id="@+id/text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Testing SubTitle"
             android:textColor="@color/version_color"
-            android:textSize="13sp" />
+            android:textSize="13sp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            tools:text="Subtitle" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="0dp"
@@ -49,9 +53,15 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="40dp"
-            android:layout_marginStart="0dp"
-            android:text="@string/hang_up"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
             android:textSize="11sp"
+            android:gravity="center"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            tools:text="Hang Up"
             tools:ignore="NestedWeights" />
 
         <Button
@@ -60,9 +70,15 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="40dp"
-            android:layout_marginStart="5dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
             android:textSize="11sp"
-            tools:text="@string/answer"/>
+            android:gravity="center"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            tools:text="Answer"/>
     </LinearLayout>
 
 </LinearLayout>

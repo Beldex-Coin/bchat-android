@@ -44,6 +44,8 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.BaseComponentActivity
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.my_account.ui.MyAccountViewModel
+import io.beldex.bchat.service.KeyCachingService
+import io.beldex.bchat.service.WebRtcCallService
 import io.beldex.bchat.util.AppLanguageEvent
 
 
@@ -80,6 +82,12 @@ fun ChooseLanguage(
 
     fun updateSelectedLanguage(context: Context, language: Language) {
         TextSecurePreferences.setAppSelectedLanguage(context, language.code)
+        val keyCachingIntent = Intent(context, KeyCachingService::class.java)
+        keyCachingIntent.action = KeyCachingService.LANGUAGE_CHANGED_ACTION
+        context.startService(keyCachingIntent)
+        val webRtcIntent = Intent(context, WebRtcCallService::class.java)
+        webRtcIntent.action = WebRtcCallService.ACTION_LANGUAGE_CHANGED
+        context.startService(webRtcIntent)
         onLanguageSelected(language.code)
     }
 

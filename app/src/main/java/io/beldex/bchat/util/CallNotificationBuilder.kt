@@ -12,6 +12,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.os.Build
+import android.util.TypedValue
 import android.view.View
 import android.widget.RemoteViews
 import androidx.annotation.DrawableRes
@@ -19,6 +20,8 @@ import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Canvas
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.notifications.NotificationChannels
 import io.beldex.bchat.preferences.PrivacySettingsActivity
@@ -55,18 +58,20 @@ class CallNotificationBuilder {
 
         @JvmStatic
         fun getFirstCallNotification(context: Context): Notification {
+            val language = TextSecurePreferences.getAppSelectedLanguage(context)
+            val localizedContext = DynamicLanguageContextWrapper.updateContext(context, language)
             val contentIntent = Intent(context, PrivacySettingsActivity::class.java)
 
             val pendingIntent = PendingIntent.getActivity(context, 0, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
-            val text = context.getString(R.string.CallNotificationBuilder_first_call_message)
+            val text = localizedContext.getString(R.string.CallNotificationBuilder_first_call_message)
 
-            val builder = NotificationCompat.Builder(context, NotificationChannels.CALLS)
+            val builder = NotificationCompat.Builder(localizedContext, NotificationChannels.CALLS)
                 .setSound(null)
                 .setSmallIcon(R.drawable.ic_baseline_call_24)
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setContentTitle(context.getString(R.string.CallNotificationBuilder_first_call_title))
+                .setContentTitle(localizedContext.getString(R.string.CallNotificationBuilder_first_call_title))
                 .setContentText(text)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(text))
                 .setAutoCancel(true)
@@ -76,11 +81,13 @@ class CallNotificationBuilder {
 
         @JvmStatic
         fun getCallInProgressNotification(context: Context, type: Int, recipient: Recipient?): Notification {
+            val language = TextSecurePreferences.getAppSelectedLanguage(context)
+            val localizedContext = DynamicLanguageContextWrapper.updateContext(context, language)
             val contentIntent = Intent(context, WebRTCComposeActivity::class.java)
                 .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            val sizeInPX = context.resources.getDimensionPixelSize(R.dimen.extra_large_profile_picture_size)
+            val sizeInPX = localizedContext.resources.getDimensionPixelSize(R.dimen.extra_large_profile_picture_size)
 
-            val contentView = RemoteViews(context.packageName, R.layout.custom_call_notification)
+            val contentView = RemoteViews(localizedContext.packageName, R.layout.custom_call_notification)
             val signalProfilePicture = recipient?.contactPhoto
 
             val bit = AvatarPlaceholderGenerator.generate(
@@ -143,50 +150,39 @@ class CallNotificationBuilder {
 
             val answerPendingIntent = PendingIntent.getActivity(context, 0, answerIntent, PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
-            val builder = NotificationCompat.Builder(context, NotificationChannels.CALLS)
-                .setFullScreenIntent(getFullScreenPendingIntent(context), true)
-                .setSound(null)
-                .setColor(context.getColor(R.color.call_notification_background))
-                .setSmallIcon(R.drawable.ic_baseline_call_24)
-                .setContentIntent(pendingIntent)
-                .setOngoing(true)
-                .setCustomContentView(contentView).build()
+            val hangUpText = localizedContext.getString(R.string.hang_up)
+            val answerText = localizedContext.getString(R.string.NotificationBarManager__answer_call)
+            val buttonTextSize = calculateButtonTextSize(localizedContext, hangUpText, answerText)
+
+            contentView.setTextViewText(R.id.hangUpButton, hangUpText)
+            contentView.setTextViewTextSize(R.id.hangUpButton, TypedValue.COMPLEX_UNIT_SP, buttonTextSize)
+            contentView.setTextViewText(R.id.answerButton, answerText)
+            contentView.setTextViewTextSize(R.id.answerButton, TypedValue.COMPLEX_UNIT_SP, buttonTextSize)
 
             recipient?.name?.let { name ->
                 contentView.setTextViewText(R.id.title, name)
             }
 
-            contentView.setTextViewText(R.id.hangUpButton, context.getString(R.string.hang_up))
-            contentView.setTextViewText(R.id.answerButton, context.getString(R.string.NotificationBarManager__answer_call))
+            val builder = NotificationCompat.Builder(localizedContext, NotificationChannels.CALLS)
+                .setFullScreenIntent(getFullScreenPendingIntent(context), true)
+                .setSound(null)
+                .setColor(localizedContext.getColor(R.color.call_notification_background))
+                .setSmallIcon(R.drawable.ic_baseline_call_24)
+                .setContentIntent(pendingIntent)
+                .setOngoing(true)
+                .setCustomContentView(contentView)
 
             when (type) {
                 TYPE_INCOMING_CONNECTING -> {
-                    contentView.setTextViewText(R.id.text, context.getString(R.string.CallNotificationBuilder_connecting))
+                    contentView.setTextViewText(R.id.text, localizedContext.getString(R.string.CallNotificationBuilder_connecting))
                     contentView.setViewVisibility(R.id.hangUpButton, View.GONE)
                     contentView.setViewVisibility(R.id.answerButton, View.GONE)
                 }
                 TYPE_INCOMING_PRE_OFFER,
                 TYPE_INCOMING_RINGING -> {
-                    contentView.setTextViewText(R.id.text, context.getString(R.string.NotificationBarManager__incoming_signal_call))
+                    contentView.setTextViewText(R.id.text, localizedContext.getString(R.string.NotificationBarManager__incoming_signal_call))
                     contentView.setOnClickPendingIntent(R.id.hangUpButton, hangUpIntent)
                     contentView.setOnClickPendingIntent(R.id.answerButton, answerPendingIntent)
-                    //builder.setFullScreenIntent(pendingIntent)
-                   /* builder.addAction(getServiceNotificationAction(
-                        context,
-                        WebRtcCallService.ACTION_DENY_CALL,
-                        R.drawable.ic_close_grey600_32dp,
-                        R.string.NotificationBarManager__deny_call
-                    ))
-                    // if notifications aren't enabled, we will trigger the intent from WebRtcCallService
-                    builder.setFullScreenIntent(getFullScreenPendingIntent(
-                        context
-                    ), true)
-                    builder.addAction(getActivityNotificationAction(
-                        context,
-                        if (type == TYPE_INCOMING_PRE_OFFER) WebRTCComposeActivity.ACTION_PRE_OFFER else WebRTCComposeActivity.ACTION_ANSWER,
-                        R.drawable.ic_phone_grey600_32dp,
-                        R.string.NotificationBarManager__answer_call
-                    ))*/
                     builder.priority = Notification.PRIORITY_MAX
                 }
                 TYPE_OUTGOING_RINGING -> {
@@ -194,13 +190,13 @@ class CallNotificationBuilder {
                         .setAction(WebRtcCallService.ACTION_LOCAL_HANGUP)
 
                     val establishCall = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-                    contentView.setTextViewText(R.id.text, context.getString(R.string.NotificationBarManager__establishing_signal_call))
+                    contentView.setTextViewText(R.id.text, localizedContext.getString(R.string.NotificationBarManager__establishing_signal_call))
                     contentView.setOnClickPendingIntent(R.id.text, establishCall)
                     contentView.setViewVisibility(R.id.hangUpButton, View.GONE)
                     contentView.setViewVisibility(R.id.answerButton, View.GONE)
                 }
                 TYPE_SCREEN_ON -> {
-                    contentView.setTextViewText(R.id.text, context.getString(R.string.CallNotificationBuilder_screen_on))
+                    contentView.setTextViewText(R.id.text, localizedContext.getString(R.string.CallNotificationBuilder_screen_on))
                     contentView.setViewVisibility(R.id.hangUpButton, View.GONE)
                     contentView.setViewVisibility(R.id.answerButton, View.GONE)
                 }
@@ -209,14 +205,31 @@ class CallNotificationBuilder {
                         .setAction(WebRtcCallService.ACTION_LOCAL_HANGUP)
 
                     val establishCall = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-                    contentView.setTextViewText(R.id.text, context.getString(R.string.NotificationBarManager_call_in_progress))
+                    contentView.setTextViewText(R.id.text, localizedContext.getString(R.string.NotificationBarManager_call_in_progress))
                     contentView.setOnClickPendingIntent(R.id.text, establishCall)
                     contentView.setViewVisibility(R.id.hangUpButton, View.GONE)
                     contentView.setViewVisibility(R.id.answerButton, View.GONE)
                 }
             }
 
-            return builder
+            return builder.build()
+        }
+
+        private fun calculateButtonTextSize(context: Context, hangUpText: String, answerText: String): Float {
+            val displayMetrics = context.resources.displayMetrics
+            val buttonWidthPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80f, displayMetrics)
+            val paint = android.graphics.Paint()
+            val maxText = if (hangUpText.length > answerText.length) hangUpText else answerText
+            val startSize = 11f
+            val minSize = 8f
+            var size = startSize
+            while (size > minSize) {
+                paint.textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, size, displayMetrics)
+                val textWidth = paint.measureText(maxText)
+                if (textWidth <= buttonWidthPx) break
+                size -= 0.5f
+            }
+            return maxOf(size, minSize)
         }
 
         private fun getServiceNotificationAction(context: Context, action: String, iconResId: Int, titleResId: Int): NotificationCompat.Action {

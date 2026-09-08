@@ -71,7 +71,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalView
@@ -129,6 +128,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
 
     val wantsToAnswer :MutableState<Boolean> = mutableStateOf(false)
     private val isInPictureInPictureMode :MutableState<Boolean> = mutableStateOf(false)
+    private val isLandscapeState: MutableState<Boolean> = mutableStateOf(false)
 
     private val hexEncodedPublicKey: String
         get() {
@@ -163,6 +163,14 @@ class WebRTCComposeActivity : BaseComponentActivity() {
         }
     }
 
+    private fun isScreenLandscape(config: Configuration) =
+        config.screenWidthDp >= config.screenHeightDp
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        isLandscapeState.value = isScreenLandscape(newConfig)
+    }
+
     override fun onPictureInPictureModeChanged(
         isInPictureInPictureMode: Boolean,
         newConfig: Configuration
@@ -177,6 +185,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState : Bundle?) {
         super.onCreate(savedInstanceState)
+        isLandscapeState.value = isScreenLandscape(resources.configuration)
         if (isSystemPipEnabledAndAvailable()) {
             pipBuilderParams = PictureInPictureParams.Builder()
             pipBuilderParams!!.setAspectRatio(Rational(9,16))
@@ -260,7 +269,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
         val callViewModel : CallViewModel=hiltViewModel()
         val context=LocalContext.current
         val lifecycleOwner=LocalLifecycleOwner.current
-        val isLandscape=LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+        val isLandscape=isLandscapeState.value
         val profilePictureSize=if (isLandscape) 112.dp else 194.dp
         val profilePictureInnerSize=if (isLandscape) 92.dp else 152.dp
         val profileSize=132.dp
@@ -824,7 +833,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                         )
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Text(
-                                            text = isStatusText,
+                                            text = if (isShowIncomingStatus) isStatusInComingText else isStatusText,
                                             style = BChatTypography.titleMedium.copy(
                                                 color = MaterialTheme.appColors.textColor,
                                                 fontSize = 22.sp,
@@ -1412,9 +1421,8 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.SpaceBetween,
                             modifier = Modifier
-                                .padding(16.dp)
                                 .align(Alignment.BottomStart)
-                                .offset(x=(16).dp, y=(10).dp)
+                                .padding(start = if(isLandscape) 82.dp else 32.dp, bottom = 10.dp)
                                 .background(
                                     color=MaterialTheme.appColors.callBottomBackground,
                                     shape=RoundedCornerShape(50.dp)
@@ -1469,7 +1477,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                         verticalArrangement = Arrangement.Bottom,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .offset(y=(-50).dp)
+                            .offset(y= if(isLandscape)(-10).dp else (-50).dp)
                     ) {
                         if (isShowIncomingStatus) {
                             Text(
@@ -1561,7 +1569,6 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                 horizontalArrangement = if (isLandscape) Arrangement.SpaceEvenly else Arrangement.SpaceAround,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical=20.dp)
                             ) {
                                 if (isLandscape) {
                                     // LEFT group: Speaker + Mute (SpaceEvenly)
@@ -1952,7 +1959,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                     modifier = Modifier
                                         .height(65.dp)
                                         .width(65.dp)
-                                        .offset(y = (-43).dp)
+                                        .offset(y = (-33).dp)
                                         .background(
                                             MaterialTheme.appColors.errorMessageColor,
                                             shape = CircleShape

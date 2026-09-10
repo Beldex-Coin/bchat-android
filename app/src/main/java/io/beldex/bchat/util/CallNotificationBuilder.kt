@@ -20,6 +20,8 @@ import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Canvas
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.Person
+import androidx.core.graphics.drawable.IconCompat
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper
 import com.beldex.libbchat.utilities.recipients.Recipient
@@ -96,50 +98,13 @@ class CallNotificationBuilder {
                 recipient?.address.toString(),
                 recipient?.name.toString()
             )
-            if (signalProfilePicture != null) {
+            val avatarBitmap = if (signalProfilePicture != null) {
                 val bitmap = decodeStream(signalProfilePicture.openInputStream(context, true))
-                if (bitmap != null) {
-                    val output = Bitmap.createBitmap(
-                        bitmap.width,
-                        bitmap.height, Bitmap.Config.ARGB_8888
-                    )
-                    val canvas = android.graphics.Canvas(output)
-
-                    val paint = Paint()
-                    val rect = Rect(0, 0, bitmap.width, bitmap.height)
-
-                    paint.isAntiAlias = true
-                    canvas.drawARGB(0, 0, 0, 0)
-                    canvas.drawCircle(
-                        (bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat(),
-                        (bitmap.width / 2).toFloat(), paint
-                    )
-                    paint.setXfermode(PorterDuffXfermode(PorterDuff.Mode.SRC_IN))
-                    canvas.drawBitmap(bitmap, rect, rect, paint)
-                    contentView.setImageViewBitmap(R.id.image, output)
-                } else {
-                    contentView.setImageViewResource(R.id.image, R.drawable.defualt_profile_pic)
-                }
+                if (bitmap != null) toCircularBitmap(bitmap) else toCircularBitmap(bit.bitmap)
             } else {
-                val output = Bitmap.createBitmap(
-                    bit.bitmap.width,
-                    bit.bitmap.height, Bitmap.Config.ARGB_8888
-                )
-                val canvas = android.graphics.Canvas(output)
-
-                val paint = Paint()
-                val rect = Rect(0, 0, bit.bitmap.width, bit.bitmap.height)
-
-                paint.isAntiAlias = true
-                canvas.drawARGB(0, 0, 0, 0)
-                canvas.drawCircle(
-                    (bit.bitmap.width / 2).toFloat(), (bit.bitmap.height / 2).toFloat(),
-                    (bit.bitmap.width / 2).toFloat(), paint
-                )
-                paint.setXfermode(PorterDuffXfermode(PorterDuff.Mode.SRC_IN))
-                canvas.drawBitmap(bit.bitmap, rect, rect, paint)
-                contentView.setImageViewBitmap(R.id.image, output)
+                toCircularBitmap(bit.bitmap)
             }
+            contentView.setImageViewBitmap(R.id.image, avatarBitmap)
             val pendingIntent = PendingIntent.getActivity(context, 0, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             val intent = Intent(context, WebRtcCallService::class.java)
                 .setAction(WebRtcCallService.ACTION_DENY_CALL)
@@ -161,6 +126,18 @@ class CallNotificationBuilder {
 
             recipient?.name?.let { name ->
                 contentView.setTextViewText(R.id.title, name)
+            }
+
+            val isIncomingCall = type == TYPE_INCOMING_PRE_OFFER || type == TYPE_INCOMING_RINGING
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && isIncomingCall) {
+                return buildIncomingCallStyleNotification(
+                    context = context,
+                    localizedContext = localizedContext,
+                    recipient = recipient,
+                    avatarBitmap = avatarBitmap,
+                    hangUpIntent = hangUpIntent,
+                    answerIntent = answerPendingIntent
+                )
             }
 
             val builder = NotificationCompat.Builder(localizedContext, NotificationChannels.CALLS)
@@ -213,6 +190,62 @@ class CallNotificationBuilder {
             }
 
             return builder.build()
+        }
+
+        private fun toCircularBitmap(source: Bitmap): Bitmap {
+            val output = Bitmap.createBitmap(source.width, source.height, Bitmap.Config.ARGB_8888)
+            val canvas = android.graphics.Canvas(output)
+
+            val paint = Paint()
+            val rect = Rect(0, 0, source.width, source.height)
+
+            paint.isAntiAlias = true
+            canvas.drawARGB(0, 0, 0, 0)
+            canvas.drawCircle(
+                (source.width / 2).toFloat(), (source.height / 2).toFloat(),
+                (source.width / 2).toFloat(), paint
+            )
+            paint.setXfermode(PorterDuffXfermode(PorterDuff.Mode.SRC_IN))
+            canvas.drawBitmap(source, rect, rect, paint)
+            return output
+        }
+
+        private fun buildIncomingCallStyleNotification(
+            context: Context,
+            localizedContext: Context,
+            recipient: Recipient?,
+            avatarBitmap: Bitmap,
+            hangUpIntent: PendingIntent,
+            answerIntent: PendingIntent
+        ): Notification {
+            val contactName = recipient?.name?.takeIf { it.isNotBlank() }
+                ?: localizedContext.getString(R.string.NotificationChannel_missing_display_name)
+
+            val person = Person.Builder()
+                .setName(contactName)
+                .setIcon(IconCompat.createWithBitmap(avatarBitmap))
+                .build()
+
+            val contentIntent = Intent(context, WebRTCComposeActivity::class.java)
+                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            val pendingIntent = PendingIntent.getActivity(context, 0, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+
+            return NotificationCompat.Builder(localizedContext, NotificationChannels.CALLS)
+                .setFullScreenIntent(getFullScreenPendingIntent(context), true)
+                .setSound(null)
+                .setColor(localizedContext.getColor(R.color.call_notification_background))
+                .setColorized(true)
+                .setSmallIcon(R.drawable.ic_baseline_call_24)
+                .setContentIntent(pendingIntent)
+                .setOngoing(true)
+                .setCategory(NotificationCompat.CATEGORY_CALL)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setStyle(
+                    NotificationCompat.CallStyle.forIncomingCall(person, hangUpIntent, answerIntent)
+                        .setAnswerButtonColorHint(localizedContext.getColor(R.color.button_green))
+                        .setDeclineButtonColorHint(localizedContext.getColor(R.color.destructive))
+                )
+                .build()
         }
 
         private fun calculateButtonTextSize(context: Context, hangUpText: String, answerText: String): Float {

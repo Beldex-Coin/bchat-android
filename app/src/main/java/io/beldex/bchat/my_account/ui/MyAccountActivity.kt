@@ -1584,31 +1584,34 @@ fun ProfileCardKeyContainer(
     ) {
         Box(
             modifier = Modifier
+                .fillMaxWidth()
                 .padding(5.dp)
                 .clickable {
                     onShowDialog()
-                }
+                },
+            contentAlignment = Alignment.Center
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(
-                    top = 13.dp,
-                    bottom = 5.dp,
-                    start = if (isBeldex) 5.dp else 15.dp,
-                    end = if (isBeldex) 5.dp else 15.dp
-                )
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = 13.dp,
+                        bottom = 5.dp
+                    )
             ) {
                 Image(
                     painter = painterResource(id = image), contentDescription = "",
                     modifier = Modifier
-                        .size(25.dp),
+                        .size(25.dp)
+                        .align(Alignment.CenterHorizontally),
                     colorFilter = if (!showCopyIcon) ColorFilter.tint(MaterialTheme.appColors.editTextColor) else null
                 )
                 Text(
                     text = title,
                     style = MaterialTheme.typography.bodySmall.copy(
-                        fontSize = 11.sp,
+                        fontSize = 10.sp,
                         color = MaterialTheme.appColors.editTextColor,
                         fontWeight = FontWeight.Medium
                     ),

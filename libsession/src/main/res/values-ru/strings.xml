@@ -21,7 +21,7 @@
     <string name="MessageRecord_called_s">Позвонили %s</string>
     <string name="MessageRecord_missed_call_from">Пропущенный звонок от %s</string>
     <string name="MessageRecord_s_joined_signal">%s is on Bchat!</string>
-    <string name="MessageRecord_you_disabled_disappearing_messages">Você desativou as mensagens temporárias</string>
+    <string name="MessageRecord_you_disabled_disappearing_messages">Вы отключили исчезающие сообщения</string>
     <string name="MessageRecord_s_disabled_disappearing_messages">%1$s desativou as mensagens temporárias</string>
     <string name="MessageRecord_you_set_disappearing_message_time_to_s">Вы установили таймер исчезающих сообщений на %1$s</string>
     <string name="MessageRecord_s_set_disappearing_message_time_to_s">%1$s установил(а) таймер исчезающих сообщений на %2$s</string>

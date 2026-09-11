@@ -21,9 +21,9 @@
     <string name="MessageRecord_called_s">Chamou %s</string>
     <string name="MessageRecord_missed_call_from">Chamada perdida de %s</string>
     <string name="MessageRecord_s_joined_signal">%s is on Bchat!</string>
-    <string name="MessageRecord_you_disabled_disappearing_messages">Вы отключили исчезающие сообщения</string>
+    <string name="MessageRecord_you_disabled_disappearing_messages">Você desativou as mensagens que desaparecem</string>
     <string name="MessageRecord_s_disabled_disappearing_messages">%1$s отключил(а) исчезающие сообщения</string>
-    <string name="MessageRecord_you_set_disappearing_message_time_to_s">Você definiu o temporizador de mensagens temporárias para %1$s</string>
+    <string name="MessageRecord_you_set_disappearing_message_time_to_s">Você definiu o temporizador de mensagens que desaparecem para %1$s</string>
     <string name="MessageRecord_s_set_disappearing_message_time_to_s">%1$s definiu o temporizador de mensagens temporárias para %2$s</string>
     <string name="MessageRecord_s_took_a_screenshot">%1$s fez uma captura de tela.</string>
     <string name="MessageRecord_media_saved_by_s">Mídia salva por %1$s.</string>

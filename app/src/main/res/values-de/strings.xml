@@ -530,6 +530,9 @@
     <string name="preferences__if_read_receipts_are_disabled_you_wont_be_able_to_see_read_receipts">Wenn Lesebestätigungen deaktiviert sind, kannst du die Lesebestätigungen anderer nicht sehen.</string>
     <string name="preferences__typing_indicators">Schreibanzeige</string>
     <string name="preferences__if_typing_indicators_are_disabled_you_wont_be_able_to_see_typing_indicators">Wenn die Schreibanzeige deaktiviert ist, kannst du nicht sehen, wenn andere tippen.</string>
+    <string name="preferences__onion_routing">Onion-Routing</string>
+    <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">Wenn aktiviert, wird Onion-Routing verwendet, um Ihre Nachrichten zu übermitteln</string>
+    <string name="onion_routing_turn_off_confirmation">Wenn du das Onion-Routing deaktivierst, wird deine IP-Adresse für den Masternode sichtbar und Netzwerkbeobachter können erkennen, dass du BChat verwendest. Deine Nachrichten bleiben in jedem Fall verschlüsselt. Trotzdem deaktivieren?</string>
     <string name="preferences__request_keyboard_to_disable_personalized_learning">Tastatur anweisen, personalisiertes Lernen zu deaktivieren.</string>
     <string name="preferences__light_theme">Light</string>
     <string name="preferences__dark_theme">Dark</string>

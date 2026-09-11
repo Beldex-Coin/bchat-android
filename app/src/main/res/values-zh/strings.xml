@@ -519,6 +519,9 @@
     <string name="preferences__if_read_receipts_are_disabled_you_wont_be_able_to_see_read_receipts">如果已禁用已读回执，您将无法看到其他用户的已读回执。</string>
     <string name="preferences__typing_indicators">输入指示器</string>
     <string name="preferences__if_typing_indicators_are_disabled_you_wont_be_able_to_see_typing_indicators">如果已禁用输入指示器，您将无法看到其他用户的输入指示器。</string>
+    <string name="preferences__onion_routing">洋葱路由</string>
+    <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">启用后，将使用洋葱路由传递您的消息</string>
+    <string name="onion_routing_turn_off_confirmation">关闭 Onion 路由会向主节点暴露您的 IP 地址，并让网络观察者知道您正在使用 BChat。无论是否使用 Onion 路由，您的消息都会保持加密。仍要关闭吗？</string>
     <string name="preferences__request_keyboard_to_disable_personalized_learning">请求键盘以禁用个性化学习。</string>
     <string name="preferences__light_theme">Light</string>
     <string name="preferences__dark_theme">Dark</string>

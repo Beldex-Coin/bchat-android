@@ -554,6 +554,9 @@
     <string name="preferences__if_read_receipts_are_disabled_you_wont_be_able_to_see_read_receipts">Если уведомления о прочтении отключены, вы не сможете видеть уведомления о прочтении от других.</string>
     <string name="preferences__typing_indicators">Индикаторы набора текста</string>
     <string name="preferences__if_typing_indicators_are_disabled_you_wont_be_able_to_see_typing_indicators">Если индикаторы ввода отключены, вы не сможете видеть индикаторы ввода от других.</string>
+    <string name="preferences__onion_routing">Луковая маршрутизация</string>
+    <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">Если включено, для доставки ваших сообщений будет использоваться луковая маршрутизация</string>
+    <string name="onion_routing_turn_off_confirmation">Отключение маршрутизации через Onion раскрывает ваш IP-адрес мастерноде и позволяет наблюдателям сети узнать, что вы используете BChat. В любом случае ваши сообщения остаются зашифрованными. Всё равно отключить?</string>
     <string name="preferences__request_keyboard_to_disable_personalized_learning">Запросить клавиатуру, чтобы отключить персонализированное обучение.</string>
     <string name="preferences__light_theme">Light</string>
     <string name="preferences__dark_theme">Dark</string>

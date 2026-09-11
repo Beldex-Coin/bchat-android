@@ -531,6 +531,9 @@
     <string name="preferences__if_read_receipts_are_disabled_you_wont_be_able_to_see_read_receipts">Okundu bilgisi devre dışı bırakılırsa, başkalarının okundu bilgilerini göremezsiniz.</string>
     <string name="preferences__typing_indicators">Yazıyor Göstergeleri</string>
     <string name="preferences__if_typing_indicators_are_disabled_you_wont_be_able_to_see_typing_indicators">Yazıyor göstergeleri devre dışı bırakılırsa, başkalarının yazıyor göstergelerini göremezsiniz.</string>
+    <string name="preferences__onion_routing">Onion Yönlendirme</string>
+    <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">Etkinleştirildiğinde, mesajlarınızı iletmek için Onion yönlendirme kullanılır</string>
+    <string name="onion_routing_turn_off_confirmation">Onion yönlendirmesini kapatmak, IP adresinizi masternode\'a açığa çıkarır ve ağ gözlemcilerinin BChat kullandığınızı görmesine olanak tanır. Her iki durumda da mesajlarınız şifreli kalır. Yine de kapatılsın mı?</string>
     <string name="preferences__request_keyboard_to_disable_personalized_learning">Klavye için kişiselleştirilmiş öğrenmenin devre dışı bırakılmasını talep edin.</string>
     <string name="preferences__light_theme">Light</string>
     <string name="preferences__dark_theme">Dark</string>

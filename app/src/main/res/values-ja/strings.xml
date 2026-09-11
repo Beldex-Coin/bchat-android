@@ -519,6 +519,9 @@
     <string name="preferences__if_read_receipts_are_disabled_you_wont_be_able_to_see_read_receipts">既読通知を無効にすると、他のユーザーの既読通知を確認できません。</string>
     <string name="preferences__typing_indicators">入力中インジケーター</string>
     <string name="preferences__if_typing_indicators_are_disabled_you_wont_be_able_to_see_typing_indicators">入力中インジケーターを無効にすると、他のユーザーの入力中インジケーターを確認できません。</string>
+    <string name="preferences__onion_routing">オニオンルーティング</string>
+    <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">有効にすると、オニオンルーティングを使用してメッセージが配信されます</string>
+    <string name="onion_routing_turn_off_confirmation">Onionルーティングをオフにすると、あなたのIPアドレスがマスターノードに公開され、ネットワークの監視者にBChatを使用していることが知られる可能性があります。どちらの場合でも、メッセージは暗号化されたままです。それでもオフにしますか？</string>
     <string name="preferences__request_keyboard_to_disable_personalized_learning">キーボードに個人学習の無効化をリクエストします。</string>
     <string name="preferences__light_theme">Light</string>
     <string name="preferences__dark_theme">Dark</string>

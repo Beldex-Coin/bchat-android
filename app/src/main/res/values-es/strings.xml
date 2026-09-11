@@ -532,6 +532,9 @@
     <string name="preferences__if_read_receipts_are_disabled_you_wont_be_able_to_see_read_receipts">Si las confirmaciones de lectura están desactivadas, no podrás ver las confirmaciones de lectura de otros.</string>
     <string name="preferences__typing_indicators">Indicadores de escritura</string>
     <string name="preferences__if_typing_indicators_are_disabled_you_wont_be_able_to_see_typing_indicators">Si los indicadores de escritura están desactivados, no podrás ver los indicadores de escritura de otros.</string>
+    <string name="preferences__onion_routing">Enrutamiento Onion</string>
+    <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">Si está habilitado, se utilizará el enrutamiento Onion para entregar tus mensajes</string>
+    <string name="onion_routing_turn_off_confirmation">Desactivar el enrutamiento Onion expone tu dirección IP al masternode y permite que los observadores de la red sepan que estás usando BChat. Tus mensajes permanecen cifrados en cualquier caso. ¿Desactivar de todos modos?</string>
     <string name="preferences__request_keyboard_to_disable_personalized_learning">Solicitar al teclado desactivar el aprendizaje personalizado.</string>
     <string name="preferences__light_theme">Light</string>
     <string name="preferences__dark_theme">Dark</string>

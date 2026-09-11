@@ -577,6 +577,9 @@
     <string name="preferences__if_read_receipts_are_disabled_you_wont_be_able_to_see_read_receipts">" إذا تم تعطيل إيصالات القراءة، فلن تتمكن من رؤية إيصالات القراءة من الآخرين."</string>
     <string name="preferences__typing_indicators">مؤشرات الكتابة</string>
     <string name="preferences__if_typing_indicators_are_disabled_you_wont_be_able_to_see_typing_indicators">" إذا تم تعطيل مؤشرات الكتابة، فلن تتمكن من رؤية مؤشرات الكتابة من الآخرين"</string>
+    <string name="preferences__onion_routing">توجيه البصل</string>
+    <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">إذا تم تفعيله، فسيتم استخدام توجيه البصل لتوصيل رسائلك</string>
+    <string name="onion_routing_turn_off_confirmation">يؤدي إيقاف التوجيه عبر شبكة Onion إلى كشف عنوان IP الخاص بك للعقدة الرئيسية، ويكشف لمراقبي الشبكة أنك تستخدم BChat. تظل رسائلك مشفّرة في كلتا الحالتين. هل تريد إيقافه على أي حال؟</string>
     <string name="preferences__request_keyboard_to_disable_personalized_learning">اطلب من لوحة المفاتيح تعطيل التعلم المخصص.</string>
     <string name="preferences__light_theme">Light</string>
     <string name="preferences__dark_theme">Dark</string>

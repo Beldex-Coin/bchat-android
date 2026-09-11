@@ -75,6 +75,8 @@ interface TextSecurePreferences {
     fun setTypingIndicatorsEnabled(enabled: Boolean)
     fun isLinkPreviewsEnabled(): Boolean
     fun setLinkPreviewsEnabled(enabled: Boolean)
+    fun isOnionRoutingEnabled(): Boolean
+    fun setOnionRoutingEnabled(enabled: Boolean)
     fun hasSeenGIFMetaDataWarning(): Boolean
     fun setHasSeenGIFMetaDataWarning()
     fun isGifSearchInGridLayout(): Boolean
@@ -364,6 +366,7 @@ interface TextSecurePreferences {
         const val MY_ADDRESS = "my_address"
         const val AIRDROP_STATUS = "airdrop_status"
         const val CALL_NOTIFICATIONS_ENABLED = "pref_call_notifications_enabled"
+        const val USE_ONION_ROUTING = "pref_onion_routing"
         const val SHOWN_CALL_WARNING = "pref_shown_call_warning" // call warning is user-facing warning of enabling calls
         const val SHOWN_CALL_NOTIFICATION = "pref_shown_call_notification" // call notification is a promp to check privacy settings
         const val HAS_HIDDEN_MESSAGE_REQUESTS = "pref_message_requests_hidden"
@@ -599,6 +602,16 @@ interface TextSecurePreferences {
         @JvmStatic
         fun setLinkPreviewsEnabled(context: Context, enabled: Boolean) {
             setBooleanPreference(context, LINK_PREVIEWS, enabled)
+        }
+
+        @JvmStatic
+        fun isOnionRoutingEnabled(context: Context): Boolean {
+            return getBooleanPreference(context, USE_ONION_ROUTING, false)
+        }
+
+        @JvmStatic
+        fun setOnionRoutingEnabled(context: Context, enabled: Boolean) {
+            setBooleanPreference(context, USE_ONION_ROUTING, enabled)
         }
 
         @JvmStatic
@@ -1660,6 +1673,14 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun setLinkPreviewsEnabled(enabled: Boolean) {
         setBooleanPreference(TextSecurePreferences.LINK_PREVIEWS, enabled)
+    }
+
+    override fun isOnionRoutingEnabled(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.USE_ONION_ROUTING, false)
+    }
+
+    override fun setOnionRoutingEnabled(enabled: Boolean) {
+        setBooleanPreference(TextSecurePreferences.USE_ONION_ROUTING, enabled)
     }
 
     override fun hasSeenGIFMetaDataWarning(): Boolean {

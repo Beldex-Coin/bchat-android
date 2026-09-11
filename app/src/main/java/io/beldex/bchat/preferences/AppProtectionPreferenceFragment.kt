@@ -11,6 +11,7 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getScreenLockTimeout
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.isPasswordDisabled
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setScreenLockEnabled
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setOnionRoutingEnabled
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
@@ -37,6 +38,9 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
             TypingIndicatorsToggleListener()
         findPreference<Preference>(TextSecurePreferences.LINK_PREVIEWS)!!.onPreferenceChangeListener =
             LinkPreviewToggleListener()
+
+        findPreference<Preference>(TextSecurePreferences.USE_ONION_ROUTING)!!.onPreferenceChangeListener =
+            OnionRoutingToggleListener()
 
         //New Line
         callToggleListener = CallToggleListener(this) { setCall(it) }
@@ -201,6 +205,29 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
     private inner class LinkPreviewToggleListener : Preference.OnPreferenceChangeListener {
         override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
             return true
+        }
+    }
+
+    private inner class OnionRoutingToggleListener : Preference.OnPreferenceChangeListener {
+        override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
+            val turningOff = !(newValue as Boolean)
+            if (!turningOff) {
+                return true
+            }
+
+            OnionRoutingConfirmDialogFragment(
+                onConfirm = {
+                    setOnionRoutingEnabled(requireContext(), false)
+                    @Suppress("UNCHECKED_CAST")
+                    (preference as? SwitchPreferenceCompat)?.isChecked = false
+                },
+                onCancel = {
+                    @Suppress("UNCHECKED_CAST")
+                    (preference as? SwitchPreferenceCompat)?.isChecked = true
+                }
+            ).show(childFragmentManager, "OnionRoutingConfirm")
+
+            return false
         }
     }
 }

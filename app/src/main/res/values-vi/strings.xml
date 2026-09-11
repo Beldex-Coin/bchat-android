@@ -522,6 +522,9 @@
     <string name="preferences__if_read_receipts_are_disabled_you_wont_be_able_to_see_read_receipts">Nếu tắt xác nhận đã đọc, bạn sẽ không thể thấy trạng thái đã đọc của người khác</string>
     <string name="preferences__typing_indicators">Chỉ báo đang nhập</string>
     <string name="preferences__if_typing_indicators_are_disabled_you_wont_be_able_to_see_typing_indicators">Nếu tắt chỉ báo đang nhập, bạn sẽ không thể thấy khi người khác đang nhập tin nhắn</string>
+    <string name="preferences__onion_routing">Định tuyến Onion</string>
+    <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">Nếu được bật, định tuyến Onion sẽ được sử dụng để gửi tin nhắn của bạn</string>
+    <string name="onion_routing_turn_off_confirmation">Việc tắt định tuyến Onion sẽ làm lộ địa chỉ IP của bạn cho masternode và cho phép các bên giám sát mạng biết rằng bạn đang sử dụng BChat. Tin nhắn của bạn vẫn được mã hóa trong cả hai trường hợp. Vẫn tắt chứ?</string>
     <string name="preferences__request_keyboard_to_disable_personalized_learning">Yêu cầu bàn phím tắt chức năng học cá nhân hóa</string>
     <string name="preferences__light_theme">Light</string>
     <string name="preferences__dark_theme">Dark</string>

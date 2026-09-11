@@ -67,7 +67,6 @@ fun ChooseLanguage(
     }
 
     val languages = listOf(
-        Language("Arabic", "العربية", "ar"),
         Language("Chinese, Simplified", "简体中文", "zh"),
         Language("English", "English", "en"),
         Language("German", "Deutsch", "de"),

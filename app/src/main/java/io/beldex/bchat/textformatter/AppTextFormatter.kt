@@ -18,10 +18,10 @@ class AppTextFormatter(private val text: String, val context: Context, imageInpu
     private val pattern = Regex(
         "(\\*\\*\\*([^*\\r\\n]+?)\\*\\*\\*)|" +   // ***text***
                 "(\\*\\*([^*\\r\\n]+?)\\*\\*)|" +         // **text**
-                "(?<![A-Za-z0-9])\\*([^\\r\\n]+?)\\*(?![A-Za-z0-9])|" +  // *text*
-                "(?<![A-Za-z0-9])_([^\\r\\n]+?)_(?![A-Za-z0-9])|" +      // _text_
-                "(?<![A-Za-z0-9])~([^\\r\\n]+?)~(?![A-Za-z0-9])|" +      // ~text~
-                "(?<![A-Za-z0-9])`([^\\r\\n`]+?)`(?![A-Za-z0-9])"        // `text`
+                "(?<![\\p{L}\\p{M}\\p{N}])\\*([^\\r\\n]+?)\\*(?![\\p{L}\\p{M}\\p{N}])|" +  // *text*
+                "(?<![\\p{L}\\p{M}\\p{N}])_([^\\r\\n]+?)_(?![\\p{L}\\p{M}\\p{N}])|" +      // _text_
+                "(?<![\\p{L}\\p{M}\\p{N}])~([^\\r\\n]+?)~(?![\\p{L}\\p{M}\\p{N}])|" +      // ~text~
+                "(?<![\\p{L}\\p{M}\\p{N}])`([^\\r\\n`]+?)`(?![\\p{L}\\p{M}\\p{N}])"        // `text`
     )
 
     private val nestedPattern = Regex(

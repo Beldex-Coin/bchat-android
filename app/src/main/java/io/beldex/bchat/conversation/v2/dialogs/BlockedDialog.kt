@@ -21,7 +21,7 @@ class BlockedDialog(private val recipient: Recipient) : BaseDialog() {
         val contactDB = DatabaseComponent.get(requireContext()).bchatContactDatabase()
         val bchatID = recipient.address.toString()
         val contact = contactDB.getContactWithBchatID(bchatID)
-        val name = contact?.displayName(Contact.ContactContext.REGULAR) ?: bchatID
+        val name = contact?.displayName(Contact.ContactContext.REGULAR, requireContext()) ?: bchatID
         val title = resources.getString(R.string.dialog_blocked_title, name)
         binding.blockedTitleTextView.text = title
         val explanation = resources.getString(R.string.dialog_blocked_explanation, name)

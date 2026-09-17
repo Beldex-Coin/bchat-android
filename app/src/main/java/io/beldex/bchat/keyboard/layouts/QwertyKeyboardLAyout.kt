@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
+import io.beldex.bchat.R
 import io.beldex.bchat.keyboard.controllers.KeyboardController
 import io.beldex.bchat.keyboard.listeners.KeyboardListener
 import io.beldex.bchat.keyboard.utils.ComponentUtils
@@ -134,10 +135,10 @@ class QwertyKeyboardLayout(context: Context, controller: KeyboardController?) :
         rowThree.add(createButton("l", columnWidth, 'l'))
         if (hasNextFocus) {
             rowThree.add(createButton(
-                "Next", (columnWidth * 1.5f), KeyboardController.SpecialKey.NEXT))
+                context.getString(R.string.next), (columnWidth * 1.5f), KeyboardController.SpecialKey.NEXT))
         } else {
             rowThree.add(createButton(
-                "Done", (columnWidth * 1.5f), KeyboardController.SpecialKey.DONE))
+                context.getString(R.string.menu_done_button), (columnWidth * 1.5f), KeyboardController.SpecialKey.DONE))
         }
 
         val rowFour = ArrayList<View>()
@@ -197,10 +198,10 @@ class QwertyKeyboardLayout(context: Context, controller: KeyboardController?) :
         rowThree.add(createButton("L", columnWidth, 'L'))
         if (hasNextFocus) {
             rowThree.add(createButton(
-                "Next", (columnWidth * 1.5f), KeyboardController.SpecialKey.NEXT))
+                context.getString(R.string.next), (columnWidth * 1.5f), KeyboardController.SpecialKey.NEXT))
         } else {
             rowThree.add(createButton(
-                "Done", (columnWidth * 1.5f), KeyboardController.SpecialKey.DONE))
+                context.getString(R.string.menu_done_button), (columnWidth * 1.5f), KeyboardController.SpecialKey.DONE))
         }
 
         val rowFour = ArrayList<View>()
@@ -260,10 +261,10 @@ class QwertyKeyboardLayout(context: Context, controller: KeyboardController?) :
         rowThree.add(createButton(")", columnWidth, ')'))
         if (hasNextFocus) {
             rowThree.add(createButton(
-                "Next", (columnWidth * 1.5f), KeyboardController.SpecialKey.NEXT))
+                context.getString(R.string.next), (columnWidth * 1.5f), KeyboardController.SpecialKey.NEXT))
         } else {
             rowThree.add(createButton(
-                "Done", (columnWidth * 1.5f), KeyboardController.SpecialKey.DONE))
+                context.getString(R.string.menu_done_button), (columnWidth * 1.5f), KeyboardController.SpecialKey.DONE))
         }
 
         val rowFour = ArrayList<View>()
@@ -324,10 +325,10 @@ class QwertyKeyboardLayout(context: Context, controller: KeyboardController?) :
         rowThree.add(createButton("♧", columnWidth, '♧'))
         if (hasNextFocus) {
             rowThree.add(createButton(
-                "Next", (columnWidth * 1.5f), KeyboardController.SpecialKey.NEXT))
+                context.getString(R.string.next), (columnWidth * 1.5f), KeyboardController.SpecialKey.NEXT))
         } else {
             rowThree.add(createButton(
-                "Done", (columnWidth * 1.5f), KeyboardController.SpecialKey.DONE))
+                context.getString(R.string.menu_done_button), (columnWidth * 1.5f), KeyboardController.SpecialKey.DONE))
         }
 
         val rowFour = ArrayList<View>()

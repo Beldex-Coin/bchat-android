@@ -86,7 +86,7 @@ class RegisterActivity : BaseActionBarActivity() {
         binding.registerButton.setOnClickListener { register() }
         binding.copyButton.setOnClickListener { copyPublicKey() }
         val termsExplanation =
-            SpannableStringBuilder("By using this service, you agree to our Terms of Service and Privacy Policy")
+            SpannableStringBuilder(getString(R.string.terms_and_privacy_message))
         termsExplanation.setSpan(
             StyleSpan(Typeface.BOLD),
             40,
@@ -120,7 +120,7 @@ class RegisterActivity : BaseActionBarActivity() {
         localPassword = intent.extras?.getString(REQUEST_PASSWORD)
         displayName =intent.extras?.getString(REQUEST_NAME)
         val displayedName : String=displayName?.substring(0, 1)?.uppercase(Locale.ROOT) + displayName?.substring(1)?.lowercase(Locale.ROOT)
-        binding.titleContentTextView.text= "Hey $displayedName, welcome to BChat!"
+        binding.titleContentTextView.text= resources.getString(R.string.hey_user_welcome_to_bchat).format(displayedName)
 
         showDetails()
 

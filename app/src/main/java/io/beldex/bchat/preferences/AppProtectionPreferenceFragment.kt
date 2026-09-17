@@ -11,6 +11,7 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getScreenLockTimeout
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.isPasswordDisabled
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setScreenLockEnabled
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setOnionRoutingEnabled
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
@@ -38,6 +39,9 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
         findPreference<Preference>(TextSecurePreferences.LINK_PREVIEWS)!!.onPreferenceChangeListener =
             LinkPreviewToggleListener()
 
+        findPreference<Preference>(TextSecurePreferences.USE_ONION_ROUTING)!!.onPreferenceChangeListener =
+            OnionRoutingToggleListener()
+
         //New Line
         callToggleListener = CallToggleListener(this) { setCall(it) }
         findPreference<Preference>(TextSecurePreferences.CALL_NOTIFICATIONS_ENABLED)!!.onPreferenceChangeListener =
@@ -57,9 +61,9 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
         if (isEnabled && !areNotificationsEnabled(requireActivity())) {
             // show a dialog saying that calls won't work properly if you don't have notifications on at a system level
             AlertDialog.Builder(requireActivity())
-                .setTitle(R.string.CallNotificationBuilder_system_notification_title)
+                .setTitle(R.string.activity_settings_notifications_button_title)
                 .setMessage(R.string.CallNotificationBuilder_system_notification_message)
-                .setPositiveButton(R.string.activity_notification_settings_title) { d, w ->
+                .setPositiveButton(R.string.activity_settings_notifications_button_title) { d, w ->
                     val settingsIntent =
                         Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -201,6 +205,29 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
     private inner class LinkPreviewToggleListener : Preference.OnPreferenceChangeListener {
         override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
             return true
+        }
+    }
+
+    private inner class OnionRoutingToggleListener : Preference.OnPreferenceChangeListener {
+        override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
+            val turningOff = !(newValue as Boolean)
+            if (!turningOff) {
+                return true
+            }
+
+            OnionRoutingConfirmDialogFragment(
+                onConfirm = {
+                    setOnionRoutingEnabled(requireContext(), false)
+                    @Suppress("UNCHECKED_CAST")
+                    (preference as? SwitchPreferenceCompat)?.isChecked = false
+                },
+                onCancel = {
+                    @Suppress("UNCHECKED_CAST")
+                    (preference as? SwitchPreferenceCompat)?.isChecked = true
+                }
+            ).show(childFragmentManager, "OnionRoutingConfirm")
+
+            return false
         }
     }
 }

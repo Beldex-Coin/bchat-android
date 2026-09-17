@@ -116,9 +116,9 @@ public class EmojiPageView extends RecyclerView implements VariationSelectorList
   }
 
   public void presentForEmojiKeyboard() {
-    setPadding(getPaddingLeft(),
+    setPadding(getPaddingStart(),
             getPaddingTop(),
-            getPaddingRight(),
+            getPaddingEnd(),
             getPaddingBottom() + ViewUtil.dpToPx(56));
 
     setClipToPadding(false);

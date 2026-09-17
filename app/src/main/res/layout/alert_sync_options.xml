@@ -30,8 +30,8 @@
             android:layout_marginStart="50dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
             android:text="@string/sync_reconnect"
             android:textColor="@color/text"
             android:textSize="16sp" />
@@ -47,8 +47,8 @@
             android:layout_marginBottom="20dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
             android:text="@string/sync_rescan"
             android:textColor="@color/text"
             android:textSize="16sp" />

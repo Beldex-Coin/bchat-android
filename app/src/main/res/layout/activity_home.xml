@@ -29,13 +29,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="visible"
+                android:minHeight="0dp"
                 android:background="@color/button_green"
-                app:contentInsetStart="0dp">
+                app:contentInsetStart="0dp"
+                app:contentInsetEnd="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
                     android:orientation="vertical">
 
                     <RelativeLayout
@@ -61,12 +65,10 @@
                             android:id="@+id/callInProgress_Call"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
                             android:layout_centerVertical="true"
-                            android:layout_marginStart="20dp"
-                            android:layout_marginEnd="10dp"
                             android:textColor="@color/white"
                             android:fontFamily="@font/open_sans_bold"
-                            android:layout_toEndOf="@id/callDuration_Call"
                             android:text="@string/call_in_progress"
                             android:textSize="11sp"
                             android:textStyle="bold" />
@@ -102,8 +104,8 @@
                         android:id="@+id/bchat_toolbar"
                         android:layout_width="match_parent"
                         android:layout_height="?attr/actionBarSize"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp">
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp">
 
                         <include layout="@layout/view_profile_picture"
                             android:id="@+id/profileButton"
@@ -126,7 +128,7 @@
                             android:layout_marginStart="16dp"
                             android:layout_toEndOf="@+id/profileButton"
                             android:fontFamily="@font/open_sans_semi_bold"
-                            android:text="@string/bchat"
+                            android:text="@string/activity_chat_settings_title"
                             android:textSize="24sp"/>
 
                         <!-- <RelativeLayout
@@ -174,7 +176,7 @@
                             android:gravity="center_vertical"
                             android:textColor="#A7A7BA"
                             android:fontFamily="@font/open_sans_regular"
-                            android:text="You are not connected to the Hop. Check your internet connection or Restart the app!"
+                            android:text="@string/hop_connection_error_message"
                             android:textSize="12sp"/>
                     </LinearLayout>
 
@@ -214,7 +216,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginStart="55dp"
                             android:fontFamily="@font/open_sans_bold"
-                            android:text="Search"
+                            android:text="@string/SearchToolbar_search"
                             android:textSize="25sp"
                             android:textStyle="bold" />
                     </RelativeLayout>
@@ -283,7 +285,7 @@
                         android:visibility="gone"
                         android:background="@color/divider_line"
                         android:layout_below="@id/archiveChatCardView"
-                        android:contentDescription="Divider" />
+                        android:contentDescription="@string/divider" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerView"
@@ -325,7 +327,7 @@
                             android:alpha="0.2"
                             android:fontFamily="@font/open_sans_medium"
                             android:gravity="center"
-                            android:text="Much empty. Such wow.\nGo get some friends to BChat!"
+                            android:text="@string/bchat_empty_state_message"
                             android:textColor="@color/text"
                             android:textSize="@dimen/medium_font_size"
                             android:textStyle="bold"
@@ -351,7 +353,7 @@
                         android:layout_centerVertical="true"
                         android:fontFamily="@font/open_sans_medium"
                         android:gravity="center"
-                        android:text="Much empty. Such wow.\nGo get some friends to BChat!"
+                        android:text="@string/bchat_empty_state_message"
                         android:textColor="@color/empty_state_container_text"
                         android:textSize="@dimen/medium_font_size"
                         android:textStyle="bold"

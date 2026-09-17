@@ -8,7 +8,6 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
-import androidx.compose.ui.res.colorResource
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.content.res.use
@@ -97,8 +96,8 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         val localNumber = TextSecurePreferences.getLocalNumber(context)
         val quoteIsLocalUser = localNumber != null && authorPublicKey == localNumber
         val authorDisplayName =
-            if (quoteIsLocalUser) context.getString(R.string.QuoteView_you)
-            else author?.displayName(Contact.contextForRecipient(thread)) ?: "${authorPublicKey.take(4)}...${authorPublicKey.takeLast(4)}"
+            if (quoteIsLocalUser) context.getString(R.string.MediaPreviewActivity_you)
+            else author?.displayName(Contact.contextForRecipient(thread), context) ?: "${authorPublicKey.take(4)}...${authorPublicKey.takeLast(4)}"
         binding.quoteViewAuthorTextView.text = authorDisplayName.capitalizeFirstLetter()
         binding.quoteViewAuthorTextView.setTextColor(if(quoteIsLocalUser && !outgoing){
             ResourcesCompat.getColor(resources, R.color.button_green, context.theme)
@@ -143,10 +142,17 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                             val addresses = flattenData(data.address)
                             val names = flattenData(data.name).ifEmpty { addresses }
                             val displayName = when(names.size) {
-                                0 -> "No Name"
+                                0 -> context.getString(R.string.no_name)
                                 1 -> names.first().capitalizeFirstLetter()
-                                2 -> "${shortNameAndAddress(names[0],addresses[0])} and ${names.size - 1} other"
-                                else -> "${shortNameAndAddress(names.first(), addresses.first())} and ${names.size - 1} others"
+                                else -> {
+                                    val othersCount = names.size - 1
+                                    context.resources.getQuantityString(
+                                        R.plurals.contact_others,
+                                        othersCount,
+                                        shortNameAndAddress(names.first(), addresses.first()),
+                                        othersCount
+                                    )
+                                }
                             }
                             binding.contactName.text = displayName
 

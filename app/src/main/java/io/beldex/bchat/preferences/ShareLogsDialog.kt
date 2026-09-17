@@ -102,7 +102,7 @@ class ShareLogsDialog : BaseDialog() {
                 }
                 dismiss()
             } catch (e: Exception) {
-                Toast.makeText(context,"Error saving logs", Toast.LENGTH_LONG).show()
+                Toast.makeText(context,getString(R.string.error_saving_logs), Toast.LENGTH_LONG).show()
                 dismiss()
             }
         }

@@ -19,17 +19,18 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import io.beldex.bchat.BaseAppCompatActivity
+import io.beldex.bchat.R
 import io.beldex.bchat.crypto.IdentityKeyUtil
+import io.beldex.bchat.databinding.ActivityLandingBinding
 import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.service.KeyCachingService
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.nodelistasync.DownloadNodeListFileAsyncTask
 import io.beldex.bchat.util.nodelistasync.NodeListConstants
 import io.beldex.bchat.util.push
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityLandingBinding
 
-class LandingActivity : AppCompatActivity() {
+class LandingActivity : BaseAppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

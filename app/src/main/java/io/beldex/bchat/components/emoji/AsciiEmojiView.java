@@ -46,7 +46,7 @@ public class AsciiEmojiView extends View {
     int xPos = (getWidth() / 2);
     int yPos = (int) ((getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2));
 
-    float overflow = paint.measureText(emoji) / (getWidth() - getPaddingLeft() - getPaddingRight());
+    float overflow = paint.measureText(emoji) / (getWidth() - getPaddingStart() - getPaddingEnd());
     if (overflow > 1f) {
       paint.setTextSize(targetFontSize / overflow);
       yPos = (int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2));

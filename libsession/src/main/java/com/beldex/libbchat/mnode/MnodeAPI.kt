@@ -16,6 +16,7 @@ import nl.komponents.kovenant.functional.bind
 import nl.komponents.kovenant.functional.map
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.utilities.MessageWrapper
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.crypto.getRandomElement
 import com.beldex.libsignal.crypto.shuffledRandom
 import com.beldex.libsignal.database.BeldexAPIDatabaseProtocol
@@ -72,7 +73,8 @@ object MnodeAPI {
         }
     }
     private const val mnodeFailureThreshold = 3
-    private const val useOnionRequests = true
+    private val useOnionRequests: Boolean
+        get() = TextSecurePreferences.isOnionRoutingEnabled(MessagingModuleConfiguration.shared.context)
 
     private const val useTestnet = BuildConfig.USE_TESTNET
 
@@ -94,12 +96,6 @@ object MnodeAPI {
         val deferred = deferred<OnionResponse, Exception>()
         //val deferred = deferred<Map<*,*>, Exception>()
         if (useOnionRequests) {
-            //-Log.d("Beldex","new payload in invoke fun Send url $url")
-            //-Log.d("Beldex","new payload in invoke fun Send method $method")
-            //-Log.d("Beldex","new payload in invoke fun Send parameters $parameters")
-            //-Log.d("Beldex","new payload in invoke fun Send mnode $mnode")
-            //-Log.d("Beldex","new payload in invoke fun Send publickey $publicKey")
-
             OnionRequestAPI.sendOnionRequest(method, parameters, mnode, publicKey, version).map {
                 val body = it.body ?: throw Error.Generic
                 //deferred.resolve(JsonUtil.fromJson(body, Map::class.java))
@@ -110,8 +106,17 @@ object MnodeAPI {
             ThreadUtils.queue {
                 val payload = mapOf( "method" to method.rawValue, "params" to parameters )
                 try {
-                    val response = HTTP.execute(HTTP.Verb.POST, url, payload).toString()
-                    val json = JsonUtil.fromJson(response, Map::class.java)
+                    val response = String(HTTP.execute(HTTP.Verb.POST, url, payload), Charsets.UTF_8)
+                    val root = JsonUtil.getMapper().readTree(response)
+                    val normalized = when {
+                        root.isArray && root.size() > 0 -> {
+                            val first = root[0]
+                            val nested = first.get("result")
+                            if (nested != null && nested.isObject) nested else first
+                        }
+                        else -> root
+                    }
+                    val json = JsonUtil.getMapper().convertValue(normalized, Map::class.java)
                     deferred.resolve(OnionResponse(json, JsonUtil.toJson(json).toByteArray()))
                 } catch (exception: Exception) {
                     val httpRequestFailedException = exception as? HTTP.HTTPRequestFailedException

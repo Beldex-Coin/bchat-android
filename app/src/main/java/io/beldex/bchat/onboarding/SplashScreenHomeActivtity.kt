@@ -1,13 +1,13 @@
 package io.beldex.bchat.onboarding
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import io.beldex.bchat.BaseAppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import io.beldex.bchat.databinding.ActivitySplashScreenHomeActivtityBinding
 
-class SplashScreenHomeActivtity : AppCompatActivity() {
+class SplashScreenHomeActivtity : BaseAppCompatActivity() {
     private lateinit var binding: ActivitySplashScreenHomeActivtityBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

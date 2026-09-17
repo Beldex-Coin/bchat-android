@@ -17,16 +17,9 @@
             android:id="@+id/conversationActivity_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"
             android:background="?colorPrimary">
-
-            <ImageButton
-                android:id="@+id/back_to_home_Btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:background="@android:color/transparent"
-                android:padding="3dp"
-                android:src="@drawable/ic_back_arrow" />
 
             <LinearLayout
                 android:id="@+id/layout_conversation"
@@ -52,41 +45,57 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:text="User"
+                        android:text="@string/user"
                         android:textColor="@color/text"
                         android:textSize="@dimen/medium_font_size"
                         android:textStyle="bold" />
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
+<LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-
                         android:orientation="horizontal">
 
-                        <ImageView
-                            android:id="@+id/muteIconImageView"
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
-                            android:layout_gravity="center"
-                            android:layout_marginEnd="4dp"
-                            android:alpha="0.6"
-                            android:src="@drawable/ic_outline_notifications_off_24"
-                            android:visibility="gone"
-                            app:tint="@color/text"
-                            tools:visibility="visible" />
-
-                        <TextView
-                            android:id="@+id/conversationSubtitleView"
-                            android:layout_width="wrap_content"
+                        <HorizontalScrollView
+                            android:id="@+id/conversationSubtitleScrollView"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:alpha="0.6"
-                            android:ellipsize="end"
-                            android:fontFamily="@font/open_sans_regular"
-                            android:maxLines="1"
-                            android:text="Muted"
-                            android:textColor="@color/text"
-                            android:textSize="@dimen/very_small_font_size" />
+                            android:layout_weight="1"
+                            android:overScrollMode="never"
+                            android:scrollbars="none">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:id="@+id/muteIconImageView"
+                                    android:layout_width="14dp"
+                                    android:layout_height="14dp"
+                                    android:layout_gravity="center"
+                                    android:layout_marginEnd="4dp"
+                                    android:alpha="0.6"
+                                    android:src="@drawable/ic_outline_notifications_off_24"
+                                    android:visibility="gone"
+                                    app:tint="@color/text"
+                                    tools:visibility="visible" />
+
+                                <TextView
+                                    android:id="@+id/conversationSubtitleView"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:alpha="0.6"
+                                    android:fontFamily="@font/open_sans_regular"
+                                    android:maxLines="1"
+                                    android:text="@string/ConversationActivity_muted_forever"
+                                    android:textColor="@color/text"
+                                    android:textSize="@dimen/very_small_font_size" />
+
+                            </LinearLayout>
+
+                        </HorizontalScrollView>
 
                     </LinearLayout>
 
@@ -139,7 +148,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_weight="1"
                         android:background="@null"
-                        android:hint="Search"
+                        android:hint="@string/SearchToolbar_search"
                         android:imeOptions="actionDone"
                         android:longClickable="false"
                         android:singleLine="true"
@@ -205,7 +214,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="7dp"
                     android:layout_marginTop="5dp"
-                    android:text="No Matches found!"
+                    android:text="@string/no_matches_found"
                     android:textColor="@color/text"
                     android:textSize="@dimen/very_small_font_size"
                     android:visibility="gone"
@@ -246,10 +255,8 @@
                     android:id="@+id/callInProgress_Call"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_toEndOf="@id/callDuration_Call"
                     android:fontFamily="@font/open_sans_bold"
                     android:text="@string/call_in_progress"
                     android:textColor="@color/white"
@@ -291,7 +298,7 @@
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:layout_marginStart="12dp"
-                   android:text="User"
+                   android:text="@string/user"
                    android:textColor="@color/text"
                    android:textStyle="bold"
                    android:textSize="@dimen/very_large_font_size"
@@ -322,7 +329,7 @@
                        android:id="@+id/conversationSubtitleView"
                        android:layout_width="wrap_content"
                        android:layout_height="wrap_content"
-                       android:text="Muted"
+                       android:text="@string/ConversationActivity_muted_forever"
                        android:textColor="@color/text"
                        android:alpha="0.6"
                        android:textSize="@dimen/very_small_font_size"
@@ -608,8 +615,8 @@
                         android:background="@drawable/rounded_rectangle"
                         android:backgroundTint="@color/conversation_unread_count_indicator_background"
                         android:maxWidth="40dp"
-                        android:paddingLeft="4dp"
-                        android:paddingRight="4dp">
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp">
 
                         <TextView
                             android:id="@+id/unreadCountTextView"
@@ -691,6 +698,7 @@
                         android:text="@string/blocked_user_message"
                         android:textAllCaps="false"
                         android:textColor="@color/received_quoted_text_color"
+                        android:textAlignment="center"
                         android:textSize="12sp"
                         app:cornerRadius="24dp" />
 
@@ -710,7 +718,11 @@
                             android:backgroundTint="@color/receive_payment_card_background"
                             android:fontFamily="@font/open_sans_semi_bold"
                             android:gravity="center"
-                            android:padding="16dp"
+                            android:maxLines="1"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp"
+                            android:paddingTop="16dp"
+                            android:paddingBottom="16dp"
                             android:text="@string/clear_chat"
                             android:textAllCaps="false"
                             android:textColor="@color/clear_red_color"
@@ -729,7 +741,11 @@
                             android:backgroundTint="@color/bchat_id_text_color"
                             android:fontFamily="@font/open_sans_semi_bold"
                             android:gravity="center"
-                            android:padding="16dp"
+                            android:maxLines="1"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp"
+                            android:paddingTop="16dp"
+                            android:paddingBottom="16dp"
                             android:text="@string/ConversationActivity_unblock"
                             android:textAllCaps="false"
                             android:textColor="@color/white"
@@ -775,13 +791,13 @@
 
                         <TextView
                             android:id="@+id/messageRequestTitle"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
                             android:layout_marginTop="@dimen/small_spacing"
                             android:fontFamily="@font/open_sans_bold"
-                            android:paddingHorizontal="@dimen/massive_spacing"
-                            android:text="@string/message_request"
+                            android:paddingHorizontal="@dimen/small_spacing"
+                            android:gravity="center"
+                            android:text="@string/activity_message_requests_title"
                             android:textColor="@color/text"
                             android:textSize="16sp"
                             android:visibility="visible" />

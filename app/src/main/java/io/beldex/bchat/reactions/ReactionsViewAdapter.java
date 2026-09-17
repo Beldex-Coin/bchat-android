@@ -83,7 +83,7 @@ public class ReactionsViewAdapter extends RecyclerView.Adapter<ReactionsViewAdap
             this.avatar.update(reaction.getSender(), false, false);
 
             if (reaction.getSender().isLocalNumber()) {
-                recipientName.setText(R.string.you);
+                recipientName.setText(R.string.MediaPreviewActivity_you);
                 this.tapToRemove.setVisibility(View.VISIBLE);
                 this.tapToRemove.setText(R.string.tap_to_remove);
             } else {

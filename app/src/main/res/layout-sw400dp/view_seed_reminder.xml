@@ -11,8 +11,8 @@
         android:id="@+id/progressBar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/accent_line_thickness"
-        android:paddingLeft="-2dp"
-        android:paddingRight="-2dp"
+        android:paddingStart="-2dp"
+        android:paddingEnd="-2dp"
         android:progressTint="@color/accent"
         android:progressBackgroundTint="@color/progress_bar_background"
         android:progress="80" />
@@ -55,14 +55,14 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_marginLeft="4dp" />
+            android:layout_marginStart="4dp" />
 
         <Button
             style="@style/Widget.Bchat.Button.Common.ProminentOutline"
             android:id="@+id/button"
             android:layout_width="wrap_content"
             android:layout_height="28dp"
-            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
             android:textStyle="normal"
             android:text="@string/continue_2" />
 

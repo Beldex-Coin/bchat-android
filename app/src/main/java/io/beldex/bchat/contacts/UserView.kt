@@ -56,7 +56,7 @@ class UserView : LinearLayout {
             } else {
                 val contact=DatabaseComponent.get(context).bchatContactDatabase()
                     .getContactWithBchatID(publicKey)
-                contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
+                contact?.displayName(Contact.ContactContext.REGULAR, context) ?: publicKey
             }
         }
 

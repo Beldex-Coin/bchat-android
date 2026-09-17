@@ -16,7 +16,7 @@
     <style name="TextAppearance.Bchat.DarkActionBar.TitleTextStyle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/open_sans_medium</item>
         <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:textSize">@dimen/very_large_font_size</item>
+        <item name="android:textSize">@dimen/medium_font_size</item>
     </style>
 
     <style name="Widget.Bchat.SearchView" parent="@style/Widget.AppCompat.SearchView">
@@ -313,9 +313,9 @@
     <style name="BchatEditText">
         <item name="android:fontFamily">@font/open_sans_medium</item>
         <item name="android:background">@drawable/bchat_id_text_view_background</item>
-        <item name="android:paddingLeft">@dimen/medium_spacing</item>
+        <item name="android:paddingStart">@dimen/medium_spacing</item>
         <item name="android:paddingTop">30dp</item>
-        <item name="android:paddingRight">@dimen/medium_spacing</item>
+        <item name="android:paddingEnd">@dimen/medium_spacing</item>
         <item name="android:paddingBottom">30dp</item>
         <item name="android:textSize">@dimen/small_font_size</item>
         <item name="android:textColor">@color/text</item>
@@ -327,9 +327,9 @@
     <style name="SmallBchatEditText">
         <item name="android:fontFamily">@font/open_sans_medium</item>
         <item name="android:background">@drawable/bchat_id_text_view_background</item>
-        <item name="android:paddingLeft">@dimen/medium_spacing</item>
+        <item name="android:paddingStart">@dimen/medium_spacing</item>
         <item name="android:paddingTop">@dimen/medium_spacing</item>
-        <item name="android:paddingRight">@dimen/medium_spacing</item>
+        <item name="android:paddingEnd">@dimen/medium_spacing</item>
         <item name="android:paddingBottom">@dimen/medium_spacing</item>
         <item name="android:textSize">@dimen/small_font_size</item>
         <item name="android:textColor">@color/text</item>
@@ -341,9 +341,9 @@
     <style name="SeedBchatEditText">
         <item name="android:fontFamily">@font/open_sans_regular</item>
         <item name="android:background">@drawable/bchat_edit_text_view_background</item>
-        <item name="android:paddingLeft">@dimen/medium_spacing</item>
+        <item name="android:paddingStart">@dimen/medium_spacing</item>
         <item name="android:paddingTop">@dimen/medium_spacing</item>
-        <item name="android:paddingRight">@dimen/medium_spacing</item>
+        <item name="android:paddingEnd">@dimen/medium_spacing</item>
         <item name="android:paddingBottom">@dimen/medium_spacing</item>
         <item name="android:textSize">@dimen/small_font_size</item>
         <item name="android:textColor">@color/text</item>
@@ -355,9 +355,9 @@
 
     <style name="BchatSearchEditText">
         <item name="android:fontFamily">@font/open_sans_medium</item>
-        <item name="android:paddingLeft">@dimen/medium_spacing</item>
+        <item name="android:paddingStart">@dimen/medium_spacing</item>
         <item name="android:paddingTop">@dimen/medium_spacing</item>
-        <item name="android:paddingRight">@dimen/medium_spacing</item>
+        <item name="android:paddingEnd">@dimen/medium_spacing</item>
         <item name="android:paddingBottom">@dimen/medium_spacing</item>
         <item name="android:textSize">@dimen/small_font_size</item>
         <item name="android:textColor">@color/text</item>
@@ -369,9 +369,9 @@
     <style name="AddNodeBchatEditText">
         <item name="android:fontFamily">@font/open_sans_medium</item>
         <item name="android:background">@drawable/add_node_edit_text_background</item>
-        <item name="android:paddingLeft">@dimen/medium_spacing</item>
+        <item name="android:paddingStart">@dimen/medium_spacing</item>
         <item name="android:paddingTop">@dimen/medium_spacing</item>
-        <item name="android:paddingRight">@dimen/medium_spacing</item>
+        <item name="android:paddingEnd">@dimen/medium_spacing</item>
         <item name="android:paddingBottom">@dimen/medium_spacing</item>
         <item name="android:textSize">@dimen/small_font_size</item>
         <item name="android:textColor">@color/text</item>
@@ -383,9 +383,9 @@
     <style name="AddNodeOptionalBchatEditText">
         <item name="android:fontFamily">@font/open_sans_medium</item>
         <item name="android:background">@drawable/add_node_optional_edit_text_background</item>
-        <item name="android:paddingLeft">@dimen/medium_spacing</item>
+        <item name="android:paddingStart">@dimen/medium_spacing</item>
         <item name="android:paddingTop">@dimen/medium_spacing</item>
-        <item name="android:paddingRight">@dimen/medium_spacing</item>
+        <item name="android:paddingEnd">@dimen/medium_spacing</item>
         <item name="android:paddingBottom">@dimen/medium_spacing</item>
         <item name="android:textSize">@dimen/small_font_size</item>
         <item name="android:textColor">@color/text</item>
@@ -396,9 +396,9 @@
    <style name="BchatAddressEditText">
         <item name="android:fontFamily">@font/open_sans_medium</item>
         <item name="android:background">@drawable/bchat_id_text_view_background</item>
-        <item name="android:paddingLeft">@dimen/medium_spacing</item>
+        <item name="android:paddingStart">@dimen/medium_spacing</item>
         <item name="android:paddingTop">@dimen/medium_spacing</item>
-        <item name="android:paddingRight">@dimen/medium_spacing</item>
+        <item name="android:paddingEnd">@dimen/medium_spacing</item>
         <item name="android:paddingBottom">@dimen/medium_spacing</item>
         <item name="android:textSize">@dimen/small_font_size</item>
         <item name="android:textColor">@color/text</item>
@@ -410,9 +410,9 @@
     <style name="SmallBChatEditText">
         <item name="android:fontFamily">@font/open_sans_medium</item>
         <item name="android:background">@color/transparent</item>
-        <item name="android:paddingLeft">@dimen/medium_spacing</item>
+        <item name="android:paddingStart">@dimen/medium_spacing</item>
         <item name="android:paddingTop">@dimen/medium_spacing</item>
-        <item name="android:paddingRight">@dimen/medium_spacing</item>
+        <item name="android:paddingEnd">@dimen/medium_spacing</item>
         <item name="android:paddingBottom">@dimen/medium_spacing</item>
         <item name="android:textSize">@dimen/very_small_font_size</item>
         <item name="android:textColor">@color/text</item>
@@ -423,9 +423,9 @@
 
     <style name="BigBChatEditText">
         <item name="android:background">@color/transparent</item>
-        <item name="android:paddingLeft">@dimen/medium_spacing</item>
+        <item name="android:paddingStart">@dimen/medium_spacing</item>
         <item name="android:paddingTop">@dimen/medium_spacing</item>
-        <item name="android:paddingRight">@dimen/medium_spacing</item>
+        <item name="android:paddingEnd">@dimen/medium_spacing</item>
         <item name="android:paddingBottom">@dimen/medium_spacing</item>
         <item name="android:textSize">@dimen/medium_font_size</item>
         <item name="android:textColor">@color/text</item>
@@ -435,9 +435,9 @@
     </style>
 
     <style name="FakeChatViewMessageBubble">
-        <item name="android:paddingLeft">@dimen/medium_spacing</item>
+        <item name="android:paddingStart">@dimen/medium_spacing</item>
         <item name="android:paddingTop">12dp</item>
-        <item name="android:paddingRight">@dimen/medium_spacing</item>
+        <item name="android:paddingEnd">@dimen/medium_spacing</item>
         <item name="android:paddingBottom">12dp</item>
         <item name="android:textSize">15sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
@@ -1027,7 +1027,7 @@
 
     <style name="Widget.Bchat.Button.Dialog.Enable">
         <item name="android:fontFamily">@font/open_sans_regular</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:background">@drawable/bchat_dialog_positive_button_shape</item>
         <item name="text_color">@color/white</item>
         <item name="android:shadowColor">@color/black</item>
@@ -1040,9 +1040,9 @@
     <style name="ConversationLengthBchatEditText">
         <item name="android:fontFamily">@font/open_sans_regular</item>
         <item name="android:background">@drawable/conversation_length_text_field_backgroun_shape</item>
-        <item name="android:paddingLeft">@dimen/medium_spacing</item>
+        <item name="android:paddingStart">@dimen/medium_spacing</item>
         <item name="android:paddingTop">@dimen/medium_spacing</item>
-        <item name="android:paddingRight">@dimen/medium_spacing</item>
+        <item name="android:paddingEnd">@dimen/medium_spacing</item>
         <item name="android:paddingBottom">@dimen/medium_spacing</item>
         <item name="android:textSize">@dimen/small_font_size</item>
         <item name="android:textColor">@color/text</item>

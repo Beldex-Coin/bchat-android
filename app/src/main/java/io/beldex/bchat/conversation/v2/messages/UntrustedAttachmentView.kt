@@ -39,7 +39,7 @@ class UntrustedAttachmentView: LinearLayout {
         val (iconRes, stringRes) = when (attachmentType) {
             AttachmentType.AUDIO -> R.drawable.ic_microphone to R.string.Slide_audio
             AttachmentType.DOCUMENT -> R.drawable.ic_document_large_light to R.string.document
-            AttachmentType.MEDIA -> R.drawable.ic_image_attachment to R.string.media
+            AttachmentType.MEDIA -> R.drawable.ic_image_attachment to R.string.MediaOverviewActivity_Media
         }
         val iconDrawable = ContextCompat.getDrawable(context,iconRes)!!
         iconDrawable.mutate().setTint(textColor)

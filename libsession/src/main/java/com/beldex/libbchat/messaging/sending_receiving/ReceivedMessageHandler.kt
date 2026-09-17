@@ -242,7 +242,7 @@ fun MessageReceiver.handleUnsendRequest(message: UnsendRequest) {
         messageDataProvider.markMessageAsDeleted(
             timestamp = timestamp,
             author = author,
-            displayedMessage = context.getString(R.string.deleteMessageDeletedGlobally)
+            displayedMessage = context.getString(R.string.deleteMessageDeletedGloballyDefault)
         )
     }
     // delete reactions

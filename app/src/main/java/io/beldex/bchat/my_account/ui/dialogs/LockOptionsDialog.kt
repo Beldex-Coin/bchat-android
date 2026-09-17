@@ -83,7 +83,7 @@ fun LockOptionsDialog(
                 textModifier = Modifier.padding(12.dp),
                 textStyle = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
-                    .fillMaxWidth(0.5f)
+                    .fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(16.dp))

@@ -2,15 +2,8 @@ package io.beldex.bchat.onboarding
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.MotionEvent
-import android.view.View
-import android.view.WindowManager
+import android.util.Log
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputConnection
 import android.widget.Toast
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.BaseActionBarActivity
@@ -20,6 +13,22 @@ import io.beldex.bchat.service.KeyCachingService
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
 import javax.inject.Inject
+import android.view.inputmethod.InputConnection
+import android.annotation.SuppressLint
+import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.text.InputType
+import android.view.View
+import android.view.WindowManager
+import android.view.MotionEvent
+import android.view.View.OnTouchListener
+import androidx.core.widget.addTextChangedListener
+import android.text.Editable
+
+import android.text.TextWatcher
+import io.beldex.bchat.R
+import org.w3c.dom.Text
 
 
 class CreatePasswordActivity : BaseActionBarActivity() {
@@ -33,7 +42,7 @@ class CreatePasswordActivity : BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityCreatePasswordBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setUpActionBarBchatLogo("Create Password", true)
+        setUpActionBarBchatLogo(getString(R.string.create_password), true)
         callPage = intent?.extras?.getInt("callPage", 0) ?: 0
         with(binding)
         {
@@ -47,29 +56,29 @@ class CreatePasswordActivity : BaseActionBarActivity() {
                     enterPinEditTxtLayout!!.isErrorEnabled = false
                     Toast.makeText(
                         this@CreatePasswordActivity,
-                        "Must set your 4 digit PIN.",
+                        getString(R.string.must_set_your_four_digit_pin),
                         Toast.LENGTH_LONG
                     ).show()
                     //enterPinEditTxtLayout!!.error = "Must set your 4 digit PIN."
                 } else if (enteredPIN.length < 4) {
                     enterPinEditTxtLayout!!.isErrorEnabled = true
-                    enterPinEditTxtLayout.error = "Please enter 4 digit PIN."
+                    enterPinEditTxtLayout.error = getString(R.string.please_enter_4_digit_pin)
                 } else if (reEnterPIN.isEmpty()) {
                     enterPinEditTxtLayout!!.isErrorEnabled = false
                     reEnterPinEditTxtLayout!!.isErrorEnabled = false
                     Toast.makeText(
                         this@CreatePasswordActivity,
-                        "Must set your 4 digit PIN.",
+                        getString(R.string.must_set_your_four_digit_pin),
                         Toast.LENGTH_LONG
                     ).show()
                     //reEnterPinEditTxtLayout!!.error = "Must set your 4 digit PIN."
                 } else if (reEnterPIN.length < 4) {
                     enterPinEditTxtLayout!!.isErrorEnabled = false
                     reEnterPinEditTxtLayout!!.isErrorEnabled = true
-                    reEnterPinEditTxtLayout.error = "Please enter 4 digit PIN."
+                    reEnterPinEditTxtLayout.error = getString(R.string.please_enter_4_digit_pin)
                 } else if (enteredPIN != reEnterPIN) {
                     reEnterPinEditTxtLayout!!.isErrorEnabled = true
-                    reEnterPinEditTxtLayout!!.error = "Password is not matched"
+                    reEnterPinEditTxtLayout!!.error = getString(R.string.password_is_not_matched)
                 } else if (enteredPIN == reEnterPIN) {
                     callPage(callPage)
                 }

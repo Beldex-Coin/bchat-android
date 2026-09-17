@@ -64,7 +64,7 @@ object MentionUtilities {
                 else
                     Contact.ContactContext.REGULAR
 
-                contact?.displayName(ctx)
+                contact?.displayName(ctx, context)
             }
 
             if (userDisplayName != null) {

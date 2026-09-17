@@ -11,7 +11,7 @@
         android:fontFamily="@font/open_sans_bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Screenlock Inactivity Timeout"
+        android:text="@string/screenlock_inactivity_timeout"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
         android:textSize="20sp"

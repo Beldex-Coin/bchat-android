@@ -54,7 +54,7 @@ public class QuoteBodyTextViewLayout extends RelativeLayout {
             return;
         }
 
-        int availableWidth = widthSize - getPaddingLeft() - getPaddingRight();
+        int availableWidth = widthSize - getPaddingStart() - getPaddingEnd();
         int availableHeight = heightSize - getPaddingTop() - getPaddingBottom();
 
         quoteViewPartMessageLayoutParams = (LayoutParams) quoteViewPartMessage.getLayoutParams();
@@ -68,18 +68,18 @@ public class QuoteBodyTextViewLayout extends RelativeLayout {
         int quoteViewPartMessageLineCount = quoteViewPartMessage.getLineCount();
         float quoteViewPartMessageLastLineWidth = quoteViewPartMessageLineCount > 0 ? quoteViewPartMessage.getLayout().getLineWidth(quoteViewPartMessageLineCount - 1) : 0;
 
-        widthSize = getPaddingLeft() + getPaddingRight();
+        widthSize = getPaddingStart() + getPaddingEnd();
         heightSize = getPaddingTop() + getPaddingBottom();
 
-        if (quoteViewPartMessageLineCount > 1 && !(quoteViewPartMessageLastLineWidth + quoteViewPartTimeWidth >= quoteViewPartMessage.getMeasuredWidth())) {
-            widthSize += availableWidth;
-            heightSize += quoteViewPartMessageHeight;
-        } else if (quoteViewPartMessageLineCount > 1 && (quoteViewPartMessageLastLineWidth + quoteViewPartTimeWidth >= availableWidth)) {
+        if (quoteViewPartMessageLineCount > 1 && (quoteViewPartMessageLastLineWidth + quoteViewPartTimeWidth >= quoteViewPartMessage.getMeasuredWidth())) {
             widthSize += availableWidth;
             heightSize += quoteViewPartMessageHeight + quoteViewPartTimeHeight;
         } else if (quoteViewPartMessageLineCount == 1 && (quoteViewPartMessageWidth + quoteViewPartTimeWidth >= availableWidth)) {
             widthSize += availableWidth;
             heightSize += quoteViewPartMessageHeight + quoteViewPartTimeHeight;
+        } else if (quoteViewPartMessageLineCount > 1) {
+            widthSize += availableWidth;
+            heightSize += quoteViewPartMessageHeight;
         } else {
             widthSize += availableWidth;
             heightSize += quoteViewPartMessageHeight;
@@ -98,15 +98,15 @@ public class QuoteBodyTextViewLayout extends RelativeLayout {
         }
 
         quoteViewPartMessage.layout(
-                getPaddingLeft(),
+                getPaddingStart(),
                 getPaddingTop(),
-                quoteViewPartMessage.getWidth() + getPaddingLeft(),
+                quoteViewPartMessage.getWidth() + getPaddingStart(),
                 quoteViewPartMessage.getHeight() + getPaddingTop());
 
         quoteViewPartTime.layout(
-                right - left - quoteViewPartTimeWidth - getPaddingRight(),
+                right - left - quoteViewPartTimeWidth - getPaddingEnd(),
                 bottom - top - getPaddingBottom() - quoteViewPartTimeHeight,
-                right - left - getPaddingRight(),
+                right - left - getPaddingEnd(),
                 bottom - top - getPaddingBottom());
     }
 }

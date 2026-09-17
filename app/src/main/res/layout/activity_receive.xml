@@ -149,9 +149,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
             android:orientation="vertical"
            >
@@ -171,8 +171,8 @@
                     app:errorTextColor="@color/red"
                     app:hintEnabled="false"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <EditText
@@ -209,15 +209,14 @@
             android:layout_width="150dp"
             android:layout_height="@dimen/medium_button_height"
             android:layout_gravity="center_horizontal"
-            android:layout_marginStart="4dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
             android:drawableStart="@drawable/ic_baseline_share_24"
             android:gravity="center"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
             android:text="@string/share"
             android:textSize="16sp"
             android:textStyle="bold" />

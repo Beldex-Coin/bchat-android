@@ -39,6 +39,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -322,7 +323,7 @@ fun NewChatScreen(
                     onClickScanQRCode = {}
                 )
                 Text(
-                    text = "Contact list",
+                    text = stringResource(R.string.contact_list),
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight(400),
@@ -596,8 +597,7 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(115.dp)
-                        .padding(end=10.dp),
+                        .height(115.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = MaterialTheme.appColors.editTextBackground,
@@ -634,10 +634,10 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                         text=stringResource(id=R.string.cancel),
                         style=MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight(400),
-                            fontSize = 14.sp,
+                            fontSize = 12.sp,
                             color = MaterialTheme.appColors.negativeGreenButtonText
                         ),
-                        modifier=Modifier.padding(10.dp)
+                        modifier=Modifier.padding(top = 4.dp, bottom = 4.dp)
                     )
                 }
 
@@ -649,7 +649,7 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                             if (bChatId.isEmpty()) {
                                 Toast.makeText(
                                     context,
-                                    "Please enter BChat ID",
+                                    context.getString(R.string.bchat_id_warning_message),
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {
@@ -679,9 +679,16 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                                 MaterialTheme.appColors.disabledLetsBchatContent
                             },
                             fontWeight = FontWeight(400),
-                            fontSize = 14.sp
+                            fontSize = 12.sp,
+                            textAlign = TextAlign.Center
                         ),
-                        modifier=Modifier.padding(10.dp)
+                        autoSize = TextAutoSize.StepBased(
+                            minFontSize = 8.sp,
+                            maxFontSize = 12.sp
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Clip,
+                        modifier=Modifier.padding(top = 4.dp, bottom = 4.dp)
                     )
                 }
             }

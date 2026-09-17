@@ -17,14 +17,15 @@
         android:contentDescription="Call Permission" />
 
     <TextView
-        android:fontFamily="@font/open_sans_bold"
         android:id="@+id/downloadTitleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans_bold"
         android:text="@string/call_permission_required_title"
+        android:textAlignment="center"
         android:textColor="@color/text"
-        android:textStyle="bold"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <TextView
         android:fontFamily="@font/open_sans_medium"

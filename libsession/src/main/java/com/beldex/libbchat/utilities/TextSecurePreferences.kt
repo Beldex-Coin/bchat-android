@@ -12,7 +12,9 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import com.beldex.libbchat.R
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.APP_SELECTED_LANGUAGE
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.CALL_NOTIFICATIONS_ENABLED
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.DEVICE_LANGUAGE
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_BNS_HOLDER
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_KEEP_ARCHIVE_CHAT
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_LOCAL_PROFILE
@@ -73,6 +75,8 @@ interface TextSecurePreferences {
     fun setTypingIndicatorsEnabled(enabled: Boolean)
     fun isLinkPreviewsEnabled(): Boolean
     fun setLinkPreviewsEnabled(enabled: Boolean)
+    fun isOnionRoutingEnabled(): Boolean
+    fun setOnionRoutingEnabled(enabled: Boolean)
     fun hasSeenGIFMetaDataWarning(): Boolean
     fun setHasSeenGIFMetaDataWarning()
     fun isGifSearchInGridLayout(): Boolean
@@ -275,6 +279,10 @@ interface TextSecurePreferences {
     fun getKeepArchiveChat(): Boolean
     fun setPinLength(pinLength: Int)
     fun getPinLength(): Int
+    fun setAppSelectedLanguage(code : String?)
+    fun getAppSelectedLanguage(): String?
+    fun setDeviceLanguage(code : String?)
+    fun getDeviceLanguage(): String?
 
 
 
@@ -358,6 +366,7 @@ interface TextSecurePreferences {
         const val MY_ADDRESS = "my_address"
         const val AIRDROP_STATUS = "airdrop_status"
         const val CALL_NOTIFICATIONS_ENABLED = "pref_call_notifications_enabled"
+        const val USE_ONION_ROUTING = "pref_onion_routing"
         const val SHOWN_CALL_WARNING = "pref_shown_call_warning" // call warning is user-facing warning of enabling calls
         const val SHOWN_CALL_NOTIFICATION = "pref_shown_call_notification" // call notification is a promp to check privacy settings
         const val HAS_HIDDEN_MESSAGE_REQUESTS = "pref_message_requests_hidden"
@@ -396,6 +405,8 @@ interface TextSecurePreferences {
         const val IS_VOICE_RECORDING = "is_voice_recording"
         const val IS_KEEP_ARCHIVE_CHAT = "is_keep_archive_chat"
         const val PIN_LENGTH = "pin_length"
+        const val APP_SELECTED_LANGUAGE = "app_selected_language"
+        const val DEVICE_LANGUAGE = "device_language"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -591,6 +602,16 @@ interface TextSecurePreferences {
         @JvmStatic
         fun setLinkPreviewsEnabled(context: Context, enabled: Boolean) {
             setBooleanPreference(context, LINK_PREVIEWS, enabled)
+        }
+
+        @JvmStatic
+        fun isOnionRoutingEnabled(context: Context): Boolean {
+            return getBooleanPreference(context, USE_ONION_ROUTING, false)
+        }
+
+        @JvmStatic
+        fun setOnionRoutingEnabled(context: Context, enabled: Boolean) {
+            setBooleanPreference(context, USE_ONION_ROUTING, enabled)
         }
 
         @JvmStatic
@@ -1465,6 +1486,26 @@ interface TextSecurePreferences {
             setIntegerPreference(context, PIN_LENGTH, pinLength)
         }
 
+        @JvmStatic
+        fun setAppSelectedLanguage(context: Context, code: String?) {
+            setStringPreference(context, APP_SELECTED_LANGUAGE, code)
+        }
+
+        @JvmStatic
+        fun getAppSelectedLanguage(context: Context):String? {
+            return getStringPreference(context, APP_SELECTED_LANGUAGE, "en")
+        }
+
+        @JvmStatic
+        fun setDeviceLanguage(context: Context, code: String?) {
+            setStringPreference(context, DEVICE_LANGUAGE, code)
+        }
+
+        @JvmStatic
+        fun getDeviceLanguage(context: Context):String? {
+            return getStringPreference(context, DEVICE_LANGUAGE, "en")
+        }
+
 
     }
 }
@@ -1632,6 +1673,14 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun setLinkPreviewsEnabled(enabled: Boolean) {
         setBooleanPreference(TextSecurePreferences.LINK_PREVIEWS, enabled)
+    }
+
+    override fun isOnionRoutingEnabled(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.USE_ONION_ROUTING, false)
+    }
+
+    override fun setOnionRoutingEnabled(enabled: Boolean) {
+        setBooleanPreference(TextSecurePreferences.USE_ONION_ROUTING, enabled)
     }
 
     override fun hasSeenGIFMetaDataWarning(): Boolean {
@@ -2385,5 +2434,21 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun getPinLength(): Int {
         return getIntegerPreference(TextSecurePreferences.PIN_LENGTH,4)
+    }
+
+    override fun setAppSelectedLanguage(code: String?) {
+        setStringPreference(APP_SELECTED_LANGUAGE, code)
+    }
+
+    override fun getAppSelectedLanguage(): String? {
+        return getStringPreference(APP_SELECTED_LANGUAGE,"en")
+    }
+
+    override fun setDeviceLanguage(code: String?) {
+        setStringPreference(DEVICE_LANGUAGE, code)
+    }
+
+    override fun getDeviceLanguage(): String? {
+        return getStringPreference(DEVICE_LANGUAGE,"en")
     }
 }

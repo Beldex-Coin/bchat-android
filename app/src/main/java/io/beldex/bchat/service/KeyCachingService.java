@@ -43,6 +43,8 @@ import io.beldex.bchat.BuildConfig;
 import io.beldex.bchat.DatabaseUpgradeActivity;
 import io.beldex.bchat.DummyActivity;
 import io.beldex.bchat.home.HomeActivity;
+
+import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper;
 import com.beldex.libsignal.utilities.Log;
 import io.beldex.bchat.notifications.NotificationChannels;
 import com.beldex.libbchat.utilities.ServiceUtil;
@@ -70,6 +72,7 @@ public class KeyCachingService extends Service {
   public  static final String LOCK_TOGGLED_EVENT       = "io.beldex.bchat.service.action.LOCK_ENABLED_EVENT";
   private static final String PASSPHRASE_EXPIRED_EVENT = "io.beldex.bchat.service.action.PASSPHRASE_EXPIRED_EVENT";
   public  static final String CLEAR_KEY_ACTION         = "io.beldex.bchat.service.action.CLEAR_KEY";
+  public  static final String LANGUAGE_CHANGED_ACTION  = "io.beldex.bchat.service.action.LANGUAGE_CHANGED";
 
   private final IBinder binder  = new KeySetBinder();
 
@@ -154,10 +157,17 @@ public class KeyCachingService extends Service {
         case CLEAR_KEY_ACTION:         handleClearKey();        break;
         case PASSPHRASE_EXPIRED_EVENT: handleClearKey();        break;
         case LOCK_TOGGLED_EVENT:       handleLockToggled();     break;
+        case LANGUAGE_CHANGED_ACTION:  foregroundService();     break;
       }
     }
 
     return START_NOT_STICKY;
+  }
+
+  @Override
+  protected void attachBaseContext(Context newBase) {
+    String language = TextSecurePreferences.getAppSelectedLanguage(newBase);
+    super.attachBaseContext(DynamicLanguageContextWrapper.updateContext(newBase, language));
   }
 
   @Override
@@ -253,15 +263,18 @@ public class KeyCachingService extends Service {
     }
 
     Log.i(TAG, "foregrounding KCS");
-    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NotificationChannels.LOCKED_STATUS);
+    String language = TextSecurePreferences.getAppSelectedLanguage(this);
+    Context localizedContext = DynamicLanguageContextWrapper.updateContext(this, language);
 
-    builder.setContentTitle(getString(R.string.KeyCachingService_passphrase_cached));
-    builder.setContentText(getString(R.string.KeyCachingService_signal_passphrase_cached));
+    NotificationCompat.Builder builder = new NotificationCompat.Builder(localizedContext, NotificationChannels.LOCKED_STATUS);
+
+    builder.setContentTitle(localizedContext.getString(R.string.KeyCachingService_passphrase_cached));
+    builder.setContentText(localizedContext.getString(R.string.KeyCachingService_signal_passphrase_cached));
     builder.setSmallIcon(R.drawable.icon_cached);
     builder.setWhen(0);
     builder.setPriority(Notification.PRIORITY_MIN);
 
-    builder.addAction(R.drawable.ic_menu_lock_dark, getString(R.string.KeyCachingService_lock), buildLockIntent());
+    builder.addAction(R.drawable.ic_menu_lock_dark, localizedContext.getString(R.string.KeyCachingService_lock), buildLockIntent());
     builder.setContentIntent(buildLaunchIntent());
 
     stopForeground(true);

@@ -3,6 +3,7 @@ package io.beldex.bchat.keyboard.layouts
 import android.content.Context
 import android.view.View
 import android.widget.LinearLayout
+import io.beldex.bchat.R
 import io.beldex.bchat.keyboard.controllers.KeyboardController
 
 class NumberKeyboardLayout(context: Context, controller: KeyboardController?) :
@@ -33,7 +34,7 @@ class NumberKeyboardLayout(context: Context, controller: KeyboardController?) :
         rowFour.add(createButton("⌫", columnWidth, KeyboardController.SpecialKey.BACKSPACE))
         rowFour.add(createButton("0", columnWidth, '0'))
         if (hasNextFocus) {
-            rowFour.add(createButton("Next", columnWidth, KeyboardController.SpecialKey.NEXT))
+            rowFour.add(createButton(context.getString(R.string.next), columnWidth, KeyboardController.SpecialKey.NEXT))
         } else {
             rowFour.add(createButton("✓", columnWidth, KeyboardController.SpecialKey.DONE))
         }

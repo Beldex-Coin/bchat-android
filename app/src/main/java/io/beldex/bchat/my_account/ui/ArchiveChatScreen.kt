@@ -16,11 +16,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Divider
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -96,7 +98,7 @@ fun ArchiveChatScreen(
     var showMenu by remember { mutableStateOf(false) }
     val itemPositions = remember { mutableStateMapOf<Long, MenuPositionState>() }
     var menuPositionState by remember { mutableStateOf(MenuPositionState()) }
-    val popupOffset = rememberMenuPosition(menuPositionState)
+    val popupOffset = rememberMenuPosition(menuPositionState, 320.dp)
 
     var showBlockPopup by remember {
         mutableStateOf(false)
@@ -143,7 +145,7 @@ fun ArchiveChatScreen(
         ) {
             UnblockUserDialog(title=stringResource(id=R.string.unblock_contact),
                 message=stringResource(id=R.string.unblock_user_confirmation),
-                positiveButtonTitle=stringResource(id=R.string.unblock),
+                positiveButtonTitle=stringResource(id=R.string.ConversationActivity_unblock),
                 onAccept={
                     threadRecord?.let { thread ->
                         archiveChatViewModel.onEvent(
@@ -230,9 +232,9 @@ fun ArchiveChatScreen(
                 val group=groupDatabase.getGroup(thread.recipient.address.toString()).orNull()
                 if (group != null && group.admins.map { it.toString() }
                         .contains(TextSecurePreferences.getLocalNumber(context))) {
-                    "Because you are the creator of this group it will be deleted for everyone. This cannot be undone."
+                    context.resources.getString(R.string.group_delete_confirmation_message)
                 } else {
-                    context.resources.getString(R.string.activity_home_leave_group_dialog_message)
+                    context.resources.getString(R.string.ConversationActivity_are_you_sure_you_want_to_leave_this_group)
                 }
             } else {
                 context.resources.getString(R.string.activity_home_delete_conversation_dialog_message)
@@ -265,7 +267,7 @@ fun ArchiveChatScreen(
                 offset = popupOffset,
                 onDismissRequest = { showMenu = false },
             ) {
-                Card(modifier = Modifier.width(200.dp)) {
+                Card(modifier = Modifier.wrapContentWidth().widthIn(max = 320.dp)) {
                     Column(
                         modifier = Modifier
                             .padding(16.dp)
@@ -286,7 +288,10 @@ fun ArchiveChatScreen(
                                         showMenu = false
                                         showBlockPopup = true
                                     }) {
-                                        Text(stringResource(id = R.string.RecipientPreferenceActivity_block))
+                                        Text(
+                                            stringResource(id = R.string.RecipientPreferenceActivity_block),
+                                            fontSize = 12.sp
+                                        )
                                     }
                                 }
                             }
@@ -306,7 +311,10 @@ fun ArchiveChatScreen(
                                         showMenu = false
                                         showUnBlockPopup = true
                                     }) {
-                                        Text(stringResource(id = R.string.RecipientPreferenceActivity_unblock))
+                                        Text(
+                                            stringResource(id=R.string.ConversationActivity_unblock),
+                                            fontSize = 12.sp
+                                        )
                                     }
                                 }
                             }
@@ -325,7 +333,10 @@ fun ArchiveChatScreen(
                                 showMenu = false
                                 archiveChatViewModel.onEvent(ArchiveChatsEvents.UnArchiveChats(thread))
                             }) {
-                                Text(stringResource(id = R.string.un_archive_chat_title))
+                                Text(
+                                    stringResource(id = R.string.un_archive_chat_title),
+                                    fontSize = 12.sp
+                                )
                             }
                         }
                         if (thread.unreadCount > 0) {
@@ -342,7 +353,10 @@ fun ArchiveChatScreen(
                                     showMenu = false
                                     archiveChatViewModel.onEvent(ArchiveChatsEvents.MarkAsRead(thread))
                                 }) {
-                                    Text(stringResource(id = R.string.MessageNotifier_mark_all_as_read))
+                                    Text(
+                                        stringResource(id = R.string.MessageNotifier_mark_all_as_read),
+                                        fontSize = 12.sp
+                                    )
                                 }
                             }
                         }
@@ -362,6 +376,7 @@ fun ArchiveChatScreen(
                                 Text(
                                     stringResource(id = R.string.delete),
                                     color = MaterialTheme.appColors.deleteOptionColor,
+                                    fontSize = 12.sp,
                                 )
                             }
                         }
@@ -529,12 +544,19 @@ fun ArchiveChatItem(
                     val addresses = flattenData(data.address)
                     val names = flattenData(data.name).ifEmpty { addresses }
                     when(names.size) {
-                        0 -> "No Name"
+                        0 -> context.getString(R.string.no_name)
                         1 -> names.first().capitalizeFirstLetter()
-                        2 -> "${shortNameAndAddress(names[0],addresses[0])} and ${names.size - 1} other"
-                        else -> "${shortNameAndAddress(names.first(), addresses.first())} and ${names.size - 1} others"
+                        else -> {
+                            val othersCount = names.size - 1
+                            context.resources.getQuantityString(
+                                R.plurals.contact_others,
+                                othersCount,
+                                shortNameAndAddress(names.first(), addresses.first()),
+                                othersCount
+                            )
+                        }
                     }
-                } ?: "No Name"
+                } ?: context.getString(R.string.no_name)
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -638,7 +660,7 @@ fun ArchiveChatItem(
 private fun getDisplayName(context : Context, publicKey : String) : String {
     val contact=
         DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
-    return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
+    return contact?.displayName(Contact.ContactContext.REGULAR, context) ?: publicKey
 }
 
 private fun getUserDisplayName(context : Context, recipient : Recipient?) : String? {

@@ -24,7 +24,7 @@ class NotifyPNServerJob(val message: MnodeMessage) : Job {
     override var id: String? = null
     override var failureCount: Int = 0
 
-    override val maxFailureCount: Int = 20
+    override val maxFailureCount: Int = 6
     companion object {
         val KEY: String = "NotifyPNServerJob"
 

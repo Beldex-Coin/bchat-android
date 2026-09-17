@@ -72,7 +72,6 @@ class Address private constructor(address: String) : Parcelable, Comparable<Addr
     class ExternalAddressFormatter internal constructor(localCountryCode: String, countryCode: Boolean) {
         private val localNumber: Optional<PhoneNumber>
         private val localCountryCode: String
-        private val ALPHA_PATTERN = Pattern.compile("[a-zA-Z]")
         fun format(number: String?): String {
             return number ?: "Unknown"
         }

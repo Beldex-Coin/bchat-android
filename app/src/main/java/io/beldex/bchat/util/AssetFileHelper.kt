@@ -1,10 +1,7 @@
 package io.beldex.bchat.util
 
 import android.app.Application
-import android.content.Context
 import java.io.IOException
-import java.io.InputStream
-import java.nio.charset.Charset
 import javax.inject.Inject
 
 class AssetFileHelper @Inject constructor(
@@ -12,33 +9,14 @@ class AssetFileHelper @Inject constructor(
 ) {
 
     fun loadChangeLogsFromAsset(): String? {
-        val json: String? = try {
-            val `is`: InputStream = application.assets.open("changeLog.json")
-            val size: Int = `is`.available()
-            val buffer = ByteArray(size)
-            `is`.read(buffer)
-            `is`.close()
-            String(buffer, Charset.forName("UTF-8"))
-        } catch (ex: IOException) {
-            ex.printStackTrace()
-            return null
-        }
-        return json
-    }
+        return try {
+            application.assets.open("changeLog.json")
+                .bufferedReader(Charsets.UTF_8)
+                .use { it.readText() }
 
-    fun loadAboutContent(): String? {
-        val json: String? = try {
-            val inputStream = application.assets.open("about.txt")
-            val size = inputStream.available()
-            val buffer = ByteArray(size)
-            inputStream.read(buffer)
-            inputStream.close()
-            String(buffer)
-        } catch (ex: IOException) {
-            ex.printStackTrace()
-            return null
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
         }
-        return json
     }
-
 }

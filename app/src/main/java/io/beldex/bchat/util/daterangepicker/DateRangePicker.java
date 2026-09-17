@@ -38,10 +38,10 @@ public class DateRangePicker extends Dialog implements OnClickListener, OnTabSel
     private Calendar startDateCal = Calendar.getInstance();
     private Calendar endDateCal = Calendar.getInstance();
     private TabLayout tabLayout;
-    private String startDateTitle = "start date";
-    private String endDateTitle = "end date";
-    private String startDateError = "Please select start date";
-    private String endDateError = "Please select end date";
+    private String startDateTitle = context.getString(R.string.str_start_date);
+    private String endDateTitle = context.getString(R.string.str_end_date);
+    private String startDateError = context.getString(R.string.str_please_select_start_date);
+    private String endDateError = context.getString(R.string.str_please_select_end_date);
 
     public DateRangePicker(@NonNull Context context, DateRangePicker.OnCalenderClickListener onCalenderClickListener) {
         super(context);

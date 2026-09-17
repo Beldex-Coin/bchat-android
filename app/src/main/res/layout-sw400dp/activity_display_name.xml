@@ -21,6 +21,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
             android:layout_marginHorizontal="30dp"
             android:fontFamily="@font/open_sans_semi_bold"
             android:text="@string/display_name_screen_title_content"
@@ -31,8 +33,10 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/large_spacing"
             android:layout_marginHorizontal="@dimen/large_spacing"
             android:layout_marginTop="@dimen/large_spacing"
+            android:layout_marginEnd="@dimen/large_spacing"
             app:cardBackgroundColor="@color/card_color"
             app:cardCornerRadius="10dp">
 
@@ -42,7 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
                 android:gravity="center_vertical"
-                android:hint="@string/activity_display_name_edit_text_hint"
+                android:hint="@string/enter_name"
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:maxLines="1"
@@ -55,13 +59,16 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="@dimen/medium_spacing"
+            android:layout_marginEnd="30dp"
             android:fontFamily="@font/open_sans_medium"
-            android:text="You can change it anytime :)"
-            android:textAlignment="textStart"
+            android:text="@string/activity_display_name_hint"
             android:textColor="@color/text_hint"
-            android:textSize="@dimen/small_font_size" />
+            android:textAlignment="textStart"
+            android:textSize="@dimen/small_font_size"
+            android:textStyle="normal" />
 
         <View
             android:layout_width="match_parent"

@@ -4,22 +4,16 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.TaskStackBuilder;
-import androidx.appcompat.app.AppCompatActivity;
-import android.widget.Toast;
-
-import io.beldex.bchat.util.CommunicationActions;
 import com.beldex.libbchat.utilities.Address;
-import io.beldex.bchat.home.HomeActivity;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import io.beldex.bchat.onboarding.PasswordActivity;
 import io.beldex.bchat.util.CommunicationActions;
 
-import io.beldex.bchat.R;
-
-public class ShortcutLauncherActivity extends AppCompatActivity {
+public class ShortcutLauncherActivity extends BaseAppCompatActivity {
 
   private static final String KEY_SERIALIZED_ADDRESS = "serialized_address";
 

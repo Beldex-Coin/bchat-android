@@ -83,7 +83,7 @@ class MessageRequestsActivity : PassphraseRequiredActionBarActivity(), Conversat
         val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_Clear_All)
         dialog.setTitle(R.string.RecipientPreferenceActivity_block_this_contact_question)
             .setMessage(R.string.message_requests_block_message)
-            .setPositiveButton(R.string.recipient_preferences__block) { _, _ ->
+            .setPositiveButton(R.string.RecipientPreferenceActivity_block) { _, _ ->
                 viewModel.blockMessageRequest(thread)
                 LoaderManager.getInstance(this).restartLoader(0, null, this)
             }
@@ -120,7 +120,7 @@ class MessageRequestsActivity : PassphraseRequiredActionBarActivity(), Conversat
     private fun deleteAllAndBlock() {
         val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_Clear_All)
            dialog.setMessage(resources.getString(R.string.message_requests_clear_all_message))
-           dialog.setPositiveButton(R.string.message_requests_clear) { _, _ ->
+           dialog.setPositiveButton(R.string.clear) { _, _ ->
             viewModel.clearAllMessageRequests()
             LoaderManager.getInstance(this).restartLoader(0, null, this)
             lifecycleScope.launch(Dispatchers.IO) {

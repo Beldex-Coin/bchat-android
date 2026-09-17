@@ -188,7 +188,7 @@ class VisibleMessageView : LinearLayout {
         binding.senderNameTextView.isVisible = !message.isOutgoing && (isStartOfMessageCluster && (isGroupThread || snIsSelected))
         val contactContext =
             if (thread.isOpenGroupRecipient) ContactContext.OPEN_GROUP else ContactContext.REGULAR
-        binding.senderNameTextView.text = contact?.displayName(contactContext) ?: senderBChatID
+        binding.senderNameTextView.text = contact?.displayName(contactContext, context) ?: senderBChatID
         // Date break
         val showDateBreak =  (isStartOfMessageCluster || snIsSelected) && !isSameDayMessage(message, previous)
         if (showDateBreak) {

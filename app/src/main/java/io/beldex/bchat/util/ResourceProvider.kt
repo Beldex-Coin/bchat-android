@@ -9,7 +9,7 @@ import javax.inject.Singleton
 
 @Singleton
 class ResourceProvider @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private var context: Context
 ) {
 
     fun getString(@StringRes stringResId: Int) : String {
@@ -23,4 +23,7 @@ class ResourceProvider @Inject constructor(
         return context.resources.getStringArray(stringResId)
     }
 
+    fun updateContext(newContext: Context) {
+        context = newContext
+    }
 }

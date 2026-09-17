@@ -7,9 +7,9 @@
     android:layout_marginEnd="@dimen/medium_spacing"
     android:background="@drawable/bchat_dialog_background_shape"
     android:orientation="vertical"
-    android:paddingLeft="20dp"
+    android:paddingStart="20dp"
     android:paddingTop="10dp"
-    android:paddingRight="20dp"
+    android:paddingEnd="20dp"
     android:paddingBottom="10dp">
 
     <LinearLayout

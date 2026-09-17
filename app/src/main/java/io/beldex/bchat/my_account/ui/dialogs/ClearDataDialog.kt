@@ -193,10 +193,11 @@ fun ClearDataDialog(
                 text = when (step) {
                     Steps.INFO_PROMPT_DEFAULT,
                     Steps.INFO_PROMPT -> {
-                        stringResource(id = R.string.dialog_clear_all_data_title)
+                        stringResource(id = R.string.
+                        dialog_clear_all_data_title)
                     }
                     Steps.NETWORK_PROMPT -> {
-                        stringResource(id = R.string.dialog_clear_all_data_clear_device_and_network_title)
+                        stringResource(id = R.string.delete_entire_account)
                     }
                     Steps.DELETING -> {
                         ""
@@ -358,8 +359,7 @@ fun DeleteOption(
                     color = MaterialTheme.appColors.clearDataSubTitle,
                     fontWeight = FontWeight.Normal,
                     fontSize = 14.sp
-                ),
-                textAlign = TextAlign.Center
+                )
             )
         }
     }

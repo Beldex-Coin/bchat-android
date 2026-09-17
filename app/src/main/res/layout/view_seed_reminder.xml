@@ -11,8 +11,8 @@
         android:id="@+id/progressBar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/accent_line_thickness"
-        android:paddingLeft="-2dp"
-        android:paddingRight="-2dp"
+        android:paddingStart="-2dp"
+        android:paddingEnd="-2dp"
         android:progressTint="@color/accent"
         android:progressBackgroundTint="@color/progress_bar_background"
         android:progress="80" />

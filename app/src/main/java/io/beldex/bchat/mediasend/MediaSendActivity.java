@@ -23,6 +23,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import io.beldex.bchat.PassphraseRequiredActionBarActivity;
 import io.beldex.bchat.providers.BlobProvider;
+import io.beldex.bchat.util.ToastMessageUtil;
 
 import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.MediaTypes;
@@ -347,7 +348,7 @@ public class MediaSendActivity extends PassphraseRequiredActionBarActivity imple
 
       switch (error) {
         case ITEM_TOO_LARGE:
-          Toast.makeText(this, R.string.MediaSendActivity_an_item_was_removed_because_it_exceeded_the_size_limit, Toast.LENGTH_LONG).show();
+          ToastMessageUtil.showLong(this, R.string.MediaSendActivity_an_item_was_removed_because_it_exceeded_the_size_limit);
           break;
         case TOO_MANY_ITEMS:
           int maxSelection = viewModel.getMaxSelection();

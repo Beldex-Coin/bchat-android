@@ -61,13 +61,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.beldex.libbchat.messaging.messages.control.DataExtractionNotification;
+import com.beldex.libbchat.messaging.sending_receiving.MessageSender;
 import com.beldex.libbchat.mnode.MnodeAPI;
+import com.beldex.libbchat.utilities.Address;
+import com.beldex.libbchat.utilities.Util;
+import com.beldex.libbchat.utilities.ViewUtil;
+import com.beldex.libbchat.utilities.recipients.Recipient;
+import com.beldex.libbchat.utilities.task.ProgressDialogAsyncTask;
+import com.bumptech.glide.Glide;
 import com.codewaves.stickyheadergrid.StickyHeaderGridLayoutManager;
 import com.google.android.material.tabs.TabLayout;
 
-import com.beldex.libbchat.messaging.messages.control.DataExtractionNotification;
-import com.beldex.libbchat.messaging.sending_receiving.MessageSender;
-import com.beldex.libbchat.utilities.Address;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 import io.beldex.bchat.conversation.v2.ConversationActivityV2;
 import io.beldex.bchat.database.CursorRecyclerViewAdapter;
@@ -75,9 +85,7 @@ import io.beldex.bchat.database.MediaDatabase;
 import io.beldex.bchat.database.loaders.BucketedThreadMediaLoader;
 import io.beldex.bchat.database.loaders.BucketedThreadMediaLoader.BucketedThreadMedia;
 import io.beldex.bchat.database.loaders.ThreadMediaLoader;
-import com.bumptech.glide.Glide;
 import io.beldex.bchat.permissions.Permissions;
-import com.beldex.libbchat.utilities.recipients.Recipient;
 import io.beldex.bchat.util.AttachmentUtil;
 import io.beldex.bchat.util.GridSpaceItemDecoration;
 import io.beldex.bchat.util.SaveAttachmentTask;
@@ -182,7 +190,8 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
 
       Bundle args = new Bundle();
       args.putString(MediaOverviewGalleryFragment.ADDRESS_EXTRA, recipient.getAddress().serialize());
-      args.putSerializable(MediaOverviewGalleryFragment.LOCALE_EXTRA, Locale.getDefault());
+      Locale appLocale = getResources().getConfiguration().getLocales().get(0);
+      args.putSerializable(MediaOverviewGalleryFragment.LOCALE_EXTRA, appLocale);
 
       fragment.setArguments(args);
 
@@ -429,10 +438,10 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
     private void handleDeleteMedia(@NonNull Collection<MediaDatabase.MediaRecord> mediaRecords) {
       int recordCount       = mediaRecords.size();
       Resources res         = getContext().getResources();
-      String confirmTitle   = res.getQuantityString(R.plurals.MediaOverviewActivity_Media_delete_confirm_title,
+      String confirmTitle   = res.getQuantityString(R.plurals.ConversationFragment_delete_selected_messages,
                                                     recordCount,
                                                     recordCount);
-      String confirmMessage = res.getQuantityString(R.plurals.MediaOverviewActivity_Media_delete_confirm_message,
+      String confirmMessage = res.getQuantityString(R.plurals.ConversationFragment_this_will_permanently_delete_all_n_selected_messages,
                                                     recordCount,
                                                     recordCount);
 

@@ -73,7 +73,7 @@ class NewConversationButtonSetView : RelativeLayout {
         TextView(context).apply {
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
             typeface = ResourcesCompat.getFont(this.context, R.font.open_sans_bold)
-            setText(R.string.home_screen_new_chat_title)
+            setText(R.string.activity_create_private_chat_title)
             isAllCaps = true
         }
     }

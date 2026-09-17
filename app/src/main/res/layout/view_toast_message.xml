@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/toast_message"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/toast_message_background"
+    android:gravity="center"
+    android:maxLines="10"
+    android:padding="16dp"
+    android:textColor="?android:attr/textColorPrimary"
+    android:textSize="14sp"
+    tools:text="An item was removed. Files must be less than 10MB." />

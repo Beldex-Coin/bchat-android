@@ -62,6 +62,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import io.beldex.bchat.R;
+import io.beldex.bchat.util.ToastMessageUtil;
 
 public class AttachmentManager {
 
@@ -344,7 +345,7 @@ public class AttachmentManager {
     // Note: This file size test must come BEFORE the `constraints.isSatisfied` check below because
     // it is a more specific type of check.
     if (slide.asAttachment().getSize() > MAX_ATTACHMENTS_FILE_SIZE_BYTES) {
-      Toast.makeText(context, R.string.MediaSendActivity_an_item_was_removed_because_it_exceeded_the_size_limit, Toast.LENGTH_LONG).show();
+      ToastMessageUtil.showLong(context, R.string.MediaSendActivity_an_item_was_removed_because_it_exceeded_the_size_limit);
       return false;
     }
 

@@ -287,11 +287,11 @@ public final class ViewUtil {
   }
 
   public static void setPaddingTop(@NonNull View view, int padding) {
-    view.setPadding(view.getPaddingLeft(), padding, view.getPaddingRight(), view.getPaddingBottom());
+    view.setPadding(view.getPaddingStart(), padding, view.getPaddingEnd(), view.getPaddingBottom());
   }
 
   public static void setPaddingBottom(@NonNull View view, int padding) {
-    view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight(), padding);
+    view.setPadding(view.getPaddingStart(), view.getPaddingTop(), view.getPaddingEnd(), padding);
   }
 
   public static void setPadding(@NonNull View view, int padding) {
@@ -300,17 +300,17 @@ public final class ViewUtil {
 
   public static void setPaddingStart(@NonNull View view, int padding) {
     if (isLtr(view)) {
-      view.setPadding(padding, view.getPaddingTop(), view.getPaddingRight(), view.getPaddingBottom());
+      view.setPadding(padding, view.getPaddingTop(), view.getPaddingEnd(), view.getPaddingBottom());
     } else {
-      view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), padding, view.getPaddingBottom());
+      view.setPadding(view.getPaddingStart(), view.getPaddingTop(), padding, view.getPaddingBottom());
     }
   }
 
   public static void setPaddingEnd(@NonNull View view, int padding) {
     if (isLtr(view)) {
-      view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), padding, view.getPaddingBottom());
+      view.setPadding(view.getPaddingStart(), view.getPaddingTop(), padding, view.getPaddingBottom());
     } else {
-      view.setPadding(padding, view.getPaddingTop(), view.getPaddingRight(), view.getPaddingBottom());
+      view.setPadding(padding, view.getPaddingTop(), view.getPaddingEnd(), view.getPaddingBottom());
     }
   }
 

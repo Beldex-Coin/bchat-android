@@ -1,23 +1,32 @@
 package io.beldex.bchat.my_account.ui
 
+import android.content.Context
+import android.content.res.Configuration
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.beldex.libbchat.mnode.OnionRequestAPI
+import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper
 import com.beldex.libbchat.utilities.truncateIdForDisplay
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import io.beldex.bchat.R
 import io.beldex.bchat.my_account.domain.PathNodeModel
+import io.beldex.bchat.util.AppLanguageEvent
 import io.beldex.bchat.util.IP2Country
 import io.beldex.bchat.util.ResourceProvider
 import io.beldex.bchat.util.SharedPreferenceUtil
-import dagger.hilt.android.lifecycle.HiltViewModel
-import io.beldex.bchat.R
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class MyAccountViewModel @Inject constructor(
+    @ApplicationContext context : Context,
     private val preferenceUtil: SharedPreferenceUtil,
     private val resourceProvider: ResourceProvider
 ): ViewModel() {
@@ -41,6 +50,26 @@ class MyAccountViewModel @Inject constructor(
     private val _showLoader = MutableLiveData<Boolean>()
     val showLoader: LiveData<Boolean> get () = _showLoader
 
+    private val _selectedLanguageCode = MutableStateFlow(TextSecurePreferences.getAppSelectedLanguage(context) ?: Locale.getDefault().language)
+
+    val selectedLanguageCode: StateFlow<String> =
+        _selectedLanguageCode.asStateFlow()
+
+    fun selectLanguage(code: String, context: Context) {
+        _selectedLanguageCode.value = code
+        val localizedContext = getLocalizedContext(context, code)
+        DynamicLanguageContextWrapper.updateContext(
+            context, code)
+        resourceProvider.updateContext(localizedContext)
+    }
+
+    private fun getLocalizedContext(context: Context, code: String): Context {
+        val locale = Locale(code)
+        val config = Configuration(context.resources.configuration)
+        config.setLocale(locale)
+        return context.createConfigurationContext(config)
+    }
+
     init {
         val publicKey = preferenceUtil.getPublicKey()
         _uiState.update {
@@ -49,6 +78,7 @@ class MyAccountViewModel @Inject constructor(
                 publicKey = publicKey
             )
         }
+        AppLanguageEvent.deviceLanguage.value = TextSecurePreferences.getDeviceLanguage(context) ?: Locale.getDefault().language
     }
 
     fun getPathNodes() {

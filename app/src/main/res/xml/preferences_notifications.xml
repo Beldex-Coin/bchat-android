@@ -3,7 +3,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory android:title="@string/preferences_notifications__messages"
+    <PreferenceCategory android:title="@string/NotificationChannel_group_messages"
         app:iconSpaceReserved="false"
         app:layout="@layout/preference_layout_header"
         />

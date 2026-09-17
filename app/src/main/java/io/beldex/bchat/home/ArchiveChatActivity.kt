@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -30,7 +29,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -62,6 +60,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import app.cash.copper.flow.observeQuery
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.BaseComponentActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.archivechats.ArchiveChatViewModel
 import io.beldex.bchat.compose_utils.BChatTheme
@@ -83,7 +82,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ArchiveChatActivity : ComponentActivity() {
+class ArchiveChatActivity : BaseComponentActivity() {
 
     @Inject
     lateinit var groupDatabase : GroupDatabase
@@ -161,7 +160,7 @@ class ArchiveChatActivity : ComponentActivity() {
                                 Box {
                                     Icon(
                                         imageVector=Icons.Default.MoreVert,
-                                        contentDescription="Menu",
+                                        contentDescription=stringResource(R.string.menu),
                                         tint=MaterialTheme.appColors.editTextColor,
                                         modifier=Modifier.clickable { expanded=true }
                                     )
@@ -171,7 +170,7 @@ class ArchiveChatActivity : ComponentActivity() {
                                         onDismissRequest={ expanded=false }
                                     ) {
                                         DropdownMenuItem(
-                                            text={ Text("Archive Settings") },
+                                            text={ Text(stringResource(R.string.archive_settings)) },
                                             onClick={
                                                 expanded=false
                                                 showSettings=true

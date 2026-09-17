@@ -166,7 +166,13 @@ class SaveAttachmentTask : ProgressDialogAsyncTask<SaveAttachmentTask.Attachment
         val fileParts: Array<String> = getFileNameParts(fileName)
         val base = fileParts[0]
         val extension = fileParts[1]
-        val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+        val extensionMimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+        val mimeType = if (!extensionMimeType.isNullOrBlank() && isSameMimeFamily(extensionMimeType, contentType)) {
+            extensionMimeType
+        } else {
+            contentType
+        }
+
         val contentValues = ContentValues()
         contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
         contentValues.put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
@@ -197,6 +203,12 @@ class SaveAttachmentTask : ProgressDialogAsyncTask<SaveAttachmentTask.Attachment
             contentValues.put(MediaStore.MediaColumns.DATA, dataPath)
         }
         return context.contentResolver.insert(outputUri, contentValues)
+    }
+
+    private fun isSameMimeFamily(a: String, b: String): Boolean {
+        val familyA = a.substringBefore("/", missingDelimiterValue = "")
+        val familyB = b.substringBefore("/", missingDelimiterValue = "")
+        return familyA.isNotEmpty() && familyA == familyB
     }
 
     private fun getFileNameParts(fileName: String): Array<String> {

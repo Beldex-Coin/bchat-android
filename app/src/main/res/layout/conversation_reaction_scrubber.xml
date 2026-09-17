@@ -13,7 +13,7 @@
         android:id="@+id/dropdown_anchor"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_gravity="left"
+        android:layout_gravity="start"
         tools:ignore="RtlHardcoded" />
 
     <LinearLayout
@@ -144,8 +144,8 @@
             android:alpha="0.5"
             android:background="@drawable/reactions_old_background"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="@id/reaction_7"
-            app:layout_constraintRight_toRightOf="@id/reaction_7"
+            app:layout_constraintStart_toStartOf="@id/reaction_7"
+            app:layout_constraintEnd_toEndOf="@id/reaction_7"
             app:layout_constraintTop_toTopOf="parent" />
 
         <io.beldex.bchat.components.emoji.EmojiImageView

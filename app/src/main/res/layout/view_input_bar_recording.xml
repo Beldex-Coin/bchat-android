@@ -88,7 +88,7 @@
                     android:id="@+id/inputBarSlideToCancelTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginStart="4dp"
                     android:text="@string/conversation_input_panel__slide_to_cancel"
                     android:textSize="@dimen/very_small_font_size"
                     android:textColor="@color/text"

@@ -2,7 +2,6 @@ package io.beldex.bchat.my_account.ui
 
 import android.app.Activity
 import android.content.Context
-import android.view.WindowManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -42,9 +41,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.lifecycleScope
 import com.beldex.libbchat.messaging.contacts.Contact
-import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
@@ -103,7 +100,7 @@ fun MessageRequestsScreen(
             RequestBlockConfirmationDialog(
                 title = stringResource(id = R.string.block_request),
                 message = stringResource(id = R.string.message_requests_block_message),
-                actionTitle = stringResource(id = R.string.recipient_preferences__block),
+                actionTitle = stringResource(id = R.string.RecipientPreferenceActivity_block),
                 onConfirmation = {
                     threadRecord?.let {
                         onEvent(MessageRequestEvents.BlockRequest(it))
@@ -331,7 +328,7 @@ fun MessageRequestItem(
 
 private fun getDisplayName(context: Context, publicKey: String): String {
     val contact = DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
-    return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
+    return contact?.displayName(Contact.ContactContext.REGULAR, context) ?: publicKey
 }
 
 private fun getUserDisplayName(context: Context, recipient: Recipient?): String? {

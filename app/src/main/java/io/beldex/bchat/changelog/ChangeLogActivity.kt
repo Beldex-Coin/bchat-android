@@ -1,14 +1,10 @@
 package io.beldex.bchat.changelog
 
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.ExpandableListView
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityChangeLogBinding
 import org.json.JSONException
 import org.json.JSONObject
-import io.beldex.bchat.BaseActionBarActivity
 import io.beldex.bchat.util.setUpActionBarBchatLogo
 import java.io.IOException
 import java.io.InputStream
@@ -25,7 +21,7 @@ class ChangeLogActivity : io.beldex.bchat.BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityChangeLogBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setUpActionBarBchatLogo("Changelog")
+        setUpActionBarBchatLogo(getString(R.string.changelog))
 
             // preparing list data
             prepareListData()

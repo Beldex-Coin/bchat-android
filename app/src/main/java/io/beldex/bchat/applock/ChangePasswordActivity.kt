@@ -28,7 +28,7 @@ class ChangePasswordActivity : BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityChangePasswordBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setUpActionBarBchatLogo("Change Password")
+        setUpActionBarBchatLogo(getString(R.string.change_password))
         val oldPassword = TextSecurePreferences.getMyPassword(this)
         with(binding)
         {
@@ -40,14 +40,14 @@ class ChangePasswordActivity : BaseActionBarActivity() {
                 when {
                     oldPassword != oldEnteredPassword -> {
                         oldPasswordEditTxtLayout.isErrorEnabled = true
-                        oldPasswordEditTxtLayout.error = "Invalid old password"
+                        oldPasswordEditTxtLayout.error = getString(R.string.invalid_old_password)
                         newPasswordEditTxtLayout.isErrorEnabled = false
                     }
                     oldEnteredPassword.isEmpty() -> {
                         oldPasswordEditTxtLayout.isErrorEnabled = false
                         Toast.makeText(
                             this@ChangePasswordActivity,
-                            "Must set your Old PIN.",
+                            getString(R.string.must_set_your_old_pin),
                             Toast.LENGTH_LONG
                         ).show()
                     }
@@ -56,21 +56,21 @@ class ChangePasswordActivity : BaseActionBarActivity() {
                             oldPasswordEditTxtLayout.isErrorEnabled = false
                         }
                         newPasswordEditTxtLayout.isErrorEnabled = true
-                        newPasswordEditTxtLayout.error = "Both are Same"
+                        newPasswordEditTxtLayout.error = getString(R.string.both_are_same)
                     }
                     newEnteredPassword.isEmpty() -> {
                         oldPasswordEditTxtLayout.isErrorEnabled = false
                         newPasswordEditTxtLayout.isErrorEnabled = false
                         Toast.makeText(
                             this@ChangePasswordActivity,
-                            "Must set your New PIN.",
+                            getString(R.string.must_set_your_new_pin),
                             Toast.LENGTH_LONG
                         ).show()
                     }
                     newEnteredPassword.length < 4 -> {
                         oldPasswordEditTxtLayout.isErrorEnabled = false
                         newPasswordEditTxtLayout.isErrorEnabled = true
-                        newPasswordEditTxtLayout.error = "Please enter 4 digit PIN."
+                        newPasswordEditTxtLayout.error = getString(R.string.please_enter_4_digit_pin)
                     }
                     oldEnteredPassword != newEnteredPassword -> {
                         TextSecurePreferences.setMyPassword(

@@ -75,7 +75,7 @@ open class ThumbnailView: FrameLayout {
             return super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         }
 
-        val finalWidth: Int = adjustedDimens[WIDTH] + paddingLeft + paddingRight
+        val finalWidth: Int = adjustedDimens[WIDTH] + paddingStart + paddingEnd
         val finalHeight: Int = adjustedDimens[HEIGHT] + paddingTop + paddingBottom
 
         super.onMeasure(

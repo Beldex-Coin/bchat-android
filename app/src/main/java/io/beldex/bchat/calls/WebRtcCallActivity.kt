@@ -331,7 +331,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                         if(binding.callActivityVideoStatus.isVisible){
                             binding.callActivityAudioStatus.text = ""
                         }else{
-                            binding.callActivityAudioStatus.text = "Call Muted"
+                            binding.callActivityAudioStatus.text = getString(R.string.call_muted)
                         }
                         Log.d("Remote Audio Enabled","false")
                     }else{
@@ -550,7 +550,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
     private fun getUserDisplayName(publicKey: String): String {
         val contact =
             DatabaseComponent.get(this).bchatContactDatabase().getContactWithBchatID(publicKey)
-        return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
+        return contact?.displayName(Contact.ContactContext.REGULAR, this) ?: publicKey
     }
 
     override fun onStop() {

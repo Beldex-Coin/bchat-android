@@ -24,6 +24,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.TextView
 import android.widget.Toast
@@ -64,6 +65,8 @@ import com.beldex.libbchat.utilities.GroupRecord
 import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libbchat.utilities.ProfilePictureModifiedEvent
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getLanguage
+import com.beldex.libbchat.utilities.dynamiclanguage.LocaleParser.Companion.findBestMatchingLocaleForLanguage
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.ThreadUtils
@@ -159,6 +162,7 @@ import timber.log.Timber
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.jvm.java
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -226,17 +230,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     }
 
     private lateinit var adapter: NavigationRVAdapter
-
-    private var items = arrayListOf(
-        NavigationItemModel(R.drawable.ic_settings_outline, "Settings"),
-        NavigationItemModel(R.drawable.ic_notification_outline, "Notification"),
-        NavigationItemModel(R.drawable.ic_msg_rqst_outline, "Message Requests"),
-        NavigationItemModel(R.drawable.ic_recovery_seed_outline, "Recovery Seed"),
-        NavigationItemModel(R.drawable.ic_report_issue_outline,"Report Issue"),
-        NavigationItemModel(R.drawable.ic_help_outline, "Help"),
-        NavigationItemModel(R.drawable.ic_invite_outline, "Invite"),
-        NavigationItemModel(R.drawable.ic_about_outline, "About")
-    )
     private val hexEncodedPublicKey: String
         get() {
             return TextSecurePreferences.getLocalNumber(this)!!
@@ -295,6 +288,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     @Inject
     lateinit var threadDb: ThreadDatabase
     private val reactWithAnyEmojiStartPage = -1
+    private lateinit var items: ArrayList<NavigationItemModel>
 
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
@@ -305,6 +299,18 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setupToolbarInsets()
         setSupportActionBar(binding.toolbar)
+
+        items = arrayListOf(
+            NavigationItemModel(R.drawable.ic_settings_outline, getString(R.string.activity_settings_title)),
+            NavigationItemModel(R.drawable.ic_notification_outline, getString(R.string.notification)),
+            NavigationItemModel(R.drawable.ic_msg_rqst_outline, getString(R.string.activity_message_requests_title)),
+            NavigationItemModel(R.drawable.ic_recovery_seed_outline, getString(R.string.activity_settings_recovery_phrase_button_title)),
+            NavigationItemModel(R.drawable.ic_language, getString(R.string.language)),
+            NavigationItemModel(R.drawable.ic_report_issue_outline,getString(R.string.report_issue)),
+            NavigationItemModel(R.drawable.ic_help_outline, getString(R.string.help)),
+            NavigationItemModel(R.drawable.ic_invite_outline, getString(R.string.invite)),
+            NavigationItemModel(R.drawable.ic_about_outline, getString(R.string.about))
+        )
 
         glide = Glide.with(this)
         binding.profileButton.root.glide = glide
@@ -334,19 +340,23 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                         showSeed()
                     }
                     4 -> {
+                        // # Choose Language Activity
+                        showChooseLanguage()
+                    }
+                    5 -> {
                         // # Support
                         sendMessageToSupport()
                         binding.drawerLayout.closeDrawer(GravityCompat.END)
                     }
-                    5 -> {
+                    6 -> {
                         // # Help Activity
                         help()
                     }
-                    6 -> {
+                    7 -> {
                         // # Invite Activity
                         sendInvitation(hexEncodedPublicKey)
                     }
-                    7 -> {
+                    8 -> {
                         // # About Activity
                         showAbout()
                     }
@@ -671,7 +681,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(intent)
         } catch (e: Exception) {
-            Toast.makeText(this, "Can't open URL", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.cannot_open_url), Toast.LENGTH_LONG).show()
         }
     }*/
     //New Line App Update
@@ -732,21 +742,21 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                 RESULT_CANCELED -> {
                     Toast.makeText(
                         applicationContext,
-                        "Update canceled by user! Result Code: $resultCode", Toast.LENGTH_LONG
+                        getString(R.string.update_canceled_by_user), Toast.LENGTH_LONG
                     ).show()
                     finish()
                 }
                 RESULT_OK -> {
                     Toast.makeText(
                         applicationContext,
-                        "Update success! Result Code: $resultCode",
+                        getString(R.string.update_success),
                         Toast.LENGTH_LONG
                     ).show()
                 }
                 else -> {
                     Toast.makeText(
                         applicationContext,
-                        "Update Failed! Result Code: $resultCode",
+                        getString(R.string.update_failed),
                         Toast.LENGTH_LONG
                     ).show()
                     checkUpdate()
@@ -844,7 +854,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                     if (messageResults.isNotEmpty()) {
                         messageResults.add(
                             0,
-                            GlobalSearchAdapter.Model.Header(R.string.global_search_messages)
+                            GlobalSearchAdapter.Model.Header(R.string.NotificationChannel_group_messages)
                         )
                     }
 
@@ -1013,7 +1023,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         val menu = MenuBuilder(this)
         menuInflater.inflate(R.menu.menu_conversation_v2, menu)
         val item : MenuItem= menu.findItem(R.id.menu_delete)
-        val s=SpannableString("Delete")
+        val s=SpannableString(getString(R.string.delete))
         s.setSpan(ForegroundColorSpan(this.getColor(R.color.red)), 0, s.length, 0)
         item.setTitle(s)
         with(menu) {
@@ -1045,6 +1055,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         // space available inside the chat list area, so it never grows over the views above (e.g.
         // the global search box) nor past the bottom of the screen.
         val menuAdapter = MenuAdapter(menu, layoutInflater, true, androidx.appcompat.R.layout.abc_popup_menu_item_layout)
+        menuAdapter.setForceShowIcon(true)
         showChatOptionsMenu(menuAdapter, view, thread, position)
     }
 
@@ -1054,6 +1065,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         var maxItemWidth = 0
         for (i in 0 until menuAdapter.count) {
             val itemView = menuAdapter.getView(i, null, null)
+            itemView.layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
             itemView.measure(
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
@@ -1179,8 +1194,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
 
     override fun hideMessageRequests() {
         val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog_New)
-            .setTitle("Hide message requests?")
-            .setMessage("Once they are hidden, you can access them from Settings > Message Requests")
+            .setTitle(R.string.hide_message_request)
+            .setMessage(R.string.message_requests_hidden_info)
             .setPositiveButton(R.string.yes) { _, _ ->
                textSecurePreferences.setHasHiddenMessageRequests()
                 homeViewModel.tryUpdateChannel()
@@ -1303,7 +1318,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     private fun sendInvitation(hexEncodedPublicKey:String) {
         val intent = Intent()
         intent.action = Intent.ACTION_SEND
-        val invitation = String.format(this.resources.getString(R.string.invitation_msg), hexEncodedPublicKey)
+        val invitation = getString(R.string.invitation_msg, hexEncodedPublicKey)
         intent.putExtra(Intent.EXTRA_TEXT, invitation)
         intent.type = "text/plain"
         val chooser = Intent.createChooser(intent, getString(R.string.activity_settings_invite_button_title))
@@ -1327,11 +1342,15 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     }
 
     private fun showSeed() {
-//        Intent(requireContext(), SeedPermissionActivity::class.java).also {
-//            show(it)
-//        }
         Intent(this, MyAccountActivity::class.java).also {
             it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.RecoverySeedScreen.route)
+            startActivity(it)
+        }
+    }
+
+    private fun showChooseLanguage() {
+        Intent(this, MyAccountActivity::class.java).also {
+            it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.LanguageChooseScreen.route)
             startActivity(it)
         }
     }
@@ -1475,9 +1494,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             val group = groupDb.getGroup(recipient.address.toString()).orNull()
             if (group != null && group.admins.map { it.toString() }
                     .contains(TextSecurePreferences.getLocalNumber(this))) {
-                "Because you are the creator of this group it will be deleted for everyone. This cannot be undone."
+                resources.getString(R.string.group_delete_confirmation_message)
             } else {
-                resources.getString(R.string.activity_home_leave_group_dialog_message)
+                resources.getString(R.string.ConversationActivity_are_you_sure_you_want_to_leave_this_group)
             }
         } else {
             resources.getString(R.string.activity_home_delete_conversation_dialog_message)
@@ -1612,7 +1631,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         binding.hanUpCall.setOnClickListener {
             this.startService(WebRtcCallService.hangupIntent(this))
             binding.toolbarCall.isVisible = false
-            Toast.makeText(this, "Call ended", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.call_ended), Toast.LENGTH_SHORT).show()
         }
         binding.toolbarCall.setOnClickListener {
             toolBarCall()
@@ -1689,6 +1708,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
+        if (!::binding.isInitialized) return
         updateEmptyState()
         val wasDrawerOpen = binding.drawerLayout.isDrawerVisible(GravityCompat.END)
         updateDrawerWidth()
@@ -1719,6 +1739,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     override fun onResume() {
         super.onResume()
         Timber.d("onResume()-->")
+        val appSettingLanguage = findBestMatchingLocaleForLanguage(getLanguage(this))
+        TextSecurePreferences.setDeviceLanguage(this, appSettingLanguage?.language)
         updateDrawerWidth()
         if (binding.drawerLayout.isDrawerVisible(GravityCompat.END)) {
             binding.drawerLayout.closeDrawer(GravityCompat.END, false)

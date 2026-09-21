@@ -55,26 +55,27 @@
                     android:background="@color/chat_id_card_background"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/medium_spacing"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginRight="@dimen/medium_spacing"
-                        android:fontFamily="@font/open_sans_bold"
-                        android:text="@string/chatid"
-                        android:textColor="@color/text_green"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/medium_spacing"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="@dimen/medium_spacing"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:text="@string/chatid"
+                    android:textColor="@color/text_green"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/medium_spacing"
-                        android:layout_marginTop="@dimen/small_spacing"
-                        android:layout_marginRight="@dimen/medium_spacing"
-                        android:layout_marginBottom="@dimen/small_spacing"
-                        android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/medium_spacing"
+                    android:layout_marginTop="@dimen/small_spacing"
+                    android:layout_marginEnd="@dimen/medium_spacing"
+                    android:layout_marginBottom="@dimen/small_spacing"
+                    android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/publicKeyTextView"
@@ -134,26 +135,27 @@
                     android:background="@color/chat_id_card_background"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/medium_spacing"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginRight="@dimen/medium_spacing"
-                        android:fontFamily="@font/open_sans_bold"
-                        android:text="@string/beldex_address"
-                        android:textColor="#0085FF"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/medium_spacing"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="@dimen/medium_spacing"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:text="@string/beldex_address"
+                    android:textColor="#0085FF"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/medium_spacing"
-                        android:layout_marginTop="@dimen/small_spacing"
-                        android:layout_marginRight="@dimen/medium_spacing"
-                        android:layout_marginBottom="@dimen/small_spacing"
-                        android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/medium_spacing"
+                    android:layout_marginTop="@dimen/small_spacing"
+                    android:layout_marginEnd="@dimen/medium_spacing"
+                    android:layout_marginBottom="@dimen/small_spacing"
+                    android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/beldexAddressTextView"
@@ -219,8 +221,10 @@
             style="@style/Widget.Bchat.Button.Common.ProminentFilled"
             android:layout_width="match_parent"
             android:layout_height="@dimen/medium_button_height"
-            android:layout_marginLeft="@dimen/medium_spacing"
-            android:layout_marginRight="@dimen/medium_spacing"
+            android:layout_marginStart="@dimen/medium_spacing"
+            android:layout_marginEnd="@dimen/medium_spacing"
+            android:layout_marginBottom="30dp"
+            android:text="@string/continue_2" />
             android:gravity="center"
             android:text="@string/continue_2"
             android:textAlignment="center" />
@@ -230,20 +234,20 @@
             style="@style/Widget.Bchat.Button.Common.ProminentOutline"
             android:layout_width="match_parent"
             android:layout_height="@dimen/medium_button_height"
-            android:layout_marginLeft="@dimen/massive_spacing"
+            android:layout_marginStart="@dimen/massive_spacing"
             android:layout_marginTop="@dimen/small_spacing"
-            android:layout_marginRight="@dimen/massive_spacing"
-            android:text="Copy"
+            android:layout_marginEnd="@dimen/massive_spacing"
+            android:text="@string/copy"
             android:visibility="gone" />
 
         <TextView
             android:id="@+id/termsTextView"
             android:layout_width="match_parent"
             android:layout_height="@dimen/onboarding_button_bottom_offset"
-            android:layout_marginLeft="@dimen/massive_spacing"
-            android:layout_marginRight="@dimen/massive_spacing"
+            android:layout_marginStart="@dimen/massive_spacing"
+            android:layout_marginEnd="@dimen/massive_spacing"
             android:gravity="center"
-            android:text="By using this service, you agree to our Terms of Service and Privacy Policy"
+            android:text="@string/terms_and_privacy_message"
             android:textColor="?android:textColorTertiary"
             android:textSize="@dimen/very_small_font_size"
             android:visibility="gone" />

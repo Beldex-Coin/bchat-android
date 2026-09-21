@@ -62,12 +62,12 @@ fun NotificationSettingDialog(
             Column(
                     Modifier
                             .fillMaxWidth()
-                            .padding(start=20.dp, end=20.dp, top=25.dp, bottom=25.dp), Arrangement.Center, Alignment.CenterHorizontally) {
+                            .padding(start=16.dp, end=16.dp, top=25.dp, bottom=25.dp), Arrangement.Center, Alignment.CenterHorizontally) {
 
                 Row(modifier=Modifier.padding(bottom=20.dp)) {
                     Text(text=stringResource(id=R.string.RecipientPreferenceActivity_notification_settings),
                             style=MaterialTheme.typography.titleMedium.copy(
-                                    fontSize=16.sp,
+                                    fontSize=15.sp,
                                     fontWeight=FontWeight(700),
                                     color=MaterialTheme.appColors.secondaryContentColor),
                             textAlign=TextAlign.Center,
@@ -123,7 +123,7 @@ fun NotificationSettingDialog(
                             ) {
 
                                 Text(text=item, style=MaterialTheme.typography.titleMedium.copy(
-                                        color=if (index == selectedItemIndex) MaterialTheme.appColors.secondaryContentColor else MaterialTheme.appColors.secondaryTextColor, fontSize=16.sp, fontWeight=FontWeight(400)
+                                        color=if (index == selectedItemIndex) MaterialTheme.appColors.secondaryContentColor else MaterialTheme.appColors.secondaryTextColor, fontSize=14.sp, fontWeight=FontWeight(400)
                                 ), modifier=Modifier.padding(10.dp))
                             }
                         }

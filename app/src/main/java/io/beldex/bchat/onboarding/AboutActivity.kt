@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import io.beldex.bchat.databinding.ActivityAboutBinding
 import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.R
 import io.beldex.bchat.util.setUpActionBarBchatLogo
 
 class AboutActivity : BaseActionBarActivity() {
@@ -13,19 +14,9 @@ class AboutActivity : BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAboutBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setUpActionBarBchatLogo("About",false)
+        setUpActionBarBchatLogo(getString(R.string.activity_settings_app_lock_button_title),false)
         with(binding){
-            aboutPageContent.text = loadFileContents(this@AboutActivity)
+            aboutPageContent.text = this@AboutActivity.getString(R.string.about_content)
         }
-
-    }
-
-    public fun loadFileContents(context: Context,): String {
-        val inputStream = context.assets.open("about.txt")
-        val size = inputStream.available()
-        val buffer = ByteArray(size)
-        inputStream.read(buffer)
-        inputStream.close()
-        return String(buffer)
     }
 }

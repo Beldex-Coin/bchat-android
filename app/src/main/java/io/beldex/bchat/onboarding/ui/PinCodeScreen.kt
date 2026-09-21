@@ -231,7 +231,7 @@ private fun PortraitPinCodeScreen(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
                     shape = RoundedCornerShape(50),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.appColors.secondaryButtonColor),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.appColors.searchBackground),
                     border = BorderStroke(
                         width = 1.dp,
                         color = if (state.pinLength == 4) MaterialTheme.appColors.tertiaryButtonColor else MaterialTheme.appColors.primaryButtonColor
@@ -495,8 +495,7 @@ private fun LandscapePinCodeScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            Text(
-                text = state.stepTitle,
+            Text(text = state.stepTitle,
                 style =
                     if (isTablet)
                         MaterialTheme.typography.headlineSmall
@@ -519,7 +518,7 @@ private fun LandscapePinCodeScreen(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
                     shape = RoundedCornerShape(50),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.appColors.secondaryButtonColor),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.appColors.searchBackground),
                     border = BorderStroke(
                         width = 1.dp,
                         color = if (state.pinLength == 4) MaterialTheme.appColors.tertiaryButtonColor else MaterialTheme.appColors.primaryButtonColor

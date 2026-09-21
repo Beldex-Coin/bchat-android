@@ -153,7 +153,7 @@ private class CreatePrivateChatActivityAdapter(val activity: CreatePrivateChatAc
     override fun getPageTitle(index: Int): CharSequence? {
         return when (index) {
             0 -> activity.resources.getString(R.string.activity_create_private_chat_enter_bchat_id_tab_title)
-            1 -> activity.resources.getString(R.string.activity_create_private_chat_scan_qr_code_tab_title)
+            1 -> activity.resources.getString(R.string.scan_qr_code)
             else -> throw IllegalStateException()
         }
     }

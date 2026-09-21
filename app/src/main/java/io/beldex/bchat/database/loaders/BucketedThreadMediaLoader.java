@@ -90,10 +90,10 @@ public class BucketedThreadMediaLoader extends AsyncTaskLoader<BucketedThreadMed
     private final TimeBucket[] TIME_SECTIONS;
 
     public BucketedThreadMedia(@NonNull Context context) {
-      this.TODAY         = new TimeBucket(context.getString(R.string.BucketedThreadMedia_Today), TimeBucket.addToCalendar(Calendar.DAY_OF_YEAR, -1), TimeBucket.addToCalendar(Calendar.DAY_OF_YEAR, 1000));
-      this.YESTERDAY     = new TimeBucket(context.getString(R.string.BucketedThreadMedia_Yesterday), TimeBucket.addToCalendar(Calendar.DAY_OF_YEAR, -2), TimeBucket.addToCalendar(Calendar.DAY_OF_YEAR, -1));
-      this.THIS_WEEK     = new TimeBucket(context.getString(R.string.BucketedThreadMedia_This_week), TimeBucket.addToCalendar(Calendar.DAY_OF_YEAR, -7), TimeBucket.addToCalendar(Calendar.DAY_OF_YEAR, -2));
-      this.THIS_MONTH    = new TimeBucket(context.getString(R.string.BucketedThreadMedia_This_month), TimeBucket.addToCalendar(Calendar.DAY_OF_YEAR, -30), TimeBucket.addToCalendar(Calendar.DAY_OF_YEAR, -7));
+      this.TODAY         = new TimeBucket(R.string.BucketedThreadMedia_Today, TimeBucket.addToCalendar(Calendar.DAY_OF_YEAR, -1), TimeBucket.addToCalendar(Calendar.DAY_OF_YEAR, 1000));
+      this.YESTERDAY     = new TimeBucket(R.string.BucketedThreadMedia_Yesterday, TimeBucket.addToCalendar(Calendar.DAY_OF_YEAR, -2), TimeBucket.addToCalendar(Calendar.DAY_OF_YEAR, -1));
+      this.THIS_WEEK     = new TimeBucket(R.string.BucketedThreadMedia_This_week, TimeBucket.addToCalendar(Calendar.DAY_OF_YEAR, -7), TimeBucket.addToCalendar(Calendar.DAY_OF_YEAR, -2));
+      this.THIS_MONTH    = new TimeBucket(R.string.BucketedThreadMedia_This_month, TimeBucket.addToCalendar(Calendar.DAY_OF_YEAR, -30), TimeBucket.addToCalendar(Calendar.DAY_OF_YEAR, -7));
       this.TIME_SECTIONS = new TimeBucket[]{TODAY, YESTERDAY, THIS_WEEK, THIS_MONTH};
       this.OLDER         = new MonthBuckets();
     }
@@ -131,11 +131,11 @@ public class BucketedThreadMediaLoader extends AsyncTaskLoader<BucketedThreadMed
       else                                    return OLDER.getItem(section - activeTimeBuckets.size(), item);
     }
 
-    public String getName(int section, Locale locale) {
+    public String getName(int section, Context context) {
       List<TimeBucket> activeTimeBuckets = Stream.of(TIME_SECTIONS).filter(timeBucket -> !timeBucket.isEmpty()).toList();
 
-      if (section < activeTimeBuckets.size()) return activeTimeBuckets.get(section).getName();
-      else                                    return OLDER.getName(section - activeTimeBuckets.size(), locale);
+      if (section < activeTimeBuckets.size()) return activeTimeBuckets.get(section).getName(context);
+      else                                    return OLDER.getName(section - activeTimeBuckets.size(), context);
     }
 
     private static class TimeBucket {
@@ -144,10 +144,10 @@ public class BucketedThreadMediaLoader extends AsyncTaskLoader<BucketedThreadMed
 
       private final long   startTime;
       private final long   endtime;
-      private final String name;
+      private final int    nameResId;
 
-      TimeBucket(String name, long startTime, long endtime) {
-        this.name      = name;
+      TimeBucket(int nameResId, long startTime, long endtime) {
+        this.nameResId   = nameResId;
         this.startTime = startTime;
         this.endtime   = endtime;
       }
@@ -172,8 +172,8 @@ public class BucketedThreadMediaLoader extends AsyncTaskLoader<BucketedThreadMed
         return records.get(position);
       }
 
-      String getName() {
-        return name;
+      String getName(Context context) {
+        return context.getString(nameResId);
       }
 
       static long addToCalendar(int field, int amount) {
@@ -223,9 +223,9 @@ public class BucketedThreadMediaLoader extends AsyncTaskLoader<BucketedThreadMed
         return keys.get(section);
       }
 
-      String getName(int section, Locale locale) {
+      String getName(int section, Context context) {
         Date sectionDate = getSection(section);
-
+        Locale locale = context.getResources().getConfiguration().getLocales().get(0);
         return new SimpleDateFormat("MMMM, yyyy", locale).format(sectionDate);
       }
     }

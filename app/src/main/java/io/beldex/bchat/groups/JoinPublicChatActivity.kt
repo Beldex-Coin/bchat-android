@@ -168,7 +168,7 @@ private class JoinPublicChatActivityAdapter(val activity: JoinPublicChatActivity
     override fun getPageTitle(index: Int): CharSequence {
         return when (index) {
             0 -> activity.resources.getString(R.string.group_url)
-            1 -> activity.resources.getString(R.string.activity_join_public_chat_scan_qr_code_tab_title)
+            1 -> activity.resources.getString(R.string.scan_qr_code)
             else -> throw IllegalStateException()
         }
     }

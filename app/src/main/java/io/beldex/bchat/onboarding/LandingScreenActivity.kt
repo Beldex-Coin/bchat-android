@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -44,6 +43,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowInsetsControllerCompat
+import io.beldex.bchat.BaseComponentActivity
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.OpenSans
@@ -51,12 +52,11 @@ import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.onboarding.ui.OnBoardingActivity
 import io.beldex.bchat.onboarding.ui.OnBoardingScreens
-import io.beldex.bchat.util.push
-import io.beldex.bchat.R
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
+import io.beldex.bchat.util.push
 
-class LandingScreenActivity: ComponentActivity() {
+class LandingScreenActivity: BaseComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -140,7 +140,7 @@ fun LandingScreen(
                     )
             ) {
                 Text(
-                    text = "Welcome to",
+                    text = stringResource(id = R.string.welcome_to),
                     style = BChatTypography.headlineSmall.copy(
                         color = MaterialTheme.appColors.onMainContainerTextColor,
                         fontWeight = FontWeight.ExtraBold

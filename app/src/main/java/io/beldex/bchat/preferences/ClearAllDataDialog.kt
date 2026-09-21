@@ -46,12 +46,12 @@ class ClearAllDataDialog : BaseDialog() {
         binding = DialogClearAllDataBinding.inflate(LayoutInflater.from(requireContext()))
         val device = RadioOption(
             "deviceOnly",
-            requireContext().getString(R.string.dialog_clear_all_data_clear_device_only_title),
+            requireContext().getString(R.string.activity_settings_clear_all_data_button_title),
             requireContext().getString(R.string.dialog_clear_all_data_clear_device_only_subtitle)
         )
         val network = RadioOption(
             "deviceAndNetwork",
-            requireContext().getString(R.string.dialog_clear_all_data_clear_device_and_network_title),
+            requireContext().getString(R.string.delete_entire_account),
             requireContext().getString(R.string.dialog_clear_all_data_clear_device_and_network_subtitle)
         )
         var selectedOption = device
@@ -104,7 +104,7 @@ class ClearAllDataDialog : BaseDialog() {
                 Steps.NETWORK_PROMPT -> {
                     binding.recyclerView.visibility = View.GONE
                     binding.dialogDescriptionText.visibility = View.VISIBLE
-                    binding.clearAllDataTitle.setText(R.string.dialog_clear_all_data_clear_device_and_network_title)
+                    binding.clearAllDataTitle.setText(R.string.delete_entire_account)
                     binding.dialogDescriptionText.setText(R.string.dialog_clear_all_data_network_explanation)
                 }
 

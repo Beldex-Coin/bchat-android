@@ -1,11 +1,12 @@
 package io.beldex.bchat.contacts
 
 import android.content.Context
+import android.content.res.Configuration
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.util.AsyncLoader
 import io.beldex.bchat.R
-import io.beldex.bchat.util.ContactUtilities
+import java.util.Locale
 
 sealed class ContactSelectionListItem {
     class Header(val name: String) : ContactSelectionListItem()
@@ -65,21 +66,29 @@ class ContactSelectionListLoader(context: Context, val mode: Int, val filter: St
         return list
     }
 
+     val localizedContext: Context
+        get() {
+            val currentLocale = Locale.getDefault()
+            val config = Configuration(context.resources.configuration)
+            config.setLocale(currentLocale)
+            return context.createConfigurationContext(config)
+        }
+
     private fun getContacts(contacts: List<Recipient>): List<ContactSelectionListItem> {
-        return getItems(contacts, context.getString(R.string.fragment_contact_selection_contacts_title)) {
+        return getItems(contacts, localizedContext.getString(R.string.fragment_contact_selection_contacts_title)) {
             !it.isGroupRecipient && it.isApproved && !it.isBlocked && it.hasApprovedMe()
         }
     }
 
     private fun getClosedGroups(contacts: List<Recipient>): List<ContactSelectionListItem> {
-        return getItems(contacts, context.getString(R.string.fragment_contact_selection_closed_groups_title)) {
+        return getItems(contacts, localizedContext.getString(R.string.fragment_contact_selection_closed_groups_title)) {
             it.address.isClosedGroup && DatabaseComponent.get(context)
                     .groupDatabase().isActive(it.address.toGroupString())
         }
     }
 
     private fun getOpenGroups(contacts: List<Recipient>): List<ContactSelectionListItem> {
-        return getItems(contacts, context.getString(R.string.fragment_contact_selection_open_groups_title)) {
+        return getItems(contacts, localizedContext.getString(R.string.fragment_contact_selection_open_groups_title)) {
             it.address.isOpenGroup
         }
     }

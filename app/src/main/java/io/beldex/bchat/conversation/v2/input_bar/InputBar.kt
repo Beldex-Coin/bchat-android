@@ -234,17 +234,16 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
 
     private fun showOrHideInputIfNeeded() {
         if (showInput) {
-            setOf( binding.inputBarEditText, attachmentsButton, binding.microphoneOrSendButtonContainer ).forEach { it.isVisible = true }
+            setOf( binding.inputBarEditText, attachmentsButton, binding.microphoneOrSendButtonContainer, binding.containerCardView ).forEach { it.isVisible = true }
             microphoneButton.isVisible = text.isEmpty() || text.isBlank()
             sendButton.isVisible = text.isNotEmpty() && text.isNotBlank()
             binding.noLongerParticipantTextView.isVisible = false
         } else {
             cancelQuoteDraft(2)
             cancelLinkPreviewDraft(2)
-            val views = setOf( binding.inputBarEditText, attachmentsButton, microphoneButton, sendButton, binding.microphoneOrSendButtonContainer )
+            val views = setOf( binding.inputBarEditText, attachmentsButton, microphoneButton, sendButton, binding.microphoneOrSendButtonContainer, binding.containerCardView )
             views.forEach { it.isVisible = false }
             binding.noLongerParticipantTextView.isVisible = true
-//            binding.containerCardView.setContentPadding(16, 16, 16, 16)
         }
     }
     /*Hales63*/

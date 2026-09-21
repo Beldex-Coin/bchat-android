@@ -334,7 +334,7 @@ public class SingleRecipientNotificationBuilder extends AbstractNotificationBuil
     String bchatID = recipient.getAddress().serialize();
     Contact contact = contactDB.getContactWithBchatID(bchatID);
     if (contact == null) { return bchatID; }
-    String displayName = contact.displayName(Contact.ContactContext.OPEN_GROUP);
+    String displayName = contact.displayName(Contact.ContactContext.OPEN_GROUP, context);
     if (displayName == null) { return bchatID; }
     return displayName;
   }

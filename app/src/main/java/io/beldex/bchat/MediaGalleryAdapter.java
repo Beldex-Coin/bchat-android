@@ -103,7 +103,7 @@ class MediaGalleryAdapter extends StickyHeaderGridAdapter {
 
   @Override
   public void onBindHeaderViewHolder(StickyHeaderGridAdapter.HeaderViewHolder viewHolder, int section) {
-    ((HeaderHolder)viewHolder).textView.setText(media.getName(section, locale));
+    ((HeaderHolder)viewHolder).textView.setText(media.getName(section, context));
   }
 
   @Override

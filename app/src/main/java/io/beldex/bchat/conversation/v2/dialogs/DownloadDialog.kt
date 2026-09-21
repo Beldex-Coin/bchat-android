@@ -29,7 +29,7 @@ class DownloadDialog(private val recipient: Recipient) : BaseDialog() {
         val binding = DialogDownloadBinding.inflate(LayoutInflater.from(requireContext()))
         val bchatID = recipient.address.toString()
         val contact = contactDB.getContactWithBchatID(bchatID)
-        val name = contact?.displayName(Contact.ContactContext.REGULAR) ?: bchatID
+        val name = contact?.displayName(Contact.ContactContext.REGULAR, requireContext()) ?: bchatID
         val title = resources.getString(R.string.dialog_download_title, name)
         binding.downloadTitleTextView.text = title
         val explanation = resources.getString(R.string.dialog_download_explanation, name)

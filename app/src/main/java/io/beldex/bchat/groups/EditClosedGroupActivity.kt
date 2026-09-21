@@ -103,7 +103,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setHomeAsUpIndicator(
                 ThemeUtil.getThemedDrawableResId(this, R.attr.actionModeCloseDrawable))
-        binding.toolbar.title = getString(R.string.activity_edit_closed_group_title)
+        supportActionBar!!.title = getString(R.string.activity_edit_closed_group_title)
 
         groupID = intent.getStringExtra(groupIDKey)!!
         val groupInfo = DatabaseComponent.get(this).groupDatabase().getGroup(groupID).get()
@@ -373,7 +373,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
             return Toast.makeText(this, R.string.activity_edit_closed_group_group_name_missing_error, Toast.LENGTH_SHORT).show()
         }
         if (name.length >= 26) {
-            return Toast.makeText(this, R.string.activity_edit_closed_group_group_name_too_long_error, Toast.LENGTH_SHORT).show()
+            return Toast.makeText(this, R.string.activity_create_closed_group_group_name_too_long_error, Toast.LENGTH_SHORT).show()
         }
         if(name == originalName){
             return Toast.makeText(this, R.string.activity_edit_closed_group_group_name_same_name_error,Toast.LENGTH_SHORT).show()
@@ -432,7 +432,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         val userAsRecipient = Recipient.from(this, Address.fromSerialized(userPublicKey), false)
 
         if (!members.contains(userAsRecipient) && !members.map { it.address.toString() }.containsAll(originalMembers.minus(userPublicKey))) {
-            val message = "Can't leave while adding or removing other members."
+            val message = getString(R.string.group_leave_during_member_update_error)
             return Toast.makeText(this@EditClosedGroupActivity, message, Toast.LENGTH_LONG).show()
         }
 
@@ -462,7 +462,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
                 setResult(RESULT_OK, returnIntent)
                 finish()
             }.failUi { exception ->
-                val message = if (exception is MessageSender.Error) exception.description else "An error occurred"
+                val message = if (exception is MessageSender.Error) exception.description else getString(R.string.an_error_occurred)
                 Toast.makeText(this@EditClosedGroupActivity, message, Toast.LENGTH_LONG).show()
                 binding.loaderContainer.fadeOut()
                 isLoading = false

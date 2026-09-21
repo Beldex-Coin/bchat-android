@@ -19,8 +19,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_important"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="10dp"/>
 
@@ -33,8 +33,8 @@
             android:text="@string/important"
             android:textSize="@dimen/very_large_font_size"
             android:textStyle="bold"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/seed_permission_important_image" />
 
         <TextView
@@ -47,8 +47,8 @@
             android:textAlignment="center"
             android:textSize="@dimen/medium_font_size"
             android:textStyle="bold"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/seed_permission_important_title" />
 
         <TextView
@@ -88,9 +88,9 @@
             style="@style/Widget.Bchat.Button.Common.ProminentFilled"
             android:layout_width="match_parent"
             android:layout_height="@dimen/medium_button_height"
-            android:layout_marginLeft="@dimen/massive_spacing"
+            android:layout_marginStart="@dimen/massive_spacing"
             android:layout_marginTop="100dp"
-            android:layout_marginRight="@dimen/massive_spacing"
+            android:layout_marginEnd="@dimen/massive_spacing"
             android:text="@string/seed_permission_important_confirmButton"
             app:layout_constraintTop_toBottomOf="@id/seed_permission_important_confirmTitle" />
     </androidx.constraintlayout.widget.ConstraintLayout>

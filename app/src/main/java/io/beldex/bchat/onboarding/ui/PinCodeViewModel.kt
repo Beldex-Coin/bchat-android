@@ -1,12 +1,16 @@
 package io.beldex.bchat.onboarding.ui
 
+import android.content.Context
+import androidx.annotation.StringRes
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.beldex.bchat.util.ResourceProvider
-import io.beldex.bchat.util.SharedPreferenceUtil
+import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import io.beldex.bchat.R
+import io.beldex.bchat.util.SharedPreferenceUtil
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,14 +18,26 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class PinCodeViewModel @Inject constructor(
-    private val resourceProvider: ResourceProvider,
+    @ApplicationContext private val context: Context,
     private val sharedPreferenceUtil: SharedPreferenceUtil,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
+
+    private val localizedContext: Context by lazy {
+        val language = TextSecurePreferences.getAppSelectedLanguage(context)
+            ?: Locale.getDefault().language
+        DynamicLanguageContextWrapper.updateContext(context, language)
+    }
+
+    private fun stringRes(@StringRes res: Int): String = localizedContext.getString(res)
+
+    private fun stringRes(@StringRes res: Int, vararg formatArgs: Any): String =
+        localizedContext.getString(res, *formatArgs)
 
     private val _state = MutableStateFlow(PinCodeState())
     val state = _state.asStateFlow()
@@ -60,42 +76,42 @@ class PinCodeViewModel @Inject constructor(
                     it.copy(
                         pinLength = savedPinLength,
                         step = PinCodeSteps.EnterPin,
-                        stepTitle = resourceProvider.getString(R.string.enter_your_pin)
+                        stepTitle = stringRes(R.string.enter_your_pin)
                     )
                 }
                 PinCodeAction.VerifyPinCode.action -> {
                     it.copy(
                         pinLength = savedPinLength,
                         step = PinCodeSteps.VerifyPin,
-                        stepTitle = resourceProvider.getString(R.string.enter_your_4_digit_bchat_pin).format(savedPinLength)
+                        stepTitle = stringRes(R.string.enter_your_4_digit_bchat_pin, savedPinLength)
                     )
                 }
                 PinCodeAction.ChangePinCode.action -> {
                     it.copy(
                         pinLength = savedPinLength,
                         step = PinCodeSteps.OldPin,
-                        stepTitle = resourceProvider.getString(R.string.enter_old_pin)
+                        stepTitle = stringRes(R.string.enter_old_pin)
                     )
                 }
                 PinCodeAction.VerifyWalletPin.action -> {
                     it.copy(
                         pinLength = savedPinLength,
                         step = PinCodeSteps.VerifyPin,
-                        stepTitle = resourceProvider.getString(R.string.enter_your_4_digit_wallet_pin).format(savedPinLength)
+                        stepTitle = stringRes(R.string.enter_your_4_digit_wallet_pin, savedPinLength)
                     )
                 }
                 PinCodeAction.CreateWalletPin.action -> {
                     it.copy(
                         pinLength = savedPinLength,
                         step = PinCodeSteps.EnterPin,
-                        stepTitle = resourceProvider.getString(R.string.enter_your_pin)
+                        stepTitle = stringRes(R.string.enter_your_pin)
                     )
                 }
                 PinCodeAction.ChangeWalletPin.action -> {
                     it.copy(
                         pinLength = savedPinLength,
                         step = PinCodeSteps.OldPin,
-                        stepTitle = resourceProvider.getString(R.string.enter_old_pin)
+                        stepTitle = stringRes(R.string.enter_old_pin)
                     )
                 }
                 else -> it
@@ -145,7 +161,7 @@ class PinCodeViewModel @Inject constructor(
                                                 pin = ""
                                             )
                                         }
-                                        _errorMessage.emit(resourceProvider.getString(R.string.invalid_password))
+                                        _errorMessage.emit(stringRes(R.string.invalid_password))
                                     }
                                 }
                             }
@@ -164,13 +180,13 @@ class PinCodeViewModel @Inject constructor(
                                     )
                                 }
                                 viewModelScope.launch {
-                                    _errorMessage.emit(resourceProvider.getString(R.string.incorrect_password_entered))
+                                    _errorMessage.emit(stringRes(R.string.incorrect_password_entered))
                                 }
                             } else {
                                 _state.update {
                                     it.copy(
                                         step = PinCodeSteps.EnterPin,
-                                        stepTitle = resourceProvider.getString(R.string.enter_new_pin)
+                                        stepTitle = stringRes(R.string.enter_new_pin)
                                     )
                                 }
                             }
@@ -184,13 +200,13 @@ class PinCodeViewModel @Inject constructor(
                                     )
                                 }
                                 viewModelScope.launch {
-                                    _errorMessage.emit(resourceProvider.getString(R.string.old_new_password_same))
+                                    _errorMessage.emit(stringRes(R.string.old_new_password_same))
                                 }
                             } else {
                                 _state.update {
                                     it.copy(
                                         step = PinCodeSteps.ReEnterPin,
-                                        stepTitle = resourceProvider.getString(R.string.re_enter_your_pin)
+                                        stepTitle = stringRes(R.string.re_enter_your_pin)
                                     )
                                 }
                             }
@@ -203,7 +219,7 @@ class PinCodeViewModel @Inject constructor(
                                     )
                                 }
                                 viewModelScope.launch {
-                                    _errorMessage.emit(resourceProvider.getString(R.string.password_does_not_match))
+                                    _errorMessage.emit(stringRes(R.string.password_does_not_match))
                                 }
                             } else {
                                 sharedPreferenceUtil.setPassword(newPin)
@@ -211,9 +227,9 @@ class PinCodeViewModel @Inject constructor(
                                 sharedPreferenceUtil.setPinLength(state.value.pinLength)
                                 viewModelScope.launch {
                                     val message = if (action == PinCodeAction.CreatePinCode.action) {
-                                        resourceProvider.getString(R.string.pincode_created)
+                                        stringRes(R.string.pincode_created)
                                     } else {
-                                        resourceProvider.getString(R.string.pincode_changed)
+                                        stringRes(R.string.pincode_changed)
 
                                     }
                                     _successContent.emit(message)
@@ -288,7 +304,7 @@ class PinCodeViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             step = PinCodeSteps.EnterPin,
-                            stepTitle = resourceProvider.getString(R.string.enter_new_pin)
+                            stepTitle = stringRes(R.string.enter_new_pin)
                         )
                     }
                 }
@@ -301,13 +317,13 @@ class PinCodeViewModel @Inject constructor(
                             )
                         }
                         viewModelScope.launch {
-                            _errorMessage.emit(resourceProvider.getString(R.string.old_new_pin_same))
+                            _errorMessage.emit(stringRes(R.string.old_new_pin_same))
                         }
                     } else {
                         _state.update {
                             it.copy(
                                     step = PinCodeSteps.ReEnterPin,
-                                    stepTitle = resourceProvider.getString(R.string.re_enter_your_pin)
+                                    stepTitle = stringRes(R.string.re_enter_your_pin)
                             )
                         }
                     }

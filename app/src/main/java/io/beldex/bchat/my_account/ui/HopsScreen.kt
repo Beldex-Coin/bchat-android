@@ -58,7 +58,7 @@ fun HopsScreen(
                 )
         ) {
             Text(
-                text = stringResource(id = R.string.activity_path_device_row_title),
+                text = stringResource(id = R.string.MediaPreviewActivity_you),
                 style = MaterialTheme.typography.bodySmall
             )
 

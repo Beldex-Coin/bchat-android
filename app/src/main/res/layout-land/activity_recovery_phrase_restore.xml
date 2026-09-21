@@ -91,7 +91,7 @@
                     android:minHeight="48dp"
                     android:paddingStart="24dp"
                     android:paddingEnd="24dp"
-                    android:text="@string/message_requests_clear"
+                    android:text="@string/clear"
                     app:icon="@drawable/ic_clear_seed"
                     app:iconTint="@color/version_color" />
 

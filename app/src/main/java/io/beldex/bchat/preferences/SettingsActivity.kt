@@ -53,7 +53,6 @@ import io.beldex.bchat.profiles.ProfileMediaConstraints
 import io.beldex.bchat.showCustomDialog
 import io.beldex.bchat.CheckOnline
 import kotlinx.coroutines.Dispatchers
-import java.util.regex.Pattern
 import com.canhub.cropper.CropImage
 import com.canhub.cropper.CropImageContract
 import com.beldex.libsignal.utilities.Log
@@ -121,7 +120,6 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
     private lateinit var animation1: Animation
     private lateinit var animation2: Animation
     private var isFrontOfCardShowing = true
-    private val namePattern = Pattern.compile("[A-Za-z0-9\\s]+")
     private var shareButtonLastClickTime: Long = 0
 
     private fun getDisplayName(): String =
@@ -132,7 +130,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
         super.onCreate(savedInstanceState, isReady)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setUpActionBarBchatLogo("My Account")
+        setUpActionBarBchatLogo(this.getString(R.string.my_account))
         val displayName = getDisplayName()
         glide = Glide.with(this)
 
@@ -397,7 +395,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
         if (displayName.isEmpty()) {
             Toast.makeText(
                 this,
-                R.string.activity_settings_display_name_missing_error,
+                R.string.activity_display_name_display_name_missing_error,
                 Toast.LENGTH_SHORT
             ).show()
             return false
@@ -405,12 +403,12 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
         if (displayName.toByteArray().size > ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
             Toast.makeText(
                 this,
-                R.string.activity_settings_display_name_too_long_error,
+                R.string.activity_display_name_display_name_too_long_error,
                 Toast.LENGTH_SHORT
             ).show()
             return false
         }
-        if (!displayName.matches(namePattern.toRegex())) {
+        if (!displayName.matches(unicodeNamePattern.toRegex())) {
             Toast.makeText(
                     this,
                     R.string.display_name_validation,
@@ -537,7 +535,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(intent)
         } catch (e: Exception) {
-            Toast.makeText(this, "Can't open URL", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.cannot_open_url), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -570,7 +568,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(intent)
         } catch (e: Exception) {
-            Toast.makeText(this, "Can't open URL", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.cannot_open_url), Toast.LENGTH_LONG).show()
         }
     }
 

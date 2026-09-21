@@ -161,11 +161,11 @@ public class ViewUtil {
   }
 
   public static void setPaddingTop(@NonNull View view, int padding) {
-    view.setPadding(view.getPaddingLeft(), padding, view.getPaddingRight(), view.getPaddingBottom());
+    view.setPadding(view.getPaddingStart(), padding, view.getPaddingEnd(), view.getPaddingBottom());
   }
 
   public static void setPaddingBottom(@NonNull View view, int padding) {
-    view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight(), padding);
+    view.setPadding(view.getPaddingStart(), view.getPaddingTop(), view.getPaddingEnd(), padding);
   }
 
   public static boolean isPointInsideView(@NonNull View view, float x, float y) {

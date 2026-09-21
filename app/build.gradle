@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'witness'
 apply plugin: 'com.google.devtools.ksp'
 apply plugin: 'kotlin-parcelize'
@@ -13,14 +13,16 @@ apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 configurations.all {
     exclude module: "commons-logging"
 }
-def canonicalVersionCode = 99
-def canonicalVersionName = "2.9.8"
+def canonicalVersionCode = 103
+def canonicalVersionName = "3.0.0"
 
 def postFixSize = 10
 def abiPostFix = ['armeabi-v7a' : 1,
                   'arm64-v8a'   : 2,
                   'x86_64'      : 4,
                   'universal'   : 5]
+
+def splitApksEnabled = project.properties["splitApks"] == "true"
 
 android {
     useLibrary 'org.apache.http.legacy'
@@ -49,10 +51,16 @@ android {
 
     splits {
         abi {
-            enable true
+            enable splitApksEnabled
             reset()
             include 'armeabi-v7a', 'arm64-v8a', 'x86_64'
             universalApk true
+        }
+    }
+
+    bundle {
+        language {
+            enableSplit = false
         }
     }
 
@@ -89,6 +97,9 @@ android {
             cmake {
                 cppFlags '-std=c++17'
             }
+        }
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
         }
         applicationId 'io.beldex.bchat'
     }

@@ -31,7 +31,7 @@ enum class EmojiCategory(val priority: Int, val key: String, @AttrRes val icon: 
     @StringRes
     fun getCategoryLabel(@AttrRes iconAttr: Int): Int {
       return when (iconAttr) {
-        R.attr.emoji_category_people -> R.string.emojiCategorySmileys
+        R.attr.emoji_category_people -> R.string.ReactWithAnyEmojiBottomSheetDialogFragment__smileys_and_people
         R.attr.emoji_category_nature -> R.string.emojiCategoryAnimals
         R.attr.emoji_category_foods -> R.string.emojiCategoryFood
         R.attr.emoji_category_activity -> R.string.emojiCategoryActivities

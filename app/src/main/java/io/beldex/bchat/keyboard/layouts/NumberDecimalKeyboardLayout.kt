@@ -3,6 +3,7 @@ package io.beldex.bchat.keyboard.layouts
 import android.content.Context
 import android.view.View
 import android.widget.LinearLayout
+import io.beldex.bchat.R
 import io.beldex.bchat.keyboard.controllers.KeyboardController
 
 class NumberDecimalKeyboardLayout(context: Context, controller: KeyboardController?) :
@@ -25,9 +26,9 @@ class NumberDecimalKeyboardLayout(context: Context, controller: KeyboardControll
         rowTwo.add(createButton("5", columnWidth, '5'))
         rowTwo.add(createButton("6", columnWidth, '6'))
         if (hasNextFocus) {
-            rowTwo.add(createButton("Next", columnWidth, KeyboardController.SpecialKey.NEXT))
+            rowTwo.add(createButton(context.getString(R.string.next), columnWidth, KeyboardController.SpecialKey.NEXT))
         } else {
-            rowTwo.add(createButton("Done", columnWidth, KeyboardController.SpecialKey.DONE))
+            rowTwo.add(createButton(context.getString(R.string.menu_done_button), columnWidth, KeyboardController.SpecialKey.DONE))
         }
 
         val rowThree = ArrayList<View>()
@@ -40,7 +41,7 @@ class NumberDecimalKeyboardLayout(context: Context, controller: KeyboardControll
         rowFour.add(createButton("⇦", columnWidth, KeyboardController.SpecialKey.BACK))
         rowFour.add(createButton("0", columnWidth, '0'))
         rowFour.add(createButton("⇨", columnWidth, KeyboardController.SpecialKey.FORWARD))
-        rowFour.add(createButton("Clear", columnWidth, KeyboardController.SpecialKey.CLEAR))
+        rowFour.add(createButton(context.getString(R.string.clear), columnWidth, KeyboardController.SpecialKey.CLEAR))
 
         val rows = ArrayList<LinearLayout>()
         rows.add(createRow(rowOne))

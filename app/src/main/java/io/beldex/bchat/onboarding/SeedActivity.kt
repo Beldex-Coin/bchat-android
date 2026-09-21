@@ -41,7 +41,7 @@ class SeedActivity : BaseActionBarActivity() {
         binding = ActivitySeedBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar!!.title = resources.getString(R.string.activity_seed_title)
-        val seedReminderViewTitle = SpannableString("You're almost finished! 90%") // Intentionally not yet translated
+        val seedReminderViewTitle = SpannableString(resources.getString(R.string.you_are_almost_finished)) // Intentionally not yet translated
         seedReminderViewTitle.setSpan(ForegroundColorSpan(resources.getColorWithID(R.color.accent, theme)), 24, 27, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         with(binding) {
             seedReminderView.title = seedReminderViewTitle
@@ -67,7 +67,7 @@ class SeedActivity : BaseActionBarActivity() {
 
     // region Updating
     private fun revealSeed() {
-        val seedReminderViewTitle = SpannableString("Account secured! 100%") // Intentionally not yet translated
+        val seedReminderViewTitle = SpannableString(resources.getString(R.string.account_secured)) // Intentionally not yet translated
         seedReminderViewTitle.setSpan(ForegroundColorSpan(resources.getColorWithID(R.color.accent, theme)), 17, 21, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         with(binding) {
             seedReminderView.title = seedReminderViewTitle

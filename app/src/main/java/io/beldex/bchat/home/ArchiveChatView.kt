@@ -55,7 +55,7 @@ fun ArchiveChatView(
         ) {
             Image(
                 painterResource(id= if(isDarkTheme) R.drawable.ic_archive else R.drawable.ic_archive_icon_white),
-                contentDescription="Archived Chats",
+                contentDescription=stringResource(R.string.archive_chat),
                 modifier=Modifier.size(26.dp)
 
             )

@@ -647,6 +647,17 @@
           "description":"Minor bug fixes"
         }
       ]
+    },
+    {
+      "title": "3.0.0",
+      "descriptions": [
+        {
+          "description":"Introducing Multi language support in BChat"
+        },
+        {
+          "description":"Minor bug fixes"
+        }
+      ]
     }
   ]
 }

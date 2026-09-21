@@ -16,7 +16,6 @@ import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -37,6 +36,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -114,6 +114,7 @@ import com.beldex.libsignal.utilities.hexEncodedPrivateKey
 import com.canhub.cropper.CropImage
 import com.canhub.cropper.CropImageContract
 import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.BaseComponentActivity
 import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.R
@@ -132,6 +133,7 @@ import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.crypto.MnemonicUtilities
 import io.beldex.bchat.database.DatabaseContentProviders
 import io.beldex.bchat.database.GroupDatabase
+import io.beldex.bchat.home.ChooseLanguage
 import io.beldex.bchat.messagerequests.MessageRequestsViewModel
 import io.beldex.bchat.my_account.ui.dialogs.BNSNameVerifySuccessDialog
 import io.beldex.bchat.my_account.ui.dialogs.ClearDataDialog
@@ -151,6 +153,7 @@ import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.copyToClipBoard
 import io.beldex.bchat.util.toPx
+import io.beldex.bchat.util.unicodeNamePattern
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -163,11 +166,10 @@ import java.io.File
 import java.io.FileOutputStream
 import java.security.SecureRandom
 import java.util.Date
-import java.util.regex.Pattern
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MyAccountActivity : ComponentActivity() {
+class MyAccountActivity : BaseComponentActivity() {
 
     private var destination = MyAccountScreens.SettingsScreen.route
     @Inject
@@ -422,11 +424,10 @@ fun MyAccountNavHost(
     }
 
     fun saveDisplayName(displayName: String, context : Context): Boolean {
-        val namePattern = Pattern.compile("[A-Za-z0-9\\s]+")
         if (displayName.isEmpty()) {
             Toast.makeText(
                 context,
-                R.string.activity_settings_display_name_missing_error,
+                R.string.activity_display_name_display_name_missing_error,
                 Toast.LENGTH_SHORT
             ).show()
             return false
@@ -434,12 +435,12 @@ fun MyAccountNavHost(
         if (displayName.toByteArray().size > SSKEnvironment.ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
             Toast.makeText(
                 context,
-                R.string.activity_settings_display_name_too_long_error,
+                R.string.activity_display_name_display_name_too_long_error,
                 Toast.LENGTH_SHORT
             ).show()
             return false
         }
-        if (!displayName.matches(namePattern.toRegex())) {
+        if (!displayName.matches(unicodeNamePattern.toRegex())) {
             Toast.makeText(
                 context,
                 R.string.display_name_validation,
@@ -493,7 +494,7 @@ fun MyAccountNavHost(
             MyAccountScreenContainer(
                 title = stringResource(id = R.string.account_settings),
                 onBackClick = {
-                    (context as ComponentActivity).finish()
+                    (context as BaseComponentActivity).finish()
                 }
             ) {
                 val state by viewModel.uiState.collectAsState()
@@ -767,6 +768,7 @@ fun MyAccountNavHost(
                         Box(
                             modifier = Modifier
                                 .padding(start = 24.dp, top = 16.dp, end = 0.dp, bottom = 16.dp)
+                                .widthIn(max = 120.dp)
                                 .background(
                                     color = if (showEditNameTextField) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.listItemBackground,
                                     shape = RoundedCornerShape(16.dp)
@@ -795,9 +797,10 @@ fun MyAccountNavHost(
                                 style = BChatTypography.bodySmall.copy(
                                     color = if(showEditNameTextField) Color.White  else MaterialTheme.appColors.primaryButtonColor,
                                     fontWeight = FontWeight(600),
-                                    fontSize = 12.sp,
+                                    fontSize = 11.sp,
                                 ),
-                                modifier = Modifier.padding(start = 12.dp, top = 4.dp, end = 12.dp, bottom = 4.dp)
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(start = 6.dp, top = 4.dp, end = 6.dp, bottom = 4.dp)
 
                             )
                         }
@@ -853,8 +856,10 @@ fun MyAccountNavHost(
                             )
                         }
                         Box(
-                            contentAlignment=Alignment.CenterEnd,
-                            modifier=Modifier.align(alignment=Alignment.TopCenter)
+                            contentAlignment = Alignment.BottomEnd,
+                            modifier = Modifier
+                                .size(ProfilePictureMode.LargePicture.size)
+                                .align(alignment = Alignment.TopCenter)
                         ) {
                             if(isProfileChanged) {
                                 ProfilePictureComponent(
@@ -862,7 +867,7 @@ fun MyAccountNavHost(
                                     displayName = state.profileName ?: state.publicKey,
                                     containerSize = ProfilePictureMode.LargePicture.size,
                                     pictureMode = ProfilePictureMode.LargePicture,
-                                    modifier = Modifier.align(alignment = Alignment.TopCenter)
+                                    modifier = Modifier.fillMaxSize()
                                 )
                                 isProfileChanged = false
                             }else{
@@ -871,14 +876,15 @@ fun MyAccountNavHost(
                                     displayName = state.profileName ?: state.publicKey,
                                     containerSize = ProfilePictureMode.LargePicture.size,
                                     pictureMode = ProfilePictureMode.LargePicture,
-                                    modifier = Modifier.align(alignment = Alignment.TopCenter)
+                                    modifier = Modifier.fillMaxSize()
                                 )
                             }
                             if (showEditNameTextField) {
                                 Box(
                                     contentAlignment=Alignment.Center,
                                     modifier= Modifier
-                                        .padding(start = 150.dp)
+                                        .align(Alignment.BottomEnd)
+                                        .padding(end = 4.dp, bottom = 4.dp)
                                         .size(32.dp)
                                         .clip(CircleShape)
                                         .background(
@@ -1030,7 +1036,7 @@ fun MyAccountNavHost(
                                         } catch (e: Exception) {
                                             Toast.makeText(
                                                 context,
-                                                "Can't open URL",
+                                                context.getString(R.string.cannot_open_url),
                                                 Toast.LENGTH_LONG
                                             ).show()
                                         }
@@ -1157,7 +1163,8 @@ fun MyAccountNavHost(
                     ) {
                         Text(
                             text = stringResource(id = R.string.no_blocked_contact),
-                            style = MaterialTheme.typography.titleLarge
+                            style = MaterialTheme.typography.titleLarge,
+                            textAlign = TextAlign.Center
                         )
                     }
                 } else {
@@ -1190,16 +1197,13 @@ fun MyAccountNavHost(
         composable(
             route = MyAccountScreens.AboutScreen.route
         ) {
-            val aboutViewModel: ContentViewModel = hiltViewModel()
-            val content by aboutViewModel.content.collectAsState()
             MyAccountScreenContainer(
                 title = stringResource(R.string.about),
                 onBackClick = {
-                    (context as ComponentActivity).finish()
+                    (context as BaseComponentActivity).finish()
                 }
             ) {
                 ContentScreen(
-                    content = content,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(16.dp)
@@ -1219,7 +1223,7 @@ fun MyAccountNavHost(
                         markedAsSafe = true
                     } else {
                         markedAsSafe = false
-                        Toast.makeText(context, "Failed to authenticate", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, context.getString(R.string.failed_to_authenticate), Toast.LENGTH_SHORT).show()
                     }
                 }
             val verifyPin: () -> Unit = {
@@ -1249,10 +1253,10 @@ fun MyAccountNavHost(
                 }
             }
             MyAccountScreenContainer(
-                title = stringResource(R.string.recovery_seed),
+                title = stringResource(R.string.activity_settings_recovery_phrase_button_title),
                 wrapInCard = markedAsSafe,
                 onBackClick = {
-                    (context as ComponentActivity).finish()
+                    (context as BaseComponentActivity).finish()
                 }
             ) {
                 RecoverySeedScreen(
@@ -1283,7 +1287,7 @@ fun MyAccountNavHost(
             MyAccountScreenContainer(
                 title = stringResource(R.string.activity_message_requests_title),
                 onBackClick = {
-                    (context as ComponentActivity).finish()
+                    (context as BaseComponentActivity).finish()
                 }
             ) {
                 MessageRequestsScreen(
@@ -1338,7 +1342,7 @@ fun MyAccountNavHost(
             ArchiveChatScreenContainer(
                 title = stringResource(R.string.archive_chat),
                 onBackClick = {
-                    (context as ComponentActivity).finish()
+                    (context as BaseComponentActivity).finish()
                 }
             ) {
                 ArchiveChatScreen(
@@ -1358,6 +1362,22 @@ fun MyAccountNavHost(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(8.dp)
+                )
+            }
+        }
+        composable(
+            route = MyAccountScreens.LanguageChooseScreen.route
+        ) {
+            MyAccountScreenContainer(
+                title = stringResource(R.string.choose_language),
+                onBackClick = {
+                    (context as BaseComponentActivity).finish()
+                }) {
+                ChooseLanguage(
+                    viewModel,
+                    onBack = {
+                        (context as BaseComponentActivity).finish()
+                    }
                 )
             }
         }
@@ -1481,7 +1501,7 @@ fun ProfileCard(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "BNS Verified",
+                    text = stringResource(R.string.bns_verified),
                     style = MaterialTheme.typography.titleSmall.copy(
                         color = MaterialTheme.appColors.primaryButtonColor,
                         fontWeight = FontWeight(700),
@@ -1497,7 +1517,7 @@ fun ProfileCard(
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             ProfileCardKeyContainer(
                 isBnsHolder = isBnsHolder,
@@ -1509,7 +1529,8 @@ fun ProfileCard(
                 isBeldex = true,
                 onShowDialog = {
                     onShowDialog(0)
-                }
+                },
+                modifier = Modifier.weight(1f)
             )
 
             ProfileCardKeyContainer(
@@ -1521,7 +1542,8 @@ fun ProfileCard(
                 },
                 onShowDialog = {
                     onShowDialog(1)
-                }
+                },
+                modifier = Modifier.weight(1f)
             )
 
             ProfileCardKeyContainer(
@@ -1533,7 +1555,8 @@ fun ProfileCard(
                 showCopyIcon = false,
                 onShowDialog = {
                     onShowDialog(2)
-                }
+                },
+                modifier = Modifier.weight(1f)
             )
         }
     }
@@ -1547,9 +1570,11 @@ fun ProfileCardKeyContainer(
     onCopy: () -> Unit,
     showCopyIcon: Boolean = true,
     isBeldex: Boolean = false,
-    onShowDialog: () -> Unit
+    onShowDialog: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
+        modifier = modifier,
         elevation = CardDefaults.cardElevation(
             defaultElevation = if(!isBnsHolder.isNullOrEmpty()) 2.dp else 0.dp
         ),
@@ -1559,31 +1584,34 @@ fun ProfileCardKeyContainer(
     ) {
         Box(
             modifier = Modifier
+                .fillMaxWidth()
                 .padding(5.dp)
                 .clickable {
                     onShowDialog()
-                }
+                },
+            contentAlignment = Alignment.Center
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(
-                    top = 13.dp,
-                    bottom = 5.dp,
-                    start = if (isBeldex) 5.dp else 15.dp,
-                    end = if (isBeldex) 5.dp else 15.dp
-                )
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = 13.dp,
+                        bottom = 5.dp
+                    )
             ) {
                 Image(
                     painter = painterResource(id = image), contentDescription = "",
                     modifier = Modifier
-                        .size(25.dp),
+                        .size(25.dp)
+                        .align(Alignment.CenterHorizontally),
                     colorFilter = if (!showCopyIcon) ColorFilter.tint(MaterialTheme.appColors.editTextColor) else null
                 )
                 Text(
                     text = title,
                     style = MaterialTheme.typography.bodySmall.copy(
-                        fontSize = 11.sp,
+                        fontSize = 10.sp,
                         color = MaterialTheme.appColors.editTextColor,
                         fontWeight = FontWeight.Medium
                     ),
@@ -1611,7 +1639,7 @@ fun ProfileCardKeyContainer(
 }
 
 @Composable
-private fun MyAccountScreenContainer(
+fun MyAccountScreenContainer(
     title: String,
     wrapInCard: Boolean = true,
     onBackClick: () -> Unit,

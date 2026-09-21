@@ -32,7 +32,7 @@ class CheckPasswordActivity : BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityCheckPasswordBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setUpActionBarBchatLogo("Password")
+        setUpActionBarBchatLogo(resources.getString(R.string.password))
 
         page = intent.extras?.getInt("page") ?: 0
 

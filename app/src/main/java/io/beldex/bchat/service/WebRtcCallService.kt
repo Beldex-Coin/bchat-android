@@ -56,6 +56,7 @@ import io.beldex.bchat.webrtc.data.State as CallState
 import android.content.pm.ServiceInfo
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
+import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.service.WebRtcCallService.Companion.ACTION_ICE_CONNECTED
 
@@ -89,6 +90,7 @@ class WebRtcCallService: LifecycleService(), CallManager.WebRtcListener {
         const val ACTION_ICE_MESSAGE = "ICE_MESSAGE"
         const val ACTION_REMOTE_HANGUP = "REMOTE_HANGUP"
         const val ACTION_ICE_CONNECTED = "ICE_CONNECTED"
+        const val ACTION_LANGUAGE_CHANGED = "LANGUAGE_CHANGED"
 
         const val EXTRA_RECIPIENT_ADDRESS = "RECIPIENT_ID"
         const val EXTRA_ENABLED = "ENABLED"
@@ -199,6 +201,8 @@ class WebRtcCallService: LifecycleService(), CallManager.WebRtcListener {
     private var isNetworkAvailable = true
     private var scheduledTimeout: ScheduledFuture<*>? = null
     private var scheduledReconnect: ScheduledFuture<*>? = null
+    private var currentNotificationType: Int = -1
+    private var currentNotificationRecipient: Recipient? = null
 
     private val lockManager by lazy { LockManager(this) }
     private val serviceExecutor = Executors.newSingleThreadExecutor()
@@ -239,6 +243,8 @@ class WebRtcCallService: LifecycleService(), CallManager.WebRtcListener {
         wantsToAnswer = false
         currentTimeouts = 0
         isNetworkAvailable = true
+        currentNotificationType = -1
+        currentNotificationRecipient = null
         scheduledTimeout?.cancel(false)
         scheduledReconnect?.cancel(false)
         scheduledTimeout = null
@@ -306,9 +312,15 @@ class WebRtcCallService: LifecycleService(), CallManager.WebRtcListener {
                 ACTION_CHECK_RECONNECT -> handleCheckReconnect(intent)
                 ACTION_IS_IN_CALL_QUERY -> handleIsInCallQuery(intent)
                 ACTION_UPDATE_AUDIO -> handleUpdateAudio(intent)
+                ACTION_LANGUAGE_CHANGED -> handleLanguageChanged()
             }
         }
         return START_NOT_STICKY
+    }
+
+    override fun attachBaseContext(newBase: Context) {
+        val language = TextSecurePreferences.getAppSelectedLanguage(newBase)
+        super.attachBaseContext(DynamicLanguageContextWrapper.updateContext(newBase, language))
     }
 
     override fun onCreate() {
@@ -714,6 +726,8 @@ class WebRtcCallService: LifecycleService(), CallManager.WebRtcListener {
     // Over the course of setting up a phone call this method is called multiple times with `types`
     // of PRE_OFFER -> RING_INCOMING -> ICE_MESSAGE
     private fun setCallInProgressNotification(type: Int, recipient: Recipient?) {
+        currentNotificationType = type
+        currentNotificationRecipient = recipient
         // Wake the device if needed
         (applicationContext as ApplicationContext).wakeUpDeviceAndDismissKeyguardIfRequired()
         // If notifications are enabled we'll try and start a foreground service to show the notification
@@ -741,6 +755,12 @@ class WebRtcCallService: LifecycleService(), CallManager.WebRtcListener {
                 .setAction(WebRTCComposeActivity.ACTION_FULL_SCREEN_INTENT)
             startActivity(foregroundIntent)
             return
+        }
+    }
+
+    private fun handleLanguageChanged() {
+        if (currentNotificationType != -1 && currentNotificationRecipient != null) {
+            setCallInProgressNotification(currentNotificationType, currentNotificationRecipient)
         }
     }
 

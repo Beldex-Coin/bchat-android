@@ -22,6 +22,7 @@ import com.beldex.libbchat.utilities.bencode.BencodeList
 import com.beldex.libbchat.utilities.bencode.BencodeString
 import com.beldex.libsignal.utilities.Base64
 import com.beldex.libsignal.utilities.Log
+import io.beldex.bchat.R
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import javax.inject.Inject
 private const val TAG = "PushHandler"
@@ -55,7 +56,7 @@ class PushReceiver @Inject constructor(@ApplicationContext val context: Context)
             .setSmallIcon(io.beldex.bchat.R.drawable.ic_notification_)
             .setColor(context.getColor(io.beldex.bchat.R.color.textsecure_primary))
             .setContentTitle("BChat")
-            .setContentText("You've got a new message.")
+            .setContentText(context.getString(R.string.you_have_got_a_new_message))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
         NotificationManagerCompat.from(context).notify(11111, builder.build())

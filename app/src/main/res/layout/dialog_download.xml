@@ -61,7 +61,7 @@
             android:id="@+id/downloadButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/dialog_download_button_title"
+            android:text="@string/audio_view__download_accessibility_description"
             android:layout_marginStart="5dp"
             android:textColor="@color/white"
             android:padding="12dp"

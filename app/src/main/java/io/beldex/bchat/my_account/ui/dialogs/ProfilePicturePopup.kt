@@ -156,12 +156,12 @@ fun ProfilePicturePopup(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.appColors.negativeGreenButton,
                         contentColor = if(profilePictureStatus) MaterialTheme.appColors.negativeGreenButtonText else MaterialTheme.appColors.disabledButtonContent,
-                        disabledContainerColor = MaterialTheme.appColors.optionalTextfieldBackground
+                        disabledContainerColor = MaterialTheme.appColors.optionalTextFieldBackground
                     ),
                     modifier = Modifier
                         .weight(1f).height(50.dp),
                     shape = RoundedCornerShape(12.dp),
-                    border = BorderStroke(width = 0.5.dp, color = if(profilePictureStatus) MaterialTheme.appColors.negativeGreenButtonBorder else MaterialTheme.appColors.optionalTextfieldBackground)
+                    border = BorderStroke(width = 0.5.dp, color = if(profilePictureStatus) MaterialTheme.appColors.negativeGreenButtonBorder else MaterialTheme.appColors.optionalTextFieldBackground)
                 ) {
                     Text(
                         text = stringResource(id = R.string.activity_settings_remove),

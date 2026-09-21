@@ -16,23 +16,25 @@ import androidx.core.view.isVisible
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentUserDetailsBottomSheetBinding
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.Address
+import com.beldex.libbchat.utilities.SSKEnvironment
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.dependencies.DatabaseComponent
 import com.bumptech.glide.Glide;
 import io.beldex.bchat.util.UiModeUtilities
+import io.beldex.bchat.util.unicodeNamePattern
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class UserDetailsBottomSheet : BottomSheetDialogFragment() {
 
     @Inject lateinit var threadDb: ThreadDatabase
-    private val nicknameRegex = Regex("^[a-zA-Z0-9 ]+$")
 
     private lateinit var binding: FragmentUserDetailsBottomSheetBinding
     companion object {
@@ -106,7 +108,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
                     else -> return@setOnEditorActionListener false
                 }
             }
-            nameTextView.text = recipient.name ?: publicKey // Uses the Contact API internally
+            nameTextView.text = if (publicKey == BuildConfig.REPORT_ISSUE_ID) getString(R.string.report_issue) else recipient.name ?: publicKey // Uses the Contact API internally
 
             publicKeyTextView.isVisible = !threadRecipient.isOpenGroupRecipient
             messageButton.isVisible = !threadRecipient.isOpenGroupRecipient
@@ -114,7 +116,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
             publicKeyTextView.setOnLongClickListener {
                 val clipboard =
                     requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("Bchat ID", publicKey)
+                val clip = ClipData.newPlainText("BChat ID", publicKey)
                 clipboard.setPrimaryClip(clip)
                 Toast.makeText(requireContext(), R.string.copied_to_clipboard, Toast.LENGTH_SHORT)
                     .show()
@@ -195,10 +197,18 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
                 ).show()
             }
 
-            !nicknameRegex.matches(nickname) -> {
+            nickname.toByteArray().size > SSKEnvironment.ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH -> {
                 Toast.makeText(
                     context,
-                    R.string.nickname_special_char_not_allowed,
+                    R.string.nick_name_too_long_error,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            !nickname.matches(unicodeNamePattern.toRegex()) -> {
+                Toast.makeText(
+                    context,
+                    R.string.display_name_validation,
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -220,7 +230,13 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
                 contact.nickname = nickname
                 contactDB.setContact(contact)
 
+                val previousName = nameTextView.text.toString()
+
                 nameTextView.text = recipient.name ?: publicKey
+
+                if(previousName != nameTextView.text.toString()) {
+                    updateProfilePictureView(recipient)
+                }
             }
         }
     }
@@ -235,5 +251,10 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
     fun hideSoftKeyboard() {
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         imm?.hideSoftInputFromWindow(binding.nicknameEditText.windowToken, 0)
+    }
+
+    private fun updateProfilePictureView(recipient: Recipient) {
+        binding.profilePictureView.root.recycle()
+        binding.profilePictureView.root.update(recipient)
     }
 }

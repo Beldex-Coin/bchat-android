@@ -21,7 +21,7 @@ class ShowSeedActivity : BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityShowSeedBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setUpActionBarBchatLogo("Seed")
+        setUpActionBarBchatLogo(getString(R.string.seed))
         with(binding) {
             showSeedCopyButton.setOnClickListener {
                 copySeed()

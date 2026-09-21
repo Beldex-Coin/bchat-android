@@ -41,7 +41,7 @@
     <ImageView
         android:id="@+id/back_arrow"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         android:elevation="8dp"
         android:layout_marginStart="@dimen/small_spacing"
         android:layout_marginTop="@dimen/small_spacing"

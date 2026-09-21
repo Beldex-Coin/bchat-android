@@ -31,7 +31,7 @@ class ContactSelectionListFragment : Fragment(), LoaderManager.LoaderCallbacks<L
     }
 
     private val listAdapter by lazy {
-        val result = ContactSelectionListAdapter(requireActivity(), multiSelect)
+        val result = ContactSelectionListAdapter(requireContext(), multiSelect)
         result.glide = Glide.with(this)
         result.contactClickListener = this
         result
@@ -87,9 +87,14 @@ class ContactSelectionListFragment : Fragment(), LoaderManager.LoaderCallbacks<L
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<ContactSelectionListItem>> {
-        return ContactSelectionListLoader(requireActivity(),
-            requireActivity().intent.getIntExtra(DISPLAY_MODE, io.beldex.bchat.contacts.ContactsCursorLoader.DisplayMode.FLAG_ALL),
-            cursorFilter)
+        return ContactSelectionListLoader(
+            requireContext(),
+            requireActivity().intent.getIntExtra(
+                DISPLAY_MODE,
+                ContactsCursorLoader.DisplayMode.FLAG_ALL
+            ),
+            cursorFilter
+        )
     }
 
     override fun onLoadFinished(loader: Loader<List<ContactSelectionListItem>>, items: List<ContactSelectionListItem>) {

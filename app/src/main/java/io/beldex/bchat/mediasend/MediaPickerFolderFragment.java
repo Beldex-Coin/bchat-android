@@ -1,28 +1,24 @@
 package io.beldex.bchat.mediasend;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-
-import com.bumptech.glide.Glide;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libsignal.utilities.guava.Optional;
-
+import com.bumptech.glide.Glide;
 import io.beldex.bchat.R;
 import io.beldex.bchat.WindowInsetsUtil;
 
@@ -110,8 +106,8 @@ public class MediaPickerFolderFragment extends Fragment implements MediaPickerFo
     onScreenWidthChanged(getScreenWidth());
   }
   private void initToolbar(Toolbar toolbar) {
-    ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
-    ActionBar actionBar = ((AppCompatActivity) requireActivity()).getSupportActionBar();
+    ((MediaSendActivity) requireActivity()).setSupportActionBar(toolbar);
+    ActionBar actionBar = ((MediaSendActivity) requireActivity()).getSupportActionBar();
     actionBar.setTitle(getString(R.string.MediaPickerActivity_send_to, recipientName));
     actionBar.setHomeAsUpIndicator(R.drawable.ic_back);
     actionBar.setDisplayHomeAsUpEnabled(true);

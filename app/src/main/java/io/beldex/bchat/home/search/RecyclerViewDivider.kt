@@ -16,8 +16,8 @@ class RecyclerViewDivider(
     private val divider: Drawable? = ContextCompat.getDrawable(context, resId)
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         divider?.let {
-            val left = parent.paddingLeft + marginStart
-            val right = parent.width - parent.paddingRight - marginEnd
+            val left = parent.paddingStart + marginStart
+            val right = parent.width - parent.paddingEnd - marginEnd
             val childCount = parent.childCount
             for (i in 0 until childCount - 1) {
                 val child = parent.getChildAt(i)

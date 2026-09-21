@@ -6,7 +6,6 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.safeDrawing
@@ -71,18 +70,19 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
+import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.BaseComponentActivity
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.R
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class OnBoardingActivity: ComponentActivity() {
+class OnBoardingActivity: BaseComponentActivity() {
 
     private var destination = OnBoardingScreens.RestoreSeedScreen.route
 

@@ -34,7 +34,7 @@ class ConversationView : LinearLayout {
     var isReportIssueID: Boolean = false
     private val reportIssueBChatID = BuildConfig.REPORT_ISSUE_ID
 
-    val attachmentRegex = Regex("""📷\s*Attachment:""")
+    val attachmentRegex = Regex("""📷\s*\S+:""")
 
     // region Lifecycle
     constructor(context: Context) : super(context) { initialize() }
@@ -112,10 +112,17 @@ class ConversationView : LinearLayout {
                 val addresses = flattenData(data.address)
                 val names = flattenData(data.name).ifEmpty { addresses }
                 val displayName = when(names.size) {
-                    0 -> "No Name"
+                    0 -> context.getString(R.string.no_name)
                     1 -> names.first().capitalizeFirstLetter()
-                    2 -> "${shortNameAndAddress(names[0],addresses[0])} and ${names.size - 1} other"
-                    else -> "${shortNameAndAddress(names.first(), addresses.first())} and ${names.size - 1} others"
+                    else -> {
+                        val othersCount = names.size - 1
+                        context.resources.getQuantityString(
+                            R.plurals.contact_others,
+                            othersCount,
+                            shortNameAndAddress(names.first(), addresses.first()),
+                            othersCount
+                        )
+                    }
                 }
                 binding.contactName.text = displayName
             }
@@ -127,8 +134,10 @@ class ConversationView : LinearLayout {
             val snippet = if (thread.isGroupUpdateMessage) {
                 rawSnippet
             } else {
+                val localized = relocalizeAttachmentLabel(rawSnippet.toString())
+
                 // Format basic styles (bold, italic, lists, etc.)
-                val formatted = TextFormatter.formatForSentMessage(context, rawSnippet)
+                val formatted = TextFormatter.formatForSentMessage(context, localized)
 
                 // Apply mentions
                 val mentionFormatted = highlightMentionsSpannableString(
@@ -167,6 +176,25 @@ class ConversationView : LinearLayout {
 
     fun recycle() {
         binding.profilePictureView.root.recycle()
+    }
+
+    private fun relocalizeAttachmentLabel(body: String): String {
+        // Attachment / voice message bodies are stored as "<emoji> <localized label>" (and
+        // optionally ": <caption>") using the language that was active when the message was
+        // sent. Rebuild the label from the emoji prefix so it always reflects the current
+        // app language, preserving any caption suffix.
+        val prefix = body.substringBefore(' ')
+        if (prefix.isEmpty()) return body
+
+        val currentLabel = when (prefix) {
+            "🎤" -> context.getString(R.string.attachment_type_voice_message)
+            "📷", "🎥", "🎧", "📎", "🎡" -> context.getString(R.string.attachment)
+            else -> return body
+        }
+
+        val colonIdx = body.indexOf(": ")
+        val suffix = if (colonIdx > 0) body.substring(colonIdx) else ""
+        return "$prefix $currentLabel$suffix"
     }
 
     private fun getUserDisplayName(recipient: Recipient): String? {

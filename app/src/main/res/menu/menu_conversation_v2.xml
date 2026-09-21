@@ -24,7 +24,7 @@
         android:icon="@drawable/ic_block"/>
 
     <item
-        android:title="@string/RecipientPreferenceActivity_unblock"
+        android:title="@string/ConversationActivity_unblock"
         android:id="@+id/menu_unblock"
         android:icon="@drawable/ic_unblock"/>
 

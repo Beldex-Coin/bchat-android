@@ -202,13 +202,13 @@ public class QuoteView extends FrameLayout implements RecipientModifiedListener 
       Contact contact = contactDB.getContactWithBchatID(senderHexEncodedPublicKey);
       if (contact != null) {
         Contact.ContactContext context = (this.conversationRecipient.isOpenGroupRecipient()) ? Contact.ContactContext.OPEN_GROUP : Contact.ContactContext.REGULAR;
-        quoteeDisplayName = contact.displayName(context);
+        quoteeDisplayName = contact.displayName(context, getContext());
       } else {
         quoteeDisplayName = senderHexEncodedPublicKey;
       }
     }
 
-    authorView.setText(isOwnNumber ? getContext().getString(R.string.QuoteView_you) : quoteeDisplayName);
+    authorView.setText(isOwnNumber ? getContext().getString(R.string.MediaPreviewActivity_you) : quoteeDisplayName);
 
     // We use the raw color resource because Android 4.x was struggling with tints here
     int colorID = UiModeUtilities.isDayUiMode(getContext()) ? R.color.black : R.color.accent;

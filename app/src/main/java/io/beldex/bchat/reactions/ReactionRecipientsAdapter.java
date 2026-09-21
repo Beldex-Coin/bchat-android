@@ -157,7 +157,7 @@ final class ReactionRecipientsAdapter extends RecyclerView.Adapter<ReactionRecip
 
 
       if (reaction.getSender().isLocalNumber()) {
-        this.recipient.setText(R.string.you);
+        this.recipient.setText(R.string.MediaPreviewActivity_you);
       } else {
         String name = reaction.getSender().getName();
         if (name == null){

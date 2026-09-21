@@ -10,7 +10,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.ComponentActivity
+import io.beldex.bchat.BaseComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -33,13 +33,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -77,6 +76,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
@@ -106,18 +106,16 @@ import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.conversation.v2.dialogs.LeaveGroupDialog
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.home.NotificationSettingDialog
 import io.beldex.bchat.my_account.ui.CardContainer
 import io.beldex.bchat.my_account.ui.dialogs.LockOptionsDialog
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.io.IOException
 
 @AndroidEntryPoint
-class SecretGroupInfoComposeActivity : ComponentActivity() {
+class SecretGroupInfoComposeActivity : BaseComponentActivity() {
 
     companion object {
         const val secretGroupID = "secret_group_id"
@@ -184,8 +182,12 @@ class SecretGroupInfoComposeActivity : ComponentActivity() {
                             groupMembers = groupMembers,
                             listenerCallback = listenerCallback,
                             secretGroupInfoViewModel = secretGroupInfoViewModel,
-                            showSearchView = {
-                                tileName = context.getString(R.string.search_member_title)
+                            showSearchView = { show ->
+                                tileName = if(show) {
+                                    context.getString(R.string.search_member_title)
+                                } else {
+                                    context.getString(R.string.group_info)
+                                }
                             }
                         )
                     }
@@ -205,7 +207,7 @@ fun GroupDetailsScreen(
     groupMembers : GroupMembers?,
     listenerCallback : SecretGroupInfoComposeActivity.SocialGroupInfoInterface?,
     secretGroupInfoViewModel : SecretGroupInfoViewModel,
-    showSearchView : () -> Unit
+    showSearchView : (Boolean) -> Unit
 ) {
     lateinit var groupID : String
     val context=LocalContext.current
@@ -324,7 +326,7 @@ fun GroupDetailsScreen(
         val bchatID=getLocalNumber(context)
         val isCurrentUserAdmin=admins.any { it.toString() == bchatID }
         val message=if (isCurrentUserAdmin) {
-            "Because you are the creator of this group it will be deleted for everyone. This cannot be undone."
+            context.resources.getString(R.string.group_delete_confirmation_message)
         } else {
             context.resources.getString(R.string.ConversationActivity_are_you_sure_you_want_to_leave_this_group)
         }
@@ -448,7 +450,7 @@ fun GroupDetailsScreen(
         } else {
             val contact=DatabaseComponent.get(context).bchatContactDatabase()
                 .getContactWithBchatID(publicKey)
-            contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
+            contact?.displayName(Contact.ContactContext.REGULAR, context) ?: publicKey
         }
     }
 
@@ -491,11 +493,6 @@ fun GroupDetailsScreen(
         return this.replaceFirstChar { it.uppercase() }
     }
 
-    val modalSheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded },
-        skipHalfExpanded = true
-    )
     var isShowSearchBottomSheet by remember {
         mutableStateOf(false)
     }
@@ -503,11 +500,20 @@ fun GroupDetailsScreen(
         isShowSearchBottomSheet = isVisible
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     if (isShowSearchBottomSheet) {
-        ModalBottomSheetLayout(
-            sheetState=modalSheetState,
-            sheetShape=RoundedCornerShape(topStart=12.dp, topEnd=12.dp),
-            sheetContent={}
+
+        val sheetState = rememberModalBottomSheetState(
+            skipPartiallyExpanded = true
+        )
+
+        ModalBottomSheet(
+            onDismissRequest = {
+                showSearchView(false)
+                secretGroupInfoViewModel.updateVisibleBottomSheet(false)
+            },
+            sheetState = sheetState,
+            shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
         ) {
             val focusRequester=remember { FocusRequester() }
             val coroutineScope=rememberCoroutineScope()
@@ -568,13 +574,13 @@ fun GroupDetailsScreen(
                         Row(
                             modifier=Modifier
                                 .fillMaxWidth()
-                                .padding(vertical=8.dp)
+                                .padding(vertical = 8.dp)
                                 .clickable {
-                                if (getLocalNumber(context) != member) {
-                                    selectedItem=member
-                                    showMemberOptionDialog=true
-                                }
-                            },
+                                    if (getLocalNumber(context) != member) {
+                                        selectedItem = member
+                                        showMemberOptionDialog = true
+                                    }
+                                },
                             verticalAlignment=Alignment.CenterVertically
                         )
                         {
@@ -617,7 +623,7 @@ fun GroupDetailsScreen(
                     item {
                         if (membersToDisplay.isEmpty()) {
                             Text(
-                                text="No records found! ",
+                                text= stringResource(R.string.no_records_found),
                                 style=MaterialTheme.typography.bodyMedium.copy(
                                     fontSize=14.sp,
                                     color=MaterialTheme.appColors.textColor
@@ -699,7 +705,7 @@ fun GroupDetailsScreen(
                         )
                     ) {
                         NavigationItem(
-                            "All Media",
+                            stringResource(R.string.all_media),
                             painterResource(id=R.drawable.ic_all_media),
                             onItemClick={ listenerCallback?.showAllMedia(recipient) },
                             checked=false,
@@ -707,7 +713,7 @@ fun GroupDetailsScreen(
                             null
                         )
                         NavigationItem(
-                            "Disappearing Messages",
+                            stringResource(R.string.disappearing_messages),
                             painterResource(id=R.drawable.ic_disappearing_message),
                             onItemClick={
                                 if (isSecretGroupIsActive()) {
@@ -725,7 +731,7 @@ fun GroupDetailsScreen(
                             subTitle=context.getString(R.string.disappearing_info)
                         )
                         NavigationItem(
-                            "Edit Group",
+                            stringResource(R.string.activity_edit_closed_group_title),
                             painterResource(id=R.drawable.ic_block_request),
                             onItemClick={
                                 if (isSecretGroupIsActive()) {
@@ -743,7 +749,7 @@ fun GroupDetailsScreen(
                             null
                         )
                         NavigationItem(
-                            "Notify for Mentions Only",
+                            stringResource(R.string.notify_for_mentions_only),
                             painterResource(id=R.drawable.ic_mention_only),
                             onItemClick={
                                 if (isSecretGroupIsActive()) {
@@ -757,7 +763,7 @@ fun GroupDetailsScreen(
                                 }
 
                             },
-                            checked=showNotificationSettingsItem == "Mentions",
+                            checked=showNotificationSettingsItem == context.getString(R.string.notify_type_mentions),
                             showSwitch=true,
                             subTitle=context.getString(R.string.notification_info)
                         )
@@ -769,7 +775,7 @@ fun GroupDetailsScreen(
                                 .padding(16.dp)
                                 .clickable {
                                     if (isSecretGroupIsActive()) {
-                                        showLeaveGroupDialog=true
+                                        showLeaveGroupDialog = true
                                     } else {
                                         Toast
                                             .makeText(
@@ -789,7 +795,7 @@ fun GroupDetailsScreen(
                             )
                             Spacer(modifier=Modifier.width(16.dp))
                             Text(
-                                text="Leave Group",
+                                text= stringResource(R.string.leave_group),
                                 color=Color.Red,
                                 style=MaterialTheme.typography.titleSmall
                             )
@@ -817,7 +823,7 @@ fun GroupDetailsScreen(
                         modifier=Modifier.padding(16.dp)
                     ) {
                         Text(
-                            text="$memberCount members",
+                            text= stringResource(R.string.ConversationActivity_member_count, memberCount),
                             color=Color.Gray,
                             style=MaterialTheme.typography.titleSmall.copy(
                                 color=MaterialTheme.appColors.editTextHint,
@@ -833,7 +839,7 @@ fun GroupDetailsScreen(
                             modifier=Modifier
                                 .size(20.dp)
                                 .clickable {
-                                    showSearchView()
+                                    showSearchView(true)
                                     secretGroupInfoViewModel.updateVisibleBottomSheet(true)
                                 }
                         )
@@ -851,8 +857,8 @@ fun GroupDetailsScreen(
                             .padding(8.dp)
                             .clickable {
                                 if (getLocalNumber(context) != member) {
-                                    selectedItem=member
-                                    showMemberOptionDialog=true
+                                    selectedItem = member
+                                    showMemberOptionDialog = true
                                 }
                             },
                         verticalAlignment=Alignment.CenterVertically,
@@ -976,7 +982,7 @@ fun NavigationItem(
                     ),
                     modifier=Modifier
                         .size(30.dp)
-                        .padding(end=4.dp)
+                        .padding(end = 4.dp)
                 )
             }
         }
@@ -1090,7 +1096,7 @@ fun MemberDetailsDialog(
         } else {
             val contact=DatabaseComponent.get(context).bchatContactDatabase()
                 .getContactWithBchatID(publicKey)
-            contact?.displayName(Contact.ContactContext.REGULAR) ?: truncatedPublicKey(publicKey)
+            contact?.displayName(Contact.ContactContext.REGULAR, context) ?: truncatedPublicKey(publicKey)
         }
     }
 
@@ -1108,7 +1114,7 @@ fun MemberDetailsDialog(
             Column(
                 Modifier
                     .fillMaxWidth()
-                    .padding(start=20.dp, end=20.dp, top=25.dp, bottom=25.dp),
+                    .padding(start = 20.dp, end = 20.dp, top = 25.dp, bottom = 25.dp),
                 Arrangement.Center,
                 Alignment.CenterHorizontally
             ) {
@@ -1124,7 +1130,7 @@ fun MemberDetailsDialog(
                             Column(
                                 modifier=Modifier
                                     .fillMaxSize()
-                                    .padding(vertical=4.dp),
+                                    .padding(vertical = 4.dp),
                                 verticalArrangement=Arrangement.Center,
                                 horizontalAlignment=Alignment.Start,
                             ) {
@@ -1142,21 +1148,21 @@ fun MemberDetailsDialog(
                                         .clickable {
                                             when (index) {
                                                 0 -> {
-                                                    val recipient=Recipient.from(
+                                                    val recipient = Recipient.from(
                                                         context,
                                                         Address.fromSerialized(member),
                                                         false
                                                     )
-                                                    val existingThread=DatabaseComponent
+                                                    val existingThread = DatabaseComponent
                                                         .get(context)
                                                         .threadDatabase()
                                                         .getThreadIdIfExistsFor(recipient)
                                                     if (activity != null) {
                                                         createConversation(
-                                                            threadId=existingThread,
-                                                            address=recipient.address,
-                                                            activity=activity,
-                                                            context=context
+                                                            threadId = existingThread,
+                                                            address = recipient.address,
+                                                            activity = activity,
+                                                            context = context
                                                         )
                                                     }
                                                     onDismiss()
@@ -1177,7 +1183,7 @@ fun MemberDetailsDialog(
                         contentDescription="",
                         tint=MaterialTheme.appColors.editTextColor,
                         modifier=Modifier
-                            .padding(end=8.dp, bottom=16.dp)
+                            .padding(end = 8.dp, bottom = 16.dp)
                             .clickable {
                                 onDismiss()
                             }

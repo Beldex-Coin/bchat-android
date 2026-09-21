@@ -227,7 +227,7 @@ class ConversationViewModel (
                 stopPlayingAudioMessage(message)
             }
             .onFailure {
-                showMessage("Couldn't delete message due to error: $it")
+                showMessage(application.getString(R.string.delete_message_failed_with_error, it))
             }
     }
 
@@ -235,7 +235,7 @@ class ConversationViewModel (
     fun deleteMessagesWithoutUnsendRequest(messages: Set<MessageRecord>) = viewModelScope.launch {
         repository.deleteMessageWithoutUnsendRequest(threadId, messages)
             .onFailure {
-                showMessage("Couldn't delete message due to error: $it")
+                showMessage(application.getString(R.string.delete_message_failed_with_error, it))
             }
     }
 

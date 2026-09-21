@@ -1,5 +1,6 @@
 package com.beldex.libbchat.messaging.mentions
 
+import android.content.Context
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.contacts.Contact
 
@@ -15,7 +16,7 @@ object MentionsManager {
         }
     }
 
-    fun getMentionCandidates(query: String, threadID: Long, isOpenGroup: Boolean): List<Mention> {
+    fun getMentionCandidates(query: String, threadID: Long, isOpenGroup: Boolean, appContext: Context): List<Mention> {
         val cache = userPublicKeyCache[threadID] ?: return listOf()
         // Prepare
         val context = if (isOpenGroup) Contact.ContactContext.OPEN_GROUP else Contact.ContactContext.REGULAR
@@ -24,7 +25,7 @@ object MentionsManager {
         // Gather candidates
         var candidates: List<Mention> = cache.mapNotNull { publicKey ->
             val contact = storage.getContactWithBchatID(publicKey)
-            val displayName = contact?.displayName(context) ?: return@mapNotNull null
+            val displayName = contact?.displayName(context, appContext) ?: return@mapNotNull null
             Mention(publicKey, displayName)
         }
         candidates = candidates.filter { it.publicKey != userPublicKey }

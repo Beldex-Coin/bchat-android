@@ -41,7 +41,6 @@ import androidx.activity.viewModels
 import androidx.annotation.DimenRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -59,6 +58,7 @@ import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.beldex.libbchat.BuildConfig
 import com.beldex.libbchat.messaging.jobs.AttachmentDownloadJob
 import com.beldex.libbchat.messaging.jobs.JobQueue
 import com.beldex.libbchat.messaging.mentions.Mention
@@ -96,6 +96,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.ApplicationContext
+import io.beldex.bchat.BaseAppCompatActivity
 import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.MediaOverviewActivity
 import io.beldex.bchat.R
@@ -207,10 +208,9 @@ import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
-import kotlin.text.indexOfAny
 
 @AndroidEntryPoint
-class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
+class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
     InputBarRecordingViewDelegate, AttachmentManager.AttachmentListener,
     ConversationActionModeCallbackDelegate,
     RecipientModifiedListener,
@@ -769,7 +769,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
                 )
             )
             binding.callActionBarView.isVisible=false
-            Toast.makeText(this, "Call ended", Toast.LENGTH_SHORT)
+            Toast.makeText(this, getString(R.string.call_ended), Toast.LENGTH_SHORT)
                 .show()
         }
         binding.callActionBarView.setOnClickListener {
@@ -1092,10 +1092,16 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             profileManager.setName(applicationContext, recipient, bnsName)
         }
 
+        // ---------- Report issue title ----------
+        val isReportIssueRecipient = recipient.address.toString() == BuildConfig.REPORT_ISSUE_ID
+        val localizedReportIssueName = getString(R.string.report_issue).capitalizeFirstLetter()
+
         // ---------- Title ----------
         val title = when {
             recipient.isLocalNumber ->
                 getString(R.string.note_to_self).capitalizeFirstLetter()
+            isReportIssueRecipient ->
+                localizedReportIssueName
             else ->
                 recipient.toShortString().capitalizeFirstLetter()
         }
@@ -1141,7 +1147,11 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         }
 
         // ---------- Back button ----------
-        binding.backToHomeBtn.setOnClickListener {
+        binding.conversationActivityToolbar.setNavigationIcon(
+            R.drawable.ic_back_arrow
+        )
+
+        binding.conversationActivityToolbar.setNavigationOnClickListener {
             handleBackPressed()
             onBackPressedDispatcher.onBackPressed()
         }
@@ -1466,9 +1476,12 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
                 val groupID : String=recipient.address.toGroupString()
                 val members=groupRepository?.getGroupMembers(groupID)
                 val memberCount=members?.members?.size ?: 0
-                binding.conversationSubtitleView.isVisible=true
-                binding.conversationSubtitleView.text=
-                    if (memberCount > 1) "$memberCount members" else "$memberCount member"
+                binding.conversationSubtitleView.isVisible = true
+                binding.conversationSubtitleView.text = resources.getQuantityString(
+                    R.plurals.group_member_count,
+                    memberCount,
+                    memberCount
+                )
             } else {
                 binding.conversationSubtitleView.isVisible=false
             }
@@ -2229,7 +2242,8 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         val candidates = MentionsManager.getMentionCandidates(
             query,
             viewModel.threadId,
-            recipient.isOpenGroupRecipient
+            recipient.isOpenGroupRecipient,
+            this
         )
 
         if (!isShowingMentionCandidatesView) {
@@ -2437,7 +2451,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         if (binding.inputBar.text.length > 4096) {
             Toast.makeText(
                 this,
-                "Text limit exceed: Maximum limit of messages is 4096 characters",
+                getString(R.string.text_limit_exceed_warnings),
                 Toast.LENGTH_SHORT
             ).show()
         } else {
@@ -3299,7 +3313,7 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
         AlertDialog.Builder(this, R.style.BChatAlertDialog_ForBan)
             .setTitle(R.string.ConversationFragment_ban_selected_user)
             .setMessage(
-                "This will ban the selected user from this room. It won't ban them from other rooms."
+                R.string.ban_message
             )
             .setCancelable(true)
             .setPositiveButton(R.string.ban) { _, _ ->
@@ -3990,11 +4004,17 @@ class ConversationActivityV2 : AppCompatActivity(), InputBarDelegate,
             val names = flattenData(contact.name).ifEmpty { addresses }
 
             val displayName = when (names.size) {
-                0 -> "No Name"
+                0 -> getString(R.string.no_name)
                 1 -> names.first().capitalizeFirstLetter()
-                2 -> "${shortNameAndAddress(names[0], addresses[0])} and 1 other"
-                else ->
-                    "${shortNameAndAddress(names.first(), addresses.first())} and ${names.size - 1} others"
+                else -> {
+                    val othersCount = names.size - 1
+                    resources.getQuantityString(
+                        R.plurals.contact_others,
+                        othersCount,
+                        shortNameAndAddress(names.first(), addresses.first()),
+                        othersCount
+                    )
+                }
             }
 
             arguments = Bundle().apply {

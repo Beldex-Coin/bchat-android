@@ -10,13 +10,13 @@
     <item
         android:id="@+id/save"
         android:icon="?menu_save_icon"
-        android:title="@string/media_preview__save_title"
+        android:title="@string/save"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/media_preview__overview"
         android:icon="?menu_photo_library_icon"
-        android:title="@string/media_preview__all_media_title"
+        android:title="@string/MediaRepository_all_media"
         app:showAsAction="ifRoom" />
 
     <item

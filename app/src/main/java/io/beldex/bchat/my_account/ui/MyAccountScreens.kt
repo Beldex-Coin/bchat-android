@@ -14,4 +14,5 @@ sealed class MyAccountScreens(val route: String) {
     data object StartWalletInfoScreen: MyAccountScreens("/start-wallet-info")
     data object AboutBNSScreen : MyAccountScreens("/about-bns")
     data object ArchiveChatScreen : MyAccountScreens("/archive_chats")
+    data object LanguageChooseScreen: MyAccountScreens("/language-choose")
 }

@@ -91,7 +91,7 @@
                     android:minHeight="56dp"
                     android:paddingStart="24dp"
                     android:paddingEnd="24dp"
-                    android:text="@string/message_requests_clear"
+                    android:text="@string/clear"
                     app:icon="@drawable/ic_clear_seed"
                     app:iconTint="@color/version_color" />
 
@@ -113,6 +113,7 @@
                 android:id="@+id/paste_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textAlignment="center"
                 android:layout_marginBottom="10dp"
                 android:fontFamily="@font/open_sans_regular"
                 android:gravity="center"

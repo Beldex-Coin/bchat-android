@@ -36,9 +36,9 @@
                     android:id="@+id/nodeAddressCardView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/medium_spacing"
+                    android:layout_marginStart="@dimen/medium_spacing"
                     android:layout_marginTop="@dimen/medium_spacing"
-                    android:layout_marginRight="@dimen/medium_spacing"
+                    android:layout_marginEnd="@dimen/medium_spacing"
                     app:cardBackgroundColor="@color/add_node_card_color"
                     app:cardCornerRadius="10dp">
 
@@ -65,9 +65,9 @@
                     android:id="@+id/nodePortCardView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/medium_spacing"
+                    android:layout_marginStart="@dimen/medium_spacing"
                     android:layout_marginTop="@dimen/medium_spacing"
-                    android:layout_marginRight="@dimen/medium_spacing"
+                    android:layout_marginEnd="@dimen/medium_spacing"
                     app:cardBackgroundColor="@color/add_node_card_color"
                     app:cardCornerRadius="10dp">
 
@@ -77,8 +77,8 @@
                         android:layout_height="wrap_content"
                         app:errorTextColor="@color/red"
                         app:hintEnabled="false"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/nodeAddressEditTxtLayout">
 
                         <EditText
@@ -98,9 +98,9 @@
                     android:id="@+id/nodeNameCardView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/medium_spacing"
+                    android:layout_marginStart="@dimen/medium_spacing"
                     android:layout_marginTop="@dimen/medium_spacing"
-                    android:layout_marginRight="@dimen/medium_spacing"
+                    android:layout_marginEnd="@dimen/medium_spacing"
                     app:cardBackgroundColor="@color/add_node_optional_card_color"
                     app:cardCornerRadius="10dp">
 
@@ -110,8 +110,8 @@
                         android:layout_height="wrap_content"
                         app:errorTextColor="@color/red"
                         app:hintEnabled="false"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/nodePortCardView">
 
 
@@ -131,9 +131,9 @@
                     android:id="@+id/nodeUserNameCardView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/medium_spacing"
+                    android:layout_marginStart="@dimen/medium_spacing"
                     android:layout_marginTop="@dimen/medium_spacing"
-                    android:layout_marginRight="@dimen/medium_spacing"
+                    android:layout_marginEnd="@dimen/medium_spacing"
                     app:cardBackgroundColor="@color/add_node_optional_card_color"
                     app:cardCornerRadius="10dp">
 
@@ -143,8 +143,8 @@
                         android:layout_height="wrap_content"
                         app:errorTextColor="@color/red"
                         app:hintEnabled="false"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/nodeNameCardView">
 
 
@@ -164,9 +164,9 @@
                     android:id="@+id/nodePasswordCardView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/medium_spacing"
+                    android:layout_marginStart="@dimen/medium_spacing"
                     android:layout_marginTop="@dimen/medium_spacing"
-                    android:layout_marginRight="@dimen/medium_spacing"
+                    android:layout_marginEnd="@dimen/medium_spacing"
                     app:cardBackgroundColor="@color/add_node_optional_card_color"
                     app:cardCornerRadius="10dp">
 
@@ -176,8 +176,8 @@
                         android:layout_height="wrap_content"
                         app:errorTextColor="@color/red"
                         app:hintEnabled="false"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/nodeUserNameCardView">
 
                         <EditText
@@ -199,12 +199,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:cardBackgroundColor="@color/button_green"
-                    android:layout_marginLeft="@dimen/medium_spacing"
+                    android:layout_marginStart="@dimen/medium_spacing"
                     android:layout_marginTop="@dimen/medium_spacing"
-                    android:layout_marginRight="@dimen/medium_spacing"
+                    android:layout_marginEnd="@dimen/medium_spacing"
                     app:cardCornerRadius="10dp"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
                     android:layout_marginBottom="15dp"
                     android:elevation="5dp">
                     <LinearLayout

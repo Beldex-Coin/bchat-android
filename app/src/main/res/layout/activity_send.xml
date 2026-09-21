@@ -28,8 +28,8 @@
                     android:layout_height="wrap_content"
                     app:errorTextColor="@color/red"
                     app:hintEnabled="false"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@id/scanQrCode"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/scanQrCode"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <EditText
@@ -94,8 +94,8 @@
                     android:layout_weight="2"
                     app:errorTextColor="@color/red"
                     app:hintEnabled="false"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@id/scanQrCode"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/scanQrCode"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <EditText
@@ -137,8 +137,8 @@
                     android:layout_weight="2"
                     app:errorTextColor="@color/red"
                     app:hintEnabled="false"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@id/scanQrCode"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/scanQrCode"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <EditText
@@ -187,9 +187,9 @@
                 style="@style/Widget.Bchat.Button.Common.ProminentFilled"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/medium_button_height"
-                android:layout_marginLeft="50dp"
+                android:layout_marginStart="50dp"
                 android:layout_marginTop="@id/spacer"
-                android:layout_marginRight="50dp"
+                android:layout_marginEnd="50dp"
                 android:layout_marginBottom="@dimen/medium_spacing"
                 android:text="@string/send" />
 

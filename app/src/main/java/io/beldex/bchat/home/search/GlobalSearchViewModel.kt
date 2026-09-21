@@ -134,7 +134,7 @@ class GlobalSearchViewModel @Inject constructor(
         if (messageResults.isNotEmpty()) {
             messageResults.add(
                 0,
-                SearchResults.Header(R.string.global_search_messages)
+                SearchResults.Header(R.string.NotificationChannel_group_messages)
             )
         }
         _searchResults.update { contactResults + messageResults }

@@ -11,6 +11,7 @@ import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.database.RecipientDatabase
 import io.beldex.bchat.dependencies.DatabaseComponent
 import com.bumptech.glide.RequestManager
+import io.beldex.bchat.R
 import javax.inject.Inject
 
 class BlockedContactAdapter(
@@ -51,7 +52,7 @@ class BlockedContactAdapter(
                 ), false
             )
             TextSecurePreferences.setUnBlockStatus(context, true)
-            Toast.makeText(context, "UnBlocked this contact", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.unblocked_this_contact, Toast.LENGTH_SHORT).show()
             listener.onBlockedContactClick(position)
         }
         viewHolder.view.bind(

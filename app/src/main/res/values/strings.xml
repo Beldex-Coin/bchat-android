@@ -532,6 +532,12 @@
     <string name="preferences__if_typing_indicators_are_disabled_you_wont_be_able_to_see_typing_indicators">If typing indicators are disabled, you won\'t be able to see typing indicators from others.</string>
     <string name="preferences__onion_routing">Onion Routing</string>
     <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">If enabled, onion routing will be used to deliver your messages</string>
+    <string name="preferences_onion_routing_hops">Onion routing hops</string>
+    <string name="preferences_onion_routing_hops_summary">Select how many hops your messages pass through. Off connects directly, 1 hop uses one master node, 3 hops use three master nodes.</string>
+    <string name="preferences__onion_routing_off">Off</string>
+    <string name="preferences__onion_routing_1_hop">1 hop</string>
+    <string name="preferences__onion_routing_3_hops">3 hops</string>
+    <string name="preferences__onion_routing_settings_subtitle">Control how your messages are routed to keep your identity private. Send them directly, or bounce them through one or three master nodes.</string>
     <string name="onion_routing_turn_off_confirmation">Turning off onion routing exposes your IP address to the masternode and reveals to network observers that you\'re using BChat. Your messages remain encrypted either way. Turn off anyway ?</string>
     <string name="preferences__request_keyboard_to_disable_personalized_learning">Request keyboard to disable personalized learning</string>
     <string name="preferences__light_theme">Light</string>

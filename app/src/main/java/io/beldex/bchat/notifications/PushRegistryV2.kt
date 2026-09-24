@@ -92,12 +92,17 @@ class PushRegistryV2 @Inject constructor(private val pushReceiver: PushReceiver)
         val url = "${server.url}/$path"
         val body = requestParameters.toRequestBody("application/json".toMediaType())
         val request = Request.Builder().url(url).post(body).build()
-        return OnionRequestAPI.sendOnionRequest(
-            request,
-            server.url,
-            server.publicKey,
-            Version.V4
-        ).map { response ->
+        val requestPromise = if (OnionRequestAPI.isOnionRoutingEnabled) {
+            OnionRequestAPI.sendOnionRequest(
+                request,
+                server.url,
+                server.publicKey,
+                Version.V4
+            )
+        } else {
+            OnionRequestAPI.sendDirectRequest(request)
+        }
+        return requestPromise.map { response ->
             response.body!!.inputStream()
                 .let { Json.decodeFromStream<T>(it) }
                 .also { if (it.isFailure()) throw Exception("error: ${it.message}.") }

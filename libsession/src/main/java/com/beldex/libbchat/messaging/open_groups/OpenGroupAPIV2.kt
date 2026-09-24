@@ -173,7 +173,7 @@ object OpenGroupAPIV2 {
                 requestBuilder.header("Room", request.room)
                 //-Log.d("Beldex","Social group api url builder ${request.room}")
             }
-            if (request.useOnionRouting) {
+            if (request.useOnionRouting && OnionRequestAPI.isOnionRoutingEnabled) {
                 val publicKey = MessagingModuleConfiguration.shared.storage.getOpenGroupPublicKey(request.server)
                     ?: return Promise.ofFail(Error.NoPublicKey)
                 return OnionRequestAPI.sendOnionRequest(requestBuilder.build(), request.server, publicKey, Version.V3).fail { e ->
@@ -201,7 +201,21 @@ object OpenGroupAPIV2 {
                     }
                 }
             } else {
-                return Promise.ofFail(IllegalStateException("It's currently not allowed to send non onion routed requests."))
+                return OnionRequestAPI.sendDirectRequest(requestBuilder.build()).fail { e ->
+                    when (e) {
+                        // No need for the stack trace for HTTP errors
+                        is HTTP.HTTPRequestFailedException -> {
+                            Log.e("OpenGroupAPIV2", "Failed request: ${e.message}")
+                            if (e.statusCode == 401) {
+                                val storage = MessagingModuleConfiguration.shared.storage
+                                if (request.room != null) {
+                                    storage.removeAuthToken(request.room, request.server)
+                                }
+                            }
+                        }
+                        else -> Log.e("OpenGroupAPIV2", "Failed request", e)
+                    }
+                }
             }
         }
         return if (request.isAuthRequired) {

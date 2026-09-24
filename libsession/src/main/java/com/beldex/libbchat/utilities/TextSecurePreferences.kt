@@ -367,6 +367,8 @@ interface TextSecurePreferences {
         const val AIRDROP_STATUS = "airdrop_status"
         const val CALL_NOTIFICATIONS_ENABLED = "pref_call_notifications_enabled"
         const val USE_ONION_ROUTING = "pref_onion_routing"
+        // Kept as a backwards-compatible alias; the canonical key lives in OnionRoutingPreferenceUtils
+        const val USE_ONION_ROUTING_PATH_COUNT = OnionRoutingPreferenceUtils.KEY_ONION_ROUTING_PATH_COUNT
         const val SHOWN_CALL_WARNING = "pref_shown_call_warning" // call warning is user-facing warning of enabling calls
         const val SHOWN_CALL_NOTIFICATION = "pref_shown_call_notification" // call notification is a promp to check privacy settings
         const val HAS_HIDDEN_MESSAGE_REQUESTS = "pref_message_requests_hidden"
@@ -606,12 +608,22 @@ interface TextSecurePreferences {
 
         @JvmStatic
         fun isOnionRoutingEnabled(context: Context): Boolean {
-            return getBooleanPreference(context, USE_ONION_ROUTING, false)
+            return getBooleanPreference(context, USE_ONION_ROUTING, true)
         }
 
         @JvmStatic
         fun setOnionRoutingEnabled(context: Context, enabled: Boolean) {
             setBooleanPreference(context, USE_ONION_ROUTING, enabled)
+        }
+
+        @JvmStatic
+        fun getOnionRequestPathCount(context: Context): Int {
+            return OnionRoutingPreferenceUtils.getPathCount(context)
+        }
+
+        @JvmStatic
+        fun setOnionRequestPathCount(context: Context, count: Int) {
+            OnionRoutingPreferenceUtils.setPathCount(context, count)
         }
 
         @JvmStatic

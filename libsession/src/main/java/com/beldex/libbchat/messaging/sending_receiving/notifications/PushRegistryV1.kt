@@ -111,10 +111,15 @@ object PushRegistryV1 {
             }
         }
     }
-    private fun sendOnionRequest(request: Request): Promise<OnionResponse, Exception> = OnionRequestAPI.sendOnionRequest(
-        request,
-        server.url,
-        server.publicKey,
-        Version.V2
-    )
+    private fun sendOnionRequest(request: Request): Promise<OnionResponse, Exception> =
+        if (OnionRequestAPI.isOnionRoutingEnabled) {
+            OnionRequestAPI.sendOnionRequest(
+                request,
+                server.url,
+                server.publicKey,
+                Version.V2
+            )
+        } else {
+            OnionRequestAPI.sendDirectRequest(request)
+        }
 }

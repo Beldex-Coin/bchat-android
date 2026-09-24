@@ -7,6 +7,8 @@ import nl.komponents.kovenant.functional.bind
 import nl.komponents.kovenant.functional.map
 import okhttp3.Request
 import com.beldex.libbchat.messaging.file_server.FileServerAPIV2
+import com.beldex.libbchat.messaging.MessagingModuleConfiguration
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.AESGCM
 import com.beldex.libsignal.utilities.*
 import com.beldex.libsignal.utilities.Mnode
@@ -25,7 +27,8 @@ import java.util.*
 private typealias Path = List<Mnode>
 
 object OnionRequestAPI {
-    private var buildPathsPromise: Promise<List<Path>, Exception>? = null
+    private var buildPathsPromise: PathBuildRequest? = null
+    private data class PathBuildRequest(val requestedPathSize: Int, val promise: Promise<List<Path>, Exception>)
     private val database: BeldexAPIDatabaseProtocol
         get() = MnodeModule.shared.storage
     private val broadcaster: Broadcaster
@@ -34,6 +37,44 @@ object OnionRequestAPI {
     private val mnodeFailureCount = mutableMapOf<Mnode, Int>()
 
     var guardMnodes = setOf<Mnode>()
+
+    /**
+     * Sets the onion-routing hop count to use for all newly built paths (1 = one hop,
+     * 3 = three hops). The default remains 3 for full onion-routing privacy.
+     *
+     * Changing this at runtime is only safe if every cached path is discarded at the same
+     * time: a path that was built for 3 hops has a different layer count than one built for
+     * 1 hop, and reusing a stale cached path would fail layer decryption at the first hop
+     * (which is exactly the kind of onion path mismatch that crashed the app / broke sends
+     * and message restore before). So when the user switches the setting we wipe the cached
+     * DB paths and the in-memory guard set, and force a fresh path build on the next send.
+     */
+    fun setOnionRequestPathCount(count: Int) {
+        if (count != 1 && count != 3) return
+        val cachedPaths = paths
+        val cachedPathsMatchSelection = cachedPaths.isNotEmpty() && cachedPaths.all { it.size == count }
+        if (cachedPathsMatchSelection) return
+        Log.d("ONION_HOP", "setOnionRequestPathCount: hop count changed to $count, wiping ${cachedPaths.size} cached path(s) and guard mnode cache")
+        paths = emptyList()              // wipes DB onionRequestPaths via the paths setter
+        guardMnodes = emptySet()
+        pathFailureCount.clear()
+        mnodeFailureCount.clear()
+    }
+    /**
+     * Triggers a fresh path build right away if the cached paths are missing or incomplete
+     * (e.g. just after the user picks a new hop count in Settings, which wipes the cache).
+     *
+     * Path building is lazy by design (it happens on the next onion request via getPath()), so
+     * without this call the home screen status light stays red and the hops screen stays empty
+     * until the next message/sync is sent. This kicks off the build immediately and lets the
+     * UI refresh via the "buildingPaths"/"pathsBuilt" broadcasts. The default is a no-op when
+     * a full set of paths already exists, so it is safe to call on every settings confirm.
+     */
+    fun rebuildPathsIfNeeded() {
+        if (paths.size >= targetPathCount) { return }
+        buildPaths(listOf())
+    }
+
     var paths: List<Path> // Not a set to ensure we consistently show the same path to the user
         get() = database.getOnionRequestPaths()
         set(newValue) {
@@ -50,9 +91,24 @@ object OnionRequestAPI {
 
     // region Settings
     /**
-     * The number of mnodes (including the guard mnode) in a path.
+     * The number of mnodes (including the guard) per path. Sourced directly from the persisted
+     * user preference rather than an in-memory field, so background workers (which never run
+     * HomeActivity.update()) and any process always build paths matching the user's selection
+     * (1 = one hop, 3 = three hops).
+     *
+     * When the user has selected "Off" (0) the count is clamped up to 1, but it is never
+     * actually used: "Off" goes fully direct for mnodes (MnodeAPI.invoke) and for external
+     * servers (the sendDirectRequest helper), so this only acts as a safety net should a
+     * call slip through that can't go direct.
      */
-    private const val pathSize = 3
+    private val pathSize: Int
+        get() = TextSecurePreferences.getOnionRequestPathCount(MessagingModuleConfiguration.shared.context).coerceAtLeast(1)
+    /**
+     * Whether the user has onion routing enabled at all. When disabled, every request - to
+     * mnodes and to external servers alike - is sent directly with no onion layers.
+     */
+    val isOnionRoutingEnabled: Boolean
+        get() = TextSecurePreferences.isOnionRoutingEnabled(MessagingModuleConfiguration.shared.context)
     /**
      * The number of times a path can fail before it's replaced.
      */
@@ -79,7 +135,8 @@ object OnionRequestAPI {
     private data class OnionBuildingResult(
         val guardMnode: Mnode,
         val finalEncryptionResult: EncryptionResult,
-        val destinationSymmetricKey: ByteArray
+        val destinationSymmetricKey: ByteArray,
+        val pathSize: Int
     )
 
     internal sealed class Destination(val description: String) {
@@ -156,8 +213,8 @@ object OnionRequestAPI {
      * Builds and returns `targetPathCount` paths. The returned promise errors out if not
      * enough (reliable) mnodes are available.
      */
-    private fun buildPaths(reusablePaths: List<Path>): Promise<List<Path>, Exception> {
-        val existingBuildPathsPromise = buildPathsPromise
+    private fun buildPaths(reusablePaths: List<Path>, requestedPathSize: Int = pathSize): Promise<List<Path>, Exception> {
+        val existingBuildPathsPromise = buildPathsPromise?.takeIf { it.requestedPathSize == requestedPathSize }?.promise
         if (existingBuildPathsPromise != null) { return existingBuildPathsPromise }
         Log.d("Beldex", "Building onion request paths.")
         broadcaster.broadcast("buildingPaths")
@@ -166,16 +223,21 @@ object OnionRequestAPI {
             getguardMnodes(reusableGuardMnodes).map { guardMnodes ->
                 var unusedMnodes = MnodeAPI.mnodePool.minus(guardMnodes).minus(reusablePaths.flatten())
                 val reusableGuardMnodeCount = reusableGuardMnodes.count()
-                val pathMnodeCount = (targetGuardMnodeCount - reusableGuardMnodeCount) * pathSize - (targetGuardMnodeCount - reusableGuardMnodeCount)
+                val pathMnodeCount = (targetGuardMnodeCount - reusableGuardMnodeCount) * requestedPathSize - (targetGuardMnodeCount - reusableGuardMnodeCount)
                 if (unusedMnodes.count() < pathMnodeCount) { throw InsufficientMnodesException() }
                 // Don't test path mnodes as this would reveal the user's IP to them
                 guardMnodes.minus(reusableGuardMnodes).map { guardMnode ->
-                    val result = listOf( guardMnode ) + (0 until (pathSize - 1)).map {
+                    val result = listOf( guardMnode ) + (0 until (requestedPathSize - 1)).map {
                         val pathMnode = unusedMnodes.getRandomElement()
                         unusedMnodes = unusedMnodes.minus(pathMnode)
                         pathMnode
                     }
                     Log.d("Beldex","Three onion request path result guardMnode  $guardMnode")
+                    // Prints the full path values for both 1-hop (requestedPathSize=1) and 3-hop (requestedPathSize=3)
+                    Log.d("ONION_HOP", "Built ${requestedPathSize}-hop path (${result.size} mnode(s)): " +
+                        result.mapIndexed { index, mnode ->
+                            "H${index + 1}=${mnode.address}:${mnode.port} (ed25519=${mnode.publicKeySet?.ed25519Key}, x25519=${mnode.publicKeySet?.x25519Key})"
+                        }.joinToString(" -> "))
 
 //                     Built new onion request path: [https://54.202.123.159:19090, https://3.26.207.159:19090, https://13.208.47.131:19090]
 
@@ -191,16 +253,22 @@ object OnionRequestAPI {
         }
         promise.success { buildPathsPromise = null }
         promise.fail { buildPathsPromise = null }
-        buildPathsPromise = promise
+        buildPathsPromise = PathBuildRequest(requestedPathSize, promise)
         return promise
     }
 
     /**
      * Returns a `Path` to be used for building an onion request. Builds new paths as needed.
      */
-    private fun getPath(mnodeToExclude: Mnode?): Promise<Path, Exception> {
-        if (pathSize < 1) { throw Exception("Can't build path of size zero.") }
-        val paths = this.paths
+    private fun getPath(mnodeToExclude: Mnode?, requestedPathSize: Int = pathSize): Promise<Path, Exception> {
+        if (requestedPathSize < 1) { throw Exception("Can't build path of size zero.") }
+        // Only consider cached paths that match the requested hop count. Cached paths may hold a
+        // mix of sizes (e.g. 1-hop message paths and 3-hop server paths); any path whose length
+        // doesn't match the current request is ignored (and rebuilt for the size that needs it).
+        var paths = this.paths.filter { it.size == requestedPathSize }
+        if (this.paths.any { it.size != requestedPathSize }) {
+            Log.d("ONION_HOP", "getPath: ${this.paths.count { it.size != requestedPathSize }} cached path(s) with a different hop count ignored")
+        }
         val guardMnodes = mutableSetOf<Mnode>()
         if (paths.isNotEmpty()) {
             guardMnodes.add(paths[0][0])
@@ -209,37 +277,42 @@ object OnionRequestAPI {
             }
         }
         OnionRequestAPI.guardMnodes = guardMnodes
-        fun getPath(paths: List<Path>): Path {
-            return if (mnodeToExclude != null) {
+        fun selectPath(paths: List<Path>): Path {
+            val selected = if (mnodeToExclude != null) {
                 paths.filter { !it.contains(mnodeToExclude) }.getRandomElement()
             } else {
                 paths.getRandomElement()
             }
+            Log.d("ONION_HOP", "getPath selected ${selected.size}-hop path: " +
+                selected.mapIndexed { index, mnode ->
+                    "H${index + 1}=${mnode.address}:${mnode.port}"
+                }.joinToString(" -> ") + " (excluded target: $mnodeToExclude)")
+            return selected
         }
         Log.d("Beldex", "Three onion request path ${paths.count().toString()}, $targetPathCount ")
 
         when {
             paths.count() >= targetPathCount -> {
                 Log.d("Beldex", "Three onion request path if")
-                return Promise.of(getPath(paths))
+                return Promise.of(selectPath(paths))
             }
             paths.isNotEmpty() -> {
                 Log.d("Beldex", "Three onion request path else")
                 return if (paths.any { !it.contains(mnodeToExclude) }) {
                     Log.d("Beldex", "Three onion request second if condition ${mnodeToExclude.toString()}")
-                    buildPaths(paths) // Re-build paths in the background
-                    Promise.of(getPath(paths))
+                    buildPaths(paths, requestedPathSize) // Re-build paths in the background
+                    Promise.of(selectPath(paths))
                 } else {
                     Log.d("Beldex", "Three onion request second else condition")
-                    buildPaths(paths).map { newPaths ->
-                        getPath(newPaths)
+                    buildPaths(paths, requestedPathSize).bind { newPaths ->
+                        Promise.of(selectPath(newPaths))
                     }
                 }
             }
             else -> {
                 Log.d("Beldex", "Three onion request first else condition")
-                return buildPaths(listOf()).map { newPaths ->
-                    getPath(newPaths)
+                return buildPaths(listOf(), requestedPathSize).bind { newPaths ->
+                    Promise.of(selectPath(newPaths))
                 }
             }
         }
@@ -285,6 +358,7 @@ object OnionRequestAPI {
      */
     private fun buildOnionForDestination(payload: ByteArray, destination: Destination, version: Version): Promise<OnionBuildingResult, Exception> {
         lateinit var guardMnode: Mnode
+        var usedPathSize = 0
         lateinit var destinationSymmetricKey: ByteArray // Needed by BeldexAPI to decrypt the response sent back by the destination
         lateinit var encryptionResult: EncryptionResult
         val mnodeToExclude = when (destination) {
@@ -292,9 +366,16 @@ object OnionRequestAPI {
             is Destination.Server -> null
         }
         Log.d("Beldex","Path build mnodeToExclude  $mnodeToExclude")
-        return getPath(mnodeToExclude).bind { path ->
+        // Mnode destinations (chat, secret groups, polling, call signaling) follow the user's hop
+        // count selection. External servers (file server, open groups, push registry, notify) must
+        // always use the full 3-hop onion when onion routing is enabled
+        val requestedPathSize = if (destination is Destination.Server) 3 else pathSize
+        return getPath(mnodeToExclude, requestedPathSize).bind { path ->
             guardMnode = path.first()
+            usedPathSize = path.size
             Log.d("Beldex","Path build first  $guardMnode")
+            // 1-hop vs 3-hop decision point: prints the path being used and exactly how many onion layers will be added
+            Log.d("ONION_HOP", "buildOnionForDestination: using ${path.size}-hop path (guard ${guardMnode.address}:${guardMnode.port}) -> encryption layers = ${path.size}")
             // Encrypt in reverse order, i.e. the destination first
             OnionRequestEncryption.encryptPayloadForDestination(payload, destination, version).bind { r ->
                 destinationSymmetricKey = r.symmetricKey
@@ -308,6 +389,7 @@ object OnionRequestAPI {
                     } else {
                         val lhs = Destination.Mnode(path.last())
                         path = path.dropLast(1)
+                        Log.d("ONION_HOP", "Wrapping onion layer: lhs=${lhs.description} -> rhs=${rhs.description} (${path.size} layer(s) remaining)")
                         OnionRequestEncryption.encryptHop(lhs, rhs, encryptionResult).bind { r ->
                             encryptionResult = r
                             rhs = lhs
@@ -317,7 +399,7 @@ object OnionRequestAPI {
                 }
                 addLayer()
             }
-        }.map { OnionBuildingResult(guardMnode, encryptionResult, destinationSymmetricKey) }
+        }.map { OnionBuildingResult(guardMnode, encryptionResult, destinationSymmetricKey, usedPathSize) }
     }
 
     /**
@@ -334,6 +416,7 @@ object OnionRequestAPI {
             //Original
             val nonNullGuardSnode = result.guardMnode
             val url = "${nonNullGuardSnode.address}:${nonNullGuardSnode.port}/onion_req/v2"
+            Log.d("ONION_HOP", "sendOnionRequest: POSTing ${result.pathSize}-hop onion to guard ${nonNullGuardSnode.address}:${nonNullGuardSnode.port} at $url, ciphertext size=${result.finalEncryptionResult.ciphertext.size} bytes")
 
             //10-05-2022 - 5.21 PM
             //val url = "https://13.233.54.176:19090/onion_req/v2"
@@ -470,6 +553,43 @@ object OnionRequestAPI {
             Log.d("Beldex", "Couldn't reach server: $url due to error: $exception.")
             throw exception
         }
+    }
+
+    /**
+     * Sends `request` directly to the server with no onion layers. Used when the user has
+     * onion routing disabled. The server's plain (JSON) response is parsed and wrapped in an
+     * [OnionResponse]; no AESGCM decryption is performed since the transport isn't onion
+     * encrypted. If the server answers with a `{ "body": ... }` envelope the body is unwrapped,
+     * mirroring what the onion response handler does.
+     */
+    fun sendDirectRequest(request: Request): Promise<OnionResponse, Exception> {
+        val deferred = deferred<OnionResponse, Exception>()
+        ThreadUtils.queue {
+            try {
+                Log.d("ONION_HOP", "sendDirectRequest: ${request.method} ${request.url}")
+                val response = HTTP.execute(request)
+                val json = try {
+                    JsonUtil.fromJson(response, Map::class.java)
+                } catch (exception: Exception) {
+                    mapOf("result" to response.decodeToString())
+                }
+                val info: Map<*, *> = when (val body = json["body"]) {
+                    is Map<*, *> -> body
+                    is String -> {
+                        try {
+                            JsonUtil.fromJson(body, Map::class.java)
+                        } catch (exception: Exception) {
+                            json
+                        }
+                    }
+                    else -> json
+                }
+                deferred.resolve(OnionResponse(info, JsonUtil.toJson(info).toByteArray()))
+            } catch (exception: Exception) {
+                deferred.reject(exception)
+            }
+        }
+        return deferred.promise
     }
     private fun generatePayload(request: Request, server: String, version: Version): ByteArray {
         val headers = request.getHeadersForOnionRequest().toMutableMap()

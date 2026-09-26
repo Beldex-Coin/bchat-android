@@ -524,6 +524,14 @@
     <string name="preferences__if_typing_indicators_are_disabled_you_wont_be_able_to_see_typing_indicators">Nếu tắt chỉ báo đang nhập, bạn sẽ không thể thấy khi người khác đang nhập tin nhắn</string>
     <string name="preferences__onion_routing">Định tuyến Onion</string>
     <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">Nếu được bật, định tuyến Onion sẽ được sử dụng để gửi tin nhắn của bạn</string>
+    <string name="preferences_onion_routing_hops_summary">Chọn số lần nhảy mà tin nhắn của bạn đi qua. Tắt kết nối trực tiếp, 1 lần nhảy dùng một nút chính, 3 lần nhảy dùng ba nút chính.</string>
+    <string name="preferences__onion_routing_off">Không nhảy</string>
+    <string name="preferences__onion_routing_1_hop">1 lần nhảy (mặc định)</string>
+    <string name="preferences__onion_routing_3_hops">3 lần nhảy</string>
+    <string name="preferences__onion_routing_settings_description_no_hops">Với tùy chọn này, tin nhắn sẽ được gửi trực tiếp đến swarm của người nhận mà không đi qua các nút trung gian.</string>
+    <string name="preferences__onion_routing_settings_description_one_hop">Với tùy chọn này, tin nhắn sẽ được định tuyến qua một nút trung gian.</string>
+    <string name="preferences__onion_routing_settings_description_three_hops">Với tùy chọn này, tin nhắn sẽ được định tuyến qua ba nút trung gian.</string>
+    <string name="preferences__onion_routing_settings_subtitle">Nếu được bật, định tuyến Onion sẽ được sử dụng để gửi tin nhắn của bạn</string>
     <string name="onion_routing_turn_off_confirmation">Việc tắt định tuyến Onion sẽ làm lộ địa chỉ IP của bạn cho masternode và cho phép các bên giám sát mạng biết rằng bạn đang sử dụng BChat. Tin nhắn của bạn vẫn được mã hóa trong cả hai trường hợp. Vẫn tắt chứ?</string>
     <string name="preferences__request_keyboard_to_disable_personalized_learning">Yêu cầu bàn phím tắt chức năng học cá nhân hóa</string>
     <string name="preferences__light_theme">Light</string>
@@ -681,7 +689,13 @@
     <string name="view_seed_reminder_subtitle_3">Hãy đảm bảo lưu cụm từ khôi phục ở nơi an toàn</string>
 
     <string name="activity_path_title">Số lần nhảy</string>
+    <string name="activity_path_title_direct">Số lần nhảy (tin nhắn trực tiếp)</string>
+    <string name="activity_path_title_one_hop">Số lần nhảy (1 lần nhảy)</string>
+    <string name="activity_path_title_three_hops">Số lần nhảy (3 lần nhảy)</string>
     <string name="activity_path_explanation">BChat che giấu địa chỉ IP của bạn bằng cách định tuyến các tin nhắn qua nhiều masternode trong mạng phi tập trung Beldex. Kết nối của bạn hiện đang được định tuyến qua các masternode sau</string>
+    <string name="activity_path_explanation_direct">Chế độ không nhảy sẽ gửi tin nhắn của bạn trực tiếp đến điểm đến mà không đi qua các masternode Beldex.</string>
+    <string name="activity_path_explanation_one_hop">Tin nhắn của bạn được định tuyến qua một masternode trung gian của Beldex trước khi đến điểm đến.</string>
+    <string name="activity_path_explanation_three_hops">Tin nhắn của bạn được định tuyến qua ba masternode trung gian của Beldex trước khi đến điểm đến.</string>
     <string name="activity_path_guard_node_row_title">Nút nhập</string>
     <string name="activity_path_service_node_row_title">Nút chính</string>
     <string name="activity_path_destination_row_title">Điểm đến</string>

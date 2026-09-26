@@ -579,6 +579,14 @@
     <string name="preferences__if_typing_indicators_are_disabled_you_wont_be_able_to_see_typing_indicators">" إذا تم تعطيل مؤشرات الكتابة، فلن تتمكن من رؤية مؤشرات الكتابة من الآخرين"</string>
     <string name="preferences__onion_routing">توجيه البصل</string>
     <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">إذا تم تفعيله، فسيتم استخدام توجيه البصل لتوصيل رسائلك</string>
+    <string name="preferences_onion_routing_hops_summary">اختر عدد القفزات التي تمر بها رسائلك. وضع إيقاف الاتصال المباشر، وقفزة واحدة تستخدم عقدة رئيسية واحدة، وثلاث قفزات تستخدم ثلاث عقد رئيسية.</string>
+    <string name="preferences__onion_routing_off">بدون قفزات</string>
+    <string name="preferences__onion_routing_1_hop">قفزة واحدة (افتراضي)</string>
+    <string name="preferences__onion_routing_3_hops">ثلاث قفزات</string>
+    <string name="preferences__onion_routing_settings_description_no_hops">مع تحديد هذا الخيار، ستُرسل الرسائل مباشرة إلى السرب الخاص بالمستلم دون المرور عبر عقد وسيطة.</string>
+    <string name="preferences__onion_routing_settings_description_one_hop">مع تحديد هذا الخيار، يتم توجيه الرسائل عبر عقدة وسيطة واحدة.</string>
+    <string name="preferences__onion_routing_settings_description_three_hops">مع تحديد هذا الخيار، سيتم توجيه الرسائل عبر ثلاث عقد وسيطة.</string>
+    <string name="preferences__onion_routing_settings_subtitle">إذا تم تفعيله، فسيتم استخدام توجيه البصل لتوصيل رسائلك</string>
     <string name="onion_routing_turn_off_confirmation">يؤدي إيقاف التوجيه عبر شبكة Onion إلى كشف عنوان IP الخاص بك للعقدة الرئيسية، ويكشف لمراقبي الشبكة أنك تستخدم BChat. تظل رسائلك مشفّرة في كلتا الحالتين. هل تريد إيقافه على أي حال؟</string>
     <string name="preferences__request_keyboard_to_disable_personalized_learning">اطلب من لوحة المفاتيح تعطيل التعلم المخصص.</string>
     <string name="preferences__light_theme">Light</string>
@@ -737,7 +745,13 @@
     <string name="view_seed_reminder_subtitle_3">تأكد من تخزين عبارة الاسترداد في مكان آمن</string>
 
     <string name="activity_path_title">الجنجل</string>
+    <string name="activity_path_title_direct">القفزات (رسالة مباشرة)</string>
+    <string name="activity_path_title_one_hop">القفزات (قفزة واحدة)</string>
+    <string name="activity_path_title_three_hops">القفزات (ثلاث قفزات)</string>
     <string name="activity_path_explanation">يقوم BChat بإخفاء عنوان IP الخاص بك عن طريق توجيه الرسائل عبر عدة Masternodes في شبكة Beldex اللامركزية. يتم توجيه اتصالك حاليًا عبر Masternodes التالية.</string>
+    <string name="activity_path_explanation_direct">بدون قفزات، تُرسل رسائلك مباشرة إلى الوجهة دون المرور عبر عُقد Beldex الرئيسية.</string>
+    <string name="activity_path_explanation_one_hop">تمر رسائلك عبر عقدة Beldex رئيسية وسيطة واحدة قبل الوصول إلى الوجهة.</string>
+    <string name="activity_path_explanation_three_hops">تمر رسائلك عبر ثلاث عُقد Beldex رئيسية وسيطة قبل الوصول إلى الوجهة.</string>
     <string name="activity_path_guard_node_row_title">نقطة الدخول</string>
     <string name="activity_path_service_node_row_title">العقدة الرئيسية</string>
     <string name="activity_path_destination_row_title">الوجهة</string>

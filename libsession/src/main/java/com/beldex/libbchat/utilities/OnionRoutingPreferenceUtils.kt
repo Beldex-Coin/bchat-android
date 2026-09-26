@@ -18,8 +18,10 @@ object OnionRoutingPreferenceUtils {
     const val KEY_ONION_ROUTING_PATH_COUNT = "pref_onion_routing_path_count"
 
     /**
-     * Default hop count: a single hop, so a fresh install routes all traffic through the onion
-     * (one master node) from the very first send until the user changes the setting.
+     * Default hop count: a single hop. Applies both to fresh installs and to existing users on
+     * upgrade. The previous release had no hop option (onion routing was hardcoded to three
+     * hops), so after updating, users who never touched settings get the new one-hop default
+     * (and at 1 hop, server traffic goes direct - see OnionRequestAPI.isServerOnionRoutingEnabled).
      */
     private const val DEFAULT_PATH_COUNT = 1
 

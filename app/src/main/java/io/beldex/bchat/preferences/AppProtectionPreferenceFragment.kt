@@ -46,6 +46,15 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
         findPreference<Preference>(TextSecurePreferences.USE_ONION_ROUTING)!!.onPreferenceClickListener =
             OnionRoutingClickListener()
 
+        childFragmentManager.setFragmentResultListener(
+            OnionRoutingHopSelectionDialogFragment.REQUEST_KEY,
+            this
+        ) { _, resultBundle ->
+            applySelectedHopCount(
+                resultBundle.getInt(OnionRoutingHopSelectionDialogFragment.RESULT_HOP_COUNT)
+            )
+        }
+
         updateOnionRoutingSummary()
 
         //New Line
@@ -226,28 +235,34 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
     private inner class OnionRoutingClickListener : Preference.OnPreferenceClickListener {
         override fun onPreferenceClick(preference: Preference): Boolean {
             // Opens the hop-selection popup (0 hop / 1 hop / 3 hops) instead of using a toggle
-            OnionRoutingHopSelectionDialogFragment(
-                currentHopCount = getOnionRequestPathCount(requireContext()),
-                onCancel = {},
-                onConfirm = { selectedHopCount ->
-                    Log.d("ONION_HOP", "User selected onion routing with $selectedHopCount hop(s)")
-                    // 1) Persist the user-selected hop count (0 = off, 1 = one hop, 3 = three hops)
-                    setOnionRequestPathCount(requireContext(), selectedHopCount)
-                    if (selectedHopCount == 0) {
-                        // 0-hop: route directly to the mnode (no onion layers)
-                        setOnionRoutingEnabled(requireContext(), false)
-                    } else {
-                        // 1 or 3 hops: enable onion routing and apply immediately; this sets
-                        // pathSize, wipes stale cached paths/guard mnodes, and proactively
-                        // rebuilds so the status light and hops screen refresh right away.
-                        setOnionRoutingEnabled(requireContext(), true)
-                        OnionRequestAPI.setOnionRequestPathCount(selectedHopCount)
-                        OnionRequestAPI.rebuildPathsIfNeeded()
-                    }
-                    updateOnionRoutingSummary()
-                }
-            ).show(childFragmentManager, "OnionRoutingHopSelection")
+            OnionRoutingHopSelectionDialogFragment
+                .newInstance(getOnionRequestPathCount(requireContext()))
+                .show(childFragmentManager, OnionRoutingHopSelectionDialogFragment.TAG)
             return true
         }
+    }
+
+    /**
+     * Persists and applies the hop count the user confirmed in the hop-selection popup. The
+     * result arrives through the fragment result API (registered in onCreate) rather than a
+     * callback handed to the dialog, so it still arrives when the popup (or this screen) is
+     * recreated by a configuration change.
+     */
+    private fun applySelectedHopCount(selectedHopCount: Int) {
+        Log.d("ONION_HOP", "User selected onion routing with $selectedHopCount hop(s)")
+        // 1) Persist the user-selected hop count (0 = off, 1 = one hop, 3 = three hops)
+        setOnionRequestPathCount(requireContext(), selectedHopCount)
+        if (selectedHopCount == 0) {
+            // 0-hop: route directly to the mnode (no onion layers)
+            setOnionRoutingEnabled(requireContext(), false)
+        } else {
+            // 1 or 3 hops: enable onion routing and apply immediately; this sets
+            // pathSize, wipes stale cached paths/guard mnodes, and proactively
+            // rebuilds so the status light and hops screen refresh right away.
+            setOnionRoutingEnabled(requireContext(), true)
+            OnionRequestAPI.setOnionRequestPathCount(selectedHopCount)
+            OnionRequestAPI.rebuildPathsIfNeeded()
+        }
+        updateOnionRoutingSummary()
     }
 }

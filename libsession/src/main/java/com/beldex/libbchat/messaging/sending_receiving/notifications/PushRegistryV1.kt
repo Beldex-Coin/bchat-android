@@ -112,7 +112,7 @@ object PushRegistryV1 {
         }
     }
     private fun sendOnionRequest(request: Request): Promise<OnionResponse, Exception> =
-        if (OnionRequestAPI.isOnionRoutingEnabled) {
+        if (OnionRequestAPI.isServerOnionRoutingEnabled) {
             OnionRequestAPI.sendOnionRequest(
                 request,
                 server.url,

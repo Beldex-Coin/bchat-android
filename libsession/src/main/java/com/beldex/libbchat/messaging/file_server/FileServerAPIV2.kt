@@ -86,7 +86,7 @@ object FileServerAPIV2 {
             HTTP.Verb.POST -> requestBuilder.post(createBody(request.parameters)!!)
             HTTP.Verb.DELETE -> requestBuilder.delete(createBody(request.parameters))
         }
-        if (request.useOnionRouting && OnionRequestAPI.isOnionRoutingEnabled) {
+        if (request.useOnionRouting && OnionRequestAPI.isServerOnionRoutingEnabled) {
             //-Log.d("Beldex","request for fileserver ${request.useOnionRouting}")
             return OnionRequestAPI.sendOnionRequest(requestBuilder.build(), server, serverPublicKey, Version.V3).fail { e ->
                 //Log.e("Beldex", "File server request failed.", e)

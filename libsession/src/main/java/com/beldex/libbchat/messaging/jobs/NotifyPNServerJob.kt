@@ -39,7 +39,7 @@ class NotifyPNServerJob(val message: MnodeMessage) : Job {
         val body = JsonUtil.toJson(parameters).toRequestBody("application/json".toMediaType())
         val request = Request.Builder().url(url).post(body).build()
         retryIfNeeded(4) {
-            val promise = if (OnionRequestAPI.isOnionRoutingEnabled) {
+            val promise = if (OnionRequestAPI.isServerOnionRoutingEnabled) {
                 OnionRequestAPI.sendOnionRequest(request, server.url, server.publicKey, Version.V2)
             } else {
                 OnionRequestAPI.sendDirectRequest(request)

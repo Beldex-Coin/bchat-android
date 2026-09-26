@@ -110,6 +110,15 @@ object OnionRequestAPI {
     val isOnionRoutingEnabled: Boolean
         get() = TextSecurePreferences.isOnionRoutingEnabled(MessagingModuleConfiguration.shared.context)
     /**
+     * Whether external server traffic (file server, open groups, push registry, notify) should be
+     * onion-routed. Single-hop relaying to an external HTTP server is broken at the masternode
+     * level (the guard returns a malformed chunked response, e.g. "Expected leading [0-9a-fA-F]
+     * character but was 0x67"), so server traffic is routed over the onion only in the full 3-hop
+     * mode; 1-hop mode falls back to the No Hops (Direct) flow instead.
+     */
+    val isServerOnionRoutingEnabled: Boolean
+        get() = isOnionRoutingEnabled && pathSize >= 3
+    /**
      * The number of times a path can fail before it's replaced.
      */
     private const val pathFailureThreshold = 10 // 25-05-2022 change the pathFailureThreshold = 10 in before  pathFailureThreshold = 3
@@ -365,11 +374,14 @@ object OnionRequestAPI {
             is Destination.Mnode -> destination.mnode
             is Destination.Server -> null
         }
-        Log.d("Beldex","Path build mnodeToExclude  $mnodeToExclude")
-        // Mnode destinations (chat, secret groups, polling, call signaling) follow the user's hop
-        // count selection. External servers (file server, open groups, push registry, notify) must
-        // always use the full 3-hop onion when onion routing is enabled
-        val requestedPathSize = if (destination is Destination.Server) 3 else pathSize
+        Log.d("Beldex", "Path build mnodeToExclude  $mnodeToExclude")
+        // Chat traffic (mnodes) follows the user's hop count selection. External servers (file
+        // server, open groups, push registry, notify) never reach this builder at 1-hop: they are
+        // gated on isServerOnionRoutingEnabled and in 1-hop mode they go direct (sendDirectRequest)
+        // instead, because a single-hop relay to an external HTTP server returns a malformed
+        // chunked response from the guard. When servers DO use the onion (3-hop mode) the path size
+        // is 3 anyway, so the requested size always matches here.
+        val requestedPathSize = pathSize
         return getPath(mnodeToExclude, requestedPathSize).bind { path ->
             guardMnode = path.first()
             usedPathSize = path.size

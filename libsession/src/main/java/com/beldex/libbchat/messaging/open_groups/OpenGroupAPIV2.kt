@@ -173,7 +173,7 @@ object OpenGroupAPIV2 {
                 requestBuilder.header("Room", request.room)
                 //-Log.d("Beldex","Social group api url builder ${request.room}")
             }
-            if (request.useOnionRouting && OnionRequestAPI.isOnionRoutingEnabled) {
+            if (request.useOnionRouting && OnionRequestAPI.isServerOnionRoutingEnabled) {
                 val publicKey = MessagingModuleConfiguration.shared.storage.getOpenGroupPublicKey(request.server)
                     ?: return Promise.ofFail(Error.NoPublicKey)
                 return OnionRequestAPI.sendOnionRequest(requestBuilder.build(), request.server, publicKey, Version.V3).fail { e ->
@@ -201,7 +201,7 @@ object OpenGroupAPIV2 {
                     }
                 }
             } else {
-                return OnionRequestAPI.sendDirectRequest(requestBuilder.build()).fail { e ->
+                    return OnionRequestAPI.sendDirectRequest(requestBuilder.build()).fail { e ->
                     when (e) {
                         // No need for the stack trace for HTTP errors
                         is HTTP.HTTPRequestFailedException -> {

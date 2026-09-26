@@ -31,7 +31,17 @@ class OnionRoutingPreference @JvmOverloads constructor(
     fun setHopCount(hopCount: Int) {
         val valueIndex = values.indexOf(hopCount.toString())
         val text =
-            if (valueIndex in entries.indices) entries[valueIndex] else ""
+            if (valueIndex in entries.indices) {
+                val splitIndex = entries[valueIndex].indexOf(" (")
+                val entry = entries[valueIndex]
+                if (splitIndex > 0) {
+                    entry.substring(0, splitIndex) + "\n" + entry.substring(splitIndex + 1)
+                } else {
+                    entry
+                }
+            } else {
+                ""
+            }
         if (selectedValueText == text) { return }
         selectedValueText = text
         notifyChanged()

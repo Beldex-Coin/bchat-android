@@ -7,6 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.beldex.libbchat.mnode.OnionRequestAPI
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getOnionRequestPathCount
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.isOnionRoutingEnabled
 import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper
 import com.beldex.libbchat.utilities.truncateIdForDisplay
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +28,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MyAccountViewModel @Inject constructor(
-    @ApplicationContext context : Context,
+    @ApplicationContext private val context: Context,
     private val preferenceUtil: SharedPreferenceUtil,
     private val resourceProvider: ResourceProvider
 ): ViewModel() {
@@ -82,6 +84,12 @@ class MyAccountViewModel @Inject constructor(
     }
 
     fun getPathNodes() {
+        val hopCount = getOnionRequestPathCount(context)
+        if (hopCount == 0 || !isOnionRoutingEnabled(context)) {
+            // Direct mode: no masternodes are involved, so there is no path to show.
+            _pathState.value = emptyList()
+            return
+        }
         if (OnionRequestAPI.paths.isNotEmpty()) {
             val path = OnionRequestAPI.paths.firstOrNull() ?: return
             _pathState.value = path.mapIndexed { _, mNode ->

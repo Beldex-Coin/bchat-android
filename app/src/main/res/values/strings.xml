@@ -534,10 +534,13 @@
     <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">If enabled, onion routing will be used to deliver your messages</string>
     <string name="preferences_onion_routing_hops">Onion routing hops</string>
     <string name="preferences_onion_routing_hops_summary">Select how many hops your messages pass through. Off connects directly, 1 hop uses one master node, 3 hops use three master nodes.</string>
-    <string name="preferences__onion_routing_off">Off</string>
-    <string name="preferences__onion_routing_1_hop">1 hop</string>
-    <string name="preferences__onion_routing_3_hops">3 hops</string>
-    <string name="preferences__onion_routing_settings_subtitle">Control how your messages are routed to keep your identity private. Send them directly, or bounce them through one or three master nodes.</string>
+    <string name="preferences__onion_routing_off">No Hops</string>
+    <string name="preferences__onion_routing_1_hop">1 Hop (Default)</string>
+    <string name="preferences__onion_routing_3_hops">3 Hops</string>
+    <string name="preferences__onion_routing_settings_description_no_hops">With this option selected, messages will be sent directly to the recipient\'s swarm without routing through intermediary nodes.</string>
+    <string name="preferences__onion_routing_settings_description_one_hop">With this option selected, messages are routed through one intermediary node.</string>
+    <string name="preferences__onion_routing_settings_description_three_hops">With this option selected, messages will be routed through three intermediary nodes.</string>
+    <string name="preferences__onion_routing_settings_subtitle">If enabled, onion routing will be used to deliver your messages</string>
     <string name="onion_routing_turn_off_confirmation">Turning off onion routing exposes your IP address to the masternode and reveals to network observers that you\'re using BChat. Your messages remain encrypted either way. Turn off anyway ?</string>
     <string name="preferences__request_keyboard_to_disable_personalized_learning">Request keyboard to disable personalized learning</string>
     <string name="preferences__light_theme">Light</string>
@@ -695,7 +698,13 @@
     <string name="view_seed_reminder_subtitle_3">Make sure to store your recovery phrase in a safe place</string>
 
     <string name="activity_path_title">Hops</string>
+    <string name="activity_path_title_direct">Hops (Direct Message)</string>
+    <string name="activity_path_title_one_hop">Hops (1 Hop)</string>
+    <string name="activity_path_title_three_hops">Hops (3 Hops)</string>
     <string name="activity_path_explanation">BChat masks your IP address by routing your messages through several masternodes in the Beldex decentralized network. Your connection is currently routed through the following masternodes</string>
+    <string name="activity_path_explanation_direct">No Hops sends your messages directly to the destination without routing them through Beldex masternodes.</string>
+    <string name="activity_path_explanation_one_hop">Your messages are routed through one intermediary Beldex masternode before reaching the destination.</string>
+    <string name="activity_path_explanation_three_hops">Your messages are routed through three intermediary Beldex masternodes before reaching the destination.</string>
     <string name="activity_path_guard_node_row_title">Entry Node</string>
     <string name="activity_path_service_node_row_title">Master Node</string>
     <string name="activity_path_destination_row_title">Destination</string>

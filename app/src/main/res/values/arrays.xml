@@ -184,6 +184,12 @@
       <item>3</item>
   </string-array>
 
+    <string-array name="preferences__onion_routing_hops_description">
+        <item>@string/preferences__onion_routing_settings_description_no_hops</item>
+        <item>@string/preferences__onion_routing_settings_description_one_hop</item>
+        <item>@string/preferences__onion_routing_settings_description_three_hops</item>
+    </string-array>
+
   <string-array name="default_or_custom_values" translatable="false">
       <item>default</item>
       <item>custom</item>

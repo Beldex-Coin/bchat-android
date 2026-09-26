@@ -1060,14 +1060,23 @@ fun MyAccountNavHost(
             route = MyAccountScreens.HopsScreen.route
         ) {
             val nodes by viewModel.pathState.collectAsState()
+            val context = LocalContext.current
+            val hopCount = TextSecurePreferences.getOnionRequestPathCount(context)
+            val hopsTitle = when (hopCount) {
+                0 -> stringResource(id = R.string.activity_path_title_direct)
+                1 -> stringResource(id = R.string.activity_path_title_one_hop)
+                else -> stringResource(id = R.string.activity_path_title_three_hops)
+            }
             MyAccountScreenContainer(
-                title = stringResource(id = R.string.activity_path_title),
+                title = hopsTitle,
                 onBackClick = {
                     navController.navigateUp()
                 }
             ) {
                 HopsScreen(
-                    nodes = nodes
+                    nodes = nodes,
+                    hopCount = hopCount,
+                    isDirect = hopCount == 0
                 )
             }
         }

@@ -281,4 +281,5 @@
     <color name="foreground_symbol">#66000000</color>
     <color name="background_color_span">#797984</color>
     <color name="foreground_image_input_bar_symbol">#66FFFFFF</color>
+    <color name="expend_icon_hint">#9595B5</color>
 </resources>

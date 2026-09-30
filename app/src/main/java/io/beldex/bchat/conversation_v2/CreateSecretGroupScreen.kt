@@ -28,11 +28,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -71,7 +69,6 @@ import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.Device
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
-import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
@@ -141,17 +138,39 @@ fun CreateSecretGroup(
                     onSearchQueryChange = { onEvent(SecretGroupEvents.SearchQueryChanged(it)) },
                     showLoader = showLoader
                 )
-                contacts.forEach { recipient ->
-                    GroupContact(
-                        recipient = recipient,
-                        isSelected = selectedContact.contains(recipient.address.toString()),
-                        onSelectionChanged = { contact, isSelected ->
-                            onEvent(SecretGroupEvents.RecipientSelectionChanged(contact, isSelected))
-                        },
+                if (contacts.isEmpty()) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                    )
+                            .padding(top = 64.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_doodle_3_1),
+                            contentDescription = null,
+                            modifier = Modifier.size(120.dp)
+                        )
+                        Text(
+                            text = stringResource(R.string.no_contacts_yet),
+                            fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                            color = MaterialTheme.appColors.homeSearchBarHint,
+                            fontSize = 14.sp,
+                            modifier = Modifier.padding(top = 16.dp)
+                        )
+                    }
+                } else {
+                    contacts.forEach { recipient ->
+                        GroupContact(
+                            recipient = recipient,
+                            isSelected = selectedContact.contains(recipient.address.toString()),
+                            onSelectionChanged = { contact, isSelected ->
+                                onEvent(SecretGroupEvents.RecipientSelectionChanged(contact, isSelected))
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                        )
+                    }
                 }
             }
             CreateGroupButton(
@@ -216,8 +235,8 @@ private fun GroupNameField(
                 .padding(vertical = 8.dp),
             shape = RoundedCornerShape(12.dp),
             colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
-                focusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+                unfocusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
+                focusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
@@ -251,18 +270,13 @@ private fun SearchField(
         onValueChange = onSearchQueryChange,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.appColors.textFiledBorderColor,
-                shape = RoundedCornerShape(36.dp)
-            ),
-        shape = RoundedCornerShape(36.dp),
+            .padding(horizontal = 16.dp),
+        shape = RoundedCornerShape(12.dp),
         trailingIcon = {
             Icon(
                 imageVector = if (searchQuery.isNotEmpty()) Icons.Default.Clear else Icons.Default.Search,
                 contentDescription = "search contact and clear search text",
-                tint = MaterialTheme.appColors.iconTint,
+                tint = MaterialTheme.appColors.homeSearchBarHint,
                 modifier = Modifier.clickable {
                     if (searchQuery.isNotEmpty()) {
                         onSearchQueryChange("")
@@ -271,8 +285,8 @@ private fun SearchField(
             )
         },
         colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
-            focusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+            unfocusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
+            focusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent,
@@ -300,7 +314,7 @@ private fun CreateGroupButton(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 8.dp)
-            .background(color = MaterialTheme.appColors.createButtonBackground),
+            .background(color = MaterialTheme.appColors.homeBackground),
         contentAlignment = Alignment.Center
     ) {
         PrimaryButton(
@@ -321,19 +335,20 @@ private fun CreateGroupButton(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            shape = RoundedCornerShape(12.dp),
+                .padding(16.dp)
+                .height(54.dp),
+            shape = io.beldex.bchat.compose_utils.notchedCornerShape(14.5.dp),
             enabled = groupName.isNotEmpty(),
-            disabledContainerColor = MaterialTheme.appColors.disabledCreateButtonContainer
+            containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
+            contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
+            disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
+            disabledContentColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledText
         ) {
             Text(
                 text = stringResource(id = R.string.create),
-                style = BChatTypography.bodyLarge.copy(
-                    color = if (groupName.isNotEmpty()) Color.White else MaterialTheme.appColors.disabledButtonContent,
-                    fontWeight = FontWeight(400),
-                    fontSize = 16.sp
-                ),
-                modifier = Modifier.padding(8.dp)
+                fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 16.sp
             )
         }
     }
@@ -352,17 +367,20 @@ private fun GroupContact(
         mutableStateOf(publicKey)
     }
 
-    OutlinedCard(
-        shape = RoundedCornerShape(50),
-        border = BorderStroke(
-            width = 1.dp,
-            color = MaterialTheme.appColors.contactCardBorder
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.appColors.contactCardBackground
-        ),
+    Box(
         modifier = modifier
-            .padding(bottom = 10.dp)
+            .padding(bottom = 8.dp)
+            .background(
+                color = if (isSelected) MaterialTheme.appColors.homeRowBackground else Color.Transparent,
+                shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp)
+            )
+            .then(
+                if (isSelected) Modifier.border(
+                    width = 1.dp,
+                    color = MaterialTheme.appColors.homeRowTimestampUnread,
+                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp)
+                ) else Modifier
+            )
             .clickable {
                 onSelectionChanged(recipient, !isSelected)
             }
@@ -387,8 +405,10 @@ private fun GroupContact(
                 text = recipient.name?.capitalizeFirstLetter()
                     ?: recipient.address.toString().capitalizeFirstLetter(),
                 textAlign = TextAlign.Start,
-                fontSize = 16.sp,
-                fontWeight = FontWeight(400),
+                fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                color = MaterialTheme.appColors.homeRowTitle,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
                 modifier = Modifier
                     .weight(1f)
                     .padding(horizontal = 10.dp),
@@ -399,10 +419,10 @@ private fun GroupContact(
             Image(
                 painter = painterResource(id = if (isSelected) R.drawable.ic_checkedbox else R.drawable.ic_checkbox),
                 contentDescription = "check box",
-                modifier = Modifier.padding(end = 25.dp),
+                modifier = Modifier.padding(end = 16.dp),
                 colorFilter = ColorFilter.tint(
-                    if (isSelected) MaterialTheme.appColors.textGreen
-                    else MaterialTheme.appColors.textColor
+                    if (isSelected) MaterialTheme.appColors.homeRowTimestampUnread
+                    else MaterialTheme.appColors.homeRowTimestamp
                 )
             )
         }

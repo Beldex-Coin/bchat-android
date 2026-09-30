@@ -39,7 +39,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -166,16 +165,15 @@ fun NewChatScreen(
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.appColors.homeBackground
                 ),
                 title = {
                     Text(
                         text = stringResource(id = R.string.new_chat_screen_title),
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            color = MaterialTheme.appColors.editTextColor,
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = 22.sp,
-                        ),
+                        fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                        color = MaterialTheme.appColors.homeTitleColor,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 16.sp,
                         textAlign = TextAlign.Start,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -189,13 +187,13 @@ fun NewChatScreen(
                             contentDescription = stringResource(
                                 id = R.string.back
                             ),
-                            tint = MaterialTheme.appColors.editTextColor,
+                            tint = MaterialTheme.appColors.homeTitleColor,
                         )
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color=MaterialTheme.colorScheme.primary),
+                    .background(color = MaterialTheme.appColors.homeBackground),
                 actions = {
                     IconButton(onClick = {
                         if(showSearchOption){
@@ -206,7 +204,7 @@ fun NewChatScreen(
                         Icon(
                             painterResource(id = R.drawable.ic_search_contact),
                             "wallet settings",
-                            tint = MaterialTheme.appColors.editTextColor
+                            tint = MaterialTheme.appColors.homeTitleColor
                         )
                     }
                 }
@@ -217,7 +215,7 @@ fun NewChatScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.primary)
+                    .background(MaterialTheme.appColors.homeBackground)
                     .padding(it)
                     .verticalScroll(rememberScrollState())
             )
@@ -227,8 +225,10 @@ fun NewChatScreen(
                         value = searchQuery,
                         placeholder = {
                             Text(
-                                text = stringResource(R.string.search_people_and_groups),
-                                style = MaterialTheme.typography.bodyMedium
+                                text = stringResource(R.string.search_name_bns_bchat_id),
+                                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                                fontSize = 14.sp,
+                                color = MaterialTheme.appColors.homeSearchBarHint
                             )
                         },
                         singleLine = true,
@@ -241,18 +241,13 @@ fun NewChatScreen(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start=7.dp, end=7.dp)
-                            .border(
-                                width=1.dp,
-                                color=MaterialTheme.appColors.textFiledBorderColor,
-                                shape=RoundedCornerShape(36.dp)
-                            ),
-                        shape = RoundedCornerShape(36.dp),
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        shape = RoundedCornerShape(12.dp),
                         trailingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Clear,
                                 contentDescription = "clear search text",
-                                tint = MaterialTheme.appColors.iconTint,
+                                tint = MaterialTheme.appColors.homeSearchBarHint,
                                 modifier=Modifier.clickable {
                                     if (searchQuery.isNotEmpty()) {
                                         onEvent("")
@@ -266,12 +261,12 @@ fun NewChatScreen(
                             Icon(
                                 imageVector = Icons.Default.Search,
                                 contentDescription = "search contact",
-                                tint = MaterialTheme.appColors.iconTint,
+                                tint = MaterialTheme.appColors.homeSearchBarHint,
                             )
                         },
                         colors = TextFieldDefaults.colors(
-                            unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
-                            focusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+                            unfocusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
+                            focusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
                             disabledIndicatorColor = Color.Transparent,
@@ -283,61 +278,72 @@ fun NewChatScreen(
                         )
                     )
                 }
-                NewChatItem(image = if(isDarkTheme) R.drawable.ic_new_chat else R.drawable.ic_new_chat_light, title = stringResource(id = R.string.activity_create_private_chat_title),MaterialTheme.appColors.textGreen, PaddingValues(start = 10.dp, end = 10.dp, top = 10.dp),true, onClick = {
-                    showNewChatPopup = !showNewChatPopup
-                }, onClickScanQRCode = {
-                    val intent = Intent(
-                        context,
-                        PrivateChatScanQRCodeActivity::class.java
-                    )
-                    privateChatScanQRCodeActivityResultLauncher.launch(intent)
-                })
-                NewChatItem(
-                    image = if(isDarkTheme) R.drawable.ic_secret_group else R.drawable.ic_secret_group_light,
-                    title = stringResource(id = R.string.home_screen_secret_groups_title),
-                    MaterialTheme.appColors.textColor,
-                    PaddingValues(start = 10.dp, end = 10.dp, top = 5.dp),
-                    onClick = {
-                        openActivity(OpenActivity.SecretGroup)
-                    },
-                    onClickScanQRCode = {}
-                )
-                NewChatItem(
-                    image = if(isDarkTheme) R.drawable.ic_social_group else R.drawable.ic_social_group_light,
-                    title = stringResource(id = R.string.home_screen_social_groups_title),
-                    MaterialTheme.appColors.textColor,
-                    PaddingValues(start = 10.dp, end = 10.dp, top = 5.dp),
-                    onClick = {
-                        openActivity(OpenActivity.PublicGroup)
-                    },
-                    onClickScanQRCode = {}
-                )
-                NewChatItem(
-                    image = if(isDarkTheme) R.drawable.ic_note_to_self else R.drawable.ic_note_to_self_light,
-                    title = stringResource(id = R.string.note_to_self),
-                    MaterialTheme.appColors.textColor,
-                    PaddingValues(start = 10.dp, end = 10.dp, top = 5.dp),
-                    onClick = {
-                        openActivity(OpenActivity.NoteToSelf)
-                    },
-                    onClickScanQRCode = {}
-                )
-                Text(
-                    text = stringResource(R.string.contact_list),
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight(400),
-                        color = MaterialTheme.appColors.textHint,
-                    ),
+
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(15.dp)
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .background(
+                            color = MaterialTheme.appColors.homeRowBackground,
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                ) {
+                    NewChatItem(image = if(isDarkTheme) R.drawable.ic_new_chat else R.drawable.ic_new_chat_light, title = stringResource(id = R.string.activity_create_private_chat_title), MaterialTheme.appColors.userDetailsBchatIdText, PaddingValues(start = 10.dp, end = 10.dp, top = 10.dp),true, onClick = {
+                        showNewChatPopup = !showNewChatPopup
+                    }, onClickScanQRCode = {
+                        val intent = Intent(
+                            context,
+                            PrivateChatScanQRCodeActivity::class.java
+                        )
+                        privateChatScanQRCodeActivityResultLauncher.launch(intent)
+                    })
+                    NewChatItem(
+                        image = if(isDarkTheme) R.drawable.ic_secret_group else R.drawable.ic_secret_group_light,
+                        title = stringResource(id = R.string.home_screen_secret_groups_title),
+                        MaterialTheme.appColors.homeRowTitle,
+                        PaddingValues(start = 10.dp, end = 10.dp, top = 5.dp),
+                        onClick = {
+                            openActivity(OpenActivity.SecretGroup)
+                        },
+                        onClickScanQRCode = {}
+                    )
+                    NewChatItem(
+                        image = if(isDarkTheme) R.drawable.ic_social_group else R.drawable.ic_social_group_light,
+                        title = stringResource(id = R.string.home_screen_social_groups_title),
+                        MaterialTheme.appColors.homeRowTitle,
+                        PaddingValues(start = 10.dp, end = 10.dp, top = 5.dp),
+                        onClick = {
+                            openActivity(OpenActivity.PublicGroup)
+                        },
+                        onClickScanQRCode = {}
+                    )
+                    NewChatItem(
+                        image = if(isDarkTheme) R.drawable.ic_note_to_self else R.drawable.ic_note_to_self_light,
+                        title = stringResource(id = R.string.note_to_self),
+                        MaterialTheme.appColors.homeRowTitle,
+                        PaddingValues(start = 10.dp, end = 10.dp, bottom = 10.dp),
+                        onClick = {
+                            openActivity(OpenActivity.NoteToSelf)
+                        },
+                        onClickScanQRCode = {}
+                    )
+                }
+
+                Text(
+                    text = stringResource(R.string.contact_list),
+                    fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = MaterialTheme.appColors.homeRowPreview,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
                 )
                 NewChatItem(
                     image = R.drawable.ic_invite_a_friend,
                     title = stringResource(id = R.string.activity_settings_invite_button_title),
-                    MaterialTheme.appColors.textColor,
-                    PaddingValues(start = 10.dp, end = 10.dp),
+                    MaterialTheme.appColors.userDetailsBchatIdText,
+                    PaddingValues(start = 26.dp, end = 26.dp),
                     onClick = {
                         openActivity(OpenActivity.InviteAFriend)
                     },
@@ -408,24 +414,31 @@ fun NewChatItem(
             }
     ) {
 
-        Image(
-            painterResource(id = image),
-            contentDescription = "",
+        Box(
+            contentAlignment = Alignment.Center,
             modifier = Modifier
-                .padding(5.dp)
-                .size(40.dp),
-            alignment = Alignment.CenterStart,
-        )
+                .size(40.dp)
+                .background(
+                    color = MaterialTheme.appColors.newChatIconBackground,
+                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(8.dp)
+                )
+        ) {
+            Image(
+                painterResource(id = image),
+                contentDescription = "",
+                modifier = Modifier
+                    .padding(8.dp)
+                    .size(24.dp)
+            )
+        }
 
         Text(
             text = title,
             textAlign = TextAlign.Start,
-            style = MaterialTheme.typography.bodyMedium.copy(
-                color = color,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            ),
+            fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+            color = color,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Normal,
             modifier = Modifier
                 .weight(1f)
                 .padding(start=10.dp, end=5.dp),
@@ -436,7 +449,7 @@ fun NewChatItem(
                 painterResource(id = R.drawable.qr_code_send),
                 contentDescription = "",
                 colorFilter = ColorFilter.tint(
-                    color = MaterialTheme.appColors.editTextColor
+                    color = MaterialTheme.appColors.homeTitleColor
                 ),
                 modifier = Modifier
                     .size(35.dp)
@@ -507,8 +520,10 @@ private fun GroupContact(
         Text(
             text = if(recipient.name != null) recipient.name.toString().capitalizeFirstLetter() else recipient.address.toString().capitalizeFirstLetter(),
             textAlign = TextAlign.Start,
-            fontSize = 16.sp,
-            fontWeight = FontWeight(400),
+            fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+            color = MaterialTheme.appColors.homeRowTitle,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.SemiBold,
             modifier = Modifier
                 .weight(1f)
                 .padding(start=if (recipient.isGroupRecipient) 5.dp else 15.dp, end=15.dp),
@@ -551,23 +566,19 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
         }
     }
 
-    DialogContainer(containerColor = MaterialTheme.appColors.newChatCardBackground, onDismissRequest = {}) {
+    DialogContainer(containerColor = MaterialTheme.appColors.userDetailsSheetBackground, onDismissRequest = {}) {
 
-        OutlinedCard(
-            modifier = Modifier
-                .fillMaxWidth(),
-        ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
 
             Text(
                 text = stringResource(R.string.activity_create_private_chat_title),
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight(700)
-                ),
+                fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                color = MaterialTheme.appColors.homeRowTitle,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(14.dp),
-                textAlign = TextAlign.Center
+                    .padding(14.dp)
             )
 
             Card(
@@ -575,18 +586,16 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                     .fillMaxWidth()
                     .padding(start=14.dp, end=14.dp),
                 shape = RoundedCornerShape(16.dp),
-                border = BorderStroke(0.5.dp, if(bchatIdErrorStatus) MaterialTheme.appColors.negativeRedButtonBorder else MaterialTheme.appColors.textFieldUnfocusedColor)
+                border = BorderStroke(0.5.dp, if(bchatIdErrorStatus) MaterialTheme.appColors.negativeRedButtonBorder else Color.Transparent)
             ) {
                 TextField(
                     value = bChatId,
                     placeholder = {
                         Text(
                             text = stringResource(R.string.enter_chat_id),
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                color = MaterialTheme.appColors.secondaryTextColor,
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight(400)
-                            )
+                            fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                            color = MaterialTheme.appColors.homeSearchBarHint,
+                            fontSize = 14.sp
                         )
                     },
                     onValueChange = {
@@ -595,13 +604,18 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                         }
                         bChatId = it
                     },
+                    textStyle = androidx.compose.ui.text.TextStyle(
+                        fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                        color = MaterialTheme.appColors.homeRowTitle,
+                        fontSize = 14.sp
+                    ),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(115.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = MaterialTheme.appColors.editTextBackground,
-                        focusedContainerColor = MaterialTheme.appColors.editTextBackground,
+                        unfocusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
+                        focusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent,
@@ -621,23 +635,20 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
             ) {
                 Button(
                     onClick={ onDismiss() },
-                    shape = RoundedCornerShape(12.dp),
+                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
                     colors= ButtonDefaults.buttonColors(
-                        containerColor=MaterialTheme.appColors.negativeGreenButton,
-                        contentColor = MaterialTheme.appColors.negativeGreenButtonText
+                        containerColor = MaterialTheme.appColors.onboardingSecondaryButtonBackground,
+                        contentColor = MaterialTheme.appColors.onboardingSecondaryButtonText
                     ),
                     modifier=Modifier
-                        .weight(1f),
-                    border = BorderStroke(width = 0.5.dp, color = MaterialTheme.appColors.negativeGreenButtonBorder)
+                        .weight(1f)
+                        .height(48.dp)
                 ) {
                     Text(
                         text=stringResource(id=R.string.cancel),
-                        style=MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight(400),
-                            fontSize = 12.sp,
-                            color = MaterialTheme.appColors.negativeGreenButtonText
-                        ),
-                        modifier=Modifier.padding(top = 4.dp, bottom = 4.dp)
+                        fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp
                     )
                 }
 
@@ -661,34 +672,24 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                         }
                     },
                     enabled = bChatId.isNotEmpty() && !bchatIdErrorStatus,
-                    shape = RoundedCornerShape(12.dp),
+                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
                     colors= ButtonDefaults.buttonColors(
-                        containerColor=MaterialTheme.appColors.primaryButtonColor,
-                        disabledContainerColor = MaterialTheme.appColors.disabledLetsBchatButton,
-                        disabledContentColor = MaterialTheme.appColors.disabledLetsBchatContent
+                        containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
+                        contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
+                        disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
+                        disabledContentColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledText
                     ),
                     modifier=Modifier
                         .weight(1f)
+                        .height(48.dp)
                 ) {
                     Text(
                         text= stringResource(id = R.string.let_s_bchat),
-                        style=MaterialTheme.typography.bodyMedium.copy(
-                            color = if (bChatId.isNotEmpty() && !bchatIdErrorStatus) {
-                                Color.White
-                            } else {
-                                MaterialTheme.appColors.disabledLetsBchatContent
-                            },
-                            fontWeight = FontWeight(400),
-                            fontSize = 12.sp,
-                            textAlign = TextAlign.Center
-                        ),
-                        autoSize = TextAutoSize.StepBased(
-                            minFontSize = 8.sp,
-                            maxFontSize = 12.sp
-                        ),
+                        fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp,
                         maxLines = 1,
-                        overflow = TextOverflow.Clip,
-                        modifier=Modifier.padding(top = 4.dp, bottom = 4.dp)
+                        overflow = TextOverflow.Clip
                     )
                 }
             }

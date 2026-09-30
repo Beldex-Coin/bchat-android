@@ -80,7 +80,6 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.PublicKeyValidation
-import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.ui.BChatPreviewContainer
@@ -197,17 +196,18 @@ private fun JoinSection(
 
     OutlinedCard(
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.appColors.contactCardBackground
+            containerColor = MaterialTheme.appColors.homeRowBackground
         ),
+        border = androidx.compose.foundation.BorderStroke(0.dp, Color.Transparent),
+        shape = RoundedCornerShape(16.dp),
         modifier = modifier
     ) {
         Text(
             text = stringResource(R.string.activity_join_public_chat_title),
-            style = MaterialTheme.typography.titleMedium.copy(
-                color = MaterialTheme.appColors.secondaryTextColor,
-                fontSize = 14.sp,
-                fontWeight = FontWeight(400)
-            ),
+            fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+            color = MaterialTheme.appColors.homeRowTitle,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Normal,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp, start = 16.dp, end = 16.dp)
@@ -218,19 +218,26 @@ private fun JoinSection(
             placeholder = {
                 Text(
                     text = stringResource(R.string.fragment_enter_chat_url_edit_text_hint),
-                    style = MaterialTheme.typography.bodyMedium
+                    fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                    color = MaterialTheme.appColors.homeSearchBarHint,
+                    fontSize = 14.sp
                 )
             },
             onValueChange = { url ->
                 onEvent(OpenGroupEvents.GroupUrlChanged(url))
             },
-            shape = RoundedCornerShape(16.dp),
+            textStyle = androidx.compose.ui.text.TextStyle(
+                fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                color = MaterialTheme.appColors.homeRowTitle,
+                fontSize = 14.sp
+            ),
+            shape = RoundedCornerShape(12.dp),
             singleLine = true,
             trailingIcon = {
                 Image(
                     painter = painterResource(id = R.drawable.ic_qr_code),
                     contentDescription = "",
-                    colorFilter = ColorFilter.tint(color = MaterialTheme.appColors.iconTint),
+                    colorFilter = ColorFilter.tint(color = MaterialTheme.appColors.homeSearchBarHint),
                     modifier = Modifier.clickable {
                         focusManager.clearFocus()
                         keyboardController?.hide()
@@ -244,8 +251,8 @@ private fun JoinSection(
                 .fillMaxWidth()
                 .padding(16.dp),
             colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
-                focusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+                unfocusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
+                focusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
@@ -258,21 +265,22 @@ private fun JoinSection(
             onClick = {
                 joinPublicChatIfPossible(uiState.groupUrl, lifecycleOwner, context)
             },
-            shape = RoundedCornerShape(12.dp),
+            shape = io.beldex.bchat.compose_utils.notchedCornerShape(14.5.dp),
             enabled = uiState.groupUrl.isNotEmpty(),
-            disabledContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+            containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
+            contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
+            disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
+            disabledContentColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledText,
             modifier = Modifier
                 .fillMaxWidth()
+                .height(54.dp)
                 .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
         ) {
             Text(
                 text = stringResource(id = R.string.next),
-                modifier = Modifier.padding(8.dp),
-                style = BChatTypography.titleMedium.copy(
-                    fontWeight = FontWeight(400),
-                    fontSize = 16.sp,
-                    color = if (uiState.groupUrl.isNotEmpty()) Color.White else MaterialTheme.appColors.disabledButtonContent
-                )
+                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 16.sp
             )
         }
     }
@@ -298,11 +306,10 @@ private fun GroupsSection(
     Column(modifier) {
         Text(
             text = stringResource(id = R.string.or_join),
-            style = MaterialTheme.typography.titleMedium.copy(
-                color = MaterialTheme.appColors.secondaryTextColor,
-                fontSize = 14.sp,
-                fontWeight = FontWeight(400)
-            ),
+            fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+            color = MaterialTheme.appColors.homeRowTitle,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Normal,
             modifier = Modifier.padding(vertical = 16.dp)
         )
 
@@ -331,8 +338,8 @@ private fun GroupsSection(
                             .fillMaxWidth()
                             .height(116.dp)
                             .background(
-                                color = MaterialTheme.appColors.disabledButtonContainerColor,
-                                shape = RoundedCornerShape(8.dp)
+                                color = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
+                                shape = RoundedCornerShape(12.dp)
                             )
                             .padding(start = 8.dp, end = 8.dp, top = 10.dp, bottom = 10.dp)
                             .clickable {
@@ -367,11 +374,10 @@ private fun GroupsSection(
                             ) {
                                 Text(
                                     text = groups[i].name.take(1).uppercase(),
-                                    style = BChatTypography.bodySmall.copy(
-                                        fontSize = 20.sp,
-                                        fontWeight = FontWeight.SemiBold,
-                                        color = MaterialTheme.appColors.textFieldTextColor
-                                    )
+                                    fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.appColors.homeRowTitle
                                 )
                             }
                         }
@@ -383,11 +389,10 @@ private fun GroupsSection(
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
                             textAlign = TextAlign.Center,
-                            style = BChatTypography.bodySmall.copy(
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.appColors.textFieldTextColor
-                            )
+                            fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.appColors.homeRowTitle
                         )
                     }
                 }

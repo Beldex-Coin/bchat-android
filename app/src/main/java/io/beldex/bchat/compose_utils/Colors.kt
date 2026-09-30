@@ -159,7 +159,9 @@ class Colors(
     val userDetailsCancelIconColor: Color,
     val userDetailsConfirmBackground: Color,
     val userDetailsBchatIdBackground: Color,
-    val userDetailsBchatIdText: Color
+    val userDetailsBchatIdText: Color,
+    // Revamp_2026 New Chat / Groups (Phase 4)
+    val newChatIconBackground: Color
 )
 
 val lightColors = Colors(
@@ -287,7 +289,8 @@ val lightColors = Colors(
     userDetailsCancelIconColor = Color(0xFF6E6E7C),
     userDetailsConfirmBackground = Color(0xFF078720),
     userDetailsBchatIdBackground = Color(0xFFF8F8F8),
-    userDetailsBchatIdText = Color(0xFF078720)
+    userDetailsBchatIdText = Color(0xFF078720),
+    newChatIconBackground = Color(0xFFECECEC)
 )
 
 val darkColors = Colors(
@@ -415,7 +418,8 @@ val darkColors = Colors(
     userDetailsCancelIconColor = Color(0xFFACACAC),
     userDetailsConfirmBackground = Color(0xFF00BC33),
     userDetailsBchatIdBackground = Color(0xFF111111),
-    userDetailsBchatIdText = Color(0xFF00BD40)
+    userDetailsBchatIdText = Color(0xFF00BD40),
+    newChatIconBackground = Color(0xFF222222)
 )
 
 

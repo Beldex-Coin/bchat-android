@@ -1445,6 +1445,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="all_media">All Media</string>
     <string name="verify_bns">Verifying...</string>
     <string name="no_contacts">No Contacts</string>
+    <string name="no_contacts_yet">No contacts Yet!</string>
     <string name="sync_option">Syncing Option</string>
     <string name="sync_reconnect">Reconnect</string>
     <string name="sync_rescan">Rescan</string>

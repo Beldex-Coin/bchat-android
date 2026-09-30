@@ -24,7 +24,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -271,16 +270,16 @@ fun ClearDataDialog(
                         onClick = onDismissRequest,
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.appColors.negativeGreenButton
+                            containerColor = MaterialTheme.appColors.onboardingSecondaryButtonBackground
                         ),
                         modifier = Modifier
                             .weight(1f),
-                        border = BorderStroke(0.5.dp, MaterialTheme.appColors.negativeGreenButtonBorder),
+                        border = BorderStroke(0.5.dp, MaterialTheme.appColors.onboardingSecondaryButtonBorder),
                     ) {
                         Text(
                             text = stringResource(id = R.string.cancel),
                             style = MaterialTheme.typography.bodyMedium.copy(
-                                color = MaterialTheme.appColors.negativeGreenButtonText,
+                                color = MaterialTheme.appColors.onboardingSecondaryButtonText,
                                 fontWeight = FontWeight(400),
                                 fontSize = 14.sp
                             ),
@@ -293,10 +292,8 @@ fun ClearDataDialog(
                         onClick = buttonClick,
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = if(buttonTitle == stringResource(R.string.clear) || buttonTitle == stringResource(
-                                    id = R.string.delete
-                                ))MaterialTheme.appColors.negativeRedButtonBorder else MaterialTheme.appColors.negativeGreenButtonBorder,
-                            contentColor = Color.White
+                            containerColor = MaterialTheme.appColors.negativeRedButtonBorder,
+                            contentColor = MaterialTheme.appColors.onboardingSecondaryButtonText
                         ),
                         modifier = Modifier
                             .weight(1f)
@@ -304,7 +301,7 @@ fun ClearDataDialog(
                         Text(
                             text = buttonTitle.toString(),
                             style = MaterialTheme.typography.titleMedium.copy(
-                                color = Color.White,
+                                color = MaterialTheme.appColors.onboardingSecondaryButtonText,
                                 fontWeight = FontWeight(400),
                                 fontSize = 14.sp
                             )

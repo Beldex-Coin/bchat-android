@@ -20,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -55,7 +54,7 @@ fun PermissionSettingDialog(
                 modifier = Modifier
                     .size(48.dp)
                     .background(
-                        color = MaterialTheme.appColors.primaryButtonColor,
+                        color = MaterialTheme.appColors.userDetailsCancelBackground,
                         shape = CircleShape
                     )
                     .padding(8.dp)
@@ -87,9 +86,9 @@ fun PermissionSettingDialog(
                 Button(
                     onClick = onDismissRequest,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.negativeGreenButton
+                        containerColor = MaterialTheme.appColors.onboardingSecondaryButtonBackground
                     ),
-                    border = BorderStroke(0.5.dp, MaterialTheme.appColors.negativeGreenButtonBorder),
+                    border = BorderStroke(0.5.dp, MaterialTheme.appColors.onboardingSecondaryButtonBorder),
                     modifier = Modifier
                         .weight(1f),
                     shape = RoundedCornerShape(12.dp),
@@ -97,7 +96,7 @@ fun PermissionSettingDialog(
                     Text(
                         text = stringResource(id = R.string.cancel),
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.appColors.negativeGreenButtonText,
+                            color = MaterialTheme.appColors.onboardingSecondaryButtonText,
                             fontWeight = FontWeight(400),
                             fontSize = 14.sp
                         )
@@ -109,7 +108,7 @@ fun PermissionSettingDialog(
                 Button(
                     onClick = gotoSettings,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.negativeGreenButtonBorder
+                        containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground
                     ),
                     modifier = Modifier
                         .weight(1f),
@@ -120,7 +119,7 @@ fun PermissionSettingDialog(
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight(400),
                             fontSize = 14.sp,
-                            color = Color.White
+                            color = MaterialTheme.appColors.onboardingPrimaryButtonText
                         ),
                     )
                 }

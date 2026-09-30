@@ -176,7 +176,7 @@ fun MyAccountScreen(
         ) {
             Card(
                     colors=CardDefaults.cardColors(
-                            containerColor=MaterialTheme.colorScheme.primary
+                            containerColor=MaterialTheme.appColors.cardBackground
                     ),
                     shape=RoundedCornerShape(16.dp),
                     elevation=CardDefaults.cardElevation(
@@ -410,7 +410,7 @@ fun AccountHeader(
         Text(
             text = stringResource(id = R.string.chatid),
             style = MaterialTheme.typography.bodyMedium.copy(
-                color = MaterialTheme.appColors.primaryButtonColor
+                color = MaterialTheme.appColors.titleTextColor
             ),
             textAlign = TextAlign.Start,
             modifier = Modifier
@@ -421,6 +421,7 @@ fun AccountHeader(
 
         KeyContainer(
             key = uiState.publicKey,
+            valueColor = MaterialTheme.appColors.userDetailsBchatIdText,
             onCopy = {
                 copyToClipBoard("Chat Id", uiState.publicKey)
             }
@@ -431,7 +432,7 @@ fun AccountHeader(
         Text(
             text = stringResource(id = R.string.beldex_address),
             style = MaterialTheme.typography.bodyMedium.copy(
-                color = MaterialTheme.appColors.beldexAddressColor
+                color = MaterialTheme.appColors.titleTextColor
             ),
             textAlign = TextAlign.Start,
             modifier = Modifier
@@ -442,6 +443,7 @@ fun AccountHeader(
 
         KeyContainer(
             key = beldexAddress,
+            valueColor = MaterialTheme.appColors.beldexAddressColor,
             onCopy = {
                 copyToClipBoard("Chat Id", beldexAddress)
             }
@@ -486,7 +488,8 @@ fun AccountHeader(
 @Composable
 fun KeyContainer(
     key: String?,
-    onCopy: () -> Unit
+    onCopy: () -> Unit,
+    valueColor: Color = MaterialTheme.appColors.titleTextColor
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -502,7 +505,9 @@ fun KeyContainer(
         ) {
             Text(
                 text = key ?: "",
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    color = valueColor
+                ),
                 modifier = Modifier
                     .padding(
                         16.dp

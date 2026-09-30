@@ -58,7 +58,7 @@ fun CroppedImageScreen(file: File, onCropped: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.appColors.backgroundColor)
     ) {
         Image(
             painter = rememberImagePainter(data = file),
@@ -140,7 +140,7 @@ fun CroppedImageScreen(file: File, onCropped: () -> Unit) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background.copy(alpha = 0.6f))
+                    .background(MaterialTheme.appColors.backgroundColor.copy(alpha = 0.6f))
                     .pointerInput(Unit) {
                         detectTransformGestures { _, pan, _, _ ->
                             val x = (pan.x + offset.x) / size.width

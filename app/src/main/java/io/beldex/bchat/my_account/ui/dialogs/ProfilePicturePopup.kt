@@ -24,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -84,7 +83,7 @@ fun ProfilePicturePopup(
                 Text(
                     text = stringResource(id = R.string.activity_settings_profile_picture),
                     style = MaterialTheme.typography.titleMedium.copy(
-                        color = MaterialTheme.appColors.primaryButtonColor
+                        color = MaterialTheme.appColors.titleTextColor
                     ),
                     textAlign = TextAlign.Center,
                     modifier = Modifier
@@ -154,21 +153,21 @@ fun ProfilePicturePopup(
                     onClick = removePicture,
                     enabled = profilePictureStatus,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.negativeGreenButton,
-                        contentColor = if(profilePictureStatus) MaterialTheme.appColors.negativeGreenButtonText else MaterialTheme.appColors.disabledButtonContent,
+                        containerColor = MaterialTheme.appColors.onboardingSecondaryButtonBackground,
+                        contentColor = if(profilePictureStatus) MaterialTheme.appColors.onboardingSecondaryButtonText else MaterialTheme.appColors.disabledButtonContent,
                         disabledContainerColor = MaterialTheme.appColors.optionalTextFieldBackground
                     ),
                     modifier = Modifier
                         .weight(1f).height(50.dp),
                     shape = RoundedCornerShape(12.dp),
-                    border = BorderStroke(width = 0.5.dp, color = if(profilePictureStatus) MaterialTheme.appColors.negativeGreenButtonBorder else MaterialTheme.appColors.optionalTextFieldBackground)
+                    border = BorderStroke(width = 0.5.dp, color = if(profilePictureStatus) MaterialTheme.appColors.onboardingSecondaryButtonBorder else MaterialTheme.appColors.optionalTextFieldBackground)
                 ) {
                     Text(
                         text = stringResource(id = R.string.activity_settings_remove),
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontWeight = FontWeight(400),
                             fontSize = 12.sp,
-                            color = if(profilePictureStatus) MaterialTheme.appColors.negativeGreenButtonText else MaterialTheme.appColors.disabledButtonContent
+                            color = if(profilePictureStatus) MaterialTheme.appColors.onboardingSecondaryButtonText else MaterialTheme.appColors.disabledButtonContent
                         )
                     )
                 }
@@ -178,7 +177,7 @@ fun ProfilePicturePopup(
                 Button(
                     onClick = uploadPicture,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.primaryButtonColor
+                        containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground
                     ),
                     modifier = Modifier
                         .weight(1f).height(50.dp),
@@ -187,7 +186,7 @@ fun ProfilePicturePopup(
                     Text(
                         text = stringResource(id = R.string.activity_settings_upload),
                         style = MaterialTheme.typography.bodySmall.copy(
-                            color = Color.White,
+                            color = MaterialTheme.appColors.onboardingPrimaryButtonText,
                             fontWeight = FontWeight(400),
                             fontSize = 12.sp
                         )

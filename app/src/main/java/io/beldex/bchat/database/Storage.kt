@@ -35,6 +35,8 @@ import com.beldex.libbchat.messaging.utilities.UpdateMessageData
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.mnode.OnionRequestAPI
 import com.beldex.libbchat.utilities.Address
+import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import com.beldex.libbchat.utilities.Address.Companion.fromSerialized
 import com.beldex.libbchat.utilities.GroupRecord
 import com.beldex.libbchat.utilities.GroupUtil
@@ -360,6 +362,10 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         DatabaseComponent.get(context).beldexAPIDatabase().removeLastMessageServerID(room, server)
     }
 
+    override fun hasMessagesInThread(threadId: Long): Boolean {
+        return DatabaseComponent.get(context).threadDatabase().getMessageCount(threadId) > 0
+    }
+
     override fun getLastDeletionServerID(room: String, server: String): Long? {
         return DatabaseComponent.get(context).beldexAPIDatabase().getLastDeletionServerID(room, server)
     }
@@ -659,7 +665,32 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
     }
 
     override fun onOpenGroupAdded(server: String) {
-        OpenGroupManager.restartPollerForServer(server.removeSuffix("/"))
+        OpenGroupManager.restartPollerForServer(normalizeServerUrl(server))
+    }
+
+    private fun normalizeServerUrl(server: String): String {
+        val trimmed = server.trim().removeSuffix("/")
+        return try {
+            val parsed = trimmed.toHttpUrlOrNull()
+            if (parsed == null) {
+                trimmed
+            } else {
+                HttpUrl.Builder()
+                    .scheme(parsed.scheme)
+                    .host(parsed.host)
+                    .apply {
+                        if (parsed.port != HttpUrl.defaultPort(parsed.scheme)) {
+                            this.port(parsed.port)
+                        }
+                    }
+                    .build()
+                    .toString()
+                    .removeSuffix("/")
+            }
+        } catch (e: Exception) {
+            Log.d("Beldex", "Couldn't normalize server url '$server': $e")
+            trimmed
+        }
     }
 
     override fun hasBackgroundGroupAddJob(groupJoinUrl: String): Boolean {

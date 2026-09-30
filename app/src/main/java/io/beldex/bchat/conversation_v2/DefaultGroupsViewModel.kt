@@ -3,6 +3,7 @@ package io.beldex.bchat.conversation_v2
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
+import com.beldex.libbchat.mnode.OnionRequestAPI
 import io.beldex.bchat.util.State
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +25,7 @@ class DefaultGroupsViewModel : ViewModel() {
 
     init {
         OpenGroupAPIV2.getDefaultRoomsIfNeeded()
+        OnionRequestAPI.rebuildPathsIfNeeded(3)
     }
 
     val defaultRooms = OpenGroupAPIV2.defaultRooms.map<DefaultGroups, GroupState> {

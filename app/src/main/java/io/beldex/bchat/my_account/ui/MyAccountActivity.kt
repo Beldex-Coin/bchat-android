@@ -1245,6 +1245,7 @@ fun MyAccountNavHost(
                     Intent.ACTION_VIEW,
                     "onboarding://manage_pin?finish=true&action=${PinCodeAction.VerifyPinCode.action}".toUri()
                 )
+                intent.setPackage(context.packageName)
                 resultLauncher.launch(intent)
             }
             val seed by lazy {

@@ -1,5 +1,6 @@
 package com.beldex.libbchat.messaging.open_groups
 
+import androidx.preference.PreferenceManager
 import com.beldex.libbchat.BuildConfig
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
@@ -29,6 +30,8 @@ import okhttp3.Headers.Companion.toHeaders
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
+import com.beldex.libbchat.utilities.Address
+import com.beldex.libbchat.utilities.GroupUtil
 import org.whispersystems.curve25519.Curve25519
 import java.util.*
 
@@ -67,6 +70,51 @@ object OpenGroupAPIV2 {
         val joinURL: String get() = "$defaultServer/$id?public_key=$defaultServerPublicKey"
 
     }
+
+    /**
+     * Offline fallback for the default social groups, mirrored from the production default server
+     * (http://social.beldex.io/rooms). Used so the Social Group screen always has content when the
+     * network fetch can't complete (e.g. no 3-hop path can be built or the server is unreachable),
+     * instead of showing an infinite loading spinner. A previously successful fetch is cached and
+     * preferred over this list.
+     */
+    private val offlineDefaultRooms = listOf(
+        DefaultGroup("bchat", "BChat", null),
+        DefaultGroup("beldex", "Beldex", null),
+        DefaultGroup("belnet", "BELNET", null),
+        DefaultGroup("crypto", "Crypto News", null),
+        DefaultGroup("masternode", "Masternode", null)
+    )
+
+    private const val CACHED_DEFAULT_ROOMS_KEY = "open_groups_default_rooms_cache"
+
+    private fun saveCachedDefaultRooms(rooms: List<DefaultGroup>) {
+        try {
+            val json = JsonUtil.toJson(rooms.map { mapOf("id" to it.id, "name" to it.name) })
+            PreferenceManager.getDefaultSharedPreferences(MessagingModuleConfiguration.shared.context)
+                .edit().putString(CACHED_DEFAULT_ROOMS_KEY, json).apply()
+        } catch (e: Exception) {
+            Log.w("OpenGroupAPIV2", "Couldn't cache default rooms.", e)
+        }
+    }
+
+    private fun loadCachedDefaultRooms(): List<DefaultGroup> {
+        return try {
+            if (cachedDefaultRooms != null) { return cachedDefaultRooms!! }
+            val json = PreferenceManager.getDefaultSharedPreferences(MessagingModuleConfiguration.shared.context)
+                .getString(CACHED_DEFAULT_ROOMS_KEY, null) ?: return offlineDefaultRooms
+            val raw = JsonUtil.fromJson(json, List::class.java) as? List<*> ?: return offlineDefaultRooms
+            cachedDefaultRooms = raw.mapNotNull { it as? Map<*, *> }.mapNotNull { entry ->
+                val id = entry["id"] as? String ?: return@mapNotNull null
+                val name = entry["name"] as? String ?: return@mapNotNull null
+                DefaultGroup(id, name, null)
+            }
+            cachedDefaultRooms!!
+        } catch (e: Exception) {
+            offlineDefaultRooms
+        }
+    }
+    private var cachedDefaultRooms: List<DefaultGroup>? = null
     enum class Capability {
         BLIND, REACTIONS
     }
@@ -173,13 +221,13 @@ object OpenGroupAPIV2 {
                 requestBuilder.header("Room", request.room)
                 //-Log.d("Beldex","Social group api url builder ${request.room}")
             }
-            if (request.useOnionRouting && OnionRequestAPI.isServerOnionRoutingEnabled) {
+            if (request.useOnionRouting) {
                 val publicKey = MessagingModuleConfiguration.shared.storage.getOpenGroupPublicKey(request.server)
                     ?: return Promise.ofFail(Error.NoPublicKey)
-                return OnionRequestAPI.sendOnionRequest(requestBuilder.build(), request.server, publicKey, Version.V3).fail { e ->
+                return OnionRequestAPI.sendOnionRequest(requestBuilder.build(), request.server, publicKey, Version.V3, forcedPathSize = 3).fail { e ->
                     // A 401 means that we didn't provide a (valid) auth token for a route that required one. We use this as an
                     // indication that the token we're using has expired. Note that a 403 has a different meaning; it means that
-                    // we provided a valid token but it doesn't have a high enough permission level for the route in question.
+                    // we provided a valid token, but it doesn't have a high enough permission level for the route in question.
                     /*if (e is OnionRequestAPI.HTTPRequestFailedAtDestinationException && e.statusCode == 401) {
                         val storage = MessagingModuleConfiguration.shared.storage
                         if (request.room != null) {
@@ -438,6 +486,21 @@ object OpenGroupAPIV2 {
 
     // region General
     @Suppress("UNCHECKED_CAST")
+
+    private fun hasLocalMessagesFor(server: String, room: String): Boolean {
+        return try {
+            val storage = MessagingModuleConfiguration.shared.storage
+            val openGroupID = "$server.$room"
+            val groupID = GroupUtil.getEncodedOpenGroupID(openGroupID.toByteArray())
+            val threadId = storage.getThreadId(Address.fromSerialized(groupID)) ?: return false
+            storage.hasMessagesInThread(threadId)
+        } catch (e: Exception) {
+            Log.d("Beldex", "Couldn't determine local message count for $server.$room: $e")
+            // Be conservative: assume messages exist so we don't trigger a full re-download.
+            true
+        }
+    }
+
     fun compactPoll(rooms: List<String>, server: String): Promise<Map<String, CompactPollResult>, Exception> {
         val authTokenRequests = rooms.associateWith { room -> getAuthToken(room, server) }
         val storage = MessagingModuleConfiguration.shared.storage
@@ -457,11 +520,19 @@ object OpenGroupAPIV2 {
                 Log.e("Beldex", "Failed to get auth token for $room.", e)
                 null
             } ?: return@mapNotNull null
+            val needsFullBackfill = !useMessageLimit && !hasLocalMessagesFor(server, room)
+            if (needsFullBackfill) {
+                Log.d("Beldex", "Social group $room has no local messages but a stored server id exists; requesting full history.")
+            }
+            val fromMessageServerID = if (useMessageLimit || needsFullBackfill) null
+                                      else storage.getLastMessageServerID(room, server)
+            val fromDeletionServerID = if (useMessageLimit || needsFullBackfill) null
+                                      else storage.getLastDeletionServerID(room, server)
             CompactPollRequest(
                 roomID = room,
                 authToken = authToken,
-                fromDeletionServerID = if (useMessageLimit) null else storage.getLastDeletionServerID(room, server),
-                fromMessageServerID = if (useMessageLimit) null else storage.getLastMessageServerID(room, server)
+                fromDeletionServerID = fromDeletionServerID,
+                fromMessageServerID = fromMessageServerID
             )
         }
         val request = Request(verb = POST, room = null, server = server, endpoint = "compact_poll", isAuthRequired = false, parameters = mapOf( "requests" to requests ))

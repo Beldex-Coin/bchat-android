@@ -311,6 +311,7 @@ fun OnBoardingNavHost(
                 KeyGenerationScreen(
                     proceed = {
                         val intent = Intent(Intent.ACTION_VIEW, "onboarding://manage_pin?finish=false&action=${PinCodeAction.CreatePinCode.action}".toUri())
+                        intent.setPackage(context.packageName)
                         context.startActivity(intent)
                     }
                 )

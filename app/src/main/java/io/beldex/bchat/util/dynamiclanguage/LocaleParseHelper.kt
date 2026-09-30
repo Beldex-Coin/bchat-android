@@ -9,9 +9,10 @@ import java.util.*
 class LocaleParseHelper: LocaleParserHelperProtocol {
 
     override fun appSupportsTheExactLocale(locale: Locale?): Boolean {
-        return if (locale == null) {
+        val supported = if (locale == null) {
             false
         } else Arrays.asList(*BuildConfig.LANGUAGES).contains(locale.toString())
+        return supported
     }
 
     override fun findBestSystemLocale(): Locale {

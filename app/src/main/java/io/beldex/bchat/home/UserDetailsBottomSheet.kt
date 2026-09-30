@@ -1,6 +1,5 @@
 package io.beldex.bchat.home
 
-import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -9,16 +8,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.core.view.isVisible
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ComposeView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
-import io.beldex.bchat.databinding.FragmentUserDetailsBottomSheetBinding
+import io.beldex.bchat.compose_utils.BChatTheme
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.Address
@@ -26,7 +26,6 @@ import com.beldex.libbchat.utilities.SSKEnvironment
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.dependencies.DatabaseComponent
-import com.bumptech.glide.Glide;
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.unicodeNamePattern
 import javax.inject.Inject
@@ -36,7 +35,6 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
 
     @Inject lateinit var threadDb: ThreadDatabase
 
-    private lateinit var binding: FragmentUserDetailsBottomSheetBinding
     companion object {
         const val ARGUMENT_PUBLIC_KEY = "publicKey"
         const val ARGUMENT_THREAD_ID = "threadId"
@@ -60,79 +58,50 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
+    private var isEditingName by mutableStateOf(false)
+    private var nicknameInput by mutableStateOf("")
+    private var displayNameState by mutableStateOf("")
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentUserDetailsBottomSheetBinding.inflate(inflater, container, false)
         setStyle(STYLE_NORMAL, R.style.Theme_Bchat_BottomSheet)
-        return binding.root
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val publicKey = arguments?.getString(ARGUMENT_PUBLIC_KEY) ?: return dismiss()
-        val threadID = arguments?.getLong(ARGUMENT_THREAD_ID) ?: return dismiss()
+        val publicKey = arguments?.getString(ARGUMENT_PUBLIC_KEY) ?: run { dismiss(); return ComposeView(requireContext()) }
+        val threadID = arguments?.getLong(ARGUMENT_THREAD_ID) ?: run { dismiss(); return ComposeView(requireContext()) }
         val recipient = Recipient.from(requireContext(), Address.fromSerialized(publicKey), false)
-        val threadRecipient = threadDb.getRecipientForThreadId(threadID) ?: return dismiss()
-        val layouts= view.layoutParams as ViewGroup.MarginLayoutParams
-        layouts.leftMargin = 32
-        layouts.rightMargin = 32
-        layouts.bottomMargin = 24
-        view.layoutParams = layouts
-        with(binding) {
-            profilePictureView.root.publicKey = publicKey
-            profilePictureView.root.glide = Glide.with(this@UserDetailsBottomSheet)
-            profilePictureView.root.isLarge = true
-            profilePictureView.root.update(recipient)
-            nameTextViewContainer.visibility = View.VISIBLE
-            nameEditIcon.setOnClickListener {
-                nameTextViewContainer.visibility = View.INVISIBLE
-                nameEditTextContainer.visibility = View.VISIBLE
-                nicknameEditText.text = null
-                nicknameEditText.requestFocus()
-                showSoftKeyboard()
-            }
-            cancelNicknameEditingButton.setOnClickListener {
-                nicknameEditText.clearFocus()
-                hideSoftKeyboard()
-                nameTextViewContainer.visibility = View.VISIBLE
-                nameEditTextContainer.visibility = View.INVISIBLE
-            }
-            saveNicknameButton.setOnClickListener {
-                saveNickName(recipient)
-            }
-            nicknameEditText.setOnEditorActionListener { _, actionId, _ ->
-                when (actionId) {
-                    EditorInfo.IME_ACTION_DONE -> {
-                        saveNickName(recipient)
-                        return@setOnEditorActionListener true
-                    }
-                    else -> return@setOnEditorActionListener false
-                }
-            }
-            nameTextView.text = if (publicKey == BuildConfig.REPORT_ISSUE_ID) getString(R.string.report_issue) else recipient.name ?: publicKey // Uses the Contact API internally
+        val threadRecipient = threadDb.getRecipientForThreadId(threadID) ?: run { dismiss(); return ComposeView(requireContext()) }
+        // Uses the Contact API internally
+        displayNameState = if (publicKey == BuildConfig.REPORT_ISSUE_ID) getString(R.string.report_issue) else recipient.name ?: publicKey
 
-            publicKeyTextView.isVisible = !threadRecipient.isOpenGroupRecipient
-            messageButton.isVisible = !threadRecipient.isOpenGroupRecipient
-            publicKeyTextView.text = publicKey
-            publicKeyTextView.setOnLongClickListener {
-                val clipboard =
-                    requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("BChat ID", publicKey)
-                clipboard.setPrimaryClip(clip)
-                Toast.makeText(requireContext(), R.string.copied_to_clipboard, Toast.LENGTH_SHORT)
-                    .show()
-                true
-            }
-            messageButton.setOnClickListener {
-                val threadId = MessagingModuleConfiguration.shared.storage.getThreadId(recipient)
-                /*val intent = Intent(
-                    context,
-                    ConversationActivityV2::class.java
-                )
-                intent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
-                intent.putExtra(ConversationActivityV2.THREAD_ID, threadId ?: -1)
-                startActivity(intent)*/
-                activityCallback?.callConversationFragmentV2(recipient.address,threadId?:-1)
-                dismiss()
+        return ComposeView(requireContext()).apply {
+            setContent {
+                BChatTheme {
+                    UserDetailsSheetContent(
+                        publicKey = publicKey,
+                        name = displayNameState,
+                        isEditingName = isEditingName,
+                        nicknameInput = nicknameInput,
+                        onNicknameInputChange = { nicknameInput = it },
+                        onEditNameClick = {
+                            nicknameInput = ""
+                            isEditingName = true
+                        },
+                        onCancelEditClick = { isEditingName = false },
+                        onSaveNicknameClick = { saveNickName(recipient) },
+                        showBchatIdAndMessageButton = !threadRecipient.isOpenGroupRecipient,
+                        onCopyBchatId = {
+                            val clipboard =
+                                requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            val clip = ClipData.newPlainText("BChat ID", publicKey)
+                            clipboard.setPrimaryClip(clip)
+                            Toast.makeText(requireContext(), R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+                        },
+                        onMessageClick = {
+                            val threadId = MessagingModuleConfiguration.shared.storage.getThreadId(recipient)
+                            activityCallback?.callConversationFragmentV2(recipient.address, threadId ?: -1)
+                            dismiss()
+                        }
+                    )
+                }
             }
         }
     }
@@ -181,13 +150,8 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
         bottomSheet.requestLayout()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        hideSoftKeyboard()
-    }
-
-    private fun saveNickName(recipient: Recipient) = with(binding) {
-        val nickname = nicknameEditText.text.toString().trim()
+    private fun saveNickName(recipient: Recipient) {
+        val nickname = nicknameInput.trim()
         when {
             nickname.isEmpty() -> {
                 Toast.makeText(
@@ -214,12 +178,6 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
             }
 
             else -> {
-                nicknameEditText.clearFocus()
-                hideSoftKeyboard()
-
-                nameTextViewContainer.visibility = View.VISIBLE
-                nameEditTextContainer.visibility = View.INVISIBLE
-
                 val publicKey = recipient.address.serialize()
                 val contactDB =
                     DatabaseComponent.get(requireContext()).bchatContactDatabase()
@@ -230,31 +188,9 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
                 contact.nickname = nickname
                 contactDB.setContact(contact)
 
-                val previousName = nameTextView.text.toString()
-
-                nameTextView.text = recipient.name ?: publicKey
-
-                if(previousName != nameTextView.text.toString()) {
-                    updateProfilePictureView(recipient)
-                }
+                displayNameState = recipient.name ?: publicKey
+                isEditingName = false
             }
         }
-    }
-
-
-    @SuppressLint("ServiceCast")
-    fun showSoftKeyboard() {
-        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-        imm?.showSoftInput(binding.nicknameEditText, 0)
-    }
-
-    fun hideSoftKeyboard() {
-        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-        imm?.hideSoftInputFromWindow(binding.nicknameEditText.windowToken, 0)
-    }
-
-    private fun updateProfilePictureView(recipient: Recipient) {
-        binding.profilePictureView.root.recycle()
-        binding.profilePictureView.root.update(recipient)
     }
 }

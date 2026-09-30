@@ -150,7 +150,16 @@ class Colors(
     val homeRowTimestampUnread: Color,
     val homeUnreadBadgeBackground: Color,
     val homeUnreadBadgeText: Color,
-    val homeFabBackground: Color
+    val homeFabBackground: Color,
+    // Revamp_2026 contact-details bottom sheet (Phase 3)
+    val userDetailsSheetBackground: Color,
+    val userDetailsNameColor: Color,
+    val userDetailsEditIconColor: Color,
+    val userDetailsCancelBackground: Color,
+    val userDetailsCancelIconColor: Color,
+    val userDetailsConfirmBackground: Color,
+    val userDetailsBchatIdBackground: Color,
+    val userDetailsBchatIdText: Color
 )
 
 val lightColors = Colors(
@@ -270,7 +279,15 @@ val lightColors = Colors(
     homeRowTimestampUnread = Color(0xFF078720),
     homeUnreadBadgeBackground = Color(0xFF00BC33),
     homeUnreadBadgeText = Color(0xFF0B0B0B),
-    homeFabBackground = Color(0xFF00BC33)
+    homeFabBackground = Color(0xFF00BC33),
+    userDetailsSheetBackground = Color(0xFFF8F8F8),
+    userDetailsNameColor = Color(0xFF333333),
+    userDetailsEditIconColor = Color(0xFF078720),
+    userDetailsCancelBackground = Color(0xFFECECEC),
+    userDetailsCancelIconColor = Color(0xFF6E6E7C),
+    userDetailsConfirmBackground = Color(0xFF078720),
+    userDetailsBchatIdBackground = Color(0xFFF8F8F8),
+    userDetailsBchatIdText = Color(0xFF078720)
 )
 
 val darkColors = Colors(
@@ -390,7 +407,15 @@ val darkColors = Colors(
     homeRowTimestampUnread = Color(0xFF00BC33),
     homeUnreadBadgeBackground = Color(0xFF00BC33),
     homeUnreadBadgeText = Color(0xFF0B0B0B),
-    homeFabBackground = Color(0xFF00BC33)
+    homeFabBackground = Color(0xFF00BC33),
+    userDetailsSheetBackground = Color(0xFF151515),
+    userDetailsNameColor = Color(0xFFEBEBEB),
+    userDetailsEditIconColor = Color(0xFF00BC33),
+    userDetailsCancelBackground = Color(0xFF222222),
+    userDetailsCancelIconColor = Color(0xFFACACAC),
+    userDetailsConfirmBackground = Color(0xFF00BC33),
+    userDetailsBchatIdBackground = Color(0xFF111111),
+    userDetailsBchatIdText = Color(0xFF00BD40)
 )
 
 

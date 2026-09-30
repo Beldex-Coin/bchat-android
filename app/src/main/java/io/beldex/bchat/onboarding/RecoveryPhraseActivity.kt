@@ -6,72 +6,49 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.SystemClock
-import android.view.View
 import android.widget.Toast
-import androidx.core.content.ContextCompat
+import androidx.activity.compose.setContent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
+import androidx.core.view.WindowCompat
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.crypto.MnemonicCodec
 import com.beldex.libsignal.utilities.hexEncodedPrivateKey
-import io.beldex.bchat.BaseActionBarActivity
-import io.beldex.bchat.WindowInsetsUtil
+import io.beldex.bchat.BaseComponentActivity
+import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.crypto.MnemonicUtilities
 import io.beldex.bchat.home.HomeActivity
-import io.beldex.bchat.util.UiMode
-import io.beldex.bchat.util.UiModeUtilities
+import io.beldex.bchat.onboarding.ui.RecoveryPhraseScreen
 import io.beldex.bchat.util.push
-import io.beldex.bchat.util.setUpActionBarBchatLogo
 import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityRecoveryPhraseBinding
 
 
-class RecoveryPhraseActivity : BaseActionBarActivity() {
-    private lateinit var binding: ActivityRecoveryPhraseBinding
-    var copiedSeed = false
+class RecoveryPhraseActivity : BaseComponentActivity() {
+    var copiedSeed by mutableStateOf(false)
     private var shareButtonLastClickTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         copiedSeed = savedInstanceState?.getBoolean(SEED_COPIED_KEY, false)
             ?: TextSecurePreferences.isCopiedSeed(this)
-        binding = ActivityRecoveryPhraseBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        WindowInsetsUtil.applyTopInset(binding.root)
-        setUpActionBarBchatLogo(getString(R.string.activity_settings_recovery_phrase_button_title), false)
-        val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
-        with(binding)
-        {
-            if(isDarkTheme) restoreSeedHintIcon.setImageResource(R.drawable.ic_restore_seed_dark) else restoreSeedHintIcon.setImageResource(R.drawable.ic_restore_seed_white)
-            registerButton.setOnClickListener() {
-                if (!copiedSeed) {
-                    Toast.makeText(
-                        this@RecoveryPhraseActivity,
-                       R.string.please_copy_and_save_your_seed,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else {
-                    Toast.makeText(
-                        this@RecoveryPhraseActivity,
-                        R.string.please_copy_the_seed_and_save_it,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    homepage()
-                }
+
+        setContent {
+            BChatTheme {
+                RecoveryPhraseScreen(
+                    title = stringResource(R.string.activity_settings_recovery_phrase_button_title),
+                    seed = seed,
+                    seedCopied = copiedSeed,
+                    onCopySeedClick = { copySeed() },
+                    onSaveClick = { shareAddressThrottled() },
+                    onContinueClick = { onContinueClick() },
+                    onBackClick = { finish() }
+                )
             }
-            copyButton.setOnClickListener() {
-                copiedSeed = true
-                copySeed()
-            }
-            shareButton.setOnClickListener() {
-                if (SystemClock.elapsedRealtime() - shareButtonLastClickTime >= 1000) {
-                    shareButtonLastClickTime = SystemClock.elapsedRealtime()
-                    shareAddress()
-                }
-            }
-            if (bChatSeedTextView != null) {
-                bChatSeedTextView.text = seed
-            }
-            applyContinueButtonState()
         }
     }
 
@@ -80,17 +57,12 @@ class RecoveryPhraseActivity : BaseActionBarActivity() {
         outState.putBoolean(SEED_COPIED_KEY, copiedSeed)
     }
 
-    private fun applyContinueButtonState() {
-        if (copiedSeed) {
-            enableContinueButton()
+    private fun onContinueClick() {
+        if (!copiedSeed) {
+            Toast.makeText(this, R.string.please_copy_and_save_your_seed, Toast.LENGTH_SHORT).show()
         } else {
-            binding.registerButton.isEnabled = false
-            binding.registerButton.setTextColor(ContextCompat.getColor(this, R.color.disable_button_text_color))
-            binding.registerButton.background =
-                ContextCompat.getDrawable(
-                    this@RecoveryPhraseActivity,
-                    R.drawable.prominent_filled_button_medium_background_disable
-                )
+            Toast.makeText(this, R.string.please_copy_the_seed_and_save_it, Toast.LENGTH_SHORT).show()
+            homepage()
         }
     }
 
@@ -119,28 +91,22 @@ class RecoveryPhraseActivity : BaseActionBarActivity() {
     }
 
     private fun copySeed() {
-        TextSecurePreferences.setCopiedSeed(this,true)
-        val seed = binding.bChatSeedTextView?.text.toString()
+        TextSecurePreferences.setCopiedSeed(this, true)
         val clipboard = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Seed", seed)
         clipboard.setPrimaryClip(clip)
         Toast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
-        enableContinueButton()
+        copiedSeed = true
     }
 
-    private fun enableContinueButton() {
-        binding.registerButton.isEnabled = true
-        binding.hint.visibility = View.GONE
-        binding.registerButton.setTextColor(ContextCompat.getColor(this, R.color.white))
-        binding.registerButton.background =
-            ContextCompat.getDrawable(
-                this@RecoveryPhraseActivity,
-                R.drawable.prominent_filled_button_medium_background
-            )
+    private fun shareAddressThrottled() {
+        if (SystemClock.elapsedRealtime() - shareButtonLastClickTime >= 1000) {
+            shareButtonLastClickTime = SystemClock.elapsedRealtime()
+            shareAddress()
+        }
     }
 
     private fun shareAddress() {
-        val seed = binding.bChatSeedTextView?.text.toString()
         val intent = Intent()
         intent.action = Intent.ACTION_SEND
         intent.putExtra(Intent.EXTRA_TEXT, seed)

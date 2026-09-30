@@ -53,23 +53,12 @@ class ConversationView : LinearLayout {
         val recipient = thread.recipient
         val isMuted = recipient.isMuted || recipient.notifyType != NOTIFY_TYPE_ALL
         val unreadCount = thread.unreadCount
-        if (thread.isPinned) {
-            binding.contentView.apply {
-                background = ContextCompat.getDrawable(context,R.drawable.unread_message_chat_background)
-                val params = layoutParams as FrameLayout.LayoutParams
-                params.setMargins(0, 16, 16, 16)
-                layoutParams = params
-
-            }
-            binding.pinnedViewContainer.isVisible = thread.isPinned
-        } else {
-            binding.pinnedViewContainer.isVisible = thread.isPinned
-            binding.contentView.apply {
-                background = null
-                val params = layoutParams as FrameLayout.LayoutParams
-                params.setMargins(0, 0, 0, 0)
-                layoutParams = params
-            }
+        binding.pinnedViewContainer.isVisible = thread.isPinned
+        binding.contentView.apply {
+            background = ContextCompat.getDrawable(context, R.drawable.home_row_background)
+            val params = layoutParams as FrameLayout.LayoutParams
+            params.setMargins(0, 0, if (thread.isPinned) 16 else 0, 0)
+            layoutParams = params
         }
         val margin = when {
             isMuted && unreadCount == 0 && !thread.isRead && thread.isPinned -> 50
@@ -92,9 +81,9 @@ class ConversationView : LinearLayout {
         binding.conversationViewDisplayNameTextView.text = recipientName
         binding.timestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(context, Locale.getDefault(), thread.date)
         if(unreadCount !=0 && !thread.isRead) {
-            binding.timestampTextView.setTextColor(context.getColor(R.color.text_green))
+            binding.timestampTextView.setTextColor(context.getColor(R.color.home_row_timestamp_unread))
         } else{
-            binding.timestampTextView.setTextColor(context.getColor(R.color.received_quoted_text_color))
+            binding.timestampTextView.setTextColor(context.getColor(R.color.home_row_timestamp))
         }
         binding.muteIcon.isVisible = isMuted
         val drawableRes = if (recipient.isMuted || recipient.notifyType == NOTIFY_TYPE_NONE) {

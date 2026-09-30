@@ -13,50 +13,39 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
+import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import io.beldex.bchat.BaseAppCompatActivity
+import io.beldex.bchat.BaseComponentActivity
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.crypto.IdentityKeyUtil
-import io.beldex.bchat.databinding.ActivityLandingBinding
+import io.beldex.bchat.onboarding.ui.LandingScreen
 import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.service.KeyCachingService
-import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.nodelistasync.DownloadNodeListFileAsyncTask
 import io.beldex.bchat.util.nodelistasync.NodeListConstants
 import io.beldex.bchat.util.push
 
-class LandingActivity : BaseAppCompatActivity() {
+class LandingActivity : BaseComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        val binding = ActivityLandingBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val systemBars = insets.getInsets(
-                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
-            )
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
         TextSecurePreferences.setCopiedSeed(this, false)
-        with(binding) {
-            registerButton.setOnClickListener() { register() }
-            restoreButton.setOnClickListener { restore() }
-            TermsandCondtionsTxt.setOnClickListener { link() }
-            val isDayUiMode = UiModeUtilities.isDayUiMode(this@LandingActivity)
-            (if (isDayUiMode) R.raw.landing_animation_light_theme else R.raw.landing_animation_dark_theme).also {
-//                img.setAnimation(
-//                    it
-//                )
+
+        setContent {
+            BChatTheme {
+                LandingScreen(
+                    onCreateAccountClick = { register() },
+                    onRestoreAccountClick = { restore() },
+                    onTermsClick = { link() }
+                )
             }
         }
+
         IdentityKeyUtil.generateIdentityKeyPair(this)
         TextSecurePreferences.setPasswordDisabled(this, true)
         // AC: This is a temporary workaround to trick the old code that the screen is unlocked.

@@ -3,19 +3,18 @@ package io.beldex.bchat.onboarding
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat
+import androidx.activity.compose.setContent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.beldex.libbchat.utilities.SSKEnvironment.ProfileManagerProtocol
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.BaseComponentActivity
 import io.beldex.bchat.data.NetworkNodes
 import io.beldex.bchat.data.NodeInfo
 import io.beldex.bchat.model.AsyncTaskCoroutine
@@ -26,11 +25,10 @@ import io.beldex.bchat.util.BChatThreadPoolExecutor
 import io.beldex.bchat.util.Helper
 import io.beldex.bchat.util.NodePinger
 import io.beldex.bchat.util.push
-import io.beldex.bchat.util.setUpActionBarBchatLogo
 import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.R
-import io.beldex.bchat.WindowInsetsUtil
-import io.beldex.bchat.databinding.ActivityDisplayNameBinding
+import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.onboarding.ui.DisplayNameStepScreen
 import io.beldex.bchat.util.englishNamePattern
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -42,8 +40,9 @@ import java.util.UUID
 import java.util.concurrent.Executor
 
 
-class DisplayNameActivity : BaseActionBarActivity() {
-    private lateinit var binding: ActivityDisplayNameBinding
+class DisplayNameActivity : BaseComponentActivity() {
+    private var displayName by mutableStateOf("")
+    private var isRegistering by mutableStateOf(false)
 
 
     //New Line
@@ -62,82 +61,19 @@ class DisplayNameActivity : BaseActionBarActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityDisplayNameBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        WindowInsetsUtil.applyTopAndImeInsets(binding.root)
-        setUpActionBarBchatLogo(getString(R.string.display_name),false)
-        with(binding) {
-            displayNameEditText.imeOptions =
-                displayNameEditText.imeOptions or 16777216 // Always use incognito keyboard
-            displayNameEditText.setOnEditorActionListener(
-                TextView.OnEditorActionListener { _, actionID, _ ->
-                    if (actionID == EditorInfo.IME_ACTION_SEARCH ||
-                        actionID == EditorInfo.IME_ACTION_DONE
-                    ) {
-                        register()
-                        return@OnEditorActionListener true
-                    }
-                    false
-                })
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
-            registerButton.setTextColor(
-                ContextCompat.getColor(
-                    this@DisplayNameActivity,
-                    R.color.disable_button_text_color
+        setContent {
+            BChatTheme {
+                DisplayNameStepScreen(
+                    displayName = displayName,
+                    onDisplayNameChange = { displayName = it },
+                    onContinueClick = { if (displayName.isNotBlank() && !isRegistering) register() },
+                    onBackClick = { finish() }
                 )
-            )
-            registerButton.background =
-                ContextCompat.getDrawable(
-                    this@DisplayNameActivity,
-                    R.drawable.disabled_button_background
-                )
-            registerButton.isEnabled = displayNameEditText.text.isNotEmpty()
-            displayNameEditText.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable) {}
-                override fun beforeTextChanged(
-                    s: CharSequence, start: Int,
-                    count: Int, after: Int
-                ) {
-                }
-
-                override fun onTextChanged(
-                    s: CharSequence, start: Int,
-                    before: Int, count: Int
-                ) {
-                    if (s.isEmpty() && s.isBlank()) {
-                        registerButton.isEnabled = false
-                        registerButton.setTextColor(
-                            ContextCompat.getColor(
-                                this@DisplayNameActivity,
-                                R.color.disable_button_text_color
-                            )
-                        )
-                        registerButton.background =
-                            ContextCompat.getDrawable(
-                                this@DisplayNameActivity,
-                                R.drawable.disabled_button_background
-                            )
-                    } else {
-                        registerButton.isEnabled = true
-                        registerButton.setTextColor(
-                            ContextCompat.getColor(
-                                this@DisplayNameActivity, R.color.white
-                            )
-                        )
-                        registerButton.background =
-                            ContextCompat.getDrawable(
-                                this@DisplayNameActivity,
-                                R.drawable.prominent_filled_button_medium_background
-                            )
-                    }
-                }
-            })
-            registerButton.setOnClickListener {
-                if (displayNameEditText.text.isNotEmpty()) {
-                    register()
-                }
             }
         }
+
         //New Line load favourites with network function
         if (CheckOnline.isOnline(this)) {
             loadFavouritesWithNetwork()
@@ -146,7 +82,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
 
     override fun onResume() {
         super.onResume()
-        binding.registerButton.isEnabled = true
+        isRegistering = false
         //New Line
         if (CheckOnline.isOnline(this)) {
             pingSelectedNode()
@@ -321,15 +257,15 @@ class DisplayNameActivity : BaseActionBarActivity() {
 
 
     private fun register() {
-        val displayName = binding.displayNameEditText.text.toString().trim()
-        if (displayName.isEmpty()) {
+        val trimmedDisplayName = displayName.trim()
+        if (trimmedDisplayName.isEmpty()) {
             return Toast.makeText(
                 this,
                 R.string.activity_display_name_display_name_missing_error,
                 Toast.LENGTH_SHORT
             ).show()
         }
-        if (displayName.toByteArray().size > ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
+        if (trimmedDisplayName.toByteArray().size > ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
             return Toast.makeText(
                 this,
                 R.string.activity_display_name_display_name_too_long_error,
@@ -338,26 +274,26 @@ class DisplayNameActivity : BaseActionBarActivity() {
         }
         //New Line
         if(TextSecurePreferences.getProfileName(this)!=null){
-            if(displayName == TextSecurePreferences.getProfileName(this)){
+            if(trimmedDisplayName == TextSecurePreferences.getProfileName(this)){
                 removeWallet()
             }
         }
-        if (!displayName.matches(englishNamePattern.toRegex())) {
+        if (!trimmedDisplayName.matches(englishNamePattern.toRegex())) {
             return Toast.makeText(
                     this,
                     R.string.display_name_validation,
                     Toast.LENGTH_SHORT
             ).show()
         }
-        binding.registerButton.isEnabled = false
+        isRegistering = true
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(binding.displayNameEditText.windowToken, 0)
-        TextSecurePreferences.setProfileName(this, displayName)
+        inputMethodManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+        TextSecurePreferences.setProfileName(this, trimmedDisplayName)
 
         //New Line
         val uuid = UUID.randomUUID()
         val password = uuid.toString()
-        _createWallet(displayName, password)
+        _createWallet(trimmedDisplayName, password)
     }
     //New Line
     private fun removeWallet(){
@@ -498,7 +434,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
                 b.putString("type","accept")
                 b.putString("path", newWalletFile?.absolutePath)
                 b.putString("password", walletPassword)
-                b.putString("displayName",displayNameActivity.binding.displayNameEditText.text.toString())
+                b.putString("displayName",displayNameActivity.displayName)
                 intent.putExtras(b)
                 displayNameActivity.push(intent)
             } else {

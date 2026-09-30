@@ -233,6 +233,10 @@ class ConversationAdapter(
                             context.startActivity(intent)
                             callMissedDialog.dismiss()
                         }
+                        val cancelButton = callMissedDialogView.findViewById<Button>(R.id.missedCallCancelButton)
+                        cancelButton.setOnClickListener {
+                            callMissedDialog.dismiss()
+                        }
                         callMissedDialog.show()
                     }
                 } else {

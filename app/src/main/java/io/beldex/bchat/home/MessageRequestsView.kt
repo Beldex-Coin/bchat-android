@@ -83,30 +83,30 @@ fun MessageRequestsView(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    shape = RoundedCornerShape(50),
-                    color = MaterialTheme.appColors.searchBackground
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.appColors.homeSearchBarBackground
                 )
                 .noRippleCallback {
                     openSearch()
                 }
                 .padding(
                     horizontal = 16.dp,
-                    vertical = 12.dp
+                    vertical = 14.dp
                 )
         ) {
             Icon(
                 Icons.Default.Search,
                 contentDescription = "",
-                tint = MaterialTheme.appColors.iconTint
+                tint = MaterialTheme.appColors.homeSearchBarHint
             )
 
             Spacer(modifier = Modifier.width(8.dp))
 
             Text(
-                text = stringResource(id = R.string.search_people_and_groups),
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.appColors.inputHintColor
-                )
+                text = stringResource(id = R.string.search_name_bns_bchat_id),
+                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                fontSize = 14.sp,
+                color = MaterialTheme.appColors.homeSearchBarHint
             )
         }
 

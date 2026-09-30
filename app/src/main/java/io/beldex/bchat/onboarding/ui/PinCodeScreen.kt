@@ -231,10 +231,10 @@ private fun PortraitPinCodeScreen(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
                     shape = RoundedCornerShape(50),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.appColors.searchBackground),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.appColors.onboardingHeadlineColor),
                     border = BorderStroke(
                         width = 1.dp,
-                        color = if (state.pinLength == 4) MaterialTheme.appColors.tertiaryButtonColor else MaterialTheme.appColors.primaryButtonColor
+                        color = if (state.pinLength == 4) MaterialTheme.appColors.onboardingSecondaryButtonBorder else MaterialTheme.appColors.onboardingSecondaryButtonBorder
                     )
                 ) {
                     Text(
@@ -245,7 +245,7 @@ private fun PortraitPinCodeScreen(
                     Spacer(Modifier.width(8.dp))
                     Icon(
                         painterResource(id = R.drawable.ic_arrow_pin),
-                        tint = MaterialTheme.appColors.textColor,
+                        tint = MaterialTheme.appColors.onboardingHeadlineColor,
                         contentDescription = "PIN digit change",
                     )
                 }
@@ -272,7 +272,7 @@ private fun PortraitPinCodeScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
-                        color = MaterialTheme.appColors.backgroundColor,
+                        color = MaterialTheme.appColors.onboardingBackground,
                         shape = RoundedCornerShape(
                             topStart = 16.dp,
                             topEnd = 16.dp
@@ -297,7 +297,7 @@ private fun PortraitPinCodeScreen(
                                 item {
                                     Card(
                                         colors = CardDefaults.cardColors(
-                                            containerColor = MaterialTheme.appColors.editTextBackground
+                                            containerColor = MaterialTheme.appColors.onboardingKeypadKeyBackground
                                         )
                                     ) {
 
@@ -308,7 +308,7 @@ private fun PortraitPinCodeScreen(
                                 item {
                                     Card(
                                         colors = CardDefaults.cardColors(
-                                            containerColor = MaterialTheme.appColors.editTextBackground
+                                            containerColor = MaterialTheme.appColors.onboardingKeypadKeyBackground
                                         ),
                                         modifier = Modifier
                                             .height(cellHeight)
@@ -334,7 +334,7 @@ private fun PortraitPinCodeScreen(
                                 item {
                                     Card(
                                         colors = CardDefaults.cardColors(
-                                            containerColor = MaterialTheme.appColors.editTextBackground
+                                            containerColor = MaterialTheme.appColors.onboardingKeypadKeyBackground
                                         ),
                                         modifier = Modifier
                                             .height(cellHeight)
@@ -359,7 +359,7 @@ private fun PortraitPinCodeScreen(
                                             Icon(
                                                 Icons.Outlined.Backspace,
                                                 contentDescription = "",
-                                                tint = MaterialTheme.appColors.editTextColor
+                                                tint = MaterialTheme.appColors.onboardingHeadlineColor
                                             )
                                         }
                                     }
@@ -369,7 +369,7 @@ private fun PortraitPinCodeScreen(
                                 item {
                                     Card(
                                         colors = CardDefaults.cardColors(
-                                            containerColor = MaterialTheme.appColors.editTextBackground
+                                            containerColor = MaterialTheme.appColors.onboardingKeypadKeyBackground
                                         ),
                                         modifier = Modifier
                                             .height(cellHeight)
@@ -415,13 +415,14 @@ private fun PortraitPinCodeScreen(
                                 buttonSize = it
                             },
                         shape = RoundedCornerShape(12.dp),
-                        disabledContainerColor = MaterialTheme.appColors.beldexAddressBackground
+                        containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
+                        disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground
                     ) {
                         Text(
                             text = stringResource(id = R.string.next),
                             style = BChatTypography.titleMedium.copy(
                                 fontWeight = FontWeight.Normal,
-                                color = if(pin.length == state.pinLength) Color.White else MaterialTheme.appColors.disabledNextButtonColor
+                                color = if(pin.length == state.pinLength) MaterialTheme.appColors.onboardingPrimaryButtonText else MaterialTheme.appColors.onboardingPrimaryButtonDisabledText
                             ),
                             modifier = Modifier
                                 .padding(8.dp)
@@ -446,7 +447,7 @@ private fun LandscapePinCodeScreen(
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.appColors.backgroundColor)
+            .background(MaterialTheme.appColors.onboardingBackground)
     ) {
         val density = LocalDensity.current
         var buttonSize by remember {
@@ -518,10 +519,10 @@ private fun LandscapePinCodeScreen(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
                     shape = RoundedCornerShape(50),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.appColors.searchBackground),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.appColors.onboardingHeadlineColor),
                     border = BorderStroke(
                         width = 1.dp,
-                        color = if (state.pinLength == 4) MaterialTheme.appColors.tertiaryButtonColor else MaterialTheme.appColors.primaryButtonColor
+                        color = if (state.pinLength == 4) MaterialTheme.appColors.onboardingSecondaryButtonBorder else MaterialTheme.appColors.onboardingSecondaryButtonBorder
                     )
                 ) {
                     Text(
@@ -532,7 +533,7 @@ private fun LandscapePinCodeScreen(
                     Spacer(Modifier.width(8.dp))
                     Icon(
                         painterResource(id = R.drawable.ic_arrow_pin),
-                        tint = MaterialTheme.appColors.textColor,
+                        tint = MaterialTheme.appColors.onboardingHeadlineColor,
                         contentDescription = "PIN digit change",
                     )
                 }
@@ -561,7 +562,7 @@ private fun LandscapePinCodeScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(
-                            color = MaterialTheme.appColors.backgroundColor,
+                            color = MaterialTheme.appColors.onboardingBackground,
                             shape = RoundedCornerShape(
                                 topStart = 16.dp,
                                 topEnd = 16.dp
@@ -586,7 +587,7 @@ private fun LandscapePinCodeScreen(
                                     item {
                                         Card(
                                             colors = CardDefaults.cardColors(
-                                                containerColor = MaterialTheme.appColors.editTextBackground
+                                                containerColor = MaterialTheme.appColors.onboardingKeypadKeyBackground
                                             )
                                         ) {
 
@@ -597,7 +598,7 @@ private fun LandscapePinCodeScreen(
                                     item {
                                         Card(
                                             colors = CardDefaults.cardColors(
-                                                containerColor = MaterialTheme.appColors.editTextBackground
+                                                containerColor = MaterialTheme.appColors.onboardingKeypadKeyBackground
                                             ),
                                             modifier = Modifier
                                                 .fillMaxWidth()
@@ -624,7 +625,7 @@ private fun LandscapePinCodeScreen(
                                     item {
                                         Card(
                                             colors = CardDefaults.cardColors(
-                                                containerColor = MaterialTheme.appColors.editTextBackground
+                                                containerColor = MaterialTheme.appColors.onboardingKeypadKeyBackground
                                             ),
                                             modifier = Modifier
                                                 .height(cellHeight)
@@ -649,7 +650,7 @@ private fun LandscapePinCodeScreen(
                                                 Icon(
                                                     Icons.Outlined.Backspace,
                                                     contentDescription = "",
-                                                    tint = MaterialTheme.appColors.editTextColor
+                                                    tint = MaterialTheme.appColors.onboardingHeadlineColor
                                                 )
                                             }
                                         }
@@ -659,7 +660,7 @@ private fun LandscapePinCodeScreen(
                                     item {
                                         Card(
                                             colors = CardDefaults.cardColors(
-                                                containerColor = MaterialTheme.appColors.editTextBackground
+                                                containerColor = MaterialTheme.appColors.onboardingKeypadKeyBackground
                                             ),
                                             modifier = Modifier
                                                 .height(cellHeight)
@@ -703,13 +704,14 @@ private fun LandscapePinCodeScreen(
                                     buttonSize = it
                                 },
                             shape = RoundedCornerShape(12.dp),
-                            disabledContainerColor = MaterialTheme.appColors.beldexAddressBackground
+                            containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
+                            disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground
                         ) {
                             Text(
                                 text = stringResource(id = R.string.next),
                                 style = BChatTypography.titleMedium.copy(
                                     fontWeight = FontWeight.Normal,
-                                    color = if(pin.length == state.pinLength) Color.White else MaterialTheme.appColors.disabledNextButtonColor
+                                    color = if(pin.length == state.pinLength) MaterialTheme.appColors.onboardingPrimaryButtonText else MaterialTheme.appColors.onboardingPrimaryButtonDisabledText
                                 ),
                                 modifier = Modifier
                                     .padding(8.dp)

@@ -3,21 +3,24 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.beldex.libbchat.utilities.SSKEnvironment
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.crypto.ecc.ECKeyPair
 import com.goterl.lazysodium.utils.KeyPair
-import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.BaseComponentActivity
+import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.data.NetworkNodes
 import io.beldex.bchat.data.NodeInfo
@@ -27,17 +30,15 @@ import io.beldex.bchat.model.NetworkType
 import io.beldex.bchat.model.Wallet
 import io.beldex.bchat.model.WalletManager
 import io.beldex.bchat.onboarding.AppLockActivity
+import io.beldex.bchat.onboarding.ui.DisplayNameStepScreen
 import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.service.KeyCachingService
 import io.beldex.bchat.util.BChatThreadPoolExecutor
 import io.beldex.bchat.util.Helper
 import io.beldex.bchat.util.NodePinger
 import io.beldex.bchat.util.push
-import io.beldex.bchat.util.setUpActionBarBchatLogo
 import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.R
-import io.beldex.bchat.WindowInsetsUtil
-import io.beldex.bchat.databinding.ActivityRecoveryGetSeedDetailsBinding
 import io.beldex.bchat.util.englishNamePattern
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -50,8 +51,9 @@ import java.util.Locale
 import java.util.UUID
 import java.util.concurrent.Executor
 
-class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
-    private lateinit var binding:ActivityRecoveryGetSeedDetailsBinding
+class RecoveryGetSeedDetailsActivity :  BaseComponentActivity() {
+    private var displayName by mutableStateOf("")
+    private var isRegisterEnabled by mutableStateOf(true)
 
     //New Line
     private val NODES_PREFS_NAME: String? = "nodes"
@@ -74,53 +76,26 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityRecoveryGetSeedDetailsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        WindowInsetsUtil.applyTopAndImeInsets(binding.root)
-        setUpActionBarBchatLogo(getString(R.string.restore_from_seed), false)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         getSeed = intent.extras?.getString("seed")
 
-        with(binding){
-            restoreSeedWalletName.imeOptions = restoreSeedWalletName.imeOptions or 16777216 // Always use incognito keyboard
-            restoreSeedWalletName.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable) {
-                    restoreSeedRestoreButton.isEnabled = (s.isNotEmpty())
-                }
-
-                override fun beforeTextChanged(
-                    s: CharSequence, start: Int,
-                    count: Int, after: Int
-                ) {
-                }
-
-                override fun onTextChanged(
-                    s: CharSequence, start: Int,
-                    before: Int, count: Int
-                ) {
-                }
-            })
-            restoreSeedWalletName.setOnEditorActionListener(
-                TextView.OnEditorActionListener { _, actionID, _ ->
-                    if (actionID == EditorInfo.IME_ACTION_SEARCH ||
-                        actionID == EditorInfo.IME_ACTION_DONE
-                    ) {
-                        register()
-                        return@OnEditorActionListener true
-                    }
-                    false
-                })
-            restoreSeedRestoreButton.setOnClickListener { register() }
+        setContent {
+            BChatTheme {
+                DisplayNameStepScreen(
+                    displayName = displayName,
+                    onDisplayNameChange = { displayName = it },
+                    onContinueClick = { if (displayName.isNotBlank() && isRegisterEnabled) register() },
+                    onBackClick = { finish() },
+                    title = stringResource(R.string.restore_from_seed),
+                    headline = stringResource(R.string.display_name_screen_title_content)
+                )
+            }
         }
-
 
         //New Line load favourites with network function
         if (CheckOnline.isOnline(this)) {
             loadFavouritesWithNetwork()
         }
-    }
-    private fun updateDateInView() {
-        binding.restoreSeedRestoreButton.isEnabled =
-            (binding.restoreSeedWalletName.text.trim().isNotEmpty())
     }
 
     private val pinCodeLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -145,15 +120,15 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
     }
 
     private fun register() {
-        val displayName = binding.restoreSeedWalletName.text.toString().trim()
-        if (displayName.isEmpty()) {
+        val trimmedDisplayName = displayName.trim()
+        if (trimmedDisplayName.isEmpty()) {
             return Toast.makeText(this, R.string.activity_display_name_display_name_missing_error, Toast.LENGTH_SHORT).show()
         }
-        if (displayName.toByteArray().size > SSKEnvironment.ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
+        if (trimmedDisplayName.toByteArray().size > SSKEnvironment.ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
             return Toast.makeText(this, R.string.activity_display_name_display_name_too_long_error, Toast.LENGTH_SHORT).show()
         }
 
-        if (!displayName.matches(englishNamePattern.toRegex())) {
+        if (!trimmedDisplayName.matches(englishNamePattern.toRegex())) {
             return Toast.makeText(
                     this,
                     R.string.display_name_validation,
@@ -162,12 +137,12 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         }
 
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(binding.restoreSeedWalletName.windowToken, 0)
-        TextSecurePreferences.setProfileName(this, displayName)
+        inputMethodManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+        TextSecurePreferences.setProfileName(this, trimmedDisplayName)
         val uuid = UUID.randomUUID()
         val password = uuid.toString()
-        binding.restoreSeedRestoreButton.isEnabled = false
-        _recoveryWallet(displayName, password, getSeed, 0L)
+        isRegisterEnabled = false
+        _recoveryWallet(trimmedDisplayName, password, getSeed, 0L)
     }
     // region Updating
     private fun updateKeyPair() {
@@ -175,7 +150,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
        /* TextSecurePreferences.setRestorationTime(this, 0)
         TextSecurePreferences.setHasViewedSeed(this, false)
 */
-        binding.restoreSeedRestoreButton.isEnabled = true
+        isRegisterEnabled = true
         val intent = Intent(Intent.ACTION_VIEW, "onboarding://manage_pin?finish=true&action=${PinCodeAction.CreatePinCode.action}".toUri())
         pinCodeLauncher.launch(intent)
 //        val intent = Intent(this, CreatePasswordActivity::class.java)

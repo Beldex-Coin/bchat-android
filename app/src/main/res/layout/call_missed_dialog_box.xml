@@ -40,19 +40,25 @@
             android:textSize="14sp"
             android:textColor="@color/text"
             android:gravity="center_horizontal" />
-        <Button
-            style="@style/Widget.Bchat.Button.Dialog.Enable"
-            android:id="@+id/missedCallOkButton"
-            android:layout_width="150dp"
-            android:layout_height="52dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/ok"
-            android:layout_gravity="center_horizontal" />
-        <TextView
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/test"
-            android:textAlignment="center"
-            android:visibility="invisible"/>
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+            <Button
+                style="@style/Widget.Bchat.Button.Dialog.Cancel"
+                android:id="@+id/missedCallCancelButton"
+                android:layout_width="130dp"
+                android:layout_height="52dp"
+                android:layout_marginEnd="12dp"
+                android:text="@string/cancel" />
+            <Button
+                style="@style/Widget.Bchat.Button.Dialog.Enable"
+                android:id="@+id/missedCallOkButton"
+                android:layout_width="130dp"
+                android:layout_height="52dp"
+                android:text="@string/ok" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

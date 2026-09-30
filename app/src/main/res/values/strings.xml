@@ -918,7 +918,8 @@
     <string name="scan_qrcode_text">Scan</string>
     <string name="beldex_address">Beldex Address</string>
     <string name="dummy_beldex_address">bx00f9b10ec366631ba25a9c6a0279e12d93c260134fce646d4c425356da5c9b480987654321a7b8c9e7a4d1b6f9e9e8</string>
-    <string name="landing_screen_content">Welcome to BChat, your private haven for seamless communication and connection.</string>
+    <string name="landing_screen_content">Welcome to BChat, a safe space for Private connection.</string>
+    <string name="landing_headline">Hello,\n\nWe\'re thrilled to have YOU!</string>
     <string name="welcome_to">Welcome to</string>
     <string name="display_name_screen_title_content">Set your Display Name</string>
     <string name="display_name_screen_description_content">Your display name is not your username and you can change it anytime.</string>
@@ -1296,6 +1297,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="initiating_transaction">Initiating Transaction..</string>
     <string name="invalid_destination_address">Invalid destination address</string>
     <string name="search_people_and_groups">Search people and groups</string>
+    <string name="search_name_bns_bchat_id">SEARCH // NAME, BNS, BCHAT ID</string>
     <string name="you_can_t_send_messages_to_this_group_because_you_re_no_longer_a_participant">You can\'t send messages to this group because you\'re no longer a participant.</string>
     <string name="empty_message_toast">Can\'t send empty message</string>
     <string name="swipe_to_send_bdx">Swipe to send BDX</string>

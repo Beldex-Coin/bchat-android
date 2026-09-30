@@ -3,119 +3,92 @@ package io.beldex.bchat.onboarding
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.InputFilter
-import android.text.TextWatcher
-import android.view.View
 import android.widget.Toast
+import androidx.activity.compose.setContent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.core.view.WindowCompat
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.crypto.MnemonicCodec
 import com.beldex.libsignal.utilities.Hex
 import com.beldex.libsignal.utilities.KeyHelper
 import com.beldex.libsignal.utilities.hexEncodedPrivateKey
 import com.beldex.libsignal.utilities.hexEncodedPublicKey
-import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.BaseComponentActivity
+import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.crypto.KeyPairUtilities
 import io.beldex.bchat.crypto.MnemonicUtilities
+import io.beldex.bchat.onboarding.ui.RecoveryPhraseRestoreScreen
 import io.beldex.bchat.seed.RecoveryGetSeedDetailsActivity
 import io.beldex.bchat.util.push
-import io.beldex.bchat.util.setUpActionBarBchatLogo
 import io.beldex.bchat.R
-import io.beldex.bchat.WindowInsetsUtil
-import io.beldex.bchat.databinding.ActivityRecoveryPhraseRestoreBinding
 
 
-class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
-    private lateinit var binding: ActivityRecoveryPhraseRestoreBinding
-    var filter: InputFilter?=null
+class RecoveryPhraseRestoreActivity : BaseComponentActivity() {
+    private var mnemonic by mutableStateOf("")
+
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         TextSecurePreferences.apply {
             setHasViewedSeed(this@RecoveryPhraseRestoreActivity, true)
             setConfigurationMessageSynced(this@RecoveryPhraseRestoreActivity, false)
             setRestorationTime(this@RecoveryPhraseRestoreActivity, System.currentTimeMillis())
             setLastProfileUpdateTime(this@RecoveryPhraseRestoreActivity, System.currentTimeMillis())
         }
-        binding = ActivityRecoveryPhraseRestoreBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        WindowInsetsUtil.applyTopAndImeInsets(binding.root)
-        setUpActionBarBchatLogo(getString(R.string.restore_seed),false)
-        binding.mnemonicEditText.imeOptions = binding.mnemonicEditText.imeOptions or 16777216 // Always use incognito keyboard
-        binding.restoreButton.setOnClickListener {
-            if(binding.recoveryPhraseCountWord.text!=null && binding.recoveryPhraseCountWord.text=="25/25") {
-                restore()
-            }
-            else{
-                Toast.makeText(this,getString(R.string.please_enter_valid_seed),Toast.LENGTH_SHORT).show()
+
+        setContent {
+            BChatTheme {
+                RecoveryPhraseRestoreScreen(
+                    mnemonic = mnemonic,
+                    onMnemonicChange = { mnemonic = it },
+                    wordCount = wordCount(mnemonic),
+                    onPasteClick = { pasteFromClipboard() },
+                    onClearClick = { mnemonic = "" },
+                    onContinueClick = { onContinueClick() },
+                    onBackClick = { finish() }
+                )
             }
         }
+    }
+    // endregion
 
-        binding.mnemonicEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable) {
-                var numberOfInputWords = 0
+    private fun wordCount(text: String): Int =
+        if (text.isEmpty()) 0 else text.trim().split("\\s+".toRegex()).size
 
-                if(s.toString().isNotEmpty()){
-                    binding.restoreButton.isEnabled = true
-                    binding.pasteText.visibility = View.GONE
-                }else{
-                    binding.restoreButton.isEnabled = false
-                    binding.pasteText.visibility = View.VISIBLE
-                }
-                if(s.toString().isNotEmpty())
-                    numberOfInputWords = s.toString().trim().split("\\s+".toRegex()).size
-                binding.recoveryPhraseCountWord.text = "$numberOfInputWords/25"
-
-                if (numberOfInputWords >= 25){
-                    filter = InputFilter.LengthFilter(binding.mnemonicEditText.text.toString().length)
-                    binding.mnemonicEditText.filters = arrayOf<InputFilter>(filter ?: return)
-                }
-                else if (filter != null) {
-                    binding.mnemonicEditText.filters = arrayOfNulls(0)
-                    filter = null
-                }
-            }
-        })
-
-        binding.clearButton.setOnClickListener {
-            binding.mnemonicEditText.text.clear()
-            binding.recoveryPhraseCountWord.text = "0/25"
-            binding.pasteText.visibility = View.VISIBLE
-        }
-
-        binding.recoveryPhrasePasteIcon.setOnClickListener {
-            val clipboard = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            //since the clipboard contains plain text.
-            if (clipboard.hasPrimaryClip()) {
-                val item = clipboard.primaryClip!!.getItemAt(0)
-                // Gets the clipboard as text.
-                if(item.text != null) {
-                    binding.mnemonicEditText.setText(item.text.toString())
-                    binding.pasteText.visibility = View.GONE
-                }
-            } else {
-                Toast.makeText(this, R.string.no_copied_seed, Toast.LENGTH_SHORT)
-                    .show()
-            }
-
+    // region Interaction
+    private fun onContinueClick() {
+        if (wordCount(mnemonic) == 25) {
+            restore()
+        } else {
+            Toast.makeText(this, getString(R.string.please_enter_valid_seed), Toast.LENGTH_SHORT).show()
         }
     }
 
-    // endregion
+    private fun pasteFromClipboard() {
+        val clipboard = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        if (clipboard.hasPrimaryClip()) {
+            val item = clipboard.primaryClip!!.getItemAt(0)
+            if (item.text != null) {
+                mnemonic = item.text.toString()
+            }
+        } else {
+            Toast.makeText(this, R.string.no_copied_seed, Toast.LENGTH_SHORT).show()
+        }
+    }
 
-    // region Interaction
     private fun restore() {
-        val mnemonic = binding.mnemonicEditText.text.toString().trimStart().trimEnd()
+        val trimmedMnemonic = mnemonic.trimStart().trimEnd()
         try {
             val loadFileContents: (String) -> String = { fileName ->
                 MnemonicUtilities.loadFileContents(this, fileName)
             }
-            val hexEncodedSeed = MnemonicCodec(loadFileContents).decode(mnemonic)
+            val hexEncodedSeed = MnemonicCodec(loadFileContents).decode(trimmedMnemonic)
             val seed = Hex.fromStringCondensed(hexEncodedSeed)
             val keyPairGenerationResult = KeyPairUtilities.generate(seed)
             val x25519KeyPair = keyPairGenerationResult.x25519KeyPair

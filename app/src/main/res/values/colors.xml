@@ -123,8 +123,14 @@
     <color name="home_search_icon_and_hint">#B9B9B9</color>
     <color name="empty_state_container_text">#646474</color>
     <color name="conversation_list_divider_shape">#2C2C3C</color>
-    <color name="rounded_indicator">@color/button_green</color>
+    <color name="rounded_indicator">#00BC33</color>
     <color name="rounded_indicator_border">#19191B</color>
+    <color name="home_row_background">#111111</color>
+    <color name="home_row_title">#EBEBEB</color>
+    <color name="home_row_snippet">#8D8D8D</color>
+    <color name="home_row_timestamp">#737373</color>
+    <color name="home_row_timestamp_unread">#00BC33</color>
+    <color name="home_unread_badge_text">#0B0B0B</color>
     <color name="document_text">#000000</color>
     <color name="copy_and_share">@color/card_color</color>
     <color name="alert_ok">#29fd2e</color>

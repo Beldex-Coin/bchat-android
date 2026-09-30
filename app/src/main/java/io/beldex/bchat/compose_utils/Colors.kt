@@ -13,6 +13,24 @@ val Outline = Color(0xFF4B4B64)
 val OutlineLight = Color(0xFFA7A7BA)
 val SurfaceLight = Color(0xFFF8F8F8)
 
+// Revamp_2026 root design tokens (Figma "BChat New theme 2023" file, page Revamp_2026).
+// Each has a light and dark variant; individual `Colors` fields below are remapped onto
+// these per-screen as each Revamp_2026 phase is implemented.
+val RootBaseLight = Color(0xFF06070B)
+val RootBaseDark = Color(0xFFFBFBFC)
+val RootFaintLight = Color(0xFF8A93A6)
+val RootFaintDark = Color(0xFF8E939D)
+val RootAccentLight = Color(0xFF0250EE)
+val RootAccentDark = Color(0xFF2B68E3)
+val RootCriticLight = Color(0xFFED5502)
+val RootCriticDark = Color(0xFFC34C0B)
+val RootWarningLight = Color(0xFFEDE202)
+val RootWarningDark = Color(0xFFC9C111)
+val RootSuccessLight = Color(0xFF02ED41)
+val RootSuccessDark = Color(0xFF0DC53E)
+val RootComplement1 = Color(0xFF6556D9)
+val RootComplement2 = Color(0xFF00F0FF)
+
 class Colors(
     val primaryButtonColor: Color,
     val backgroundColor: Color,
@@ -100,7 +118,39 @@ class Colors(
     val newChatCardBackground: Color,
     val secretGroupInfoBackground: Color,
     val textSelectionBackgroundColor: Color,
-    val scrollBarColor: Color
+    val scrollBarColor: Color,
+    // Revamp_2026 onboarding (Phase 1)
+    val onboardingBackground: Color,
+    val onboardingHeadlineColor: Color,
+    val onboardingBodyColor: Color,
+    val onboardingTermsColor: Color,
+    val onboardingPrimaryButtonBackground: Color,
+    val onboardingPrimaryButtonText: Color,
+    val onboardingSecondaryButtonBackground: Color,
+    val onboardingSecondaryButtonBorder: Color,
+    val onboardingSecondaryButtonText: Color,
+    val onboardingPrimaryButtonDisabledBackground: Color,
+    val onboardingPrimaryButtonDisabledText: Color,
+    val onboardingInputBackground: Color,
+    val onboardingInputText: Color,
+    val onboardingInputHint: Color,
+    val onboardingCaptionColor: Color,
+    val onboardingKeypadKeyBackground: Color,
+    // Revamp_2026 Home / conversation list (Phase 2)
+    val homeBackground: Color,
+    val homeTitleColor: Color,
+    val homeBannerIconBackground: Color,
+    val homeBannerText: Color,
+    val homeSearchBarBackground: Color,
+    val homeSearchBarHint: Color,
+    val homeRowBackground: Color,
+    val homeRowTitle: Color,
+    val homeRowPreview: Color,
+    val homeRowTimestamp: Color,
+    val homeRowTimestampUnread: Color,
+    val homeUnreadBadgeBackground: Color,
+    val homeUnreadBadgeText: Color,
+    val homeFabBackground: Color
 )
 
 val lightColors = Colors(
@@ -190,7 +240,37 @@ val lightColors = Colors(
     newChatCardBackground = Color(0xFFECECEC),
     secretGroupInfoBackground = Color(0xFFF8F8F8),
     textSelectionBackgroundColor = Color(0xFFA7A7BA),
-    scrollBarColor = Color(0xFFCDCDCD)
+    scrollBarColor = Color(0xFFCDCDCD),
+    onboardingBackground = Color(0xFFEBEBEB),
+    onboardingHeadlineColor = Color(0xFF333333),
+    onboardingBodyColor = Color(0xFF6E6E7C),
+    onboardingTermsColor = Color(0xFF8A8A9D),
+    onboardingPrimaryButtonBackground = Color(0xFF0B0B0B),
+    onboardingPrimaryButtonText = Color(0xFFEBEBEB),
+    onboardingSecondaryButtonBackground = Color(0xFFF8F8F8),
+    onboardingSecondaryButtonBorder = Color(0xFFA7A7BA),
+    onboardingSecondaryButtonText = Color(0xFF333333),
+    onboardingPrimaryButtonDisabledBackground = Color(0xFFF8F8F8),
+    onboardingPrimaryButtonDisabledText = Color(0xFF6E6E7C),
+    onboardingInputBackground = Color(0xFFF8F8F8),
+    onboardingInputText = Color(0xFF333333),
+    onboardingInputHint = Color(0xFFA7A7BA),
+    onboardingCaptionColor = Color(0xFF8A8A9D),
+    onboardingKeypadKeyBackground = Color(0xFFECECEC),
+    homeBackground = Color(0xFFEBEBEB),
+    homeTitleColor = Color(0xFF333333),
+    homeBannerIconBackground = Color(0xFFFF3E3E),
+    homeBannerText = Color(0xFF6A6A77),
+    homeSearchBarBackground = Color(0xFFF8F8F8),
+    homeSearchBarHint = Color(0xFFA7A7BA),
+    homeRowBackground = Color(0xFFF8F8F8),
+    homeRowTitle = Color(0xFF333333),
+    homeRowPreview = Color(0xFF6E6E7C),
+    homeRowTimestamp = Color(0xFF8A8A9D),
+    homeRowTimestampUnread = Color(0xFF078720),
+    homeUnreadBadgeBackground = Color(0xFF00BC33),
+    homeUnreadBadgeText = Color(0xFF0B0B0B),
+    homeFabBackground = Color(0xFF00BC33)
 )
 
 val darkColors = Colors(
@@ -280,7 +360,37 @@ val darkColors = Colors(
     newChatCardBackground = Color(0xFF111119),
     secretGroupInfoBackground = Color(0xFF1C1C26),
     textSelectionBackgroundColor = Color(0xFFFFFFFF),
-    scrollBarColor = Color(0xFF282836)
+    scrollBarColor = Color(0xFF282836),
+    onboardingBackground = Color(0xFF0B0B0B),
+    onboardingHeadlineColor = Color(0xFFACACAC),
+    onboardingBodyColor = Color(0xFF8D8D8D),
+    onboardingTermsColor = Color(0xFF737373),
+    onboardingPrimaryButtonBackground = Color(0xFFEBEBEB),
+    onboardingPrimaryButtonText = Color(0xFF0B0B0B),
+    onboardingSecondaryButtonBackground = Color(0xFF111111),
+    onboardingSecondaryButtonBorder = Color(0xFF8D8D8D),
+    onboardingSecondaryButtonText = Color(0xFFEBEBEB),
+    onboardingPrimaryButtonDisabledBackground = Color(0xFF1A1A1A),
+    onboardingPrimaryButtonDisabledText = Color(0xFF737373),
+    onboardingInputBackground = Color(0xFF111111),
+    onboardingInputText = Color(0xFFEBEBEB),
+    onboardingInputHint = Color(0xFF737373),
+    onboardingCaptionColor = Color(0xFF737373),
+    onboardingKeypadKeyBackground = Color(0xFF1A1A1A),
+    homeBackground = Color(0xFF0B0B0B),
+    homeTitleColor = Color(0xFFEBEBEB),
+    homeBannerIconBackground = Color(0xFFFF3E3E),
+    homeBannerText = Color(0xFFACACAC),
+    homeSearchBarBackground = Color(0xFF111111),
+    homeSearchBarHint = Color(0xFF737373),
+    homeRowBackground = Color(0xFF111111),
+    homeRowTitle = Color(0xFFEBEBEB),
+    homeRowPreview = Color(0xFF8D8D8D),
+    homeRowTimestamp = Color(0xFF737373),
+    homeRowTimestampUnread = Color(0xFF00BC33),
+    homeUnreadBadgeBackground = Color(0xFF00BC33),
+    homeUnreadBadgeText = Color(0xFF0B0B0B),
+    homeFabBackground = Color(0xFF00BC33)
 )
 
 

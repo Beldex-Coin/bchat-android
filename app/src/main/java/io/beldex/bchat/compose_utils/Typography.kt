@@ -1,8 +1,11 @@
 package io.beldex.bchat.compose_utils
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
 import io.beldex.bchat.R
 
@@ -11,6 +14,17 @@ val OpenSans = FontFamily(
     Font(R.font.open_sans_medium, FontWeight.Medium),
     Font(R.font.open_sans_regular, FontWeight.Normal),
     Font(R.font.open_sans_semi_bold, FontWeight.SemiBold)
+)
+
+// Roboto Mono is a variable font (single file, weight selected via the `wght` axis)
+// used by the Revamp_2026 design as the secondary/body typeface alongside Open Sans.
+@OptIn(ExperimentalTextApi::class)
+val RobotoMono = FontFamily(
+    Font(R.font.roboto_mono, FontWeight.Light, variationSettings = FontVariation.Settings(FontVariation.weight(300))),
+    Font(R.font.roboto_mono, FontWeight.Normal, variationSettings = FontVariation.Settings(FontVariation.weight(400))),
+    Font(R.font.roboto_mono, FontWeight.SemiBold, variationSettings = FontVariation.Settings(FontVariation.weight(600))),
+    Font(R.font.roboto_mono, FontWeight.Bold, variationSettings = FontVariation.Settings(FontVariation.weight(700))),
+    Font(R.font.roboto_mono_italic, FontWeight.Normal, style = FontStyle.Italic, variationSettings = FontVariation.Settings(FontVariation.weight(400)))
 )
 
 private val defaultTypography = Typography()

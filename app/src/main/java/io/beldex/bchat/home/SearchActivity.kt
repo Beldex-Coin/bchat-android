@@ -215,7 +215,7 @@ private fun SearchView(
         modifier = modifier
     ) {
         Card(
-            shape = RoundedCornerShape(50),
+            shape = RoundedCornerShape(12.dp),
             modifier = Modifier
                 .fillMaxWidth()
         ) {
@@ -224,10 +224,10 @@ private fun SearchView(
                 onValueChange = onQueryChanged,
                 placeholder = {
                     Text(
-                        text = stringResource(id = R.string.search_people_and_groups),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.appColors.inputHintColor
-                        )
+                        text = stringResource(id = R.string.search_name_bns_bchat_id),
+                        fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                        fontSize = 14.sp,
+                        color = MaterialTheme.appColors.homeSearchBarHint
                     )
                 },
                 singleLine = true,
@@ -240,8 +240,8 @@ private fun SearchView(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
-                    focusedContainerColor = MaterialTheme.appColors.searchBackground,
-                    unfocusedContainerColor = MaterialTheme.appColors.searchBackground,
+                    focusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
+                    unfocusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
                     cursorColor = MaterialTheme.appColors.primaryButtonColor,
                     selectionColors = TextSelectionColors(
                         handleColor = MaterialTheme.appColors.primaryButtonColor,
@@ -321,7 +321,11 @@ private fun SearchView(
                     is SearchResults.Header -> {
                         Text(
                             text = stringResource(id = it.title),
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 14.sp,
+                                color = MaterialTheme.appColors.homeBannerText
+                            )
                         )
                     }
                     is SearchResults.Message -> {
@@ -400,7 +404,10 @@ private fun ContactView(
 
         Text(
             text = model.contact.getSearchName(),
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 14.sp
+            ),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
@@ -477,20 +484,27 @@ private fun MessageView(
             ) {
                 Text(
                     text = model.messageResult.conversationRecipient.toShortString(),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp
+                    ),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = messageDate,
-                    style = MaterialTheme.typography.labelMedium,
+                    fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                    fontSize = 10.sp,
+                    color = MaterialTheme.appColors.homeRowTimestamp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
             }
             Text(
                 text = annotatedText,
-                style = MaterialTheme.typography.bodyMedium,
+                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                fontSize = 12.sp,
+                color = MaterialTheme.appColors.homeRowPreview,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -532,14 +546,19 @@ private fun GroupConversationView(
         Column {
             Text(
                 text = nameString,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 14.sp
+                ),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             if (model.groupRecord.isClosedGroup) {
                 Text(
                     text = membersString,
-                    style = MaterialTheme.typography.bodyMedium,
+                    fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                    fontSize = 12.sp,
+                    color = MaterialTheme.appColors.homeRowPreview,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )

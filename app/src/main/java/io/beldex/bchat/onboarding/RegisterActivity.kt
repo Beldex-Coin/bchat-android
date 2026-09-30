@@ -5,21 +5,17 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.Typeface
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.text.style.StyleSpan
 import android.util.Log
-import android.view.View
 import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.core.net.toUri
+import androidx.core.view.WindowCompat
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.crypto.MnemonicCodec
 import com.beldex.libsignal.crypto.ecc.ECKeyPair
@@ -28,7 +24,8 @@ import com.beldex.libsignal.utilities.KeyHelper
 import com.beldex.libsignal.utilities.hexEncodedPrivateKey
 import com.beldex.libsignal.utilities.hexEncodedPublicKey
 import com.goterl.lazysodium.utils.KeyPair
-import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.BaseComponentActivity
+import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.crypto.KeyPairUtilities
 import io.beldex.bchat.crypto.MnemonicUtilities
@@ -36,18 +33,15 @@ import io.beldex.bchat.model.AsyncTaskCoroutine
 import io.beldex.bchat.model.Wallet
 import io.beldex.bchat.model.WalletManager
 import io.beldex.bchat.onboarding.ui.PinCodeAction
+import io.beldex.bchat.onboarding.ui.RegisterScreen
 import io.beldex.bchat.service.KeyCachingService
 import io.beldex.bchat.util.BChatThreadPoolExecutor
 import io.beldex.bchat.util.push
-import io.beldex.bchat.util.setUpActionBarBchatLogo
 import io.beldex.bchat.R
-import io.beldex.bchat.WindowInsetsUtil
-import io.beldex.bchat.databinding.ActivityRegisterBinding
 import java.util.Locale
 import java.util.concurrent.Executor
 
-class RegisterActivity : BaseActionBarActivity() {
-    private lateinit var binding: ActivityRegisterBinding
+class RegisterActivity : BaseComponentActivity() {
     private var seed: ByteArray? = null
     private var ed25519KeyPair: KeyPair? = null
     private var x25519KeyPair: ECKeyPair? = null
@@ -69,13 +63,18 @@ class RegisterActivity : BaseActionBarActivity() {
     val REQUEST_TYPE = "type"
     private var walletName: String? = null
 
+    // Compose UI state (replaces the old ViewBinding field reads/writes below)
+    private var isAddressLoading by mutableStateOf(true)
+    private var beldexAddressText by mutableStateOf("")
+    private var isPublicKeyLoading by mutableStateOf(true)
+    private var publicKeyText by mutableStateOf("")
+    private var isRegisterEnabled by mutableStateOf(false)
+    private var headlineText by mutableStateOf("")
+
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityRegisterBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        WindowInsetsUtil.applyTopInset(binding.root)
-        setUpActionBarBchatLogo(getString(R.string.register), false)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         TextSecurePreferences.apply {
             setHasViewedSeed(this@RegisterActivity, false)
@@ -83,36 +82,6 @@ class RegisterActivity : BaseActionBarActivity() {
             setRestorationTime(this@RegisterActivity, 0)
             setLastProfileUpdateTime(this@RegisterActivity, System.currentTimeMillis())
         }
-        binding.registerButton.setOnClickListener { register() }
-        binding.copyButton.setOnClickListener { copyPublicKey() }
-        val termsExplanation =
-            SpannableStringBuilder(getString(R.string.terms_and_privacy_message))
-        termsExplanation.setSpan(
-            StyleSpan(Typeface.BOLD),
-            40,
-            56,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        termsExplanation.setSpan(object : ClickableSpan() {
-
-            override fun onClick(widget: View) {
-                openURL("https://www.beldex.io/")
-            }
-        }, 40, 56, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        termsExplanation.setSpan(
-            StyleSpan(Typeface.BOLD),
-            61,
-            75,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        termsExplanation.setSpan(object : ClickableSpan() {
-
-            override fun onClick(widget: View) {
-                openURL("https://www.beldex.io/")
-            }
-        }, 61, 75, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        binding.termsTextView.movementMethod = LinkMovementMethod.getInstance()
-        binding.termsTextView.text = termsExplanation
 
         //New Line
         type = intent.extras?.getString(REQUEST_TYPE)
@@ -120,7 +89,24 @@ class RegisterActivity : BaseActionBarActivity() {
         localPassword = intent.extras?.getString(REQUEST_PASSWORD)
         displayName =intent.extras?.getString(REQUEST_NAME)
         val displayedName : String=displayName?.substring(0, 1)?.uppercase(Locale.ROOT) + displayName?.substring(1)?.lowercase(Locale.ROOT)
-        binding.titleContentTextView.text= resources.getString(R.string.hey_user_welcome_to_bchat).format(displayedName)
+        headlineText = resources.getString(R.string.hey_user_welcome_to_bchat).format(displayedName)
+
+        setContent {
+            BChatTheme {
+                RegisterScreen(
+                    headline = headlineText,
+                    isAddressLoading = isAddressLoading,
+                    beldexAddress = beldexAddressText,
+                    isPublicKeyLoading = isPublicKeyLoading,
+                    publicKey = publicKeyText,
+                    registerEnabled = isRegisterEnabled,
+                    onCopyPublicKey = { copyPublicKey() },
+                    onCopyAddress = { copyBeldexAddress() },
+                    onRegisterClick = { register() },
+                    onBackClick = { finish() }
+                )
+            }
+        }
 
         showDetails()
 
@@ -165,12 +151,8 @@ class RegisterActivity : BaseActionBarActivity() {
             super.onPreExecute()
             //showProgress()
             //registerActivity.showProgressDialog(R.string.please_wait, 250)
-            registerActivity.binding.beldexAddressAnimation!!.visibility=View.VISIBLE
-            registerActivity.binding.beldexAddressTextView.visibility=View.GONE
-            registerActivity.binding.registerButton.isEnabled=false
-            registerActivity.binding.registerButton.setTextColor(ContextCompat.getColor(registerActivity, R.color.disable_button_text_color))
-            registerActivity.binding.registerButton.background =
-                ContextCompat.getDrawable(registerActivity, R.drawable.prominent_filled_button_medium_background_disable)
+            registerActivity.isAddressLoading = true
+            registerActivity.isRegisterEnabled = false
             /*if (walletPathVal != null
                 && (WalletManager.getInstance()
                     .queryWalletDevice("$walletPathVal.keys", registerActivity.localPassword)
@@ -321,7 +303,7 @@ class RegisterActivity : BaseActionBarActivity() {
 
     //New Line
     private fun updateKeyPair(seedByteArray: ByteArray, address: String?) {
-        binding.beldexAddressTextView.text= address
+        beldexAddressText = address.orEmpty()
         val keyPairGenerationResult = KeyPairUtilities.generate(seedByteArray)
         seed = keyPairGenerationResult.seed
         ed25519KeyPair = keyPairGenerationResult.ed25519KeyPair
@@ -332,12 +314,8 @@ class RegisterActivity : BaseActionBarActivity() {
             keyPairGenerationResult.ed25519KeyPair,
             x25519KeyPair!!
         )
-        this.binding.beldexAddressAnimation.visibility=View.GONE
-        this.binding.beldexAddressTextView.visibility=View.VISIBLE
-        this.binding.registerButton.isEnabled=true
-        this.binding.registerButton.setTextColor(ContextCompat.getColor(this, R.color.white))
-        this.binding.registerButton.background =
-        ContextCompat.getDrawable(this, R.drawable.prominent_filled_button_medium_background)
+        isAddressLoading = false
+        isRegisterEnabled = true
     }
 
     //Main
@@ -379,9 +357,8 @@ class RegisterActivity : BaseActionBarActivity() {
 
     private fun updatePublicKeyTextView() {
         Handler().postDelayed({
-            binding.publicKeyAnimation!!.visibility=View.GONE
-            binding.publicKeyTextView.visibility=View.VISIBLE
-            binding.publicKeyTextView.text = x25519KeyPair!!.hexEncodedPublicKey
+            isPublicKeyLoading = false
+            publicKeyText = x25519KeyPair!!.hexEncodedPublicKey
         }, 32)
     }
 // endregion
@@ -429,13 +406,12 @@ class RegisterActivity : BaseActionBarActivity() {
         Toast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
     }
 
-    private fun openURL(url: String) {
-        try {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            startActivity(intent)
-        } catch (e: Exception) {
-            Toast.makeText(this, R.string.invalid_url, Toast.LENGTH_SHORT).show()
-        }
+    private fun copyBeldexAddress() {
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("Beldex Address", beldexAddressText)
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
     }
+
 // endregion
 }

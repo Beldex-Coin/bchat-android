@@ -65,8 +65,14 @@
     <color name="home_search_icon_and_hint">#8D8D8D</color>
     <color name="empty_state_container_text">#646474</color>
     <color name="conversation_list_divider_shape">#DBDBDB</color>
-    <color name="rounded_indicator">@color/button_green</color>
+    <color name="rounded_indicator">#00BC33</color>
     <color name="rounded_indicator_border">#ffffff</color>
+    <color name="home_row_background">#F8F8F8</color>
+    <color name="home_row_title">#333333</color>
+    <color name="home_row_snippet">#6E6E7C</color>
+    <color name="home_row_timestamp">#8A8A9D</color>
+    <color name="home_row_timestamp_unread">#078720</color>
+    <color name="home_unread_badge_text">#0B0B0B</color>
     <color name="document_text">#FFFFFF</color>
     <color name="copy_and_share">#F5F5F5</color>
     <color name="alert_ok">#138B20</color>

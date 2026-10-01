@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -34,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.OpenSans
+import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.notchedCornerShape
@@ -95,13 +94,11 @@ fun RecoveryPhraseScreen(
                         .padding(top = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Button(
+                    PrimaryButton(
                         onClick = onCopySeedClick,
                         shape = notchedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.appColors.onboardingSecondaryButtonBackground,
-                            contentColor = MaterialTheme.appColors.onboardingSecondaryButtonText
-                        ),
+                        containerColor = MaterialTheme.appColors.onboardingSecondaryButtonBackground,
+                        contentColor = MaterialTheme.appColors.onboardingSecondaryButtonText,
                         border = BorderStroke(1.dp, MaterialTheme.appColors.onboardingSecondaryButtonBorder),
                         modifier = Modifier
                             .weight(1f)
@@ -123,13 +120,11 @@ fun RecoveryPhraseScreen(
                         )
                     }
 
-                    Button(
+                    PrimaryButton(
                         onClick = onSaveClick,
                         shape = notchedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
-                            contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText
-                        ),
+                        containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
+                        contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
                         modifier = Modifier
                             .weight(1f)
                             .height(52.dp)

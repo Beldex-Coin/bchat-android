@@ -56,9 +56,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.BChatTypography
+import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.PinCodeView
 import io.beldex.bchat.compose_utils.PrimaryButton
+import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.notchedCornerShape
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.R
@@ -210,6 +213,7 @@ private fun PortraitPinCodeScreen(
             Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = state.stepTitle,
+                fontFamily = OpenSans,
                 style =
                     if (isTablet)
                         MaterialTheme.typography.headlineSmall
@@ -239,6 +243,7 @@ private fun PortraitPinCodeScreen(
                 ) {
                     Text(
                         text = stringResource(if (state.pinLength == 4) R.string.six_digit_pin else R.string.four_digit_pin),
+                        fontFamily = RobotoMono,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium
                     )
@@ -324,6 +329,7 @@ private fun PortraitPinCodeScreen(
                                         ) {
                                             Text(
                                                 text = "0",
+                                                fontFamily = RobotoMono,
                                                 style = MaterialTheme.typography.titleLarge
                                             )
                                         }
@@ -385,6 +391,7 @@ private fun PortraitPinCodeScreen(
                                         ) {
                                             Text(
                                                 text = "$index",
+                                                fontFamily = RobotoMono,
                                                 style = MaterialTheme.typography.titleLarge
                                             )
                                         }
@@ -414,7 +421,7 @@ private fun PortraitPinCodeScreen(
                             .onSizeChanged {
                                 buttonSize = it
                             },
-                        shape = RoundedCornerShape(12.dp),
+                        shape = notchedCornerShape(12.dp),
                         containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
                         disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground
                     ) {
@@ -497,6 +504,7 @@ private fun LandscapePinCodeScreen(
             Spacer(Modifier.height(12.dp))
 
             Text(text = state.stepTitle,
+                fontFamily = OpenSans,
                 style =
                     if (isTablet)
                         MaterialTheme.typography.headlineSmall
@@ -527,6 +535,7 @@ private fun LandscapePinCodeScreen(
                 ) {
                     Text(
                         text = stringResource(if (state.pinLength == 4) R.string.six_digit_pin else R.string.four_digit_pin),
+                        fontFamily = RobotoMono,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium
                     )
@@ -615,6 +624,7 @@ private fun LandscapePinCodeScreen(
                                             ) {
                                                 Text(
                                                     text = "0",
+                                                    fontFamily = RobotoMono,
                                                     style = MaterialTheme.typography.titleLarge
                                                 )
                                             }
@@ -676,6 +686,7 @@ private fun LandscapePinCodeScreen(
                                             ) {
                                                 Text(
                                                     text = "$index",
+                                                    fontFamily = RobotoMono,
                                                     style = MaterialTheme.typography.titleLarge
                                                 )
                                             }
@@ -703,7 +714,7 @@ private fun LandscapePinCodeScreen(
                                 .onSizeChanged {
                                     buttonSize = it
                                 },
-                            shape = RoundedCornerShape(12.dp),
+                            shape = notchedCornerShape(12.dp),
                             containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
                             disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground
                         ) {

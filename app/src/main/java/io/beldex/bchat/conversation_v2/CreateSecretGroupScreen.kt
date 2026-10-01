@@ -72,6 +72,7 @@ import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
+import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.CheckOnline
@@ -128,7 +129,7 @@ fun CreateSecretGroup(
                     showLoader = showLoader
                 )
                 Divider(
-                    color = colorResource(id = R.color.divider_color),
+                    color = MaterialTheme.appColors.dividerColor,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(0.5.dp)
@@ -220,7 +221,9 @@ private fun GroupNameField(
             placeholder = {
                 Text(
                     text = stringResource(R.string.enter_group_name),
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontFamily = RobotoMono,
+                    color = MaterialTheme.appColors.homeSearchBarHint
                 )
             },
             onValueChange = onGroupNameChange,
@@ -241,7 +244,7 @@ private fun GroupNameField(
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
                 selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
-                cursorColor = colorResource(id = R.color.button_green)
+                cursorColor = MaterialTheme.appColors.textSelectionColor
             )
         )
     }
@@ -258,7 +261,9 @@ private fun SearchField(
         placeholder = {
             Text(
                 text = stringResource(R.string.search_contact),
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                fontFamily = RobotoMono,
+                color = MaterialTheme.appColors.homeSearchBarHint
             )
         },
         singleLine = true,
@@ -291,7 +296,7 @@ private fun SearchField(
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent,
             selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
-            cursorColor = colorResource(id = R.color.button_green)
+            cursorColor = MaterialTheme.appColors.textSelectionColor
         )
     )
 }

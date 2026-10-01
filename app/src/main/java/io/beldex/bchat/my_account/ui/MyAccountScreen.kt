@@ -58,11 +58,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
+import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.checkAndRequestPermissions
+import io.beldex.bchat.compose_utils.notchedCornerShape
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.my_account.ui.dialogs.PermissionSettingDialog
 import io.beldex.bchat.my_account.ui.dialogs.ProfilePicturePopup
@@ -72,7 +75,6 @@ import io.beldex.bchat.util.isValidString
 import io.beldex.bchat.util.toPx
 import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.R
-import java.io.File
 
 @Composable
 fun MyAccountScreen(
@@ -82,7 +84,6 @@ fun MyAccountScreen(
     val context = LocalContext.current
     val profileSize = ProfilePictureMode.LargePicture.size
     val requiredPermission = arrayOf(Manifest.permission.CAMERA)
-    var capturedFile: File? = null
     var showPictureDialog by remember {
         mutableStateOf(false)
     }
@@ -96,27 +97,6 @@ fun MyAccountScreen(
             showPermissionDialog = true
         }
     }
-    val avatarLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
-        println(">>>>>data:${it.data}---${it.resultCode}")
-//        if (it.resultCode == Activity.RESULT_OK) {
-//            val outputFile = Uri.fromFile(File(cacheDir, "cropped"))
-//            var inputFile: Uri? = it.data?.data
-//            if (inputFile == null && capturedFile != null) {
-//                inputFile = Uri.fromFile(capturedFile)
-//            }
-//            AvatarSelection.circularCropImage(
-//                context as Activity,
-//                inputFile,
-//                outputFile,
-//                R.string.CropImageActivity_profile_avatar
-//            )
-//        }
-    }
-//    fun startAvatarSelection() {
-//        capturedFile = File.createTempFile("avatar-capture", ".jpg", getImageDir(context))
-//        val intent = AvatarSelection.createAvatarSelectionIntent(context, capturedFile, false)
-//        avatarLauncher.launch(intent)
-//    }
     fun checkForPermission() {
         // Ask for an optional camera permission.
         if (CheckOnline.isOnline(context)) {
@@ -246,6 +226,7 @@ fun MyAccountScreen(
 
         PrimaryButton(
             onClick = {},
+            shape = notchedCornerShape(14.5.dp),
             modifier = Modifier
                 .fillMaxWidth(0.8f)
         ) {
@@ -256,9 +237,7 @@ fun MyAccountScreen(
 
             Text(
                 text = stringResource(id = R.string.share),
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = Color.White
-                ),
+                style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier
                     .padding(8.dp)
             )
@@ -397,7 +376,7 @@ fun AccountHeader(
                     Icon(
                         Icons.Default.Check,
                         contentDescription = "",
-                        tint = Color.White,
+                        tint = MaterialTheme.appColors.primaryButtonIconColor,
                         modifier = Modifier
                             .size(16.dp)
                     )
@@ -410,7 +389,8 @@ fun AccountHeader(
         Text(
             text = stringResource(id = R.string.chatid),
             style = MaterialTheme.typography.bodyMedium.copy(
-                color = MaterialTheme.appColors.titleTextColor
+                color = MaterialTheme.appColors.titleTextColor,
+                fontFamily = OpenSans
             ),
             textAlign = TextAlign.Start,
             modifier = Modifier
@@ -432,7 +412,8 @@ fun AccountHeader(
         Text(
             text = stringResource(id = R.string.beldex_address),
             style = MaterialTheme.typography.bodyMedium.copy(
-                color = MaterialTheme.appColors.titleTextColor
+                color = MaterialTheme.appColors.titleTextColor,
+                fontFamily = OpenSans
             ),
             textAlign = TextAlign.Start,
             modifier = Modifier
@@ -454,7 +435,7 @@ fun AccountHeader(
         Card(
             border = BorderStroke(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.outline
+                color = MaterialTheme.appColors.dividerColor
             ),
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
@@ -506,7 +487,8 @@ fun KeyContainer(
             Text(
                 text = key ?: "",
                 style = MaterialTheme.typography.bodySmall.copy(
-                    color = valueColor
+                    color = valueColor,
+                    fontFamily = RobotoMono
                 ),
                 modifier = Modifier
                     .padding(
@@ -532,7 +514,7 @@ fun KeyContainer(
             Icon(
                 painter = painterResource(id = R.drawable.ic_copy),
                 contentDescription = "",
-                tint = Color.White,
+                tint = MaterialTheme.appColors.primaryButtonIconColor,
                 modifier = Modifier
                     .size(16.dp)
             )

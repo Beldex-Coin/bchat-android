@@ -17,8 +17,6 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.OpenSans
+import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.notchedCornerShape
@@ -106,13 +105,11 @@ fun LandingScreen(
                     .padding(horizontal = 24.dp, vertical = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Button(
+                PrimaryButton(
                     onClick = onCreateAccountClick,
                     shape = notchedCornerShape(14.5.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
-                        contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText
-                    ),
+                    containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
+                    contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(54.dp)
@@ -125,13 +122,11 @@ fun LandingScreen(
                     )
                 }
 
-                Button(
+                PrimaryButton(
                     onClick = onRestoreAccountClick,
                     shape = notchedCornerShape(14.5.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.onboardingSecondaryButtonBackground,
-                        contentColor = MaterialTheme.appColors.onboardingSecondaryButtonText
-                    ),
+                    containerColor = MaterialTheme.appColors.onboardingSecondaryButtonBackground,
+                    contentColor = MaterialTheme.appColors.onboardingSecondaryButtonText,
                     border = BorderStroke(1.dp, MaterialTheme.appColors.onboardingSecondaryButtonBorder),
                     modifier = Modifier
                         .fillMaxWidth()

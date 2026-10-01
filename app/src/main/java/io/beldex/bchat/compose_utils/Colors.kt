@@ -33,6 +33,7 @@ val RootComplement2 = Color(0xFF00F0FF)
 
 class Colors(
     val primaryButtonColor: Color,
+    val primaryButtonIconColor: Color,
     val backgroundColor: Color,
     val secondaryContentColor: Color,
     val editTextPlaceholder: Color,
@@ -104,6 +105,7 @@ class Colors(
     val disabledCreateButtonContainer: Color,
     val archiveChatCountBackground: Color,
     val deleteOptionColor: Color,
+    val deleteOptionIconColor: Color,
     val archiveChatCardBackground: Color,
     val archiveChatIconBackground: Color,
     val floatingActionButtonBackground: Color,
@@ -151,6 +153,7 @@ class Colors(
     val homeUnreadBadgeBackground: Color,
     val homeUnreadBadgeText: Color,
     val homeFabBackground: Color,
+    val homeFabIconColor: Color,
     // Revamp_2026 contact-details bottom sheet (Phase 3)
     val userDetailsSheetBackground: Color,
     val userDetailsNameColor: Color,
@@ -158,6 +161,7 @@ class Colors(
     val userDetailsCancelBackground: Color,
     val userDetailsCancelIconColor: Color,
     val userDetailsConfirmBackground: Color,
+    val userDetailsConfirmIconColor: Color,
     val userDetailsBchatIdBackground: Color,
     val userDetailsBchatIdText: Color,
     // Revamp_2026 New Chat / Groups (Phase 4)
@@ -166,6 +170,7 @@ class Colors(
 
 val lightColors = Colors(
     primaryButtonColor = Color(0xFF078720),
+    primaryButtonIconColor = Color(0xFFFFFFFF),
     backgroundColor = Color(0xFFEBEBEB),
     secondaryContentColor = Color(0xFF333333),
     editTextPlaceholder = Color(0xFFA7A7BA),
@@ -237,6 +242,7 @@ val lightColors = Colors(
     disabledCreateButtonContainer = Color(0xFFECECEC),
     archiveChatCountBackground = Color(0xFFFFFFFF),
     deleteOptionColor = Color(0xFFFF3E3E),
+    deleteOptionIconColor = Color(0xFFFFFFFF),
     archiveChatCardBackground = Color(0xFFF8F8F8),
     archiveChatIconBackground = Color(0xFFECECEC),
     floatingActionButtonBackground = Color(0xFF078720),
@@ -282,12 +288,14 @@ val lightColors = Colors(
     homeUnreadBadgeBackground = Color(0xFF00BC33),
     homeUnreadBadgeText = Color(0xFF0B0B0B),
     homeFabBackground = Color(0xFF00BC33),
+    homeFabIconColor = Color(0xFF000000),
     userDetailsSheetBackground = Color(0xFFF8F8F8),
     userDetailsNameColor = Color(0xFF333333),
     userDetailsEditIconColor = Color(0xFF078720),
     userDetailsCancelBackground = Color(0xFFECECEC),
     userDetailsCancelIconColor = Color(0xFF6E6E7C),
     userDetailsConfirmBackground = Color(0xFF078720),
+    userDetailsConfirmIconColor = Color(0xFFFFFFFF),
     userDetailsBchatIdBackground = Color(0xFFF8F8F8),
     userDetailsBchatIdText = Color(0xFF078720),
     newChatIconBackground = Color(0xFFECECEC)
@@ -295,6 +303,7 @@ val lightColors = Colors(
 
 val darkColors = Colors(
     primaryButtonColor = Color(0xFF078720),
+    primaryButtonIconColor = Color(0xFFFFFFFF),
     backgroundColor = Color(0xFF11111A),
     secondaryContentColor = Color(0xFFFFFFFF),
     editTextPlaceholder = Color(0xFFA7A7BA),
@@ -366,6 +375,7 @@ val darkColors = Colors(
     disabledCreateButtonContainer = Color(0xFF282836),
     archiveChatCountBackground = Color(0xFF42425F),
     deleteOptionColor = Color(0xFFFF3E3E),
+    deleteOptionIconColor = Color(0xFFFFFFFF),
     archiveChatCardBackground = Color(0xFF282836),
     archiveChatIconBackground = Color(0xFF1C1C26),
     floatingActionButtonBackground = Color(0xFF078720),
@@ -411,12 +421,14 @@ val darkColors = Colors(
     homeUnreadBadgeBackground = Color(0xFF00BC33),
     homeUnreadBadgeText = Color(0xFF0B0B0B),
     homeFabBackground = Color(0xFF00BC33),
+    homeFabIconColor = Color(0xFF000000),
     userDetailsSheetBackground = Color(0xFF151515),
     userDetailsNameColor = Color(0xFFEBEBEB),
     userDetailsEditIconColor = Color(0xFF00BC33),
     userDetailsCancelBackground = Color(0xFF222222),
     userDetailsCancelIconColor = Color(0xFFACACAC),
     userDetailsConfirmBackground = Color(0xFF00BC33),
+    userDetailsConfirmIconColor = Color(0xFFFFFFFF),
     userDetailsBchatIdBackground = Color(0xFF111111),
     userDetailsBchatIdText = Color(0xFF00BD40),
     newChatIconBackground = Color(0xFF222222)

@@ -45,7 +45,7 @@ fun DialogContainer(
             ),
             border = BorderStroke(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.outline
+                color = MaterialTheme.appColors.dividerColor
             ),
             modifier = Modifier
                 .then(

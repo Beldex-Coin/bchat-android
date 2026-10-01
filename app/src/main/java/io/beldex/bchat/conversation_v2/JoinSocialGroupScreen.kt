@@ -257,7 +257,7 @@ private fun JoinSection(
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
                 selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
-                cursorColor = colorResource(id = R.color.button_green)
+                cursorColor = MaterialTheme.appColors.textSelectionColor
             )
         )
 
@@ -339,7 +339,7 @@ private fun GroupsSection(
                             .height(116.dp)
                             .background(
                                 color = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
-                                shape = RoundedCornerShape(12.dp)
+                                shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp)
                             )
                             .padding(start = 8.dp, end = 8.dp, top = 10.dp, bottom = 10.dp)
                             .clickable {

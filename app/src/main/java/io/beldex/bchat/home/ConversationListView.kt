@@ -173,7 +173,7 @@ private fun ConversationRow(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_delete_24),
                     contentDescription = stringResource(R.string.delete),
-                    tint = androidx.compose.ui.graphics.Color.White
+                    tint = MaterialTheme.appColors.deleteOptionIconColor
                 )
             }
         }

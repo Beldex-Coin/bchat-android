@@ -38,6 +38,7 @@ import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.compose_utils.BChatRadioButton
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.DialogContainer
+import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.util.ConfigurationMessageUtilities
 import io.beldex.bchat.util.Helper
@@ -203,6 +204,7 @@ fun ClearDataDialog(
                     }
                 },
                 style = MaterialTheme.typography.titleMedium,
+                    fontFamily = OpenSans,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
 
@@ -236,6 +238,7 @@ fun ClearDataDialog(
                     Text(
                         text = stringResource(id = R.string.dialog_clear_all_data_explanation),
                         style = MaterialTheme.typography.titleMedium,
+                            fontFamily = OpenSans,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Normal,
                             textAlign = TextAlign.Center
@@ -245,6 +248,7 @@ fun ClearDataDialog(
                     Text(
                         text = stringResource(id = R.string.dialog_clear_all_data_network_explanation),
                         style = MaterialTheme.typography.titleMedium,
+                            fontFamily = OpenSans,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Normal,
                             textAlign = TextAlign.Center
@@ -280,6 +284,7 @@ fun ClearDataDialog(
                             text = stringResource(id = R.string.cancel),
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 color = MaterialTheme.appColors.onboardingSecondaryButtonText,
+                                fontFamily = OpenSans,
                                 fontWeight = FontWeight(400),
                                 fontSize = 14.sp
                             ),
@@ -302,6 +307,7 @@ fun ClearDataDialog(
                             text = buttonTitle.toString(),
                             style = MaterialTheme.typography.titleMedium.copy(
                                 color = MaterialTheme.appColors.onboardingSecondaryButtonText,
+                                fontFamily = OpenSans,
                                 fontWeight = FontWeight(400),
                                 fontSize = 14.sp
                             )
@@ -345,6 +351,7 @@ fun DeleteOption(
                 text = title,
                 style = MaterialTheme.typography.titleMedium.copy(
                     color = MaterialTheme.appColors.editTextColor,
+                    fontFamily = OpenSans,
                     fontWeight = FontWeight.Normal,
                     fontSize = 16.sp,
                 )
@@ -354,6 +361,7 @@ fun DeleteOption(
                 text = description,
                 style = MaterialTheme.typography.labelMedium.copy(
                     color = MaterialTheme.appColors.clearDataSubTitle,
+                    fontFamily = OpenSans,
                     fontWeight = FontWeight.Normal,
                     fontSize = 14.sp
                 )

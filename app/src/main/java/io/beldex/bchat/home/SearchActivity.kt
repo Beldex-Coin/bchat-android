@@ -77,6 +77,8 @@ import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.darkColors
+import io.beldex.bchat.compose_utils.lightColors
 import io.beldex.bchat.compose_utils.ui.ScreenContainer
 import io.beldex.bchat.conversation_v2.getUserDisplayName
 import io.beldex.bchat.dependencies.DatabaseComponent
@@ -107,8 +109,8 @@ class SearchActivity : BaseComponentActivity() {
             val focusManager = LocalFocusManager.current
             val view = LocalView.current
             val window = (view.context as Activity).window
-            val statusBarColor = if (isDarkTheme) Color.Black else Color.White
-            val navBarColor = if (isDarkTheme) Color.Black else Color.White
+            val statusBarColor = if (isDarkTheme) darkColors.homeBackground else lightColors.homeBackground
+            val navBarColor = if (isDarkTheme) darkColors.homeBackground else lightColors.homeBackground
             SideEffect {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                     window.statusBarColor = statusBarColor.toArgb()
@@ -130,7 +132,7 @@ class SearchActivity : BaseComponentActivity() {
                             modifier = Modifier
                                 .fillMaxSize()
                                 .background(
-                                    color = MaterialTheme.colorScheme.primary
+                                    color = MaterialTheme.appColors.homeBackground
                                 )
                                 .padding(it)
                         ) {

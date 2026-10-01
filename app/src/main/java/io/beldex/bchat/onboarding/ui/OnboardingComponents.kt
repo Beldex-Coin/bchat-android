@@ -1,15 +1,9 @@
 package io.beldex.bchat.onboarding.ui
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.OpenSans
+import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.notchedCornerShape
 
@@ -71,16 +66,14 @@ fun OnboardingPrimaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Button(
+    PrimaryButton(
         onClick = onClick,
         enabled = enabled,
         shape = notchedCornerShape(14.5.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
-            contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
-            disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
-            disabledContentColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledText
-        ),
+        containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
+        contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
+        disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
+        disabledContentColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledText,
         modifier = modifier
             .fillMaxWidth()
             .height(54.dp)

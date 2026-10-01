@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.beldex.bchat.compose_utils.DialogContainer
+import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.R
 
@@ -65,6 +66,7 @@ fun PermissionSettingDialog(
             Text(
                 text = stringResource(id = R.string.Permissions_permission_required),
                 style = MaterialTheme.typography.titleMedium.copy(
+                    fontFamily = OpenSans,
                     fontWeight = FontWeight.SemiBold
                 ),
             )
@@ -73,7 +75,9 @@ fun PermissionSettingDialog(
 
             Text(
                 text = message,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontFamily = OpenSans
+                ),
                 textAlign = TextAlign.Center,
             )
 
@@ -97,6 +101,7 @@ fun PermissionSettingDialog(
                         text = stringResource(id = R.string.cancel),
                         style = MaterialTheme.typography.bodyMedium.copy(
                             color = MaterialTheme.appColors.onboardingSecondaryButtonText,
+                            fontFamily = OpenSans,
                             fontWeight = FontWeight(400),
                             fontSize = 14.sp
                         )
@@ -117,6 +122,7 @@ fun PermissionSettingDialog(
                     Text(
                         text = stringResource(id = R.string.activity_settings_title),
                         style = MaterialTheme.typography.bodyMedium.copy(
+                            fontFamily = OpenSans,
                             fontWeight = FontWeight(400),
                             fontSize = 14.sp,
                             color = MaterialTheme.appColors.onboardingPrimaryButtonText

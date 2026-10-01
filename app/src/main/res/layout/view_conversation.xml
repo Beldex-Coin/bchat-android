@@ -69,7 +69,7 @@
                 android:layout_width="14dp"
                 android:layout_height="14dp"
                 android:src="@drawable/ic_contact_person"
-                app:tint="@color/version_color" />
+                app:tint="@color/home_row_snippet" />
 
             <TextView
                 android:fontFamily="@font/open_sans_regular"
@@ -114,7 +114,7 @@
                 layout="@layout/view_typing_indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:typingIndicator_tint="@color/text"
+                app:typingIndicator_tint="@color/home_row_title"
                 android:visibility="gone"
                 />
 

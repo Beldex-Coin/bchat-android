@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.OpenSans
+import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.RobotoMono
@@ -129,7 +129,7 @@ fun UserDetailsSheetContent(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_done_circle),
                     contentDescription = stringResource(R.string.save),
-                    tint = Color.White,
+                    tint = MaterialTheme.appColors.userDetailsConfirmIconColor,
                     modifier = Modifier
                         .padding(start = 8.dp)
                         .size(24.dp)
@@ -191,23 +191,17 @@ fun UserDetailsSheetContent(
                     .padding(16.dp)
             )
 
-            Box(
-                contentAlignment = Alignment.Center,
+            PrimaryButton(
+                onClick = onMessageClick,
+                shape = notchedCornerShape(14.5.dp),
+                containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
+                contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
                 modifier = Modifier
                     .padding(top = 16.dp)
                     .fillMaxWidth()
-                    .clip(notchedCornerShape(14.5.dp))
-                    .background(MaterialTheme.appColors.onboardingPrimaryButtonBackground)
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = onMessageClick
-                    )
-                    .padding(vertical = 16.dp)
             ) {
                 Text(
                     text = stringResource(R.string.ConversationActivity_message),
-                    color = MaterialTheme.appColors.onboardingPrimaryButtonText,
                     fontFamily = RobotoMono,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 14.sp

@@ -2,6 +2,7 @@ package io.beldex.bchat.my_account.ui.dialogs
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,13 +11,18 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.ui.draw.clip
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +42,7 @@ import com.beldex.libbchat.avatars.ProfileContactPhoto
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.compose_utils.DialogContainer
+import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
@@ -83,7 +90,8 @@ fun ProfilePicturePopup(
                 Text(
                     text = stringResource(id = R.string.activity_settings_profile_picture),
                     style = MaterialTheme.typography.titleMedium.copy(
-                        color = MaterialTheme.appColors.titleTextColor
+                        color = MaterialTheme.appColors.titleTextColor,
+                        fontFamily = OpenSans
                     ),
                     textAlign = TextAlign.Center,
                     modifier = Modifier
@@ -108,13 +116,7 @@ fun ProfilePicturePopup(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                ProfilePictureComponent(
-                    publicKey = publicKey,
-                    displayName = displayName,
-                    containerSize = ProfilePictureMode.LargePicture.size,
-                    pictureMode = ProfilePictureMode.LargePicture
-                )
-               /* Box {
+                Box {
                     ProfilePictureComponent(
                         publicKey = publicKey,
                         displayName = displayName,
@@ -128,7 +130,7 @@ fun ProfilePicturePopup(
                             .size(32.dp)
                             .clip(CircleShape)
                             .background(
-                                color = MaterialTheme.appColors.backgroundColor
+                                color = MaterialTheme.appColors.userDetailsCancelBackground
                             )
                             .align(Alignment.BottomEnd)
                     ) {
@@ -140,7 +142,7 @@ fun ProfilePicturePopup(
                                 .size(20.dp)
                         )
                     }
-                }*/
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -165,6 +167,7 @@ fun ProfilePicturePopup(
                     Text(
                         text = stringResource(id = R.string.activity_settings_remove),
                         style = MaterialTheme.typography.bodySmall.copy(
+                            fontFamily = OpenSans,
                             fontWeight = FontWeight(400),
                             fontSize = 12.sp,
                             color = if(profilePictureStatus) MaterialTheme.appColors.onboardingSecondaryButtonText else MaterialTheme.appColors.disabledButtonContent
@@ -187,6 +190,7 @@ fun ProfilePicturePopup(
                         text = stringResource(id = R.string.activity_settings_upload),
                         style = MaterialTheme.typography.bodySmall.copy(
                             color = MaterialTheme.appColors.onboardingPrimaryButtonText,
+                            fontFamily = OpenSans,
                             fontWeight = FontWeight(400),
                             fontSize = 12.sp
                         )

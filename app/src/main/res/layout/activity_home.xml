@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:background="@color/screen_background">
+            android:background="@color/home_screen_background">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar_Call"
@@ -186,7 +186,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 style="@style/CustomCardViewStyle"
-                app:cardBackgroundColor="@color/page_background"
+                app:cardBackgroundColor="@color/home_screen_background"
                 app:cardElevation="4dp">
 
                 <RelativeLayout

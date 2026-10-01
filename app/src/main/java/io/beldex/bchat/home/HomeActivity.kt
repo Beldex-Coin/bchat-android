@@ -453,7 +453,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                 }
             }
             conversationsState = newData
-            //setupMessageRequestsBanner()
             ArchiveChatCountRepository.refreshArchiveCount(threadDb)
         }
         ApplicationContext.getInstance(this).typingStatusRepository.typingThreads.observe(this) { threadIds ->
@@ -779,12 +778,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                     }
                 }
             }
-            // monitor the global search VM query
-//            launch {
-//                globalSearchInputLayout.query
-//                    .onEach(globalSearchViewModel::postQuery)
-//                    .collect()
-//            }
             // Get group results and display them
             launch {
                 globalSearchViewModel.result.collect { result ->

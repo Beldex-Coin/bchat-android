@@ -101,38 +101,6 @@ fun CroppedImageScreen(file: File, onCropped: () -> Unit) {
                             translationY = if (cropMode) 0f else offset.y,
                             rotationZ = rotationState
                         )
-//                        .clip(
-//                            if (cropMode) {
-//                                // Crop shape
-//                                val scale = 1 / scale
-//                                val scaleX = size.width / file.width
-//                                val scaleY = size.height / file.height
-//                                val minScale = minOf(scaleX, scaleY)
-//                                val x = cropRect.x * size.width
-//                                val y = cropRect.y * size.height
-//                                val width = cropRect.width * size.width
-//                                val height = cropRect.height * size.height
-//                                val scaledWidth = width * scale
-//                                val scaledHeight = height * scale
-//                                val scaledX = x * scale
-//                                val scaledY = y * scale
-//                                val offsetX = (size.width - scaledWidth) / 2
-//                                val offsetY = (size.height - scaledHeight) / 2
-//                                RoundedCornerShape(
-//                                    size = Size(
-//                                        width = scaledWidth / minScale,
-//                                        height = scaledHeight / minScale
-//                                    ),
-//                                    corner = CornerRadius.Zero
-//                                ).offset(
-//                                    x = (scaledX - offsetX) / minScale,
-//                                    y = (scaledY - offsetY) / minScale
-//                                )
-//                            } else {
-//                                // Full image shape
-//                                RoundedCornerShape(corner = CornerSize(0))
-//                            }
-//                        )
                 )
         )
 
@@ -145,7 +113,6 @@ fun CroppedImageScreen(file: File, onCropped: () -> Unit) {
                         detectTransformGestures { _, pan, _, _ ->
                             val x = (pan.x + offset.x) / size.width
                             val y = (pan.y + offset.y) / size.height
-//                            cropRect = cropRect.copy(x = x.coerceIn(0f, 1f), y = y.coerceIn(0f, 1f))
                         }
                     }
             )
@@ -155,21 +122,6 @@ fun CroppedImageScreen(file: File, onCropped: () -> Unit) {
                     .fillMaxSize()
                     .clip(RoundedCornerShape(corner = CornerSize(0)))
             ) {
-                // Draw crop rectangle
-//                DrawRect(
-//                    modifier = Modifier
-//                        .fillMaxSize()
-//                        .background(MaterialTheme.colorScheme.primary)
-//                        .then(
-//                            Modifier.graphicsLayer(
-//                                scaleX = cropRect.width,
-//                                scaleY = cropRect.height,
-//                                translationX = cropRect.x,
-//                                translationY = cropRect.y
-//                            )
-//                        )
-//                )
-
                 // Draw crop controls
                 Row(
                     modifier = Modifier.fillMaxSize(),
@@ -183,7 +135,7 @@ fun CroppedImageScreen(file: File, onCropped: () -> Unit) {
                             .background(MaterialTheme.appColors.primaryButtonColor)
                             .clickable { /* Rotate */ }
                     ) {
-                        Icon(imageVector = Icons.Default.Crop, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary)
+                        Icon(imageVector = Icons.Default.Crop, contentDescription = null, tint = MaterialTheme.appColors.primaryButtonIconColor)
                     }
 
                     Box(
@@ -193,7 +145,7 @@ fun CroppedImageScreen(file: File, onCropped: () -> Unit) {
                             .background(MaterialTheme.appColors.primaryButtonColor)
                             .clickable { /* Zoom in */ }
                     ) {
-                        Icon(imageVector = Icons.Default.ZoomIn, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary)
+                        Icon(imageVector = Icons.Default.ZoomIn, contentDescription = null, tint = MaterialTheme.appColors.primaryButtonIconColor)
                     }
 
                     Box(
@@ -203,7 +155,7 @@ fun CroppedImageScreen(file: File, onCropped: () -> Unit) {
                             .background(MaterialTheme.appColors.primaryButtonColor)
                             .clickable { /* Zoom out */ }
                     ) {
-                        Icon(imageVector = Icons.Default.ZoomOut, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary)
+                        Icon(imageVector = Icons.Default.ZoomOut, contentDescription = null, tint = MaterialTheme.appColors.primaryButtonIconColor)
                     }
 
                     Box(
@@ -213,7 +165,7 @@ fun CroppedImageScreen(file: File, onCropped: () -> Unit) {
                             .background(MaterialTheme.appColors.primaryButtonColor)
                             .clickable { cropMode = false }
                     ) {
-                        Icon(imageVector = Icons.Default.Done, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary)
+                        Icon(imageVector = Icons.Default.Done, contentDescription = null, tint = MaterialTheme.appColors.primaryButtonIconColor)
                     }
 
                     Box(
@@ -223,7 +175,7 @@ fun CroppedImageScreen(file: File, onCropped: () -> Unit) {
                             .background(MaterialTheme.appColors.primaryButtonColor)
                             .clickable { cropMode = false }
                     ) {
-                        Icon(imageVector = Icons.Default.Close, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary)
+                        Icon(imageVector = Icons.Default.Close, contentDescription = null, tint = MaterialTheme.appColors.primaryButtonIconColor)
                     }
                 }
             }

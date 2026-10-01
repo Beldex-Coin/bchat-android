@@ -41,7 +41,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -55,6 +54,7 @@ import com.beldex.libbchat.messaging.contacts.Contact
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
+import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.noRippleCallback
 import io.beldex.bchat.compose_utils.ui.BubbledText
@@ -256,7 +256,7 @@ fun RequestItem(
                             defaultElevation=4.dp
                         ),
                         colors=CardDefaults.cardColors(
-                            containerColor=Color.White
+                            containerColor=MaterialTheme.appColors.requestCountBackground
                         ),
                         shape=CircleShape,
                         modifier=Modifier
@@ -282,6 +282,7 @@ fun RequestItem(
             Text(
                 text = request.recipient.name?.capitalizeFirstLetter() ?: "",
                 style = MaterialTheme.typography.bodyMedium,
+                fontFamily = RobotoMono,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
                 modifier = Modifier.weight(1f)
@@ -316,7 +317,7 @@ fun RequestItem(
                             defaultElevation=4.dp
                         ),
                         colors=CardDefaults.cardColors(
-                            containerColor=Color.White
+                            containerColor=MaterialTheme.appColors.requestCountBackground
                         ),
                         shape=CircleShape,
                         modifier=Modifier

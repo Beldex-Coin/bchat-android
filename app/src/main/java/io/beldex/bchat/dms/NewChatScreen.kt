@@ -46,13 +46,11 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -274,7 +272,7 @@ fun NewChatScreen(
                                 MaterialTheme.appColors.textSelectionColor,
                                 MaterialTheme.appColors.textSelectionColor
                             ),
-                            cursorColor = colorResource(id = R.color.button_green)
+                            cursorColor = MaterialTheme.appColors.textSelectionColor
                         )
                     )
                 }
@@ -623,7 +621,7 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                             MaterialTheme.appColors.textSelectionColor,
                             MaterialTheme.appColors.textSelectionColor
                         ),
-                        cursorColor = colorResource(id = R.color.button_green),
+                        cursorColor = MaterialTheme.appColors.textSelectionColor,
                     )
                 )
             }
@@ -705,27 +703,25 @@ fun BnsLoadingPopUp(onDismiss: () -> Unit) {
         onDismissRequest = onDismiss,
     ) {
 
-        OutlinedCard(colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.dialogBackground), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), modifier = Modifier.fillMaxWidth()) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier
-                .fillMaxWidth()
-                .padding(15.dp)) {
-                Box(
-                    contentAlignment= Alignment.Center,
-                    modifier = Modifier
-                        .size(55.dp)
-                        .background(
-                            color=MaterialTheme.appColors.circularProgressBarBackground,
-                            shape=CircleShape
-                        ),
-                ){
-                    CircularProgressIndicator(
-                        modifier = Modifier.padding(12.dp),
-                        color = MaterialTheme.appColors.primaryButtonColor,
-                        strokeWidth = 2.dp
-                    )
-                }
-                Text(text = stringResource(id = R.string.verify_bns), style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier.padding(10.dp))
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier
+            .fillMaxWidth()
+            .padding(15.dp)) {
+            Box(
+                contentAlignment= Alignment.Center,
+                modifier = Modifier
+                    .size(55.dp)
+                    .background(
+                        color=MaterialTheme.appColors.circularProgressBarBackground,
+                        shape=CircleShape
+                    ),
+            ){
+                CircularProgressIndicator(
+                    modifier = Modifier.padding(12.dp),
+                    color = MaterialTheme.appColors.primaryButtonColor,
+                    strokeWidth = 2.dp
+                )
             }
+            Text(text = stringResource(id = R.string.verify_bns), style = MaterialTheme.typography.titleMedium.copy(fontFamily = io.beldex.bchat.compose_utils.OpenSans, fontSize = 16.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier.padding(10.dp))
         }
     }
 

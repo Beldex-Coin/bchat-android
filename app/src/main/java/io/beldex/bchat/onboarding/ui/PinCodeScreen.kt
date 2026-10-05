@@ -26,12 +26,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Backspace
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -213,6 +211,7 @@ private fun PortraitPinCodeScreen(
             Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = state.stepTitle,
+                color = MaterialTheme.appColors.onboardingCaptionColor,
                 fontFamily = OpenSans,
                 style =
                     if (isTablet)
@@ -224,7 +223,7 @@ private fun PortraitPinCodeScreen(
             if (state.step == PinCodeSteps.EnterPin) {
                 Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedButton(
+                PrimaryButton(
                     onClick = {
                         if (state.pinLength == 4) {
                             onEvent(PinCodeEvents.EnableSixDigitPin)
@@ -234,11 +233,12 @@ private fun PortraitPinCodeScreen(
                     },
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
-                    shape = RoundedCornerShape(50),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.appColors.onboardingHeadlineColor),
+                    shape = notchedCornerShape(10.dp),
+                    containerColor = MaterialTheme.appColors.onboardingInputBackground,
+                    contentColor = MaterialTheme.appColors.onboardingInputText,
                     border = BorderStroke(
                         width = 1.dp,
-                        color = if (state.pinLength == 4) MaterialTheme.appColors.onboardingSecondaryButtonBorder else MaterialTheme.appColors.onboardingSecondaryButtonBorder
+                        color = MaterialTheme.appColors.dividerColor
                     )
                 ) {
                     Text(
@@ -250,7 +250,7 @@ private fun PortraitPinCodeScreen(
                     Spacer(Modifier.width(8.dp))
                     Icon(
                         painterResource(id = R.drawable.ic_arrow_pin),
-                        tint = MaterialTheme.appColors.onboardingHeadlineColor,
+                        tint = MaterialTheme.appColors.onboardingInputText,
                         contentDescription = "PIN digit change",
                     )
                 }
@@ -504,6 +504,7 @@ private fun LandscapePinCodeScreen(
             Spacer(Modifier.height(12.dp))
 
             Text(text = state.stepTitle,
+                color = MaterialTheme.appColors.onboardingCaptionColor,
                 fontFamily = OpenSans,
                 style =
                     if (isTablet)
@@ -516,7 +517,7 @@ private fun LandscapePinCodeScreen(
 
                 Spacer(Modifier.height(16.dp))
 
-                OutlinedButton(
+                PrimaryButton(
                     onClick = {
                         if (state.pinLength == 4) {
                             onEvent(PinCodeEvents.EnableSixDigitPin)
@@ -526,11 +527,12 @@ private fun LandscapePinCodeScreen(
                     },
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
-                    shape = RoundedCornerShape(50),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.appColors.onboardingHeadlineColor),
+                    shape = notchedCornerShape(10.dp),
+                    containerColor = MaterialTheme.appColors.onboardingInputBackground,
+                    contentColor = MaterialTheme.appColors.onboardingInputText,
                     border = BorderStroke(
                         width = 1.dp,
-                        color = if (state.pinLength == 4) MaterialTheme.appColors.onboardingSecondaryButtonBorder else MaterialTheme.appColors.onboardingSecondaryButtonBorder
+                        color = MaterialTheme.appColors.dividerColor
                     )
                 ) {
                     Text(
@@ -542,7 +544,7 @@ private fun LandscapePinCodeScreen(
                     Spacer(Modifier.width(8.dp))
                     Icon(
                         painterResource(id = R.drawable.ic_arrow_pin),
-                        tint = MaterialTheme.appColors.onboardingHeadlineColor,
+                        tint = MaterialTheme.appColors.onboardingInputText,
                         contentDescription = "PIN digit change",
                     )
                 }

@@ -31,7 +31,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -50,7 +49,6 @@ import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.R
-import io.beldex.bchat.compose_utils.Colors
 
 @Composable
 fun BlockedContactScreen(
@@ -192,15 +190,17 @@ fun BlockedContactScreen(
                 onClick = {
                     showConfirmationDialog = true
                 },
-                containerColor = MaterialTheme.appColors.primaryButtonColor,
+                shape = io.beldex.bchat.compose_utils.notchedCornerShape(14.5.dp),
+                containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
+                contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
                 Text(
                     text = stringResource(id = R.string.unblock_selected),
                     style = MaterialTheme.typography.titleMedium.copy(
-                        color = Color.White,
-                        fontWeight = FontWeight(400),
+                        fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                        fontWeight = FontWeight(600),
                         fontSize = 16.sp
                     ),
                     modifier = Modifier
@@ -221,9 +221,13 @@ private fun BlockedContactItem(
     modifier: Modifier = Modifier
 ) {
     Card(
-        shape = RoundedCornerShape(15),
+        shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
+        border = androidx.compose.foundation.BorderStroke(
+            1.dp,
+            if (isSelected) MaterialTheme.appColors.userDetailsConfirmBackground else MaterialTheme.appColors.dividerColor
+        ),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.appColors.settingsCardBackground
+            containerColor = MaterialTheme.appColors.backgroundColor
         ),
         modifier = modifier
     ) {

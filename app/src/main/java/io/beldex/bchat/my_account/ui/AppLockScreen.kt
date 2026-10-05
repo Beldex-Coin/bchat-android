@@ -9,12 +9,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +34,8 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.compose_utils.OpenSans
+import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.my_account.ui.dialogs.LockOptionsDialog
@@ -118,8 +122,9 @@ fun AppLockScreen() {
     ) {
         Card(
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primary
+                containerColor = Color.Transparent
             ),
+            border = BorderStroke(1.dp, MaterialTheme.appColors.dividerColor),
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 0.dp
             ),
@@ -142,11 +147,12 @@ fun AppLockScreen() {
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))
-                
+
                 Text(
                     text = stringResource(id = R.string.change_password),
                     style = MaterialTheme.typography.titleMedium.copy(
                         color = MaterialTheme.appColors.editTextColor,
+                        fontFamily = OpenSans,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp
                     )
@@ -158,8 +164,9 @@ fun AppLockScreen() {
 
         Card(
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primary
+                containerColor = Color.Transparent
             ),
+            border = BorderStroke(1.dp, MaterialTheme.appColors.dividerColor),
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 0.dp
             ),
@@ -188,6 +195,7 @@ fun AppLockScreen() {
                         text = stringResource(id = R.string.screenlock_inactivity_timeout),
                         style = MaterialTheme.typography.titleMedium.copy(
                             color = MaterialTheme.appColors.editTextColor,
+                            fontFamily = OpenSans,
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 14.sp
                         )
@@ -197,6 +205,7 @@ fun AppLockScreen() {
                         text = stringResource(selectedLockOption.labelRes),
                         style = MaterialTheme.typography.bodySmall.copy(
                             color = MaterialTheme.appColors.lockTimerColor,
+                            fontFamily = RobotoMono,
                             fontWeight = FontWeight(400),
                             fontSize = 14.sp
                         )

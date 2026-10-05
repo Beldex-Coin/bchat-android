@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -126,6 +127,7 @@ fun DisplayNameStepScreen(
                         .fillMaxWidth()
                         .padding(top = 16.dp)
                         .background(MaterialTheme.appColors.onboardingInputBackground)
+                        .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
                         .padding(horizontal = 18.dp, vertical = 16.dp)
                         .focusRequester(focusRequester)
                 )

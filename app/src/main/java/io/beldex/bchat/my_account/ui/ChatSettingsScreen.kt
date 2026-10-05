@@ -1,6 +1,7 @@
 package io.beldex.bchat.my_account.ui
 
 import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -23,8 +25,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.preference.PreferenceManager
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.R
 
@@ -36,6 +40,10 @@ fun ChatSettingsScreen(
     var enterKeySends by remember {
         mutableStateOf(TextSecurePreferences.isEnterSendsEnabled(context))
     }
+    val sharedPreferences = remember { PreferenceManager.getDefaultSharedPreferences(context) }
+    var keepChatsArchived by remember {
+        mutableStateOf(sharedPreferences.getBoolean("is_keep_archive_chat", false))
+    }
     Column(
         modifier = modifier
     ) {
@@ -43,6 +51,7 @@ fun ChatSettingsScreen(
             text = stringResource(id = R.string.chat),
             style = MaterialTheme.typography.titleMedium.copy(
                 color = MaterialTheme.appColors.textGreen,
+                fontFamily = OpenSans,
                 fontWeight = FontWeight(600),
                 fontSize = 16.sp
             ),
@@ -52,8 +61,9 @@ fun ChatSettingsScreen(
 
         Card(
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.appColors.settingsCardBackground
+                containerColor = Color.Transparent
             ),
+            border = BorderStroke(1.dp, MaterialTheme.appColors.dividerColor),
             modifier = Modifier
                 .fillMaxWidth()
         ) {
@@ -92,6 +102,7 @@ fun ChatSettingsScreen(
             text = stringResource(R.string.preferences_chats__message_trimming),
             style = MaterialTheme.typography.titleMedium.copy(
                 color = MaterialTheme.appColors.textGreen,
+                fontFamily = OpenSans,
                 fontWeight = FontWeight(600),
                 fontSize = 16.sp
             ),
@@ -101,8 +112,9 @@ fun ChatSettingsScreen(
 
         Card(
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.appColors.settingsCardBackground
+                containerColor = Color.Transparent
             ),
+            border = BorderStroke(1.dp, MaterialTheme.appColors.dividerColor),
             modifier = Modifier
                 .fillMaxWidth()
         ) {
@@ -137,6 +149,48 @@ fun ChatSettingsScreen(
                     settingTitle = stringResource(R.string.preferences__trim_all_conversations_now),
                     painterResource(id = R.drawable.ic_trim_conversation),
                     containsSwitch = false,
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = stringResource(R.string.archive_chat),
+            style = MaterialTheme.typography.titleMedium.copy(
+                color = MaterialTheme.appColors.textGreen,
+                fontFamily = OpenSans,
+                fontWeight = FontWeight(600),
+                fontSize = 16.sp
+            ),
+            modifier = Modifier
+                .padding(16.dp)
+        )
+
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = Color.Transparent
+            ),
+            border = BorderStroke(1.dp, MaterialTheme.appColors.dividerColor),
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                SettingsItem(
+                    settingTitle = stringResource(R.string.keep_chats_archived),
+                    settingIcon = painterResource(id = R.drawable.ic_keep_archived),
+                    isEnabled = keepChatsArchived,
+                    settingDesc = stringResource(R.string.keep_chats_archived_subtitle),
+                    onSwitchChanged = { checked ->
+                        keepChatsArchived = checked
+                        sharedPreferences.edit().putBoolean("is_keep_archive_chat", checked).apply()
+                    },
                     modifier = Modifier
                         .fillMaxWidth(),
                 )

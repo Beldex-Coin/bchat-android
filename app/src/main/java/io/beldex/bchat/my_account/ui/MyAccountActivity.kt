@@ -20,6 +20,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -142,7 +143,6 @@ import io.beldex.bchat.my_account.ui.dialogs.LinkYourBNSDialog
 import io.beldex.bchat.my_account.ui.dialogs.ProfilePicturePopup
 import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.permissions.Permissions
-import io.beldex.bchat.preferences.ChatSettingsActivity
 import io.beldex.bchat.profiles.ProfileMediaConstraints
 import io.beldex.bchat.util.BitmapDecodingException
 import io.beldex.bchat.util.BitmapUtil
@@ -996,13 +996,11 @@ fun MyAccountNavHost(
                                     }
 
                                     SettingItem.ChatSettings -> {
-                                        Intent(
-                                            context,
-                                            ChatSettingsActivity::class.java
-                                        ).also { intent ->
-                                            startActivity(intent)
-                                        }
-//                                navController.navigate(MyAccountScreens.ChatSettingsScreen.route)
+                                        navController.navigate(MyAccountScreens.ChatSettingsScreen.route)
+                                    }
+
+                                    SettingItem.NotificationSettings -> {
+                                        navController.navigate(MyAccountScreens.NotificationSettingsScreen.route)
                                     }
 
                                     SettingItem.BlockedContacts -> {
@@ -1113,6 +1111,23 @@ fun MyAccountNavHost(
                 }
             ) {
                 ChatSettingsScreen(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                )
+            }
+        }
+
+        composable(
+            route = MyAccountScreens.NotificationSettingsScreen.route
+        ) {
+            MyAccountScreenContainer(
+                title = stringResource(id = R.string.activity_settings_notifications_button_title),
+                onBackClick = {
+                    navController.navigateUp()
+                }
+            ) {
+                NotificationSettingsScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(16.dp)
@@ -1488,7 +1503,7 @@ fun ProfileCard(
                     focusedIndicatorColor = MaterialTheme.appColors.textColor,
                     unfocusedIndicatorColor = MaterialTheme.appColors.textColor,
                     selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
-                    cursorColor = colorResource(id = R.color.button_green)
+                    cursorColor = MaterialTheme.appColors.textSelectionColor
                 )
             )
         }
@@ -1575,6 +1590,8 @@ fun ProfileCardKeyContainer(
 ) {
     Card(
         modifier = modifier,
+        shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
+        border = BorderStroke(1.dp, MaterialTheme.appColors.dividerColor),
         elevation = CardDefaults.cardElevation(
             defaultElevation = if(!isBnsHolder.isNullOrEmpty()) 2.dp else 0.dp
         ),

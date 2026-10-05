@@ -113,7 +113,6 @@ import io.beldex.bchat.my_account.ui.MyAccountScreens
 import io.beldex.bchat.notifications.PushRegistry
 import io.beldex.bchat.onboarding.SeedActivity
 import io.beldex.bchat.onboarding.SeedReminderViewDelegate
-import io.beldex.bchat.preferences.NotificationSettingsActivity
 import io.beldex.bchat.preferences.PrivacySettingsActivity
 import io.beldex.bchat.repository.ConversationRepository
 import io.beldex.bchat.search.SearchActivityResults
@@ -910,8 +909,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     }
 
     private fun showNotificationSettings() {
-        Intent(this, NotificationSettingsActivity::class.java).also {
-            push(it)
+        Intent(this, MyAccountActivity::class.java).also {
+            it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.NotificationSettingsScreen.route)
+            resultLauncher.launch(it)
         }
     }
 

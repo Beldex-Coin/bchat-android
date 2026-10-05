@@ -1,9 +1,11 @@
 package io.beldex.bchat.onboarding.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.border
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,6 +37,7 @@ fun OnboardingTopBar(
         modifier = modifier
             .fillMaxWidth()
             .height(50.dp)
+            .border(BorderStroke(1.dp, MaterialTheme.appColors.newChatIconBackground))
             .padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -42,12 +45,12 @@ fun OnboardingTopBar(
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow_left_24),
                 contentDescription = null,
-                tint = MaterialTheme.appColors.onboardingHeadlineColor
+                tint = MaterialTheme.appColors.onboardingInputText
             )
         }
         Text(
             text = title,
-            color = MaterialTheme.appColors.onboardingHeadlineColor,
+            color = MaterialTheme.appColors.onboardingInputText,
             fontFamily = OpenSans,
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp

@@ -2,6 +2,7 @@ package io.beldex.bchat.onboarding.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -64,15 +65,26 @@ fun RecoveryPhraseScreen(
             OnboardingTopBar(title = title, onBackClick = onBackClick)
 
             Column(modifier = Modifier.weight(1f).padding(horizontal = 22.dp)) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_recovery_seed_outline),
+                    contentDescription = null,
+                    tint = MaterialTheme.appColors.onboardingInputText,
+                    modifier = Modifier
+                        .padding(top = 24.dp)
+                        .size(48.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+
                 Text(
                     text = stringResource(R.string.copy_your_recovery_seed),
                     color = MaterialTheme.appColors.seedInfoTextColor,
                     fontFamily = RobotoMono,
                     fontWeight = FontWeight.Normal,
                     fontSize = 18.sp,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 24.dp)
+                        .padding(top = 16.dp)
                 )
 
                 Text(
@@ -85,6 +97,7 @@ fun RecoveryPhraseScreen(
                         .padding(top = 20.dp)
                         .clip(RoundedCornerShape(16.dp))
                         .background(MaterialTheme.appColors.onboardingInputBackground)
+                        .border(1.dp, MaterialTheme.appColors.newChatIconBackground, RoundedCornerShape(16.dp))
                         .padding(19.dp)
                 )
 

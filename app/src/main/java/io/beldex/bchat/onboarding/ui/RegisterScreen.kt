@@ -1,33 +1,28 @@
 package io.beldex.bchat.onboarding.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,9 +40,8 @@ import io.beldex.bchat.compose_utils.appColors
 
 /**
  * Live "Register" onboarding step, hosted by [io.beldex.bchat.onboarding.RegisterActivity].
- * No single Revamp_2026 frame maps to this exact screen (it isn't in the redesigned frame set),
- * so it follows the established onboarding design system (colors/typography/components from the
- * other migrated screens) rather than a specific Figma spec.
+ * Matches the Revamp_2026 `Privacy_settings` frame (7546:3651) — misleadingly named in Figma, its
+ * actual content is this Register/welcome step (BChat ID card, Beldex Address card, Continue).
  */
 @Composable
 fun RegisterScreen(
@@ -85,7 +79,7 @@ fun RegisterScreen(
             ) {
                 Text(
                     text = headline,
-                    color = MaterialTheme.appColors.onboardingHeadlineColor,
+                    color = MaterialTheme.appColors.onboardingInputText,
                     fontFamily = OpenSans,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 18.sp,
@@ -94,6 +88,7 @@ fun RegisterScreen(
 
                 RegisterKeyCard(
                     label = stringResource(R.string.chatid),
+                    labelColor = MaterialTheme.appColors.userDetailsBchatIdText,
                     isLoading = isPublicKeyLoading,
                     value = publicKey,
                     onCopyClick = onCopyPublicKey,
@@ -101,14 +96,16 @@ fun RegisterScreen(
                 )
                 Text(
                     text = stringResource(R.string.register_screen_chat_id_description_content),
-                    color = MaterialTheme.appColors.onboardingCaptionColor,
+                    color = MaterialTheme.appColors.onboardingBodyColor,
                     fontFamily = RobotoMono,
+                    fontWeight = FontWeight.Light,
                     fontSize = 12.sp,
                     modifier = Modifier.padding(top = 8.dp)
                 )
 
                 RegisterKeyCard(
                     label = stringResource(R.string.beldex_address),
+                    labelColor = MaterialTheme.appColors.onboardingHeadlineColor,
                     isLoading = isAddressLoading,
                     value = beldexAddress,
                     onCopyClick = onCopyAddress,
@@ -116,8 +113,9 @@ fun RegisterScreen(
                 )
                 Text(
                     text = stringResource(R.string.register_screen_beldex_address_description_content),
-                    color = MaterialTheme.appColors.onboardingCaptionColor,
+                    color = MaterialTheme.appColors.onboardingBodyColor,
                     fontFamily = RobotoMono,
+                    fontWeight = FontWeight.Light,
                     fontSize = 12.sp,
                     modifier = Modifier.padding(top = 8.dp, bottom = 20.dp)
                 )
@@ -136,6 +134,7 @@ fun RegisterScreen(
 @Composable
 private fun RegisterKeyCard(
     label: String,
+    labelColor: androidx.compose.ui.graphics.Color,
     isLoading: Boolean,
     value: String,
     onCopyClick: () -> Unit,
@@ -146,11 +145,19 @@ private fun RegisterKeyCard(
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .background(MaterialTheme.appColors.onboardingInputBackground)
+            .then(
+                if (isLoading) Modifier else Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = onCopyClick
+                )
+            )
+            .border(1.dp, MaterialTheme.appColors.userDetailsCancelBackground, RoundedCornerShape(16.dp))
             .padding(18.dp)
     ) {
         Text(
             text = label,
-            color = MaterialTheme.appColors.onboardingHeadlineColor,
+            color = labelColor,
             fontFamily = OpenSans,
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp
@@ -167,30 +174,15 @@ private fun RegisterKeyCard(
                     .padding(top = 10.dp)
             )
         } else {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(top = 10.dp)
-            ) {
-                Text(
-                    text = value,
-                    color = MaterialTheme.appColors.onboardingInputText,
-                    fontFamily = RobotoMono,
-                    fontSize = 12.sp,
-                    modifier = Modifier.weight(1f)
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_copy),
-                    contentDescription = stringResource(R.string.copy),
-                    tint = MaterialTheme.appColors.onboardingHeadlineColor,
-                    modifier = Modifier
-                        .size(20.dp)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = onCopyClick
-                        )
-                )
-            }
+            Text(
+                text = value,
+                color = MaterialTheme.appColors.onboardingInputText,
+                fontFamily = RobotoMono,
+                fontSize = 12.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp)
+            )
         }
     }
 }

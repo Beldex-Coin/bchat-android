@@ -35,7 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import io.beldex.bchat.compose_utils.BChatTypography
+import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.home.PathStatusView
 import io.beldex.bchat.my_account.domain.PathNodeModel
@@ -45,6 +45,7 @@ enum class SettingItem(val title: Int) {
     Hops(R.string.activity_path_title),
     AppLock(R.string.activity_settings_app_lock_button_title),
     ChatSettings(R.string.preferences_chats__chats),
+    NotificationSettings(R.string.activity_settings_notifications_button_title),
     BlockedContacts(R.string.blocked_contacts),
     ClearData(R.string.activity_settings_clear_all_data_button_title),
     Feedback(R.string.activity_settings_survey_feedback),
@@ -69,6 +70,7 @@ fun SettingsScreen(
                     SettingItem.Hops -> painterResource(id = R.drawable.ic_hops)
                     SettingItem.AppLock -> painterResource(id = R.drawable.ic_app_lock)
                     SettingItem.ChatSettings -> painterResource(id = R.drawable.ic_chat_settings)
+                    SettingItem.NotificationSettings -> painterResource(id = R.drawable.ic_notification_settings_menu)
                     SettingItem.BlockedContacts -> painterResource(id = R.drawable.ic_blocked_contacts)
                     SettingItem.ClearData -> painterResource(id = R.drawable.ic_clear_data)
                     SettingItem.Feedback -> painterResource(id = R.drawable.ic_feedback)
@@ -83,6 +85,7 @@ fun SettingsScreen(
                         SettingItem.Hops -> true
                         SettingItem.AppLock -> true
                         SettingItem.ChatSettings -> true
+                        SettingItem.NotificationSettings -> true
                         SettingItem.BlockedContacts -> true
                         SettingItem.ClearData -> false
                         SettingItem.Feedback -> false
@@ -131,8 +134,9 @@ private fun MyAccountItem(
         ) {
             Text(
                 text = title,
-                style = BChatTypography.titleMedium.copy(
-                    color = MaterialTheme.appColors.editTextColor
+                style = MaterialTheme.typography.titleMedium.copy(
+                    color = MaterialTheme.appColors.editTextColor,
+                    fontFamily = RobotoMono
                 )
             )
 

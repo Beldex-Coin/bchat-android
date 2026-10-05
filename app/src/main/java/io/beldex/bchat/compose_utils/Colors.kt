@@ -31,408 +31,411 @@ val RootSuccessDark = Color(0xFF0DC53E)
 val RootComplement1 = Color(0xFF6556D9)
 val RootComplement2 = Color(0xFF00F0FF)
 
-class Colors(
-    val primaryButtonColor: Color,
-    val primaryButtonIconColor: Color,
-    val backgroundColor: Color,
-    val secondaryContentColor: Color,
-    val editTextPlaceholder: Color,
-    val textFieldFocusedColor: Color,
-    val textFieldUnfocusedColor: Color,
-    val textFieldCursorColor: Color,
-    val textFieldTextColor: Color,
-    val tertiaryButtonColor: Color,
-    val disabledPrimaryButtonContentColor: Color,
-    val onMainContainerTextColor: Color,
-    val secondaryTextColor: Color,
-    val editTextBackground: Color,
-    val editTextColor: Color,
-    val editTextHint: Color,
-    val titleTextColor: Color,
-    val iconColor: Color,
-    val beldexAddressColor: Color,
-    val cardBackground: Color,
-    val iconTint: Color,
-    val changeLogColor: Color,
-    val changeLogBackground: Color,
-    val lockTimerColor: Color,
-    val unCheckedSwitchThumb: Color,
-    val switchTrackColor: Color,
-    val settingsCardBackground: Color,
-    val dialogBackground: Color,
-    val restoreDescColor: Color,
-    val seedInfoTextColor: Color,
-    val actionIconBackground: Color,
-    val createButtonBackground: Color,
-    val contactCardBackground: Color,
-    val contactCardBorder: Color,
-    val requestCountBackground: Color,
-    val requestCountColor: Color,
-    val searchBackground: Color,
-    val inputHintColor: Color,
-    val disabledButtonContainerColor: Color,
-    val disabledButtonContent: Color,
-    val textFieldDescriptionColor: Color,
-    val cancelButtonTextColor: Color,
-    val textColor: Color,
-    val beldexAddressBackground: Color,
-    val qrCodeBackground: Color,
-    val errorMessageColor: Color,
-    val textFiledBorderColor: Color,
-    val textHint: Color,
-    val dividerColor: Color,
-    val popUpAddressBackground: Color,
-    val walletDashboardMainMenuCardBackground: Color,
-    val walletDashboardReceiveButtonBackground: Color,
-    val walletSyncingIcon: Color,
-    val transactionSubTitle: Color,
-    val iconBackground: Color,
-    val loaderBackground: Color,
-    val callBottomBackground: Color,
-    val circularProgressBarBackground : Color,
-    val numberPickerDivider: Color,
-    val optionalTextFieldBackground: Color,
-    val clearDataSubTitle: Color,
-    val textSelectionColor: Color,
-    val disabledNextButtonColor : Color,
-    val listItemBackground : Color,
-    val bnsDialogBackground: Color,
-    val linkBnsDisabledButtonContent: Color,
-    val linkBnsAddressBackground: Color,
-    val profileAddressCardBackground: Color,
-    val profileCameraIconBackgroundWithBnsTag: Color,
-    val profileCameraIconBackground: Color,
-    val disabledCreateButtonContainer: Color,
-    val archiveChatCountBackground: Color,
-    val deleteOptionColor: Color,
-    val deleteOptionIconColor: Color,
-    val archiveChatCardBackground: Color,
-    val archiveChatIconBackground: Color,
-    val floatingActionButtonBackground: Color,
-    val negativeGreenButton: Color,
-    val negativeGreenButtonBorder: Color,
-    val negativeRedButton: Color,
-    val negativeRedButtonBorder: Color,
-    val negativeGreenButtonText: Color,
-    val textGreen: Color,
-    val disabledLetsBchatButton: Color,
-    val disabledLetsBchatContent: Color,
-    val newChatCardBackground: Color,
-    val secretGroupInfoBackground: Color,
-    val textSelectionBackgroundColor: Color,
-    val scrollBarColor: Color,
+class Colors() {
+    var primaryButtonColor: Color = Color.Unspecified
+    var primaryButtonIconColor: Color = Color.Unspecified
+    var backgroundColor: Color = Color.Unspecified
+    var secondaryContentColor: Color = Color.Unspecified
+    var editTextPlaceholder: Color = Color.Unspecified
+    var textFieldFocusedColor: Color = Color.Unspecified
+    var textFieldUnfocusedColor: Color = Color.Unspecified
+    var textFieldCursorColor: Color = Color.Unspecified
+    var textFieldTextColor: Color = Color.Unspecified
+    var tertiaryButtonColor: Color = Color.Unspecified
+    var disabledPrimaryButtonContentColor: Color = Color.Unspecified
+    var onMainContainerTextColor: Color = Color.Unspecified
+    var secondaryTextColor: Color = Color.Unspecified
+    var editTextBackground: Color = Color.Unspecified
+    var editTextColor: Color = Color.Unspecified
+    var editTextHint: Color = Color.Unspecified
+    var titleTextColor: Color = Color.Unspecified
+    var iconColor: Color = Color.Unspecified
+    var beldexAddressColor: Color = Color.Unspecified
+    var cardBackground: Color = Color.Unspecified
+    var iconTint: Color = Color.Unspecified
+    var changeLogColor: Color = Color.Unspecified
+    var changeLogBackground: Color = Color.Unspecified
+    var lockTimerColor: Color = Color.Unspecified
+    var unCheckedSwitchThumb: Color = Color.Unspecified
+    var switchTrackColor: Color = Color.Unspecified
+    var settingsCardBackground: Color = Color.Unspecified
+    var dialogBackground: Color = Color.Unspecified
+    var restoreDescColor: Color = Color.Unspecified
+    var seedInfoTextColor: Color = Color.Unspecified
+    var actionIconBackground: Color = Color.Unspecified
+    var createButtonBackground: Color = Color.Unspecified
+    var contactCardBackground: Color = Color.Unspecified
+    var contactCardBorder: Color = Color.Unspecified
+    var requestCountBackground: Color = Color.Unspecified
+    var requestCountColor: Color = Color.Unspecified
+    var searchBackground: Color = Color.Unspecified
+    var inputHintColor: Color = Color.Unspecified
+    var disabledButtonContainerColor: Color = Color.Unspecified
+    var disabledButtonContent: Color = Color.Unspecified
+    var textFieldDescriptionColor: Color = Color.Unspecified
+    var cancelButtonTextColor: Color = Color.Unspecified
+    var textColor: Color = Color.Unspecified
+    var beldexAddressBackground: Color = Color.Unspecified
+    var qrCodeBackground: Color = Color.Unspecified
+    var errorMessageColor: Color = Color.Unspecified
+    var textFiledBorderColor: Color = Color.Unspecified
+    var textHint: Color = Color.Unspecified
+    var dividerColor: Color = Color.Unspecified
+    var popUpAddressBackground: Color = Color.Unspecified
+    var walletDashboardMainMenuCardBackground: Color = Color.Unspecified
+    var walletDashboardReceiveButtonBackground: Color = Color.Unspecified
+    var walletSyncingIcon: Color = Color.Unspecified
+    var transactionSubTitle: Color = Color.Unspecified
+    var iconBackground: Color = Color.Unspecified
+    var loaderBackground: Color = Color.Unspecified
+    var callBottomBackground: Color = Color.Unspecified
+    var circularProgressBarBackground : Color = Color.Unspecified
+    var numberPickerDivider: Color = Color.Unspecified
+    var optionalTextFieldBackground: Color = Color.Unspecified
+    var clearDataSubTitle: Color = Color.Unspecified
+    var textSelectionColor: Color = Color.Unspecified
+    var disabledNextButtonColor : Color = Color.Unspecified
+    var listItemBackground : Color = Color.Unspecified
+    var bnsDialogBackground: Color = Color.Unspecified
+    var linkBnsDisabledButtonContent: Color = Color.Unspecified
+    var linkBnsAddressBackground: Color = Color.Unspecified
+    var profileAddressCardBackground: Color = Color.Unspecified
+    var profileCameraIconBackgroundWithBnsTag: Color = Color.Unspecified
+    var profileCameraIconBackground: Color = Color.Unspecified
+    var disabledCreateButtonContainer: Color = Color.Unspecified
+    var archiveChatCountBackground: Color = Color.Unspecified
+    var deleteOptionColor: Color = Color.Unspecified
+    var deleteOptionIconColor: Color = Color.Unspecified
+    var archiveChatCardBackground: Color = Color.Unspecified
+    var archiveChatIconBackground: Color = Color.Unspecified
+    var floatingActionButtonBackground: Color = Color.Unspecified
+    var negativeGreenButton: Color = Color.Unspecified
+    var negativeGreenButtonBorder: Color = Color.Unspecified
+    var negativeRedButton: Color = Color.Unspecified
+    var negativeRedButtonBorder: Color = Color.Unspecified
+    var negativeGreenButtonText: Color = Color.Unspecified
+    var textGreen: Color = Color.Unspecified
+    var disabledLetsBchatButton: Color = Color.Unspecified
+    var disabledLetsBchatContent: Color = Color.Unspecified
+    var newChatCardBackground: Color = Color.Unspecified
+    var secretGroupInfoBackground: Color = Color.Unspecified
+    var textSelectionBackgroundColor: Color = Color.Unspecified
+    var scrollBarColor: Color = Color.Unspecified
     // Revamp_2026 onboarding (Phase 1)
-    val onboardingBackground: Color,
-    val onboardingHeadlineColor: Color,
-    val onboardingBodyColor: Color,
-    val onboardingTermsColor: Color,
-    val onboardingPrimaryButtonBackground: Color,
-    val onboardingPrimaryButtonText: Color,
-    val onboardingSecondaryButtonBackground: Color,
-    val onboardingSecondaryButtonBorder: Color,
-    val onboardingSecondaryButtonText: Color,
-    val onboardingPrimaryButtonDisabledBackground: Color,
-    val onboardingPrimaryButtonDisabledText: Color,
-    val onboardingInputBackground: Color,
-    val onboardingInputText: Color,
-    val onboardingInputHint: Color,
-    val onboardingCaptionColor: Color,
-    val onboardingKeypadKeyBackground: Color,
+    var onboardingBackground: Color = Color.Unspecified
+    var onboardingHeadlineColor: Color = Color.Unspecified
+    var onboardingBodyColor: Color = Color.Unspecified
+    var onboardingTermsColor: Color = Color.Unspecified
+    var onboardingPrimaryButtonBackground: Color = Color.Unspecified
+    var onboardingPrimaryButtonText: Color = Color.Unspecified
+    var onboardingSecondaryButtonBackground: Color = Color.Unspecified
+    var onboardingSecondaryButtonBorder: Color = Color.Unspecified
+    var onboardingSecondaryButtonText: Color = Color.Unspecified
+    var onboardingPrimaryButtonDisabledBackground: Color = Color.Unspecified
+    var onboardingPrimaryButtonDisabledText: Color = Color.Unspecified
+    var pinBoxInactiveBorder: Color = Color.Unspecified
+    var onboardingInputBackground: Color = Color.Unspecified
+    var onboardingInputText: Color = Color.Unspecified
+    var onboardingInputHint: Color = Color.Unspecified
+    var onboardingCaptionColor: Color = Color.Unspecified
+    var onboardingKeypadKeyBackground: Color = Color.Unspecified
     // Revamp_2026 Home / conversation list (Phase 2)
-    val homeBackground: Color,
-    val homeTitleColor: Color,
-    val homeBannerIconBackground: Color,
-    val homeBannerText: Color,
-    val homeSearchBarBackground: Color,
-    val homeSearchBarHint: Color,
-    val homeRowBackground: Color,
-    val homeRowTitle: Color,
-    val homeRowPreview: Color,
-    val homeRowTimestamp: Color,
-    val homeRowTimestampUnread: Color,
-    val homeUnreadBadgeBackground: Color,
-    val homeUnreadBadgeText: Color,
-    val homeFabBackground: Color,
-    val homeFabIconColor: Color,
+    var homeBackground: Color = Color.Unspecified
+    var homeTitleColor: Color = Color.Unspecified
+    var homeBannerIconBackground: Color = Color.Unspecified
+    var homeBannerText: Color = Color.Unspecified
+    var homeSearchBarBackground: Color = Color.Unspecified
+    var homeSearchBarHint: Color = Color.Unspecified
+    var homeRowBackground: Color = Color.Unspecified
+    var homeRowTitle: Color = Color.Unspecified
+    var homeRowPreview: Color = Color.Unspecified
+    var homeRowTimestamp: Color = Color.Unspecified
+    var homeRowTimestampUnread: Color = Color.Unspecified
+    var homeUnreadBadgeBackground: Color = Color.Unspecified
+    var homeUnreadBadgeText: Color = Color.Unspecified
+    var homeFabBackground: Color = Color.Unspecified
+    var homeFabIconColor: Color = Color.Unspecified
     // Revamp_2026 contact-details bottom sheet (Phase 3)
-    val userDetailsSheetBackground: Color,
-    val userDetailsNameColor: Color,
-    val userDetailsEditIconColor: Color,
-    val userDetailsCancelBackground: Color,
-    val userDetailsCancelIconColor: Color,
-    val userDetailsConfirmBackground: Color,
-    val userDetailsConfirmIconColor: Color,
-    val userDetailsBchatIdBackground: Color,
-    val userDetailsBchatIdText: Color,
+    var userDetailsSheetBackground: Color = Color.Unspecified
+    var userDetailsNameColor: Color = Color.Unspecified
+    var userDetailsEditIconColor: Color = Color.Unspecified
+    var userDetailsCancelBackground: Color = Color.Unspecified
+    var userDetailsCancelIconColor: Color = Color.Unspecified
+    var userDetailsConfirmBackground: Color = Color.Unspecified
+    var userDetailsConfirmIconColor: Color = Color.Unspecified
+    var userDetailsBchatIdBackground: Color = Color.Unspecified
+    var userDetailsBchatIdText: Color = Color.Unspecified
     // Revamp_2026 New Chat / Groups (Phase 4)
-    val newChatIconBackground: Color
-)
+    var newChatIconBackground: Color = Color.Unspecified
+}
 
-val lightColors = Colors(
-    primaryButtonColor = Color(0xFF078720),
-    primaryButtonIconColor = Color(0xFFFFFFFF),
-    backgroundColor = Color(0xFFEBEBEB),
-    secondaryContentColor = Color(0xFF333333),
-    editTextPlaceholder = Color(0xFFA7A7BA),
-    textFieldFocusedColor = Color(0xFF00BD40),
-    textFieldUnfocusedColor = Color(0xFFA7A7BA),
-    textFieldCursorColor = Color(0x66222222),
-    textFieldTextColor = Color(0xFF333333),
-    tertiaryButtonColor = Color(0xFF0085FF),
-    disabledPrimaryButtonContentColor = Color(0xFFF8F8F8),
-    onMainContainerTextColor = Color(0xFF333333),
-    secondaryTextColor = Color(0xFF8A8A9D),
-    editTextBackground = Color(0xFFF8F8F8),
-    editTextColor = Color(0xFF333333),
-    editTextHint = Color(0xFFA7A7BA),
-    titleTextColor = Color(0xFF333333),
-    iconColor = Color(0xFF717194),
-    beldexAddressColor = Color(0xFF00A3FF),
-    cardBackground = Color(0xFFFFFFFF),
-    iconTint = Color(0xFF333333),
-    changeLogColor = Color(0xFF333333),
-    changeLogBackground = Color(0xFFF4F4F4),
-    lockTimerColor = Color(0xFF8A8A9D),
-    unCheckedSwitchThumb = Color(0xFFA7A7BA),
-    switchTrackColor = Color.White,
-    settingsCardBackground = Color(0xFFF4F4F4),
-    dialogBackground = Color(0xFFF8F8F8),
-    restoreDescColor = Color(0xFFACACAC),
-    seedInfoTextColor = Color(0xFFECAB0F),
-    actionIconBackground = Color(0xFFFFFFFF),
-    createButtonBackground = Color(0xFFF8F8F8),
-    contactCardBackground = Color(0xFFECECEC),
-    contactCardBorder = Color(0xFFA7A7BA),
-    requestCountBackground = Color(0xFFFFFFFF),
-    requestCountColor = Color(0xFF1C1C26),
-    searchBackground = Color(0xFFF8F8F8),
-    inputHintColor = Color(0xFF8D8D8D),
-    disabledButtonContainerColor = Color(0xFFF8F8F8),
-    disabledButtonContent = Color(0xFF6E6E7C),
-    textFieldDescriptionColor = Color(0xFF333333),
-    cancelButtonTextColor = Color(0xFF8A8A9D),
-    textColor = Color(0xFF111111),
-    beldexAddressBackground = Color(0xFFF8F8F8),
-    qrCodeBackground = Color(0xFFF8F8F8),
-    errorMessageColor = Color(0xFFFF3E3E),
-    textFiledBorderColor = Color(0xFFA7A7BA),
-    textHint = Color(0xFFA7A7BA),
-    dividerColor = Color(0XFFA7A7BA),
-    popUpAddressBackground = Color(0xFFF8F8F8),
-    walletDashboardMainMenuCardBackground = Color(0xffF0F0F0),
-    walletDashboardReceiveButtonBackground = Color(0xff078720),
-    walletSyncingIcon = Color(0xffA7A7BA),
-    transactionSubTitle = Color(0xff82828D),
-    iconBackground = Color(0xFFE0E0E0),
-    loaderBackground = Color(0xA4000000),
-    callBottomBackground = Color(0xFFE8E8E8),
-    circularProgressBarBackground = Color(0xffEBEBEB),
-    numberPickerDivider = Color(0xFFA7A7BA),
-    optionalTextFieldBackground = Color(0xFFF4F4F4),
-    clearDataSubTitle = Color(0XFF6A6A77),
-    textSelectionColor= Color(0xFF008D06),
-    disabledNextButtonColor = Color(0xFFA7A7BA),
-    listItemBackground = Color(0xFFF8F8F8),
-    bnsDialogBackground = Color(0xFFEBEBEB),
-    linkBnsDisabledButtonContent = Color(0xFFACACAC),
-    linkBnsAddressBackground = Color(0xFFECECEC),
-    profileAddressCardBackground = Color(0xFFFFFFFF),
-    profileCameraIconBackgroundWithBnsTag = Color(0xFFEBEBEB),
-    profileCameraIconBackground = Color(0xFFF8F8F8),
-    disabledCreateButtonContainer = Color(0xFFECECEC),
-    archiveChatCountBackground = Color(0xFFFFFFFF),
-    deleteOptionColor = Color(0xFFFF3E3E),
-    deleteOptionIconColor = Color(0xFFFFFFFF),
-    archiveChatCardBackground = Color(0xFFF8F8F8),
-    archiveChatIconBackground = Color(0xFFECECEC),
-    floatingActionButtonBackground = Color(0xFF078720),
-    negativeGreenButton = Color(0x0D078727),
-    negativeGreenButtonBorder = Color(0xFF078720),
-    negativeRedButton = Color(0x0DFF3E3E),
-    negativeRedButtonBorder = Color(0xFFFF3E3E),
-    negativeGreenButtonText = Color(0xFF333333),
-    textGreen = Color(0xFF078720),
-    disabledLetsBchatButton = Color(0xFFF8F8F8),
-    disabledLetsBchatContent = Color(0xFF6C6C78),
-    newChatCardBackground = Color(0xFFECECEC),
-    secretGroupInfoBackground = Color(0xFFF8F8F8),
-    textSelectionBackgroundColor = Color(0xFFA7A7BA),
-    scrollBarColor = Color(0xFFCDCDCD),
-    onboardingBackground = Color(0xFFEBEBEB),
-    onboardingHeadlineColor = Color(0xFF333333),
-    onboardingBodyColor = Color(0xFF6E6E7C),
-    onboardingTermsColor = Color(0xFF8A8A9D),
-    onboardingPrimaryButtonBackground = Color(0xFF0B0B0B),
-    onboardingPrimaryButtonText = Color(0xFFEBEBEB),
-    onboardingSecondaryButtonBackground = Color(0xFFF8F8F8),
-    onboardingSecondaryButtonBorder = Color(0xFFA7A7BA),
-    onboardingSecondaryButtonText = Color(0xFF333333),
-    onboardingPrimaryButtonDisabledBackground = Color(0xFFF8F8F8),
-    onboardingPrimaryButtonDisabledText = Color(0xFF6E6E7C),
-    onboardingInputBackground = Color(0xFFF8F8F8),
-    onboardingInputText = Color(0xFF333333),
-    onboardingInputHint = Color(0xFFA7A7BA),
-    onboardingCaptionColor = Color(0xFF8A8A9D),
-    onboardingKeypadKeyBackground = Color(0xFFECECEC),
-    homeBackground = Color(0xFFEBEBEB),
-    homeTitleColor = Color(0xFF333333),
-    homeBannerIconBackground = Color(0xFFFF3E3E),
-    homeBannerText = Color(0xFF6A6A77),
-    homeSearchBarBackground = Color(0xFFF8F8F8),
-    homeSearchBarHint = Color(0xFFA7A7BA),
-    homeRowBackground = Color(0xFFF8F8F8),
-    homeRowTitle = Color(0xFF333333),
-    homeRowPreview = Color(0xFF6E6E7C),
-    homeRowTimestamp = Color(0xFF8A8A9D),
-    homeRowTimestampUnread = Color(0xFF078720),
-    homeUnreadBadgeBackground = Color(0xFF00BC33),
-    homeUnreadBadgeText = Color(0xFF0B0B0B),
-    homeFabBackground = Color(0xFF00BC33),
-    homeFabIconColor = Color(0xFF000000),
-    userDetailsSheetBackground = Color(0xFFF8F8F8),
-    userDetailsNameColor = Color(0xFF333333),
-    userDetailsEditIconColor = Color(0xFF078720),
-    userDetailsCancelBackground = Color(0xFFECECEC),
-    userDetailsCancelIconColor = Color(0xFF6E6E7C),
-    userDetailsConfirmBackground = Color(0xFF078720),
-    userDetailsConfirmIconColor = Color(0xFFFFFFFF),
-    userDetailsBchatIdBackground = Color(0xFFF8F8F8),
-    userDetailsBchatIdText = Color(0xFF078720),
+val lightColors = Colors().apply {
+    primaryButtonColor = Color(0xFF078720)
+    primaryButtonIconColor = Color(0xFFFFFFFF)
+    backgroundColor = Color(0xFFEBEBEB)
+    secondaryContentColor = Color(0xFF333333)
+    editTextPlaceholder = Color(0xFFA7A7BA)
+    textFieldFocusedColor = Color(0xFF00BD40)
+    textFieldUnfocusedColor = Color(0xFFA7A7BA)
+    textFieldCursorColor = Color(0x66222222)
+    textFieldTextColor = Color(0xFF333333)
+    tertiaryButtonColor = Color(0xFF0085FF)
+    disabledPrimaryButtonContentColor = Color(0xFFF8F8F8)
+    onMainContainerTextColor = Color(0xFF333333)
+    secondaryTextColor = Color(0xFF8A8A9D)
+    editTextBackground = Color(0xFFF8F8F8)
+    editTextColor = Color(0xFF333333)
+    editTextHint = Color(0xFFA7A7BA)
+    titleTextColor = Color(0xFF333333)
+    iconColor = Color(0xFF717194)
+    beldexAddressColor = Color(0xFF00A3FF)
+    cardBackground = Color(0xFFFFFFFF)
+    iconTint = Color(0xFF333333)
+    changeLogColor = Color(0xFF333333)
+    changeLogBackground = Color(0xFFF4F4F4)
+    lockTimerColor = Color(0xFF8A8A9D)
+    unCheckedSwitchThumb = Color(0xFFA7A7BA)
+    switchTrackColor = Color.White
+    settingsCardBackground = Color(0xFFF4F4F4)
+    dialogBackground = Color(0xFFF8F8F8)
+    restoreDescColor = Color(0xFFACACAC)
+    seedInfoTextColor = Color(0xFFECAB0F)
+    actionIconBackground = Color(0xFFFFFFFF)
+    createButtonBackground = Color(0xFFF8F8F8)
+    contactCardBackground = Color(0xFFECECEC)
+    contactCardBorder = Color(0xFFA7A7BA)
+    requestCountBackground = Color(0xFFFFFFFF)
+    requestCountColor = Color(0xFF1C1C26)
+    searchBackground = Color(0xFFF8F8F8)
+    inputHintColor = Color(0xFF8D8D8D)
+    disabledButtonContainerColor = Color(0xFFF8F8F8)
+    disabledButtonContent = Color(0xFF6E6E7C)
+    textFieldDescriptionColor = Color(0xFF333333)
+    cancelButtonTextColor = Color(0xFF8A8A9D)
+    textColor = Color(0xFF111111)
+    beldexAddressBackground = Color(0xFFF8F8F8)
+    qrCodeBackground = Color(0xFFF8F8F8)
+    errorMessageColor = Color(0xFFFF3E3E)
+    textFiledBorderColor = Color(0xFFA7A7BA)
+    textHint = Color(0xFFA7A7BA)
+    dividerColor = Color(0XFFA7A7BA)
+    popUpAddressBackground = Color(0xFFF8F8F8)
+    walletDashboardMainMenuCardBackground = Color(0xffF0F0F0)
+    walletDashboardReceiveButtonBackground = Color(0xff078720)
+    walletSyncingIcon = Color(0xffA7A7BA)
+    transactionSubTitle = Color(0xff82828D)
+    iconBackground = Color(0xFFE0E0E0)
+    loaderBackground = Color(0xA4000000)
+    callBottomBackground = Color(0xFFE8E8E8)
+    circularProgressBarBackground = Color(0xffEBEBEB)
+    numberPickerDivider = Color(0xFFA7A7BA)
+    optionalTextFieldBackground = Color(0xFFF4F4F4)
+    clearDataSubTitle = Color(0XFF6A6A77)
+    textSelectionColor= Color(0xFF008D06)
+    disabledNextButtonColor = Color(0xFFA7A7BA)
+    listItemBackground = Color(0xFFF8F8F8)
+    bnsDialogBackground = Color(0xFFEBEBEB)
+    linkBnsDisabledButtonContent = Color(0xFFACACAC)
+    linkBnsAddressBackground = Color(0xFFECECEC)
+    profileAddressCardBackground = Color(0xFFFFFFFF)
+    profileCameraIconBackgroundWithBnsTag = Color(0xFFEBEBEB)
+    profileCameraIconBackground = Color(0xFFF8F8F8)
+    disabledCreateButtonContainer = Color(0xFFECECEC)
+    archiveChatCountBackground = Color(0xFFFFFFFF)
+    deleteOptionColor = Color(0xFFFF3E3E)
+    deleteOptionIconColor = Color(0xFFFFFFFF)
+    archiveChatCardBackground = Color(0xFFF8F8F8)
+    archiveChatIconBackground = Color(0xFFECECEC)
+    floatingActionButtonBackground = Color(0xFF078720)
+    negativeGreenButton = Color(0x0D078727)
+    negativeGreenButtonBorder = Color(0xFF078720)
+    negativeRedButton = Color(0x0DFF3E3E)
+    negativeRedButtonBorder = Color(0xFFFF3E3E)
+    negativeGreenButtonText = Color(0xFF333333)
+    textGreen = Color(0xFF078720)
+    disabledLetsBchatButton = Color(0xFFF8F8F8)
+    disabledLetsBchatContent = Color(0xFF6C6C78)
+    newChatCardBackground = Color(0xFFECECEC)
+    secretGroupInfoBackground = Color(0xFFF8F8F8)
+    textSelectionBackgroundColor = Color(0xFFA7A7BA)
+    scrollBarColor = Color(0xFFCDCDCD)
+    onboardingBackground = Color(0xFFEBEBEB)
+    onboardingHeadlineColor = Color(0xFF333333)
+    onboardingBodyColor = Color(0xFF6E6E7C)
+    onboardingTermsColor = Color(0xFF8A8A9D)
+    onboardingPrimaryButtonBackground = Color(0xFF0B0B0B)
+    onboardingPrimaryButtonText = Color(0xFFEBEBEB)
+    onboardingSecondaryButtonBackground = Color(0xFFF8F8F8)
+    onboardingSecondaryButtonBorder = Color(0xFFA7A7BA)
+    onboardingSecondaryButtonText = Color(0xFF333333)
+    onboardingPrimaryButtonDisabledBackground = Color(0xFFF8F8F8)
+    onboardingPrimaryButtonDisabledText = Color(0xFF6E6E7C)
+    pinBoxInactiveBorder = Color(0xFFD9D9D9)
+    onboardingInputBackground = Color(0xFFF8F8F8)
+    onboardingInputText = Color(0xFF333333)
+    onboardingInputHint = Color(0xFFA7A7BA)
+    onboardingCaptionColor = Color(0xFF8A8A9D)
+    onboardingKeypadKeyBackground = Color(0xFFECECEC)
+    homeBackground = Color(0xFFEBEBEB)
+    homeTitleColor = Color(0xFF333333)
+    homeBannerIconBackground = Color(0xFFFF3E3E)
+    homeBannerText = Color(0xFF6A6A77)
+    homeSearchBarBackground = Color(0xFFF8F8F8)
+    homeSearchBarHint = Color(0xFFA7A7BA)
+    homeRowBackground = Color(0xFFF8F8F8)
+    homeRowTitle = Color(0xFF333333)
+    homeRowPreview = Color(0xFF6E6E7C)
+    homeRowTimestamp = Color(0xFF8A8A9D)
+    homeRowTimestampUnread = Color(0xFF078720)
+    homeUnreadBadgeBackground = Color(0xFF00BC33)
+    homeUnreadBadgeText = Color(0xFF0B0B0B)
+    homeFabBackground = Color(0xFF00BC33)
+    homeFabIconColor = Color(0xFF000000)
+    userDetailsSheetBackground = Color(0xFFF8F8F8)
+    userDetailsNameColor = Color(0xFF333333)
+    userDetailsEditIconColor = Color(0xFF078720)
+    userDetailsCancelBackground = Color(0xFFECECEC)
+    userDetailsCancelIconColor = Color(0xFF6E6E7C)
+    userDetailsConfirmBackground = Color(0xFF078720)
+    userDetailsConfirmIconColor = Color(0xFFFFFFFF)
+    userDetailsBchatIdBackground = Color(0xFFF8F8F8)
+    userDetailsBchatIdText = Color(0xFF078720)
     newChatIconBackground = Color(0xFFECECEC)
-)
+}
 
-val darkColors = Colors(
-    primaryButtonColor = Color(0xFF078720),
-    primaryButtonIconColor = Color(0xFFFFFFFF),
-    backgroundColor = Color(0xFF11111A),
-    secondaryContentColor = Color(0xFFFFFFFF),
-    editTextPlaceholder = Color(0xFFA7A7BA),
-    textFieldFocusedColor = Color(0xFF00BD40),
-    textFieldUnfocusedColor = Color(0xFF4B4B64),
-    textFieldCursorColor = Color(0x66FFFFFF),
-    textFieldTextColor = Color(0x80FFFFFF),
-    tertiaryButtonColor = Color(0xFF0085FF),
-    disabledPrimaryButtonContentColor = Color(0xFF6C6C78),
-    onMainContainerTextColor = Color(0xFFFFFFFF),
-    secondaryTextColor = Color(0xFFA7A7BA),
-    editTextBackground = Color(0xFF1C1C26),
-    editTextColor = Color(0xFFEBEBEB),
-    editTextHint = Color(0xFFA7A7BA),
-    titleTextColor = Color(0xFFEBEBEB),
-    iconColor = Color(0xFF717194),
-    beldexAddressColor = Color(0xFF00A3FF),
-    cardBackground = Color(0xFF282836),
-    iconTint = Color(0xFFFFFFFF),
-    changeLogColor = Color(0xFFEBEBEB),
-    changeLogBackground = Color.Transparent,
-    lockTimerColor = Color(0xFFACACAC),
-    unCheckedSwitchThumb = Color(0xFF9595B5),
-    switchTrackColor = Color(0xFF363645),
-    settingsCardBackground = Color(0xFF1C1C26),
-    dialogBackground = Color(0xFF111119),
-    restoreDescColor = Color(0xFFACACAC),
-    seedInfoTextColor = Color(0xFFF0AF13),
-    actionIconBackground = Color(0xFF2C2C3B),
-    createButtonBackground = Color(0xFF11111A),
-    contactCardBackground = Color(0xFF1C1C26),
-    contactCardBorder = Color(0xFF353544),
-    requestCountBackground = Color(0xFFEBEBEB),
-    requestCountColor = Color(0xFF1C1C26),
-    searchBackground = Color(0xFF282836),
-    inputHintColor = Color(0xFFB9B9B9),
-    disabledButtonContainerColor = Color(0xFF282836),
-    disabledButtonContent = Color(0xFF6E6E7C),
-    textFieldDescriptionColor = Color(0xFFA7A7BA),
-    cancelButtonTextColor = Color(0xFFACACAC),
-    textColor = Color(0xFFFFFFFF),
-    beldexAddressBackground = Color(0xFF1C1C26),
-    qrCodeBackground = Color(0xFF2C2C3B),
-    errorMessageColor = Color(0xFFFF3E3E),
-    textFiledBorderColor = Color(0xFF4B4B64),
-    textHint = Color(0xFFA7A7BA),
-    dividerColor = Color(0XFF4B4B64),
-    popUpAddressBackground = Color(0xFF282836),
-    walletDashboardMainMenuCardBackground = Color(0xff1C1C26),
-    walletDashboardReceiveButtonBackground = Color(0xff078720),
-    walletSyncingIcon = Color(0xff65656E),
-    transactionSubTitle = Color(0xffA7A7BA),
-    iconBackground = Color(0xFF30303F),
-    loaderBackground = Color(0xA4000000),
-    callBottomBackground = Color(0xFF11111A),
-    circularProgressBarBackground = Color(0xff30303F),
-    numberPickerDivider = Color(0xFF4B4B64),
-    optionalTextFieldBackground = Color(0xFF1C1C26),
-    clearDataSubTitle = Color(0XFF6A6A77),
-    textSelectionColor= Color(0xFF008D06),
-    disabledNextButtonColor = Color(0xFF6C6C78),
-    listItemBackground = Color(0xFF1C1C26),
-    bnsDialogBackground = Color(0xFF282836),
-    linkBnsDisabledButtonContent = Color(0xFF6C6C78),
-    linkBnsAddressBackground = Color(0xFF282836),
-    profileAddressCardBackground = Color(0xFF11111A),
-    profileCameraIconBackgroundWithBnsTag = Color(0xFF11111A),
-    profileCameraIconBackground = Color(0xFF111119),
-    disabledCreateButtonContainer = Color(0xFF282836),
-    archiveChatCountBackground = Color(0xFF42425F),
-    deleteOptionColor = Color(0xFFFF3E3E),
-    deleteOptionIconColor = Color(0xFFFFFFFF),
-    archiveChatCardBackground = Color(0xFF282836),
-    archiveChatIconBackground = Color(0xFF1C1C26),
-    floatingActionButtonBackground = Color(0xFF078720),
-    negativeGreenButton = Color(0x1A078727),
-    negativeGreenButtonBorder = Color(0xFF078720),
-    negativeRedButton = Color(0x1AFF3E3E),
-    negativeRedButtonBorder = Color(0xFFFF3E3E),
-    negativeGreenButtonText = Color(0xFFACACAC),
-    textGreen = Color(0xFF078720),
-    disabledLetsBchatButton = Color(0xFF272733),
-    disabledLetsBchatContent = Color(0xFF6C6C78),
-    newChatCardBackground = Color(0xFF111119),
-    secretGroupInfoBackground = Color(0xFF1C1C26),
-    textSelectionBackgroundColor = Color(0xFFFFFFFF),
-    scrollBarColor = Color(0xFF282836),
-    onboardingBackground = Color(0xFF0B0B0B),
-    onboardingHeadlineColor = Color(0xFFACACAC),
-    onboardingBodyColor = Color(0xFF8D8D8D),
-    onboardingTermsColor = Color(0xFF737373),
-    onboardingPrimaryButtonBackground = Color(0xFFEBEBEB),
-    onboardingPrimaryButtonText = Color(0xFF0B0B0B),
-    onboardingSecondaryButtonBackground = Color(0xFF111111),
-    onboardingSecondaryButtonBorder = Color(0xFF8D8D8D),
-    onboardingSecondaryButtonText = Color(0xFFEBEBEB),
-    onboardingPrimaryButtonDisabledBackground = Color(0xFF1A1A1A),
-    onboardingPrimaryButtonDisabledText = Color(0xFF737373),
-    onboardingInputBackground = Color(0xFF111111),
-    onboardingInputText = Color(0xFFEBEBEB),
-    onboardingInputHint = Color(0xFF737373),
-    onboardingCaptionColor = Color(0xFF737373),
-    onboardingKeypadKeyBackground = Color(0xFF1A1A1A),
-    homeBackground = Color(0xFF0B0B0B),
-    homeTitleColor = Color(0xFFEBEBEB),
-    homeBannerIconBackground = Color(0xFFFF3E3E),
-    homeBannerText = Color(0xFFACACAC),
-    homeSearchBarBackground = Color(0xFF111111),
-    homeSearchBarHint = Color(0xFF737373),
-    homeRowBackground = Color(0xFF111111),
-    homeRowTitle = Color(0xFFEBEBEB),
-    homeRowPreview = Color(0xFF8D8D8D),
-    homeRowTimestamp = Color(0xFF737373),
-    homeRowTimestampUnread = Color(0xFF00BC33),
-    homeUnreadBadgeBackground = Color(0xFF00BC33),
-    homeUnreadBadgeText = Color(0xFF0B0B0B),
-    homeFabBackground = Color(0xFF00BC33),
-    homeFabIconColor = Color(0xFF000000),
-    userDetailsSheetBackground = Color(0xFF151515),
-    userDetailsNameColor = Color(0xFFEBEBEB),
-    userDetailsEditIconColor = Color(0xFF00BC33),
-    userDetailsCancelBackground = Color(0xFF222222),
-    userDetailsCancelIconColor = Color(0xFFACACAC),
-    userDetailsConfirmBackground = Color(0xFF00BC33),
-    userDetailsConfirmIconColor = Color(0xFFFFFFFF),
-    userDetailsBchatIdBackground = Color(0xFF111111),
-    userDetailsBchatIdText = Color(0xFF00BD40),
+val darkColors = Colors().apply {
+    primaryButtonColor = Color(0xFF078720)
+    primaryButtonIconColor = Color(0xFFFFFFFF)
+    backgroundColor = Color(0xFF11111A)
+    secondaryContentColor = Color(0xFFFFFFFF)
+    editTextPlaceholder = Color(0xFFA7A7BA)
+    textFieldFocusedColor = Color(0xFF00BD40)
+    textFieldUnfocusedColor = Color(0xFF4B4B64)
+    textFieldCursorColor = Color(0x66FFFFFF)
+    textFieldTextColor = Color(0x80FFFFFF)
+    tertiaryButtonColor = Color(0xFF0085FF)
+    disabledPrimaryButtonContentColor = Color(0xFF6C6C78)
+    onMainContainerTextColor = Color(0xFFFFFFFF)
+    secondaryTextColor = Color(0xFFA7A7BA)
+    editTextBackground = Color(0xFF1C1C26)
+    editTextColor = Color(0xFFEBEBEB)
+    editTextHint = Color(0xFFA7A7BA)
+    titleTextColor = Color(0xFFEBEBEB)
+    iconColor = Color(0xFF717194)
+    beldexAddressColor = Color(0xFF00A3FF)
+    cardBackground = Color(0xFF282836)
+    iconTint = Color(0xFFFFFFFF)
+    changeLogColor = Color(0xFFEBEBEB)
+    changeLogBackground = Color.Transparent
+    lockTimerColor = Color(0xFFACACAC)
+    unCheckedSwitchThumb = Color(0xFF9595B5)
+    switchTrackColor = Color(0xFF363645)
+    settingsCardBackground = Color(0xFF1C1C26)
+    dialogBackground = Color(0xFF111119)
+    restoreDescColor = Color(0xFFACACAC)
+    seedInfoTextColor = Color(0xFFF0AF13)
+    actionIconBackground = Color(0xFF2C2C3B)
+    createButtonBackground = Color(0xFF11111A)
+    contactCardBackground = Color(0xFF1C1C26)
+    contactCardBorder = Color(0xFF353544)
+    requestCountBackground = Color(0xFFEBEBEB)
+    requestCountColor = Color(0xFF1C1C26)
+    searchBackground = Color(0xFF282836)
+    inputHintColor = Color(0xFFB9B9B9)
+    disabledButtonContainerColor = Color(0xFF282836)
+    disabledButtonContent = Color(0xFF6E6E7C)
+    textFieldDescriptionColor = Color(0xFFA7A7BA)
+    cancelButtonTextColor = Color(0xFFACACAC)
+    textColor = Color(0xFFFFFFFF)
+    beldexAddressBackground = Color(0xFF1C1C26)
+    qrCodeBackground = Color(0xFF2C2C3B)
+    errorMessageColor = Color(0xFFFF3E3E)
+    textFiledBorderColor = Color(0xFF4B4B64)
+    textHint = Color(0xFFA7A7BA)
+    dividerColor = Color(0XFF4B4B64)
+    popUpAddressBackground = Color(0xFF282836)
+    walletDashboardMainMenuCardBackground = Color(0xff1C1C26)
+    walletDashboardReceiveButtonBackground = Color(0xff078720)
+    walletSyncingIcon = Color(0xff65656E)
+    transactionSubTitle = Color(0xffA7A7BA)
+    iconBackground = Color(0xFF30303F)
+    loaderBackground = Color(0xA4000000)
+    callBottomBackground = Color(0xFF11111A)
+    circularProgressBarBackground = Color(0xff30303F)
+    numberPickerDivider = Color(0xFF4B4B64)
+    optionalTextFieldBackground = Color(0xFF1C1C26)
+    clearDataSubTitle = Color(0XFF6A6A77)
+    textSelectionColor= Color(0xFF008D06)
+    disabledNextButtonColor = Color(0xFF6C6C78)
+    listItemBackground = Color(0xFF1C1C26)
+    bnsDialogBackground = Color(0xFF282836)
+    linkBnsDisabledButtonContent = Color(0xFF6C6C78)
+    linkBnsAddressBackground = Color(0xFF282836)
+    profileAddressCardBackground = Color(0xFF11111A)
+    profileCameraIconBackgroundWithBnsTag = Color(0xFF11111A)
+    profileCameraIconBackground = Color(0xFF111119)
+    disabledCreateButtonContainer = Color(0xFF282836)
+    archiveChatCountBackground = Color(0xFF42425F)
+    deleteOptionColor = Color(0xFFFF3E3E)
+    deleteOptionIconColor = Color(0xFFFFFFFF)
+    archiveChatCardBackground = Color(0xFF282836)
+    archiveChatIconBackground = Color(0xFF1C1C26)
+    floatingActionButtonBackground = Color(0xFF078720)
+    negativeGreenButton = Color(0x1A078727)
+    negativeGreenButtonBorder = Color(0xFF078720)
+    negativeRedButton = Color(0x1AFF3E3E)
+    negativeRedButtonBorder = Color(0xFFFF3E3E)
+    negativeGreenButtonText = Color(0xFFACACAC)
+    textGreen = Color(0xFF078720)
+    disabledLetsBchatButton = Color(0xFF272733)
+    disabledLetsBchatContent = Color(0xFF6C6C78)
+    newChatCardBackground = Color(0xFF111119)
+    secretGroupInfoBackground = Color(0xFF1C1C26)
+    textSelectionBackgroundColor = Color(0xFFFFFFFF)
+    scrollBarColor = Color(0xFF282836)
+    onboardingBackground = Color(0xFF0B0B0B)
+    onboardingHeadlineColor = Color(0xFFACACAC)
+    onboardingBodyColor = Color(0xFF8D8D8D)
+    onboardingTermsColor = Color(0xFF737373)
+    onboardingPrimaryButtonBackground = Color(0xFFEBEBEB)
+    onboardingPrimaryButtonText = Color(0xFF0B0B0B)
+    onboardingSecondaryButtonBackground = Color(0xFF111111)
+    onboardingSecondaryButtonBorder = Color(0xFF8D8D8D)
+    onboardingSecondaryButtonText = Color(0xFFEBEBEB)
+    onboardingPrimaryButtonDisabledBackground = Color(0xFF1A1A1A)
+    onboardingPrimaryButtonDisabledText = Color(0xFF737373)
+    pinBoxInactiveBorder = Color(0xFF333333)
+    onboardingInputBackground = Color(0xFF111111)
+    onboardingInputText = Color(0xFFEBEBEB)
+    onboardingInputHint = Color(0xFF737373)
+    onboardingCaptionColor = Color(0xFF737373)
+    onboardingKeypadKeyBackground = Color(0xFF1A1A1A)
+    homeBackground = Color(0xFF0B0B0B)
+    homeTitleColor = Color(0xFFEBEBEB)
+    homeBannerIconBackground = Color(0xFFFF3E3E)
+    homeBannerText = Color(0xFFACACAC)
+    homeSearchBarBackground = Color(0xFF111111)
+    homeSearchBarHint = Color(0xFF737373)
+    homeRowBackground = Color(0xFF111111)
+    homeRowTitle = Color(0xFFEBEBEB)
+    homeRowPreview = Color(0xFF8D8D8D)
+    homeRowTimestamp = Color(0xFF737373)
+    homeRowTimestampUnread = Color(0xFF00BC33)
+    homeUnreadBadgeBackground = Color(0xFF00BC33)
+    homeUnreadBadgeText = Color(0xFF0B0B0B)
+    homeFabBackground = Color(0xFF00BC33)
+    homeFabIconColor = Color(0xFF000000)
+    userDetailsSheetBackground = Color(0xFF151515)
+    userDetailsNameColor = Color(0xFFEBEBEB)
+    userDetailsEditIconColor = Color(0xFF00BC33)
+    userDetailsCancelBackground = Color(0xFF222222)
+    userDetailsCancelIconColor = Color(0xFFACACAC)
+    userDetailsConfirmBackground = Color(0xFF00BC33)
+    userDetailsConfirmIconColor = Color(0xFFFFFFFF)
+    userDetailsBchatIdBackground = Color(0xFF111111)
+    userDetailsBchatIdText = Color(0xFF00BD40)
     newChatIconBackground = Color(0xFF222222)
-)
+}
 
 
 

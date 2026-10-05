@@ -12,12 +12,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.beldex.bchat.compose_utils.OpenSans
+import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.R
 
@@ -29,6 +30,7 @@ fun SettingsItem(
     isEnabled: Boolean = false,
     containsSwitch: Boolean = true,
     settingDesc: String? = null,
+    trailingText: String? = null,
     onSwitchChanged: (Boolean) -> Unit = {},
 ) {
     Row(
@@ -50,6 +52,7 @@ fun SettingsItem(
             Text(
                 text = settingTitle,
                 style = MaterialTheme.typography.bodyMedium.copy(
+                    fontFamily = OpenSans,
                     fontWeight = FontWeight(400),
                     fontSize = 14.sp
                 ),
@@ -59,12 +62,27 @@ fun SettingsItem(
                 Text(
                     text = description,
                     style = MaterialTheme.typography.labelSmall.copy(
-                        color = Color(0xACACACAC),
+                        color = MaterialTheme.appColors.lockTimerColor,
+                        fontFamily = RobotoMono,
                         fontWeight = FontWeight(600),
                         fontSize = 12.sp
                     ),
                 )
             }
+        }
+
+        trailingText?.let { value ->
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text(
+                text = value,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    color = MaterialTheme.appColors.lockTimerColor,
+                    fontFamily = RobotoMono,
+                    fontWeight = FontWeight(600),
+                    fontSize = 14.sp
+                ),
+            )
         }
 
         if (containsSwitch) {

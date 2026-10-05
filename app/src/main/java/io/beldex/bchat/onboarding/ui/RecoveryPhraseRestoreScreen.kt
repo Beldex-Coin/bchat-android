@@ -8,6 +8,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -81,6 +82,7 @@ fun RecoveryPhraseRestoreScreen(
                         .padding(top = 24.dp)
                         .clip(RoundedCornerShape(16.dp))
                         .background(MaterialTheme.appColors.onboardingInputBackground)
+                        .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder, RoundedCornerShape(16.dp))
                 ) {
                     Column(modifier = Modifier.padding(18.dp)) {
                         val hintColor = MaterialTheme.appColors.onboardingInputHint.toArgb()

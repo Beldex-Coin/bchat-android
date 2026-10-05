@@ -1119,6 +1119,23 @@ fun MyAccountNavHost(
         }
 
         composable(
+            route = MyAccountScreens.PrivacySettingsScreen.route
+        ) {
+            MyAccountScreenContainer(
+                title = stringResource(id = R.string.activity_settings_title),
+                onBackClick = {
+                    navController.navigateUp()
+                }
+            ) {
+                PrivacySettingsScreen(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                )
+            }
+        }
+
+        composable(
             route = MyAccountScreens.NotificationSettingsScreen.route
         ) {
             MyAccountScreenContainer(

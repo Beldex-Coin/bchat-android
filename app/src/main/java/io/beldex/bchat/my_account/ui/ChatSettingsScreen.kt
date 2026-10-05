@@ -50,7 +50,7 @@ fun ChatSettingsScreen(
         Text(
             text = stringResource(id = R.string.chat),
             style = MaterialTheme.typography.titleMedium.copy(
-                color = MaterialTheme.appColors.textGreen,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = OpenSans,
                 fontWeight = FontWeight(600),
                 fontSize = 16.sp
@@ -101,7 +101,7 @@ fun ChatSettingsScreen(
         Text(
             text = stringResource(R.string.preferences_chats__message_trimming),
             style = MaterialTheme.typography.titleMedium.copy(
-                color = MaterialTheme.appColors.textGreen,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = OpenSans,
                 fontWeight = FontWeight(600),
                 fontSize = 16.sp
@@ -160,7 +160,7 @@ fun ChatSettingsScreen(
         Text(
             text = stringResource(R.string.archive_chat),
             style = MaterialTheme.typography.titleMedium.copy(
-                color = MaterialTheme.appColors.textGreen,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = OpenSans,
                 fontWeight = FontWeight(600),
                 fontSize = 16.sp

@@ -113,7 +113,6 @@ import io.beldex.bchat.my_account.ui.MyAccountScreens
 import io.beldex.bchat.notifications.PushRegistry
 import io.beldex.bchat.onboarding.SeedActivity
 import io.beldex.bchat.onboarding.SeedReminderViewDelegate
-import io.beldex.bchat.preferences.PrivacySettingsActivity
 import io.beldex.bchat.repository.ConversationRepository
 import io.beldex.bchat.search.SearchActivityResults
 import io.beldex.bchat.service.WebRtcCallService
@@ -903,8 +902,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     }
 
     private fun showPrivacySettings() {
-        Intent(this, PrivacySettingsActivity::class.java).also {
-            push(it)
+        Intent(this, MyAccountActivity::class.java).also {
+            it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.PrivacySettingsScreen.route)
+            resultLauncher.launch(it)
         }
     }
 

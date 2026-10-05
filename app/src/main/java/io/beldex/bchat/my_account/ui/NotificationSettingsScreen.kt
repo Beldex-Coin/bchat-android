@@ -180,7 +180,7 @@ fun NotificationSettingsScreen(
         Text(
             text = stringResource(id = R.string.preferences_notifications_strategy_category_title),
             style = MaterialTheme.typography.titleMedium.copy(
-                color = MaterialTheme.appColors.textGreen,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = OpenSans,
                 fontWeight = FontWeight(600),
                 fontSize = 16.sp
@@ -223,7 +223,7 @@ fun NotificationSettingsScreen(
         Text(
             text = stringResource(id = R.string.activity_notification_settings_style_section_title),
             style = MaterialTheme.typography.titleMedium.copy(
-                color = MaterialTheme.appColors.textGreen,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = OpenSans,
                 fontWeight = FontWeight(600),
                 fontSize = 16.sp
@@ -305,7 +305,7 @@ fun NotificationSettingsScreen(
         Text(
             text = stringResource(id = R.string.activity_notification_settings_content_section_title),
             style = MaterialTheme.typography.titleMedium.copy(
-                color = MaterialTheme.appColors.textGreen,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = OpenSans,
                 fontWeight = FontWeight(600),
                 fontSize = 16.sp

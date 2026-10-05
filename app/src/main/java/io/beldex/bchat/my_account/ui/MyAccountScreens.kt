@@ -8,6 +8,7 @@ sealed class MyAccountScreens(val route: String) {
     data object AppLockScreen: MyAccountScreens("/app-lock")
     data object ChatSettingsScreen: MyAccountScreens("/chat-settings")
     data object NotificationSettingsScreen: MyAccountScreens("/notification-settings")
+    data object PrivacySettingsScreen: MyAccountScreens("/privacy-settings")
     data object BlockedContactScreen: MyAccountScreens("/blocked-contacts")
     data object MessageRequestsScreen: MyAccountScreens("/message-requests")
     data object RecoverySeedScreen: MyAccountScreens("/recovery-seed")

@@ -286,7 +286,7 @@ fun NewChatScreen(
                             shape = RoundedCornerShape(16.dp)
                         )
                 ) {
-                    NewChatItem(image = if(isDarkTheme) R.drawable.ic_new_chat else R.drawable.ic_new_chat_light, title = stringResource(id = R.string.activity_create_private_chat_title), MaterialTheme.appColors.userDetailsBchatIdText, PaddingValues(start = 10.dp, end = 10.dp, top = 10.dp),true, onClick = {
+                    NewChatItem(image = if(isDarkTheme) R.drawable.ic_new_chat else R.drawable.ic_new_chat_light, title = stringResource(id = R.string.activity_create_private_chat_title), MaterialTheme.appColors.userDetailsBchatIdText, PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),true, onClick = {
                         showNewChatPopup = !showNewChatPopup
                     }, onClickScanQRCode = {
                         val intent = Intent(
@@ -299,7 +299,7 @@ fun NewChatScreen(
                         image = if(isDarkTheme) R.drawable.ic_secret_group else R.drawable.ic_secret_group_light,
                         title = stringResource(id = R.string.home_screen_secret_groups_title),
                         MaterialTheme.appColors.homeRowTitle,
-                        PaddingValues(start = 10.dp, end = 10.dp, top = 5.dp),
+                        PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),
                         onClick = {
                             openActivity(OpenActivity.SecretGroup)
                         },
@@ -309,7 +309,7 @@ fun NewChatScreen(
                         image = if(isDarkTheme) R.drawable.ic_social_group else R.drawable.ic_social_group_light,
                         title = stringResource(id = R.string.home_screen_social_groups_title),
                         MaterialTheme.appColors.homeRowTitle,
-                        PaddingValues(start = 10.dp, end = 10.dp, top = 5.dp),
+                        PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),
                         onClick = {
                             openActivity(OpenActivity.PublicGroup)
                         },
@@ -319,7 +319,7 @@ fun NewChatScreen(
                         image = if(isDarkTheme) R.drawable.ic_note_to_self else R.drawable.ic_note_to_self_light,
                         title = stringResource(id = R.string.note_to_self),
                         MaterialTheme.appColors.homeRowTitle,
-                        PaddingValues(start = 10.dp, end = 10.dp, bottom = 10.dp),
+                        PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),
                         onClick = {
                             openActivity(OpenActivity.NoteToSelf)
                         },

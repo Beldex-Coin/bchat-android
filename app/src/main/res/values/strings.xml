@@ -610,7 +610,7 @@
     <string name="trimmer__old_messages_successfully_deleted">Old messages successfully deleted</string>
 
     <!-- transport_selection_list_item -->
-    <string name="Permissions_permission_required">Permission Required!</string>
+    <string name="Permissions_permission_required">Permission Required</string>
     <string name="Permissions_allow">Allow</string>
     <string name="Permissions_deny">Deny</string>
     <string name="backup_enable_dialog__backups_will_be_saved_to_external_storage_and_encrypted_with_the_passphrase_below_you_must_have_this_passphrase_in_order_to_restore_a_backup">Backups will be saved to external storage and encrypted with the passphrase below. You must have this passphrase in order to restore a backup.</string>
@@ -1004,6 +1004,8 @@
     <string name="preferences__clear_conversation_history">Clear conversation History</string>
     <string name="clear_all_conversation_history_confirmation">Permanently delete all messages in every conversation? Your conversations and contacts will be kept.</string>
     <string name="message_timing">Message Timing</string>
+    <string name="enter_the_bchat_id">Enter the BChat ID</string>
+    <string name="enter_correct_bchat_id">Enter correct BChat ID!</string>
     <string name="home_filter_all">All</string>
     <string name="home_filter_social">Social</string>
     <string name="home_filter_groups">Groups</string>
@@ -1391,7 +1393,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="search_contact">Search Contact</string>
     <string name="block_or_delete_request">Do you want to block or just delete this user?</string>
     <string name="or_join">Or Join</string>
-    <string name="let_s_bchat">Let\'s BChat</string>
+    <string name="let_s_bchat">Let\'s Bchat</string>
     <string name="your_chat_id">Your Chat ID</string>
     <string name="enter_chat_id">Enter Chat ID or BNS Name</string>
     <string name="restore_account">Restore Account</string>

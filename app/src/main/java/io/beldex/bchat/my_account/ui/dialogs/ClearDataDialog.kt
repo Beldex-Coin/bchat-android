@@ -272,7 +272,7 @@ fun ClearDataDialog(
                 ) {
                     Button(
                         onClick = onDismissRequest,
-                        shape = RoundedCornerShape(12.dp),
+                        shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.appColors.onboardingSecondaryButtonBackground
                         ),
@@ -295,7 +295,7 @@ fun ClearDataDialog(
 
                     Button(
                         onClick = buttonClick,
-                        shape = RoundedCornerShape(12.dp),
+                        shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.appColors.negativeRedButtonBorder,
                             contentColor = MaterialTheme.appColors.onboardingSecondaryButtonText

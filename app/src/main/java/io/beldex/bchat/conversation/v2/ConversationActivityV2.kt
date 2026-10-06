@@ -165,6 +165,8 @@ import io.beldex.bchat.mms.Slide
 import io.beldex.bchat.mms.SlideDeck
 import io.beldex.bchat.mms.VideoSlide
 import io.beldex.bchat.permissions.Permissions
+import io.beldex.bchat.compose_utils.ui.ComposeMessageDialogFragment
+import androidx.core.text.HtmlCompat
 import io.beldex.bchat.reactions.ReactionsDialogFragment
 import io.beldex.bchat.reactions.any.ReactWithAnyEmojiDialogFragment
 import io.beldex.bchat.service.WebRtcCallService
@@ -597,23 +599,16 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
     private fun call(context : Context, thread : Recipient) {
 
         if (!TextSecurePreferences.isCallNotificationsEnabled(context)) {
-            val factory=LayoutInflater.from(this)
-            val callPermissionDialogView : View=
-                factory.inflate(R.layout.call_permissions_dialog_box, null)
-            val callPermissionDialog=AlertDialog.Builder(this).create()
-            callPermissionDialog.setView(callPermissionDialogView)
-            callPermissionDialogView.findViewById<Button>(R.id.settingsDialogBoxButton)
-                .setOnClickListener {
-                    val intent=io.beldex.bchat.my_account.ui.MyAccountActivity.intentForRoute(this, io.beldex.bchat.my_account.ui.MyAccountScreens.PrivacySettingsScreen.route)
-                    startActivity(intent)
-                    callPermissionDialog.dismiss()
+            ComposeMessageDialogFragment.show(
+                supportFragmentManager,
+                title = getString(R.string.call_permission_required_title),
+                message = HtmlCompat.fromHtml(getString(R.string.call_permission_required_description), HtmlCompat.FROM_HTML_MODE_LEGACY).toString(),
+                positiveText = getString(R.string.activity_settings_title),
+                negativeText = getString(R.string.cancel),
+                onPositive = {
+                    startActivity(io.beldex.bchat.my_account.ui.MyAccountActivity.intentForRoute(this, io.beldex.bchat.my_account.ui.MyAccountScreens.PrivacySettingsScreen.route))
                 }
-            callPermissionDialogView.findViewById<Button>(R.id.cancelDialogBoxButton)
-                .setOnClickListener {
-                    callPermissionDialog.dismiss()
-                }
-            callPermissionDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-            callPermissionDialog.show()
+            )
             return
         }
 
@@ -3220,34 +3215,19 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
 
             recipient.isOpenGroupRecipient -> {
                 val messageCount = messages.size
-
-                AlertDialog.Builder(this, R.style.BChatAlertDialog)
-                    .setTitle(
-                        resources.getQuantityString(
-                            R.plurals.ConversationFragment_delete_selected_messages,
-                            messageCount,
-                            messageCount
-                        )
-                    )
-                    .setMessage(
-                        resources.getQuantityString(
-                            R.plurals.ConversationFragment_this_will_permanently_delete_all_n_selected_messages,
-                            messageCount,
-                            messageCount
-                        )
-                    )
-                    .setCancelable(true)
-                    .setPositiveButton(R.string.delete) { _, _ ->
-                        messages.forEach {
-                            viewModel.deleteForEveryone(it)
-                        }
+                ComposeMessageDialogFragment.show(
+                    supportFragmentManager,
+                    title = resources.getQuantityString(R.plurals.ConversationFragment_delete_selected_messages, messageCount, messageCount),
+                    message = resources.getQuantityString(R.plurals.ConversationFragment_this_will_permanently_delete_all_n_selected_messages, messageCount, messageCount),
+                    positiveText = getString(R.string.delete),
+                    negativeText = getString(android.R.string.cancel),
+                    destructive = true,
+                    onPositive = {
+                        messages.forEach { viewModel.deleteForEveryone(it) }
                         endActionMode()
-                    }
-                    .setNegativeButton(android.R.string.cancel) { dialog, _ ->
-                        dialog.dismiss()
-                        endActionMode()
-                    }
-                    .show()
+                    },
+                    onNegative = { endActionMode() }
+                )
             }
 
             allSentByCurrentUser && allHaveServerHash -> {
@@ -3308,40 +3288,35 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
     }
 
     override fun banUser(messages: Set<MessageRecord>) {
-
-        AlertDialog.Builder(this, R.style.BChatAlertDialog_ForBan)
-            .setTitle(R.string.ConversationFragment_ban_selected_user)
-            .setMessage(
-                R.string.ban_message
-            )
-            .setCancelable(true)
-            .setPositiveButton(R.string.ban) { _, _ ->
-                messages.firstOrNull()?.let {
-                    viewModel.banUser(it.individualRecipient)
-                }
+        ComposeMessageDialogFragment.show(
+            supportFragmentManager,
+            title = getString(R.string.ConversationFragment_ban_selected_user),
+            message = getString(R.string.ban_message),
+            positiveText = getString(R.string.ban),
+            negativeText = getString(android.R.string.cancel),
+            destructive = true,
+            onPositive = {
+                messages.firstOrNull()?.let { viewModel.banUser(it.individualRecipient) }
                 endActionMode()
-            }
-            .setNegativeButton(android.R.string.cancel) { dialog, _ ->
-                dialog.dismiss()
-                endActionMode()
-            }
-            .show()
+            },
+            onNegative = { endActionMode() }
+        )
     }
 
     override fun banAndDeleteAll(messages : Set<MessageRecord>) {
-        val builder=AlertDialog.Builder(this, R.style.BChatAlertDialog_ForBan)
-        builder.setTitle(R.string.ConversationFragment_ban_selected_user)
-        builder.setMessage("This will ban the selected user from this room and delete all messages sent by them. It won't ban them from other rooms or delete the messages they sent there.")
-        builder.setCancelable(true)
-        builder.setPositiveButton(R.string.ban) { _, _ ->
-            viewModel.banAndDeleteAll(messages.first().individualRecipient)
-            endActionMode()
-        }
-        builder.setNegativeButton(android.R.string.cancel) { dialog, _ ->
-            dialog.dismiss()
-            endActionMode()
-        }
-        builder.show()
+        ComposeMessageDialogFragment.show(
+            supportFragmentManager,
+            title = getString(R.string.ConversationFragment_ban_selected_user),
+            message = "This will ban the selected user from this room and delete all messages sent by them. It won't ban them from other rooms or delete the messages they sent there.",
+            positiveText = getString(R.string.ban),
+            negativeText = getString(android.R.string.cancel),
+            destructive = true,
+            onPositive = {
+                viewModel.banAndDeleteAll(messages.first().individualRecipient)
+                endActionMode()
+            },
+            onNegative = { endActionMode() }
+        )
     }
 
     override fun copyMessages(messages: Set<MessageRecord>) {

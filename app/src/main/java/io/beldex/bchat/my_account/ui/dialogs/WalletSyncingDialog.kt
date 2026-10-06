@@ -86,7 +86,7 @@ fun WalletSyncingDialog(
             ) {
                 Button(
                     onClick=onDismissRequest,
-                    shape = RoundedCornerShape(12.dp),
+                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
                     colors=ButtonDefaults.buttonColors(
                             containerColor=MaterialTheme.appColors.negativeGreenButton
                     ),
@@ -108,7 +108,7 @@ fun WalletSyncingDialog(
 
                 Button(
                     onClick=exit,
-                    shape = RoundedCornerShape(12.dp),
+                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
                     colors=ButtonDefaults.buttonColors(
                             containerColor=MaterialTheme.appColors.primaryButtonColor
                     ),

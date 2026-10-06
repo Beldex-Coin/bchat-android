@@ -92,7 +92,7 @@ fun LockOptionsDialog(
                 onClick = {
                     onValueChanged(valuesPickerState.selectedItem, options.indexOf(valuesPickerState.selectedItem))
                 },
-                shape = RoundedCornerShape(12.dp)
+                shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp)
             ) {
                 Text(
                     text = stringResource(id = R.string.ok),

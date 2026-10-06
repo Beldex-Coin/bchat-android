@@ -81,7 +81,7 @@ fun UnblockUserDialog(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.appColors.negativeGreenButton
                     ),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
                     border = BorderStroke(0.5.dp, MaterialTheme.appColors.negativeGreenButtonBorder),
                     modifier = Modifier
                         .weight(1f)

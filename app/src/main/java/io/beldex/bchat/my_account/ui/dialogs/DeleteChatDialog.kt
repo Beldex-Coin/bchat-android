@@ -1,6 +1,8 @@
 package io.beldex.bchat.my_account.ui.dialogs
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -68,53 +70,34 @@ fun DeleteChatConfirmationDialog(
             Spacer(modifier=Modifier.height(16.dp))
 
             Row(
-                modifier=Modifier
-                            .fillMaxWidth()
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Button(
-                    onClick=onDismissRequest,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.negativeGreenButton
+                Text(
+                    text = stringResource(id = R.string.no),
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.appColors.onboardingHeadlineColor,
+                        fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp
                     ),
-                    shape = RoundedCornerShape(12.dp),
-                    border = BorderStroke(0.5.dp, MaterialTheme.appColors.negativeGreenButtonBorder),
                     modifier = Modifier
-                        .weight(1f)
-                ) {
-                    Text(
-                        text=stringResource(id=R.string.no),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.appColors.negativeGreenButtonText,
-                            fontWeight = FontWeight(400),
-                            fontSize = 14.sp
-                        )
-                    )
-                }
+                        .clickable { onDismissRequest() }
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                )
 
-                Spacer(modifier=Modifier.width(16.dp))
-
-                Button(
-                    onClick={
-                    println("deleted button clicked called 3")
-                    onConfirmation()
-                            }
-                    ,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.negativeRedButtonBorder
+                Text(
+                    text = stringResource(id = R.string.yes),
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.appColors.negativeRedButtonBorder,
+                        fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp
                     ),
-                    shape = RoundedCornerShape(12.dp),
                     modifier = Modifier
-                        .weight(1f)
-                ) {
-                    Text(
-                        text=stringResource(id=R.string.yes),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight(400),
-                            fontSize = 14.sp,
-                            color = Color.White
-                        ),
-                    )
-                }
+                        .clickable { onConfirmation() }
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                )
             }
         }
     }

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
+import io.beldex.bchat.compose_utils.ui.ComposeMessageDialogFragment
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
@@ -55,22 +56,17 @@ class BlockedContactsActivity: PassphraseRequiredActionBarActivity(), View.OnCli
                 getString(R.string.Unblock_dialog__message, stringBuilder.toString())
             }
 
-           val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_Clear_All)
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton(R.string.continue_2) { d, _ ->
+            ComposeMessageDialogFragment.show(
+                supportFragmentManager,
+                title = title,
+                message = message,
+                positiveText = getString(R.string.continue_2),
+                negativeText = getString(R.string.cancel),
+                onPositive = {
                     TextSecurePreferences.setUnBlockStatus(this, true)
                     viewModel.unblock(contactsToUnblock)
-                    d.dismiss()
                 }
-                .setNegativeButton(R.string.cancel) { d, _ ->
-                    d.dismiss()
-                }
-                .show()
-            //New Line
-            val textView: TextView? = dialog.findViewById(android.R.id.message)
-            val face: Typeface = Typeface.createFromAsset(this.assets,"fonts/open_sans_medium.ttf")
-            textView!!.typeface = face
+            )
         }
     }
 
@@ -123,21 +119,16 @@ class BlockedContactsActivity: PassphraseRequiredActionBarActivity(), View.OnCli
     }
 
     fun unblockSingleUser(recipient: Recipient, context: BlockedContactsActivity){
-        val dialog = AlertDialog.Builder(context,R.style.BChatAlertDialog_Clear_All)
-            .setTitle(getString(R.string.Unblock_dialog__title_single, recipient.name))
-            .setMessage(getString(R.string.Unblock_dialog__message,recipient.name))
-            .setPositiveButton(R.string.continue_2) { d, _ ->
+        ComposeMessageDialogFragment.show(
+            context.supportFragmentManager,
+            title = context.getString(R.string.Unblock_dialog__title_single, recipient.name),
+            message = context.getString(R.string.Unblock_dialog__message, recipient.name),
+            positiveText = context.getString(R.string.continue_2),
+            negativeText = context.getString(R.string.cancel),
+            onPositive = {
                 TextSecurePreferences.setUnBlockStatus(context, true)
                 viewModel.unblockSingleUser(recipient)
-                d.dismiss()
             }
-            .setNegativeButton(R.string.cancel) { d, _ ->
-                d.dismiss()
-            }
-            .show()
-        //New Line
-        val textView: TextView? = dialog.findViewById(android.R.id.message)
-        val face: Typeface = Typeface.createFromAsset(context.assets,"fonts/open_sans_medium.ttf")
-        textView!!.typeface = face
+        )
     }
 }

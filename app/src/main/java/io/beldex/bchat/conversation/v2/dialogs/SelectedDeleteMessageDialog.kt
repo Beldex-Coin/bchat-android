@@ -77,7 +77,7 @@ fun SelectedDeleteMessage(
             ) {
                 Button(
                     onClick = onCancel,
-                    shape = RoundedCornerShape(12.dp),
+                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
                     border = BorderStroke(
                         0.5.dp,
                         MaterialTheme.appColors.negativeGreenButtonBorder
@@ -102,7 +102,7 @@ fun SelectedDeleteMessage(
 
                 Button(
                     onClick = onAccept,
-                    shape = RoundedCornerShape(12.dp),
+                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.appColors.negativeRedButtonBorder
                     ),

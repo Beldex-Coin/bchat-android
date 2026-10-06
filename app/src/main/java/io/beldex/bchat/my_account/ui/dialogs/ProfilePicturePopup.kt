@@ -187,7 +187,7 @@ fun ProfilePicturePopup(
                     shape = RoundedCornerShape(12.dp),
                 ) {
                     Text(
-                        text = stringResource(id = R.string.activity_settings_upload),
+                        text = stringResource(id = R.string.save),
                         style = MaterialTheme.typography.bodySmall.copy(
                             color = MaterialTheme.appColors.onboardingPrimaryButtonText,
                             fontFamily = OpenSans,

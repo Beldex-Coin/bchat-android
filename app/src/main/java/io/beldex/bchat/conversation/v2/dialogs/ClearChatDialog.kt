@@ -91,7 +91,7 @@ fun ClearChatDialog(
             ) {
                 Button(
                     onClick = onCancel,
-                    shape = RoundedCornerShape(12.dp),
+                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.appColors.negativeGreenButton
                     ),
@@ -113,7 +113,7 @@ fun ClearChatDialog(
 
                 Button(
                     onClick = onAccept,
-                    shape = RoundedCornerShape(12.dp),
+                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.appColors.negativeRedButtonBorder
                     ),

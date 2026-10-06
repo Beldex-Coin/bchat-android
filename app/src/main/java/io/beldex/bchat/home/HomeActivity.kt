@@ -72,6 +72,7 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.compose_utils.ui.ComposeMessageDialogFragment
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.CheckOnline
@@ -1003,21 +1004,17 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     }
 
     fun hideMessageRequests() {
-        val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog_New)
-            .setTitle(R.string.hide_message_request)
-            .setMessage(R.string.message_requests_hidden_info)
-            .setPositiveButton(R.string.yes) { _, _ ->
-               textSecurePreferences.setHasHiddenMessageRequests()
+        ComposeMessageDialogFragment.show(
+            supportFragmentManager,
+            title = getString(R.string.hide_message_request),
+            message = getString(R.string.message_requests_hidden_info),
+            positiveText = getString(R.string.yes),
+            negativeText = getString(R.string.no),
+            onPositive = {
+                textSecurePreferences.setHasHiddenMessageRequests()
                 homeViewModel.tryUpdateChannel()
             }
-            .setNegativeButton(R.string.no) { _, _ ->
-                // Do nothing
-            }.show()
-
-        //SteveJosephh21
-        val message: TextView = dialog.findViewById(android.R.id.message)
-        val messageFace: Typeface= Typeface.createFromAsset(this.assets, "fonts/open_sans_medium.ttf")
-        message.typeface = messageFace
+        )
     }
 
     private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

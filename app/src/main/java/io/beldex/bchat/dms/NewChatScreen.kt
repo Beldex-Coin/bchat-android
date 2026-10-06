@@ -559,7 +559,6 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                     message = context.resources.getString(R.string.fragment_enter_public_key_error_message)
                     Log.d("Beldex","BNS exception $it")
                 }
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -590,7 +589,7 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                     value = bChatId,
                     placeholder = {
                         Text(
-                            text = stringResource(R.string.enter_chat_id),
+                            text = stringResource(R.string.enter_the_bchat_id),
                             fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                             color = MaterialTheme.appColors.homeSearchBarHint,
                             fontSize = 14.sp
@@ -623,6 +622,16 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                         ),
                         cursorColor = MaterialTheme.appColors.textSelectionColor,
                     )
+                )
+            }
+
+            if (bchatIdErrorStatus) {
+                Text(
+                    text = stringResource(R.string.enter_correct_bchat_id),
+                    fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                    color = MaterialTheme.appColors.negativeRedButtonBorder,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(start = 14.dp, end = 14.dp, top = 6.dp)
                 )
             }
 

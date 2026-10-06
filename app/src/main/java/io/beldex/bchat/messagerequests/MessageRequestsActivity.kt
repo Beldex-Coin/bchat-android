@@ -12,6 +12,7 @@ import androidx.loader.content.Loader
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import io.beldex.bchat.compose_utils.ui.ComposeMessageDialogFragment
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.database.ThreadDatabase
@@ -80,33 +81,36 @@ class MessageRequestsActivity : PassphraseRequiredActionBarActivity(), Conversat
     }
 
     override fun onBlockConversationClick(thread: ThreadRecord) {
-        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_Clear_All)
-        dialog.setTitle(R.string.RecipientPreferenceActivity_block_this_contact_question)
-            .setMessage(R.string.message_requests_block_message)
-            .setPositiveButton(R.string.RecipientPreferenceActivity_block) { _, _ ->
+        ComposeMessageDialogFragment.show(
+            supportFragmentManager,
+            title = getString(R.string.RecipientPreferenceActivity_block_this_contact_question),
+            message = getString(R.string.message_requests_block_message),
+            positiveText = getString(R.string.RecipientPreferenceActivity_block),
+            negativeText = getString(R.string.no),
+            destructive = true,
+            onPositive = {
                 viewModel.blockMessageRequest(thread)
                 LoaderManager.getInstance(this).restartLoader(0, null, this)
             }
-            .setNegativeButton(R.string.no) { _, _ ->
-                // Do nothing
-            }
-        dialog.create().show()
+        )
     }
 
     override fun onDeleteConversationClick(thread: ThreadRecord) {
-        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_Clear_All)
-        dialog.setMessage(resources.getString(R.string.message_requests_delete_message))
-        dialog.setPositiveButton(R.string.yes) { _, _ ->
-            viewModel.deleteMessageRequest(thread)
-            LoaderManager.getInstance(this).restartLoader(0, null, this)
-            lifecycleScope.launch(Dispatchers.IO) {
-                ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(this@MessageRequestsActivity)
+        ComposeMessageDialogFragment.show(
+            supportFragmentManager,
+            title = getString(R.string.delete),
+            message = getString(R.string.message_requests_delete_message),
+            positiveText = getString(R.string.yes),
+            negativeText = getString(R.string.no),
+            destructive = true,
+            onPositive = {
+                viewModel.deleteMessageRequest(thread)
+                LoaderManager.getInstance(this).restartLoader(0, null, this)
+                lifecycleScope.launch(Dispatchers.IO) {
+                    ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(this@MessageRequestsActivity)
+                }
             }
-        }
-        dialog.setNegativeButton(R.string.no) { _, _ ->
-            // Do nothing
-        }
-        dialog.create().show()
+        )
     }
 
     private fun updateEmptyState() {
@@ -118,31 +122,37 @@ class MessageRequestsActivity : PassphraseRequiredActionBarActivity(), Conversat
     }
 
     private fun deleteAllAndBlock() {
-        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_Clear_All)
-           dialog.setMessage(resources.getString(R.string.message_requests_clear_all_message))
-           dialog.setPositiveButton(R.string.clear) { _, _ ->
-            viewModel.clearAllMessageRequests()
-            LoaderManager.getInstance(this).restartLoader(0, null, this)
-            lifecycleScope.launch(Dispatchers.IO) {
-                ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(this@MessageRequestsActivity)
+        ComposeMessageDialogFragment.show(
+            supportFragmentManager,
+            title = getString(R.string.clear),
+            message = getString(R.string.message_requests_clear_all_message),
+            positiveText = getString(R.string.clear),
+            negativeText = getString(R.string.cancel),
+            destructive = true,
+            onPositive = {
+                viewModel.clearAllMessageRequests()
+                LoaderManager.getInstance(this).restartLoader(0, null, this)
+                lifecycleScope.launch(Dispatchers.IO) {
+                    ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(this@MessageRequestsActivity)
+                }
             }
-        }
-        dialog.setNegativeButton(R.string.cancel) { _, _ ->
-            // Do nothing
-        }.create().show()
+        )
     }
 
     private fun acceptAllMessageRequest() {
-        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog)
-           .setMessage(resources.getString(R.string.message_requests_clear_all_message))
-           .setPositiveButton(R.string.accept) { _, _ ->
-           viewModel.acceptAllMessageRequests()
-           LoaderManager.getInstance(this).restartLoader(0, null, this)
-           lifecycleScope.launch(Dispatchers.IO) {
-                ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(this@MessageRequestsActivity)
+        ComposeMessageDialogFragment.show(
+            supportFragmentManager,
+            title = getString(R.string.accept),
+            message = getString(R.string.message_requests_clear_all_message),
+            positiveText = getString(R.string.accept),
+            negativeText = getString(R.string.cancel),
+            onPositive = {
+                viewModel.acceptAllMessageRequests()
+                LoaderManager.getInstance(this).restartLoader(0, null, this)
+                lifecycleScope.launch(Dispatchers.IO) {
+                    ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(this@MessageRequestsActivity)
+                }
             }
-        }.setNegativeButton(R.string.cancel) { _, _ ->
-            // Do nothing
-        }.create().show()
+        )
     }
 }

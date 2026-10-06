@@ -197,46 +197,18 @@ class ConversationAdapter(
                 )
                 if (message.isCallLog && message.isFirstMissedCall) {
                     viewHolder.view.setOnClickListener {
-                        val factory = LayoutInflater.from(context)
-                        val callMissedDialogView: View = factory.inflate(R.layout.call_missed_dialog_box, null)
-                        val callMissedDialog = AlertDialog.Builder(context).create()
-                        callMissedDialog.window?.setBackgroundDrawableResource(R.color.transparent)
-                        callMissedDialog.setView(callMissedDialogView)
-                        val color = ResourcesCompat.getColor(context.resources, R.color.text_old_green, context.theme)
-                        val description = callMissedDialogView.findViewById<TextView>(R.id.messageTextView)
-                        description.text = context.getString(R.string.call_missed_description,
-                            if(message.recipient.name != null) "\"${message.recipient.name}\"" else "\"${message.recipient.address}\"")
-
-                        val recipientName = SpannableStringBuilder(description.text)
-                        val startIndex =message.recipient.name?.let { it1 ->
-                            description.text.indexOf(
-                                it1
-                            )
-                        }
-                        var endIndex = 0
-                        if(startIndex != -1){
-                            if (startIndex != null) {
-                                endIndex = startIndex + message.recipient.name!!.length
+                        val recipientName = message.recipient.name?.let { "\"$it\"" } ?: "\"${message.recipient.address}\""
+                        val fragmentManager = (context as? androidx.fragment.app.FragmentActivity)?.supportFragmentManager ?: return@setOnClickListener
+                        io.beldex.bchat.compose_utils.ui.ComposeMessageDialogFragment.show(
+                            fragmentManager,
+                            title = context.getString(R.string.call_missed_title),
+                            message = context.getString(R.string.call_missed_description, recipientName),
+                            positiveText = context.getString(R.string.ok),
+                            negativeText = context.getString(R.string.cancel),
+                            onPositive = {
+                                context.startActivity(io.beldex.bchat.my_account.ui.MyAccountActivity.intentForRoute(context, io.beldex.bchat.my_account.ui.MyAccountScreens.PrivacySettingsScreen.route))
                             }
-                        }
-                        if (startIndex != null) {
-                            recipientName.setSpan(ForegroundColorSpan(color), startIndex -1, endIndex +1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        }
-                        if (startIndex != null) {
-                            recipientName.setSpan(StyleSpan(Typeface.BOLD), startIndex -1, endIndex +1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        }
-                        description.text = recipientName
-                        val okButton =  callMissedDialogView.findViewById<Button>(R.id.missedCallOkButton)
-                        okButton.setOnClickListener {
-                            val intent = io.beldex.bchat.my_account.ui.MyAccountActivity.intentForRoute(context, io.beldex.bchat.my_account.ui.MyAccountScreens.PrivacySettingsScreen.route)
-                            context.startActivity(intent)
-                            callMissedDialog.dismiss()
-                        }
-                        val cancelButton = callMissedDialogView.findViewById<Button>(R.id.missedCallCancelButton)
-                        cancelButton.setOnClickListener {
-                            callMissedDialog.dismiss()
-                        }
-                        callMissedDialog.show()
+                        )
                     }
                 } else {
                     viewHolder.view.setOnClickListener(null)

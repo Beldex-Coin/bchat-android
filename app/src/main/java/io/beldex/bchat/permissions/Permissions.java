@@ -176,34 +176,26 @@ public class Permissions {
     @SuppressLint("MissingInflatedId")
     @SuppressWarnings("ConstantConditions")
     private void executePermissionsRequestWithRationale(PermissionsRequest request) {
-      LayoutInflater factory = LayoutInflater.from(permissionObject.getContext());
-      View callPermissionDialogView =
-              factory.inflate(R.layout.permission_rationale_dialog, null);
-      AlertDialog callPermissionDialog = new AlertDialog.Builder(permissionObject.getContext()).create();
-      callPermissionDialog.setView(callPermissionDialogView);
-      callPermissionDialogView.<ImageView>findViewById(R.id.permissionImageview).setImageDrawable(ContextCompat.getDrawable(permissionObject.getContext(),rationalDialogHeader[0]));
-      if(!Objects.equals(rationaleDialogMessage, permissionObject.getContext().getString(R.string.ConversationActivity_to_send_photos_and_video_allow_signal_access_to_storage))) {
-        Log.d("Message-String",""+rationaleDialogMessage+","+permissionObject.getContext().getString(R.string.ConversationActivity_to_send_photos_and_video_allow_signal_access_to_storage));
-        callPermissionDialogView.<ImageView>findViewById(R.id.permissionImageview).setColorFilter(ContextCompat.getColor(permissionObject.getContext(), R.color.download_icon));
+      Context context = permissionObject.getContext();
+      if (!(context instanceof androidx.fragment.app.FragmentActivity)) {
+        executeNoPermissionsRequest(request);
+        return;
       }
-      callPermissionDialogView.<TextView>findViewById(R.id.permissionDescriptionTextview).setText(rationaleDialogMessage);
-      callPermissionDialogView.<TextView>findViewById(R.id.permissionTitleTextview).setText(rationalDialogTitle);
-      callPermissionDialogView.<Button>findViewById(R.id.allowDialogBoxButton).setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-          executePermissionsRequest(request);
-          callPermissionDialog.dismiss();
-        }
-      });
-      callPermissionDialogView.<Button>findViewById(R.id.denyDialogBoxButton).setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-          executeNoPermissionsRequest(request);
-          callPermissionDialog.dismiss();
-        }
-      });
-      callPermissionDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-      callPermissionDialog.show();
+      io.beldex.bchat.compose_utils.ui.ComposeMessageDialogFragment.show(
+          ((androidx.fragment.app.FragmentActivity) context).getSupportFragmentManager(),
+          rationalDialogTitle,
+          rationaleDialogMessage,
+          context.getString(R.string.Permissions_allow),
+          context.getString(R.string.Permissions_deny),
+          false,
+          () -> {
+            executePermissionsRequest(request);
+            return kotlin.Unit.INSTANCE;
+          },
+          () -> {
+            executeNoPermissionsRequest(request);
+            return kotlin.Unit.INSTANCE;
+          });
     }
 
     private void executePermissionsRequest(PermissionsRequest request) {
@@ -385,13 +377,19 @@ public class Permissions {
     public void run() {
       Context context = this.context.get();
 
-      if (context != null) {
-        new AlertDialog.Builder(context)
-            .setTitle(R.string.Permissions_permission_required)
-            .setMessage(message)
-            .setPositiveButton(R.string.Permissions_allow, (dialog, which) -> context.startActivity(getApplicationSettingsIntent(context)))
-            .setNeutralButton(R.string.Permissions_deny, null)
-            .show();
+      if (context instanceof androidx.fragment.app.FragmentActivity) {
+        io.beldex.bchat.compose_utils.ui.ComposeMessageDialogFragment.show(
+            ((androidx.fragment.app.FragmentActivity) context).getSupportFragmentManager(),
+            context.getString(R.string.Permissions_permission_required),
+            message,
+            context.getString(R.string.Permissions_allow),
+            context.getString(R.string.Permissions_deny),
+            false,
+            () -> {
+              context.startActivity(getApplicationSettingsIntent(context));
+              return kotlin.Unit.INSTANCE;
+            },
+            null);
       }
     }
   }

@@ -28,6 +28,7 @@ import com.beldex.libbchat.utilities.ThemeUtil
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.toHexString
 import com.bumptech.glide.Glide
+import io.beldex.bchat.compose_utils.ui.ComposeMessageDialogFragment
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.WindowInsetsUtil
@@ -347,18 +348,20 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
     }
 
     private fun remove(member: String) {
-        val title = R.string.remove_this_contact
-        val message = R.string.remove_message
-        AlertDialog.Builder(this,R.style.BChatAlertDialog)
-            .setTitle(title)
-            .setMessage(message)
-            .setNegativeButton(android.R.string.no, null)
-            .setPositiveButton(R.string.RecipientPreferenceActivity_block) { _, _ ->
+        ComposeMessageDialogFragment.show(
+            supportFragmentManager,
+            title = getString(R.string.remove_this_contact),
+            message = getString(R.string.remove_message),
+            positiveText = getString(R.string.RecipientPreferenceActivity_block),
+            negativeText = getString(android.R.string.no),
+            destructive = true,
+            onPositive = {
                 if (zombies.contains(member)) zombies.remove(member)
                 else members.remove(member)
                 updateMembers()
                 showApplyChangesButton(true)
-            }.show()
+            }
+        )
     }
 
     private fun onAddMembersClick() {

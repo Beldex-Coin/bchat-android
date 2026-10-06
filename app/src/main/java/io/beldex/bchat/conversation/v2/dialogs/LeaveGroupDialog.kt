@@ -76,7 +76,7 @@ fun LeaveGroupDialog(title : String,
             ) {
                 Button(
                     onClick=onCancel,
-                    shape=RoundedCornerShape(12.dp),
+                    shape=io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
                     colors=ButtonDefaults.buttonColors(
                             containerColor=MaterialTheme.appColors.negativeGreenButton
                     ),
@@ -101,7 +101,7 @@ fun LeaveGroupDialog(title : String,
 
                 Button(
                         onClick=onLeave,
-                        shape=RoundedCornerShape(12.dp),
+                        shape=io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
                         colors=ButtonDefaults.buttonColors(
                                 containerColor=MaterialTheme.appColors.negativeRedButtonBorder
                         ),

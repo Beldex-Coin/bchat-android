@@ -165,7 +165,6 @@ import io.beldex.bchat.mms.Slide
 import io.beldex.bchat.mms.SlideDeck
 import io.beldex.bchat.mms.VideoSlide
 import io.beldex.bchat.permissions.Permissions
-import io.beldex.bchat.preferences.PrivacySettingsActivity
 import io.beldex.bchat.reactions.ReactionsDialogFragment
 import io.beldex.bchat.reactions.any.ReactWithAnyEmojiDialogFragment
 import io.beldex.bchat.service.WebRtcCallService
@@ -605,7 +604,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
             callPermissionDialog.setView(callPermissionDialogView)
             callPermissionDialogView.findViewById<Button>(R.id.settingsDialogBoxButton)
                 .setOnClickListener {
-                    val intent=Intent(this, PrivacySettingsActivity::class.java)
+                    val intent=io.beldex.bchat.my_account.ui.MyAccountActivity.intentForRoute(this, io.beldex.bchat.my_account.ui.MyAccountScreens.PrivacySettingsScreen.route)
                     startActivity(intent)
                     callPermissionDialog.dismiss()
                 }

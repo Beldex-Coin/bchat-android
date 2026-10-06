@@ -69,6 +69,7 @@
     <color name="rounded_indicator_border">#ffffff</color>
     <color name="home_row_background">#F8F8F8</color>
     <color name="home_row_title">#333333</color>
+    <color name="home_row_border">#D9D9D9</color>
     <color name="home_row_snippet">#6E6E7C</color>
     <color name="home_row_timestamp">#8A8A9D</color>
     <color name="home_row_timestamp_unread">#078720</color>

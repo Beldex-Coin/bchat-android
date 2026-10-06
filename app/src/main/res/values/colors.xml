@@ -100,7 +100,7 @@
     <color name="text_white">#FFFFFF</color>
     <color name="sign_in_black">#3F3E4A</color>
     <color name="card_color">#1C1C26</color>
-    <color name="page_background">#11111A</color>
+    <color name="page_background">#0B0B0B</color>
     <color name="welcome_bg">#EDEDED</color>
     <color name="play_button">#000000</color>
     <color name="drawer_card_color">#16161f</color>
@@ -127,6 +127,7 @@
     <color name="rounded_indicator_border">#19191B</color>
     <color name="home_row_background">#111111</color>
     <color name="home_row_title">#EBEBEB</color>
+    <color name="home_row_border">#333333</color>
     <color name="home_row_snippet">#8D8D8D</color>
     <color name="home_row_timestamp">#737373</color>
     <color name="home_row_timestamp_unread">#00BC33</color>
@@ -236,7 +237,7 @@
     <color name="overflow_menu_background">#2C2C3B</color>
     <color name="received_message_background">#2C2C3B</color>
     <color name="received_message_text_color">#EBEBEB</color>
-    <color name="syncing_option_card_background">#111119</color>
+    <color name="syncing_option_card_background">#111111</color>
     <color name="syncing_option_card_button_background">#282836</color>
     <color name="wallet_info_background">#111119</color>
     <color name="wallet_info_highlights">#00C304</color>
@@ -271,7 +272,7 @@
     <color name="pin_rounded_background">#42425F</color>
     <color name="pin_icon_home">#FFFFFF</color>
     <color name="switch_track">#363645</color>
-    <color name="dialog_box_background_border">#4B4B64</color>
+    <color name="dialog_box_background_border">#444444</color>
     <color name="cancel_button">#1C1C26</color>
     <color name="cancel_button_text">#ACACAC</color>
     <color name="download_icon">#EBEBEB</color>

@@ -9,12 +9,13 @@
     android:orientation="vertical">
 
     <TextView
-        android:fontFamily="@font/open_sans_regular"
+        android:fontFamily="@font/roboto_mono"
         android:id="@+id/dateBreakTextView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/large_spacing"
         android:gravity="center"
-        android:textColor="@color/conversation_day_color"
+        android:background="@drawable/date_chip_background"
+        android:textColor="#8D8D8D"
         android:textSize="@dimen/very_small_font_size"
         android:textStyle="bold"
         tools:text="@tools:sample/date/hhmmss" />

@@ -100,6 +100,9 @@ import com.google.android.gms.common.util.CollectionUtils.listOf
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.BaseComponentActivity
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.notchedCornerShape
+import io.beldex.bchat.compose_utils.OpenSans
+import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
@@ -271,7 +274,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
         val lifecycleOwner=LocalLifecycleOwner.current
         val isLandscape=isLandscapeState.value
         val profilePictureSize=if (isLandscape) 112.dp else 194.dp
-        val profilePictureInnerSize=if (isLandscape) 92.dp else 152.dp
+        val profilePictureInnerSize=if (isLandscape) 92.dp else 132.dp
         val profileSize=132.dp
 
         var wantsToAnswer by remember {
@@ -836,8 +839,9 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                             text = if (isShowIncomingStatus) isStatusInComingText else isStatusText,
                                             style = BChatTypography.titleMedium.copy(
                                                 color = MaterialTheme.appColors.textColor,
-                                                fontSize = 22.sp,
-                                                fontWeight = FontWeight(700)
+                                                fontFamily = RobotoMono,
+                                                fontSize = 18.sp,
+                                                fontWeight = FontWeight(400)
                                             )
                                         )
                                     }
@@ -847,8 +851,9 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                         text = if (showLocalUserDetailsInFullScreen()) localUserName else isPersonNameText,
                                         style = BChatTypography.titleMedium.copy(
                                             color = MaterialTheme.appColors.textColor,
+                                            fontFamily = OpenSans,
                                             fontSize = 24.sp,
-                                            fontWeight = FontWeight(700)
+                                            fontWeight = FontWeight(600)
                                         ),
                                         textAlign = TextAlign.Center,
                                         maxLines = 1,
@@ -870,10 +875,17 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                         Text(
                                             text = stringResource(id = R.string.end_to_end_encrypted),
                                             style = BChatTypography.titleMedium.copy(
-                                                color = MaterialTheme.appColors.textColor,
+                                                color = MaterialTheme.appColors.onboardingHeadlineColor,
+                                                fontFamily = RobotoMono,
                                                 fontSize = 12.sp,
                                                 fontWeight = FontWeight(400)
-                                            )
+                                            ),
+                                            modifier = Modifier
+                                                .background(
+                                                    MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
+                                                    RoundedCornerShape(12.dp)
+                                                )
+                                                .padding(horizontal = 10.dp, vertical = 4.dp)
                                         )
                                     }
                                 }
@@ -1003,8 +1015,9 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                         text = isStatusText,
                                         style = BChatTypography.titleMedium.copy(
                                             color = MaterialTheme.appColors.textColor,
+                                            fontFamily = OpenSans,
                                             fontSize = 24.sp,
-                                            fontWeight = FontWeight(700)
+                                            fontWeight = FontWeight(600)
                                         ),
                                         textAlign = TextAlign.Center
                                     )
@@ -1522,12 +1535,9 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                             if (isShowDeclineOption) {
                                 Box(
                                     modifier = Modifier
-                                        .height(65.dp)
-                                        .width(65.dp)
-                                        .background(
-                                            MaterialTheme.appColors.errorMessageColor,
-                                            shape=CircleShape
-                                        )
+                                        .height(68.dp)
+                                        .width(68.dp)
+                                        .callControlSurface(MaterialTheme.appColors.callEndBackground, MaterialTheme.appColors.negativeRedButtonBorder)
                                         .clickable {
                                             val declineIntent=
                                                 WebRtcCallService.denyCallIntent(context)
@@ -1580,12 +1590,9 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                         if (isShowSpeakerOption) {
                                             Box(
                                                 modifier = Modifier
-                                                    .height(42.dp)
-                                                    .width(42.dp)
-                                                    .background(
-                                                        MaterialTheme.appColors.qrCodeBackground,
-                                                        shape=CircleShape
-                                                    )
+                                                    .height(52.dp)
+                                                    .width(52.dp)
+                                                    .callControlSurface(MaterialTheme.appColors.userDetailsCancelBackground, MaterialTheme.appColors.dividerColor)
                                                     .clickable {
                                                         if (isBluetoothIsConnected) {
                                                             expanded=!expanded
@@ -1640,12 +1647,9 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                         if (isShowMuteOption) {
                                             Box(
                                                 modifier = Modifier
-                                                    .height(42.dp)
-                                                    .width(42.dp)
-                                                    .background(
-                                                        MaterialTheme.appColors.qrCodeBackground,
-                                                        shape=CircleShape
-                                                    )
+                                                    .height(52.dp)
+                                                    .width(52.dp)
+                                                    .callControlSurface(MaterialTheme.appColors.userDetailsCancelBackground, MaterialTheme.appColors.dividerColor)
                                                     .clickable(isMuteOptionClickable) { enableMuteOption() },
                                                 contentAlignment = Alignment.Center
                                             ) {
@@ -1675,12 +1679,9 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                     if (!isLandscape && isShowEndCallOption) {
                                         Box(
                                             modifier = Modifier
-                                                .height(65.dp)
-                                                .width(65.dp)
-                                                .background(
-                                                    MaterialTheme.appColors.errorMessageColor,
-                                                    shape = CircleShape
-                                                )
+                                                .height(52.dp)
+                                                .width(52.dp)
+                                                .callControlSurface(MaterialTheme.appColors.callEndBackground, MaterialTheme.appColors.negativeRedButtonBorder)
                                                 .clickable {
                                                     context.startService(
                                                         WebRtcCallService.hangupIntent(
@@ -1706,12 +1707,9 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                         if (isShowSwitchCameraOption) {
                                             Box(
                                                 modifier = Modifier
-                                                    .height(42.dp)
-                                                    .width(42.dp)
-                                                    .background(
-                                                        MaterialTheme.appColors.qrCodeBackground,
-                                                        shape=CircleShape
-                                                    )
+                                                    .height(52.dp)
+                                                    .width(52.dp)
+                                                    .callControlSurface(MaterialTheme.appColors.userDetailsCancelBackground, MaterialTheme.appColors.dividerColor)
                                                     .clickable(enabled=isSwitchCameraFlipEnabled) {
                                                         switchCamera()
                                                     }, contentAlignment = Alignment.Center
@@ -1730,12 +1728,9 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                         if (isShowVideoOption) {
                                             Box(
                                                 modifier = Modifier
-                                                    .height(42.dp)
-                                                    .width(42.dp)
-                                                    .background(
-                                                        MaterialTheme.appColors.qrCodeBackground,
-                                                        shape = CircleShape
-                                                    )
+                                                    .height(52.dp)
+                                                    .width(52.dp)
+                                                    .callControlSurface(MaterialTheme.appColors.userDetailsCancelBackground, MaterialTheme.appColors.dividerColor)
                                                     .clickable {
                                                         if (isShowCallDurationStatus) {
                                                             enableCamera()
@@ -1772,12 +1767,9 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                         if (isShowSpeakerOption) {
                                             Box(
                                                 modifier = Modifier
-                                                    .height(42.dp)
-                                                    .width(42.dp)
-                                                    .background(
-                                                        MaterialTheme.appColors.qrCodeBackground,
-                                                        shape=CircleShape
-                                                    )
+                                                    .height(52.dp)
+                                                    .width(52.dp)
+                                                    .callControlSurface(MaterialTheme.appColors.userDetailsCancelBackground, MaterialTheme.appColors.dividerColor)
                                                     .clickable {
                                                         if (isBluetoothIsConnected) {
                                                             expanded=!expanded
@@ -1847,12 +1839,9 @@ class WebRTCComposeActivity : BaseComponentActivity() {
 
                                             Box(
                                                 modifier = Modifier
-                                                    .height(42.dp)
-                                                    .width(42.dp)
-                                                    .background(
-                                                        MaterialTheme.appColors.qrCodeBackground,
-                                                        shape=CircleShape
-                                                    )
+                                                    .height(52.dp)
+                                                    .width(52.dp)
+                                                    .callControlSurface(MaterialTheme.appColors.userDetailsCancelBackground, MaterialTheme.appColors.dividerColor)
                                                     .clickable(isMuteOptionClickable) { enableMuteOption() },
                                                 contentAlignment = Alignment.Center
 
@@ -1887,12 +1876,9 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                         if (isShowSwitchCameraOption) {
                                             Box(
                                                 modifier = Modifier
-                                                    .height(42.dp)
-                                                    .width(42.dp)
-                                                    .background(
-                                                        MaterialTheme.appColors.qrCodeBackground,
-                                                        shape=CircleShape
-                                                    )
+                                                    .height(52.dp)
+                                                    .width(52.dp)
+                                                    .callControlSurface(MaterialTheme.appColors.userDetailsCancelBackground, MaterialTheme.appColors.dividerColor)
                                                     .clickable(enabled=isSwitchCameraFlipEnabled) {
                                                         switchCamera()
                                                     }, contentAlignment = Alignment.Center
@@ -1916,12 +1902,9 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                         if (isShowVideoOption) {
                                             Box(
                                                 modifier = Modifier
-                                                    .height(42.dp)
-                                                    .width(42.dp)
-                                                    .background(
-                                                        MaterialTheme.appColors.qrCodeBackground,
-                                                        shape = CircleShape
-                                                    )
+                                                    .height(52.dp)
+                                                    .width(52.dp)
+                                                    .callControlSurface(MaterialTheme.appColors.userDetailsCancelBackground, MaterialTheme.appColors.dividerColor)
                                                     .clickable {
                                                         if (isShowCallDurationStatus) {
                                                             enableCamera()
@@ -1957,13 +1940,10 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                             if (isShowEndCallOption) {
                                 Box(
                                     modifier = Modifier
-                                        .height(65.dp)
-                                        .width(65.dp)
-                                        .offset(y = (-33).dp)
-                                        .background(
-                                            MaterialTheme.appColors.errorMessageColor,
-                                            shape = CircleShape
-                                        )
+                                        .height(52.dp)
+                                        .width(52.dp)
+                                        .offset(y = (-26).dp)
+                                        .callControlSurface(MaterialTheme.appColors.callEndBackground, MaterialTheme.appColors.negativeRedButtonBorder)
                                         .clickable {
                                             context.startService(
                                                 WebRtcCallService.hangupIntent(
@@ -2035,3 +2015,8 @@ class WebRTCComposeActivity : BaseComponentActivity() {
         WebRtcCallScreen(wantsToAnswer.value, hexEncodedPublicKey, isInPictureInPictureMode.value)
     }
 }
+
+@Composable
+private fun Modifier.callControlSurface(fill: Color, stroke: Color): Modifier = this
+    .background(fill, notchedCornerShape(12.dp))
+    .border(1.dp, stroke, notchedCornerShape(12.dp))

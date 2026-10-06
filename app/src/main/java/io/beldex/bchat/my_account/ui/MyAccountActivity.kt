@@ -350,6 +350,9 @@ class MyAccountActivity : BaseComponentActivity() {
 
     companion object {
         const val extraStartDestination = "io.beldex.EXTRA_START_DESTINATION"
+
+        fun intentForRoute(context: Context, route: String): Intent =
+            Intent(context, MyAccountActivity::class.java).putExtra(extraStartDestination, route)
     }
 }
 

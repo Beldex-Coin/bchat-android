@@ -11,6 +11,7 @@ import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapp
 
 open class BaseComponentActivity : ComponentActivity() {
     protected override fun onResume() {
+        io.beldex.bchat.util.ScreenSecurity.apply(this)
         super.onResume()
         DynamicLanguageActivityHelper.recreateIfNotInCorrectLanguage(
             this,

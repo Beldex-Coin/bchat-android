@@ -72,7 +72,7 @@ fun HomeHeader(
                 color = MaterialTheme.appColors.homeTitleColor,
                 fontFamily = OpenSans,
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 18.sp,
+                fontSize = 20.sp,
                 modifier = Modifier.padding(start = 12.dp)
             )
 

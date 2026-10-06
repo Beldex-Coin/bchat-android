@@ -26,7 +26,6 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.notifications.NotificationChannels
-import io.beldex.bchat.preferences.PrivacySettingsActivity
 import io.beldex.bchat.service.WebRtcCallService
 import io.beldex.bchat.webrtc.WebRTCComposeActivity
 import io.beldex.bchat.R
@@ -62,7 +61,7 @@ class CallNotificationBuilder {
         fun getFirstCallNotification(context: Context): Notification {
             val language = TextSecurePreferences.getAppSelectedLanguage(context)
             val localizedContext = DynamicLanguageContextWrapper.updateContext(context, language)
-            val contentIntent = Intent(context, PrivacySettingsActivity::class.java)
+            val contentIntent = io.beldex.bchat.my_account.ui.MyAccountActivity.intentForRoute(context, io.beldex.bchat.my_account.ui.MyAccountScreens.PrivacySettingsScreen.route)
 
             val pendingIntent = PendingIntent.getActivity(context, 0, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 

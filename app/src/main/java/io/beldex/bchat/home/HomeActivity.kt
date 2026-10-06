@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.Column
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -170,6 +171,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     // Compose state for the Revamp_2026 header + conversation list (replaces the old
     // RecyclerView/HomeAdapter + XML toolbar header).
     private var conversationsState by mutableStateOf<List<ThreadRecord>>(emptyList())
+    private var homeFilterState by mutableStateOf(HomeFilter.All)
     private var typingThreadIdsState by mutableStateOf<Set<Long>>(emptySet())
     private var showConnectivityWarning by mutableStateOf(false)
     private var profileDisplayNameState by mutableStateOf("")
@@ -390,18 +392,32 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         }
         binding.conversationList.setContent {
             BChatTheme {
-                ConversationListView(
-                    conversations = conversationsState,
-                    typingThreadIds = typingThreadIdsState,
-                    glide = glide,
-                    isSecretGroupActive = { thread -> isSecretGroupIsActive(thread.recipient) },
-                    onClick = { thread -> onConversationClick(thread.threadId) },
-                    onAction = { thread, action -> handleRowMenuAction(thread, action) },
-                    onSwipeDelete = { thread ->
-                        val position = conversationsState.indexOf(thread)
-                        deleteConversation(thread, position)
+                val visibleConversations = conversationsState.filter { thread ->
+                    when (homeFilterState) {
+                        HomeFilter.All -> true
+                        HomeFilter.Social -> thread.recipient.isOpenGroupRecipient
+                        HomeFilter.Groups -> thread.recipient.isGroupRecipient && !thread.recipient.isOpenGroupRecipient
                     }
-                )
+                }
+                Column {
+                    HomeFilterChips(
+                        selected = homeFilterState,
+                        onSelect = { homeFilterState = it }
+                    )
+                    ConversationListView(
+                        conversations = visibleConversations,
+                        typingThreadIds = typingThreadIdsState,
+                        glide = glide,
+                        isSecretGroupActive = { thread -> isSecretGroupIsActive(thread.recipient) },
+                        onClick = { thread -> onConversationClick(thread.threadId) },
+                        onAction = { thread, action -> handleRowMenuAction(thread, action) },
+                        onSwipeDelete = { thread ->
+                            val position = conversationsState.indexOf(thread)
+                            deleteConversation(thread, position)
+                        },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
             }
         }
 

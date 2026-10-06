@@ -691,7 +691,7 @@
     <string name="activity_path_title">Hops</string>
     <string name="activity_path_explanation">BChat masks your IP address by routing your messages through several masternodes in the Beldex decentralized network. Your connection is currently routed through the following masternodes</string>
     <string name="activity_path_guard_node_row_title">Entry Node</string>
-    <string name="activity_path_service_node_row_title">Master Node</string>
+    <string name="activity_path_service_node_row_title">Masternode</string>
     <string name="activity_path_destination_row_title">Destination</string>
     <string name="activity_path_learn_more_button_title">Learn More</string>
     <string name="activity_path_resolving_progress">Resolving…</string>
@@ -1000,6 +1000,13 @@
     <string name="answer">Answer</string>
     <string name="back_to_call">Back to call</string>
     <string name="call_in_progress">Call in progress</string>
+    <string name="tap_to_return_to_call">Tap to Return to the Call</string>
+    <string name="preferences__clear_conversation_history">Clear conversation History</string>
+    <string name="clear_all_conversation_history_confirmation">Permanently delete all messages in every conversation? Your conversations and contacts will be kept.</string>
+    <string name="message_timing">Message Timing</string>
+    <string name="home_filter_all">All</string>
+    <string name="home_filter_social">Social</string>
+    <string name="home_filter_groups">Groups</string>
     <string name="call_muted">Call Muted</string>
     <string name="video_paused">Video Paused</string>
     <string name="video_paused_and_microphone_off">Video paused and microphone off</string>

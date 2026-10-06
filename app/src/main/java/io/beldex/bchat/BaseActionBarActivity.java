@@ -28,6 +28,7 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    io.beldex.bchat.util.ScreenSecurity.apply(this);
     WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
     // Automatically apply navigation bar insets to the content view

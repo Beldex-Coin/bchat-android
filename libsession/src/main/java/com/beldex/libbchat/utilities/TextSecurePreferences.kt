@@ -314,6 +314,7 @@ interface TextSecurePreferences {
         const val UPDATE_APK_DOWNLOAD_ID = "pref_update_apk_download_id"
         const val UPDATE_APK_DIGEST = "pref_update_apk_digest"
         const val IN_THREAD_NOTIFICATION_PREF = "pref_key_inthread_notifications"
+        const val SCREEN_SECURITY_PREF = "pref_screen_security"
         const val MESSAGE_BODY_TEXT_SIZE_PREF = "pref_message_body_text_size"
         const val LOCAL_REGISTRATION_ID_PREF = "pref_local_registration_id"
         const val REPEAT_ALERTS_PREF = "pref_repeat_alerts"
@@ -869,6 +870,16 @@ interface TextSecurePreferences {
 
         fun setHasSeenWelcomeScreen(context: Context, value: Boolean) {
             setBooleanPreference(context, SEEN_WELCOME_SCREEN_PREF, value)
+        }
+
+        @JvmStatic
+        fun isScreenSecurityEnabled(context: Context): Boolean {
+            return getBooleanPreference(context, SCREEN_SECURITY_PREF, true)
+        }
+
+        @JvmStatic
+        fun setScreenSecurityEnabled(context: Context, enabled: Boolean) {
+            setBooleanPreference(context, SCREEN_SECURITY_PREF, enabled)
         }
 
         @JvmStatic

@@ -99,7 +99,7 @@ fun ChatSettingsScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = stringResource(R.string.preferences_chats__message_trimming),
+            text = stringResource(R.string.message_timing),
             style = MaterialTheme.typography.titleMedium.copy(
                 color = MaterialTheme.appColors.editTextColor,
                 fontFamily = OpenSans,

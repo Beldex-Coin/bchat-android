@@ -50,7 +50,6 @@ import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.databinding.ComposeViewHolderBinding
 import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.preferences.PrivacySettingsActivity
 import io.beldex.bchat.conversation.v2.messages.VisibleMessageViewDelegate
 import io.beldex.bchat.conversation.v2.search.SearchViewModel
 import io.beldex.bchat.util.DateUtils
@@ -229,7 +228,7 @@ class ConversationAdapter(
                         description.text = recipientName
                         val okButton =  callMissedDialogView.findViewById<Button>(R.id.missedCallOkButton)
                         okButton.setOnClickListener {
-                            val intent = Intent(context, PrivacySettingsActivity::class.java)
+                            val intent = io.beldex.bchat.my_account.ui.MyAccountActivity.intentForRoute(context, io.beldex.bchat.my_account.ui.MyAccountScreens.PrivacySettingsScreen.route)
                             context.startActivity(intent)
                             callMissedDialog.dismiss()
                         }

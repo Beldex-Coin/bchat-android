@@ -26,7 +26,7 @@
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <TextView
-            android:fontFamily="@font/open_sans_medium"
+            android:fontFamily="@font/open_sans_bold"
             android:id="@+id/conversationViewDisplayNameTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
             android:maxLines="1"
             android:ellipsize="end"
             android:textAlignment="viewStart"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textStyle="bold"
             android:textColor="@color/home_row_title"
             tools:text="I'm a very long display name. What are you going to do about it?"

@@ -26,6 +26,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import io.beldex.bchat.dependencies.DatabaseComponent
+import io.beldex.bchat.util.ScreenSecurity
+import android.app.Activity
+import androidx.compose.foundation.clickable
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
@@ -53,10 +57,14 @@ fun PrivacySettingsScreen(
     var linkPreviews by remember { mutableStateOf(TextSecurePreferences.isLinkPreviewsEnabled(context)) }
     var voiceVideoCalls by remember { mutableStateOf(TextSecurePreferences.isCallNotificationsEnabled(context)) }
     var onionRouting by remember { mutableStateOf(TextSecurePreferences.isOnionRoutingEnabled(context)) }
+    var screenSecurity by remember { mutableStateOf(TextSecurePreferences.isScreenSecurityEnabled(context)) }
     var showOnionConfirm by remember { mutableStateOf(false) }
+    var showClearHistoryConfirm by remember { mutableStateOf(false) }
 
     if (showOnionConfirm) {
-        OnionRoutingConfirmDialog(
+        ConfirmDialog(
+            title = stringResource(R.string.preferences__onion_routing),
+            message = stringResource(R.string.onion_routing_turn_off_confirmation),
             onConfirm = {
                 showOnionConfirm = false
                 onionRouting = false
@@ -68,9 +76,42 @@ fun PrivacySettingsScreen(
         )
     }
 
+    if (showClearHistoryConfirm) {
+        ConfirmDialog(
+            title = stringResource(R.string.preferences__clear_conversation_history),
+            message = stringResource(R.string.clear_all_conversation_history_confirmation),
+            onConfirm = {
+                showClearHistoryConfirm = false
+                ApplicationContext.getInstance(context).let { app ->
+                    Thread {
+                        DatabaseComponent.get(app).threadDatabase().trimAllThreads(0) { _, _ -> }
+                    }.start()
+                }
+            },
+            onCancel = {
+                showClearHistoryConfirm = false
+            }
+        )
+    }
+
     Column(modifier = modifier) {
         SectionTitle(stringResource(R.string.preferences_app_protection__app_access))
         SectionCard {
+            SettingsItem(
+                settingTitle = stringResource(R.string.preferences__screen_security),
+                settingIcon = painterResource(id = R.drawable.ic_screen_lock),
+                settingDesc = stringResource(R.string.preferences__disable_screen_security_to_allow_screen_shots),
+                isEnabled = screenSecurity,
+                onSwitchChanged = { checked ->
+                    screenSecurity = checked
+                    TextSecurePreferences.setScreenSecurityEnabled(context, checked)
+                    (context as? Activity)?.let { ScreenSecurity.apply(it) }
+                },
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             SettingsItem(
                 settingTitle = stringResource(R.string.preferences__incognito_keyboard),
                 settingIcon = painterResource(id = R.drawable.ic_incognito_keyboard),
@@ -153,6 +194,18 @@ fun PrivacySettingsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             SettingsItem(
+                settingTitle = stringResource(R.string.preferences__clear_conversation_history),
+                settingIcon = painterResource(id = R.drawable.ic_clear_data),
+                containsSwitch = false,
+                onSwitchChanged = {},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { showClearHistoryConfirm = true },
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            SettingsItem(
                 settingTitle = stringResource(R.string.preferences__onion_routing),
                 settingIcon = painterResource(id = R.drawable.ic_onion_routing),
                 isEnabled = onionRouting,
@@ -198,7 +251,9 @@ private fun SectionCard(content: @Composable () -> Unit) {
 }
 
 @Composable
-private fun OnionRoutingConfirmDialog(
+private fun ConfirmDialog(
+    title: String,
+    message: String,
     onConfirm: () -> Unit,
     onCancel: () -> Unit
 ) {
@@ -209,7 +264,7 @@ private fun OnionRoutingConfirmDialog(
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
             Text(
-                text = stringResource(R.string.preferences__onion_routing),
+                text = title,
                 style = MaterialTheme.typography.titleMedium.copy(
                     color = MaterialTheme.appColors.editTextColor,
                     fontFamily = OpenSans,
@@ -219,7 +274,7 @@ private fun OnionRoutingConfirmDialog(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = stringResource(R.string.onion_routing_turn_off_confirmation),
+                text = message,
                 style = MaterialTheme.typography.bodyMedium.copy(
                     color = MaterialTheme.appColors.editTextColor,
                     fontSize = 14.sp

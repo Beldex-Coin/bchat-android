@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.os.SystemClock
 import android.text.Spannable
 import android.text.SpannableString
@@ -71,6 +72,7 @@ import com.bumptech.glide.RequestManager
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.SearchUtil
+import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.getColorWithID
 import io.beldex.bchat.util.isSharedContact
@@ -122,7 +124,12 @@ class VisibleMessageContentView : MaterialCardView {
         isSelectionMode : Boolean = false
     ) {
         // Background
-        val background = getBackground(message.isOutgoing, isStartOfMessageCluster, isEndOfMessageCluster)
+        val isDarkUi = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
+        val background = if (isDarkUi) {
+            bubbleGradientBackground(message.isOutgoing)
+        } else {
+            getBackground(message.isOutgoing, isStartOfMessageCluster, isEndOfMessageCluster)
+        }
         val colorID = if (message.isOutgoing) {
             R.attr.message_sent_background_color
         } else {
@@ -135,7 +142,7 @@ class VisibleMessageContentView : MaterialCardView {
         )
         binding.tailSendView.colorFilter = filter
         binding.tailReceiveView.colorFilter = filter
-        background.colorFilter = filter
+        if (!isDarkUi) background.colorFilter = filter
         setBackground(background)
 
         val mediaThumbnailMessage =
@@ -722,6 +729,17 @@ class VisibleMessageContentView : MaterialCardView {
             voiceMessageView.root,
             quoteView.root
         ).none { it.isVisible }
+
+    private fun bubbleGradientBackground(isOutgoing: Boolean): Drawable {
+        val colors = if (isOutgoing) {
+            intArrayOf(0xFF0D1C0D.toInt(), 0xFF0A2E0A.toInt(), 0xFF0C190C.toInt())
+        } else {
+            intArrayOf(0xFF333333.toInt(), 0xFF444444.toInt(), 0xFF333333.toInt())
+        }
+        return GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, colors).apply {
+            cornerRadius = resources.getDimension(R.dimen.message_corner_radius)
+        }
+    }
 
     private fun getBackground(
         isOutgoing: Boolean,

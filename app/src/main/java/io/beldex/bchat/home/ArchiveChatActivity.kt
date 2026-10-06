@@ -71,7 +71,6 @@ import io.beldex.bchat.database.GroupDatabase
 import io.beldex.bchat.my_account.ui.ArchiveChatScreen
 import io.beldex.bchat.my_account.ui.ArchiveChatScreenContainer
 import io.beldex.bchat.my_account.ui.CardContainer
-import io.beldex.bchat.preferences.ChatSettingsActivity
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.push
@@ -110,7 +109,7 @@ class ArchiveChatActivity : BaseComponentActivity() {
             var showSettings by remember { mutableStateOf(false) }
 
             fun showChatSettings() {
-                val intent=Intent(this, ChatSettingsActivity::class.java)
+                val intent=io.beldex.bchat.my_account.ui.MyAccountActivity.intentForRoute(this, io.beldex.bchat.my_account.ui.MyAccountScreens.ChatSettingsScreen.route)
                 push(intent)
             }
 

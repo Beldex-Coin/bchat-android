@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/card_color"
+    android:background="@color/page_background"
     android:layout_height="match_parent">
 
     <androidx.core.widget.NestedScrollView
@@ -117,10 +117,13 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/addButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/add"
+            android:layout_height="52dp"
             android:enabled="false"
-            style="@style/PrimaryContainedPositiveDisabledButton"/>
+            android:fontFamily="@font/open_sans_regular"
+            android:text="@string/add"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Bchat.NotchedButton" />
     </LinearLayout>
 
 </RelativeLayout>

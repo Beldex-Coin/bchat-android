@@ -244,7 +244,9 @@
     <color name="icon_tint">#FFFFFF</color>
     <color name="bchat_id_text_color">@color/button_green</color>
     <color name="conversation_menu_background">#1C1C26</color>
-    <color name="overflow_menu_background">#2C2C3B</color>
+    <!-- Message long-press context menu + reaction scrubber (Figma 7546:10954), matches the
+         same dark-card convention as missed_call_dialog_background/dialog_background. -->
+    <color name="overflow_menu_background">#111119</color>
     <color name="received_message_background">#2C2C3B</color>
     <color name="received_message_text_color">#EBEBEB</color>
     <color name="syncing_option_card_background">#111111</color>

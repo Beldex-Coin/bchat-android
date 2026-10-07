@@ -125,17 +125,21 @@
 
             <LinearLayout
                 android:id="@+id/resend_container"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/large_spacing"
                 android:gravity="center">
-            <Button
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/resend_button"
-                android:layout_width="150dp"
+                android:layout_width="180dp"
                 android:layout_height="52dp"
-                android:textColor="@color/white"
-                style="@style/Widget.Bchat.Button.Dialog.Enable"
-                android:text="@string/message_recipients_list_item__resend" />
+                android:backgroundTint="@color/chat_message_request_accept_background"
+                android:fontFamily="@font/open_sans_semi_bold"
+                android:text="@string/message_recipients_list_item__resend"
+                android:textAllCaps="false"
+                android:textColor="@color/chat_message_request_accept_text"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Bchat.NotchedButton" />
 
             </LinearLayout>
 

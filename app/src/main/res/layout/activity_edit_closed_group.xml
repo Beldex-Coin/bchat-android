@@ -223,13 +223,18 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/applyChangesBtn"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
                 android:layout_marginStart="@dimen/small_spacing"
                 android:layout_marginEnd="@dimen/small_spacing"
                 android:layout_marginTop="@dimen/small_spacing"
                 android:layout_marginBottom="@dimen/small_spacing"
+                android:backgroundTint="@color/chat_message_request_accept_background"
+                android:fontFamily="@font/open_sans_regular"
                 android:text="@string/apply_changes"
-                style="@style/PrimaryContainedPositiveButton"/>
+                android:textAllCaps="false"
+                android:textColor="@color/chat_message_request_accept_text"
+                android:textSize="14sp"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Bchat.NotchedButton" />
         </LinearLayout>
 
     </LinearLayout>

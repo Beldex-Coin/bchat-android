@@ -3,8 +3,14 @@ package io.beldex.bchat.conversation.v2.messages
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.graphics.LinearGradient
 import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.PixelFormat
 import android.graphics.Rect
+import android.graphics.RectF
+import android.graphics.Shader
+import android.graphics.ColorFilter
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.SystemClock
@@ -63,6 +69,7 @@ import com.codewaves.stickyheadergrid.StickyHeaderGridLayoutManager
 import com.google.android.material.card.MaterialCardView
 import io.beldex.bchat.conversation.v2.ModalUrlBottomSheet
 import io.beldex.bchat.conversation.v2.utilities.MentionUtilities
+import io.beldex.bchat.conversation.v2.utilities.MessageBubbleUtilities
 import io.beldex.bchat.conversation.v2.utilities.ModalURLSpan
 import io.beldex.bchat.conversation.v2.utilities.TextUtilities.getIntersectedModalSpans
 import io.beldex.bchat.database.model.MessageRecord
@@ -126,7 +133,7 @@ class VisibleMessageContentView : MaterialCardView {
         // Background
         val isDarkUi = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
         val background = if (isDarkUi) {
-            bubbleGradientBackground(message.isOutgoing)
+            bubbleGradientBackground(message.isOutgoing, isStartOfMessageCluster, isEndOfMessageCluster)
         } else {
             getBackground(message.isOutgoing, isStartOfMessageCluster, isEndOfMessageCluster)
         }
@@ -730,15 +737,62 @@ class VisibleMessageContentView : MaterialCardView {
             quoteView.root
         ).none { it.isVisible }
 
-    private fun bubbleGradientBackground(isOutgoing: Boolean): Drawable {
+    /**
+     * Figma's `Bubble BG` fill (7546:10498) is a left-to-right linear gradient with uneven stop
+     * positions — 0 / 42.8% / 100% for incoming, 0 / 38.5% / 100% for outgoing — not the even 0 /
+     * 50% / 100% spacing `GradientDrawable`'s multi-color constructor always produces (the
+     * previously "approximate" gradient this replaces). `GradientDrawable` has no API for custom
+     * stop positions, so this draws the gradient with a `LinearGradient` shader instead, which
+     * also lets it honor the real per-message-cluster corner radii (start/middle/end/alone) that
+     * the flat `cornerRadius` this replaced ignored.
+     */
+    private class GradientBubbleDrawable(
+        private val colors: IntArray,
+        private val positions: FloatArray,
+        private val radii: FloatArray
+    ) : Drawable() {
+        private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+        private val path = Path()
+
+        override fun draw(canvas: android.graphics.Canvas) {
+            val b = bounds
+            if (b.width() <= 0 || b.height() <= 0) return
+            paint.shader = LinearGradient(
+                b.left.toFloat(), b.top.toFloat(), b.right.toFloat(), b.top.toFloat(),
+                colors, positions, Shader.TileMode.CLAMP
+            )
+            path.reset()
+            path.addRoundRect(RectF(b), radii, Path.Direction.CW)
+            canvas.drawPath(path, paint)
+        }
+
+        override fun setAlpha(alpha: Int) { paint.alpha = alpha }
+        override fun setColorFilter(colorFilter: ColorFilter?) { paint.colorFilter = colorFilter }
+        @Deprecated("Deprecated in Java", ReplaceWith("PixelFormat.TRANSLUCENT", "android.graphics.PixelFormat"))
+        override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
+    }
+
+    private fun bubbleGradientBackground(
+        isOutgoing: Boolean,
+        isStartOfMessageCluster: Boolean,
+        isEndOfMessageCluster: Boolean
+    ): Drawable {
         val colors = if (isOutgoing) {
             intArrayOf(0xFF0D1C0D.toInt(), 0xFF0A2E0A.toInt(), 0xFF0C190C.toInt())
         } else {
             intArrayOf(0xFF333333.toInt(), 0xFF444444.toInt(), 0xFF333333.toInt())
         }
-        return GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, colors).apply {
-            cornerRadius = resources.getDimension(R.dimen.message_corner_radius)
-        }
+        val positions = if (isOutgoing) floatArrayOf(0f, 0.385f, 1f) else floatArrayOf(0f, 0.428f, 1f)
+        val cornerRadii = MessageBubbleUtilities.calculateRadii(context, isStartOfMessageCluster, isEndOfMessageCluster, isOutgoing)
+        // calculateRadii returns [TL, TR, BR, BL]; addRoundRect wants 8 values, 2 (x,y) per corner
+        // in TL, TR, BR, BL order.
+        val radii = floatArrayOf(
+            cornerRadii[0].toFloat(), cornerRadii[0].toFloat(),
+            cornerRadii[1].toFloat(), cornerRadii[1].toFloat(),
+            cornerRadii[2].toFloat(), cornerRadii[2].toFloat(),
+            cornerRadii[3].toFloat(), cornerRadii[3].toFloat()
+        )
+        return GradientBubbleDrawable(colors, positions, radii)
     }
 
     private fun getBackground(

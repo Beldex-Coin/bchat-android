@@ -11,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 
 @Composable
@@ -28,6 +29,7 @@ fun ContentScreen(
             text = stringResource(R.string.about_content),
             style = MaterialTheme.typography.bodyMedium.copy(
                 color = MaterialTheme.appColors.editTextColor,
+                fontFamily = RobotoMono,
                 fontWeight = FontWeight(400),
                 fontSize = 14.sp
             )

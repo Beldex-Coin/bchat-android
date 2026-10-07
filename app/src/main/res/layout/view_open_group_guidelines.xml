@@ -44,16 +44,21 @@
             android:textColor="@color/text"
             android:textSize="14sp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/readButton"
-            style="@style/Widget.Bchat.Button.Dialog.Enable"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/small_button_height"
+            android:backgroundTint="@color/chat_message_request_accept_background"
+            android:fontFamily="@font/open_sans_regular"
             android:gravity="center"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:paddingHorizontal="16dp"
             android:text="@string/open_group_guidelines_read"
-            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:textColor="@color/chat_message_request_accept_text"
             android:textSize="14sp"
-            android:textStyle="normal" />
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Bchat.NotchedButton" />
 
     </LinearLayout>
 

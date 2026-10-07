@@ -92,15 +92,16 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
         selectContactsAdapter.selectionChangedListener =
             object : SelectContactsAdapter.OnSelectionChangedListener {
                 override fun onSelectionChanged(selectedCount: Int) {
-                    val enabledColor = ResourcesCompat.getColor(
+                    val enabled = selectedCount > 0
+                    val backgroundColor = ResourcesCompat.getColor(
                         resources,
-                        if (selectedCount > 0) R.color.button_green else R.color.cancel_background,
+                        if (enabled) R.color.chat_message_request_accept_background else R.color.cancel_background,
                         theme
                     )
                     binding.addButton.apply {
-                        isEnabled = selectedCount > 0
-                        backgroundTintList = ColorStateList.valueOf(enabledColor)
-                        setTextColor(ContextCompat.getColor(context, if (selectedCount > 0) R.color.white else R.color.disable_button_text_color))
+                        isEnabled = enabled
+                        backgroundTintList = ColorStateList.valueOf(backgroundColor)
+                        setTextColor(ContextCompat.getColor(context, if (enabled) R.color.chat_message_request_accept_text else R.color.disable_button_text_color))
                     }
                 }
             }

@@ -147,7 +147,7 @@ class SecretGroupInfoComposeActivity : BaseComponentActivity() {
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background)
+                        .background(MaterialTheme.appColors.backgroundColor)
                         .padding(WindowInsets.systemBars.asPaddingValues())
                 ) {
                     val context = LocalContext.current
@@ -537,7 +537,7 @@ fun GroupDetailsScreen(
                     focusedBorderColor=Color.Transparent,
                     unFocusedBorderColor=Color.Transparent,
                     selectionColors=MaterialTheme.appColors.textSelectionColor,
-                    cursorColor=colorResource(id=R.color.button_green),
+                    cursorColor=MaterialTheme.appColors.textSelectionColor,
                     shape=RoundedCornerShape(26.dp),
                     leadingIcon={
                         Icon(
@@ -811,7 +811,7 @@ fun GroupDetailsScreen(
 
                 item {
                     Divider(
-                        color=colorResource(id=R.color.contact_list_border),
+                        color=MaterialTheme.appColors.dividerColor,
                         modifier=Modifier
                             .fillMaxWidth()
                             .alpha(0.5f)

@@ -28,7 +28,9 @@ import io.beldex.bchat.util.push
 import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
+import androidx.compose.ui.res.stringResource
 import io.beldex.bchat.onboarding.ui.DisplayNameStepScreen
+import io.beldex.bchat.onboarding.ui.OnboardingLoadingOverlay
 import io.beldex.bchat.util.englishNamePattern
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -71,6 +73,10 @@ class DisplayNameActivity : BaseComponentActivity() {
                     onContinueClick = { if (displayName.isNotBlank() && !isRegistering) register() },
                     onBackClick = { finish() }
                 )
+
+                if (isRegistering) {
+                    OnboardingLoadingOverlay(message = stringResource(R.string.generate_wallet_creating))
+                }
             }
         }
 
@@ -409,7 +415,6 @@ class DisplayNameActivity : BaseComponentActivity() {
         override fun onPreExecute() {
             super.onPreExecute()
             //    displayNameActivity.acquireWakeLock()
-            displayNameActivity.showProgressDialog(R.string.generate_wallet_creating, 250)
         }
 
 
@@ -421,7 +426,7 @@ class DisplayNameActivity : BaseComponentActivity() {
             if (displayNameActivity.isDestroyed) {
                 return
             }
-            displayNameActivity.dismissProgressDialog()
+            displayNameActivity.isRegistering = false
             if (result == true) {
                 //startDetails(newWalletFile, walletPassword, GenerateReviewFragment.VIEW_TYPE_ACCEPT)
                 Log.d("Wallet","OK")

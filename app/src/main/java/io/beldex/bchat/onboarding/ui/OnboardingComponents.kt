@@ -1,11 +1,13 @@
 package io.beldex.bchat.onboarding.ui
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.border
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -15,9 +17,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.appColors
@@ -82,5 +86,42 @@ fun OnboardingPrimaryButton(
             .height(54.dp)
     ) {
         Text(text = text, fontFamily = OpenSans, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+    }
+}
+
+/**
+ * Themed replacement for the old [android.app.ProgressDialog]-based blocking spinner
+ * (`BaseComponentActivity.showProgressDialog`) shown while the onboarding wallet/account is
+ * being created, after display-name entry, on both the create- and restore-account flows. No
+ * dedicated Figma frame covers this transient state, so it follows the same spinner+message
+ * pattern already used elsewhere in the app (e.g. `ClearDataDialog`'s deleting step) rather than
+ * inventing a new look. Non-dismissible, matching the old dialog's `setCancelable(false)`.
+ */
+@Composable
+fun OnboardingLoadingOverlay(message: String) {
+    DialogContainer(
+        dismissOnBackPress = false,
+        dismissOnClickOutside = false,
+        onDismissRequest = {},
+        wrapContentWidth = true
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp)
+        ) {
+            CircularProgressIndicator(color = MaterialTheme.appColors.primaryButtonColor)
+
+            Text(
+                text = message,
+                color = MaterialTheme.appColors.onboardingInputText,
+                fontFamily = OpenSans,
+                fontWeight = FontWeight.Normal,
+                fontSize = 14.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 16.dp)
+            )
+        }
     }
 }

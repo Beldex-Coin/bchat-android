@@ -17,7 +17,7 @@
             android:id="@+id/conversationActivity_toolbar"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="?colorPrimary">
+            android:background="@color/chat_header_background">
 
             <ImageButton
                 android:id="@+id/back_to_home_Btn"
@@ -41,8 +41,9 @@
                     android:layout_gravity="center_vertical" />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="12dp"
                     android:orientation="vertical">
@@ -54,7 +55,7 @@
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:text="User"
-                        android:textColor="@color/text"
+                        android:textColor="@color/chat_header_title"
                         android:textSize="@dimen/medium_font_size"
                         android:textStyle="bold" />
 
@@ -73,7 +74,7 @@
                             android:alpha="0.6"
                             android:src="@drawable/ic_outline_notifications_off_24"
                             android:visibility="gone"
-                            app:tint="@color/text"
+                            app:tint="@color/chat_header_title"
                             tools:visibility="visible" />
 
                         <TextView
@@ -85,16 +86,27 @@
                             android:fontFamily="@font/open_sans_regular"
                             android:maxLines="1"
                             android:text="Muted"
-                            android:textColor="@color/text"
+                            android:textColor="@color/chat_header_title"
                             android:textSize="@dimen/very_small_font_size" />
 
                     </LinearLayout>
 
                 </LinearLayout>
 
+                <androidx.compose.ui.platform.ComposeView
+                    android:id="@+id/conversationHeaderActions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical" />
+
             </LinearLayout>
 
         </androidx.appcompat.widget.Toolbar>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/chat_header_border" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/search_bar"
@@ -646,18 +658,37 @@
                             tools:ignore="NotSibling"
                             tools:visibility="visible">
 
-                            <TextView
-                                android:id="@+id/messageRequestTitle"
-                                android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:layout_marginTop="@dimen/small_spacing"
-                                android:fontFamily="@font/open_sans_bold"
-                                android:paddingHorizontal="@dimen/massive_spacing"
-                                android:text="@string/activity_message_requests_title"
-                                android:textColor="@color/text"
-                                android:textSize="16sp"
-                                android:visibility="visible" />
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/messageRequestTitle"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_marginTop="@dimen/small_spacing"
+                                    android:fontFamily="@font/open_sans_bold"
+                                    android:paddingHorizontal="@dimen/massive_spacing"
+                                    android:text="@string/activity_message_requests_title"
+                                    android:textColor="@color/chat_header_title"
+                                    android:textSize="16sp"
+                                    android:visibility="visible" />
+
+                                <ImageView
+                                    android:id="@+id/messageRequestCloseButton"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_marginEnd="@dimen/small_spacing"
+                                    android:background="?selectableItemBackgroundBorderless"
+                                    android:contentDescription="@string/close"
+                                    android:padding="2dp"
+                                    android:src="@drawable/ic_close"
+                                    app:tint="@color/chat_header_title" />
+
+                            </LinearLayout>
 
                             <TextView
                                 android:id="@+id/messageRequestBlock"
@@ -674,14 +705,13 @@
 
                             <TextView
                                 android:id="@+id/sendAcceptsTextView"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="@dimen/medium_spacing"
-                                android:alpha="0.6"
                                 android:fontFamily="@font/open_sans_regular"
-                                android:gravity="center_horizontal"
+                                android:gravity="start"
                                 android:text="@string/message_requests_send_notice"
-                                android:textColor="@color/text"
+                                android:textColor="@color/chat_header_title"
                                 android:textSize="@dimen/small_font_size" />
 
                             <LinearLayout
@@ -689,28 +719,34 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal">
 
-                                <Button
+                                <com.google.android.material.button.MaterialButton
                                     android:id="@+id/declineMessageRequestButton"
-                                    style="@style/Widget.Bchat.Button.Dialog.Cancel"
                                     android:layout_width="0dp"
                                     android:layout_height="52dp"
                                     android:layout_weight="1"
+                                    android:backgroundTint="@android:color/transparent"
                                     android:fontFamily="@font/open_sans_regular"
                                     android:text="@string/decline"
-                                    android:textColor="@color/negative_green_button_text"
-                                    android:textSize="14sp" />
+                                    android:textAllCaps="false"
+                                    android:textColor="@color/chat_message_request_decline_text"
+                                    android:textSize="14sp"
+                                    app:strokeColor="@color/message_request_view_border"
+                                    app:strokeWidth="1dp"
+                                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Bchat.NotchedButton" />
 
-                                <Button
+                                <com.google.android.material.button.MaterialButton
                                     android:id="@+id/acceptMessageRequestButton"
-                                    style="@style/Widget.Bchat.Button.Dialog.Enable"
                                     android:layout_width="0dp"
                                     android:layout_height="52dp"
                                     android:layout_marginStart="@dimen/small_spacing"
                                     android:layout_weight="1"
+                                    android:backgroundTint="@color/chat_message_request_accept_background"
                                     android:fontFamily="@font/open_sans_regular"
                                     android:text="@string/accept"
-                                    android:textColor="@color/white"
-                                    android:textSize="14sp" />
+                                    android:textAllCaps="false"
+                                    android:textColor="@color/chat_message_request_accept_text"
+                                    android:textSize="14sp"
+                                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Bchat.NotchedButton" />
 
                             </LinearLayout>
 

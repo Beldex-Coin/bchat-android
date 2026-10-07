@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.AsyncTask
@@ -13,10 +11,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
@@ -38,131 +33,98 @@ import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.groups.EditClosedGroupActivity
 import io.beldex.bchat.groups.EditClosedGroupActivity.Companion.groupIDKey
 import io.beldex.bchat.util.BitmapUtil
-import io.beldex.bchat.util.getColorWithID
 import io.beldex.bchat.R
 import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import java.io.IOException
 
+/**
+ * One entry in the themed Compose overflow dropdown (see `ConversationOverflowMenu.kt`). Mirrors
+ * a single clickable row of the old system-rendered options menu this replaces.
+ */
+data class ConversationMenuEntry(val id: Int, val label: String)
+
 object ConversationMenuHelper {
 
-    fun onPrepareOptionsMenu(menu: Menu, inflater: MenuInflater, thread: Recipient, threadId: Long, context: Context, activityContext: ConversationActivityV2, onOptionsItemSelected: (MenuItem) -> Unit) {
-        // Prepare
-        menu.clear()
+    /**
+     * Compose-dropdown equivalent of [onPrepareOptionsMenu] below — same conditions, same item
+     * ids, but returns a plain list instead of inflating XML menu resources into a system [Menu].
+     * Keep these two functions' conditions in sync; [onPrepareOptionsMenu] is still used to size
+     * the now-empty system options menu (so no auto overflow icon renders) but no longer the
+     * source of truth for what's shown to the user.
+     */
+    fun buildMenuEntries(context: Context, activityContext: ConversationActivityV2, thread: Recipient): List<ConversationMenuEntry> {
+        val entries = mutableListOf<ConversationMenuEntry>()
         val isOpenGroup = thread.isOpenGroupRecipient
         val isBlockedContact = thread.isBlocked
-        // Base menu (options that should always be present)
-        inflater.inflate(R.menu.menu_conversation, menu)
-        // Expiring messages
-        //New Line v32
-        if (!isOpenGroup && (thread.hasApprovedMe() || thread.isClosedGroupRecipient) && !isBlockedContact){
+
+        entries += ConversationMenuEntry(R.id.menu_view_all_media, context.getString(R.string.MediaRepository_all_media))
+        entries += ConversationMenuEntry(R.id.menu_search, context.getString(R.string.SearchToolbar_search))
+        entries += ConversationMenuEntry(R.id.menu_add_shortcut, context.getString(R.string.conversation__menu_add_shortcut))
+
+        if (!isOpenGroup && (thread.hasApprovedMe() || thread.isClosedGroupRecipient) && !isBlockedContact) {
             if (thread.expireMessages > 0) {
-                inflater.inflate(R.menu.menu_conversation_expiration_on, menu)
-                val item = menu.findItem(R.id.menu_expiring_messages)
-                val actionView = item.actionView
-                val iconView = actionView?.findViewById<ImageView>(R.id.menu_badge_icon)
-                val badgeView = actionView?.findViewById<TextView>(R.id.expiration_badge)
-                @ColorInt val color = activityContext.resources.getColorWithID(R.color.text, context.theme)
-                iconView?.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY)
-                badgeView?.text = ExpirationUtil.getExpirationAbbreviatedDisplayValue(context, thread.expireMessages)
-                actionView?.setOnClickListener { onOptionsItemSelected(item) }
+                val badge = ExpirationUtil.getExpirationAbbreviatedDisplayValue(context, thread.expireMessages)
+                entries += ConversationMenuEntry(R.id.menu_expiring_messages, "${context.getString(R.string.menu_conversation_expiring_on__messages_expiring)} ($badge)")
             } else {
-                if (thread.isGroupRecipient && activityContext.isSecretGroupIsActive()) {
-                    inflater.inflate(R.menu.menu_conversation_expiration_off, menu)
-                }
-                if(!thread.isGroupRecipient){
-                    inflater.inflate(R.menu.menu_conversation_expiration_off, menu)
+                val showOff = (thread.isGroupRecipient && activityContext.isSecretGroupIsActive()) || !thread.isGroupRecipient
+                if (showOff) {
+                    entries += ConversationMenuEntry(R.id.menu_expiring_messages_off, context.getString(R.string.ExpirationDialog_disappearing_messages))
                 }
             }
         }
-        // One-on-one chat menu (options that should only be present for one-on-one chats)
+
         if (thread.isContactRecipient && thread.hasApprovedMe() && !thread.isLocalNumber) {
-            if (thread.isBlocked) {
-                inflater.inflate(R.menu.menu_conversation_unblock, menu)
+            entries += if (thread.isBlocked) {
+                ConversationMenuEntry(R.id.menu_unblock, context.getString(R.string.ConversationActivity_unblock))
             } else {
-                inflater.inflate(R.menu.menu_conversation_block, menu)
+                ConversationMenuEntry(R.id.menu_block, context.getString(R.string.RecipientPreferenceActivity_block))
             }
         }
-        // Secret group menu (options that should only be present in secret groups)
-        if (thread.isClosedGroupRecipient) {
-            if(activityContext.isSecretGroupIsActive()){
-                inflater.inflate(R.menu.menu_conversation_closed_group, menu)
-            }
-           /* val groupPublicKey = doubleDecodeGroupID(thread.address.toString()).toHexString()
-            val isClosedGroup =
-                DatabaseComponent.get(context).beldexAPIDatabase().isClosedGroup(groupPublicKey)
-            if (isClosedGroup) {
-                inflater.inflate(R.menu.menu_conversation_closed_group, menu)
-            }*/
+
+        if (thread.isClosedGroupRecipient && activityContext.isSecretGroupIsActive()) {
+            entries += ConversationMenuEntry(R.id.menu_edit_group, context.getString(R.string.conversation__menu_edit_group))
+            entries += ConversationMenuEntry(R.id.menu_leave_group, context.getString(R.string.conversation__menu_leave_group))
         }
-        // Social group menu
+
         if (isOpenGroup) {
-            inflater.inflate(R.menu.menu_conversation_open_group, menu)
+            entries += ConversationMenuEntry(R.id.menu_invite_to_open_group, context.getString(R.string.ConversationActivity_invite_to_open_group))
         }
-        // Muting
-        if(thread.hasApprovedMe() && !thread.isLocalNumber) {
-            if (thread.isMuted) {
-                inflater.inflate(R.menu.menu_conversation_muted, menu)
+
+        if (thread.hasApprovedMe() && !thread.isLocalNumber) {
+            entries += if (thread.isMuted) {
+                ConversationMenuEntry(R.id.menu_unmute_notifications, context.getString(R.string.conversation_muted__unmute))
             } else {
-                inflater.inflate(R.menu.menu_conversation_unmuted, menu)
+                ConversationMenuEntry(R.id.menu_mute_notifications, context.getString(R.string.conversation_unmuted__mute_notifications))
             }
         }
 
         if (thread.isGroupRecipient && !thread.isMuted && activityContext.isSecretGroupIsActive()) {
-            Log.d("menu-status ->","1")
-            inflater.inflate(R.menu.menu_conversation_notification_settings, menu)
+            entries += ConversationMenuEntry(R.id.menu_notification_settings, context.getString(R.string.RecipientPreferenceActivity_notification_settings))
         }
 
-        //SteveJosephh21
-        if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isLocalNumber) {
-            inflater.inflate(R.menu.menu_conversation_call, menu)
-        }
+        return entries
+    }
 
-        // Search
-//        val searchViewItem = menu.findItem(R.id.menu_search)
-//        activityContext.searchViewItem = searchViewItem
-//        val searchView = searchViewItem.actionView as SearchView
-//
-//        val queryListener = object : OnQueryTextListener {
-//            override fun onQueryTextSubmit(query: String): Boolean {
-//                return true
-//            }
-//
-//            override fun onQueryTextChange(query: String): Boolean {
-//                activityContext.onSearchQueryUpdated(query)
-//                Log.d("Beldex","Search Query text change")
-//                return true
-//            }
-//        }
-//        searchViewItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-//            override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-//                Log.d("Beldex","Search expand listener")
-//                searchView.setOnQueryTextListener(queryListener)
-//                activityContext.onSearchOpened()
-//                for (i in 0 until menu.size()) {
-//                    if (menu.getItem(i) != searchViewItem) {
-//                        menu.getItem(i).isVisible = false
-//                    }
-//                }
-//                return true
-//            }
-//
-//            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-//                searchView.setOnQueryTextListener(null)
-//                activityContext.onSearchClosed()
-//                return true
-//            }
-//        })
-
+    /**
+     * The chat screen's overflow/call icons are now rendered by a themed Compose
+     * [io.beldex.bchat.conversation.v2.menus.ConversationOverflowMenu] (see [buildMenuEntries]
+     * above), not the system options menu. This is kept as a no-op purely so the system never
+     * populates a (differently-styled) overflow icon of its own on top of it — an empty [Menu]
+     * means `Toolbar`/`ActionBar` renders no overflow button at all. The real menu-item
+     * conditions now live in [buildMenuEntries]; keep the two in sync if either changes.
+     */
+    fun onPrepareOptionsMenu(menu: Menu, inflater: MenuInflater, thread: Recipient, threadId: Long, context: Context, activityContext: ConversationActivityV2, onOptionsItemSelected: (MenuItem) -> Unit) {
+        menu.clear()
     }
 
     fun onOptionItemSelected(
             context : Context,
             activityContext : ConversationActivityV2,
-            item : MenuItem,
+            itemId : Int,
             thread : Recipient,
             childFragmentManager : FragmentManager
     ): Boolean {
-        when (item.itemId) {
+        when (itemId) {
             R.id.menu_view_all_media -> { showAllMedia(thread, activityContext) }
             R.id.menu_search -> { search(activityContext) }
             R.id.menu_add_shortcut -> { addShortcut(context, thread) }

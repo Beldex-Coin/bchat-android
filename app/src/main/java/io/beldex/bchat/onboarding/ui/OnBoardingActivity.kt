@@ -75,6 +75,7 @@ import io.beldex.bchat.BaseComponentActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.DialogContainer
+import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
@@ -424,22 +425,18 @@ fun PassWordChangedPopup(onDismiss : () -> Unit, showPinChangedPopupTitle : Stri
                 Text(text=showPinChangedPopupTitle,
                         textAlign=TextAlign.Center,
                         style=MaterialTheme.typography.titleMedium.copy(
+                                fontFamily=OpenSans,
                                 fontSize=16.sp,
                                 fontWeight=FontWeight(800),
                                 color=MaterialTheme.appColors.primaryButtonColor),
                         modifier=Modifier.padding(vertical=16.dp)
                         )
 
-                Button(onClick={ onDismiss() }, shape = RoundedCornerShape(12.dp), colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.primaryButtonColor), modifier=Modifier
-                        .height(50.dp)
-                        .width(150.dp)
-                ) {
-                    Text(text=stringResource(id=R.string.ok), style=MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight(400),
-                        fontSize = 14.sp,
-                        color=Color.White
-                    ))
-                }
+                OnboardingPrimaryButton(
+                    text = stringResource(id = R.string.ok),
+                    enabled = true,
+                    onClick = { onDismiss() }
+                )
             }
 
         }

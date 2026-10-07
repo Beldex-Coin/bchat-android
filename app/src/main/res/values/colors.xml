@@ -9,6 +9,16 @@
     <color name="cell_background">#24242F</color>
     <color name="cell_selected">#0C0C0C</color>
     <color name="action_bar_background">#1c1c26</color>
+    <!-- Revamp_2026 chat-screen header (Figma 7546:10498), mirrors Colors.kt's dark
+         backgroundColor/titleTextColor/newChatIconBackground tokens exactly. -->
+    <color name="chat_header_background">#0B0B0B</color>
+    <color name="chat_header_title">#EBEBEB</color>
+    <color name="chat_header_border">#222222</color>
+    <!-- Revamp_2026 in-chat message-request card (Figma 7546:21487), mirrors Colors.kt's dark
+         onboardingPrimaryButton*/onboardingSecondaryButton* tokens exactly. -->
+    <color name="chat_message_request_accept_background">#EBEBEB</color>
+    <color name="chat_message_request_accept_text">#0B0B0B</color>
+    <color name="chat_message_request_decline_text">#EBEBEB</color>
     <color name="separator">#36383C</color>
     <color name="unimportant_button_background">@color/card_color</color>
     <color name="dialog_background">#101011</color>

@@ -102,6 +102,10 @@ import io.beldex.bchat.MediaOverviewActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.WindowInsetsUtil
 import io.beldex.bchat.audio.AudioRecorder
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.ComposeDialogContainer
 import io.beldex.bchat.compose_utils.DialogType
 import io.beldex.bchat.contacts.SelectContactsActivity
@@ -117,6 +121,7 @@ import io.beldex.bchat.conversation.v2.input_bar.InputBarRecordingViewDelegate
 import io.beldex.bchat.conversation.v2.input_bar.mentions.MentionCandidatesView
 import io.beldex.bchat.conversation.v2.menus.ConversationActionModeCallback
 import io.beldex.bchat.conversation.v2.menus.ConversationActionModeCallbackDelegate
+import io.beldex.bchat.conversation.v2.menus.ConversationHeaderActions
 import io.beldex.bchat.conversation.v2.menus.ConversationMenuHelper
 import io.beldex.bchat.conversation.v2.messages.ControlMessageView
 import io.beldex.bchat.conversation.v2.messages.VisibleMessageContentView
@@ -444,6 +449,41 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
         }
 
         setSupportActionBar(binding.conversationActivityToolbar)
+
+        binding.conversationHeaderActions.setContent {
+            BChatTheme {
+                val recipient by viewModel.recipient.collectAsStateWithLifecycle()
+                recipient?.let { thread ->
+                    val menuEntries = remember(thread, thread.isMuted, thread.isBlocked, thread.expireMessages) {
+                        ConversationMenuHelper.buildMenuEntries(this, this@ConversationActivityV2, thread)
+                    }
+                    val showCallIcon = !thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isLocalNumber
+                    ConversationHeaderActions(
+                        showCallIcon = showCallIcon,
+                        menuEntries = menuEntries,
+                        onCallClick = {
+                            hideAttachmentContainer()
+                            if (thread.isContactRecipient && thread.isBlocked) {
+                                unblock()
+                            } else {
+                                call(this@ConversationActivityV2, thread)
+                            }
+                        },
+                        onMenuOpen = { hideAttachmentContainer() },
+                        onMenuItemClick = { itemId ->
+                            ConversationMenuHelper.onOptionItemSelected(
+                                this@ConversationActivityV2,
+                                this@ConversationActivityV2,
+                                itemId,
+                                thread,
+                                supportFragmentManager
+                            )
+                        }
+                    )
+                }
+            }
+        }
+
         // ---------- Network monitoring ----------
         networkChangedReceiver = NetworkChangeReceiver(::networkChange)
         networkChangedReceiver?.register(this)
@@ -584,7 +624,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                     ConversationMenuHelper.onOptionItemSelected(
                         this,
                         this,
-                        item,
+                        item.itemId,
                         recipient,
                         supportFragmentManager
                     )
@@ -1553,6 +1593,10 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
         }
         binding.declineMessageRequestButton.setOnClickListener {
             declineAlertDialog()
+        }
+        binding.messageRequestCloseButton.setOnClickListener {
+            // Just dismiss the notice — unlike Decline, this doesn't block/decline the request.
+            binding.messageRequestBarCardView.isVisible = false
         }
     }
 

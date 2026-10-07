@@ -31,6 +31,7 @@ import io.beldex.bchat.model.Wallet
 import io.beldex.bchat.model.WalletManager
 import io.beldex.bchat.onboarding.AppLockActivity
 import io.beldex.bchat.onboarding.ui.DisplayNameStepScreen
+import io.beldex.bchat.onboarding.ui.OnboardingLoadingOverlay
 import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.service.KeyCachingService
 import io.beldex.bchat.util.BChatThreadPoolExecutor
@@ -89,6 +90,10 @@ class RecoveryGetSeedDetailsActivity :  BaseComponentActivity() {
                     title = stringResource(R.string.restore_from_seed),
                     headline = stringResource(R.string.display_name_screen_title_content)
                 )
+
+                if (!isRegisterEnabled) {
+                    OnboardingLoadingOverlay(message = stringResource(R.string.generate_wallet_creating))
+                }
             }
         }
 
@@ -431,7 +436,6 @@ class RecoveryGetSeedDetailsActivity :  BaseComponentActivity() {
         override fun onPreExecute() {
             super.onPreExecute()
             //recoveryGetSeedDetailsActivity.acquireWakeLock()
-            recoveryGetSeedDetailsActivity.showProgressDialog(R.string.generate_wallet_creating, 250)
         }
 
 
@@ -443,7 +447,7 @@ class RecoveryGetSeedDetailsActivity :  BaseComponentActivity() {
             if (recoveryGetSeedDetailsActivity.isDestroyed) {
                 return
             }
-            recoveryGetSeedDetailsActivity.dismissProgressDialog()
+            recoveryGetSeedDetailsActivity.isRegisterEnabled = true
             if (result == true) {
                 //startDetails(newWalletFile, walletPassword, GenerateReviewFragment.VIEW_TYPE_ACCEPT)
 

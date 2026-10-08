@@ -86,7 +86,7 @@ private fun LogItem(
     val borderStroke = if (isDarkTheme) {
         BorderStroke(
             width = 1.dp,
-            color = MaterialTheme.colorScheme.outline
+            color = MaterialTheme.appColors.dividerColor
         )
     } else {
         null

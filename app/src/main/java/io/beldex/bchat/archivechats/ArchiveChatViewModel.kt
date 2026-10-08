@@ -46,6 +46,10 @@ class ArchiveChatViewModel @Inject constructor(
                 unArchiveChat(event.thread)
             }
 
+            is ArchiveChatsEvents.TogglePin -> {
+                togglePin(event.thread)
+            }
+
             is ArchiveChatsEvents.BlockConversation -> {
                 blockContact(event.thread)
             }
@@ -86,6 +90,13 @@ class ArchiveChatViewModel @Inject constructor(
             ArchiveChatCountRepository.updateArchiveCount(
                 threadDb.archivedConversationList.count
             )
+        }
+    }
+
+    private fun togglePin(thread : ThreadRecord) {
+        viewModelScope.launch(Dispatchers.IO) {
+            threadDb.setPinned(thread.threadId, !thread.isPinned)
+            refreshContacts()
         }
     }
 

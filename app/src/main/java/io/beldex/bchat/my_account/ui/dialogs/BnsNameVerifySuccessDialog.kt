@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -22,7 +20,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -34,7 +31,9 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import io.beldex.bchat.compose_utils.DialogContainer
+import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.onboarding.ui.OnboardingPrimaryButton
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.R
@@ -75,24 +74,25 @@ fun BNSNameVerifySuccessDialog(onDismiss: () -> Unit) {
                     text= stringResource(id= R.string.bns_linked_successfully),
                     textAlign= TextAlign.Center,
                     style= MaterialTheme.typography.titleMedium.copy(
+                        fontFamily = OpenSans,
                         fontSize=16.sp,
                         fontWeight= FontWeight(800),
                         color= MaterialTheme.appColors.primaryButtonColor),
                 )
 
-                Button(onClick={
-                    scope.launch {
-                        if (isButtonEnabled) {
-                            isButtonEnabled=false
-                            onDismiss()
+                OnboardingPrimaryButton(
+                    text = stringResource(id = R.string.ok),
+                    enabled = isButtonEnabled,
+                    onClick = {
+                        scope.launch {
+                            if (isButtonEnabled) {
+                                isButtonEnabled = false
+                                onDismiss()
+                            }
                         }
-                    }
-                }, enabled = isButtonEnabled,colors= ButtonDefaults.buttonColors(containerColor= MaterialTheme.appColors.primaryButtonColor), modifier= Modifier
-                    .padding(vertical=16.dp)
-                    .height(50.dp)
-                    .width(150.dp)) {
-                    Text(text= stringResource(id= R.string.ok), style= MaterialTheme.typography.bodyMedium.copy(color= Color.White, fontWeight = FontWeight(400), fontSize = 14.sp))
-                }
+                    },
+                    modifier = Modifier.padding(vertical = 16.dp)
+                )
             }
 
         }

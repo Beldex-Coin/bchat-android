@@ -28,6 +28,8 @@ sealed interface AddressBookEvents {
 sealed interface ArchiveChatsEvents {
     data class UnArchiveChats(val thread : ThreadRecord) : ArchiveChatsEvents
 
+    data class TogglePin(val thread : ThreadRecord) : ArchiveChatsEvents
+
     data class BlockConversation(val thread : ThreadRecord) : ArchiveChatsEvents
 
     data class UnBlockConversation(val thread : ThreadRecord) : ArchiveChatsEvents

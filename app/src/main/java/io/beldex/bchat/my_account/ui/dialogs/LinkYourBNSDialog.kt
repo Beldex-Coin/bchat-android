@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.sp
 import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.notchedCornerShape
 import io.beldex.bchat.R
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalConfiguration
@@ -272,7 +273,7 @@ fun LinkYourBNSDialog(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.appColors.negativeGreenButton,
                     ),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = notchedCornerShape(14.5.dp),
                     border = BorderStroke(
                         width = 0.5.dp,
                         color = MaterialTheme.appColors.negativeGreenButtonBorder
@@ -314,7 +315,7 @@ fun LinkYourBNSDialog(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.appColors.contactCardBackground,
                     ),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = notchedCornerShape(14.5.dp),
                     border = BorderStroke(
                         width = 1.dp,
                         color = if (verifyBNSName(bnsName)) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.contactCardBackground
@@ -354,15 +355,16 @@ fun LinkYourBNSDialog(
                 },
                 modifier = Modifier
                     .fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
+                shape = notchedCornerShape(14.5.dp),
                 enabled = isVerified,
+                containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
                 disabledContainerColor = MaterialTheme.appColors.contactCardBackground,
             ) {
                 Text(
                     text = stringResource(R.string.link),
                     style = BChatTypography.titleMedium.copy(
                         color = if (isVerified) {
-                            Color.White
+                            MaterialTheme.appColors.onboardingPrimaryButtonText
                         } else {
                             MaterialTheme.appColors.linkBnsDisabledButtonContent
                         },

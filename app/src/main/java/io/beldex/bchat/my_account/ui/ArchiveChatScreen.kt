@@ -339,6 +339,26 @@ fun ArchiveChatScreen(
                                 )
                             }
                         }
+                        Row(
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(id = if (thread.isPinned) R.drawable.ic_unpin else R.drawable.ic_pin_menu),
+                                contentDescription = "",
+                                tint = MaterialTheme.appColors.iconTint,
+                                modifier = Modifier.size(14.dp)
+                            )
+                            TextButton(onClick = {
+                                showMenu = false
+                                archiveChatViewModel.onEvent(ArchiveChatsEvents.TogglePin(thread))
+                            }) {
+                                Text(
+                                    stringResource(id = if (thread.isPinned) R.string.conversation_unpin else R.string.conversation_pin),
+                                    fontSize = 12.sp
+                                )
+                            }
+                        }
                         if (thread.unreadCount > 0) {
                             Row(
                                 horizontalArrangement = Arrangement.Start,
@@ -355,6 +375,53 @@ fun ArchiveChatScreen(
                                 }) {
                                     Text(
                                         stringResource(id = R.string.MessageNotifier_mark_all_as_read),
+                                        fontSize = 12.sp
+                                    )
+                                }
+                            }
+                        }
+                        if (!thread.recipient.isLocalNumber) {
+                            Row(
+                                horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = if (thread.recipient.isMuted) R.drawable.ic_unmute_notification_menu else R.drawable.ic_mute_notification_menu),
+                                    contentDescription = "",
+                                    tint = MaterialTheme.appColors.iconTint
+                                )
+                                TextButton(onClick = {
+                                    showMenu = false
+                                    showMuteNotification = true
+                                }) {
+                                    Text(
+                                        stringResource(
+                                            id = if (thread.recipient.isMuted) R.string.conversation_muted__unmute
+                                            else R.string.conversation_unmuted__mute_notifications
+                                        ),
+                                        fontSize = 12.sp
+                                    )
+                                }
+                            }
+                        }
+                        val isSecretGroupActive = thread.recipient.isClosedGroupRecipient &&
+                            (groupDatabase.getGroup(thread.recipient.address.toString()).orNull()?.isActive == true)
+                        if (thread.recipient.isGroupRecipient && !thread.recipient.isMuted && isSecretGroupActive) {
+                            Row(
+                                horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_notification_settings_menu),
+                                    contentDescription = "",
+                                    tint = MaterialTheme.appColors.iconTint
+                                )
+                                TextButton(onClick = {
+                                    showMenu = false
+                                    showNotificationSettings = true
+                                }) {
+                                    Text(
+                                        stringResource(id = R.string.RecipientPreferenceActivity_notification_settings),
                                         fontSize = 12.sp
                                     )
                                 }

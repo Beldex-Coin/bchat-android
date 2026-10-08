@@ -112,14 +112,17 @@ object PushRegistryV1 {
         }
     }
     private fun sendOnionRequest(request: Request): Promise<OnionResponse, Exception> =
-        if (OnionRequestAPI.isServerOnionRoutingEnabled) {
-            OnionRequestAPI.sendOnionRequest(
-                request,
-                server.url,
-                server.publicKey,
-                Version.V2
-            )
-        } else {
-            OnionRequestAPI.sendDirectRequest(request)
-        }
+        // Like PushRegistryV2, every push-server call is forced onto the 3-hop onion path for ALL
+        // hop-count configurations. Below 3 hops (No Hops / 1 Hop) isServerOnionRoutingEnabled is
+        // false, which previously routed these calls direct (sendDirectRequest) - and the direct
+        // path throws on the legacy server's HTTP 404 (HTTP.execute only accepts 200), which made
+        // register() fail and blocked tokenManager.register() entirely. Channeling v1 over the
+        // 3-hop onion lets its code-tolerance logic work unreliably-free in every configuration.
+        OnionRequestAPI.sendOnionRequest(
+            request,
+            server.url,
+            server.publicKey,
+            Version.V2,
+            forcedPathSize = 3
+        )
 }

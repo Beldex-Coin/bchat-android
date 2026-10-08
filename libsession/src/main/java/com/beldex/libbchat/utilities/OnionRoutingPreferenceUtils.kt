@@ -17,13 +17,24 @@ object OnionRoutingPreferenceUtils {
     /** SharedPreferences key of the selected hop count. */
     const val KEY_ONION_ROUTING_PATH_COUNT = "pref_onion_routing_path_count"
 
+    /** SharedPreferences key of the one-time forced-3-hop migration flag. */
+    const val KEY_ONION_ROUTING_FORCED_THREE_HOP_MIGRATION = "pref_onion_routing_forced_three_hop_migration"
+
+    const val KEY_ONION_ROUTING_APPLIED_PATH_SIZE = "pref_onion_routing_applied_path_size"
+
+    /** The hop count every installation is expected to run on: three hops. */
+    const val FORCED_HOP_COUNT = 3
+
     /**
-     * Default hop count: a single hop. Applies both to fresh installs and to existing users on
-     * upgrade. The previous release had no hop option (onion routing was hardcoded to three
-     * hops), so after updating, users who never touched settings get the new one-hop default
-     * (and at 1 hop, server traffic goes direct - see OnionRequestAPI.isServerOnionRoutingEnabled).
+     * Default hop count: three hops. Applies both to fresh installs and to any existing user who
+     * has never picked a value. Three hops is the original, hardened behaviour of this app (the
+     * release before the hop selector existed hardcoded three hops), so users who don't touch the
+     * setting get exactly the routing the app was built around. Everything derived from this
+     * follows the same default: path building ([com.beldex.libbchat.mnode.OnionRequestAPI.pathSize]),
+     * the hops screen, and the selection dialog. The user can still switch to 0 or 1 at any time
+     * from the hop selector, and that explicit choice is persisted and never overridden here.
      */
-    private const val DEFAULT_PATH_COUNT = 1
+    private const val DEFAULT_PATH_COUNT = FORCED_HOP_COUNT
 
     @JvmStatic
     fun getPathCount(context: Context): Int {
@@ -46,6 +57,19 @@ object OnionRoutingPreferenceUtils {
         PreferenceManager.getDefaultSharedPreferences(context)
             .edit()
             .putInt(KEY_ONION_ROUTING_PATH_COUNT, count)
+            .apply()
+    }
+
+    @JvmStatic
+    fun migrateToForcedThreeHopIfNeeded(context: Context) {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        if (sharedPreferences.getBoolean(KEY_ONION_ROUTING_FORCED_THREE_HOP_MIGRATION, false)) return
+        if (getPathCount(context) != FORCED_HOP_COUNT) {
+            setPathCount(context, FORCED_HOP_COUNT)
+            TextSecurePreferences.setOnionRoutingEnabled(context, true)
+        }
+        sharedPreferences.edit()
+            .putBoolean(KEY_ONION_ROUTING_FORCED_THREE_HOP_MIGRATION, true)
             .apply()
     }
 }

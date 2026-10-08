@@ -37,7 +37,7 @@ import io.beldex.bchat.R
 @Composable
 fun HopsScreen(
     nodes: List<PathNodeModel>,
-    hopCount: Int = 1,
+    hopCount: Int = 3,
     isDirect: Boolean = hopCount == 0
 ) {
     val explanation = when (hopCount) {

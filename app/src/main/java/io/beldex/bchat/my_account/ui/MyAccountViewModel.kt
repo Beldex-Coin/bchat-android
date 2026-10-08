@@ -90,8 +90,8 @@ class MyAccountViewModel @Inject constructor(
             _pathState.value = emptyList()
             return
         }
-        if (OnionRequestAPI.paths.isNotEmpty()) {
-            val path = OnionRequestAPI.paths.firstOrNull() ?: return
+        if (OnionRequestAPI.selectedHopPaths.isNotEmpty()) {
+            val path = OnionRequestAPI.selectedHopPaths.firstOrNull() ?: return
             _pathState.value = path.mapIndexed { _, mNode ->
                 val isGuardNode = (OnionRequestAPI.guardMnodes.contains(mNode))
                 PathNodeModel(

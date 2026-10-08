@@ -221,48 +221,30 @@ object OpenGroupAPIV2 {
                 requestBuilder.header("Room", request.room)
                 //-Log.d("Beldex","Social group api url builder ${request.room}")
             }
-            if (request.useOnionRouting) {
-                val publicKey = MessagingModuleConfiguration.shared.storage.getOpenGroupPublicKey(request.server)
-                    ?: return Promise.ofFail(Error.NoPublicKey)
-                return OnionRequestAPI.sendOnionRequest(requestBuilder.build(), request.server, publicKey, Version.V3, forcedPathSize = 3).fail { e ->
-                    // A 401 means that we didn't provide a (valid) auth token for a route that required one. We use this as an
-                    // indication that the token we're using has expired. Note that a 403 has a different meaning; it means that
-                    // we provided a valid token, but it doesn't have a high enough permission level for the route in question.
-                    /*if (e is OnionRequestAPI.HTTPRequestFailedAtDestinationException && e.statusCode == 401) {
-                        val storage = MessagingModuleConfiguration.shared.storage
-                        if (request.room != null) {
-                            storage.removeAuthToken(request.room, request.server)
-                        }
-                    }*/
-                    when (e) {
-                        // No need for the stack trace for HTTP errors
-                        is HTTP.HTTPRequestFailedException -> {
-                            Log.e("OpenGroupAPIV2", "Failed onion request: ${e.message}")
-                            if(e.statusCode == 401) {
-                                val storage = MessagingModuleConfiguration.shared.storage
-                                if (request.room != null) {
-                                    storage.removeAuthToken(request.room, request.server)
-                                }
+            val publicKey = MessagingModuleConfiguration.shared.storage.getOpenGroupPublicKey(request.server)
+                ?: return Promise.ofFail(Error.NoPublicKey)
+            return OnionRequestAPI.sendOnionRequest(requestBuilder.build(), request.server, publicKey, Version.V3, forcedPathSize = 3).fail { e ->
+                // A 401 means that we didn't provide a (valid) auth token for a route that required one. We use this as an
+                // indication that the token we're using has expired. Note that a 403 has a different meaning; it means that
+                // we provided a valid token, but it doesn't have a high enough permission level for the route in question.
+                /*if (e is OnionRequestAPI.HTTPRequestFailedAtDestinationException && e.statusCode == 401) {
+                    val storage = MessagingModuleConfiguration.shared.storage
+                    if (request.room != null) {
+                        storage.removeAuthToken(request.room, request.server)
+                    }
+                }*/
+                when (e) {
+                    // No need for the stack trace for HTTP errors
+                    is HTTP.HTTPRequestFailedException -> {
+                        Log.e("OpenGroupAPIV2", "Failed onion request: ${e.message}")
+                        if(e.statusCode == 401) {
+                            val storage = MessagingModuleConfiguration.shared.storage
+                            if (request.room != null) {
+                                storage.removeAuthToken(request.room, request.server)
                             }
                         }
-                        else -> Log.e("OpenGroupAPIV2", "Failed onion request", e)
                     }
-                }
-            } else {
-                    return OnionRequestAPI.sendDirectRequest(requestBuilder.build()).fail { e ->
-                    when (e) {
-                        // No need for the stack trace for HTTP errors
-                        is HTTP.HTTPRequestFailedException -> {
-                            Log.e("OpenGroupAPIV2", "Failed request: ${e.message}")
-                            if (e.statusCode == 401) {
-                                val storage = MessagingModuleConfiguration.shared.storage
-                                if (request.room != null) {
-                                    storage.removeAuthToken(request.room, request.server)
-                                }
-                            }
-                        }
-                        else -> Log.e("OpenGroupAPIV2", "Failed request", e)
-                    }
+                    else -> Log.e("OpenGroupAPIV2", "Failed onion request", e)
                 }
             }
         }

@@ -341,7 +341,7 @@ fun NewChatScreen(
                     image = R.drawable.ic_invite_a_friend,
                     title = stringResource(id = R.string.activity_settings_invite_button_title),
                     MaterialTheme.appColors.userDetailsBchatIdText,
-                    PaddingValues(start = 26.dp, end = 26.dp),
+                    PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),
                     onClick = {
                         openActivity(OpenActivity.InviteAFriend)
                     },

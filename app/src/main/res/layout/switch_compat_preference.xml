@@ -5,7 +5,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     app:track="@drawable/switch_toggle_background"
-    android:background="@drawable/switch_toggle_background"
     android:clickable="false"
     android:textColor="@color/red"
     android:focusable="false"

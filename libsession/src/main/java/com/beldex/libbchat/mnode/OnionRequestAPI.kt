@@ -1,5 +1,7 @@
 package com.beldex.libbchat.mnode
 
+import android.content.Context
+import androidx.preference.PreferenceManager
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.all
 import nl.komponents.kovenant.deferred
@@ -9,6 +11,7 @@ import okhttp3.Request
 import com.beldex.libbchat.messaging.file_server.FileServerAPIV2
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.OnionRoutingPreferenceUtils
 import com.beldex.libbchat.utilities.AESGCM
 import com.beldex.libsignal.utilities.*
 import com.beldex.libsignal.utilities.Mnode
@@ -35,6 +38,9 @@ object OnionRequestAPI {
         get() = MnodeModule.shared.broadcaster
     private val pathFailureCount = mutableMapOf<Path, Int>()
     private val mnodeFailureCount = mutableMapOf<Mnode, Int>()
+    /** The hop count the cache was last validated against; persisted so it survives process restarts. */
+    private fun appliedPathSize(context: Context): Int = PreferenceManager.getDefaultSharedPreferences(context)
+        .getInt(OnionRoutingPreferenceUtils.KEY_ONION_ROUTING_APPLIED_PATH_SIZE, -1)
 
     var guardMnodes = setOf<Mnode>()
 
@@ -51,6 +57,13 @@ object OnionRequestAPI {
      */
     fun setOnionRequestPathCount(count: Int) {
         if (count != 1 && count != 3) return
+        val context = MessagingModuleConfiguration.shared.context
+        val lastAppliedPathSize = appliedPathSize(context)
+        if (count == lastAppliedPathSize) return
+        PreferenceManager.getDefaultSharedPreferences(context)
+            .edit()
+            .putInt(OnionRoutingPreferenceUtils.KEY_ONION_ROUTING_APPLIED_PATH_SIZE, count)
+            .apply()
         val cachedPaths = paths
         val cachedPathsMatchSelection = cachedPaths.isNotEmpty() && cachedPaths.all { it.size == count }
         if (cachedPathsMatchSelection) return
@@ -106,6 +119,16 @@ object OnionRequestAPI {
      */
     private val pathSize: Int
         get() = TextSecurePreferences.getOnionRequestPathCount(MessagingModuleConfiguration.shared.context).coerceAtLeast(1)
+    /**
+     * Only the cached paths that match the hop count the user currently has selected.
+     *
+     * [paths] can hold mixed sizes at once (1-hop chat paths next to the 3-hop paths social
+     * groups always build), so anything that *shows* the user "their" path - the hops screen,
+     * the path activity, the home status dot - must read this instead of [paths], otherwise a
+     * user who selected 1 hop gets shown a 3-hop path and vice versa.
+     */
+    val selectedHopPaths: List<Path>
+        get() = paths.filter { it.size == pathSize }
     /**
      * Whether the user has onion routing enabled at all. When disabled, every request - to
      * mnodes and to external servers alike - is sent directly with no onion layers.

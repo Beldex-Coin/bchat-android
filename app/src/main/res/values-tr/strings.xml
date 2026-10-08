@@ -533,6 +533,14 @@
     <string name="preferences__if_typing_indicators_are_disabled_you_wont_be_able_to_see_typing_indicators">Yazıyor göstergeleri devre dışı bırakılırsa, başkalarının yazıyor göstergelerini göremezsiniz.</string>
     <string name="preferences__onion_routing">Onion Yönlendirme</string>
     <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">Etkinleştirildiğinde, mesajlarınızı iletmek için Onion yönlendirme kullanılır</string>
+    <string name="preferences_onion_routing_hops_summary">Mesajlarınızın kaç hop üzerinden geçeceğini seçin. Kapalı: doğrudan bağlantı, 1 hop bir ana düğüm, 3 hop üç ana düğüm kullanır.</string>
+    <string name="preferences__onion_routing_off">Hops Yok</string>
+    <string name="preferences__onion_routing_1_hop">1 Hop (Varsayılan)</string>
+    <string name="preferences__onion_routing_3_hops">3 Hops</string>
+    <string name="preferences__onion_routing_settings_description_no_hops">Bu seçenek seçildiğinde, mesajlar aracı düğümlerden geçirilmeden doğrudan alıcının swarm\'una gönderilir.</string>
+    <string name="preferences__onion_routing_settings_description_one_hop">Bu seçenek seçildiğinde, mesajlar tek bir aracı düğüm üzerinden yönlendirilir.</string>
+    <string name="preferences__onion_routing_settings_description_three_hops">Bu seçenek seçildiğinde, mesajlar üç aracı düğüm üzerinden yönlendirilir.</string>
+    <string name="preferences__onion_routing_settings_subtitle">Etkinleştirildiğinde, mesajlarınızı iletmek için Onion yönlendirme kullanılır</string>
     <string name="onion_routing_turn_off_confirmation">Onion yönlendirmesini kapatmak, IP adresinizi masternode\'a açığa çıkarır ve ağ gözlemcilerinin BChat kullandığınızı görmesine olanak tanır. Her iki durumda da mesajlarınız şifreli kalır. Yine de kapatılsın mı?</string>
     <string name="preferences__request_keyboard_to_disable_personalized_learning">Klavye için kişiselleştirilmiş öğrenmenin devre dışı bırakılmasını talep edin.</string>
     <string name="preferences__light_theme">Light</string>
@@ -691,7 +699,13 @@
     <string name="view_seed_reminder_subtitle_3">Kurtarma ifadenizi güvenli bir yerde sakladığınızdan emin olun</string>
 
     <string name="activity_path_title">Hops</string>
+    <string name="activity_path_title_direct">Hops (Doğrudan Mesaj)</string>
+    <string name="activity_path_title_one_hop">Hops (1 Hop)</string>
+    <string name="activity_path_title_three_hops">Hops (3 Hops)</string>
     <string name="activity_path_explanation">BChat, mesajları Beldex merkeziyetsiz ağı üzerindeki birkaç masternode üzerinden yönlendirerek IP adresinizi gizler. Bağlantınız şu anda aşağıdaki masternodelar üzerinden yönlendirilmektedir</string>
+    <string name="activity_path_explanation_direct">Hops yok modunda mesajlarınız Beldex masternodelarından geçirilmeden doğrudan hedefe gönderilir.</string>
+    <string name="activity_path_explanation_one_hop">Mesajlarınız hedefe ulaşmadan önce bir aracı Beldex masternodu üzerinden yönlendirilir.</string>
+    <string name="activity_path_explanation_three_hops">Mesajlarınız hedefe ulaşmadan önce üç aracı Beldex masternodu üzerinden yönlendirilir.</string>
     <string name="activity_path_guard_node_row_title">Giriş Düğümü</string>
     <string name="activity_path_service_node_row_title">Ana Düğüm</string>
     <string name="activity_path_destination_row_title">Hedef</string>

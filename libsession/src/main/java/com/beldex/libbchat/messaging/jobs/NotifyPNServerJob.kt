@@ -24,7 +24,7 @@ class NotifyPNServerJob(val message: MnodeMessage) : Job {
     override var id: String? = null
     override var failureCount: Int = 0
 
-    override val maxFailureCount: Int = 20
+    override val maxFailureCount: Int = 6
     companion object {
         val KEY: String = "NotifyPNServerJob"
 
@@ -39,7 +39,12 @@ class NotifyPNServerJob(val message: MnodeMessage) : Job {
         val body = JsonUtil.toJson(parameters).toRequestBody("application/json".toMediaType())
         val request = Request.Builder().url(url).post(body).build()
         retryIfNeeded(4) {
-            OnionRequestAPI.sendOnionRequest(request, server.url, server.publicKey, Version.V2) success { response ->
+            val promise = if (OnionRequestAPI.isServerOnionRoutingEnabled) {
+                OnionRequestAPI.sendOnionRequest(request, server.url, server.publicKey, Version.V2)
+            } else {
+                OnionRequestAPI.sendDirectRequest(request)
+            }
+            promise success { response ->
                 when (response.code) {
                     null, 0 -> Log.d("NotifyPNServerJob", "Couldn't notify PN server due to error: ${response.message}.")
                 }

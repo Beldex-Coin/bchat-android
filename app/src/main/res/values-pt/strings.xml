@@ -534,6 +534,14 @@
     <string name="preferences__if_typing_indicators_are_disabled_you_wont_be_able_to_see_typing_indicators">Se os indicadores de digitação estiverem desativados, você não poderá ver quando outras pessoas estiverem digitando</string>
     <string name="preferences__onion_routing">Roteamento Onion</string>
     <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">Se ativado, o roteamento Onion será usado para entregar suas mensagens</string>
+    <string name="preferences_onion_routing_hops_summary">Selecione quantos hops suas mensagens devem percorrer. Desligado conecta diretamente, 1 hop usa um master node, 3 hops usam três master nodes.</string>
+    <string name="preferences__onion_routing_off">Sem Hops</string>
+    <string name="preferences__onion_routing_1_hop">1 Hop (Padrão)</string>
+    <string name="preferences__onion_routing_3_hops">3 Hops</string>
+    <string name="preferences__onion_routing_settings_description_no_hops">Com esta opção selecionada, as mensagens serão enviadas diretamente ao swarm do destinatário, sem passarem por nós intermediários.</string>
+    <string name="preferences__onion_routing_settings_description_one_hop">Com esta opção selecionada, as mensagens serão roteadas por um nó intermediário.</string>
+    <string name="preferences__onion_routing_settings_description_three_hops">Com esta opção selecionada, as mensagens serão roteadas por três nós intermediários.</string>
+    <string name="preferences__onion_routing_settings_subtitle">Se ativado, o roteamento Onion será usado para entregar suas mensagens</string>
     <string name="onion_routing_turn_off_confirmation">Desativar o roteamento Onion expõe seu endereço IP ao masternode e permite que observadores da rede saibam que você está usando o BChat. Suas mensagens continuam criptografadas de qualquer maneira. Deseja desativar mesmo assim?</string>
     <string name="preferences__request_keyboard_to_disable_personalized_learning">Solicitar que o teclado desative o aprendizado personalizado</string>
     <string name="preferences__light_theme">Light</string>
@@ -692,7 +700,13 @@
     <string name="view_seed_reminder_subtitle_3">Certifique-se de guardar sua frase de recuperação em um local seguro</string>
 
     <string name="activity_path_title">Hops</string>
+    <string name="activity_path_title_direct">Hops (Mensagem Direta)</string>
+    <string name="activity_path_title_one_hop">Hops (1 Hop)</string>
+    <string name="activity_path_title_three_hops">Hops (3 Hops)</string>
     <string name="activity_path_explanation">O BChat mascara seu endereço IP roteando as mensagens através de vários masternodes na rede descentralizada Beldex. Sua conexão atualmente está sendo roteada pelos seguintes masternodes</string>
+    <string name="activity_path_explanation_direct">Sem Hops, suas mensagens são enviadas diretamente ao destino, sem passar pelos master nodes da Beldex.</string>
+    <string name="activity_path_explanation_one_hop">Suas mensagens passam por um master node intermediário da Beldex antes de chegar ao destino.</string>
+    <string name="activity_path_explanation_three_hops">Suas mensagens passam por três master nodes intermediários da Beldex antes de chegar ao destino.</string>
     <string name="activity_path_guard_node_row_title">Nó de Entrada</string>
     <string name="activity_path_service_node_row_title">Nó Mestre</string>
     <string name="activity_path_destination_row_title">Destino</string>

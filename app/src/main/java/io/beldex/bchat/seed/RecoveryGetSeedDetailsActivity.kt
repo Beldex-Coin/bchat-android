@@ -177,6 +177,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
 */
         binding.restoreSeedRestoreButton.isEnabled = true
         val intent = Intent(Intent.ACTION_VIEW, "onboarding://manage_pin?finish=true&action=${PinCodeAction.CreatePinCode.action}".toUri())
+        intent.setPackage(packageName)
         pinCodeLauncher.launch(intent)
 //        val intent = Intent(this, CreatePasswordActivity::class.java)
 //        intent.putExtra("callPage",2)

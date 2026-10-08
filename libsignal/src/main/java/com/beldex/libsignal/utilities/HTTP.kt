@@ -87,22 +87,22 @@ object HTTP {
     /**
      * Sync. Don't call from the main thread.
      */
-    fun execute(verb: Verb, url: String, parameters: Map<String, Any>?, timeout: Long = HTTP.timeout, useSeedNodeConnection: Boolean = false): ByteArray {
+    fun execute(verb: Verb, url: String, parameters: Map<String, Any>?, timeout: Long = HTTP.timeout, useSeedNodeConnection: Boolean = false, quietFailures: Boolean = false): ByteArray {
         return if (parameters != null) {
             Log.d("Beldex","parameters in HTTP first execute fun  $parameters")
             val body = JsonUtil.toJson(parameters).toByteArray()
             Log.d("Beldex","body in HTTP first execute fun $body")
 
-            execute(verb = verb, url = url, body = body, timeout = timeout, useSeedNodeConnection = useSeedNodeConnection)
+            execute(verb = verb, url = url, body = body, timeout = timeout, useSeedNodeConnection = useSeedNodeConnection, quietFailures = quietFailures)
         } else {
-            execute(verb = verb, url = url, body = null, timeout = timeout, useSeedNodeConnection = useSeedNodeConnection)
+            execute(verb = verb, url = url, body = null, timeout = timeout, useSeedNodeConnection = useSeedNodeConnection, quietFailures = quietFailures)
         }
     }
 
     /**
      * Sync. Don't call from the main thread.
      */
-    fun execute(verb: Verb, url: String, body: ByteArray?, timeout: Long = HTTP.timeout, useSeedNodeConnection: Boolean = false): ByteArray {
+    fun execute(verb: Verb, url: String, body: ByteArray?, timeout: Long = HTTP.timeout, useSeedNodeConnection: Boolean = false, quietFailures: Boolean = false): ByteArray {
         val request = Request.Builder().url(url)
             .removeHeader("User-Agent").addHeader("User-Agent", "WhatsApp") // Set a fake value
             .removeHeader("Accept-Language").addHeader("Accept-Language", "en-us") // Set a fake value
@@ -141,10 +141,50 @@ object HTTP {
         }
         return when (val statusCode = response.code) {
             200 -> {
-                response.body!!.bytes()
+                try {
+                    response.body!!.bytes()
+                } catch (exception: Exception) {
+                    if (!quietFailures) { Log.d("Beldex", "${verb.rawValue} request to $url failed while reading the response due to error: ${exception.localizedMessage}.") }
+                    if (!isConnectedToNetwork()) { throw HTTPNoNetworkException() }
+                    // Override the actual error so that we can correctly catch failed requests in OnionRequestAPI
+                    throw HTTPRequestFailedException(0, null, "HTTP request failed due to: ${exception.message}")
+                }
             }
             else -> {
                 Log.d("Beldex", "${verb.rawValue} request to $url failed with status code: $statusCode.")
+                throw HTTPRequestFailedException(statusCode, null)
+            }
+        }
+    }
+
+    /**
+     * Sync. Don't call from the main thread. Executes a fully-built request as-is.
+     * Used for direct (non-onion) requests to external servers such as the file server,
+     * open group server and push registry, where the callers need to keep their own
+     * headers and body intact.
+     */
+    fun execute(request: Request, quietFailures: Boolean = false): ByteArray {
+        lateinit var response: Response
+        try {
+            response = defaultConnection.newCall(request).execute()
+        } catch (exception: Exception) {
+            if (!quietFailures) { Log.d("Beldex", "${request.method} request to ${request.url} failed due to error: ${exception.localizedMessage}.") }
+            if (!isConnectedToNetwork()) { throw HTTPNoNetworkException() }
+            // Override the actual error so that we can correctly catch failed requests in OnionRequestAPI
+            throw HTTPRequestFailedException(0, null, "HTTP request failed due to: ${exception.message}")
+        }
+        return when (val statusCode = response.code) {
+            200 -> {
+                try {
+                    response.body!!.bytes()
+                } catch (exception: Exception) {
+                    if (!quietFailures) { Log.d("Beldex", "${request.method} request to ${request.url} failed while reading the response due to error: ${exception.localizedMessage}.") }
+                    if (!isConnectedToNetwork()) { throw HTTPNoNetworkException() }
+                    throw HTTPRequestFailedException(0, null, "HTTP request failed due to: ${exception.message}")
+                }
+            }
+            else -> {
+                Log.d("Beldex", "${request.method} request to ${request.url} failed with status code: $statusCode.")
                 throw HTTPRequestFailedException(statusCode, null)
             }
         }

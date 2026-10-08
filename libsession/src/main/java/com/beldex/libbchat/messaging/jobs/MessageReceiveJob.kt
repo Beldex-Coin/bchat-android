@@ -12,7 +12,7 @@ class MessageReceiveJob(val data: ByteArray, val serverHash: String? = null, val
     override var id: String? = null
     override var failureCount: Int = 0
 
-    override val maxFailureCount: Int = 10
+    override val maxFailureCount: Int = 3
     companion object {
         val TAG = MessageReceiveJob::class.simpleName
         val KEY: String = "MessageReceiveJob"

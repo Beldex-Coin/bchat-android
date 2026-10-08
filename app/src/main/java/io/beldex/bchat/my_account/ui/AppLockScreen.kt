@@ -45,6 +45,7 @@ fun AppLockScreen() {
     val context = LocalContext.current
     val changePin: () -> Unit  = {
         val intent = Intent(Intent.ACTION_VIEW, "onboarding://manage_pin?finish=true&action=${PinCodeAction.ChangePinCode.action}".toUri())
+        intent.setPackage(context.packageName)
         context.startActivity(intent)
     }
     var showLockOptionsDialog by remember {

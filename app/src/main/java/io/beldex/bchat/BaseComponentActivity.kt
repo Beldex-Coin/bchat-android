@@ -16,10 +16,11 @@ open class BaseComponentActivity : ComponentActivity() {
     }
 
     protected override fun attachBaseContext(newBase: Context) {
+        val selected = getAppSelectedLanguage(newBase)
         super.attachBaseContext(
             DynamicLanguageContextWrapper.updateContext(
                 newBase,
-                getAppSelectedLanguage(newBase)
+                selected
             )
         )
     }

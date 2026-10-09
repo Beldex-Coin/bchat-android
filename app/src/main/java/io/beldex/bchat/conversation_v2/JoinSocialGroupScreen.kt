@@ -272,9 +272,9 @@ private fun JoinSection(
             disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
             disabledContentColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledText,
             modifier = Modifier
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
                 .fillMaxWidth()
                 .height(54.dp)
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
         ) {
             Text(
                 text = stringResource(id = R.string.next),

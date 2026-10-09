@@ -49,7 +49,8 @@ fun DisplayNameStepScreen(
     onContinueClick: () -> Unit,
     onBackClick: () -> Unit,
     title: String = stringResource(R.string.display_name),
-    headline: String = stringResource(R.string.display_name_screen_title_content)
+    headline: String = stringResource(R.string.display_name_screen_title_content),
+    errorMessage: String? = null
 ) {
     Box(
         modifier = Modifier
@@ -127,18 +128,32 @@ fun DisplayNameStepScreen(
                         .fillMaxWidth()
                         .padding(top = 16.dp)
                         .background(MaterialTheme.appColors.onboardingInputBackground)
-                        .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
+                        .border(
+                            1.dp,
+                            if (errorMessage != null) MaterialTheme.appColors.negativeRedButtonBorder
+                            else MaterialTheme.appColors.pinBoxInactiveBorder
+                        )
                         .padding(horizontal = 18.dp, vertical = 16.dp)
                         .focusRequester(focusRequester)
                 )
 
-                Text(
-                    text = stringResource(R.string.activity_display_name_hint),
-                    color = MaterialTheme.appColors.onboardingCaptionColor,
-                    fontFamily = RobotoMono,
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(top = 16.dp)
-                )
+                if (errorMessage != null) {
+                    Text(
+                        text = errorMessage,
+                        color = MaterialTheme.appColors.negativeRedButtonBorder,
+                        fontFamily = RobotoMono,
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(top = 16.dp)
+                    )
+                } else {
+                    Text(
+                        text = stringResource(R.string.activity_display_name_hint),
+                        color = MaterialTheme.appColors.onboardingCaptionColor,
+                        fontFamily = RobotoMono,
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(top = 16.dp)
+                    )
+                }
             }
 
             OnboardingPrimaryButton(

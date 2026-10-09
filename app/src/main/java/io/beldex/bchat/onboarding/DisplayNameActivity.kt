@@ -45,6 +45,7 @@ import java.util.concurrent.Executor
 class DisplayNameActivity : BaseComponentActivity() {
     private var displayName by mutableStateOf("")
     private var isRegistering by mutableStateOf(false)
+    private var displayNameError by mutableStateOf<String?>(null)
 
 
     //New Line
@@ -69,9 +70,10 @@ class DisplayNameActivity : BaseComponentActivity() {
             BChatTheme {
                 DisplayNameStepScreen(
                     displayName = displayName,
-                    onDisplayNameChange = { displayName = it },
+                    onDisplayNameChange = { displayName = it; displayNameError = null },
                     onContinueClick = { if (displayName.isNotBlank() && !isRegistering) register() },
-                    onBackClick = { finish() }
+                    onBackClick = { finish() },
+                    errorMessage = displayNameError
                 )
 
                 if (isRegistering) {
@@ -265,6 +267,7 @@ class DisplayNameActivity : BaseComponentActivity() {
     private fun register() {
         val trimmedDisplayName = displayName.trim()
         if (trimmedDisplayName.isEmpty()) {
+            displayNameError = getString(R.string.activity_display_name_display_name_missing_error)
             return Toast.makeText(
                 this,
                 R.string.activity_display_name_display_name_missing_error,
@@ -272,6 +275,7 @@ class DisplayNameActivity : BaseComponentActivity() {
             ).show()
         }
         if (trimmedDisplayName.toByteArray().size > ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
+            displayNameError = getString(R.string.activity_display_name_display_name_too_long_error)
             return Toast.makeText(
                 this,
                 R.string.activity_display_name_display_name_too_long_error,
@@ -285,12 +289,14 @@ class DisplayNameActivity : BaseComponentActivity() {
             }
         }
         if (!trimmedDisplayName.matches(englishNamePattern.toRegex())) {
+            displayNameError = getString(R.string.display_name_validation)
             return Toast.makeText(
                     this,
                     R.string.display_name_validation,
                     Toast.LENGTH_SHORT
             ).show()
         }
+        displayNameError = null
         isRegistering = true
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)

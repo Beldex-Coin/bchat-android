@@ -1127,7 +1127,9 @@ fun MyAccountNavHost(
             MyAccountScreenContainer(
                 title = stringResource(id = R.string.activity_settings_title),
                 onBackClick = {
-                    navController.navigateUp()
+                    if (!navController.navigateUp()) {
+                        (context as BaseComponentActivity).finish()
+                    }
                 }
             ) {
                 PrivacySettingsScreen(
@@ -1144,7 +1146,9 @@ fun MyAccountNavHost(
             MyAccountScreenContainer(
                 title = stringResource(id = R.string.activity_settings_notifications_button_title),
                 onBackClick = {
-                    navController.navigateUp()
+                    if (!navController.navigateUp()) {
+                        (context as BaseComponentActivity).finish()
+                    }
                 }
             ) {
                 NotificationSettingsScreen(

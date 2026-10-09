@@ -545,7 +545,6 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
         if (PublicKeyValidation.isValid(bnsNameOrPublicKey)) {
             createPrivateChat(bnsNameOrPublicKey, context, bnsNameOrPublicKey)
         } else {
-            //Toast.makeText(context, R.string.invalid_bchat_id, Toast.LENGTH_SHORT).show()
             // This could be an BNS name
             updateBnsLoader(true)
             MnodeAPI.getBchatID(bnsNameOrPublicKey).successUi { hexEncodedPublicKey ->
@@ -554,11 +553,11 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
             }.failUi { exception ->
                 bchatIdErrorStatus = true
                 updateBnsLoader(false)
-                var message = context.resources.getString(R.string.fragment_enter_public_key_error_message)
+                val message = context.resources.getString(R.string.fragment_enter_public_key_error_message)
                 exception.localizedMessage?.let {
-                    message = context.resources.getString(R.string.fragment_enter_public_key_error_message)
                     Log.d("Beldex","BNS exception $it")
                 }
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             }
         }
     }

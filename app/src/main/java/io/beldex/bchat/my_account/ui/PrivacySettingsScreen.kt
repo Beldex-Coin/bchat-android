@@ -1,5 +1,6 @@
 package io.beldex.bchat.my_account.ui
 
+import android.Manifest
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
@@ -40,6 +41,7 @@ import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.notchedCornerShape
+import io.beldex.bchat.permissions.Permissions
 
 /**
  * Revamp_2026 Privacy / App Protection settings (Figma `Settings` 7546:23529), reached from the
@@ -62,6 +64,7 @@ fun PrivacySettingsScreen(
     var screenSecurity by remember { mutableStateOf(TextSecurePreferences.isScreenSecurityEnabled(context)) }
     var showOnionConfirm by remember { mutableStateOf(false) }
     var showClearHistoryConfirm by remember { mutableStateOf(false) }
+    var showVoiceVideoConfirm by remember { mutableStateOf(false) }
 
     if (showOnionConfirm) {
         ConfirmDialog(
@@ -92,6 +95,32 @@ fun PrivacySettingsScreen(
             },
             onCancel = {
                 showClearHistoryConfirm = false
+            }
+        )
+    }
+
+    if (showVoiceVideoConfirm) {
+        ConfirmDialog(
+            title = stringResource(R.string.dialog_voice_video_title),
+            message = stringResource(R.string.dialog_voice_video_message),
+            onConfirm = {
+                showVoiceVideoConfirm = false
+                Permissions.with(context as Activity)
+                    .request(Manifest.permission.RECORD_AUDIO)
+                    .onAllGranted {
+                        voiceVideoCalls = true
+                        TextSecurePreferences.setBooleanPreference(
+                            context,
+                            TextSecurePreferences.CALL_NOTIFICATIONS_ENABLED,
+                            true
+                        )
+                    }
+                    .onAnyDenied { voiceVideoCalls = false }
+                    .execute()
+            },
+            onCancel = {
+                showVoiceVideoConfirm = false
+                voiceVideoCalls = false
             }
         )
     }
@@ -183,12 +212,16 @@ fun PrivacySettingsScreen(
                 settingIcon = painterResource(id = R.drawable.ic_video_call_setting),
                 isEnabled = voiceVideoCalls,
                 onSwitchChanged = { checked ->
-                    voiceVideoCalls = checked
-                    TextSecurePreferences.setBooleanPreference(
-                        context,
-                        TextSecurePreferences.CALL_NOTIFICATIONS_ENABLED,
-                        checked
-                    )
+                    if (checked) {
+                        showVoiceVideoConfirm = true
+                    } else {
+                        voiceVideoCalls = false
+                        TextSecurePreferences.setBooleanPreference(
+                            context,
+                            TextSecurePreferences.CALL_NOTIFICATIONS_ENABLED,
+                            false
+                        )
+                    }
                 },
                 modifier = Modifier.fillMaxWidth(),
             )

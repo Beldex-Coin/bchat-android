@@ -55,6 +55,7 @@ import java.util.concurrent.Executor
 class RecoveryGetSeedDetailsActivity :  BaseComponentActivity() {
     private var displayName by mutableStateOf("")
     private var isRegisterEnabled by mutableStateOf(true)
+    private var displayNameError by mutableStateOf<String?>(null)
 
     //New Line
     private val NODES_PREFS_NAME: String? = "nodes"
@@ -84,11 +85,12 @@ class RecoveryGetSeedDetailsActivity :  BaseComponentActivity() {
             BChatTheme {
                 DisplayNameStepScreen(
                     displayName = displayName,
-                    onDisplayNameChange = { displayName = it },
+                    onDisplayNameChange = { displayName = it; displayNameError = null },
                     onContinueClick = { if (displayName.isNotBlank() && isRegisterEnabled) register() },
                     onBackClick = { finish() },
                     title = stringResource(R.string.restore_from_seed),
-                    headline = stringResource(R.string.display_name_screen_title_content)
+                    headline = stringResource(R.string.display_name_screen_title_content),
+                    errorMessage = displayNameError
                 )
 
                 if (!isRegisterEnabled) {
@@ -127,13 +129,16 @@ class RecoveryGetSeedDetailsActivity :  BaseComponentActivity() {
     private fun register() {
         val trimmedDisplayName = displayName.trim()
         if (trimmedDisplayName.isEmpty()) {
+            displayNameError = getString(R.string.activity_display_name_display_name_missing_error)
             return Toast.makeText(this, R.string.activity_display_name_display_name_missing_error, Toast.LENGTH_SHORT).show()
         }
         if (trimmedDisplayName.toByteArray().size > SSKEnvironment.ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
+            displayNameError = getString(R.string.activity_display_name_display_name_too_long_error)
             return Toast.makeText(this, R.string.activity_display_name_display_name_too_long_error, Toast.LENGTH_SHORT).show()
         }
 
         if (!trimmedDisplayName.matches(englishNamePattern.toRegex())) {
+            displayNameError = getString(R.string.display_name_validation)
             return Toast.makeText(
                     this,
                     R.string.display_name_validation,
@@ -141,6 +146,7 @@ class RecoveryGetSeedDetailsActivity :  BaseComponentActivity() {
             ).show()
         }
 
+        displayNameError = null
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
         TextSecurePreferences.setProfileName(this, trimmedDisplayName)

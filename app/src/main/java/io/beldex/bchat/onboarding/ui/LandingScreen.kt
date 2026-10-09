@@ -12,10 +12,10 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -49,18 +49,8 @@ fun LandingScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.appColors.onboardingBackground),
-        contentAlignment = Alignment.BottomEnd
+            .background(MaterialTheme.appColors.onboardingBackground)
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_landing_decoration),
-            contentDescription = null,
-            modifier = Modifier
-                .wrapContentSize(unbounded = true, align = Alignment.BottomEnd)
-                .height(280.dp),
-            contentScale = ContentScale.FillHeight
-        )
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -79,7 +69,7 @@ fun LandingScreen(
                 )
 
                 Text(
-                    text = stringResource(R.string.landing_headline),
+                    text = stringResource(R.string.landing_headline).uppercase(),
                     color = MaterialTheme.appColors.onboardingHeadlineColor,
                     fontFamily = OpenSans,
                     fontWeight = FontWeight.ExtraBold,
@@ -96,6 +86,17 @@ fun LandingScreen(
                     fontSize = 14.sp,
                     lineHeight = 18.sp,
                     modifier = Modifier.padding(top = 20.dp)
+                )
+
+                Image(
+                    painter = painterResource(id = R.drawable.ic_landing_decoration),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 140.dp)
+                        .padding(top = 24.dp),
+                    contentScale = ContentScale.Fit,
+                    alignment = Alignment.CenterEnd
                 )
             }
 

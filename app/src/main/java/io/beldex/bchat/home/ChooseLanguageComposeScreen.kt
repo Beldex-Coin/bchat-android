@@ -36,12 +36,16 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.BaseComponentActivity
+import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.OpenSans
+import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.my_account.ui.MyAccountViewModel
 import io.beldex.bchat.service.KeyCachingService
@@ -135,7 +139,7 @@ fun ChooseLanguage(
                         },
                         colors = RadioButtonDefaults.colors(
                             selectedColor = MaterialTheme.appColors.primaryButtonColor,
-                            unselectedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                            unselectedColor = MaterialTheme.appColors.transactionSubTitle,
                         ),
                     )
                     Column(
@@ -146,14 +150,16 @@ fun ChooseLanguage(
                         Text(
                             text = language.nativeName,
                             color = MaterialTheme.appColors.textColor,
+                            fontFamily = OpenSans,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Normal,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
                         Text(
-                            text = if (language.code.contains(deviceLanguageCode)) "(device's language)" else language.englishName,
+                            text = if (language.code.contains(deviceLanguageCode)) stringResource(R.string.choose_language_device_language) else language.englishName,
                             color = MaterialTheme.appColors.transactionSubTitle,
+                            fontFamily = RobotoMono,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Normal,
                             maxLines = 1,

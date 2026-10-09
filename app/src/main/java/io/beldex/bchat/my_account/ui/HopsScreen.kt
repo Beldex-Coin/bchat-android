@@ -36,8 +36,15 @@ import io.beldex.bchat.R
 
 @Composable
 fun HopsScreen(
-    nodes: List<PathNodeModel>
+    nodes: List<PathNodeModel>,
+    hopCount: Int = 3,
+    isDirect: Boolean = hopCount == 0
 ) {
+    val explanation = when (hopCount) {
+        0 -> stringResource(id = R.string.activity_path_explanation_direct)
+        1 -> stringResource(id = R.string.activity_path_explanation_one_hop)
+        else -> stringResource(id = R.string.activity_path_explanation_three_hops)
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -46,7 +53,7 @@ fun HopsScreen(
     ) {
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = stringResource(id = R.string.activity_path_explanation),
+            text = explanation,
             style = MaterialTheme.typography.labelMedium
         )
 
@@ -66,13 +73,15 @@ fun HopsScreen(
 
             GetFilledCircle()
 
-            nodes.forEach {
-                GetInternalNode(
-                    title = it.title,
-                    subTitle = it.subTitle
-                )
+            if (!isDirect) {
+                nodes.forEach {
+                    GetInternalNode(
+                        title = it.title,
+                        subTitle = it.subTitle
+                    )
 
-                Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
             }
 
             GetLine()

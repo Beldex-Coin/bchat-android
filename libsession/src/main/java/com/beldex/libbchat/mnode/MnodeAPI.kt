@@ -91,11 +91,12 @@ object MnodeAPI {
     }
 
     // Internal API
-    internal fun invoke(method: Mnode.Method, mnode: Mnode, publicKey: String? = null, parameters: Map<String, Any>, version: Version = Version.V3): RawResponsePromise {
+    internal fun invoke(method: Mnode.Method, mnode: Mnode, publicKey: String? = null, parameters: Map<String, Any>, version: Version = Version.V3, forceDirect: Boolean = false): RawResponsePromise {
         val url = "${mnode.address}:${mnode.port}/storage_rpc/v1"
         val deferred = deferred<OnionResponse, Exception>()
         //val deferred = deferred<Map<*,*>, Exception>()
-        if (useOnionRequests) {
+        val useOnion = useOnionRequests && !forceDirect
+        if (useOnion) {
             OnionRequestAPI.sendOnionRequest(method, parameters, mnode, publicKey, version).map {
                 val body = it.body ?: throw Error.Generic
                 //deferred.resolve(JsonUtil.fromJson(body, Map::class.java))
@@ -377,7 +378,7 @@ object MnodeAPI {
         }
     }
 
-    fun sendMessage(message: MnodeMessage, requiresAuth: Boolean = false, namespace: Int = 0): RawResponsePromise {
+    fun sendMessage(message: MnodeMessage, requiresAuth: Boolean = false, namespace: Int = 0, forceDirect: Boolean = false): RawResponsePromise {
         val destination = message.recipient
         Log.d("Beldex","bchat id validation -- check the test net  or mainnet for remove prefix")
         return retryIfNeeded(maxRetryCount) {
@@ -407,7 +408,7 @@ object MnodeAPI {
             }
             getSingleTargetMnode(destination).bind { mnode ->
                 Log.d("Beldex", "invoke MnodeAPI.kt 5")
-                invoke(Mnode.Method.SendMessage, mnode, destination, parameters)
+                invoke(Mnode.Method.SendMessage, mnode, destination, parameters, forceDirect = forceDirect)
             }
         }
     }

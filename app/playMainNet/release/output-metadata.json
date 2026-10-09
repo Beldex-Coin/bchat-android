@@ -11,9 +11,9 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 103,
-      "versionName": "3.0.0",
-      "outputFile": "Bchat-3.0.0-universal.apk"
+      "versionCode": 107,
+      "versionName": "3.0.1",
+      "outputFile": "Bchat-3.0.1-universal.apk"
     }
   ],
   "elementType": "File",
@@ -22,14 +22,14 @@
       "minApi": 28,
       "maxApi": 30,
       "baselineProfiles": [
-        "baselineProfiles/1/Bchat-3.0.0-universal.dm"
+        "baselineProfiles/1/Bchat-3.0.1-universal.dm"
       ]
     },
     {
       "minApi": 31,
       "maxApi": 2147483647,
       "baselineProfiles": [
-        "baselineProfiles/0/Bchat-3.0.0-universal.dm"
+        "baselineProfiles/0/Bchat-3.0.1-universal.dm"
       ]
     }
   ],

@@ -24,7 +24,7 @@ class NotifyPNServerJob(val message: MnodeMessage) : Job {
     override var id: String? = null
     override var failureCount: Int = 0
 
-    override val maxFailureCount: Int = 20
+    override val maxFailureCount: Int = 6
     companion object {
         val KEY: String = "NotifyPNServerJob"
 
@@ -39,7 +39,14 @@ class NotifyPNServerJob(val message: MnodeMessage) : Job {
         val body = JsonUtil.toJson(parameters).toRequestBody("application/json".toMediaType())
         val request = Request.Builder().url(url).post(body).build()
         retryIfNeeded(4) {
-            OnionRequestAPI.sendOnionRequest(request, server.url, server.publicKey, Version.V2) success { response ->
+            // Like PushRegistryV2/PushRegistryV1, the notify call is forced onto the 3-hop onion
+            // path for ALL hop-count configurations. Below 3 hops (No Hops / 1 Hop) the old
+            // isServerOnionRoutingEnabled gate flipped this to sendDirectRequest, and the direct
+            // path throws on the push server's non-200 replies (HTTP.execute only accepts 200),
+            // which made the job fail and hammer the job queue in 0/1-hop mode. Routing it over
+            // the 3-hop onion keeps it working consistently in every configuration.
+            val promise = OnionRequestAPI.sendOnionRequest(request, server.url, server.publicKey, Version.V2, forcedPathSize = 3)
+            promise success { response ->
                 when (response.code) {
                     null, 0 -> Log.d("NotifyPNServerJob", "Couldn't notify PN server due to error: ${response.message}.")
                 }

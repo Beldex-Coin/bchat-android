@@ -79,8 +79,12 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -152,6 +156,7 @@ import io.beldex.bchat.util.QRCodeUtilities
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.copyToClipBoard
+import io.beldex.bchat.util.getColorWithID
 import io.beldex.bchat.util.toPx
 import io.beldex.bchat.util.unicodeNamePattern
 import kotlinx.coroutines.Dispatchers
@@ -1060,14 +1065,23 @@ fun MyAccountNavHost(
             route = MyAccountScreens.HopsScreen.route
         ) {
             val nodes by viewModel.pathState.collectAsState()
+            val context = LocalContext.current
+            val hopCount = TextSecurePreferences.getOnionRequestPathCount(context)
+            val hopsTitleResId = when (hopCount) {
+                0 -> R.string.activity_path_title_direct
+                1 -> R.string.activity_path_title_one_hop
+                else -> R.string.activity_path_title_three_hops
+            }
             MyAccountScreenContainer(
-                title = stringResource(id = R.string.activity_path_title),
+                title = dimTitleSuffix(stringResource(id = hopsTitleResId)),
                 onBackClick = {
                     navController.navigateUp()
                 }
             ) {
                 HopsScreen(
-                    nodes = nodes
+                    nodes = nodes,
+                    hopCount = hopCount,
+                    isDirect = hopCount == 0
                 )
             }
         }
@@ -1231,6 +1245,7 @@ fun MyAccountNavHost(
                     Intent.ACTION_VIEW,
                     "onboarding://manage_pin?finish=true&action=${PinCodeAction.VerifyPinCode.action}".toUri()
                 )
+                intent.setPackage(context.packageName)
                 resultLauncher.launch(intent)
             }
             val seed by lazy {
@@ -1639,8 +1654,37 @@ fun ProfileCardKeyContainer(
 }
 
 @Composable
+private fun dimTitleSuffix(title: String): AnnotatedString {
+    val bracketIndex = title.indexOf('(')
+    if (bracketIndex <= 0) return AnnotatedString(title)
+
+    val suffixColor = MaterialTheme.appColors.restoreDescColor
+    return buildAnnotatedString {
+        append(title.substring(0, bracketIndex))
+        withStyle(SpanStyle(color = suffixColor)) { append(title.substring(bracketIndex)) }
+    }
+}
+
+@Composable
 fun MyAccountScreenContainer(
     title: String,
+    wrapInCard: Boolean = true,
+    onBackClick: () -> Unit,
+    actionItems: @Composable () -> Unit = {},
+    content: @Composable () -> Unit,
+) {
+    MyAccountScreenContainer(
+        title = AnnotatedString(title),
+        wrapInCard = wrapInCard,
+        onBackClick = onBackClick,
+        actionItems = actionItems,
+        content = content
+    )
+}
+
+@Composable
+fun MyAccountScreenContainer(
+    title: AnnotatedString,
     wrapInCard: Boolean = true,
     onBackClick: () -> Unit,
     actionItems: @Composable () -> Unit = {},

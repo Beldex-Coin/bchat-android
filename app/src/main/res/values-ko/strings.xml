@@ -521,6 +521,14 @@
     <string name="preferences__if_typing_indicators_are_disabled_you_wont_be_able_to_see_typing_indicators">입력 표시기가 비활성화되면 다른 사용자의 입력 표시를 볼 수 없습니다.</string>
     <string name="preferences__onion_routing">어니언 라우팅</string>
     <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">활성화하면 어니언 라우팅을 사용하여 메시지가 전달됩니다</string>
+    <string name="preferences_onion_routing_hops_summary">메시지가 거치는 홉 수를 선택하세요. 꺼짐은 직접 연결, 1홉은 마스터 노드 1개, 3홉은 마스터 노드 3개를 사용합니다.</string>
+    <string name="preferences__onion_routing_off">홉 없음</string>
+    <string name="preferences__onion_routing_1_hop">1홉 (기본값)</string>
+    <string name="preferences__onion_routing_3_hops">3홉</string>
+    <string name="preferences__onion_routing_settings_description_no_hops">이 옵션을 선택하면 메시지가 중간 노드를 거치지 않고 수신자의 스웜에 직접 전송됩니다.</string>
+    <string name="preferences__onion_routing_settings_description_one_hop">이 옵션을 선택하면 메시지가 하나의 중간 노드를 통해 라우팅됩니다.</string>
+    <string name="preferences__onion_routing_settings_description_three_hops">이 옵션을 선택하면 메시지가 세 개의 중간 노드를 통해 라우팅됩니다.</string>
+    <string name="preferences__onion_routing_settings_subtitle">활성화하면 어니언 라우팅을 사용하여 메시지가 전달됩니다</string>
     <string name="onion_routing_turn_off_confirmation">Onion 라우팅을 끄면 마스터노드에 IP 주소가 노출되고 네트워크 관찰자가 BChat을 사용하고 있다는 사실을 알 수 있습니다. 어느 경우든 메시지는 암호화된 상태로 유지됩니다. 그래도 끄시겠습니까?</string>
     <string name="preferences__request_keyboard_to_disable_personalized_learning">키보드의 개인화 학습 기능을 비활성화하도록 요청합니다.</string>
     <string name="preferences__light_theme">Light</string>
@@ -679,7 +687,13 @@
     <string name="view_seed_reminder_subtitle_3">복구 문구를 반드시 안전한 장소에 보관하세요.</string>
 
     <string name="activity_path_title">홉</string>
+    <string name="activity_path_title_direct">홉 (직접 메시지)</string>
+    <string name="activity_path_title_one_hop">홉 (1홉)</string>
+    <string name="activity_path_title_three_hops">홉 (3홉)</string>
     <string name="activity_path_explanation">BChat은 Beldex 탈중앙화 네트워크의 여러 마스터노드를 통해 메시지를 라우팅하여 사용자의 IP 주소를 숨깁니다. 현재 연결은 다음 마스터노드를 통해 라우팅되고 있습니다.</string>
+    <string name="activity_path_explanation_direct">홉 없음은 Beldex 마스터 노드를 거치지 않고 메시지를 목적지로 직접 전송합니다.</string>
+    <string name="activity_path_explanation_one_hop">메시지는 목적지에 도달하기 전에 하나의 Beldex 중간 마스터 노드를 거쳐 라우팅됩니다.</string>
+    <string name="activity_path_explanation_three_hops">메시지는 목적지에 도달하기 전에 세 개의 Beldex 중간 마스터 노드를 거쳐 라우팅됩니다.</string>
     <string name="activity_path_guard_node_row_title">입구 노드</string>
     <string name="activity_path_service_node_row_title">마스터 노드</string>
     <string name="activity_path_destination_row_title">목적지</string>

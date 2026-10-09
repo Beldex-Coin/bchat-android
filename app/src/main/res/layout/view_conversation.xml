@@ -11,11 +11,10 @@
         android:id="@+id/content_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/home_row_background"
-        android:paddingStart="12dp"
+        android:paddingStart="11dp"
         android:paddingEnd="12dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp">
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
 
         <include layout="@layout/view_profile_picture"
             android:id="@+id/profilePictureView"
@@ -26,7 +25,7 @@
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <TextView
-            android:fontFamily="@font/open_sans_bold"
+            android:fontFamily="@font/open_sans_semi_bold"
             android:id="@+id/conversationViewDisplayNameTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -35,13 +34,12 @@
             android:ellipsize="end"
             android:textAlignment="viewStart"
             android:textSize="14sp"
-            android:textStyle="bold"
             android:textColor="@color/home_row_title"
             tools:text="I'm a very long display name. What are you going to do about it?"
             app:layout_constraintStart_toEndOf="@id/profilePictureView"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/contactView"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="10dp"
             android:layout_marginEnd="24dp"
             app:layout_constraintEnd_toStartOf="@id/timestampTextView"/>
 
@@ -137,10 +135,10 @@
                 android:layout_centerInParent="true"
                 android:gravity="center"
                 android:textColor="@color/home_unread_badge_text"
-                android:textSize="@dimen/very_small_font_size"
-                android:textStyle="bold"
+                android:fontFamily="@font/open_sans_bold"
+                android:textSize="10sp"
                 android:minHeight="18dp"
-                android:minWidth="18dp"/>
+                android:minWidth="14dp"/>
 
         </RelativeLayout>
 
@@ -152,10 +150,9 @@
             android:layout_marginStart="@dimen/medium_spacing"
             android:maxLines="1"
             android:ellipsize="end"
-            android:textSize="@dimen/very_small_font_size"
+            android:textSize="10sp"
             android:textColor="@color/home_row_timestamp"
             tools:text="9:41 AM"
-            android:padding="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/conversationViewDisplayNameTextView"
             android:layout_marginBottom="2dp"
@@ -179,8 +176,8 @@
 
     <RelativeLayout
         android:id="@+id/pinnedViewContainer"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
         android:background="@drawable/pin_rounded_indicator"
         android:layout_gravity="center_vertical|end"
         android:gravity="center"

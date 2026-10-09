@@ -185,14 +185,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                style="@style/CustomCardViewStyle"
+                app:cardCornerRadius="0dp"
+                app:strokeWidth="0dp"
                 app:cardBackgroundColor="@color/home_screen_background"
-                app:cardElevation="4dp">
+                app:cardElevation="0dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/medium_spacing">
+                    android:layout_height="match_parent">
 
                     <androidx.compose.ui.platform.ComposeView
                         android:id="@+id/archiveChatCardView"
@@ -217,7 +217,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_below="@id/archiveChatDivider"
-                        android:padding="8dp"/>
+                        android:paddingBottom="8dp"/>
 
                     <!--                <io.beldex.bchat.home.NewConversationButtonSetView-->
                     <!--                    android:id="@+id/newConversationButtonSet"-->

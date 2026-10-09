@@ -1,6 +1,20 @@
 package io.beldex.bchat.compose_utils
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.ui.graphics.luminance
+import androidx.compose.runtime.getValue
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.background
+import androidx.compose.ui.res.painterResource
+import androidx.compose.material3.Icon
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -197,20 +211,25 @@ fun BChatOutlinedTextField(
     )
 }
 
+// Revamp_2026 radio (Figma Clear all data dialog, 7546:5043): 17dp ring, 11dp inner dot when selected.
 @Composable
 fun BChatRadioButton(
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    RadioButton(
-        selected = selected,
-        onClick = onClick,
-        colors = RadioButtonDefaults.colors(
-            selectedColor = MaterialTheme.appColors.primaryButtonColor,
-        ),
+    val ringColor = if (selected) Color(0xFF078720) else MaterialTheme.appColors.onboardingInputText
+    androidx.compose.foundation.layout.Box(
+        contentAlignment = Alignment.Center,
         modifier = modifier
-    )
+            .size(24.dp)
+            .selectable(selected = selected, role = androidx.compose.ui.semantics.Role.RadioButton, onClick = onClick)
+    ) {
+        androidx.compose.foundation.Canvas(modifier = Modifier.size(17.dp)) {
+            drawCircle(color = ringColor, style = androidx.compose.ui.graphics.drawscope.Stroke(width = 1.dp.toPx()))
+            if (selected) drawCircle(color = ringColor, radius = 5.5.dp.toPx())
+        }
+    }
 }
 
 @Composable
@@ -241,4 +260,69 @@ fun ImageView(
         contentDescription = contentDescription,
         modifier = modifier
     )
+}
+
+// Revamp_2026 long-press / more-options menu row (Figma 7546:7547).
+@Composable
+fun ContextMenuItem(
+    iconRes: Int,
+    label: String,
+    onClick: () -> Unit,
+    destructive: Boolean = false
+) {
+    val color = if (destructive) MaterialTheme.appColors.deleteOptionColor else MaterialTheme.appColors.onboardingInputText
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 20.dp, vertical = 10.dp)
+    ) {
+        Icon(
+            painter = painterResource(id = iconRes),
+            contentDescription = null,
+            tint = color,
+            modifier = Modifier.size(20.dp)
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Text(
+            text = label,
+            color = color,
+            fontFamily = RobotoMono,
+            fontWeight = FontWeight.Normal,
+            fontSize = 14.sp
+        )
+    }
+}
+
+// Revamp_2026 toggle (Figma Toggle 7546:13500): 40x22 rectangle, gradient track, 14dp square thumb.
+@Composable
+fun BChatSwitch(
+    checked: Boolean,
+    onCheckedChange: ((Boolean) -> Unit)?,
+    modifier: Modifier = Modifier
+) {
+    val isDark = MaterialTheme.appColors.backgroundColor.luminance() < 0.5f
+    val trackStart = if (isDark) Color(0xFF1A1A1A) else Color(0xFFCFCFCF)
+    val trackEnd = if (isDark) Color(0xFF333333) else Color(0xFFE6E6E6)
+    val thumbOff = if (isDark) Color(0xFF666666) else Color(0xFF8D8D8D)
+    val thumbColor = if (checked) Color(0xFF00BC33) else thumbOff
+    val thumbX by androidx.compose.animation.core.animateDpAsState(if (checked) 22.dp else 4.dp, label = "switchThumb")
+    Box(
+        modifier = modifier
+            .size(width = 40.dp, height = 22.dp)
+            .background(androidx.compose.ui.graphics.Brush.horizontalGradient(listOf(trackStart, trackEnd)))
+            .then(
+                if (onCheckedChange != null)
+                    Modifier.toggleable(value = checked, role = androidx.compose.ui.semantics.Role.Switch, onValueChange = onCheckedChange)
+                else Modifier
+            )
+    ) {
+        Box(
+            modifier = Modifier
+                .offset(x = thumbX, y = 4.dp)
+                .size(14.dp)
+                .background(thumbColor)
+        )
+    }
 }

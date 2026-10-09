@@ -1,5 +1,9 @@
 package io.beldex.bchat.my_account.ui
 
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.layout.IntrinsicSize
+import io.beldex.bchat.compose_utils.ContextMenuItem
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -267,186 +271,84 @@ fun ArchiveChatScreen(
                 offset = popupOffset,
                 onDismissRequest = { showMenu = false },
             ) {
-                Card(modifier = Modifier.wrapContentWidth().widthIn(max = 320.dp)) {
+                Card(
+                    shape = RoundedCornerShape(4.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.backgroundColor.copy(alpha = 0.96f)),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
+                    modifier = Modifier.wrapContentWidth().widthIn(max = 320.dp)
+                ) {
                     Column(
                         modifier = Modifier
-                            .padding(16.dp)
+                            .width(IntrinsicSize.Max)
+                            .padding(vertical = 10.dp)
                             .verticalScroll(rememberScrollState())
                     ) {
-                        if (!thread.recipient.isBlocked) {
-                            if (!thread.recipient.isGroupRecipient && !thread.recipient.isLocalNumber) {
-                                Row(
-                                    horizontalArrangement = Arrangement.Start,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.ic_block),
-                                        contentDescription = "",
-                                        tint = MaterialTheme.appColors.iconTint,
-                                    )
-                                    TextButton(onClick = {
-                                        showMenu = false
-                                        showBlockPopup = true
-                                    }) {
-                                        Text(
-                                            stringResource(id = R.string.RecipientPreferenceActivity_block),
-                                            fontSize = 12.sp
-                                        )
-                                    }
-                                }
+                        if (!thread.recipient.isGroupRecipient && !thread.recipient.isLocalNumber) {
+                            if (thread.recipient.isBlocked) {
+                                ContextMenuItem(
+                                    iconRes = R.drawable.ic_unblock,
+                                    label = stringResource(id = R.string.ConversationActivity_unblock),
+                                    onClick = { showMenu = false; showUnBlockPopup = true }
+                                )
+                            } else {
+                                ContextMenuItem(
+                                    iconRes = R.drawable.ic_block,
+                                    label = stringResource(id = R.string.RecipientPreferenceActivity_block),
+                                    onClick = { showMenu = false; showBlockPopup = true }
+                                )
                             }
                         }
-                        if (thread.recipient.isBlocked) {
-                            if (!thread.recipient.isGroupRecipient && !thread.recipient.isLocalNumber) {
-                                Row(
-                                    horizontalArrangement = Arrangement.Start,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.ic_unblock),
-                                        contentDescription = "",
-                                        tint = MaterialTheme.appColors.iconTint,
-                                    )
-                                    TextButton(onClick = {
-                                        showMenu = false
-                                        showUnBlockPopup = true
-                                    }) {
-                                        Text(
-                                            stringResource(id=R.string.ConversationActivity_unblock),
-                                            fontSize = 12.sp
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                        Row(
-                            horizontalArrangement = Arrangement.Start,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_unarchive_chats),
-                                contentDescription = "",
-                                tint = MaterialTheme.appColors.iconTint,
-                                modifier = Modifier.size(14.dp)
-                            )
-                            TextButton(onClick = {
+                        ContextMenuItem(
+                            iconRes = R.drawable.ic_unarchive_chats,
+                            label = stringResource(id = R.string.un_archive_chat_title),
+                            onClick = {
                                 showMenu = false
                                 archiveChatViewModel.onEvent(ArchiveChatsEvents.UnArchiveChats(thread))
-                            }) {
-                                Text(
-                                    stringResource(id = R.string.un_archive_chat_title),
-                                    fontSize = 12.sp
-                                )
                             }
-                        }
-                        Row(
-                            horizontalArrangement = Arrangement.Start,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                painter = painterResource(id = if (thread.isPinned) R.drawable.ic_unpin else R.drawable.ic_pin_menu),
-                                contentDescription = "",
-                                tint = MaterialTheme.appColors.iconTint,
-                                modifier = Modifier.size(14.dp)
-                            )
-                            TextButton(onClick = {
+                        )
+                        ContextMenuItem(
+                            iconRes = if (thread.isPinned) R.drawable.ic_unpin else R.drawable.ic_pin_menu,
+                            label = stringResource(id = if (thread.isPinned) R.string.conversation_unpin else R.string.conversation_pin),
+                            onClick = {
                                 showMenu = false
                                 archiveChatViewModel.onEvent(ArchiveChatsEvents.TogglePin(thread))
-                            }) {
-                                Text(
-                                    stringResource(id = if (thread.isPinned) R.string.conversation_unpin else R.string.conversation_pin),
-                                    fontSize = 12.sp
-                                )
                             }
-                        }
+                        )
                         if (thread.unreadCount > 0) {
-                            Row(
-                                horizontalArrangement = Arrangement.Start,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_mark_as_read_menu),
-                                    contentDescription = "",
-                                    tint = MaterialTheme.appColors.iconTint
-                                )
-                                TextButton(onClick = {
+                            ContextMenuItem(
+                                iconRes = R.drawable.ic_mark_as_read_menu,
+                                label = stringResource(id = R.string.MessageNotifier_mark_all_as_read),
+                                onClick = {
                                     showMenu = false
                                     archiveChatViewModel.onEvent(ArchiveChatsEvents.MarkAsRead(thread))
-                                }) {
-                                    Text(
-                                        stringResource(id = R.string.MessageNotifier_mark_all_as_read),
-                                        fontSize = 12.sp
-                                    )
                                 }
-                            }
+                            )
                         }
                         if (!thread.recipient.isLocalNumber) {
-                            Row(
-                                horizontalArrangement = Arrangement.Start,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = if (thread.recipient.isMuted) R.drawable.ic_unmute_notification_menu else R.drawable.ic_mute_notification_menu),
-                                    contentDescription = "",
-                                    tint = MaterialTheme.appColors.iconTint
-                                )
-                                TextButton(onClick = {
-                                    showMenu = false
-                                    showMuteNotification = true
-                                }) {
-                                    Text(
-                                        stringResource(
-                                            id = if (thread.recipient.isMuted) R.string.conversation_muted__unmute
-                                            else R.string.conversation_unmuted__mute_notifications
-                                        ),
-                                        fontSize = 12.sp
-                                    )
-                                }
-                            }
+                            ContextMenuItem(
+                                iconRes = if (thread.recipient.isMuted) R.drawable.ic_unmute_notification_menu else R.drawable.ic_mute_notification_menu,
+                                label = stringResource(
+                                    id = if (thread.recipient.isMuted) R.string.conversation_muted__unmute
+                                    else R.string.conversation_unmuted__mute_notifications
+                                ),
+                                onClick = { showMenu = false; showMuteNotification = true }
+                            )
                         }
                         val isSecretGroupActive = thread.recipient.isClosedGroupRecipient &&
                             (groupDatabase.getGroup(thread.recipient.address.toString()).orNull()?.isActive == true)
                         if (thread.recipient.isGroupRecipient && !thread.recipient.isMuted && isSecretGroupActive) {
-                            Row(
-                                horizontalArrangement = Arrangement.Start,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_notification_settings_menu),
-                                    contentDescription = "",
-                                    tint = MaterialTheme.appColors.iconTint
-                                )
-                                TextButton(onClick = {
-                                    showMenu = false
-                                    showNotificationSettings = true
-                                }) {
-                                    Text(
-                                        stringResource(id = R.string.RecipientPreferenceActivity_notification_settings),
-                                        fontSize = 12.sp
-                                    )
-                                }
-                            }
-                        }
-                        Row(
-                            horizontalArrangement = Arrangement.Start,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_delete_menu),
-                                contentDescription = "",
-                                tint = MaterialTheme.appColors.deleteOptionColor,
+                            ContextMenuItem(
+                                iconRes = R.drawable.ic_notification_settings_menu,
+                                label = stringResource(id = R.string.RecipientPreferenceActivity_notification_settings),
+                                onClick = { showMenu = false; showNotificationSettings = true }
                             )
-                            TextButton(onClick = {
-                                showMenu = false
-                                showDeletePopup = true
-                            }) {
-                                Text(
-                                    stringResource(id = R.string.delete),
-                                    color = MaterialTheme.appColors.deleteOptionColor,
-                                    fontSize = 12.sp,
-                                )
-                            }
                         }
+                        ContextMenuItem(
+                            iconRes = R.drawable.ic_delete_menu,
+                            label = stringResource(id = R.string.delete),
+                            destructive = true,
+                            onClick = { showMenu = false; showDeletePopup = true }
+                        )
                     }
                 }
             }

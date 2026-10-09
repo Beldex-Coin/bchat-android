@@ -36,6 +36,7 @@ import androidx.navigation.compose.rememberNavController
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.utilities.recipients.Recipient
 import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.BaseComponentActivity
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.R
@@ -102,7 +103,7 @@ class NewGroupConversationActivity: BaseComponentActivity() {
                                     modifier = Modifier
                                         .fillMaxSize()
                                         .background(
-                                            color = MaterialTheme.colorScheme.primary
+                                            color = MaterialTheme.appColors.backgroundColor
                                         )
                                 ) {
                                     CreateSecretGroup(
@@ -142,7 +143,7 @@ class NewGroupConversationActivity: BaseComponentActivity() {
                                     modifier = Modifier
                                         .fillMaxSize()
                                         .background(
-                                            color = MaterialTheme.colorScheme.primary
+                                            color = MaterialTheme.appColors.backgroundColor
                                         )
                                 ) {
                                     JoinSocialGroupScreen(

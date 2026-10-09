@@ -194,7 +194,7 @@ class VisibleMessageView : LinearLayout {
         if (showDateBreak) {
             binding.dateBreakTextView.text = DateUtils.getCoversationDisplayFormattedTimeSpanString(context, Locale.getDefault(), message.timestamp)
             binding.dateBreakTextView.isVisible = true
-            binding.dateBreakTextView.textSize = fontSize.toFloat()
+            binding.dateBreakTextView.textSize = fontSize.toFloat() * 0.65f
         } else {
             binding.dateBreakTextView.isVisible = false
         }

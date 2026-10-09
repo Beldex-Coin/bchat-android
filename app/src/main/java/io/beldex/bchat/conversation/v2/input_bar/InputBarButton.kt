@@ -47,10 +47,10 @@ class InputBarButton : RelativeLayout {
     private val colorID by lazy {
         if (hasOpaqueBackground) {
             R.color.input_bar_button_background_opaque
+        } else if (isMessageBox) {
+            android.R.color.transparent
         } else if (isSendButton) {
             R.color.button_green
-        } else if (isMessageBox){
-            R.color.input_bar_background
         }
         else {
             R.color.button_green
@@ -92,7 +92,7 @@ class InputBarButton : RelativeLayout {
 
     private val imageView by lazy {
         val result = ImageView(context)
-        val size = if (isGIFButton || isSendButton) toPx(24, resources) else toPx(16, resources)
+        val size = if (isGIFButton || isSendButton || isMessageBox) toPx(24, resources) else toPx(16, resources)
         result.layoutParams = LayoutParams(size, size)
         result.layoutParams = LayoutParams(size, size)
         result.scaleType = ImageView.ScaleType.CENTER_INSIDE

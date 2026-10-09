@@ -22,8 +22,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -44,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.BaseComponentActivity
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.BChatRadioButton
 import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
@@ -132,15 +131,9 @@ fun ChooseLanguage(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    RadioButton(
+                    BChatRadioButton(
                         selected = language.code == selectedCode,
-                        onClick = {
-                            updateSelectedLanguage(context, language)
-                        },
-                        colors = RadioButtonDefaults.colors(
-                            selectedColor = MaterialTheme.appColors.primaryButtonColor,
-                            unselectedColor = MaterialTheme.appColors.transactionSubTitle,
-                        ),
+                        onClick = { updateSelectedLanguage(context, language) }
                     )
                     Column(
                         verticalArrangement = Arrangement.spacedBy(4.dp),

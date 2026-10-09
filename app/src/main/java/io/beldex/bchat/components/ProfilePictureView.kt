@@ -18,17 +18,28 @@ import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterInside
-import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.util.AvatarPlaceholderGenerator.generate
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewProfilePictureBinding
+import io.beldex.bchat.compose_utils.clipToNotchedAvatar
 import com.bumptech.glide.RequestManager;
 
 class ProfilePictureView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : RelativeLayout(context, attrs) {
     private val binding: ViewProfilePictureBinding by lazy { ViewProfilePictureBinding.bind(this) }
+
+    init {
+        post {
+            with(binding) {
+                listOf(
+                    doubleModeImageView1, doubleModeSocialGroupImageView1, largeSingleModeWithTagImageView,
+                    singleModeWithTagImageView, editGroupdoubleModeImageView1, singleModeImageView, largeSingleModeImageView
+                ).forEach { it.clipToNotchedAvatar() }
+            }
+        }
+    }
     lateinit var glide: RequestManager
     var publicKey: String? = null
     var displayName: String? = null
@@ -207,8 +218,7 @@ class ProfilePictureView @JvmOverloads constructor(
                     .placeholder(unknownRecipientDrawable)
                     .error(setupDefaultProfileView())
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .transform(CenterInside(),
-                        GranularRoundedCorners(20f, 20f, 20f, 20f))
+                    .transform(CenterInside())
                     .into(imageView)
             } else if (recipient.isOpenGroupRecipient && recipient.groupAvatarId == null) {
                 glide.clear(imageView)
@@ -224,10 +234,7 @@ class ProfilePictureView @JvmOverloads constructor(
                 ).into(imageView)*/
                 glide.load(placeholder)
                     .placeholder(unknownRecipientDrawable)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE).transform(
-                        CenterInside(),
-                        GranularRoundedCorners(20f, 20f, 20f, 20f)
-                    ).into(imageView)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE).transform(CenterInside()).into(imageView)
             }
             if(isBnsTag){
                 profilePicturesCacheWithBnsTag[publicKey] = recipient.profileAvatar

@@ -74,6 +74,7 @@ class ViewAllContactsActivity : BaseAppCompatActivity() {
         setContent {
             BChatTheme {
                 Surface(
+                    color = MaterialTheme.appColors.backgroundColor,
                     modifier = Modifier.fillMaxSize()
                 ) {
                     ScreenContainer(

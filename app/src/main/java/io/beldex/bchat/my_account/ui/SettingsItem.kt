@@ -1,5 +1,6 @@
 package io.beldex.bchat.my_account.ui
 
+import io.beldex.bchat.compose_utils.BChatSwitch
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -88,15 +89,9 @@ fun SettingsItem(
         if (containsSwitch) {
             Spacer(modifier = Modifier.width(8.dp))
 
-            Switch(
+            BChatSwitch(
                 checked = isEnabled,
-                onCheckedChange = onSwitchChanged,
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = MaterialTheme.appColors.primaryButtonColor,
-                    uncheckedThumbColor = MaterialTheme.appColors.unCheckedSwitchThumb,
-                    checkedTrackColor = MaterialTheme.appColors.switchTrackColor,
-                    uncheckedTrackColor = MaterialTheme.appColors.switchTrackColor
-                )
+                onCheckedChange = onSwitchChanged
             )
         }
     }

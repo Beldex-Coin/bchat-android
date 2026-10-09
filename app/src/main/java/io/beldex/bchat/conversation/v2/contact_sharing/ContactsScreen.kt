@@ -36,6 +36,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.beldex.bchat.R
+import androidx.compose.foundation.border
+import io.beldex.bchat.compose_utils.notchedCornerShape
+import io.beldex.bchat.compose_utils.RobotoMono
+import io.beldex.bchat.onboarding.ui.OnboardingTopBar
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.appColors
@@ -59,69 +63,54 @@ fun ContactsScreen(
     val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(LocalContext.current) == UiMode.NIGHT
     Scaffold(
         topBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painterResource(id = R.drawable.ic_back_arrow),
-                    contentDescription = stringResource(R.string.back),
-                    modifier = Modifier
-                        .noRippleCallback { onBack() }
-                )
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Text(
-                    stringResource(R.string.share_contacts),
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
+            OnboardingTopBar(
+                title = stringResource(R.string.share_contacts),
+                onBackClick = onBack
+            )
         },
         bottomBar = {
             if (contacts.isNotEmpty()) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(
-                            color = MaterialTheme.appColors.createButtonBackground
-                        ),
+                        .background(MaterialTheme.appColors.createButtonBackground)
+                        .padding(horizontal = 21.dp, vertical = 15.dp)
+                        .imePadding(),
                     contentAlignment = Alignment.Center,
                 ) {
                     PrimaryButton(
-                        onClick={
-                            onSend(selectedContacts)
-                        },
-                        enabled=selectedContacts.isNotEmpty(),
-                        disabledContainerColor=MaterialTheme.appColors.disabledCreateButtonContainer,
-                        modifier=Modifier
+                        onClick = { onSend(selectedContacts) },
+                        enabled = selectedContacts.isNotEmpty(),
+                        shape = notchedCornerShape(14.5.dp),
+                        containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
+                        contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
+                        disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
+                        disabledContentColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledText,
+                        modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp)
-                            .imePadding()
+                            .height(58.dp)
                     ) {
                         Text(
-                            text=stringResource(id=R.string.conversation_activity__send),
-                            style=MaterialTheme.typography.bodyMedium.copy(
-                                color=Color.White,
-                                fontWeight=FontWeight(400),
-                                fontSize=16.sp
-                            ),
-                            modifier=Modifier.padding(8.dp)
+                            text = stringResource(id = R.string.conversation_activity__send),
+                            fontFamily = RobotoMono,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 16.sp
                         )
                     }
                 }
             }
         },
+        containerColor = MaterialTheme.appColors.backgroundColor,
         modifier = modifier.fillMaxSize()
     ) { innerPadding ->
 
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(16.dp)
+                .padding(horizontal = 14.dp, vertical = 13.dp)
                 .fillMaxSize()
+                .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
+                .padding(13.dp)
         ) {
             SearchView(
                 hint = stringResource(id = R.string.search_contact),

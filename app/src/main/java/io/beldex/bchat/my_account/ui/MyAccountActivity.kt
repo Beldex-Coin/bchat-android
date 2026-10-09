@@ -141,6 +141,7 @@ import io.beldex.bchat.my_account.ui.dialogs.ClearDataDialog
 import io.beldex.bchat.my_account.ui.dialogs.CopyContentDialog
 import io.beldex.bchat.my_account.ui.dialogs.LinkYourBNSDialog
 import io.beldex.bchat.my_account.ui.dialogs.ProfilePicturePopup
+import io.beldex.bchat.onboarding.ui.OnboardingTopBar
 import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.profiles.ProfileMediaConstraints
@@ -309,7 +310,7 @@ class MyAccountActivity : BaseComponentActivity() {
                 Surface {
                     Scaffold(
                         contentWindowInsets = WindowInsets.safeDrawing,
-                        containerColor = MaterialTheme.colorScheme.primary
+                        containerColor = MaterialTheme.appColors.backgroundColor
                     ) { padding ->
 
                         val navController = rememberNavController()
@@ -1691,38 +1692,11 @@ fun MyAccountScreenContainer(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(top = 8.dp, bottom = 16.dp)
-        ) {
-            Icon(
-                painterResource(id = R.drawable.ic_back_arrow),
-                contentDescription = stringResource(R.string.back),
-                tint = MaterialTheme.appColors.editTextColor,
-                modifier = Modifier
-                    .clickable {
-                        onBackClick()
-                    }
-            )
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge.copy(
-                    color = MaterialTheme.appColors.editTextColor,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                ),
-                modifier = Modifier
-                    .weight(1f)
-            )
-
-            actionItems()
-        }
+        OnboardingTopBar(
+            title = title,
+            onBackClick = onBackClick,
+            actions = { actionItems() }
+        )
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -1771,37 +1745,11 @@ fun ArchiveChatScreenContainer(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
-            Icon(
-                painterResource(id = R.drawable.ic_back_arrow),
-                contentDescription = stringResource(R.string.back),
-                tint = MaterialTheme.appColors.editTextColor,
-                modifier = Modifier
-                    .clickable {
-                        onBackClick()
-                    }
-            )
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge.copy(
-                    color = MaterialTheme.appColors.editTextColor,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                ),
-                modifier = Modifier
-                    .weight(1f)
-            )
-
-            actionItems()
-        }
+        OnboardingTopBar(
+            title = title,
+            onBackClick = onBackClick,
+            actions = { actionItems() }
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 

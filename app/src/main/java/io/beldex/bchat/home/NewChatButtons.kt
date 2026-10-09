@@ -19,6 +19,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.notchedCornerShape
+import androidx.compose.ui.res.stringResource
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
 import io.beldex.bchat.compose_utils.ui.BChatPreviewContainer
 import io.beldex.bchat.R
 
@@ -35,30 +39,26 @@ fun NewChatButtons(
         Box(
             modifier = Modifier
         ) {
-            FloatingActionButton(
-                elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(
-                    defaultElevation = 0.dp,
-                    pressedElevation = 0.dp,
-                    focusedElevation = 0.dp,
-                    hoveredElevation = 0.dp
-                ),
-                onClick = {
-                    openNewConversationChat()
-                },
-                containerColor = MaterialTheme.appColors.homeFabBackground,
+            Box(
+                contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .size(52.dp).padding(
-                        bottom = 8.dp,
-                        end = 8.dp
-                    ),
-                shape = RoundedCornerShape(16.dp)
+                    .padding(end = 8.dp, bottom = 10.dp)
+                    .size(48.dp)
+                    .clickable(onClick = openNewConversationChat)
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_plus),
-                    contentDescription = "",
-                    tint = MaterialTheme.appColors.homeFabIconColor,
-                    modifier = Modifier.size(16.dp)
-                )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(30.dp)
+                        .background(MaterialTheme.appColors.homeFabBackground, notchedCornerShape(6.dp))
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_plus),
+                        contentDescription = stringResource(R.string.activity_create_private_chat_title),
+                        tint = MaterialTheme.appColors.homeFabIconColor,
+                        modifier = Modifier.size(12.dp)
+                    )
+                }
             }
         }
     }

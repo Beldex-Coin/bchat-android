@@ -106,6 +106,10 @@ fun RecoveryPhraseRestoreScreen(
                                     setHintTextColor(hintColor)
                                     setTextColor(textColor)
                                     setPadding(0, 0, 0, 0)
+                                    filters = arrayOf(InputFilter { source, start, end, dest, dstart, dend ->
+                                        val result = dest.substring(0, dstart) + source.subSequence(start, end) + dest.substring(dend)
+                                        if (result.split(Regex("\\s+")).count { it.isNotEmpty() } > 25) "" else null
+                                    })
                                     addTextChangedListener(object : TextWatcher {
                                         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                                         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -119,12 +123,10 @@ fun RecoveryPhraseRestoreScreen(
                                 editText.hint = hintText
                                 if (editText.text?.toString() != mnemonic) {
                                     editText.setText(mnemonic)
-                                    editText.setSelection(mnemonic.length)
-                                }
-                                if (mnemonic.split(Regex("\\s+")).count { it.isNotEmpty() } >= 25) {
-                                    editText.filters = arrayOf(InputFilter.LengthFilter(mnemonic.length))
-                                } else {
-                                    editText.filters = arrayOfNulls(0)
+                                    editText.setSelection(editText.text?.length ?: 0)
+                                    // A paste longer than 25 words is rejected by the filter; keep state in sync.
+                                    val shown = editText.text?.toString().orEmpty()
+                                    if (shown != mnemonic) latestOnMnemonicChange.value(shown)
                                 }
                             },
                             modifier = Modifier.fillMaxWidth()

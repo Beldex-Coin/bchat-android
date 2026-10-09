@@ -15,7 +15,7 @@
             android:layout_height="@dimen/medium_profile_picture_size"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            app:riv_corner_radius="200dp"/>
+            app:riv_corner_radius="0dp"/>
 
         <ImageView
             android:id="@+id/doubleModeImageView2"
@@ -40,7 +40,7 @@
             android:layout_height="@dimen/medium_profile_picture_size"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            app:riv_corner_radius="200dp"/>
+            app:riv_corner_radius="0dp"/>
 
     </RelativeLayout>
 
@@ -52,7 +52,7 @@
             android:id="@+id/largeSingleModeWithTagImageView"
             android:layout_width="@dimen/large_profile_picture_size"
             android:layout_height="@dimen/large_profile_picture_size"
-            app:riv_corner_radius="200dp"
+            app:riv_corner_radius="0dp"
             android:background="@drawable/ic_bns_tag_background"
             android:padding="4dp"/>
         <ImageView
@@ -74,7 +74,7 @@
             android:id="@+id/singleModeWithTagImageView"
             android:layout_width="@dimen/medium_profile_picture_size"
             android:layout_height="@dimen/medium_profile_picture_size"
-            app:riv_corner_radius="200dp"
+            app:riv_corner_radius="0dp"
             android:background="@drawable/ic_bns_tag_background"
             android:padding="2dp"/>
         <ImageView
@@ -107,7 +107,7 @@
             android:layout_height="76dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            app:riv_corner_radius="200dp"/>
+            app:riv_corner_radius="0dp"/>
 
         <ImageView
             android:id="@+id/editGroupdoubleModeImageView2"
@@ -126,12 +126,12 @@
         android:id="@+id/singleModeImageView"
         android:layout_width="@dimen/medium_profile_picture_size"
         android:layout_height="@dimen/medium_profile_picture_size"
-        app:riv_corner_radius="200dp"/>
+        app:riv_corner_radius="0dp"/>
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/largeSingleModeImageView"
         android:layout_width="@dimen/large_profile_picture_size"
         android:layout_height="@dimen/large_profile_picture_size"
-        app:riv_corner_radius="200dp"/>
+        app:riv_corner_radius="0dp"/>
 
 </io.beldex.bchat.components.ProfilePictureView>

@@ -1,5 +1,6 @@
 package io.beldex.bchat.home
 
+import io.beldex.bchat.compose_utils.BChatSwitch
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -60,6 +61,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import app.cash.copper.flow.observeQuery
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.onboarding.ui.OnboardingTopBar
 import io.beldex.bchat.BaseComponentActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.archivechats.ArchiveChatViewModel
@@ -145,9 +147,9 @@ class ArchiveChatActivity : BaseComponentActivity() {
 
             BChatTheme(darkTheme=isDarkTheme) {
                 Surface(
+                    color=MaterialTheme.appColors.backgroundColor,
                     modifier=Modifier
                         .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background)
                         .padding(WindowInsets.systemBars.asPaddingValues())
                 ) {
                     Box(modifier=Modifier.fillMaxSize()) {
@@ -237,36 +239,12 @@ class ArchiveChatActivity : BaseComponentActivity() {
         Column(
             modifier=Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.primary)
+                .background(MaterialTheme.appColors.backgroundColor)
         ) {
-            Row(
-                verticalAlignment=Alignment.CenterVertically,
-                modifier=Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            ) {
-                Icon(
-                    painterResource(id=R.drawable.ic_back_arrow),
-                    contentDescription=stringResource(R.string.back),
-                    tint=MaterialTheme.appColors.editTextColor,
-                    modifier=Modifier
-                        .clickable {
-                            onClose()
-                        }
-                )
-                Spacer(modifier=Modifier.width(16.dp))
-
-                Text(
-                    text=stringResource(R.string.archive_settings),
-                    style=MaterialTheme.typography.titleLarge.copy(
-                        color=MaterialTheme.appColors.editTextColor,
-                        fontWeight=FontWeight.Bold,
-                        fontSize=18.sp
-                    ),
-                    modifier=Modifier
-                        .weight(1f)
-                )
-            }
+            OnboardingTopBar(
+                title=stringResource(R.string.archive_settings),
+                onBackClick=onClose
+            )
 
             Spacer(modifier=Modifier.height(8.dp))
 
@@ -306,20 +284,11 @@ class ArchiveChatActivity : BaseComponentActivity() {
 
                     Spacer(modifier=Modifier.width(12.dp))
 
-                    Switch(
+                    BChatSwitch(
                         checked=keepArchiveChat,
                         onCheckedChange={ checked ->
                             onToggle(checked)
-                        },
-                        colors=SwitchDefaults.colors(
-                            checkedThumbColor=MaterialTheme.appColors.primaryButtonColor,
-                            uncheckedThumbColor=MaterialTheme.appColors.unCheckedSwitchThumb,
-                            checkedTrackColor=MaterialTheme.appColors.switchTrackColor,
-                            uncheckedTrackColor=MaterialTheme.appColors.switchTrackColor
-                        ),
-                        modifier=Modifier
-                            .size(30.dp)
-                            .padding(end=4.dp)
+                        }
                     )
                 }
             }

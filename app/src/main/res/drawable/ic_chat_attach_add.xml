@@ -1,0 +1,9 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="@color/chat_input_attach_icon"
+        android:pathData="M4.76587,4.76562V19.2337H19.234V4.76562H4.76587ZM5.61693,5.61669H18.3829V18.3826H5.61693V5.61669ZM11.5578,8.1865V11.5741H8.17012V12.4252H11.5578V15.8128H12.4088V12.4252H15.7965V11.5741H12.4088V8.1865H11.5578Z" />
+</vector>

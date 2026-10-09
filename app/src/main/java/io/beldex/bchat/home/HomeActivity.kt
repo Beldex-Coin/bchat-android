@@ -460,10 +460,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                             onConversationClick(it.threadId)
                         },
                         modifier =Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                horizontal=16.dp
-                            )
+                            .fillMaxWidth(),
+                        openMessageRequests = { showMessageRequests() }
                     )
                 }
             }

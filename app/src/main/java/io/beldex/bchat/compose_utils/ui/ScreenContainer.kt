@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.onboarding.ui.OnboardingTopBar
 import io.beldex.bchat.R
 
 @Composable
@@ -36,42 +37,11 @@ fun ScreenContainer(
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    vertical = 8.dp,
-                    horizontal = 16.dp
-                )
-        ) {
-
-            Icon(
-                painter = painterResource(id = R.drawable.ic_back_arrow),
-                contentDescription = stringResource(R.string.back),
-                tint = MaterialTheme.appColors.editTextColor,
-                modifier = Modifier.clickable {
-                    onBackClick()
-                }
-            )
-
-            Spacer(
-                modifier = Modifier.width(12.dp)
-            )
-
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge.copy(
-                    color = MaterialTheme.appColors.editTextColor,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                ),
-                modifier = Modifier.weight(1f)
-            )
-
-            actionItems()
-        }
+        OnboardingTopBar(
+            title = title,
+            onBackClick = onBackClick,
+            actions = { actionItems() }
+        )
 
         Column(
             modifier = Modifier

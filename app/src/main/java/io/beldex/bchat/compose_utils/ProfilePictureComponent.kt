@@ -8,7 +8,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,7 +34,6 @@ import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterInside
-import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -182,7 +180,7 @@ fun ProfilePicture(
 //            imageLoader = imageLoader,
 //            modifier = modifier
 //                .size(containerSize)
-//                .clip(CircleShape)
+//                .clip(NotchedAvatarShape)
 //        )
         val sizePx = with(LocalDensity.current) {
             containerSize.toPx()
@@ -194,22 +192,20 @@ fun ProfilePicture(
                         val imageView = ImageView(ctx).apply {
                             layoutParams = ViewGroup.LayoutParams(sizePx, sizePx)
                             contentDescription = displayName
+                            clipToNotchedAvatar()
                         }
                         glide.load(signalProfilePicture)
                             .placeholder(unknownRecipientDrawable)
                             .error(setupDefaultProfileView())
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .transform(
-                                CenterInside(),
-                                CircleCrop()
-                            )
+                            .transform(CenterInside())
                             .into(imageView)
                         imageView
                     },
                     modifier = modifier.border(
                         width = if (pictureType == 1) 2.dp else 4.dp,
                         color = MaterialTheme.appColors.primaryButtonColor,
-                        shape = CircleShape)
+                        shape = NotchedAvatarShape)
                 )
                 Image(
                     painter = painterResource(id = R.drawable.ic_bns_verified_tag),
@@ -225,15 +221,13 @@ fun ProfilePicture(
                     val imageView = ImageView(ctx).apply {
                         layoutParams = ViewGroup.LayoutParams(sizePx, sizePx)
                         contentDescription = displayName
+                        clipToNotchedAvatar()
                     }
                     glide.load(signalProfilePicture)
                         .placeholder(unknownRecipientDrawable)
                         .error(setupDefaultProfileView())
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .transform(
-                            CenterInside(),
-                            CircleCrop()
-                        )
+                        .transform(CenterInside())
                         .into(imageView)
                     imageView
                 },
@@ -295,11 +289,11 @@ fun ProfilePicture(
                         contentScale = ContentScale.Crop,
                         modifier = modifier
                             .size(containerSize)
-                            .clip(CircleShape)
+                            .clip(NotchedAvatarShape)
                             .border(
                                 width = if (pictureType == 1) 2.dp else 4.dp,
                                 color = MaterialTheme.appColors.primaryButtonColor,
-                                shape = CircleShape
+                                shape = NotchedAvatarShape
                             )
                     )
                     Image(
@@ -317,7 +311,7 @@ fun ProfilePicture(
                     contentScale = ContentScale.Crop,
                     modifier = modifier
                         .size(containerSize)
-                        .clip(CircleShape)
+                        .clip(NotchedAvatarShape)
                 )
             }
         }

@@ -33,6 +33,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.BaseComponentActivity
 import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 
@@ -56,11 +57,10 @@ class ContactSharingActivity: BaseComponentActivity() {
             }
             BChatTheme(darkTheme = isDarkTheme) {
                 Surface(
-                    modifier=Modifier
-                        .background(MaterialTheme.colorScheme.background)
+                    color=MaterialTheme.appColors.backgroundColor
                 ) {
                     Scaffold(
-                        containerColor=MaterialTheme.colorScheme.primary,
+                        containerColor=MaterialTheme.appColors.backgroundColor,
                         contentWindowInsets = WindowInsets.systemBars,
                     ) {
                         val viewModel : ContactsViewModel=hiltViewModel()

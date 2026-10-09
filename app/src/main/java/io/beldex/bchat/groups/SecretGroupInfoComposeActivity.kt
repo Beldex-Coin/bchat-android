@@ -1,5 +1,6 @@
 package io.beldex.bchat.groups
 
+import io.beldex.bchat.compose_utils.BChatSwitch
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Activity.RESULT_OK
@@ -145,9 +146,9 @@ class SecretGroupInfoComposeActivity : BaseComponentActivity() {
 
             BChatTheme(darkTheme = isDarkTheme) {
                 Surface(
+                    color = MaterialTheme.appColors.backgroundColor,
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(MaterialTheme.appColors.backgroundColor)
                         .padding(WindowInsets.systemBars.asPaddingValues())
                 ) {
                     val context = LocalContext.current
@@ -971,18 +972,9 @@ fun NavigationItem(
                     modifier=Modifier.size(16.dp)
                 )
             } else {
-                Switch(
+                BChatSwitch(
                     checked=checked,
-                    onCheckedChange={ onItemClick() },
-                    colors=SwitchDefaults.colors(
-                        checkedThumbColor=MaterialTheme.appColors.primaryButtonColor,
-                        uncheckedThumbColor=MaterialTheme.appColors.unCheckedSwitchThumb,
-                        checkedTrackColor=MaterialTheme.appColors.switchTrackColor,
-                        uncheckedTrackColor=MaterialTheme.appColors.switchTrackColor
-                    ),
-                    modifier=Modifier
-                        .size(30.dp)
-                        .padding(end = 4.dp)
+                    onCheckedChange={ onItemClick() }
                 )
             }
         }

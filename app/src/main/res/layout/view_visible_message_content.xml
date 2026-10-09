@@ -233,7 +233,7 @@
                     android:id="@+id/bodyTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans_regular"
+                    android:fontFamily="@font/roboto_mono"
                     android:maxWidth="@dimen/max_text_width"
                     android:layout_gravity="end|bottom"
                     android:gravity="start|top"

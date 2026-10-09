@@ -41,8 +41,12 @@ object AvatarPlaceholderGenerator {
         // Draw background/frame
         val paint = Paint(Paint.ANTI_ALIAS_FLAG)
         paint.color = colorPrimary
-        val radius = pixelSize.toFloat() / 2
-        canvas.drawCircle(radius, radius, radius, paint)
+        val size = pixelSize.toFloat()
+        val cut = size * io.beldex.bchat.compose_utils.AVATAR_NOTCH_FRACTION
+        val shape = android.graphics.Path().apply {
+            moveTo(0f, 0f); lineTo(size - cut, 0f); lineTo(size, cut); lineTo(size, size); lineTo(0f, size); close()
+        }
+        canvas.drawPath(shape, paint)
         // Draw text
         val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
         textPaint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)

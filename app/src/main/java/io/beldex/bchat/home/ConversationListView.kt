@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -43,6 +42,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
 import com.bumptech.glide.RequestManager
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.ContextMenuItem
 import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.database.model.ThreadRecord
@@ -57,7 +57,22 @@ enum class ConversationRowAction {
     Details, Pin, Unpin, Block, Unblock, Archive, Mute, Unmute, NotificationSettings, MarkRead, Delete
 }
 
-private data class RowMenuItem(val action: ConversationRowAction, val labelRes: Int)
+private data class RowMenuItem(val action: ConversationRowAction, val labelRes: Int) {
+    val iconRes: Int
+        get() = when (action) {
+            ConversationRowAction.Details -> R.drawable.ic_details_menu
+            ConversationRowAction.Pin -> R.drawable.ic_pin_menu
+            ConversationRowAction.Unpin -> R.drawable.ic_unpin
+            ConversationRowAction.Block -> R.drawable.ic_block
+            ConversationRowAction.Unblock -> R.drawable.ic_unblock
+            ConversationRowAction.Archive -> R.drawable.ic_archive_chats
+            ConversationRowAction.Mute -> R.drawable.ic_mute_notification_menu
+            ConversationRowAction.Unmute -> R.drawable.ic_unmute_notification_menu
+            ConversationRowAction.NotificationSettings -> R.drawable.ic_notification_settings_menu
+            ConversationRowAction.MarkRead -> R.drawable.ic_mark_as_read_menu
+            ConversationRowAction.Delete -> R.drawable.ic_delete_menu
+        }
+}
 
 private fun menuItemsFor(thread: ThreadRecord, isSecretGroupActive: Boolean): List<RowMenuItem> {
     val recipient = thread.recipient
@@ -121,7 +136,7 @@ fun ConversationListView(
     }
 
     LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
         modifier = modifier.fillMaxSize()
     ) {
         items(items = conversations, key = { it.threadId }) { thread ->
@@ -167,7 +182,6 @@ private fun ConversationRow(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(RoundedCornerShape(16.dp))
                     .background(MaterialTheme.appColors.deleteOptionColor)
                     .padding(horizontal = 20.dp),
                 contentAlignment = Alignment.CenterEnd
@@ -196,24 +210,26 @@ private fun ConversationRow(
             AndroidView(
                 factory = { ctx -> ConversationView(ctx) },
                 update = { view -> view.bind(thread, isTyping, glide) },
-                modifier = Modifier.fillMaxWidth()
+                // Opaque base so the swipe-to-delete layer underneath doesn't show through flat rows.
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.appColors.homeBackground)
             )
 
             DropdownMenu(
                 expanded = showMenu,
                 onDismissRequest = { showMenu = false },
-                modifier = Modifier.zIndex(1f)
+                containerColor = MaterialTheme.appColors.backgroundColor.copy(alpha = 0.96f),
+                shadowElevation = 16.dp,
+                modifier = Modifier
+                    .zIndex(1f)
+                    .padding(vertical = 2.dp)
             ) {
                 for (item in menuItemsFor(thread, isSecretGroupActive)) {
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                text = stringResource(item.labelRes),
-                                fontFamily = OpenSans,
-                                fontWeight = if (item.action == ConversationRowAction.Delete) FontWeight.SemiBold else FontWeight.Normal,
-                                color = if (item.action == ConversationRowAction.Delete) MaterialTheme.appColors.deleteOptionColor else MaterialTheme.appColors.homeRowTitle
-                            )
-                        },
+                    ContextMenuItem(
+                        iconRes = item.iconRes,
+                        label = stringResource(item.labelRes),
+                        destructive = item.action == ConversationRowAction.Delete,
                         onClick = {
                             showMenu = false
                             onAction(item.action)

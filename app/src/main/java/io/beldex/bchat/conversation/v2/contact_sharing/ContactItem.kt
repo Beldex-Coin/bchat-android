@@ -1,6 +1,15 @@
 package io.beldex.bchat.conversation.v2.contact_sharing
 
 import androidx.compose.foundation.BorderStroke
+import io.beldex.bchat.compose_utils.notchedCornerShape
+import io.beldex.bchat.compose_utils.RobotoMono
+import io.beldex.bchat.compose_utils.OpenSans
+import io.beldex.bchat.R
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -15,9 +24,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Message
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -42,104 +49,68 @@ fun ContactItem(
     modifier: Modifier = Modifier,
     isSharing: Boolean = true
 ) {
-    OutlinedCard(
-        shape = RoundedCornerShape(50),
+    val shape = if (isSelected) notchedCornerShape(12.dp) else RectangleShape
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-    ){
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    8.dp
-                )
-                .noRippleCallback {
-                    contactChanged(contact, !isSelected)
-                }
-        ) {
-            if (contact == null) {
-                Box(
-                    modifier = Modifier
-                        .weight(0.1f)
-                        .size(36.dp)
-                        .background(
-                            color = Color.Green,
-                            shape = RoundedCornerShape(100)
-                        )
-                )
+            .fillMaxWidth()
+            .height(56.dp)
+            .background(
+                if (isSelected) MaterialTheme.appColors.onboardingInputBackground else Color.Transparent,
+                shape
+            )
+            .border(
+                BorderStroke(
+                    if (isSelected) 0.5.dp else 1.dp,
+                    if (isSelected) MaterialTheme.appColors.userDetailsConfirmBackground
+                    else MaterialTheme.appColors.pinBoxInactiveBorder
+                ),
+                shape
+            )
+            .noRippleCallback {
+                contactChanged(contact, !isSelected)
             }
-            if (contact != null) {
-                ProfilePictureComponent(
-                    publicKey = contact.recipient.address.toString(),
-                    displayName = contact.recipient.name.toString(),
-                    containerSize = 36.dp,
-                    pictureMode = ProfilePictureMode.SmallPicture
-                )
-            }
+            .padding(horizontal = 12.dp)
+    ) {
+        if (contact != null) {
+            ProfilePictureComponent(
+                publicKey = contact.recipient.address.toString(),
+                displayName = contact.recipient.name.toString(),
+                containerSize = 32.dp,
+                pictureMode = ProfilePictureMode.SmallPicture
+            )
+        }
 
-            Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(14.dp))
 
-            Column(
-                modifier = Modifier
-                    .weight(if (isSharing) 0.8f else 0.7f)
-            ) {
-                Text((contact?.recipient?.name ?: contact?.recipient?.address.toString()).capitalizeFirstLetter(),
-                    style = MaterialTheme.typography.titleMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                (contact?.recipient?.name ?: contact?.recipient?.address.toString()).capitalizeFirstLetter(),
+                color = MaterialTheme.appColors.onboardingInputText,
+                fontFamily = OpenSans,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 14.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                contact?.recipient?.address?.toString()?.let { formatAddresses(it) } ?: "",
+                color = MaterialTheme.appColors.onboardingCaptionColor,
+                fontFamily = RobotoMono,
+                fontSize = 12.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    contact?.recipient?.address?.toString()?.let { formatAddresses(it) } ?: "",
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            if (isSharing) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .weight(0.1f)
-                ) {
-                    OutlinedCheckbox(
-                        checked = isSelected,
-                    )
-
-                }
-            } else {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .weight(0.2f)
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Icon(
-                            Icons.Filled.Message,
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(24.dp)
-                        )
-
-                        Icon(
-                            Icons.Default.Cancel,
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(24.dp)
-                        )
-                    }
-                }
-            }
+        if (isSharing) {
+            Spacer(modifier = Modifier.width(10.dp))
+            Image(
+                painter = painterResource(id = if (isSelected) R.drawable.ic_checkedbox else R.drawable.ic_checkbox),
+                contentDescription = null,
+                modifier = Modifier.size(24.dp)
+            )
         }
     }
 }

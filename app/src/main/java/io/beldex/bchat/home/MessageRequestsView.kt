@@ -8,6 +8,11 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.border
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -70,151 +75,98 @@ fun MessageRequestsView(
     openSearch: () -> Unit,
     ignoreRequest: (ThreadRecord) -> Unit,
     openChat: (ThreadRecord) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    openMessageRequests: () -> Unit = {}
 ) {
-    val configuration = LocalConfiguration.current
-    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-
-    Column(
-        modifier = modifier
-    ) {
+    // Revamp_2026 (Figma 7546:1780): flat full-width search band, then a green Message Requests
+    // banner that opens the requests screen. ignoreRequest/openChat stay for the requests screen.
+    Column(modifier = modifier) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .background(
-                    shape = RoundedCornerShape(12.dp),
-                    color = MaterialTheme.appColors.homeSearchBarBackground
-                )
-                .noRippleCallback {
-                    openSearch()
+                .height(60.dp)
+                .background(MaterialTheme.appColors.homeSearchBarBackground)
+                .drawBehind {
+                    val stroke = 0.75.dp.toPx()
+                    drawLine(homeBandBorder, Offset(0f, 0f), Offset(size.width, 0f), stroke)
+                    drawLine(homeBandBorder, Offset(0f, size.height), Offset(size.width, size.height), stroke)
                 }
-                .padding(
-                    horizontal = 16.dp,
-                    vertical = 14.dp
-                )
+                .noRippleCallback { openSearch() }
+                .padding(horizontal = 20.dp)
         ) {
             Icon(
-                Icons.Default.Search,
-                contentDescription = "",
-                tint = MaterialTheme.appColors.homeSearchBarHint
+                painter = painterResource(id = R.drawable.ic_home_search),
+                contentDescription = null,
+                tint = MaterialTheme.appColors.homeSearchBarHint,
+                modifier = Modifier.size(15.dp)
             )
-
-            Spacer(modifier = Modifier.width(8.dp))
-
+            Spacer(modifier = Modifier.width(12.dp))
             Text(
                 text = stringResource(id = R.string.search_name_bns_bchat_id),
                 fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                fontWeight = FontWeight.Light,
                 fontSize = 14.sp,
                 color = MaterialTheme.appColors.homeSearchBarHint
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
         if (requests.isNotEmpty()) {
-            var showRequests by remember {
-                mutableStateOf(false)
-            }
-            val rotationDegree by animateFloatAsState(
-                targetValue = if (showRequests) 180f else 0f,
-                label = "rotation",
-                animationSpec = tween(
-                    durationMillis = 500,
-                )
-            )
-
+            Spacer(modifier = Modifier.height(12.dp))
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .height(53.dp)
+                    .background(requestBannerFill)
+                    .border(0.5.dp, requestBannerAccent)
+                    .clickable { openMessageRequests() }
+                    .padding(horizontal = 20.dp)
             ) {
-                Text(
-                    text = stringResource(id = if(requests.size==1) R.string.activity_message_request_title else R.string.activity_message_requests_title),
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight(700)
-                    )
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                BubbledText(
-                    text = requests.size.toString(),
-                    textStyle = MaterialTheme.typography.titleMedium.copy(
-                        fontSize = 10.sp,
-                        color = MaterialTheme.appColors.requestCountColor
-                    ),
-                    boxBackground = MaterialTheme.appColors.requestCountBackground
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-
                 Icon(
-                    Icons.Outlined.ExpandCircleDown,
-                    contentDescription = "",
-                    tint = MaterialTheme.appColors.iconTint,
-                    modifier = Modifier
-                        .clickable {
-                            showRequests = !showRequests
-                        }
-                        .rotate(
-                            degrees = rotationDegree
-                        )
+                    painter = painterResource(id = R.drawable.ic_message_request_banner),
+                    contentDescription = null,
+                    tint = MaterialTheme.appColors.lockTimerColor,
+                    modifier = Modifier.size(width = 20.dp, height = 18.dp)
                 )
-            }
-
-            if (showRequests) {
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-
-            AnimatedContent(
-                targetState = showRequests,
-                label = "MessageRequests"
-            ) {
-                if (it) {
-                    if (isLandscape) {
-                        LazyColumn(
-                            verticalArrangement = Arrangement.spacedBy(12.dp),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            items(
-                                items = requests,
-                                key = { it.recipient.address.toString() }
-                            ) { record ->
-                                RequestItem(
-                                    request = record,
-                                    onClick = openChat,
-                                    onCancel = ignoreRequest,
-                                    horizontal = true
-                                )
-                            }
-                        }
-                    } else {
-                        LazyRow(
-                            horizontalArrangement = Arrangement.spacedBy(16.dp),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            items(
-                                items = requests,
-                                key = { it.recipient.address.toString() }
-                            ) { record ->
-                                RequestItem(
-                                    request = record,
-                                    onClick = openChat,
-                                    onCancel = ignoreRequest
-                                )
-                            }
-                        }
-                    }
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(
+                    text = stringResource(id = if (requests.size == 1) R.string.activity_message_request_title else R.string.activity_message_requests_title),
+                    fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                    fontSize = 13.5.sp,
+                    color = MaterialTheme.appColors.onboardingInputText,
+                    modifier = Modifier.weight(1f)
+                )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .background(requestBannerAccent)
+                        .padding(horizontal = 5.dp, vertical = 1.dp)
+                ) {
+                    Text(
+                        text = requests.size.toString(),
+                        fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 9.sp,
+                        color = Color(0xFF0B0B0B)
+                    )
                 }
+                Spacer(modifier = Modifier.width(12.dp))
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_arrow_right_green),
+                    contentDescription = null,
+                    tint = requestBannerAccent,
+                    modifier = Modifier.size(14.dp)
+                )
             }
         }
-
         Spacer(modifier = Modifier.height(8.dp))
     }
 }
+
+private val homeBandBorder = Color(0xFF444444)
+private val requestBannerAccent = Color(0xFF00BC33)
+private val requestBannerFill = Color(0x80061306)
 
 @Composable
 fun RequestItem(

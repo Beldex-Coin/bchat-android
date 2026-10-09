@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.compose_utils.NotchedAvatarShape
 import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
@@ -50,7 +51,7 @@ fun HomeHeader(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 22.dp, vertical = 12.dp)
+                .padding(horizontal = 12.dp, vertical = 12.dp)
         ) {
             ProfilePictureComponent(
                 publicKey = publicKey,
@@ -58,8 +59,8 @@ fun HomeHeader(
                 containerSize = ProfilePictureMode.SmallPicture.size,
                 pictureMode = ProfilePictureMode.SmallPicture,
                 modifier = Modifier
-                    .size(32.dp)
-                    .clip(CircleShape)
+                    .size(29.dp)
+                    .clip(NotchedAvatarShape)
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
@@ -72,8 +73,8 @@ fun HomeHeader(
                 color = MaterialTheme.appColors.homeTitleColor,
                 fontFamily = OpenSans,
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 20.sp,
-                modifier = Modifier.padding(start = 12.dp)
+                fontSize = 18.sp,
+                modifier = Modifier.padding(start = 8.dp)
             )
 
             // Self-contained onion-routing path status dot (own broadcast receivers/coloring
@@ -82,8 +83,8 @@ fun HomeHeader(
             AndroidView(
                 factory = { ctx -> PathStatusView(ctx) },
                 modifier = Modifier
-                    .padding(start = 8.dp)
-                    .size(12.dp)
+                    .padding(start = 6.dp)
+                    .size(10.dp)
             )
         }
 

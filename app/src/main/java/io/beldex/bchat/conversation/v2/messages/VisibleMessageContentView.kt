@@ -69,7 +69,6 @@ import com.codewaves.stickyheadergrid.StickyHeaderGridLayoutManager
 import com.google.android.material.card.MaterialCardView
 import io.beldex.bchat.conversation.v2.ModalUrlBottomSheet
 import io.beldex.bchat.conversation.v2.utilities.MentionUtilities
-import io.beldex.bchat.conversation.v2.utilities.MessageBubbleUtilities
 import io.beldex.bchat.conversation.v2.utilities.ModalURLSpan
 import io.beldex.bchat.conversation.v2.utilities.TextUtilities.getIntersectedModalSpans
 import io.beldex.bchat.database.model.MessageRecord
@@ -746,53 +745,74 @@ class VisibleMessageContentView : MaterialCardView {
      * also lets it honor the real per-message-cluster corner radii (start/middle/end/alone) that
      * the flat `cornerRadius` this replaced ignored.
      */
+    // Revamp_2026 bubble (Figma 7546:10376/10427): a rectangle with one cut corner at the bottom
+    // (left for incoming, right for outgoing), gradient fill and a thin gradient border.
     private class GradientBubbleDrawable(
         private val colors: IntArray,
         private val positions: FloatArray,
-        private val radii: FloatArray
+        private val strokeColors: IntArray,
+        private val strokeWidth: Float,
+        private val cutX: Float,
+        private val cutY: Float,
+        private val cutBottomRight: Boolean
     ) : Drawable() {
-        private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+        private val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+        private val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
         private val path = Path()
 
         override fun draw(canvas: android.graphics.Canvas) {
             val b = bounds
             if (b.width() <= 0 || b.height() <= 0) return
-            paint.shader = LinearGradient(
-                b.left.toFloat(), b.top.toFloat(), b.right.toFloat(), b.top.toFloat(),
-                colors, positions, Shader.TileMode.CLAMP
-            )
+            val inset = strokeWidth / 2f
+            val l = b.left + inset; val t = b.top + inset; val r = b.right - inset; val btm = b.bottom - inset
+            val cx = minOf(cutX, (r - l) / 2f); val cy = minOf(cutY, (btm - t) / 2f)
             path.reset()
-            path.addRoundRect(RectF(b), radii, Path.Direction.CW)
-            canvas.drawPath(path, paint)
+            path.moveTo(l, t)
+            path.lineTo(r, t)
+            if (cutBottomRight) {
+                path.lineTo(r, btm - cy); path.lineTo(r - cx, btm); path.lineTo(l, btm)
+            } else {
+                path.lineTo(r, btm); path.lineTo(l + cx, btm); path.lineTo(l, btm - cy)
+            }
+            path.close()
+            fillPaint.shader = LinearGradient(l, t, r, t, colors, positions, Shader.TileMode.CLAMP)
+            canvas.drawPath(path, fillPaint)
+            strokePaint.strokeWidth = strokeWidth
+            strokePaint.shader = LinearGradient(l, t, r, t, strokeColors, null, Shader.TileMode.CLAMP)
+            canvas.drawPath(path, strokePaint)
         }
 
-        override fun setAlpha(alpha: Int) { paint.alpha = alpha }
-        override fun setColorFilter(colorFilter: ColorFilter?) { paint.colorFilter = colorFilter }
+        override fun setAlpha(alpha: Int) { fillPaint.alpha = alpha; strokePaint.alpha = alpha }
+        override fun setColorFilter(colorFilter: ColorFilter?) { fillPaint.colorFilter = colorFilter; strokePaint.colorFilter = colorFilter }
         @Deprecated("Deprecated in Java", ReplaceWith("PixelFormat.TRANSLUCENT", "android.graphics.PixelFormat"))
         override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun bubbleGradientBackground(
         isOutgoing: Boolean,
         isStartOfMessageCluster: Boolean,
         isEndOfMessageCluster: Boolean
     ): Drawable {
         val colors = if (isOutgoing) {
-            intArrayOf(0xFF0D1C0D.toInt(), 0xFF0A2E0A.toInt(), 0xFF0C190C.toInt())
+            intArrayOf(0xB30D1C0D.toInt(), 0xB30A2E0A.toInt(), 0xB30C190C.toInt())
         } else {
-            intArrayOf(0xFF333333.toInt(), 0xFF444444.toInt(), 0xFF333333.toInt())
+            intArrayOf(0x60333333, 0x60444444, 0x60333333)
         }
         val positions = if (isOutgoing) floatArrayOf(0f, 0.385f, 1f) else floatArrayOf(0f, 0.428f, 1f)
-        val cornerRadii = MessageBubbleUtilities.calculateRadii(context, isStartOfMessageCluster, isEndOfMessageCluster, isOutgoing)
-        // calculateRadii returns [TL, TR, BR, BL]; addRoundRect wants 8 values, 2 (x,y) per corner
-        // in TL, TR, BR, BL order.
-        val radii = floatArrayOf(
-            cornerRadii[0].toFloat(), cornerRadii[0].toFloat(),
-            cornerRadii[1].toFloat(), cornerRadii[1].toFloat(),
-            cornerRadii[2].toFloat(), cornerRadii[2].toFloat(),
-            cornerRadii[3].toFloat(), cornerRadii[3].toFloat()
+        val strokeColors = if (isOutgoing) {
+            intArrayOf(0xFF005417.toInt(), 0xFF003200.toInt())
+        } else {
+            intArrayOf(0xFF222222.toInt(), 0xFF333333.toInt())
+        }
+        val density = resources.displayMetrics.density
+        return GradientBubbleDrawable(
+            colors, positions, strokeColors,
+            strokeWidth = 0.75f * density,
+            cutX = 13f * density,
+            cutY = 15f * density,
+            cutBottomRight = isOutgoing
         )
-        return GradientBubbleDrawable(colors, positions, radii)
     }
 
     private fun getBackground(

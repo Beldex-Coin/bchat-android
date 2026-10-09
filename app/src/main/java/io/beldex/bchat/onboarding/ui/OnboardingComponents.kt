@@ -3,6 +3,8 @@ package io.beldex.bchat.onboarding.ui
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,7 +37,8 @@ import io.beldex.bchat.compose_utils.notchedCornerShape
 fun OnboardingTopBar(
     title: String,
     onBackClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    actions: @Composable RowScope.() -> Unit = {}
 ) {
     Row(
         modifier = modifier
@@ -57,8 +60,12 @@ fun OnboardingTopBar(
             color = MaterialTheme.appColors.onboardingInputText,
             fontFamily = OpenSans,
             fontWeight = FontWeight.Normal,
-            fontSize = 16.sp
+            fontSize = 16.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f)
         )
+        actions()
     }
 }
 

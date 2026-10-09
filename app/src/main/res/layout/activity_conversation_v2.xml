@@ -10,7 +10,7 @@
         android:id="@+id/contentView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?colorPrimary"
+        android:background="@color/page_background"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
@@ -29,15 +29,16 @@
                 <include
                     android:id="@+id/profilePictureView"
                     layout="@layout/view_profile_picture"
-                    android:layout_width="@dimen/medium_profile_picture_size"
-                    android:layout_height="@dimen/medium_profile_picture_size" />
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_gravity="center_vertical" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginStart="7dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -47,9 +48,9 @@
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:text="@string/user"
+                        android:fontFamily="@font/open_sans_regular"
                         android:textColor="@color/chat_header_title"
-                        android:textSize="@dimen/medium_font_size"
-                        android:textStyle="bold" />
+                        android:textSize="16sp" />
 
 <LinearLayout
                         android:layout_width="match_parent"
@@ -367,12 +368,13 @@
            </LinearLayout>-->
 
         <com.google.android.material.card.MaterialCardView
-            style="@style/CustomCardViewStyle"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="8dp"
             android:layout_weight="1"
-            app:cardBackgroundColor="@color/new_card_background">
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp"
+            app:cardBackgroundColor="@color/page_background">
 
 
             <RelativeLayout

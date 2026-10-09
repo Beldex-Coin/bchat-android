@@ -2,7 +2,6 @@ package io.beldex.bchat.onboarding.ui
 
 import android.app.Activity
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.core.view.WindowCompat
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -28,7 +25,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -37,7 +33,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -45,13 +40,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -66,16 +59,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
-import com.airbnb.lottie.compose.rememberLottieComposition
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.BaseComponentActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
-import io.beldex.bchat.compose_utils.DialogContainer
-import io.beldex.bchat.compose_utils.OpenSans
+import io.beldex.bchat.compose_utils.SuccessPopup
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
@@ -107,7 +95,7 @@ class OnBoardingActivity: BaseComponentActivity() {
             BChatTheme {
                 Surface {
                     Scaffold(
-                        containerColor = MaterialTheme.colorScheme.primary,
+                        containerColor = MaterialTheme.appColors.backgroundColor,
                         contentWindowInsets = WindowInsets.safeDrawing
                     ) {
                         val navController = rememberNavController()
@@ -347,34 +335,10 @@ private fun ScreenContainer(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-        ) {
-            Icon(
-                painterResource(id = R.drawable.ic_back_arrow),
-                contentDescription = stringResource(R.string.back),
-                tint = MaterialTheme.appColors.editTextColor,
-                modifier =Modifier
-                        .clickable {
-                            onBackClick()
-                        }
-            )
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    color = MaterialTheme.appColors.editTextColor,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                ),
-                modifier = Modifier.weight(1f)
-            )
-        }
+        OnboardingTopBar(
+            title = title,
+            onBackClick = onBackClick
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -395,53 +359,7 @@ private fun ScreenContainer(
 
 @Composable
 fun PassWordChangedPopup(onDismiss : () -> Unit, showPinChangedPopupTitle : String) {
-    val context = LocalContext.current
-    val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(if(isDarkTheme) R.raw.sent else R.raw.sent_light))
-    val isPlaying by remember {
-        mutableStateOf(true)
-    }
-    // for speed
-    val speed by remember {
-        mutableFloatStateOf(1f)
-    }
-    val progress by animateLottieCompositionAsState(composition, isPlaying = isPlaying, speed = speed, restartOnPlay = false)
-    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
-    DialogContainer(
-            dismissOnBackPress = false,
-            dismissOnClickOutside = false,
-            onDismissRequest = onDismiss,
-            wrapContentWidth = isLandscape,
-    ) {
-
-        OutlinedCard(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.dialogBackground), elevation=CardDefaults.cardElevation(defaultElevation=4.dp), modifier=Modifier.fillMaxWidth()) {
-            Column(horizontalAlignment=Alignment.CenterHorizontally, verticalArrangement=Arrangement.Center, modifier=Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)) {
-                LottieAnimation(composition, progress, modifier=Modifier
-                        .size(120.dp)
-                        .align(Alignment.CenterHorizontally))
-
-                Text(text=showPinChangedPopupTitle,
-                        textAlign=TextAlign.Center,
-                        style=MaterialTheme.typography.titleMedium.copy(
-                                fontFamily=OpenSans,
-                                fontSize=16.sp,
-                                fontWeight=FontWeight(800),
-                                color=MaterialTheme.appColors.primaryButtonColor),
-                        modifier=Modifier.padding(vertical=16.dp)
-                        )
-
-                OnboardingPrimaryButton(
-                    text = stringResource(id = R.string.ok),
-                    enabled = true,
-                    onClick = { onDismiss() }
-                )
-            }
-
-        }
-    }
-
+    SuccessPopup(title = showPinChangedPopupTitle, onDismiss = onDismiss)
 }
 
 @Preview

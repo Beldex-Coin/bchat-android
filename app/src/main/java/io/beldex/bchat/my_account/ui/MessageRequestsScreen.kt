@@ -1,5 +1,8 @@
 package io.beldex.bchat.my_account.ui
 
+import io.beldex.bchat.compose_utils.OpenSans
+import io.beldex.bchat.compose_utils.notchedCornerShape
+import androidx.compose.foundation.border
 import android.app.Activity
 import android.content.Context
 import androidx.compose.foundation.Image
@@ -157,7 +160,7 @@ fun MessageRequestsScreen(
         }
 
         LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = modifier
         ) {
             items(
@@ -184,11 +187,9 @@ fun MessageRequestsScreen(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(
-                            color = MaterialTheme.appColors.settingsCardBackground,
-                            shape = RoundedCornerShape(50)
-                        )
-                        .padding(16.dp)
+                        .height(59.dp)
+                        .background(MaterialTheme.appColors.homeRowBackground)
+                        .padding(horizontal = 14.dp)
                 )
             }
         }
@@ -240,17 +241,16 @@ fun MessageRequestItem(
             )
         }
 
-        Spacer(modifier=Modifier.width(8.dp))
+        Spacer(modifier=Modifier.width(12.dp))
 
         val senderName=getUserDisplayName(context, request.recipient)
             ?: request.recipient.address.toString()
         Text(
             text=senderName,
-            style=MaterialTheme.typography.titleMedium.copy(
-                color=MaterialTheme.appColors.editTextColor,
-                fontWeight=FontWeight(400),
-                fontSize=14.sp
-            ),
+            color=MaterialTheme.appColors.onboardingInputText,
+            fontFamily=OpenSans,
+            fontWeight=FontWeight.Normal,
+            fontSize=14.sp,
             maxLines=1,
             overflow=TextOverflow.Ellipsis,
             modifier=Modifier
@@ -261,18 +261,16 @@ fun MessageRequestItem(
             contentAlignment=Alignment.Center,
             modifier=Modifier
                 .size(32.dp)
-                .background(
-                    color=MaterialTheme.appColors.actionIconBackground,
-                    shape=RoundedCornerShape(15)
-                )
+                .background(color=MaterialTheme.appColors.deleteOptionColor.copy(alpha=0.1f), shape=notchedCornerShape(6.dp))
+                .border(1.dp, MaterialTheme.appColors.deleteOptionColor, notchedCornerShape(6.dp))
                 .clickable {
-
                     deleteRequest(request)
                 }
         ) {
             Image(
                 painter=painterResource(id=R.drawable.ic_delete_24),
                 contentDescription="",
+                colorFilter=ColorFilter.tint(color=MaterialTheme.appColors.deleteOptionColor),
                 modifier=Modifier
                     .size(16.dp)
             )
@@ -284,10 +282,8 @@ fun MessageRequestItem(
             contentAlignment=Alignment.Center,
             modifier=Modifier
                 .size(32.dp)
-                .background(
-                    color=MaterialTheme.appColors.actionIconBackground,
-                    shape=RoundedCornerShape(15)
-                )
+                .background(color=MaterialTheme.appColors.onboardingInputBackground, shape=notchedCornerShape(6.dp))
+                .border(1.dp, MaterialTheme.appColors.dividerColor, notchedCornerShape(6.dp))
                 .clickable {
                     blockRequest(request)
                 }
@@ -295,7 +291,7 @@ fun MessageRequestItem(
             Image(
                 painter=painterResource(id=R.drawable.ic_block_request),
                 contentDescription="",
-                colorFilter=ColorFilter.tint(color=MaterialTheme.appColors.iconTint),
+                colorFilter=ColorFilter.tint(color=MaterialTheme.appColors.onboardingInputText),
                 modifier=Modifier
                     .size(16.dp)
             )
@@ -307,10 +303,7 @@ fun MessageRequestItem(
             contentAlignment=Alignment.Center,
             modifier=Modifier
                 .size(32.dp)
-                .background(
-                    color=MaterialTheme.appColors.primaryButtonColor,
-                    shape=RoundedCornerShape(15)
-                )
+                .background(color=MaterialTheme.appColors.userDetailsConfirmBackground, shape=notchedCornerShape(6.dp))
                 .clickable {
                     acceptRequest(request)
                 }
@@ -318,7 +311,7 @@ fun MessageRequestItem(
             Icon(
                 Icons.Default.Check,
                 contentDescription="",
-                tint=Color.White,
+                tint=Color(0xFF0B0B0B),
                 modifier=Modifier
                     .size(16.dp)
             )

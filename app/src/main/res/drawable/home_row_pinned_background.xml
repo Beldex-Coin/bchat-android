@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Revamp_2026 home-row pin badge (Figma 7546:1780 `Frame 1486`): 22dp bordered square. -->
+<!-- Revamp_2026 pinned home row (Figma 7546:1780 `Frame 1485`): flat, half-opaque fill, hairline border. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <solid android:color="#80111111" />

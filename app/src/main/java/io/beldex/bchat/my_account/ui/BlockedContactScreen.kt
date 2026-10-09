@@ -101,49 +101,49 @@ fun BlockedContactScreen(
                 stringResource(id = R.string.Unblock_dialog__message, stringBuilder.toString())
             }
             Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(horizontal = 15.dp, vertical = 18.dp)
                     .verticalScroll(rememberScrollState())
             ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium
+                    color = MaterialTheme.appColors.onboardingInputText,
+                    fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
                     text = message,
-                    style = MaterialTheme.typography.bodyMedium
+                    color = MaterialTheme.appColors.onboardingInputText,
+                    fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                    fontSize = 14.sp,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 Row(
-                    horizontalArrangement = Arrangement.End,
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(
+                    io.beldex.bchat.compose_utils.DialogCancelButton(
                         text = stringResource(id = R.string.cancel),
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier
-                            .clickable {
-                                showConfirmationDialog = false
-                            }
+                        onClick = { showConfirmationDialog = false },
+                        modifier = Modifier.weight(1f)
                     )
-
-                    Spacer(modifier = Modifier.width(24.dp))
-
-                    Text(
+                    io.beldex.bchat.compose_utils.DialogConfirmButton(
                         text = stringResource(id = R.string.continue_2),
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier
-                            .clickable {
-                                unBlockMultipleContacts()
-                                showConfirmationDialog = false
-                            }
+                        onClick = {
+                            unBlockMultipleContacts()
+                            showConfirmationDialog = false
+                        },
+                        modifier = Modifier.weight(1f)
                     )
                 }
             }
@@ -244,7 +244,7 @@ private fun BlockedContactItem(
                     modifier=Modifier
                             .height(36.dp)
                             .width(36.dp)
-                            .clip(RoundedCornerShape(15)),
+                            .clip(io.beldex.bchat.compose_utils.NotchedAvatarShape),
                     contentAlignment=Alignment.Center,
             ) {
                 ProfilePictureComponent(
@@ -283,17 +283,16 @@ private fun BlockedContactItem(
                         fontWeight = FontWeight(600),
                         fontSize = 12.sp
                     ),
+                    color = MaterialTheme.appColors.onboardingInputText,
                     modifier = Modifier
                         .background(
                             color = MaterialTheme.appColors.popUpAddressBackground,
-                            shape = RoundedCornerShape(15)
-                        )
-                        .padding(
-                            8.dp
+                            shape = io.beldex.bchat.compose_utils.notchedCornerShape(8.dp)
                         )
                         .clickable {
                             unblockContact()
                         }
+                        .padding(horizontal = 14.dp, vertical = 8.dp)
                 )
             }
         }

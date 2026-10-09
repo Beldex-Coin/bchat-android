@@ -37,6 +37,8 @@ import com.beldex.libsignal.utilities.Log
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.compose_utils.BChatRadioButton
 import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.compose_utils.DialogCancelButton
+import io.beldex.bchat.compose_utils.DialogConfirmButton
 import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.appColors
@@ -187,7 +189,7 @@ fun ClearDataDialog(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(horizontal = 15.dp, vertical = 18.dp)
         ) {
             Text(
                 text = when (step) {
@@ -203,11 +205,12 @@ fun ClearDataDialog(
                         ""
                     }
                 },
-                style = MaterialTheme.typography.titleMedium,
-                    fontFamily = OpenSans,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-
+                color = MaterialTheme.appColors.onboardingInputText,
+                fontFamily = OpenSans,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = if (step == Steps.INFO_PROMPT_DEFAULT) TextAlign.Start else TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -237,21 +240,21 @@ fun ClearDataDialog(
                 Steps.INFO_PROMPT -> {
                     Text(
                         text = stringResource(id = R.string.dialog_clear_all_data_explanation),
-                        style = MaterialTheme.typography.titleMedium,
-                            fontFamily = OpenSans,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Normal,
-                            textAlign = TextAlign.Center
+                        color = MaterialTheme.appColors.onboardingInputText,
+                        fontFamily = OpenSans,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Normal,
+                        textAlign = TextAlign.Center
                     )
                 }
                 Steps.NETWORK_PROMPT -> {
                     Text(
                         text = stringResource(id = R.string.dialog_clear_all_data_network_explanation),
-                        style = MaterialTheme.typography.titleMedium,
-                            fontFamily = OpenSans,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Normal,
-                            textAlign = TextAlign.Center
+                        color = MaterialTheme.appColors.onboardingInputText,
+                        fontFamily = OpenSans,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Normal,
+                        textAlign = TextAlign.Center
                     )
                 }
                 Steps.DELETING -> {
@@ -267,52 +270,21 @@ fun ClearDataDialog(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Row(
+                    horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    Button(
+                    DialogCancelButton(
+                        text = stringResource(id = R.string.cancel),
                         onClick = onDismissRequest,
-                        shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.appColors.onboardingSecondaryButtonBackground
-                        ),
-                        modifier = Modifier
-                            .weight(1f),
-                        border = BorderStroke(0.5.dp, MaterialTheme.appColors.onboardingSecondaryButtonBorder),
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.cancel),
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                color = MaterialTheme.appColors.onboardingSecondaryButtonText,
-                                fontFamily = OpenSans,
-                                fontWeight = FontWeight(400),
-                                fontSize = 14.sp
-                            ),
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.width(16.dp))
-
-                    Button(
+                        modifier = Modifier.weight(1f)
+                    )
+                    DialogConfirmButton(
+                        text = buttonTitle.toString(),
                         onClick = buttonClick,
-                        shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.appColors.negativeRedButtonBorder,
-                            contentColor = MaterialTheme.appColors.onboardingSecondaryButtonText
-                        ),
-                        modifier = Modifier
-                            .weight(1f)
-                    ) {
-                        Text(
-                            text = buttonTitle.toString(),
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                color = MaterialTheme.appColors.onboardingSecondaryButtonText,
-                                fontFamily = OpenSans,
-                                fontWeight = FontWeight(400),
-                                fontSize = 14.sp
-                            )
-                        )
-                    }
+                        destructive = true,
+                        modifier = Modifier.weight(1f)
+                    )
                 }
             }
         }
@@ -343,17 +315,16 @@ fun DeleteOption(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(
-                    top = 8.dp
-                )
+                .padding(start = 8.dp)
         ) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium.copy(
-                    color = MaterialTheme.appColors.editTextColor,
+                    color = MaterialTheme.appColors.onboardingInputText,
                     fontFamily = OpenSans,
                     fontWeight = FontWeight.Normal,
                     fontSize = 16.sp,
+                    lineHeight = 24.sp
                 )
             )
 
@@ -363,7 +334,8 @@ fun DeleteOption(
                     color = MaterialTheme.appColors.clearDataSubTitle,
                     fontFamily = OpenSans,
                     fontWeight = FontWeight.Normal,
-                    fontSize = 14.sp
+                    fontSize = 14.sp,
+                    lineHeight = 18.sp
                 )
             )
         }

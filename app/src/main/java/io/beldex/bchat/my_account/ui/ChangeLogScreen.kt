@@ -40,7 +40,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.compose_utils.OpenSans
+import io.beldex.bchat.compose_utils.RobotoMono
+import io.beldex.bchat.compose_utils.OpenSans
+import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import io.beldex.bchat.my_account.domain.ChangeLogModel
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
@@ -50,10 +56,10 @@ fun ChangeLogScreen(
     changeLogs: List<ChangeLogModel>
 ) {
     LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(horizontal = 14.dp, vertical = 16.dp)
     ) {
         itemsIndexed(
             items = changeLogs,
@@ -82,29 +88,22 @@ private fun LogItem(
     val iconRotation by remember(isExpanded) {
         mutableStateOf(if (isExpanded) 180f else 0f)
     }
-    val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(LocalContext.current) == UiMode.NIGHT
-    val borderStroke = if (isDarkTheme) {
-        BorderStroke(
+    Card(
+        shape = androidx.compose.ui.graphics.RectangleShape,
+        colors = CardDefaults.cardColors(
+            containerColor = androidx.compose.ui.graphics.Color.Transparent
+        ),
+        border = BorderStroke(
             width = 1.dp,
             color = MaterialTheme.appColors.dividerColor
-        )
-    } else {
-        null
-    }
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.appColors.changeLogBackground
         ),
-        border = borderStroke,
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = if (isDarkTheme) 0.dp else 4.dp
-        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         modifier = modifier
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(horizontal = 18.dp, vertical = 15.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -122,22 +121,23 @@ private fun LogItem(
                             shape = CircleShape
                         )
                 )
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(11.dp))
 
                 Text(
                     text = versionLog.version,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 16.sp
-                    ),
+                    color = MaterialTheme.appColors.onboardingInputText,
+                    fontFamily = OpenSans,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp,
                     modifier = Modifier
                         .weight(1f)
                 )
                 Icon(
                     Icons.Outlined.ExpandCircleDown,
                     contentDescription = "",
-                    tint = MaterialTheme.appColors.iconTint,
+                    tint = MaterialTheme.appColors.onboardingInputText,
                     modifier = Modifier
+                        .size(22.dp)
                         .rotate(iconRotation)
                 )
             }
@@ -157,9 +157,9 @@ private fun LogItem(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(
-                                        start = 16.dp,
-                                        top = 4.dp,
-                                        bottom = 4.dp
+                                        start = 2.dp,
+                                        top = 7.dp,
+                                        bottom = 2.dp
                                     )
                             ) {
                                 Box(
@@ -173,6 +173,8 @@ private fun LogItem(
                                 Text(
                                     text = log,
                                     style = MaterialTheme.typography.titleMedium.copy(
+                                        color = MaterialTheme.appColors.onboardingInputText,
+                                        fontFamily = RobotoMono,
                                         fontWeight = FontWeight.Normal,
                                         fontSize = 16.sp
                                     ),

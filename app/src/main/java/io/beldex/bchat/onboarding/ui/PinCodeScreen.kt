@@ -75,7 +75,8 @@ data class PinCodeState(
     val pin: String = "",
     val newPin: String = "",
     val reEnteredPin: String = "",
-    val pinLength: Int = 4
+    val pinLength: Int = 4,
+    val errorText: String? = null
 )
 
 enum class PinCodeAction(val action: Int) {
@@ -187,6 +188,7 @@ private fun PortraitPinCodeScreen(
     ) {
         Image(
             painter = painterResource(id = R.drawable.ic_pin_lock),
+            colorFilter = if (state.errorText != null) androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.appColors.negativeRedButtonBorder) else null,
             contentDescription = "",
             modifier = Modifier
                 .padding(top = 12.dp)
@@ -207,13 +209,14 @@ private fun PortraitPinCodeScreen(
                 PinCodeView(
                     pin = pin,
                     pinLength = state.pinLength,
+                    isError = state.errorText != null,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
 
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = state.stepTitle.uppercase(),
+                text = (state.errorText ?: state.stepTitle).uppercase(),
                 color = MaterialTheme.appColors.onboardingCaptionColor,
                 fontFamily = RobotoMono,
                 fontSize = 13.5.sp
@@ -501,13 +504,14 @@ private fun LandscapePinCodeScreen(
                 PinCodeView(
                     pin = pin,
                     pinLength = state.pinLength,
+                    isError = state.errorText != null,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
 
             Spacer(Modifier.height(12.dp))
 
-            Text(text = state.stepTitle,
+            Text(text = state.errorText ?: state.stepTitle,
                 color = MaterialTheme.appColors.onboardingCaptionColor,
                 fontFamily = OpenSans,
                 style =

@@ -1067,4 +1067,11 @@
     <style name="Widget.Bchat.TabLayout.Reactions">
         <item name="tabIndicatorColor">@color/transparent</item>
     </style>
+    <style name="ShapeAppearance.NotchedButton" parent="">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeTopRight">12dp</item>
+        <item name="cornerSizeBottomLeft">12dp</item>
+    </style>
 </resources>

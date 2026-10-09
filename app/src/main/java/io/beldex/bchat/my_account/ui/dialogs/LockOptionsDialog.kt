@@ -1,6 +1,18 @@
 package io.beldex.bchat.my_account.ui.dialogs
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import io.beldex.bchat.compose_utils.BChatRadioButton
+import io.beldex.bchat.compose_utils.DialogCancelButton
+import io.beldex.bchat.compose_utils.OpenSans
+import io.beldex.bchat.compose_utils.RobotoMono
+import io.beldex.bchat.compose_utils.notchedCornerShape
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -38,75 +50,75 @@ fun LockOptionsDialog(
     onValueChanged: (String, Int) -> Unit
 ) {
     DialogContainer(
-        dismissOnBackPress = false,
+        dismissOnBackPress = true,
         dismissOnClickOutside = false,
         onDismissRequest = onDismiss,
     ) {
-        val valuesPickerState = rememberPickerState()
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(horizontal = 15.dp, vertical = 18.dp)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ){
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        color = MaterialTheme.appColors.secondaryContentColor,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
-                    ),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.weight(1f).align(Alignment.CenterVertically)
-                )
-                Icon(
-                    painter= painterResource(id=R.drawable.ic_close),
-                    contentDescription="",
-                    tint=MaterialTheme.appColors.editTextColor,
-                    modifier= Modifier
-                        .clickable {
-                            onDismiss()
-                        }
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            NumberPicker(
-                state = valuesPickerState,
-                items = options,
-                visibleItemsCount = 3,
-                startIndex = options.indexOf(currentValue),
-                textModifier = Modifier.padding(12.dp),
-                textStyle = MaterialTheme.typography.titleMedium,
-                modifier = Modifier
-                    .fillMaxWidth()
+            Text(
+                text = title,
+                color = MaterialTheme.appColors.onboardingInputText,
+                fontFamily = OpenSans,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(18.dp))
 
-            PrimaryButton(
-                onClick = {
-                    onValueChanged(valuesPickerState.selectedItem, options.indexOf(valuesPickerState.selectedItem))
-                },
-                shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp)
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 200.dp)
             ) {
-                Text(
-                    text = stringResource(id = R.string.ok),
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        color = Color.White,
-                        fontWeight = FontWeight(400),
-                        fontSize = 14.sp
-                    ),
-                    modifier = Modifier
-                        .padding(
-                            horizontal = 16.dp
+                itemsIndexed(options) { index, option ->
+                    val selected = option == currentValue
+                    val accent = MaterialTheme.appColors.userDetailsConfirmBackground
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(60.dp)
+                            .background(
+                                if (selected) MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground
+                                else MaterialTheme.appColors.backgroundColor,
+                                notchedCornerShape(12.dp)
+                            )
+                            .border(
+                                1.dp,
+                                if (selected) accent else MaterialTheme.appColors.dividerColor,
+                                notchedCornerShape(12.dp)
+                            )
+                            .clickable { onValueChanged(option, index) }
+                            .padding(horizontal = 24.dp)
+                    ) {
+                        BChatRadioButton(selected = selected, onClick = { onValueChanged(option, index) })
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Text(
+                            text = option,
+                            color = if (selected) accent else MaterialTheme.appColors.onboardingBodyColor,
+                            fontFamily = RobotoMono,
+                            fontSize = 16.sp
                         )
-                )
+                    }
+                }
             }
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            DialogCancelButton(
+                text = stringResource(id = R.string.cancel),
+                onClick = onDismiss,
+                fontFamily = RobotoMono,
+                textColor = MaterialTheme.appColors.onboardingInputText,
+                modifier = Modifier.width(162.dp)
+            )
         }
     }
 }

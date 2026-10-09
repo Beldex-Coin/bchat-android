@@ -36,7 +36,8 @@ import kotlinx.coroutines.delay
 fun PinCodeView(
     modifier: Modifier = Modifier,
     pinLength: Int = 4,
-    pin: String = ""
+    pin: String = "",
+    isError: Boolean = false
 ) {
 
     val configuration = LocalConfiguration.current
@@ -102,6 +103,7 @@ fun PinCodeView(
                     border = BorderStroke(
                         width = 1.dp,
                         color = when {
+                            isError -> MaterialTheme.appColors.negativeRedButtonBorder
                             value.isNotEmpty() -> MaterialTheme.appColors.primaryButtonColor
                             isActiveBox -> MaterialTheme.appColors.primaryButtonColor
                             else -> MaterialTheme.appColors.pinBoxInactiveBorder

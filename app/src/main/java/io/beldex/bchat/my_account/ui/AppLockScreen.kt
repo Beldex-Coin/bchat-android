@@ -185,7 +185,7 @@ fun AppLockScreen() {
                     .padding(24.dp)
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_screen_lock),
+                    painter = painterResource(id = R.drawable.ic_screen_lock_hourglass),
                     contentDescription = null,
                     tint = MaterialTheme.appColors.iconTint
                 )

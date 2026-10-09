@@ -968,7 +968,7 @@
     <string name="message_requests_accept_all">Accept All</string>
     <string name="message_requests_accept_message">Are you sure you want to accept this request?</string>
     <string name="message_requests_decline_message">Declining this request will permanently block this user, are you sure?</string>
-    <string name="no_blocked_contact">No blocked contacts yet</string>
+    <string name="no_blocked_contact">No Blocked Contacts</string>
     <string name="blocked_contacts">Blocked Contacts</string>
 
     <string name="CallNotificationBuilder_first_call_title">Call Missed</string>
@@ -1716,4 +1716,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     </plurals>
     <string name="no_contact_found">No Contact Found!</string>
     <string name="choose_language_device_language">(device\'s language)</string>
+    <string name="wrong_password_try_again">Wrong Password! Try again.</string>
 </resources>

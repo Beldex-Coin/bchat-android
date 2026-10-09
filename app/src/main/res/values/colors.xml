@@ -397,4 +397,9 @@
     <color name="foreground_symbol">#66FFFFFF</color>
     <color name="background_color_span">#797984</color>
     <color name="foreground_image_input_bar_symbol">#66FFFFFF</color>
+    <color name="blocked_action_red">#FF3E3E</color>
+    <color name="blocked_action_red_bg">#1AFF3E3E</color>
+    <color name="blocked_action_green">#00BC33</color>
+    <color name="blocked_action_green_bg">#1A00BC33</color>
+    <color name="blocked_action_text">#EBEBEB</color>
 </resources>

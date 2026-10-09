@@ -729,7 +729,10 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="8dp"
                             android:layout_weight="1"
-                            android:backgroundTint="@color/receive_payment_card_background"
+                            android:backgroundTint="@color/blocked_action_red_bg"
+                            app:strokeColor="@color/blocked_action_red"
+                            app:strokeWidth="1dp"
+                            app:shapeAppearanceOverlay="@style/ShapeAppearance.NotchedButton"
                             android:fontFamily="@font/open_sans_semi_bold"
                             android:gravity="center"
                             android:maxLines="1"
@@ -739,12 +742,11 @@
                             android:paddingBottom="16dp"
                             android:text="@string/clear_chat"
                             android:textAllCaps="false"
-                            android:textColor="@color/clear_red_color"
+                            android:textColor="@color/blocked_action_text"
                             android:textSize="14sp"
-                            app:cornerRadius="12dp"
-                            app:icon="@drawable/ic_clear_conversation"
+                                                        app:icon="@drawable/ic_clear_conversation"
                             app:iconGravity="textStart"
-                            app:iconTint="@color/clear_red_color" />
+                            app:iconTint="@color/blocked_action_red" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/unblockButton"
@@ -752,7 +754,10 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:layout_weight="1"
-                            android:backgroundTint="@color/bchat_id_text_color"
+                            android:backgroundTint="@color/blocked_action_green_bg"
+                            app:strokeColor="@color/blocked_action_green"
+                            app:strokeWidth="1dp"
+                            app:shapeAppearanceOverlay="@style/ShapeAppearance.NotchedButton"
                             android:fontFamily="@font/open_sans_semi_bold"
                             android:gravity="center"
                             android:maxLines="1"
@@ -762,12 +767,11 @@
                             android:paddingBottom="16dp"
                             android:text="@string/ConversationActivity_unblock"
                             android:textAllCaps="false"
-                            android:textColor="@color/white"
+                            android:textColor="@color/blocked_action_text"
                             android:textSize="14sp"
-                            app:cornerRadius="12dp"
-                            app:icon="@drawable/ic_unblock_user"
+                                                        app:icon="@drawable/ic_unblock_user"
                             app:iconGravity="textStart"
-                            app:iconTint="@color/white" />
+                            app:iconTint="@color/blocked_action_green" />
 
                     </LinearLayout>
 

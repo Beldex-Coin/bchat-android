@@ -1203,11 +1203,20 @@ fun MyAccountNavHost(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        Text(
-                            text = stringResource(id = R.string.no_blocked_contact),
-                            style = MaterialTheme.typography.titleLarge,
-                            textAlign = TextAlign.Center
-                        )
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_no_blocked_contacts),
+                                contentDescription = null,
+                                modifier = Modifier.size(134.dp)
+                            )
+                            Text(
+                                text = stringResource(id = R.string.no_blocked_contact),
+                                color = Color(0xFF737373),
+                                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                                fontSize = 16.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        }
                     }
                 } else {
                     BlockedContactScreen(

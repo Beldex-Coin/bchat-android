@@ -131,3 +131,50 @@ fun SuccessPopup(
         }
     }
 }
+
+// Revamp_2026 dialog buttons (Figma 7546:5067): 162x52 notched, dark neutral "cancel" and a
+// tinted "confirm" (red tint for destructive actions, green tint otherwise).
+@Composable
+fun DialogCancelButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    fontFamily: androidx.compose.ui.text.font.FontFamily = OpenSans,
+    textColor: Color = MaterialTheme.appColors.onboardingSecondaryButtonText
+) {
+    PrimaryButton(
+        onClick = onClick,
+        shape = notchedCornerShape(12.dp),
+        containerColor = MaterialTheme.appColors.onboardingSecondaryButtonBackground,
+        contentColor = textColor,
+        border = BorderStroke(1.dp, MaterialTheme.appColors.onboardingSecondaryButtonBorder),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
+        modifier = modifier.height(52.dp)
+    ) {
+        Text(text = text, fontFamily = fontFamily, fontWeight = FontWeight.Normal, fontSize = 14.sp)
+    }
+}
+
+@Composable
+fun DialogConfirmButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    destructive: Boolean = false,
+    enabled: Boolean = true
+) {
+    val accent = if (destructive) MaterialTheme.appColors.negativeRedButtonBorder
+    else MaterialTheme.appColors.userDetailsConfirmBackground
+    PrimaryButton(
+        onClick = onClick,
+        enabled = enabled,
+        shape = notchedCornerShape(12.dp),
+        containerColor = accent.copy(alpha = 0.1f),
+        contentColor = MaterialTheme.appColors.onboardingInputText,
+        border = BorderStroke(0.5.dp, accent),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
+        modifier = modifier.height(52.dp)
+    ) {
+        Text(text = text, fontFamily = OpenSans, fontWeight = FontWeight.Normal, fontSize = 14.sp)
+    }
+}

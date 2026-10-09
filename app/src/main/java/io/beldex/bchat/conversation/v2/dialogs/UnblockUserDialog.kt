@@ -22,6 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.beldex.bchat.compose_utils.DialogCancelButton
+import io.beldex.bchat.compose_utils.DialogConfirmButton
 import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.R
@@ -35,7 +37,9 @@ fun UnblockUserDialog(
     onAccept: () -> Unit,
     onCancel: () -> Unit,
     modifier: Modifier = Modifier,
-    negativeButtonTitle: String = stringResource(id = R.string.cancel)
+    negativeButtonTitle: String = stringResource(id = R.string.cancel),
+    destructive: Boolean = positiveButtonTitle == stringResource(id = R.string.decline) ||
+        title == stringResource(id = R.string.block_contact)
 ) {
     DialogContainer(
         dismissOnBackPress = true,
@@ -51,7 +55,7 @@ fun UnblockUserDialog(
             Text(
                 text = title.capitalizeFirstLetter(),
                 style = MaterialTheme.typography.titleMedium.copy(
-                    color = MaterialTheme.appColors.secondaryContentColor,
+                    color = MaterialTheme.appColors.onboardingInputText,
                     fontWeight = FontWeight(700),
                     fontSize = 16.sp
                 ),
@@ -72,53 +76,22 @@ fun UnblockUserDialog(
             Spacer(modifier = Modifier.height(16.dp))
 
             Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Button(
+                DialogCancelButton(
+                    text = negativeButtonTitle,
                     onClick = onCancel,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.negativeGreenButton
-                    ),
-                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
-                    border = BorderStroke(0.5.dp, MaterialTheme.appColors.negativeGreenButtonBorder),
-                    modifier = Modifier
-                        .weight(1f)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.cancel),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.appColors.negativeGreenButtonText,
-                            fontWeight = FontWeight(400),
-                            fontSize = 12.sp
-                        ),
-                        modifier = Modifier.padding(
-                            vertical = 8.dp
-                        )
-                    )
-                }
-
-                Button(
-                    onClick = onAccept,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if(positiveButtonTitle == stringResource(id = R.string.decline)) MaterialTheme.appColors.negativeRedButtonBorder else MaterialTheme.appColors.negativeGreenButtonBorder
-                    ),
-                    shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = positiveButtonTitle,
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight(400),
-                            fontSize = 12.sp,
-                            color = Color.White
-                        ),
-                        modifier = Modifier.padding(
-                            vertical = 8.dp
-                        )
-                    )
-                }
+                )
+
+                DialogConfirmButton(
+                    text = positiveButtonTitle,
+                    onClick = onAccept,
+                    destructive = destructive,
+                    modifier = Modifier.weight(1f)
+                )
             }
         }
     }

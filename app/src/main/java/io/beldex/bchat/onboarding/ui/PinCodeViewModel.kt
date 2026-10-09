@@ -119,7 +119,17 @@ class PinCodeViewModel @Inject constructor(
         }
     }
 
+    // Shows the Figma "wrong password" state (red boxes + inline message) and then clears the entry.
+    private fun showPinError(message: String, clearEntry: (PinCodeState) -> PinCodeState) {
+        _state.update { it.copy(errorText = message) }
+        viewModelScope.launch {
+            kotlinx.coroutines.delay(1000)
+            _state.update { clearEntry(it).copy(errorText = null) }
+        }
+    }
+
     fun onEvent(event: PinCodeEvents) {
+        if (state.value.errorText != null && event is PinCodeEvents.PinCodeChanged) return
         when (event) {
             is PinCodeEvents.PinCodeChanged -> {
                 with(state.value) {
@@ -156,12 +166,7 @@ class PinCodeViewModel @Inject constructor(
                                     if (event.pinCode == savedPassword) {
                                         _successEvent.emit(false)
                                     } else {
-                                        _state.update {
-                                            it.copy(
-                                                pin = ""
-                                            )
-                                        }
-                                        _errorMessage.emit(stringRes(R.string.invalid_password))
+                                        showPinError(stringRes(R.string.wrong_password_try_again)) { it.copy(pin = "") }
                                     }
                                 }
                             }
@@ -174,14 +179,7 @@ class PinCodeViewModel @Inject constructor(
                     when (step) {
                         PinCodeSteps.OldPin -> {
                             if (pin != savedPassword) {
-                                _state.update {
-                                    it.copy(
-                                        pin = ""
-                                    )
-                                }
-                                viewModelScope.launch {
-                                    _errorMessage.emit(stringRes(R.string.incorrect_password_entered))
-                                }
+                                showPinError(stringRes(R.string.wrong_password_try_again)) { it.copy(pin = "") }
                             } else {
                                 _state.update {
                                     it.copy(
@@ -194,14 +192,7 @@ class PinCodeViewModel @Inject constructor(
                         PinCodeSteps.EnterPin -> {
                             println("called wallet pin changed 1")
                             if (action == PinCodeAction.ChangePinCode.action && newPin == savedPassword) {
-                                _state.update {
-                                    it.copy(
-                                        newPin = ""
-                                    )
-                                }
-                                viewModelScope.launch {
-                                    _errorMessage.emit(stringRes(R.string.old_new_password_same))
-                                }
+                                showPinError(stringRes(R.string.old_new_password_same)) { it.copy(newPin = "") }
                             } else {
                                 _state.update {
                                     it.copy(
@@ -213,14 +204,7 @@ class PinCodeViewModel @Inject constructor(
                         }
                         PinCodeSteps.ReEnterPin -> {
                             if (reEnteredPin != newPin) {
-                                _state.update {
-                                    it.copy(
-                                        reEnteredPin = ""
-                                    )
-                                }
-                                viewModelScope.launch {
-                                    _errorMessage.emit(stringRes(R.string.password_does_not_match))
-                                }
+                                showPinError(stringRes(R.string.password_does_not_match)) { it.copy(reEnteredPin = "") }
                             } else {
                                 sharedPreferenceUtil.setPassword(newPin)
                                 // Save selected PIN length here
@@ -311,14 +295,7 @@ class PinCodeViewModel @Inject constructor(
                 PinCodeSteps.EnterPin -> {
                     println("called wallet pin changed $action and $newPin and $walletSavedPassword")
                     if (action == PinCodeAction.ChangeWalletPin.action && newPin == walletSavedPassword) {
-                        _state.update {
-                            it.copy(
-                                    newPin = ""
-                            )
-                        }
-                        viewModelScope.launch {
-                            _errorMessage.emit(stringRes(R.string.old_new_pin_same))
-                        }
+                        showPinError(stringRes(R.string.old_new_pin_same)) { it.copy(newPin = "") }
                     } else {
                         _state.update {
                             it.copy(

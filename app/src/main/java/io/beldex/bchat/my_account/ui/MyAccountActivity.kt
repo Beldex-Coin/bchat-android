@@ -774,8 +774,7 @@ fun MyAccountNavHost(
                                 .padding(start = 24.dp, top = 16.dp, end = 0.dp, bottom = 16.dp)
                                 .widthIn(max = 120.dp)
                                 .background(
-                                    color = if (showEditNameTextField) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.listItemBackground,
-                                    shape = RoundedCornerShape(16.dp)
+                                    color = if (showEditNameTextField) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground
                                 )
                                 .align(Alignment.TopEnd)
                                 .clickable {
@@ -799,9 +798,10 @@ fun MyAccountNavHost(
                             Text(
                                 text = if(showEditNameTextField) stringResource(id=R.string.menu_done_button) else stringResource(id=R.string.edit_title),
                                 style = BChatTypography.bodySmall.copy(
-                                    color = if(showEditNameTextField) Color.White  else MaterialTheme.appColors.primaryButtonColor,
+                                    color = if(showEditNameTextField) Color.White else MaterialTheme.appColors.onboardingInputText,
+                                    fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                                     fontWeight = FontWeight(600),
-                                    fontSize = 11.sp,
+                                    fontSize = 12.sp,
                                 ),
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.padding(start = 6.dp, top = 4.dp, end = 6.dp, bottom = 4.dp)
@@ -826,10 +826,6 @@ fun MyAccountNavHost(
                                 ) else Modifier
                                 .fillMaxWidth()
                                 .padding(top = 50.dp, bottom = 10.dp)
-                                .background(
-                                    color = MaterialTheme.appColors.listItemBackground,
-                                    shape = RoundedCornerShape(16.dp)
-                                )
                         ) {
                             ProfileCard(
                                 isBnsHolder = isBnsHolder,
@@ -919,7 +915,10 @@ fun MyAccountNavHost(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(bottom = 10.dp),
-                            shape = RoundedCornerShape(12.dp),
+                            shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
+                            containerColor = Color(0xFF0A1F0F),
+                            contentColor = MaterialTheme.appColors.onboardingInputText,
+                            border = BorderStroke(0.5.dp, MaterialTheme.appColors.userDetailsConfirmBackground),
                             disabledContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
                         ) {
                             Row(
@@ -928,13 +927,16 @@ fun MyAccountNavHost(
                             ) {
                                 Icon(
                                     painterResource(id = R.drawable.bns_transaction),
-                                    contentDescription = ""
+                                    contentDescription = "",
+                                    modifier = Modifier.size(18.dp)
                                 )
                                 Text(
                                     text = stringResource(R.string.link_your_bns),
                                     style = BChatTypography.titleSmall.copy(
-                                        color = Color.White,
+                                        color = MaterialTheme.appColors.onboardingInputText,
+                                        fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                                         fontWeight = FontWeight(600),
+                                        fontSize = 13.sp
                                     ),
                                     modifier = Modifier
                                         .padding(start = 5.dp)
@@ -975,9 +977,9 @@ fun MyAccountNavHost(
                     }
 
                     Card(
-                        shape = RoundedCornerShape(16.dp),
+                        shape = androidx.compose.ui.graphics.RectangleShape,
                         colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.appColors.listItemBackground
+                            containerColor = Color.Transparent
                         ),
                         modifier = Modifier.fillMaxWidth()
                     ) {

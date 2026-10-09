@@ -3,6 +3,9 @@ package io.beldex.bchat.onboarding.ui
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.border
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -183,11 +186,11 @@ private fun PortraitPinCodeScreen(
             .verticalScroll(rememberScrollState())
     ) {
         Image(
-            painter = painterResource(id = if(isDarkTheme) R.drawable.ic_password_dark else R.drawable.ic_password_light),
+            painter = painterResource(id = R.drawable.ic_pin_lock),
             contentDescription = "",
-            modifier = Modifier.height(
-                if (isTablet) 140.dp else 80.dp
-            )
+            modifier = Modifier
+                .padding(top = 12.dp)
+                .height(if (isTablet) 140.dp else 66.dp)
         )
 
         Column(
@@ -210,14 +213,10 @@ private fun PortraitPinCodeScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = state.stepTitle,
+                text = state.stepTitle.uppercase(),
                 color = MaterialTheme.appColors.onboardingCaptionColor,
-                fontFamily = OpenSans,
-                style =
-                    if (isTablet)
-                        MaterialTheme.typography.headlineSmall
-                    else
-                        MaterialTheme.typography.titleMedium
+                fontFamily = RobotoMono,
+                fontSize = 13.5.sp
             )
 
             if (state.step == PinCodeSteps.EnterPin) {
@@ -232,10 +231,13 @@ private fun PortraitPinCodeScreen(
                         }
                     },
                     modifier = Modifier
-                        .align(Alignment.CenterHorizontally),
-                    shape = notchedCornerShape(10.dp),
+                        .align(Alignment.CenterHorizontally)
+                        .width(164.dp)
+                        .height(41.dp),
+                    shape = notchedCornerShape(8.dp),
                     containerColor = MaterialTheme.appColors.onboardingInputBackground,
                     contentColor = MaterialTheme.appColors.onboardingInputText,
+                    contentPadding = PaddingValues(0.dp),
                     border = BorderStroke(
                         width = 1.dp,
                         color = MaterialTheme.appColors.dividerColor
@@ -244,8 +246,8 @@ private fun PortraitPinCodeScreen(
                     Text(
                         text = stringResource(if (state.pinLength == 4) R.string.six_digit_pin else R.string.four_digit_pin),
                         fontFamily = RobotoMono,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium
+                        fontSize = 13.5.sp,
+                        fontWeight = FontWeight.SemiBold
                     )
                     Spacer(Modifier.width(8.dp))
                     Icon(
@@ -272,7 +274,7 @@ private fun PortraitPinCodeScreen(
                 buttonSize.height.toDp()
             }
             val cellHeight =
-                if (isTablet) 88.dp else 64.dp
+                if (isTablet) 88.dp else 56.dp
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -286,13 +288,13 @@ private fun PortraitPinCodeScreen(
             ) {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(14.dp),
+                    horizontalArrangement = Arrangement.spacedBy(18.dp),
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
                         .padding(
-                            horizontal = if (isTablet) 48.dp else 24.dp,
+                            horizontal = if (isTablet) 48.dp else 48.dp,
                             vertical = if (isTablet) 32.dp else 16.dp
                         )
                 ) {
@@ -300,7 +302,7 @@ private fun PortraitPinCodeScreen(
                         when (val index = it + 1) {
                             10 -> {
                                 item {
-                                    Card(
+                                    PinKeyCard(
                                         colors = CardDefaults.cardColors(
                                             containerColor = MaterialTheme.appColors.onboardingKeypadKeyBackground
                                         )
@@ -311,7 +313,7 @@ private fun PortraitPinCodeScreen(
                             }
                             11 -> {
                                 item {
-                                    Card(
+                                    PinKeyCard(
                                         colors = CardDefaults.cardColors(
                                             containerColor = MaterialTheme.appColors.onboardingKeypadKeyBackground
                                         ),
@@ -330,7 +332,8 @@ private fun PortraitPinCodeScreen(
                                             Text(
                                                 text = "0",
                                                 fontFamily = RobotoMono,
-                                                style = MaterialTheme.typography.titleLarge
+                                                fontSize = 26.sp,
+                                                color = MaterialTheme.appColors.onboardingInputText
                                             )
                                         }
                                     }
@@ -338,7 +341,7 @@ private fun PortraitPinCodeScreen(
                             }
                             12 -> {
                                 item {
-                                    Card(
+                                    PinKeyCard(
                                         colors = CardDefaults.cardColors(
                                             containerColor = MaterialTheme.appColors.onboardingKeypadKeyBackground
                                         ),
@@ -373,7 +376,7 @@ private fun PortraitPinCodeScreen(
                             }
                             else -> {
                                 item {
-                                    Card(
+                                    PinKeyCard(
                                         colors = CardDefaults.cardColors(
                                             containerColor = MaterialTheme.appColors.onboardingKeypadKeyBackground
                                         ),
@@ -392,7 +395,8 @@ private fun PortraitPinCodeScreen(
                                             Text(
                                                 text = "$index",
                                                 fontFamily = RobotoMono,
-                                                style = MaterialTheme.typography.titleLarge
+                                                fontSize = 26.sp,
+                                                color = MaterialTheme.appColors.onboardingInputText
                                             )
                                         }
                                     }
@@ -526,10 +530,13 @@ private fun LandscapePinCodeScreen(
                         }
                     },
                     modifier = Modifier
-                        .align(Alignment.CenterHorizontally),
-                    shape = notchedCornerShape(10.dp),
+                        .align(Alignment.CenterHorizontally)
+                        .width(164.dp)
+                        .height(41.dp),
+                    shape = notchedCornerShape(8.dp),
                     containerColor = MaterialTheme.appColors.onboardingInputBackground,
                     contentColor = MaterialTheme.appColors.onboardingInputText,
+                    contentPadding = PaddingValues(0.dp),
                     border = BorderStroke(
                         width = 1.dp,
                         color = MaterialTheme.appColors.dividerColor
@@ -538,8 +545,8 @@ private fun LandscapePinCodeScreen(
                     Text(
                         text = stringResource(if (state.pinLength == 4) R.string.six_digit_pin else R.string.four_digit_pin),
                         fontFamily = RobotoMono,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium
+                        fontSize = 13.5.sp,
+                        fontWeight = FontWeight.SemiBold
                     )
                     Spacer(Modifier.width(8.dp))
                     Icon(
@@ -596,7 +603,7 @@ private fun LandscapePinCodeScreen(
                             when (val index = it + 1) {
                                 10 -> {
                                     item {
-                                        Card(
+                                        PinKeyCard(
                                             colors = CardDefaults.cardColors(
                                                 containerColor = MaterialTheme.appColors.onboardingKeypadKeyBackground
                                             )
@@ -607,7 +614,7 @@ private fun LandscapePinCodeScreen(
                                 }
                                 11 -> {
                                     item {
-                                        Card(
+                                        PinKeyCard(
                                             colors = CardDefaults.cardColors(
                                                 containerColor = MaterialTheme.appColors.onboardingKeypadKeyBackground
                                             ),
@@ -627,7 +634,8 @@ private fun LandscapePinCodeScreen(
                                                 Text(
                                                     text = "0",
                                                     fontFamily = RobotoMono,
-                                                    style = MaterialTheme.typography.titleLarge
+                                                    fontSize = 26.sp,
+                                                    color = MaterialTheme.appColors.onboardingInputText
                                                 )
                                             }
                                         }
@@ -635,7 +643,7 @@ private fun LandscapePinCodeScreen(
                                 }
                                 12 -> {
                                     item {
-                                        Card(
+                                        PinKeyCard(
                                             colors = CardDefaults.cardColors(
                                                 containerColor = MaterialTheme.appColors.onboardingKeypadKeyBackground
                                             ),
@@ -670,7 +678,7 @@ private fun LandscapePinCodeScreen(
                                 }
                                 else -> {
                                     item {
-                                        Card(
+                                        PinKeyCard(
                                             colors = CardDefaults.cardColors(
                                                 containerColor = MaterialTheme.appColors.onboardingKeypadKeyBackground
                                             ),
@@ -689,7 +697,8 @@ private fun LandscapePinCodeScreen(
                                                 Text(
                                                     text = "$index",
                                                     fontFamily = RobotoMono,
-                                                    style = MaterialTheme.typography.titleLarge
+                                                    fontSize = 26.sp,
+                                                    color = MaterialTheme.appColors.onboardingInputText
                                                 )
                                             }
                                         }
@@ -767,4 +776,21 @@ fun PinCodeScreenPreview2() {
             )
         }
     }
+}
+
+// Revamp_2026 keypad key (Figma 7546:3797): 86x60, top-right and bottom-left corners cut.
+@Composable
+private fun PinKeyCard(
+    colors: androidx.compose.material3.CardColors,
+    modifier: Modifier = Modifier,
+    content: @Composable androidx.compose.foundation.layout.ColumnScope.() -> Unit
+) {
+    val shape = notchedCornerShape(10.dp)
+    androidx.compose.foundation.layout.Column(
+        modifier = modifier
+            .clip(shape)
+            .background(MaterialTheme.appColors.onboardingKeypadKeyBackground, shape)
+            .border(0.5.dp, MaterialTheme.appColors.pinBoxInactiveBorder, shape),
+        content = content
+    )
 }

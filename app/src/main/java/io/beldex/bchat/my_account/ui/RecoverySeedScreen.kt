@@ -158,12 +158,11 @@ private fun RecoveryWarningView(
         modifier = modifier
     ) {
         OutlinedCard(
+            shape = androidx.compose.ui.graphics.RectangleShape,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.appColors.dialogBackground
             ),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 4.dp
-            ),
+            border = BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
             modifier = Modifier
                 .fillMaxWidth()
         ) {
@@ -221,7 +220,8 @@ private fun RecoveryWarningView(
                     text = stringResource(id = R.string.seed_permission_important_description),
                     style = MaterialTheme.typography.labelMedium.copy(
                         color = MaterialTheme.appColors.restoreDescColor,
-                        fontWeight = FontWeight(400),
+                        fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                        fontWeight = FontWeight.Light,
                         fontSize = 12.sp
                     ),
                     textAlign = TextAlign.Center
@@ -241,20 +241,18 @@ private fun RecoveryWarningView(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Button(
+                io.beldex.bchat.compose_utils.PrimaryButton(
                     onClick = verifyPin,
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.primaryButtonColor
-                    )
+                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(10.dp),
+                    containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
+                    contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
+                    modifier = Modifier.height(48.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.seed_permission_important_confirmButton),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = Color.White,
-                            fontWeight = FontWeight(400),
-                            fontSize = 14.sp
-                        ),
+                        fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp,
                         textAlign = TextAlign.Center
                     )
                 }

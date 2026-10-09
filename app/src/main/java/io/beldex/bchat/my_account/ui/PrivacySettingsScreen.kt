@@ -276,7 +276,8 @@ private fun SectionTitle(title: String) {
 private fun SectionCard(content: @Composable () -> Unit) {
     Card(
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        border = BorderStroke(1.dp, MaterialTheme.appColors.dividerColor),
+        shape = androidx.compose.ui.graphics.RectangleShape,
+        border = BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {

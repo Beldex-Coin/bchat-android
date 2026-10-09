@@ -134,7 +134,8 @@ fun NotificationSettingsScreen(
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             ),
-            border = BorderStroke(1.dp, MaterialTheme.appColors.dividerColor),
+            shape = androidx.compose.ui.graphics.RectangleShape,
+            border = BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
             modifier = Modifier
                 .fillMaxWidth()
         ) {
@@ -192,7 +193,8 @@ fun NotificationSettingsScreen(
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             ),
-            border = BorderStroke(1.dp, MaterialTheme.appColors.dividerColor),
+            shape = androidx.compose.ui.graphics.RectangleShape,
+            border = BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(
@@ -235,7 +237,8 @@ fun NotificationSettingsScreen(
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             ),
-            border = BorderStroke(1.dp, MaterialTheme.appColors.dividerColor),
+            shape = androidx.compose.ui.graphics.RectangleShape,
+            border = BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(
@@ -317,7 +320,8 @@ fun NotificationSettingsScreen(
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             ),
-            border = BorderStroke(1.dp, MaterialTheme.appColors.dividerColor),
+            shape = androidx.compose.ui.graphics.RectangleShape,
+            border = BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(

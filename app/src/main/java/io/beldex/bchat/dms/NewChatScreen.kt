@@ -281,22 +281,30 @@ fun NewChatScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .background(
-                            color = MaterialTheme.appColors.homeRowBackground,
-                            shape = RoundedCornerShape(16.dp)
-                        )
+                        .background(MaterialTheme.appColors.homeRowBackground)
+                        .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
+                        .padding(vertical = 4.dp)
                 ) {
-                    NewChatItem(image = if(isDarkTheme) R.drawable.ic_new_chat else R.drawable.ic_new_chat_light, title = stringResource(id = R.string.activity_create_private_chat_title), MaterialTheme.appColors.userDetailsBchatIdText, PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),true, onClick = {
-                        showNewChatPopup = !showNewChatPopup
-                    }, onClickScanQRCode = {
-                        val intent = Intent(
-                            context,
-                            PrivateChatScanQRCodeActivity::class.java
-                        )
-                        privateChatScanQRCodeActivityResultLauncher.launch(intent)
-                    })
                     NewChatItem(
-                        image = if(isDarkTheme) R.drawable.ic_secret_group else R.drawable.ic_secret_group_light,
+                        image = R.drawable.ic_newchat_new_chat,
+                        title = stringResource(id = R.string.activity_create_private_chat_title),
+                        color = MaterialTheme.appColors.userDetailsBchatIdText,
+                        padding = PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),
+                        showQrCode = true,
+                        highlighted = true,
+                        onClick = {
+                            showNewChatPopup = !showNewChatPopup
+                        },
+                        onClickScanQRCode = {
+                            val intent = Intent(
+                                context,
+                                PrivateChatScanQRCodeActivity::class.java
+                            )
+                            privateChatScanQRCodeActivityResultLauncher.launch(intent)
+                        }
+                    )
+                    NewChatItem(
+                        image = R.drawable.ic_newchat_secret,
                         title = stringResource(id = R.string.home_screen_secret_groups_title),
                         MaterialTheme.appColors.homeRowTitle,
                         PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),
@@ -306,7 +314,7 @@ fun NewChatScreen(
                         onClickScanQRCode = {}
                     )
                     NewChatItem(
-                        image = if(isDarkTheme) R.drawable.ic_social_group else R.drawable.ic_social_group_light,
+                        image = R.drawable.ic_newchat_social,
                         title = stringResource(id = R.string.home_screen_social_groups_title),
                         MaterialTheme.appColors.homeRowTitle,
                         PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),
@@ -316,7 +324,7 @@ fun NewChatScreen(
                         onClickScanQRCode = {}
                     )
                     NewChatItem(
-                        image = if(isDarkTheme) R.drawable.ic_note_to_self else R.drawable.ic_note_to_self_light,
+                        image = R.drawable.ic_newchat_note,
                         title = stringResource(id = R.string.note_to_self),
                         MaterialTheme.appColors.homeRowTitle,
                         PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),
@@ -338,10 +346,11 @@ fun NewChatScreen(
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                 )
                 NewChatItem(
-                    image = R.drawable.ic_invite_a_friend,
+                    image = R.drawable.ic_newchat_invite,
                     title = stringResource(id = R.string.activity_settings_invite_button_title),
-                    MaterialTheme.appColors.userDetailsBchatIdText,
-                    PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),
+                    color = MaterialTheme.appColors.homeRowTitle,
+                    padding = PaddingValues(start = 16.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),
+                    highlighted = true,
                     onClick = {
                         openActivity(OpenActivity.InviteAFriend)
                     },
@@ -400,6 +409,8 @@ fun NewChatItem(
     showQrCode: Boolean = false,
     onClick: () -> Unit,
     onClickScanQRCode: () -> Unit,
+    highlighted: Boolean = false,
+    plainIcon: Boolean = true,
 ){
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -415,18 +426,21 @@ fun NewChatItem(
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .size(40.dp)
+                .size(36.dp)
                 .background(
                     color = MaterialTheme.appColors.newChatIconBackground,
                     shape = io.beldex.bchat.compose_utils.notchedCornerShape(8.dp)
+                )
+                .border(
+                    1.dp,
+                    if (highlighted) MaterialTheme.appColors.userDetailsConfirmBackground else MaterialTheme.appColors.pinBoxInactiveBorder,
+                    io.beldex.bchat.compose_utils.notchedCornerShape(8.dp)
                 )
         ) {
             Image(
                 painterResource(id = image),
                 contentDescription = "",
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(24.dp)
+                modifier = Modifier.size(22.dp)
             )
         }
 
@@ -444,14 +458,10 @@ fun NewChatItem(
 
         if(showQrCode) {
             Image(
-                painterResource(id = R.drawable.qr_code_send),
+                painterResource(id = R.drawable.ic_newchat_scan),
                 contentDescription = "",
-                colorFilter = ColorFilter.tint(
-                    color = MaterialTheme.appColors.homeTitleColor
-                ),
                 modifier = Modifier
-                    .size(35.dp)
-                    .padding(end=15.dp)
+                    .size(26.dp)
                     .clickable {
                         onClickScanQRCode()
                     },

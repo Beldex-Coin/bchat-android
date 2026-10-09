@@ -3,6 +3,9 @@ package io.beldex.bchat.my_account.ui
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,9 +14,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.ui.graphics.RectangleShape
+import io.beldex.bchat.compose_utils.OpenSans
+import io.beldex.bchat.compose_utils.PrimaryButton
+import io.beldex.bchat.compose_utils.notchedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -56,8 +63,10 @@ fun ShowQRDialog(
         onDismissRequest = {
             onDismissRequest()
         },
-        containerColor = MaterialTheme.appColors.bnsDialogBackground,
-        wrapContentWidth = isLandscape
+        wrapContentWidth = isLandscape,
+        containerColor = Color(0xA60B0B0B),
+        shape = notchedCornerShape(20.dp),
+        showBorder = false
     ) {
         val context = LocalContext.current
         Column(
@@ -75,14 +84,16 @@ fun ShowQRDialog(
             Text(
                 text = title,
                 style = BChatTypography.titleMedium.copy(
-                    color = MaterialTheme.appColors.primaryButtonColor,
-                    fontSize = 14.sp,
+                    color = MaterialTheme.appColors.onboardingInputText,
+                    fontFamily = OpenSans,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight(700),
                 ),
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(10.dp))
             Card(
+                shape = RectangleShape,
                 colors = CardDefaults.cardColors(
                     containerColor = Color.White
                 )
@@ -95,13 +106,27 @@ fun ShowQRDialog(
                         isInverted = false,
                         hasTransparentBackground = false
                     )
-                    Image(
-                        bitmap = bitMap.asImageBitmap(),
-                        contentDescription = "",
-                        modifier =Modifier
-                            .sizeIn(maxWidth = 180.dp, maxHeight = 180.dp)
-                            .padding(5.dp)
-                    )
+                    Box(contentAlignment = Alignment.Center) {
+                        Image(
+                            bitmap = bitMap.asImageBitmap(),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .sizeIn(maxWidth = 180.dp, maxHeight = 180.dp)
+                                .padding(5.dp)
+                        )
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .size(40.dp)
+                                .background(Color(0xFF222222), CircleShape)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_bchat_logo),
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    }
                 } else {
                     Box(
                         modifier = Modifier
@@ -110,11 +135,28 @@ fun ShowQRDialog(
                 }
             }
             Spacer(modifier = Modifier.height(10.dp))
-            Button(onClick={
-                onShare()
-            }, colors= ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.primaryButtonColor)) {
-                Text(text= stringResource(R.string.share), style=MaterialTheme.typography.bodyMedium.copy(color=Color.White, fontWeight=FontWeight.Bold), modifier=Modifier.padding(start = 10.dp, end = 5.dp))
-                Icon(painter=painterResource(id= R.drawable.ic_baseline_share_24), contentDescription="Refresh", tint=Color.White, modifier = Modifier.size(14.dp))
+            PrimaryButton(
+                onClick = { onShare() },
+                shape = notchedCornerShape(12.dp),
+                containerColor = Color(0xFFE0E0E0),
+                contentColor = Color(0xFF0B0B0B),
+                border = BorderStroke(1.4.dp, Color(0xFF0A370A)),
+                contentPadding = PaddingValues(0.dp),
+                modifier = Modifier.width(122.dp).height(52.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_baseline_share_24),
+                    contentDescription = "Share",
+                    tint = Color(0xFF0B0B0B),
+                    modifier = Modifier.size(18.dp)
+                )
+                Text(
+                    text = stringResource(R.string.share),
+                    fontFamily = OpenSans,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(start = 10.dp, end = 4.dp)
+                )
             }
 
         }

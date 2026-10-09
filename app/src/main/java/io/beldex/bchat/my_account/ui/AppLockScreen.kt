@@ -124,7 +124,8 @@ fun AppLockScreen() {
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             ),
-            border = BorderStroke(1.dp, MaterialTheme.appColors.dividerColor),
+            shape = androidx.compose.ui.graphics.RectangleShape,
+            border = BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 0.dp
             ),
@@ -166,7 +167,8 @@ fun AppLockScreen() {
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             ),
-            border = BorderStroke(1.dp, MaterialTheme.appColors.dividerColor),
+            shape = androidx.compose.ui.graphics.RectangleShape,
+            border = BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 0.dp
             ),

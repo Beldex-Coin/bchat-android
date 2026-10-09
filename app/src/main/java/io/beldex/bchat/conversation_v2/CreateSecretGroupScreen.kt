@@ -220,9 +220,10 @@ private fun GroupNameField(
             value = groupName,
             placeholder = {
                 Text(
-                    text = stringResource(R.string.enter_group_name),
-                    style = MaterialTheme.typography.bodyMedium,
+                    text = stringResource(R.string.enter_group_name).uppercase(),
                     fontFamily = RobotoMono,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Light,
+                    fontSize = 12.sp,
                     color = MaterialTheme.appColors.homeSearchBarHint
                 )
             },
@@ -235,8 +236,9 @@ private fun GroupNameField(
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp),
-            shape = RoundedCornerShape(12.dp),
+                .padding(vertical = 8.dp)
+                .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
+            shape = androidx.compose.ui.graphics.RectangleShape,
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
                 focusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
@@ -260,9 +262,10 @@ private fun SearchField(
         value = searchQuery,
         placeholder = {
             Text(
-                text = stringResource(R.string.search_contact),
-                style = MaterialTheme.typography.bodyMedium,
+                text = stringResource(R.string.search_contact).uppercase(),
                 fontFamily = RobotoMono,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.Light,
+                fontSize = 12.sp,
                 color = MaterialTheme.appColors.homeSearchBarHint
             )
         },
@@ -275,8 +278,9 @@ private fun SearchField(
         onValueChange = onSearchQueryChange,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        shape = RoundedCornerShape(12.dp),
+            .padding(horizontal = 16.dp)
+            .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
+        shape = androidx.compose.ui.graphics.RectangleShape,
         trailingIcon = {
             Icon(
                 imageVector = if (searchQuery.isNotEmpty()) Icons.Default.Clear else Icons.Default.Search,

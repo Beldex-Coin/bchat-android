@@ -1,6 +1,11 @@
 package io.beldex.bchat.onboarding.ui
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,7 +18,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
@@ -27,7 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -54,6 +57,7 @@ fun LandingScreen(
             .fillMaxSize()
             .background(MaterialTheme.appColors.onboardingBackground)
     ) {
+        LandingChatSkeleton(modifier = Modifier.fillMaxSize())
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -62,8 +66,8 @@ fun LandingScreen(
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(horizontal = 24.dp),
-                verticalArrangement = Arrangement.Center
+                    .padding(start = 24.dp, end = 24.dp, top = 40.dp),
+                verticalArrangement = Arrangement.Top
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
@@ -81,15 +85,19 @@ fun LandingScreen(
                     )
                 }
 
-                Text(
-                    text = stringResource(R.string.landing_headline).uppercase(),
-                    color = MaterialTheme.appColors.onboardingHeadlineColor,
-                    fontFamily = OpenSans,
-                    fontWeight = FontWeight.ExtraBold,
-                    fontSize = 28.sp,
-                    lineHeight = 34.sp,
-                    modifier = Modifier.padding(top = 36.dp)
-                )
+                val headlineParts = stringResource(R.string.landing_headline).uppercase()
+                    .split("\n").filter { it.isNotBlank() }
+                headlineParts.forEachIndexed { index, part ->
+                    Text(
+                        text = part,
+                        color = MaterialTheme.appColors.onboardingHeadlineColor,
+                        fontFamily = OpenSans,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 28.sp,
+                        lineHeight = 34.sp,
+                        modifier = Modifier.padding(top = if (index == 0) 44.dp else 12.dp)
+                    )
+                }
 
                 Text(
                     text = stringResource(R.string.landing_screen_content),
@@ -99,17 +107,6 @@ fun LandingScreen(
                     fontSize = 14.sp,
                     lineHeight = 18.sp,
                     modifier = Modifier.padding(top = 20.dp)
-                )
-
-                Image(
-                    painter = painterResource(id = R.drawable.ic_landing_decoration),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(max = 140.dp)
-                        .padding(top = 24.dp),
-                    contentScale = ContentScale.Fit,
-                    alignment = Alignment.CenterEnd
                 )
             }
 
@@ -181,5 +178,46 @@ fun LandingScreen(
 private fun LandingScreenPreview() {
     BChatTheme {
         LandingScreen(onCreateAccountClick = {}, onRestoreAccountClick = {}, onTermsClick = {})
+    }
+}
+
+// Figma `Frame 2765` (Landing 7546:934): faded chat-row skeleton drawn between the intro text and
+// the buttons. Coordinates are Figma px on the 390-wide frame, treated as dp; it bleeds off the right edge.
+@Composable
+private fun LandingChatSkeleton(modifier: Modifier = Modifier) {
+    val circle = Color(0xFF1A1A1A)
+    val lineColor = Color(0xFF333333)
+    Canvas(modifier = modifier) {
+        fun dp(v: Float) = v.dp.toPx()
+        fun card(x: Float, y: Float, w: Float, h: Float, tl: Float, tr: Float) {
+            val r = dp(19f)
+            val path = androidx.compose.ui.graphics.Path().apply {
+                addRoundRect(
+                    androidx.compose.ui.geometry.RoundRect(
+                        left = dp(x), top = dp(y), right = dp(x + w), bottom = dp(y + h),
+                        topLeftCornerRadius = androidx.compose.ui.geometry.CornerRadius(dp(tl)),
+                        topRightCornerRadius = androidx.compose.ui.geometry.CornerRadius(dp(tr)),
+                        bottomRightCornerRadius = androidx.compose.ui.geometry.CornerRadius(r),
+                        bottomLeftCornerRadius = androidx.compose.ui.geometry.CornerRadius(r)
+                    )
+                )
+            }
+            drawPath(path, brush = Brush.horizontalGradient(listOf(Color(0xFF222222), Color(0xFF111111)), startX = dp(x), endX = dp(x + w)))
+        }
+        fun line(x: Float, y: Float, w: Float) =
+            drawLine(lineColor, Offset(dp(x), dp(y)), Offset(dp(x + w), dp(y)), strokeWidth = dp(4.75f), cap = StrokeCap.Round)
+
+        // row 1
+        drawCircle(circle, radius = dp(27f), center = Offset(dp(93f), dp(404f)))
+        card(139f, 369f, 325f, 69f, tl = 2.4f, tr = 19f)
+        line(168f, 393f, 267f); line(168f, 415f, 267f)
+        // row 2
+        card(139f, 457f, 253f, 91f, tl = 19f, tr = 2.4f)
+        line(168f, 481f, 195f); line(168f, 503f, 195f); line(168f, 525f, 112f)
+        drawCircle(circle, radius = dp(27f), center = Offset(dp(438f), dp(503f)))
+        // row 3
+        drawCircle(circle, radius = dp(27f), center = Offset(dp(93f), dp(602f)))
+        card(139f, 567f, 325f, 69f, tl = 2.4f, tr = 19f)
+        line(168f, 591f, 267f); line(168f, 613f, 267f)
     }
 }

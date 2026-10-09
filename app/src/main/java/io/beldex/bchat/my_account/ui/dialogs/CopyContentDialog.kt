@@ -26,6 +26,10 @@ import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.OpenSans
+import io.beldex.bchat.compose_utils.notchedCornerShape
+import androidx.compose.ui.graphics.Color
+import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.R
 
 @Composable
@@ -41,7 +45,9 @@ fun CopyContentDialog(
         onDismissRequest = {
                onDismissRequest()
         },
-        containerColor = MaterialTheme.appColors.bnsDialogBackground
+        containerColor = Color(0xA60B0B0B),
+        shape = notchedCornerShape(20.dp),
+        showBorder = false
     ) {
         Row(
             modifier = Modifier
@@ -56,7 +62,8 @@ fun CopyContentDialog(
                 Text(
                     text = title,
                     style = BChatTypography.titleMedium.copy(
-                        color = MaterialTheme.appColors.primaryButtonColor,
+                        color = MaterialTheme.appColors.userDetailsConfirmBackground,
+                        fontFamily = OpenSans,
                         fontSize = 12.sp,
                         fontWeight = FontWeight(700),
                     ),
@@ -65,8 +72,10 @@ fun CopyContentDialog(
                 Text(
                     text = data,
                     style = BChatTypography.titleSmall.copy(
-                        color = MaterialTheme.appColors.editTextColor,
+                        color = MaterialTheme.appColors.onboardingInputText,
+                        fontFamily = RobotoMono,
                         fontSize = 12.sp,
+                        lineHeight = 20.sp,
                         fontWeight = FontWeight(400),
                     ),
                 )
@@ -76,7 +85,7 @@ fun CopyContentDialog(
             Icon(
                 painter = painterResource(id = R.drawable.ic_copy),
                 contentDescription = "",
-                tint = MaterialTheme.appColors.primaryButtonColor,
+                tint = MaterialTheme.appColors.userDetailsConfirmBackground,
                 modifier = Modifier
                     .size(16.dp)
                     .align(alignment = Alignment.CenterVertically)

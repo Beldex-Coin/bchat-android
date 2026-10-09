@@ -70,10 +70,10 @@ fun DisplayNameStepScreen(
             Column(modifier = Modifier.weight(1f).padding(horizontal = 22.dp)) {
                 Text(
                     text = headline,
-                    color = MaterialTheme.appColors.onboardingHeadlineColor,
+                    color = MaterialTheme.appColors.onboardingInputText,
                     fontFamily = OpenSans,
                     fontWeight = FontWeight.SemiBold,
-                    fontSize = 18.sp,
+                    fontSize = 16.sp,
                     modifier = Modifier.padding(top = 20.dp)
                 )
 
@@ -118,7 +118,9 @@ fun DisplayNameStepScreen(
                         }
                     },
                     update = { editText ->
-                        editText.hint = hintText
+                        editText.hint = android.text.SpannableString(hintText.uppercase()).apply {
+                            setSpan(android.text.style.AbsoluteSizeSpan(12, true), 0, length, android.text.Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                        }
                         if (editText.text?.toString() != displayName) {
                             editText.setText(displayName)
                             editText.setSelection(displayName.length)

@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,7 +22,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -66,12 +64,12 @@ fun RecoveryPhraseScreen(
 
             Column(modifier = Modifier.weight(1f).padding(horizontal = 22.dp)) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_recovery_seed_outline),
+                    painter = painterResource(id = R.drawable.ic_recovery_seed_news),
                     contentDescription = null,
-                    tint = MaterialTheme.appColors.onboardingInputText,
+                    tint = MaterialTheme.appColors.onboardingHeadlineColor,
                     modifier = Modifier
                         .padding(top = 24.dp)
-                        .size(48.dp)
+                        .size(68.dp)
                         .align(Alignment.CenterHorizontally)
                 )
 
@@ -91,13 +89,13 @@ fun RecoveryPhraseScreen(
                     text = seed,
                     color = MaterialTheme.appColors.onboardingInputText,
                     fontFamily = RobotoMono,
-                    fontSize = 14.sp,
+                    fontSize = 12.sp,
+                    lineHeight = 18.sp,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 20.dp)
-                        .clip(RoundedCornerShape(16.dp))
                         .background(MaterialTheme.appColors.onboardingInputBackground)
-                        .border(1.dp, MaterialTheme.appColors.newChatIconBackground, RoundedCornerShape(16.dp))
+                        .border(1.dp, MaterialTheme.appColors.newChatIconBackground)
                         .padding(19.dp)
                 )
 

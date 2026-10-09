@@ -109,32 +109,28 @@ fun ChooseLanguage(
 
         ) {
             items(languages, key = { it.code }) { language ->
+                val isSelected = language.code == selectedCode
+                val rowShape = if (isSelected) io.beldex.bchat.compose_utils.notchedCornerShape(14.dp) else androidx.compose.ui.graphics.RectangleShape
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
-                        .border(
-                            width = if (language.code == selectedCode) 1.dp else 0.dp,
-                            color = if (language.code == selectedCode)
-                                MaterialTheme.appColors.primaryButtonColor
-                            else
-                                MaterialTheme.appColors.editTextBackground,
-                            shape = RoundedCornerShape(12.dp),
-                        )
+                        .clip(rowShape)
                         .background(
-                            color = if (selectedCode == language.code) MaterialTheme.appColors.contactCardBackground else MaterialTheme.appColors.editTextBackground
+                            color = if (isSelected) Color(0xFF0B1210) else MaterialTheme.appColors.homeRowBackground.copy(alpha = 0.9f),
+                            shape = rowShape
+                        )
+                        .border(
+                            width = 1.dp,
+                            color = if (isSelected) MaterialTheme.appColors.userDetailsConfirmBackground else MaterialTheme.appColors.pinBoxInactiveBorder,
+                            shape = rowShape,
                         )
                         .clickable {
                             updateSelectedLanguage(context, language)
                         }
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                        .padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    BChatRadioButton(
-                        selected = language.code == selectedCode,
-                        onClick = { updateSelectedLanguage(context, language) }
-                    )
                     Column(
                         verticalArrangement = Arrangement.spacedBy(4.dp),
                         horizontalAlignment = Alignment.Start,
@@ -142,16 +138,16 @@ fun ChooseLanguage(
                     ) {
                         Text(
                             text = language.nativeName,
-                            color = MaterialTheme.appColors.textColor,
+                            color = MaterialTheme.appColors.onboardingInputText,
                             fontFamily = OpenSans,
-                            fontSize = 16.sp,
+                            fontSize = 15.sp,
                             fontWeight = FontWeight.Normal,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
                         Text(
                             text = if (language.code.contains(deviceLanguageCode)) stringResource(R.string.choose_language_device_language) else language.englishName,
-                            color = MaterialTheme.appColors.transactionSubTitle,
+                            color = if (isSelected) MaterialTheme.appColors.userDetailsConfirmBackground else MaterialTheme.appColors.onboardingCaptionColor,
                             fontFamily = RobotoMono,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Normal,
@@ -159,6 +155,10 @@ fun ChooseLanguage(
                             overflow = TextOverflow.Ellipsis
                         )
                     }
+                    BChatRadioButton(
+                        selected = isSelected,
+                        onClick = { updateSelectedLanguage(context, language) }
+                    )
                 }
             }
         }

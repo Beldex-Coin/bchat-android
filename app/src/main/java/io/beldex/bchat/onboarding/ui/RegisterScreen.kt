@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -100,7 +98,8 @@ fun RegisterScreen(
                     fontFamily = RobotoMono,
                     fontWeight = FontWeight.Light,
                     fontSize = 12.sp,
-                    modifier = Modifier.padding(top = 8.dp)
+                    lineHeight = 18.sp,
+                    modifier = Modifier.padding(top = 10.dp)
                 )
 
                 RegisterKeyCard(
@@ -117,7 +116,8 @@ fun RegisterScreen(
                     fontFamily = RobotoMono,
                     fontWeight = FontWeight.Light,
                     fontSize = 12.sp,
-                    modifier = Modifier.padding(top = 8.dp, bottom = 20.dp)
+                    lineHeight = 18.sp,
+                    modifier = Modifier.padding(top = 10.dp, bottom = 20.dp)
                 )
             }
 
@@ -143,7 +143,6 @@ private fun RegisterKeyCard(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
             .background(MaterialTheme.appColors.onboardingInputBackground)
             .then(
                 if (isLoading) Modifier else Modifier.clickable(
@@ -152,7 +151,7 @@ private fun RegisterKeyCard(
                     onClick = onCopyClick
                 )
             )
-            .border(1.dp, MaterialTheme.appColors.userDetailsCancelBackground, RoundedCornerShape(16.dp))
+            .border(1.dp, MaterialTheme.appColors.userDetailsCancelBackground)
             .padding(18.dp)
     ) {
         Text(
@@ -179,9 +178,10 @@ private fun RegisterKeyCard(
                 color = MaterialTheme.appColors.onboardingInputText,
                 fontFamily = RobotoMono,
                 fontSize = 12.sp,
+                lineHeight = 15.sp,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 10.dp)
+                    .padding(top = 8.dp)
             )
         }
     }

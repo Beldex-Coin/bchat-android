@@ -124,7 +124,10 @@
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_indicator"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/timestampTextView"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="1"
+            android:layout_marginTop="6dp"
             android:layout_marginEnd="16dp"
             >
 
@@ -154,8 +157,8 @@
             android:textColor="@color/home_row_timestamp"
             tools:text="9:41 AM"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/conversationViewDisplayNameTextView"
-            android:layout_marginBottom="2dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="2dp"
             android:layout_marginEnd="16dp"/>
 
         <ImageView
@@ -165,6 +168,8 @@
             app:srcCompat="@drawable/ic_mute_home"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/timestampTextView"
+            app:layout_constraintVertical_bias="1"
+            android:layout_marginTop="6dp"
             app:layout_constraintEnd_toStartOf="@id/unreadCountIndicator"
             android:layout_marginEnd="5dp"
 

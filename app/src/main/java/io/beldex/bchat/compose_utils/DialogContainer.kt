@@ -40,6 +40,8 @@ fun DialogContainer(
     onDismissRequest: () -> Unit,
     containerColor: Color = MaterialTheme.appColors.dialogBackground,
     wrapContentWidth: Boolean = false,
+    shape: androidx.compose.ui.graphics.Shape = androidx.compose.ui.graphics.RectangleShape,
+    showBorder: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val configuration = LocalConfiguration.current
@@ -53,14 +55,14 @@ fun DialogContainer(
         )
     ) {
         Card(
-            shape = RoundedCornerShape(16.dp),
+            shape = shape,
             colors = CardDefaults.cardColors(
                 containerColor = containerColor
             ),
-            border = BorderStroke(
+            border = if (showBorder) BorderStroke(
                 width = 1.dp,
-                color = MaterialTheme.appColors.dividerColor
-            ),
+                color = MaterialTheme.appColors.pinBoxInactiveBorder
+            ) else null,
             modifier = Modifier
                 .then(
                     if (wrapContentWidth)

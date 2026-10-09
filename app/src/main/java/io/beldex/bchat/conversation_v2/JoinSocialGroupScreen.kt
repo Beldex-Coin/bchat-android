@@ -16,6 +16,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -198,8 +199,8 @@ private fun JoinSection(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.appColors.homeRowBackground
         ),
-        border = androidx.compose.foundation.BorderStroke(0.dp, Color.Transparent),
-        shape = RoundedCornerShape(16.dp),
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
+        shape = androidx.compose.ui.graphics.RectangleShape,
         modifier = modifier
     ) {
         Text(
@@ -217,10 +218,11 @@ private fun JoinSection(
             value = uiState.groupUrl,
             placeholder = {
                 Text(
-                    text = stringResource(R.string.fragment_enter_chat_url_edit_text_hint),
-                    fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                    text = stringResource(R.string.fragment_enter_chat_url_edit_text_hint).uppercase(),
+                    fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                    fontWeight = FontWeight.Light,
                     color = MaterialTheme.appColors.homeSearchBarHint,
-                    fontSize = 14.sp
+                    fontSize = 12.sp
                 )
             },
             onValueChange = { url ->
@@ -231,13 +233,12 @@ private fun JoinSection(
                 color = MaterialTheme.appColors.homeRowTitle,
                 fontSize = 14.sp
             ),
-            shape = RoundedCornerShape(12.dp),
+            shape = androidx.compose.ui.graphics.RectangleShape,
             singleLine = true,
             trailingIcon = {
                 Image(
-                    painter = painterResource(id = R.drawable.ic_qr_code),
+                    painter = painterResource(id = R.drawable.ic_newchat_scan),
                     contentDescription = "",
-                    colorFilter = ColorFilter.tint(color = MaterialTheme.appColors.homeSearchBarHint),
                     modifier = Modifier.clickable {
                         focusManager.clearFocus()
                         keyboardController?.hide()
@@ -249,7 +250,8 @@ private fun JoinSection(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(16.dp)
+                .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
                 focusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
@@ -339,7 +341,7 @@ private fun GroupsSection(
                             .height(116.dp)
                             .background(
                                 color = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
-                                shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp)
+                                shape = androidx.compose.ui.graphics.RectangleShape
                             )
                             .padding(start = 8.dp, end = 8.dp, top = 10.dp, bottom = 10.dp)
                             .clickable {

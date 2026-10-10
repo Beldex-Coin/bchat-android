@@ -347,15 +347,15 @@ fun MessageReceiver.handleVisibleMessage(message: VisibleMessage, proto: SignalS
         }
     }
     // Parse reaction if needed
-    val threadIsGroup = threadRecipient?.isGroupRecipient == true
+    val targetThreadIsOpenGroup = threadRecipient?.isOpenGroupRecipient == true
     message.reaction?.let { reaction ->
         if (reaction.react == true) {
             reaction.serverId = message.openGroupServerMessageID?.toString() ?: message.serverHash.orEmpty()
             reaction.dateSent = message.sentTimestamp ?: 0
             reaction.dateReceived = message.receivedTimestamp ?: 0
-            storage.addReaction(reaction,messageSender, !threadIsGroup)
+            storage.addReaction(reaction,messageSender, !targetThreadIsOpenGroup)
         } else {
-            storage.removeReaction(reaction.emoji!!, reaction.timestamp!!, reaction.publicKey!!, threadIsGroup)
+            storage.removeReaction(reaction.emoji!!, reaction.timestamp!!, reaction.publicKey!!, !targetThreadIsOpenGroup)
         }
     } ?: run {
         // Persist the message

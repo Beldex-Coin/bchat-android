@@ -492,11 +492,10 @@
     <string name="arrays__use_default">استخدام الافتراضي</string>
     <string name="arrays__use_custom">استخدام مخصص</string>
 
-    <string name="arrays__mute_for_one_hour">" كتم لمدة ساعة واحدة"</string>
-    <string name="arrays__mute_for_two_hours">" كتم لمدة ساعتين"</string>
-    <string name="arrays__mute_for_one_day">كتم لمدة يوم واحد</string>
-    <string name="arrays__mute_for_seven_days">كتم لمدة 7 أيام</string>
-    <string name="arrays__mute_forever">كتم إلى الأبد</string>
+    <string name="arrays__mute_for_eight_hours">كتم لمدة 8 ساعات</string>
+    <string name="arrays__mute_for_twenty_four_hours">كتم لمدة 24 ساعة</string>
+    <string name="arrays__mute_for_one_week">كتم لمدة أسبوع واحد</string>
+    <string name="arrays__mute_forever">دائمًا</string>
 
     <string name="arrays__settings_default">Settings default</string>
     <string name="arrays__enabled">Enabled</string>

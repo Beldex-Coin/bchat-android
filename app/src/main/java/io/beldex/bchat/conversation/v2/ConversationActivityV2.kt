@@ -3802,11 +3802,10 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
 
             HomeDialogType.MuteChat -> {
                 val muteUntil = when (data as? Int) {
-                    1 -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(2)
-                    2 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)
-                    3 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7)
-                    4 -> Long.MAX_VALUE
-                    else -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)
+                    0 -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(8)
+                    1 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)
+                    2 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7)
+                    else -> Long.MAX_VALUE
                 }
 
                 viewModel.recipient.value?.let { recipient ->

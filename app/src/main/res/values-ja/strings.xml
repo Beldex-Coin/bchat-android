@@ -439,11 +439,10 @@
     <string name="arrays__use_default">デフォルトを使用</string>
     <string name="arrays__use_custom">カスタムを使用</string>
 
-    <string name="arrays__mute_for_one_hour">1時間ミュート</string>
-    <string name="arrays__mute_for_two_hours">2時間ミュート</string>
-    <string name="arrays__mute_for_one_day">1日ミュート</string>
-    <string name="arrays__mute_for_seven_days">7日ミュート</string>
-    <string name="arrays__mute_forever">無期限ミュート</string>
+    <string name="arrays__mute_for_eight_hours">8時間ミュート</string>
+    <string name="arrays__mute_for_twenty_four_hours">24時間ミュート</string>
+    <string name="arrays__mute_for_one_week">1週間ミュート</string>
+    <string name="arrays__mute_forever">常に</string>
 
     <string name="arrays__settings_default">Settings default</string>
     <string name="arrays__enabled">Enabled</string>

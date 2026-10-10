@@ -66,6 +66,8 @@ public class ThreadRecord extends DisplayRecord implements Serializable {
   * This was to make sure HomeDifUtil returns a difference between old and new list*/
   private           final String  nickName;
   private           final int messageRequestCount;
+  private           final long    mutedUntil;
+  private           final int     notifyType;
 
   public ThreadRecord(@NonNull String body, @Nullable Uri snippetUri,@Nullable MessageRecord lastMessage,
                       Recipient recipient, long date, long count, int unreadCount,
@@ -85,6 +87,8 @@ public class ThreadRecord extends DisplayRecord implements Serializable {
     this.pinned           = pinned;
     this.nickName         = recipient == null ? null : recipient.getName();
     this.messageRequestCount = messageRequestCount;
+    this.mutedUntil       = recipient == null ? 0 : recipient.mutedUntil;
+    this.notifyType       = recipient == null ? 0 : recipient.notifyType;
   }
 
   public @Nullable Uri getSnippetUri() {
@@ -222,5 +226,13 @@ public class ThreadRecord extends DisplayRecord implements Serializable {
 
   public int getMessageRequestCount() {
     return messageRequestCount;
+  }
+
+  public long getMutedUntil() {
+    return mutedUntil;
+  }
+
+  public int getNotifyType() {
+    return notifyType;
   }
 }

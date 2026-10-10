@@ -1983,11 +1983,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             HomeDialogType.MuteChat -> {
                 val index = data as Int
                 val muteUntil = when (index) {
-                    1 -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(2)
-                    2 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)
-                    3 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7)
-                    4 -> Long.MAX_VALUE
-                    else -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)
+                    0 -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(8)
+                    1 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)
+                    2 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7)
+                    else -> Long.MAX_VALUE
                 }
                 lifecycleScope.launch(Dispatchers.IO) {
                     threadRecord?.let {

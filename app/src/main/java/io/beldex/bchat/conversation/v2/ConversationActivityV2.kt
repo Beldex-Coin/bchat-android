@@ -3813,6 +3813,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                         .recipientDatabase()
                         .setMuted(recipient, muteUntil)
                 }
+                updateSubtitle()
             }
 
             HomeDialogType.BlockUser -> {

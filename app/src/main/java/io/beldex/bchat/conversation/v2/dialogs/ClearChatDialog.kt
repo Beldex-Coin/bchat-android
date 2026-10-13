@@ -40,100 +40,16 @@ fun ClearChatDialog(
     onCancel: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    DialogContainer(
-        dismissOnBackPress = true,
-        dismissOnClickOutside = true,
-        onDismissRequest = onCancel
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Image(
-                painterResource(id = R.drawable.ic_clear_conversation),
-                contentDescription = "",
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(
-                        color = MaterialTheme.appColors.iconBackground,
-                        shape = CircleShape
-                    )
-                    .padding(8.dp)
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = stringResource(id = R.string.clear_chat),
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.SemiBold
-                ),
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = stringResource(id = R.string.clear_chat_confirmation),
-                style = MaterialTheme.typography.bodyMedium.copy(
-
-                ),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Button(
-                    onClick = onCancel,
-                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.negativeGreenButton
-                    ),
-                    modifier = Modifier.weight(1f),
-                    border = BorderStroke(width = 0.5.dp, color = MaterialTheme.appColors.negativeGreenButtonBorder)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.cancel),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight(400),
-                            fontSize = 14.sp,
-                            color = MaterialTheme.appColors.negativeGreenButtonText
-                        ),
-                        modifier = Modifier.padding(
-                            vertical = 8.dp
-                        )
-                    )
-                }
-
-                Button(
-                    onClick = onAccept,
-                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.negativeRedButtonBorder
-                    ),
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.clear),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight(400),
-                            fontSize = 14.sp,
-                            color = Color.White
-                        ),
-                        modifier = Modifier.padding(
-                            vertical = 8.dp
-                        )
-                    )
-                }
-            }
-        }
-    }
+    io.beldex.bchat.compose_utils.IconConfirmDialog(
+        icon = painterResource(id = R.drawable.ic_clear_conversation),
+        title = stringResource(id = R.string.clear_chat),
+        message = androidx.compose.ui.text.AnnotatedString(stringResource(id = R.string.clear_chat_confirmation)),
+        cancelText = stringResource(id = R.string.cancel),
+        confirmText = stringResource(id = R.string.clear),
+        onCancel = onCancel,
+        onConfirm = onAccept,
+        destructive = true
+    )
 }
 
 //@Preview(

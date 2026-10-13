@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,6 +35,7 @@ import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.bchatBackground
 import io.beldex.bchat.compose_utils.notchedCornerShape
 
 /**
@@ -53,7 +55,7 @@ fun RecoveryPhraseScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.appColors.onboardingBackground)
+            .bchatBackground(MaterialTheme.appColors.onboardingBackground)
     ) {
         Column(
             modifier = Modifier
@@ -63,12 +65,13 @@ fun RecoveryPhraseScreen(
             OnboardingTopBar(title = title, onBackClick = onBackClick)
 
             Column(modifier = Modifier.weight(1f).padding(horizontal = 22.dp)) {
+                // Figma: the free space sits above the icon (group starts ~170dp under the header).
+                Spacer(modifier = Modifier.weight(1f))
                 Icon(
                     painter = painterResource(id = R.drawable.ic_recovery_seed_news),
                     contentDescription = null,
                     tint = MaterialTheme.appColors.onboardingHeadlineColor,
                     modifier = Modifier
-                        .padding(top = 24.dp)
                         .size(68.dp)
                         .align(Alignment.CenterHorizontally)
                 )
@@ -148,6 +151,7 @@ fun RecoveryPhraseScreen(
                         )
                     }
                 }
+                Spacer(modifier = Modifier.weight(0.9f))
             }
 
             AnimatedVisibility(visible = !seedCopied) {

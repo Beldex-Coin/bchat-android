@@ -1,5 +1,6 @@
 package io.beldex.bchat.applock
 
+import io.beldex.bchat.util.BChatToast
 import android.app.AlertDialog
 import android.os.Bundle
 import android.os.Handler
@@ -45,7 +46,7 @@ class ChangePasswordActivity : BaseActionBarActivity() {
                     }
                     oldEnteredPassword.isEmpty() -> {
                         oldPasswordEditTxtLayout.isErrorEnabled = false
-                        Toast.makeText(
+                        BChatToast.makeText(
                             this@ChangePasswordActivity,
                             getString(R.string.must_set_your_old_pin),
                             Toast.LENGTH_LONG
@@ -61,7 +62,7 @@ class ChangePasswordActivity : BaseActionBarActivity() {
                     newEnteredPassword.isEmpty() -> {
                         oldPasswordEditTxtLayout.isErrorEnabled = false
                         newPasswordEditTxtLayout.isErrorEnabled = false
-                        Toast.makeText(
+                        BChatToast.makeText(
                             this@ChangePasswordActivity,
                             getString(R.string.must_set_your_new_pin),
                             Toast.LENGTH_LONG
@@ -77,7 +78,7 @@ class ChangePasswordActivity : BaseActionBarActivity() {
                             this@ChangePasswordActivity,
                             newPasswordEditTxt.text.toString()
                         )
-                       /* Toast.makeText(
+                       /* BChatToast.makeText(
                             this@ChangePasswordActivity,
                             "Password Changed Successfully",
                             Toast.LENGTH_LONG

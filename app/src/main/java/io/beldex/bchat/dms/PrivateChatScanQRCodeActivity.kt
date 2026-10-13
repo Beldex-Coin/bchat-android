@@ -1,5 +1,6 @@
 package io.beldex.bchat.dms
 
+import io.beldex.bchat.util.BChatToast
 import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -189,7 +190,7 @@ class PrivateChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
                         message = it
                     }
 
-                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                    BChatToast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
                     restartScannerWithDelay()
                 }

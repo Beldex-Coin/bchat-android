@@ -1,6 +1,8 @@
 package io.beldex.bchat.dms
 
+import io.beldex.bchat.util.BChatToast
 import android.app.Activity
+import io.beldex.bchat.compose_utils.bchatBackground
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
@@ -157,9 +159,12 @@ fun NewChatScreen(
     }
 
     Scaffold(
-        modifier = Modifier.windowInsetsPadding(
-            WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal)
-        ),
+        containerColor = androidx.compose.ui.graphics.Color.Transparent,
+        modifier = Modifier
+            .bchatBackground(MaterialTheme.appColors.homeBackground)
+            .windowInsetsPadding(
+                WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal)
+            ),
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -213,7 +218,6 @@ fun NewChatScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.appColors.homeBackground)
                     .padding(it)
                     .verticalScroll(rememberScrollState())
             )
@@ -567,70 +571,60 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                 exception.localizedMessage?.let {
                     Log.d("Beldex","BNS exception $it")
                 }
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                BChatToast.makeText(context, message, Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    DialogContainer(containerColor = MaterialTheme.appColors.userDetailsSheetBackground, onDismissRequest = {}) {
+    DialogContainer(onDismissRequest = {}) {
 
-        Column(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp, vertical = 18.dp)) {
 
             Text(
                 text = stringResource(R.string.activity_create_private_chat_title),
                 fontFamily = io.beldex.bchat.compose_utils.OpenSans,
-                color = MaterialTheme.appColors.homeRowTitle,
+                color = MaterialTheme.appColors.onboardingInputText,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(14.dp)
+                    .padding(bottom = 16.dp)
             )
 
-            Card(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start=14.dp, end=14.dp),
-                shape = RoundedCornerShape(16.dp),
-                border = BorderStroke(0.5.dp, if(bchatIdErrorStatus) MaterialTheme.appColors.negativeRedButtonBorder else Color.Transparent)
+                    .height(115.dp)
+                    .background(MaterialTheme.appColors.onboardingInputBackground)
+                    .border(
+                        1.dp,
+                        if (bchatIdErrorStatus) MaterialTheme.appColors.negativeRedButtonBorder else MaterialTheme.appColors.pinBoxInactiveBorder
+                    )
+                    .padding(horizontal = 14.dp, vertical = 12.dp)
             ) {
-                TextField(
+                if (bChatId.isEmpty()) {
+                    Text(
+                        text = stringResource(R.string.enter_the_bchat_id).uppercase(),
+                        fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                        color = MaterialTheme.appColors.onboardingInputHint,
+                        fontSize = 12.sp
+                    )
+                }
+                androidx.compose.foundation.text.BasicTextField(
                     value = bChatId,
-                    placeholder = {
-                        Text(
-                            text = stringResource(R.string.enter_the_bchat_id),
-                            fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
-                            color = MaterialTheme.appColors.homeSearchBarHint,
-                            fontSize = 14.sp
-                        )
-                    },
                     onValueChange = {
-                        if(it.isNotEmpty()){
+                        if (it.isNotEmpty()) {
                             bchatIdErrorStatus = false
                         }
                         bChatId = it
                     },
                     textStyle = androidx.compose.ui.text.TextStyle(
                         fontFamily = io.beldex.bchat.compose_utils.OpenSans,
-                        color = MaterialTheme.appColors.homeRowTitle,
+                        color = MaterialTheme.appColors.onboardingInputText,
                         fontSize = 14.sp
                     ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(115.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
-                        focusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        selectionColors = TextSelectionColors(
-                            MaterialTheme.appColors.textSelectionColor,
-                            MaterialTheme.appColors.textSelectionColor
-                        ),
-                        cursorColor = MaterialTheme.appColors.textSelectionColor,
-                    )
+                    cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.appColors.textSelectionColor),
+                    modifier = Modifier.fillMaxSize()
                 )
             }
 
@@ -640,41 +634,28 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                     fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                     color = MaterialTheme.appColors.negativeRedButtonBorder,
                     fontSize = 12.sp,
-                    modifier = Modifier.padding(start = 14.dp, end = 14.dp, top = 6.dp)
+                    modifier = Modifier.padding(top = 6.dp)
                 )
             }
 
+            Spacer(modifier = Modifier.height(18.dp))
+
             Row(
-                modifier= Modifier
-                    .fillMaxWidth()
-                    .padding(14.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Button(
-                    onClick={ onDismiss() },
-                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
-                    colors= ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.onboardingSecondaryButtonBackground,
-                        contentColor = MaterialTheme.appColors.onboardingSecondaryButtonText
-                    ),
-                    modifier=Modifier
-                        .weight(1f)
-                        .height(48.dp)
-                ) {
-                    Text(
-                        text=stringResource(id=R.string.cancel),
-                        fontFamily = io.beldex.bchat.compose_utils.OpenSans,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp
-                    )
-                }
+                io.beldex.bchat.compose_utils.DialogCancelButton(
+                    text = stringResource(id = R.string.cancel),
+                    onClick = { onDismiss() },
+                    modifier = Modifier.weight(1f)
+                )
 
-                Spacer(modifier=Modifier.width(7.dp))
-
-                Button(
-                    onClick={
+                val canStart = bChatId.isNotEmpty() && !bchatIdErrorStatus
+                io.beldex.bchat.compose_utils.PrimaryButton(
+                    onClick = {
                         if (CheckOnline.isOnline(context)) {
                             if (bChatId.isEmpty()) {
-                                Toast.makeText(
+                                BChatToast.makeText(
                                     context,
                                     context.getString(R.string.bchat_id_warning_message),
                                     Toast.LENGTH_SHORT
@@ -684,23 +665,23 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                                 onClick(bChatId)
                             }
                         } else {
-                            Toast.makeText(context, context.getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
+                            BChatToast.makeText(context, context.getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
                         }
                     },
-                    enabled = bChatId.isNotEmpty() && !bchatIdErrorStatus,
+                    enabled = canStart,
                     shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
-                    colors= ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
-                        contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
-                        disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
-                        disabledContentColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledText
-                    ),
-                    modifier=Modifier
+                    containerColor = Color(0xFFE0E0E0),
+                    contentColor = Color(0xFF0B0B0B),
+                    disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
+                    disabledContentColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledText,
+                    border = if (canStart) BorderStroke(1.dp, Color(0xFF0A370A)) else BorderStroke(1.dp, MaterialTheme.appColors.dividerColor),
+                    contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
+                    modifier = Modifier
                         .weight(1f)
-                        .height(48.dp)
+                        .height(52.dp)
                 ) {
                     Text(
-                        text= stringResource(id = R.string.let_s_bchat),
+                        text = stringResource(id = R.string.let_s_bchat),
                         fontFamily = io.beldex.bchat.compose_utils.OpenSans,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
@@ -713,6 +694,7 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
     }
 }
 
+
 @Composable
 fun BnsLoadingPopUp(onDismiss: () -> Unit) {
     DialogContainer(
@@ -720,29 +702,8 @@ fun BnsLoadingPopUp(onDismiss: () -> Unit) {
         dismissOnClickOutside = false,
         onDismissRequest = onDismiss,
     ) {
-
-        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier
-            .fillMaxWidth()
-            .padding(15.dp)) {
-            Box(
-                contentAlignment= Alignment.Center,
-                modifier = Modifier
-                    .size(55.dp)
-                    .background(
-                        color=MaterialTheme.appColors.circularProgressBarBackground,
-                        shape=CircleShape
-                    ),
-            ){
-                CircularProgressIndicator(
-                    modifier = Modifier.padding(12.dp),
-                    color = MaterialTheme.appColors.primaryButtonColor,
-                    strokeWidth = 2.dp
-                )
-            }
-            Text(text = stringResource(id = R.string.verify_bns), style = MaterialTheme.typography.titleMedium.copy(fontFamily = io.beldex.bchat.compose_utils.OpenSans, fontSize = 16.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier.padding(10.dp))
-        }
+        io.beldex.bchat.compose_utils.BChatLoaderContent(text = stringResource(id = R.string.verify_bns))
     }
-
 }
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)

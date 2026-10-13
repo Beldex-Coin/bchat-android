@@ -3,6 +3,8 @@ package io.beldex.bchat.home
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -38,52 +40,47 @@ fun ArchiveChatView(
 ) {
     val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
 
-    Row(verticalAlignment=Alignment.CenterVertically, modifier=Modifier
-        .background(
-            color=MaterialTheme.appColors.archiveChatCardBackground, shape=RoundedCornerShape(40.dp)
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.appColors.homeBackground.copy(alpha = 0.6f))
+            .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
+            .clickable { onRequestClick() }
+            .padding(horizontal = 12.dp, vertical = 10.dp)
+    ) {
+        Image(
+            painterResource(id = R.drawable.ic_archive_chats),
+            contentDescription = stringResource(R.string.archive_chat),
+            colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.appColors.onboardingInputText),
+            modifier = Modifier.size(22.dp)
         )
-        .padding(8.dp)
-        .clickable {
-            onRequestClick()
-        }) {
-        Box(
-            contentAlignment=Alignment.Center, modifier=Modifier
-                .size(42.dp)
-                .background(
-                    color=MaterialTheme.appColors.archiveChatIconBackground, shape=CircleShape
-                )
-        ) {
-            Image(
-                painterResource(id= if(isDarkTheme) R.drawable.ic_archive else R.drawable.ic_archive_icon_white),
-                contentDescription=stringResource(R.string.archive_chat),
-                modifier=Modifier.size(26.dp)
-
-            )
-        }
-        Spacer(modifier=Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(14.dp))
         Text(
-            text=stringResource(id=R.string.archive_chat),
-            style=MaterialTheme.typography.titleMedium.copy(
-                fontSize=14.sp, fontWeight=FontWeight(600), color=MaterialTheme.appColors.textColor
-            ),
+            text = stringResource(id = R.string.archive_chat),
+            color = MaterialTheme.appColors.onboardingInputText,
+            fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.SemiBold
         )
-        Spacer(modifier=Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(1f))
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .height(28.dp)
-                .defaultMinSize(minWidth = 28.dp)
+                .height(24.dp)
+                .defaultMinSize(minWidth = 24.dp)
                 .background(
-                    color = MaterialTheme.appColors.archiveChatCountBackground,
-                    shape = CircleShape
+                    color = MaterialTheme.appColors.userDetailsConfirmBackground,
+                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(6.dp)
                 )
                 .padding(horizontal = 6.dp)
         ) {
             Text(
                 text = if (count > 99) "99+" else count.toString(),
-                color = MaterialTheme.appColors.textColor,
+                color = androidx.compose.ui.graphics.Color(0xFF0B0B0B),
+                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                 fontWeight = FontWeight.Bold,
-                fontSize = 14.sp
+                fontSize = 12.sp
             )
         }
     }

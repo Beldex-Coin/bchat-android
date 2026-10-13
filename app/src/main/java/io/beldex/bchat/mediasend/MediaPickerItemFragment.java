@@ -1,5 +1,6 @@
 package io.beldex.bchat.mediasend;
 
+import io.beldex.bchat.util.BChatToast;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Point;
@@ -162,7 +163,7 @@ public class MediaPickerItemFragment extends Fragment implements MediaPickerItem
 
   @Override
   public void onMediaSelectionOverflow(int maxSelection) {
-    Toast.makeText(requireContext(), getResources().getQuantityString(R.plurals.MediaSendActivity_cant_share_more_than_n_items, maxSelection, maxSelection), Toast.LENGTH_SHORT).show();
+    BChatToast.makeText(requireContext(), getResources().getQuantityString(R.plurals.MediaSendActivity_cant_share_more_than_n_items, maxSelection, maxSelection), Toast.LENGTH_SHORT).show();
   }
 
   private void initToolbar(Toolbar toolbar) {

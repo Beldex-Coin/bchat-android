@@ -1,5 +1,6 @@
 package io.beldex.bchat.my_account.ui.dialogs
 
+import io.beldex.bchat.util.BChatToast
 import android.content.Context
 import android.content.res.Configuration
 import android.util.Log
@@ -8,6 +9,11 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import io.beldex.bchat.compose_utils.DialogCancelButton
+import io.beldex.bchat.compose_utils.RobotoMono
+import io.beldex.bchat.compose_utils.OpenSans
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -111,7 +117,7 @@ fun LinkYourBNSDialog(
                     result(true)
                 }else{
                     result(false)
-                    Toast.makeText(context, context.resources.getString(R.string.invalid_bns_warning_message), Toast.LENGTH_SHORT).show()
+                    BChatToast.makeText(context, context.resources.getString(R.string.invalid_bns_warning_message), Toast.LENGTH_SHORT).show()
                 }
             }.failUi { exception ->
                 bnsLoader = false
@@ -121,7 +127,7 @@ fun LinkYourBNSDialog(
                     message = context.resources.getString(R.string.bns_name_warning_message)
                     Log.d("Beldex", "BNS exception $it")
                 }
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                BChatToast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 result(false)
             }
         }
@@ -137,242 +143,195 @@ fun LinkYourBNSDialog(
             configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
         val dialogMaxHeight = (configuration.screenHeightDp * 0.9f).dp
+        val fieldBorder = when {
+            showErrorMessage -> MaterialTheme.appColors.negativeRedButtonBorder
+            isVerified -> MaterialTheme.appColors.userDetailsConfirmBackground
+            else -> MaterialTheme.appColors.pinBoxInactiveBorder
+        }
+        val lightButton = Color(0xFFE0E0E0)
+        val darkText = Color(0xFF0B0B0B)
+        val disabledText = MaterialTheme.appColors.onboardingCaptionColor
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(max = dialogMaxHeight)
                 .verticalScroll(rememberScrollState())
-                .padding(if (isLandscape) 10.dp else 16.dp)
+                .padding(horizontal = 15.dp, vertical = 16.dp)
         ) {
-            Text(
-                text = stringResource(R.string.link_bns),
-                style = BChatTypography.titleMedium.copy(
-                    color = MaterialTheme.appColors.editTextColor,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight(700),
-                    textAlign = TextAlign.Center
-                ),
-                modifier =Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(bottom=15.dp)
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = stringResource(R.string.link_bns),
+                    color = MaterialTheme.appColors.onboardingInputText,
+                    fontFamily = OpenSans,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(22.dp)
+                        .background(Color(0xCC222222))
+                        .border(1.dp, MaterialTheme.appColors.dividerColor)
+                        .clickable { onDismissRequest(false) }
+                ) {
+                    androidx.compose.material3.Icon(
+                        painter = painterResource(id = R.drawable.ic_close),
+                        contentDescription = null,
+                        tint = MaterialTheme.appColors.onboardingInputText,
+                        modifier = Modifier.size(14.dp)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(18.dp))
             Text(
                 text = stringResource(R.string.your_bchat_id),
-                style = BChatTypography.titleMedium.copy(
-                    color = MaterialTheme.appColors.editTextColor,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight(600),
-                    textAlign = TextAlign.Start
-                ),
-                modifier =Modifier
-                        .align(Alignment.Start)
-                        .padding(start=5.dp, bottom=5.dp)
+                color = MaterialTheme.appColors.onboardingInputText,
+                fontFamily = OpenSans,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold
             )
-            Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.appColors.linkBnsAddressBackground
-                ),
-                modifier =Modifier
-                        .fillMaxWidth()
-                        .padding(bottom=10.dp)
+            Spacer(modifier = Modifier.height(8.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.appColors.onboardingInputBackground)
+                    .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
+                    .padding(horizontal = 14.dp, vertical = 12.dp)
             ) {
                 Text(
                     text = state.publicKey ?: "",
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier
-                        .padding(
-                            16.dp
-                        )
+                    color = MaterialTheme.appColors.onboardingInputText,
+                    fontFamily = RobotoMono,
+                    fontSize = 12.sp,
+                    lineHeight = 17.sp
                 )
             }
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = stringResource(R.string.bns_name),
-                style = BChatTypography.titleMedium.copy(
-                    color = MaterialTheme.appColors.editTextColor,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight(600),
-                    textAlign = TextAlign.Start
-                ),
-                modifier =Modifier
-                        .align(Alignment.Start)
-                        .padding(start=5.dp, bottom=5.dp)
+                color = MaterialTheme.appColors.onboardingInputText,
+                fontFamily = OpenSans,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold
             )
-            TextField(
-                value = bnsName,
-                textStyle = TextStyle(
-                    color = if(isVerified) MaterialTheme.appColors.negativeGreenButtonBorder else MaterialTheme.appColors.secondaryContentColor
-                ),
-                placeholder = {
-                    Text(
-                        text = stringResource(R.string.bns_textfield_hint),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.appColors.textFieldDescriptionColor
-                        )
-                    )
-                },
-                onValueChange = {
-                    bnsName = it
-                    isVerified = false
-                    showErrorMessage = false
-                },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
-                ),
-                modifier = if(showErrorMessage) {
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = if (isLandscape) 8.dp else 15.dp)
-                        .border(
-                            1.dp,
-                            color = MaterialTheme.appColors.negativeRedButtonBorder,
-                            shape = RoundedCornerShape(16.dp)
-                        )
-                }else {
-                    if (isVerified) {
-                        Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = if (isLandscape) 8.dp else 15.dp)
-                        .border(
-                            1.dp,
-                            color = MaterialTheme.appColors.negativeGreenButtonBorder,
-                            shape = RoundedCornerShape(16.dp)
-                        )
-                    }else {
-                        Modifier
-                        .fillMaxWidth()
-                        .padding(bottom=15.dp)
-                    }
-                },
-                shape = RoundedCornerShape(16.dp),
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = MaterialTheme.appColors.contactCardBackground,
-                    focusedContainerColor = MaterialTheme.appColors.contactCardBackground,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    selectionColors = if(isVerified) TextSelectionColors(
-                        MaterialTheme.appColors.textSelectionBackgroundColor,
-                        MaterialTheme.appColors.textSelectionBackgroundColor
-                    ) else TextSelectionColors(
-                        MaterialTheme.appColors.textSelectionColor,
-                        MaterialTheme.appColors.textSelectionColor
-                    ),
-                    cursorColor = MaterialTheme.appColors.secondaryContentColor
-                )
-            )
-            Row(
-                modifier =Modifier
-                        .fillMaxWidth()
-                        .padding(bottom=10.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
+            Spacer(modifier = Modifier.height(8.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.appColors.onboardingInputBackground)
+                    .border(1.dp, fieldBorder)
+                    .padding(horizontal = 14.dp, vertical = 14.dp)
             ) {
-                OutlinedButton(
-                    onClick = { onDismissRequest(false) },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.negativeGreenButton,
-                    ),
-                    shape = notchedCornerShape(14.5.dp),
-                    border = BorderStroke(
-                        width = 0.5.dp,
-                        color = MaterialTheme.appColors.negativeGreenButtonBorder
-                    ),
-                    contentPadding = PaddingValues(
-                        vertical = if (isLandscape) 10.dp else 14.dp
-                    ),
-                    modifier = Modifier.weight(1F)
-                ) {
+                if (bnsName.isEmpty()) {
                     Text(
-                        text = stringResource(R.string.cancel),
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            color = MaterialTheme.appColors.negativeGreenButtonText,
-                            fontWeight = FontWeight(400),
-                            fontSize = 14.sp
-                        ),
-                        modifier = Modifier
-                            .padding(
-                                vertical = 4.dp
-                            )
+                        text = stringResource(R.string.bns_textfield_hint).uppercase(),
+                        color = MaterialTheme.appColors.onboardingInputHint,
+                        fontFamily = RobotoMono,
+                        fontSize = 12.sp
                     )
                 }
-                Spacer(modifier = Modifier.width(5.dp))
-                OutlinedButton(
+                androidx.compose.foundation.text.BasicTextField(
+                    value = bnsName,
+                    onValueChange = {
+                        bnsName = it
+                        isVerified = false
+                        showErrorMessage = false
+                    },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    ),
+                    textStyle = TextStyle(
+                        color = if (isVerified) MaterialTheme.appColors.userDetailsConfirmBackground else MaterialTheme.appColors.onboardingInputText,
+                        fontFamily = RobotoMono,
+                        fontSize = 12.sp
+                    ),
+                    cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.appColors.textSelectionColor),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            Spacer(modifier = Modifier.height(18.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                DialogCancelButton(
+                    text = stringResource(R.string.cancel),
+                    onClick = { onDismissRequest(false) },
+                    fontFamily = RobotoMono,
+                    textColor = MaterialTheme.appColors.onboardingInputText,
+                    modifier = Modifier.weight(1f)
+                )
+                val canVerify = verifyBNSName(bnsName)
+                PrimaryButton(
                     onClick = {
                         if (CheckOnline.isOnline(context)) {
                             if (!isVerified) {
                                 if (verifyBNSName(bnsName) && state.publicKey.isNotEmpty()) {
-                                    verifyBNS(bnsName.trim().lowercase(Locale.US), state.publicKey, context, result={
-                                        isVerified=it
-                                        showErrorMessage=!it
+                                    verifyBNS(bnsName.trim().lowercase(Locale.US), state.publicKey, context, result = {
+                                        isVerified = it
+                                        showErrorMessage = !it
                                     })
                                 }
                             }
                         } else {
-                            Toast.makeText(context, context.getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
+                            BChatToast.makeText(context, context.getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.contactCardBackground,
-                    ),
-                    shape = notchedCornerShape(14.5.dp),
-                    border = BorderStroke(
-                        width = 1.dp,
-                        color = if (verifyBNSName(bnsName)) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.contactCardBackground
-                    ),
-                    contentPadding = PaddingValues(
-                        vertical = if (isLandscape) 10.dp else 14.dp
-                    ),
-                    modifier = Modifier.weight(1F)
+                    shape = notchedCornerShape(12.dp),
+                    containerColor = if (canVerify) lightButton else MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
+                    contentColor = if (canVerify) darkText else disabledText,
+                    border = if (canVerify) BorderStroke(1.dp, MaterialTheme.appColors.userDetailsConfirmBackground.copy(alpha = 0.5f)) else null,
+                    contentPadding = PaddingValues(0.dp),
+                    modifier = Modifier.weight(1f).height(52.dp)
                 ) {
                     Text(
-                        text = if(isVerified) stringResource(id = R.string.verified) else stringResource(R.string.verify),
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            color = if (verifyBNSName(bnsName)) if(isVerified) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.secondaryContentColor else MaterialTheme.appColors.linkBnsDisabledButtonContent,
-                            fontWeight = FontWeight(400),
-                            fontSize = 14.sp
-                        ),
-                        modifier = Modifier
-                            .padding(
-                                vertical = 4.dp
-                            )
+                        text = if (isVerified) stringResource(id = R.string.verified) else stringResource(R.string.verify),
+                        fontFamily = RobotoMono,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp
                     )
-                    if(isVerified){
-                        Image(painter = painterResource(id = R.drawable.ic_message_sent), contentDescription = "Bns verified", modifier =Modifier
-                                .size(20.dp)
-                                .align(Alignment.CenterVertically)
-                                .padding(start=5.dp))
+                    if (isVerified) {
+                        Spacer(modifier = Modifier.width(6.dp))
+                        androidx.compose.material3.Icon(
+                            painter = painterResource(id = R.drawable.ic_toast_check),
+                            contentDescription = "Bns verified",
+                            tint = Color.Unspecified,
+                            modifier = Modifier.size(16.dp)
+                        )
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(10.dp))
             PrimaryButton(
                 onClick = {
-                    if(isVerified) {
+                    if (isVerified) {
                         TextSecurePreferences.setIsBNSHolder(context, bnsName)
-                        MessagingModuleConfiguration.shared.storage.setIsBnsHolder(state.publicKey,true)
+                        MessagingModuleConfiguration.shared.storage.setIsBnsHolder(state.publicKey, true)
                         onDismissRequest(true)
                     }
                 },
                 modifier = Modifier
-                    .fillMaxWidth(),
-                shape = notchedCornerShape(14.5.dp),
+                    .fillMaxWidth()
+                    .height(52.dp),
+                shape = notchedCornerShape(12.dp),
                 enabled = isVerified,
-                containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
-                disabledContainerColor = MaterialTheme.appColors.contactCardBackground,
+                containerColor = lightButton,
+                contentColor = darkText,
+                disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
+                disabledContentColor = disabledText,
+                contentPadding = PaddingValues(0.dp)
             ) {
                 Text(
                     text = stringResource(R.string.link),
-                    style = BChatTypography.titleMedium.copy(
-                        color = if (isVerified) {
-                            MaterialTheme.appColors.onboardingPrimaryButtonText
-                        } else {
-                            MaterialTheme.appColors.linkBnsDisabledButtonContent
-                        },
-                        fontWeight = FontWeight(400),
-                        fontSize = 16.sp
-                    ),
-                    modifier = Modifier
-                        .padding(8.dp)
+                    fontFamily = RobotoMono,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 14.sp
                 )
             }
         }
@@ -400,25 +359,7 @@ fun BnsNameVerifyingLoader(onDismiss: () -> Unit) {
         onDismissRequest = onDismiss,
     ) {
 
-        OutlinedCard(colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.dialogBackground), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), modifier = Modifier.fillMaxWidth()) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier =Modifier
-                    .fillMaxWidth()
-                    .padding(15.dp)) {
-                Box(
-                    contentAlignment= Alignment.Center,
-                    modifier =Modifier
-                            .size(55.dp)
-                            .background(color=MaterialTheme.appColors.circularProgressBarBackground, shape=CircleShape),
-                ){
-                    CircularProgressIndicator(
-                        modifier = Modifier.padding(12.dp),
-                        color = MaterialTheme.appColors.primaryButtonColor,
-                        strokeWidth = 2.dp
-                    )
-                }
-                Text(text = stringResource(id = R.string.verify_bns), style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier.padding(10.dp))
-            }
-        }
+        io.beldex.bchat.compose_utils.BChatLoaderContent(text = stringResource(id = R.string.verify_bns))
     }
 
 }

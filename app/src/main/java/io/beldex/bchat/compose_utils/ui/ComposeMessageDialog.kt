@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.compose_utils.DialogCancelButton
+import io.beldex.bchat.compose_utils.DialogConfirmButton
 import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.PrimaryButton
@@ -32,63 +34,97 @@ import io.beldex.bchat.compose_utils.notchedCornerShape
 @Composable
 fun ComposeMessageDialogContent(
     title: String,
-    message: String,
+    message: CharSequence,
     positiveText: String,
     negativeText: String?,
     destructive: Boolean,
     onPositive: () -> Unit,
-    onNegative: () -> Unit
+    onNegative: () -> Unit,
+    iconRes: Int = 0
 ) {
+    val annotated = androidx.compose.runtime.remember(message) { message.toBoldAwareAnnotatedString() }
+    if (iconRes != 0 && negativeText != null) {
+        io.beldex.bchat.compose_utils.IconConfirmDialog(
+            icon = androidx.compose.ui.res.painterResource(id = iconRes),
+            title = title,
+            message = annotated,
+            cancelText = negativeText,
+            confirmText = positiveText,
+            onCancel = onNegative,
+            onConfirm = onPositive
+        )
+        return
+    }
     DialogContainer(
         dismissOnBackPress = true,
         dismissOnClickOutside = true,
         onDismissRequest = onNegative
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+        Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp, vertical = 18.dp)) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    color = MaterialTheme.appColors.editTextColor,
-                    fontFamily = OpenSans,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
-                )
+                color = MaterialTheme.appColors.onboardingInputText,
+                fontFamily = OpenSans,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp
             )
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = message,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.appColors.secondaryContentColor,
-                    fontFamily = RobotoMono,
-                    fontSize = 14.sp
-                )
+                text = annotated,
+                color = MaterialTheme.appColors.onboardingInputText,
+                fontFamily = RobotoMono,
+                fontSize = 13.sp,
+                lineHeight = 19.sp
             )
             Spacer(modifier = Modifier.height(20.dp))
             Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 if (negativeText != null) {
-                    PrimaryButton(
+                    DialogCancelButton(
+                        text = negativeText,
                         onClick = onNegative,
-                        shape = notchedCornerShape(12.dp),
-                        containerColor = MaterialTheme.appColors.onboardingSecondaryButtonBackground,
-                        contentColor = MaterialTheme.appColors.onboardingSecondaryButtonText,
-                        border = BorderStroke(1.dp, MaterialTheme.appColors.onboardingSecondaryButtonBorder),
                         modifier = Modifier.weight(1f)
+                    )
+                }
+                if (destructive) {
+                    DialogConfirmButton(
+                        text = positiveText,
+                        onClick = onPositive,
+                        destructive = true,
+                        modifier = Modifier.weight(1f)
+                    )
+                } else {
+                    PrimaryButton(
+                        onClick = onPositive,
+                        shape = notchedCornerShape(12.dp),
+                        containerColor = androidx.compose.ui.graphics.Color(0xFFE0E0E0),
+                        contentColor = androidx.compose.ui.graphics.Color(0xFF0B0B0B),
+                        border = BorderStroke(1.dp, androidx.compose.ui.graphics.Color(0xFF0A370A)),
+                        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
+                        modifier = Modifier.weight(1f).height(52.dp)
                     ) {
-                        Text(text = negativeText, fontFamily = OpenSans, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                        Text(text = positiveText, fontFamily = OpenSans, fontSize = 14.sp)
                     }
                 }
-                PrimaryButton(
-                    onClick = onPositive,
-                    shape = notchedCornerShape(12.dp),
-                    containerColor = if (destructive) MaterialTheme.appColors.negativeRedButtonBorder else MaterialTheme.appColors.onboardingPrimaryButtonBackground,
-                    contentColor = if (destructive) MaterialTheme.appColors.onboardingSecondaryButtonText else MaterialTheme.appColors.onboardingPrimaryButtonText,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(text = positiveText, fontFamily = OpenSans, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
-                }
+            }
+        }
+    }
+}
+
+/** Keeps bold runs from HTML-formatted strings (e.g. the call-permission description). */
+private fun CharSequence.toBoldAwareAnnotatedString(): androidx.compose.ui.text.AnnotatedString {
+    val spanned = this as? android.text.Spanned ?: return androidx.compose.ui.text.AnnotatedString(toString())
+    return androidx.compose.ui.text.buildAnnotatedString {
+        append(spanned.toString())
+        spanned.getSpans(0, spanned.length, android.text.style.StyleSpan::class.java).forEach { span ->
+            if (span.style == android.graphics.Typeface.BOLD || span.style == android.graphics.Typeface.BOLD_ITALIC) {
+                addStyle(
+                    androidx.compose.ui.text.SpanStyle(fontWeight = FontWeight.Bold),
+                    spanned.getSpanStart(span),
+                    spanned.getSpanEnd(span)
+                )
             }
         }
     }
@@ -97,7 +133,8 @@ fun ComposeMessageDialogContent(
 class ComposeMessageDialogFragment : DialogFragment() {
 
     private var title: String = ""
-    private var message: String = ""
+    private var message: CharSequence = ""
+    private var iconRes: Int = 0
     private var positiveText: String = ""
     private var negativeText: String? = null
     private var destructive: Boolean = false
@@ -109,7 +146,8 @@ class ComposeMessageDialogFragment : DialogFragment() {
         setStyle(STYLE_NO_TITLE, 0)
         arguments?.let {
             title = it.getString(ARG_TITLE).orEmpty()
-            message = it.getString(ARG_MESSAGE).orEmpty()
+            message = it.getCharSequence(ARG_MESSAGE) ?: ""
+            iconRes = it.getInt(ARG_ICON, 0)
             positiveText = it.getString(ARG_POSITIVE).orEmpty()
             negativeText = it.getString(ARG_NEGATIVE)
             destructive = it.getBoolean(ARG_DESTRUCTIVE)
@@ -138,6 +176,7 @@ class ComposeMessageDialogFragment : DialogFragment() {
                         positiveText = positiveText,
                         negativeText = negativeText,
                         destructive = destructive,
+                        iconRes = iconRes,
                         onPositive = {
                             dismiss()
                             onPositive?.invoke()
@@ -158,6 +197,7 @@ class ComposeMessageDialogFragment : DialogFragment() {
         private const val ARG_POSITIVE = "positive"
         private const val ARG_NEGATIVE = "negative"
         private const val ARG_DESTRUCTIVE = "destructive"
+        private const val ARG_ICON = "icon"
         const val TAG = "ComposeMessageDialog"
 
         @JvmStatic
@@ -170,12 +210,14 @@ class ComposeMessageDialogFragment : DialogFragment() {
             negativeText: String? = null,
             destructive: Boolean = false,
             onPositive: (() -> Unit)? = null,
-            onNegative: (() -> Unit)? = null
+            onNegative: (() -> Unit)? = null,
+            iconRes: Int = 0
         ) {
             ComposeMessageDialogFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_TITLE, title)
-                    putString(ARG_MESSAGE, message.toString())
+                    putCharSequence(ARG_MESSAGE, message)
+                    putInt(ARG_ICON, iconRes)
                     putString(ARG_POSITIVE, positiveText)
                     putString(ARG_NEGATIVE, negativeText)
                     putBoolean(ARG_DESTRUCTIVE, destructive)

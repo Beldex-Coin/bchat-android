@@ -161,7 +161,7 @@ object BackupUtil {
             fileName)
 
         if (fileUri == null) {
-            Toast.makeText(context, "Cannot create writable file in the dir $dirUri", Toast.LENGTH_LONG).show()
+            BChatToast.makeText(context, "Cannot create writable file in the dir $dirUri", Toast.LENGTH_LONG).show()
             throw IOException("Cannot create writable file in the dir $dirUri")
         }
 

@@ -2,6 +2,7 @@ package io.beldex.bchat.my_account.ui
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,6 +33,9 @@ import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.R
+import io.beldex.bchat.my_account.ui.dialogs.TrimLengthDialog
+import io.beldex.bchat.my_account.ui.dialogs.TrimNowDialog
+import io.beldex.bchat.util.Trimmer
 
 @Composable
 fun ChatSettingsScreen(
@@ -43,6 +48,36 @@ fun ChatSettingsScreen(
     val sharedPreferences = remember { PreferenceManager.getDefaultSharedPreferences(context) }
     var keepChatsArchived by remember {
         mutableStateOf(sharedPreferences.getBoolean("is_keep_archive_chat", false))
+    }
+    var trimEnabled by remember {
+        mutableStateOf(TextSecurePreferences.isThreadLengthTrimmingEnabled(context))
+    }
+    var trimLength by remember {
+        mutableStateOf(TextSecurePreferences.getThreadTrimLength(context))
+    }
+    var showTrimLengthDialog by remember { mutableStateOf(false) }
+    var showTrimNowDialog by remember { mutableStateOf(false) }
+
+    if (showTrimLengthDialog) {
+        TrimLengthDialog(
+            currentLength = trimLength,
+            onSave = { length ->
+                sharedPreferences.edit().putString(TextSecurePreferences.THREAD_TRIM_LENGTH, length.toString()).apply()
+                trimLength = length
+                showTrimLengthDialog = false
+            },
+            onDismiss = { showTrimLengthDialog = false }
+        )
+    }
+    if (showTrimNowDialog) {
+        TrimNowDialog(
+            limit = trimLength,
+            onConfirm = {
+                Trimmer.trimAllThreads(context, trimLength)
+                showTrimNowDialog = false
+            },
+            onDismiss = { showTrimNowDialog = false }
+        )
     }
     Column(
         modifier = modifier
@@ -128,8 +163,11 @@ fun ChatSettingsScreen(
                 SettingsItem(
                     settingTitle = stringResource(R.string.preferences__delete_old_messages),
                     settingIcon = painterResource(id = R.drawable.ic_delete_old),
-                    isEnabled = false,
-                    onSwitchChanged = {},
+                    isEnabled = trimEnabled,
+                    onSwitchChanged = { checked ->
+                        trimEnabled = checked
+                        sharedPreferences.edit().putBoolean(TextSecurePreferences.THREAD_TRIM_ENABLED, checked).apply()
+                    },
                     modifier = Modifier
                         .fillMaxWidth(),
                 )
@@ -140,9 +178,14 @@ fun ChatSettingsScreen(
                     settingTitle = stringResource(R.string.preferences__conversation_length_limit),
                     painterResource(id = R.drawable.ic_conversation_length),
                     containsSwitch = false,
-                    settingDesc = stringResource(R.string.default_value_messages_per_conversation),
+                    settingDesc = pluralStringResource(
+                        id = R.plurals.ApplicationPreferencesActivity_messages_per_conversation,
+                        count = trimLength,
+                        trimLength
+                    ),
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .clickable { showTrimLengthDialog = true },
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -152,7 +195,8 @@ fun ChatSettingsScreen(
                     painterResource(id = R.drawable.ic_trim_conversation),
                     containsSwitch = false,
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .clickable { showTrimNowDialog = true },
                 )
             }
         }

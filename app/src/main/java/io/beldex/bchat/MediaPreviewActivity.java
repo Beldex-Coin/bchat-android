@@ -16,6 +16,7 @@
  */
 package io.beldex.bchat;
 
+import io.beldex.bchat.util.BChatToast;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -387,7 +388,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
   private void initializeMedia() {
     if (!isContentTypeSupported(initialMediaType)) {
       Log.w(TAG, "Unsupported media type sent to MediaPreviewActivity, finishing.");
-      Toast.makeText(getApplicationContext(), R.string.MediaPreviewActivity_unssuported_media_type, Toast.LENGTH_LONG).show();
+      BChatToast.makeText(getApplicationContext(), R.string.MediaPreviewActivity_unssuported_media_type, Toast.LENGTH_LONG).show();
       finish();
     }
 
@@ -463,7 +464,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
               .request(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
               .maxSdkVersion(Build.VERSION_CODES.P)
               .withPermanentDenialDialog(getString(R.string.MediaPreviewActivity_signal_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied))
-              .onAnyDenied(() -> Toast.makeText(this, R.string.MediaPreviewActivity_unable_to_write_to_external_storage_without_permission, Toast.LENGTH_LONG).show())
+              .onAnyDenied(() -> BChatToast.makeText(this, R.string.MediaPreviewActivity_unable_to_write_to_external_storage_without_permission, Toast.LENGTH_LONG).show())
               .onAllGranted(() -> {
                 SaveAttachmentTask saveTask = new SaveAttachmentTask(MediaPreviewActivity.this);
                 long saveDate = (mediaItem.date > 0) ? mediaItem.date : MnodeAPI.getNowWithOffset();

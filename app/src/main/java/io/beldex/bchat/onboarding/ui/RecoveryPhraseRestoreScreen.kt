@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -45,6 +47,7 @@ import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.bchatBackground
 
 /**
  * Live seed-restore onboarding step (Figma `Restore Seed` 7546:4119/4150), hosted by
@@ -63,7 +66,7 @@ fun RecoveryPhraseRestoreScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.appColors.onboardingBackground)
+            .bchatBackground(MaterialTheme.appColors.onboardingBackground)
     ) {
         Column(
             modifier = Modifier
@@ -76,15 +79,16 @@ fun RecoveryPhraseRestoreScreen(
             )
 
             Column(modifier = Modifier.weight(1f).padding(horizontal = 22.dp)) {
+                // Figma "Restore Seed": the box floats at roughly 43% of the screen (277dp below the header).
+                Spacer(modifier = Modifier.weight(1f))
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 24.dp)
-                        .clip(RoundedCornerShape(16.dp))
+                        .heightIn(min = 144.dp)
                         .background(MaterialTheme.appColors.onboardingInputBackground)
-                        .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder, RoundedCornerShape(16.dp))
+                        .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
                 ) {
-                    Column(modifier = Modifier.padding(18.dp)) {
+                    Column(modifier = Modifier.padding(horizontal = 18.dp, vertical = 17.dp)) {
                         val hintColor = MaterialTheme.appColors.onboardingInputHint.toArgb()
                         val textColor = MaterialTheme.appColors.onboardingInputText.toArgb()
                         val hintText = stringResource(R.string.mnemonic_edit_text_hint)
@@ -105,7 +109,10 @@ fun RecoveryPhraseRestoreScreen(
                                     minLines = 3
                                     setHintTextColor(hintColor)
                                     setTextColor(textColor)
-                                    setPadding(0, 0, 0, 0)
+                                    // Right padding keeps pasted text clear of the paste icon.
+                                    val density = context.resources.displayMetrics.density
+                                    setPadding(0, 0, (26 * density).toInt(), 0)
+                                    gravity = android.view.Gravity.TOP or android.view.Gravity.START
                                     filters = arrayOf(InputFilter { source, start, end, dest, dstart, dend ->
                                         val result = dest.substring(0, dstart) + source.subSequence(start, end) + dest.substring(dend)
                                         if (result.split(Regex("\\s+")).count { it.isNotEmpty() } > 25) "" else null
@@ -120,7 +127,9 @@ fun RecoveryPhraseRestoreScreen(
                                 }
                             },
                             update = { editText ->
-                                editText.hint = hintText
+                                editText.hint = android.text.SpannableString(hintText.uppercase()).apply {
+                                    setSpan(android.text.style.AbsoluteSizeSpan(12, true), 0, length, android.text.Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                                }
                                 if (editText.text?.toString() != mnemonic) {
                                     editText.setText(mnemonic)
                                     editText.setSelection(editText.text?.length ?: 0)
@@ -132,13 +141,44 @@ fun RecoveryPhraseRestoreScreen(
                             modifier = Modifier.fillMaxWidth()
                         )
 
-                        Text(
-                            text = "$wordCount/25",
-                            color = MaterialTheme.appColors.onboardingBodyColor,
-                            fontFamily = RobotoMono,
-                            fontSize = 12.sp,
-                            modifier = Modifier.padding(top = 20.dp)
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 16.dp)
+                        ) {
+                            if (mnemonic.isNotEmpty()) {
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.clickable(
+                                        interactionSource = remember { MutableInteractionSource() },
+                                        indication = null,
+                                        onClick = onClearClick
+                                    )
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_clear_seed),
+                                        contentDescription = null,
+                                        tint = MaterialTheme.appColors.onboardingHeadlineColor,
+                                        modifier = Modifier.size(14.dp)
+                                    )
+                                    Text(
+                                        text = stringResource(R.string.clear),
+                                        color = MaterialTheme.appColors.onboardingHeadlineColor,
+                                        fontFamily = RobotoMono,
+                                        fontSize = 12.sp
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.weight(1f))
+                            Text(
+                                text = "$wordCount/25",
+                                color = MaterialTheme.appColors.onboardingBodyColor,
+                                fontFamily = RobotoMono,
+                                fontSize = 12.sp
+                            )
+                        }
                     }
 
                     Icon(
@@ -147,7 +187,7 @@ fun RecoveryPhraseRestoreScreen(
                         tint = MaterialTheme.appColors.onboardingHeadlineColor,
                         modifier = Modifier
                             .align(Alignment.TopEnd)
-                            .padding(18.dp)
+                            .padding(top = 17.dp, end = 17.dp)
                             .size(16.dp)
                             .clickable(
                                 interactionSource = remember { MutableInteractionSource() },
@@ -156,34 +196,7 @@ fun RecoveryPhraseRestoreScreen(
                             )
                     )
                 }
-
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(top = 16.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = onClearClick
-                        )
-                        .padding(horizontal = 14.dp, vertical = 8.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_clear_seed),
-                        contentDescription = null,
-                        tint = MaterialTheme.appColors.onboardingHeadlineColor,
-                        modifier = Modifier.size(15.dp)
-                    )
-                    Text(
-                        text = stringResource(R.string.clear),
-                        color = MaterialTheme.appColors.onboardingHeadlineColor,
-                        fontFamily = RobotoMono,
-                        fontSize = 14.sp
-                    )
-                }
+                Spacer(modifier = Modifier.weight(0.9f))
             }
 
             AnimatedVisibility(visible = mnemonic.isBlank()) {

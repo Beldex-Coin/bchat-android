@@ -1,6 +1,7 @@
 package io.beldex.bchat;
 
 
+import io.beldex.bchat.util.BChatToast;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -71,7 +72,7 @@ public class MediaDocumentsAdapter extends CursorRecyclerViewAdapter<ViewHolder>
           getContext().startActivity(intent);
         } catch (ActivityNotFoundException anfe) {
           Log.w(TAG, "No activity existed to view the media.");
-          Toast.makeText(getContext(), R.string.ConversationItem_unable_to_open_media, Toast.LENGTH_LONG).show();
+          BChatToast.makeText(getContext(), R.string.ConversationItem_unable_to_open_media, Toast.LENGTH_LONG).show();
         }
       });
     } else {

@@ -1,5 +1,6 @@
 package io.beldex.bchat.conversation.v2
 
+import io.beldex.bchat.util.BChatToast
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
@@ -55,7 +56,7 @@ class ModalUrlBottomSheet(private val url: String): BottomSheetDialogFragment(),
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             requireContext().startActivity(intent)
         } catch (e: Exception) {
-            Toast.makeText(context, R.string.invalid_url, Toast.LENGTH_SHORT).show()
+            BChatToast.makeText(context, R.string.invalid_url, Toast.LENGTH_SHORT).show()
         }
         dismiss()
     }
@@ -64,7 +65,7 @@ class ModalUrlBottomSheet(private val url: String): BottomSheetDialogFragment(),
         val clip = ClipData.newPlainText("URL", url)
         val manager = requireContext().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         manager.setPrimaryClip(clip)
-        Toast.makeText(requireContext(), R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+        BChatToast.makeText(requireContext(), R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
         dismiss()
     }
 

@@ -1,5 +1,6 @@
 package io.beldex.bchat.groups
 
+import io.beldex.bchat.util.BChatToast
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -153,17 +154,17 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
     private fun createClosedGroup() {
         val name = binding.nameEditText.text.trim()
         if (name.isEmpty()) {
-            return Toast.makeText(this, R.string.activity_create_closed_group_group_name_missing_error, Toast.LENGTH_LONG).show()
+            return BChatToast.makeText(this, R.string.activity_create_closed_group_group_name_missing_error, Toast.LENGTH_LONG).show()
         }
         if (name.length >= 64) {
-            return Toast.makeText(this, R.string.activity_create_closed_group_group_name_too_long_error, Toast.LENGTH_LONG).show()
+            return BChatToast.makeText(this, R.string.activity_create_closed_group_group_name_too_long_error, Toast.LENGTH_LONG).show()
         }
         val selectedMembers = this.selectContactsAdapter.selectedMembers
         if (selectedMembers.count() < 1) {
-            return Toast.makeText(this, R.string.activity_create_closed_group_not_enough_group_members_error, Toast.LENGTH_LONG).show()
+            return BChatToast.makeText(this, R.string.activity_create_closed_group_not_enough_group_members_error, Toast.LENGTH_LONG).show()
         }
         if (selectedMembers.count() >= groupSizeLimit) { // Minus one because we're going to include self later
-            return Toast.makeText(this, R.string.activity_create_closed_group_too_many_group_members_error, Toast.LENGTH_LONG).show()
+            return BChatToast.makeText(this, R.string.activity_create_closed_group_too_many_group_members_error, Toast.LENGTH_LONG).show()
         }
         val userPublicKey = TextSecurePreferences.getLocalNumber(this)!!
         isLoading = true
@@ -185,7 +186,7 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
             binding.nameEditText.isFocusable = true
             binding.loaderContainer.fadeOut()
             isLoading = false
-            Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+            BChatToast.makeText(this, it.message, Toast.LENGTH_LONG).show()
         }
     }
 

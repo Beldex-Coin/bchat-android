@@ -3,6 +3,9 @@ package io.beldex.bchat.my_account.ui
 import android.app.Activity
 import android.view.WindowManager
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -78,44 +81,43 @@ fun RecoverySeedView(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .verticalScroll(rememberScrollState())
-            .padding(
-                top = 48.dp
-            )
+            .padding(top = 64.dp)
     ) {
         Image(
-            painter = painterResource(id = if(isDarkTheme) R.drawable.ic_warning_lock else R.drawable.ic_warning_lock_light),
+            painter = painterResource(id = R.drawable.ic_recovery_seed_news),
             contentDescription = "",
-            modifier = Modifier.height(80.dp)
+            colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.appColors.onboardingHeadlineColor),
+            modifier = Modifier.size(68.dp)
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(28.dp))
 
         Text(
             text = stringResource(id = R.string.copy_your_recovery_seed),
-            style = MaterialTheme.typography.titleMedium.copy(
-                color = MaterialTheme.appColors.seedInfoTextColor,
-                fontWeight = FontWeight(600),
-                fontSize = 18.sp
-            ),
+            color = MaterialTheme.appColors.seedInfoTextColor,
+            fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+            fontWeight = FontWeight.Medium,
+            fontSize = 16.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
-        OutlinedCard(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .background(MaterialTheme.appColors.onboardingInputBackground)
+                .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
         ) {
             Text(
                 text = seed,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.appColors.primaryButtonColor,
-                    fontWeight = FontWeight(400),
-                    fontSize = 14.sp
-                ),
-                modifier = Modifier
-                    .padding(16.dp)
+                color = MaterialTheme.appColors.onboardingInputText,
+                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                fontWeight = FontWeight.Normal,
+                fontSize = 14.sp,
+                lineHeight = 21.sp,
+                modifier = Modifier.padding(horizontal = 18.dp, vertical = 20.dp)
             )
         }
 
@@ -123,26 +125,30 @@ fun RecoverySeedView(
 
         PrimaryButton(
             onClick = copyToClipBoard,
+            shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
+            containerColor = MaterialTheme.appColors.onboardingSecondaryButtonBackground,
+            contentColor = MaterialTheme.appColors.onboardingInputText,
+            border = BorderStroke(1.dp, MaterialTheme.appColors.onboardingSecondaryButtonBorder),
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
             modifier = Modifier
                 .fillMaxWidth()
+                .height(52.dp)
         ) {
             Text(
-                text = stringResource(id = R.string.copy),
-                style = MaterialTheme.typography.titleMedium.copy(
-                    color = Color.White,
-                    fontWeight = FontWeight(400),
-                    fontSize = 16.sp
-                ),
-                modifier = Modifier
-                    .padding(8.dp)
+                text = stringResource(id = R.string.copy) + " " + stringResource(id = R.string.seed),
+                fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                fontWeight = FontWeight.Normal,
+                fontSize = 14.sp
             )
+
+            Spacer(modifier = Modifier.width(8.dp))
 
             Icon(
                 painter = painterResource(id = R.drawable.ic_copy),
                 contentDescription = "",
-                tint = Color.White,
+                tint = MaterialTheme.appColors.userDetailsConfirmBackground,
                 modifier = Modifier
-                    .size(16.dp)
+                    .size(14.dp)
             )
         }
     }

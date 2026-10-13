@@ -1,5 +1,6 @@
 package io.beldex.bchat.preferences
 
+import io.beldex.bchat.util.BChatToast
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Intent
@@ -102,7 +103,7 @@ class ShareLogsDialog : BaseDialog() {
                 }
                 dismiss()
             } catch (e: Exception) {
-                Toast.makeText(context,getString(R.string.error_saving_logs), Toast.LENGTH_LONG).show()
+                BChatToast.makeText(context,getString(R.string.error_saving_logs), Toast.LENGTH_LONG).show()
                 dismiss()
             }
         }

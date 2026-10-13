@@ -1,5 +1,6 @@
 package io.beldex.bchat.longmessage;
 
+import io.beldex.bchat.util.BChatToast;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -72,7 +73,7 @@ public class LongMessageActivity extends PassphraseRequiredActionBarActivity {
       if (message == null) return;
 
       if (!message.isPresent()) {
-        Toast.makeText(this, R.string.LongMessageActivity_unable_to_find_message, Toast.LENGTH_SHORT).show();
+        BChatToast.makeText(this, R.string.LongMessageActivity_unable_to_find_message, Toast.LENGTH_SHORT).show();
         finish();
         return;
       }

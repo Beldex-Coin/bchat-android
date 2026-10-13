@@ -1,5 +1,6 @@
 package io.beldex.bchat.conversation.v2.dialogs
 
+import io.beldex.bchat.util.BChatToast
 import android.app.Activity
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
@@ -72,7 +73,7 @@ class JoinOpenGroupDialog(private val name: String, private val url: String) : B
         val parsedUrl = stringWithExplicitScheme.toHttpUrlOrNull()
 
         if (parsedUrl == null) {
-            Toast.makeText(
+            BChatToast.makeText(
                 context,
                 R.string.invalid_url,
                 Toast.LENGTH_SHORT
@@ -93,7 +94,7 @@ class JoinOpenGroupDialog(private val name: String, private val url: String) : B
                 false
             ))
         ) {
-            Toast.makeText(
+            BChatToast.makeText(
                 context,
                 R.string.invalid_public_key,
                 Toast.LENGTH_SHORT
@@ -133,7 +134,7 @@ class JoinOpenGroupDialog(private val name: String, private val url: String) : B
                         false
                     )
 
-                    Toast.makeText(
+                    BChatToast.makeText(
                         activity,
                         resources.getString(
                             R.string.activity_public_chat_success_message,
@@ -163,7 +164,7 @@ class JoinOpenGroupDialog(private val name: String, private val url: String) : B
 
                     if (!isAdded) return@withContext
 
-                    Toast.makeText(
+                    BChatToast.makeText(
                         activity,
                         R.string.activity_join_public_chat_error,
                         Toast.LENGTH_SHORT

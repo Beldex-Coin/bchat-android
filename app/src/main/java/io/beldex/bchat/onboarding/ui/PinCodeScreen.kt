@@ -62,6 +62,7 @@ import io.beldex.bchat.compose_utils.PinCodeView
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.bchatBackground
 import io.beldex.bchat.compose_utils.notchedCornerShape
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
@@ -180,12 +181,16 @@ private fun PortraitPinCodeScreen(
     isDarkTheme: Boolean,
     isTablet: Boolean
 ) {
+    androidx.compose.foundation.layout.BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+    // Tall phones: the free space belongs above the lock icon (Figma), not between keypad and Next.
+    val compact = maxHeight < 700.dp
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .then(if (compact) Modifier.verticalScroll(rememberScrollState()) else Modifier)
     ) {
+        if (!compact) Spacer(modifier = Modifier.weight(0.6f))
         Image(
             painter = painterResource(id = R.drawable.ic_pin_lock),
             colorFilter = if (state.errorText != null) androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.appColors.negativeRedButtonBorder) else null,
@@ -264,189 +269,107 @@ private fun PortraitPinCodeScreen(
 
         Spacer(modifier = Modifier.height(if(state.step == PinCodeSteps.EnterPin) 8.dp else 10.dp))
 
-        Box(
+        val cellHeight = if (isTablet) 88.dp else 60.dp
+        val gridVerticalSpacing = if (isTablet) 14.dp else 29.dp
+        PinKeypadGrid(
+            state = state,
+            pin = pin,
+            onEvent = onEvent,
+            cellHeight = cellHeight,
+            verticalSpacing = gridVerticalSpacing,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
-        ) {
-            val density = LocalDensity.current
-            var buttonSize by remember {
-                mutableStateOf(IntSize.Zero)
-            }
-            val buttonHeight = with(density) {
-                buttonSize.height.toDp()
-            }
-            val cellHeight =
-                if (isTablet) 88.dp else 56.dp
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        color = MaterialTheme.appColors.onboardingBackground,
-                        shape = RoundedCornerShape(
-                            topStart = 16.dp,
-                            topEnd = 16.dp
-                        )
-                    )
-            ) {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(3),
-                    verticalArrangement = Arrangement.spacedBy(14.dp),
-                    horizontalArrangement = Arrangement.spacedBy(18.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .padding(
-                            horizontal = if (isTablet) 48.dp else 48.dp,
-                            vertical = if (isTablet) 32.dp else 16.dp
-                        )
-                ) {
-                    repeat(12) {
-                        when (val index = it + 1) {
-                            10 -> {
-                                item {
-                                    PinKeyCard(
-                                        colors = CardDefaults.cardColors(
-                                            containerColor = MaterialTheme.appColors.onboardingKeypadKeyBackground
-                                        )
-                                    ) {
+                .padding(horizontal = 48.dp)
+        )
 
+        if (!compact) Spacer(modifier = Modifier.weight(0.4f)) else Spacer(modifier = Modifier.height(20.dp))
+
+        if (state.step != PinCodeSteps.VerifyPin) {
+            PrimaryButton(
+                onClick = {
+                    onEvent(PinCodeEvents.Submit)
+                },
+                enabled = pin.length == state.pinLength,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                shape = notchedCornerShape(12.dp),
+                containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
+                disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground
+            ) {
+                Text(
+                    text = stringResource(id = R.string.next),
+                    style = BChatTypography.titleMedium.copy(
+                        fontWeight = FontWeight.Normal,
+                        color = if(pin.length == state.pinLength) MaterialTheme.appColors.onboardingPrimaryButtonText else MaterialTheme.appColors.onboardingPrimaryButtonDisabledText
+                    ),
+                    modifier = Modifier
+                        .padding(8.dp)
+                )
+            }
+        }
+    }
+    }
+}
+
+@Composable
+private fun PinKeypadGrid(
+    state: PinCodeState,
+    pin: String,
+    onEvent: (PinCodeEvents) -> Unit,
+    cellHeight: androidx.compose.ui.unit.Dp,
+    verticalSpacing: androidx.compose.ui.unit.Dp,
+    modifier: Modifier = Modifier
+) {
+    val keyColors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.onboardingKeypadKeyBackground)
+    Column(
+        verticalArrangement = Arrangement.spacedBy(verticalSpacing),
+        modifier = modifier
+    ) {
+        listOf(listOf("1", "2", "3"), listOf("4", "5", "6"), listOf("7", "8", "9"), listOf("", "0", "<")).forEach { row ->
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(18.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                row.forEach { key ->
+                    if (key.isEmpty()) {
+                        Spacer(modifier = Modifier.weight(1f).height(cellHeight))
+                    } else {
+                        PinKeyCard(
+                            colors = keyColors,
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(cellHeight)
+                                .clickable {
+                                    if (key == "<") {
+                                        if (pin.isNotEmpty()) onEvent(PinCodeEvents.PinCodeChanged(pin.substring(0, pin.length - 1)))
+                                    } else if (pin.length < state.pinLength) {
+                                        onEvent(PinCodeEvents.PinCodeChanged(pin + key))
                                     }
                                 }
-                            }
-                            11 -> {
-                                item {
-                                    PinKeyCard(
-                                        colors = CardDefaults.cardColors(
-                                            containerColor = MaterialTheme.appColors.onboardingKeypadKeyBackground
-                                        ),
-                                        modifier = Modifier
-                                            .height(cellHeight)
-                                            .clickable {
-                                                if (pin.length < state.pinLength)
-                                                    onEvent(PinCodeEvents.PinCodeChanged(pin + "0"))
-                                            }
-                                    ) {
-                                        Box(
-                                            contentAlignment = Alignment.Center,
-                                            modifier = Modifier
-                                                .fillMaxSize()
-                                        ) {
-                                            Text(
-                                                text = "0",
-                                                fontFamily = RobotoMono,
-                                                fontSize = 26.sp,
-                                                color = MaterialTheme.appColors.onboardingInputText
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                            12 -> {
-                                item {
-                                    PinKeyCard(
-                                        colors = CardDefaults.cardColors(
-                                            containerColor = MaterialTheme.appColors.onboardingKeypadKeyBackground
-                                        ),
-                                        modifier = Modifier
-                                            .height(cellHeight)
-                                            .clickable {
-                                                if (pin.isNotEmpty()) {
-                                                    onEvent(
-                                                        PinCodeEvents.PinCodeChanged(
-                                                            pin.substring(
-                                                                0,
-                                                                pin.length - 1
-                                                            )
-                                                        )
-                                                    )
-                                                }
-                                            }
-                                    ) {
-                                        Box(
-                                            contentAlignment = Alignment.Center,
-                                            modifier = Modifier
-                                                .fillMaxSize()
-                                        ) {
-                                            Icon(
-                                                Icons.Outlined.Backspace,
-                                                contentDescription = "",
-                                                tint = MaterialTheme.appColors.onboardingHeadlineColor
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                            else -> {
-                                item {
-                                    PinKeyCard(
-                                        colors = CardDefaults.cardColors(
-                                            containerColor = MaterialTheme.appColors.onboardingKeypadKeyBackground
-                                        ),
-                                        modifier = Modifier
-                                            .height(cellHeight)
-                                            .clickable {
-                                                if (pin.length < state.pinLength)
-                                                    onEvent(PinCodeEvents.PinCodeChanged(pin + "$index"))
-                                            }
-                                    ) {
-                                        Box(
-                                            contentAlignment = Alignment.Center,
-                                            modifier = Modifier
-                                                .fillMaxSize()
-                                        ) {
-                                            Text(
-                                                text = "$index",
-                                                fontFamily = RobotoMono,
-                                                fontSize = 26.sp,
-                                                color = MaterialTheme.appColors.onboardingInputText
-                                            )
-                                        }
-                                    }
+                        ) {
+                            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                                if (key == "<") {
+                                    Icon(
+                                        Icons.Outlined.Backspace,
+                                        contentDescription = "",
+                                        tint = MaterialTheme.appColors.onboardingHeadlineColor
+                                    )
+                                } else {
+                                    Text(
+                                        text = key,
+                                        fontFamily = RobotoMono,
+                                        fontSize = 26.sp,
+                                        color = MaterialTheme.appColors.onboardingInputText
+                                    )
                                 }
                             }
                         }
                     }
                 }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                if (state.step != PinCodeSteps.VerifyPin) {
-                    PrimaryButton(
-                        onClick = {
-                            onEvent(PinCodeEvents.Submit)
-                        },
-                        enabled = pin.length == state.pinLength,
-                        modifier = Modifier
-                            .fillMaxWidth().
-                            padding(
-                                start = 16.dp,
-                                end = 16.dp,
-                                bottom = 16.dp
-                            )
-                            .align(Alignment.CenterHorizontally)
-                            .onSizeChanged {
-                                buttonSize = it
-                            },
-                        shape = notchedCornerShape(12.dp),
-                        containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
-                        disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.next),
-                            style = BChatTypography.titleMedium.copy(
-                                fontWeight = FontWeight.Normal,
-                                color = if(pin.length == state.pinLength) MaterialTheme.appColors.onboardingPrimaryButtonText else MaterialTheme.appColors.onboardingPrimaryButtonDisabledText
-                            ),
-                            modifier = Modifier
-                                .padding(8.dp)
-                        )
-                    }
-                }
             }
         }
     }
-
 }
 
 @Composable
@@ -461,7 +384,7 @@ private fun LandscapePinCodeScreen(
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.appColors.onboardingBackground)
+            .bchatBackground(MaterialTheme.appColors.onboardingBackground)
     ) {
         val density = LocalDensity.current
         var buttonSize by remember {

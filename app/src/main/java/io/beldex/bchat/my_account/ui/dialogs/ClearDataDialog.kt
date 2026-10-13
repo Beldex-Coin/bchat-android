@@ -258,9 +258,7 @@ fun ClearDataDialog(
                     )
                 }
                 Steps.DELETING -> {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.appColors.primaryButtonColor
-                    )
+                    io.beldex.bchat.compose_utils.BChatLoader(size = 40.dp)
 
                     Spacer(modifier = Modifier.height(24.dp))
                 }

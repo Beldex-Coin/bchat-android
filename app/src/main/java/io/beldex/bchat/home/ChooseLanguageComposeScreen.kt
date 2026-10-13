@@ -11,6 +11,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import io.beldex.bchat.compose_utils.PrimaryButton
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -68,6 +75,9 @@ fun ChooseLanguage(
         }
         onBack()
     }
+    // Revamp_2026: a row only highlights; "Apply" commits the language.
+    var pendingCode by remember(selectedCode) { mutableStateOf(selectedCode) }
+    var query by remember { mutableStateOf("") }
 
     val languages = listOf(
         Language("Chinese, Simplified", "简体中文", "zh"),
@@ -93,23 +103,36 @@ fun ChooseLanguage(
         onLanguageSelected(language.code)
     }
 
+    val visibleLanguages = languages.filter {
+        query.isBlank() || it.nativeName.contains(query.trim(), ignoreCase = true) ||
+            it.englishName.contains(query.trim(), ignoreCase = true)
+    }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        LanguageSearchField(
+            query = query,
+            onQueryChange = { query = it },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, top = 12.dp)
+        )
     Box(
         modifier =
             Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .weight(1f)
+                .padding(horizontal = 16.dp)
     ) {
         LazyColumn(
             state = scrollState,
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(vertical = 16.dp),
+            contentPadding = PaddingValues(vertical = 12.dp),
             modifier = Modifier
                 .fillMaxSize()
                 .padding(end = 16.dp)
 
         ) {
-            items(languages, key = { it.code }) { language ->
-                val isSelected = language.code == selectedCode
+            items(visibleLanguages, key = { it.code }) { language ->
+                val isSelected = language.code == pendingCode
                 val rowShape = if (isSelected) io.beldex.bchat.compose_utils.notchedCornerShape(14.dp) else androidx.compose.ui.graphics.RectangleShape
                 Row(
                     modifier = Modifier
@@ -125,7 +148,7 @@ fun ChooseLanguage(
                             shape = rowShape,
                         )
                         .clickable {
-                            updateSelectedLanguage(context, language)
+                            pendingCode = language.code
                         }
                         .padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -157,7 +180,7 @@ fun ChooseLanguage(
                     }
                     BChatRadioButton(
                         selected = isSelected,
-                        onClick = { updateSelectedLanguage(context, language) }
+                        onClick = { pendingCode = language.code }
                     )
                 }
             }
@@ -170,6 +193,86 @@ fun ChooseLanguage(
                 .align(Alignment.CenterEnd)
                 .padding(start = 8.dp, top = 16.dp, end = 2.dp, bottom = 8.dp)
         )
+    }
+        PrimaryButton(
+            onClick = {
+                val chosen = languages.firstOrNull { it.code == pendingCode }
+                if (chosen != null && chosen.code != selectedCode) {
+                    updateSelectedLanguage(context, chosen)
+                } else {
+                    onBack()
+                }
+            },
+            shape = io.beldex.bchat.compose_utils.notchedCornerShape(14.dp),
+            containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
+            contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .height(58.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.apply),
+                fontFamily = RobotoMono,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 14.sp
+            )
+        }
+    }
+}
+
+@Composable
+private fun LanguageSearchField(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .background(MaterialTheme.appColors.onboardingInputBackground)
+            .border(1.dp, MaterialTheme.appColors.dividerColor)
+            .padding(horizontal = 14.dp, vertical = 14.dp)
+    ) {
+        androidx.compose.material3.Icon(
+            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_home_search),
+            contentDescription = null,
+            tint = MaterialTheme.appColors.onboardingCaptionColor,
+            modifier = Modifier.size(18.dp)
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+        Box(modifier = Modifier.weight(1f)) {
+            if (query.isEmpty()) {
+                Text(
+                    text = stringResource(R.string.search_language).uppercase(),
+                    color = MaterialTheme.appColors.onboardingInputHint,
+                    fontFamily = RobotoMono,
+                    fontSize = 12.sp
+                )
+            }
+            androidx.compose.foundation.text.BasicTextField(
+                value = query,
+                onValueChange = onQueryChange,
+                singleLine = true,
+                textStyle = androidx.compose.ui.text.TextStyle(
+                    color = MaterialTheme.appColors.onboardingInputText,
+                    fontFamily = RobotoMono,
+                    fontSize = 14.sp
+                ),
+                cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.appColors.textSelectionColor),
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        if (query.isNotEmpty()) {
+            androidx.compose.material3.Icon(
+                painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_close),
+                contentDescription = null,
+                tint = MaterialTheme.appColors.onboardingInputText,
+                modifier = Modifier
+                    .size(18.dp)
+                    .clickable { onQueryChange("") }
+            )
+        }
     }
 }
 

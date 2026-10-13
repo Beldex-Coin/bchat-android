@@ -1,5 +1,6 @@
 package io.beldex.bchat.onboarding
 
+import io.beldex.bchat.util.BChatToast
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Build
@@ -97,7 +98,7 @@ class CheckPasswordActivity : BaseActionBarActivity() {
             pin.isEmpty() -> {
                 binding.userPinEditTxtLayout.isErrorEnabled = false
                 if (validation) {
-                    Toast.makeText(
+                    BChatToast.makeText(
                         this,
                         getString(R.string.please_enter_your_four_digit_pin),
                         Toast.LENGTH_LONG

@@ -1,5 +1,6 @@
 package io.beldex.bchat.conversation.v2.messages
 
+import io.beldex.bchat.util.BChatToast
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Canvas
@@ -244,7 +245,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         }
 
         if (TextSecurePreferences.getRecordingStatus(context)) {
-            Toast.makeText(
+            BChatToast.makeText(
                 context,
                 context.getString(R.string.unable_to_play_audio_while_recording),
                 Toast.LENGTH_SHORT

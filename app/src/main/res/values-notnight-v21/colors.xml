@@ -60,6 +60,7 @@
     <color name="drawer_background">#F0F0F0</color>
     <color name="drawer_profile_background">#E4E4E4</color>
     <color name="drawer_item_border">#D9D9D9</color>
+    <color name="drawer_profile_border">#D9D9D9</color>
     <color name="drawer_text">#333333</color>
     <color name="drawer_version_text">#8D8D8D</color>
     <color name="switch_square_track_start">#CFCFCF</color>

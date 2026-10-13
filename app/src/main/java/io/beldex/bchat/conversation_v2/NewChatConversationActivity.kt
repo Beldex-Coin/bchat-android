@@ -56,7 +56,7 @@ class NewChatConversationActivity: BaseComponentActivity() {
                 darkTheme = isDarkTheme
             ) {
                 // A surface container using the 'background' color from the theme
-                Surface {
+                Surface(color = Color.Transparent) {
                     NewChatScreen(
                         searchQuery = searchQuery,
                         contacts = contacts,

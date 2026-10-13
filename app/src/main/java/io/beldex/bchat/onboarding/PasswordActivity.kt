@@ -1,6 +1,8 @@
 package io.beldex.bchat.onboarding
 
+import io.beldex.bchat.util.BChatToast
 import android.app.Activity
+import io.beldex.bchat.compose_utils.bchatBackground
 import android.app.KeyguardManager
 import android.content.ComponentName
 import android.content.Intent
@@ -107,13 +109,13 @@ class PasswordActivity : BaseActionBarActivity() {
             BChatTheme {
 
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.appColors.backgroundColor
+                    modifier = Modifier.fillMaxSize().bchatBackground(MaterialTheme.appColors.backgroundColor),
+                    color = Color.Transparent
                 ) {
 
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
-                        containerColor = MaterialTheme.appColors.backgroundColor,
+                        containerColor = Color.Transparent,
                         contentWindowInsets =
                             WindowInsets.safeDrawing.only(
                                 WindowInsetsSides.Top
@@ -131,7 +133,7 @@ class PasswordActivity : BaseActionBarActivity() {
 
                             launch {
                                 viewModel.errorMessage.collectLatest { message ->
-                                    Toast.makeText(
+                                    BChatToast.makeText(
                                         context,
                                         message,
                                         Toast.LENGTH_SHORT
@@ -233,7 +235,7 @@ class PasswordActivity : BaseActionBarActivity() {
             pin.isEmpty() -> {
                 binding.userPinEditTxtLayout.isErrorEnabled=false
                 if(validation) {
-                    Toast.makeText(
+                    BChatToast.makeText(
                         this,
                         getString(R.string.please_enter_your_four_digit_pin),
                         Toast.LENGTH_LONG
@@ -260,7 +262,7 @@ class PasswordActivity : BaseActionBarActivity() {
         if(pin.isEmpty()){
             binding.userPinEditTxtLayout.isErrorEnabled=false
             if(validation) {
-                Toast.makeText(
+                BChatToast.makeText(
                     this,
                     getString(R.string.please_enter_your_four_digit_pin),
                     Toast.LENGTH_LONG

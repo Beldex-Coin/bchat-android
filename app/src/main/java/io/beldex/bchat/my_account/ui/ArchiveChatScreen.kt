@@ -272,8 +272,9 @@ fun ArchiveChatScreen(
                 onDismissRequest = { showMenu = false },
             ) {
                 Card(
-                    shape = RoundedCornerShape(4.dp),
+                    shape = androidx.compose.ui.graphics.RectangleShape,
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.backgroundColor.copy(alpha = 0.96f)),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
                     elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
                     modifier = Modifier.wrapContentWidth().widthIn(max = 320.dp)
                 ) {
@@ -368,9 +369,10 @@ fun ArchiveChatScreen(
                     style = MaterialTheme.typography.titleSmall.copy(
                     fontSize = 12.sp,
                     fontWeight = FontWeight(400),
-                    color = MaterialTheme.appColors.textColor
+                    fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                    color = MaterialTheme.appColors.onboardingHeadlineColor
                 ),
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Start,
                 modifier = Modifier
                     .padding(16.dp)
                     .clickable {
@@ -448,182 +450,14 @@ fun ArchiveChatItem(
     keepArchiveChat: Boolean,
     modifier : Modifier=Modifier
 ) {
-    val unreadCount = thread.unreadCount
-
-    val formattedUnreadCount =
-        if (thread.isRead) null
-        else if (unreadCount < 100) unreadCount.toString() else "99+"
-
-    Row(
-        verticalAlignment=Alignment.CenterVertically, modifier=modifier
-    ) {
-
-        val isOpenGroupWithProfilePicture=
-            thread.recipient.isOpenGroupRecipient && thread.recipient.groupAvatarId != null
-        if (thread.recipient.isGroupRecipient && !isOpenGroupWithProfilePicture) {
-            val pictureType=ProfilePictureMode.GroupPicture
-            val members=DatabaseComponent.get(context).groupDatabase()
-                .getGroupMemberAddresses(thread.recipient.address.toGroupString(), true).sorted()
-                .take(2).toMutableList()
-            val additionalPk=members.getOrNull(1)?.serialize() ?: ""
-            val additionalDisplay=getDisplayName(context, additionalPk)
-            ProfilePictureComponent(
-                publicKey=thread.recipient.address.toString() ?: "",
-                displayName=thread.recipient.name.toString() ?: "",
-                additionalPublicKey=additionalPk,
-                additionalDisplayName=additionalDisplay,
-                containerSize=ProfilePictureMode.SmallPicture.size,
-                pictureMode=pictureType
-            )
-        } else {
-            val pictureType=ProfilePictureMode.SmallPicture
-            val displayName=getDisplayName(context, thread.recipient.address.toString())
-            ProfilePictureComponent(
-                publicKey=thread.recipient.address.toString(),
-                displayName=displayName,
-                containerSize=pictureType.size,
-                pictureMode=pictureType
-            )
-        }
-
-        Spacer(modifier=Modifier.width(8.dp))
-
-        val senderName= getUserDisplayName(context, thread.recipient) ?: thread.recipient.address.toString()
-        val rawSnippet=thread.getDisplayBody(context)
-        val timeStamp= DateUtils.getDisplayFormattedTimeSpanString(context, Locale.getDefault(), thread.date)
-
-        Column(
-            verticalArrangement=Arrangement.SpaceEvenly,
-            modifier=modifier
-                .weight(1f)
-                .align(Alignment.Top)
-        ) {
-            Text(
-                text=senderName, style=MaterialTheme.typography.titleMedium.copy(
-                    fontWeight=FontWeight(700), fontSize=14.sp
-
-                ), maxLines=1, overflow=TextOverflow.Ellipsis
-            )
-
-            Spacer(modifier=Modifier.height(8.dp))
-
-            if (thread.isSharedContact) {
-                val contactName = UpdateMessageData.fromJSON(thread.body)?.let {
-                    val data = it.kind as UpdateMessageData.Kind.SharedContact
-                    val addresses = flattenData(data.address)
-                    val names = flattenData(data.name).ifEmpty { addresses }
-                    when(names.size) {
-                        0 -> context.getString(R.string.no_name)
-                        1 -> names.first().capitalizeFirstLetter()
-                        else -> {
-                            val othersCount = names.size - 1
-                            context.resources.getQuantityString(
-                                R.plurals.contact_others,
-                                othersCount,
-                                shortNameAndAddress(names.first(), addresses.first()),
-                                othersCount
-                            )
-                        }
-                    }
-                } ?: context.getString(R.string.no_name)
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painterResource(R.drawable.ic_profile_default),
-                        contentDescription = "",
-                        tint = MaterialTheme.appColors.iconTint,
-                        modifier = Modifier
-                            .size(20.dp)
-                    )
-
-                    Spacer(modifier = Modifier.width(4.dp))
-
-                    Text(
-                        text = contactName,
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            fontWeight = FontWeight(400),
-                            fontSize = 12.sp
-                        ),
-                        maxLines=1,
-                        overflow=TextOverflow.Ellipsis,
-                    )
-                }
-            } else {
-                val snippet=MentionUtilities.highlightMentions(rawSnippet, thread.threadId, context)
-                val message = TextFormatter.formatForSentMessage(context, snippet)
-                Text(
-                    text=message.toAnnotatedString(), style=MaterialTheme.typography.bodySmall.copy(
-                        fontWeight=FontWeight(400), fontSize=12.sp
-                    ), maxLines=1, overflow=TextOverflow.Ellipsis
-                )
-            }
-        }
-
-        Spacer(modifier=Modifier.width(8.dp))
-
-        Column(
-            horizontalAlignment=Alignment.End,
-            verticalArrangement=Arrangement.Top,
-            modifier=Modifier.align(Alignment.Top)
-        ) {
-
-            Text(
-                text=timeStamp, style=MaterialTheme.typography.bodySmall.copy(
-                    fontWeight=FontWeight(400),
-                    fontSize=10.sp,
-                    color = if(thread.unreadCount !=0 && !thread.isRead) MaterialTheme.appColors.textGreen else MaterialTheme.appColors.textColor
-                ), maxLines=1, overflow=TextOverflow.Ellipsis, modifier=Modifier.padding(top=12.dp)
-            )
-            Spacer(modifier=Modifier.height(8.dp))
-
-            Row(
-                verticalAlignment=Alignment.CenterVertically,
-                horizontalArrangement=Arrangement.End
-            ) {
-                Box(
-                    modifier=Modifier
-                        .width(28.dp),
-                    contentAlignment=Alignment.CenterEnd
-                ) {
-                    when {
-                        thread.recipient.isMuted -> {
-                            Image(
-                                painter=painterResource(id=R.drawable.ic_mute_home),
-                                contentDescription=""
-                            )
-                        }
-
-                        thread.recipient.notifyType == RecipientDatabase.NOTIFY_TYPE_MENTIONS -> {
-                            Image(
-                                painter=painterResource(id=R.drawable.ic_mention_home),
-                                contentDescription=""
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier=Modifier.width(6.dp))
-                if (thread.unreadCount != 0 && !thread.isRead) {
-                    Box(
-                        contentAlignment=Alignment.Center,
-                        modifier=Modifier
-                            .size(24.dp)
-                            .background(
-                                color=MaterialTheme.appColors.textSelectionColor, shape=CircleShape
-                            )
-                    ) {
-                        Text(
-                            text=formattedUnreadCount ?: "",
-                            color=Color.White,
-                            fontWeight=FontWeight.Bold,
-                            fontSize=if (unreadCount < 100) 12.sp else 10.sp
-                        )
-                    }
-                }
-            }
-        }
-    }
+    // Revamp_2026: archived rows are the exact same row as Home (notched avatar, mono preview,
+    // square unread badge, new mute/mention/pin icons), so reuse the shared ConversationView.
+    val glide = androidx.compose.runtime.remember(context) { com.bumptech.glide.Glide.with(context) }
+    androidx.compose.ui.viewinterop.AndroidView(
+        factory = { ctx -> io.beldex.bchat.home.ConversationView(ctx) },
+        update = { view -> view.bind(thread, false, glide) },
+        modifier = modifier
+    )
 }
 
 private fun getDisplayName(context : Context, publicKey : String) : String {

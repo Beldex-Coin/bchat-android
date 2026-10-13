@@ -1,5 +1,6 @@
 package io.beldex.bchat.home
 
+import io.beldex.bchat.util.BChatToast
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -83,9 +84,9 @@ class PathActivity : PassphraseRequiredActionBarActivity() {
     private fun handleOnionRequestPathCountriesLoaded() { update(false) }
    /* private fun showToast(status:Boolean){
         if(status)
-        Toast.makeText(this,"Please check your internet connection",Toast.LENGTH_SHORT).show()
+        BChatToast.makeText(this,"Please check your internet connection",Toast.LENGTH_SHORT).show()
         else
-            Toast.makeText(this,"Please check your internet connection",Toast.LENGTH_SHORT).cancel()
+            BChatToast.makeText(this,"Please check your internet connection",Toast.LENGTH_SHORT).cancel()
     }*/
 
     private fun update(isAnimated: Boolean) {

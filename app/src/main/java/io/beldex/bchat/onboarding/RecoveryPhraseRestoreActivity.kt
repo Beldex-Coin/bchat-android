@@ -1,5 +1,6 @@
 package io.beldex.bchat.onboarding
 
+import io.beldex.bchat.util.BChatToast
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
@@ -66,7 +67,7 @@ class RecoveryPhraseRestoreActivity : BaseComponentActivity() {
         if (wordCount(mnemonic) == 25) {
             restore()
         } else {
-            Toast.makeText(this, getString(R.string.please_enter_valid_seed), Toast.LENGTH_SHORT).show()
+            BChatToast.makeText(this, getString(R.string.please_enter_valid_seed), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -78,7 +79,7 @@ class RecoveryPhraseRestoreActivity : BaseComponentActivity() {
                 mnemonic = item.text.toString()
             }
         } else {
-            Toast.makeText(this, R.string.no_copied_seed, Toast.LENGTH_SHORT).show()
+            BChatToast.makeText(this, R.string.no_copied_seed, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -106,7 +107,7 @@ class RecoveryPhraseRestoreActivity : BaseComponentActivity() {
             push(intent)*/
         } catch (e: Exception) {
             val message = if (e is MnemonicCodec.DecodingError) e.description else MnemonicCodec.DecodingError.Generic.description
-            return Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+            return BChatToast.makeText(this, message, Toast.LENGTH_SHORT).show()
         }
     }
 

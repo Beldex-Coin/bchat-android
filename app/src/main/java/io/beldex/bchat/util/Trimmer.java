@@ -53,7 +53,7 @@ public class Trimmer {
     @Override
     protected void onPostExecute(Void result) {
       progressDialog.dismiss();
-      Toast.makeText(context,
+      BChatToast.makeText(context,
                      R.string.trimmer__old_messages_successfully_deleted,
                      Toast.LENGTH_LONG).show();
     }

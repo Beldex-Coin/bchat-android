@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/page_background"
+    android:background="@android:color/transparent"
     android:layout_height="match_parent">
 
     <androidx.core.widget.NestedScrollView

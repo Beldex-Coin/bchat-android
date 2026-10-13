@@ -33,15 +33,17 @@ fun SettingsItem(
     settingDesc: String? = null,
     trailingText: String? = null,
     onSwitchChanged: (Boolean) -> Unit = {},
+    iconTint: androidx.compose.ui.graphics.Color? = null,
+    iconAlignTop: Boolean = false,
 ) {
     Row(
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = if (iconAlignTop) Alignment.Top else Alignment.CenterVertically,
         modifier = modifier
     ) {
         Icon(
             painter = settingIcon,
             contentDescription = "",
-            tint = MaterialTheme.appColors.iconTint
+            tint = iconTint ?: MaterialTheme.appColors.iconTint
         )
 
         Spacer(modifier = Modifier.width(16.dp))
@@ -63,10 +65,11 @@ fun SettingsItem(
                 Text(
                     text = description,
                     style = MaterialTheme.typography.labelSmall.copy(
-                        color = MaterialTheme.appColors.lockTimerColor,
+                        color = MaterialTheme.appColors.onboardingBodyColor,
                         fontFamily = RobotoMono,
-                        fontWeight = FontWeight(600),
-                        fontSize = 12.sp
+                        fontWeight = FontWeight(400),
+                        fontSize = 12.sp,
+                        lineHeight = 16.sp
                     ),
                 )
             }

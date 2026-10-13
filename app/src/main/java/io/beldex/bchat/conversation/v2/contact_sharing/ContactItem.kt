@@ -106,10 +106,10 @@ fun ContactItem(
 
         if (isSharing) {
             Spacer(modifier = Modifier.width(10.dp))
-            Image(
-                painter = painterResource(id = if (isSelected) R.drawable.ic_checkedbox else R.drawable.ic_checkbox),
-                contentDescription = null,
-                modifier = Modifier.size(24.dp)
+            io.beldex.bchat.util.CustomCheckBox(
+                checked = isSelected,
+                onCheckedChange = { contactChanged(contact, it) },
+                checkBoxSize = 20.dp
             )
         }
     }

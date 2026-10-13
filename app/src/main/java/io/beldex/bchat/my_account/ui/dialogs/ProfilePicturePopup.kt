@@ -47,6 +47,12 @@ import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.notchedCornerShape
+import io.beldex.bchat.compose_utils.PrimaryButton
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.Image
 
 @Composable
 fun ProfilePicturePopup(
@@ -93,7 +99,7 @@ fun ProfilePicturePopup(
                         color = MaterialTheme.appColors.titleTextColor,
                         fontFamily = OpenSans
                     ),
-                    textAlign = TextAlign.Center,
+                    textAlign = TextAlign.Start,
                     modifier = Modifier
                         .fillMaxWidth()
                 )
@@ -124,76 +130,58 @@ fun ProfilePicturePopup(
                         pictureMode = ProfilePictureMode.LargePicture
                     )
 
-                    Box(
-                        contentAlignment = Alignment.Center,
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_camera_badge),
+                        contentDescription = stringResource(id = R.string.activity_settings_profile_picture),
                         modifier = Modifier
-                            .size(32.dp)
-                            .clip(CircleShape)
-                            .background(
-                                color = MaterialTheme.appColors.userDetailsCancelBackground
-                            )
+                            .size(34.dp)
                             .align(Alignment.BottomEnd)
-                    ) {
-                        Icon(
-                            Icons.Outlined.CameraAlt,
-                            contentDescription = "",
-                            tint = MaterialTheme.appColors.editTextColor,
-                            modifier = Modifier
-                                .size(20.dp)
-                        )
-                    }
+                            .clickable { uploadPicture() }
+                    )
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Button(
+                PrimaryButton(
                     onClick = removePicture,
                     enabled = profilePictureStatus,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.onboardingSecondaryButtonBackground,
-                        contentColor = if(profilePictureStatus) MaterialTheme.appColors.onboardingSecondaryButtonText else MaterialTheme.appColors.disabledButtonContent,
-                        disabledContainerColor = MaterialTheme.appColors.optionalTextFieldBackground
-                    ),
-                    modifier = Modifier
-                        .weight(1f).height(50.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    border = BorderStroke(width = 0.5.dp, color = if(profilePictureStatus) MaterialTheme.appColors.onboardingSecondaryButtonBorder else MaterialTheme.appColors.optionalTextFieldBackground)
+                    shape = notchedCornerShape(12.dp),
+                    containerColor = MaterialTheme.appColors.onboardingSecondaryButtonBackground,
+                    contentColor = MaterialTheme.appColors.onboardingSecondaryButtonText,
+                    disabledContainerColor = MaterialTheme.appColors.optionalTextFieldBackground,
+                    disabledContentColor = MaterialTheme.appColors.disabledButtonContent,
+                    border = BorderStroke(1.dp, if (profilePictureStatus) MaterialTheme.appColors.onboardingSecondaryButtonBorder else MaterialTheme.appColors.optionalTextFieldBackground),
+                    contentPadding = PaddingValues(0.dp),
+                    modifier = Modifier.weight(1.13f).height(52.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.activity_settings_remove),
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            fontFamily = OpenSans,
-                            fontWeight = FontWeight(400),
-                            fontSize = 12.sp,
-                            color = if(profilePictureStatus) MaterialTheme.appColors.onboardingSecondaryButtonText else MaterialTheme.appColors.disabledButtonContent
-                        )
+                        fontFamily = OpenSans,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 14.sp
                     )
                 }
 
-                Spacer(modifier = Modifier.width(5.dp))
-
-                Button(
+                PrimaryButton(
                     onClick = uploadPicture,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground
-                    ),
-                    modifier = Modifier
-                        .weight(1f).height(50.dp),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = notchedCornerShape(12.dp),
+                    containerColor = Color(0xFFE0E0E0),
+                    contentColor = Color(0xFF0B0B0B),
+                    border = BorderStroke(1.4.dp, Color(0xFF0A370A)),
+                    contentPadding = PaddingValues(0.dp),
+                    modifier = Modifier.weight(1f).height(52.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.save),
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            color = MaterialTheme.appColors.onboardingPrimaryButtonText,
-                            fontFamily = OpenSans,
-                            fontWeight = FontWeight(400),
-                            fontSize = 12.sp
-                        )
+                        fontFamily = OpenSans,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 14.sp
                     )
                 }
             }

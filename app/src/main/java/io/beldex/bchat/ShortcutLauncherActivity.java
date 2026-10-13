@@ -1,5 +1,6 @@
 package io.beldex.bchat;
 
+import io.beldex.bchat.util.BChatToast;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -33,7 +34,7 @@ public class ShortcutLauncherActivity extends BaseAppCompatActivity {
     String serializedAddress = getIntent().getStringExtra(KEY_SERIALIZED_ADDRESS);
 
     if (serializedAddress == null) {
-      Toast.makeText(this, R.string.ShortcutLauncherActivity_invalid_shortcut, Toast.LENGTH_SHORT).show();
+      BChatToast.makeText(this, R.string.ShortcutLauncherActivity_invalid_shortcut, Toast.LENGTH_SHORT).show();
       startActivity(new Intent(this, PasswordActivity.class));
       finish();
       return;

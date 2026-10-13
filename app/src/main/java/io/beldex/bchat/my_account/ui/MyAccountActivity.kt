@@ -1,6 +1,8 @@
 package io.beldex.bchat.my_account.ui
 
+import io.beldex.bchat.util.BChatToast
 import android.Manifest
+import io.beldex.bchat.compose_utils.bchatBackground
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -307,10 +309,11 @@ class MyAccountActivity : BaseComponentActivity() {
             ) {
                 val context = LocalContext.current
                 val activity = (context as? Activity)
-                Surface {
+                Surface(color = Color.Transparent) {
                     Scaffold(
+                        modifier = Modifier.bchatBackground(MaterialTheme.appColors.backgroundColor),
                         contentWindowInsets = WindowInsets.safeDrawing,
-                        containerColor = MaterialTheme.appColors.backgroundColor
+                        containerColor = Color.Transparent
                     ) { padding ->
 
                         val navController = rememberNavController()
@@ -341,7 +344,7 @@ class MyAccountActivity : BaseComponentActivity() {
                 }
                 .execute()
         } else {
-            Toast.makeText(
+            BChatToast.makeText(
                 this,
                 getString(R.string.please_check_your_internet_connection),
                 Toast.LENGTH_SHORT
@@ -429,7 +432,7 @@ fun MyAccountNavHost(
 
     fun saveDisplayName(displayName: String, context : Context): Boolean {
         if (displayName.isEmpty()) {
-            Toast.makeText(
+            BChatToast.makeText(
                 context,
                 R.string.activity_display_name_display_name_missing_error,
                 Toast.LENGTH_SHORT
@@ -437,7 +440,7 @@ fun MyAccountNavHost(
             return false
         }
         if (displayName.toByteArray().size > SSKEnvironment.ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
-            Toast.makeText(
+            BChatToast.makeText(
                 context,
                 R.string.activity_display_name_display_name_too_long_error,
                 Toast.LENGTH_SHORT
@@ -445,7 +448,7 @@ fun MyAccountNavHost(
             return false
         }
         if (!displayName.matches(unicodeNamePattern.toRegex())) {
-            Toast.makeText(
+            BChatToast.makeText(
                 context,
                 R.string.display_name_validation,
                 Toast.LENGTH_SHORT
@@ -658,7 +661,7 @@ fun MyAccountNavHost(
                             }
                         )
                     } else {
-                        Toast.makeText(
+                        BChatToast.makeText(
                             context,
                             context.resources.getString(R.string.please_check_your_internet_connection),
                             Toast.LENGTH_SHORT
@@ -1005,10 +1008,6 @@ fun MyAccountNavHost(
                                         navController.navigate(MyAccountScreens.ChatSettingsScreen.route)
                                     }
 
-                                    SettingItem.NotificationSettings -> {
-                                        navController.navigate(MyAccountScreens.NotificationSettingsScreen.route)
-                                    }
-
                                     SettingItem.BlockedContacts -> {
 //                                Intent(context, BlockedContactsActivity::class.java).also { intent ->
 //                                    startActivity(intent)
@@ -1038,7 +1037,7 @@ fun MyAccountNavHost(
                                             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                                             startActivity(intent)
                                         } catch (e: Exception) {
-                                            Toast.makeText(
+                                            BChatToast.makeText(
                                                 context,
                                                 context.getString(R.string.cannot_open_url),
                                                 Toast.LENGTH_LONG
@@ -1274,7 +1273,7 @@ fun MyAccountNavHost(
                         markedAsSafe = true
                     } else {
                         markedAsSafe = false
-                        Toast.makeText(context, context.getString(R.string.failed_to_authenticate), Toast.LENGTH_SHORT).show()
+                        BChatToast.makeText(context, context.getString(R.string.failed_to_authenticate), Toast.LENGTH_SHORT).show()
                     }
                 }
             val verifyPin: () -> Unit = {
@@ -1730,16 +1729,8 @@ fun CardContainer(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    Card(
-        shape = RoundedCornerShape(
-            topStart = 16.dp,
-            topEnd = 16.dp
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.appColors.backgroundColor
-        ),
-        modifier = modifier
-    ) {
+    // Revamp_2026: settings content sits directly on the screen background (no rounded panel).
+    androidx.compose.foundation.layout.Box(modifier = modifier) {
         content()
     }
 }

@@ -1,5 +1,6 @@
 package io.beldex.bchat.my_account.ui
 
+import io.beldex.bchat.util.BChatToast
 import android.Manifest
 import android.content.res.Configuration
 import android.widget.Toast
@@ -109,7 +110,7 @@ fun MyAccountScreen(
                 }
             )
         } else {
-            Toast.makeText(
+            BChatToast.makeText(
                 context,
                 context.resources.getString(R.string.please_check_your_internet_connection),
                 Toast.LENGTH_SHORT

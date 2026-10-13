@@ -1,5 +1,6 @@
 package io.beldex.bchat.conversation_v2
 
+import io.beldex.bchat.util.BChatToast
 import android.app.Activity
 import android.content.Context
 import android.widget.Toast
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -128,17 +130,20 @@ fun CreateSecretGroup(
                     onGroupNameChange = { groupName = it },
                     showLoader = showLoader
                 )
-                Divider(
-                    color = MaterialTheme.appColors.dividerColor,
+                // Figma: search + contact list live inside one hairline container under the name field.
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(0.5.dp)
-                )
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
+                        .padding(12.dp)
+                ) {
                 SearchField(
                     searchQuery = searchQuery,
                     onSearchQueryChange = { onEvent(SecretGroupEvents.SearchQueryChanged(it)) },
                     showLoader = showLoader
                 )
+                Spacer(modifier = Modifier.height(10.dp))
                 if (contacts.isEmpty()) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -169,9 +174,9 @@ fun CreateSecretGroup(
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
                         )
                     }
+                }
                 }
             }
             CreateGroupButton(
@@ -197,11 +202,7 @@ fun CreateSecretGroup(
                     .clickable(enabled = true, onClick = {}),
                 contentAlignment = Alignment.Center
             ) {
-                LottieAnimation(
-                    composition,
-                    progress,
-                    modifier = Modifier.size(70.dp)
-                )
+                io.beldex.bchat.compose_utils.BChatLoader(size = 44.dp)
             }
         }
     }
@@ -278,7 +279,6 @@ private fun SearchField(
         onValueChange = onSearchQueryChange,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
             .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
         shape = androidx.compose.ui.graphics.RectangleShape,
         trailingIcon = {
@@ -322,8 +322,7 @@ private fun CreateGroupButton(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp)
-            .background(color = MaterialTheme.appColors.homeBackground),
+            .padding(top = 8.dp),
         contentAlignment = Alignment.Center
     ) {
         PrimaryButton(
@@ -335,7 +334,7 @@ private fun CreateGroupButton(
                         if (CheckOnline.isOnline(context)) {
                             createClosedGroup(device, groupName.trim(), context, activity, selectedContact, showLoader = onShowLoaderChange)
                         } else {
-                            Toast.makeText(context, context.getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
+                            BChatToast.makeText(context, context.getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
                         }
                         delay(2000)
                         onButtonEnabledChange(true)
@@ -425,14 +424,10 @@ private fun GroupContact(
                 overflow = TextOverflow.Ellipsis
             )
 
-            Image(
-                painter = painterResource(id = if (isSelected) R.drawable.ic_checkedbox else R.drawable.ic_checkbox),
-                contentDescription = "check box",
-                modifier = Modifier.padding(end = 16.dp),
-                colorFilter = ColorFilter.tint(
-                    if (isSelected) MaterialTheme.appColors.homeRowTimestampUnread
-                    else MaterialTheme.appColors.homeRowTimestamp
-                )
+            io.beldex.bchat.util.CustomCheckBox(
+                checked = isSelected,
+                onCheckedChange = { onSelectionChanged(recipient, it) },
+                modifier = Modifier.padding(end = 16.dp)
             )
         }
     }
@@ -453,35 +448,35 @@ private fun createClosedGroup(
     showLoader: (status : Boolean) -> Unit
 ) {
     if (name.isEmpty()) {
-        return Toast.makeText(
+        return BChatToast.makeText(
             context,
             R.string.activity_create_closed_group_group_name_missing_error,
             Toast.LENGTH_LONG
         ).show()
     }
     else if (name.length >= 26) {
-        return Toast.makeText(
+        return BChatToast.makeText(
             context,
             R.string.activity_create_closed_group_group_name_too_long_error,
             Toast.LENGTH_LONG
         ).show()
     }
     else if (selected.isEmpty()) {
-        return Toast.makeText(
+        return BChatToast.makeText(
             context,
             R.string.activity_create_closed_group_not_enough_group_members_error,
             Toast.LENGTH_LONG
         ).show()
     }
     else if (selected.count() >= groupSizeLimit) { // Minus one because we're going to include self later
-        return Toast.makeText(
+        return BChatToast.makeText(
             context,
             R.string.activity_create_closed_group_too_many_group_members_error,
             Toast.LENGTH_LONG
         ).show()
     }
     else if (!isValidGroupName(name)) {
-        Toast.makeText(
+        BChatToast.makeText(
             context,
             R.string.nickname_special_char_not_allowed,
             Toast.LENGTH_SHORT
@@ -506,7 +501,7 @@ private fun createClosedGroup(
                 }
             }.failUi {
                 showLoader(false)
-            Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+            BChatToast.makeText(context, it.message, Toast.LENGTH_LONG).show()
         }
     }
 }

@@ -1,5 +1,6 @@
 package io.beldex.bchat.onboarding
 
+import io.beldex.bchat.util.BChatToast
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -403,14 +404,14 @@ class RegisterActivity : BaseComponentActivity() {
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("BChat ID", x25519KeyPair!!.hexEncodedPublicKey)
         clipboard.setPrimaryClip(clip)
-        Toast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+        BChatToast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
     }
 
     private fun copyBeldexAddress() {
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Beldex Address", beldexAddressText)
         clipboard.setPrimaryClip(clip)
-        Toast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+        BChatToast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
     }
 
 // endregion

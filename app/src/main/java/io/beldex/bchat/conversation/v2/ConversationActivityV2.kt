@@ -1,5 +1,6 @@
 package io.beldex.bchat.conversation.v2
 
+import io.beldex.bchat.util.BChatToast
 import android.Manifest
 import android.animation.FloatEvaluator
 import android.animation.ValueAnimator
@@ -290,7 +291,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
             }
         }
         if (id == -1L) {
-            Toast.makeText(
+            BChatToast.makeText(
                 this,
                 getString(R.string.conversationsDeleted),
                 Toast.LENGTH_LONG
@@ -642,9 +643,10 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
             ComposeMessageDialogFragment.show(
                 supportFragmentManager,
                 title = getString(R.string.call_permission_required_title),
-                message = HtmlCompat.fromHtml(getString(R.string.call_permission_required_description), HtmlCompat.FROM_HTML_MODE_LEGACY).toString(),
+                message = HtmlCompat.fromHtml(getString(R.string.call_permission_required_description), HtmlCompat.FROM_HTML_MODE_LEGACY),
                 positiveText = getString(R.string.activity_settings_title),
                 negativeText = getString(R.string.cancel),
+                iconRes = R.drawable.ic_permission_setting,
                 onPositive = {
                     startActivity(io.beldex.bchat.my_account.ui.MyAccountActivity.intentForRoute(this, io.beldex.bchat.my_account.ui.MyAccountScreens.PrivacySettingsScreen.route))
                 }
@@ -672,7 +674,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
         lifecycleScope.launch {
             viewModel.backToHome.collectLatest { shouldGoBack ->
                 if (shouldGoBack) {
-                    Toast.makeText(
+                    BChatToast.makeText(
                         this@ConversationActivityV2,
                         getString(R.string.conversationsDeleted),
                         Toast.LENGTH_LONG
@@ -803,7 +805,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                 )
             )
             binding.callActionBarView.isVisible=false
-            Toast.makeText(this, getString(R.string.call_ended), Toast.LENGTH_SHORT)
+            BChatToast.makeText(this, getString(R.string.call_ended), Toast.LENGTH_SHORT)
                 .show()
         }
         binding.callActionBarView.setOnClickListener {
@@ -1211,7 +1213,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                 showGIFPicker()
                 toggleAttachmentOptions()
             } else {
-                Toast.makeText(
+                BChatToast.makeText(
                     this,
                     R.string.please_check_your_internet_connection,
                     Toast.LENGTH_SHORT
@@ -1308,7 +1310,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                         }
 
                         override fun onFailure(e: ExecutionException?) {
-                            Toast.makeText(
+                            BChatToast.makeText(
                                 this@ConversationActivityV2,
                                 R.string.activity_conversation_attachment_prep_failed,
                                 Toast.LENGTH_LONG
@@ -1359,7 +1361,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                     }
 
                     override fun onFailure(e: ExecutionException?) {
-                        Toast.makeText(
+                        BChatToast.makeText(
                             this@ConversationActivityV2,
                             R.string.activity_conversation_attachment_prep_failed,
                             Toast.LENGTH_LONG
@@ -1400,7 +1402,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
 
                     // ---------- UI messages ----------
                     uiState.uiMessages.firstOrNull()?.let { uiMessage ->
-                        Toast.makeText(
+                        BChatToast.makeText(
                             this@ConversationActivityV2,
                             uiMessage.message,
                             Toast.LENGTH_LONG
@@ -2487,7 +2489,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
 
     private fun callSendTextOnlyMessage() {
         if (binding.inputBar.text.length > 4096) {
-            Toast.makeText(
+            BChatToast.makeText(
                 this,
                 getString(R.string.text_limit_exceed_warnings),
                 Toast.LENGTH_SHORT
@@ -2683,7 +2685,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
             )
             // Notify the user
             val toastMessage=R.string.activity_home_conversation_deleted_message
-            Toast.makeText(this@ConversationActivityV2, toastMessage, Toast.LENGTH_LONG).show()
+            BChatToast.makeText(this@ConversationActivityV2, toastMessage, Toast.LENGTH_LONG).show()
             walletOnBackPressed()
         }
     }
@@ -2744,7 +2746,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
             }
 
             override fun onFailure(e : ExecutionException?) {
-                    Toast.makeText(
+                    BChatToast.makeText(
                         this@ConversationActivityV2,
                         R.string.activity_conversation_attachment_prep_failed,
                         Toast.LENGTH_LONG
@@ -2965,7 +2967,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
 
         val callStartTime = callViewModel.callStartTime ?: -1L
         if (callStartTime != -1L) {
-            Toast.makeText(
+            BChatToast.makeText(
                 this,
                 getString(R.string.warning_message_of_voice_recording),
                 Toast.LENGTH_SHORT
@@ -3094,7 +3096,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
 
         when {
             messageText.isEmpty() -> {
-                Toast.makeText(
+                BChatToast.makeText(
                     this,
                     R.string.empty_message_toast,
                     Toast.LENGTH_SHORT
@@ -3213,7 +3215,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
 
             override fun onFailure(e: ExecutionException) {
                 if (!isFinishing && !isDestroyed) {
-                    Toast.makeText(
+                    BChatToast.makeText(
                         this@ConversationActivityV2,
                         R.string.ConversationActivity_unable_to_record_audio,
                         Toast.LENGTH_LONG
@@ -3437,7 +3439,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
             ClipData.newPlainText("Message Content", builder.toString())
         )
 
-        Toast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+        BChatToast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
         endActionMode()
     }
 
@@ -3457,7 +3459,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
         val clip = ClipData.newPlainText("BChat ID", bchatID)
         clipboard.setPrimaryClip(clip)
 
-        Toast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+        BChatToast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
 
         endActionMode()
     }
@@ -3488,7 +3490,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
 
         // Do not allow saving before media finishes downloading
         if (message.isMediaPending) {
-            Toast.makeText(
+            BChatToast.makeText(
                 this,
                 getString(R.string.conversation_activity__wait_until_attachment_has_finished_downloading),
                 Toast.LENGTH_LONG
@@ -3508,7 +3510,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                 )
                 .onAnyDenied {
                     endActionMode()
-                    Toast.makeText(
+                    BChatToast.makeText(
                         this@ConversationActivityV2,
                         R.string.MediaPreviewActivity_unable_to_write_to_external_storage_without_permission,
                         Toast.LENGTH_LONG
@@ -3543,7 +3545,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                         return@onAllGranted
                     }
 
-                    Toast.makeText(
+                    BChatToast.makeText(
                         this@ConversationActivityV2,
                         resources.getQuantityString(
                             R.plurals.ConversationFragment_error_while_saving_attachments_to_sd_card,
@@ -3613,7 +3615,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
         val clip=ClipData.newPlainText("BChat ID", bchatId)
         val manager=getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         manager.setPrimaryClip(clip)
-        Toast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+        BChatToast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
     }
 
     override fun showExpiringMessagesDialog(thread: Recipient) {

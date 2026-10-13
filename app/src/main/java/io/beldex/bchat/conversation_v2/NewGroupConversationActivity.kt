@@ -1,6 +1,7 @@
 package io.beldex.bchat.conversation_v2
 
 import android.app.Activity
+import io.beldex.bchat.compose_utils.bchatBackground
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -77,8 +78,11 @@ class NewGroupConversationActivity: BaseComponentActivity() {
                 darkTheme = isDarkTheme
             ) {
                 // A surface container using the 'background' color from the theme
-                Surface {
-                    Scaffold {
+                Surface(color = androidx.compose.ui.graphics.Color.Transparent) {
+                    Scaffold(
+                        modifier = Modifier.bchatBackground(MaterialTheme.appColors.backgroundColor),
+                        containerColor = androidx.compose.ui.graphics.Color.Transparent
+                    ) {
                         val navController = rememberNavController()
                         NavHost(
                             navController = navController,
@@ -102,9 +106,7 @@ class NewGroupConversationActivity: BaseComponentActivity() {
                                     onBackClick = { finish() },
                                     modifier = Modifier
                                         .fillMaxSize()
-                                        .background(
-                                            color = MaterialTheme.appColors.backgroundColor
-                                        )
+                                        .bchatBackground(MaterialTheme.appColors.backgroundColor)
                                 ) {
                                     CreateSecretGroup(
                                         searchQuery = searchQuery,
@@ -142,9 +144,7 @@ class NewGroupConversationActivity: BaseComponentActivity() {
                                     onBackClick = { finish() },
                                     modifier = Modifier
                                         .fillMaxSize()
-                                        .background(
-                                            color = MaterialTheme.appColors.backgroundColor
-                                        )
+                                        .bchatBackground(MaterialTheme.appColors.backgroundColor)
                                 ) {
                                     JoinSocialGroupScreen(
                                         uiState = uiState,

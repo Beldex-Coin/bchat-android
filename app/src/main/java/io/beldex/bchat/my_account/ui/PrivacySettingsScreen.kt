@@ -35,6 +35,10 @@ import android.app.Activity
 import androidx.compose.foundation.clickable
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.DialogConfirmButton
+import io.beldex.bchat.compose_utils.DialogCancelButton
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Arrangement
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.OpenSans
@@ -85,6 +89,7 @@ fun PrivacySettingsScreen(
         ConfirmDialog(
             title = stringResource(R.string.preferences__clear_conversation_history),
             message = stringResource(R.string.clear_all_conversation_history_confirmation),
+            destructive = true,
             onConfirm = {
                 showClearHistoryConfirm = false
                 ApplicationContext.getInstance(context).let { app ->
@@ -100,9 +105,12 @@ fun PrivacySettingsScreen(
     }
 
     if (showVoiceVideoConfirm) {
-        ConfirmDialog(
+        io.beldex.bchat.compose_utils.IconConfirmDialog(
+            icon = painterResource(id = R.drawable.ic_headset_popup),
             title = stringResource(R.string.dialog_voice_video_title),
-            message = stringResource(R.string.dialog_voice_video_message),
+            message = androidx.compose.ui.text.AnnotatedString(stringResource(R.string.dialog_voice_video_message)),
+            cancelText = stringResource(R.string.cancel),
+            confirmText = stringResource(R.string.dialog_voice_video_enable),
             onConfirm = {
                 showVoiceVideoConfirm = false
                 Permissions.with(context as Activity)
@@ -146,6 +154,7 @@ fun PrivacySettingsScreen(
             SettingsItem(
                 settingTitle = stringResource(R.string.preferences__incognito_keyboard),
                 settingIcon = painterResource(id = R.drawable.ic_incognito_keyboard),
+                settingDesc = stringResource(R.string.preferences__request_keyboard_to_disable_personalized_learning),
                 isEnabled = incognitoKeyboard,
                 onSwitchChanged = { checked ->
                     incognitoKeyboard = checked
@@ -197,6 +206,7 @@ fun PrivacySettingsScreen(
             SettingsItem(
                 settingTitle = stringResource(R.string.preferences__send_link_previews),
                 settingIcon = painterResource(id = R.drawable.ic_send_link_setting),
+                settingDesc = stringResource(R.string.preferences__previews_are_supported_for),
                 isEnabled = linkPreviews,
                 onSwitchChanged = { checked ->
                     linkPreviews = checked
@@ -210,6 +220,7 @@ fun PrivacySettingsScreen(
             SettingsItem(
                 settingTitle = stringResource(R.string.preferences__voice_video_calls),
                 settingIcon = painterResource(id = R.drawable.ic_video_call_setting),
+                settingDesc = stringResource(R.string.preferences__allow_access_voice_video),
                 isEnabled = voiceVideoCalls,
                 onSwitchChanged = { checked ->
                     if (checked) {
@@ -231,6 +242,7 @@ fun PrivacySettingsScreen(
             SettingsItem(
                 settingTitle = stringResource(R.string.preferences__clear_conversation_history),
                 settingIcon = painterResource(id = R.drawable.ic_clear_data),
+                iconTint = MaterialTheme.appColors.negativeRedButtonBorder,
                 containsSwitch = false,
                 onSwitchChanged = {},
                 modifier = Modifier
@@ -243,6 +255,7 @@ fun PrivacySettingsScreen(
             SettingsItem(
                 settingTitle = stringResource(R.string.preferences__onion_routing),
                 settingIcon = painterResource(id = R.drawable.ic_onion_routing),
+                settingDesc = stringResource(R.string.preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages),
                 isEnabled = onionRouting,
                 onSwitchChanged = { checked ->
                     if (checked) {
@@ -291,18 +304,19 @@ private fun ConfirmDialog(
     title: String,
     message: String,
     onConfirm: () -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
+    destructive: Boolean = false
 ) {
     DialogContainer(
         dismissOnBackPress = true,
         dismissOnClickOutside = true,
         onDismissRequest = onCancel,
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+        Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp, vertical = 18.dp)) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium.copy(
-                    color = MaterialTheme.appColors.editTextColor,
+                    color = MaterialTheme.appColors.onboardingInputText,
                     fontFamily = OpenSans,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp
@@ -316,35 +330,21 @@ private fun ConfirmDialog(
                     fontSize = 14.sp
                 )
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            PrimaryButton(
-                onClick = onConfirm,
-                shape = notchedCornerShape(12.dp),
-                containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
-                contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
+            Spacer(modifier = Modifier.height(20.dp))
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(
-                    text = stringResource(R.string.ok),
-                    fontFamily = OpenSans,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 14.sp
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            PrimaryButton(
-                onClick = onCancel,
-                shape = notchedCornerShape(12.dp),
-                containerColor = MaterialTheme.appColors.onboardingSecondaryButtonBackground,
-                contentColor = MaterialTheme.appColors.onboardingSecondaryButtonText,
-                border = BorderStroke(1.dp, MaterialTheme.appColors.onboardingSecondaryButtonBorder),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
+                DialogCancelButton(
                     text = stringResource(R.string.cancel),
-                    fontFamily = OpenSans,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 14.sp
+                    onClick = onCancel,
+                    modifier = Modifier.weight(1f)
+                )
+                DialogConfirmButton(
+                    text = stringResource(R.string.ok),
+                    onClick = onConfirm,
+                    destructive = destructive,
+                    modifier = Modifier.weight(1f)
                 )
             }
         }

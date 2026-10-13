@@ -16,6 +16,7 @@
  */
 package io.beldex.bchat.conversation.v2.utilities;
 
+import io.beldex.bchat.util.BChatToast;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -330,7 +331,7 @@ public class AttachmentManager {
       activity.startActivityForResult(intent, requestCode);
     } catch (ActivityNotFoundException anfe) {
       Log.w(TAG, "couldn't complete ACTION_GET_CONTENT intent, no activity found. falling back.");
-      Toast.makeText(activity, R.string.AttachmentManager_cant_open_media_selection, Toast.LENGTH_LONG).show();
+      BChatToast.makeText(activity, R.string.AttachmentManager_cant_open_media_selection, Toast.LENGTH_LONG).show();
     }
   }
 

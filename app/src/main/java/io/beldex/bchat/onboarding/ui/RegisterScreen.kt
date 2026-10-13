@@ -35,6 +35,7 @@ import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.bchatBackground
 
 /**
  * Live "Register" onboarding step, hosted by [io.beldex.bchat.onboarding.RegisterActivity].
@@ -57,7 +58,7 @@ fun RegisterScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.appColors.onboardingBackground)
+            .bchatBackground(MaterialTheme.appColors.onboardingBackground)
     ) {
         Column(
             modifier = Modifier

@@ -1,5 +1,6 @@
 package io.beldex.bchat.dms
 
+import io.beldex.bchat.util.BChatToast
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.ClipData
@@ -108,7 +109,7 @@ class CreatePrivateChatActivity : PassphraseRequiredActionBarActivity(), ScanQRC
                 exception.localizedMessage?.let {
                     message = it
                 }
-                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                BChatToast.makeText(this, message, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -207,7 +208,7 @@ class EnterPublicKeyFragment : Fragment() {
         val clipboard = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Bchat ID", hexEncodedPublicKey)
         clipboard.setPrimaryClip(clip)
-        Toast.makeText(requireContext(), R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+        BChatToast.makeText(requireContext(), R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
     }
 
     private fun sharePublicKey() {

@@ -41,62 +41,45 @@ fun DeleteChatConfirmationDialog(
             onDismissRequest=onDismissRequest
     ) {
         Column(
-                horizontalAlignment=Alignment.CenterHorizontally,
                 modifier=Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
+                        .padding(horizontal = 15.dp, vertical = 18.dp)
         ) {
             Text(
                 text=stringResource(id=R.string.delete_conversation),
-                style = MaterialTheme.typography.titleMedium.copy(
-                    color = MaterialTheme.appColors.secondaryContentColor,
-                    fontWeight = FontWeight(700),
-                    fontSize = 16.sp
-                )
+                color = MaterialTheme.appColors.onboardingInputText,
+                fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp
             )
 
-            Spacer(modifier=Modifier.height(16.dp))
+            Spacer(modifier=Modifier.height(14.dp))
 
             Text(
                 text=message,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.appColors.titleTextColor,
-                    fontWeight = FontWeight(400),
-                    fontSize = 14.sp
-                ),
-                textAlign=TextAlign.Center
+                color = MaterialTheme.appColors.onboardingInputText,
+                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                fontSize = 13.sp,
+                lineHeight = 19.sp
             )
 
-            Spacer(modifier=Modifier.height(16.dp))
+            Spacer(modifier=Modifier.height(20.dp))
 
             Row(
-                horizontalArrangement = Arrangement.End,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(
+                io.beldex.bchat.compose_utils.DialogCancelButton(
                     text = stringResource(id = R.string.no),
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        color = MaterialTheme.appColors.onboardingHeadlineColor,
-                        fontFamily = io.beldex.bchat.compose_utils.OpenSans,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp
-                    ),
-                    modifier = Modifier
-                        .clickable { onDismissRequest() }
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                    onClick = onDismissRequest,
+                    fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                    modifier = Modifier.weight(1f)
                 )
-
-                Text(
+                io.beldex.bchat.compose_utils.DialogConfirmButton(
                     text = stringResource(id = R.string.yes),
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        color = MaterialTheme.appColors.negativeRedButtonBorder,
-                        fontFamily = io.beldex.bchat.compose_utils.OpenSans,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp
-                    ),
-                    modifier = Modifier
-                        .clickable { onConfirmation() }
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                    onClick = onConfirmation,
+                    destructive = true,
+                    modifier = Modifier.weight(1f)
                 )
             }
         }

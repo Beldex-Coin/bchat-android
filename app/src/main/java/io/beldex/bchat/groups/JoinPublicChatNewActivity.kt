@@ -1,5 +1,6 @@
 package io.beldex.bchat.groups
 
+import io.beldex.bchat.util.BChatToast
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
@@ -209,7 +210,7 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
         // Add "http" if not entered explicitly
         val stringWithExplicitScheme = if (!url.startsWith("http")) "http://$url" else url
         Log.d("Beldex","join group URL  $url")
-        val url = stringWithExplicitScheme.toHttpUrlOrNull() ?: return Toast.makeText(this,R.string.invalid_url, Toast.LENGTH_SHORT).show()
+        val url = stringWithExplicitScheme.toHttpUrlOrNull() ?: return BChatToast.makeText(this,R.string.invalid_url, Toast.LENGTH_SHORT).show()
         Log.d("Beldex","join group full URL  $url")
         val room = url.pathSegments.firstOrNull()
         Log.d("Beldex","join group room  $room")
@@ -217,7 +218,7 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
         Log.d("Beldex","join group public key  $publicKey")
         val isV2OpenGroup = !room.isNullOrEmpty()
         if (isV2OpenGroup && (publicKey == null || !PublicKeyValidation.isValid(publicKey, 64,false))) {
-            return Toast.makeText(this, R.string.invalid_public_key, Toast.LENGTH_SHORT).show()
+            return BChatToast.makeText(this, R.string.invalid_public_key, Toast.LENGTH_SHORT).show()
         }
         showLoader()
         lifecycleScope.launch(Dispatchers.IO) {
@@ -253,7 +254,7 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
                 Log.e("Beldex", "Couldn't join social group.", e)
                 withContext(Dispatchers.Main) {
                     hideLoader()
-                    Toast.makeText(this@JoinPublicChatNewActivity, R.string.activity_join_public_chat_error, Toast.LENGTH_SHORT).show()
+                    BChatToast.makeText(this@JoinPublicChatNewActivity, R.string.activity_join_public_chat_error, Toast.LENGTH_SHORT).show()
                 }
                 return@launch
             }

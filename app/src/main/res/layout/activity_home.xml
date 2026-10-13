@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:background="@color/home_screen_background">
+            android:background="@android:color/transparent">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar_Call"
@@ -91,7 +91,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/home_screen_background"
+                android:background="@android:color/transparent"
                 app:contentInsetStart="0dp">
 
                 <LinearLayout
@@ -179,7 +179,7 @@
                 android:id="@+id/requests"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/home_screen_background" />
+                android:background="@android:color/transparent" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
@@ -187,7 +187,7 @@
                 android:layout_weight="1"
                 app:cardCornerRadius="0dp"
                 app:strokeWidth="0dp"
-                app:cardBackgroundColor="@color/home_screen_background"
+                app:cardBackgroundColor="@android:color/transparent"
                 app:cardElevation="0dp">
 
                 <RelativeLayout

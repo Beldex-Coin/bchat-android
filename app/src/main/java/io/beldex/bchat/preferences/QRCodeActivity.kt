@@ -1,5 +1,6 @@
 package io.beldex.bchat.preferences
 
+import io.beldex.bchat.util.BChatToast
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -42,7 +43,7 @@ class QRCodeActivity : PassphraseRequiredActionBarActivity(), ScanQRCodeWrapperF
     }
 
     fun createPrivateChatIfPossible(hexEncodedPublicKey: String) {
-       /* if (!PublicKeyValidation.isValid(hexEncodedPublicKey)) { return Toast.makeText(this, R.string.invalid_bchat_id, Toast.LENGTH_SHORT).show() }
+       /* if (!PublicKeyValidation.isValid(hexEncodedPublicKey)) { return BChatToast.makeText(this, R.string.invalid_bchat_id, Toast.LENGTH_SHORT).show() }
         val recipient = Recipient.from(this, Address.fromSerialized(hexEncodedPublicKey), false)
         val intent = Intent(this, ConversationActivityV2::class.java)
         intent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)

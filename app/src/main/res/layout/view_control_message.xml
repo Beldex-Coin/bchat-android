@@ -9,8 +9,10 @@
 
     <TextView
         android:id="@+id/dateBreakTextView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
+        android:minWidth="120dp"
+        android:paddingHorizontal="24dp"
         android:fontFamily="@font/roboto_mono"
         android:gravity="center"
         android:background="@drawable/date_chip_background"
@@ -33,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
-        android:fontFamily="@font/open_sans_regular"
+        android:fontFamily="@font/roboto_mono"
         android:gravity="center"
         android:paddingStart="16dp"
         android:paddingTop="4dp"
@@ -53,8 +55,8 @@
         android:layout_marginBottom="5dp"
         android:elevation="5dp"
         android:visibility="gone"
-        app:cardBackgroundColor="@color/card_color"
-        app:cardCornerRadius="10dp"
+        app:cardBackgroundColor="#1A1A1A"
+        app:cardCornerRadius="0dp"
         tools:visibility="visible">
 
         <LinearLayout
@@ -82,7 +84,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:fontFamily="@font/open_sans_regular"
+                android:fontFamily="@font/roboto_mono"
                 android:gravity="center"
                 android:textAlignment="center"
                 android:textColor="@color/text"
@@ -102,8 +104,8 @@
         android:layout_marginEnd="@dimen/medium_spacing"
         android:elevation="5dp"
         android:visibility="gone"
-        app:cardBackgroundColor="@color/send_message_background"
-        app:cardCornerRadius="10dp"
+        app:cardBackgroundColor="#0A1F0F"
+        app:cardCornerRadius="0dp"
         tools:visibility="visible">
 
         <LinearLayout
@@ -124,7 +126,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:fontFamily="@font/open_sans_regular"
+                android:fontFamily="@font/roboto_mono"
                 android:gravity="center"
                 android:textAlignment="center"
                 android:textColor="@color/white"
@@ -161,8 +163,8 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/received_call_card_background"
-                app:cardCornerRadius="8dp"
+                app:cardBackgroundColor="#0B0B0B"
+                app:cardCornerRadius="0dp"
                 app:cardElevation="0dp"
                 app:contentPadding="4dp">
 
@@ -189,8 +191,8 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="16dp"
-                        android:fontFamily="@font/open_sans_medium"
-                        android:textColor="@color/received_message_text_color"
+                        android:fontFamily="@font/roboto_mono"
+                        android:textColor="@color/text"
                         android:textSize="12sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/receivedCallIcon"
@@ -209,7 +211,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="4dp"
                 android:layout_marginBottom="10dp"
-                android:fontFamily="@font/open_sans_regular"
+                android:fontFamily="@font/roboto_mono"
                 android:textColor="@color/received_message_time_color"
                 android:textSize="11sp"
                 tools:text="12:00 pm" />
@@ -236,8 +238,8 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/outgoing_call_background"
-                app:cardCornerRadius="8dp"
+                app:cardBackgroundColor="#0B0B0B"
+                app:cardCornerRadius="0dp"
                 app:cardElevation="0dp"
                 app:contentPadding="4dp">
 
@@ -264,8 +266,8 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="16dp"
-                        android:fontFamily="@font/open_sans_medium"
-                        android:textColor="@color/sent_message_time_color"
+                        android:fontFamily="@font/roboto_mono"
+                        android:textColor="@color/text"
                         android:textSize="12sp"
                         app:layout_constraintStart_toEndOf="@id/dialledCallIcon"
                         tools:text="Voice Call" />
@@ -282,7 +284,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="4dp"
                 android:layout_marginBottom="10dp"
-                android:fontFamily="@font/open_sans_regular"
+                android:fontFamily="@font/roboto_mono"
                 android:textColor="@color/sent_message_time_color"
                 android:textSize="11sp"
                 tools:text="12:00 pm" />

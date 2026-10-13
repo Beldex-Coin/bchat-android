@@ -1,5 +1,6 @@
 package io.beldex.bchat.onboarding
 
+import io.beldex.bchat.util.BChatToast
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -59,9 +60,9 @@ class RecoveryPhraseActivity : BaseComponentActivity() {
 
     private fun onContinueClick() {
         if (!copiedSeed) {
-            Toast.makeText(this, R.string.please_copy_and_save_your_seed, Toast.LENGTH_SHORT).show()
+            BChatToast.makeText(this, R.string.please_copy_and_save_your_seed, Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(this, R.string.please_copy_the_seed_and_save_it, Toast.LENGTH_SHORT).show()
+            BChatToast.makeText(this, R.string.please_copy_the_seed_and_save_it, Toast.LENGTH_SHORT).show()
             homepage()
         }
     }
@@ -95,7 +96,7 @@ class RecoveryPhraseActivity : BaseComponentActivity() {
         val clipboard = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Seed", seed)
         clipboard.setPrimaryClip(clip)
-        Toast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+        BChatToast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
         copiedSeed = true
     }
 

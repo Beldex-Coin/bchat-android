@@ -1,4 +1,5 @@
 package io.beldex.bchat.seed
+import io.beldex.bchat.util.BChatToast
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -130,16 +131,16 @@ class RecoveryGetSeedDetailsActivity :  BaseComponentActivity() {
         val trimmedDisplayName = displayName.trim()
         if (trimmedDisplayName.isEmpty()) {
             displayNameError = getString(R.string.activity_display_name_display_name_missing_error)
-            return Toast.makeText(this, R.string.activity_display_name_display_name_missing_error, Toast.LENGTH_SHORT).show()
+            return BChatToast.makeText(this, R.string.activity_display_name_display_name_missing_error, Toast.LENGTH_SHORT).show()
         }
         if (trimmedDisplayName.toByteArray().size > SSKEnvironment.ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
             displayNameError = getString(R.string.activity_display_name_display_name_too_long_error)
-            return Toast.makeText(this, R.string.activity_display_name_display_name_too_long_error, Toast.LENGTH_SHORT).show()
+            return BChatToast.makeText(this, R.string.activity_display_name_display_name_too_long_error, Toast.LENGTH_SHORT).show()
         }
 
         if (!trimmedDisplayName.matches(englishNamePattern.toRegex())) {
             displayNameError = getString(R.string.display_name_validation)
-            return Toast.makeText(
+            return BChatToast.makeText(
                     this,
                     R.string.display_name_validation,
                     Toast.LENGTH_SHORT
@@ -265,7 +266,7 @@ class RecoveryGetSeedDetailsActivity :  BaseComponentActivity() {
             if (result != null) {
                 Timber.d("found a good node %s", result.toString())
                 Timber.d("Connected", result.address.toString())
-                /*Toast.makeText(
+                /*BChatToast.makeText(
                   this,
                    ""+result.getName().toString() + " connected\n",
                    Toast.LENGTH_SHORT
@@ -367,7 +368,7 @@ class RecoveryGetSeedDetailsActivity :  BaseComponentActivity() {
     val MNEMONIC_LANGUAGE = "English"
 
     private fun toast(msg: String) {
-        runOnUiThread { Toast.makeText(this@RecoveryGetSeedDetailsActivity, msg, Toast.LENGTH_LONG).show() }
+        runOnUiThread { BChatToast.makeText(this@RecoveryGetSeedDetailsActivity, msg, Toast.LENGTH_LONG).show() }
     }
 
     fun checkAndCloseWallet(aWallet: Wallet): Boolean {

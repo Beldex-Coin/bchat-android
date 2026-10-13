@@ -1,5 +1,6 @@
 package io.beldex.bchat.contacts
 
+import io.beldex.bchat.util.BChatToast
 import android.content.Context
 import android.view.ViewGroup
 import android.widget.Button
@@ -52,7 +53,7 @@ class BlockedContactAdapter(
                 ), false
             )
             TextSecurePreferences.setUnBlockStatus(context, true)
-            Toast.makeText(context, R.string.unblocked_this_contact, Toast.LENGTH_SHORT).show()
+            BChatToast.makeText(context, R.string.unblocked_this_contact, Toast.LENGTH_SHORT).show()
             listener.onBlockedContactClick(position)
         }
         viewHolder.view.bind(

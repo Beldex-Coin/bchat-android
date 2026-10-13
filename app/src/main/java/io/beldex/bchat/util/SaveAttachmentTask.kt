@@ -257,7 +257,7 @@ class SaveAttachmentTask : ProgressDialogAsyncTask<SaveAttachmentTask.Attachment
                 val message = context.resources.getQuantityText(
                         R.plurals.ConversationFragment_error_while_saving_attachments_to_sd_card,
                         attachmentCount)
-                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                BChatToast.makeText(context, message, Toast.LENGTH_LONG).show()
             }
 
             RESULT_SUCCESS -> {
@@ -266,7 +266,7 @@ class SaveAttachmentTask : ProgressDialogAsyncTask<SaveAttachmentTask.Attachment
                 } else {
                     context.resources.getString(R.string.SaveAttachmentTask_saved)
                 }
-                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                BChatToast.makeText(context, message, Toast.LENGTH_LONG).show()
             }
 
             else -> throw IllegalStateException("Unexpected result value: " + result.first)

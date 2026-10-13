@@ -1,5 +1,6 @@
 package io.beldex.bchat.preferences
 
+import io.beldex.bchat.util.BChatToast
 import android.Manifest
 import android.app.Activity
 import android.content.ClipData
@@ -393,7 +394,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
     private fun saveDisplayName(): Boolean {
         val displayName = binding.displayNameEditText.text.toString().trim()
         if (displayName.isEmpty()) {
-            Toast.makeText(
+            BChatToast.makeText(
                 this,
                 R.string.activity_display_name_display_name_missing_error,
                 Toast.LENGTH_SHORT
@@ -401,7 +402,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             return false
         }
         if (displayName.toByteArray().size > ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
-            Toast.makeText(
+            BChatToast.makeText(
                 this,
                 R.string.activity_display_name_display_name_too_long_error,
                 Toast.LENGTH_SHORT
@@ -409,7 +410,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             return false
         }
         if (!displayName.matches(unicodeNamePattern.toRegex())) {
-            Toast.makeText(
+            BChatToast.makeText(
                     this,
                     R.string.display_name_validation,
                     Toast.LENGTH_SHORT
@@ -467,7 +468,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
                     }
                     .execute()
         } else {
-            Toast.makeText(
+            BChatToast.makeText(
                     this,
                     getString(R.string.please_check_your_internet_connection),
                     Toast.LENGTH_SHORT
@@ -486,14 +487,14 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Chat ID", hexEncodedPublicKey)
         clipboard.setPrimaryClip(clip)
-        Toast.makeText(this, R.string.bchat_id_clipboard, Toast.LENGTH_SHORT).show()
+        BChatToast.makeText(this, R.string.bchat_id_clipboard, Toast.LENGTH_SHORT).show()
     }
 
     private fun copyBeldexAddress() {
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Chat ID", binding.beldexAddressTextView.text.toString())
         clipboard.setPrimaryClip(clip)
-        Toast.makeText(this, R.string.beldex_address_clipboard, Toast.LENGTH_SHORT).show()
+        BChatToast.makeText(this, R.string.beldex_address_clipboard, Toast.LENGTH_SHORT).show()
     }
 
     private fun sharePublicKey() {
@@ -535,7 +536,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(intent)
         } catch (e: Exception) {
-            Toast.makeText(this, getString(R.string.cannot_open_url), Toast.LENGTH_LONG).show()
+            BChatToast.makeText(this, getString(R.string.cannot_open_url), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -568,7 +569,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(intent)
         } catch (e: Exception) {
-            Toast.makeText(this, getString(R.string.cannot_open_url), Toast.LENGTH_LONG).show()
+            BChatToast.makeText(this, getString(R.string.cannot_open_url), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -586,7 +587,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             .maxSdkVersion(Build.VERSION_CODES.P)
             .withPermanentDenialDialog(getString(R.string.MediaPreviewActivity_signal_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied))
             .onAnyDenied {
-                Toast.makeText(
+                BChatToast.makeText(
                     this,
                     R.string.MediaPreviewActivity_unable_to_write_to_external_storage_without_permission,
                     Toast.LENGTH_LONG

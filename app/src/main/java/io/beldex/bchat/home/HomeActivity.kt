@@ -1,5 +1,6 @@
 package io.beldex.bchat.home
 
+import io.beldex.bchat.util.BChatToast
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.BroadcastReceiver
@@ -608,7 +609,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                 result(true)
             }else{
                 result(false)
-                Toast.makeText(context, context.resources.getString(R.string.invalid_bns_warning_message), Toast.LENGTH_SHORT).show()
+                BChatToast.makeText(context, context.resources.getString(R.string.invalid_bns_warning_message), Toast.LENGTH_SHORT).show()
             }
         }.failUi { exception ->
             var message =
@@ -617,7 +618,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                 message = context.resources.getString(R.string.bns_name_changed_warning_message)
                 Log.d("Beldex", "BNS exception $it")
             }
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            BChatToast.makeText(context, message, Toast.LENGTH_SHORT).show()
             result(false)
         }
     }
@@ -675,7 +676,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(intent)
         } catch (e: Exception) {
-            Toast.makeText(this, getString(R.string.cannot_open_url), Toast.LENGTH_LONG).show()
+            BChatToast.makeText(this, getString(R.string.cannot_open_url), Toast.LENGTH_LONG).show()
         }
     }*/
     //New Line App Update
@@ -734,21 +735,21 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         if (requestCode == immediateAppUpdateRequestCode) {
             when (resultCode) {
                 RESULT_CANCELED -> {
-                    Toast.makeText(
+                    BChatToast.makeText(
                         applicationContext,
                         getString(R.string.update_canceled_by_user), Toast.LENGTH_LONG
                     ).show()
                     finish()
                 }
                 RESULT_OK -> {
-                    Toast.makeText(
+                    BChatToast.makeText(
                         applicationContext,
                         getString(R.string.update_success),
                         Toast.LENGTH_LONG
                     ).show()
                 }
                 else -> {
-                    Toast.makeText(
+                    BChatToast.makeText(
                         applicationContext,
                         getString(R.string.update_failed),
                         Toast.LENGTH_LONG
@@ -1345,7 +1346,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         binding.hanUpCall.setOnClickListener {
             this.startService(WebRtcCallService.hangupIntent(this))
             binding.toolbarCall.isVisible = false
-            Toast.makeText(this, getString(R.string.call_ended), Toast.LENGTH_SHORT).show()
+            BChatToast.makeText(this, getString(R.string.call_ended), Toast.LENGTH_SHORT).show()
         }
         binding.toolbarCall.setOnClickListener {
             toolBarCall()
@@ -1460,7 +1461,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         //Important
         //if (!Ledger.isConnected()) attachLedger()
         if(!CheckOnline.isOnline(this)){
-            Toast.makeText(this,getString(R.string.please_check_your_internet_connection),Toast.LENGTH_SHORT).show()
+            BChatToast.makeText(this,getString(R.string.please_check_your_internet_connection),Toast.LENGTH_SHORT).show()
         }
         setupCallActionBar()
         ApplicationContext.getInstance(this).messageNotifier.setHomeScreenVisible(false)
@@ -1644,7 +1645,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                         // Notify the user
                         val toastMessage =
                             if (recipient.isGroupRecipient) R.string.MessageRecord_left_group else R.string.activity_home_conversation_deleted_message
-                        Toast.makeText(this@HomeActivity, toastMessage, Toast.LENGTH_LONG).show()
+                        BChatToast.makeText(this@HomeActivity, toastMessage, Toast.LENGTH_LONG).show()
                     }
                 }
             }

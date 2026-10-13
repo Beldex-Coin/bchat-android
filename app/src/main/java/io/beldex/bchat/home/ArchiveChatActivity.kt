@@ -1,6 +1,7 @@
 package io.beldex.bchat.home
 
 import io.beldex.bchat.compose_utils.BChatSwitch
+import io.beldex.bchat.compose_utils.bchatBackground
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -239,7 +240,7 @@ class ArchiveChatActivity : BaseComponentActivity() {
         Column(
             modifier=Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.appColors.backgroundColor)
+                .bchatBackground(MaterialTheme.appColors.backgroundColor)
         ) {
             OnboardingTopBar(
                 title=stringResource(R.string.archive_settings),

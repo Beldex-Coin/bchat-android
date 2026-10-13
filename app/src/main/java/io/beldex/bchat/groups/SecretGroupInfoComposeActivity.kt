@@ -1,5 +1,6 @@
 package io.beldex.bchat.groups
 
+import io.beldex.bchat.util.BChatToast
 import io.beldex.bchat.compose_utils.BChatSwitch
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -33,6 +34,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material.icons.Icons
@@ -356,7 +358,7 @@ fun GroupDetailsScreen(
                             MessageSender.leave(groupPublicKey!!, true)
                             activity.finish()
                         } else {
-                            Toast.makeText(
+                            BChatToast.makeText(
                                 context,
                                 R.string.ConversationActivity_error_leaving_group,
                                 Toast.LENGTH_LONG
@@ -364,7 +366,7 @@ fun GroupDetailsScreen(
                             showLeaveGroupDialog=false
                         }
                     } catch (e : Exception) {
-                        Toast.makeText(
+                        BChatToast.makeText(
                             context,
                             R.string.ConversationActivity_error_leaving_group,
                             Toast.LENGTH_LONG
@@ -514,7 +516,8 @@ fun GroupDetailsScreen(
                 secretGroupInfoViewModel.updateVisibleBottomSheet(false)
             },
             sheetState = sheetState,
-            shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
+            shape = androidx.compose.ui.graphics.RectangleShape,
+            containerColor = MaterialTheme.appColors.backgroundColor
         ) {
             val focusRequester=remember { FocusRequester() }
             val coroutineScope=rememberCoroutineScope()
@@ -539,7 +542,7 @@ fun GroupDetailsScreen(
                     unFocusedBorderColor=Color.Transparent,
                     selectionColors=MaterialTheme.appColors.textSelectionColor,
                     cursorColor=MaterialTheme.appColors.textSelectionColor,
-                    shape=RoundedCornerShape(26.dp),
+                    shape=androidx.compose.ui.graphics.RectangleShape,
                     leadingIcon={
                         Icon(
                             imageVector=Icons.Default.Search,
@@ -690,10 +693,7 @@ fun GroupDetailsScreen(
 
             LazyColumn(
                 modifier=Modifier
-                    .background(
-                        color=MaterialTheme.appColors.secretGroupInfoBackground,
-                        shape=RoundedCornerShape(12.dp)
-                    )
+                    .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
             )
             {
                 item() {
@@ -720,7 +720,7 @@ fun GroupDetailsScreen(
                                 if (isSecretGroupIsActive()) {
                                     showExpireMessageDialog=true
                                 } else {
-                                    Toast.makeText(
+                                    BChatToast.makeText(
                                         context,
                                         context.getString(R.string.no_participate_content),
                                         Toast.LENGTH_SHORT
@@ -738,7 +738,7 @@ fun GroupDetailsScreen(
                                 if (isSecretGroupIsActive()) {
                                     editSecretGroup(context, recipient)
                                 } else {
-                                    Toast.makeText(
+                                    BChatToast.makeText(
                                         context,
                                         context.getString(R.string.no_participate_content),
                                         Toast.LENGTH_SHORT
@@ -756,7 +756,7 @@ fun GroupDetailsScreen(
                                 if (isSecretGroupIsActive()) {
                                     showNotificationSettingsDialog=true
                                 } else {
-                                    Toast.makeText(
+                                    BChatToast.makeText(
                                         context,
                                         context.getString(R.string.no_participate_content),
                                         Toast.LENGTH_SHORT
@@ -791,14 +791,15 @@ fun GroupDetailsScreen(
                             Icon(
                                 painterResource(id=R.drawable.ic_block_request),
                                 contentDescription="exit group",
-                                tint=Color.Red,
+                                tint=MaterialTheme.appColors.negativeRedButtonBorder,
                                 modifier=Modifier.size(24.dp)
                             )
                             Spacer(modifier=Modifier.width(16.dp))
                             Text(
                                 text= stringResource(R.string.leave_group),
-                                color=Color.Red,
-                                style=MaterialTheme.typography.titleSmall
+                                color=MaterialTheme.appColors.negativeRedButtonBorder,
+                                fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                                fontSize = 14.sp
                             )
                         }
 
@@ -1079,7 +1080,7 @@ fun MemberDetailsDialog(
         val clipboard=context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip=ClipData.newPlainText("Chat ID", bchatID)
         clipboard.setPrimaryClip(clip)
-        Toast.makeText(context, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+        BChatToast.makeText(context, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
     }
 
     fun getUserDisplayName(publicKey : String) : String {
@@ -1097,9 +1098,7 @@ fun MemberDetailsDialog(
         dismissOnClickOutside=false,
         onDismissRequest=onDismiss,
     ) {
-        OutlinedCard(
-            colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.dialogBackground),
-            elevation=CardDefaults.cardElevation(defaultElevation=4.dp),
+        Box(
             modifier=Modifier.fillMaxWidth()
         ) {
 
@@ -1131,8 +1130,9 @@ fun MemberDetailsDialog(
                                         item + " " + getUserDisplayName(member)
                                     } else item,
                                     style=MaterialTheme.typography.titleMedium.copy(
-                                        color=MaterialTheme.appColors.secondaryTextColor,
-                                        fontSize=16.sp,
+                                        color=MaterialTheme.appColors.onboardingInputText,
+                                        fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                                        fontSize=14.sp,
                                         fontWeight=FontWeight(400)
                                     ),
                                     modifier=Modifier

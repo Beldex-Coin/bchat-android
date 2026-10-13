@@ -1,5 +1,6 @@
 package io.beldex.bchat.onboarding
 
+import io.beldex.bchat.util.BChatToast
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -161,7 +162,7 @@ class DisplayNameActivity : BaseComponentActivity() {
             if (result != null) {
                 Timber.d("found a good node %s", result.toString())
                 Timber.d("Connected", result.address.toString())
-                /*Toast.makeText(
+                /*BChatToast.makeText(
                   this,
                    ""+result.getName().toString() + " connected\n",
                    Toast.LENGTH_SHORT
@@ -268,7 +269,7 @@ class DisplayNameActivity : BaseComponentActivity() {
         val trimmedDisplayName = displayName.trim()
         if (trimmedDisplayName.isEmpty()) {
             displayNameError = getString(R.string.activity_display_name_display_name_missing_error)
-            return Toast.makeText(
+            return BChatToast.makeText(
                 this,
                 R.string.activity_display_name_display_name_missing_error,
                 Toast.LENGTH_SHORT
@@ -276,7 +277,7 @@ class DisplayNameActivity : BaseComponentActivity() {
         }
         if (trimmedDisplayName.toByteArray().size > ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
             displayNameError = getString(R.string.activity_display_name_display_name_too_long_error)
-            return Toast.makeText(
+            return BChatToast.makeText(
                 this,
                 R.string.activity_display_name_display_name_too_long_error,
                 Toast.LENGTH_SHORT
@@ -290,7 +291,7 @@ class DisplayNameActivity : BaseComponentActivity() {
         }
         if (!trimmedDisplayName.matches(englishNamePattern.toRegex())) {
             displayNameError = getString(R.string.display_name_validation)
-            return Toast.makeText(
+            return BChatToast.makeText(
                     this,
                     R.string.display_name_validation,
                     Toast.LENGTH_SHORT
@@ -330,7 +331,7 @@ class DisplayNameActivity : BaseComponentActivity() {
     val MNEMONIC_LANGUAGE = "English"
 
     private fun toast(msg: String) {
-        runOnUiThread { Toast.makeText(this@DisplayNameActivity, msg, Toast.LENGTH_LONG).show() }
+        runOnUiThread { BChatToast.makeText(this@DisplayNameActivity, msg, Toast.LENGTH_LONG).show() }
     }
 
     fun checkAndCloseWallet(aWallet: Wallet): Boolean {

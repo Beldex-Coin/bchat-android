@@ -1,5 +1,6 @@
 package io.beldex.bchat.archivechats
 
+import io.beldex.bchat.util.BChatToast
 import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
@@ -218,7 +219,7 @@ class ArchiveChatViewModel @Inject constructor(
                 // Notify the user
                 val toastMessage=
                     if (recipient.isGroupRecipient) R.string.MessageRecord_left_group else R.string.activity_home_conversation_deleted_message
-                Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
+                BChatToast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
             }
         }
     }

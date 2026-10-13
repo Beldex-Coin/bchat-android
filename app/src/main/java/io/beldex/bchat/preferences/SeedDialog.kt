@@ -1,5 +1,6 @@
 package io.beldex.bchat.preferences
 
+import io.beldex.bchat.util.BChatToast
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -39,7 +40,7 @@ class SeedDialog : BaseDialog() {
         val clipboard = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Seed", seed)
         clipboard.setPrimaryClip(clip)
-        Toast.makeText(requireContext(), R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+        BChatToast.makeText(requireContext(), R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
         dismiss()
     }
 }

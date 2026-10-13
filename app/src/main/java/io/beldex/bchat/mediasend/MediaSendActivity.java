@@ -1,5 +1,6 @@
 package io.beldex.bchat.mediasend;
 
+import io.beldex.bchat.util.BChatToast;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -191,7 +192,7 @@ public class MediaSendActivity extends PassphraseRequiredActionBarActivity imple
       int maxSelection = viewModel.getMaxSelection();
 
       if (viewModel.getSelectedMedia().getValue() != null && viewModel.getSelectedMedia().getValue().size() >= maxSelection) {
-        Toast.makeText(this, getResources().getQuantityString(R.plurals.MediaSendActivity_cant_share_more_than_n_items, maxSelection, maxSelection), Toast.LENGTH_SHORT).show();
+        BChatToast.makeText(this, getResources().getQuantityString(R.plurals.MediaSendActivity_cant_share_more_than_n_items, maxSelection, maxSelection), Toast.LENGTH_SHORT).show();
       } else {
         navigateToCamera();
       }
@@ -272,7 +273,7 @@ public class MediaSendActivity extends PassphraseRequiredActionBarActivity imple
 
   @Override
   public void onCameraError() {
-    Toast.makeText(this, R.string.MediaSendActivity_camera_unavailable, Toast.LENGTH_SHORT).show();
+    BChatToast.makeText(this, R.string.MediaSendActivity_camera_unavailable, Toast.LENGTH_SHORT).show();
     setResult(RESULT_CANCELED, new Intent());
     finish();
   }
@@ -352,7 +353,7 @@ public class MediaSendActivity extends PassphraseRequiredActionBarActivity imple
           break;
         case TOO_MANY_ITEMS:
           int maxSelection = viewModel.getMaxSelection();
-          Toast.makeText(this, getResources().getQuantityString(R.plurals.MediaSendActivity_cant_share_more_than_n_items, maxSelection, maxSelection), Toast.LENGTH_SHORT).show();
+          BChatToast.makeText(this, getResources().getQuantityString(R.plurals.MediaSendActivity_cant_share_more_than_n_items, maxSelection, maxSelection), Toast.LENGTH_SHORT).show();
           break;
       }
     });
@@ -387,7 +388,7 @@ public class MediaSendActivity extends PassphraseRequiredActionBarActivity imple
                                             .addToBackStack(null)
                                             .commit();
                })
-               .onAnyDenied(() -> Toast.makeText(MediaSendActivity.this, R.string.ConversationActivity_signal_needs_camera_permissions_to_take_photos_or_video, Toast.LENGTH_LONG).show())
+               .onAnyDenied(() -> BChatToast.makeText(MediaSendActivity.this, R.string.ConversationActivity_signal_needs_camera_permissions_to_take_photos_or_video, Toast.LENGTH_LONG).show())
                .execute();
   }
 

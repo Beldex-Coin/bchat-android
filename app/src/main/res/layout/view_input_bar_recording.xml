@@ -11,7 +11,10 @@
         android:id="@+id/timer_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="100dp"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="0dp"
+        app:strokeColor="@color/drawer_profile_border"
+        app:strokeWidth="1dp"
         app:cardBackgroundColor="@color/input_bar_background"
         android:layout_marginEnd="8dp"
         android:layout_gravity="bottom"
@@ -52,7 +55,7 @@
                     android:layout_marginEnd="8dp"/>
 
                 <TextView
-                    android:fontFamily="@font/open_sans_regular"
+                    android:fontFamily="@font/roboto_mono"
                     android:id="@+id/recordingViewDurationTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -84,7 +87,7 @@
                     android:alpha="0.6" />
 
                 <TextView
-                    android:fontFamily="@font/open_sans_regular"
+                    android:fontFamily="@font/roboto_mono"
                     android:id="@+id/inputBarSlideToCancelTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -112,7 +115,7 @@
             <!-- The cancel button -->
 
 <!--            <TextView-->
-<!--                android:fontFamily="@font/open_sans_regular"-->
+<!--                android:fontFamily="@font/roboto_mono"-->
 <!--                android:id="@+id/inputBarCancelButton"-->
 <!--                android:layout_width="100dp"-->
 <!--                android:layout_height="40dp"-->
@@ -138,7 +141,10 @@
         android:layout_marginBottom="16dp"
         app:cardBackgroundColor="@color/received_message_background"
         app:contentPadding="8dp"
-        app:cardCornerRadius="100dp"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="0dp"
+        app:strokeColor="@color/drawer_profile_border"
+        app:strokeWidth="1dp"
         android:visibility="gone">
 
         <LinearLayout

@@ -1,5 +1,6 @@
 package io.beldex.bchat.home
 
+import io.beldex.bchat.util.BChatToast
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -93,7 +94,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
                                 requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                             val clip = ClipData.newPlainText("BChat ID", publicKey)
                             clipboard.setPrimaryClip(clip)
-                            Toast.makeText(requireContext(), R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+                            BChatToast.makeText(requireContext(), R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
                         },
                         onMessageClick = {
                             val threadId = MessagingModuleConfiguration.shared.storage.getThreadId(recipient)
@@ -154,7 +155,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
         val nickname = nicknameInput.trim()
         when {
             nickname.isEmpty() -> {
-                Toast.makeText(
+                BChatToast.makeText(
                     context,
                     R.string.enter_a_valid_nickname,
                     Toast.LENGTH_SHORT
@@ -162,7 +163,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
             }
 
             nickname.toByteArray().size > SSKEnvironment.ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH -> {
-                Toast.makeText(
+                BChatToast.makeText(
                     context,
                     R.string.nick_name_too_long_error,
                     Toast.LENGTH_SHORT
@@ -170,7 +171,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
             }
 
             !nickname.matches(unicodeNamePattern.toRegex()) -> {
-                Toast.makeText(
+                BChatToast.makeText(
                     context,
                     R.string.display_name_validation,
                     Toast.LENGTH_SHORT

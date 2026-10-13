@@ -28,35 +28,33 @@ fun CustomCheckBox(
     checked: Boolean,
     onCheckedChange: ((Boolean) -> Unit),
     checkBoxSize: Dp = 18.dp,
-    checkBoxBorderWidth: Dp = 2.dp,
-    checkBoxBorderColorSelected: Color = MaterialTheme.appColors.primaryButtonColor,
-    checkBoxBorderColorUnSelected: Color = MaterialTheme.appColors.secondaryContentColor,
-    checkBoxCheckedIconColor: Color = MaterialTheme.appColors.primaryButtonColor,
+    checkBoxBorderWidth: Dp = 1.dp,
+    checkBoxBorderColorSelected: Color = MaterialTheme.appColors.userDetailsConfirmBackground,
+    checkBoxBorderColorUnSelected: Color = MaterialTheme.appColors.userDetailsConfirmBackground,
+    checkBoxCheckedIconColor: Color = Color(0xFF0B0B0B),
 ) {
-// state is used to hold the checkbox click or not by default is false
-    val checkBoxState = remember { mutableStateOf(checked) }
-// Ui for checkbox
+    // Revamp_2026 checkbox: a green square outline; filled green with a dark tick when checked.
+    // Fully controlled by `checked` (the previous copy kept its own state and could desync in lists).
     Box(
         modifier = modifier
-            .border(
-                shape = RoundedCornerShape(2.dp),
-                border = BorderStroke(checkBoxBorderWidth,
-                    if (checkBoxState.value) checkBoxBorderColorSelected
-                    else checkBoxBorderColorUnSelected)
-            )
             .size(checkBoxSize)
-            .background(Color.Transparent)
-            .padding(2.dp)
-            .clickable {
-                onCheckedChange(!checkBoxState.value)
-                checkBoxState.value = !checkBoxState.value
-            },
+            .background(if (checked) checkBoxBorderColorSelected else Color.Transparent)
+            .border(
+                border = BorderStroke(
+                    checkBoxBorderWidth,
+                    if (checked) checkBoxBorderColorSelected else checkBoxBorderColorUnSelected
+                )
+            )
+            .clickable { onCheckedChange(!checked) },
         contentAlignment = Alignment.Center
     ) {
-        if (checkBoxState.value)
+        if (checked) {
             Icon(
                 Icons.Default.Check,
                 tint = checkBoxCheckedIconColor,
-                contentDescription = "Custom CheckBox")
+                contentDescription = "Custom CheckBox",
+                modifier = Modifier.size(checkBoxSize - 6.dp)
+            )
+        }
     }
 }

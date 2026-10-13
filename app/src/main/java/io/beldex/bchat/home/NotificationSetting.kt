@@ -3,6 +3,12 @@ package io.beldex.bchat.home
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -55,80 +61,98 @@ fun NotificationSettingDialog(
             dismissOnClickOutside=false,
             onDismissRequest=onDismiss,
     ) {
-        OutlinedCard(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.dialogBackground),
-                elevation=CardDefaults.cardElevation(defaultElevation=4.dp),
-                modifier=Modifier.fillMaxWidth()) {
-
-            Column(
-                    Modifier
-                            .fillMaxWidth()
-                            .padding(start=16.dp, end=16.dp, top=25.dp, bottom=25.dp), Arrangement.Center, Alignment.CenterHorizontally) {
-
-                Row(modifier=Modifier.padding(bottom=20.dp)) {
-                    Text(text=stringResource(id=R.string.RecipientPreferenceActivity_notification_settings),
-                            style=MaterialTheme.typography.titleMedium.copy(
-                                    fontSize=15.sp,
-                                    fontWeight=FontWeight(700),
-                                    color=MaterialTheme.appColors.secondaryContentColor),
-                            textAlign=TextAlign.Center,
-                            modifier=Modifier
-                                    .weight(1f)
-                                    .align(Alignment.CenterVertically))
-
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 18.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(bottom = 18.dp)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.RecipientPreferenceActivity_notification_settings),
+                    color = MaterialTheme.appColors.onboardingInputText,
+                    fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                androidx.compose.foundation.layout.Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(22.dp)
+                        .background(androidx.compose.ui.graphics.Color(0xCC222222))
+                        .border(1.dp, MaterialTheme.appColors.dividerColor)
+                        .clickable { onDismiss() }
+                ) {
                     Icon(
-                            painter=painterResource(id=R.drawable.ic_close),
-                            contentDescription="",
-                            tint=MaterialTheme.appColors.editTextColor,
-                            modifier=Modifier
-                                    .clickable {
-                                        onDismiss()
-                                    }
+                        painter = painterResource(id = R.drawable.ic_close),
+                        contentDescription = "",
+                        tint = MaterialTheme.appColors.onboardingInputText,
+                        modifier = Modifier.size(14.dp)
                     )
                 }
-                LazyColumn(
-                        verticalArrangement=Arrangement.spacedBy(10.dp),
-                        horizontalAlignment=Alignment.CenterHorizontally,
-                        modifier=Modifier
-                                .fillMaxWidth()
-
-                ) {
-                    itemsIndexed(options) { index, item ->
-                        Card(
-                                colors=CardDefaults.cardColors(
-                                        containerColor=MaterialTheme.appColors.changeLogBackground
-                                ),
-                                border=BorderStroke(
-                                        width=2.dp,
-                                        color=if (index == selectedItemIndex) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.textFiledBorderColor
-                                ),
-                                elevation=CardDefaults.cardElevation(
-                                        defaultElevation=0.dp
-                                ),
-                                modifier=Modifier
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            selectedItemIndex=index
-                                            onClick(selectedItemIndex)
-                                            onValueChanged(options[selectedItemIndex], selectedItemIndex)
-                                        },
-                                shape=RoundedCornerShape(16.dp)
-                        ) {
-
-                            Column(
-                                    modifier=Modifier
-                                            .fillMaxSize()
-                                            .padding(vertical=8.dp),
-                                    verticalArrangement=Arrangement.Center,
-                                    horizontalAlignment=Alignment.CenterHorizontally,
-                            ) {
-
-                                Text(text=item, style=MaterialTheme.typography.titleMedium.copy(
-                                        color=if (index == selectedItemIndex) MaterialTheme.appColors.secondaryContentColor else MaterialTheme.appColors.secondaryTextColor, fontSize=14.sp, fontWeight=FontWeight(400)
-                                ), modifier=Modifier.padding(10.dp))
-                            }
-                        }
+            }
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                options.forEachIndexed { index, item ->
+                    val selected = index == selectedItemIndex
+                    val shape = io.beldex.bchat.compose_utils.notchedCornerShape(10.dp)
+                    androidx.compose.foundation.layout.Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .background(
+                                if (selected) MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground
+                                else MaterialTheme.appColors.backgroundColor,
+                                shape
+                            )
+                            .border(
+                                1.dp,
+                                if (selected) MaterialTheme.appColors.userDetailsConfirmBackground else MaterialTheme.appColors.dividerColor,
+                                shape
+                            )
+                            .clickable { selectedItemIndex = index }
+                    ) {
+                        Text(
+                            text = item,
+                            color = if (selected) MaterialTheme.appColors.userDetailsConfirmBackground else MaterialTheme.appColors.onboardingBodyColor,
+                            fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                            fontSize = 14.sp
+                        )
                     }
                 }
+            }
+            Spacer(modifier = Modifier.height(18.dp))
+            io.beldex.bchat.compose_utils.PrimaryButton(
+                onClick = {
+                    if (selectedItemIndex in options.indices) {
+                        onClick(selectedItemIndex)
+                        onValueChanged(options[selectedItemIndex], selectedItemIndex)
+                    } else {
+                        onDismiss()
+                    }
+                },
+                shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
+                containerColor = androidx.compose.ui.graphics.Color(0xFFE0E0E0),
+                contentColor = androidx.compose.ui.graphics.Color(0xFF0B0B0B),
+                border = BorderStroke(1.4.dp, androidx.compose.ui.graphics.Color(0xFF0A370A)),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .width(122.dp)
+                    .height(52.dp)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.ok),
+                    fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 14.sp
+                )
             }
         }
     }

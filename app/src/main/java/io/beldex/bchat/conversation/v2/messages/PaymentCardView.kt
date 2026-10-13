@@ -1,5 +1,6 @@
 package io.beldex.bchat.conversation.v2.messages
 
+import io.beldex.bchat.util.BChatToast
 import android.R.color
 import android.content.Context
 import android.content.Intent
@@ -87,7 +88,7 @@ class PaymentCardView : LinearLayout {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                     context.startActivity(intent)
                 } catch (e: Exception) {
-                    Toast.makeText(context, context.getString(R.string.cannot_open_url), Toast.LENGTH_LONG).show()
+                    BChatToast.makeText(context, context.getString(R.string.cannot_open_url), Toast.LENGTH_LONG).show()
                 }
             }
 

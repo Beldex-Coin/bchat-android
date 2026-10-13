@@ -1,6 +1,8 @@
 package io.beldex.bchat.onboarding.ui
 
+import io.beldex.bchat.util.BChatToast
 import android.app.Activity
+import io.beldex.bchat.compose_utils.bchatBackground
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -93,9 +95,10 @@ class OnBoardingActivity: BaseComponentActivity() {
                 WindowInsetsControllerCompat(window, view).isAppearanceLightNavigationBars = !isDarkTheme
             }
             BChatTheme {
-                Surface {
+                Surface(color = Color.Transparent) {
                     Scaffold(
-                        containerColor = MaterialTheme.appColors.backgroundColor,
+                        modifier = Modifier.bchatBackground(MaterialTheme.appColors.backgroundColor),
+                        containerColor = Color.Transparent,
                         contentWindowInsets = WindowInsets.safeDrawing
                     ) {
                         val navController = rememberNavController()
@@ -214,7 +217,7 @@ fun OnBoardingNavHost(
             LaunchedEffect(key1 = true) {
                 launch {
                     viewModel.errorMessage.collectLatest { message ->
-                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                        BChatToast.makeText(context, message, Toast.LENGTH_SHORT).show()
                     }
                 }
                 launch {

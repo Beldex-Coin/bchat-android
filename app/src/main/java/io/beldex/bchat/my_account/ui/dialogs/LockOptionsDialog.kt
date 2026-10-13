@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import io.beldex.bchat.compose_utils.BChatRadioButton
 import io.beldex.bchat.compose_utils.DialogCancelButton
 import io.beldex.bchat.compose_utils.OpenSans
+import io.beldex.bchat.compose_utils.lazyListScrollbar
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.notchedCornerShape
 import androidx.compose.foundation.layout.Column
@@ -71,11 +72,14 @@ fun LockOptionsDialog(
 
             Spacer(modifier = Modifier.height(18.dp))
 
+            val listState = androidx.compose.foundation.lazy.rememberLazyListState()
             LazyColumn(
+                state = listState,
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(max = 200.dp)
+                    .lazyListScrollbar(listState)
             ) {
                 itemsIndexed(options) { index, option ->
                     val selected = option == currentValue

@@ -1,5 +1,6 @@
 package io.beldex.bchat.conversation.v2.messages
 
+import io.beldex.bchat.util.BChatToast
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -388,7 +389,7 @@ class VisibleMessageContentView : MaterialCardView {
                         val documentSlide = message.slideDeck.documentSlide
 
                         if (documentSlide?.uri == null) {
-                            Toast.makeText(
+                            BChatToast.makeText(
                                 context,
                                 context.getString(R.string.please_wait_until_file_downloaded),
                                 Toast.LENGTH_SHORT
@@ -414,7 +415,7 @@ class VisibleMessageContentView : MaterialCardView {
                                 e
                             )
 
-                            Toast.makeText(
+                            BChatToast.makeText(
                                 context,
                                 R.string.ConversationItem_unable_to_open_media,
                                 Toast.LENGTH_LONG

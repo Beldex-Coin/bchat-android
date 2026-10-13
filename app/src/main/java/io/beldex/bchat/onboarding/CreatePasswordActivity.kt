@@ -1,5 +1,6 @@
 package io.beldex.bchat.onboarding
 
+import io.beldex.bchat.util.BChatToast
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -54,7 +55,7 @@ class CreatePasswordActivity : BaseActionBarActivity() {
 
                 if (enteredPIN.isEmpty()) {
                     enterPinEditTxtLayout!!.isErrorEnabled = false
-                    Toast.makeText(
+                    BChatToast.makeText(
                         this@CreatePasswordActivity,
                         getString(R.string.must_set_your_four_digit_pin),
                         Toast.LENGTH_LONG
@@ -66,7 +67,7 @@ class CreatePasswordActivity : BaseActionBarActivity() {
                 } else if (reEnterPIN.isEmpty()) {
                     enterPinEditTxtLayout!!.isErrorEnabled = false
                     reEnterPinEditTxtLayout!!.isErrorEnabled = false
-                    Toast.makeText(
+                    BChatToast.makeText(
                         this@CreatePasswordActivity,
                         getString(R.string.must_set_your_four_digit_pin),
                         Toast.LENGTH_LONG

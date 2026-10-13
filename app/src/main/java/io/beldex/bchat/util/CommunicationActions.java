@@ -55,7 +55,7 @@ public class CommunicationActions {
       Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
       context.startActivity(intent);
     } catch (ActivityNotFoundException e) {
-      Toast.makeText(context, R.string.CommunicationActions_no_browser_found, Toast.LENGTH_SHORT).show();
+      BChatToast.makeText(context, R.string.CommunicationActions_no_browser_found, Toast.LENGTH_SHORT).show();
     }
   }
 }

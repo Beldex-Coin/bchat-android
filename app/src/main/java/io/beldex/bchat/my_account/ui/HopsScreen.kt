@@ -2,6 +2,14 @@ package io.beldex.bchat.my_account.ui
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import io.beldex.bchat.compose_utils.RobotoMono
+import io.beldex.bchat.compose_utils.OpenSans
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -41,171 +49,108 @@ fun HopsScreen(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(24.dp)
             .verticalScroll(rememberScrollState())
+            .padding(horizontal = 24.dp, vertical = 28.dp)
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = stringResource(id = R.string.activity_path_explanation),
-            style = MaterialTheme.typography.labelMedium
+            color = MaterialTheme.appColors.onboardingBodyColor,
+            fontFamily = RobotoMono,
+            fontSize = 12.sp,
+            lineHeight = 16.sp
         )
 
+        Spacer(modifier = Modifier.height(28.dp))
+
+        // Figma "Hops" path card: #111111 @ 60% fill, #333333 hairline, green start/end markers.
         Column(
             modifier = Modifier
-                .padding(
-                    vertical = 16.dp,
-                    horizontal = 16.dp
-                )
+                .fillMaxWidth()
+                .background(Color(0x99111111))
+                .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
+                .padding(horizontal = 24.dp, vertical = 24.dp)
         ) {
             Text(
                 text = stringResource(id = R.string.MediaPreviewActivity_you),
-                style = MaterialTheme.typography.bodySmall
+                color = MaterialTheme.appColors.onboardingInputText,
+                fontFamily = OpenSans,
+                fontSize = 12.sp
             )
-
             Spacer(modifier = Modifier.height(4.dp))
+            PathMarker(filled = true, color = MaterialTheme.appColors.userDetailsConfirmBackground.copy(alpha = 0.75f), size = 16.dp)
+            PathLine()
 
-            GetFilledCircle()
-
-            nodes.forEach {
-                GetInternalNode(
-                    title = it.title,
-                    subTitle = it.subTitle
+            nodes.forEachIndexed { index, node ->
+                PathMarker(
+                    filled = index != nodes.lastIndex || nodes.size == 1,
+                    color = MaterialTheme.appColors.onboardingInputText,
+                    size = 12.dp
                 )
-
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = node.title,
+                    color = MaterialTheme.appColors.onboardingInputText,
+                    fontFamily = RobotoMono,
+                    fontSize = 12.sp,
+                    lineHeight = 14.sp
+                )
+                Text(
+                    text = node.subTitle,
+                    color = MaterialTheme.appColors.onboardingInputText,
+                    fontFamily = RobotoMono,
+                    fontSize = 10.sp,
+                    lineHeight = 12.sp
+                )
                 Spacer(modifier = Modifier.height(4.dp))
+                PathLine()
             }
 
-            GetLine()
-
-            GetFilledCircle()
-
+            PathMarker(filled = true, color = MaterialTheme.appColors.userDetailsConfirmBackground.copy(alpha = 0.75f), size = 16.dp)
             Spacer(modifier = Modifier.height(4.dp))
-
             Text(
                 text = stringResource(id = R.string.activity_path_destination_row_title),
-                style = MaterialTheme.typography.bodySmall
+                color = MaterialTheme.appColors.onboardingInputText,
+                fontFamily = OpenSans,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 12.sp
             )
-
         }
     }
 }
 
+/** Marker centred in a 16dp column so every marker and dashed connector share one x. */
 @Composable
-fun GetInternalNode(
-    title: String,
-    subTitle: String
-) {
-    val color = MaterialTheme.appColors.primaryButtonColor
-    val density = LocalDensity.current
-    val lineHeight = with(density) {
-        48.dp.toPx()
-    }
-    val lineXOffset = with(density) {
-        8.dp.toPx()
-    }
-    val circleCenterOffset = with(density) {
-        2.dp.toPx()
-    }
-    val startingPoint by remember {
-        mutableStateOf(Offset(lineXOffset, 0f))
-    }
-    Column {
+private fun PathMarker(filled: Boolean, color: Color, size: Dp) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.size(16.dp)
+    ) {
         Box(
             modifier = Modifier
-                .height(48.dp)
-                .drawBehind {
-                    drawLine(
-                        color = color,
-                        start = startingPoint,
-                        end = Offset(
-                            x = startingPoint.x,
-                            y = startingPoint.y + lineHeight
-                        ),
-                        strokeWidth = 4f,
-                        pathEffect = PathEffect.dashPathEffect(
-                            floatArrayOf(
-                                10f,
-                                10f
-                            ), 0f
-                        )
-                    )
-                }
-        )
-        Box(
-            modifier = Modifier
-                .size(12.dp)
-                .drawBehind {
-                    drawCircle(
-                        color = color,
-                        style = Stroke(
-                            width = 6f
-                        ),
-                        center = Offset(
-                            x = center.x + circleCenterOffset,
-                            y = center.y
-                        )
-                    )
-                }
-        )
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        Text(
-            text = title,
-            style = MaterialTheme.typography.bodySmall
-        )
-        Text(
-            text = subTitle,
-            style = MaterialTheme.typography.bodySmall.copy(
-                fontSize = 10.sp
-            )
+                .size(size)
+                .clip(CircleShape)
+                .then(
+                    if (filled) Modifier.background(color)
+                    else Modifier.border(1.dp, color, CircleShape)
+                )
         )
     }
 }
 
 @Composable
-private fun GetFilledCircle() {
-    Box(
-        modifier = Modifier
-            .size(16.dp)
-            .clip(CircleShape)
-            .background(
-                color = MaterialTheme.appColors.primaryButtonColor
-            )
-    )
-}
-
-@Composable
-private fun GetLine() {
+private fun PathLine() {
     val color = MaterialTheme.appColors.primaryButtonColor
-    val density = LocalDensity.current
-    val lineHeight = with(density) {
-        64.dp.toPx()
-    }
-    val lineXOffset = with(density) {
-        8.dp.toPx()
-    }
-    val startingPoint by remember {
-        mutableStateOf(Offset(x = lineXOffset, y = 0f))
-    }
     Box(
         modifier = Modifier
-            .height(64.dp)
+            .width(16.dp)
+            .height(30.dp)
             .drawBehind {
                 drawLine(
                     color = color,
-                    start = startingPoint,
-                    end = Offset(
-                        x = startingPoint.x,
-                        y = startingPoint.y + lineHeight
-                    ),
-                    strokeWidth = 4f,
-                    pathEffect = PathEffect.dashPathEffect(
-                        floatArrayOf(
-                            10f,
-                            10f
-                        ), 0f
-                    )
+                    start = Offset(size.width / 2, 0f),
+                    end = Offset(size.width / 2, size.height),
+                    strokeWidth = 2f,
+                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(6f, 6f), 0f)
                 )
             }
     )

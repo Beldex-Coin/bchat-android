@@ -72,14 +72,17 @@ fun ConversationHeaderActions(
 
             DropdownMenu(
                 expanded = showMenu,
-                onDismissRequest = { showMenu = false }
+                onDismissRequest = { showMenu = false },
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(18.dp),
+                containerColor = androidx.compose.ui.graphics.Color(0xF2111111),
+                border = androidx.compose.foundation.BorderStroke(1.dp, androidx.compose.ui.graphics.Color(0x33FFFFFF))
             ) {
                 for (entry in menuEntries) {
                     DropdownMenuItem(
                         text = {
                             Text(
                                 text = entry.label,
-                                fontFamily = OpenSans,
+                                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                                 fontSize = 14.sp,
                                 color = MaterialTheme.appColors.homeRowTitle
                             )

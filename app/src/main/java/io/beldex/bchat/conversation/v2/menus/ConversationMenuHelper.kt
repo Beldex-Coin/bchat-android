@@ -1,5 +1,6 @@
 package io.beldex.bchat.conversation.v2.menus
 
+import io.beldex.bchat.util.BChatToast
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -208,7 +209,7 @@ object ConversationMenuHelper {
                     .setIntent(ShortcutLauncherActivity.createIntent(context, thread.address))
                     .build()
                 if (ShortcutManagerCompat.requestPinShortcut(context, shortcutInfo, null)) {
-                    Toast.makeText(context, context.resources.getString(R.string.ConversationActivity_added_to_home_screen), Toast.LENGTH_LONG).show()
+                    BChatToast.makeText(context, context.resources.getString(R.string.ConversationActivity_added_to_home_screen), Toast.LENGTH_LONG).show()
                 }
             }
         }.execute()
@@ -275,10 +276,10 @@ object ConversationMenuHelper {
                             MessageSender.leave(groupPublicKey!!, true)
                             activityContext.backToHome()
                         } else {
-                            Toast.makeText(context, R.string.ConversationActivity_error_leaving_group, Toast.LENGTH_LONG).show()
+                            BChatToast.makeText(context, R.string.ConversationActivity_error_leaving_group, Toast.LENGTH_LONG).show()
                         }
                     } catch (e: Exception) {
-                        Toast.makeText(context, R.string.ConversationActivity_error_leaving_group, Toast.LENGTH_LONG).show()
+                        BChatToast.makeText(context, R.string.ConversationActivity_error_leaving_group, Toast.LENGTH_LONG).show()
                     }
                 },
                 onCancel = {},

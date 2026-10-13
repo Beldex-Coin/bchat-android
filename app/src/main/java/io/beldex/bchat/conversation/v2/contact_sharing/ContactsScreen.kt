@@ -100,7 +100,7 @@ fun ContactsScreen(
                 }
             }
         },
-        containerColor = MaterialTheme.appColors.backgroundColor,
+        containerColor = androidx.compose.ui.graphics.Color.Transparent,
         modifier = modifier.fillMaxSize()
     ) { innerPadding ->
 

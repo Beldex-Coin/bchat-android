@@ -44,6 +44,7 @@ import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.bchatBackground
 import io.beldex.bchat.compose_utils.notchedCornerShape
 
 @Composable
@@ -55,7 +56,7 @@ fun LandingScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.appColors.onboardingBackground)
+            .bchatBackground(MaterialTheme.appColors.onboardingBackground)
     ) {
         LandingChatSkeleton(modifier = Modifier.fillMaxSize())
         Column(

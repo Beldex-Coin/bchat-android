@@ -1,5 +1,6 @@
 package io.beldex.bchat.my_account.ui
 
+import io.beldex.bchat.util.BChatToast
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
@@ -275,7 +276,7 @@ class MyProfileActivity: BaseAppCompatActivity() {
                 }
                 .execute()
         } else {
-            Toast.makeText(
+            BChatToast.makeText(
                 this,
                 getString(R.string.please_check_your_internet_connection),
                 Toast.LENGTH_SHORT
@@ -365,7 +366,7 @@ class MyProfileActivity: BaseAppCompatActivity() {
 
     private fun saveDisplayName(displayName: String): Boolean {
         if (displayName.isEmpty()) {
-            Toast.makeText(
+            BChatToast.makeText(
                 this,
                 R.string.activity_display_name_display_name_missing_error,
                 Toast.LENGTH_SHORT
@@ -373,7 +374,7 @@ class MyProfileActivity: BaseAppCompatActivity() {
             return false
         }
         if (displayName.toByteArray().size > SSKEnvironment.ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
-            Toast.makeText(
+            BChatToast.makeText(
                 this,
                 R.string.activity_display_name_display_name_too_long_error,
                 Toast.LENGTH_SHORT
@@ -381,7 +382,7 @@ class MyProfileActivity: BaseAppCompatActivity() {
             return false
         }
         if (!displayName.matches(unicodeNamePattern.toRegex())) {
-            Toast.makeText(
+            BChatToast.makeText(
                 this,
                 R.string.display_name_validation,
                 Toast.LENGTH_SHORT

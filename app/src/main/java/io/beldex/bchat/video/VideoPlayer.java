@@ -16,6 +16,7 @@
  */
 package io.beldex.bchat.video;
 
+import io.beldex.bchat.util.BChatToast;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
@@ -157,7 +158,7 @@ public class VideoPlayer extends FrameLayout {
       //noinspection ConstantConditions
       this.videoView.setVideoURI(videoSource.getUri());
     } else {
-      Toast.makeText(getContext(), getContext().getString(R.string.VideoPlayer_error_playing_video), Toast.LENGTH_LONG).show();
+      BChatToast.makeText(getContext(), getContext().getString(R.string.VideoPlayer_error_playing_video), Toast.LENGTH_LONG).show();
       return;
     }
 

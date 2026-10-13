@@ -76,9 +76,10 @@
     </style>
 
     <style name="Widget.Bchat.TabLayout" parent="Widget.Design.TabLayout">
-        <item name="android:fontFamily">@font/open_sans_medium</item>
-        <item name="elevation">1dp</item>
-        <item name="tabIndicatorColor">?colorAccent</item>
+        <item name="android:fontFamily">@font/roboto_mono</item>
+        <item name="elevation">0dp</item>
+        <item name="tabBackground">@drawable/tab_background_selector</item>
+        <item name="tabIndicatorColor">@color/blocked_action_green</item>
         <item name="tabSelectedTextColor">@color/text</item>
         <item name="tabTextColor">#8D8D8D</item>
         <item name="tabIndicatorFullWidth">true</item>
@@ -88,7 +89,8 @@
     </style>
 
     <style name="TextAppearance.Bchat.Tab" parent="TextAppearance.Design.Tab">
-        <item name="android:fontFamily">@font/open_sans_medium</item>
+        <item name="android:fontFamily">@font/roboto_mono</item>
+        <item name="textAllCaps">false</item>
         <item name="android:textSize">@dimen/medium_font_size</item>
         <item name="textAllCaps">false</item>
         <item name="android:gravity">center</item>
@@ -511,10 +513,16 @@
         <item name="android:foreground">?attr/selectableItemBackground</item>
     </style>
 
+    <style name="TextAppearance.Bchat.PopupMenu" parent="TextAppearance.AppCompat.Widget.PopupMenu.Large">
+        <item name="android:fontFamily">@font/roboto_mono</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text</item>
+    </style>
+
     <style name="popupOverflowMenu" parent="@style/Widget.MaterialComponents.PopupMenu.Overflow">
         <item name="android:overlapAnchor">false</item>
-        <item name="android:fontFamily">@font/open_sans_medium</item>
-        <item name="android:popupBackground">@drawable/bchat_id_text_view_background</item>
+        <item name="android:fontFamily">@font/roboto_mono</item>
+        <item name="android:popupBackground">@drawable/overflow_menu_background</item>
     </style>
 
     <style name="BChatAlertDialog" parent="ThemeOverlay.AppCompat.Dialog.Alert">

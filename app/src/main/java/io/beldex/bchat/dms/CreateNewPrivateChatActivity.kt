@@ -1,5 +1,6 @@
 package io.beldex.bchat.dms
 
+import io.beldex.bchat.util.BChatToast
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
@@ -82,7 +83,7 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
             }
             createPrivateChatButton.setOnClickListener {
                 if (publicKeyEditText.text.isEmpty()) {
-                    Toast.makeText(
+                    BChatToast.makeText(
                         this@CreateNewPrivateChatActivity,
                         R.string.bchat_id_warning_message,
                         Toast.LENGTH_SHORT
@@ -158,7 +159,7 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
         val clipboard = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("BChat ID", hexEncodedPublicKey)
         clipboard.setPrimaryClip(clip)
-        Toast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+        BChatToast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
     }
 
     private fun sharePublicKey() {
@@ -199,7 +200,7 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
         } else {
             Log.d("PublicKeyValidation", "Cancel")
 
-           //Toast.makeText(this, R.string.invalid_bchat_id, Toast.LENGTH_SHORT).show()
+           //BChatToast.makeText(this, R.string.invalid_bchat_id, Toast.LENGTH_SHORT).show()
 
             //Important 02-06-2022 - 2.30 PM
             // This could be an BNS name
@@ -216,7 +217,7 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
                     message = it
                     Log.d("Beldex","BNS exception $it")
                 }
-                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                BChatToast.makeText(this, message, Toast.LENGTH_SHORT).show()
             }
         }
     }

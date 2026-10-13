@@ -36,6 +36,7 @@ import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.bchatBackground
 
 /**
  * Live "Set your Display Name" onboarding step (Figma `display_name` 7546:1015/1036), hosted by
@@ -55,7 +56,7 @@ fun DisplayNameStepScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.appColors.onboardingBackground)
+            .bchatBackground(MaterialTheme.appColors.onboardingBackground)
     ) {
         Column(
             modifier = Modifier
@@ -124,6 +125,14 @@ fun DisplayNameStepScreen(
                         if (editText.text?.toString() != displayName) {
                             editText.setText(displayName)
                             editText.setSelection(displayName.length)
+                        }
+                        // When validation fails after Continue, the field re-lays out and the
+                        // caret/scroll jumps to the middle of a long name; park it at the end.
+                        if (editText.tag != errorMessage) {
+                            editText.tag = errorMessage
+                            if (errorMessage != null) {
+                                editText.post { editText.setSelection(editText.text?.length ?: 0) }
+                            }
                         }
                     },
                     modifier = Modifier

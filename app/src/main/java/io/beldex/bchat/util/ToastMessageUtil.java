@@ -24,7 +24,7 @@ public final class ToastMessageUtil {
                 .inflate(R.layout.view_toast_message, null, false);
         view.setText(message);
 
-        Toast toast = Toast.makeText(context.getApplicationContext(), "", duration);
+        Toast toast = BChatToast.makeText(context.getApplicationContext(), "", duration);
         toast.setView(view);
         toast.show();
     }

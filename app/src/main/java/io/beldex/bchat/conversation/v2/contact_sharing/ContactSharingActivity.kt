@@ -1,6 +1,7 @@
 package io.beldex.bchat.conversation.v2.contact_sharing
 
 import android.annotation.SuppressLint
+import io.beldex.bchat.compose_utils.bchatBackground
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
@@ -57,10 +58,11 @@ class ContactSharingActivity: BaseComponentActivity() {
             }
             BChatTheme(darkTheme = isDarkTheme) {
                 Surface(
-                    color=MaterialTheme.appColors.backgroundColor
+                    color=Color.Transparent
                 ) {
                     Scaffold(
-                        containerColor=MaterialTheme.appColors.backgroundColor,
+                        modifier = Modifier.bchatBackground(MaterialTheme.appColors.backgroundColor),
+                        containerColor=Color.Transparent,
                         contentWindowInsets = WindowInsets.systemBars,
                     ) {
                         val viewModel : ContactsViewModel=hiltViewModel()

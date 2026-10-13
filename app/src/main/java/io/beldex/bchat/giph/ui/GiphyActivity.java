@@ -1,5 +1,6 @@
 package io.beldex.bchat.giph.ui;
 
+import io.beldex.bchat.util.BChatToast;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
@@ -146,7 +147,7 @@ public class GiphyActivity extends PassphraseRequiredActionBarActivity
         viewHolder.gifProgress.setVisibility(View.GONE);
 
         if (uri == null) {
-          Toast.makeText(
+          BChatToast.makeText(
                   GiphyActivity.this,
                   R.string.GiphyActivity_error_while_retrieving_full_resolution_gif,
                   Toast.LENGTH_LONG

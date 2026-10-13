@@ -1446,7 +1446,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                 painter = painterResource(id = R.drawable.ic_bluetooth_call),
                                 contentDescription = "endCallDescription",
                                 colorFilter = ColorFilter.tint(
-                                    color = (if (isBluetoothIsSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.iconTint)
+                                    color = (if (isBluetoothIsSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.secondaryContentColor)
                                 ),
                                 modifier = Modifier
                                     .padding(16.dp)
@@ -1464,7 +1464,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                 painter = painterResource(id = R.drawable.ic_speaker_call),
                                 contentDescription = "endCallDescription",
                                 colorFilter = ColorFilter.tint(
-                                    color = (if (isSpeakerIsSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.iconTint)
+                                    color = (if (isSpeakerIsSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.secondaryContentColor)
                                 ),
                                 modifier = Modifier
                                     .padding(16.dp)
@@ -1623,7 +1623,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                                             painterResource(id = R.drawable.ic_speaker_call_white)
                                                         },
                                                         colorFilter = ColorFilter.tint(
-                                                            color = (if (isSpeakerIsSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.iconTint)
+                                                            color = (if (isSpeakerIsSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.secondaryContentColor)
                                                         ),
                                                         contentDescription = speakerDescription,
                                                         modifier = Modifier.align(Alignment.Center)
@@ -1809,7 +1809,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                                             painterResource(id = R.drawable.ic_speaker_call_white)
                                                         },
                                                         colorFilter = ColorFilter.tint(
-                                                            color = (if (isSpeakerIsSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.iconTint)
+                                                            color = (if (isSpeakerIsSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.secondaryContentColor)
                                                         ),
                                                         contentDescription = speakerDescription,
                                                         modifier = Modifier.align(Alignment.Center)
@@ -2018,5 +2018,5 @@ class WebRTCComposeActivity : BaseComponentActivity() {
 
 @Composable
 private fun Modifier.callControlSurface(fill: Color, stroke: Color): Modifier = this
-    .background(fill, notchedCornerShape(12.dp))
-    .border(1.dp, stroke, notchedCornerShape(12.dp))
+    .background(fill, notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium))
+    .border(1.dp, stroke, notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium))

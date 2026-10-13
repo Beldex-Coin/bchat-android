@@ -242,9 +242,9 @@ private fun PortraitPinCodeScreen(
                         .align(Alignment.CenterHorizontally)
                         .width(164.dp)
                         .height(41.dp),
-                    shape = notchedCornerShape(8.dp),
-                    containerColor = MaterialTheme.appColors.onboardingInputBackground,
-                    contentColor = MaterialTheme.appColors.onboardingInputText,
+                    shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall),
+                    containerColor = MaterialTheme.appColors.dialogBackground,
+                    contentColor = MaterialTheme.appColors.editTextColor,
                     contentPadding = PaddingValues(0.dp),
                     border = BorderStroke(
                         width = 1.dp,
@@ -260,7 +260,7 @@ private fun PortraitPinCodeScreen(
                     Spacer(Modifier.width(8.dp))
                     Icon(
                         painterResource(id = R.drawable.ic_arrow_pin),
-                        tint = MaterialTheme.appColors.onboardingInputText,
+                        tint = MaterialTheme.appColors.editTextColor,
                         contentDescription = "PIN digit change",
                     )
                 }
@@ -293,7 +293,7 @@ private fun PortraitPinCodeScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-                shape = notchedCornerShape(12.dp),
+                shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
                 containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
                 disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground
             ) {
@@ -301,7 +301,7 @@ private fun PortraitPinCodeScreen(
                     text = stringResource(id = R.string.next),
                     style = BChatTypography.titleMedium.copy(
                         fontWeight = FontWeight.Normal,
-                        color = if(pin.length == state.pinLength) MaterialTheme.appColors.onboardingPrimaryButtonText else MaterialTheme.appColors.onboardingPrimaryButtonDisabledText
+                        color = if(pin.length == state.pinLength) MaterialTheme.appColors.backgroundColor else MaterialTheme.appColors.onboardingPrimaryButtonDisabledText
                     ),
                     modifier = Modifier
                         .padding(8.dp)
@@ -360,7 +360,7 @@ private fun PinKeypadGrid(
                                         text = key,
                                         fontFamily = RobotoMono,
                                         fontSize = 26.sp,
-                                        color = MaterialTheme.appColors.onboardingInputText
+                                        color = MaterialTheme.appColors.editTextColor
                                     )
                                 }
                             }
@@ -384,7 +384,7 @@ private fun LandscapePinCodeScreen(
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .bchatBackground(MaterialTheme.appColors.onboardingBackground)
+            .bchatBackground(MaterialTheme.appColors.backgroundColor)
     ) {
         val density = LocalDensity.current
         var buttonSize by remember {
@@ -460,9 +460,9 @@ private fun LandscapePinCodeScreen(
                         .align(Alignment.CenterHorizontally)
                         .width(164.dp)
                         .height(41.dp),
-                    shape = notchedCornerShape(8.dp),
-                    containerColor = MaterialTheme.appColors.onboardingInputBackground,
-                    contentColor = MaterialTheme.appColors.onboardingInputText,
+                    shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall),
+                    containerColor = MaterialTheme.appColors.dialogBackground,
+                    contentColor = MaterialTheme.appColors.editTextColor,
                     contentPadding = PaddingValues(0.dp),
                     border = BorderStroke(
                         width = 1.dp,
@@ -478,7 +478,7 @@ private fun LandscapePinCodeScreen(
                     Spacer(Modifier.width(8.dp))
                     Icon(
                         painterResource(id = R.drawable.ic_arrow_pin),
-                        tint = MaterialTheme.appColors.onboardingInputText,
+                        tint = MaterialTheme.appColors.editTextColor,
                         contentDescription = "PIN digit change",
                     )
                 }
@@ -507,7 +507,7 @@ private fun LandscapePinCodeScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(
-                            color = MaterialTheme.appColors.onboardingBackground,
+                            color = MaterialTheme.appColors.backgroundColor,
                             shape = RoundedCornerShape(
                                 topStart = 16.dp,
                                 topEnd = 16.dp
@@ -562,7 +562,7 @@ private fun LandscapePinCodeScreen(
                                                     text = "0",
                                                     fontFamily = RobotoMono,
                                                     fontSize = 26.sp,
-                                                    color = MaterialTheme.appColors.onboardingInputText
+                                                    color = MaterialTheme.appColors.editTextColor
                                                 )
                                             }
                                         }
@@ -625,7 +625,7 @@ private fun LandscapePinCodeScreen(
                                                     text = "$index",
                                                     fontFamily = RobotoMono,
                                                     fontSize = 26.sp,
-                                                    color = MaterialTheme.appColors.onboardingInputText
+                                                    color = MaterialTheme.appColors.editTextColor
                                                 )
                                             }
                                         }
@@ -652,7 +652,7 @@ private fun LandscapePinCodeScreen(
                                 .onSizeChanged {
                                     buttonSize = it
                                 },
-                            shape = notchedCornerShape(12.dp),
+                            shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
                             containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
                             disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground
                         ) {
@@ -660,7 +660,7 @@ private fun LandscapePinCodeScreen(
                                 text = stringResource(id = R.string.next),
                                 style = BChatTypography.titleMedium.copy(
                                     fontWeight = FontWeight.Normal,
-                                    color = if(pin.length == state.pinLength) MaterialTheme.appColors.onboardingPrimaryButtonText else MaterialTheme.appColors.onboardingPrimaryButtonDisabledText
+                                    color = if(pin.length == state.pinLength) MaterialTheme.appColors.backgroundColor else MaterialTheme.appColors.onboardingPrimaryButtonDisabledText
                                 ),
                                 modifier = Modifier
                                     .padding(8.dp)

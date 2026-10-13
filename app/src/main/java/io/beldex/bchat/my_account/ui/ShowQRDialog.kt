@@ -65,7 +65,7 @@ fun ShowQRDialog(
         },
         wrapContentWidth = isLandscape,
         containerColor = Color(0xA60B0B0B),
-        shape = notchedCornerShape(20.dp),
+        shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchCard),
         showBorder = false
     ) {
         val context = LocalContext.current
@@ -84,7 +84,7 @@ fun ShowQRDialog(
             Text(
                 text = title,
                 style = BChatTypography.titleMedium.copy(
-                    color = MaterialTheme.appColors.onboardingInputText,
+                    color = MaterialTheme.appColors.editTextColor,
                     fontFamily = OpenSans,
                     fontSize = 16.sp,
                     fontWeight = FontWeight(700),
@@ -137,7 +137,7 @@ fun ShowQRDialog(
             Spacer(modifier = Modifier.height(10.dp))
             PrimaryButton(
                 onClick = { onShare() },
-                shape = notchedCornerShape(12.dp),
+                shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
                 containerColor = Color(0xFFE0E0E0),
                 contentColor = Color(0xFF0B0B0B),
                 border = BorderStroke(1.4.dp, Color(0xFF0A370A)),

@@ -113,7 +113,14 @@ fun NewChatScreen(
     openActivity: (OpenActivity) -> Unit,
     openConversation: (Recipient) -> Unit,
     onBackPress: () -> Unit,
-    isDarkTheme: Boolean
+    isDarkTheme: Boolean,
+    isBnsLoading: Boolean = false,
+    chatIdError: Boolean = false,
+    onStartChat: (String) -> Unit = {},
+    onChatIdErrorCleared: () -> Unit = {},
+    onScannedChat: (hexEncodedPublicKey: String, bnsName: String) -> Unit = { _, _ -> },
+    groupAvatarInfo: (Recipient) -> io.beldex.bchat.conversation_v2.NewChatScreenViewModel.GroupAvatarInfo =
+        { io.beldex.bchat.conversation_v2.NewChatScreenViewModel.GroupAvatarInfo(false, "", "") }
 ) {
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -125,10 +132,6 @@ fun NewChatScreen(
         mutableStateOf(false)
     }
 
-    var bnsLoader by remember {
-        mutableStateOf(false)
-    }
-
     val privateChatScanQRCodeActivityResultLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -136,45 +139,44 @@ fun NewChatScreen(
             val hexEncodedPublicKey = result.data!!.getStringExtra(ConversationActivityV2.HEX_ENCODED_PUBLIC_KEY)
             val bnsName = result.data!!.getStringExtra(ConversationActivityV2.BNS_NAME)
             if(hexEncodedPublicKey!=null) {
-                createPrivateChat(hexEncodedPublicKey, context, bnsName.toString())
+                onScannedChat(hexEncodedPublicKey, bnsName.toString())
             }
         }
     }
 
     if(showNewChatPopup){
-        NewChatPopUp(context = context, onDismiss = {
-            showNewChatPopup = false
-        }, onClick = {
-            keyboardController?.hide()
-        }, updateBnsLoader = {
-            bnsLoader = it
-        })
+        NewChatPopUp(
+            hasError = chatIdError,
+            onDismiss = { showNewChatPopup = false },
+            onStartChat = {
+                keyboardController?.hide()
+                onStartChat(it)
+            },
+            onInputChanged = onChatIdErrorCleared
+        )
     }
 
-    if(bnsLoader) {
-        BnsLoadingPopUp(onDismiss = {
-            bnsLoader = false
-
-        })
+    if(isBnsLoading) {
+        BnsLoadingPopUp(onDismiss = {})
     }
 
     Scaffold(
         containerColor = androidx.compose.ui.graphics.Color.Transparent,
         modifier = Modifier
-            .bchatBackground(MaterialTheme.appColors.homeBackground)
+            .bchatBackground(MaterialTheme.appColors.backgroundColor)
             .windowInsetsPadding(
                 WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal)
             ),
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.appColors.homeBackground
+                    containerColor = MaterialTheme.appColors.backgroundColor
                 ),
                 title = {
                     Text(
                         text = stringResource(id = R.string.new_chat_screen_title),
                         fontFamily = io.beldex.bchat.compose_utils.OpenSans,
-                        color = MaterialTheme.appColors.homeTitleColor,
+                        color = MaterialTheme.appColors.editTextColor,
                         fontWeight = FontWeight.Normal,
                         fontSize = 16.sp,
                         textAlign = TextAlign.Start,
@@ -190,13 +192,13 @@ fun NewChatScreen(
                             contentDescription = stringResource(
                                 id = R.string.back
                             ),
-                            tint = MaterialTheme.appColors.homeTitleColor,
+                            tint = MaterialTheme.appColors.editTextColor,
                         )
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = MaterialTheme.appColors.homeBackground),
+                    .background(color = MaterialTheme.appColors.backgroundColor),
                 actions = {
                     IconButton(onClick = {
                         if(showSearchOption){
@@ -207,7 +209,7 @@ fun NewChatScreen(
                         Icon(
                             painterResource(id = R.drawable.ic_search_contact),
                             "wallet settings",
-                            tint = MaterialTheme.appColors.homeTitleColor
+                            tint = MaterialTheme.appColors.editTextColor
                         )
                     }
                 }
@@ -230,7 +232,7 @@ fun NewChatScreen(
                                 text = stringResource(R.string.search_name_bns_bchat_id),
                                 fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                                 fontSize = 14.sp,
-                                color = MaterialTheme.appColors.homeSearchBarHint
+                                color = MaterialTheme.appColors.onboardingInputHint
                             )
                         },
                         singleLine = true,
@@ -249,7 +251,7 @@ fun NewChatScreen(
                             Icon(
                                 imageVector = Icons.Default.Clear,
                                 contentDescription = "clear search text",
-                                tint = MaterialTheme.appColors.homeSearchBarHint,
+                                tint = MaterialTheme.appColors.onboardingInputHint,
                                 modifier=Modifier.clickable {
                                     if (searchQuery.isNotEmpty()) {
                                         onEvent("")
@@ -263,12 +265,12 @@ fun NewChatScreen(
                             Icon(
                                 imageVector = Icons.Default.Search,
                                 contentDescription = "search contact",
-                                tint = MaterialTheme.appColors.homeSearchBarHint,
+                                tint = MaterialTheme.appColors.onboardingInputHint,
                             )
                         },
                         colors = TextFieldDefaults.colors(
-                            unfocusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
-                            focusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
+                            unfocusedContainerColor = MaterialTheme.appColors.dialogBackground,
+                            focusedContainerColor = MaterialTheme.appColors.dialogBackground,
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
                             disabledIndicatorColor = Color.Transparent,
@@ -285,7 +287,7 @@ fun NewChatScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .background(MaterialTheme.appColors.homeRowBackground)
+                        .background(MaterialTheme.appColors.dialogBackground)
                         .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
                         .padding(vertical = 4.dp)
                 ) {
@@ -310,7 +312,7 @@ fun NewChatScreen(
                     NewChatItem(
                         image = R.drawable.ic_newchat_secret,
                         title = stringResource(id = R.string.home_screen_secret_groups_title),
-                        MaterialTheme.appColors.homeRowTitle,
+                        MaterialTheme.appColors.editTextColor,
                         PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),
                         onClick = {
                             openActivity(OpenActivity.SecretGroup)
@@ -320,7 +322,7 @@ fun NewChatScreen(
                     NewChatItem(
                         image = R.drawable.ic_newchat_social,
                         title = stringResource(id = R.string.home_screen_social_groups_title),
-                        MaterialTheme.appColors.homeRowTitle,
+                        MaterialTheme.appColors.editTextColor,
                         PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),
                         onClick = {
                             openActivity(OpenActivity.PublicGroup)
@@ -330,7 +332,7 @@ fun NewChatScreen(
                     NewChatItem(
                         image = R.drawable.ic_newchat_note,
                         title = stringResource(id = R.string.note_to_self),
-                        MaterialTheme.appColors.homeRowTitle,
+                        MaterialTheme.appColors.editTextColor,
                         PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),
                         onClick = {
                             openActivity(OpenActivity.NoteToSelf)
@@ -344,7 +346,7 @@ fun NewChatScreen(
                     fontFamily = io.beldex.bchat.compose_utils.OpenSans,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
-                    color = MaterialTheme.appColors.homeRowPreview,
+                    color = MaterialTheme.appColors.onboardingBodyColor,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -352,7 +354,7 @@ fun NewChatScreen(
                 NewChatItem(
                     image = R.drawable.ic_newchat_invite,
                     title = stringResource(id = R.string.activity_settings_invite_button_title),
-                    color = MaterialTheme.appColors.homeRowTitle,
+                    color = MaterialTheme.appColors.editTextColor,
                     padding = PaddingValues(start = 16.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),
                     highlighted = true,
                     onClick = {
@@ -376,32 +378,13 @@ fun NewChatScreen(
                             onClick = {
                                 openConversation(it)
                             },
-                            context
+                            groupAvatarInfo = groupAvatarInfo
                         )
                     }
                 }
             }
         }
     )
-}
-
-private fun createPrivateChat(hexEncodedPublicKey: String, context: Context,bnsName: String ) {
-    val activity = (context as? Activity)
-    val recipient = Recipient.from(context, Address.fromSerialized(hexEncodedPublicKey), false)
-    val bundle = Bundle()
-    val intent = Intent()
-    bundle.putParcelable(ConversationActivityV2.URI, intent.data)
-    bundle.putString(ConversationActivityV2.TYPE, intent.type)
-    bundle.putString(ConversationActivityV2.BNS_NAME,bnsName)
-    val returnIntent = Intent()
-    returnIntent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
-    //returnIntent.setDataAndType(intent.data, intent.type)
-    val existingThread =
-        DatabaseComponent.get(context).threadDatabase().getThreadIdIfExistsFor(recipient)
-    returnIntent.putExtra(ConversationActivityV2.THREAD_ID, existingThread)
-    returnIntent.putExtras(bundle)
-    activity?.setResult(RESULT_OK, returnIntent)
-    activity?.finish()
 }
 
 @Composable
@@ -432,13 +415,13 @@ fun NewChatItem(
             modifier = Modifier
                 .size(36.dp)
                 .background(
-                    color = MaterialTheme.appColors.newChatIconBackground,
-                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(8.dp)
+                    color = MaterialTheme.appColors.userDetailsCancelBackground,
+                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall)
                 )
                 .border(
                     1.dp,
                     if (highlighted) MaterialTheme.appColors.userDetailsConfirmBackground else MaterialTheme.appColors.pinBoxInactiveBorder,
-                    io.beldex.bchat.compose_utils.notchedCornerShape(8.dp)
+                    io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall)
                 )
         ) {
             Image(
@@ -481,7 +464,7 @@ private fun GroupContact(
     recipient: Recipient,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    context: Context
+    groupAvatarInfo: (Recipient) -> io.beldex.bchat.conversation_v2.NewChatScreenViewModel.GroupAvatarInfo
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -495,21 +478,13 @@ private fun GroupContact(
     ) {
         Box(modifier = Modifier.padding(vertical = 5.dp)) {
             if(recipient.isGroupRecipient){
-                val groupRecipients = remember {
-                    DatabaseComponent.get(context).groupDatabase()
-                        .getGroupMemberAddresses(recipient.address.toGroupString(), true)
-                        .sorted()
-                        .take(2)
-                        .toMutableList()
-                }
-                val pictureMode = if (groupRecipients.size >= 2)
+                val avatarInfo = remember(recipient.address) { groupAvatarInfo(recipient) }
+                val pictureMode = if (avatarInfo.hasTwoMembers)
                     ProfilePictureMode.GroupPicture
                 else
                     ProfilePictureMode.SmallPicture
-                /*val pk = groupRecipients.getOrNull(0)?.serialize() ?: ""*/
-                val additionalPk = groupRecipients.getOrNull(1)?.serialize() ?: ""
-                val additionalDisplay =
-                    getUserDisplayName(additionalPk, context)
+                val additionalPk = avatarInfo.additionalPublicKey
+                val additionalDisplay = avatarInfo.additionalDisplayName
 
                 ProfilePictureComponent(
                     publicKey = recipient.address.toString() ?: "",
@@ -533,7 +508,7 @@ private fun GroupContact(
             text = if(recipient.name != null) recipient.name.toString().capitalizeFirstLetter() else recipient.address.toString().capitalizeFirstLetter(),
             textAlign = TextAlign.Start,
             fontFamily = io.beldex.bchat.compose_utils.OpenSans,
-            color = MaterialTheme.appColors.homeRowTitle,
+            color = MaterialTheme.appColors.editTextColor,
             fontSize = 14.sp,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier
@@ -546,35 +521,16 @@ private fun GroupContact(
 }
 
 @Composable
-fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> Unit, updateBnsLoader: (Boolean) -> Unit){
+fun NewChatPopUp(
+    hasError: Boolean,
+    onDismiss: () -> Unit,
+    onStartChat: (String) -> Unit,
+    onInputChanged: () -> Unit
+){
     var bChatId by remember {
         mutableStateOf("")
     }
-
-    var bchatIdErrorStatus by remember {
-        mutableStateOf(false)
-    }
-
-    fun createPrivateChatIfPossible(bnsNameOrPublicKey: String, context: Context) {
-        if (PublicKeyValidation.isValid(bnsNameOrPublicKey)) {
-            createPrivateChat(bnsNameOrPublicKey, context, bnsNameOrPublicKey)
-        } else {
-            // This could be an BNS name
-            updateBnsLoader(true)
-            MnodeAPI.getBchatID(bnsNameOrPublicKey).successUi { hexEncodedPublicKey ->
-                updateBnsLoader(false)
-                createPrivateChat(hexEncodedPublicKey,context,bnsNameOrPublicKey)
-            }.failUi { exception ->
-                bchatIdErrorStatus = true
-                updateBnsLoader(false)
-                val message = context.resources.getString(R.string.fragment_enter_public_key_error_message)
-                exception.localizedMessage?.let {
-                    Log.d("Beldex","BNS exception $it")
-                }
-                BChatToast.makeText(context, message, Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
+    val bchatIdErrorStatus = hasError
 
     DialogContainer(onDismissRequest = {}) {
 
@@ -583,7 +539,7 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
             Text(
                 text = stringResource(R.string.activity_create_private_chat_title),
                 fontFamily = io.beldex.bchat.compose_utils.OpenSans,
-                color = MaterialTheme.appColors.onboardingInputText,
+                color = MaterialTheme.appColors.editTextColor,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
@@ -595,7 +551,7 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(115.dp)
-                    .background(MaterialTheme.appColors.onboardingInputBackground)
+                    .background(MaterialTheme.appColors.dialogBackground)
                     .border(
                         1.dp,
                         if (bchatIdErrorStatus) MaterialTheme.appColors.negativeRedButtonBorder else MaterialTheme.appColors.pinBoxInactiveBorder
@@ -614,13 +570,13 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                     value = bChatId,
                     onValueChange = {
                         if (it.isNotEmpty()) {
-                            bchatIdErrorStatus = false
+                            onInputChanged()
                         }
                         bChatId = it
                     },
                     textStyle = androidx.compose.ui.text.TextStyle(
                         fontFamily = io.beldex.bchat.compose_utils.OpenSans,
-                        color = MaterialTheme.appColors.onboardingInputText,
+                        color = MaterialTheme.appColors.editTextColor,
                         fontSize = 14.sp
                     ),
                     cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.appColors.textSelectionColor),
@@ -652,24 +608,9 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
 
                 val canStart = bChatId.isNotEmpty() && !bchatIdErrorStatus
                 io.beldex.bchat.compose_utils.PrimaryButton(
-                    onClick = {
-                        if (CheckOnline.isOnline(context)) {
-                            if (bChatId.isEmpty()) {
-                                BChatToast.makeText(
-                                    context,
-                                    context.getString(R.string.bchat_id_warning_message),
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            } else {
-                                createPrivateChatIfPossible(bChatId, context)
-                                onClick(bChatId)
-                            }
-                        } else {
-                            BChatToast.makeText(context, context.getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
-                        }
-                    },
+                    onClick = { onStartChat(bChatId) },
                     enabled = canStart,
-                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
+                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
                     containerColor = Color(0xFFE0E0E0),
                     contentColor = Color(0xFF0B0B0B),
                     disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,

@@ -3,6 +3,9 @@ package io.beldex.bchat.conversation_v2
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
+import io.beldex.bchat.util.BChatToast
+import androidx.compose.runtime.LaunchedEffect
+import android.widget.Toast
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.material3.Surface
@@ -42,6 +45,27 @@ class NewChatConversationActivity: BaseComponentActivity() {
             val contactViewModel: NewChatScreenViewModel = hiltViewModel()
             val searchQuery by contactViewModel.searchQuery.collectAsState()
             val contacts by contactViewModel.recipients.collectAsState(initial = listOf())
+            val isBnsLoading by contactViewModel.isBnsLoading.collectAsState()
+            val chatIdError by contactViewModel.chatIdError.collectAsState()
+            LaunchedEffect(Unit) {
+                contactViewModel.events.collect { event ->
+                    when (event) {
+                        is NewChatScreenViewModel.Event.Message ->
+                            BChatToast.makeText(context, event.resId, Toast.LENGTH_SHORT).show()
+                        is NewChatScreenViewModel.Event.OpenChat -> {
+                            val returnIntent = Intent().apply {
+                                putExtra(ConversationActivityV2.ADDRESS, event.address)
+                                putExtra(ConversationActivityV2.THREAD_ID, event.threadId)
+                                putExtra(ConversationActivityV2.BNS_NAME, event.bnsName)
+                                putExtra(ConversationActivityV2.URI, null as android.os.Parcelable?)
+                                putExtra(ConversationActivityV2.TYPE, null as String?)
+                            }
+                            context.setResult(RESULT_OK, returnIntent)
+                            context.finish()
+                        }
+                    }
+                }
+            }
             val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
             val view = LocalView.current
             val window = (view.context as Activity).window
@@ -90,7 +114,14 @@ class NewChatConversationActivity: BaseComponentActivity() {
                         },
                         onBackPress = {
                             context.finish()
-                        },isDarkTheme)
+                        },
+                        isDarkTheme = isDarkTheme,
+                        isBnsLoading = isBnsLoading,
+                        chatIdError = chatIdError,
+                        onStartChat = contactViewModel::startChat,
+                        onChatIdErrorCleared = contactViewModel::clearChatIdError,
+                        onScannedChat = contactViewModel::openChat,
+                        groupAvatarInfo = contactViewModel::groupAvatarInfo)
                 }
             }
         }

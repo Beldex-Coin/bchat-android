@@ -139,7 +139,7 @@ fun ChooseLanguage(
                         .fillMaxWidth()
                         .clip(rowShape)
                         .background(
-                            color = if (isSelected) Color(0xFF0B1210) else MaterialTheme.appColors.homeRowBackground.copy(alpha = 0.9f),
+                            color = if (isSelected) Color(0xFF0B1210) else MaterialTheme.appColors.dialogBackground.copy(alpha = 0.9f),
                             shape = rowShape
                         )
                         .border(
@@ -161,7 +161,7 @@ fun ChooseLanguage(
                     ) {
                         Text(
                             text = language.nativeName,
-                            color = MaterialTheme.appColors.onboardingInputText,
+                            color = MaterialTheme.appColors.editTextColor,
                             fontFamily = OpenSans,
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Normal,
@@ -205,7 +205,7 @@ fun ChooseLanguage(
             },
             shape = io.beldex.bchat.compose_utils.notchedCornerShape(14.dp),
             containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
-            contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
+            contentColor = MaterialTheme.appColors.backgroundColor,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 12.dp)
@@ -230,7 +230,7 @@ private fun LanguageSearchField(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .background(MaterialTheme.appColors.onboardingInputBackground)
+            .background(MaterialTheme.appColors.dialogBackground)
             .border(1.dp, MaterialTheme.appColors.dividerColor)
             .padding(horizontal = 14.dp, vertical = 14.dp)
     ) {
@@ -255,7 +255,7 @@ private fun LanguageSearchField(
                 onValueChange = onQueryChange,
                 singleLine = true,
                 textStyle = androidx.compose.ui.text.TextStyle(
-                    color = MaterialTheme.appColors.onboardingInputText,
+                    color = MaterialTheme.appColors.editTextColor,
                     fontFamily = RobotoMono,
                     fontSize = 14.sp
                 ),
@@ -267,7 +267,7 @@ private fun LanguageSearchField(
             androidx.compose.material3.Icon(
                 painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_close),
                 contentDescription = null,
-                tint = MaterialTheme.appColors.onboardingInputText,
+                tint = MaterialTheme.appColors.editTextColor,
                 modifier = Modifier
                     .size(18.dp)
                     .clickable { onQueryChange("") }

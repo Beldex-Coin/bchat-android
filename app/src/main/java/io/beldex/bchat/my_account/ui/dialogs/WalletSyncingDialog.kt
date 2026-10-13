@@ -86,18 +86,18 @@ fun WalletSyncingDialog(
             ) {
                 Button(
                     onClick=onDismissRequest,
-                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
+                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
                     colors=ButtonDefaults.buttonColors(
                             containerColor=MaterialTheme.appColors.negativeGreenButton
                     ),
                     modifier=Modifier
                             .weight(1f),
-                    border = BorderStroke(width = 0.5.dp, color = MaterialTheme.appColors.negativeGreenButtonBorder)
+                    border = BorderStroke(width = 0.5.dp, color = MaterialTheme.appColors.primaryButtonColor)
                 ) {
                     Text(
                             text=stringResource(id=R.string.cancel),
                             style=MaterialTheme.typography.bodyMedium.copy(
-                                color = MaterialTheme.appColors.negativeGreenButtonText,
+                                color = MaterialTheme.appColors.onboardingHeadlineColor,
                                 fontWeight = FontWeight(400),
                                 fontSize = 14.sp
                             )
@@ -108,7 +108,7 @@ fun WalletSyncingDialog(
 
                 Button(
                     onClick=exit,
-                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
+                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
                     colors=ButtonDefaults.buttonColors(
                             containerColor=MaterialTheme.appColors.primaryButtonColor
                     ),

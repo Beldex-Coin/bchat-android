@@ -99,7 +99,7 @@ fun PinCodeView(
                 }
 
                 Card(
-                    shape = notchedCornerShape(8.dp),
+                    shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall),
                     border = BorderStroke(
                         width = 1.dp,
                         color = when {

@@ -274,7 +274,7 @@ fun ChatWithContactPopUp(name: String, address : String, onDismiss: () -> Unit){
             Text(
                 text = stringResource(R.string.chat_with_contact_confirmation),
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.appColors.titleTextColor,
+                    color = MaterialTheme.appColors.editTextColor,
                     fontWeight = FontWeight(400),
                     fontSize = 14.sp
                 ),
@@ -294,14 +294,14 @@ fun ChatWithContactPopUp(name: String, address : String, onDismiss: () -> Unit){
                         containerColor = MaterialTheme.appColors.negativeGreenButton
                     ),
                     shape = RoundedCornerShape(12.dp),
-                    border = BorderStroke(0.5.dp, MaterialTheme.appColors.negativeGreenButtonBorder),
+                    border = BorderStroke(0.5.dp, MaterialTheme.appColors.primaryButtonColor),
                     modifier = Modifier
                         .weight(1f)
                 ) {
                     Text(
                         text = stringResource(id = R.string.cancel),
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.appColors.negativeGreenButtonText,
+                            color = MaterialTheme.appColors.onboardingHeadlineColor,
                             fontWeight = FontWeight(400),
                             fontSize = 14.sp
                         ),
@@ -317,7 +317,7 @@ fun ChatWithContactPopUp(name: String, address : String, onDismiss: () -> Unit){
                         activity.supportFragmentManager.popBackStack()
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.negativeGreenButtonBorder
+                        containerColor = MaterialTheme.appColors.primaryButtonColor
                     ),
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.weight(1f)

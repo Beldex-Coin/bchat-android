@@ -31,7 +31,7 @@ import io.beldex.bchat.compose_utils.appColors
  * system-rendered ActionBar call action item + auto overflow icon this app used to show (see
  * [ConversationMenuHelper.onPrepareOptionsMenu]'s now-empty body). Same `DropdownMenu` pattern
  * already used and verified for Home's long-press menu (`ConversationListView.kt`), so this
- * reuses that component and its `appColors.homeRowTitle` item-text token rather than inventing a
+ * reuses that component and its `appColors.editTextColor` item-text token rather than inventing a
  * new one — its hex (#EBEBEB dark) is an exact match to this menu's Figma spec too.
  */
 @Composable
@@ -54,7 +54,7 @@ fun ConversationHeaderActions(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_call_new),
                     contentDescription = stringResource(id = R.string.conversation_context__menu_call),
-                    tint = MaterialTheme.appColors.titleTextColor,
+                    tint = MaterialTheme.appColors.editTextColor,
                     modifier = Modifier.size(22.dp)
                 )
             }
@@ -65,7 +65,7 @@ fun ConversationHeaderActions(
                 Icon(
                     imageVector = Icons.Default.MoreVert,
                     contentDescription = null,
-                    tint = MaterialTheme.appColors.titleTextColor,
+                    tint = MaterialTheme.appColors.editTextColor,
                     modifier = Modifier.size(22.dp)
                 )
             }
@@ -84,7 +84,7 @@ fun ConversationHeaderActions(
                                 text = entry.label,
                                 fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                                 fontSize = 14.sp,
-                                color = MaterialTheme.appColors.homeRowTitle
+                                color = MaterialTheme.appColors.editTextColor
                             )
                         },
                         onClick = {

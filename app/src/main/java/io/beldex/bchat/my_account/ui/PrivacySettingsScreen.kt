@@ -316,7 +316,7 @@ private fun ConfirmDialog(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium.copy(
-                    color = MaterialTheme.appColors.onboardingInputText,
+                    color = MaterialTheme.appColors.editTextColor,
                     fontFamily = OpenSans,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp

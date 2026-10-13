@@ -81,9 +81,9 @@ fun ContactsScreen(
                     PrimaryButton(
                         onClick = { onSend(selectedContacts) },
                         enabled = selectedContacts.isNotEmpty(),
-                        shape = notchedCornerShape(14.5.dp),
+                        shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchLarge),
                         containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
-                        contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
+                        contentColor = MaterialTheme.appColors.backgroundColor,
                         disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
                         disabledContentColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledText,
                         modifier = Modifier
@@ -121,7 +121,7 @@ fun ContactsScreen(
                         Icon(
                             Icons.Default.Close,
                             contentDescription = "clear",
-                            tint = MaterialTheme.appColors.iconTint,
+                            tint = MaterialTheme.appColors.secondaryContentColor,
                             modifier = Modifier.clickable {
                                 onQueryChanged("")
                             }
@@ -130,7 +130,7 @@ fun ContactsScreen(
                         Icon(
                             Icons.Default.Search,
                             contentDescription = "search",
-                            tint = MaterialTheme.appColors.iconTint
+                            tint = MaterialTheme.appColors.secondaryContentColor
                         )
                     }
                 }

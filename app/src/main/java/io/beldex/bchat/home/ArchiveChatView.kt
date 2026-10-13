@@ -44,7 +44,7 @@ fun ArchiveChatView(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.appColors.homeBackground.copy(alpha = 0.6f))
+            .background(MaterialTheme.appColors.backgroundColor.copy(alpha = 0.6f))
             .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
             .clickable { onRequestClick() }
             .padding(horizontal = 12.dp, vertical = 10.dp)
@@ -52,13 +52,13 @@ fun ArchiveChatView(
         Image(
             painterResource(id = R.drawable.ic_archive_chats),
             contentDescription = stringResource(R.string.archive_chat),
-            colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.appColors.onboardingInputText),
+            colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.appColors.editTextColor),
             modifier = Modifier.size(22.dp)
         )
         Spacer(modifier = Modifier.width(14.dp))
         Text(
             text = stringResource(id = R.string.archive_chat),
-            color = MaterialTheme.appColors.onboardingInputText,
+            color = MaterialTheme.appColors.editTextColor,
             fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
             fontSize = 14.sp,
             fontWeight = FontWeight.SemiBold

@@ -59,7 +59,7 @@ fun TrimLengthDialog(
         ) {
             Text(
                 text = stringResource(id = R.string.preferences__conversation_length_limit),
-                color = MaterialTheme.appColors.onboardingInputText,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = OpenSans,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
@@ -72,14 +72,14 @@ fun TrimLengthDialog(
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 textStyle = TextStyle(
-                    color = MaterialTheme.appColors.onboardingInputText,
+                    color = MaterialTheme.appColors.editTextColor,
                     fontFamily = RobotoMono,
                     fontSize = 16.sp
                 ),
                 cursorBrush = SolidColor(MaterialTheme.appColors.textSelectionColor),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.appColors.onboardingInputBackground)
+                    .background(MaterialTheme.appColors.dialogBackground)
                     .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
                     .padding(horizontal = 18.dp, vertical = 16.dp)
             )
@@ -124,7 +124,7 @@ fun TrimNowDialog(
         ) {
             Text(
                 text = stringResource(id = R.string.ApplicationPreferencesActivity_delete_all_old_messages_now),
-                color = MaterialTheme.appColors.onboardingInputText,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = OpenSans,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
@@ -137,7 +137,7 @@ fun TrimNowDialog(
                     count = limit,
                     limit
                 ),
-                color = MaterialTheme.appColors.onboardingInputText,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = OpenSans,
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center

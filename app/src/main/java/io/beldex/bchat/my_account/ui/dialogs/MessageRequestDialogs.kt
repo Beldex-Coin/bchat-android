@@ -64,7 +64,7 @@ fun RequestBlockConfirmationDialog(
             Text(
                 text = message,
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.appColors.titleTextColor,
+                    color = MaterialTheme.appColors.editTextColor,
                     fontWeight = FontWeight(400),
                     fontSize = 14.sp
                 ),
@@ -82,15 +82,15 @@ fun RequestBlockConfirmationDialog(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.appColors.negativeGreenButton
                     ),
-                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
-                    border = BorderStroke(0.5.dp, MaterialTheme.appColors.negativeGreenButtonBorder),
+                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+                    border = BorderStroke(0.5.dp, MaterialTheme.appColors.primaryButtonColor),
                     modifier = Modifier
                         .weight(1f)
                 ) {
                     Text(
                         text = stringResource(id = R.string.cancel),
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.appColors.negativeGreenButtonText,
+                            color = MaterialTheme.appColors.onboardingHeadlineColor,
                             fontWeight = FontWeight(400),
                             fontSize = 12.sp
                         )
@@ -102,7 +102,7 @@ fun RequestBlockConfirmationDialog(
                 Button(
                     onClick=onConfirmation,
                     colors=ButtonDefaults.buttonColors(
-                        containerColor=if (title == stringResource(R.string.accept_request)) MaterialTheme.appColors.negativeGreenButtonBorder else MaterialTheme.appColors.negativeRedButtonBorder
+                        containerColor=if (title == stringResource(R.string.accept_request)) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.negativeRedButtonBorder
                     ),
                     shape=RoundedCornerShape(12.dp),
                     modifier=Modifier
@@ -153,7 +153,7 @@ fun IgnoreRequestDialog(
             Text(
                 text = stringResource(id = R.string.block_or_delete_request),
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.appColors.titleTextColor,
+                    color = MaterialTheme.appColors.editTextColor,
                     fontWeight = FontWeight(400),
                     fontSize = 14.sp
                 ),

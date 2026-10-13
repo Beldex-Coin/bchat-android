@@ -125,7 +125,7 @@ private fun LogItem(
 
                 Text(
                     text = versionLog.version,
-                    color = MaterialTheme.appColors.onboardingInputText,
+                    color = MaterialTheme.appColors.editTextColor,
                     fontFamily = OpenSans,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp,
@@ -135,7 +135,7 @@ private fun LogItem(
                 Icon(
                     Icons.Outlined.ExpandCircleDown,
                     contentDescription = "",
-                    tint = MaterialTheme.appColors.onboardingInputText,
+                    tint = MaterialTheme.appColors.editTextColor,
                     modifier = Modifier
                         .size(22.dp)
                         .rotate(iconRotation)
@@ -166,14 +166,14 @@ private fun LogItem(
                                     modifier = Modifier
                                         .size(4.dp)
                                         .background(
-                                            color = MaterialTheme.appColors.changeLogColor,
+                                            color = MaterialTheme.appColors.editTextColor,
                                             shape = CircleShape
                                         )
                                 )
                                 Text(
                                     text = log,
                                     style = MaterialTheme.typography.titleMedium.copy(
-                                        color = MaterialTheme.appColors.onboardingInputText,
+                                        color = MaterialTheme.appColors.editTextColor,
                                         fontFamily = RobotoMono,
                                         fontWeight = FontWeight.Normal,
                                         fontSize = 16.sp

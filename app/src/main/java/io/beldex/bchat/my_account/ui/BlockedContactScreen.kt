@@ -109,7 +109,7 @@ fun BlockedContactScreen(
             ) {
                 Text(
                     text = title,
-                    color = MaterialTheme.appColors.onboardingInputText,
+                    color = MaterialTheme.appColors.editTextColor,
                     fontFamily = io.beldex.bchat.compose_utils.OpenSans,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
@@ -120,7 +120,7 @@ fun BlockedContactScreen(
 
                 Text(
                     text = message,
-                    color = MaterialTheme.appColors.onboardingInputText,
+                    color = MaterialTheme.appColors.editTextColor,
                     fontFamily = io.beldex.bchat.compose_utils.OpenSans,
                     fontSize = 14.sp,
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -190,9 +190,9 @@ fun BlockedContactScreen(
                 onClick = {
                     showConfirmationDialog = true
                 },
-                shape = io.beldex.bchat.compose_utils.notchedCornerShape(14.5.dp),
+                shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchLarge),
                 containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
-                contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
+                contentColor = MaterialTheme.appColors.backgroundColor,
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
@@ -221,7 +221,7 @@ private fun BlockedContactItem(
     modifier: Modifier = Modifier
 ) {
     Card(
-        shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
+        shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
         border = androidx.compose.foundation.BorderStroke(
             1.dp,
             if (isSelected) MaterialTheme.appColors.userDetailsConfirmBackground else MaterialTheme.appColors.dividerColor
@@ -283,11 +283,11 @@ private fun BlockedContactItem(
                         fontWeight = FontWeight(600),
                         fontSize = 12.sp
                     ),
-                    color = MaterialTheme.appColors.onboardingInputText,
+                    color = MaterialTheme.appColors.editTextColor,
                     modifier = Modifier
                         .background(
-                            color = MaterialTheme.appColors.popUpAddressBackground,
-                            shape = io.beldex.bchat.compose_utils.notchedCornerShape(8.dp)
+                            color = MaterialTheme.appColors.searchBackground,
+                            shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall)
                         )
                         .clickable {
                             unblockContact()

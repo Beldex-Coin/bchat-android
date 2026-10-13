@@ -72,7 +72,7 @@ fun NotificationSettingDialog(
             ) {
                 Text(
                     text = stringResource(id = R.string.RecipientPreferenceActivity_notification_settings),
-                    color = MaterialTheme.appColors.onboardingInputText,
+                    color = MaterialTheme.appColors.editTextColor,
                     fontFamily = io.beldex.bchat.compose_utils.OpenSans,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
@@ -89,7 +89,7 @@ fun NotificationSettingDialog(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_close),
                         contentDescription = "",
-                        tint = MaterialTheme.appColors.onboardingInputText,
+                        tint = MaterialTheme.appColors.editTextColor,
                         modifier = Modifier.size(14.dp)
                     )
                 }
@@ -137,7 +137,7 @@ fun NotificationSettingDialog(
                         onDismiss()
                     }
                 },
-                shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
+                shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
                 containerColor = androidx.compose.ui.graphics.Color(0xFFE0E0E0),
                 contentColor = androidx.compose.ui.graphics.Color(0xFF0B0B0B),
                 border = BorderStroke(1.4.dp, androidx.compose.ui.graphics.Color(0xFF0A370A)),

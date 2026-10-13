@@ -41,7 +41,7 @@ fun HomeFilterChips(
                 HomeFilter.Social -> stringResource(R.string.home_filter_social)
                 HomeFilter.Groups -> stringResource(R.string.home_filter_groups)
             }
-            val accent = if (isSelected) MaterialTheme.appColors.userDetailsConfirmBackground else MaterialTheme.appColors.homeRowTimestamp
+            val accent = if (isSelected) MaterialTheme.appColors.userDetailsConfirmBackground else MaterialTheme.appColors.onboardingCaptionColor
             Text(
                 text = label,
                 color = accent,

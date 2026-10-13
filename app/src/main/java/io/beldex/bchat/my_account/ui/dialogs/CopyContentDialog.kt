@@ -46,7 +46,7 @@ fun CopyContentDialog(
                onDismissRequest()
         },
         containerColor = Color(0xA60B0B0B),
-        shape = notchedCornerShape(20.dp),
+        shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchCard),
         showBorder = false
     ) {
         Row(
@@ -72,7 +72,7 @@ fun CopyContentDialog(
                 Text(
                     text = data,
                     style = BChatTypography.titleSmall.copy(
-                        color = MaterialTheme.appColors.onboardingInputText,
+                        color = MaterialTheme.appColors.editTextColor,
                         fontFamily = RobotoMono,
                         fontSize = 12.sp,
                         lineHeight = 20.sp,

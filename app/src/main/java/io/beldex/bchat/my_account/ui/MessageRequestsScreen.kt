@@ -188,7 +188,7 @@ fun MessageRequestsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(59.dp)
-                        .background(MaterialTheme.appColors.homeRowBackground)
+                        .background(MaterialTheme.appColors.dialogBackground)
                         .padding(horizontal = 14.dp)
                 )
             }
@@ -247,7 +247,7 @@ fun MessageRequestItem(
             ?: request.recipient.address.toString()
         Text(
             text=senderName,
-            color=MaterialTheme.appColors.onboardingInputText,
+            color=MaterialTheme.appColors.editTextColor,
             fontFamily=OpenSans,
             fontWeight=FontWeight.Normal,
             fontSize=14.sp,
@@ -261,8 +261,8 @@ fun MessageRequestItem(
             contentAlignment=Alignment.Center,
             modifier=Modifier
                 .size(32.dp)
-                .background(color=MaterialTheme.appColors.deleteOptionColor.copy(alpha=0.1f), shape=notchedCornerShape(6.dp))
-                .border(1.dp, MaterialTheme.appColors.deleteOptionColor, notchedCornerShape(6.dp))
+                .background(color=MaterialTheme.appColors.negativeRedButtonBorder.copy(alpha=0.1f), shape=notchedCornerShape(6.dp))
+                .border(1.dp, MaterialTheme.appColors.negativeRedButtonBorder, notchedCornerShape(6.dp))
                 .clickable {
                     deleteRequest(request)
                 }
@@ -270,7 +270,7 @@ fun MessageRequestItem(
             Image(
                 painter=painterResource(id=R.drawable.ic_delete_24),
                 contentDescription="",
-                colorFilter=ColorFilter.tint(color=MaterialTheme.appColors.deleteOptionColor),
+                colorFilter=ColorFilter.tint(color=MaterialTheme.appColors.negativeRedButtonBorder),
                 modifier=Modifier
                     .size(16.dp)
             )
@@ -282,7 +282,7 @@ fun MessageRequestItem(
             contentAlignment=Alignment.Center,
             modifier=Modifier
                 .size(32.dp)
-                .background(color=MaterialTheme.appColors.onboardingInputBackground, shape=notchedCornerShape(6.dp))
+                .background(color=MaterialTheme.appColors.dialogBackground, shape=notchedCornerShape(6.dp))
                 .border(1.dp, MaterialTheme.appColors.dividerColor, notchedCornerShape(6.dp))
                 .clickable {
                     blockRequest(request)
@@ -291,7 +291,7 @@ fun MessageRequestItem(
             Image(
                 painter=painterResource(id=R.drawable.ic_block_request),
                 contentDescription="",
-                colorFilter=ColorFilter.tint(color=MaterialTheme.appColors.onboardingInputText),
+                colorFilter=ColorFilter.tint(color=MaterialTheme.appColors.editTextColor),
                 modifier=Modifier
                     .size(16.dp)
             )

@@ -109,8 +109,8 @@ class SearchActivity : BaseComponentActivity() {
             val focusManager = LocalFocusManager.current
             val view = LocalView.current
             val window = (view.context as Activity).window
-            val statusBarColor = if (isDarkTheme) darkColors.homeBackground else lightColors.homeBackground
-            val navBarColor = if (isDarkTheme) darkColors.homeBackground else lightColors.homeBackground
+            val statusBarColor = if (isDarkTheme) darkColors.backgroundColor else lightColors.backgroundColor
+            val navBarColor = if (isDarkTheme) darkColors.backgroundColor else lightColors.backgroundColor
             SideEffect {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                     window.statusBarColor = statusBarColor.toArgb()
@@ -132,7 +132,7 @@ class SearchActivity : BaseComponentActivity() {
                             modifier = Modifier
                                 .fillMaxSize()
                                 .background(
-                                    color = MaterialTheme.appColors.homeBackground
+                                    color = MaterialTheme.appColors.backgroundColor
                                 )
                                 .padding(it)
                         ) {
@@ -229,7 +229,7 @@ private fun SearchView(
                         text = stringResource(id = R.string.search_name_bns_bchat_id),
                         fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                         fontSize = 14.sp,
-                        color = MaterialTheme.appColors.homeSearchBarHint
+                        color = MaterialTheme.appColors.onboardingInputHint
                     )
                 },
                 singleLine = true,
@@ -242,8 +242,8 @@ private fun SearchView(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
-                    focusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
-                    unfocusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
+                    focusedContainerColor = MaterialTheme.appColors.dialogBackground,
+                    unfocusedContainerColor = MaterialTheme.appColors.dialogBackground,
                     cursorColor = MaterialTheme.appColors.primaryButtonColor,
                     selectionColors = TextSelectionColors(
                         handleColor = MaterialTheme.appColors.primaryButtonColor,
@@ -254,7 +254,7 @@ private fun SearchView(
                     Icon(
                         Icons.Default.Search,
                         contentDescription = stringResource(R.string.SearchToolbar_search),
-                        tint = MaterialTheme.appColors.iconTint
+                        tint = MaterialTheme.appColors.secondaryContentColor
                     )
                 },
                 trailingIcon = {
@@ -262,7 +262,7 @@ private fun SearchView(
                         Icon(
                             Icons.Default.Close,
                             contentDescription = stringResource(R.string.clear),
-                            tint = MaterialTheme.appColors.iconTint,
+                            tint = MaterialTheme.appColors.secondaryContentColor,
                             modifier = Modifier.clickable(
                                 onClick = {
                                     onQueryChanged("")
@@ -497,7 +497,7 @@ private fun MessageView(
                     text = messageDate,
                     fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                     fontSize = 10.sp,
-                    color = MaterialTheme.appColors.homeRowTimestamp,
+                    color = MaterialTheme.appColors.onboardingCaptionColor,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -506,7 +506,7 @@ private fun MessageView(
                 text = annotatedText,
                 fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                 fontSize = 12.sp,
-                color = MaterialTheme.appColors.homeRowPreview,
+                color = MaterialTheme.appColors.onboardingBodyColor,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -560,7 +560,7 @@ private fun GroupConversationView(
                     text = membersString,
                     fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                     fontSize = 12.sp,
-                    color = MaterialTheme.appColors.homeRowPreview,
+                    color = MaterialTheme.appColors.onboardingBodyColor,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )

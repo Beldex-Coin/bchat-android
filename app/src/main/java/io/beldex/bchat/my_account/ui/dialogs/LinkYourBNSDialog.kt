@@ -164,7 +164,7 @@ fun LinkYourBNSDialog(
             ) {
                 Text(
                     text = stringResource(R.string.link_bns),
-                    color = MaterialTheme.appColors.onboardingInputText,
+                    color = MaterialTheme.appColors.editTextColor,
                     fontFamily = OpenSans,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
@@ -181,7 +181,7 @@ fun LinkYourBNSDialog(
                     androidx.compose.material3.Icon(
                         painter = painterResource(id = R.drawable.ic_close),
                         contentDescription = null,
-                        tint = MaterialTheme.appColors.onboardingInputText,
+                        tint = MaterialTheme.appColors.editTextColor,
                         modifier = Modifier.size(14.dp)
                     )
                 }
@@ -189,7 +189,7 @@ fun LinkYourBNSDialog(
             Spacer(modifier = Modifier.height(18.dp))
             Text(
                 text = stringResource(R.string.your_bchat_id),
-                color = MaterialTheme.appColors.onboardingInputText,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = OpenSans,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.SemiBold
@@ -198,13 +198,13 @@ fun LinkYourBNSDialog(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.appColors.onboardingInputBackground)
+                    .background(MaterialTheme.appColors.dialogBackground)
                     .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
                     .padding(horizontal = 14.dp, vertical = 12.dp)
             ) {
                 Text(
                     text = state.publicKey ?: "",
-                    color = MaterialTheme.appColors.onboardingInputText,
+                    color = MaterialTheme.appColors.editTextColor,
                     fontFamily = RobotoMono,
                     fontSize = 12.sp,
                     lineHeight = 17.sp
@@ -213,7 +213,7 @@ fun LinkYourBNSDialog(
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = stringResource(R.string.bns_name),
-                color = MaterialTheme.appColors.onboardingInputText,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = OpenSans,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.SemiBold
@@ -222,7 +222,7 @@ fun LinkYourBNSDialog(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.appColors.onboardingInputBackground)
+                    .background(MaterialTheme.appColors.dialogBackground)
                     .border(1.dp, fieldBorder)
                     .padding(horizontal = 14.dp, vertical = 14.dp)
             ) {
@@ -247,7 +247,7 @@ fun LinkYourBNSDialog(
                         imeAction = ImeAction.Done
                     ),
                     textStyle = TextStyle(
-                        color = if (isVerified) MaterialTheme.appColors.userDetailsConfirmBackground else MaterialTheme.appColors.onboardingInputText,
+                        color = if (isVerified) MaterialTheme.appColors.userDetailsConfirmBackground else MaterialTheme.appColors.editTextColor,
                         fontFamily = RobotoMono,
                         fontSize = 12.sp
                     ),
@@ -264,7 +264,7 @@ fun LinkYourBNSDialog(
                     text = stringResource(R.string.cancel),
                     onClick = { onDismissRequest(false) },
                     fontFamily = RobotoMono,
-                    textColor = MaterialTheme.appColors.onboardingInputText,
+                    textColor = MaterialTheme.appColors.editTextColor,
                     modifier = Modifier.weight(1f)
                 )
                 val canVerify = verifyBNSName(bnsName)
@@ -283,7 +283,7 @@ fun LinkYourBNSDialog(
                             BChatToast.makeText(context, context.getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
                         }
                     },
-                    shape = notchedCornerShape(12.dp),
+                    shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
                     containerColor = if (canVerify) lightButton else MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
                     contentColor = if (canVerify) darkText else disabledText,
                     border = if (canVerify) BorderStroke(1.dp, MaterialTheme.appColors.userDetailsConfirmBackground.copy(alpha = 0.5f)) else null,
@@ -319,7 +319,7 @@ fun LinkYourBNSDialog(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
-                shape = notchedCornerShape(12.dp),
+                shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
                 enabled = isVerified,
                 containerColor = lightButton,
                 contentColor = darkText,

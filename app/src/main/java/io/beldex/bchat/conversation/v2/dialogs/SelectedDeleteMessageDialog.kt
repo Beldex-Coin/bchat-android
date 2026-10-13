@@ -61,7 +61,7 @@ fun SelectedDeleteMessage(
             Text(
                 text = message,
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.appColors.titleTextColor,
+                    color = MaterialTheme.appColors.editTextColor,
                     fontWeight = FontWeight(400),
                     fontSize = 14.sp
                 ),
@@ -77,10 +77,10 @@ fun SelectedDeleteMessage(
             ) {
                 Button(
                     onClick = onCancel,
-                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
+                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
                     border = BorderStroke(
                         0.5.dp,
-                        MaterialTheme.appColors.negativeGreenButtonBorder
+                        MaterialTheme.appColors.primaryButtonColor
                     ),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.appColors.negativeGreenButton
@@ -90,7 +90,7 @@ fun SelectedDeleteMessage(
                     Text(
                         text = stringResource(id = R.string.cancel),
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.appColors.negativeGreenButtonText,
+                            color = MaterialTheme.appColors.onboardingHeadlineColor,
                             fontWeight = FontWeight(400),
                             fontSize = 14.sp
                         ),
@@ -102,7 +102,7 @@ fun SelectedDeleteMessage(
 
                 Button(
                     onClick = onAccept,
-                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
+                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.appColors.negativeRedButtonBorder
                     ),

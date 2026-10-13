@@ -96,7 +96,7 @@ fun ProfilePicturePopup(
                 Text(
                     text = stringResource(id = R.string.activity_settings_profile_picture),
                     style = MaterialTheme.typography.titleMedium.copy(
-                        color = MaterialTheme.appColors.titleTextColor,
+                        color = MaterialTheme.appColors.editTextColor,
                         fontFamily = OpenSans
                     ),
                     textAlign = TextAlign.Start,
@@ -106,7 +106,7 @@ fun ProfilePicturePopup(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_close),
                     contentDescription = stringResource(id = R.string.close),
-                    tint = MaterialTheme.appColors.iconTint,
+                    tint = MaterialTheme.appColors.secondaryContentColor,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .clickable {
@@ -151,9 +151,9 @@ fun ProfilePicturePopup(
                 PrimaryButton(
                     onClick = removePicture,
                     enabled = profilePictureStatus,
-                    shape = notchedCornerShape(12.dp),
-                    containerColor = MaterialTheme.appColors.onboardingSecondaryButtonBackground,
-                    contentColor = MaterialTheme.appColors.onboardingSecondaryButtonText,
+                    shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+                    containerColor = MaterialTheme.appColors.dialogBackground,
+                    contentColor = MaterialTheme.appColors.editTextColor,
                     disabledContainerColor = MaterialTheme.appColors.optionalTextFieldBackground,
                     disabledContentColor = MaterialTheme.appColors.disabledButtonContent,
                     border = BorderStroke(1.dp, if (profilePictureStatus) MaterialTheme.appColors.onboardingSecondaryButtonBorder else MaterialTheme.appColors.optionalTextFieldBackground),
@@ -170,7 +170,7 @@ fun ProfilePicturePopup(
 
                 PrimaryButton(
                     onClick = uploadPicture,
-                    shape = notchedCornerShape(12.dp),
+                    shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
                     containerColor = Color(0xFFE0E0E0),
                     contentColor = Color(0xFF0B0B0B),
                     border = BorderStroke(1.4.dp, Color(0xFF0A370A)),

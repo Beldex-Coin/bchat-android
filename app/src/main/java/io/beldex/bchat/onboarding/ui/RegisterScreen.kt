@@ -58,7 +58,7 @@ fun RegisterScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .bchatBackground(MaterialTheme.appColors.onboardingBackground)
+            .bchatBackground(MaterialTheme.appColors.backgroundColor)
     ) {
         Column(
             modifier = Modifier
@@ -78,7 +78,7 @@ fun RegisterScreen(
             ) {
                 Text(
                     text = headline,
-                    color = MaterialTheme.appColors.onboardingInputText,
+                    color = MaterialTheme.appColors.editTextColor,
                     fontFamily = OpenSans,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 18.sp,
@@ -144,7 +144,7 @@ private fun RegisterKeyCard(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(MaterialTheme.appColors.onboardingInputBackground)
+            .background(MaterialTheme.appColors.dialogBackground)
             .then(
                 if (isLoading) Modifier else Modifier.clickable(
                     interactionSource = remember { MutableInteractionSource() },
@@ -176,7 +176,7 @@ private fun RegisterKeyCard(
         } else {
             Text(
                 text = value,
-                color = MaterialTheme.appColors.onboardingInputText,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = RobotoMono,
                 fontSize = 12.sp,
                 lineHeight = 15.sp,

@@ -182,14 +182,14 @@ private fun ConversationRow(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.appColors.deleteOptionColor)
+                    .background(MaterialTheme.appColors.negativeRedButtonBorder)
                     .padding(horizontal = 20.dp),
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_delete_24),
                     contentDescription = stringResource(R.string.delete),
-                    tint = MaterialTheme.appColors.deleteOptionIconColor
+                    tint = MaterialTheme.appColors.primaryButtonIconColor
                 )
             }
         }
@@ -213,7 +213,7 @@ private fun ConversationRow(
                 // Opaque base so the swipe-to-delete layer underneath doesn't show through flat rows.
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.appColors.homeBackground)
+                    .background(MaterialTheme.appColors.backgroundColor)
             )
 
             DropdownMenu(
@@ -255,7 +255,7 @@ private fun EmptyConversationList(modifier: Modifier = Modifier) {
         )
         Text(
             text = stringResource(R.string.bchat_empty_state_message),
-            color = MaterialTheme.appColors.homeRowPreview,
+            color = MaterialTheme.appColors.onboardingBodyColor,
             fontFamily = OpenSans,
             fontSize = 14.sp,
             textAlign = TextAlign.Center,

@@ -106,7 +106,7 @@ fun SuccessPopup(
             Text(
                 text = title,
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.appColors.onboardingInputText,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = OpenSans,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
@@ -115,9 +115,9 @@ fun SuccessPopup(
             PrimaryButton(
                 onClick = onDismiss,
                 enabled = okEnabled,
-                shape = notchedCornerShape(12.dp),
+                shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
                 containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
-                contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
+                contentColor = MaterialTheme.appColors.backgroundColor,
                 modifier = Modifier
                     .width(158.dp)
                     .height(52.dp)
@@ -141,16 +141,16 @@ fun DialogCancelButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     fontFamily: androidx.compose.ui.text.font.FontFamily = OpenSans,
-    textColor: Color = MaterialTheme.appColors.onboardingSecondaryButtonText
+    textColor: Color = MaterialTheme.appColors.editTextColor
 ) {
     PrimaryButton(
         onClick = onClick,
-        shape = notchedCornerShape(12.dp),
-        containerColor = MaterialTheme.appColors.onboardingSecondaryButtonBackground,
+        shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+        containerColor = MaterialTheme.appColors.dialogBackground,
         contentColor = textColor,
         border = BorderStroke(1.dp, MaterialTheme.appColors.onboardingSecondaryButtonBorder),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
-        modifier = modifier.height(52.dp)
+        modifier = modifier.heightIn(min = BChatDimens.DialogButtonMinHeight)
     ) {
         Text(text = text, fontFamily = fontFamily, fontWeight = FontWeight.Normal, fontSize = 14.sp)
     }
@@ -169,12 +169,12 @@ fun DialogConfirmButton(
     PrimaryButton(
         onClick = onClick,
         enabled = enabled,
-        shape = notchedCornerShape(12.dp),
+        shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
         containerColor = accent.copy(alpha = 0.1f),
-        contentColor = MaterialTheme.appColors.onboardingInputText,
+        contentColor = MaterialTheme.appColors.editTextColor,
         border = BorderStroke(0.5.dp, accent),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
-        modifier = modifier.height(52.dp)
+        modifier = modifier.heightIn(min = BChatDimens.DialogButtonMinHeight)
     ) {
         Text(text = text, fontFamily = OpenSans, fontWeight = FontWeight.Normal, fontSize = 14.sp)
     }
@@ -216,7 +216,7 @@ fun IconConfirmDialog(
                     androidx.compose.material3.Icon(
                         painter = icon,
                         contentDescription = null,
-                        tint = MaterialTheme.appColors.onboardingInputText,
+                        tint = MaterialTheme.appColors.editTextColor,
                         modifier = Modifier.size(30.dp)
                     )
                 }
@@ -224,7 +224,7 @@ fun IconConfirmDialog(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = title,
-                        color = MaterialTheme.appColors.onboardingInputText,
+                        color = MaterialTheme.appColors.editTextColor,
                         fontFamily = OpenSans,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
@@ -232,7 +232,7 @@ fun IconConfirmDialog(
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(
                         text = message,
-                        color = MaterialTheme.appColors.onboardingInputText,
+                        color = MaterialTheme.appColors.editTextColor,
                         fontFamily = RobotoMono,
                         fontSize = 13.sp,
                         lineHeight = 20.sp
@@ -248,7 +248,7 @@ fun IconConfirmDialog(
                     text = cancelText,
                     onClick = onCancel,
                     fontFamily = RobotoMono,
-                    textColor = MaterialTheme.appColors.onboardingInputText,
+                    textColor = MaterialTheme.appColors.editTextColor,
                     modifier = Modifier.weight(1f)
                 )
                 if (destructive) {
@@ -261,7 +261,7 @@ fun IconConfirmDialog(
                 } else {
                 PrimaryButton(
                     onClick = onConfirm,
-                    shape = notchedCornerShape(12.dp),
+                    shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
                     containerColor = Color(0xFFE0E0E0),
                     contentColor = Color(0xFF0B0B0B),
                     border = BorderStroke(1.dp, Color(0xFF0A370A)),

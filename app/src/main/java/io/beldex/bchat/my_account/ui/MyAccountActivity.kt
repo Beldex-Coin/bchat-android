@@ -801,7 +801,7 @@ fun MyAccountNavHost(
                             Text(
                                 text = if(showEditNameTextField) stringResource(id=R.string.menu_done_button) else stringResource(id=R.string.edit_title),
                                 style = BChatTypography.bodySmall.copy(
-                                    color = if(showEditNameTextField) Color.White else MaterialTheme.appColors.onboardingInputText,
+                                    color = if(showEditNameTextField) Color.White else MaterialTheme.appColors.editTextColor,
                                     fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                                     fontWeight = FontWeight(600),
                                     fontSize = 12.sp,
@@ -918,11 +918,11 @@ fun MyAccountNavHost(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(bottom = 10.dp),
-                            shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
+                            shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
                             containerColor = Color(0xFF0A1F0F),
-                            contentColor = MaterialTheme.appColors.onboardingInputText,
+                            contentColor = MaterialTheme.appColors.editTextColor,
                             border = BorderStroke(0.5.dp, MaterialTheme.appColors.userDetailsConfirmBackground),
-                            disabledContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+                            disabledContainerColor = MaterialTheme.appColors.searchBackground,
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
@@ -936,7 +936,7 @@ fun MyAccountNavHost(
                                 Text(
                                     text = stringResource(R.string.link_your_bns),
                                     style = BChatTypography.titleSmall.copy(
-                                        color = MaterialTheme.appColors.onboardingInputText,
+                                        color = MaterialTheme.appColors.editTextColor,
                                         fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                                         fontWeight = FontWeight(600),
                                         fontSize = 13.sp
@@ -1188,7 +1188,7 @@ fun MyAccountNavHost(
                             else
                                 painterResource(id = R.drawable.ic_unselected_all),
                             contentDescription = "",
-                            tint = MaterialTheme.appColors.iconTint,
+                            tint = MaterialTheme.appColors.secondaryContentColor,
                             modifier = Modifier
                                 .clickable {
                                     contactViewModel.onEvent(BlockedContactEvents.MultiSelectClicked)
@@ -1509,7 +1509,7 @@ fun ProfileCard(
             Text(
                 text=uiState.profileName ?: "",
                 style=MaterialTheme.typography.titleMedium.copy(
-                    color=MaterialTheme.appColors.titleTextColor,
+                    color=MaterialTheme.appColors.editTextColor,
                     fontWeight=FontWeight(700),
                     fontSize=18.sp,
                     lineHeight=24.51.sp
@@ -1625,7 +1625,7 @@ fun ProfileCardKeyContainer(
 ) {
     Card(
         modifier = modifier,
-        shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
+        shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
         border = BorderStroke(1.dp, MaterialTheme.appColors.dividerColor),
         elevation = CardDefaults.cardElevation(
             defaultElevation = if(!isBnsHolder.isNullOrEmpty()) 2.dp else 0.dp
@@ -1677,7 +1677,7 @@ fun ProfileCardKeyContainer(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_copy),
                     contentDescription = "",
-                    tint = MaterialTheme.appColors.editTextHint,
+                    tint = MaterialTheme.appColors.editTextPlaceholder,
                     modifier = Modifier
                         .size(16.dp)
                         .align(alignment = Alignment.TopEnd)

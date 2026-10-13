@@ -72,7 +72,7 @@ fun HopsScreen(
         ) {
             Text(
                 text = stringResource(id = R.string.MediaPreviewActivity_you),
-                color = MaterialTheme.appColors.onboardingInputText,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = OpenSans,
                 fontSize = 12.sp
             )
@@ -83,20 +83,20 @@ fun HopsScreen(
             nodes.forEachIndexed { index, node ->
                 PathMarker(
                     filled = index != nodes.lastIndex || nodes.size == 1,
-                    color = MaterialTheme.appColors.onboardingInputText,
+                    color = MaterialTheme.appColors.editTextColor,
                     size = 12.dp
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = node.title,
-                    color = MaterialTheme.appColors.onboardingInputText,
+                    color = MaterialTheme.appColors.editTextColor,
                     fontFamily = RobotoMono,
                     fontSize = 12.sp,
                     lineHeight = 14.sp
                 )
                 Text(
                     text = node.subTitle,
-                    color = MaterialTheme.appColors.onboardingInputText,
+                    color = MaterialTheme.appColors.editTextColor,
                     fontFamily = RobotoMono,
                     fontSize = 10.sp,
                     lineHeight = 12.sp
@@ -109,7 +109,7 @@ fun HopsScreen(
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = stringResource(id = R.string.activity_path_destination_row_title),
-                color = MaterialTheme.appColors.onboardingInputText,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = OpenSans,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 12.sp

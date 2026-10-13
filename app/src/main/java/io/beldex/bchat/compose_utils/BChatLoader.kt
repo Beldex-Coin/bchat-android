@@ -89,7 +89,7 @@ fun BChatLoaderContent(text: String?, modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = text,
-                color = MaterialTheme.appColors.onboardingInputText,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = RobotoMono,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 14.sp

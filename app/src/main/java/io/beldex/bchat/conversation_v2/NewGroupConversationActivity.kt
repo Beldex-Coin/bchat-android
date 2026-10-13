@@ -18,6 +18,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
+import io.beldex.bchat.util.BChatToast
+import android.widget.Toast
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -108,12 +110,33 @@ class NewGroupConversationActivity: BaseComponentActivity() {
                                         .fillMaxSize()
                                         .bchatBackground(MaterialTheme.appColors.backgroundColor)
                                 ) {
+                                    val isLoading by contactViewModel.isLoading.collectAsState()
+                                    val isCreateEnabled by contactViewModel.isCreateEnabled.collectAsState()
+                                    LaunchedEffect(Unit) {
+                                        contactViewModel.events.collect { event ->
+                                            when (event) {
+                                                is CreateSecretGroupViewModel.Event.Message -> {
+                                                    val text = event.text ?: event.resId?.let { getString(it) }
+                                                    BChatToast.makeText(this@NewGroupConversationActivity, text, Toast.LENGTH_LONG).show()
+                                                }
+                                                is CreateSecretGroupViewModel.Event.GroupCreated -> {
+                                                    val recipient = Recipient.from(this@NewGroupConversationActivity, event.address, false)
+                                                    if (!isFinishing) {
+                                                        openConversationActivity(event.threadId, recipient, this@NewGroupConversationActivity)
+                                                        finish()
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                     CreateSecretGroup(
                                         searchQuery = searchQuery,
                                         contacts = contacts,
                                         selectedContact = selectedContact,
                                         onEvent = contactViewModel::onEvent,
-                                        context
+                                        isLoading = isLoading,
+                                        isCreateEnabled = isCreateEnabled,
+                                        onCreateClick = contactViewModel::createGroup
                                     )
                                 }
                             }

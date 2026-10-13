@@ -70,7 +70,7 @@ fun HomeHeader(
 
             Text(
                 text = stringResource(R.string.activity_chat_settings_title),
-                color = MaterialTheme.appColors.homeTitleColor,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = OpenSans,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 18.sp,
@@ -95,14 +95,14 @@ fun HomeHeader(
                     .fillMaxWidth()
                     .padding(horizontal = 22.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.appColors.homeSearchBarBackground)
+                    .background(MaterialTheme.appColors.dialogBackground)
                     .padding(12.dp)
             ) {
                 Box(
                     modifier = Modifier
                         .size(8.dp)
                         .clip(CircleShape)
-                        .background(MaterialTheme.appColors.homeBannerIconBackground)
+                        .background(MaterialTheme.appColors.negativeRedButtonBorder)
                 )
                 Text(
                     text = stringResource(R.string.hop_connection_error_message),

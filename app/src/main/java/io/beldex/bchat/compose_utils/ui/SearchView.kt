@@ -43,7 +43,7 @@ fun SearchView(
             .fillMaxWidth()
             .border(
                 width=1.dp,
-                color=MaterialTheme.appColors.textFiledBorderColor,
+                color=MaterialTheme.appColors.textFieldUnfocusedColor,
                 shape=RoundedCornerShape(50.dp)
             )
     ) {

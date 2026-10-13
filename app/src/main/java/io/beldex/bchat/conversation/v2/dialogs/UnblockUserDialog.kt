@@ -55,7 +55,7 @@ fun UnblockUserDialog(
             Text(
                 text = title.capitalizeFirstLetter(),
                 style = MaterialTheme.typography.titleMedium.copy(
-                    color = MaterialTheme.appColors.onboardingInputText,
+                    color = MaterialTheme.appColors.editTextColor,
                     fontWeight = FontWeight(700),
                     fontSize = 16.sp
                 ),
@@ -66,7 +66,7 @@ fun UnblockUserDialog(
             Text(
                 text = message,
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.appColors.titleTextColor,
+                    color = MaterialTheme.appColors.editTextColor,
                     fontWeight = FontWeight(400),
                     fontSize = 14.sp
                 ),

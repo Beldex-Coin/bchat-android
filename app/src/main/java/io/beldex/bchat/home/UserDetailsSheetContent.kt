@@ -91,7 +91,7 @@ fun UserDetailsSheetContent(
                         )
                     },
                     textStyle = androidx.compose.ui.text.TextStyle(
-                        color = MaterialTheme.appColors.userDetailsNameColor,
+                        color = MaterialTheme.appColors.editTextColor,
                         fontFamily = OpenSans,
                         fontSize = 18.sp,
                         textAlign = TextAlign.Center
@@ -102,9 +102,9 @@ fun UserDetailsSheetContent(
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.Transparent,
                         unfocusedContainerColor = Color.Transparent,
-                        focusedIndicatorColor = MaterialTheme.appColors.userDetailsNameColor,
-                        unfocusedIndicatorColor = MaterialTheme.appColors.userDetailsNameColor,
-                        cursorColor = MaterialTheme.appColors.userDetailsNameColor
+                        focusedIndicatorColor = MaterialTheme.appColors.editTextColor,
+                        unfocusedIndicatorColor = MaterialTheme.appColors.editTextColor,
+                        cursorColor = MaterialTheme.appColors.editTextColor
                     ),
                     modifier = Modifier.weight(1f, fill = false)
                 )
@@ -129,7 +129,7 @@ fun UserDetailsSheetContent(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_done_circle),
                     contentDescription = stringResource(R.string.save),
-                    tint = MaterialTheme.appColors.userDetailsConfirmIconColor,
+                    tint = MaterialTheme.appColors.primaryButtonIconColor,
                     modifier = Modifier
                         .padding(start = 8.dp)
                         .size(24.dp)
@@ -150,7 +150,7 @@ fun UserDetailsSheetContent(
             ) {
                 Text(
                     text = name,
-                    color = MaterialTheme.appColors.userDetailsNameColor,
+                    color = MaterialTheme.appColors.editTextColor,
                     fontFamily = OpenSans,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
@@ -158,7 +158,7 @@ fun UserDetailsSheetContent(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_baseline_edit_group_name),
                     contentDescription = stringResource(R.string.edit_title),
-                    tint = MaterialTheme.appColors.userDetailsEditIconColor,
+                    tint = MaterialTheme.appColors.userDetailsConfirmBackground,
                     modifier = Modifier
                         .padding(start = 8.dp)
                         .size(18.dp)
@@ -182,7 +182,7 @@ fun UserDetailsSheetContent(
                     .padding(top = 20.dp)
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.appColors.userDetailsBchatIdBackground)
+                    .background(MaterialTheme.appColors.dialogBackground)
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
@@ -193,9 +193,9 @@ fun UserDetailsSheetContent(
 
             PrimaryButton(
                 onClick = onMessageClick,
-                shape = notchedCornerShape(14.5.dp),
+                shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchLarge),
                 containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
-                contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
+                contentColor = MaterialTheme.appColors.backgroundColor,
                 modifier = Modifier
                     .padding(top = 16.dp)
                     .fillMaxWidth()

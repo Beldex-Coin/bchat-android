@@ -63,7 +63,7 @@ fun ComposeMessageDialogContent(
         Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp, vertical = 18.dp)) {
             Text(
                 text = title,
-                color = MaterialTheme.appColors.onboardingInputText,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = OpenSans,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
@@ -71,7 +71,7 @@ fun ComposeMessageDialogContent(
             Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = annotated,
-                color = MaterialTheme.appColors.onboardingInputText,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = RobotoMono,
                 fontSize = 13.sp,
                 lineHeight = 19.sp
@@ -98,7 +98,7 @@ fun ComposeMessageDialogContent(
                 } else {
                     PrimaryButton(
                         onClick = onPositive,
-                        shape = notchedCornerShape(12.dp),
+                        shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
                         containerColor = androidx.compose.ui.graphics.Color(0xFFE0E0E0),
                         contentColor = androidx.compose.ui.graphics.Color(0xFF0B0B0B),
                         border = BorderStroke(1.dp, androidx.compose.ui.graphics.Color(0xFF0A370A)),

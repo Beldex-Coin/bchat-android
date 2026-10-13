@@ -120,8 +120,8 @@ fun BChatOutlinedTextField(
     focusedLabelColor: Color = MaterialTheme.appColors.textFieldFocusedColor,
     unFocusedBorderColor: Color = MaterialTheme.appColors.textFieldUnfocusedColor,
     unFocusedLabelColor: Color = MaterialTheme.appColors.textFieldUnfocusedColor,
-    focusedContainerColor: Color = MaterialTheme.appColors.disabledButtonContainerColor,
-    unFocusedContainerColor: Color = MaterialTheme.appColors.disabledButtonContainerColor,
+    focusedContainerColor: Color = MaterialTheme.appColors.searchBackground,
+    unFocusedContainerColor: Color = MaterialTheme.appColors.searchBackground,
     cursorColor: Color = MaterialTheme.appColors.textFieldCursorColor,
     selectionColors : Color = MaterialTheme.appColors.textSelectionColor,
     imeAction: ImeAction = ImeAction.Done,
@@ -218,7 +218,7 @@ fun BChatRadioButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val ringColor = if (selected) Color(0xFF078720) else MaterialTheme.appColors.onboardingInputText
+    val ringColor = if (selected) Color(0xFF078720) else MaterialTheme.appColors.editTextColor
     androidx.compose.foundation.layout.Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
@@ -270,7 +270,7 @@ fun ContextMenuItem(
     onClick: () -> Unit,
     destructive: Boolean = false
 ) {
-    val color = if (destructive) MaterialTheme.appColors.deleteOptionColor else MaterialTheme.appColors.onboardingInputText
+    val color = if (destructive) MaterialTheme.appColors.negativeRedButtonBorder else MaterialTheme.appColors.editTextColor
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier

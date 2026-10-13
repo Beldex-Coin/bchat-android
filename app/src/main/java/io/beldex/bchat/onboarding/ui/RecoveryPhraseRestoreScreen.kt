@@ -66,7 +66,7 @@ fun RecoveryPhraseRestoreScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .bchatBackground(MaterialTheme.appColors.onboardingBackground)
+            .bchatBackground(MaterialTheme.appColors.backgroundColor)
     ) {
         Column(
             modifier = Modifier
@@ -85,12 +85,12 @@ fun RecoveryPhraseRestoreScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(min = 144.dp)
-                        .background(MaterialTheme.appColors.onboardingInputBackground)
+                        .background(MaterialTheme.appColors.dialogBackground)
                         .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
                 ) {
                     Column(modifier = Modifier.padding(horizontal = 18.dp, vertical = 17.dp)) {
                         val hintColor = MaterialTheme.appColors.onboardingInputHint.toArgb()
-                        val textColor = MaterialTheme.appColors.onboardingInputText.toArgb()
+                        val textColor = MaterialTheme.appColors.editTextColor.toArgb()
                         val hintText = stringResource(R.string.mnemonic_edit_text_hint)
                         val latestOnMnemonicChange = rememberUpdatedState(onMnemonicChange)
 

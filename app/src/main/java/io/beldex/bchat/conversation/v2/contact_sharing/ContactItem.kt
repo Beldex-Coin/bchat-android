@@ -49,14 +49,14 @@ fun ContactItem(
     modifier: Modifier = Modifier,
     isSharing: Boolean = true
 ) {
-    val shape = if (isSelected) notchedCornerShape(12.dp) else RectangleShape
+    val shape = if (isSelected) notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium) else RectangleShape
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
             .background(
-                if (isSelected) MaterialTheme.appColors.onboardingInputBackground else Color.Transparent,
+                if (isSelected) MaterialTheme.appColors.dialogBackground else Color.Transparent,
                 shape
             )
             .border(
@@ -86,7 +86,7 @@ fun ContactItem(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 (contact?.recipient?.name ?: contact?.recipient?.address.toString()).capitalizeFirstLetter(),
-                color = MaterialTheme.appColors.onboardingInputText,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = OpenSans,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 14.sp,

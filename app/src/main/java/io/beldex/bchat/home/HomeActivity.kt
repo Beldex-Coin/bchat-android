@@ -175,6 +175,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     private var conversationsState by mutableStateOf<List<ThreadRecord>>(emptyList())
     private var homeFilterState by mutableStateOf(HomeFilter.All)
     private var typingThreadIdsState by mutableStateOf<Set<Long>>(emptySet())
+    private var messageRequestsState by mutableStateOf<List<ThreadRecord>>(emptyList())
+    private var archiveCountState by mutableStateOf(0)
     private var showConnectivityWarning by mutableStateOf(false)
     private var profileDisplayNameState by mutableStateOf("")
 
@@ -423,6 +425,46 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             }
         }
 
+        binding.requests.setContent {
+            BChatTheme {
+                MessageRequestsView(
+                    requests = messageRequestsState,
+                    openSearch = {
+                        Intent(this, SearchActivity::class.java).also {
+                            searchResultLauncher.launch(it)
+                        }
+                    },
+                    ignoreRequest = {
+                        val dialog = ConversationActionDialog()
+                        dialog.apply {
+                            arguments = Bundle().apply {
+                                putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, it)
+                                putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.IgnoreRequest)
+                            }
+                            setListener(this@HomeActivity)
+                        }
+                        dialog.show(supportFragmentManager, ConversationActionDialog.TAG)
+                    },
+                    openChat = {
+                        onConversationClick(it.threadId)
+                    },
+                    modifier =Modifier
+                        .fillMaxWidth(),
+                    openMessageRequests = { showMessageRequests() }
+                )
+            }
+        }
+
+        binding.archiveChatCardView.setContent {
+            BChatTheme {
+                ArchiveChatView(
+                    count = archiveCountState,
+                    onRequestClick = { showArchiveChats() },
+                    context = this
+                )
+            }
+        }
+
         homeViewModel.getObservable(this).observe(this) { newData ->
             val messageRequestCount = threadDb.unapprovedConversationCount
             var request = emptyList<ThreadRecord>()
@@ -437,35 +479,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                     request = threads
                 }
             }
-            binding.requests.setContent {
-                BChatTheme {
-                    MessageRequestsView(
-                        requests = request,
-                        openSearch = {
-                            Intent(this, SearchActivity::class.java).also {
-                                searchResultLauncher.launch(it)
-                            }
-                        },
-                        ignoreRequest = {
-                            val dialog = ConversationActionDialog()
-                            dialog.apply {
-                                arguments = Bundle().apply {
-                                    putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, it)
-                                    putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.IgnoreRequest)
-                                }
-                                setListener(this@HomeActivity)
-                            }
-                            dialog.show(supportFragmentManager, ConversationActionDialog.TAG)
-                        },
-                        openChat = {
-                            onConversationClick(it.threadId)
-                        },
-                        modifier =Modifier
-                            .fillMaxWidth(),
-                        openMessageRequests = { showMessageRequests() }
-                    )
-                }
-            }
+            messageRequestsState = request
             conversationsState = newData
             ArchiveChatCountRepository.refreshArchiveCount(threadDb)
         }
@@ -568,20 +582,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     }
 
     private fun updateArchiveCountUI(count: Int) {
+        archiveCountState = count
         if (count != 0) {
             binding.archiveChatCardView.visibility=View.VISIBLE
             binding.archiveChatDivider.visibility=View.VISIBLE
-            binding.archiveChatCardView.setContent {
-                BChatTheme {
-                    ArchiveChatView(
-                        count = count,
-                        onRequestClick={
-                            showArchiveChats()
-                        },
-                        context=this
-                    )
-                }
-            }
         } else {
             binding.archiveChatCardView.visibility=View.GONE
             binding.archiveChatDivider.visibility=View.GONE

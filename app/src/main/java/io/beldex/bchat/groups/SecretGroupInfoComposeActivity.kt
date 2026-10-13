@@ -547,7 +547,7 @@ fun GroupDetailsScreen(
                         Icon(
                             imageVector=Icons.Default.Search,
                             contentDescription="clear search text",
-                            tint=MaterialTheme.appColors.iconTint,
+                            tint=MaterialTheme.appColors.secondaryContentColor,
                         )
                     },
                     trailingIcon={
@@ -555,7 +555,7 @@ fun GroupDetailsScreen(
                             Icon(
                                 imageVector=Icons.Default.Clear,
                                 contentDescription="clear search text",
-                                tint=MaterialTheme.appColors.iconTint,
+                                tint=MaterialTheme.appColors.secondaryContentColor,
                                 modifier=Modifier.clickable {
                                     secretGroupInfoViewModel._searchQuery.value=""
                                 }
@@ -828,7 +828,7 @@ fun GroupDetailsScreen(
                             text= stringResource(R.string.ConversationActivity_member_count, memberCount),
                             color=Color.Gray,
                             style=MaterialTheme.typography.titleSmall.copy(
-                                color=MaterialTheme.appColors.editTextHint,
+                                color=MaterialTheme.appColors.editTextPlaceholder,
                                 fontSize=16.sp,
                                 fontWeight=FontWeight(400)
                             ),
@@ -1130,7 +1130,7 @@ fun MemberDetailsDialog(
                                         item + " " + getUserDisplayName(member)
                                     } else item,
                                     style=MaterialTheme.typography.titleMedium.copy(
-                                        color=MaterialTheme.appColors.onboardingInputText,
+                                        color=MaterialTheme.appColors.editTextColor,
                                         fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                                         fontSize=14.sp,
                                         fontWeight=FontWeight(400)

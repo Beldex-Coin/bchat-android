@@ -30,7 +30,7 @@ fun MultilineTextField(
                 if (value.isEmpty()) {
                     Text(
                         text = hintText,
-                        color = MaterialTheme.appColors.editTextHint
+                        color = MaterialTheme.appColors.editTextPlaceholder
                     )
                 }
                 innerTextField()

@@ -43,7 +43,7 @@ fun SettingsItem(
         Icon(
             painter = settingIcon,
             contentDescription = "",
-            tint = iconTint ?: MaterialTheme.appColors.iconTint
+            tint = iconTint ?: MaterialTheme.appColors.secondaryContentColor
         )
 
         Spacer(modifier = Modifier.width(16.dp))

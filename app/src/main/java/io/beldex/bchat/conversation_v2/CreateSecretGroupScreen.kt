@@ -93,18 +93,16 @@ fun CreateSecretGroup(
     contacts: List<Recipient>,
     selectedContact: List<String>,
     onEvent: (SecretGroupEvents) -> Unit,
-    activity: NewGroupConversationActivity
+    isLoading: Boolean,
+    isCreateEnabled: Boolean,
+    onCreateClick: (String) -> Unit
 ) {
     var groupName by remember { mutableStateOf("") }
-    val context = LocalContext.current
-    val device: Device = Device.ANDROID
     val keyboardController = LocalSoftwareKeyboardController.current
-    var showLoader by remember { mutableStateOf(false) }
+    val showLoader = isLoading
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.load_animation))
     val isPlaying by remember { mutableStateOf(true) }
     val speed by remember { mutableFloatStateOf(1f) }
-    var isButtonEnabled by remember { mutableStateOf(true) }
-    val scope = rememberCoroutineScope()
 
     val progress by animateLottieCompositionAsState(
         composition,
@@ -159,7 +157,7 @@ fun CreateSecretGroup(
                         Text(
                             text = stringResource(R.string.no_contacts_yet),
                             fontFamily = io.beldex.bchat.compose_utils.OpenSans,
-                            color = MaterialTheme.appColors.homeSearchBarHint,
+                            color = MaterialTheme.appColors.onboardingInputHint,
                             fontSize = 14.sp,
                             modifier = Modifier.padding(top = 16.dp)
                         )
@@ -181,16 +179,11 @@ fun CreateSecretGroup(
             }
             CreateGroupButton(
                 groupName = groupName,
-                showLoader = showLoader,
-                context = context,
-                scope = scope,
-                device = device,
-                keyboardController = keyboardController,
-                selectedContact = selectedContact,
-                activity = activity,
-                isButtonEnabled = isButtonEnabled,
-                onButtonEnabledChange = { isButtonEnabled = it },
-                onShowLoaderChange = { showLoader = it }
+                isButtonEnabled = isCreateEnabled,
+                onClick = {
+                    keyboardController?.hide()
+                    onCreateClick(groupName)
+                }
             )
         }
 
@@ -225,7 +218,7 @@ private fun GroupNameField(
                     fontFamily = RobotoMono,
                     fontWeight = androidx.compose.ui.text.font.FontWeight.Light,
                     fontSize = 12.sp,
-                    color = MaterialTheme.appColors.homeSearchBarHint
+                    color = MaterialTheme.appColors.onboardingInputHint
                 )
             },
             onValueChange = onGroupNameChange,
@@ -241,8 +234,8 @@ private fun GroupNameField(
                 .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
             shape = androidx.compose.ui.graphics.RectangleShape,
             colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
-                focusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
+                unfocusedContainerColor = MaterialTheme.appColors.dialogBackground,
+                focusedContainerColor = MaterialTheme.appColors.dialogBackground,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
@@ -267,7 +260,7 @@ private fun SearchField(
                 fontFamily = RobotoMono,
                 fontWeight = androidx.compose.ui.text.font.FontWeight.Light,
                 fontSize = 12.sp,
-                color = MaterialTheme.appColors.homeSearchBarHint
+                color = MaterialTheme.appColors.onboardingInputHint
             )
         },
         singleLine = true,
@@ -285,7 +278,7 @@ private fun SearchField(
             Icon(
                 imageVector = if (searchQuery.isNotEmpty()) Icons.Default.Clear else Icons.Default.Search,
                 contentDescription = "search contact and clear search text",
-                tint = MaterialTheme.appColors.homeSearchBarHint,
+                tint = MaterialTheme.appColors.onboardingInputHint,
                 modifier = Modifier.clickable {
                     if (searchQuery.isNotEmpty()) {
                         onSearchQueryChange("")
@@ -294,8 +287,8 @@ private fun SearchField(
             )
         },
         colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
-            focusedContainerColor = MaterialTheme.appColors.homeSearchBarBackground,
+            unfocusedContainerColor = MaterialTheme.appColors.dialogBackground,
+            focusedContainerColor = MaterialTheme.appColors.dialogBackground,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent,
@@ -308,16 +301,8 @@ private fun SearchField(
 @Composable
 private fun CreateGroupButton(
     groupName: String,
-    showLoader: Boolean,
-    context: Context,
-    scope: kotlinx.coroutines.CoroutineScope,
-    device: Device,
-    keyboardController: androidx.compose.ui.platform.SoftwareKeyboardController?,
-    selectedContact: List<String>,
-    activity: NewGroupConversationActivity,
     isButtonEnabled: Boolean,
-    onButtonEnabledChange: (Boolean) -> Unit,
-    onShowLoaderChange: (Boolean) -> Unit
+    onClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -326,29 +311,15 @@ private fun CreateGroupButton(
         contentAlignment = Alignment.Center
     ) {
         PrimaryButton(
-            onClick = {
-                if (isButtonEnabled) {
-                    keyboardController?.hide()
-                    onButtonEnabledChange(false)
-                    scope.launch(Dispatchers.Main) {
-                        if (CheckOnline.isOnline(context)) {
-                            createClosedGroup(device, groupName.trim(), context, activity, selectedContact, showLoader = onShowLoaderChange)
-                        } else {
-                            BChatToast.makeText(context, context.getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
-                        }
-                        delay(2000)
-                        onButtonEnabledChange(true)
-                    }
-                }
-            },
+            onClick = { if (isButtonEnabled) onClick() },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
                 .height(54.dp),
-            shape = io.beldex.bchat.compose_utils.notchedCornerShape(14.5.dp),
+            shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchLarge),
             enabled = groupName.isNotEmpty(),
             containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
-            contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
+            contentColor = MaterialTheme.appColors.backgroundColor,
             disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
             disabledContentColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledText
         ) {
@@ -379,14 +350,14 @@ private fun GroupContact(
         modifier = modifier
             .padding(bottom = 8.dp)
             .background(
-                color = if (isSelected) MaterialTheme.appColors.homeRowBackground else Color.Transparent,
-                shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp)
+                color = if (isSelected) MaterialTheme.appColors.dialogBackground else Color.Transparent,
+                shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium)
             )
             .then(
                 if (isSelected) Modifier.border(
                     width = 1.dp,
-                    color = MaterialTheme.appColors.homeRowTimestampUnread,
-                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp)
+                    color = MaterialTheme.appColors.userDetailsConfirmBackground,
+                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium)
                 ) else Modifier
             )
             .clickable {
@@ -414,7 +385,7 @@ private fun GroupContact(
                     ?: recipient.address.toString().capitalizeFirstLetter(),
                 textAlign = TextAlign.Start,
                 fontFamily = io.beldex.bchat.compose_utils.OpenSans,
-                color = MaterialTheme.appColors.homeRowTitle,
+                color = MaterialTheme.appColors.editTextColor,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier
@@ -438,74 +409,6 @@ fun getUserDisplayName(publicKey: String, context: Context): String {
         DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
     return contact?.displayName(Contact.ContactContext.REGULAR, context) ?: publicKey
 }
-
-private fun createClosedGroup(
-    device: Device,
-    name: String,
-    context: Context,
-    activity: Activity?,
-    selected: Collection<String>,
-    showLoader: (status : Boolean) -> Unit
-) {
-    if (name.isEmpty()) {
-        return BChatToast.makeText(
-            context,
-            R.string.activity_create_closed_group_group_name_missing_error,
-            Toast.LENGTH_LONG
-        ).show()
-    }
-    else if (name.length >= 26) {
-        return BChatToast.makeText(
-            context,
-            R.string.activity_create_closed_group_group_name_too_long_error,
-            Toast.LENGTH_LONG
-        ).show()
-    }
-    else if (selected.isEmpty()) {
-        return BChatToast.makeText(
-            context,
-            R.string.activity_create_closed_group_not_enough_group_members_error,
-            Toast.LENGTH_LONG
-        ).show()
-    }
-    else if (selected.count() >= groupSizeLimit) { // Minus one because we're going to include self later
-        return BChatToast.makeText(
-            context,
-            R.string.activity_create_closed_group_too_many_group_members_error,
-            Toast.LENGTH_LONG
-        ).show()
-    }
-    else if (!isValidGroupName(name)) {
-        BChatToast.makeText(
-            context,
-            R.string.nickname_special_char_not_allowed,
-            Toast.LENGTH_SHORT
-        ).show()
-    } else {
-        showLoader(true)
-        val userPublicKey = TextSecurePreferences.getLocalNumber(context)!!
-        MessageSender.createClosedGroup(device, name, selected + setOf(userPublicKey))
-            .successUi { groupID ->
-                val threadID =
-                    DatabaseComponent.get(context).threadDatabase().getOrCreateThreadIdFor(
-                        Recipient.from(context, Address.fromSerialized(groupID), false)
-                    )
-                if (!activity!!.isFinishing) {
-                    openConversationActivity(
-                        threadID,
-                        Recipient.from(context, Address.fromSerialized(groupID), false),
-                        activity
-                    )
-                    showLoader(false)
-                    activity.finish()
-                }
-            }.failUi {
-                showLoader(false)
-            BChatToast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-        }
-    }
-}
-
 
 /*@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable

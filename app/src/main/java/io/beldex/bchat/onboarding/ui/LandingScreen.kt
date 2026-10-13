@@ -56,7 +56,7 @@ fun LandingScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .bchatBackground(MaterialTheme.appColors.onboardingBackground)
+            .bchatBackground(MaterialTheme.appColors.backgroundColor)
     ) {
         LandingChatSkeleton(modifier = Modifier.fillMaxSize())
         Column(
@@ -79,7 +79,7 @@ fun LandingScreen(
                     Image(
                         painter = painterResource(id = R.drawable.ic_landing_logo_wordmark),
                         contentDescription = stringResource(R.string.app_name),
-                        colorFilter = ColorFilter.tint(MaterialTheme.appColors.onboardingInputText),
+                        colorFilter = ColorFilter.tint(MaterialTheme.appColors.editTextColor),
                         modifier = Modifier
                             .padding(start = 14.dp)
                             .size(width = 151.dp, height = 38.dp)
@@ -119,9 +119,9 @@ fun LandingScreen(
             ) {
                 PrimaryButton(
                     onClick = onCreateAccountClick,
-                    shape = notchedCornerShape(14.5.dp),
+                    shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchLarge),
                     containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
-                    contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
+                    contentColor = MaterialTheme.appColors.backgroundColor,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(54.dp)
@@ -136,9 +136,9 @@ fun LandingScreen(
 
                 PrimaryButton(
                     onClick = onRestoreAccountClick,
-                    shape = notchedCornerShape(14.5.dp),
-                    containerColor = MaterialTheme.appColors.onboardingSecondaryButtonBackground,
-                    contentColor = MaterialTheme.appColors.onboardingSecondaryButtonText,
+                    shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchLarge),
+                    containerColor = MaterialTheme.appColors.dialogBackground,
+                    contentColor = MaterialTheme.appColors.editTextColor,
                     border = BorderStroke(1.dp, MaterialTheme.appColors.onboardingSecondaryButtonBorder),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -154,7 +154,7 @@ fun LandingScreen(
 
                 Text(
                     text = stringResource(R.string.terms_and_conditions),
-                    color = MaterialTheme.appColors.onboardingTermsColor,
+                    color = MaterialTheme.appColors.onboardingCaptionColor,
                     fontFamily = RobotoMono,
                     fontWeight = FontWeight.Normal,
                     fontSize = 14.sp,

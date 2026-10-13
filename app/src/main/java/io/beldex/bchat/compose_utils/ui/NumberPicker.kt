@@ -45,7 +45,7 @@ fun NumberPicker(
     visibleItemsCount: Int = 3,
     textModifier: Modifier = Modifier,
     textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
-    dividerColor: Color = MaterialTheme.appColors.numberPickerDivider,
+    dividerColor: Color = MaterialTheme.appColors.textFieldUnfocusedColor,
 ) {
 
     val visibleItemsMiddle = visibleItemsCount / 2
@@ -98,7 +98,7 @@ fun NumberPicker(
                         color = if (state.selectedItem == item) {
                             MaterialTheme.appColors.primaryButtonColor
                         } else {
-                            MaterialTheme.appColors.cancelButtonTextColor
+                            MaterialTheme.appColors.lockTimerColor
                         },
                         fontWeight = if (state.selectedItem == item) {
                             FontWeight.Bold

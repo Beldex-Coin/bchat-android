@@ -63,7 +63,7 @@ fun LockOptionsDialog(
         ) {
             Text(
                 text = title,
-                color = MaterialTheme.appColors.onboardingInputText,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = OpenSans,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
@@ -92,12 +92,12 @@ fun LockOptionsDialog(
                             .background(
                                 if (selected) MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground
                                 else MaterialTheme.appColors.backgroundColor,
-                                notchedCornerShape(12.dp)
+                                notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium)
                             )
                             .border(
                                 1.dp,
                                 if (selected) accent else MaterialTheme.appColors.dividerColor,
-                                notchedCornerShape(12.dp)
+                                notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium)
                             )
                             .clickable { onValueChanged(option, index) }
                             .padding(horizontal = 24.dp)
@@ -120,7 +120,7 @@ fun LockOptionsDialog(
                 text = stringResource(id = R.string.cancel),
                 onClick = onDismiss,
                 fontFamily = RobotoMono,
-                textColor = MaterialTheme.appColors.onboardingInputText,
+                textColor = MaterialTheme.appColors.editTextColor,
                 modifier = Modifier.width(162.dp)
             )
         }

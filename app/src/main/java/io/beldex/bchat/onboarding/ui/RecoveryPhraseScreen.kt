@@ -55,7 +55,7 @@ fun RecoveryPhraseScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .bchatBackground(MaterialTheme.appColors.onboardingBackground)
+            .bchatBackground(MaterialTheme.appColors.backgroundColor)
     ) {
         Column(
             modifier = Modifier
@@ -90,15 +90,15 @@ fun RecoveryPhraseScreen(
 
                 Text(
                     text = seed,
-                    color = MaterialTheme.appColors.onboardingInputText,
+                    color = MaterialTheme.appColors.editTextColor,
                     fontFamily = RobotoMono,
                     fontSize = 12.sp,
                     lineHeight = 18.sp,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 20.dp)
-                        .background(MaterialTheme.appColors.onboardingInputBackground)
-                        .border(1.dp, MaterialTheme.appColors.newChatIconBackground)
+                        .background(MaterialTheme.appColors.dialogBackground)
+                        .border(1.dp, MaterialTheme.appColors.userDetailsCancelBackground)
                         .padding(19.dp)
                 )
 
@@ -110,9 +110,9 @@ fun RecoveryPhraseScreen(
                 ) {
                     PrimaryButton(
                         onClick = onCopySeedClick,
-                        shape = notchedCornerShape(12.dp),
-                        containerColor = MaterialTheme.appColors.onboardingSecondaryButtonBackground,
-                        contentColor = MaterialTheme.appColors.onboardingSecondaryButtonText,
+                        shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+                        containerColor = MaterialTheme.appColors.dialogBackground,
+                        contentColor = MaterialTheme.appColors.editTextColor,
                         border = BorderStroke(1.dp, MaterialTheme.appColors.onboardingSecondaryButtonBorder),
                         modifier = Modifier
                             .weight(1f)
@@ -127,7 +127,7 @@ fun RecoveryPhraseScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_copy),
                             contentDescription = null,
-                            tint = MaterialTheme.appColors.textGreen,
+                            tint = MaterialTheme.appColors.primaryButtonColor,
                             modifier = Modifier
                                 .padding(start = 6.dp)
                                 .size(14.dp)
@@ -136,9 +136,9 @@ fun RecoveryPhraseScreen(
 
                     PrimaryButton(
                         onClick = onSaveClick,
-                        shape = notchedCornerShape(12.dp),
+                        shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
                         containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
-                        contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
+                        contentColor = MaterialTheme.appColors.backgroundColor,
                         modifier = Modifier
                             .weight(1f)
                             .height(52.dp)

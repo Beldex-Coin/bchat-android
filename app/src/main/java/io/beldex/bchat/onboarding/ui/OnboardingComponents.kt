@@ -46,8 +46,8 @@ fun OnboardingTopBar(
         modifier = modifier
             .fillMaxWidth()
             .height(50.dp)
-            .background(MaterialTheme.appColors.onboardingBackground)
-            .border(BorderStroke(1.dp, MaterialTheme.appColors.newChatIconBackground))
+            .background(MaterialTheme.appColors.backgroundColor)
+            .border(BorderStroke(1.dp, MaterialTheme.appColors.userDetailsCancelBackground))
             .padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -55,12 +55,12 @@ fun OnboardingTopBar(
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow_left_24),
                 contentDescription = null,
-                tint = MaterialTheme.appColors.onboardingInputText
+                tint = MaterialTheme.appColors.editTextColor
             )
         }
         Text(
             text = title,
-            color = MaterialTheme.appColors.onboardingInputText,
+            color = MaterialTheme.appColors.editTextColor,
             fontFamily = OpenSans,
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp,
@@ -86,9 +86,9 @@ fun OnboardingPrimaryButton(
     PrimaryButton(
         onClick = onClick,
         enabled = enabled,
-        shape = notchedCornerShape(14.5.dp),
+        shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchLarge),
         containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
-        contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
+        contentColor = MaterialTheme.appColors.backgroundColor,
         disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
         disabledContentColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledText,
         modifier = modifier
@@ -125,7 +125,7 @@ fun OnboardingLoadingOverlay(message: String) {
 
             Text(
                 text = message,
-                color = MaterialTheme.appColors.onboardingInputText,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = OpenSans,
                 fontWeight = FontWeight.Normal,
                 fontSize = 14.sp,

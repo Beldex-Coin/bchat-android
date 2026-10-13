@@ -47,7 +47,7 @@ fun DeleteChatConfirmationDialog(
         ) {
             Text(
                 text=stringResource(id=R.string.delete_conversation),
-                color = MaterialTheme.appColors.onboardingInputText,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = io.beldex.bchat.compose_utils.OpenSans,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
@@ -57,7 +57,7 @@ fun DeleteChatConfirmationDialog(
 
             Text(
                 text=message,
-                color = MaterialTheme.appColors.onboardingInputText,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                 fontSize = 13.sp,
                 lineHeight = 19.sp

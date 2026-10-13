@@ -56,7 +56,7 @@ fun DisplayNameStepScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .bchatBackground(MaterialTheme.appColors.onboardingBackground)
+            .bchatBackground(MaterialTheme.appColors.backgroundColor)
     ) {
         Column(
             modifier = Modifier
@@ -71,7 +71,7 @@ fun DisplayNameStepScreen(
             Column(modifier = Modifier.weight(1f).padding(horizontal = 22.dp)) {
                 Text(
                     text = headline,
-                    color = MaterialTheme.appColors.onboardingInputText,
+                    color = MaterialTheme.appColors.editTextColor,
                     fontFamily = OpenSans,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp,
@@ -86,7 +86,7 @@ fun DisplayNameStepScreen(
                 // (e.g. Gboard) learning/storing the typed display name. That privacy behavior must
                 // not regress just because the screen moved to Compose.
                 val hintColor = MaterialTheme.appColors.onboardingInputHint.toArgb()
-                val textColor = MaterialTheme.appColors.onboardingInputText.toArgb()
+                val textColor = MaterialTheme.appColors.editTextColor.toArgb()
                 val hintText = stringResource(R.string.enter_name)
                 val latestOnDisplayNameChange = rememberUpdatedState(onDisplayNameChange)
                 val latestOnContinueClick = rememberUpdatedState(onContinueClick)
@@ -138,7 +138,7 @@ fun DisplayNameStepScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 16.dp)
-                        .background(MaterialTheme.appColors.onboardingInputBackground)
+                        .background(MaterialTheme.appColors.dialogBackground)
                         .border(
                             1.dp,
                             if (errorMessage != null) MaterialTheme.appColors.negativeRedButtonBorder

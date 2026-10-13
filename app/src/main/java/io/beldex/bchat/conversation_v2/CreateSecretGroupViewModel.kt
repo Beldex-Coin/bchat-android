@@ -1,6 +1,21 @@
 package io.beldex.bchat.conversation_v2
 
+import android.content.Context
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
+import com.beldex.libbchat.messaging.sending_receiving.MessageSender
+import com.beldex.libbchat.messaging.sending_receiving.groupSizeLimit
+import com.beldex.libbchat.utilities.Address
+import com.beldex.libbchat.utilities.Device
+import dagger.hilt.android.qualifiers.ApplicationContext
+import io.beldex.bchat.CheckOnline
+import io.beldex.bchat.R
+import io.beldex.bchat.util.isValidGroupName
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import nl.komponents.kovenant.ui.failUi
+import nl.komponents.kovenant.ui.successUi
 import androidx.lifecycle.viewModelScope
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
@@ -23,8 +38,73 @@ import javax.inject.Inject
 class CreateSecretGroupViewModel@Inject constructor(
     private val threadDb: ThreadDatabase,
     private val textSecurePreferences: TextSecurePreferences,
-    private val databaseComponent: DatabaseComponent
+    private val databaseComponent: DatabaseComponent,
+    @ApplicationContext private val appContext: Context
 ) : ViewModel() {
+
+    /** One-shot UI events: a message to toast, or the created group to open. */
+    sealed interface Event {
+        data class Message(@StringRes val resId: Int? = null, val text: String? = null) : Event
+        data class GroupCreated(val threadId: Long, val address: Address) : Event
+    }
+
+    private val _events = MutableSharedFlow<Event>(extraBufferCapacity = 4)
+    val events: SharedFlow<Event> = _events.asSharedFlow()
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    private val _isCreateEnabled = MutableStateFlow(true)
+    val isCreateEnabled: StateFlow<Boolean> = _isCreateEnabled.asStateFlow()
+
+    /** Validates the form, creates the closed group and reports the outcome through [events]. */
+    fun createGroup(rawName: String) {
+        if (!_isCreateEnabled.value) return
+        _isCreateEnabled.value = false
+        viewModelScope.launch {
+            try {
+                if (!CheckOnline.isOnline(appContext)) {
+                    _events.emit(Event.Message(resId = R.string.please_check_your_internet_connection))
+                } else {
+                    startCreation(rawName.trim())
+                }
+            } finally {
+                // Same 2s debounce the button had, so a double tap can't create two groups.
+                delay(2000)
+                _isCreateEnabled.value = true
+            }
+        }
+    }
+
+    private fun startCreation(name: String) {
+        val selected = _selectedRecipients.value
+        val error = when {
+            name.isEmpty() -> R.string.activity_create_closed_group_group_name_missing_error
+            name.length >= 26 -> R.string.activity_create_closed_group_group_name_too_long_error
+            selected.isEmpty() -> R.string.activity_create_closed_group_not_enough_group_members_error
+            selected.count() >= groupSizeLimit -> R.string.activity_create_closed_group_too_many_group_members_error
+            !isValidGroupName(name) -> R.string.nickname_special_char_not_allowed
+            else -> null
+        }
+        if (error != null) {
+            _events.tryEmit(Event.Message(resId = error))
+            return
+        }
+        _isLoading.value = true
+        val userPublicKey = textSecurePreferences.getLocalNumber()!!
+        MessageSender.createClosedGroup(Device.ANDROID, name, selected + setOf(userPublicKey))
+            .successUi { groupID ->
+                val address = Address.fromSerialized(groupID)
+                val threadId = databaseComponent.threadDatabase().getOrCreateThreadIdFor(
+                    Recipient.from(appContext, address, false)
+                )
+                _isLoading.value = false
+                _events.tryEmit(Event.GroupCreated(threadId, address))
+            }.failUi {
+                _isLoading.value = false
+                _events.tryEmit(Event.Message(text = it.message))
+            }
+    }
 
     private val _selectedRecipients = MutableStateFlow(listOf<String>())
     val selectedRecipients: StateFlow<List<String>> = _selectedRecipients.asStateFlow()

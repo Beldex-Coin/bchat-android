@@ -107,12 +107,12 @@ fun RecoverySeedView(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.appColors.onboardingInputBackground)
+                .background(MaterialTheme.appColors.dialogBackground)
                 .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
         ) {
             Text(
                 text = seed,
-                color = MaterialTheme.appColors.onboardingInputText,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                 fontWeight = FontWeight.Normal,
                 fontSize = 14.sp,
@@ -125,9 +125,9 @@ fun RecoverySeedView(
 
         PrimaryButton(
             onClick = copyToClipBoard,
-            shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
-            containerColor = MaterialTheme.appColors.onboardingSecondaryButtonBackground,
-            contentColor = MaterialTheme.appColors.onboardingInputText,
+            shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+            containerColor = MaterialTheme.appColors.dialogBackground,
+            contentColor = MaterialTheme.appColors.editTextColor,
             border = BorderStroke(1.dp, MaterialTheme.appColors.onboardingSecondaryButtonBorder),
             contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
             modifier = Modifier
@@ -251,7 +251,7 @@ private fun RecoveryWarningView(
                     onClick = verifyPin,
                     shape = io.beldex.bchat.compose_utils.notchedCornerShape(10.dp),
                     containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
-                    contentColor = MaterialTheme.appColors.onboardingPrimaryButtonText,
+                    contentColor = MaterialTheme.appColors.backgroundColor,
                     modifier = Modifier.height(48.dp)
                 ) {
                     Text(

@@ -227,7 +227,7 @@ fun MyAccountScreen(
 
         PrimaryButton(
             onClick = {},
-            shape = notchedCornerShape(14.5.dp),
+            shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchLarge),
             modifier = Modifier
                 .fillMaxWidth(0.8f)
         ) {
@@ -283,7 +283,7 @@ fun AccountHeader(
                 Text(
                     text = uiState.profileName ?: "",
                     style = MaterialTheme.typography.titleMedium.copy(
-                        color = MaterialTheme.appColors.titleTextColor,
+                        color = MaterialTheme.appColors.editTextColor,
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp
                     ),
@@ -390,7 +390,7 @@ fun AccountHeader(
         Text(
             text = stringResource(id = R.string.chatid),
             style = MaterialTheme.typography.bodyMedium.copy(
-                color = MaterialTheme.appColors.titleTextColor,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = OpenSans
             ),
             textAlign = TextAlign.Start,
@@ -413,7 +413,7 @@ fun AccountHeader(
         Text(
             text = stringResource(id = R.string.beldex_address),
             style = MaterialTheme.typography.bodyMedium.copy(
-                color = MaterialTheme.appColors.titleTextColor,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = OpenSans
             ),
             textAlign = TextAlign.Start,
@@ -471,7 +471,7 @@ fun AccountHeader(
 fun KeyContainer(
     key: String?,
     onCopy: () -> Unit,
-    valueColor: Color = MaterialTheme.appColors.titleTextColor
+    valueColor: Color = MaterialTheme.appColors.editTextColor
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,

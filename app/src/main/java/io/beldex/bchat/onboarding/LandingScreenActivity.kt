@@ -142,7 +142,7 @@ fun LandingScreen(
                 Text(
                     text = stringResource(id = R.string.welcome_to),
                     style = BChatTypography.headlineSmall.copy(
-                        color = MaterialTheme.appColors.onMainContainerTextColor,
+                        color = MaterialTheme.appColors.secondaryContentColor,
                         fontWeight = FontWeight.ExtraBold
                     ),
                     modifier = Modifier
@@ -194,7 +194,7 @@ fun LandingScreen(
                 Text(
                     text = stringResource(id = R.string.hello),
                     style = BChatTypography.headlineSmall.copy(
-                        color = MaterialTheme.appColors.onMainContainerTextColor,
+                        color = MaterialTheme.appColors.secondaryContentColor,
                         fontWeight = FontWeight.ExtraBold
                     )
                 )
@@ -204,7 +204,7 @@ fun LandingScreen(
                 Text(
                     text = stringResource(id = R.string.we_are_thrilled),
                     style = BChatTypography.headlineSmall.copy(
-                        color = MaterialTheme.appColors.onMainContainerTextColor,
+                        color = MaterialTheme.appColors.secondaryContentColor,
                         fontWeight = FontWeight.ExtraBold
                     )
                 )
@@ -214,7 +214,7 @@ fun LandingScreen(
                 Text(
                     text = stringResource(id = R.string.landing_screen_content),
                     style = BChatTypography.bodyMedium.copy(
-                        color = MaterialTheme.appColors.onMainContainerTextColor
+                        color = MaterialTheme.appColors.secondaryContentColor
                     )
                 )
             }
@@ -252,7 +252,7 @@ fun LandingScreen(
             Text(
                 text = stringResource(id = R.string.activity_landing_restore_button_title),
                 style = BChatTypography.bodyLarge.copy(
-                    color = MaterialTheme.appColors.onMainContainerTextColor
+                    color = MaterialTheme.appColors.secondaryContentColor
                 ),
                 modifier = Modifier
                     .padding(8.dp)

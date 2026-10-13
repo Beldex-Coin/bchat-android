@@ -86,7 +86,7 @@ fun MessageRequestsView(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(60.dp)
-                .background(MaterialTheme.appColors.homeSearchBarBackground)
+                .background(MaterialTheme.appColors.dialogBackground)
                 .drawBehind {
                     val stroke = 0.75.dp.toPx()
                     drawLine(homeBandBorder, Offset(0f, 0f), Offset(size.width, 0f), stroke)
@@ -98,7 +98,7 @@ fun MessageRequestsView(
             Icon(
                 painter = painterResource(id = R.drawable.ic_home_search),
                 contentDescription = null,
-                tint = MaterialTheme.appColors.homeSearchBarHint,
+                tint = MaterialTheme.appColors.onboardingInputHint,
                 modifier = Modifier.size(15.dp)
             )
             Spacer(modifier = Modifier.width(12.dp))
@@ -107,7 +107,7 @@ fun MessageRequestsView(
                 fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                 fontWeight = FontWeight.Light,
                 fontSize = 14.sp,
-                color = MaterialTheme.appColors.homeSearchBarHint
+                color = MaterialTheme.appColors.onboardingInputHint
             )
         }
 
@@ -134,7 +134,7 @@ fun MessageRequestsView(
                     text = stringResource(id = if (requests.size == 1) R.string.activity_message_request_title else R.string.activity_message_requests_title),
                     fontFamily = io.beldex.bchat.compose_utils.OpenSans,
                     fontSize = 13.5.sp,
-                    color = MaterialTheme.appColors.onboardingInputText,
+                    color = MaterialTheme.appColors.editTextColor,
                     modifier = Modifier.weight(1f)
                 )
                 Box(

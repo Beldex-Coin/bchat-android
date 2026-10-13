@@ -205,7 +205,7 @@ fun ClearDataDialog(
                         ""
                     }
                 },
-                color = MaterialTheme.appColors.onboardingInputText,
+                color = MaterialTheme.appColors.editTextColor,
                 fontFamily = OpenSans,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
@@ -240,7 +240,7 @@ fun ClearDataDialog(
                 Steps.INFO_PROMPT -> {
                     Text(
                         text = stringResource(id = R.string.dialog_clear_all_data_explanation),
-                        color = MaterialTheme.appColors.onboardingInputText,
+                        color = MaterialTheme.appColors.editTextColor,
                         fontFamily = OpenSans,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Normal,
@@ -250,7 +250,7 @@ fun ClearDataDialog(
                 Steps.NETWORK_PROMPT -> {
                     Text(
                         text = stringResource(id = R.string.dialog_clear_all_data_network_explanation),
-                        color = MaterialTheme.appColors.onboardingInputText,
+                        color = MaterialTheme.appColors.editTextColor,
                         fontFamily = OpenSans,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Normal,
@@ -318,7 +318,7 @@ fun DeleteOption(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium.copy(
-                    color = MaterialTheme.appColors.onboardingInputText,
+                    color = MaterialTheme.appColors.editTextColor,
                     fontFamily = OpenSans,
                     fontWeight = FontWeight.Normal,
                     fontSize = 16.sp,

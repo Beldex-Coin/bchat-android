@@ -76,7 +76,7 @@ fun SharedContactView(
         modifier = columnModifier
     ) {
         Card(
-            shape = io.beldex.bchat.compose_utils.notchedCornerShape(12.dp),
+            shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
             colors =CardDefaults.cardColors(
                 containerColor = backgroundColor
             ),

@@ -144,7 +144,7 @@ fun AppLockScreen() {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_change_password),
                     contentDescription = "",
-                    tint = MaterialTheme.appColors.iconTint
+                    tint = MaterialTheme.appColors.secondaryContentColor
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))
@@ -187,7 +187,7 @@ fun AppLockScreen() {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_screen_lock_hourglass),
                     contentDescription = null,
-                    tint = MaterialTheme.appColors.iconTint
+                    tint = MaterialTheme.appColors.secondaryContentColor
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))

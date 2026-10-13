@@ -533,8 +533,8 @@
     <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">Wenn aktiviert, wird Onion-Routing verwendet, um Ihre Nachrichten zu übermitteln</string>
     <string name="preferences_onion_routing_hops_summary">Wählen Sie, wie viele Hops Ihre Nachrichten durchlaufen. „Aus" verbindet direkt, 1 Hop nutzt einen Masterknoten, 3 Hops nutzen drei Masterknoten.</string>
     <string name="preferences__onion_routing_off">Keine Hops</string>
-    <string name="preferences__onion_routing_1_hop">1 Hop (Standard)</string>
-    <string name="preferences__onion_routing_3_hops">3 Hops</string>
+    <string name="preferences__onion_routing_1_hop">1 Hop</string>
+    <string name="preferences__onion_routing_3_hops">3 Hops (Standard)</string>
     <string name="preferences__onion_routing_settings_description_no_hops">Mit dieser Option werden die Nachrichten direkt an den Swarm des Empfängers gesendet, ohne über Zwischenknoten geleitet zu werden.</string>
     <string name="preferences__onion_routing_settings_description_one_hop">Mit dieser Option werden die Nachrichten über einen einzelnen Zwischenknoten geleitet.</string>
     <string name="preferences__onion_routing_settings_description_three_hops">Mit dieser Option werden die Nachrichten über drei Zwischenknoten geleitet.</string>

@@ -557,8 +557,8 @@
     <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">Если включено, для доставки ваших сообщений будет использоваться луковая маршрутизация</string>
     <string name="preferences_onion_routing_hops_summary">Выберите, через сколько хопов проходят ваши сообщения. Выкл.: прямое соединение, 1 хоп — один мастернод, 3 хопа — три мастернода.</string>
     <string name="preferences__onion_routing_off">Без хопов</string>
-    <string name="preferences__onion_routing_1_hop">1 хоп (по умолчанию)</string>
-    <string name="preferences__onion_routing_3_hops">3 хопа</string>
+    <string name="preferences__onion_routing_1_hop">1 хоп</string>
+    <string name="preferences__onion_routing_3_hops">3 хопа (по умолчанию)</string>
     <string name="preferences__onion_routing_settings_description_no_hops">При выборе этого параметра сообщения будут отправляться напрямую в swarm получателя, без прохождения через промежуточные узлы.</string>
     <string name="preferences__onion_routing_settings_description_one_hop">При выборе этого параметра сообщения маршрутизируются через один промежуточный узел.</string>
     <string name="preferences__onion_routing_settings_description_three_hops">При выборе этого параметра сообщения будут маршрутизироваться через три промежуточных узла.</string>

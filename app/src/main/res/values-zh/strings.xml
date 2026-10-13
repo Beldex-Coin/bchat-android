@@ -522,8 +522,8 @@
     <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">启用后，将使用洋葱路由传递您的消息</string>
     <string name="preferences_onion_routing_hops_summary">选择您的消息经过的跳数。关闭时直接连接，1 跳使用一个主节点，3 跳使用三个主节点。</string>
     <string name="preferences__onion_routing_off">无跳数</string>
-    <string name="preferences__onion_routing_1_hop">1 跳（默认）</string>
-    <string name="preferences__onion_routing_3_hops">3 跳</string>
+    <string name="preferences__onion_routing_1_hop">1 跳</string>
+    <string name="preferences__onion_routing_3_hops">3 跳（默认）</string>
     <string name="preferences__onion_routing_settings_description_no_hops">选择此选项后，消息将直接发送到收件人的节点组，而不经过中间节点路由。</string>
     <string name="preferences__onion_routing_settings_description_one_hop">选择此选项后，消息将通过一个中间节点路由。</string>
     <string name="preferences__onion_routing_settings_description_three_hops">选择此选项后，消息将通过三个中间节点路由。</string>

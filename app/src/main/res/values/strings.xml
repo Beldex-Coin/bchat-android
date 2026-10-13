@@ -533,8 +533,8 @@
     <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">If enabled, onion routing will be used to deliver your messages</string>
     <string name="preferences_onion_routing_hops_summary">Select how many hops your messages pass through. Off connects directly, 1 hop uses one master node, 3 hops use three master nodes.</string>
     <string name="preferences__onion_routing_off">No Hops</string>
-    <string name="preferences__onion_routing_1_hop">1 Hop (Default)</string>
-    <string name="preferences__onion_routing_3_hops">3 Hops</string>
+    <string name="preferences__onion_routing_1_hop">1 Hop</string>
+    <string name="preferences__onion_routing_3_hops">3 Hops (Default)</string>
     <string name="preferences__onion_routing_settings_description_no_hops">With this option selected, messages will be sent directly to the recipient\'s swarm without routing through intermediary nodes.</string>
     <string name="preferences__onion_routing_settings_description_one_hop">With this option selected, messages are routed through one intermediary node.</string>
     <string name="preferences__onion_routing_settings_description_three_hops">With this option selected, messages will be routed through three intermediary nodes.</string>

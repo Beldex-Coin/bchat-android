@@ -525,8 +525,8 @@
     <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">Nếu được bật, định tuyến Onion sẽ được sử dụng để gửi tin nhắn của bạn</string>
     <string name="preferences_onion_routing_hops_summary">Chọn số lần nhảy mà tin nhắn của bạn đi qua. Tắt kết nối trực tiếp, 1 lần nhảy dùng một nút chính, 3 lần nhảy dùng ba nút chính.</string>
     <string name="preferences__onion_routing_off">Không nhảy</string>
-    <string name="preferences__onion_routing_1_hop">1 lần nhảy (mặc định)</string>
-    <string name="preferences__onion_routing_3_hops">3 lần nhảy</string>
+    <string name="preferences__onion_routing_1_hop">1 lần nhảy</string>
+    <string name="preferences__onion_routing_3_hops">3 lần nhảy (mặc định)</string>
     <string name="preferences__onion_routing_settings_description_no_hops">Với tùy chọn này, tin nhắn sẽ được gửi trực tiếp đến swarm của người nhận mà không đi qua các nút trung gian.</string>
     <string name="preferences__onion_routing_settings_description_one_hop">Với tùy chọn này, tin nhắn sẽ được định tuyến qua một nút trung gian.</string>
     <string name="preferences__onion_routing_settings_description_three_hops">Với tùy chọn này, tin nhắn sẽ được định tuyến qua ba nút trung gian.</string>

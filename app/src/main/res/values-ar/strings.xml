@@ -580,8 +580,8 @@
     <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">إذا تم تفعيله، فسيتم استخدام توجيه البصل لتوصيل رسائلك</string>
     <string name="preferences_onion_routing_hops_summary">اختر عدد القفزات التي تمر بها رسائلك. وضع إيقاف الاتصال المباشر، وقفزة واحدة تستخدم عقدة رئيسية واحدة، وثلاث قفزات تستخدم ثلاث عقد رئيسية.</string>
     <string name="preferences__onion_routing_off">بدون قفزات</string>
-    <string name="preferences__onion_routing_1_hop">قفزة واحدة (افتراضي)</string>
-    <string name="preferences__onion_routing_3_hops">ثلاث قفزات</string>
+    <string name="preferences__onion_routing_1_hop">قفزة واحدة</string>
+    <string name="preferences__onion_routing_3_hops">ثلاث قفزات (افتراضي)</string>
     <string name="preferences__onion_routing_settings_description_no_hops">مع تحديد هذا الخيار، ستُرسل الرسائل مباشرة إلى السرب الخاص بالمستلم دون المرور عبر عقد وسيطة.</string>
     <string name="preferences__onion_routing_settings_description_one_hop">مع تحديد هذا الخيار، يتم توجيه الرسائل عبر عقدة وسيطة واحدة.</string>
     <string name="preferences__onion_routing_settings_description_three_hops">مع تحديد هذا الخيار، سيتم توجيه الرسائل عبر ثلاث عقد وسيطة.</string>

@@ -1,5 +1,6 @@
 package io.beldex.bchat.conversation.v2.contact_sharing
 
+import io.beldex.bchat.compose_utils.bchatBackground
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -74,7 +75,7 @@ class ViewAllContactsActivity : BaseAppCompatActivity() {
         setContent {
             BChatTheme {
                 Surface(
-                    color = MaterialTheme.appColors.backgroundColor,
+                    color = androidx.compose.ui.graphics.Color.Transparent,
                     modifier = Modifier.fillMaxSize()
                 ) {
                     ScreenContainer(
@@ -82,9 +83,7 @@ class ViewAllContactsActivity : BaseAppCompatActivity() {
                         onBackClick = { onBackPressedDispatcher.onBackPressed() },
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(
-                                color = MaterialTheme.appColors.walletDashboardMainMenuCardBackground
-                            )
+                            .bchatBackground(MaterialTheme.appColors.backgroundColor)
                             .systemBarsPadding()
                     ) {
                         contact?.let {
@@ -166,11 +165,10 @@ private fun ViewContactItem(
 ) {
 
     OutlinedCard(
-        shape=RoundedCornerShape(50), border=BorderStroke(
-            width=1.dp, color=MaterialTheme.appColors.contactCardBorder
-        ), colors=CardDefaults.cardColors(
-            containerColor=MaterialTheme.appColors.contactCardBackground
-        ), modifier=modifier.padding(bottom=4.dp)
+        shape = androidx.compose.ui.graphics.RectangleShape,
+        border = BorderStroke(width = 1.dp, color = androidx.compose.ui.graphics.Color(0xFF222222)),
+        colors = CardDefaults.cardColors(containerColor = androidx.compose.ui.graphics.Color(0xFF111111)),
+        modifier = modifier.padding(bottom = 4.dp)
     ) {
         Row(
             verticalAlignment=Alignment.CenterVertically,
@@ -205,10 +203,10 @@ private fun ViewContactItem(
                 Text(
                     formatAddresses(address),
                     maxLines=1,
-                    fontFamily=OpenSans,
+                    fontFamily=io.beldex.bchat.compose_utils.RobotoMono,
                     fontWeight=FontWeight(400),
                     fontSize=12.sp,
-                    color=MaterialTheme.appColors.secondaryTextColor,
+                    color=androidx.compose.ui.graphics.Color(0xFF737373),
                     overflow=TextOverflow.Ellipsis
                 )
             }
@@ -254,87 +252,16 @@ fun ChatWithContactPopUp(name: String, address : String, onDismiss: () -> Unit){
         dismissOnClickOutside = true,
         onDismissRequest = onDismiss
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Text(
-                text = nameOfContact.capitalizeFirstLetter().ifEmpty { formatAddresses(address) },
-                style = MaterialTheme.typography.titleMedium.copy(
-                    color = MaterialTheme.appColors.secondaryContentColor,
-                    fontWeight = FontWeight(700),
-                    fontSize = 16.sp
-                ),
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = stringResource(R.string.chat_with_contact_confirmation),
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.appColors.editTextColor,
-                    fontWeight = FontWeight(400),
-                    fontSize = 14.sp
-                ),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Button(
-                    onClick = onDismiss,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.negativeGreenButton
-                    ),
-                    shape = RoundedCornerShape(12.dp),
-                    border = BorderStroke(0.5.dp, MaterialTheme.appColors.primaryButtonColor),
-                    modifier = Modifier
-                        .weight(1f)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.cancel),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.appColors.onboardingHeadlineColor,
-                            fontWeight = FontWeight(400),
-                            fontSize = 14.sp
-                        ),
-                        modifier = Modifier.padding(
-                            vertical = 8.dp
-                        )
-                    )
-                }
-
-                Button(
-                    onClick = {
-                        moveToChat(address)
-                        activity.supportFragmentManager.popBackStack()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.primaryButtonColor
-                    ),
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text= stringResource(id = R.string.message),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight(400),
-                            fontSize = 14.sp,
-                            color = Color.White
-                        ),
-                        modifier = Modifier.padding(
-                            vertical = 8.dp
-                        )
-                    )
-                }
+        io.beldex.bchat.compose_utils.PopupBody(
+            title = nameOfContact.capitalizeFirstLetter().ifEmpty { formatAddresses(address) },
+            message = androidx.compose.ui.text.AnnotatedString(stringResource(R.string.chat_with_contact_confirmation)),
+            cancelText = stringResource(id = R.string.cancel),
+            onCancel = onDismiss,
+            confirmText = stringResource(id = R.string.message),
+            onConfirm = {
+                moveToChat(address)
+                activity.supportFragmentManager.popBackStack()
             }
-        }
+        )
     }
 }

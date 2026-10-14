@@ -25,8 +25,9 @@
                 android:layout_marginLeft="@dimen/medium_spacing"
                 android:layout_marginTop="@dimen/large_spacing"
                 android:layout_marginRight="@dimen/medium_spacing"
-                app:cardBackgroundColor="@color/search_background"
-                app:cardCornerRadius="30dp">
+                app:cardBackgroundColor="#111111"
+                app:cardCornerRadius="0dp"
+                app:cardElevation="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"

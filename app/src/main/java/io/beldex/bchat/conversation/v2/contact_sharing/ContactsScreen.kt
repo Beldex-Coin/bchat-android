@@ -141,27 +141,7 @@ fun ContactsScreen(
                 Box(
                     modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(
-                                id = if (isDarkTheme) R.drawable.ic_no_contact_found
-                                else R.drawable.ic_no_contact_found_white
-                            ),
-                            contentDescription = stringResource(id = R.string.no_contact_found),
-                        )
-                        Text(
-                            text = stringResource(id = R.string.no_contact_found),
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.appColors.editTextPlaceholder
-                            ),
-                            textAlign = TextAlign.Center
-                        )
-                    }
+                    io.beldex.bchat.compose_utils.GhostEmptyState(text = stringResource(id = R.string.no_contact_found))
                 }
             } else {
                 LazyColumn(

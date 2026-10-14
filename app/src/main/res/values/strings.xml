@@ -1714,7 +1714,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
         <item quantity="one">%d member</item>
         <item quantity="other">%d members</item>
     </plurals>
-    <string name="no_contact_found">No Contact Found!</string>
+    <string name="no_contact_found">No contacts found!</string>
     <string name="choose_language_device_language">(device\'s language)</string>
     <string name="wrong_password_try_again">Wrong Password! Try again.</string>
     <string name="apply">Apply</string>

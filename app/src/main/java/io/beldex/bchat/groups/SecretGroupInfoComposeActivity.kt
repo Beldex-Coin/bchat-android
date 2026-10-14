@@ -103,6 +103,7 @@ import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatOutlinedTextField
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.DialogContainer
+import io.beldex.bchat.compose_utils.bchatBackground
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
@@ -503,21 +504,17 @@ fun GroupDetailsScreen(
         isShowSearchBottomSheet = isVisible
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     if (isShowSearchBottomSheet) {
-
-        val sheetState = rememberModalBottomSheetState(
-            skipPartiallyExpanded = true
-        )
-
-        ModalBottomSheet(
+        // Figma "search_member": a full screen with a back arrow, a bordered search box and plain rows.
+        androidx.compose.ui.window.Dialog(
             onDismissRequest = {
                 showSearchView(false)
                 secretGroupInfoViewModel.updateVisibleBottomSheet(false)
             },
-            sheetState = sheetState,
-            shape = androidx.compose.ui.graphics.RectangleShape,
-            containerColor = MaterialTheme.appColors.backgroundColor
+            properties = androidx.compose.ui.window.DialogProperties(
+                usePlatformDefaultWidth = false,
+                dismissOnClickOutside = false
+            )
         ) {
             val focusRequester=remember { FocusRequester() }
             val coroutineScope=rememberCoroutineScope()
@@ -528,6 +525,16 @@ fun GroupDetailsScreen(
                 }
             }
 
+            io.beldex.bchat.compose_utils.ui.ScreenContainer(
+                title = stringResource(id = R.string.search_member_title),
+                onBackClick = {
+                    showSearchView(false)
+                    secretGroupInfoViewModel.updateVisibleBottomSheet(false)
+                },
+                modifier = Modifier
+                    .fillMaxSize()
+                    .bchatBackground(MaterialTheme.appColors.backgroundColor)
+            ) {
             Column(modifier=Modifier.padding(16.dp)) {
 
                 BChatOutlinedTextField(
@@ -535,11 +542,11 @@ fun GroupDetailsScreen(
                     onValueChange={
                         secretGroupInfoViewModel.updateSearchQuery(it)
                     },
-                    placeHolder=stringResource(id=R.string.enter_name),
-                    unFocusedContainerColor=MaterialTheme.appColors.searchBackground,
-                    focusedContainerColor=MaterialTheme.appColors.searchBackground,
-                    focusedBorderColor=Color.Transparent,
-                    unFocusedBorderColor=Color.Transparent,
+                    placeHolder=stringResource(id=R.string.search_contact).uppercase(),
+                    unFocusedContainerColor=MaterialTheme.appColors.dialogBackground,
+                    focusedContainerColor=MaterialTheme.appColors.dialogBackground,
+                    focusedBorderColor=MaterialTheme.appColors.pinBoxInactiveBorder,
+                    unFocusedBorderColor=MaterialTheme.appColors.pinBoxInactiveBorder,
                     selectionColors=MaterialTheme.appColors.textSelectionColor,
                     cursorColor=MaterialTheme.appColors.textSelectionColor,
                     shape=androidx.compose.ui.graphics.RectangleShape,
@@ -637,6 +644,7 @@ fun GroupDetailsScreen(
                         }
                     }
                 }
+            }
             }
         }
     }

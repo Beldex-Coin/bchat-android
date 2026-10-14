@@ -11,7 +11,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -216,7 +218,8 @@ private fun SearchView(
         modifier = modifier
     ) {
         Card(
-            shape = RoundedCornerShape(12.dp),
+            shape = androidx.compose.ui.graphics.RectangleShape,
+            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
             modifier = Modifier
                 .fillMaxWidth()
         ) {
@@ -337,40 +340,40 @@ private fun SearchView(
                         )
                     }
                     is SearchResults.SavedMessages -> {
-                        Card(
-                            shape = RoundedCornerShape(50),
+                        // Figma "note_to_self": square #1A1A1A row with a #333 hairline and a notched icon tile.
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                                .fillMaxWidth(),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.appColors.searchBackground
-                            )
+                                .fillMaxWidth()
+                                .background(androidx.compose.ui.graphics.Color(0xFF1A1A1A))
+                                .border(1.dp, androidx.compose.ui.graphics.Color(0xFF333333))
+                                .clickable { onSearchResultClick(it) }
+                                .padding(horizontal = 14.dp, vertical = 14.dp)
                         ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
+                            Box(
+                                contentAlignment = Alignment.Center,
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(10.dp)
-                                    .clickable {
-                                        onSearchResultClick(it)
-                                    }
-                            ) {
-                                Image(
-                                    painter = painterResource(id = if(isDarkTheme) R.drawable.ic_note_to_self else R.drawable.ic_note_to_self_light),
-                                    contentDescription = "",
-                                    modifier = Modifier
-                                        .size(ProfilePictureMode.GroupPicture.size)
-                                )
-
-                                Spacer(modifier = Modifier.width(12.dp))
-
-                                Text(
-                                    text = stringResource(id = R.string.note_to_self),
-                                    style = MaterialTheme.typography.titleMedium.copy(
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight(600)
+                                    .size(42.dp)
+                                    .background(
+                                        androidx.compose.ui.graphics.Color(0xFF222222),
+                                        io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall)
                                     )
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_note_to_self_row),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.appColors.editTextColor,
+                                    modifier = Modifier.size(20.dp)
                                 )
                             }
+                            Spacer(modifier = Modifier.width(14.dp))
+                            Text(
+                                text = stringResource(id = R.string.note_to_self),
+                                color = MaterialTheme.appColors.editTextColor,
+                                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
                 }

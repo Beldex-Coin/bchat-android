@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:background="#0B0B0B"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 android:orientation="vertical">
@@ -14,13 +15,13 @@
         <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/colorPrimary">
+                android:background="#0B0B0B">
 
             <io.beldex.bchat.giph.ui.GiphyActivityToolbar
                     android:id="@+id/giphy_toolbar"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
-                    android:background="?attr/colorPrimary"
+                    android:background="#0B0B0B"
                     android:theme="?attr/actionBarStyle"
                     app:layout_scrollFlags="scroll|enterAlways"/>
 
@@ -30,7 +31,9 @@
                     android:layout_height="wrap_content"
                     android:theme="@style/Widget.Bchat.TabLayout"
                     app:tabRippleColor="@color/cell_selected"
-                    app:tabIndicatorColor="@color/accent"
+                    app:tabIndicatorColor="#00BD40"
+                    app:tabSelectedTextColor="#EBEBEB"
+                    app:tabTextColor="#8D8D8D"
                     android:scrollbars="horizontal"/>
 
         </com.google.android.material.appbar.AppBarLayout>

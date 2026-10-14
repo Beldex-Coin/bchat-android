@@ -76,7 +76,7 @@ public class ShapeScrim extends View {
     }
 
     scrim.eraseColor(Color.TRANSPARENT);
-    scrimCanvas.drawColor(Color.parseColor("#55BDBDBD"));
+    scrimCanvas.drawColor(Color.parseColor("#E60B0B0B"));
 
     if (shape == ShapeType.CIRCLE) drawCircle(scrimCanvas, drawRadius, eraser);
     else                           drawSquare(scrimCanvas, drawRadius, eraser);
@@ -112,7 +112,25 @@ public class ShapeScrim extends View {
     float right = centerX + radius;
     float bottom = centerY + radius;
 
-    canvas.drawRoundRect(new RectF(left, top, right, bottom), 25, 25, eraser);
+    canvas.drawRect(new RectF(left, top, right, bottom), eraser);
+    drawCornerBrackets(canvas, left, top, right, bottom);
+  }
+
+  /** Figma "Scan QR": four green L-shaped brackets marking the scan window. */
+  private void drawCornerBrackets(Canvas canvas, float left, float top, float right, float bottom) {
+    Paint bracket = new Paint(Paint.ANTI_ALIAS_FLAG);
+    bracket.setColor(0xFF00BD40);
+    bracket.setStyle(Paint.Style.STROKE);
+    bracket.setStrokeWidth(dpToPx(1.5f));
+    float len = (right - left) * 0.22f;
+    canvas.drawLine(left, top, left + len, top, bracket);
+    canvas.drawLine(left, top, left, top + len, bracket);
+    canvas.drawLine(right, top, right - len, top, bracket);
+    canvas.drawLine(right, top, right, top + len, bracket);
+    canvas.drawLine(left, bottom, left + len, bottom, bracket);
+    canvas.drawLine(left, bottom, left, bottom - len, bracket);
+    canvas.drawLine(right, bottom, right - len, bottom, bracket);
+    canvas.drawLine(right, bottom, right, bottom - len, bracket);
   }
 
   private float dpToPx(float dp) {

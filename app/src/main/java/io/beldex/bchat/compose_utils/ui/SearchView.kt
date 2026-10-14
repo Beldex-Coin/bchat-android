@@ -36,16 +36,16 @@ fun SearchView(
 ) {
     val focusRequester = remember { FocusRequester() }
     Card(
-        shape = RoundedCornerShape(50),
+        shape = androidx.compose.ui.graphics.RectangleShape,
         colors=CardDefaults.cardColors(
-            containerColor=MaterialTheme.appColors.searchBackground
+            containerColor=MaterialTheme.appColors.dialogBackground
         ),
         modifier = modifier
             .fillMaxWidth()
             .border(
                 width=1.dp,
-                color=MaterialTheme.appColors.textFieldUnfocusedColor,
-                shape=RoundedCornerShape(50.dp)
+                color=MaterialTheme.appColors.pinBoxInactiveBorder,
+                shape=androidx.compose.ui.graphics.RectangleShape
             )
     ) {
         TextField(
@@ -70,8 +70,8 @@ fun SearchView(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
-                focusedContainerColor = MaterialTheme.appColors.searchBackground,
-                unfocusedContainerColor = MaterialTheme.appColors.searchBackground,
+                focusedContainerColor = MaterialTheme.appColors.dialogBackground,
+                unfocusedContainerColor = MaterialTheme.appColors.dialogBackground,
                 cursorColor = MaterialTheme.appColors.primaryButtonColor,
                 selectionColors = TextSelectionColors(
                     handleColor = MaterialTheme.appColors.primaryButtonColor,

@@ -71,7 +71,7 @@
     <string name="ConversationActivity_add_attachment">Add attachment</string>
     <string name="ConversationActivity_select_contact_info">Select contact info</string>
     <string name="ConversationActivity_sorry_there_was_an_error_setting_your_attachment">Sorry, there was an error setting your attachment.</string>
-    <string name="ConversationActivity_message">Write a message....</string>
+    <string name="ConversationActivity_message">Write message here..</string>
     <string name="ConversationActivity_compose">Compose</string>
     <string name="ConversationActivity_muted_until_date">Muted until %1$s</string>
     <string name="ConversationActivity_muted_forever">Muted</string>
@@ -974,10 +974,10 @@
     <string name="CallNotificationBuilder_first_call_title">Call Missed</string>
     <string name="CallNotificationBuilder_first_call_message">You missed a call because you need to enable the \'Voice and video calls\' permission in the Privacy Settings.</string>
     <string name="CallNotificationBuilder_connecting">Connecting…</string>
-    <string name="NotificationBarManager__incoming_signal_call">Incoming call</string>
+    <string name="NotificationBarManager__incoming_signal_call">Incoming voice call..</string>
     <string name="NotificationBarManager__deny_call">Deny call</string>
     <string name="NotificationBarManager__answer_call">Answer call</string>
-    <string name="NotificationBarManager__establishing_signal_call">Establishing call</string>
+    <string name="NotificationBarManager__establishing_signal_call">Establishing Call</string>
     <string name="NotificationBarManager__cancel_call">Cancel call</string>
     <string name="NotificationBarManager_call_in_progress">Person in call</string>
     <string name="NotificationBarManager__end_call">End call</string>
@@ -986,7 +986,7 @@
     <string name="conversation_context__menu_call">Call</string>
     <string name="ConversationActivity_call_title">Call Permissions Required</string>
     <string name="dialog_voice_video_title">Voice/Video Calls</string>
-    <string name="dialog_voice_video_message">The current implementation of voice / video calls will expose your IP address to the Beldex servers and the calling / called user</string>
+    <string name="dialog_voice_video_message">The current implementation of voice / video calls will expose your IP address to the Beldex servers and the calling / called user.</string>
     <string name="CallNotificationBuilder_system_notification_message">Having notifications disabled will prevent you from receiving calls, go to Bchat notification settings?</string>
     <string name="dismiss">Dismiss</string>
     <string name="preferences__voice_video_calls">Voice and video calls</string>
@@ -994,6 +994,11 @@
     <string name="incoming_call">Incoming Call..</string>
     <string name="outgoing_call">Outgoing Call</string>
     <string name="calling">Calling..</string>
+    <string name="call_banner_person">Person</string>
+    <string name="call_banner_in_call">%1$s in call</string>
+    <string name="call_banner_in_video_call">%1$s in Video call</string>
+    <string name="bluetooth_device">Bluetooth Device</string>
+    <string name="mobile_speaker">Mobile Speaker</string>
     <string name="end_to_end_encrypted">End to End Encrypted</string>
     <string name="call_duration">00:10:10</string>
     <string name="hang_up">Hangup</string>

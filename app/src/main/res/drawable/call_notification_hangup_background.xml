@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Notched Hangup button (Figma incoming-call banner): dark red with a red hairline. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp" android:height="36dp"
+    android:viewportWidth="100" android:viewportHeight="36">
+    <path
+        android:pathData="M0.5,0.5 L89.5,0.5 L99.5,10.5 L99.5,35.5 L10.5,35.5 L0.5,25.5 Z"
+        android:fillColor="#2B0A0A"
+        android:strokeColor="#ED3E3E"
+        android:strokeWidth="1" />
+</vector>

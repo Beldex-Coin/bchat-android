@@ -1022,13 +1022,8 @@ class VisibleMessageContentView : MaterialCardView {
                 ds.isUnderlineText = false
                 ds.isFakeBoldText = true
 
-                val isDayUiMode = UiModeUtilities.isDayUiMode(context)
-                ds.color = if (message.isOutgoing) {
-                    if (isDayUiMode) ContextCompat.getColor(context, R.color.black)
-                    else ContextCompat.getColor(context, R.color.chat_id_card_background)
-                } else {
-                    ContextCompat.getColor(context, R.color.send_message_background)
-                }
+                // Green accent so the link reads on both the green (sent) and grey (received) bubbles.
+                ds.color = if (UiModeUtilities.isDayUiMode(context)) 0xFF078720.toInt() else 0xFF00BD40.toInt()
             }
         }
 
@@ -1068,13 +1063,8 @@ class VisibleMessageContentView : MaterialCardView {
                 ds.isUnderlineText = false
                 ds.isFakeBoldText = true
 
-                val isDayUiMode = UiModeUtilities.isDayUiMode(context)
-                ds.color = if (message.isOutgoing) {
-                    if (isDayUiMode) ContextCompat.getColor(context, R.color.black)
-                    else ContextCompat.getColor(context, R.color.chat_id_card_background)
-                } else {
-                    ContextCompat.getColor(context, R.color.send_message_background)
-                }
+                // Green accent so the link reads on both the green (sent) and grey (received) bubbles.
+                ds.color = if (UiModeUtilities.isDayUiMode(context)) 0xFF078720.toInt() else 0xFF00BD40.toInt()
             }
         }
 

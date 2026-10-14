@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Notched Answer button (Figma incoming-call banner): dark green with a green hairline. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp" android:height="36dp"
+    android:viewportWidth="100" android:viewportHeight="36">
+    <path
+        android:pathData="M0.5,0.5 L89.5,0.5 L99.5,10.5 L99.5,35.5 L10.5,35.5 L0.5,25.5 Z"
+        android:fillColor="#0A2B0F"
+        android:strokeColor="#00BD40"
+        android:strokeWidth="1" />
+</vector>

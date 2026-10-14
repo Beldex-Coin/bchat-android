@@ -220,6 +220,7 @@ private fun JoinSection(
             placeholder = {
                 Text(
                     text = stringResource(R.string.fragment_enter_chat_url_edit_text_hint).uppercase(),
+                    modifier = Modifier.padding(start = 4.dp),
                     fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                     fontWeight = FontWeight.Light,
                     color = MaterialTheme.appColors.onboardingInputHint,

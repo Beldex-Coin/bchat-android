@@ -278,6 +278,7 @@ private fun SearchField(
         placeholder = {
             Text(
                 text = stringResource(R.string.search_contact).uppercase(),
+                modifier = Modifier.padding(start = 4.dp),
                 fontFamily = RobotoMono,
                 fontWeight = androidx.compose.ui.text.font.FontWeight.Light,
                 fontSize = 12.sp,

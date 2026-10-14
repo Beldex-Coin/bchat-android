@@ -1336,10 +1336,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                             binding.toolbarCall.isVisible = false
                         } else {
                             binding.toolbarCall.isVisible = true
-                            binding.callDurationCall.text = DurationFormatUtils.formatDuration(
-                                System.currentTimeMillis() - startTime,
-                                callDurationFormat
-                            )
+                            binding.callDurationCall.text = io.beldex.bchat.webrtc.CallBannerUtils.formatDuration(System.currentTimeMillis() - startTime)
+                            binding.callInProgressCall.text = io.beldex.bchat.webrtc.CallBannerUtils.label(this@HomeActivity, callViewModel)
                         }
 
                         delay(1_000)

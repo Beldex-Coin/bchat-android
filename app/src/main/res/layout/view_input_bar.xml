@@ -68,7 +68,8 @@
                     android:paddingBottom="6dp"
                     android:textSize="13sp"
                     android:inputType="textNoSuggestions|textMultiLine"
-                    android:scrollbars="vertical"/>
+                    android:scrollbars="vertical"
+                    android:scrollbarStyle="insideInset"/>
 
             </RelativeLayout>
 

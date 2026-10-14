@@ -3,6 +3,7 @@ package io.beldex.bchat.compose_utils.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
@@ -53,6 +54,7 @@ fun SearchView(
             placeholder = {
                 Text(
                     text = hint,
+                    modifier = Modifier.padding(start = 4.dp),
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = MaterialTheme.appColors.inputHintColor
                     )

@@ -281,17 +281,16 @@ class ConversationActionDialog: DialogFragment() {
                                     )
                                 }
                             }
-                            LockOptionsDialog(
-                                title = stringResource(R.string.disappearing_messages),
+                            val currentIndex = timesOption.indexOf(argument3).coerceAtLeast(0)
+                            io.beldex.bchat.my_account.ui.dialogs.DisappearingMessagesDialog(
                                 options = options,
-                                currentValue = options[timesOption.indexOf(argument3)],
-                                onDismiss = {
+                                initialIndex = currentIndex,
+                                onDismiss = { dismiss() },
+                                onConfirm = { index ->
                                     dismiss()
-                                },
-                                onValueChanged = { _, index ->
-                                    dismiss()
-                                    if (options[timesOption.indexOf(argument3)] != options[index]) {
-                                        listener?.onConfirmationWithData(dialogType, timesOption[index], threadRecord, threadPosition)                                    }
+                                    if (index != currentIndex) {
+                                        listener?.onConfirmationWithData(dialogType, timesOption[index], threadRecord, threadPosition)
+                                    }
                                 }
                             )
                         }

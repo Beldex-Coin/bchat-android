@@ -46,7 +46,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/message_details_header__sent"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:fontFamily="@font/open_sans_semi_bold"
                     android:gravity="start" />
 
@@ -56,9 +56,14 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
+                    android:fontFamily="@font/open_sans_semi_bold"
                     android:textColor="@color/input_quoted_text_color"
-                    android:textSize="14sp"
-                    android:gravity="start"
+                    android:textSize="12sp"
+                    android:maxLines="1"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="8sp"
+                    android:autoSizeMaxTextSize="12sp"
+                    android:gravity="end"
                     tools:text="Jan 18, 2015, 12:29:37 AM GMT-08:00" />
 
             </LinearLayout>
@@ -75,7 +80,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/message_details_header__disappears"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:fontFamily="@font/open_sans_semi_bold"
                     android:textColor="@color/text"
                     android:gravity="start"
@@ -87,9 +92,10 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
+                    android:fontFamily="@font/open_sans_semi_bold"
                     android:textColor="@color/input_quoted_text_color"
-                    android:textSize="14sp"
-                    android:gravity="start"
+                    android:textSize="12sp"
+                    android:gravity="end"
                     tools:text="5 minutes" />
 
             </LinearLayout>
@@ -106,7 +112,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/message_details_header__error"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:fontFamily="@font/open_sans_semi_bold"
                     android:textColor="@color/text"
                     android:gravity="start"
@@ -118,9 +124,10 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
+                    android:fontFamily="@font/open_sans_semi_bold"
                     android:textColor="@color/input_quoted_text_color"
-                    android:textSize="14sp"
-                    android:gravity="start"
+                    android:textSize="12sp"
+                    android:gravity="end"
                     tools:text="Connection timeout" />
 
             </LinearLayout>
@@ -134,10 +141,15 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/resend_button"
-                android:layout_width="180dp"
-                android:layout_height="52dp"
-                android:backgroundTint="@color/chat_message_request_accept_background"
-                android:fontFamily="@font/open_sans_semi_bold"
+                android:layout_width="146dp"
+                android:layout_height="50dp"
+                android:backgroundTint="#E0E0E0"
+                app:strokeColor="#0A370A"
+                app:strokeWidth="1dp"
+                android:fontFamily="@font/open_sans_bold"
+                android:textSize="14sp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
                 android:text="@string/message_recipients_list_item__resend"
                 android:textAllCaps="false"
                 android:textColor="@color/chat_message_request_accept_text"

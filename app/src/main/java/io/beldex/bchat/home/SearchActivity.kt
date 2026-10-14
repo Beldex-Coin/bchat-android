@@ -226,6 +226,7 @@ private fun SearchView(
                 placeholder = {
                     Text(
                         text = stringResource(id = R.string.search_name_bns_bchat_id),
+                        modifier = Modifier.padding(start = 4.dp),
                         fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                         fontSize = 14.sp,
                         color = MaterialTheme.appColors.onboardingInputHint

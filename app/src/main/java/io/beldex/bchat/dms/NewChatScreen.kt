@@ -230,6 +230,7 @@ fun NewChatScreen(
                         placeholder = {
                             Text(
                                 text = stringResource(R.string.search_name_bns_bchat_id),
+                modifier = Modifier.padding(start = 4.dp),
                                 fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                                 fontSize = 12.sp,
                                 maxLines = 1,

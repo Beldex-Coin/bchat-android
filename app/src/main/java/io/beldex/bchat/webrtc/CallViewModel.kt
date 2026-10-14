@@ -103,6 +103,9 @@ public class CallViewModel @Inject constructor(private val callManager: CallMana
     val callStartTime: Long
         get() = callManager.callStartTime
 
+    /** The remote participant of the current call, if any. */
+    val currentRecipient get() = callManager.recipient
+
     fun swapVideos() {
         callManager.swapVideos()
     }

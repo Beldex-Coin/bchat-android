@@ -85,12 +85,12 @@ class ControlMessageView : LinearLayout {
 
         /*Hales63*/
         var messageBody: CharSequence = message.getDisplayBody(context)
+        var inlineIcon = 0
         when {
             message.isExpirationTimerUpdate -> {
-                binding.iconImageView.setImageDrawable(
-                    ResourcesCompat.getDrawable(resources, R.drawable.ic_timer, context.theme)
-                )
-                binding.iconImageView.visibility = View.VISIBLE
+                // Figma: the timer glyph sits inline at the start of the chip, not above it.
+                inlineIcon = R.drawable.ic_timer
+                binding.textView.textSize = 10f
             }
             message.isMediaSavedNotification -> {
                 binding.iconImageView.setImageDrawable(
@@ -176,6 +176,14 @@ class ControlMessageView : LinearLayout {
         }
         binding.textView.isVisible = messageBody.trim().isNotEmpty()
         binding.textView.text = messageBody
+        // Icon is sized to the text (Figma: 10dp glyph beside 10sp text) so it stays inline in the chip.
+        val iconDrawable = if (inlineIcon != 0) ContextCompat.getDrawable(context, inlineIcon)?.mutate() else null
+        iconDrawable?.let {
+            val size = (binding.textView.textSize * 0.95f).toInt()
+            it.setBounds(0, 0, size, size)
+        }
+        binding.textView.setCompoundDrawablesRelative(iconDrawable, null, null, null)
+        binding.textView.compoundDrawablePadding = (6 * resources.displayMetrics.density).toInt()
         styleChips(messageBody)
 
         // handle long clicked if it was passed on

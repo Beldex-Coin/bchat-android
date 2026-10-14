@@ -100,10 +100,12 @@ fun UserDetailsSheetContent(
                     textStyle = androidx.compose.ui.text.TextStyle(
                         color = MaterialTheme.appColors.editTextColor,
                         fontFamily = OpenSans,
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
                         fontSize = 18.sp,
                         textAlign = TextAlign.Center
                     ),
                     singleLine = true,
+                    visualTransformation = io.beldex.bchat.compose_utils.CursorGapTransformation,
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = { onSaveNicknameClick() }),
                     colors = TextFieldDefaults.colors(

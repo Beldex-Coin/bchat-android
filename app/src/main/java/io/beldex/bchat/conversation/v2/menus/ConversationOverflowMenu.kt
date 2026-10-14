@@ -2,6 +2,7 @@ package io.beldex.bchat.conversation.v2.menus
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.DropdownMenu
@@ -36,6 +37,8 @@ import io.beldex.bchat.compose_utils.appColors
 @Composable
 fun ConversationHeaderActions(
     showCallIcon: Boolean,
+    expirationLabel: String? = null,
+    onExpirationClick: () -> Unit = {},
     menuEntries: List<ConversationMenuEntry>,
     onCallClick: () -> Unit,
     onMenuOpen: () -> Unit = {},
@@ -48,6 +51,25 @@ fun ConversationHeaderActions(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        if (expirationLabel != null) {
+            // Figma "Timer 1": the disappearing-messages timer shown beside the call icon.
+            IconButton(onClick = onExpirationClick) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_timer_new),
+                        contentDescription = stringResource(id = R.string.disappearing_messages),
+                        tint = MaterialTheme.appColors.editTextColor,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Text(
+                        text = expirationLabel,
+                        color = MaterialTheme.appColors.editTextColor,
+                        fontSize = 7.sp,
+                        modifier = Modifier.padding(top = 5.dp)
+                    )
+                }
+            }
+        }
         if (showCallIcon) {
             IconButton(onClick = onCallClick) {
                 Icon(

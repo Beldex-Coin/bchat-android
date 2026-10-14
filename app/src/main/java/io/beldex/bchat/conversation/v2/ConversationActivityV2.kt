@@ -257,6 +257,8 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
 
     private var uiJob : Job?=null
     private val callDurationFormat="HH:mm:ss"
+    /** Bumped when the recipient is mutated in place (e.g. disappearing timer) so the Compose header recomposes. */
+    private val headerRefreshTick = androidx.compose.runtime.mutableIntStateOf(0)
 
     // -------------------- Hilt injections ----------------
     @Inject
@@ -455,12 +457,17 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
             BChatTheme {
                 val recipient by viewModel.recipient.collectAsStateWithLifecycle()
                 recipient?.let { thread ->
-                    val menuEntries = remember(thread, thread.isMuted, thread.isBlocked, thread.expireMessages) {
+                    val refreshTick = headerRefreshTick.intValue
+                    val menuEntries = remember(thread, thread.isMuted, thread.isBlocked, thread.expireMessages, refreshTick) {
                         ConversationMenuHelper.buildMenuEntries(this, this@ConversationActivityV2, thread)
                     }
                     val showCallIcon = !thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isLocalNumber
                     ConversationHeaderActions(
                         showCallIcon = showCallIcon,
+                        expirationLabel = if (thread.expireMessages > 0) {
+                            com.beldex.libbchat.utilities.ExpirationUtil.getExpirationAbbreviatedDisplayValue(this@ConversationActivityV2, thread.expireMessages)
+                        } else null,
+                        onExpirationClick = { showExpiringMessagesDialog(thread) },
                         menuEntries = menuEntries,
                         onCallClick = {
                             hideAttachmentContainer()
@@ -787,10 +794,8 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                             binding.callActionBarView.isVisible=false
                         } else {
                             binding.callActionBarView.isVisible=true
-                            binding.callDurationCall.text=DurationFormatUtils.formatDuration(
-                                System.currentTimeMillis() - startTime,
-                                callDurationFormat
-                            )
+                            binding.callDurationCall.text = io.beldex.bchat.webrtc.CallBannerUtils.formatDuration(System.currentTimeMillis() - startTime)
+                            binding.callInProgressCall.text = io.beldex.bchat.webrtc.CallBannerUtils.label(this@ConversationActivityV2, callViewModel)
                         }
 
                         delay(1_000)
@@ -3867,6 +3872,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                     expiringMessageManager.setExpirationTimer(message)
                     MessageSender.send(message, thread.address)
 
+                    headerRefreshTick.intValue++
                     invalidateOptionsMenu()
                 }
             }

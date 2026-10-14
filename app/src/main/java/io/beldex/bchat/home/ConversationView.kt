@@ -51,7 +51,7 @@ class ConversationView : LinearLayout {
     fun bind(thread: ThreadRecord, isTyping: Boolean, glide: RequestManager) {
         this.thread = thread
         val recipient = thread.recipient
-        val isMuted = recipient.isMuted || recipient.notifyType != NOTIFY_TYPE_ALL
+        val isMuted = recipient.isMuted || recipient.notifyType != NOTIFY_TYPE_ALL || (recipient.isBlocked && !recipient.isGroupRecipient)
         val unreadCount = thread.unreadCount
         binding.pinnedViewContainer.isVisible = thread.isPinned
         binding.contentView.apply {
@@ -85,8 +85,11 @@ class ConversationView : LinearLayout {
         } else{
             binding.timestampTextView.setTextColor(context.getColor(R.color.home_row_timestamp))
         }
-        binding.muteIcon.isVisible = isMuted
-        val drawableRes = if (recipient.isMuted || recipient.notifyType == NOTIFY_TYPE_NONE) {
+        val isBlockedContact = recipient.isBlocked && !recipient.isGroupRecipient
+        binding.muteIcon.isVisible = isMuted || isBlockedContact
+        val drawableRes = if (isBlockedContact) {
+            R.drawable.ic_blocked_home
+        } else if (recipient.isMuted || recipient.notifyType == NOTIFY_TYPE_NONE) {
             R.drawable.ic_mute_home
         } else {
             R.drawable.ic_mention_home

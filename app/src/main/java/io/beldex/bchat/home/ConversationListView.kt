@@ -3,6 +3,7 @@ package io.beldex.bchat.home
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -179,17 +180,19 @@ private fun ConversationRow(
         state = dismissState,
         enableDismissFromStartToEnd = false,
         backgroundContent = {
+            // Figma destructive style: red-tinted panel, red hairline, red bin.
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.appColors.negativeRedButtonBorder)
-                    .padding(horizontal = 20.dp),
+                    .background(androidx.compose.ui.graphics.Color(0x1AFF3E3E))
+                    .border(0.5.dp, androidx.compose.ui.graphics.Color(0xFFFF3E3E))
+                    .padding(horizontal = 24.dp),
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_delete_24),
+                    painter = painterResource(id = R.drawable.ic_delete_menu),
                     contentDescription = stringResource(R.string.delete),
-                    tint = MaterialTheme.appColors.primaryButtonIconColor
+                    tint = androidx.compose.ui.graphics.Color(0xFFFF3E3E)
                 )
             }
         }
@@ -219,7 +222,9 @@ private fun ConversationRow(
             DropdownMenu(
                 expanded = showMenu,
                 onDismissRequest = { showMenu = false },
-                containerColor = MaterialTheme.appColors.backgroundColor.copy(alpha = 0.96f),
+                containerColor = androidx.compose.ui.graphics.Color(0xF2111111),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(18.dp),
+                border = androidx.compose.foundation.BorderStroke(1.dp, androidx.compose.ui.graphics.Color(0x33FFFFFF)),
                 shadowElevation = 16.dp,
                 modifier = Modifier
                     .zIndex(1f)

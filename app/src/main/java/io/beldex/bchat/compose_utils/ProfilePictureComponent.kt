@@ -88,9 +88,10 @@ fun ProfilePictureComponent(
                         Image(
                             painter=painterResource(id=R.drawable.ic_secret_group_profile),
                             contentDescription=null,
+                            // Figma group badge: 16dp, flush with the tile's bottom-right corner.
                             modifier=modifier
-                                .size(if(isGroupInfo)35.dp else 25.dp)
-                                .align(Alignment.BottomEnd).padding(end=5.dp)
+                                .size(if(isGroupInfo) 26.dp else 16.dp)
+                                .align(Alignment.BottomEnd)
                         )
                     /*additionalPublicKey?.let { adnPublicKey ->
                         additionalDisplayName?.let { addDisplayName ->
@@ -287,11 +288,6 @@ fun ProfilePicture(
                         modifier = modifier
                             .size(containerSize)
                             .clip(NotchedAvatarShape)
-                            .border(
-                                width = if (pictureType == 1) 2.dp else 4.dp,
-                                color = MaterialTheme.appColors.primaryButtonColor,
-                                shape = NotchedAvatarShape
-                            )
                     )
                     Image(
                         painter = painterResource(id = R.drawable.ic_bns_verified_tag),

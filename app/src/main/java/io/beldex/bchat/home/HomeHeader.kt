@@ -56,11 +56,9 @@ fun HomeHeader(
             ProfilePictureComponent(
                 publicKey = publicKey,
                 displayName = displayName,
-                containerSize = ProfilePictureMode.SmallPicture.size,
+                containerSize = 29.dp,
                 pictureMode = ProfilePictureMode.SmallPicture,
                 modifier = Modifier
-                    .size(29.dp)
-                    .clip(NotchedAvatarShape)
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
@@ -89,27 +87,25 @@ fun HomeHeader(
         }
 
         AnimatedVisibility(visible = showConnectivityWarning) {
+            // Figma: red "danger" triangle left of the message, text directly on the page.
             Row(
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.Top,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 22.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.appColors.dialogBackground)
-                    .padding(12.dp)
+                    .padding(horizontal = 12.dp, vertical = 6.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(8.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.appColors.negativeRedButtonBorder)
+                androidx.compose.foundation.Image(
+                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_warning_no_internet),
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp)
                 )
                 Text(
                     text = stringResource(R.string.hop_connection_error_message),
                     color = MaterialTheme.appColors.homeBannerText,
                     fontFamily = RobotoMono,
                     fontSize = 12.sp,
-                    modifier = Modifier.padding(start = 10.dp)
+                    lineHeight = 16.sp,
+                    modifier = Modifier.padding(start = 14.dp)
                 )
             }
         }

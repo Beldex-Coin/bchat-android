@@ -187,8 +187,10 @@ fun MessageRequestsScreen(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(59.dp)
-                        .background(MaterialTheme.appColors.dialogBackground)
+                        .height(64.dp)
+                        .background(Color(0xFF222222))
+                        .border(1.dp, Color(0xFF444444))
+                        .clickable { onRequestClick(recipient) }
                         .padding(horizontal = 14.dp)
                 )
             }

@@ -272,9 +272,9 @@ fun ArchiveChatScreen(
                 onDismissRequest = { showMenu = false },
             ) {
                 Card(
-                    shape = androidx.compose.ui.graphics.RectangleShape,
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.backgroundColor.copy(alpha = 0.96f)),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
+                    shape = RoundedCornerShape(18.dp),
+                    colors = CardDefaults.cardColors(containerColor = androidx.compose.ui.graphics.Color(0xF2111111)),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, androidx.compose.ui.graphics.Color(0x33FFFFFF)),
                     elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
                     modifier = Modifier.wrapContentWidth().widthIn(max = 320.dp)
                 ) {

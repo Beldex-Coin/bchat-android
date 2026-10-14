@@ -1,5 +1,7 @@
 package io.beldex.bchat.home
 
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,6 +32,7 @@ import io.beldex.bchat.R
 fun NewChatButtons(
     openNewConversationChat: () -> Unit
 ) {
+    val fabDescription = stringResource(R.string.activity_create_private_chat_title)
     Column(
         horizontalAlignment = Alignment.End,
         verticalArrangement = Arrangement.Bottom,
@@ -52,12 +55,17 @@ fun NewChatButtons(
                         .size(30.dp)
                         .background(MaterialTheme.appColors.homeFabBackground, notchedCornerShape(6.dp))
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_plus),
-                        contentDescription = stringResource(R.string.activity_create_private_chat_title),
-                        tint = MaterialTheme.appColors.homeFabIconColor,
-                        modifier = Modifier.size(12.dp)
-                    )
+                    // Figma "FAB New Chat": two 10 x 1.5 bars, #0A0A0A.
+                    androidx.compose.foundation.Canvas(
+                        modifier = Modifier
+                            .size(10.dp)
+                            .semantics { contentDescription = fabDescription }
+                    ) {
+                        val bar = 1.5.dp.toPx()
+                        val barColor = androidx.compose.ui.graphics.Color(0xFF0A0A0A)
+                        drawRect(barColor, topLeft = androidx.compose.ui.geometry.Offset(0f, (size.height - bar) / 2), size = androidx.compose.ui.geometry.Size(size.width, bar))
+                        drawRect(barColor, topLeft = androidx.compose.ui.geometry.Offset((size.width - bar) / 2, 0f), size = androidx.compose.ui.geometry.Size(bar, size.height))
+                    }
                 }
             }
         }

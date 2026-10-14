@@ -45,11 +45,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans_regular"
+                android:fontFamily="@font/roboto_mono"
                 android:padding="5dp"
                 android:text="@string/upload_from_gallery"
-                android:textColor="@color/text"
-                android:textSize="@dimen/small_font_size" />
+                android:textColor="#ACACAC"
+                android:textSize="14sp" />
         </LinearLayout>
 
         <TextView
@@ -61,13 +61,12 @@
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="30dp"
             android:background="@drawable/scan_qr_content_background"
-            android:fontFamily="@font/open_sans_medium"
+            android:fontFamily="@font/roboto_mono"
             android:gravity="center"
             android:padding="@dimen/large_spacing"
             android:text="@string/activity_create_private_chat_scan_qr_code_explanation"
-            android:textColor="@color/white"
-            android:textSize="@dimen/small_font_size"
-            android:textStyle="bold" />
+            android:textColor="#737373"
+            android:textSize="12sp" />
 
     </LinearLayout>
 

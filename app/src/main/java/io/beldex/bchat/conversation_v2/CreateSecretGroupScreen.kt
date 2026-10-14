@@ -1,5 +1,7 @@
 package io.beldex.bchat.conversation_v2
 
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.offset
 import io.beldex.bchat.util.BChatToast
 import android.app.Activity
 import android.content.Context
@@ -119,9 +121,7 @@ fun CreateSecretGroup(
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState())
+                modifier = Modifier.weight(1f)
             ) {
                 GroupNameField(
                     groupName = groupName,
@@ -132,6 +132,7 @@ fun CreateSecretGroup(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .weight(1f)
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
                         .padding(12.dp)
@@ -149,30 +150,50 @@ fun CreateSecretGroup(
                             .fillMaxWidth()
                             .padding(top = 64.dp)
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_doodle_3_1),
-                            contentDescription = null,
-                            modifier = Modifier.size(120.dp)
-                        )
+                        // Figma empty state: two ghosted bordered rows and a grey mono caption.
+                        Box(modifier = Modifier.size(width = 200.dp, height = 62.dp)) {
+                            val ghost = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall)
+                            Box(
+                                modifier = Modifier
+                                    .offset(x = 77.dp, y = 0.dp)
+                                    .size(width = 123.dp, height = 33.dp)
+                                    .background(Color(0xFF111111), ghost)
+                                    .border(1.dp, Color(0xFF444444), ghost)
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .offset(x = 0.dp, y = 26.dp)
+                                    .size(width = 123.dp, height = 33.dp)
+                                    .background(Color(0xFF111111), ghost)
+                                    .border(1.dp, Color(0xFF444444), ghost)
+                            )
+                        }
                         Text(
                             text = stringResource(R.string.no_contacts_yet),
-                            fontFamily = io.beldex.bchat.compose_utils.OpenSans,
-                            color = MaterialTheme.appColors.onboardingInputHint,
-                            fontSize = 14.sp,
-                            modifier = Modifier.padding(top = 16.dp)
+                            fontFamily = RobotoMono,
+                            color = Color(0xFF555555),
+                            fontSize = 13.5.sp,
+                            modifier = Modifier.padding(top = 20.dp)
                         )
                     }
                 } else {
-                    contacts.forEach { recipient ->
-                        GroupContact(
-                            recipient = recipient,
-                            isSelected = selectedContact.contains(recipient.address.toString()),
-                            onSelectionChanged = { contact, isSelected ->
-                                onEvent(SecretGroupEvents.RecipientSelectionChanged(contact, isSelected))
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        )
+                    // Only the contact list scrolls; the name field and search stay put (N22).
+                    androidx.compose.foundation.lazy.LazyColumn(modifier = Modifier.fillMaxWidth().weight(1f)) {
+                        items(
+                            count = contacts.size,
+                            key = { index -> contacts[index].address.toString() }
+                        ) { index ->
+                            val recipient = contacts[index]
+                            GroupContact(
+                                recipient = recipient,
+                                isSelected = selectedContact.contains(recipient.address.toString()),
+                                onSelectionChanged = { contact, isSelected ->
+                                    onEvent(SecretGroupEvents.RecipientSelectionChanged(contact, isSelected))
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            )
+                        }
                     }
                 }
                 }

@@ -754,8 +754,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:layout_weight="1"
-                            android:backgroundTint="@color/blocked_action_green_bg"
-                            app:strokeColor="@color/blocked_action_green"
+                            android:backgroundTint="#E0E0E0"
+                            app:strokeColor="#0A370A"
                             app:strokeWidth="1dp"
                             app:shapeAppearanceOverlay="@style/ShapeAppearance.NotchedButton"
                             android:fontFamily="@font/open_sans_semi_bold"
@@ -767,11 +767,11 @@
                             android:paddingBottom="16dp"
                             android:text="@string/ConversationActivity_unblock"
                             android:textAllCaps="false"
-                            android:textColor="@color/blocked_action_text"
+                            android:textColor="#0B0B0B"
                             android:textSize="14sp"
                                                         app:icon="@drawable/ic_unblock_user"
                             app:iconGravity="textStart"
-                            app:iconTint="@color/blocked_action_green" />
+                            app:iconTint="#0B0B0B" />
 
                     </LinearLayout>
 

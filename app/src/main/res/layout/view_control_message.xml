@@ -10,9 +10,9 @@
     <TextView
         android:id="@+id/dateBreakTextView"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:minWidth="120dp"
-        android:paddingHorizontal="24dp"
+        android:layout_height="28dp"
+        android:minWidth="110dp"
+        android:paddingHorizontal="20dp"
         android:fontFamily="@font/roboto_mono"
         android:gravity="center"
         android:background="@drawable/date_chip_background"

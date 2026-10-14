@@ -1726,4 +1726,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="hops_none_description">With this option selected, messages will be sent directly to the recipient\'s swarm without routing through intermediary nodes.</string>
     <string name="hops_one_description">With this option selected, messages are routed through one intermediary node.</string>
     <string name="hops_three_description">With this option selected, messages will be routed through three intermediary nodes.</string>
+    <string name="write_message">Write Message</string>
 </resources>

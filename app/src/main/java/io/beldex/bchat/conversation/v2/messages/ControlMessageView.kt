@@ -49,6 +49,20 @@ class ControlMessageView : LinearLayout {
         )
     }
 
+    /** Figma control-message chip: notched, #111111 fill, hairline; "You left this group" is red. */
+    private fun styleChips(messageBody: CharSequence) {
+        val density = resources.displayMetrics.density
+        val left = messageBody.toString() == context.getString(R.string.MessageRecord_left_group)
+        val accent = if (left) 0xFFFF3E3E.toInt() else 0xFF444444.toInt()
+        binding.textView.background = io.beldex.bchat.compose_utils.NotchedDrawable(
+            6 * density, 0.75f * density, 0xFF111111.toInt(), accent
+        )
+        binding.textView.setTextColor(if (left) 0xFFFF3E3E.toInt() else 0xFF8D8D8D.toInt())
+        binding.dateBreakTextView.background = io.beldex.bchat.compose_utils.NotchedDrawable(
+            8 * density, 0.5f * density, 0xFF111111.toInt(), 0xFF444444.toInt()
+        )
+    }
+
     // region Updating
     @SuppressLint("StringFormatMatches")
     fun bind(message: MessageRecord, previous: MessageRecord?, longPress: (() -> Unit)? = null) {
@@ -162,6 +176,7 @@ class ControlMessageView : LinearLayout {
         }
         binding.textView.isVisible = messageBody.trim().isNotEmpty()
         binding.textView.text = messageBody
+        styleChips(messageBody)
 
         // handle long clicked if it was passed on
         longPress?.let {

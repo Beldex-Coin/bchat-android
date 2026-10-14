@@ -231,7 +231,9 @@ fun NewChatScreen(
                             Text(
                                 text = stringResource(R.string.search_name_bns_bchat_id),
                                 fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
-                                fontSize = 14.sp,
+                                fontSize = 12.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
                                 color = MaterialTheme.appColors.onboardingInputHint
                             )
                         },
@@ -554,7 +556,7 @@ fun NewChatPopUp(
                     .background(MaterialTheme.appColors.dialogBackground)
                     .border(
                         1.dp,
-                        if (bchatIdErrorStatus) MaterialTheme.appColors.negativeRedButtonBorder else MaterialTheme.appColors.pinBoxInactiveBorder
+                        if (bchatIdErrorStatus) MaterialTheme.appColors.negativeRedButtonBorder else Color(0xFF444444)
                     )
                     .padding(horizontal = 14.dp, vertical = 12.dp)
             ) {
@@ -613,9 +615,9 @@ fun NewChatPopUp(
                     shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
                     containerColor = Color(0xFFE0E0E0),
                     contentColor = Color(0xFF0B0B0B),
-                    disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
-                    disabledContentColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledText,
-                    border = if (canStart) BorderStroke(1.dp, Color(0xFF0A370A)) else BorderStroke(1.dp, MaterialTheme.appColors.dividerColor),
+                    disabledContainerColor = Color(0xFF1A1A1A),
+                    disabledContentColor = Color(0xFF737373),
+                    border = if (canStart) BorderStroke(1.dp, Color(0xFF0A370A)) else null,
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
                     modifier = Modifier
                         .weight(1f)

@@ -1,6 +1,8 @@
 package io.beldex.bchat.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -65,7 +67,12 @@ fun UserDetailsSheetContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.appColors.userDetailsSheetBackground)
+            .background(
+                androidx.compose.ui.graphics.Brush.radialGradient(
+                    colors = listOf(androidx.compose.ui.graphics.Color(0xFF1A1A1A), androidx.compose.ui.graphics.Color(0xFF0B0B0B)),
+                    radius = 900f
+                )
+            )
             .padding(horizontal = 22.dp, vertical = 24.dp)
     ) {
         ProfilePictureComponent(
@@ -115,9 +122,8 @@ fun UserDetailsSheetContent(
                     tint = MaterialTheme.appColors.userDetailsCancelIconColor,
                     modifier = Modifier
                         .padding(start = 8.dp)
-                        .size(24.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.appColors.userDetailsCancelBackground)
+                        .size(26.dp)
+                        .background(androidx.compose.ui.graphics.Color(0xFF222222), notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall))
                         .padding(4.dp)
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
@@ -132,9 +138,8 @@ fun UserDetailsSheetContent(
                     tint = MaterialTheme.appColors.primaryButtonIconColor,
                     modifier = Modifier
                         .padding(start = 8.dp)
-                        .size(24.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.appColors.userDetailsConfirmBackground)
+                        .size(26.dp)
+                        .background(MaterialTheme.appColors.userDetailsConfirmBackground, notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall))
                         .padding(4.dp)
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
@@ -181,8 +186,8 @@ fun UserDetailsSheetContent(
                 modifier = Modifier
                     .padding(top = 20.dp)
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.appColors.dialogBackground)
+                    .background(androidx.compose.ui.graphics.Color(0xFF111111))
+                    .border(1.dp, androidx.compose.ui.graphics.Color(0xFF333333))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
@@ -194,14 +199,16 @@ fun UserDetailsSheetContent(
             PrimaryButton(
                 onClick = onMessageClick,
                 shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchLarge),
-                containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
-                contentColor = MaterialTheme.appColors.backgroundColor,
+                containerColor = androidx.compose.ui.graphics.Color(0xFFE0E0E0),
+                contentColor = androidx.compose.ui.graphics.Color(0xFF0B0B0B),
+                border = androidx.compose.foundation.BorderStroke(1.dp, androidx.compose.ui.graphics.Color(0xFF0A370A)),
                 modifier = Modifier
                     .padding(top = 16.dp)
                     .fillMaxWidth()
+                    .heightIn(min = 54.dp)
             ) {
                 Text(
-                    text = stringResource(R.string.ConversationActivity_message),
+                    text = stringResource(R.string.write_message),
                     fontFamily = RobotoMono,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 14.sp

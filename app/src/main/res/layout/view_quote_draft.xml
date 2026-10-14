@@ -7,11 +7,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:quote_mode="draft"
-    app:cardCornerRadius="16dp"
+    app:cardCornerRadius="0dp"
     android:layout_margin="8dp"
     android:elevation="0dp"
     app:cardElevation="0dp"
-    app:cardBackgroundColor="@color/quote_view_background"
+    app:cardBackgroundColor="#111111"
     app:contentPadding="8dp">
 
     <LinearLayout
@@ -41,7 +41,7 @@
             tools:visibility="gone" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:fontFamily="@font/open_sans_medium"
+            android:fontFamily="@font/roboto_mono"
             tools:visibility="visible"
             android:id="@+id/quoteViewAuthorTextView"
             android:layout_width="0dp"
@@ -78,7 +78,7 @@
                 />
 
             <TextView
-                android:fontFamily="@font/open_sans_regular"
+                android:fontFamily="@font/roboto_mono"
                 android:id="@+id/contactName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
             android:visibility="gone"/>
 
         <com.google.android.material.textview.MaterialTextView
-            android:fontFamily="@font/open_sans_regular"
+            android:fontFamily="@font/roboto_mono"
             android:id="@+id/quoteViewBodyTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

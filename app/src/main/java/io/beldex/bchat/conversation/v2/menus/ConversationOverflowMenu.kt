@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -63,7 +62,7 @@ fun ConversationHeaderActions(
         Box {
             IconButton(onClick = { onMenuOpen(); showMenu = true }) {
                 Icon(
-                    imageVector = Icons.Default.MoreVert,
+                    painter = painterResource(id = R.drawable.ic_menu_dots),
                     contentDescription = null,
                     tint = MaterialTheme.appColors.editTextColor,
                     modifier = Modifier.size(22.dp)

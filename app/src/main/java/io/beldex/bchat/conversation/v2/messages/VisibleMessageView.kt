@@ -289,9 +289,9 @@ class VisibleMessageView : LinearLayout {
             !message.isOutgoing -> null to null
             message.isPending -> R.drawable.ic_circle_dot_dot_dot to null
             message.isRead -> R.drawable.ic_message_seen to null
-            message.isSent -> R.drawable.ic_message_sent to null
+            message.isSent -> R.drawable.ic_msg_tick_sent to null
             message.isFailed -> R.drawable.ic_message_failed to null
-            else -> R.drawable.ic_message_sent to null
+            else -> R.drawable.ic_msg_tick_sent to null
         }
     }
 

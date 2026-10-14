@@ -1213,7 +1213,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                 showGIFPicker()
                 toggleAttachmentOptions()
             } else {
-                BChatToast.makeText(
+                BChatToast.error(
                     this,
                     R.string.please_check_your_internet_connection,
                     Toast.LENGTH_SHORT
@@ -1310,7 +1310,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                         }
 
                         override fun onFailure(e: ExecutionException?) {
-                            BChatToast.makeText(
+                            BChatToast.error(
                                 this@ConversationActivityV2,
                                 R.string.activity_conversation_attachment_prep_failed,
                                 Toast.LENGTH_LONG
@@ -1361,7 +1361,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                     }
 
                     override fun onFailure(e: ExecutionException?) {
-                        BChatToast.makeText(
+                        BChatToast.error(
                             this@ConversationActivityV2,
                             R.string.activity_conversation_attachment_prep_failed,
                             Toast.LENGTH_LONG
@@ -1402,7 +1402,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
 
                     // ---------- UI messages ----------
                     uiState.uiMessages.firstOrNull()?.let { uiMessage ->
-                        BChatToast.makeText(
+                        BChatToast.error(
                             this@ConversationActivityV2,
                             uiMessage.message,
                             Toast.LENGTH_LONG
@@ -2489,7 +2489,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
 
     private fun callSendTextOnlyMessage() {
         if (binding.inputBar.text.length > 4096) {
-            BChatToast.makeText(
+            BChatToast.error(
                 this,
                 getString(R.string.text_limit_exceed_warnings),
                 Toast.LENGTH_SHORT
@@ -2746,7 +2746,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
             }
 
             override fun onFailure(e : ExecutionException?) {
-                    BChatToast.makeText(
+                    BChatToast.error(
                         this@ConversationActivityV2,
                         R.string.activity_conversation_attachment_prep_failed,
                         Toast.LENGTH_LONG
@@ -2967,7 +2967,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
 
         val callStartTime = callViewModel.callStartTime ?: -1L
         if (callStartTime != -1L) {
-            BChatToast.makeText(
+            BChatToast.error(
                 this,
                 getString(R.string.warning_message_of_voice_recording),
                 Toast.LENGTH_SHORT
@@ -3215,7 +3215,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
 
             override fun onFailure(e: ExecutionException) {
                 if (!isFinishing && !isDestroyed) {
-                    BChatToast.makeText(
+                    BChatToast.error(
                         this@ConversationActivityV2,
                         R.string.ConversationActivity_unable_to_record_audio,
                         Toast.LENGTH_LONG
@@ -3510,7 +3510,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                 )
                 .onAnyDenied {
                     endActionMode()
-                    BChatToast.makeText(
+                    BChatToast.error(
                         this@ConversationActivityV2,
                         R.string.MediaPreviewActivity_unable_to_write_to_external_storage_without_permission,
                         Toast.LENGTH_LONG
@@ -3545,7 +3545,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                         return@onAllGranted
                     }
 
-                    BChatToast.makeText(
+                    BChatToast.error(
                         this@ConversationActivityV2,
                         resources.getQuantityString(
                             R.plurals.ConversationFragment_error_while_saving_attachments_to_sd_card,

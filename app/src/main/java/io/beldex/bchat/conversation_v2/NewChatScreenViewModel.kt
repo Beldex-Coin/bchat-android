@@ -80,9 +80,9 @@ class NewChatScreenViewModel@Inject constructor(
                 _isBnsLoading.value = false
                 openChat(hexEncodedPublicKey, input)
             }.failUi {
+                // Shown inline under the field only; a toast on top of it was a duplicate (N21.3).
                 _chatIdError.value = true
                 _isBnsLoading.value = false
-                _events.tryEmit(Event.Message(R.string.fragment_enter_public_key_error_message))
             }
         }
     }

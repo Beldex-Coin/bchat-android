@@ -195,7 +195,8 @@ public class Permissions {
           () -> {
             executeNoPermissionsRequest(request);
             return kotlin.Unit.INSTANCE;
-          });
+          },
+          R.drawable.ic_permission_setting);
     }
 
     private void executePermissionsRequest(PermissionsRequest request) {
@@ -389,7 +390,8 @@ public class Permissions {
               context.startActivity(getApplicationSettingsIntent(context));
               return kotlin.Unit.INSTANCE;
             },
-            null);
+            null,
+            R.drawable.ic_permission_setting);
       }
     }
   }

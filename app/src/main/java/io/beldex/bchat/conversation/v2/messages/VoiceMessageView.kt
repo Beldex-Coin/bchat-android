@@ -245,7 +245,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         }
 
         if (TextSecurePreferences.getRecordingStatus(context)) {
-            BChatToast.makeText(
+            BChatToast.error(
                 context,
                 context.getString(R.string.unable_to_play_audio_while_recording),
                 Toast.LENGTH_SHORT

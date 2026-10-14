@@ -415,7 +415,7 @@ class VisibleMessageContentView : MaterialCardView {
                                 e
                             )
 
-                            BChatToast.makeText(
+                            BChatToast.error(
                                 context,
                                 R.string.ConversationItem_unable_to_open_media,
                                 Toast.LENGTH_LONG

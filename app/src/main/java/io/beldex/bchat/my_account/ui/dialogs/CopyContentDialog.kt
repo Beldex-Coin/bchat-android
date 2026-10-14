@@ -45,9 +45,7 @@ fun CopyContentDialog(
         onDismissRequest = {
                onDismissRequest()
         },
-        containerColor = Color(0xA60B0B0B),
-        shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchCard),
-        showBorder = false
+        shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchCard)
     ) {
         Row(
             modifier = Modifier

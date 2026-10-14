@@ -202,10 +202,7 @@ fun ProfilePicture(
                             .into(imageView)
                         imageView
                     },
-                    modifier = modifier.border(
-                        width = if (pictureType == 1) 2.dp else 4.dp,
-                        color = MaterialTheme.appColors.primaryButtonColor,
-                        shape = NotchedAvatarShape)
+                    modifier = modifier
                 )
                 Image(
                     painter = painterResource(id = R.drawable.ic_bns_verified_tag),

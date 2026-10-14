@@ -344,7 +344,7 @@ class MyAccountActivity : BaseComponentActivity() {
                 }
                 .execute()
         } else {
-            BChatToast.makeText(
+            BChatToast.error(
                 this,
                 getString(R.string.please_check_your_internet_connection),
                 Toast.LENGTH_SHORT
@@ -432,7 +432,7 @@ fun MyAccountNavHost(
 
     fun saveDisplayName(displayName: String, context : Context): Boolean {
         if (displayName.isEmpty()) {
-            BChatToast.makeText(
+            BChatToast.error(
                 context,
                 R.string.activity_display_name_display_name_missing_error,
                 Toast.LENGTH_SHORT
@@ -440,7 +440,7 @@ fun MyAccountNavHost(
             return false
         }
         if (displayName.toByteArray().size > SSKEnvironment.ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
-            BChatToast.makeText(
+            BChatToast.error(
                 context,
                 R.string.activity_display_name_display_name_too_long_error,
                 Toast.LENGTH_SHORT
@@ -661,7 +661,7 @@ fun MyAccountNavHost(
                             }
                         )
                     } else {
-                        BChatToast.makeText(
+                        BChatToast.error(
                             context,
                             context.resources.getString(R.string.please_check_your_internet_connection),
                             Toast.LENGTH_SHORT
@@ -1037,7 +1037,7 @@ fun MyAccountNavHost(
                                             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                                             startActivity(intent)
                                         } catch (e: Exception) {
-                                            BChatToast.makeText(
+                                            BChatToast.error(
                                                 context,
                                                 context.getString(R.string.cannot_open_url),
                                                 Toast.LENGTH_LONG
@@ -1273,7 +1273,7 @@ fun MyAccountNavHost(
                         markedAsSafe = true
                     } else {
                         markedAsSafe = false
-                        BChatToast.makeText(context, context.getString(R.string.failed_to_authenticate), Toast.LENGTH_SHORT).show()
+                        BChatToast.error(context, context.getString(R.string.failed_to_authenticate), Toast.LENGTH_SHORT).show()
                     }
                 }
             val verifyPin: () -> Unit = {

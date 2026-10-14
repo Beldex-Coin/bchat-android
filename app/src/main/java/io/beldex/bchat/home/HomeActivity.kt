@@ -613,7 +613,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                 result(true)
             }else{
                 result(false)
-                BChatToast.makeText(context, context.resources.getString(R.string.invalid_bns_warning_message), Toast.LENGTH_SHORT).show()
+                BChatToast.error(context, context.resources.getString(R.string.invalid_bns_warning_message), Toast.LENGTH_SHORT).show()
             }
         }.failUi { exception ->
             var message =
@@ -680,7 +680,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(intent)
         } catch (e: Exception) {
-            BChatToast.makeText(this, getString(R.string.cannot_open_url), Toast.LENGTH_LONG).show()
+            BChatToast.error(this, getString(R.string.cannot_open_url), Toast.LENGTH_LONG).show()
         }
     }*/
     //New Line App Update
@@ -753,7 +753,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                     ).show()
                 }
                 else -> {
-                    BChatToast.makeText(
+                    BChatToast.error(
                         applicationContext,
                         getString(R.string.update_failed),
                         Toast.LENGTH_LONG
@@ -1465,7 +1465,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         //Important
         //if (!Ledger.isConnected()) attachLedger()
         if(!CheckOnline.isOnline(this)){
-            BChatToast.makeText(this,getString(R.string.please_check_your_internet_connection),Toast.LENGTH_SHORT).show()
+            BChatToast.error(this,getString(R.string.please_check_your_internet_connection),Toast.LENGTH_SHORT).show()
         }
         setupCallActionBar()
         ApplicationContext.getInstance(this).messageNotifier.setHomeScreenVisible(false)

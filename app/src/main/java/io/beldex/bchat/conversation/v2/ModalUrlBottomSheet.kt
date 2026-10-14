@@ -1,5 +1,8 @@
 package io.beldex.bchat.conversation.v2
 
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxWidth
 import io.beldex.bchat.util.BChatToast
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -23,32 +26,40 @@ import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentModalUrlBottomSheetBinding
 import io.beldex.bchat.util.UiModeUtilities
 
-class ModalUrlBottomSheet(private val url: String): BottomSheetDialogFragment(), View.OnClickListener {
-    private lateinit var binding: FragmentModalUrlBottomSheetBinding
-    
-    override fun onCreateView(inflater: LayoutInflater,container: ViewGroup?,savedInstanceState: Bundle?): View {
-        binding = FragmentModalUrlBottomSheetBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+class ModalUrlBottomSheet(private val url: String): BottomSheetDialogFragment() {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+        androidx.compose.ui.platform.ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                io.beldex.bchat.compose_utils.BChatTheme(
+                    darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == io.beldex.bchat.util.UiMode.NIGHT
+                ) {
+                    androidx.compose.foundation.layout.Box(
+                        modifier = androidx.compose.ui.Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+                    ) {
+                        io.beldex.bchat.compose_utils.DialogPanel(modifier = androidx.compose.ui.Modifier.fillMaxWidth()) {
+                            io.beldex.bchat.compose_utils.PopupBody(
+                                title = androidx.compose.ui.res.stringResource(R.string.dialog_open_url_title),
+                                message = io.beldex.bchat.compose_utils.boldedMessage(
+                                    androidx.compose.ui.res.stringResource(R.string.dialog_open_url_explanation, url), url
+                                ),
+                                cancelText = androidx.compose.ui.res.stringResource(R.string.cancel),
+                                onCancel = { dismiss() },
+                                middleText = androidx.compose.ui.res.stringResource(R.string.copy),
+                                onMiddle = { copy() },
+                                confirmText = androidx.compose.ui.res.stringResource(R.string.dialog_open_url_title).removeSuffix("?"),
+                                onConfirm = { open() }
+                            )
+                        }
+                    }
+                }
+            }
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val explanation = resources.getString(R.string.dialog_open_url_explanation, url)
-        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-        if (!isLandscape) {
-            val layouts = view.layoutParams as ViewGroup.MarginLayoutParams
-            layouts.leftMargin = 32
-            layouts.rightMargin = 32
-            layouts.bottomMargin = 24
-            view.layoutParams = layouts
-        }
-        val spannable = SpannableStringBuilder(explanation)
-        val startIndex = explanation.indexOf(url)
-        spannable.setSpan(StyleSpan(Typeface.BOLD), startIndex, startIndex + url.count(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        binding.openURLExplanationTextView.text = spannable
-        binding.cancelButton.setOnClickListener(this)
-        binding.copyButton.setOnClickListener(this)
-        binding.openURLButton.setOnClickListener(this)
+        // The Revamp_2026 panel draws its own surface; the sheet itself must be see-through.
+        (view.parent as? View)?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
     }
 
     private fun open() {
@@ -56,7 +67,7 @@ class ModalUrlBottomSheet(private val url: String): BottomSheetDialogFragment(),
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             requireContext().startActivity(intent)
         } catch (e: Exception) {
-            BChatToast.makeText(context, R.string.invalid_url, Toast.LENGTH_SHORT).show()
+            BChatToast.error(context, R.string.invalid_url, Toast.LENGTH_SHORT).show()
         }
         dismiss()
     }
@@ -86,14 +97,6 @@ class ModalUrlBottomSheet(private val url: String): BottomSheetDialogFragment(),
                 val displayHeight = resources.displayMetrics.heightPixels
                 behavior.maxHeight = (displayHeight * 0.9).toInt()
             }
-        }
-    }
-
-    override fun onClick(v: View?) {
-        when (v) {
-            binding.openURLButton -> open()
-            binding.copyButton -> copy()
-            binding.cancelButton -> dismiss()
         }
     }
 }

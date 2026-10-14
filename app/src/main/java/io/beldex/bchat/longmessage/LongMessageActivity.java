@@ -73,7 +73,7 @@ public class LongMessageActivity extends PassphraseRequiredActionBarActivity {
       if (message == null) return;
 
       if (!message.isPresent()) {
-        BChatToast.makeText(this, R.string.LongMessageActivity_unable_to_find_message, Toast.LENGTH_SHORT).show();
+        BChatToast.error(this, R.string.LongMessageActivity_unable_to_find_message, Toast.LENGTH_SHORT).show();
         finish();
         return;
       }

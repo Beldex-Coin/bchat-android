@@ -53,10 +53,11 @@ class SaveAttachmentTask : ProgressDialogAsyncTask<SaveAttachmentTask.Attachment
             val fragmentManager = (context as? androidx.fragment.app.FragmentActivity)?.supportFragmentManager ?: return
             ComposeMessageDialogFragment.show(
                 fragmentManager,
-                title = context.getString(R.string.save),
+                title = context.getString(R.string.ConversationFragment_save_to_sd_card),
                 message = context.resources.getQuantityString(R.plurals.ConversationFragment_saving_n_media_to_storage_warning, count, count),
-                positiveText = context.getString(R.string.save),
-                negativeText = context.getString(R.string.cancel),
+                positiveText = context.getString(R.string.yes),
+                negativeText = context.getString(R.string.no),
+                iconRes = R.drawable.ic_download_media,
                 onPositive = onAcceptListener
             )
         }

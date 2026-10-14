@@ -117,7 +117,7 @@ fun LinkYourBNSDialog(
                     result(true)
                 }else{
                     result(false)
-                    BChatToast.makeText(context, context.resources.getString(R.string.invalid_bns_warning_message), Toast.LENGTH_SHORT).show()
+                    BChatToast.error(context, context.resources.getString(R.string.invalid_bns_warning_message), Toast.LENGTH_SHORT).show()
                 }
             }.failUi { exception ->
                 bnsLoader = false
@@ -280,7 +280,7 @@ fun LinkYourBNSDialog(
                                 }
                             }
                         } else {
-                            BChatToast.makeText(context, context.getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
+                            BChatToast.error(context, context.getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
                         }
                     },
                     shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),

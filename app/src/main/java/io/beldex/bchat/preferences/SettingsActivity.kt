@@ -394,7 +394,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
     private fun saveDisplayName(): Boolean {
         val displayName = binding.displayNameEditText.text.toString().trim()
         if (displayName.isEmpty()) {
-            BChatToast.makeText(
+            BChatToast.error(
                 this,
                 R.string.activity_display_name_display_name_missing_error,
                 Toast.LENGTH_SHORT
@@ -402,7 +402,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             return false
         }
         if (displayName.toByteArray().size > ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
-            BChatToast.makeText(
+            BChatToast.error(
                 this,
                 R.string.activity_display_name_display_name_too_long_error,
                 Toast.LENGTH_SHORT
@@ -468,7 +468,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
                     }
                     .execute()
         } else {
-            BChatToast.makeText(
+            BChatToast.error(
                     this,
                     getString(R.string.please_check_your_internet_connection),
                     Toast.LENGTH_SHORT
@@ -536,7 +536,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(intent)
         } catch (e: Exception) {
-            BChatToast.makeText(this, getString(R.string.cannot_open_url), Toast.LENGTH_LONG).show()
+            BChatToast.error(this, getString(R.string.cannot_open_url), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -569,7 +569,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(intent)
         } catch (e: Exception) {
-            BChatToast.makeText(this, getString(R.string.cannot_open_url), Toast.LENGTH_LONG).show()
+            BChatToast.error(this, getString(R.string.cannot_open_url), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -587,7 +587,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             .maxSdkVersion(Build.VERSION_CODES.P)
             .withPermanentDenialDialog(getString(R.string.MediaPreviewActivity_signal_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied))
             .onAnyDenied {
-                BChatToast.makeText(
+                BChatToast.error(
                     this,
                     R.string.MediaPreviewActivity_unable_to_write_to_external_storage_without_permission,
                     Toast.LENGTH_LONG

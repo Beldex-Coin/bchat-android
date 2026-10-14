@@ -147,7 +147,7 @@ public class GiphyActivity extends PassphraseRequiredActionBarActivity
         viewHolder.gifProgress.setVisibility(View.GONE);
 
         if (uri == null) {
-          BChatToast.makeText(
+          BChatToast.error(
                   GiphyActivity.this,
                   R.string.GiphyActivity_error_while_retrieving_full_resolution_gif,
                   Toast.LENGTH_LONG

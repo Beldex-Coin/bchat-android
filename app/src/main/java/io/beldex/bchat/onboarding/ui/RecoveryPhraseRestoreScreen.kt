@@ -141,12 +141,20 @@ fun RecoveryPhraseRestoreScreen(
                             modifier = Modifier.fillMaxWidth()
                         )
 
+                        // Figma: the "n/25" counter sits on the left, "Clear" on the right of the same row.
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 16.dp)
                         ) {
+                            Text(
+                                text = "$wordCount/25",
+                                color = MaterialTheme.appColors.onboardingBodyColor,
+                                fontFamily = RobotoMono,
+                                fontSize = 12.sp
+                            )
+                            Spacer(modifier = Modifier.weight(1f))
                             if (mnemonic.isNotEmpty()) {
                                 Row(
                                     horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -157,27 +165,14 @@ fun RecoveryPhraseRestoreScreen(
                                         onClick = onClearClick
                                     )
                                 ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.ic_clear_seed),
-                                        contentDescription = null,
-                                        tint = MaterialTheme.appColors.onboardingHeadlineColor,
-                                        modifier = Modifier.size(14.dp)
-                                    )
                                     Text(
                                         text = stringResource(R.string.clear),
-                                        color = MaterialTheme.appColors.onboardingHeadlineColor,
+                                        color = MaterialTheme.appColors.onboardingBodyColor,
                                         fontFamily = RobotoMono,
                                         fontSize = 12.sp
                                     )
                                 }
                             }
-                            Spacer(modifier = Modifier.weight(1f))
-                            Text(
-                                text = "$wordCount/25",
-                                color = MaterialTheme.appColors.onboardingBodyColor,
-                                fontFamily = RobotoMono,
-                                fontSize = 12.sp
-                            )
                         }
                     }
 

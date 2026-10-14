@@ -269,7 +269,7 @@ class DisplayNameActivity : BaseComponentActivity() {
         val trimmedDisplayName = displayName.trim()
         if (trimmedDisplayName.isEmpty()) {
             displayNameError = getString(R.string.activity_display_name_display_name_missing_error)
-            return BChatToast.makeText(
+            return BChatToast.error(
                 this,
                 R.string.activity_display_name_display_name_missing_error,
                 Toast.LENGTH_SHORT
@@ -277,7 +277,7 @@ class DisplayNameActivity : BaseComponentActivity() {
         }
         if (trimmedDisplayName.toByteArray().size > ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
             displayNameError = getString(R.string.activity_display_name_display_name_too_long_error)
-            return BChatToast.makeText(
+            return BChatToast.error(
                 this,
                 R.string.activity_display_name_display_name_too_long_error,
                 Toast.LENGTH_SHORT

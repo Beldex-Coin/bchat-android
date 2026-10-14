@@ -358,7 +358,7 @@ fun GroupDetailsScreen(
                             MessageSender.leave(groupPublicKey!!, true)
                             activity.finish()
                         } else {
-                            BChatToast.makeText(
+                            BChatToast.error(
                                 context,
                                 R.string.ConversationActivity_error_leaving_group,
                                 Toast.LENGTH_LONG
@@ -366,7 +366,7 @@ fun GroupDetailsScreen(
                             showLeaveGroupDialog=false
                         }
                     } catch (e : Exception) {
-                        BChatToast.makeText(
+                        BChatToast.error(
                             context,
                             R.string.ConversationActivity_error_leaving_group,
                             Toast.LENGTH_LONG
@@ -720,7 +720,7 @@ fun GroupDetailsScreen(
                                 if (isSecretGroupIsActive()) {
                                     showExpireMessageDialog=true
                                 } else {
-                                    BChatToast.makeText(
+                                    BChatToast.error(
                                         context,
                                         context.getString(R.string.no_participate_content),
                                         Toast.LENGTH_SHORT
@@ -738,7 +738,7 @@ fun GroupDetailsScreen(
                                 if (isSecretGroupIsActive()) {
                                     editSecretGroup(context, recipient)
                                 } else {
-                                    BChatToast.makeText(
+                                    BChatToast.error(
                                         context,
                                         context.getString(R.string.no_participate_content),
                                         Toast.LENGTH_SHORT
@@ -756,7 +756,7 @@ fun GroupDetailsScreen(
                                 if (isSecretGroupIsActive()) {
                                     showNotificationSettingsDialog=true
                                 } else {
-                                    BChatToast.makeText(
+                                    BChatToast.error(
                                         context,
                                         context.getString(R.string.no_participate_content),
                                         Toast.LENGTH_SHORT

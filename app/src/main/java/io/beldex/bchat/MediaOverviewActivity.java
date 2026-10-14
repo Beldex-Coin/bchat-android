@@ -388,7 +388,7 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
                 .request(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .maxSdkVersion(Build.VERSION_CODES.P)
                 .withPermanentDenialDialog(getString(R.string.MediaPreviewActivity_signal_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied))
-                .onAnyDenied(() -> BChatToast.makeText(getContext(), R.string.MediaPreviewActivity_unable_to_write_to_external_storage_without_permission, Toast.LENGTH_LONG).show())
+                .onAnyDenied(() -> BChatToast.error(getContext(), R.string.MediaPreviewActivity_unable_to_write_to_external_storage_without_permission, Toast.LENGTH_LONG).show())
                 .onAllGranted(() -> {
                   new ProgressDialogAsyncTask<Void, Void, List<SaveAttachmentTask.Attachment>>(
                           context,

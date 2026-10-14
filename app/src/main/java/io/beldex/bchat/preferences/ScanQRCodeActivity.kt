@@ -150,7 +150,7 @@ class ScanQRCodeActivity : PassphraseRequiredActionBarActivity(), ScanQRCodePlac
     }
 
     fun createPrivateChatIfPossible(hexEncodedPublicKey: String) {
-        if (!PublicKeyValidation.isValid(hexEncodedPublicKey)) { return BChatToast.makeText(this, R.string.invalid_bchat_id, Toast.LENGTH_SHORT).show() }
+        if (!PublicKeyValidation.isValid(hexEncodedPublicKey)) { return BChatToast.error(this, R.string.invalid_bchat_id, Toast.LENGTH_SHORT).show() }
        /* val recipient = Recipient.from(this, Address.fromSerialized(hexEncodedPublicKey), false)
         val intent = Intent(this, ConversationActivityV2::class.java)
         intent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)

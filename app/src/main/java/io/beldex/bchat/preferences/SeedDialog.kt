@@ -13,9 +13,9 @@ import com.beldex.libsignal.crypto.MnemonicCodec
 import com.beldex.libsignal.utilities.hexEncodedPrivateKey
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.crypto.MnemonicUtilities
-import io.beldex.bchat.conversation.v2.utilities.BaseDialog
+import io.beldex.bchat.conversation.v2.utilities.LegacyBaseDialog
 
-class SeedDialog : BaseDialog() {
+class SeedDialog : LegacyBaseDialog() {
 
     private val seed by lazy {
         var hexEncodedSeed = IdentityKeyUtil.retrieve(requireContext(), IdentityKeyUtil.BELDEX_SEED)

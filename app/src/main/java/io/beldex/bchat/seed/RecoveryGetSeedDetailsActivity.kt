@@ -131,11 +131,11 @@ class RecoveryGetSeedDetailsActivity :  BaseComponentActivity() {
         val trimmedDisplayName = displayName.trim()
         if (trimmedDisplayName.isEmpty()) {
             displayNameError = getString(R.string.activity_display_name_display_name_missing_error)
-            return BChatToast.makeText(this, R.string.activity_display_name_display_name_missing_error, Toast.LENGTH_SHORT).show()
+            return BChatToast.error(this, R.string.activity_display_name_display_name_missing_error, Toast.LENGTH_SHORT).show()
         }
         if (trimmedDisplayName.toByteArray().size > SSKEnvironment.ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
             displayNameError = getString(R.string.activity_display_name_display_name_too_long_error)
-            return BChatToast.makeText(this, R.string.activity_display_name_display_name_too_long_error, Toast.LENGTH_SHORT).show()
+            return BChatToast.error(this, R.string.activity_display_name_display_name_too_long_error, Toast.LENGTH_SHORT).show()
         }
 
         if (!trimmedDisplayName.matches(englishNamePattern.toRegex())) {

@@ -109,9 +109,9 @@ class ScanQRCodeFragment : Fragment() {
                     val result = reader.decode(bBitmap)
                     scanListener!!.onQrDataFound(result.toString())
                 } catch (e: NotFoundException) {
-                    BChatToast.makeText(requireActivity(), R.string.invalid_qr_code_image, Toast.LENGTH_SHORT).show()
+                    BChatToast.error(requireActivity(), R.string.invalid_qr_code_image, Toast.LENGTH_SHORT).show()
                 } catch (e: NotFoundException) {
-                    BChatToast.makeText(requireActivity(), getString(R.string.invalid_qr_code_image), Toast.LENGTH_SHORT).show()
+                    BChatToast.error(requireActivity(), getString(R.string.invalid_qr_code_image), Toast.LENGTH_SHORT).show()
                 }
             } catch (e: FileNotFoundException) {
                 Log.e("TAG", "scan qr can not open file" + uri.toString(), e)

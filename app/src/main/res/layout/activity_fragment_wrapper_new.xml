@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:background="@color/screen_background">
+    android:background="@android:color/transparent">
 
     <LinearLayout
         android:id="@+id/chatSettingsToolbar"
@@ -34,8 +34,9 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        style="@style/CustomCardViewStyle"
-        app:cardBackgroundColor="@color/new_card_background"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@android:color/transparent"
         android:layout_marginTop="16dp">
 
         <FrameLayout
@@ -43,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
-            android:background="@color/page_background"/>
+            android:background="@android:color/transparent"/>
 
     </com.google.android.material.card.MaterialCardView>
 

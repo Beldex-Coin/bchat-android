@@ -3,13 +3,13 @@ package io.beldex.bchat.preferences
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.preference.ListPreference
-import io.beldex.bchat.conversation.v2.utilities.BaseDialog
+import io.beldex.bchat.conversation.v2.utilities.LegacyBaseDialog
 import io.beldex.bchat.databinding.DialogListPreferenceBinding
 
 class ListPreferenceDialog(
     private val listPreference: ListPreference,
     private val dialogListener: () -> Unit
-) : BaseDialog() {
+) : LegacyBaseDialog() {
     private lateinit var binding: DialogListPreferenceBinding
 
     override fun setContentView(builder: AlertDialog.Builder) {

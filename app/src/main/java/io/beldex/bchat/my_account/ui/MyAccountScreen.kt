@@ -110,7 +110,7 @@ fun MyAccountScreen(
                 }
             )
         } else {
-            BChatToast.makeText(
+            BChatToast.error(
                 context,
                 context.resources.getString(R.string.please_check_your_internet_connection),
                 Toast.LENGTH_SHORT

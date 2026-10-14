@@ -276,7 +276,7 @@ class MyProfileActivity: BaseAppCompatActivity() {
                 }
                 .execute()
         } else {
-            BChatToast.makeText(
+            BChatToast.error(
                 this,
                 getString(R.string.please_check_your_internet_connection),
                 Toast.LENGTH_SHORT
@@ -366,7 +366,7 @@ class MyProfileActivity: BaseAppCompatActivity() {
 
     private fun saveDisplayName(displayName: String): Boolean {
         if (displayName.isEmpty()) {
-            BChatToast.makeText(
+            BChatToast.error(
                 this,
                 R.string.activity_display_name_display_name_missing_error,
                 Toast.LENGTH_SHORT
@@ -374,7 +374,7 @@ class MyProfileActivity: BaseAppCompatActivity() {
             return false
         }
         if (displayName.toByteArray().size > SSKEnvironment.ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
-            BChatToast.makeText(
+            BChatToast.error(
                 this,
                 R.string.activity_display_name_display_name_too_long_error,
                 Toast.LENGTH_SHORT

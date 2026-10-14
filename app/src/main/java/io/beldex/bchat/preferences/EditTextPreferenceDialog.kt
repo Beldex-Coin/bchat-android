@@ -5,13 +5,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.preference.Preference
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.utilities.Log
-import io.beldex.bchat.conversation.v2.utilities.BaseDialog
+import io.beldex.bchat.conversation.v2.utilities.LegacyBaseDialog
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.DialogEditTextPreferenceBinding
 
 class EditTextPreferenceDialog(
         private val preference : Preference
-) : BaseDialog() {
+) : LegacyBaseDialog() {
     private lateinit var binding : DialogEditTextPreferenceBinding
 
     override fun setContentView(builder : AlertDialog.Builder) {

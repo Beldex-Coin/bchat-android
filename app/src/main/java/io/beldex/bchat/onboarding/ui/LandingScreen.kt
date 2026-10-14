@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -56,9 +57,9 @@ fun LandingScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .bchatBackground(MaterialTheme.appColors.backgroundColor)
+            .bchatBackground(MaterialTheme.appColors.backgroundColor, centerAlpha = 0.3f, dotAlpha = 0.1f)
     ) {
-        LandingChatSkeleton(modifier = Modifier.fillMaxSize())
+        LandingChatSkeleton(modifier = Modifier.fillMaxSize().graphicsLayer(alpha = 0.5f))
         Column(
             modifier = Modifier
                 .fillMaxSize()

@@ -51,7 +51,7 @@ class NewChatConversationActivity: BaseComponentActivity() {
                 contactViewModel.events.collect { event ->
                     when (event) {
                         is NewChatScreenViewModel.Event.Message ->
-                            BChatToast.makeText(context, event.resId, Toast.LENGTH_SHORT).show()
+                            BChatToast.error(context, event.resId, Toast.LENGTH_SHORT).show()
                         is NewChatScreenViewModel.Event.OpenChat -> {
                             val returnIntent = Intent().apply {
                                 putExtra(ConversationActivityV2.ADDRESS, event.address)

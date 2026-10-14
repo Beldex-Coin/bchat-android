@@ -5,10 +5,10 @@ import android.text.Html
 import android.text.Spanned
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
-import io.beldex.bchat.conversation.v2.utilities.BaseDialog
+import io.beldex.bchat.conversation.v2.utilities.LegacyBaseDialog
 import io.beldex.bchat.databinding.ActivityTransactionLoadingBarBinding
 
-class TransactionLoadingBar : BaseDialog() {
+class TransactionLoadingBar : LegacyBaseDialog() {
     private lateinit var binding: ActivityTransactionLoadingBarBinding
 
     override fun setContentView(builder: AlertDialog.Builder) {

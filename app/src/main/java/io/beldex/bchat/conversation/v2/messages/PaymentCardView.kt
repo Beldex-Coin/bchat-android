@@ -88,7 +88,7 @@ class PaymentCardView : LinearLayout {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                     context.startActivity(intent)
                 } catch (e: Exception) {
-                    BChatToast.makeText(context, context.getString(R.string.cannot_open_url), Toast.LENGTH_LONG).show()
+                    BChatToast.error(context, context.getString(R.string.cannot_open_url), Toast.LENGTH_LONG).show()
                 }
             }
 

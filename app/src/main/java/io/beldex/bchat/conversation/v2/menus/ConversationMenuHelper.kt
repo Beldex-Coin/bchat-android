@@ -276,10 +276,10 @@ object ConversationMenuHelper {
                             MessageSender.leave(groupPublicKey!!, true)
                             activityContext.backToHome()
                         } else {
-                            BChatToast.makeText(context, R.string.ConversationActivity_error_leaving_group, Toast.LENGTH_LONG).show()
+                            BChatToast.error(context, R.string.ConversationActivity_error_leaving_group, Toast.LENGTH_LONG).show()
                         }
                     } catch (e: Exception) {
-                        BChatToast.makeText(context, R.string.ConversationActivity_error_leaving_group, Toast.LENGTH_LONG).show()
+                        BChatToast.error(context, R.string.ConversationActivity_error_leaving_group, Toast.LENGTH_LONG).show()
                     }
                 },
                 onCancel = {},

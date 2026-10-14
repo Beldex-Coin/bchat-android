@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/menu_container"
-    app:cardBackgroundColor="@color/drawer_background"
+    app:cardBackgroundColor="@android:color/transparent"
+    android:background="@drawable/drawer_panel_background"
     app:cardCornerRadius="26dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout

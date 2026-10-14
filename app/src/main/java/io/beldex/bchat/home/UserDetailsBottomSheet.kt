@@ -163,7 +163,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
             }
 
             nickname.toByteArray().size > SSKEnvironment.ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH -> {
-                BChatToast.makeText(
+                BChatToast.error(
                     context,
                     R.string.nick_name_too_long_error,
                     Toast.LENGTH_SHORT

@@ -1,5 +1,7 @@
 package io.beldex.bchat.my_account.ui.dialogs
 
+import androidx.compose.ui.text.AnnotatedString
+import io.beldex.bchat.compose_utils.PopupBody
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -39,86 +41,21 @@ fun RequestBlockConfirmationDialog(
     onConfirmation: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
+    val isAccept = title == stringResource(R.string.accept_request)
     DialogContainer(
         dismissOnBackPress = true,
         dismissOnClickOutside = true,
         onDismissRequest = onDismissRequest
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    color = MaterialTheme.appColors.secondaryContentColor,
-                    fontWeight = FontWeight(700),
-                    fontSize = 16.sp
-                )
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = message,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.appColors.editTextColor,
-                    fontWeight = FontWeight(400),
-                    fontSize = 14.sp
-                ),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Button(
-                    onClick = onDismissRequest,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.negativeGreenButton
-                    ),
-                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
-                    border = BorderStroke(0.5.dp, MaterialTheme.appColors.primaryButtonColor),
-                    modifier = Modifier
-                        .weight(1f)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.cancel),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.appColors.onboardingHeadlineColor,
-                            fontWeight = FontWeight(400),
-                            fontSize = 12.sp
-                        )
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Button(
-                    onClick=onConfirmation,
-                    colors=ButtonDefaults.buttonColors(
-                        containerColor=if (title == stringResource(R.string.accept_request)) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.negativeRedButtonBorder
-                    ),
-                    shape=RoundedCornerShape(12.dp),
-                    modifier=Modifier
-                        .weight(1f)
-                ) {
-                    Text(
-                        text = actionTitle,
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight(400),
-                            fontSize = 12.sp,
-                            color = Color.White
-                        ),
-                    )
-                }
-            }
-        }
+        PopupBody(
+            title = title,
+            message = AnnotatedString(message),
+            cancelText = stringResource(id = R.string.cancel),
+            onCancel = onDismissRequest,
+            confirmText = actionTitle,
+            onConfirm = onConfirmation,
+            destructive = !isAccept
+        )
     }
 }
 
@@ -133,91 +70,15 @@ fun IgnoreRequestDialog(
         dismissOnClickOutside = true,
         onDismissRequest = onDismissRequest
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Text(
-                text = stringResource(id = R.string.activity_message_requests_title),
-                style = MaterialTheme.typography.titleMedium.copy(
-                    color = MaterialTheme.appColors.secondaryContentColor,
-                    fontWeight = FontWeight(700),
-                    fontSize = 16.sp
-                )
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = stringResource(id = R.string.block_or_delete_request),
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.appColors.editTextColor,
-                    fontWeight = FontWeight(400),
-                    fontSize = 14.sp
-                ),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Button(
-                    onClick ={
-                        onBlock()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.negativeRedButton
-                    ),
-                    shape = RoundedCornerShape(12.dp),
-                    border = BorderStroke(0.5.dp, MaterialTheme.appColors.negativeRedButtonBorder),
-                    modifier = Modifier
-                        .weight(1f)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.RecipientPreferenceActivity_block),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.appColors.negativeRedButtonBorder,
-                            fontWeight = FontWeight(400),
-                            fontSize = 12.sp
-                        ),
-                        maxLines = 1,
-                        softWrap = false,
-                        overflow = TextOverflow.Visible
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Button(
-                    onClick ={
-                        onDelete()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.negativeRedButtonBorder
-                    ),
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier
-                        .weight(1f)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.delete),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight(400),
-                            fontSize = 12.sp,
-                            color = Color.White
-                        ),
-                        maxLines = 1,
-                        softWrap = false,
-                        overflow = TextOverflow.Visible
-                    )
-                }
-            }
-        }
+        PopupBody(
+            title = stringResource(id = R.string.activity_message_requests_title),
+            message = AnnotatedString(stringResource(id = R.string.block_or_delete_request)),
+            cancelText = stringResource(id = R.string.RecipientPreferenceActivity_block),
+            onCancel = onBlock,
+            confirmText = stringResource(id = R.string.delete),
+            onConfirm = onDelete,
+            destructive = true
+        )
     }
 }
 

@@ -27,26 +27,38 @@ object BChatToast {
     fun makeText(context: Context?, @StringRes resId: Int, duration: Int): Toast =
         makeText(context, context!!.getText(resId), duration)
 
+    /** Red variant for failures and warnings. */
     @JvmStatic
-    fun makeText(context: Context?, text: CharSequence?, duration: Int): Toast {
+    fun error(context: Context?, @StringRes resId: Int, duration: Int): Toast =
+        error(context, context!!.getText(resId), duration)
+
+    @JvmStatic
+    fun error(context: Context?, text: CharSequence?, duration: Int): Toast =
+        build(context, text, duration, isError = true)
+
+    @JvmStatic
+    fun makeText(context: Context?, text: CharSequence?, duration: Int): Toast =
+        build(context, text, duration, isError = false)
+
+    private fun build(context: Context?, text: CharSequence?, duration: Int, isError: Boolean): Toast {
         requireNotNull(context) { "BChatToast needs a context" }
         val toast = Toast(context.applicationContext)
         toast.duration = duration
         toast.setGravity(Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, dp(context, 96))
-        toast.view = buildView(context, text ?: "")
+        toast.view = buildView(context, text ?: "", isError)
         return toast
     }
 
-    private fun buildView(context: Context, text: CharSequence): View {
+    private fun buildView(context: Context, text: CharSequence, isError: Boolean): View {
         val row = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
             minimumHeight = dp(context, 42)
             setPadding(dp(context, 22), dp(context, 10), dp(context, 22), dp(context, 10))
-            background = NotchedToastDrawable(dp(context, 10).toFloat(), dp(context, 1).toFloat())
+            background = NotchedToastDrawable(dp(context, 10).toFloat(), dp(context, 1).toFloat(), if (isError) 0xFFFF3E3E.toInt() else 0xFF078720.toInt())
         }
         row.addView(ImageView(context).apply {
-            setImageResource(R.drawable.ic_toast_check)
+            setImageResource(if (isError) R.drawable.ic_toast_error else R.drawable.ic_toast_check)
         }, LinearLayout.LayoutParams(dp(context, 16), dp(context, 16)))
         row.addView(TextView(context).apply {
             this.text = text
@@ -65,10 +77,10 @@ object BChatToast {
         (value * context.resources.displayMetrics.density).toInt()
 
     /** Top-right and bottom-left corners cut, like every notched surface in the revamp. */
-    private class NotchedToastDrawable(private val notch: Float, private val stroke: Float) : Drawable() {
+    private class NotchedToastDrawable(private val notch: Float, private val stroke: Float, private val outline: Int) : Drawable() {
         private val fill = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = 0xFF1A1A1A.toInt() }
         private val line = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = 0xFF078720.toInt()
+            color = outline
             style = Paint.Style.STROKE
             strokeWidth = stroke
         }

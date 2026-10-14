@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Revamp_2026 drawer panel (Figma "Frame 3011"): radial #1A1A1A glow at the top fading to #111111. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <gradient
+        android:type="radial"
+        android:centerX="0.38"
+        android:centerY="0.0"
+        android:gradientRadius="75%p"
+        android:startColor="#1A1A1A"
+        android:centerColor="#111111"
+        android:endColor="#111111" />
+    <corners android:radius="26dp" />
+</shape>

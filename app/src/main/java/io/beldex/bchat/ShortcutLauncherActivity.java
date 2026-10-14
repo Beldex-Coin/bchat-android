@@ -34,7 +34,7 @@ public class ShortcutLauncherActivity extends BaseAppCompatActivity {
     String serializedAddress = getIntent().getStringExtra(KEY_SERIALIZED_ADDRESS);
 
     if (serializedAddress == null) {
-      BChatToast.makeText(this, R.string.ShortcutLauncherActivity_invalid_shortcut, Toast.LENGTH_SHORT).show();
+      BChatToast.error(this, R.string.ShortcutLauncherActivity_invalid_shortcut, Toast.LENGTH_SHORT).show();
       startActivity(new Intent(this, PasswordActivity.class));
       finish();
       return;

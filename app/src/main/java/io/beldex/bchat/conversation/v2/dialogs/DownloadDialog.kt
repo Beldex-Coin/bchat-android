@@ -1,18 +1,17 @@
 package io.beldex.bchat.conversation.v2.dialogs
 
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.StyleSpan
-import android.view.LayoutInflater
-import androidx.appcompat.app.AlertDialog
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.DialogDownloadBinding
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.messaging.jobs.AttachmentDownloadJob
 import com.beldex.libbchat.messaging.jobs.JobQueue
 import com.beldex.libbchat.utilities.recipients.Recipient
+import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.PopupBody
+import io.beldex.bchat.compose_utils.boldedMessage
 import io.beldex.bchat.conversation.v2.utilities.BaseDialog
 import io.beldex.bchat.database.BchatContactDatabase
 import io.beldex.bchat.dependencies.DatabaseComponent
@@ -25,21 +24,21 @@ class DownloadDialog(private val recipient: Recipient) : BaseDialog() {
 
     @Inject lateinit var contactDB: BchatContactDatabase
 
-    override fun setContentView(builder: AlertDialog.Builder) {
-        val binding = DialogDownloadBinding.inflate(LayoutInflater.from(requireContext()))
+    @Composable
+    override fun Content() {
+        val context = LocalContext.current
         val bchatID = recipient.address.toString()
         val contact = contactDB.getContactWithBchatID(bchatID)
-        val name = contact?.displayName(Contact.ContactContext.REGULAR, requireContext()) ?: bchatID
-        val title = resources.getString(R.string.dialog_download_title, name)
-        binding.downloadTitleTextView.text = title
-        val explanation = resources.getString(R.string.dialog_download_explanation, name)
-        val spannable = SpannableStringBuilder(explanation)
-        val startIndex = explanation.indexOf(name)
-        spannable.setSpan(StyleSpan(Typeface.BOLD), startIndex, startIndex + name.count(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        binding.downloadExplanationTextView.text = spannable
-        binding.cancelButton.setOnClickListener { dismiss() }
-        binding.downloadButton.setOnClickListener { trust() }
-        builder.setView(binding.root)
+        val name = contact?.displayName(Contact.ContactContext.REGULAR, context) ?: bchatID
+        PopupBody(
+            icon = painterResource(R.drawable.ic_download_media),
+            title = stringResource(R.string.dialog_download_title, name),
+            message = boldedMessage(stringResource(R.string.dialog_download_explanation, name), name),
+            cancelText = stringResource(R.string.cancel),
+            onCancel = { dismiss() },
+            confirmText = stringResource(R.string.audio_view__download_accessibility_description),
+            onConfirm = { trust() }
+        )
     }
 
     private fun trust() {

@@ -412,7 +412,7 @@ fun joinPublicChatIfPossible(url: String, lifecycleOwner: LifecycleOwner, contex
     val activity = (context as? Activity)
     // Add "http" if not entered explicitly
     val stringWithExplicitScheme = if (!url.startsWith("http")) "http://$url" else url
-    val url = stringWithExplicitScheme.toHttpUrlOrNull() ?: return BChatToast.makeText(
+    val url = stringWithExplicitScheme.toHttpUrlOrNull() ?: return BChatToast.error(
         context,
         R.string.invalid_url,
         Toast.LENGTH_SHORT
@@ -426,7 +426,7 @@ fun joinPublicChatIfPossible(url: String, lifecycleOwner: LifecycleOwner, contex
             false
         ))
     ) {
-        return BChatToast.makeText(context, R.string.invalid_public_key, Toast.LENGTH_SHORT).show()
+        return BChatToast.error(context, R.string.invalid_public_key, Toast.LENGTH_SHORT).show()
     }
     //showLoader()
     lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
@@ -459,7 +459,7 @@ fun joinPublicChatIfPossible(url: String, lifecycleOwner: LifecycleOwner, contex
             Log.e("Beldex", "Couldn't join social group.", e)
             withContext(Dispatchers.Main) {
                 // hideLoader()
-                BChatToast.makeText(
+                BChatToast.error(
                     context,
                     R.string.activity_join_public_chat_error,
                     Toast.LENGTH_SHORT

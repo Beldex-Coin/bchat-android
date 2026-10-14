@@ -117,7 +117,7 @@ class NewGroupConversationActivity: BaseComponentActivity() {
                                             when (event) {
                                                 is CreateSecretGroupViewModel.Event.Message -> {
                                                     val text = event.text ?: event.resId?.let { getString(it) }
-                                                    BChatToast.makeText(this@NewGroupConversationActivity, text, Toast.LENGTH_LONG).show()
+                                                    BChatToast.error(this@NewGroupConversationActivity, text, Toast.LENGTH_LONG).show()
                                                 }
                                                 is CreateSecretGroupViewModel.Event.GroupCreated -> {
                                                     val recipient = Recipient.from(this@NewGroupConversationActivity, event.address, false)

@@ -72,7 +72,7 @@ public class MediaDocumentsAdapter extends CursorRecyclerViewAdapter<ViewHolder>
           getContext().startActivity(intent);
         } catch (ActivityNotFoundException anfe) {
           Log.w(TAG, "No activity existed to view the media.");
-          BChatToast.makeText(getContext(), R.string.ConversationItem_unable_to_open_media, Toast.LENGTH_LONG).show();
+          BChatToast.error(getContext(), R.string.ConversationItem_unable_to_open_media, Toast.LENGTH_LONG).show();
         }
       });
     } else {

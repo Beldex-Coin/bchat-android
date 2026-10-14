@@ -81,7 +81,7 @@ class PNModeActivity : BaseActionBarActivity() {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(intent)
         } catch (e: Exception) {
-            BChatToast.makeText(this, R.string.invalid_url, Toast.LENGTH_SHORT).show()
+            BChatToast.error(this, R.string.invalid_url, Toast.LENGTH_SHORT).show()
         }
     }
 

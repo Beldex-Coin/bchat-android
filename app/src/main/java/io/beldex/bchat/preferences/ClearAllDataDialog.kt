@@ -16,12 +16,12 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.utilities.Log
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.util.ConfigurationMessageUtilities
-import io.beldex.bchat.conversation.v2.utilities.BaseDialog
+import io.beldex.bchat.conversation.v2.utilities.LegacyBaseDialog
 import java.io.File
 import io.beldex.bchat.util.Helper
 import kotlinx.coroutines.launch
 
-class ClearAllDataDialog : BaseDialog() {
+class ClearAllDataDialog : LegacyBaseDialog() {
     private lateinit var binding: DialogClearAllDataBinding
 
     enum class Steps {

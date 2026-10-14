@@ -77,6 +77,7 @@ import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.bchatBackground
 import io.beldex.bchat.compose_utils.darkColors
 import io.beldex.bchat.compose_utils.lightColors
 import io.beldex.bchat.compose_utils.ui.ScreenContainer
@@ -131,9 +132,7 @@ class SearchActivity : BaseComponentActivity() {
                                 finish() },
                             modifier = Modifier
                                 .fillMaxSize()
-                                .background(
-                                    color = MaterialTheme.appColors.backgroundColor
-                                )
+                                .bchatBackground(MaterialTheme.appColors.backgroundColor)
                                 .padding(it)
                         ) {
                             val viewModel: GlobalSearchViewModel = hiltViewModel()

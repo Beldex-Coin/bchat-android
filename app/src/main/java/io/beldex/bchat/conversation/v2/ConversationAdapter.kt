@@ -205,6 +205,7 @@ class ConversationAdapter(
                             message = context.getString(R.string.call_missed_description, recipientName),
                             positiveText = context.getString(R.string.ok),
                             negativeText = context.getString(R.string.cancel),
+                            iconRes = R.drawable.ic_headset_popup,
                             onPositive = {
                                 context.startActivity(io.beldex.bchat.my_account.ui.MyAccountActivity.intentForRoute(context, io.beldex.bchat.my_account.ui.MyAccountScreens.PrivacySettingsScreen.route))
                             }

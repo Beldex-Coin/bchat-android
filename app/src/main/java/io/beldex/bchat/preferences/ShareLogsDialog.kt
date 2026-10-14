@@ -22,7 +22,7 @@ import io.beldex.bchat.R
 import io.beldex.bchat.databinding.DialogShareLogsBinding
 import com.beldex.libsignal.utilities.ExternalStorageUtil
 import io.beldex.bchat.ApplicationContext
-import io.beldex.bchat.conversation.v2.utilities.BaseDialog
+import io.beldex.bchat.conversation.v2.utilities.LegacyBaseDialog
 import io.beldex.bchat.util.FileProviderUtil
 import io.beldex.bchat.util.StreamUtil
 import kotlinx.coroutines.Dispatchers.Main
@@ -33,7 +33,7 @@ import java.io.IOException
 import java.util.Objects
 import java.util.concurrent.TimeUnit
 
-class ShareLogsDialog : BaseDialog() {
+class ShareLogsDialog : LegacyBaseDialog() {
 
     private var shareJob: Job? = null
 
@@ -103,7 +103,7 @@ class ShareLogsDialog : BaseDialog() {
                 }
                 dismiss()
             } catch (e: Exception) {
-                BChatToast.makeText(context,getString(R.string.error_saving_logs), Toast.LENGTH_LONG).show()
+                BChatToast.error(context,getString(R.string.error_saving_logs), Toast.LENGTH_LONG).show()
                 dismiss()
             }
         }

@@ -1,30 +1,37 @@
 package io.beldex.bchat.util
 
-import android.content.Context
-import android.view.LayoutInflater
-import androidx.appcompat.app.AlertDialog
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.PopupBody
 import io.beldex.bchat.conversation.v2.utilities.BaseDialog
-import io.beldex.bchat.databinding.SaveYourSeedDialogBoxBinding
 
 class SaveYourSeedDialogBox(
     private val showSeed: () -> Unit,
 ) : BaseDialog() {
-    private lateinit var binding: SaveYourSeedDialogBoxBinding
 
+    override fun onCreate(savedInstanceState: android.os.Bundle?) {
+        super.onCreate(savedInstanceState)
+        isCancelable = false
+    }
 
-    override fun setContentView(builder: AlertDialog.Builder) {
-        binding = SaveYourSeedDialogBoxBinding.inflate(LayoutInflater.from(requireContext()))
-
-        with(binding) {
-            okButton.setOnClickListener {
-                TextSecurePreferences.setCopiedSeed(requireContext(),true)
+    @Composable
+    override fun Content() {
+        val context = LocalContext.current
+        PopupBody(
+            icon = painterResource(R.drawable.ic_seed_warning),
+            title = stringResource(R.string.save_your_seed),
+            message = AnnotatedString(stringResource(R.string.save_your_seed_message)),
+            confirmText = stringResource(R.string.ok),
+            onConfirm = {
+                TextSecurePreferences.setCopiedSeed(context, true)
                 showSeed()
                 dismiss()
             }
-        }
-
-        builder.setView(binding.root)
-        isCancelable = false
+        )
     }
 }

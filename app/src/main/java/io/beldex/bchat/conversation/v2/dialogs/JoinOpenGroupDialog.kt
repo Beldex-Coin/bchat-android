@@ -1,5 +1,10 @@
 package io.beldex.bchat.conversation.v2.dialogs
 
+import io.beldex.bchat.compose_utils.boldedMessage
+import io.beldex.bchat.compose_utils.PopupBody
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.runtime.Composable
 import io.beldex.bchat.util.BChatToast
 import android.app.Activity
 import android.content.Context.INPUT_METHOD_SERVICE
@@ -39,23 +44,17 @@ class JoinOpenGroupDialog(private val name: String, private val url: String) : B
 
     private val tag = JoinOpenGroupDialog::class.java.simpleName
 
-    override fun setContentView(builder: AlertDialog.Builder) {
-        val binding = DialogJoinOpenGroupBinding.inflate(LayoutInflater.from(requireContext()))
-        val title = resources.getString(R.string.dialog_join_open_group_title, name)
-        binding.joinOpenGroupTitleTextView.text = title
-        val explanation = resources.getString(R.string.dialog_join_open_group_explanation, name)
-        val spannable = SpannableStringBuilder(explanation)
-        val startIndex = explanation.indexOf(name)
-        spannable.setSpan(
-            StyleSpan(Typeface.BOLD),
-            startIndex,
-            startIndex + name.count(),
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+    @Composable
+    override fun Content() {
+        PopupBody(
+            icon = painterResource(R.drawable.ic_external_link),
+            title = stringResource(R.string.dialog_join_open_group_title, name),
+            message = boldedMessage(stringResource(R.string.dialog_join_open_group_explanation, name), name),
+            cancelText = stringResource(R.string.cancel),
+            onCancel = { dismiss() },
+            confirmText = stringResource(R.string.open_group_invitation_view__join_accessibility_description),
+            onConfirm = { join(name) }
         )
-        binding.joinOpenGroupExplanationTextView.text = spannable
-        binding.cancelButton.setOnClickListener { dismiss() }
-        binding.joinButton.setOnClickListener { join(name) }
-        builder.setView(binding.root)
     }
 
     private fun join(name: String) {
@@ -73,7 +72,7 @@ class JoinOpenGroupDialog(private val name: String, private val url: String) : B
         val parsedUrl = stringWithExplicitScheme.toHttpUrlOrNull()
 
         if (parsedUrl == null) {
-            BChatToast.makeText(
+            BChatToast.error(
                 context,
                 R.string.invalid_url,
                 Toast.LENGTH_SHORT
@@ -94,7 +93,7 @@ class JoinOpenGroupDialog(private val name: String, private val url: String) : B
                 false
             ))
         ) {
-            BChatToast.makeText(
+            BChatToast.error(
                 context,
                 R.string.invalid_public_key,
                 Toast.LENGTH_SHORT
@@ -164,7 +163,7 @@ class JoinOpenGroupDialog(private val name: String, private val url: String) : B
 
                     if (!isAdded) return@withContext
 
-                    BChatToast.makeText(
+                    BChatToast.error(
                         activity,
                         R.string.activity_join_public_chat_error,
                         Toast.LENGTH_SHORT

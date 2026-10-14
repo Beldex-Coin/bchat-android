@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
-
-    <solid  android:color="@color/button_green" />
-
-    <corners android:radius="25dp" />
-
+<!-- Revamp_2026: a BNS-verified avatar has no ring, only the small tag at its bottom-right corner. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@android:color/transparent" />
 </shape>

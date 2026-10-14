@@ -73,6 +73,8 @@ fun LockOptionsDialog(
             Spacer(modifier = Modifier.height(18.dp))
 
             val listState = androidx.compose.foundation.lazy.rememberLazyListState()
+            // Only reserve a gutter when the list really scrolls, so the scrollbar never sits on the cards.
+            val scrollable = listState.canScrollForward || listState.canScrollBackward
             LazyColumn(
                 state = listState,
                 verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -80,6 +82,7 @@ fun LockOptionsDialog(
                     .fillMaxWidth()
                     .heightIn(max = 200.dp)
                     .lazyListScrollbar(listState)
+                    .padding(end = if (scrollable) 12.dp else 0.dp)
             ) {
                 itemsIndexed(options) { index, option ->
                     val selected = option == currentValue

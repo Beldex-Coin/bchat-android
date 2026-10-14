@@ -28,18 +28,22 @@ private val DotColor = Color(0xFFD9D9D9).copy(alpha = 0.15f)
  * centred at 43.5% of the height, and a faint dot grid (1.5dp dots every 6dp). Dark theme only;
  * light theme keeps the flat [fallback] colour.
  */
-fun Modifier.bchatBackground(fallback: Color = BackgroundBase): Modifier = composed {
+fun Modifier.bchatBackground(
+    fallback: Color = BackgroundBase,
+    centerAlpha: Float = 0.6f,
+    dotAlpha: Float = 0.15f
+): Modifier = composed {
     val context = LocalContext.current
     val isDark = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
     if (!isDark) {
         Modifier.drawBehind { drawRect(fallback) }
     } else {
         val density = LocalDensity.current
-        val dotBrush = remember(density.density) {
+        val dotBrush = remember(density.density, dotAlpha) {
             val pitch = (6 * density.density).toInt().coerceAtLeast(2)
             val tile = ImageBitmap(pitch, pitch, ImageBitmapConfig.Argb8888)
             val canvas = Canvas(tile)
-            val paint = Paint().apply { color = DotColor; isAntiAlias = true }
+            val paint = Paint().apply { color = DotColor.copy(alpha = dotAlpha); isAntiAlias = true }
             canvas.drawCircle(Offset(pitch / 2f, pitch / 2f), 0.75f * density.density, paint)
             ShaderBrush(ImageShader(tile, TileMode.Repeated, TileMode.Repeated))
         }
@@ -51,7 +55,7 @@ fun Modifier.bchatBackground(fallback: Color = BackgroundBase): Modifier = compo
             scale(scaleX = 1f, scaleY = ry / rx, pivot = center) {
                 drawRect(
                     brush = Brush.radialGradient(
-                        colors = listOf(Color(0xFF1A1A1A).copy(alpha = 0.6f), Color.Black),
+                        colors = listOf(Color(0xFF1A1A1A).copy(alpha = centerAlpha), Color.Black),
                         center = center,
                         radius = rx
                     )

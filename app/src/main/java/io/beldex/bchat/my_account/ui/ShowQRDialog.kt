@@ -64,9 +64,7 @@ fun ShowQRDialog(
             onDismissRequest()
         },
         wrapContentWidth = isLandscape,
-        containerColor = Color(0xA60B0B0B),
-        shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchCard),
-        showBorder = false
+        shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchCard)
     ) {
         val context = LocalContext.current
         Column(

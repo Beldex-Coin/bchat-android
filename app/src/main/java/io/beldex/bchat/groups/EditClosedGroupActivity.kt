@@ -228,7 +228,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         return if(CheckOnline.isOnline(this)){
             true
         }else{
-            BChatToast.makeText(
+            BChatToast.error(
                 this,
                 R.string.please_check_your_internet_connection,
                 Toast.LENGTH_SHORT
@@ -374,16 +374,16 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
     private fun saveName() {
         val name = binding.edtGroupName.text.toString().trim()
         if (name.isEmpty()) {
-            return BChatToast.makeText(this, R.string.activity_edit_closed_group_group_name_missing_error, Toast.LENGTH_SHORT).show()
+            return BChatToast.error(this, R.string.activity_edit_closed_group_group_name_missing_error, Toast.LENGTH_SHORT).show()
         }
         if (name.length >= 26) {
-            return BChatToast.makeText(this, R.string.activity_create_closed_group_group_name_too_long_error, Toast.LENGTH_SHORT).show()
+            return BChatToast.error(this, R.string.activity_create_closed_group_group_name_too_long_error, Toast.LENGTH_SHORT).show()
         }
         if(name == originalName){
-            return BChatToast.makeText(this, R.string.activity_edit_closed_group_group_name_same_name_error,Toast.LENGTH_SHORT).show()
+            return BChatToast.error(this, R.string.activity_edit_closed_group_group_name_same_name_error,Toast.LENGTH_SHORT).show()
         }
         if (!isValidGroupName(name)) {
-            return BChatToast.makeText(
+            return BChatToast.error(
                 this,
                 R.string.nickname_special_char_not_allowed,
                 Toast.LENGTH_SHORT
@@ -424,12 +424,12 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         }
 
         if (members.isEmpty()) {
-            return BChatToast.makeText(this, R.string.activity_edit_closed_group_not_enough_group_members_error, Toast.LENGTH_LONG).show()
+            return BChatToast.error(this, R.string.activity_edit_closed_group_not_enough_group_members_error, Toast.LENGTH_LONG).show()
         }
 
         val maxGroupMembers = if (isClosedGroup) groupSizeLimit else legacyGroupSizeLimit
         if (members.size >= maxGroupMembers) {
-            return BChatToast.makeText(this, R.string.activity_create_closed_group_too_many_group_members_error, Toast.LENGTH_LONG).show()
+            return BChatToast.error(this, R.string.activity_create_closed_group_too_many_group_members_error, Toast.LENGTH_LONG).show()
         }
 
         val userPublicKey = TextSecurePreferences.getLocalNumber(this)!!

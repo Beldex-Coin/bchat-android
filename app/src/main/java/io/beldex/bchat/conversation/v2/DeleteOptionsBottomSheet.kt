@@ -1,5 +1,13 @@
 package io.beldex.bchat.conversation.v2
 
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxWidth
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,13 +26,12 @@ import io.beldex.bchat.util.UiModeUtilities
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class DeleteOptionsBottomSheet : BottomSheetDialogFragment(), View.OnClickListener {
+class DeleteOptionsBottomSheet : BottomSheetDialogFragment() {
 
     @Inject
     lateinit var contactDatabase: BchatContactDatabase
 
     lateinit var recipient: Recipient
-    private lateinit var binding: FragmentDeleteMessageBottomSheetBinding
     val contact by lazy {
         val senderId = recipient.address.serialize()
         // this dialog won't show for social group contacts
@@ -41,36 +48,70 @@ class DeleteOptionsBottomSheet : BottomSheetDialogFragment(), View.OnClickListen
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentDeleteMessageBottomSheetBinding.inflate(inflater, container, false)
-        return binding.root
+        if (!this::recipient.isInitialized) {
+            dismiss()
+            return View(requireContext())
+        }
+        val forMeText = if (recipient.isLocalNumber) resources.getString(R.string.delete)
+        else resources.getString(R.string.delete_message_for_me)
+        val everyoneText = if (!recipient.isGroupRecipient && !contact.isNullOrEmpty())
+            resources.getString(R.string.delete_message_for_me_and_recipient, contact)
+        else resources.getString(R.string.delete_message_for_everyone)
+        val showEveryone = !recipient.isLocalNumber
+        return androidx.compose.ui.platform.ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                io.beldex.bchat.compose_utils.BChatTheme(
+                    darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == io.beldex.bchat.util.UiMode.NIGHT
+                ) {
+                    io.beldex.bchat.compose_utils.DialogPanel(
+                        modifier = androidx.compose.ui.Modifier.fillMaxWidth()
+                    ) {
+                        androidx.compose.foundation.layout.Column(
+                            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(10.dp),
+                            modifier = androidx.compose.ui.Modifier.padding(horizontal = 15.dp, vertical = 18.dp)
+                        ) {
+                            DeleteOptionCard(forMeText, destructive = true) { onDeleteForMeTapped?.invoke() }
+                            if (showEveryone) {
+                                DeleteOptionCard(everyoneText, destructive = true) { onDeleteForEveryoneTapped?.invoke() }
+                            }
+                            DeleteOptionCard(resources.getString(R.string.cancel), destructive = false) { onCancelTapped?.invoke() }
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    override fun onClick(v: View?) {
-        when (v) {
-            binding.deleteForMeTextView -> onDeleteForMeTapped?.invoke()
-            binding.deleteForEveryoneTextView -> onDeleteForEveryoneTapped?.invoke()
-            binding.cancelTextView -> onCancelTapped?.invoke()
+    @androidx.compose.runtime.Composable
+    private fun DeleteOptionCard(text: String, destructive: Boolean, onClick: () -> Unit) {
+        val shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium)
+        val accent = if (destructive) androidx.compose.ui.graphics.Color(0xFFFF3E3E) else androidx.compose.ui.graphics.Color(0xFF444444)
+        androidx.compose.foundation.layout.Box(
+            contentAlignment = androidx.compose.ui.Alignment.Center,
+            modifier = androidx.compose.ui.Modifier
+                .fillMaxWidth()
+                .heightIn(min = 52.dp)
+                .background(
+                    if (destructive) accent.copy(alpha = 0.1f) else androidx.compose.ui.graphics.Color(0xFF111111),
+                    shape
+                )
+                .border(if (destructive) 0.5.dp else 1.dp, accent, shape)
+                .clickable(onClick = onClick)
+                .padding(horizontal = 12.dp, vertical = 10.dp)
+        ) {
+            androidx.compose.material3.Text(
+                text = text,
+                color = androidx.compose.ui.graphics.Color(0xFFEBEBEB),
+                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                fontSize = 14.sp
+            )
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (!this::recipient.isInitialized) {
-            return dismiss()
-        }
-        if (!recipient.isGroupRecipient && !contact.isNullOrEmpty()) {
-            binding.deleteForEveryoneTextView.text =
-                resources.getString(R.string.delete_message_for_me_and_recipient, contact)
-        }
-        if(recipient.isLocalNumber){
-            binding.deleteForMeTextView.text = resources.getString(R.string.delete)
-        }else{
-            binding.deleteForMeTextView.text = resources.getString(R.string.delete_message_for_me)
-        }
-        binding.deleteForEveryoneTextView.isVisible = !recipient.isLocalNumber
-        binding.deleteForMeTextView.setOnClickListener(this)
-        binding.deleteForEveryoneTextView.setOnClickListener(this)
-        binding.cancelTextView.setOnClickListener(this)
+        (view.parent as? View)?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
     }
 
     override fun onStart() {

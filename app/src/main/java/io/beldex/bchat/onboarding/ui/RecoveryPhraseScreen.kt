@@ -1,5 +1,6 @@
 package io.beldex.bchat.onboarding.ui
 
+import androidx.compose.ui.draw.alpha
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -154,18 +155,17 @@ fun RecoveryPhraseScreen(
                 Spacer(modifier = Modifier.weight(0.9f))
             }
 
-            AnimatedVisibility(visible = !seedCopied) {
-                Text(
-                    text = stringResource(R.string.copy_and_save_the_seed_to_continue),
-                    color = MaterialTheme.appColors.onboardingCaptionColor,
-                    fontFamily = OpenSans,
-                    fontSize = 14.sp,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 22.dp, vertical = 8.dp)
-                )
-            }
+            Text(
+                text = stringResource(R.string.copy_and_save_the_seed_to_continue),
+                color = MaterialTheme.appColors.onboardingCaptionColor,
+                fontFamily = OpenSans,
+                fontSize = 14.sp,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .alpha(if (!seedCopied) 1f else 0f)
+                    .padding(horizontal = 22.dp, vertical = 8.dp)
+            )
 
             OnboardingPrimaryButton(
                 text = stringResource(R.string.continue_2),

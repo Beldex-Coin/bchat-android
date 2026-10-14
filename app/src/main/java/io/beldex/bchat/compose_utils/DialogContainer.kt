@@ -368,3 +368,28 @@ fun boldedMessage(text: String, vararg bold: String): androidx.compose.ui.text.A
             }
         }
     }
+
+
+/** Light primary button used for the confirming action of a popup (Figma "Save", "OK", "Allow"). */
+@Composable
+fun DialogPrimaryButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
+) {
+    PrimaryButton(
+        onClick = onClick,
+        enabled = enabled,
+        shape = notchedCornerShape(BChatDimens.NotchMedium),
+        containerColor = Color(0xFFE0E0E0),
+        contentColor = Color(0xFF0B0B0B),
+        disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
+        disabledContentColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledText,
+        border = BorderStroke(1.dp, Color(0xFF0A370A)),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
+        modifier = modifier.heightIn(min = BChatDimens.DialogButtonMinHeight)
+    ) {
+        Text(text = text, fontFamily = RobotoMono, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+    }
+}

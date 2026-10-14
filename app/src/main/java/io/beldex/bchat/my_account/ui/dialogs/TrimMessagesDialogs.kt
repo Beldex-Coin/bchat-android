@@ -93,7 +93,7 @@ fun TrimLengthDialog(
                     onClick = onDismiss,
                     modifier = Modifier.weight(1f)
                 )
-                DialogConfirmButton(
+                io.beldex.bchat.compose_utils.DialogPrimaryButton(
                     text = stringResource(id = R.string.ok),
                     onClick = { value?.let(onSave) },
                     enabled = value != null && value >= 1,
@@ -111,54 +111,20 @@ fun TrimNowDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    DialogContainer(
-        dismissOnBackPress = true,
-        dismissOnClickOutside = true,
-        onDismissRequest = onDismiss
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 15.dp, vertical = 18.dp)
-        ) {
-            Text(
-                text = stringResource(id = R.string.ApplicationPreferencesActivity_delete_all_old_messages_now),
-                color = MaterialTheme.appColors.editTextColor,
-                fontFamily = OpenSans,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                textAlign = TextAlign.Center
+    io.beldex.bchat.compose_utils.IconConfirmDialog(
+        icon = androidx.compose.ui.res.painterResource(id = R.drawable.ic_trim_conversation),
+        title = stringResource(id = R.string.ApplicationPreferencesActivity_delete_all_old_messages_now),
+        message = androidx.compose.ui.text.AnnotatedString(
+            androidx.compose.ui.res.pluralStringResource(
+                id = R.plurals.ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages,
+                count = limit,
+                limit
             )
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = pluralStringResource(
-                    id = R.plurals.ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages,
-                    count = limit,
-                    limit
-                ),
-                color = MaterialTheme.appColors.editTextColor,
-                fontFamily = OpenSans,
-                fontSize = 14.sp,
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                DialogCancelButton(
-                    text = stringResource(id = R.string.cancel),
-                    onClick = onDismiss,
-                    modifier = Modifier.weight(1f)
-                )
-                DialogConfirmButton(
-                    text = stringResource(id = R.string.delete),
-                    onClick = onConfirm,
-                    destructive = true,
-                    modifier = Modifier.weight(1f)
-                )
-            }
-        }
-    }
+        ),
+        cancelText = stringResource(id = R.string.cancel),
+        confirmText = stringResource(id = R.string.delete),
+        onCancel = onDismiss,
+        onConfirm = onConfirm,
+        destructive = true
+    )
 }

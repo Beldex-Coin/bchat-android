@@ -1,5 +1,8 @@
 package io.beldex.bchat.my_account.ui
 
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import android.Manifest
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
@@ -65,42 +68,26 @@ fun PrivacySettingsScreen(
     var linkPreviews by remember { mutableStateOf(TextSecurePreferences.isLinkPreviewsEnabled(context)) }
     var voiceVideoCalls by remember { mutableStateOf(TextSecurePreferences.isCallNotificationsEnabled(context)) }
     var onionRouting by remember { mutableStateOf(TextSecurePreferences.isOnionRoutingEnabled(context)) }
-    var screenSecurity by remember { mutableStateOf(TextSecurePreferences.isScreenSecurityEnabled(context)) }
-    var showOnionConfirm by remember { mutableStateOf(false) }
-    var showClearHistoryConfirm by remember { mutableStateOf(false) }
-    var showVoiceVideoConfirm by remember { mutableStateOf(false) }
-
-    if (showOnionConfirm) {
-        ConfirmDialog(
-            title = stringResource(R.string.preferences__onion_routing),
-            message = stringResource(R.string.onion_routing_turn_off_confirmation),
-            onConfirm = {
-                showOnionConfirm = false
-                onionRouting = false
-                TextSecurePreferences.setOnionRoutingEnabled(context, false)
-            },
-            onCancel = {
-                showOnionConfirm = false
-            }
+    var showHopsDialog by remember { mutableStateOf(false) }
+    val sharedPrefs = remember { androidx.preference.PreferenceManager.getDefaultSharedPreferences(context) }
+    var hops by remember {
+        mutableStateOf(
+            sharedPrefs.getInt("pref_onion_hops", if (TextSecurePreferences.isOnionRoutingEnabled(context)) 3 else 0)
         )
     }
+    var showVoiceVideoConfirm by remember { mutableStateOf(false) }
 
-    if (showClearHistoryConfirm) {
-        ConfirmDialog(
-            title = stringResource(R.string.preferences__clear_conversation_history),
-            message = stringResource(R.string.clear_all_conversation_history_confirmation),
-            destructive = true,
-            onConfirm = {
-                showClearHistoryConfirm = false
-                ApplicationContext.getInstance(context).let { app ->
-                    Thread {
-                        DatabaseComponent.get(app).threadDatabase().trimAllThreads(0) { _, _ -> }
-                    }.start()
-                }
+    if (showHopsDialog) {
+        HopsDialog(
+            selected = hops,
+            onSelect = { value ->
+                hops = value
+                sharedPrefs.edit().putInt("pref_onion_hops", value).apply()
+                // No Hops = direct delivery; 1 or 3 hops = onion routing.
+                TextSecurePreferences.setOnionRoutingEnabled(context, value != 0)
+                showHopsDialog = false
             },
-            onCancel = {
-                showClearHistoryConfirm = false
-            }
+            onCancel = { showHopsDialog = false }
         )
     }
 
@@ -136,21 +123,6 @@ fun PrivacySettingsScreen(
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
         SectionTitle(stringResource(R.string.preferences_app_protection__app_access))
         SectionCard {
-            SettingsItem(
-                settingTitle = stringResource(R.string.preferences__screen_security),
-                settingIcon = painterResource(id = R.drawable.ic_screen_lock),
-                settingDesc = stringResource(R.string.preferences__disable_screen_security_to_allow_screen_shots),
-                isEnabled = screenSecurity,
-                onSwitchChanged = { checked ->
-                    screenSecurity = checked
-                    TextSecurePreferences.setScreenSecurityEnabled(context, checked)
-                    (context as? Activity)?.let { ScreenSecurity.apply(it) }
-                },
-                modifier = Modifier.fillMaxWidth(),
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             SettingsItem(
                 settingTitle = stringResource(R.string.preferences__incognito_keyboard),
                 settingIcon = painterResource(id = R.drawable.ic_incognito_keyboard),
@@ -240,32 +212,13 @@ fun PrivacySettingsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             SettingsItem(
-                settingTitle = stringResource(R.string.preferences__clear_conversation_history),
-                settingIcon = painterResource(id = R.drawable.ic_clear_data),
-                iconTint = MaterialTheme.appColors.negativeRedButtonBorder,
-                containsSwitch = false,
-                onSwitchChanged = {},
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { showClearHistoryConfirm = true },
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            SettingsItem(
                 settingTitle = stringResource(R.string.preferences__onion_routing),
                 settingIcon = painterResource(id = R.drawable.ic_onion_routing),
-                settingDesc = stringResource(R.string.preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages),
-                isEnabled = onionRouting,
-                onSwitchChanged = { checked ->
-                    if (checked) {
-                        onionRouting = true
-                        TextSecurePreferences.setOnionRoutingEnabled(context, true)
-                    } else {
-                        showOnionConfirm = true
-                    }
-                },
-                modifier = Modifier.fillMaxWidth(),
+                containsSwitch = false,
+                trailingText = hopsLabel(hops),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { showHopsDialog = true },
             )
         }
     }
@@ -356,5 +309,84 @@ private fun ConfirmDialog(
 fun PrivacySettingsScreenPreview() {
     BChatTheme {
         PrivacySettingsScreen()
+    }
+}
+
+
+@Composable
+private fun hopsLabel(hops: Int): String = when (hops) {
+    0 -> stringResource(R.string.hops_none)
+    1 -> stringResource(R.string.hops_one)
+    else -> stringResource(R.string.hops_three)
+}
+
+/** Figma "Hops" popup: pick how many intermediary nodes messages are routed through. */
+@Composable
+private fun HopsDialog(selected: Int, onSelect: (Int) -> Unit, onCancel: () -> Unit) {
+    val options = listOf(0, 1, 3)
+    DialogContainer(
+        dismissOnBackPress = true,
+        dismissOnClickOutside = true,
+        onDismissRequest = onCancel
+    ) {
+        Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp, vertical = 18.dp)) {
+            Text(
+                text = stringResource(R.string.preferences__onion_routing),
+                color = MaterialTheme.appColors.editTextColor,
+                fontFamily = OpenSans,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            options.forEach { option ->
+                val isSelected = option == selected
+                val shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium)
+                val accent = MaterialTheme.appColors.userDetailsConfirmBackground
+                Row(
+                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 10.dp)
+                        .height(56.dp)
+                        .background(
+                            if (isSelected) MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground else MaterialTheme.appColors.backgroundColor,
+                            shape
+                        )
+                        .border(1.dp, if (isSelected) accent else MaterialTheme.appColors.dividerColor, shape)
+                        .clickable { onSelect(option) }
+                        .padding(horizontal = 20.dp)
+                ) {
+                    io.beldex.bchat.compose_utils.BChatRadioButton(selected = isSelected, onClick = { onSelect(option) })
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = hopsLabel(option),
+                        color = if (isSelected) accent else MaterialTheme.appColors.onboardingBodyColor,
+                        fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                        fontSize = 16.sp
+                    )
+                }
+            }
+            Text(
+                text = stringResource(
+                    when (selected) {
+                        0 -> R.string.hops_none_description
+                        1 -> R.string.hops_one_description
+                        else -> R.string.hops_three_description
+                    }
+                ),
+                color = MaterialTheme.appColors.onboardingBodyColor,
+                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                fontSize = 12.sp,
+                lineHeight = 17.sp,
+                modifier = Modifier.padding(top = 4.dp, bottom = 16.dp)
+            )
+            DialogCancelButton(
+                text = stringResource(R.string.cancel),
+                onClick = onCancel,
+                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                textColor = MaterialTheme.appColors.editTextColor,
+                modifier = Modifier.width(162.dp).align(androidx.compose.ui.Alignment.CenterHorizontally)
+            )
+        }
     }
 }

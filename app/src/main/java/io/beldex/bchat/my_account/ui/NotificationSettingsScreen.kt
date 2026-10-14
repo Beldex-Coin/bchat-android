@@ -206,6 +206,7 @@ fun NotificationSettingsScreen(
                     settingTitle = stringResource(id = R.string.preferences_notifications_strategy_category_fast_mode_title),
                     settingIcon = painterResource(id = R.drawable.ic_fast_mode_setting),
                     iconAlignTop = true,
+                    descTopPadding = 10.dp,
                     isEnabled = fastModeEnabled,
                     settingDesc = stringResource(id = R.string.preferences_notifications_strategy_category_fast_mode_summary),
                     onSwitchChanged = { checked ->

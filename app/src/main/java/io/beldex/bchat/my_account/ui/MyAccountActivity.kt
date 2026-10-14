@@ -25,6 +25,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -777,7 +778,7 @@ fun MyAccountNavHost(
                                 .padding(start = 24.dp, top = 16.dp, end = 0.dp, bottom = 16.dp)
                                 .widthIn(max = 120.dp)
                                 .background(
-                                    color = if (showEditNameTextField) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground
+                                    color = if (showEditNameTextField) Color(0xFFE0E0E0) else Color(0xFF1A1A1A)
                                 )
                                 .align(Alignment.TopEnd)
                                 .clickable {
@@ -801,7 +802,7 @@ fun MyAccountNavHost(
                             Text(
                                 text = if(showEditNameTextField) stringResource(id=R.string.menu_done_button) else stringResource(id=R.string.edit_title),
                                 style = BChatTypography.bodySmall.copy(
-                                    color = if(showEditNameTextField) Color.White else MaterialTheme.appColors.editTextColor,
+                                    color = if(showEditNameTextField) Color(0xFF0B0B0B) else MaterialTheme.appColors.editTextColor,
                                     fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                                     fontWeight = FontWeight(600),
                                     fontSize = 12.sp,
@@ -828,7 +829,10 @@ fun MyAccountNavHost(
                                     cornersRadius = 16.dp
                                 ) else Modifier
                                 .fillMaxWidth()
-                                .padding(top = 50.dp, bottom = 10.dp)
+                                .padding(top = 0.dp, bottom = 10.dp)
+                                // Figma "Frame 3026": #111111 panel, #333333 hairline, avatar inside it.
+                                .background(Color(0xFF111111))
+                                .border(1.dp, Color(0xFF333333))
                         ) {
                             ProfileCard(
                                 isBnsHolder = isBnsHolder,
@@ -837,7 +841,7 @@ fun MyAccountNavHost(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(
-                                        top = 40.dp
+                                        top = if (!isBnsHolder.isNullOrEmpty()) 40.dp else 82.dp
                                     ),
                                 onShowDialog = {
                                     when (it) {
@@ -861,8 +865,9 @@ fun MyAccountNavHost(
                         Box(
                             contentAlignment = Alignment.BottomEnd,
                             modifier = Modifier
-                                .size(ProfilePictureMode.LargePicture.size)
                                 .align(alignment = Alignment.TopCenter)
+                                .padding(top = if (!isBnsHolder.isNullOrEmpty()) 0.dp else 12.dp)
+                                .size(ProfilePictureMode.LargePicture.size)
                         ) {
                             if(isProfileChanged) {
                                 ProfilePictureComponent(
@@ -917,11 +922,18 @@ fun MyAccountNavHost(
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(bottom = 10.dp),
+                                .padding(bottom = 10.dp)
+                                .background(
+                                    androidx.compose.ui.graphics.Brush.radialGradient(
+                                        colors = listOf(Color(0xFF003F00), Color(0xFF0B150B)),
+                                        radius = 500f
+                                    ),
+                                    io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium)
+                                ),
                             shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
-                            containerColor = Color(0xFF0A1F0F),
+                            containerColor = Color.Transparent,
                             contentColor = MaterialTheme.appColors.editTextColor,
-                            border = BorderStroke(0.5.dp, MaterialTheme.appColors.userDetailsConfirmBackground),
+                            border = BorderStroke(1.dp, Color(0xFF00BD40)),
                             disabledContainerColor = MaterialTheme.appColors.searchBackground,
                         ) {
                             Row(
@@ -1521,25 +1533,27 @@ fun ProfileCard(
             )
         }
         if (onShowEditName) {
-            TextField(
-                value= textFieldValueState,
-                onValueChange={
-                    textFieldValueState=it
+            // Figma input: #111111 fill, #333333 hairline, Roboto Mono 14.
+            androidx.compose.foundation.text.BasicTextField(
+                value = textFieldValueState,
+                onValueChange = {
+                    textFieldValueState = it
                     savedName(it)
                 },
                 maxLines = 1,
                 singleLine = true,
-                textStyle = MaterialTheme.typography.bodyMedium.copy(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight(400),
+                textStyle = androidx.compose.ui.text.TextStyle(
+                    color = MaterialTheme.appColors.editTextColor,
+                    fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                    fontSize = 14.sp,
                     textAlign = TextAlign.Center
                 ),
-                colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = MaterialTheme.appColors.textColor,
-                    unfocusedIndicatorColor = MaterialTheme.appColors.textColor,
-                    selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
-                    cursorColor = MaterialTheme.appColors.textSelectionColor
-                )
+                cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.appColors.textSelectionColor),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFF111111))
+                    .border(1.dp, Color(0xFF333333))
+                    .padding(horizontal = 14.dp, vertical = 12.dp)
             )
         }
         if(!isBnsHolder.isNullOrEmpty()){
@@ -1626,13 +1640,9 @@ fun ProfileCardKeyContainer(
     Card(
         modifier = modifier,
         shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
-        border = BorderStroke(1.dp, MaterialTheme.appColors.dividerColor),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = if(!isBnsHolder.isNullOrEmpty()) 2.dp else 0.dp
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor = if(!isBnsHolder.isNullOrEmpty()) MaterialTheme.appColors.profileAddressCardBackground else MaterialTheme.appColors.backgroundColor
-        ),
+        border = BorderStroke(1.dp, Color(0xFF444444)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF111111)),
     ) {
         Box(
             modifier = Modifier
@@ -1664,8 +1674,9 @@ fun ProfileCardKeyContainer(
                     text = title,
                     style = MaterialTheme.typography.bodySmall.copy(
                         fontSize = 10.sp,
+                        fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                         color = MaterialTheme.appColors.editTextColor,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.Normal
                     ),
                     textAlign = TextAlign.Center,
                     modifier = Modifier

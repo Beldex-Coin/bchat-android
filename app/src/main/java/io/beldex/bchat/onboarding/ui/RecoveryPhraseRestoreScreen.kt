@@ -1,5 +1,6 @@
 package io.beldex.bchat.onboarding.ui
 
+import androidx.compose.ui.draw.alpha
 import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
@@ -194,18 +195,17 @@ fun RecoveryPhraseRestoreScreen(
                 Spacer(modifier = Modifier.weight(0.9f))
             }
 
-            AnimatedVisibility(visible = mnemonic.isBlank()) {
-                Text(
-                    text = stringResource(R.string.paste_the_seed_to_continue),
-                    color = MaterialTheme.appColors.onboardingCaptionColor,
-                    fontFamily = RobotoMono,
-                    fontSize = 14.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 22.dp, vertical = 8.dp)
-                )
-            }
+            Text(
+                text = stringResource(R.string.paste_the_seed_to_continue),
+                color = MaterialTheme.appColors.onboardingCaptionColor,
+                fontFamily = RobotoMono,
+                fontSize = 14.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .alpha(if (mnemonic.isBlank()) 1f else 0f)
+                    .padding(horizontal = 22.dp, vertical = 8.dp)
+            )
 
             OnboardingPrimaryButton(
                 text = stringResource(R.string.continue_2),

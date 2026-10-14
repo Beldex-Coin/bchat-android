@@ -3,6 +3,7 @@ package io.beldex.bchat.my_account.ui
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -137,7 +138,7 @@ fun BlockedContactScreen(
                         onClick = { showConfirmationDialog = false },
                         modifier = Modifier.weight(1f)
                     )
-                    io.beldex.bchat.compose_utils.DialogConfirmButton(
+                    io.beldex.bchat.compose_utils.DialogPrimaryButton(
                         text = stringResource(id = R.string.continue_2),
                         onClick = {
                             unBlockMultipleContacts()
@@ -199,6 +200,7 @@ fun BlockedContactScreen(
                 Text(
                     text = stringResource(id = R.string.unblock_selected),
                     style = MaterialTheme.typography.titleMedium.copy(
+                        color = androidx.compose.ui.graphics.Color(0xFF0B0B0B),
                         fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                         fontWeight = FontWeight(600),
                         fontSize = 16.sp
@@ -220,14 +222,16 @@ private fun BlockedContactItem(
     selectContact: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val rowShape = if (isSelected) io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium)
+    else androidx.compose.ui.graphics.RectangleShape
     Card(
-        shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+        shape = rowShape,
         border = androidx.compose.foundation.BorderStroke(
             1.dp,
-            if (isSelected) MaterialTheme.appColors.userDetailsConfirmBackground else MaterialTheme.appColors.dividerColor
+            if (isSelected) androidx.compose.ui.graphics.Color(0xFF00BC33) else androidx.compose.ui.graphics.Color(0xFF444444)
         ),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.appColors.backgroundColor
+            containerColor = if (isSelected) androidx.compose.ui.graphics.Color(0xFF111111) else androidx.compose.ui.graphics.Color(0xFF222222)
         ),
         modifier = modifier
     ) {
@@ -235,9 +239,7 @@ private fun BlockedContactItem(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    if (multiSelectActivated) 8.dp else 16.dp
-                )
+                .padding(horizontal = 20.dp, vertical = 10.dp)
         ) {
 
             Box(
@@ -269,18 +271,16 @@ private fun BlockedContactItem(
             )
 
             if (multiSelectActivated) {
-                BChatCheckBox(
+                CircleCheck(
                     checked = isSelected,
-                    onCheckedChange = {
-                        selectContact(it)
-                    },
-                    modifier = Modifier.padding(end = 10.dp)
+                    onClick = { selectContact(!isSelected) }
                 )
             } else {
                 Text(
                     text = stringResource(R.string.ConversationActivity_unblock),
                     style = MaterialTheme.typography.labelMedium.copy(
-                        fontWeight = FontWeight(600),
+                        fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                        fontWeight = FontWeight(400),
                         fontSize = 12.sp
                     ),
                     color = MaterialTheme.appColors.editTextColor,
@@ -332,5 +332,33 @@ fun BlockedContactScreenPreviewDark() {
                 .fillMaxSize()
                 .padding(16.dp)
         )
+    }
+}
+
+/** Figma tick: a green ring that fills with a dark check when selected. */
+@Composable
+private fun CircleCheck(checked: Boolean, onClick: () -> Unit) {
+    val green = androidx.compose.ui.graphics.Color(0xFF00BC33)
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .size(24.dp)
+            .clip(androidx.compose.foundation.shape.CircleShape)
+            .clickable(onClick = onClick)
+    ) {
+        androidx.compose.foundation.Canvas(modifier = Modifier.size(18.dp)) {
+            val stroke = 1.5.dp.toPx()
+            if (checked) {
+                drawCircle(green)
+                val path = androidx.compose.ui.graphics.Path().apply {
+                    moveTo(size.width * 0.27f, size.height * 0.52f)
+                    lineTo(size.width * 0.44f, size.height * 0.68f)
+                    lineTo(size.width * 0.74f, size.height * 0.34f)
+                }
+                drawPath(path, androidx.compose.ui.graphics.Color(0xFF0B0B0B), style = androidx.compose.ui.graphics.drawscope.Stroke(width = stroke, cap = androidx.compose.ui.graphics.StrokeCap.Round))
+            } else {
+                drawCircle(green, style = androidx.compose.ui.graphics.drawscope.Stroke(width = stroke))
+            }
+        }
     }
 }

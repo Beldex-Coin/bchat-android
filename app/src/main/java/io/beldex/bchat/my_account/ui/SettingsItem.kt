@@ -3,6 +3,7 @@ package io.beldex.bchat.my_account.ui
 import io.beldex.bchat.compose_utils.BChatSwitch
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
@@ -33,6 +34,7 @@ fun SettingsItem(
     settingDesc: String? = null,
     trailingText: String? = null,
     onSwitchChanged: (Boolean) -> Unit = {},
+    descTopPadding: androidx.compose.ui.unit.Dp = 2.dp,
     iconTint: androidx.compose.ui.graphics.Color? = null,
     iconAlignTop: Boolean = false,
 ) {
@@ -71,6 +73,7 @@ fun SettingsItem(
                         fontSize = 12.sp,
                         lineHeight = 16.sp
                     ),
+                    modifier = Modifier.padding(top = descTopPadding),
                 )
             }
         }

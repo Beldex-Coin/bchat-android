@@ -226,11 +226,8 @@ class VisibleMessageView : LinearLayout {
         if (message.reactions.isNotEmpty()) {
             binding.emojiReactionsView.root.setReactions(message.id, message.reactions, message.isOutgoing, delegate)
             binding.emojiReactionsView.root.isVisible = true
-            if(isEndOfMessageCluster) {
-                containerParams.bottomMargin = if(isGroupThread) resources.getDimensionPixelSize(R.dimen.react_with_any_emoji_parent_container_bottom_margin_with_tail_group_message) else resources.getDimensionPixelSize(R.dimen.react_with_any_emoji_parent_container_bottom_margin_with_tail)
-            }else {
-                containerParams.bottomMargin = if(isGroupThread) resources.getDimensionPixelSize(R.dimen.react_with_any_emoji_parent_container_bottom_margin_group_message) else resources.getDimensionPixelSize(R.dimen.react_with_any_emoji_parent_container_bottom_margin)
-            }
+            // The pill now sits below the bubble (Figma), so the bubble needs no extra bottom margin.
+            containerParams.bottomMargin = 0
         } else {
             binding.emojiReactionsView.root.visibility = View.GONE
             containerParams.bottomMargin = 0

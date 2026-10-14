@@ -159,8 +159,10 @@
         <ImageView
             tools:visibility="visible"
             android:id="@+id/quoteViewCancelButton"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:padding="4dp"
+            android:background="@drawable/reactions_close_tile"
             android:src="@drawable/ic_close_white_48dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

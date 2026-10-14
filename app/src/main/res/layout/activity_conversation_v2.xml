@@ -481,7 +481,7 @@
                     android:layout_alignBottom="@+id/conversationRecyclerView" />
 
 
-                <com.google.android.material.card.MaterialCardView
+                <LinearLayout
                     android:id="@+id/attachment_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -489,74 +489,52 @@
                     android:layout_alignParentStart="true"
                     android:layout_marginStart="@dimen/small_spacing"
                     android:layout_marginBottom="8dp"
-                    android:visibility="gone"
-                    app:cardBackgroundColor="@color/attachment_container_background"
-                    app:cardCornerRadius="48dp">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                    android:orientation="horizontal"
+                    android:padding="14dp"
+                    android:visibility="gone">
 
                         <ImageView
                             android:id="@+id/cameraButton"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="8dp"
+                            android:layout_marginEnd="14dp"
                             android:contentDescription="@string/camera_option"
-                            android:padding="3dp"
-                            android:src="@drawable/ic_camera_new" />
-
+                            android:padding="9dp"
+                            android:src="@drawable/ic_attach_camera" />
                         <ImageView
                             android:id="@+id/imageButton"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="5dp"
-                            android:layout_marginBottom="8dp"
+                            android:layout_marginEnd="14dp"
                             android:contentDescription="@string/gallery_option"
-                            android:padding="3dp"
-                            android:src="@drawable/ic_gallery_new" />
-
-
+                            android:padding="9dp"
+                            android:src="@drawable/ic_attach_gallery" />
                         <ImageView
                             android:id="@+id/documentButton"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="5dp"
-                            android:layout_marginBottom="8dp"
+                            android:layout_marginEnd="14dp"
                             android:contentDescription="@string/document_option"
-                            android:padding="3dp"
-                            android:src="@drawable/ic_document_new" />
-
+                            android:padding="9dp"
+                            android:src="@drawable/ic_attach_document" />
                         <ImageView
                             android:id="@+id/gifButton"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginBottom="8dp"
+                            android:layout_marginEnd="14dp"
                             android:contentDescription="@string/gif_option"
-                            android:padding="3dp"
-                            android:src="@drawable/ic_gif_new" />
-
+                            android:padding="9dp"
+                            android:src="@drawable/ic_attach_gif" />
                         <ImageView
                             android:id="@+id/contactButton"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginBottom="8dp"
+                            android:layout_marginEnd="0dp"
                             android:contentDescription="@string/gif_option"
-                            android:padding="3dp"
-                            android:src="@drawable/ic_contact_share" />
+                            android:padding="9dp"
+                            android:src="@drawable/ic_attach_contact" />
 
-                    </LinearLayout>
-
-                </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
 
                 <!--            <LinearLayout-->
                 <!--                android:id="@+id/attachmentOptionsContainer"-->

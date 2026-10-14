@@ -6,7 +6,7 @@
     android:id="@+id/media_preview_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/page_background"
+    android:background="#0B0B0B"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -14,8 +14,8 @@
         style="@style/Widget.Bchat.AppBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/card_color"
-        android:stateListAnimator="@animator/appbar_elevation">
+        android:background="#0B0B0B"
+        android:stateListAnimator="@null">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"

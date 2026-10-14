@@ -6,13 +6,14 @@
     xmlns:wheel="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/screen_background"
+    android:background="@drawable/default_bchat_background"
     android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#0B0B0B"
         android:padding="16dp">
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -33,7 +34,7 @@
 
     </LinearLayout>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/searchCardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,8 +43,11 @@
         android:layout_marginTop="@dimen/small_spacing"
         android:layout_marginEnd="@dimen/medium_spacing"
         android:layout_marginBottom="@dimen/medium_spacing"
-        app:cardBackgroundColor="@color/your_bchat_id_bg"
-        app:cardCornerRadius="30dp">
+        app:cardBackgroundColor="#1A1A1A"
+        app:cardElevation="0dp"
+        app:strokeColor="#333333"
+        app:strokeWidth="1dp"
+        app:cardCornerRadius="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -76,7 +80,7 @@
 
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
 
     <fragment

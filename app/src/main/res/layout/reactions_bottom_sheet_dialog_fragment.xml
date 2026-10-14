@@ -4,7 +4,7 @@
     android:id="@+id/reactions_bottom_view_parent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/popup_menu_background"
+    android:background="@drawable/reactions_sheet_background"
     android:minHeight="150dp"
     android:maxHeight="250dp"
     android:orientation="vertical"
@@ -28,9 +28,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/small_spacing"
+                android:fontFamily="@font/open_sans_semi_bold"
                 android:text="@string/reaction"
-                android:textColor="@color/text"
-                android:textSize="@dimen/medium_font_size" />
+                android:textColor="#EBEBEB"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/reaction_count"
@@ -48,6 +49,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginEnd="@dimen/small_spacing"
+            android:background="@drawable/reactions_close_tile"
+            android:padding="5dp"
             android:src="@drawable/ic_close" />
 
     </LinearLayout>
@@ -55,7 +58,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/divider_color" />
+        android:background="#333333" />
 
     <androidx.recyclerview.widget.RecyclerView xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/reactions_bottom_view_recipient_recycler_all"

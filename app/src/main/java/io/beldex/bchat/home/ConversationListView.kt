@@ -137,7 +137,7 @@ fun ConversationListView(
     }
 
     LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
         modifier = modifier.fillMaxSize()
     ) {
         items(items = conversations, key = { it.threadId }) { thread ->
@@ -213,10 +213,15 @@ private fun ConversationRow(
             AndroidView(
                 factory = { ctx -> ConversationView(ctx) },
                 update = { view -> view.bind(thread, isTyping, glide) },
-                // Opaque base so the swipe-to-delete layer underneath doesn't show through flat rows.
+                // Figma rows sit directly on the dotted background; only go opaque while swiping so the
+                // delete layer underneath doesn't show through.
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.appColors.backgroundColor)
+                    .background(
+                        if (dismissState.dismissDirection != SwipeToDismissBoxValue.Settled)
+                            MaterialTheme.appColors.backgroundColor
+                        else androidx.compose.ui.graphics.Color.Transparent
+                    )
             )
 
             DropdownMenu(

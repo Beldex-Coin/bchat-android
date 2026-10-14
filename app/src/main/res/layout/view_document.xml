@@ -70,9 +70,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:ellipsize="end"
-            android:fontFamily="@font/open_sans_regular"
+            android:fontFamily="@font/roboto_mono"
             android:maxLines="1"
-            android:textColor="@color/text"
+            android:textColor="#EBEBEB"
             android:textSize="@dimen/small_font_size"
             tools:text="I'm a very long document title. Did you know that?" />
     </LinearLayout>

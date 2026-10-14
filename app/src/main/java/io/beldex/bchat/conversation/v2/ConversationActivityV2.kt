@@ -1201,6 +1201,18 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
     private fun setupInputBar() {
         binding.inputBar.delegate=this
         binding.inputBarRecordingView.delegate=this
+        // Figma attachment tray: notched #0B0B0B panel (#444 hairline) holding five notched tiles.
+        run {
+            val density = resources.displayMetrics.density
+            binding.attachmentContainer.background = io.beldex.bchat.compose_utils.NotchedDrawable(
+                14 * density, 1 * density, 0xE60B0B0B.toInt(), 0xFF444444.toInt()
+            )
+            listOf(binding.cameraButton, binding.imageButton, binding.documentButton, binding.gifButton, binding.contactButton).forEach {
+                it.background = io.beldex.bchat.compose_utils.NotchedDrawable(
+                    8 * density, 1 * density, 0xFF1A1A1A.toInt(), 0xFF333333.toInt()
+                )
+            }
+        }
         binding.cameraButton.setOnClickListener {
             showCamera()
             toggleAttachmentOptions()
@@ -4166,11 +4178,26 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
         showAllMediaView(recipient)
     }
 
+    /** Forward: hands the message's text or media to the share flow, which opens the chosen chat with it ready to send. */
+    private fun forwardMessage(message: MessageRecord) {
+        val intent = Intent(this, io.beldex.bchat.ShareActivity::class.java)
+        val mediaSlide = (message as? MmsMessageRecord)?.slideDeck?.slides?.firstOrNull { it.uri != null && (it.hasImage() || it.hasVideo() || it.hasAudio() || it.hasDocument()) }
+        if (mediaSlide != null) {
+            intent.putExtra(Intent.EXTRA_STREAM, mediaSlide.uri)
+            intent.type = mediaSlide.contentType
+        } else {
+            intent.putExtra(Intent.EXTRA_TEXT, message.body)
+            intent.type = "text/plain"
+        }
+        startActivity(intent)
+    }
+
     inner class ReactionsToolbarListener(val message : MessageRecord, val position : Int) :
         ConversationReactionOverlay.OnActionSelectedListener {
         override fun onActionSelected(action : ConversationReactionOverlay.Action) {
             val selectedItems=setOf(message)
             when (action) {
+                ConversationReactionOverlay.Action.FORWARD -> forwardMessage(message)
                 ConversationReactionOverlay.Action.REPLY -> reply(selectedItems)
                 ConversationReactionOverlay.Action.RESEND -> resendMessage(selectedItems)
                 ConversationReactionOverlay.Action.DOWNLOAD -> saveAttachment(selectedItems)

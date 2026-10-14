@@ -794,6 +794,11 @@ class ConversationReactionOverlay : FrameLayout {
                 R.string.accessibilityId_select
             )
         }
+        // Forward (Figma menu): text or a single media attachment
+        val forwardableMedia = message.isMms && (message as? MediaMmsMessageRecord)?.containsMediaSlide() == true
+        if (!message.isPending && !message.isFailed && !isDeleteOnly && !containsControlMessage && !isSharedContact && (hasText || forwardableMedia)) {
+            items += ActionItem(R.attr.menu_forward_icon, context.resources.getString(R.string.media_preview__forward_title), { handleActionItemClicked(Action.FORWARD) }, R.string.media_preview__forward_title)
+        }
         // Reply
         if (!message.isPending && !message.isFailed && !isDeleteOnly) {
             items += ActionItem(R.attr.menu_reply_icon, context.resources.getString(R.string.MessageNotifier_reply), { handleActionItemClicked(Action.REPLY) }, R.string.MessageNotifier_reply)
@@ -820,7 +825,7 @@ class ConversationReactionOverlay : FrameLayout {
             items += ActionItem(R.attr.menu_trash_icon,context.resources.getString(R.string.conversation_context__menu_ban_and_delete_all), { handleActionItemClicked(Action.BAN_AND_DELETE_ALL) })
         }
         // Message detail
-        if(!isDeleteOnly && message.isFailed) {
+        if(!isDeleteOnly && !containsControlMessage) {
             items+=ActionItem(
                 R.attr.menu_info_icon,
                 context.resources.getString(R.string.conversation_context__menu_message_details),
@@ -961,6 +966,7 @@ class ConversationReactionOverlay : FrameLayout {
         TAP
     }
     enum class Action {
+        FORWARD,
         REPLY,
         RESEND,
         RESYNC,

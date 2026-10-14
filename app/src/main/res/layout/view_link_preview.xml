@@ -13,8 +13,10 @@
         android:layout_width="match_parent"
         android:layout_height="72dp"
         android:layout_marginBottom="8dp"
-        app:cardBackgroundColor="@color/dialled_call_detail_background"
-        app:cardCornerRadius="12dp"
+        app:cardBackgroundColor="#0B0B0B"
+        app:cardCornerRadius="0dp"
+        app:strokeColor="#333333"
+        app:strokeWidth="1dp"
         app:cardElevation="0dp">
 
         <LinearLayout
@@ -31,7 +33,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:ellipsize="end"
-                android:fontFamily="@font/open_sans_regular"
+                android:fontFamily="@font/roboto_mono"
                 android:gravity="center_vertical"
                 android:maxLines="2"
                 android:minWidth="@dimen/media_bubble_min_width"

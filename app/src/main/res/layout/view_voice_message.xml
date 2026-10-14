@@ -6,16 +6,18 @@
     android:layout_width="250dp"
     android:layout_height="69dp">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/viewVoiceMessageCard"
         android:layout_width="match_parent"
         android:layout_height="36dp"
         android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        app:cardCornerRadius="30dp"
+        app:cardCornerRadius="0dp"
         app:cardElevation="0dp"
-        app:cardBackgroundColor="@color/dialled_call_detail_background">
+        app:strokeColor="#0A370A"
+        app:strokeWidth="1dp"
+        app:cardBackgroundColor="#0B0B0B">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -49,7 +51,7 @@
                     android:layout_height="16dp"
                     android:layout_centerInParent="true"
                     android:src="@drawable/ic_play_audio"
-                    app:tint="@color/white" />
+                    app:tint="#00BD40" />
 
                 <ProgressBar
                     android:id="@+id/voiceMessageViewLoader"
@@ -75,11 +77,13 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerInParent="true"
                 android:layout_marginEnd="@dimen/small_spacing"
-                android:textColor="@color/sent_message_time_color"
-                android:textSize="@dimen/small_font_size"
+                android:fontFamily="@font/roboto_mono"
+                android:textStyle="bold"
+                android:textColor="#EBEBEB"
+                android:textSize="11sp"
                 tools:text="0:00" />
         </RelativeLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/voice_message_time"

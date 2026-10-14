@@ -35,8 +35,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:maxLines="2"
-            android:textColor="@color/text"
-            android:textSize="@dimen/small_font_size"
+            android:fontFamily="@font/open_sans_regular"
+            android:textColor="#EBEBEB"
+            android:textSize="14sp"
             tools:text="@tools:sample/full_names" />
 
         <io.beldex.bchat.components.FromTextView
@@ -47,8 +48,9 @@
             android:gravity="center_vertical"
             android:maxLines="1"
             android:text="@string/tap_to_remove"
-            android:textColor="@color/text_hint"
-            android:textSize="7sp" />
+            android:fontFamily="@font/roboto_mono"
+            android:textColor="#737373"
+            android:textSize="8sp" />
 
     </LinearLayout>
 

@@ -130,11 +130,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/medium_spacing"
             android:layout_marginEnd="@dimen/large_spacing"
+            android:layout_marginTop="4dp"
             android:clickable="false"
             android:visibility="gone"
             android:focusable="false"
             app:layout_constraintStart_toStartOf="@+id/messageInnerContainer"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/messageInnerContainer"
             app:layout_constraintBottom_toBottomOf="parent"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>

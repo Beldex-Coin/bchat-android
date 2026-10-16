@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Figma recording lock pill: #1A1A1A with a #333333 hairline. -->
 <shape
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <corners android:radius="100dp"/>
-    <stroke android:color="@color/input_bar_lock_view_border" android:width="1px" />
-    <solid android:color="@color/input_bar_lock_view_background" />
+    <stroke android:color="#333333" android:width="1dp" />
+    <solid android:color="#1A1A1A" />
 </shape>

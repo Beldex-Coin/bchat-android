@@ -1001,8 +1001,8 @@
     </style>
 
     <style name="AudioSeekBar" parent="Widget.AppCompat.SeekBar">
-        <item name="android:progressBackgroundTint">#B2D7B2</item>
-        <item name="android:progressTint">#FFFFFF</item>
+        <item name="android:progressBackgroundTint">#1F4D26</item>
+        <item name="android:progressTint">#00BD40</item>
         <item name="android:thumbTint">#FFFFFF</item>
     </style>
 

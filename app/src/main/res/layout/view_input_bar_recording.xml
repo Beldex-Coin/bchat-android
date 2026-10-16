@@ -139,11 +139,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/timer_container"
         android:layout_marginBottom="16dp"
-        app:cardBackgroundColor="@color/received_message_background"
+        app:cardBackgroundColor="#111111"
         app:contentPadding="8dp"
         app:cardCornerRadius="0dp"
         app:cardElevation="0dp"
-        app:strokeColor="@color/drawer_profile_border"
+        app:strokeColor="#333333"
         app:strokeWidth="1dp"
         android:visibility="gone">
 
@@ -163,7 +163,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/delete"
-                android:textColor="@color/received_message_text_color"
+                android:fontFamily="@font/roboto_mono"
+                android:textColor="#EBEBEB"
                 android:layout_marginStart="8dp"/>
 
         </LinearLayout>

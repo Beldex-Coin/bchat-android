@@ -334,8 +334,8 @@ private fun GroupsSection(
                 contentPadding = PaddingValues(8.dp)
             ) {
                 items(groups.size) { i ->
-                    val groupImage = groups[i].image?.let {
-                        convertImageByteArrayToBitmap(it).asImageBitmap()
+                    val groupImage = groups[i].image?.takeIf { it.isNotEmpty() }?.let {
+                        BitmapFactory.decodeByteArray(it, 0, it.size)?.asImageBitmap()
                     }
                     Column(
                         modifier = Modifier
@@ -366,6 +366,16 @@ private fun GroupsSection(
                                     .height(52.dp)
                                     .clip(shape = RoundedCornerShape(6.dp)),
                                 alignment = Alignment.Center
+                            )
+                        } else if (bundledGroupLogo(groups[i].name, groups[i].id) != null) {
+                            // The server sent no picture: use the bundled Figma logo for the known default rooms.
+                            Image(
+                                painter = painterResource(id = bundledGroupLogo(groups[i].name, groups[i].id)!!),
+                                contentDescription = groups[i].name,
+                                modifier = Modifier
+                                    .width(52.dp)
+                                    .height(52.dp)
+                                    .clip(shape = RoundedCornerShape(6.dp))
                             )
                         } else {
                             Box(
@@ -402,6 +412,19 @@ private fun GroupsSection(
                 }
             }
         }
+    }
+}
+
+/** Bundled logos for the default social groups, matched by room name or id. */
+private fun bundledGroupLogo(name: String, id: String): Int? {
+    val key = "$name $id".lowercase()
+    return when {
+        "masternode" in key -> R.drawable.group_logo_masternode
+        "belnet" in key -> R.drawable.group_logo_belnet
+        "crypto" in key || "news" in key -> R.drawable.group_logo_news
+        "beldex" in key -> R.drawable.group_logo_beldex
+        "bchat" in key -> R.drawable.group_logo_bchat
+        else -> null
     }
 }
 

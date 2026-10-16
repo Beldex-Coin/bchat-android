@@ -93,7 +93,7 @@ fun ContactItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            Spacer(modifier = Modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(0.dp))
             Text(
                 contact?.recipient?.address?.toString()?.let { formatAddresses(it) } ?: "",
                 color = MaterialTheme.appColors.onboardingCaptionColor,

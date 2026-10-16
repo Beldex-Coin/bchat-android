@@ -289,7 +289,8 @@ private fun SearchView(
                 .weight(1f)
         ) {
             items(
-                items = results,
+                // Figma: "Note to Self" sits above the contacts and groups.
+                items = results.sortedBy { if (it is SearchResults.SavedMessages) 0 else 1 },
                 key = {
                     when (it) {
                         is SearchResults.Contact -> {

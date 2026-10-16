@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Notched icon tile for the "Note to Self" row (Figma "Frame 2985"). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="42dp" android:height="42dp"
+    android:viewportWidth="42" android:viewportHeight="42">
+    <path android:pathData="M0,0 L32,0 L42,10 L42,42 L10,42 L0,32 Z" android:fillColor="#222222" />
+</vector>

@@ -89,7 +89,7 @@ fun HomeHeader(
         AnimatedVisibility(visible = showConnectivityWarning) {
             // Figma: red "danger" triangle left of the message, text directly on the page.
             Row(
-                verticalAlignment = Alignment.Top,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 12.dp, vertical = 6.dp)

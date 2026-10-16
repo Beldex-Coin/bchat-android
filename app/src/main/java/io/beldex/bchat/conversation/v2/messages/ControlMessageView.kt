@@ -53,11 +53,12 @@ class ControlMessageView : LinearLayout {
     private fun styleChips(messageBody: CharSequence) {
         val density = resources.displayMetrics.density
         val left = messageBody.toString() == context.getString(R.string.MessageRecord_left_group)
-        val accent = if (left) 0xFFFF3E3E.toInt() else 0xFF444444.toInt()
+        // Figma: #1A1A1A chip, no stroke; "You left this group" is red-tinted with a red hairline.
         binding.textView.background = io.beldex.bchat.compose_utils.NotchedDrawable(
-            6 * density, 0.75f * density, 0xFF111111.toInt(), accent
+            6 * density, if (left) 0.75f * density else 0f, if (left) 0xFF2B0A0A.toInt() else 0xFF1A1A1A.toInt(), 0xFFFF3D3D.toInt()
         )
-        binding.textView.setTextColor(if (left) 0xFFFF3E3E.toInt() else 0xFF8D8D8D.toInt())
+        binding.textView.setTextColor(if (left) 0xFFFF3D3D.toInt() else 0xFF8D8D8D.toInt())
+        binding.textView.typeface = androidx.core.content.res.ResourcesCompat.getFont(context, R.font.roboto_mono)
         binding.dateBreakTextView.background = io.beldex.bchat.compose_utils.NotchedDrawable(
             8 * density, 0.5f * density, 0xFF111111.toInt(), 0xFF444444.toInt()
         )
@@ -69,8 +70,9 @@ class ControlMessageView : LinearLayout {
         binding.dateBreakTextView.showDateBreak(message, previous)
         binding.iconImageView.visibility = View.GONE
 
-        val fontSize = TextSecurePreferences.getChatFontSize(context)
-        binding.textView.textSize = fontSize!!.toFloat()
+        val fontSize = TextSecurePreferences.getChatFontSize(context)!!
+        // Control chips are a fixed 11sp in the design, regardless of the chat font size.
+        binding.textView.textSize = 11f
         binding.receiverStatusIconTextView.textSize = fontSize.toFloat()
         binding.senderStatusIconTextView.textSize = fontSize.toFloat()
         binding.receivedCallText.textSize = fontSize.toFloat()
@@ -91,6 +93,7 @@ class ControlMessageView : LinearLayout {
                 // Figma: the timer glyph sits inline at the start of the chip, not above it.
                 inlineIcon = R.drawable.ic_timer
                 binding.textView.textSize = 10f
+                binding.textView.setTextColor(0xFFACACAC.toInt())
             }
             message.isMediaSavedNotification -> {
                 binding.iconImageView.setImageDrawable(

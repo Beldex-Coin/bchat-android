@@ -485,7 +485,8 @@
                     android:id="@+id/attachment_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_above="@id/slideToPayButton"
+                    android:elevation="8dp"
+                    android:layout_above="@id/messageRequestBarCardView"
                     android:layout_alignParentStart="true"
                     android:layout_marginStart="@dimen/small_spacing"
                     android:layout_marginBottom="8dp"
@@ -767,10 +768,10 @@
                     android:layout_marginStart="15dp"
                     android:layout_marginEnd="15dp"
                     android:layout_marginBottom="10dp"
-                    app:cardBackgroundColor="@color/missed_call_dialog_background"
-                    app:cardCornerRadius="20dp"
+                    app:cardBackgroundColor="#0B0B0B"
+                    app:cardCornerRadius="0dp"
                     app:cardElevation="0dp"
-                    app:strokeColor="@color/message_request_view_border"
+                    app:strokeColor="#333333"
                     app:strokeWidth="1dp"
                     tools:visibility="gone">
 
@@ -804,7 +805,7 @@
                                 android:fontFamily="@font/open_sans_bold"
                                 android:paddingHorizontal="@dimen/small_spacing"
                                 android:text="@string/activity_message_requests_title"
-                                android:textColor="@color/chat_header_title"
+                                android:textColor="#EBEBEB"
                                 android:textSize="16sp"
                                 android:visibility="visible" />
 
@@ -813,11 +814,11 @@
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:layout_marginEnd="@dimen/small_spacing"
-                                android:background="?selectableItemBackgroundBorderless"
                                 android:contentDescription="@string/close"
-                                android:padding="2dp"
+                                android:background="@drawable/reactions_close_tile"
+                                android:padding="5dp"
                                 android:src="@drawable/ic_close"
-                                app:tint="@color/chat_header_title" />
+                                app:tint="#EBEBEB" />
 
                         </LinearLayout>
 
@@ -839,11 +840,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/medium_spacing"
-                            android:fontFamily="@font/open_sans_regular"
+                            android:fontFamily="@font/roboto_mono"
                             android:gravity="start"
                             android:text="@string/message_requests_send_notice"
-                            android:textColor="@color/chat_header_title"
-                            android:textSize="@dimen/small_font_size" />
+                            android:textColor="#EBEBEB"
+                            android:textSize="13sp" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -855,13 +856,13 @@
                                 android:layout_width="0dp"
                                 android:layout_height="52dp"
                                 android:layout_weight="1"
-                                android:backgroundTint="@android:color/transparent"
-                                android:fontFamily="@font/open_sans_regular"
+                                android:backgroundTint="#111111"
+                                android:fontFamily="@font/roboto_mono"
                                 android:text="@string/decline"
                                 android:textAllCaps="false"
-                                android:textColor="@color/chat_message_request_decline_text"
+                                android:textColor="#EBEBEB"
                                 android:textSize="14sp"
-                                app:strokeColor="@color/message_request_view_border"
+                                app:strokeColor="#444444"
                                 app:strokeWidth="1dp"
                                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Bchat.NotchedButton" />
 
@@ -871,11 +872,14 @@
                                 android:layout_height="52dp"
                                 android:layout_marginStart="@dimen/small_spacing"
                                 android:layout_weight="1"
-                                android:backgroundTint="@color/chat_message_request_accept_background"
-                                android:fontFamily="@font/open_sans_regular"
+                                android:backgroundTint="#E0E0E0"
+                                android:fontFamily="@font/roboto_mono"
                                 android:text="@string/accept"
                                 android:textAllCaps="false"
-                                android:textColor="@color/chat_message_request_accept_text"
+                                android:textStyle="bold"
+                                android:textColor="#0B0B0B"
+                                app:strokeColor="#0A370A"
+                                app:strokeWidth="1dp"
                                 android:textSize="14sp"
                                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Bchat.NotchedButton" />
 

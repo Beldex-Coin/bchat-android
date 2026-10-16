@@ -64,7 +64,6 @@ class ContactSelectionListFragment : Fragment(), LoaderManager.LoaderCallbacks<L
         binding.recyclerView.adapter = listAdapter
         val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
         val icNoteToSelf : Int = if (isDarkTheme) R.drawable.ic_note_to_self else R.drawable.ic_note_to_self_light
-        binding.noteToSelfImage.setImageDrawable(ContextCompat.getDrawable(requireContext(), icNoteToSelf ))
         binding.noteToSelfContainer.setOnClickListener { onLocalSend() }
     }
 

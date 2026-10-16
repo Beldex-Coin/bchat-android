@@ -31,9 +31,12 @@
 
                 <ImageView
                     android:id="@+id/noteToSelfImage"
-                    android:layout_width="@dimen/small_profile_picture_size"
-                    android:layout_height="@dimen/small_profile_picture_size"
-                    android:src="@drawable/ic_note_to_self"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:padding="11dp"
+                    android:background="@drawable/note_to_self_tile"
+                    android:src="@drawable/ic_note_to_self_row"
+                    app:tint="#EBEBEB"
                     android:contentDescription="" />
 
                 <Space
@@ -45,8 +48,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/note_to_self"
-                    android:textSize="16sp"
-                    android:textColor="@color/text" />
+                    android:fontFamily="@font/roboto_mono"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:textColor="#EBEBEB" />
 
             </LinearLayout>
 

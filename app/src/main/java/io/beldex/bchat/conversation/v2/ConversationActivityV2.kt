@@ -1210,7 +1210,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
         run {
             val density = resources.displayMetrics.density
             binding.attachmentContainer.background = io.beldex.bchat.compose_utils.NotchedDrawable(
-                14 * density, 1 * density, 0xE60B0B0B.toInt(), 0xFF444444.toInt()
+                14 * density, 1 * density, 0xFF0B0B0B.toInt(), 0xFF444444.toInt()
             )
             listOf(binding.cameraButton, binding.imageButton, binding.documentButton, binding.gifButton, binding.contactButton).forEach {
                 it.background = io.beldex.bchat.compose_utils.NotchedDrawable(

@@ -148,9 +148,10 @@ class ArchiveChatActivity : BaseComponentActivity() {
 
             BChatTheme(darkTheme=isDarkTheme) {
                 Surface(
-                    color=MaterialTheme.appColors.backgroundColor,
+                    color=androidx.compose.ui.graphics.Color.Transparent,
                     modifier=Modifier
                         .fillMaxSize()
+                        .bchatBackground(MaterialTheme.appColors.backgroundColor)
                         .padding(WindowInsets.systemBars.asPaddingValues())
                 ) {
                     Box(modifier=Modifier.fillMaxSize()) {
@@ -161,18 +162,22 @@ class ArchiveChatActivity : BaseComponentActivity() {
 
                                 Box {
                                     Icon(
-                                        imageVector=Icons.Default.MoreVert,
+                                        painter=androidx.compose.ui.res.painterResource(id=R.drawable.ic_menu_dots),
                                         contentDescription=stringResource(R.string.menu),
                                         tint=MaterialTheme.appColors.editTextColor,
                                         modifier=Modifier.clickable { expanded=true }
                                     )
 
+                                    // Same glass menu as the Home row menu (Figma).
                                     DropdownMenu(
                                         expanded=expanded,
-                                        onDismissRequest={ expanded=false }
+                                        onDismissRequest={ expanded=false },
+                                        containerColor=androidx.compose.ui.graphics.Color(0xF2111111),
+                                        shape=androidx.compose.foundation.shape.RoundedCornerShape(18.dp),
+                                        border=androidx.compose.foundation.BorderStroke(1.dp, androidx.compose.ui.graphics.Color(0x33FFFFFF))
                                     ) {
                                         DropdownMenuItem(
-                                            text={ Text(stringResource(R.string.archive_settings)) },
+                                            text={ Text(stringResource(R.string.archive_settings), color=MaterialTheme.appColors.editTextColor) },
                                             onClick={
                                                 expanded=false
                                                 showSettings=true

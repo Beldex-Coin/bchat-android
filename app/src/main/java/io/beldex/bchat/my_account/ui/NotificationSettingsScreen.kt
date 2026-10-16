@@ -92,22 +92,25 @@ fun NotificationSettingsScreen(
     }
     var showPrivacyDialog by remember { mutableStateOf(false) }
 
-    val ringtoneLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val uri = result.data?.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
-            if (uri == Settings.System.DEFAULT_NOTIFICATION_URI) {
-                NotificationChannels.updateMessageRingtone(context, uri)
-                TextSecurePreferences.removeNotificationRingtone(context)
-                ringtoneUri = TextSecurePreferences.getNotificationRingtone(context)
-            } else {
-                val resolved = uri ?: Uri.EMPTY
-                NotificationChannels.updateMessageRingtone(context, resolved)
-                TextSecurePreferences.setNotificationRingtone(context, resolved.toString())
-                ringtoneUri = resolved
+    var showRingtoneDialog by remember { mutableStateOf(false) }
+    if (showRingtoneDialog) {
+        io.beldex.bchat.my_account.ui.dialogs.RingtonePickerDialog(
+            currentUri = ringtoneUri,
+            onDismiss = { showRingtoneDialog = false },
+            onSelected = { uri ->
+                if (uri == Settings.System.DEFAULT_NOTIFICATION_URI) {
+                    NotificationChannels.updateMessageRingtone(context, uri)
+                    TextSecurePreferences.removeNotificationRingtone(context)
+                    ringtoneUri = TextSecurePreferences.getNotificationRingtone(context)
+                } else {
+                    val resolved = uri ?: Uri.EMPTY
+                    NotificationChannels.updateMessageRingtone(context, resolved)
+                    TextSecurePreferences.setNotificationRingtone(context, resolved.toString())
+                    ringtoneUri = resolved
+                }
+                showRingtoneDialog = false
             }
-        }
+        )
     }
 
     if (showPrivacyDialog) {
@@ -259,19 +262,7 @@ fun NotificationSettingsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable(enabled = notificationsEnabled) {
-                            val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
-                            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true)
-                            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, true)
-                            intent.putExtra(
-                                RingtoneManager.EXTRA_RINGTONE_TYPE,
-                                RingtoneManager.TYPE_NOTIFICATION
-                            )
-                            intent.putExtra(
-                                RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI,
-                                Settings.System.DEFAULT_NOTIFICATION_URI
-                            )
-                            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, ringtoneUri)
-                            ringtoneLauncher.launch(intent)
+                            showRingtoneDialog = true
                         },
                 )
 

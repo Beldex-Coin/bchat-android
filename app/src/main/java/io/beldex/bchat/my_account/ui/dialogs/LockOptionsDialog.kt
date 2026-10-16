@@ -80,7 +80,7 @@ fun LockOptionsDialog(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(max = 200.dp)
+                    .heightIn(max = 260.dp)
                     .lazyListScrollbar(listState)
                     .padding(end = if (scrollable) 12.dp else 0.dp)
             ) {

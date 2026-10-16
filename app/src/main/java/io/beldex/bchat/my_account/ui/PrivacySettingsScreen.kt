@@ -1,5 +1,6 @@
 package io.beldex.bchat.my_account.ui
 
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.border
 import androidx.compose.foundation.background
@@ -13,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -217,6 +220,13 @@ fun PrivacySettingsScreen(
                 settingIcon = painterResource(id = R.drawable.ic_onion_routing),
                 containsSwitch = false,
                 trailingText = hopsLabel(hops),
+                settingDesc = stringResource(
+                    when (hops) {
+                        0 -> R.string.hops_none_description
+                        1 -> R.string.hops_one_description
+                        else -> R.string.hops_three_description
+                    }
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { showHopsDialog = true },
@@ -367,20 +377,28 @@ private fun HopsDialog(selected: Int, onSelect: (Int) -> Unit, onCancel: () -> U
                     )
                 }
             }
-            Text(
-                text = stringResource(
-                    when (selected) {
-                        0 -> R.string.hops_none_description
-                        1 -> R.string.hops_one_description
-                        else -> R.string.hops_three_description
-                    }
-                ),
-                color = MaterialTheme.appColors.onboardingBodyColor,
-                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
-                fontSize = 12.sp,
-                lineHeight = 17.sp,
-                modifier = Modifier.padding(top = 4.dp, bottom = 16.dp)
-            )
+            Row(modifier = Modifier.padding(top = 4.dp, bottom = 16.dp)) {
+                androidx.compose.material3.Icon(
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = null,
+                    tint = MaterialTheme.appColors.onboardingBodyColor,
+                    modifier = Modifier.padding(top = 2.dp).size(16.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = stringResource(
+                        when (selected) {
+                            0 -> R.string.hops_none_description
+                            1 -> R.string.hops_one_description
+                            else -> R.string.hops_three_description
+                        }
+                    ),
+                    color = MaterialTheme.appColors.onboardingBodyColor,
+                    fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                    fontSize = 12.sp,
+                    lineHeight = 17.sp
+                )
+            }
             DialogCancelButton(
                 text = stringResource(R.string.cancel),
                 onClick = onCancel,

@@ -310,15 +310,9 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 R.color.incoming_reply_message_icon
             }, context.theme))
             if(mode == Mode.Regular) {
-                val backgroundColorID = if (outgoing) {
-                    R.color.button_green
-                } else {
-                    R.color.user_view_background
-                }
-                val backgroundColor =
-                    ResourcesCompat.getColor(resources, backgroundColorID, context.theme)
+                // Figma: the quoted attachment tile is a neutral #222222 square in both bubble types.
                 binding.quoteViewAttachmentPreviewContainer.backgroundTintList =
-                    ColorStateList.valueOf(backgroundColor)
+                    ColorStateList.valueOf(0xFF222222.toInt())
                 binding.quoteViewAttachmentPreviewImageView.isVisible = false
                 binding.quoteViewAttachmentThumbnailImageView.root.isVisible = false
             }else{

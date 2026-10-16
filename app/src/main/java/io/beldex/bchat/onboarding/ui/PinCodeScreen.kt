@@ -193,6 +193,8 @@ private fun PortraitPinCodeScreen(
         // Figma: lock sits 61dp under the header. Extra height goes above it on Create/Change PIN,
         // but the Verify screen starts near the top (more space there looked misaligned).
         if (!compact && state.step != PinCodeSteps.VerifyPin) Spacer(modifier = Modifier.weight(0.6f))
+        // Verify PIN has no Next button to balance it, so give it the same breathing room under the header (Figma ~68dp).
+        else if (state.step == PinCodeSteps.VerifyPin) Spacer(modifier = Modifier.height(if (compact) 24.dp else 64.dp))
         Image(
             painter = painterResource(id = R.drawable.ic_pin_lock),
             colorFilter = if (state.errorText != null) androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.appColors.negativeRedButtonBorder) else null,

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Figma emoji bar: pill #111111 with a #333333 hairline. -->
 <shape android:shape="rectangle" xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/overflow_menu_background" />
+    <solid android:color="#111111" />
     <corners android:radius="30dp" />
+    <stroke android:width="1dp" android:color="#333333" />
 </shape>

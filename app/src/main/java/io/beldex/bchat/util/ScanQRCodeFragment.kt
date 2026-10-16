@@ -54,6 +54,14 @@ class ScanQRCodeFragment : Fragment() {
         } else {
             binding.messageTextView.text = getString(R.string.join_social_group_content)
         }
+        // Figma "Upload from Gallery": notched #111111 button with a green hairline.
+        val density = resources.displayMetrics.density
+        binding.uploadFromGalleryLayout.background = io.beldex.bchat.compose_utils.NotchedDrawable(
+            12 * density, 1 * density, 0xFF111111.toInt(), 0xFF00BC33.toInt()
+        )
+        binding.messageTextView.background = io.beldex.bchat.compose_utils.NotchedDrawable(
+            10 * density, 1 * density, 0xFF111111.toInt(), 0xFF333333.toInt()
+        )
         binding.uploadFromGalleryLayout.setOnClickListener {
             binding.uploadFromGalleryLayout.isEnabled = false
             val pickIntent = Intent(Intent.ACTION_PICK)

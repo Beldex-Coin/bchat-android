@@ -279,7 +279,7 @@
     <color name="sent_message_time_color">#EBEBEB</color>
     <color name="received_message_time_color">#A7A7BA</color>
     <color name="call_notification_background">#2C2C3B</color>
-    <color name="quote_view_background">#11111A</color>
+    <color name="quote_view_background">#111111</color>
     <color name="input_quoted_text_color">#A7A7BA</color>
     <color name="quote_author_text_color">#00BD40</color>
     <color name="sent_quoted_text_color">#EBEBEB</color>
@@ -307,7 +307,7 @@
     <color name="flip_camera_icon_tint">#5F5F76</color>
     <color name="conversation_day_color">#5F5F76</color>
     <color name="popup_menu_background">#2C2C3B</color>
-    <color name="received_call_card_background">#1C1C26</color>
+    <color name="received_call_card_background">#111111</color>
     <color name="view_message_view_duration">#EBEBEB</color>
     <color name="outgoingMessageProgressBackgroundTintColor">#00BD40</color>
     <color name="incomingMessageProgressBackgroundTintColor">#DDFFFF</color>
@@ -343,7 +343,7 @@
     <color name="negative_red_button">#1AFF3E3E</color>
     <color name="negative_green_button_text">#FFACACAC</color>
     <color name="ic_self_message">#00BD40</color>
-    <color name="outgoing_call_background">#136515</color>
+    <color name="outgoing_call_background">#0B0B0B</color>
     <color name="incoming_call_icon_background">#252534</color>
     <color name="payment_card_view_background">#3F3F56</color>
     <color name="chat_icon_background">#2C2C3B</color>
@@ -392,8 +392,8 @@
     <color name="view_all_text_out">#FFFFFF</color>
     <color name="timestamp_out">#EBEBEB</color>
     <color name="timestamp_in">#A7A7BA</color>
-    <color name="incoming_message_divider_color">#4B4B64</color>
-    <color name="outgoing_message_divider_color">#2FA62F</color>
+    <color name="incoming_message_divider_color">#333333</color>
+    <color name="outgoing_message_divider_color">#0A370A</color>
     <color name="quote_gray">#CCCCCC</color>
     <color name="foreground_symbol">#66FFFFFF</color>
     <color name="background_color_span">#797984</color>

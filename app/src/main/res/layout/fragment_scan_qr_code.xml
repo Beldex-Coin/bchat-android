@@ -25,6 +25,14 @@
             android:layout_height="0dp"
             app:radius="0.45" />
 
+        <!-- Everything under the scan window sits on a solid panel so the camera never shows there. -->
+        <LinearLayout
+            android:id="@+id/scanBottomPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#0B0B0B"
+            android:orientation="vertical">
+
         <LinearLayout
             android:id="@+id/uploadFromGallery_Layout"
             android:layout_width="wrap_content"
@@ -67,6 +75,8 @@
             android:text="@string/activity_create_private_chat_scan_qr_code_explanation"
             android:textColor="#737373"
             android:textSize="12sp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

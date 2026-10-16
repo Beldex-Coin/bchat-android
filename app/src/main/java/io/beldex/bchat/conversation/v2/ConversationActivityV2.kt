@@ -888,6 +888,13 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
         binding.conversationRecyclerView.layoutManager = layoutManager
         binding.conversationRecyclerView.setHasFixedSize(true)
 
+        // The "You Joined / You Created" card depends on how many messages the group chat has.
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onChanged() = updateGroupJoinedCard()
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) = updateGroupJoinedCard()
+            override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) = updateGroupJoinedCard()
+        })
+
         // Cursor loader (Activity-safe)
         LoaderManager.getInstance(this@ConversationActivityV2)
             .restartLoader(0, null, this)
@@ -1511,6 +1518,46 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
             // ---------- Default ----------
             else -> {
                 binding.conversationSubtitleView.isVisible = false
+            }
+        }
+    }
+
+    /** Figma: a brand-new group chat (nothing but the creation notice) shows a "You Joined/Created" card. */
+    private fun updateGroupJoinedCard() {
+        val recipient = viewModel.recipient.value
+        val show = recipient != null && recipient.isGroupRecipient && adapter.itemCount <= 1
+        val card = binding.groupJoinedCard ?: return
+        card.isVisible = show
+        // Keep the control notice (e.g. "X added you") visible above the card by padding the list under it.
+        card.post {
+            binding.conversationRecyclerView.setPadding(
+                binding.conversationRecyclerView.paddingLeft,
+                binding.conversationRecyclerView.paddingTop,
+                binding.conversationRecyclerView.paddingRight,
+                if (show) card.height + (14 * resources.displayMetrics.density).toInt() else 0
+            )
+        }
+        if (!show || recipient == null) return
+        val openGroup = viewModel.getOpenGroupChat()
+        val isSocial = openGroup != null
+        val memberCount = if (isSocial) {
+            viewModel.getUserCount(openGroup!!) ?: 0
+        } else {
+            groupRepository?.getGroupMembers(recipient.address.toGroupString())?.members?.size ?: 0
+        }
+        val isCreator = !isSocial && viewModel.getGroup(recipient)?.admins?.any { it.toString() == textSecurePreferences.getLocalNumber() } == true
+        val whenText = getString(R.string.today) + " · " + DateUtils.getTimeStamp(this, Locale.getDefault(), System.currentTimeMillis())
+        val name = recipient.name?.let { n -> n.replaceFirstChar { it.uppercase() } } ?: ""
+        card.setContent {
+            BChatTheme {
+                io.beldex.bchat.groups.GroupJoinedCard(
+                    verb = getString(if (isCreator) R.string.you_created else R.string.you_joined),
+                    groupName = name,
+                    kind = getString(if (isSocial) R.string.social_group_kind else R.string.secret_group_kind),
+                    memberCount = resources.getQuantityString(R.plurals.group_member_count, memberCount, memberCount),
+                    whenText = whenText,
+                    publicKey = recipient.address.toString()
+                )
             }
         }
     }

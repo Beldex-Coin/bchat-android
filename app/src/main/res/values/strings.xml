@@ -999,6 +999,11 @@
     <string name="call_banner_in_call">%1$s in call</string>
     <string name="call_banner_in_video_call">%1$s in Video call</string>
     <string name="search_gif">SEARCH GIF</string>
+    <string name="you_joined">You Joined</string>
+    <string name="you_created">You Created</string>
+    <string name="today">Today</string>
+    <string name="social_group_kind">Social Group</string>
+    <string name="secret_group_kind">Secret Group</string>
     <string name="bluetooth_device">Bluetooth Device</string>
     <string name="mobile_speaker">Mobile Speaker</string>
     <string name="end_to_end_encrypted">End to End Encrypted</string>

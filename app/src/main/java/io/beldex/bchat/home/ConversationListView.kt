@@ -180,8 +180,9 @@ private fun ConversationRow(
         state = dismissState,
         enableDismissFromStartToEnd = false,
         backgroundContent = {
-            // Figma destructive style: red-tinted panel, red hairline, red bin.
-            Box(
+            // Figma destructive style: red-tinted panel, red hairline, red bin. Only while swiping, so
+            // resting rows never show it through their transparent background.
+            if (dismissState.dismissDirection != SwipeToDismissBoxValue.Settled) Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(androidx.compose.ui.graphics.Color(0x1AFF3E3E))

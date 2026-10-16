@@ -85,6 +85,7 @@ fun PrivacySettingsScreen(
                 sharedPrefs.edit().putInt("pref_onion_hops", value).apply()
                 // No Hops = direct delivery; 1 or 3 hops = onion routing.
                 TextSecurePreferences.setOnionRoutingEnabled(context, value != 0)
+                if (value != 0) com.beldex.libbchat.mnode.OnionRequestAPI.setHopCount(value)
                 showHopsDialog = false
             },
             onCancel = { showHopsDialog = false }

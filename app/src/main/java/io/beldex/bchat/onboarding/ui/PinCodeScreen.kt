@@ -291,7 +291,10 @@ private fun PortraitPinCodeScreen(
                 onClick = {
                     onEvent(PinCodeEvents.Submit)
                 },
-                enabled = pin.length == state.pinLength,
+                enabled = pin.length == state.pinLength &&
+                    // Re-enter step: Next only unlocks once the PIN actually matches the one entered before.
+                    (state.step != PinCodeSteps.ReEnterPin || state.reEnteredPin == state.newPin) &&
+                    state.errorText == null,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
@@ -642,7 +645,10 @@ private fun LandscapePinCodeScreen(
                             onClick = {
                                 onEvent(PinCodeEvents.Submit)
                             },
-                            enabled = pin.length == state.pinLength,
+                            enabled = pin.length == state.pinLength &&
+                    // Re-enter step: Next only unlocks once the PIN actually matches the one entered before.
+                    (state.step != PinCodeSteps.ReEnterPin || state.reEnteredPin == state.newPin) &&
+                    state.errorText == null,
                             modifier = Modifier
                                 .fillMaxWidth().
                                 padding(

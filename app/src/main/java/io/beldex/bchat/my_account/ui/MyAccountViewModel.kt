@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MyAccountViewModel @Inject constructor(
-    @ApplicationContext context : Context,
+    @ApplicationContext private val context : Context,
     private val preferenceUtil: SharedPreferenceUtil,
     private val resourceProvider: ResourceProvider
 ): ViewModel() {
@@ -82,6 +82,11 @@ class MyAccountViewModel @Inject constructor(
     }
 
     fun getPathNodes() {
+        // No Hops = messages go straight to the destination, so there are no relay nodes to show.
+        if (!TextSecurePreferences.isOnionRoutingEnabled(context)) {
+            _pathState.value = listOf()
+            return
+        }
         if (OnionRequestAPI.paths.isNotEmpty()) {
             val path = OnionRequestAPI.paths.firstOrNull() ?: return
             _pathState.value = path.mapIndexed { _, mNode ->

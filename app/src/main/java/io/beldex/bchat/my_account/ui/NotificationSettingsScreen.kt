@@ -160,10 +160,11 @@ fun NotificationSettingsScreen(
                 SettingsItem(
                     settingTitle = stringResource(id = R.string.preferences_notifications__priority),
                     settingIcon = painterResource(id = R.drawable.ic_priority_setting),
+                    rowEnabled = notificationsEnabled,
                     containsSwitch = false,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable {
+                        .clickable(enabled = notificationsEnabled) {
                             val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
                             intent.putExtra(
                                 Settings.EXTRA_CHANNEL_ID,
@@ -205,6 +206,7 @@ fun NotificationSettingsScreen(
                 SettingsItem(
                     settingTitle = stringResource(id = R.string.preferences_notifications_strategy_category_fast_mode_title),
                     settingIcon = painterResource(id = R.drawable.ic_fast_mode_setting),
+                    rowEnabled = notificationsEnabled,
                     iconAlignTop = true,
                     descTopPadding = 10.dp,
                     isEnabled = fastModeEnabled,
@@ -251,11 +253,12 @@ fun NotificationSettingsScreen(
                 SettingsItem(
                     settingTitle = stringResource(id = R.string.preferences__sound),
                     settingIcon = painterResource(id = R.drawable.ic_sound_setting),
+                    rowEnabled = notificationsEnabled,
                     containsSwitch = false,
                     trailingText = ringtoneTitle ?: stringResource(id = R.string.preferences__silent),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable {
+                        .clickable(enabled = notificationsEnabled) {
                             val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
                             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true)
                             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, true)
@@ -277,6 +280,7 @@ fun NotificationSettingsScreen(
                 SettingsItem(
                     settingTitle = stringResource(id = R.string.preferences__vibrate),
                     settingIcon = painterResource(id = R.drawable.ic_vibrate_setting),
+                    rowEnabled = notificationsEnabled,
                     isEnabled = vibrateEnabled,
                     onSwitchChanged = { checked ->
                         vibrateEnabled = checked
@@ -291,6 +295,7 @@ fun NotificationSettingsScreen(
                 SettingsItem(
                     settingTitle = stringResource(id = R.string.preferences_notifications__in_chat_sounds),
                     settingIcon = painterResource(id = R.drawable.ic_chat_sound_setting),
+                    rowEnabled = notificationsEnabled,
                     isEnabled = inChatSoundsEnabled,
                     onSwitchChanged = { checked ->
                         inChatSoundsEnabled = checked
@@ -334,11 +339,12 @@ fun NotificationSettingsScreen(
                 SettingsItem(
                     settingTitle = stringResource(id = R.string.preferences_notifications__show),
                     settingIcon = painterResource(id = R.drawable.ic_show_setting),
+                    rowEnabled = notificationsEnabled,
                     containsSwitch = false,
                     trailingText = privacyEntries.getOrElse(privacyValues.indexOf(privacyValue)) { privacyEntries[0] },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable {
+                        .clickable(enabled = notificationsEnabled) {
                             showPrivacyDialog = true
                         },
                 )

@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,10 +38,12 @@ fun SettingsItem(
     descTopPadding: androidx.compose.ui.unit.Dp = 2.dp,
     iconTint: androidx.compose.ui.graphics.Color? = null,
     iconAlignTop: Boolean = false,
+    /** When false the whole row is dimmed and its switch cannot be toggled. */
+    rowEnabled: Boolean = true,
 ) {
     Row(
         verticalAlignment = if (iconAlignTop) Alignment.Top else Alignment.CenterVertically,
-        modifier = modifier
+        modifier = modifier.then(if (rowEnabled) Modifier else Modifier.alpha(0.4f))
     ) {
         Icon(
             painter = settingIcon,
@@ -97,7 +100,7 @@ fun SettingsItem(
 
             BChatSwitch(
                 checked = isEnabled,
-                onCheckedChange = onSwitchChanged
+                onCheckedChange = if (rowEnabled) onSwitchChanged else { _ -> }
             )
         }
     }

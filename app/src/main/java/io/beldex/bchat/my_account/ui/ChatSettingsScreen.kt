@@ -178,6 +178,7 @@ fun ChatSettingsScreen(
                     settingTitle = stringResource(R.string.preferences__conversation_length_limit),
                     painterResource(id = R.drawable.ic_conversation_length),
                     containsSwitch = false,
+                    rowEnabled = trimEnabled,
                     settingDesc = pluralStringResource(
                         id = R.plurals.ApplicationPreferencesActivity_messages_per_conversation,
                         count = trimLength,
@@ -185,7 +186,7 @@ fun ChatSettingsScreen(
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { showTrimLengthDialog = true },
+                        .clickable(enabled = trimEnabled) { showTrimLengthDialog = true },
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -194,9 +195,10 @@ fun ChatSettingsScreen(
                     settingTitle = stringResource(R.string.preferences__trim_all_conversations_now),
                     painterResource(id = R.drawable.ic_trim_conversation),
                     containsSwitch = false,
+                    rowEnabled = trimEnabled,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { showTrimNowDialog = true },
+                        .clickable(enabled = trimEnabled) { showTrimNowDialog = true },
                 )
             }
         }

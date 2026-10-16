@@ -874,7 +874,7 @@ interface TextSecurePreferences {
 
         @JvmStatic
         fun isScreenSecurityEnabled(context: Context): Boolean {
-            return getBooleanPreference(context, SCREEN_SECURITY_PREF, true)
+            return getBooleanPreference(context, SCREEN_SECURITY_PREF, false)
         }
 
         @JvmStatic

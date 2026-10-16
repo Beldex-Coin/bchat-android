@@ -154,6 +154,10 @@ class PinCodeViewModel @Inject constructor(
                                     reEnteredPin = event.pinCode
                                 )
                             }
+                            // Wrong PIN: flag it as soon as all digits are in, instead of leaving Next usable.
+                            if (event.pinCode.length == pinLength && event.pinCode != newPin) {
+                                showPinError(stringRes(R.string.password_does_not_match)) { it.copy(reEnteredPin = "") }
+                            }
                         }
                         PinCodeSteps.VerifyPin -> {
                             _state.update {

@@ -47,7 +47,7 @@ open class BaseDialog : DialogFragment() {
                 androidx.compose.foundation.layout.Box(
                     modifier = Modifier.padding(horizontal = 20.dp)
                 ) {
-                    DialogPanel(modifier = Modifier.fillMaxWidth()) { Content() }
+                    DialogPanel(modifier = Modifier.fillMaxWidth()) { this@BaseDialog.Content() }
                 }
             }
         }

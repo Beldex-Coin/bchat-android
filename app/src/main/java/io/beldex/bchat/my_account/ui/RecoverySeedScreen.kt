@@ -73,7 +73,15 @@ fun RecoverySeedView(
     val context = LocalContext.current
     val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(LocalContext.current) == UiMode.NIGHT
     val activity = (context as? Activity)
-    activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+    // The seed itself stays protected from screenshots, but only while this screen is showing.
+    androidx.compose.runtime.DisposableEffect(activity) {
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        onDispose {
+            if (activity != null && !com.beldex.libbchat.utilities.TextSecurePreferences.isScreenSecurityEnabled(activity)) {
+                activity.window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+            }
+        }
+    }
     val copyToClipBoard: () -> Unit = {
         context.copyToClipBoard("Seed", seed)
     }

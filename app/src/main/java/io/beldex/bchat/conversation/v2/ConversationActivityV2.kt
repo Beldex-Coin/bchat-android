@@ -462,7 +462,12 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                         ConversationMenuHelper.buildMenuEntries(this, this@ConversationActivityV2, thread)
                     }
                     val showCallIcon = !thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isLocalNumber
-                    ConversationHeaderActions(
+                    // While a message request is pending (either direction) the header has no call or menu actions.
+                    val isPendingRequest = remember(thread, refreshTick) {
+                        !thread.isGroupRecipient && !thread.isLocalNumber &&
+                            (!thread.isApproved || !(thread.hasApprovedMe() || viewModel.hasReceived()))
+                    }
+                    if (!isPendingRequest) ConversationHeaderActions(
                         showCallIcon = showCallIcon,
                         expirationLabel = if (thread.expireMessages > 0) {
                             com.beldex.libbchat.utilities.ExpirationUtil.getExpirationAbbreviatedDisplayValue(this@ConversationActivityV2, thread.expireMessages)
@@ -3707,7 +3712,8 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
             // Message request bar
             setUpMessageRequestsBar()
 
-            // Refresh menu
+            // Refresh menu + the Compose header (call / overflow icons depend on request state)
+            headerRefreshTick.intValue++
             invalidateOptionsMenu()
 
             updateSubtitle()

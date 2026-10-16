@@ -50,9 +50,30 @@ object OnionRequestAPI {
 
     // region Settings
     /**
-     * The number of mnodes (including the guard mnode) in a path.
+     * The number of mnodes (including the guard mnode) in a path. Follows the user's hop setting (1 or 3).
      */
-    private const val pathSize = 3
+    @Volatile
+    var pathSize = 3
+        private set
+
+    /** Restores the saved hop setting at app start; paths are untouched because storage may not be ready yet. */
+    @JvmStatic
+    fun restoreHopCount(count: Int) {
+        pathSize = count.coerceIn(1, 3)
+    }
+
+    /**
+     * Applies the "Hops" setting. Changing it drops the current paths so new ones are built with the new length.
+     */
+    @JvmStatic
+    fun setHopCount(count: Int) {
+        val size = count.coerceIn(1, 3)
+        if (size == pathSize) return
+        pathSize = size
+        guardMnodes = setOf()
+        buildPathsPromise = null
+        paths = listOf()
+    }
     /**
      * The number of times a path can fail before it's replaced.
      */

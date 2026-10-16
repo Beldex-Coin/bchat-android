@@ -85,6 +85,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/no_records_found"
             android:src="@drawable/ic_no_contact_found"
+            app:tint="#555555"
             />
 
         <TextView
@@ -111,7 +112,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/syncing_option_card_background"
+        android:background="#0B0B0B"
         android:layout_alignParentBottom="true"
         android:padding="@dimen/small_spacing">
 
@@ -120,9 +121,14 @@
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:enabled="false"
-            android:fontFamily="@font/open_sans_regular"
+            android:backgroundTint="@color/apply_button_tint"
+            android:fontFamily="@font/roboto_mono"
             android:text="@string/add"
             android:textAllCaps="false"
+            android:textStyle="bold"
+            android:textColor="@color/apply_button_text"
+            app:strokeColor="#0A370A"
+            app:strokeWidth="1dp"
             android:textSize="14sp"
             app:shapeAppearanceOverlay="@style/ShapeAppearance.Bchat.NotchedButton" />
     </LinearLayout>

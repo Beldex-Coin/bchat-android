@@ -77,7 +77,9 @@ class UserView : LinearLayout {
                 binding.actionIndicatorImageView.setImageResource(R.drawable.ic_block_request_background)
             }
             ActionIndicator.Tick -> {
-                binding.userViewLayout.background = context.getDrawable(R.drawable.contact_list_background)
+                binding.userViewLayout.background = context.getDrawable(
+                    if (isSelected) R.drawable.contact_list_background_selected else R.drawable.contact_list_background
+                )
                 binding.actionIndicatorImageView.visibility = View.VISIBLE
                 binding.actionIndicatorImageView.setImageResource(
                         if (isSelected) R.drawable.ic_checkedbox else R.drawable.ic_checkbox
@@ -91,6 +93,9 @@ class UserView : LinearLayout {
     }
 
     fun toggleCheckbox(isSelected: Boolean = false) {
+        binding.userViewLayout.background = context.getDrawable(
+            if (isSelected) R.drawable.contact_list_background_selected else R.drawable.contact_list_background
+        )
         binding.actionIndicatorImageView.visibility = View.VISIBLE
         binding.actionIndicatorImageView.setImageResource(
             if (isSelected) R.drawable.ic_checkedbox else R.drawable.ic_checkbox

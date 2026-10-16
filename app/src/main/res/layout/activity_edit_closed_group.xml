@@ -4,7 +4,9 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/transparent"
+    android:background="@drawable/default_bchat_background"
+    app:cardElevation="0dp"
+    app:cardCornerRadius="0dp"
     tools:context="io.beldex.bchat.groups.EditClosedGroupActivity">
 
     <LinearLayout

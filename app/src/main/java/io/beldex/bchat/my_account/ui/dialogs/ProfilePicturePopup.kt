@@ -154,9 +154,10 @@ fun ProfilePicturePopup(
                     shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
                     containerColor = MaterialTheme.appColors.dialogBackground,
                     contentColor = MaterialTheme.appColors.editTextColor,
-                    disabledContainerColor = MaterialTheme.appColors.optionalTextFieldBackground,
-                    disabledContentColor = MaterialTheme.appColors.disabledButtonContent,
-                    border = BorderStroke(1.dp, if (profilePictureStatus) MaterialTheme.appColors.onboardingSecondaryButtonBorder else MaterialTheme.appColors.optionalTextFieldBackground),
+                    // Same dark notched look in both states (Figma); only the label dims when there is nothing to remove.
+                    disabledContainerColor = MaterialTheme.appColors.dialogBackground,
+                    disabledContentColor = MaterialTheme.appColors.editTextColor.copy(alpha = 0.4f),
+                    border = BorderStroke(1.dp, MaterialTheme.appColors.onboardingSecondaryButtonBorder),
                     contentPadding = PaddingValues(0.dp),
                     modifier = Modifier.weight(1.13f).height(52.dp)
                 ) {

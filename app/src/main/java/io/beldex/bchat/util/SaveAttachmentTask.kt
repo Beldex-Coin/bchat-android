@@ -57,7 +57,7 @@ class SaveAttachmentTask : ProgressDialogAsyncTask<SaveAttachmentTask.Attachment
                 message = context.resources.getQuantityString(R.plurals.ConversationFragment_saving_n_media_to_storage_warning, count, count),
                 positiveText = context.getString(R.string.yes),
                 negativeText = context.getString(R.string.no),
-                iconRes = R.drawable.ic_download_media,
+                iconRes = R.drawable.ic_pop_save_storage,
                 onPositive = onAcceptListener
             )
         }

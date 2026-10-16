@@ -41,7 +41,7 @@ fun ClearChatDialog(
     modifier: Modifier = Modifier
 ) {
     io.beldex.bchat.compose_utils.IconConfirmDialog(
-        icon = painterResource(id = R.drawable.ic_clear_conversation),
+        icon = painterResource(id = R.drawable.ic_pop_clear_chat),
         title = stringResource(id = R.string.clear_chat),
         message = androidx.compose.ui.text.AnnotatedString(stringResource(id = R.string.clear_chat_confirmation)),
         cancelText = stringResource(id = R.string.cancel),

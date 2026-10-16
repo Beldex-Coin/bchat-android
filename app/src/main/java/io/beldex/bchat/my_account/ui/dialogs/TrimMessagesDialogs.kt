@@ -112,7 +112,7 @@ fun TrimNowDialog(
     onDismiss: () -> Unit
 ) {
     io.beldex.bchat.compose_utils.IconConfirmDialog(
-        icon = androidx.compose.ui.res.painterResource(id = R.drawable.ic_trim_conversation),
+        icon = androidx.compose.ui.res.painterResource(id = R.drawable.ic_pop_trim_now),
         title = stringResource(id = R.string.ApplicationPreferencesActivity_delete_all_old_messages_now),
         message = androidx.compose.ui.text.AnnotatedString(
             androidx.compose.ui.res.pluralStringResource(

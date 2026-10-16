@@ -6,6 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.border
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.fillMaxWidth
 import android.content.res.Configuration
@@ -71,11 +73,23 @@ class DeleteOptionsBottomSheet : BottomSheetDialogFragment() {
                             verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(10.dp),
                             modifier = androidx.compose.ui.Modifier.padding(horizontal = 15.dp, vertical = 18.dp)
                         ) {
-                            DeleteOptionCard(forMeText, destructive = true) { onDeleteForMeTapped?.invoke() }
-                            if (showEveryone) {
-                                DeleteOptionCard(everyoneText, destructive = true) { onDeleteForEveryoneTapped?.invoke() }
+                            androidx.compose.foundation.layout.Row(
+                                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                            ) {
+                                androidx.compose.material3.Text(
+                                    text = resources.getString(R.string.delete_message_title),
+                                    color = androidx.compose.ui.graphics.Color(0xFFEBEBEB),
+                                    fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                                    fontSize = 16.sp,
+                                    modifier = androidx.compose.ui.Modifier.weight(1f)
+                                )
+                                io.beldex.bchat.compose_utils.CloseTile(onClick = { onCancelTapped?.invoke() })
                             }
-                            DeleteOptionCard(resources.getString(R.string.cancel), destructive = false) { onCancelTapped?.invoke() }
+                            DeleteOptionCard(forMeText, R.drawable.ic_pop_delete_me, destructive = false) { onDeleteForMeTapped?.invoke() }
+                            if (showEveryone) {
+                                DeleteOptionCard(everyoneText, R.drawable.ic_pop_delete_everyone, destructive = true) { onDeleteForEveryoneTapped?.invoke() }
+                            }
                         }
                     }
                 }
@@ -84,26 +98,35 @@ class DeleteOptionsBottomSheet : BottomSheetDialogFragment() {
     }
 
     @androidx.compose.runtime.Composable
-    private fun DeleteOptionCard(text: String, destructive: Boolean, onClick: () -> Unit) {
+    private fun DeleteOptionCard(text: String, iconRes: Int, destructive: Boolean, onClick: () -> Unit) {
         val shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium)
         val accent = if (destructive) androidx.compose.ui.graphics.Color(0xFFFF3E3E) else androidx.compose.ui.graphics.Color(0xFF444444)
-        androidx.compose.foundation.layout.Box(
-            contentAlignment = androidx.compose.ui.Alignment.Center,
+        val content = if (destructive) androidx.compose.ui.graphics.Color(0xFFFF3E3E) else androidx.compose.ui.graphics.Color(0xFFEBEBEB)
+        androidx.compose.foundation.layout.Row(
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
             modifier = androidx.compose.ui.Modifier
                 .fillMaxWidth()
                 .heightIn(min = 52.dp)
                 .background(
-                    if (destructive) accent.copy(alpha = 0.1f) else androidx.compose.ui.graphics.Color(0xFF111111),
+                    if (destructive) accent.copy(alpha = 0.15f) else androidx.compose.ui.graphics.Color(0xFF111111),
                     shape
                 )
                 .border(if (destructive) 0.5.dp else 1.dp, accent, shape)
                 .clickable(onClick = onClick)
-                .padding(horizontal = 12.dp, vertical = 10.dp)
+                .padding(horizontal = 16.dp, vertical = 10.dp)
         ) {
+            androidx.compose.material3.Icon(
+                painter = androidx.compose.ui.res.painterResource(iconRes),
+                contentDescription = null,
+                tint = content,
+                modifier = androidx.compose.ui.Modifier.size(22.dp)
+            )
+            androidx.compose.foundation.layout.Spacer(modifier = androidx.compose.ui.Modifier.width(14.dp))
             androidx.compose.material3.Text(
                 text = text,
-                color = androidx.compose.ui.graphics.Color(0xFFEBEBEB),
-                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                color = content,
+                fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
                 fontSize = 14.sp
             )
         }

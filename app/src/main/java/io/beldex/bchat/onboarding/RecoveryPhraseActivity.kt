@@ -60,7 +60,7 @@ class RecoveryPhraseActivity : BaseComponentActivity() {
 
     private fun onContinueClick() {
         if (!copiedSeed) {
-            BChatToast.makeText(this, R.string.please_copy_and_save_your_seed, Toast.LENGTH_SHORT).show()
+            BChatToast.error(this, R.string.please_copy_and_save_your_seed, Toast.LENGTH_SHORT).show()
         } else {
             BChatToast.makeText(this, R.string.please_copy_the_seed_and_save_it, Toast.LENGTH_SHORT).show()
             homepage()

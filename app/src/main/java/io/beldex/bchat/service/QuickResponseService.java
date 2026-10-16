@@ -38,7 +38,7 @@ public class QuickResponseService extends IntentService {
 
     if (KeyCachingService.isLocked(this)) {
       Log.w(TAG, "Got quick response request when locked...");
-      BChatToast.makeText(this, R.string.QuickResponseService_quick_response_unavailable_when_Signal_is_locked, Toast.LENGTH_LONG).show();
+      BChatToast.error(this, R.string.QuickResponseService_quick_response_unavailable_when_Signal_is_locked, Toast.LENGTH_LONG).show();
       return;
     }
 
@@ -58,7 +58,7 @@ public class QuickResponseService extends IntentService {
         MessageSender.send(message, Address.fromExternal(this, number));
       }
     } catch (URISyntaxException e) {
-      BChatToast.makeText(this, R.string.QuickResponseService_problem_sending_message, Toast.LENGTH_LONG).show();
+      BChatToast.error(this, R.string.QuickResponseService_problem_sending_message, Toast.LENGTH_LONG).show();
       Log.w(TAG, e);
     }
   }

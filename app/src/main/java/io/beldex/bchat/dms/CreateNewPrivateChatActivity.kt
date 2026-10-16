@@ -217,7 +217,7 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
                     message = it
                     Log.d("Beldex","BNS exception $it")
                 }
-                BChatToast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                BChatToast.error(this, message, Toast.LENGTH_SHORT).show()
             }
         }
     }

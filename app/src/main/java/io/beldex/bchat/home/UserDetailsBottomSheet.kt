@@ -155,7 +155,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
         val nickname = nicknameInput.trim()
         when {
             nickname.isEmpty() -> {
-                BChatToast.makeText(
+                BChatToast.error(
                     context,
                     R.string.enter_a_valid_nickname,
                     Toast.LENGTH_SHORT
@@ -171,7 +171,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
             }
 
             !nickname.matches(unicodeNamePattern.toRegex()) -> {
-                BChatToast.makeText(
+                BChatToast.error(
                     context,
                     R.string.display_name_validation,
                     Toast.LENGTH_SHORT

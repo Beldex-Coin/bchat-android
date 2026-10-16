@@ -127,7 +127,7 @@ fun LinkYourBNSDialog(
                     message = context.resources.getString(R.string.bns_name_warning_message)
                     Log.d("Beldex", "BNS exception $it")
                 }
-                BChatToast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                BChatToast.error(context, message, Toast.LENGTH_SHORT).show()
                 result(false)
             }
         }

@@ -219,7 +219,8 @@ class ArchiveChatViewModel @Inject constructor(
                 // Notify the user
                 val toastMessage=
                     if (recipient.isGroupRecipient) R.string.MessageRecord_left_group else R.string.activity_home_conversation_deleted_message
-                BChatToast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
+                if (recipient.isGroupRecipient) BChatToast.error(context, toastMessage, Toast.LENGTH_LONG).show()
+                else BChatToast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
             }
         }
     }

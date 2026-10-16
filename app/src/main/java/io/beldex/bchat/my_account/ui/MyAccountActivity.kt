@@ -774,46 +774,6 @@ fun MyAccountNavHost(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Box(
-                            modifier = Modifier
-                                .padding(start = 24.dp, top = 16.dp, end = 0.dp, bottom = 16.dp)
-                                .widthIn(max = 120.dp)
-                                .background(
-                                    color = if (showEditNameTextField) Color(0xFFE0E0E0) else Color(0xFF1A1A1A)
-                                )
-                                .align(Alignment.TopEnd)
-                                .clickable {
-                                    if (!showEditNameTextField) {
-                                        showNameOnly = false
-                                        showEditNameTextField = true
-                                    } else {
-                                        val isSaved = saveEditName?.let {
-                                            saveDisplayName(it.trim(), context)
-                                        } ?: false
-
-                                        if (isSaved) {
-                                            showNameOnly = true
-                                            showEditNameTextField = false
-                                        }
-                                    }
-                                },
-                            contentAlignment = Alignment.Center
-
-                        ){
-                            Text(
-                                text = if(showEditNameTextField) stringResource(id=R.string.menu_done_button) else stringResource(id=R.string.edit_title),
-                                style = BChatTypography.bodySmall.copy(
-                                    color = if(showEditNameTextField) Color(0xFF0B0B0B) else MaterialTheme.appColors.editTextColor,
-                                    fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
-                                    fontWeight = FontWeight(600),
-                                    fontSize = 12.sp,
-                                ),
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(start = 6.dp, top = 4.dp, end = 6.dp, bottom = 4.dp)
-
-                            )
-                        }
-
-                        Box(
                             modifier = if(!isBnsHolder.isNullOrEmpty()) Modifier
                                 .fillMaxWidth()
                                 .padding(top = 50.dp, bottom = 10.dp)
@@ -830,9 +790,6 @@ fun MyAccountNavHost(
                                 ) else Modifier
                                 .fillMaxWidth()
                                 .padding(top = 0.dp, bottom = 10.dp)
-                                // Figma "Frame 3026": #111111 panel, #333333 hairline, avatar inside it.
-                                .background(Color(0xFF111111))
-                                .border(1.dp, Color(0xFF333333))
                         ) {
                             ProfileCard(
                                 isBnsHolder = isBnsHolder,
@@ -841,7 +798,8 @@ fun MyAccountNavHost(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(
-                                        top = if (!isBnsHolder.isNullOrEmpty()) 40.dp else 82.dp
+                                        top = if (!isBnsHolder.isNullOrEmpty()) 40.dp
+                                        else ProfilePictureMode.LargePicture.size + 20.dp
                                     ),
                                 onShowDialog = {
                                     when (it) {
@@ -913,6 +871,46 @@ fun MyAccountNavHost(
                                 }
                             }
                         }
+                        Box(
+                            modifier = Modifier
+                                .padding(start = 24.dp, top = 16.dp, end = 0.dp, bottom = 16.dp)
+                                .widthIn(max = 120.dp)
+                                .background(
+                                    color = if (showEditNameTextField) Color(0xFFE0E0E0) else Color(0xFF1A1A1A)
+                                )
+                                .align(Alignment.TopEnd)
+                                .clickable {
+                                    if (!showEditNameTextField) {
+                                        showNameOnly = false
+                                        showEditNameTextField = true
+                                    } else {
+                                        val isSaved = saveEditName?.let {
+                                            saveDisplayName(it.trim(), context)
+                                        } ?: false
+
+                                        if (isSaved) {
+                                            showNameOnly = true
+                                            showEditNameTextField = false
+                                        }
+                                    }
+                                },
+                            contentAlignment = Alignment.Center
+
+                        ){
+                            Text(
+                                text = if(showEditNameTextField) stringResource(id=R.string.menu_done_button) else stringResource(id=R.string.edit_title),
+                                style = BChatTypography.bodySmall.copy(
+                                    color = if(showEditNameTextField) Color(0xFF0B0B0B) else MaterialTheme.appColors.editTextColor,
+                                    fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                                    fontWeight = FontWeight(600),
+                                    fontSize = 12.sp,
+                                ),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(start = 6.dp, top = 4.dp, end = 6.dp, bottom = 4.dp)
+
+                            )
+                        }
+
                     }
 
                     if(isBnsHolder.isNullOrEmpty()) {
@@ -1685,13 +1683,15 @@ fun ProfileCardKeyContainer(
                 )
             }
             if (showCopyIcon) {
+                // Figma: a small 10dp copy glyph in the card's top-right corner (above the notch cut).
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_copy),
+                    painter = painterResource(id = R.drawable.ic_copy_card),
                     contentDescription = "",
-                    tint = MaterialTheme.appColors.editTextPlaceholder,
+                    tint = MaterialTheme.appColors.userDetailsConfirmBackground,
                     modifier = Modifier
-                        .size(16.dp)
                         .align(alignment = Alignment.TopEnd)
+                        .padding(top = 4.dp, end = 6.dp)
+                        .size(10.dp)
                         .clickable {
                             onCopy()
                         }

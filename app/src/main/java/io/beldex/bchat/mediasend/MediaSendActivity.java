@@ -273,7 +273,7 @@ public class MediaSendActivity extends PassphraseRequiredActionBarActivity imple
 
   @Override
   public void onCameraError() {
-    BChatToast.makeText(this, R.string.MediaSendActivity_camera_unavailable, Toast.LENGTH_SHORT).show();
+    BChatToast.error(this, R.string.MediaSendActivity_camera_unavailable, Toast.LENGTH_SHORT).show();
     setResult(RESULT_CANCELED, new Intent());
     finish();
   }
@@ -388,7 +388,7 @@ public class MediaSendActivity extends PassphraseRequiredActionBarActivity imple
                                             .addToBackStack(null)
                                             .commit();
                })
-               .onAnyDenied(() -> BChatToast.makeText(MediaSendActivity.this, R.string.ConversationActivity_signal_needs_camera_permissions_to_take_photos_or_video, Toast.LENGTH_LONG).show())
+               .onAnyDenied(() -> BChatToast.error(MediaSendActivity.this, R.string.ConversationActivity_signal_needs_camera_permissions_to_take_photos_or_video, Toast.LENGTH_LONG).show())
                .execute();
   }
 

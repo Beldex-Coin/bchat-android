@@ -291,7 +291,7 @@ class DisplayNameActivity : BaseComponentActivity() {
         }
         if (!trimmedDisplayName.matches(englishNamePattern.toRegex())) {
             displayNameError = getString(R.string.display_name_validation)
-            return BChatToast.makeText(
+            return BChatToast.error(
                     this,
                     R.string.display_name_validation,
                     Toast.LENGTH_SHORT
@@ -331,7 +331,7 @@ class DisplayNameActivity : BaseComponentActivity() {
     val MNEMONIC_LANGUAGE = "English"
 
     private fun toast(msg: String) {
-        runOnUiThread { BChatToast.makeText(this@DisplayNameActivity, msg, Toast.LENGTH_LONG).show() }
+        runOnUiThread { BChatToast.error(this@DisplayNameActivity, msg, Toast.LENGTH_LONG).show() }
     }
 
     fun checkAndCloseWallet(aWallet: Wallet): Boolean {

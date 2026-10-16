@@ -217,7 +217,7 @@ fun OnBoardingNavHost(
             LaunchedEffect(key1 = true) {
                 launch {
                     viewModel.errorMessage.collectLatest { message ->
-                        BChatToast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                        BChatToast.error(context, message, Toast.LENGTH_SHORT).show()
                     }
                 }
                 launch {

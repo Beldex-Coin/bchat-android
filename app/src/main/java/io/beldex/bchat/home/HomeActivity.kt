@@ -622,7 +622,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                 message = context.resources.getString(R.string.bns_name_changed_warning_message)
                 Log.d("Beldex", "BNS exception $it")
             }
-            BChatToast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            BChatToast.error(context, message, Toast.LENGTH_SHORT).show()
             result(false)
         }
     }
@@ -739,7 +739,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         if (requestCode == immediateAppUpdateRequestCode) {
             when (resultCode) {
                 RESULT_CANCELED -> {
-                    BChatToast.makeText(
+                    BChatToast.error(
                         applicationContext,
                         getString(R.string.update_canceled_by_user), Toast.LENGTH_LONG
                     ).show()
@@ -1647,7 +1647,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                         // Notify the user
                         val toastMessage =
                             if (recipient.isGroupRecipient) R.string.MessageRecord_left_group else R.string.activity_home_conversation_deleted_message
-                        BChatToast.makeText(this@HomeActivity, toastMessage, Toast.LENGTH_LONG).show()
+                        if (recipient.isGroupRecipient) BChatToast.error(this@HomeActivity, toastMessage, Toast.LENGTH_LONG).show()
+                        else BChatToast.makeText(this@HomeActivity, toastMessage, Toast.LENGTH_LONG).show()
                     }
                 }
             }

@@ -43,11 +43,12 @@ class ModalUrlBottomSheet(private val url: String): BottomSheetDialogFragment() 
                                 message = io.beldex.bchat.compose_utils.boldedMessage(
                                     androidx.compose.ui.res.stringResource(R.string.dialog_open_url_explanation, url), url
                                 ),
-                                cancelText = androidx.compose.ui.res.stringResource(R.string.cancel),
-                                onCancel = { dismiss() },
+                                onClose = { dismiss() },
                                 middleText = androidx.compose.ui.res.stringResource(R.string.copy),
                                 onMiddle = { copy() },
+                                middleIcon = androidx.compose.ui.res.painterResource(R.drawable.ic_pop_copy),
                                 confirmText = androidx.compose.ui.res.stringResource(R.string.dialog_open_url_title).removeSuffix("?"),
+                                confirmIcon = androidx.compose.ui.res.painterResource(R.drawable.ic_pop_open_link),
                                 onConfirm = { open() }
                             )
                         }

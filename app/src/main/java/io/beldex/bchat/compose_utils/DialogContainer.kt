@@ -7,6 +7,8 @@ import androidx.compose.foundation.background
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -177,7 +179,8 @@ fun DialogCancelButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     fontFamily: androidx.compose.ui.text.font.FontFamily = OpenSans,
-    textColor: Color = MaterialTheme.appColors.editTextColor
+    textColor: Color = MaterialTheme.appColors.editTextColor,
+    icon: androidx.compose.ui.graphics.painter.Painter? = null
 ) {
     PrimaryButton(
         onClick = onClick,
@@ -188,6 +191,10 @@ fun DialogCancelButton(
         contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
         modifier = modifier.heightIn(min = BChatDimens.DialogButtonMinHeight)
     ) {
+        if (icon != null) {
+            androidx.compose.material3.Icon(painter = icon, contentDescription = null, tint = textColor, modifier = Modifier.size(16.dp))
+            Spacer(modifier = Modifier.width(8.dp))
+        }
         Text(text = text, fontFamily = fontFamily, fontWeight = FontWeight.Normal, fontSize = 14.sp)
     }
 }
@@ -233,7 +240,11 @@ fun PopupBody(
     onCancel: () -> Unit = {},
     destructive: Boolean = false,
     middleText: String? = null,
-    onMiddle: () -> Unit = {}
+    onMiddle: () -> Unit = {},
+    /** When set, a square close tile is shown at the top right (Figma "Open URL?", "Delete message"). */
+    onClose: (() -> Unit)? = null,
+    middleIcon: androidx.compose.ui.graphics.painter.Painter? = null,
+    confirmIcon: androidx.compose.ui.graphics.painter.Painter? = null
 ) {
     Column(
         modifier = modifier
@@ -258,13 +269,17 @@ fun PopupBody(
                 Spacer(modifier = Modifier.width(14.dp))
             }
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = title,
-                    color = MaterialTheme.appColors.editTextColor,
-                    fontFamily = OpenSans,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = title,
+                        color = MaterialTheme.appColors.editTextColor,
+                        fontFamily = OpenSans,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        modifier = Modifier.weight(1f)
+                    )
+                    if (onClose != null) CloseTile(onClose)
+                }
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     text = message,
@@ -295,6 +310,7 @@ fun PopupBody(
                     onClick = onMiddle,
                     fontFamily = RobotoMono,
                     textColor = MaterialTheme.appColors.editTextColor,
+                    icon = middleIcon,
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -315,6 +331,10 @@ fun PopupBody(
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
                     modifier = Modifier.weight(1f).heightIn(min = BChatDimens.DialogButtonMinHeight)
                 ) {
+                    if (confirmIcon != null) {
+                        androidx.compose.material3.Icon(painter = confirmIcon, contentDescription = null, tint = Color(0xFF0B0B0B), modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
+                    }
                     Text(
                         text = confirmText,
                         fontFamily = RobotoMono,
@@ -324,6 +344,25 @@ fun PopupBody(
                 }
             }
         }
+    }
+}
+
+/** Square #222 close tile with an X, used at the top right of popups. */
+@Composable
+fun CloseTile(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .size(24.dp)
+            .background(Color(0xFF222222))
+            .clickable(onClick = onClick)
+    ) {
+        androidx.compose.material3.Icon(
+            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_close),
+            contentDescription = null,
+            tint = MaterialTheme.appColors.editTextColor,
+            modifier = Modifier.size(14.dp)
+        )
     }
 }
 
@@ -386,7 +425,7 @@ fun DialogPrimaryButton(
         contentColor = Color(0xFF0B0B0B),
         disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
         disabledContentColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledText,
-        border = BorderStroke(1.dp, Color(0xFF0A370A)),
+        border = BorderStroke(1.dp, if (enabled) Color(0xFF0A370A) else Color(0xFF333333)),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
         modifier = modifier.heightIn(min = BChatDimens.DialogButtonMinHeight)
     ) {

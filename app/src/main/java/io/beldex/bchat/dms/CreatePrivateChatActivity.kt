@@ -109,7 +109,7 @@ class CreatePrivateChatActivity : PassphraseRequiredActionBarActivity(), ScanQRC
                 exception.localizedMessage?.let {
                     message = it
                 }
-                BChatToast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                BChatToast.error(this, message, Toast.LENGTH_SHORT).show()
             }
         }
     }

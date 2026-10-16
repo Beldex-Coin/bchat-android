@@ -67,7 +67,7 @@ class RecoveryPhraseRestoreActivity : BaseComponentActivity() {
         if (wordCount(mnemonic) == 25) {
             restore()
         } else {
-            BChatToast.makeText(this, getString(R.string.please_enter_valid_seed), Toast.LENGTH_SHORT).show()
+            BChatToast.error(this, getString(R.string.please_enter_valid_seed), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -79,7 +79,7 @@ class RecoveryPhraseRestoreActivity : BaseComponentActivity() {
                 mnemonic = item.text.toString()
             }
         } else {
-            BChatToast.makeText(this, R.string.no_copied_seed, Toast.LENGTH_SHORT).show()
+            BChatToast.error(this, R.string.no_copied_seed, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -107,7 +107,7 @@ class RecoveryPhraseRestoreActivity : BaseComponentActivity() {
             push(intent)*/
         } catch (e: Exception) {
             val message = if (e is MnemonicCodec.DecodingError) e.description else MnemonicCodec.DecodingError.Generic.description
-            return BChatToast.makeText(this, message, Toast.LENGTH_SHORT).show()
+            return BChatToast.error(this, message, Toast.LENGTH_SHORT).show()
         }
     }
 

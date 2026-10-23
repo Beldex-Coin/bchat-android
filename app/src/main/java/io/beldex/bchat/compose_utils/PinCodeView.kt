@@ -9,8 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -56,19 +55,20 @@ fun PinCodeView(
             when {
                 isLandscape && pinLength == 6 -> 2.dp
                 isLandscape -> 4.dp
-                pinLength == 6 -> 4.dp
-                else -> 12.dp
+                pinLength == 6 -> 8.dp
+                else -> 17.dp
             }
 
-        val separatorWidth = if (pinLength == 6) 14.dp else 0.dp
+        val separatorWidth = if (pinLength == 6) 27.dp else 0.dp
         val boxSize =
             (
                     (maxWidth - spacing * (pinLength - 1) - separatorWidth)
                             / pinLength
                     ).coerceIn(
                     if (isLandscape) 24.dp else 36.dp,
-                    if (isLandscape && pinLength == 6) 32.dp else if (isLandscape) 40.dp else 56.dp
+                    if (isLandscape && pinLength == 6) 32.dp else if (isLandscape) 40.dp else if (pinLength == 6) 45.dp else 56.dp
                 )
+        val boxHeight = if (pinLength == 6 && !isLandscape) 46.dp else boxSize
 
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -81,17 +81,19 @@ fun PinCodeView(
                 val isActiveBox = i == pin.length && pin.isNotEmpty() && pin.length < pinLength
 
                 if (pinLength == 6 && i == 3) {
-                    Spacer(modifier = Modifier.width(if (isLandscape) 1.dp else 2.dp))
-                    Text(
-                        text = "-",
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            color = MaterialTheme.appColors.restoreDescColor,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = if (isLandscape) 14.sp else 20.sp
-                        ),
-                        modifier = Modifier.padding(horizontal = if (isLandscape) 1.dp else 2.dp)
-                    )
-                    Spacer(modifier = Modifier.width(if (isLandscape) 1.dp else 2.dp))
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.width(separatorWidth)
+                    ) {
+                        Text(
+                            text = "-",
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                color = MaterialTheme.appColors.restoreDescColor,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = if (isLandscape) 14.sp else 20.sp
+                            )
+                        )
+                    }
                 }
 
                 if (i > 0 && !(pinLength == 6 && i == 3)) {
@@ -101,7 +103,8 @@ fun PinCodeView(
                 Card(
                     shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall),
                     border = BorderStroke(
-                        width = 1.dp,
+                        // Design: filled box stroke 1px, empty box stroke 2px.
+                        width = if (value.isNotEmpty() || isActiveBox) 1.dp else 2.dp,
                         color = when {
                             isError -> MaterialTheme.appColors.negativeRedButtonBorder
                             value.isNotEmpty() -> MaterialTheme.appColors.primaryButtonColor
@@ -113,7 +116,8 @@ fun PinCodeView(
                         containerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground
                     ),
                     modifier = Modifier
-                        .size(boxSize)
+                        .width(boxSize)
+                        .height(boxHeight)
                 ) {
                     Box(
                         contentAlignment = Alignment.Center,
@@ -127,12 +131,13 @@ fun PinCodeView(
                         Text(
                             text = displayText,
                             style = MaterialTheme.typography.titleMedium.copy(
-                                fontSize = 20.sp,
+                                fontFamily = OpenSans,
+                                fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = if (isActiveBox && pinCode.isEmpty())
                                     MaterialTheme.appColors.textColor
                                 else
-                                    MaterialTheme.typography.titleMedium.color
+                                    MaterialTheme.appColors.editTextColor
                             ),
                             textAlign = TextAlign.Center
                         )

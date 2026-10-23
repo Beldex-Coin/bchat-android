@@ -30,3 +30,57 @@ fun notchedCornerShape(notch: Dp): Shape {
         }
     }
 }
+
+/**
+ * The single corner that gets cut off by [singleCornerCutShape].
+ */
+enum class NotchCorner {
+    TopRight,
+    TopLeft,
+    BottomRight,
+    BottomLeft
+}
+@Composable
+fun singleCornerCutShape(
+    notch: Dp,
+    corner: NotchCorner = NotchCorner.TopRight
+): Shape {
+    val density = LocalDensity.current
+    return remember(notch, corner, density) {
+        val notchPx = with(density) { notch.toPx() }
+        GenericShape { size, _ ->
+            val n = notchPx.coerceAtMost(minOf(size.width, size.height) / 2f)
+            when (corner) {
+                NotchCorner.TopRight -> {
+                    moveTo(0f, 0f)
+                    lineTo(size.width - n, 0f)
+                    lineTo(size.width, n)
+                    lineTo(size.width, size.height)
+                    lineTo(0f, size.height)
+                }
+                NotchCorner.TopLeft -> {
+                    moveTo(n, 0f)
+                    lineTo(size.width, 0f)
+                    lineTo(size.width, size.height)
+                    lineTo(0f, size.height)
+                    lineTo(0f, n)
+                }
+                NotchCorner.BottomRight -> {
+                    moveTo(0f, 0f)
+                    lineTo(size.width, 0f)
+                    lineTo(size.width, size.height - n)
+                    lineTo(size.width - n, size.height)
+                    lineTo(0f, size.height)
+                }
+                NotchCorner.BottomLeft -> {
+                    moveTo(size.width, 0f)
+                    lineTo(size.width, size.height)
+                    lineTo(n, size.height)
+                    lineTo(0f, size.height - n)
+                    lineTo(0f, 0f)
+                }
+            }
+            close()
+        }
+    }
+}

@@ -200,7 +200,6 @@ private fun PortraitPinCodeScreen(
             colorFilter = if (state.errorText != null) androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.appColors.negativeRedButtonBorder) else null,
             contentDescription = "",
             modifier = Modifier
-                .padding(top = 12.dp)
                 .height(if (isTablet) 140.dp else 66.dp)
         )
 
@@ -223,7 +222,7 @@ private fun PortraitPinCodeScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(18.dp))
             Text(
                 text = (state.errorText ?: state.stepTitle).uppercase(),
                 color = MaterialTheme.appColors.onboardingCaptionColor,
@@ -232,7 +231,7 @@ private fun PortraitPinCodeScreen(
             )
 
             if (state.step == PinCodeSteps.EnterPin) {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 PrimaryButton(
                     onClick = {
@@ -258,7 +257,7 @@ private fun PortraitPinCodeScreen(
                     Text(
                         text = stringResource(if (state.pinLength == 4) R.string.six_digit_pin else R.string.four_digit_pin),
                         fontFamily = RobotoMono,
-                        fontSize = 13.5.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                     Spacer(Modifier.width(8.dp))
@@ -479,7 +478,7 @@ private fun LandscapePinCodeScreen(
                     Text(
                         text = stringResource(if (state.pinLength == 4) R.string.six_digit_pin else R.string.four_digit_pin),
                         fontFamily = RobotoMono,
-                        fontSize = 13.5.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                     Spacer(Modifier.width(8.dp))

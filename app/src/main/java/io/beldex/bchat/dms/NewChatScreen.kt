@@ -1,15 +1,8 @@
 package io.beldex.bchat.dms
 
-import io.beldex.bchat.util.BChatToast
-import android.app.Activity
-import io.beldex.bchat.compose_utils.bchatBackground
 import android.app.Activity.RESULT_OK
-import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -32,23 +25,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -68,13 +53,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -84,25 +66,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.beldex.libbchat.mnode.MnodeAPI
-import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
-import com.beldex.libsignal.utilities.PublicKeyValidation
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.BChatDimens
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.DialogContainer
+import io.beldex.bchat.compose_utils.NotchCorner
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.bchatBackground
+import io.beldex.bchat.compose_utils.notchedCornerShape
+import io.beldex.bchat.compose_utils.singleCornerCutShape
+import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 import io.beldex.bchat.conversation_v2.NewChatScreenViewModel
 import io.beldex.bchat.conversation_v2.OpenActivity
-import io.beldex.bchat.conversation_v2.getUserDisplayName
-import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.CheckOnline
-import io.beldex.bchat.conversation.v2.ConversationActivityV2
-import nl.komponents.kovenant.ui.failUi
-import nl.komponents.kovenant.ui.successUi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -292,13 +271,13 @@ fun NewChatScreen(
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         .background(MaterialTheme.appColors.dialogBackground)
                         .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
-                        .padding(vertical = 4.dp)
+                        .padding(vertical = 7.dp)
                 ) {
                     NewChatItem(
                         image = R.drawable.ic_newchat_new_chat,
                         title = stringResource(id = R.string.activity_create_private_chat_title),
                         color = MaterialTheme.appColors.userDetailsBchatIdText,
-                        padding = PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),
+                        padding = PaddingValues(start = 11.dp, end = 11.dp, top = 6.dp, bottom = 6.dp),
                         showQrCode = true,
                         highlighted = true,
                         onClick = {
@@ -316,7 +295,7 @@ fun NewChatScreen(
                         image = R.drawable.ic_newchat_secret,
                         title = stringResource(id = R.string.home_screen_secret_groups_title),
                         MaterialTheme.appColors.editTextColor,
-                        PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),
+                        PaddingValues(start = 11.dp, end = 11.dp, top = 6.dp, bottom = 6.dp),
                         onClick = {
                             openActivity(OpenActivity.SecretGroup)
                         },
@@ -326,7 +305,7 @@ fun NewChatScreen(
                         image = R.drawable.ic_newchat_social,
                         title = stringResource(id = R.string.home_screen_social_groups_title),
                         MaterialTheme.appColors.editTextColor,
-                        PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),
+                        PaddingValues(start = 11.dp, end = 11.dp, top = 6.dp, bottom = 6.dp),
                         onClick = {
                             openActivity(OpenActivity.PublicGroup)
                         },
@@ -336,7 +315,8 @@ fun NewChatScreen(
                         image = R.drawable.ic_newchat_note,
                         title = stringResource(id = R.string.note_to_self),
                         MaterialTheme.appColors.editTextColor,
-                        PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),
+                        PaddingValues(start = 11.dp, end = 11.dp, top = 6.dp, bottom = 6.dp),
+                        iconSize = 20.dp,
                         onClick = {
                             openActivity(OpenActivity.NoteToSelf)
                         },
@@ -401,6 +381,7 @@ fun NewChatItem(
     onClickScanQRCode: () -> Unit,
     highlighted: Boolean = false,
     plainIcon: Boolean = true,
+    iconSize: androidx.compose.ui.unit.Dp = 22.dp,
 ){
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -419,18 +400,18 @@ fun NewChatItem(
                 .size(36.dp)
                 .background(
                     color = MaterialTheme.appColors.userDetailsCancelBackground,
-                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall)
+                    shape = singleCornerCutShape(BChatDimens.NotchSmall, NotchCorner.TopRight)
                 )
                 .border(
                     1.dp,
                     if (highlighted) MaterialTheme.appColors.userDetailsConfirmBackground else MaterialTheme.appColors.pinBoxInactiveBorder,
-                    io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall)
+                    singleCornerCutShape(BChatDimens.NotchSmall, NotchCorner.TopRight)
                 )
         ) {
             Image(
                 painterResource(id = image),
                 contentDescription = "",
-                modifier = Modifier.size(22.dp)
+                modifier = Modifier.size(iconSize)
             )
         }
 
@@ -443,7 +424,7 @@ fun NewChatItem(
             fontWeight = FontWeight.Normal,
             modifier = Modifier
                 .weight(1f)
-                .padding(start=10.dp, end=5.dp),
+                .padding(start=12.dp, end=5.dp),
         )
 
         if(showQrCode) {
@@ -613,7 +594,7 @@ fun NewChatPopUp(
                 io.beldex.bchat.compose_utils.PrimaryButton(
                     onClick = { onStartChat(bChatId) },
                     enabled = canStart,
-                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+                    shape = notchedCornerShape(BChatDimens.NotchMedium),
                     containerColor = Color(0xFFE0E0E0),
                     contentColor = Color(0xFF0B0B0B),
                     disabledContainerColor = Color(0xFF1A1A1A),

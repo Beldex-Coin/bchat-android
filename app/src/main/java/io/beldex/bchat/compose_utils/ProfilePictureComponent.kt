@@ -27,14 +27,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.rememberAsyncImagePainter
 import com.beldex.libbchat.avatars.ContactColors
-import com.beldex.libbchat.avatars.PlaceholderAvatarPhoto
 import com.beldex.libbchat.avatars.ProfileContactPhoto
 import com.beldex.libbchat.avatars.ResourceContactPhoto
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterInside
-import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import io.beldex.bchat.dependencies.DatabaseComponent
@@ -250,20 +248,13 @@ fun ProfilePicture(
         var status by remember {
             mutableStateOf(true)
         }
-
-        val placeholder = PlaceholderAvatarPhoto(
-            publicKey, if (displayName.isNotEmpty() || displayName.isNotBlank())
-                displayName
-            else
-                "${publicKey.take(4)}...${publicKey.takeLast(4)}"
-        )
+        val placeholder = setupDefaultProfileView()
         if (status) {
             glide
                 .load(placeholder)
                 .placeholder(unknownRecipientDrawable)
                 .diskCacheStrategy(DiskCacheStrategy.NONE).transform(
-                    CenterInside(),
-                    GranularRoundedCorners(20f, 20f, 20f, 20f)
+                    CenterInside()
                 )
                 .into(object : CustomTarget<Drawable>() {
                     override fun onResourceReady(

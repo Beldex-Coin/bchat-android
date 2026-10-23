@@ -14,8 +14,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,10 +44,10 @@ fun ComposeMessageDialogContent(
     onNegative: () -> Unit,
     iconRes: Int = 0
 ) {
-    val annotated = androidx.compose.runtime.remember(message) { message.toBoldAwareAnnotatedString() }
+    val annotated = remember(message) { message.toBoldAwareAnnotatedString() }
     if (iconRes != 0 && negativeText != null) {
         io.beldex.bchat.compose_utils.IconConfirmDialog(
-            icon = androidx.compose.ui.res.painterResource(id = iconRes),
+            icon = painterResource(id = iconRes),
             title = title,
             message = annotated,
             cancelText = negativeText,
@@ -60,7 +62,9 @@ fun ComposeMessageDialogContent(
         dismissOnClickOutside = true,
         onDismissRequest = onNegative
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp, vertical = 18.dp)) {
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 15.dp, vertical = 18.dp)) {
             Text(
                 text = title,
                 color = MaterialTheme.appColors.editTextColor,
@@ -103,7 +107,9 @@ fun ComposeMessageDialogContent(
                         contentColor = androidx.compose.ui.graphics.Color(0xFF0B0B0B),
                         border = BorderStroke(1.dp, androidx.compose.ui.graphics.Color(0xFF0A370A)),
                         contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
-                        modifier = Modifier.weight(1f).height(52.dp)
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(52.dp)
                     ) {
                         Text(text = positiveText, fontFamily = OpenSans, fontSize = 14.sp)
                     }

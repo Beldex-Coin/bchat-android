@@ -10,7 +10,6 @@ import android.widget.RelativeLayout
 import androidx.annotation.DimenRes
 import androidx.core.view.isVisible
 import com.beldex.libbchat.avatars.ContactColors
-import com.beldex.libbchat.avatars.PlaceholderAvatarPhoto
 import com.beldex.libbchat.avatars.ProfileContactPhoto
 import com.beldex.libbchat.avatars.ResourceContactPhoto
 import com.beldex.libbchat.messaging.contacts.Contact
@@ -225,13 +224,8 @@ class ProfilePictureView @JvmOverloads constructor(
                 imageView.setImageDrawable(unknownOpenGroupDrawable)
 
             } else {
-                val placeholder = PlaceholderAvatarPhoto(publicKey, displayName ?: "${publicKey.take(4)}...${publicKey.takeLast(4)}")
+                val placeholder = setupDefaultProfileView()
                 glide.clear(imageView)
-                //New Line
-                /*glide.load(AvatarPlaceholderGenerator.generate(context, sizeInPX, publicKey, displayName)).diskCacheStrategy(DiskCacheStrategy.ALL).transform(
-                    CenterInside(),
-                    GranularRoundedCorners(20f, 20f, 20f, 20f)
-                ).into(imageView)*/
                 glide.load(placeholder)
                     .placeholder(unknownRecipientDrawable)
                     .diskCacheStrategy(DiskCacheStrategy.NONE).transform(CenterInside()).into(imageView)

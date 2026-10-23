@@ -172,7 +172,8 @@ import io.beldex.bchat.mms.SlideDeck
 import io.beldex.bchat.mms.VideoSlide
 import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.compose_utils.ui.ComposeMessageDialogFragment
-import androidx.core.text.HtmlCompat
+import io.beldex.bchat.my_account.ui.MyAccountActivity.Companion.intentForRoute
+import io.beldex.bchat.my_account.ui.MyAccountScreens
 import io.beldex.bchat.reactions.ReactionsDialogFragment
 import io.beldex.bchat.reactions.any.ReactWithAnyEmojiDialogFragment
 import io.beldex.bchat.service.WebRtcCallService
@@ -655,12 +656,12 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
             ComposeMessageDialogFragment.show(
                 supportFragmentManager,
                 title = getString(R.string.call_permission_required_title),
-                message = HtmlCompat.fromHtml(getString(R.string.call_permission_required_description), HtmlCompat.FROM_HTML_MODE_LEGACY),
+                message = getString(R.string.call_permission_required_description),
                 positiveText = getString(R.string.activity_settings_title),
                 negativeText = getString(R.string.cancel),
                 iconRes = R.drawable.ic_permission_setting,
                 onPositive = {
-                    startActivity(io.beldex.bchat.my_account.ui.MyAccountActivity.intentForRoute(this, io.beldex.bchat.my_account.ui.MyAccountScreens.PrivacySettingsScreen.route))
+                    startActivity(intentForRoute(this, MyAccountScreens.PrivacySettingsScreen.route))
                 }
             )
             return

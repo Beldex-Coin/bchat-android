@@ -148,32 +148,58 @@ fun CreateSecretGroup(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 64.dp)
+                            .padding(top = 190.dp)
                     ) {
                         // Figma empty state: two ghosted bordered rows and a grey mono caption.
-                        Box(modifier = Modifier.size(width = 200.dp, height = 62.dp)) {
+                        Box(modifier = Modifier.size(width = 200.dp, height = 81.dp)) {
                             val ghost = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall)
                             Box(
                                 modifier = Modifier
-                                    .offset(x = 77.dp, y = 0.dp)
+                                    .offset(x = 77.dp, y = 11.dp)
                                     .size(width = 123.dp, height = 33.dp)
                                     .background(Color(0xFF111111), ghost)
                                     .border(1.dp, Color(0xFF444444), ghost)
-                            )
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .offset(x = 13.dp, y = 9.dp)
+                                        .size(16.dp)
+                                        .background(Color(0xFF222222), androidx.compose.foundation.shape.CircleShape)
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .offset(x = 40.dp, y = 15.dp)
+                                        .size(width = 71.dp, height = 5.dp)
+                                        .background(Color(0xFF222222))
+                                )
+                            }
                             Box(
                                 modifier = Modifier
-                                    .offset(x = 0.dp, y = 26.dp)
+                                    .offset(x = 0.dp, y = 37.dp)
                                     .size(width = 123.dp, height = 33.dp)
                                     .background(Color(0xFF111111), ghost)
                                     .border(1.dp, Color(0xFF444444), ghost)
-                            )
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .offset(x = 11.dp, y = 9.dp)
+                                        .size(16.dp)
+                                        .background(Color(0xFF222222), androidx.compose.foundation.shape.CircleShape)
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .offset(x = 36.dp, y = 15.dp)
+                                        .size(width = 71.dp, height = 5.dp)
+                                        .background(Color(0xFF222222))
+                                )
+                            }
                         }
                         Text(
                             text = stringResource(R.string.no_contacts_yet),
                             fontFamily = RobotoMono,
                             color = Color(0xFF555555),
                             fontSize = 13.5.sp,
-                            modifier = Modifier.padding(top = 20.dp)
+                            modifier = Modifier.padding(top = 16.dp)
                         )
                     }
                 } else {

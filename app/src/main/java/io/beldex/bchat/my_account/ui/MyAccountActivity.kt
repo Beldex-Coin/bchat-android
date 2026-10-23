@@ -28,6 +28,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,6 +37,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
@@ -67,10 +69,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Paint
@@ -124,13 +128,17 @@ import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.archivechats.ArchiveChatViewModel
 import io.beldex.bchat.avatar.AvatarSelection
+import io.beldex.bchat.compose_utils.BChatDimens
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.BChatTypography
+import io.beldex.bchat.compose_utils.NotchCorner
+import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.checkAndRequestPermissions
+import io.beldex.bchat.compose_utils.singleCornerCutShape
 import io.beldex.bchat.contacts.blocked.BlockedContactsViewModel
 import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.crypto.IdentityKeyUtil
@@ -171,6 +179,8 @@ import java.io.FileOutputStream
 import java.security.SecureRandom
 import java.util.Date
 import javax.inject.Inject
+
+private val ACCOUNT_AVATAR_SIZE = 86.dp
 
 @AndroidEntryPoint
 class MyAccountActivity : BaseComponentActivity() {
@@ -767,11 +777,16 @@ fun MyAccountNavHost(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
+                        .padding(12.dp)
                         .verticalScroll(scrollState),
                 ) {
                     Box(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .then(
+                                if (isBnsHolder.isNullOrEmpty()) Modifier
+                                else Modifier
+                            )
                     ) {
                         Box(
                             modifier = if(!isBnsHolder.isNullOrEmpty()) Modifier
@@ -789,7 +804,7 @@ fun MyAccountNavHost(
                                     cornersRadius = 16.dp
                                 ) else Modifier
                                 .fillMaxWidth()
-                                .padding(top = 0.dp, bottom = 10.dp)
+                                .padding(top = 0.dp, bottom = 1.dp)
                         ) {
                             ProfileCard(
                                 isBnsHolder = isBnsHolder,
@@ -799,7 +814,7 @@ fun MyAccountNavHost(
                                     .fillMaxWidth()
                                     .padding(
                                         top = if (!isBnsHolder.isNullOrEmpty()) 40.dp
-                                        else ProfilePictureMode.LargePicture.size + 20.dp
+                                        else ACCOUNT_AVATAR_SIZE + 1.dp
                                     ),
                                 onShowDialog = {
                                     when (it) {
@@ -825,13 +840,14 @@ fun MyAccountNavHost(
                             modifier = Modifier
                                 .align(alignment = Alignment.TopCenter)
                                 .padding(top = if (!isBnsHolder.isNullOrEmpty()) 0.dp else 12.dp)
-                                .size(ProfilePictureMode.LargePicture.size)
+                                .size(ACCOUNT_AVATAR_SIZE)
+                                .border(1.dp, Color(0xFF000000), io.beldex.bchat.compose_utils.NotchedAvatarShape)
                         ) {
                             if(isProfileChanged) {
                                 ProfilePictureComponent(
                                     publicKey = state.publicKey,
                                     displayName = state.profileName ?: state.publicKey,
-                                    containerSize = ProfilePictureMode.LargePicture.size,
+                                    containerSize = ACCOUNT_AVATAR_SIZE,
                                     pictureMode = ProfilePictureMode.LargePicture,
                                     modifier = Modifier.fillMaxSize()
                                 )
@@ -840,7 +856,7 @@ fun MyAccountNavHost(
                                 ProfilePictureComponent(
                                     publicKey = state.publicKey,
                                     displayName = state.profileName ?: state.publicKey,
-                                    containerSize = ProfilePictureMode.LargePicture.size,
+                                    containerSize = ACCOUNT_AVATAR_SIZE,
                                     pictureMode = ProfilePictureMode.LargePicture,
                                     modifier = Modifier.fillMaxSize()
                                 )
@@ -914,52 +930,64 @@ fun MyAccountNavHost(
                     }
 
                     if(isBnsHolder.isNullOrEmpty()) {
-                        PrimaryButton(
-                            onClick = {
-                                showLinkYourBnsDialog = true
-                            },
+                        val bnsGreen = if (isDarkMode) Color(0xFF00BD40) else Color(0xFF078720)
+                        val bnsGradientStart = if (isDarkMode) Color(0xFF003F00) else Color(0xFFD4EAD9)
+                        val bnsGradientEnd = if (isDarkMode) Color(0xFF0B150B) else Color(0xFFFFFFFF)
+                        val bnsTextColor = if (isDarkMode) Color(0xFFEBEBEB) else Color(0xFF222222)
+                        val bnsShape = singleCornerCutShape(
+                            BChatDimens.NotchMedium,
+                            NotchCorner.TopRight
+                        )
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(bottom = 10.dp)
-                                .background(
-                                    androidx.compose.ui.graphics.Brush.radialGradient(
-                                        colors = listOf(Color(0xFF003F00), Color(0xFF0B150B)),
-                                        radius = 500f
-                                    ),
-                                    io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium)
-                                ),
-                            shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
-                            containerColor = Color.Transparent,
-                            contentColor = MaterialTheme.appColors.editTextColor,
-                            border = BorderStroke(1.dp, Color(0xFF00BD40)),
-                            disabledContainerColor = MaterialTheme.appColors.searchBackground,
+                                .padding(start = 12.dp, end = 12.dp, top = 0.dp, bottom = 12.dp)
+                                .height(47.dp)
+                                .clip(bnsShape)
+                                .drawBehind {
+                                    drawRect(
+                                        brush = Brush.radialGradient(
+                                            colors = listOf(bnsGradientStart, bnsGradientEnd),
+                                            center = Offset(size.width, 0f),
+                                            radius = size.width
+                                        )
+                                    )
+                                }
+                                .border(1.dp, bnsGreen, bnsShape)
+                                .clickable {
+                                    showLinkYourBnsDialog = true
+                                }
+                                .padding(start = 20.dp, end = 12.dp),
+                            contentAlignment = Alignment.CenterStart
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(8.dp)
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier.fillMaxWidth()
                             ) {
-                                Icon(
-                                    painterResource(id = R.drawable.bns_transaction),
-                                    contentDescription = "",
-                                    modifier = Modifier.size(18.dp)
-                                )
-                                Text(
-                                    text = stringResource(R.string.link_your_bns),
-                                    style = BChatTypography.titleSmall.copy(
-                                        color = MaterialTheme.appColors.editTextColor,
-                                        fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
-                                        fontWeight = FontWeight(600),
-                                        fontSize = 13.sp
-                                    ),
-                                    modifier = Modifier
-                                        .padding(start = 5.dp)
-                                )
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.bns_transaction),
+                                        contentDescription = "",
+                                        modifier = Modifier.size(width = 14.dp, height = 16.dp)
+                                    )
+                                    Text(
+                                        text = stringResource(R.string.link_your_bns),
+                                        style = BChatTypography.titleSmall.copy(
+                                            color = bnsTextColor,
+                                            fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                                            fontWeight = FontWeight(600),
+                                            fontSize = 12.sp
+                                        ),
+                                        modifier = Modifier
+                                            .padding(start = 8.dp)
+                                    )
+                                }
                             }
                         }
                         Row(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 10.dp),
+                                .fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center
                         ) {
@@ -1212,12 +1240,16 @@ fun MyAccountNavHost(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.offset(y = (-60).dp)
+                        ) {
                             Image(
                                 painter = painterResource(id = R.drawable.ic_no_blocked_contacts),
                                 contentDescription = null,
                                 modifier = Modifier.size(134.dp)
                             )
+                            Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = stringResource(id = R.string.no_blocked_contact),
                                 color = Color(0xFF737373),
@@ -1520,7 +1552,8 @@ fun ProfileCard(
                 text=uiState.profileName ?: "",
                 style=MaterialTheme.typography.titleMedium.copy(
                     color=MaterialTheme.appColors.editTextColor,
-                    fontWeight=FontWeight(700),
+                    fontFamily = OpenSans,
+                    fontWeight=FontWeight(600),
                     fontSize=18.sp,
                     lineHeight=24.51.sp
                 ),
@@ -1574,12 +1607,12 @@ fun ProfileCard(
                 Image(painter = painterResource(id = R.drawable.ic_bns_verified), contentDescription = "Bns verified", modifier = Modifier.size(14.dp))
             }
         }else {
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
         }
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.spacedBy(7.dp)
         ) {
             ProfileCardKeyContainer(
                 isBnsHolder = isBnsHolder,
@@ -1637,7 +1670,12 @@ fun ProfileCardKeyContainer(
 ) {
     Card(
         modifier = modifier,
-        shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+        // Figma 7546:13728 "BG Corner Cut": only the bottom-left corner is cut,
+        // the other three edges stay square.
+        shape = io.beldex.bchat.compose_utils.singleCornerCutShape(
+            io.beldex.bchat.compose_utils.BChatDimens.NotchAccountCard,
+            io.beldex.bchat.compose_utils.NotchCorner.BottomLeft
+        ),
         border = BorderStroke(1.dp, Color(0xFF444444)),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF111111)),
@@ -1664,7 +1702,8 @@ fun ProfileCardKeyContainer(
                 Image(
                     painter = painterResource(id = image), contentDescription = "",
                     modifier = Modifier
-                        .size(25.dp)
+                        // Figma: 28dp identity icons (Beldex logo, BChat ID, QR).
+                        .size(28.dp)
                         .align(Alignment.CenterHorizontally),
                     colorFilter = if (!showCopyIcon) ColorFilter.tint(MaterialTheme.appColors.editTextColor) else null
                 )
@@ -1674,7 +1713,7 @@ fun ProfileCardKeyContainer(
                         fontSize = 10.sp,
                         fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                         color = MaterialTheme.appColors.editTextColor,
-                        fontWeight = FontWeight.Normal
+                        fontWeight = FontWeight(600)
                     ),
                     textAlign = TextAlign.Center,
                     modifier = Modifier

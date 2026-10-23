@@ -1,18 +1,19 @@
 package io.beldex.bchat.home
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
@@ -24,16 +25,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.BChatDimens
+import io.beldex.bchat.compose_utils.CursorGapTransformation
+import io.beldex.bchat.compose_utils.NotchCorner
 import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
@@ -41,6 +47,7 @@ import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.notchedCornerShape
+import io.beldex.bchat.compose_utils.singleCornerCutShape
 
 /**
  * Revamp_2026 contact-details bottom sheet content (Figma `profile_Detail` 7546:2219 / view state,
@@ -67,13 +74,14 @@ fun UserDetailsSheetContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
+            .border(0.5.dp, MaterialTheme.appColors.onboardingSecondaryButtonBorder, RectangleShape)
             .background(
-                androidx.compose.ui.graphics.Brush.radialGradient(
-                    colors = listOf(androidx.compose.ui.graphics.Color(0xFF1A1A1A), androidx.compose.ui.graphics.Color(0xFF0B0B0B)),
+                Brush.radialGradient(
+                    colors = listOf(Color(0xFF1A1A1A), Color(0xFF0B0B0B)),
                     radius = 900f
                 )
             )
-            .padding(horizontal = 22.dp, vertical = 24.dp)
+            .padding(horizontal = 16.dp, vertical = 18.dp)
     ) {
         ProfilePictureComponent(
             publicKey = publicKey,
@@ -91,21 +99,25 @@ fun UserDetailsSheetContent(
                     value = nicknameInput,
                     onValueChange = { if (it.length <= 26) onNicknameInputChange(it) },
                     placeholder = {
-                        Text(
-                            text = stringResource(R.string.fragment_user_details_bottom_sheet_edit_text_hint),
-                            fontFamily = OpenSans,
-                            fontSize = 18.sp
-                        )
+                        if (nicknameInput.isEmpty()) {
+                            Text(
+                                text = name,
+                                fontFamily = OpenSans,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 18.sp,
+                                color = MaterialTheme.appColors.editTextColor
+                            )
+                        }
                     },
-                    textStyle = androidx.compose.ui.text.TextStyle(
+                    textStyle = TextStyle(
                         color = MaterialTheme.appColors.editTextColor,
                         fontFamily = OpenSans,
-                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                        fontWeight = FontWeight.Bold,
                         fontSize = 18.sp,
                         textAlign = TextAlign.Center
                     ),
                     singleLine = true,
-                    visualTransformation = io.beldex.bchat.compose_utils.CursorGapTransformation,
+                    visualTransformation = CursorGapTransformation,
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = { onSaveNicknameClick() }),
                     colors = TextFieldDefaults.colors(
@@ -115,18 +127,20 @@ fun UserDetailsSheetContent(
                         unfocusedIndicatorColor = MaterialTheme.appColors.editTextColor,
                         cursorColor = MaterialTheme.appColors.editTextColor
                     ),
-                    modifier = Modifier.weight(1f, fill = false)
+                    modifier = Modifier
+                        .width(IntrinsicSize.Min)
+                        .widthIn(min = 1.dp, max = 220.dp)
                 )
 
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_close_circle),
+                    painter = painterResource(id = R.drawable.ic_close),
                     contentDescription = stringResource(R.string.cancel),
-                    tint = MaterialTheme.appColors.userDetailsCancelIconColor,
+                    tint = MaterialTheme.appColors.editTextColor,
                     modifier = Modifier
-                        .padding(start = 8.dp)
-                        .size(26.dp)
-                        .background(androidx.compose.ui.graphics.Color(0xFF222222), notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall))
-                        .padding(4.dp)
+                        .padding(start = 10.dp)
+                        .size(22.dp)
+                        .background(Color(0xFF222222), singleCornerCutShape(BChatDimens.NotchSmall, NotchCorner.TopRight))
+                        .padding(2.dp)
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null,
@@ -135,14 +149,14 @@ fun UserDetailsSheetContent(
                 )
 
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_done_circle),
+                    painter = painterResource(id = R.drawable.ic_done),
                     contentDescription = stringResource(R.string.save),
-                    tint = MaterialTheme.appColors.primaryButtonIconColor,
+                    tint = Color(0xFF0B0B0B),
                     modifier = Modifier
-                        .padding(start = 8.dp)
-                        .size(26.dp)
-                        .background(MaterialTheme.appColors.userDetailsConfirmBackground, notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall))
-                        .padding(4.dp)
+                        .padding(start = 6.dp)
+                        .size(22.dp)
+                        .background(MaterialTheme.appColors.homeFabBackground, RectangleShape)
+                        .padding(3.dp)
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null,
@@ -163,7 +177,7 @@ fun UserDetailsSheetContent(
                     fontSize = 18.sp
                 )
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_baseline_edit_group_name),
+                    painter = painterResource(id = R.drawable.ic_user_detail_edit_pencil),
                     contentDescription = stringResource(R.string.edit_title),
                     tint = MaterialTheme.appColors.userDetailsConfirmBackground,
                     modifier = Modifier
@@ -188,8 +202,8 @@ fun UserDetailsSheetContent(
                 modifier = Modifier
                     .padding(top = 20.dp)
                     .fillMaxWidth()
-                    .background(androidx.compose.ui.graphics.Color(0xFF111111))
-                    .border(1.dp, androidx.compose.ui.graphics.Color(0xFF333333))
+                    .background(Color(0xFF111111))
+                    .border(1.dp, Color(0xFF333333))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
@@ -200,10 +214,10 @@ fun UserDetailsSheetContent(
 
             PrimaryButton(
                 onClick = onMessageClick,
-                shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchLarge),
-                containerColor = androidx.compose.ui.graphics.Color(0xFFE0E0E0),
-                contentColor = androidx.compose.ui.graphics.Color(0xFF0B0B0B),
-                border = androidx.compose.foundation.BorderStroke(1.dp, androidx.compose.ui.graphics.Color(0xFF0A370A)),
+                shape = notchedCornerShape(BChatDimens.NotchLarge),
+                containerColor = Color(0xFFE0E0E0),
+                contentColor = Color(0xFF0B0B0B),
+                border = BorderStroke(1.dp, Color(0xFF0A370A)),
                 modifier = Modifier
                     .padding(top = 16.dp)
                     .fillMaxWidth()

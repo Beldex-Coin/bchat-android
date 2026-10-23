@@ -11,6 +11,9 @@ object BChatDimens {
     val NotchLarge: Dp = 14.5.dp
     val NotchCard: Dp = 20.dp
 
+    // Single bottom-left cut of the account settings identity cards (Figma 7546:13728: 16x16 diagonal).
+    val NotchAccountCard: Dp = 16.dp
+
     // Minimum button heights. Used with heightIn(min = …) so large font sizes can grow the button.
     val DialogButtonMinHeight: Dp = 52.dp
     val PrimaryButtonMinHeight: Dp = 54.dp

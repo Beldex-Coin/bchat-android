@@ -95,6 +95,8 @@ class Colors() {
     var onboardingInputHint: Color = Color.Unspecified
     var onboardingCaptionColor: Color = Color.Unspecified
     var onboardingKeypadKeyBackground: Color = Color.Unspecified
+    var onboardingClearButtonBackground: Color = Color.Unspecified
+    var onboardingClearButtonBorder: Color = Color.Unspecified
     // Revamp_2026 Home / conversation list (Phase 2)
     var homeBannerText: Color = Color.Unspecified
     var homeFabBackground: Color = Color.Unspecified
@@ -170,6 +172,8 @@ val lightColors = Colors().apply {
     onboardingInputHint = Color(0xFFA7A7BA)
     onboardingCaptionColor = Color(0xFF8A8A9D)
     onboardingKeypadKeyBackground = Color(0xFFECECEC)
+    onboardingClearButtonBackground = Color(0xFFFFFFFF)
+    onboardingClearButtonBorder = Color(0xFFF0F0F0)
     homeBannerText = Color(0xFF6A6A77)
     homeFabBackground = Color(0xFF00BC33)
     homeFabIconColor = Color(0xFF0A0A0A)
@@ -242,6 +246,8 @@ val darkColors = Colors().apply {
     onboardingInputHint = Color(0xFF737373)
     onboardingCaptionColor = Color(0xFF737373)
     onboardingKeypadKeyBackground = Color(0xFF1A1A1A)
+    onboardingClearButtonBackground = Color(0xFF1A1A1A)
+    onboardingClearButtonBorder = Color(0xFF000000)
     homeBannerText = Color(0xFFACACAC)
     homeFabBackground = Color(0xFF00BC33)
     homeFabIconColor = Color(0xFF0A0A0A)

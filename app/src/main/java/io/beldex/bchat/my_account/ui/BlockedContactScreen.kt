@@ -1,10 +1,9 @@
 package io.beldex.bchat.my_account.ui
 
 import android.content.res.Configuration
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -32,9 +30,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -42,14 +44,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.beldex.libbchat.utilities.recipients.Recipient
-import io.beldex.bchat.compose_utils.BChatCheckBox
+import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.BChatDimens
 import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.compose_utils.DialogCancelButton
 import io.beldex.bchat.compose_utils.DialogContainer
+import io.beldex.bchat.compose_utils.DialogPrimaryButton
+import io.beldex.bchat.compose_utils.NotchCorner
+import io.beldex.bchat.compose_utils.NotchedAvatarShape
+import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
+import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
-import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.notchedCornerShape
+import io.beldex.bchat.compose_utils.singleCornerCutShape
 
 @Composable
 fun BlockedContactScreen(
@@ -111,7 +121,7 @@ fun BlockedContactScreen(
                 Text(
                     text = title,
                     color = MaterialTheme.appColors.editTextColor,
-                    fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                    fontFamily = OpenSans,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -122,7 +132,7 @@ fun BlockedContactScreen(
                 Text(
                     text = message,
                     color = MaterialTheme.appColors.editTextColor,
-                    fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                    fontFamily = OpenSans,
                     fontSize = 14.sp,
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
                 )
@@ -133,12 +143,12 @@ fun BlockedContactScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    io.beldex.bchat.compose_utils.DialogCancelButton(
+                    DialogCancelButton(
                         text = stringResource(id = R.string.cancel),
                         onClick = { showConfirmationDialog = false },
                         modifier = Modifier.weight(1f)
                     )
-                    io.beldex.bchat.compose_utils.DialogPrimaryButton(
+                    DialogPrimaryButton(
                         text = stringResource(id = R.string.continue_2),
                         onClick = {
                             unBlockMultipleContacts()
@@ -156,7 +166,7 @@ fun BlockedContactScreen(
         modifier = modifier
     ) {
         LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
@@ -191,17 +201,19 @@ fun BlockedContactScreen(
                 onClick = {
                     showConfirmationDialog = true
                 },
-                shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchLarge),
-                containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
+                shape = notchedCornerShape(BChatDimens.NotchLarge),
+                containerColor = MaterialTheme.appColors.editTextColor,
                 contentColor = MaterialTheme.appColors.backgroundColor,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .height(58.dp)
+                    .padding(horizontal = 6.dp)
             ) {
                 Text(
                     text = stringResource(id = R.string.unblock_selected),
                     style = MaterialTheme.typography.titleMedium.copy(
-                        color = androidx.compose.ui.graphics.Color(0xFF0B0B0B),
-                        fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                        color = MaterialTheme.appColors.backgroundColor,
+                        fontFamily = RobotoMono,
                         fontWeight = FontWeight(600),
                         fontSize = 16.sp
                     ),
@@ -222,16 +234,19 @@ private fun BlockedContactItem(
     selectContact: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val rowShape = if (isSelected) io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium)
-    else androidx.compose.ui.graphics.RectangleShape
+    val rowShape = if (multiSelectActivated && isSelected) {
+        notchedCornerShape(BChatDimens.NotchLarge)
+    } else {
+        RectangleShape
+    }
     Card(
         shape = rowShape,
-        border = androidx.compose.foundation.BorderStroke(
+        border = if (multiSelectActivated) androidx.compose.foundation.BorderStroke(
             1.dp,
-            if (isSelected) androidx.compose.ui.graphics.Color(0xFF00BC33) else androidx.compose.ui.graphics.Color(0xFF444444)
-        ),
+            if (isSelected) Color(0xFF00BC33).copy(alpha = 0.5f) else Color(0xFF444444)
+        ) else null,
         colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) androidx.compose.ui.graphics.Color(0xFF111111) else androidx.compose.ui.graphics.Color(0xFF222222)
+            containerColor = if(isSelected) Color(0xFF111111) else Color.Transparent
         ),
         modifier = modifier
     ) {
@@ -246,7 +261,7 @@ private fun BlockedContactItem(
                     modifier=Modifier
                             .height(36.dp)
                             .width(36.dp)
-                            .clip(io.beldex.bchat.compose_utils.NotchedAvatarShape),
+                            .clip(NotchedAvatarShape),
                     contentAlignment=Alignment.Center,
             ) {
                 ProfilePictureComponent(
@@ -258,13 +273,14 @@ private fun BlockedContactItem(
             Text(
                 text = contact.name ?: "",
                 style = MaterialTheme.typography.titleMedium.copy(
+                    fontFamily = OpenSans,
                     fontWeight = FontWeight(400),
                     fontSize = 14.sp
                 ),
                 modifier = Modifier
                     .weight(1f)
                     .padding(
-                        start = 8.dp
+                        start = 14.dp
                     ),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -276,24 +292,26 @@ private fun BlockedContactItem(
                     onClick = { selectContact(!isSelected) }
                 )
             } else {
-                Text(
-                    text = stringResource(R.string.ConversationActivity_unblock),
-                    style = MaterialTheme.typography.labelMedium.copy(
-                        fontFamily = io.beldex.bchat.compose_utils.OpenSans,
-                        fontWeight = FontWeight(400),
-                        fontSize = 12.sp
-                    ),
-                    color = MaterialTheme.appColors.editTextColor,
-                    modifier = Modifier
-                        .background(
-                            color = MaterialTheme.appColors.searchBackground,
-                            shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall)
-                        )
-                        .clickable {
-                            unblockContact()
-                        }
-                        .padding(horizontal = 14.dp, vertical = 8.dp)
+            val unblockBg = if (isSystemInDarkTheme()) MaterialTheme.appColors.editTextColor else Color(0xFFF8F8F8)
+            val unblockText = if (isSystemInDarkTheme()) MaterialTheme.appColors.backgroundColor else MaterialTheme.appColors.editTextColor
+            Text(
+                text = stringResource(R.string.ConversationActivity_unblock),
+                style = MaterialTheme.typography.labelMedium.copy(
+                    fontFamily = RobotoMono,
+                    fontWeight = FontWeight(600),
+                    fontSize = 12.sp
+                ),
+                color = unblockText,
+            modifier = Modifier
+                .background(
+                    color = unblockBg,
+                    shape = singleCornerCutShape(BChatDimens.NotchSmall, NotchCorner.TopRight)
                 )
+                .clickable {
+                    unblockContact()
+                }
+                .padding(horizontal = 14.dp, vertical = 8.dp)
+            )
             }
         }
     }
@@ -335,10 +353,10 @@ fun BlockedContactScreenPreviewDark() {
     }
 }
 
-/** Figma tick: a green ring that fills with a dark check when selected. */
+/** Figma tick: a green rounded square that fills with a dark check when selected. */
 @Composable
 private fun CircleCheck(checked: Boolean, onClick: () -> Unit) {
-    val green = androidx.compose.ui.graphics.Color(0xFF00BC33)
+    val green = Color(0xFF00BC33)
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -347,17 +365,30 @@ private fun CircleCheck(checked: Boolean, onClick: () -> Unit) {
             .clickable(onClick = onClick)
     ) {
         androidx.compose.foundation.Canvas(modifier = Modifier.size(18.dp)) {
-            val stroke = 1.5.dp.toPx()
+            val stroke = 1.35.dp.toPx()
+            // Figma "Iconex/Light/Check": an 18dp rounded square outlined in green.
+            val corner = androidx.compose.ui.geometry.CornerRadius(4.dp.toPx())
             if (checked) {
-                drawCircle(green)
-                val path = androidx.compose.ui.graphics.Path().apply {
+                drawRoundRect(
+                    color = green,
+                    cornerRadius = corner
+                )
+                val path = Path().apply {
                     moveTo(size.width * 0.27f, size.height * 0.52f)
                     lineTo(size.width * 0.44f, size.height * 0.68f)
                     lineTo(size.width * 0.74f, size.height * 0.34f)
                 }
-                drawPath(path, androidx.compose.ui.graphics.Color(0xFF0B0B0B), style = androidx.compose.ui.graphics.drawscope.Stroke(width = stroke, cap = androidx.compose.ui.graphics.StrokeCap.Round))
+                drawPath(path, Color(0xFF0B0B0B), style = Stroke(
+                    width = stroke,
+                    cap = StrokeCap.Round
+                )
+                )
             } else {
-                drawCircle(green, style = androidx.compose.ui.graphics.drawscope.Stroke(width = stroke))
+                drawRoundRect(
+                    color = green,
+                    cornerRadius = corner,
+                    style = Stroke(width = stroke)
+                )
             }
         }
     }

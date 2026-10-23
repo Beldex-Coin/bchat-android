@@ -25,9 +25,9 @@ object AvatarPlaceholderGenerator {
             hash = 0
         }
 
-        // Do not cache color array, it may be different depends on the current theme.
-        val colorArray = context.resources.getIntArray(R.array.profile_picture_placeholder_colors)
-        val colorPrimary = colorArray[(hash % colorArray.size).toInt()]
+        val isDark = (context.resources.configuration.uiMode and
+                android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
+        val colorPrimary = if (isDark) 0xFF1A1A1A.toInt() else 0xFFFFFFFF.toInt()
 
         val labelText = when {
             !TextUtils.isEmpty(displayName) -> extractLabel(displayName!!.capitalize(Locale.ROOT))
@@ -51,7 +51,7 @@ object AvatarPlaceholderGenerator {
         val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
         textPaint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
         textPaint.textSize = pixelSize * 0.5f
-        textPaint.color = Color.WHITE
+        textPaint.color = if (isDark) 0xFF8D8D8D.toInt() else 0xFF737373.toInt()
         val textBounds = Rect()
         textPaint.getTextBounds(labelText, 0, labelText.length, textBounds)
         val textX = (canvas.width - textBounds.width()) / 2.0f

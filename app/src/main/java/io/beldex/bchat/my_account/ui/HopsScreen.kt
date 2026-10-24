@@ -84,110 +84,111 @@ fun HopsScreen(
                 fontSize = 12.sp
             )
             Spacer(modifier = Modifier.height(4.dp))
-            PathMarker(filled = true, color = MaterialTheme.appColors.userDetailsConfirmBackground.copy(alpha = 0.75f), size = 16.dp)
+            PathMarker(
+                filled = true,
+                color = MaterialTheme.appColors.userDetailsConfirmBackground.copy(alpha = 0.75f),
+                size = 16.dp
+            )
             PathLine()
 
             if (!isDirect) {
-                nodes.forEach {
-                    GetInternalNode(
-                        title = it.title,
-                        subTitle = it.subTitle
+                nodes.forEachIndexed { index, node ->
+                    PathMarker(
+                        filled = index != nodes.lastIndex || nodes.size == 1,
+                        color = MaterialTheme.appColors.editTextColor,
+                        size = 12.dp
                     )
-
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = node.title,
+                        color = MaterialTheme.appColors.editTextColor,
+                        fontFamily = RobotoMono,
+                        fontSize = 12.sp,
+                        lineHeight = 14.sp
+                    )
+                    Text(
+                        text = node.subTitle,
+                        color = MaterialTheme.appColors.editTextColor,
+                        fontFamily = RobotoMono,
+                        fontSize = 10.sp,
+                        lineHeight = 12.sp
+                    )
                     Spacer(modifier = Modifier.height(4.dp))
+                    PathLine()
                 }
-            nodes.forEachIndexed { index, node ->
+
                 PathMarker(
-                    filled = index != nodes.lastIndex || nodes.size == 1,
-                    color = MaterialTheme.appColors.editTextColor,
-                    size = 12.dp
-                )
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = node.title,
-                    color = MaterialTheme.appColors.editTextColor,
-                    fontFamily = RobotoMono,
-                    fontSize = 12.sp,
-                    lineHeight = 14.sp
-                )
-                Text(
-                    text = node.subTitle,
-                    color = MaterialTheme.appColors.editTextColor,
-                    fontFamily = RobotoMono,
-                    fontSize = 10.sp,
-                    lineHeight = 12.sp
+                    filled = true,
+                    color = MaterialTheme.appColors.userDetailsConfirmBackground.copy(alpha = 0.75f),
+                    size = 16.dp
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                PathLine()
+                Text(
+                    text = stringResource(id = R.string.activity_path_destination_row_title),
+                    color = MaterialTheme.appColors.editTextColor,
+                    fontFamily = OpenSans,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 12.sp
+                )
             }
-
-            PathMarker(filled = true, color = MaterialTheme.appColors.userDetailsConfirmBackground.copy(alpha = 0.75f), size = 16.dp)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = stringResource(id = R.string.activity_path_destination_row_title),
-                color = MaterialTheme.appColors.editTextColor,
-                fontFamily = OpenSans,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 12.sp
-            )
         }
     }
 }
 
-/** Marker centred in a 16dp column so every marker and dashed connector share one x. */
-@Composable
-private fun PathMarker(filled: Boolean, color: Color, size: Dp) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier.size(16.dp)
-    ) {
+    /** Marker centred in a 16dp column so every marker and dashed connector share one x. */
+    @Composable
+    private fun PathMarker(filled: Boolean, color: Color, size: Dp) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.size(16.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(size)
+                    .clip(CircleShape)
+                    .then(
+                        if (filled) Modifier.background(color)
+                        else Modifier.border(1.dp, color, CircleShape)
+                    )
+            )
+        }
+    }
+
+    @Composable
+    private fun PathLine() {
+        val color = MaterialTheme.appColors.primaryButtonColor
         Box(
             modifier = Modifier
-                .size(size)
-                .clip(CircleShape)
-                .then(
-                    if (filled) Modifier.background(color)
-                    else Modifier.border(1.dp, color, CircleShape)
-                )
+                .width(16.dp)
+                .height(30.dp)
+                .drawBehind {
+                    drawLine(
+                        color = color,
+                        start = Offset(size.width / 2, 0f),
+                        end = Offset(size.width / 2, size.height),
+                        strokeWidth = 2f,
+                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(6f, 6f), 0f)
+                    )
+                }
         )
     }
-}
 
-@Composable
-private fun PathLine() {
-    val color = MaterialTheme.appColors.primaryButtonColor
-    Box(
-        modifier = Modifier
-            .width(16.dp)
-            .height(30.dp)
-            .drawBehind {
-                drawLine(
-                    color = color,
-                    start = Offset(size.width / 2, 0f),
-                    end = Offset(size.width / 2, size.height),
-                    strokeWidth = 2f,
-                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(6f, 6f), 0f)
-                )
-            }
-    )
-}
-
-@Preview
-@Composable
-fun HopsScreenPreview() {
-    BChatTheme {
-        HopsScreen(
-            nodes = listOf()
-        )
+    @Preview
+    @Composable
+    fun HopsScreenPreview() {
+        BChatTheme {
+            HopsScreen(
+                nodes = listOf()
+            )
+        }
     }
-}
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun HopsScreenPreviewDark() {
-    BChatTheme {
-        HopsScreen(
-            nodes = listOf()
-        )
+    @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+    @Composable
+    fun HopsScreenPreviewDark() {
+        BChatTheme {
+            HopsScreen(
+                nodes = listOf()
+            )
+        }
     }
-}

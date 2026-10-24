@@ -45,6 +45,7 @@ import io.beldex.bchat.compose_utils.DialogConfirmButton
 import io.beldex.bchat.compose_utils.DialogCancelButton
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Arrangement
+import com.beldex.libbchat.mnode.OnionRequestAPI
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.OpenSans
@@ -88,7 +89,7 @@ fun PrivacySettingsScreen(
                 sharedPrefs.edit().putInt("pref_onion_hops", value).apply()
                 // No Hops = direct delivery; 1 or 3 hops = onion routing.
                 TextSecurePreferences.setOnionRoutingEnabled(context, value != 0)
-                if (value != 0) com.beldex.libbchat.mnode.OnionRequestAPI.setHopCount(value)
+                TextSecurePreferences.setOnionRequestPathCount(context, value)
                 showHopsDialog = false
             },
             onCancel = { showHopsDialog = false }

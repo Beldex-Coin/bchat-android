@@ -219,9 +219,9 @@ private fun OnionRoutingHopSelectionDialog(
                                     BorderStroke(
                                         width = 1.dp,
                                         color = if (isSelected) {
-                                            MaterialTheme.appColors.negativeGreenButtonBorder
+                                            MaterialTheme.appColors.primaryButtonColor
                                         } else {
-                                            MaterialTheme.appColors.textFiledBorderColor
+                                            MaterialTheme.appColors.dividerColor
                                         }
                                     ),
                                     shape = RoundedCornerShape(12.dp)
@@ -257,13 +257,13 @@ private fun OnionRoutingHopSelectionDialog(
                         Icon(
                             painterResource(id = R.drawable.ic_info_outline_dark),
                             contentDescription = "info icon for routing",
-                            tint = MaterialTheme.appColors.titleTextColor,
+                            tint = MaterialTheme.appColors.editTextColor,
                             modifier = Modifier.size(15.dp)
                         )
                         Text(
                             text = messageHint.getOrElse(selectedIndex) { "" },
                             style = MaterialTheme.typography.bodySmall.copy(
-                                color = MaterialTheme.appColors.titleTextColor,
+                                color = MaterialTheme.appColors.editTextColor,
                                 fontWeight = FontWeight(400),
                                 fontSize = 12.sp
                             ),
@@ -284,14 +284,14 @@ private fun OnionRoutingHopSelectionDialog(
                             containerColor = MaterialTheme.appColors.negativeGreenButton
                         ),
                         shape = RoundedCornerShape(12.dp),
-                        border = BorderStroke(0.5.dp, MaterialTheme.appColors.negativeGreenButtonBorder),
+                        border = BorderStroke(0.5.dp, MaterialTheme.appColors.primaryButtonColor),
                         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                         modifier = Modifier.weight(1f)
                     ) {
                         Text(
                             text = stringResource(id = R.string.cancel),
                             style = MaterialTheme.typography.bodyMedium.copy(
-                                color = MaterialTheme.appColors.negativeGreenButtonText,
+                                color = MaterialTheme.appColors.onboardingHeadlineColor,
                                 fontWeight = FontWeight(400),
                                 fontSize = 12.sp
                             )
@@ -301,7 +301,7 @@ private fun OnionRoutingHopSelectionDialog(
                     Button(
                         onClick = { onConfirm(selection) },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.appColors.negativeGreenButtonBorder
+                            containerColor = MaterialTheme.appColors.primaryButtonColor
                         ),
                         shape = RoundedCornerShape(12.dp),
                         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
@@ -332,9 +332,9 @@ modifier = Modifier
                 BorderStroke(
                     width = 1.dp,
                     color = if (isSelected) {
-                        MaterialTheme.appColors.negativeGreenButtonBorder
+                        MaterialTheme.appColors.primaryButtonColor
                     } else {
-                        MaterialTheme.appColors.textFiledBorderColor
+                        MaterialTheme.appColors.dividerColor
                     }
                 ),
                 shape = CircleShape
@@ -344,7 +344,7 @@ modifier = Modifier
             Box(
                 modifier = Modifier
                     .size(7.dp)
-                    .background(MaterialTheme.appColors.negativeGreenButtonBorder, CircleShape)
+                    .background(MaterialTheme.appColors.primaryButtonColor, CircleShape)
             )
         }
     }

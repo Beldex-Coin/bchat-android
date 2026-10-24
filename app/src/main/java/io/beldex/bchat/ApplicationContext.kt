@@ -200,9 +200,6 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
             com.beldex.libbchat.utilities.task.ProgressDialogAsyncTask.DialogFactory { context, title, message ->
                 io.beldex.bchat.compose_utils.LoadingDialog.create(context, title, message)
             }
-        com.beldex.libbchat.mnode.OnionRequestAPI.restoreHopCount(
-            androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).getInt("pref_onion_hops", 3)
-        )
         startKovenant()
         initializeSecurityProvider()
         initializeLogging()

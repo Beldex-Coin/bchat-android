@@ -46,7 +46,6 @@
                     android:layout_weight="1"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="12dp"
-                    android:layout_weight="1"
                     android:orientation="vertical">
 
                     <TextView

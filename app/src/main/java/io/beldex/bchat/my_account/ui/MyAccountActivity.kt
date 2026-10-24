@@ -1797,7 +1797,7 @@ fun MyAccountScreenContainer(
             .fillMaxSize()
     ) {
         OnboardingTopBar(
-            title = title,
+            title = title.text,
             onBackClick = onBackClick,
             actions = { actionItems() }
         )

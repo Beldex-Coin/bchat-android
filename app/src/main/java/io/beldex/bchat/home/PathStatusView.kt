@@ -132,7 +132,7 @@ class PathStatusView : View {
 
     private fun update() {
 
-        val isConnectedToHops = OnionRequestAPI.paths.isNotEmpty()
+        val isConnectedToHops = OnionRequestAPI.selectedHopPaths.isNotEmpty()
 
         if (!isNetworkAvailable) {
             setBackgroundResource(R.drawable.paths_building_dot)

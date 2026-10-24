@@ -556,6 +556,14 @@
     <string name="preferences__if_typing_indicators_are_disabled_you_wont_be_able_to_see_typing_indicators">Если индикаторы ввода отключены, вы не сможете видеть индикаторы ввода от других.</string>
     <string name="preferences__onion_routing">Луковая маршрутизация</string>
     <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">Если включено, для доставки ваших сообщений будет использоваться луковая маршрутизация</string>
+    <string name="preferences_onion_routing_hops_summary">Выберите, через сколько хопов проходят ваши сообщения. Выкл.: прямое соединение, 1 хоп — один мастернод, 3 хопа — три мастернода.</string>
+    <string name="preferences__onion_routing_off">Без хопов</string>
+    <string name="preferences__onion_routing_1_hop">1 хоп (по умолчанию)</string>
+    <string name="preferences__onion_routing_3_hops">3 хопа</string>
+    <string name="preferences__onion_routing_settings_description_no_hops">При выборе этого параметра сообщения будут отправляться напрямую в swarm получателя, без прохождения через промежуточные узлы.</string>
+    <string name="preferences__onion_routing_settings_description_one_hop">При выборе этого параметра сообщения маршрутизируются через один промежуточный узел.</string>
+    <string name="preferences__onion_routing_settings_description_three_hops">При выборе этого параметра сообщения будут маршрутизироваться через три промежуточных узла.</string>
+    <string name="preferences__onion_routing_settings_subtitle">Если включено, для доставки ваших сообщений будет использоваться луковая маршрутизация</string>
     <string name="onion_routing_turn_off_confirmation">Отключение маршрутизации через Onion раскрывает ваш IP-адрес мастерноде и позволяет наблюдателям сети узнать, что вы используете BChat. В любом случае ваши сообщения остаются зашифрованными. Всё равно отключить?</string>
     <string name="preferences__request_keyboard_to_disable_personalized_learning">Запросить клавиатуру, чтобы отключить персонализированное обучение.</string>
     <string name="preferences__light_theme">Light</string>
@@ -714,7 +722,13 @@
     <string name="view_seed_reminder_subtitle_3">Обязательно храните свою фразу восстановления в безопасном месте</string>
 
     <string name="activity_path_title">Хопы</string>
+    <string name="activity_path_title_direct">Хопы (Прямое сообщение)</string>
+    <string name="activity_path_title_one_hop">Хопы (1 хоп)</string>
+    <string name="activity_path_title_three_hops">Хопы (3 хопа)</string>
     <string name="activity_path_explanation">BChat скрывает ваш IP-адрес, маршрутизируя сообщения через несколько мастернодов в децентрализованной сети Beldex.  В данный момент ваше соединение проходит через следующие мастерноды</string>
+    <string name="activity_path_explanation_direct">Без хопов сообщения отправляются напрямую получателю, не проходя через мастерноды Beldex.</string>
+    <string name="activity_path_explanation_one_hop">Сообщения маршрутизируются через один промежуточный мастернод Beldex, прежде чем достичь получателя.</string>
+    <string name="activity_path_explanation_three_hops">Сообщения маршрутизируются через три промежуточных мастернода Beldex, прежде чем достичь получателя.</string>
     <string name="activity_path_guard_node_row_title">Входной узел</string>
     <string name="activity_path_service_node_row_title">Мастернода</string>
     <string name="activity_path_destination_row_title">Назначение</string>

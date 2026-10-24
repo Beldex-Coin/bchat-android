@@ -532,6 +532,14 @@
     <string name="preferences__if_typing_indicators_are_disabled_you_wont_be_able_to_see_typing_indicators">Wenn die Schreibanzeige deaktiviert ist, kannst du nicht sehen, wenn andere tippen.</string>
     <string name="preferences__onion_routing">Onion-Routing</string>
     <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">Wenn aktiviert, wird Onion-Routing verwendet, um Ihre Nachrichten zu übermitteln</string>
+    <string name="preferences_onion_routing_hops_summary">Wählen Sie, wie viele Hops Ihre Nachrichten durchlaufen. „Aus" verbindet direkt, 1 Hop nutzt einen Masterknoten, 3 Hops nutzen drei Masterknoten.</string>
+    <string name="preferences__onion_routing_off">Keine Hops</string>
+    <string name="preferences__onion_routing_1_hop">1 Hop (Standard)</string>
+    <string name="preferences__onion_routing_3_hops">3 Hops</string>
+    <string name="preferences__onion_routing_settings_description_no_hops">Mit dieser Option werden die Nachrichten direkt an den Swarm des Empfängers gesendet, ohne über Zwischenknoten geleitet zu werden.</string>
+    <string name="preferences__onion_routing_settings_description_one_hop">Mit dieser Option werden die Nachrichten über einen einzelnen Zwischenknoten geleitet.</string>
+    <string name="preferences__onion_routing_settings_description_three_hops">Mit dieser Option werden die Nachrichten über drei Zwischenknoten geleitet.</string>
+    <string name="preferences__onion_routing_settings_subtitle">Wenn aktiviert, wird das Onion-Routing verwendet, um Ihre Nachrichten zu übermitteln</string>
     <string name="onion_routing_turn_off_confirmation">Wenn du das Onion-Routing deaktivierst, wird deine IP-Adresse für den Masternode sichtbar und Netzwerkbeobachter können erkennen, dass du BChat verwendest. Deine Nachrichten bleiben in jedem Fall verschlüsselt. Trotzdem deaktivieren?</string>
     <string name="preferences__request_keyboard_to_disable_personalized_learning">Tastatur anweisen, personalisiertes Lernen zu deaktivieren.</string>
     <string name="preferences__light_theme">Light</string>
@@ -690,7 +698,13 @@
     <string name="view_seed_reminder_subtitle_3">Stellen Sie sicher, dass Sie Ihre Wiederherstellungsphrase an einem sicheren Ort aufbewahren</string>
 
     <string name="activity_path_title">Hopfen</string>
+    <string name="activity_path_title_direct">Hops (Direktnachricht)</string>
+    <string name="activity_path_title_one_hop">Hops (1 Hop)</string>
+    <string name="activity_path_title_three_hops">Hops (3 Hops)</string>
     <string name="activity_path_explanation">BChat verschleiert deine IP-Adresse, indem Nachrichten über mehrere Masternodes im dezentralen Beldex-Netzwerk weitergeleitet werden. Deine Verbindung wird derzeit über die folgenden Masternodes geroutet.</string>
+    <string name="activity_path_explanation_direct">Ohne Hops werden Ihre Nachrichten direkt an das Ziel gesendet, ohne sie über Beldex-Masterknoten zu leiten.</string>
+    <string name="activity_path_explanation_one_hop">Ihre Nachrichten werden vor dem Erreichen des Ziels über einen zwischengeschalteten Beldex-Masterknoten geleitet.</string>
+    <string name="activity_path_explanation_three_hops">Ihre Nachrichten werden vor dem Erreichen des Ziels über drei zwischengeschaltete Beldex-Masterknoten geleitet.</string>
     <string name="activity_path_guard_node_row_title">Einstiegsknoten</string>
     <string name="activity_path_service_node_row_title">Masterknoten</string>
     <string name="activity_path_destination_row_title">Ziel</string>

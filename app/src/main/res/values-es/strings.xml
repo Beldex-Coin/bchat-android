@@ -534,6 +534,14 @@
     <string name="preferences__if_typing_indicators_are_disabled_you_wont_be_able_to_see_typing_indicators">Si los indicadores de escritura están desactivados, no podrás ver los indicadores de escritura de otros.</string>
     <string name="preferences__onion_routing">Enrutamiento Onion</string>
     <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">Si está habilitado, se utilizará el enrutamiento Onion para entregar tus mensajes</string>
+    <string name="preferences_onion_routing_hops_summary">Seleccione cuántos saltos atraviesan sus mensajes. Desactivado conecta directamente, 1 salto usa un nodo maestro, 3 saltos usan tres nodos maestros.</string>
+    <string name="preferences__onion_routing_off">Sin saltos</string>
+    <string name="preferences__onion_routing_1_hop">1 salto (predeterminado)</string>
+    <string name="preferences__onion_routing_3_hops">3 saltos</string>
+    <string name="preferences__onion_routing_settings_description_no_hops">Con esta opción seleccionada, los mensajes se enviarán directamente al swarm del destinatario sin pasar por nodos intermediarios.</string>
+    <string name="preferences__onion_routing_settings_description_one_hop">Con esta opción seleccionada, los mensajes se enrutarán a través de un nodo intermediario.</string>
+    <string name="preferences__onion_routing_settings_description_three_hops">Con esta opción seleccionada, los mensajes se enrutarán a través de tres nodos intermediarios.</string>
+    <string name="preferences__onion_routing_settings_subtitle">Si está habilitado, se utilizará el enrutamiento Onion para entregar tus mensajes</string>
     <string name="onion_routing_turn_off_confirmation">Desactivar el enrutamiento Onion expone tu dirección IP al masternode y permite que los observadores de la red sepan que estás usando BChat. Tus mensajes permanecen cifrados en cualquier caso. ¿Desactivar de todos modos?</string>
     <string name="preferences__request_keyboard_to_disable_personalized_learning">Solicitar al teclado desactivar el aprendizaje personalizado.</string>
     <string name="preferences__light_theme">Light</string>
@@ -692,7 +700,13 @@
     <string name="view_seed_reminder_subtitle_3">Asegúrate de guardar tu frase de recuperación en un lugar seguro.</string>
 
     <string name="activity_path_title">Saltos</string>
+    <string name="activity_path_title_direct">Saltos (mensaje directo)</string>
+    <string name="activity_path_title_one_hop">Saltos (1 salto)</string>
+    <string name="activity_path_title_three_hops">Saltos (3 saltos)</string>
     <string name="activity_path_explanation">BChat oculta tu dirección IP enrutando los mensajes a través de varios masternodos en la red descentralizada de Beldex. Tu conexión actualmente se enruta a través de los siguientes masternodos</string>
+    <string name="activity_path_explanation_direct">Sin saltos, los mensajes se envían directamente al destino sin pasar por los nodos maestros de Beldex.</string>
+    <string name="activity_path_explanation_one_hop">Los mensajes se enrutan a través de un nodo maestro intermediario de Beldex antes de llegar al destino.</string>
+    <string name="activity_path_explanation_three_hops">Los mensajes se enrutan a través de tres nodos maestros intermediarios de Beldex antes de llegar al destino.</string>
     <string name="activity_path_guard_node_row_title">Nodo de Entrada</string>
     <string name="activity_path_service_node_row_title">Nodo Maestro</string>
     <string name="activity_path_destination_row_title">Destino</string>

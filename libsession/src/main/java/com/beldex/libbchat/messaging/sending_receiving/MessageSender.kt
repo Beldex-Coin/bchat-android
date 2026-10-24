@@ -178,7 +178,8 @@ object MessageSender {
             if (destination is Destination.Contact && message is VisibleMessage && !isSelfSend) {
                 MnodeModule.shared.broadcaster.broadcast("sendingMessage", message.sentTimestamp!!)
             }
-            namespaces.map { namespace -> MnodeAPI.sendMessage(mnodeMessage, requiresAuth = false, namespace = namespace) }.let { promises ->
+            val isCallMessage = message is CallMessage
+            namespaces.map { namespace -> MnodeAPI.sendMessage(mnodeMessage, requiresAuth = false, namespace = namespace, forceDirect = isCallMessage) }.let { promises ->
                 var isSuccess = false
                 val promiseCount = promises.size
                 var errorCount =  AtomicInteger(0)

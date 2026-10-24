@@ -80,12 +80,11 @@
             app:layout="@layout/preference_layout"
             app:icon="@drawable/ic_video_call_setting"/>
 
-        <io.beldex.bchat.components.SwitchPreferenceCompat
-            android:defaultValue="false"
+        <io.beldex.bchat.preferences.OnionRoutingPreference
             android:key="pref_onion_routing"
             app:iconSpaceReserved="false"
             android:title="@string/preferences__onion_routing"
-            android:summary="@string/preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages"
+            android:summary="@string/preferences__onion_routing_settings_subtitle"
             app:layout="@layout/preference_layout"
             app:icon="@drawable/ic_onion_routing" />
     </PreferenceCategory>

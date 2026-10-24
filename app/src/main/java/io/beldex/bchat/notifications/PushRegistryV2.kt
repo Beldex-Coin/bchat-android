@@ -92,12 +92,22 @@ class PushRegistryV2 @Inject constructor(private val pushReceiver: PushReceiver)
         val url = "${server.url}/$path"
         val body = requestParameters.toRequestBody("application/json".toMediaType())
         val request = Request.Builder().url(url).post(body).build()
-        return OnionRequestAPI.sendOnionRequest(
+        val requestPromise = OnionRequestAPI.sendOnionRequest(
             request,
             server.url,
             server.publicKey,
-            Version.V4
-        ).map { response ->
+            Version.V4,
+            // Push registration must ALWAYS be onion-routed at 3 hops, no matter which hop count
+            // the user selected in Settings (0 = No Hops, 1 = one hop, 3 = three hops). For server
+            // traffic below 3 hops isServerOnionRoutingEnabled is false, which used to send push
+            // directly (sendDirectRequest) - and that direct path is broken in production: the v2
+            // push server never answers a direct request with HTTP 200 (and HTTP.execute only
+            // accepts 200), so registration failed and the FCM token was never subscribed. Forcing
+            // 3 hops here builds a dedicated 3-hop path for push even when the user is on 0/1,
+            // without touching their chat routing.
+            forcedPathSize = 3
+        )
+        return requestPromise.map { response ->
             response.body!!.inputStream()
                 .let { Json.decodeFromStream<T>(it) }
                 .also { if (it.isFailure()) throw Exception("error: ${it.message}.") }

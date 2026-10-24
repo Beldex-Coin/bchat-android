@@ -11,7 +11,7 @@ class GroupAvatarDownloadJob(val room: String, val server: String) : Job {
     override var delegate: JobDelegate? = null
     override var id: String? = null
     override var failureCount: Int = 0
-    override val maxFailureCount: Int = 10
+    override val maxFailureCount: Int = 3
 
     override fun execute() {
         val storage = MessagingModuleConfiguration.shared.storage

@@ -71,12 +71,13 @@ object OpenGroupManager {
         // Check it it's added already
         val existingOpenGroup = threadDB.getOpenGroupChat(threadID)
         Log.d("Beldex", "Social group manager fun existingOpenGroup $existingOpenGroup")
-        if (existingOpenGroup != null) {
-            return
-        }
         // Clear any existing data if needed
         storage.removeLastDeletionServerID(room, server)
         storage.removeLastMessageServerID(room, server)
+        if (existingOpenGroup != null) {
+            Log.d("Beldex", "Social group $openGroupID already exists; reset last message server id to restore history")
+            return
+        }
         // Store the public key
         storage.setOpenGroupPublicKey(server, publicKey)
         // Get an auth token

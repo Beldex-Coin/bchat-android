@@ -397,6 +397,7 @@ class RegisterActivity : BaseComponentActivity() {
         TextSecurePreferences.setRestorationTime(this, 0)
         TextSecurePreferences.setHasViewedSeed(this, false)
         val intent = Intent(Intent.ACTION_VIEW, "onboarding://manage_pin?finish=true&action=${PinCodeAction.CreatePinCode.action}".toUri())
+        intent.setPackage(packageName)
         pinCodeLauncher.launch(intent)
     }
 

@@ -581,7 +581,8 @@ public class DefaultMessageNotifier implements MessageNotifier {
         }
 
         boolean isApproved = threadRecipients != null && threadRecipients.isApproved();
-        if (isApproved && (body == null || body.toString().trim().isEmpty())) {
+        boolean isMediaRecord = record.isMms() && !((MmsMessageRecord) record).getSlideDeck().getSlides().isEmpty();
+        if (isApproved && !isMediaRecord && (body == null || body.toString().trim().isEmpty())) {
           Log.d(TAG, "Skipping empty body notification for approved thread: " + threadId);
           continue;
         }

@@ -7,10 +7,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import androidx.preference.Preference
+import android.util.Log
+import com.beldex.libbchat.mnode.OnionRequestAPI
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getOnionRequestPathCount
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getScreenLockTimeout
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.isPasswordDisabled
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setScreenLockEnabled
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setOnionRequestPathCount
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setOnionRoutingEnabled
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.BuildConfig
@@ -39,8 +43,19 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
         findPreference<Preference>(TextSecurePreferences.LINK_PREVIEWS)!!.onPreferenceChangeListener =
             LinkPreviewToggleListener()
 
-        findPreference<Preference>(TextSecurePreferences.USE_ONION_ROUTING)!!.onPreferenceChangeListener =
-            OnionRoutingToggleListener()
+        findPreference<Preference>(TextSecurePreferences.USE_ONION_ROUTING)!!.onPreferenceClickListener =
+            OnionRoutingClickListener()
+
+        childFragmentManager.setFragmentResultListener(
+            OnionRoutingHopSelectionDialogFragment.REQUEST_KEY,
+            this
+        ) { _, resultBundle ->
+            applySelectedHopCount(
+                resultBundle.getInt(OnionRoutingHopSelectionDialogFragment.RESULT_HOP_COUNT)
+            )
+        }
+
+        updateOnionRoutingSummary()
 
         //New Line
         callToggleListener = CallToggleListener(this) { setCall(it) }
@@ -123,7 +138,16 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
         if (isPasswordDisabled(requireContext())) {
             initializeScreenLockTimeoutSummary()
         }
+        updateOnionRoutingSummary()
         callToggleListener?.reattachCallbackIfNeeded()
+    }
+
+    private fun updateOnionRoutingSummary() {
+        // The summary line is a fixed description (see preferences_app_protection.xml); the
+        // selected hop option ("Off" / "1 hop" / "3 hops") is shown on the right hand side.
+        val selectedHopCount = getOnionRequestPathCount(requireContext())
+        findPreference<OnionRoutingPreference>(TextSecurePreferences.USE_ONION_ROUTING)
+            ?.setHopCount(selectedHopCount)
     }
 
     private fun initializeScreenLockTimeoutSummary() {
@@ -208,26 +232,37 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
         }
     }
 
-    private inner class OnionRoutingToggleListener : Preference.OnPreferenceChangeListener {
-        override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
-            val turningOff = !(newValue as Boolean)
-            if (!turningOff) {
-                return true
-            }
-
-            OnionRoutingConfirmDialogFragment(
-                onConfirm = {
-                    setOnionRoutingEnabled(requireContext(), false)
-                    @Suppress("UNCHECKED_CAST")
-                    (preference as? SwitchPreferenceCompat)?.isChecked = false
-                },
-                onCancel = {
-                    @Suppress("UNCHECKED_CAST")
-                    (preference as? SwitchPreferenceCompat)?.isChecked = true
-                }
-            ).show(childFragmentManager, "OnionRoutingConfirm")
-
-            return false
+    private inner class OnionRoutingClickListener : Preference.OnPreferenceClickListener {
+        override fun onPreferenceClick(preference: Preference): Boolean {
+            // Opens the hop-selection popup (0 hop / 1 hop / 3 hops) instead of using a toggle
+            OnionRoutingHopSelectionDialogFragment
+                .newInstance(getOnionRequestPathCount(requireContext()))
+                .show(childFragmentManager, OnionRoutingHopSelectionDialogFragment.TAG)
+            return true
         }
+    }
+
+    /**
+     * Persists and applies the hop count the user confirmed in the hop-selection popup. The
+     * result arrives through the fragment result API (registered in onCreate) rather than a
+     * callback handed to the dialog, so it still arrives when the popup (or this screen) is
+     * recreated by a configuration change.
+     */
+    private fun applySelectedHopCount(selectedHopCount: Int) {
+        Log.d("ONION_HOP", "User selected onion routing with $selectedHopCount hop(s)")
+        // 1) Persist the user-selected hop count (0 = off, 1 = one hop, 3 = three hops)
+        setOnionRequestPathCount(requireContext(), selectedHopCount)
+        if (selectedHopCount == 0) {
+            // 0-hop: route directly to the mnode (no onion layers)
+            setOnionRoutingEnabled(requireContext(), false)
+        } else {
+            // 1 or 3 hops: enable onion routing and apply immediately; this sets
+            // pathSize, wipes stale cached paths/guard mnodes, and proactively
+            // rebuilds so the status light and hops screen refresh right away.
+            setOnionRoutingEnabled(requireContext(), true)
+            OnionRequestAPI.setOnionRequestPathCount(selectedHopCount)
+            OnionRequestAPI.rebuildPathsIfNeeded()
+        }
+        updateOnionRoutingSummary()
     }
 }

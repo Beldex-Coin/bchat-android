@@ -162,7 +162,6 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
     }
 
     override fun setOnionRequestPaths(newValue: List<List<Mnode>>) {
-        // FIXME: This approach assumes either 1 or 2 paths of length 3 each. We should do better than this.
         val database = databaseHelper.writableDatabase
         fun set(indexPath: String, mnode: Mnode) {
             var mnodeAsString = "${mnode.address}-${mnode.port}"
@@ -175,53 +174,48 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
         }
         Log.d("Beldex", "Persisting onion request paths to database.")
         clearOnionRequestPaths()
-        if (newValue.count() < 1) { return }
-        val path0 = newValue[0]
-        if (path0.count() != 3) { return }
-        set("0-0", path0[0]); set("0-1", path0[1]); set("0-2", path0[2])
-        if (newValue.count() < 2) { return }
-        val path1 = newValue[1]
-        if (path1.count() != 3) { return }
-        set("1-0", path1[0]); set("1-1", path1[1]); set("1-2", path1[2])
+        // Persist any number of paths of any length (1-hop or 3-hop). The index encodes the
+        // path and mnode position as "<pathIndex>-<mnodeIndex>", which keeps the storage format
+        // backwards compatible with the old fixed "<0/1>-<0..2>" keys used for 3-hop paths.
+        newValue.forEachIndexed { pathIndex, path ->
+            path.forEachIndexed { mnodeIndex, mnode ->
+                set("$pathIndex-$mnodeIndex", mnode)
+            }
+        }
     }
 
     override fun getOnionRequestPaths(): List<List<Mnode>> {
         val database = databaseHelper.readableDatabase
-        fun get(indexPath: String): Mnode? {
-            return database.get(onionRequestPathTable, "${Companion.indexPath} = ?", wrap(indexPath)) { cursor ->
-                val mnodeAsString = cursor.getString(cursor.getColumnIndexOrThrow(mnode))
-                val components = mnodeAsString.split("-")
-                val address = components[0]
-                val port = components.getOrNull(1)?.toIntOrNull()
-                val ed25519Key = components.getOrNull(2)
-                val x25519Key = components.getOrNull(3)
-                if (port != null && ed25519Key != null && x25519Key != null) {
-                    Mnode(address, port, Mnode.KeySet(ed25519Key, x25519Key))
-                } else {
-                    null
-                }
+        val rows = database.getAll(onionRequestPathTable, null, null, { cursor ->
+            Pair(
+                cursor.getString(Companion.indexPath),
+                cursor.getString(Companion.mnode)
+            )
+        })
+        // Rebuild each path by grouping rows on their "<pathIndex>-<mnodeIndex>" key, keeping
+        // paths and the mnodes inside them sorted exactly as they were stored. Works for both
+        // 1-hop and 3-hop configurations.
+        val pathsByIndex = sortedMapOf<Int, MutableMap<Int, Mnode>>()
+        for ((indexPath, mnodeAsString) in rows) {
+            val pathIndex = indexPath.substringBefore('-').toIntOrNull() ?: continue
+            val mnodeIndex = indexPath.substringAfter('-').toIntOrNull() ?: continue
+            val components = mnodeAsString.split("-")
+            val address = components[0]
+            val port = components.getOrNull(1)?.toIntOrNull()
+            val ed25519Key = components.getOrNull(2)
+            val x25519Key = components.getOrNull(3)
+            if (port != null && ed25519Key != null && x25519Key != null) {
+                val mnode = Mnode(address, port, Mnode.KeySet(ed25519Key, x25519Key))
+                pathsByIndex.getOrPut(pathIndex) { sortedMapOf() }[mnodeIndex] = mnode
             }
         }
-        val result = mutableListOf<List<Mnode>>()
-        val path0Mnode0 = get("0-0"); val path0Mnode1 = get("0-1"); val path0Mnode2 = get("0-2")
-        if (path0Mnode0 != null && path0Mnode1 != null && path0Mnode2 != null) {
-            result.add(listOf( path0Mnode0, path0Mnode1, path0Mnode2 ))
-        }
-        val path1Mnode0 = get("1-0"); val path1Mnode1 = get("1-1"); val path1Mnode2 = get("1-2")
-        if (path1Mnode0 != null && path1Mnode1 != null && path1Mnode2 != null) {
-            result.add(listOf( path1Mnode0, path1Mnode1, path1Mnode2 ))
-        }
-        return result
+        return pathsByIndex.values.map { indexedMnodes -> indexedMnodes.values.toList() }
     }
 
     override fun clearOnionRequestPaths() {
         val database = databaseHelper.writableDatabase
-        fun delete(indexPath: String) {
-            database.delete(onionRequestPathTable, "${Companion.indexPath} = ?", wrap(indexPath))
-        }
-        delete("0-0"); delete("0-1")
-        delete("0-2"); delete("1-0")
-        delete("1-1"); delete("1-2")
+        // Delete every cached path row regardless of path length or index format
+        database.delete(onionRequestPathTable, null, null)
     }
 
     override fun getSwarm(publicKey: String): Set<Mnode>? {

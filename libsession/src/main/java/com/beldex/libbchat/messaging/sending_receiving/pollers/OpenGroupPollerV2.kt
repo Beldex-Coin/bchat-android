@@ -10,8 +10,11 @@ import com.beldex.libbchat.messaging.sending_receiving.MessageReceiver
 import com.beldex.libbchat.messaging.sending_receiving.handleOpenGroupReactions
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libsignal.protos.SignalServiceProtos
+import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.successBackground
 import nl.komponents.kovenant.functional.map
+import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
@@ -41,7 +44,14 @@ class OpenGroupPollerV2(private val server: String, private val executorService:
 
     fun poll(isBackgroundPoll: Boolean = false): Promise<Unit, Exception> {
         val storage = MessagingModuleConfiguration.shared.storage
-        val rooms = storage.getAllV2OpenGroups().values.filter { it.server == server }.map { it.room }
+        val allOpenGroups = storage.getAllV2OpenGroups().values
+        val pollerOrigin = serverOrigin(server)
+        val rooms = allOpenGroups
+            .filter { serverOrigin(it.server) == pollerOrigin }
+            .map { it.room }
+        if (rooms.isEmpty() && allOpenGroups.isNotEmpty()) {
+            Log.d("Beldex", "Open group poller for '$server' matched no rooms. Known servers: ${allOpenGroups.map { it.server }.distinct()}")
+        }
         rooms.forEach { downloadGroupAvatarIfNeeded(it) }
         return OpenGroupAPIV2.compactPoll(rooms, server).successBackground { responses ->
             responses.forEach { (room, response) ->
@@ -115,6 +125,26 @@ class OpenGroupPollerV2(private val server: String, private val executorService:
         val latestMax = deletions.map { it.id }.maxOrNull() ?: 0L
         if (latestMax > currentMax && latestMax != 0L) {
             storage.setLastDeletionServerID(room, server, latestMax)
+        }
+    }
+
+    private fun serverOrigin(value: String): String {
+        val trimmed = value.trim().removeSuffix("/")
+        return try {
+            val parsed = trimmed.toHttpUrlOrNull() ?: return trimmed
+            HttpUrl.Builder()
+                .scheme(parsed.scheme)
+                .host(parsed.host)
+                .apply {
+                    if (parsed.port != HttpUrl.defaultPort(parsed.scheme)) {
+                        this.port(parsed.port)
+                    }
+                }
+                .build()
+                .toString()
+                .removeSuffix("/")
+        } catch (e: Exception) {
+            trimmed
         }
     }
 

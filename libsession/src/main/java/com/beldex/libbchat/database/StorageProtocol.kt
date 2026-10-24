@@ -82,6 +82,8 @@ interface StorageProtocol {
     fun setLastMessageServerID(room: String, server: String, newValue: Long)
     fun removeLastMessageServerID(room: String, server: String)
 
+    fun hasMessagesInThread(threadId: Long): Boolean
+
     // Last Deletion Server ID
     fun getLastDeletionServerID(room: String, server: String): Long?
     fun setLastDeletionServerID(room: String, server: String, newValue: Long)

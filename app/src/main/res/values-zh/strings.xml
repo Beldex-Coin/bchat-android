@@ -521,6 +521,14 @@
     <string name="preferences__if_typing_indicators_are_disabled_you_wont_be_able_to_see_typing_indicators">如果已禁用输入指示器，您将无法看到其他用户的输入指示器。</string>
     <string name="preferences__onion_routing">洋葱路由</string>
     <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">启用后，将使用洋葱路由传递您的消息</string>
+    <string name="preferences_onion_routing_hops_summary">选择您的消息经过的跳数。关闭时直接连接，1 跳使用一个主节点，3 跳使用三个主节点。</string>
+    <string name="preferences__onion_routing_off">无跳数</string>
+    <string name="preferences__onion_routing_1_hop">1 跳（默认）</string>
+    <string name="preferences__onion_routing_3_hops">3 跳</string>
+    <string name="preferences__onion_routing_settings_description_no_hops">选择此选项后，消息将直接发送到收件人的节点组，而不经过中间节点路由。</string>
+    <string name="preferences__onion_routing_settings_description_one_hop">选择此选项后，消息将通过一个中间节点路由。</string>
+    <string name="preferences__onion_routing_settings_description_three_hops">选择此选项后，消息将通过三个中间节点路由。</string>
+    <string name="preferences__onion_routing_settings_subtitle">启用后，将使用洋葱路由传递您的消息</string>
     <string name="onion_routing_turn_off_confirmation">关闭 Onion 路由会向主节点暴露您的 IP 地址，并让网络观察者知道您正在使用 BChat。无论是否使用 Onion 路由，您的消息都会保持加密。仍要关闭吗？</string>
     <string name="preferences__request_keyboard_to_disable_personalized_learning">请求键盘以禁用个性化学习。</string>
     <string name="preferences__light_theme">Light</string>
@@ -679,7 +687,13 @@
     <string name="view_seed_reminder_subtitle_3">请务必将恢复短语保存在安全的地方</string>
 
     <string name="activity_path_title">节点跳数</string>
+    <string name="activity_path_title_direct">跳数（直接消息）</string>
+    <string name="activity_path_title_one_hop">跳数（1 跳）</string>
+    <string name="activity_path_title_three_hops">跳数（3 跳）</string>
     <string name="activity_path_explanation">BChat 通过在 Beldex 去中心化网络中的多个主节点之间路由消息来隐藏您的 IP 地址。您当前的连接通过以下主节点进行路由。</string>
+    <string name="activity_path_explanation_direct">无跳数模式将您的消息直接发送到目的地，无需经过 Beldex 主节点路由。</string>
+    <string name="activity_path_explanation_one_hop">您的消息在到达目的地之前，会通过一个 Beldex 中间主节点进行路由。</string>
+    <string name="activity_path_explanation_three_hops">您的消息在到达目的地之前，会通过三个 Beldex 中间主节点进行路由。</string>
     <string name="activity_path_guard_node_row_title">入口节点</string>
     <string name="activity_path_service_node_row_title">主节点</string>
     <string name="activity_path_destination_row_title">目标</string>

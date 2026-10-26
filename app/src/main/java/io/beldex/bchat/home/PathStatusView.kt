@@ -16,7 +16,9 @@ import android.view.View
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import io.beldex.bchat.R
+import io.beldex.bchat.CheckOnline
 import com.beldex.libbchat.mnode.OnionRequestAPI
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.util.getColorWithID
 import io.beldex.bchat.util.toPx
 
@@ -53,6 +55,7 @@ class PathStatusView : View {
     }
 
     private fun initialize() {
+        isNetworkAvailable = CheckOnline.isOnline(context)
         update()
         setWillNotDraw(false)
     }
@@ -101,21 +104,27 @@ class PathStatusView : View {
         networkCallback = object : ConnectivityManager.NetworkCallback() {
 
             override fun onAvailable(network: Network) {
-                post {
-                    isNetworkAvailable = true
-                    update()
-                }
+                post { refreshNetworkAvailability() }
+            }
+
+            override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
+                post { refreshNetworkAvailability() }
             }
 
             override fun onLost(network: Network) {
-                post {
-                    isNetworkAvailable = false
-                    update()
-                }
+                // A lost Wi-Fi/mobile network does not mean connectivity is gone if another
+                // validated network has already become active.
+                post { refreshNetworkAvailability() }
             }
         }
 
         connectivityManager.registerNetworkCallback(request, networkCallback!!)
+        refreshNetworkAvailability()
+    }
+
+    private fun refreshNetworkAvailability() {
+        isNetworkAvailable = CheckOnline.isOnline(context)
+        update()
     }
 
     private fun unregisterNetworkCallback() {
@@ -132,6 +141,8 @@ class PathStatusView : View {
 
     private fun update() {
 
+        val isDirectMode = TextSecurePreferences.getOnionRequestPathCount(context) == 0 ||
+                !OnionRequestAPI.isOnionRoutingEnabled
         val isConnectedToHops = OnionRequestAPI.selectedHopPaths.isNotEmpty()
 
         if (!isNetworkAvailable) {
@@ -139,7 +150,7 @@ class PathStatusView : View {
             mainColor = ContextCompat.getColor(context, R.color.clear_red_color)
             bchatShadowColor = ContextCompat.getColor(context, R.color.clear_red_color)
 
-        } else if (isConnectedToHops) {
+        } else if (isDirectMode || isConnectedToHops) {
             setBackgroundResource(R.drawable.accent_dot)
             mainColor = ContextCompat.getColor(context, R.color.button_green)
             bchatShadowColor = ContextCompat.getColor(context, R.color.button_green)

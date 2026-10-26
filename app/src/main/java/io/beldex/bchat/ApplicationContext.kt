@@ -25,7 +25,6 @@ import com.beldex.libbchat.utilities.Address.Companion.fromSerialized
 import com.beldex.libbchat.utilities.Device
 import com.beldex.libbchat.utilities.ProfilePictureUtilities.upload
 import com.beldex.libbchat.utilities.SSKEnvironment.Companion.configure
-import com.beldex.libbchat.utilities.OnionRoutingPreferenceUtils
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.clearAll
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getAppSelectedLanguage
@@ -184,7 +183,6 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
         init(this)
         configure(this)
         super<Application>.onCreate()
-        OnionRoutingPreferenceUtils.migrateToForcedThreeHopIfNeeded(this)
         messagingModuleConfiguration=MessagingModuleConfiguration(
             this,
             storage,

@@ -535,8 +535,8 @@
     <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">Se ativado, o roteamento Onion será usado para entregar suas mensagens</string>
     <string name="preferences_onion_routing_hops_summary">Selecione quantos hops suas mensagens devem percorrer. Desligado conecta diretamente, 1 hop usa um master node, 3 hops usam três master nodes.</string>
     <string name="preferences__onion_routing_off">Sem Hops</string>
-    <string name="preferences__onion_routing_1_hop">1 Hop</string>
-    <string name="preferences__onion_routing_3_hops">3 Hops (Padrão)</string>
+    <string name="preferences__onion_routing_1_hop">1 Hop (Padrão)</string>
+    <string name="preferences__onion_routing_3_hops">3 Hops</string>
     <string name="preferences__onion_routing_settings_description_no_hops">Com esta opção selecionada, as mensagens serão enviadas diretamente ao swarm do destinatário, sem passarem por nós intermediários.</string>
     <string name="preferences__onion_routing_settings_description_one_hop">Com esta opção selecionada, as mensagens serão roteadas por um nó intermediário.</string>
     <string name="preferences__onion_routing_settings_description_three_hops">Com esta opção selecionada, as mensagens serão roteadas por três nós intermediários.</string>

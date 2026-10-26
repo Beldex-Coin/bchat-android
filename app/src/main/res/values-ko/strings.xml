@@ -522,8 +522,8 @@
     <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">활성화하면 어니언 라우팅을 사용하여 메시지가 전달됩니다</string>
     <string name="preferences_onion_routing_hops_summary">메시지가 거치는 홉 수를 선택하세요. 꺼짐은 직접 연결, 1홉은 마스터 노드 1개, 3홉은 마스터 노드 3개를 사용합니다.</string>
     <string name="preferences__onion_routing_off">홉 없음</string>
-    <string name="preferences__onion_routing_1_hop">1홉</string>
-    <string name="preferences__onion_routing_3_hops">3홉 (기본값)</string>
+    <string name="preferences__onion_routing_1_hop">1홉 (기본값)</string>
+    <string name="preferences__onion_routing_3_hops">3홉</string>
     <string name="preferences__onion_routing_settings_description_no_hops">이 옵션을 선택하면 메시지가 중간 노드를 거치지 않고 수신자의 스웜에 직접 전송됩니다.</string>
     <string name="preferences__onion_routing_settings_description_one_hop">이 옵션을 선택하면 메시지가 하나의 중간 노드를 통해 라우팅됩니다.</string>
     <string name="preferences__onion_routing_settings_description_three_hops">이 옵션을 선택하면 메시지가 세 개의 중간 노드를 통해 라우팅됩니다.</string>

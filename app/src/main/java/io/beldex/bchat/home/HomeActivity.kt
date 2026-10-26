@@ -1582,10 +1582,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     private fun handlePathsBuiltEvent() { update() }
 
     private fun update() {
-        OnionRequestAPI.setOnionRequestPathCount(TextSecurePreferences.getOnionRequestPathCount(this))
         val hasPaths = OnionRequestAPI.selectedHopPaths.isNotEmpty()
         val isOnline = CheckOnline.isOnline(this)
-        val shouldShowWarning = !hasPaths && !isOnline
+        val isDirectMode = TextSecurePreferences.getOnionRequestPathCount(this) == 0 ||
+                !OnionRequestAPI.isOnionRoutingEnabled
+        val shouldShowWarning = !isDirectMode && !hasPaths && !isOnline
         val newVisibility =
             if (shouldShowWarning) View.VISIBLE else View.GONE
         if (binding.hopsWarningLayout.visibility != newVisibility) {

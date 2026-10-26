@@ -522,8 +522,8 @@
     <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">有効にすると、オニオンルーティングを使用してメッセージが配信されます</string>
     <string name="preferences_onion_routing_hops_summary">メッセージが通過するホップ数を選択します。オフは直接接続、1ホップはマスターノード1つ、3ホップはマスターノード3つを使用します。</string>
     <string name="preferences__onion_routing_off">ホップなし</string>
-    <string name="preferences__onion_routing_1_hop">1ホップ</string>
-    <string name="preferences__onion_routing_3_hops">3ホップ（デフォルト）</string>
+    <string name="preferences__onion_routing_1_hop">1ホップ（デフォルト）</string>
+    <string name="preferences__onion_routing_3_hops">3ホップ</string>
     <string name="preferences__onion_routing_settings_description_no_hops">このオプションを選択すると、メッセージは中間ノードを経由せず、受信者のスウォームに直接送信されます。</string>
     <string name="preferences__onion_routing_settings_description_one_hop">このオプションを選択すると、メッセージは1つの中間ノードを経由してルーティングされます。</string>
     <string name="preferences__onion_routing_settings_description_three_hops">このオプションを選択すると、メッセージは3つの中間ノードを経由してルーティングされます。</string>

@@ -534,8 +534,8 @@
     <string name="preferences__if_enabled_onion_routing_will_be_used_to_deliver_your_messages">Etkinleştirildiğinde, mesajlarınızı iletmek için Onion yönlendirme kullanılır</string>
     <string name="preferences_onion_routing_hops_summary">Mesajlarınızın kaç hop üzerinden geçeceğini seçin. Kapalı: doğrudan bağlantı, 1 hop bir ana düğüm, 3 hop üç ana düğüm kullanır.</string>
     <string name="preferences__onion_routing_off">Hops Yok</string>
-    <string name="preferences__onion_routing_1_hop">1 Hop</string>
-    <string name="preferences__onion_routing_3_hops">3 Hops (Varsayılan)</string>
+    <string name="preferences__onion_routing_1_hop">1 Hop (Varsayılan)</string>
+    <string name="preferences__onion_routing_3_hops">3 Hops</string>
     <string name="preferences__onion_routing_settings_description_no_hops">Bu seçenek seçildiğinde, mesajlar aracı düğümlerden geçirilmeden doğrudan alıcının swarm\'una gönderilir.</string>
     <string name="preferences__onion_routing_settings_description_one_hop">Bu seçenek seçildiğinde, mesajlar tek bir aracı düğüm üzerinden yönlendirilir.</string>
     <string name="preferences__onion_routing_settings_description_three_hops">Bu seçenek seçildiğinde, mesajlar üç aracı düğüm üzerinden yönlendirilir.</string>

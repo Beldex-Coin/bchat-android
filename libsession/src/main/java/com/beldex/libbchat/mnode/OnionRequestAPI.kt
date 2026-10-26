@@ -1,7 +1,5 @@
 package com.beldex.libbchat.mnode
 
-import android.content.Context
-import androidx.preference.PreferenceManager
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.all
 import nl.komponents.kovenant.deferred
@@ -11,7 +9,6 @@ import okhttp3.Request
 import com.beldex.libbchat.messaging.file_server.FileServerAPIV2
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.beldex.libbchat.utilities.OnionRoutingPreferenceUtils
 import com.beldex.libbchat.utilities.AESGCM
 import com.beldex.libsignal.utilities.*
 import com.beldex.libsignal.utilities.Mnode
@@ -38,41 +35,7 @@ object OnionRequestAPI {
         get() = MnodeModule.shared.broadcaster
     private val pathFailureCount = mutableMapOf<Path, Int>()
     private val mnodeFailureCount = mutableMapOf<Mnode, Int>()
-    /** The hop count the cache was last validated against; persisted so it survives process restarts. */
-    private fun appliedPathSize(context: Context): Int = PreferenceManager.getDefaultSharedPreferences(context)
-        .getInt(OnionRoutingPreferenceUtils.KEY_ONION_ROUTING_APPLIED_PATH_SIZE, -1)
-
     var guardMnodes = setOf<Mnode>()
-
-    /**
-     * Sets the onion-routing hop count to use for all newly built paths (1 = one hop,
-     * 3 = three hops). The default remains 3 for full onion-routing privacy.
-     *
-     * Changing this at runtime is only safe if every cached path is discarded at the same
-     * time: a path that was built for 3 hops has a different layer count than one built for
-     * 1 hop, and reusing a stale cached path would fail layer decryption at the first hop
-     * (which is exactly the kind of onion path mismatch that crashed the app / broke sends
-     * and message restore before). So when the user switches the setting we wipe the cached
-     * DB paths and the in-memory guard set, and force a fresh path build on the next send.
-     */
-    fun setOnionRequestPathCount(count: Int) {
-        if (count != 1 && count != 3) return
-        val context = MessagingModuleConfiguration.shared.context
-        val lastAppliedPathSize = appliedPathSize(context)
-        if (count == lastAppliedPathSize) return
-        PreferenceManager.getDefaultSharedPreferences(context)
-            .edit()
-            .putInt(OnionRoutingPreferenceUtils.KEY_ONION_ROUTING_APPLIED_PATH_SIZE, count)
-            .apply()
-        val cachedPaths = paths
-        val cachedPathsMatchSelection = cachedPaths.isNotEmpty() && cachedPaths.all { it.size == count }
-        if (cachedPathsMatchSelection) return
-        Log.d("ONION_HOP", "setOnionRequestPathCount: hop count changed to $count, wiping ${cachedPaths.size} cached path(s) and guard mnode cache")
-        paths = emptyList()              // wipes DB onionRequestPaths via the paths setter
-        guardMnodes = emptySet()
-        pathFailureCount.clear()
-        mnodeFailureCount.clear()
-    }
     /**
      * Triggers a fresh path build right away if the cached paths are missing or incomplete
      * (e.g. just after the user picks a new hop count in Settings, which wipes the cache, or
@@ -128,7 +91,11 @@ object OnionRequestAPI {
      * user who selected 1 hop gets shown a 3-hop path and vice versa.
      */
     val selectedHopPaths: List<Path>
-        get() = paths.filter { it.size == pathSize }
+        get() = if (isOnionRoutingEnabled && TextSecurePreferences.getOnionRequestPathCount(MessagingModuleConfiguration.shared.context) > 0) {
+            paths.filter { it.size == pathSize }
+        } else {
+            emptyList()
+        }
     /**
      * Whether the user has onion routing enabled at all. When disabled, every request - to
      * mnodes and to external servers alike - is sent directly with no onion layers.

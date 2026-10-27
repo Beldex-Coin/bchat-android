@@ -122,7 +122,7 @@ public abstract class GiphyFragment extends Fragment implements LoaderManager.Lo
   }
 
   private RecyclerView.LayoutManager getLayoutManager(boolean gridLayout) {
-    return gridLayout ? new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+    return gridLayout ? new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)
                       : new LinearLayoutManager(getActivity());
   }
 

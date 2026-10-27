@@ -37,6 +37,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
@@ -72,7 +73,7 @@ fun SharedContactView(
     val cardWidth = if (isLandscape) 0.35f else 0.7f
 
     Column(
-        horizontalAlignment = Alignment.End,
+        horizontalAlignment = if (isOutgoing) Alignment.End else Alignment.Start,
         modifier = columnModifier
     ) {
         Card(
@@ -89,60 +90,57 @@ fun SharedContactView(
                     bottom=if (isQuoted) 4.dp else 8.dp
                 ),
         ) {
-            SharedContactContent(
-                contacts = contacts,
-                titleColor = titleColor,
-                subtitleColor = subtitleColor,
-                backgroundColor = backgroundColor,
-                modifier = Modifier
-                    .fillMaxWidth(),
-                searchQuery = searchQuery,
-                isOutgoing = isOutgoing,
-                hasResult = hasResult
-
-            )
-        }
-
-        Column(
-            modifier=Modifier
-                .fillMaxWidth(cardWidth)
-                .padding(
-                    top = if (isQuoted) 3.dp else 0.dp,
-                    bottom = 3.dp
-                ),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-
-            Text(
-                text = timeStamp,
-                style = MaterialTheme.typography.bodySmall.copy(
-                    color = colorResource(if(isOutgoing) R.color.timestamp_out else R.color.timestamp_in),
-                    fontSize = 11.sp
-                ),
-                modifier = Modifier.align(Alignment.End).padding(
-                    end=if (isQuoted) 2.dp else 8.dp,
+            Column {
+                SharedContactContent(
+                    contacts = contacts,
+                    titleColor = titleColor,
+                    subtitleColor = subtitleColor,
+                    backgroundColor = backgroundColor,
+                    modifier = Modifier.fillMaxWidth(),
+                    searchQuery = searchQuery,
+                    isOutgoing = isOutgoing,
+                    hasResult = hasResult
                 )
-            )
-            Spacer(modifier = Modifier.height(5.dp))
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+                Spacer(modifier = Modifier.height(24.dp))
                 HorizontalDivider(
                     modifier = Modifier.fillMaxWidth().height(0.5.dp),
-                    color = colorResource(if(isOutgoing) R.color.outgoing_message_divider_color else R.color.incoming_message_divider_color)
+                    color = colorResource(if (isOutgoing) R.color.outgoing_message_divider_color else R.color.incoming_message_divider_color)
                 )
-                Spacer(modifier = Modifier.height(5.dp))
-                Text(
-                    text= if(numberOfContacts.size > 1) stringResource(R.string.view_all) else stringResource(R.string.message),
-                    style=MaterialTheme.typography.bodySmall.copy(
-                        color= colorResource(if(isOutgoing) R.color.view_all_text_out else R.color.view_all_text),
-                        fontSize=14.sp
-                    ),
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth().height(36.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = if (numberOfContacts.size > 1) stringResource(R.string.view_all) else stringResource(R.string.message_now),
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            color = colorResource(R.color.contact_message_action),
+                            fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = if (numberOfContacts.size > 1) 14.sp else 11.sp
+                        )
+                    )
+                    if (numberOfContacts.size == 1) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_baseline_send_24),
+                            contentDescription = null,
+                            tint = colorResource(R.color.contact_message_action),
+                            modifier = Modifier.padding(start = 6.dp).size(8.dp)
+                        )
+                    }
+                }
             }
         }
-
+        Text(
+            text = timeStamp,
+            style = MaterialTheme.typography.bodySmall.copy(
+                color = colorResource(if (isOutgoing) R.color.timestamp_out else R.color.timestamp_in),
+                fontSize = 11.sp
+            ),
+            modifier = Modifier
+                .fillMaxWidth(cardWidth)
+                .padding(top = if (isQuoted) 3.dp else 8.dp, bottom = 3.dp, start = 8.dp, end = 8.dp)
+        )
 
     }
 }

@@ -41,6 +41,11 @@
     <color name="input_bar_button_background_opaque_border">#33FFFFFF</color>
     <color name="input_bar_lock_view_background">#171717</color>
     <color name="input_bar_lock_view_border">#66FFFFFF</color>
+    <color name="recording_bar_background">#141414</color>
+    <color name="recording_bar_border">#333333</color>
+    <color name="recording_timer_text">#EBEBEB</color>
+    <color name="media_overview_tab_selected">#222222</color>
+    <color name="contact_message_action">#EBEBEB</color>
     <color name="mention_candidates_view_background">#171717</color>
     <color name="mention_candidates_view_background_ripple">#0C0C0C</color>
     <color name="link_preview_background">#000000</color>
@@ -261,6 +266,16 @@
     <!-- Message long-press context menu + reaction scrubber (Figma 7546:10954), matches the
          same dark-card convention as missed_call_dialog_background/dialog_background. -->
     <color name="overflow_menu_background">#F2111111</color>
+    <color name="reaction_overlay_card_background">#111111</color>
+    <color name="reaction_overlay_card_border">#333333</color>
+    <color name="reply_draft_card_background">#1A1A1A</color>
+    <color name="reply_draft_secondary_text">#8D8D8D</color>
+    <color name="reply_input_gradient_edge">#401A1A1A</color>
+    <color name="reply_input_gradient_center">#40444444</color>
+    <color name="reply_input_border">#FF333333</color>
+    <color name="document_attachment_tile_background">#1C1C26</color>
+    <color name="document_attachment_icon_background">#22222B</color>
+    <color name="document_icon_tint">#EBEBEB</color>
     <color name="received_message_background">#2C2C3B</color>
     <color name="received_message_text_color">#EBEBEB</color>
     <color name="syncing_option_card_background">#111111</color>
@@ -404,4 +419,8 @@
     <color name="blocked_action_green">#00BC33</color>
     <color name="blocked_action_green_bg">#1A00BC33</color>
     <color name="blocked_action_text">#EBEBEB</color>
+    <color name="sticker_message_label_background">#1A1A1A</color>
+    <color name="sticker_message_label_text">#ACACAC</color>
+    <color name="sticker_message_timestamp">#A7A7BA</color>
+    <color name="group_left_message_background">#1A1A1A</color>
 </resources>

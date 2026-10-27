@@ -3,8 +3,9 @@
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/view_input_bar_layout"
     android:orientation="horizontal"
-    android:gravity="center_vertical"
+    android:gravity="center"
     android:layout_marginHorizontal="14dp"
     android:minHeight="47dp"
     android:background="@drawable/chat_input_field_background">
@@ -78,18 +79,20 @@
     </com.google.android.material.card.MaterialCardView>
 
     <TextView
-        android:fontFamily="@font/open_sans_medium"
         android:id="@+id/noLongerParticipantTextView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textColor="@color/text"
+        android:fontFamily="@font/roboto_mono"
         android:gravity="center"
-        android:paddingStart="8dp"
-        android:paddingEnd="4dp"
-        android:layout_margin="5dp"
+        android:background="@drawable/you_left_group_background"
+        android:paddingStart="22dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="22dp"
+        android:paddingBottom="6dp"
+        android:textColor="@color/blocked_action_red"
+        android:textSize="11sp"
         android:visibility="visible"
-        android:text="@string/you_can_t_send_messages_to_this_group_because_you_re_no_longer_a_participant"
+        android:text="@string/MessageRecord_left_group"
     />
 
     <RelativeLayout

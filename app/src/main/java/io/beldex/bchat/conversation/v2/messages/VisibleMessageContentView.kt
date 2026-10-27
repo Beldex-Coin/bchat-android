@@ -158,6 +158,7 @@ class VisibleMessageContentView : MaterialCardView {
         // reset visibilities / containers
         onContentClick.clear()
         binding.albumThumbnailView.root.clearViews()
+        binding.stickerMessageView.root.isVisible = false
         onContentDoubleTap = null
 
         if (message.isDeleted) {
@@ -371,7 +372,7 @@ class VisibleMessageContentView : MaterialCardView {
             }
             //Document
             message is MmsMessageRecord && message.slideDeck.documentSlide != null -> {
-                hideBody=true
+                hideBody=false
                 showQuoteBody=false
                 // Document attachment
                 if (contactIsTrusted || message.isOutgoing) {

@@ -333,6 +333,12 @@
         <item name="windowActionModeOverlay">true</item>
     </style>
 
+    <style name="Theme.TextSecure.GiphyBottomSheet" parent="Theme.TextSecure.DayNight.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
     <style name="Theme.TextSecure.Dialog.Rationale" parent="Theme.AppCompat.DayNight.Dialog.Alert">
         <item name="android:fontFamily">@font/open_sans_semi_bold</item>
         <item name="android:windowBackground">@drawable/default_dialog_background</item>

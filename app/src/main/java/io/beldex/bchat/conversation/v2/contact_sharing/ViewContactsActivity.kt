@@ -37,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -257,7 +258,10 @@ fun ChatWithContactPopUp(name: String, address : String, onDismiss: () -> Unit){
             message = androidx.compose.ui.text.AnnotatedString(stringResource(R.string.chat_with_contact_confirmation)),
             cancelText = stringResource(id = R.string.cancel),
             onCancel = onDismiss,
-            confirmText = stringResource(id = R.string.message),
+            confirmText = stringResource(id = R.string.chat),
+            confirmContainerColor = Color(0xFF0B0B0B),
+            confirmContentColor = White,
+            confirmBorderColor = Color(0xFF078720),
             onConfirm = {
                 moveToChat(address)
                 activity.supportFragmentManager.popBackStack()

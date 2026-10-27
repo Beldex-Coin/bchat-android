@@ -293,6 +293,12 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         //binding.quoteViewBodyTextView.setTextColor(getTextColor(isOutgoingMessage))
         // Accent line / attachment preview
         val hasAttachments = (attachments != null && attachments.asAttachments().isNotEmpty()) && !isOriginalMissing
+        if (mode == Mode.Draft) {
+            binding.quoteViewBodyTextView.textSize = if (hasAttachments) 10f else 13f
+            binding.quoteViewBodyTextView.setTextColor(
+                ResourcesCompat.getColor(resources, R.color.reply_draft_secondary_text, context.theme)
+            )
+        }
 //        binding.quoteViewAccentLine.isVisible = !hasAttachments
         binding.quoteViewAttachmentPreviewContainer.isVisible = hasAttachments
         if (!hasAttachments) {
@@ -316,7 +322,11 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 binding.quoteViewAttachmentPreviewImageView.isVisible = false
                 binding.quoteViewAttachmentThumbnailImageView.root.isVisible = false
             }else{
-                val backgroundColorID = R.color.quote_view_background
+                val backgroundColorID = if (mode == Mode.Draft) {
+                    R.color.reply_draft_card_background
+                } else {
+                    R.color.quote_view_background
+                }
                 val backgroundColor =
                     ResourcesCompat.getColor(resources, backgroundColorID, context.theme)
                 binding.quoteViewAttachmentPreviewContainer.backgroundTintList =
@@ -345,17 +355,23 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 }
                 attachments.thumbnailSlide != null -> {
                     val slide = attachments.thumbnailSlide!!
-                    // This internally fetches the thumbnail
-                    /*binding.quoteViewAttachmentThumbnailImageView.root.setImageResource(glide, slide, false, null)
-                    binding.quoteViewAttachmentThumbnailImageView.root.radius = toPx(10, resources)
-                    binding.quoteViewAttachmentThumbnailImageView.root.isVisible = true*/
-                    binding.quoteViewAttachmentPreviewImageView.setImageResource(if (MediaUtil.isVideo(slide.asAttachment())) R.drawable.ic_video_attachment else R.drawable.ic_image_attachment)
-                    binding.quoteViewAttachmentPreviewImageView.isVisible = true
                     binding.quoteViewBodyTextView.text = if (MediaUtil.isVideo(slide.asAttachment())) resources.getString(R.string.Slide_video) else resources.getString(R.string.Slide_image)
                     binding.contentTypeIcon.setImageResource(
                         if (MediaUtil.isVideo(slide.asAttachment())) R.drawable.ic_video_attachment else R.drawable.ic_image_attachment
                     )
                     binding.contentTypeIcon.visibility = View.VISIBLE
+                    if (mode == Mode.Draft) {
+                        binding.quoteViewAttachmentThumbnailImageView.root.setImageResource(glide, slide, false, null)
+                        binding.quoteViewAttachmentThumbnailImageView.root.radius = toPx(8, resources)
+                        binding.quoteViewAttachmentThumbnailImageView.root.isVisible = true
+                        binding.quoteViewAttachmentPreviewImageView.isVisible = false
+                    } else {
+                        binding.quoteViewAttachmentPreviewImageView.setImageResource(
+                            if (MediaUtil.isVideo(slide.asAttachment())) R.drawable.ic_video_attachment else R.drawable.ic_image_attachment
+                        )
+                        binding.quoteViewAttachmentPreviewImageView.isVisible = true
+                        binding.quoteViewAttachmentThumbnailImageView.root.isVisible = false
+                    }
                 }
             }
         }
@@ -368,6 +384,13 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             if (hasAttachments) {
                 binding.contentTypeIcon.setColorFilter(resources.getColor(quotedTextColor,null))
             }
+        } else {
+            // Draft quote card should remain fully opaque over the input bar in both themes.
+            binding.mainQuoteViewContainer.setCardBackgroundColor(
+                ResourcesCompat.getColor(resources, R.color.reply_draft_card_background, context.theme)
+            )
+            binding.mainQuoteViewContainer.cardElevation = 0f
+            binding.mainQuoteViewContainer.alpha = 1f
         }
     }
     // endregion

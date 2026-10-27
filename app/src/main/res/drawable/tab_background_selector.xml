@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Revamp_2026 tab: the selected tab is a filled #222 tile (Figma "All Media" Media / Documents). -->
+<!-- Revamp_2026 selected tab uses the Figma corner-cut tile. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_selected="true">
-        <shape android:shape="rectangle">
-            <solid android:color="#222222" />
-        </shape>
-    </item>
+    <item android:state_selected="true" android:drawable="@drawable/media_overview_tab_selected" />
     <item>
         <shape android:shape="rectangle">
             <solid android:color="@android:color/transparent" />

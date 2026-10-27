@@ -196,7 +196,9 @@ public class Permissions {
             executeNoPermissionsRequest(request);
             return kotlin.Unit.INSTANCE;
           },
-          R.drawable.ic_permission_setting);
+          rationalDialogHeader != null && rationalDialogHeader.length > 0
+              ? rationalDialogHeader[0]
+              : R.drawable.ic_permission_setting);
     }
 
     private void executePermissionsRequest(PermissionsRequest request) {

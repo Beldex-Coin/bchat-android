@@ -607,7 +607,7 @@
     <!-- media_preview -->
     <string name="media_preview__forward_title">Forward</string>
     <!-- media_overview -->
-    <string name="media_overview_documents_fragment__no_documents_found">No document items to show!</string>
+    <string name="media_overview_documents_fragment__no_documents_found">No Document items to show!</string>
 
     <!-- media_preview_activity -->
     <string name="media_preview_activity__media_content_description">Media preview</string>
@@ -1447,6 +1447,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="transactions">Transactions</string>
     <string name="transaction_filter">Transaction Filter</string>
     <string name="chat">Chat</string>
+    <string name="message_now">Message Now</string>
     <string name="clear_data_from_device">Clear Data From Device</string>
     <string name="delete_data_on_this_device">Delete data on this device</string>
     <string name="delete_data_from_the_network">Delete data from the network</string>

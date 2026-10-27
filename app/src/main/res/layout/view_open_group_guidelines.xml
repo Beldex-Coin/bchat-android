@@ -5,15 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/medium_spacing"
-    app:cardBackgroundColor="#111111"
+    android:id="@+id/guidelinesCard"
+    android:padding="0dp"
+    app:cardBackgroundColor="#A6F0F0F0"
     app:cardCornerRadius="0dp"
     app:cardElevation="0dp"
-    app:strokeColor="@color/drawer_profile_border"
-    android:layout_marginStart="@dimen/small_spacing"
-    android:layout_marginTop="@dimen/small_spacing"
-    android:layout_marginEnd="@dimen/small_spacing"
-    android:layout_marginBottom="@dimen/small_spacing"
+    app:strokeColor="#D0D0D0"
+    android:layout_marginStart="14dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="14dp"
+    android:layout_marginBottom="8dp"
     app:strokeWidth="1dp">
 
     <LinearLayout
@@ -21,44 +22,49 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:paddingTop="@dimen/small_spacing"
-        android:paddingBottom="@dimen/small_spacing">
+        android:paddingStart="18dp"
+        android:paddingEnd="18dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp">
 
         <ImageView
             android:id="@+id/pin_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:src="@drawable/ic_pinned_dark" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="@dimen/small_spacing"
-            android:layout_marginEnd="@dimen/small_spacing"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:id="@+id/guidelinesTitle"
             android:ellipsize="end"
-            android:fontFamily="@font/roboto_mono"
+            android:fontFamily="@font/open_sans_regular"
             android:maxLines="1"
             android:text="@string/ConversationActivity_open_group_guidelines"
-            android:textColor="@color/text"
+            android:textColor="#222222"
             android:textSize="14sp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/readButton"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/small_button_height"
-            android:backgroundTint="@color/chat_message_request_accept_background"
-            android:fontFamily="@font/open_sans_regular"
+            android:layout_width="71dp"
+            android:layout_height="32dp"
+            android:backgroundTint="#0B0B0B"
+            android:fontFamily="@font/open_sans_semi_bold"
             android:gravity="center"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            android:paddingHorizontal="16dp"
+            android:padding="0dp"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
             android:text="@string/open_group_guidelines_read"
             android:textAllCaps="false"
-            android:textColor="@color/chat_message_request_accept_text"
+            android:textColor="#FFFFFF"
             android:textSize="14sp"
+            app:strokeColor="#078720"
+            app:strokeWidth="1dp"
             app:shapeAppearanceOverlay="@style/ShapeAppearance.Bchat.NotchedButton" />
 
     </LinearLayout>

@@ -157,6 +157,17 @@
                 app:barrierDirection="bottom"/>
 
             <!--Album ThumbnailView MessageView-->
+            <include
+                android:id="@+id/stickerMessageView"
+                layout="@layout/view_sticker_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/quote_container" />
+
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/album_container"
                 android:layout_width="wrap_content"

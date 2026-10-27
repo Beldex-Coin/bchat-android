@@ -1,7 +1,6 @@
 package io.beldex.bchat.conversation.v2.input_bar
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.SystemClock
@@ -10,15 +9,16 @@ import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.View
-import android.view.View.OnKeyListener
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.RelativeLayout
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.bumptech.glide.RequestManager
+import com.google.android.material.card.MaterialCardView
 import io.beldex.bchat.R
 import io.beldex.bchat.conversation.v2.components.LinkPreviewDraftView
 import io.beldex.bchat.conversation.v2.components.LinkPreviewDraftViewDelegate
@@ -26,12 +26,10 @@ import io.beldex.bchat.conversation.v2.messages.QuoteView
 import io.beldex.bchat.conversation.v2.messages.QuoteViewDelegate
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.database.model.MmsMessageRecord
-import com.google.android.material.card.MaterialCardView
 import io.beldex.bchat.databinding.ViewInputBarBinding
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.getColorWithID
-import io.beldex.bchat.util.toDp
 import io.beldex.bchat.util.toPx
 
 
@@ -60,7 +58,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
 
     private val attachmentsButton by lazy { InputBarButton(context, R.drawable.ic_chat_attach_add, isMessageBox = true) }
     private val microphoneButton by lazy { InputBarButton(context, R.drawable.ic_chat_mic, true, isMessageBox = true) }
-    private val sendButton by lazy { InputBarButton(context, R.drawable.send, true, isMessageBox = true) }
+    private val sendButton by lazy { InputBarButton(context, R.drawable.ic_baseline_send_24, true, isMessageBox = true) }
 
     // region Lifecycle
     constructor(context: Context) : super(context) { initialize() }
@@ -178,13 +176,16 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         linkPreview = null
         linkPreviewDraftView = null
         binding.inputBarAdditionalContentContainer.removeAllViews()
-        // adjust rounded corner of background card
-        binding.containerCardView.radius = toPx(24, resources).toFloat()
+        setReplyDraftSurface(true)
+        binding.containerCardView.radius = 0f
         // inflate quoteview with typed array here
         val layout = LayoutInflater.from(context).inflate(R.layout.view_quote_draft, binding.inputBarAdditionalContentContainer, false)
         val quoteView = layout.findViewById<QuoteView>(R.id.mainQuoteViewContainer)
         quoteView.delegate = this
-        binding.inputBarAdditionalContentContainer.addView(layout)
+        binding.inputBarAdditionalContentContainer.addView(
+            layout,
+            ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        )
         val attachments = (message as? MmsMessageRecord)?.slideDeck
         val sender = if (message.isOutgoing) TextSecurePreferences.getLocalNumber(context)!! else message.individualRecipient.address.serialize()
         quoteView.bind(sender, message.body, attachments,
@@ -195,7 +196,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     override fun cancelQuoteDraft(i:Int) {
         quote = null
         binding.inputBarAdditionalContentContainer.removeAllViews()
-        //adjust input bar card radius
+        setReplyDraftSurface(false)
         binding.containerCardView.radius = toPx(48, resources).toFloat()
         requestLayout()
         if(i==1){
@@ -207,6 +208,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     fun draftLinkPreview() {
         quote = null
         binding.inputBarAdditionalContentContainer.removeAllViews()
+        setReplyDraftSurface(false)
         val linkPreviewDraftView = LinkPreviewDraftView(context)
         linkPreviewDraftView.delegate = this
         this.linkPreviewDraftView = linkPreviewDraftView
@@ -225,11 +227,22 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         if (quote != null) { return }
         linkPreview = null
         binding.inputBarAdditionalContentContainer.removeAllViews()
+        setReplyDraftSurface(false)
         binding.containerCardView.radius = toPx(48, resources).toFloat()
         requestLayout()
         if(i==1){
             binding.inputBarEditText.text?.clear()
         }
+    }
+
+    private fun setReplyDraftSurface(enabled: Boolean) {
+        binding.root.background = ContextCompat.getDrawable(
+            context,
+            if (enabled) R.drawable.chat_reply_input_background else R.drawable.chat_input_field_background
+        )
+        val horizontalPadding = if (enabled) toPx(10, resources) else 0
+        val verticalPadding = if (enabled) toPx(8, resources) else 0
+        binding.root.setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding)
     }
 
     private fun showOrHideInputIfNeeded() {
@@ -238,12 +251,16 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
             microphoneButton.isVisible = text.isEmpty() || text.isBlank()
             sendButton.isVisible = text.isNotEmpty() && text.isNotBlank()
             binding.noLongerParticipantTextView.isVisible = false
+            binding.viewInputBarLayout.background = ContextCompat.getDrawable(
+                context, R.drawable.chat_input_field_background)
         } else {
             cancelQuoteDraft(2)
             cancelLinkPreviewDraft(2)
             val views = setOf( binding.inputBarEditText, attachmentsButton, microphoneButton, sendButton, binding.microphoneOrSendButtonContainer, binding.containerCardView )
             views.forEach { it.isVisible = false }
             binding.noLongerParticipantTextView.isVisible = true
+            binding.viewInputBarLayout.background = null
+
         }
     }
     /*Hales63*/

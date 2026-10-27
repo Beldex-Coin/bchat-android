@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -74,6 +75,7 @@ import com.beldex.libbchat.utilities.Device
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.compose_utils.PrimaryButton
+import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.RobotoMono
@@ -81,6 +83,8 @@ import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.BChatDimens
+import io.beldex.bchat.compose_utils.notchedCornerShape
 import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 import io.beldex.bchat.util.isValidGroupName
 import kotlinx.coroutines.Dispatchers
@@ -142,69 +146,32 @@ fun CreateSecretGroup(
                     onSearchQueryChange = { onEvent(SecretGroupEvents.SearchQueryChanged(it)) },
                     showLoader = showLoader
                 )
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(6.dp))
                 if (contacts.isEmpty()) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 190.dp)
+                            .weight(1f),
+                        verticalArrangement = Arrangement.Center
                     ) {
-                        // Figma empty state: two ghosted bordered rows and a grey mono caption.
-                        Box(modifier = Modifier.size(width = 200.dp, height = 81.dp)) {
-                            val ghost = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall)
-                            Box(
-                                modifier = Modifier
-                                    .offset(x = 77.dp, y = 11.dp)
-                                    .size(width = 123.dp, height = 33.dp)
-                                    .background(Color(0xFF111111), ghost)
-                                    .border(1.dp, Color(0xFF444444), ghost)
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .offset(x = 13.dp, y = 9.dp)
-                                        .size(16.dp)
-                                        .background(Color(0xFF222222), androidx.compose.foundation.shape.CircleShape)
-                                )
-                                Box(
-                                    modifier = Modifier
-                                        .offset(x = 40.dp, y = 15.dp)
-                                        .size(width = 71.dp, height = 5.dp)
-                                        .background(Color(0xFF222222))
-                                )
-                            }
-                            Box(
-                                modifier = Modifier
-                                    .offset(x = 0.dp, y = 37.dp)
-                                    .size(width = 123.dp, height = 33.dp)
-                                    .background(Color(0xFF111111), ghost)
-                                    .border(1.dp, Color(0xFF444444), ghost)
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .offset(x = 11.dp, y = 9.dp)
-                                        .size(16.dp)
-                                        .background(Color(0xFF222222), androidx.compose.foundation.shape.CircleShape)
-                                )
-                                Box(
-                                    modifier = Modifier
-                                        .offset(x = 36.dp, y = 15.dp)
-                                        .size(width = 71.dp, height = 5.dp)
-                                        .background(Color(0xFF222222))
-                                )
-                            }
-                        }
+                        Image(
+                            painter = painterResource(R.drawable.no_contacts_empty_state),
+                            contentDescription = null,
+                            modifier = Modifier.size(width = 202.03.dp, height = 81.445.dp)
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
                         Text(
                             text = stringResource(R.string.no_contacts_yet),
                             fontFamily = RobotoMono,
                             color = Color(0xFF555555),
                             fontSize = 13.5.sp,
-                            modifier = Modifier.padding(top = 16.dp)
+                            textAlign = TextAlign.Center
                         )
                     }
                 } else {
                     // Only the contact list scrolls; the name field and search stay put (N22).
-                    androidx.compose.foundation.lazy.LazyColumn(modifier = Modifier.fillMaxWidth().weight(1f)) {
+                    LazyColumn(modifier = Modifier.fillMaxWidth().weight(1f)) {
                         items(
                             count = contacts.size,
                             key = { index -> contacts[index].address.toString() }
@@ -322,18 +289,26 @@ private fun SearchField(
             .fillMaxWidth()
             .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
         shape = androidx.compose.ui.graphics.RectangleShape,
-        trailingIcon = {
+        leadingIcon = {
             Icon(
-                imageVector = if (searchQuery.isNotEmpty()) Icons.Default.Clear else Icons.Default.Search,
-                contentDescription = "search contact and clear search text",
+                painter = painterResource(R.drawable.ic_search_secret_group),
+                contentDescription = stringResource(R.string.search_contact),
                 tint = MaterialTheme.appColors.onboardingInputHint,
-                modifier = Modifier.clickable {
-                    if (searchQuery.isNotEmpty()) {
-                        onSearchQueryChange("")
-                    }
-                }
+                modifier = Modifier.size(12.dp)
             )
         },
+        trailingIcon = if (searchQuery.isNotEmpty()) {
+            {
+                Icon(
+                    imageVector = Icons.Default.Clear,
+                    contentDescription = stringResource(R.string.clear),
+                    tint = MaterialTheme.appColors.onboardingInputHint,
+                    modifier = Modifier
+                        .size(18.dp)
+                        .clickable { onSearchQueryChange("") }
+                )
+            }
+        } else null,
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = MaterialTheme.appColors.dialogBackground,
             focusedContainerColor = MaterialTheme.appColors.dialogBackground,

@@ -39,9 +39,12 @@
 
             <io.beldex.bchat.components.ControllableTabLayout
                 android:id="@+id/tab_layout"
-                style="@style/Widget.Bchat.TabLayout"
+                style="@style/Widget.Bchat.TabLayout.MediaOverview"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:background="@color/home_screen_background"
+                app:tabPaddingStart="6dp"
+                app:tabPaddingEnd="6dp"
                 app:tabMode="fixed"
                 app:tabGravity="fill"
                 app:tabIndicatorFullWidth="true"/>

@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -229,11 +230,11 @@ fun DialogConfirmButton(
 @Composable
 fun PopupBody(
     title: String,
-    message: androidx.compose.ui.text.AnnotatedString,
+    message: AnnotatedString,
     confirmText: String,
     onConfirm: () -> Unit,
     modifier: Modifier = Modifier,
-    icon: androidx.compose.ui.graphics.painter.Painter? = null,
+    icon: Painter? = null,
     cancelText: String? = null,
     onCancel: () -> Unit = {},
     destructive: Boolean = false,
@@ -241,8 +242,11 @@ fun PopupBody(
     onMiddle: () -> Unit = {},
     /** When set, a square close tile is shown at the top right (Figma "Open URL?", "Delete message"). */
     onClose: (() -> Unit)? = null,
-    middleIcon: androidx.compose.ui.graphics.painter.Painter? = null,
-    confirmIcon: androidx.compose.ui.graphics.painter.Painter? = null
+    middleIcon: Painter? = null,
+    confirmIcon: Painter? = null,
+    confirmContainerColor: Color = Color(0xFFE0E0E0),
+    confirmContentColor: Color = Color(0xFF0B0B0B),
+    confirmBorderColor: Color = Color(0xFF0A370A)
 ) {
     Column(
         modifier = modifier
@@ -323,14 +327,14 @@ fun PopupBody(
                 PrimaryButton(
                     onClick = onConfirm,
                     shape = notchedCornerShape(BChatDimens.NotchMedium),
-                    containerColor = Color(0xFFE0E0E0),
-                    contentColor = Color(0xFF0B0B0B),
-                    border = BorderStroke(1.dp, Color(0xFF0A370A)),
+                    containerColor = confirmContainerColor,
+                    contentColor = confirmContentColor,
+                    border = BorderStroke(1.dp, confirmBorderColor),
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
                     modifier = Modifier.weight(1f).heightIn(min = BChatDimens.DialogButtonMinHeight)
                 ) {
                     if (confirmIcon != null) {
-                        androidx.compose.material3.Icon(painter = confirmIcon, contentDescription = null, tint = Color(0xFF0B0B0B), modifier = Modifier.size(16.dp))
+                        androidx.compose.material3.Icon(painter = confirmIcon, contentDescription = null, tint = confirmContentColor, modifier = Modifier.size(16.dp))
                         Spacer(modifier = Modifier.width(8.dp))
                     }
                     Text(

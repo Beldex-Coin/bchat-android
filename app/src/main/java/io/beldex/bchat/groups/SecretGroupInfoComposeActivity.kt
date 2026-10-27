@@ -67,6 +67,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -83,6 +84,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.Dp
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.ViewModelProvider
 import com.beldex.libbchat.messaging.contacts.Contact
@@ -737,11 +739,12 @@ fun GroupDetailsScreen(
                             },
                             checked=showExpirationItem != 0,
                             showSwitch=true,
-                            subTitle=context.getString(R.string.disappearing_info)
+                            subTitle=context.getString(R.string.disappearing_info),
+                            iconSize=20.dp
                         )
                         NavigationItem(
                             stringResource(R.string.activity_edit_closed_group_title),
-                            painterResource(id=R.drawable.ic_block_request),
+                            painterResource(id=R.drawable.ic_group_edit),
                             onItemClick={
                                 if (isSecretGroupIsActive()) {
                                     editSecretGroup(context, recipient)
@@ -755,7 +758,8 @@ fun GroupDetailsScreen(
                             },
                             checked=false,
                             false,
-                            null
+                            null,
+                            iconSize=20.dp
                         )
                         NavigationItem(
                             stringResource(R.string.notify_for_mentions_only),
@@ -774,7 +778,8 @@ fun GroupDetailsScreen(
                             },
                             checked=showNotificationSettingsItem == context.getString(R.string.notify_type_mentions),
                             showSwitch=true,
-                            subTitle=context.getString(R.string.notification_info)
+                            subTitle=context.getString(R.string.notification_info),
+                            iconSize=20.dp
                         )
 
                         Row(
@@ -797,7 +802,7 @@ fun GroupDetailsScreen(
                                 }
                         ) {
                             Icon(
-                                painterResource(id=R.drawable.ic_block_request),
+                                painterResource(id=R.drawable.ic_leave_group),
                                 contentDescription="exit group",
                                 tint=MaterialTheme.appColors.negativeRedButtonBorder,
                                 modifier=Modifier.size(24.dp)
@@ -922,8 +927,12 @@ fun NavigationItem(
     onItemClick : () -> Unit,
     checked : Boolean,
     showSwitch : Boolean,
-    subTitle : String?
+    subTitle : String?,
+    iconSize: Dp = 22.dp
 ) {
+
+    val iconTint = MaterialTheme.appColors.editTextColor
+    val iconColorFilter = if (iconTint.luminance() > 0.5f) ColorFilter.tint(iconTint) else null
 
     Column(modifier=Modifier) {
 
@@ -940,10 +949,8 @@ fun NavigationItem(
             Image(
                 painter=icon,
                 contentDescription=label,
-                colorFilter=ColorFilter.tint(
-                    color=MaterialTheme.appColors.editTextColor
-                ),
-                modifier=Modifier.size(24.dp)
+                colorFilter=iconColorFilter,
+                modifier=Modifier.size(iconSize)
             )
             Spacer(modifier=Modifier.width(16.dp))
 

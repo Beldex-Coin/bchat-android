@@ -3,9 +3,12 @@ package io.beldex.bchat.giph.ui;
 import io.beldex.bchat.util.BChatToast;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.WindowManager;
 import android.view.View;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
@@ -13,6 +16,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+
+import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.google.android.material.tabs.TabLayout;
 import io.beldex.bchat.PassphraseRequiredActionBarActivity;
 import com.beldex.libbchat.utilities.MediaTypes;
@@ -46,20 +51,17 @@ public class GiphyActivity extends PassphraseRequiredActionBarActivity
 
   @Override
   public void onCreate(Bundle bundle, boolean ready) {
+    getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+    getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+    WindowManager.LayoutParams windowAttributes = getWindow().getAttributes();
+    windowAttributes.dimAmount = 0.35f;
+    getWindow().setAttributes(windowAttributes);
     setContentView(R.layout.giphy_activity);
 
     initializeToolbar();
     initializeResources();
-
-    View coordinatorLayout = findViewById(R.id.giphy_toolbar).getParent().getParent() instanceof View
-            ? (View) findViewById(R.id.giphy_toolbar).getParent().getParent() : null;
-    if (coordinatorLayout != null) {
-      androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(coordinatorLayout, (v, insets) -> {
-        int top = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars()).top;
-        v.setPadding(v.getPaddingLeft(), top, v.getPaddingRight(), v.getPaddingBottom());
-        return insets;
-      });
-    }
+    findViewById(R.id.giphy_close).setOnClickListener(v -> finish());
+    findViewById(R.id.giphy_scrim).setOnClickListener(v -> finish());
   }
 
   private void initializeToolbar() {
@@ -67,14 +69,12 @@ public class GiphyActivity extends PassphraseRequiredActionBarActivity
     toolbar.setOnFilterChangedListener(this);
     toolbar.setOnLayoutChangedListener(this);
     toolbar.setPersistence(GiphyActivityToolbarTextSecurePreferencesPersistence.fromContext(this));
-
-    setSupportActionBar(toolbar);
-
-    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_arrow);
+    toolbar.findViewById(R.id.button_toggle).setVisibility(View.GONE);
   }
 
   private void initializeResources() {
+
+  TextSecurePreferences.setIsGifSearchInGridLayout(this, true);
 
     ViewPager viewPager = ViewUtil.findById(this, R.id.giphy_pager);
     TabLayout tabLayout = ViewUtil.findById(this, R.id.tab_layout);

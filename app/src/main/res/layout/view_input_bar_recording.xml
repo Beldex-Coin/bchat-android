@@ -13,10 +13,10 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="0dp"
         app:cardElevation="0dp"
-        app:strokeColor="@color/drawer_profile_border"
+        app:strokeColor="@color/recording_bar_border"
         app:strokeWidth="1dp"
-        app:cardBackgroundColor="@color/input_bar_background"
-        android:layout_marginEnd="8dp"
+        app:cardBackgroundColor="@color/recording_bar_background"
+        android:layout_marginEnd="0dp"
         android:layout_gravity="bottom"
         tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -25,7 +25,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/input_bar_height"
+            android:layout_height="47dp"
             android:layout_alignParentBottom="true"
 
             android:orientation="vertical">
@@ -45,14 +45,14 @@
                 android:layout_marginStart="16dp"
                 tools:ignore="MissingConstraints">
 
-                <View
+                <ImageView
                     android:id="@+id/dotView"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:background="@drawable/circle_tintable"
-                    android:backgroundTint="@color/destructive"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/recording_indicator"
+                    android:scaleType="fitCenter"
                     android:visibility="visible"
-                    android:layout_marginEnd="8dp"/>
+                    android:layout_marginEnd="8dp" />
 
                 <TextView
                     android:fontFamily="@font/roboto_mono"
@@ -61,7 +61,8 @@
                     android:layout_height="wrap_content"
                     android:text="00:00"
                     android:textSize="@dimen/small_font_size"
-                    android:textColor="@color/text" />
+                    android:textStyle="bold"
+                    android:textColor="@color/recording_timer_text" />
 
             </LinearLayout>
 
@@ -238,7 +239,7 @@
         android:id="@+id/microphoneOrSendButtonContainer"
         android:layout_width="@dimen/input_bar_button_expanded_size"
         android:layout_height="@dimen/input_bar_button_expanded_size"
-        android:layout_marginEnd="4dp"
+        android:layout_marginEnd="0dp"
         android:layout_marginStart="@dimen/small_spacing"
         android:layout_gravity="bottom"
         app:layout_constraintEnd_toEndOf="parent"

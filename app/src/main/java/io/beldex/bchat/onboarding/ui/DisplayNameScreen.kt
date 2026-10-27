@@ -75,6 +75,7 @@ fun DisplayNameScreen(
                     onEvent(OnBoardingEvents.CreateAccountEvents.DisplayNameChanged(it))
                 },
                 placeHolder = stringResource(id = R.string.enter_name),
+                cursorColor = Color(0xFFEBEBEB),
                 keyboardActions = KeyboardActions(onDone = { proceed() }),
                 modifier = Modifier
                     .fillMaxWidth()

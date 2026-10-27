@@ -126,6 +126,32 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
 
     this.viewPager.setAdapter(new MediaOverviewPagerAdapter(getSupportFragmentManager()));
     this.tabLayout.setupWithViewPager(viewPager);
+    centerTabLabels();
+  }
+
+  private void centerTabLabels() {
+    ViewGroup tabStrip = (ViewGroup) tabLayout.getChildAt(0);
+    if (tabStrip == null) return;
+
+    for (int index = 0; index < tabStrip.getChildCount(); index++) {
+      View tab = tabStrip.getChildAt(index);
+      if (tab instanceof LinearLayout) {
+        ((LinearLayout) tab).setGravity(Gravity.CENTER);
+      }
+      centerTabText(tab);
+    }
+  }
+
+  private void centerTabText(View view) {
+    if (view instanceof TextView) {
+      ((TextView) view).setGravity(Gravity.CENTER);
+      ((TextView) view).setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+    } else if (view instanceof ViewGroup) {
+      ViewGroup group = (ViewGroup) view;
+      for (int index = 0; index < group.getChildCount(); index++) {
+        centerTabText(group.getChildAt(index));
+      }
+    }
   }
 
   @Override

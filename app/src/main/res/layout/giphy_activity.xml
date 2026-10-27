@@ -1,57 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:background="#0B0B0B"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:orientation="vertical">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <View
+        android:id="@+id/giphy_scrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#66000000" />
+
+    <LinearLayout
+        android:id="@+id/giphy_panel"
+        android:layout_width="match_parent"
+        android:layout_height="520dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/giphy_picker_sheet_background"
+        android:orientation="vertical">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/giphy_logo"
-            android:orientation="vertical">
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="18dp">
 
-        <com.google.android.material.appbar.AppBarLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="#0B0B0B">
+                android:layout_weight="1"
+                android:fontFamily="@font/open_sans_semi_bold"
+                android:text="Send Gif"
+                android:textColor="@color/text"
+                android:textSize="16sp" />
 
-            <io.beldex.bchat.giph.ui.GiphyActivityToolbar
-                    android:id="@+id/giphy_toolbar"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:background="#0B0B0B"
-                    android:theme="?attr/actionBarStyle"
-                    app:layout_scrollFlags="scroll|enterAlways"/>
+            <ImageView
+                android:id="@+id/giphy_close"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/circle_touch_highlight_background"
+                android:contentDescription="@string/cancel"
+                android:padding="4dp"
+                android:src="@drawable/ic_close"
+                app:tint="@color/text" />
+        </LinearLayout>
 
-            <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tab_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:theme="@style/Widget.Bchat.TabLayout"
-                    app:tabRippleColor="@color/cell_selected"
-                    app:tabIndicatorColor="#00BD40"
-                    app:tabSelectedTextColor="#EBEBEB"
-                    app:tabTextColor="#8D8D8D"
-                    android:scrollbars="horizontal"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/incoming_message_divider_color" />
 
-        </com.google.android.material.appbar.AppBarLayout>
+        <io.beldex.bchat.giph.ui.GiphyActivityToolbar
+            android:id="@+id/giphy_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@color/page_background" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/incoming_message_divider_color" />
 
         <androidx.viewpager.widget.ViewPager
-                android:id="@+id/giphy_pager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            android:id="@+id/giphy_pager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/incoming_message_divider_color" />
 
-    <ImageView android:id="@+id/giphy_logo"
-               android:src="@drawable/poweredby_giphy"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_alignParentBottom="true"
-               android:padding="10dp"
-               android:background="@color/black"/>
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:paddingHorizontal="10dp"
+            android:theme="@style/Widget.Bchat.TabLayout"
+            app:tabGravity="fill"
+            app:tabIndicatorHeight="0dp"
+            app:tabMode="fixed"
+            app:tabBackground="@drawable/tab_background_selector"
+            app:tabMinWidth="96dp"
+            app:tabRippleColor="@color/cell_selected"
+            app:tabSelectedTextColor="@color/button_green"
+            app:tabTextColor="@color/timestamp_in" />
 
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/giphy_logo"
+            android:layout_width="match_parent"
+            android:layout_height="22dp"
+            android:background="@color/page_background"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="3dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/poweredby_giphy" />
+    </LinearLayout>
+</FrameLayout>

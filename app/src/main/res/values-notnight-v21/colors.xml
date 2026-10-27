@@ -25,6 +25,11 @@
     <color name="input_bar_button_background_opaque_border">#33000000</color>
     <color name="input_bar_lock_view_background">#FCFCFC</color>
     <color name="input_bar_lock_view_border">#66000000</color>
+    <color name="recording_bar_background">#F0F0F0</color>
+    <color name="recording_bar_border">#D0D0D0</color>
+    <color name="recording_timer_text">#555555</color>
+    <color name="media_overview_tab_selected">#E0E0E0</color>
+    <color name="contact_message_action">#555555</color>
     <color name="mention_candidates_view_background">#FCFCFC</color>
     <color name="mention_candidates_view_background_ripple">#DFDFDF</color>
     <color name="link_preview_background">#0F000000</color>
@@ -167,6 +172,16 @@
     <color name="bchat_id_text_color">@color/button_green</color>
     <color name="conversation_menu_background">#ECECEC</color>
     <color name="overflow_menu_background">#F8F8F8</color>
+    <color name="reaction_overlay_card_background">#F8F8F8</color>
+    <color name="reaction_overlay_card_border">#C4C4C4</color>
+    <color name="reply_draft_card_background">#FFFFFF</color>
+    <color name="reply_draft_secondary_text">#8D8D8D</color>
+    <color name="reply_input_gradient_edge">#40FFFFFF</color>
+    <color name="reply_input_gradient_center">#40EEEEEE</color>
+    <color name="reply_input_border">#FFC4C4C4</color>
+    <color name="document_attachment_tile_background">#FFFFFF</color>
+    <color name="document_attachment_icon_background">#FFFFFF</color>
+    <color name="document_icon_tint">#555555</color>
     <color name="received_message_background">#E0E0E0</color>
     <color name="received_message_text_color">#333333</color>
     <color name="syncing_option_card_background">#F8F8F8</color>
@@ -191,7 +206,7 @@
     <color name="sent_quoted_text_color">#EBEBEB</color>
     <color name="received_quoted_text_color">#8A8A9D</color>
     <color name="clear_red_color">#FF3E3E</color>
-    <color name="no_media_color">#A7A7BA</color>
+    <color name="no_media_color">#ACACAC</color>
     <color name="input_bar_stroke">#A7A7BA</color>
     <color name="call_bottom_background">#E8E8E8</color>
     <color name="unread_chat_background">#F4F4F4</color>
@@ -304,4 +319,8 @@
     <color name="background_color_span">#797984</color>
     <color name="foreground_image_input_bar_symbol">#66FFFFFF</color>
     <color name="expend_icon_hint">#9595B5</color>
+    <color name="sticker_message_label_background">#E0E0E0</color>
+    <color name="sticker_message_label_text">#555555</color>
+    <color name="sticker_message_timestamp">#777777</color>
+    <color name="group_left_message_background">#E8E8E8</color>
 </resources>

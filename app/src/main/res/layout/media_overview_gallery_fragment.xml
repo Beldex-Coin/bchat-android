@@ -20,21 +20,23 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:layout_centerInParent="true"
+        android:layout_marginBottom="94dp"
         android:orientation="vertical"
         android:gravity="center">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:tint="@color/no_media_color"
             android:src="@drawable/ic_no_media"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/medium_font_size"
+            android:textSize="16sp"
             android:textColor="@color/no_media_color"
             android:text="@string/media_overview_activity__no_media"
-            android:fontFamily="@font/open_sans_medium"
+            android:fontFamily="@font/open_sans_semi_bold"
             android:textAlignment="center"
             android:layout_marginTop="16dp"/>
 

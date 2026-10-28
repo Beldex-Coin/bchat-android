@@ -104,6 +104,9 @@ fun MessageRequestsView(
             Spacer(modifier = Modifier.width(12.dp))
             Text(
                 text = stringResource(id = R.string.search_name_bns_bchat_id),
+                maxLines = 1,
+                softWrap = false,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                 fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                 fontWeight = FontWeight.Light,
                 fontSize = 14.sp,

@@ -230,6 +230,9 @@ private fun SearchView(
                     Text(
                         text = stringResource(id = R.string.search_name_bns_bchat_id),
                         modifier = Modifier.padding(start = 4.dp),
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                         fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                         fontSize = 14.sp,
                         color = MaterialTheme.appColors.onboardingInputHint

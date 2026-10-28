@@ -1,10 +1,12 @@
 package io.beldex.bchat.onboarding.ui
 
+import android.os.Build
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.TextView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -103,6 +105,16 @@ fun DisplayNameStepScreen(
                             setHintTextColor(hintColor)
                             setTextColor(textColor)
                             setPadding(0, 0, 0, 0)
+                            // The theme's cursor is green; Figma shows a white caret with a small gap.
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                setTextCursorDrawable(R.drawable.onboarding_edit_text_cursor)
+                            } else {
+                                runCatching {
+                                    TextView::class.java.getDeclaredField("mCursorDrawableRes")
+                                        .apply { isAccessible = true }
+                                        .setInt(this, R.drawable.onboarding_edit_text_cursor)
+                                }
+                            }
                             setOnEditorActionListener { _, actionId, _ ->
                                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                                     latestOnContinueClick.value()

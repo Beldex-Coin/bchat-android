@@ -269,19 +269,11 @@ class DisplayNameActivity : BaseComponentActivity() {
         val trimmedDisplayName = displayName.trim()
         if (trimmedDisplayName.isEmpty()) {
             displayNameError = getString(R.string.activity_display_name_display_name_missing_error)
-            return BChatToast.error(
-                this,
-                R.string.activity_display_name_display_name_missing_error,
-                Toast.LENGTH_SHORT
-            ).show()
+            return
         }
         if (trimmedDisplayName.toByteArray().size > ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
             displayNameError = getString(R.string.activity_display_name_display_name_too_long_error)
-            return BChatToast.error(
-                this,
-                R.string.activity_display_name_display_name_too_long_error,
-                Toast.LENGTH_SHORT
-            ).show()
+            return
         }
         //New Line
         if(TextSecurePreferences.getProfileName(this)!=null){
@@ -291,11 +283,7 @@ class DisplayNameActivity : BaseComponentActivity() {
         }
         if (!trimmedDisplayName.matches(englishNamePattern.toRegex())) {
             displayNameError = getString(R.string.display_name_validation)
-            return BChatToast.error(
-                    this,
-                    R.string.display_name_validation,
-                    Toast.LENGTH_SHORT
-            ).show()
+            return
         }
         displayNameError = null
         isRegistering = true

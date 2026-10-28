@@ -188,8 +188,7 @@ fun MessageRequestsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(64.dp)
-                        .background(Color(0xFF222222))
-                        .border(1.dp, Color(0xFF444444))
+                        .background(Color(0xFF0B0B0B))
                         .clickable { onRequestClick(recipient) }
                         .padding(horizontal = 14.dp)
                 )
@@ -284,8 +283,8 @@ fun MessageRequestItem(
             contentAlignment=Alignment.Center,
             modifier=Modifier
                 .size(32.dp)
-                .background(color=MaterialTheme.appColors.dialogBackground, shape=notchedCornerShape(6.dp))
-                .border(1.dp, MaterialTheme.appColors.dividerColor, notchedCornerShape(6.dp))
+                .background(color=Color(0xFF111111), shape=notchedCornerShape(6.dp))
+                .border(1.dp, Color(0xFF444444), notchedCornerShape(6.dp))
                 .clickable {
                     blockRequest(request)
                 }

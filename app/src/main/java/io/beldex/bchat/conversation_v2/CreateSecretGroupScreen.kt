@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -266,58 +267,66 @@ private fun SearchField(
     onSearchQueryChange: (String) -> Unit,
     showLoader: Boolean
 ) {
-    TextField(
+    // Figma: 48dp box, 15dp search icon 12dp from the edge, text 11dp after the icon.
+    androidx.compose.foundation.text.BasicTextField(
         value = searchQuery,
-        placeholder = {
-            Text(
-                text = stringResource(R.string.search_contact).uppercase(),
-                modifier = Modifier.padding(start = 4.dp),
-                fontFamily = RobotoMono,
-                fontWeight = androidx.compose.ui.text.font.FontWeight.Light,
-                fontSize = 12.sp,
-                color = MaterialTheme.appColors.onboardingInputHint
-            )
-        },
-        singleLine = true,
+        onValueChange = onSearchQueryChange,
         enabled = !showLoader,
+        singleLine = true,
+        textStyle = androidx.compose.ui.text.TextStyle(
+            fontFamily = RobotoMono,
+            fontSize = 14.sp,
+            color = MaterialTheme.appColors.editTextColor
+        ),
+        cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.appColors.textSelectionColor),
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Done
         ),
-        onValueChange = onSearchQueryChange,
         modifier = Modifier
             .fillMaxWidth()
+            .height(48.dp)
+            .background(MaterialTheme.appColors.dialogBackground)
             .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
-        shape = androidx.compose.ui.graphics.RectangleShape,
-        leadingIcon = {
-            Icon(
-                painter = painterResource(R.drawable.ic_search_secret_group),
-                contentDescription = stringResource(R.string.search_contact),
-                tint = MaterialTheme.appColors.onboardingInputHint,
-                modifier = Modifier.size(12.dp)
-            )
-        },
-        trailingIcon = if (searchQuery.isNotEmpty()) {
-            {
+        decorationBox = { innerTextField ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 12.dp)
+            ) {
                 Icon(
-                    imageVector = Icons.Default.Clear,
-                    contentDescription = stringResource(R.string.clear),
+                    painter = painterResource(R.drawable.ic_search_secret_group),
+                    contentDescription = stringResource(R.string.search_contact),
                     tint = MaterialTheme.appColors.onboardingInputHint,
-                    modifier = Modifier
-                        .size(18.dp)
-                        .clickable { onSearchQueryChange("") }
+                    modifier = Modifier.size(15.dp)
                 )
+                Spacer(modifier = Modifier.width(11.dp))
+                Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+                    if (searchQuery.isEmpty()) {
+                        Text(
+                            text = stringResource(R.string.search_contact).uppercase(),
+                            fontFamily = RobotoMono,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.Light,
+                            fontSize = 12.sp,
+                            maxLines = 1,
+                            color = MaterialTheme.appColors.onboardingInputHint
+                        )
+                    }
+                    innerTextField()
+                }
+                if (searchQuery.isNotEmpty()) {
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = stringResource(R.string.clear),
+                        tint = MaterialTheme.appColors.onboardingInputHint,
+                        modifier = Modifier
+                            .size(18.dp)
+                            .clickable { onSearchQueryChange("") }
+                    )
+                }
             }
-        } else null,
-        colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = MaterialTheme.appColors.dialogBackground,
-            focusedContainerColor = MaterialTheme.appColors.dialogBackground,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent,
-            selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
-            cursorColor = MaterialTheme.appColors.textSelectionColor
-        )
+        }
     )
 }
 

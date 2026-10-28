@@ -656,7 +656,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
             ComposeMessageDialogFragment.show(
                 supportFragmentManager,
                 title = getString(R.string.call_permission_required_title),
-                message = getString(R.string.call_permission_required_description),
+                message = getText(R.string.call_permission_required_description),
                 positiveText = getString(R.string.activity_settings_title),
                 negativeText = getString(R.string.cancel),
                 iconRes = R.drawable.ic_permission_setting,

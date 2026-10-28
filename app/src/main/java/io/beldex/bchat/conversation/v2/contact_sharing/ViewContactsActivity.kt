@@ -259,9 +259,6 @@ fun ChatWithContactPopUp(name: String, address : String, onDismiss: () -> Unit){
             cancelText = stringResource(id = R.string.cancel),
             onCancel = onDismiss,
             confirmText = stringResource(id = R.string.chat),
-            confirmContainerColor = Color(0xFF0B0B0B),
-            confirmContentColor = White,
-            confirmBorderColor = Color(0xFF078720),
             onConfirm = {
                 moveToChat(address)
                 activity.supportFragmentManager.popBackStack()

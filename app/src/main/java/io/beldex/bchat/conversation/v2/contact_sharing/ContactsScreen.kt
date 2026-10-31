@@ -139,8 +139,7 @@ fun ContactsScreen(
             Spacer(modifier = Modifier.height(16.dp))
             if (contacts.isEmpty()) {
                 if (searchQuery.isNotEmpty()) {
-                    // Figma "contacts_select": a bar under the search box (not a ghost illustration).
-                    androidx.compose.material3.Text(
+                    Text(
                         text = stringResource(id = R.string.no_such_contact_found),
                         color = MaterialTheme.appColors.editTextColor,
                         fontFamily = RobotoMono,
@@ -154,7 +153,15 @@ fun ContactsScreen(
                     Box(
                         modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
                     ) {
-                        io.beldex.bchat.compose_utils.GhostEmptyState(text = stringResource(id = R.string.no_contacts_yet))
+                        Image(
+                            painter = painterResource(
+                                if (isDarkTheme)
+                                    R.drawable.share_no_contact_yet
+                                else
+                                    R.drawable.share_no_contact_yet_light
+                            ),
+                            contentDescription = "no contact yet",
+                        )
                     }
                 }
             } else {

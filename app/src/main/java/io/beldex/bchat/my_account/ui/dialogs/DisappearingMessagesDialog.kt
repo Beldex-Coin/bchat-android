@@ -84,14 +84,14 @@ fun DisappearingMessagesDialog(
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .size(24.dp)
+                        .size(22.dp)
                         .background(MaterialTheme.appColors.userDetailsCancelBackground)
                         .clickable(onClick = onDismiss)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_close),
                         contentDescription = stringResource(id = R.string.cancel),
-                        tint = MaterialTheme.appColors.editTextColor,
+                        tint = MaterialTheme.appColors.cancelIconTint,
                         modifier = Modifier.size(14.dp)
                     )
                 }
@@ -118,10 +118,10 @@ fun DisappearingMessagesDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp)
-                            .background(MaterialTheme.appColors.backgroundColor, shape)
+                            .background(if(isSelected) MaterialTheme.appColors.selectedItemBackground else MaterialTheme.appColors.backgroundColor, shape)
                             .border(
-                                1.dp,
-                                if (isSelected) accent else MaterialTheme.appColors.dividerColor,
+                                if(isSelected) 0.5.dp else 1.dp,
+                                if (isSelected) accent else MaterialTheme.appColors.optionBorder,
                                 shape
                             )
                             .clickable { selected = index }

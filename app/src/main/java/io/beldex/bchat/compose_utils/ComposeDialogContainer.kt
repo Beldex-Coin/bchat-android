@@ -212,7 +212,7 @@ class ComposeDialogContainer(
                             UnblockUserDialog(
                                 title = argument1 ?: "",
                                 message = stringResource(id = R.string.chat_with_contact_confirmation),
-                                positiveButtonTitle = stringResource(id = R.string.message),
+                                positiveButtonTitle = stringResource(id = R.string.chat),
                                 onAccept = {
                                     dismiss()
                                     onConfirm()

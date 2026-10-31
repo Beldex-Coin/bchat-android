@@ -21,8 +21,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -31,8 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.DialogCancelButton
-import io.beldex.bchat.compose_utils.DialogConfirmButton
 import io.beldex.bchat.compose_utils.DialogContainer
+import io.beldex.bchat.compose_utils.IconConfirmDialog
 import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
@@ -111,11 +113,11 @@ fun TrimNowDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    io.beldex.bchat.compose_utils.IconConfirmDialog(
-        icon = androidx.compose.ui.res.painterResource(id = R.drawable.ic_pop_trim_now),
+    IconConfirmDialog(
+        icon = painterResource(id = R.drawable.ic_delete_all),
         title = stringResource(id = R.string.ApplicationPreferencesActivity_delete_all_old_messages_now),
-        message = androidx.compose.ui.text.AnnotatedString(
-            androidx.compose.ui.res.pluralStringResource(
+        message = AnnotatedString(
+            pluralStringResource(
                 id = R.plurals.ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages,
                 count = limit,
                 limit

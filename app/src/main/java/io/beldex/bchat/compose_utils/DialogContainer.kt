@@ -8,6 +8,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,6 +33,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -178,24 +180,24 @@ fun DialogCancelButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    fontFamily: androidx.compose.ui.text.font.FontFamily = OpenSans,
+    fontFamily: FontFamily = OpenSans,
     textColor: Color = MaterialTheme.appColors.editTextColor,
-    icon: androidx.compose.ui.graphics.painter.Painter? = null
+    icon: Painter? = null
 ) {
     PrimaryButton(
         onClick = onClick,
-        shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+        shape = notchedCornerShape(BChatDimens.NotchMedium),
         containerColor = MaterialTheme.appColors.dialogBackground,
         contentColor = textColor,
         border = BorderStroke(1.dp, MaterialTheme.appColors.onboardingSecondaryButtonBorder),
-        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
+        contentPadding =PaddingValues(0.dp),
         modifier = modifier.heightIn(min = BChatDimens.DialogButtonMinHeight)
     ) {
         if (icon != null) {
             androidx.compose.material3.Icon(painter = icon, contentDescription = null, tint = textColor, modifier = Modifier.size(16.dp))
             Spacer(modifier = Modifier.width(8.dp))
         }
-        Text(text = text, fontFamily = fontFamily, fontWeight = FontWeight.Normal, fontSize = 14.sp)
+        Text(text = text, fontFamily = fontFamily, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = MaterialTheme.appColors.dialogNegativeButtonText)
     }
 }
 
@@ -207,19 +209,21 @@ fun DialogConfirmButton(
     destructive: Boolean = false,
     enabled: Boolean = true
 ) {
-    val accent = if (destructive) MaterialTheme.appColors.negativeRedButtonBorder
-    else MaterialTheme.appColors.userDetailsConfirmBackground
+    val containerColor = if (destructive) MaterialTheme.appColors.negativeRedButtonBorder
+    else MaterialTheme.appColors.editTextColor
+    val containerBorder = if (destructive) MaterialTheme.appColors.negativeRedButtonBorder
+    else MaterialTheme.appColors.dialogPositiveButtonBorder
     PrimaryButton(
         onClick = onClick,
         enabled = enabled,
-        shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
-        containerColor = accent.copy(alpha = 0.1f),
+        shape = notchedCornerShape(BChatDimens.NotchMedium),
+        containerColor = containerColor,
         contentColor = MaterialTheme.appColors.editTextColor,
-        border = BorderStroke(0.5.dp, accent),
+        border = BorderStroke(0.5.dp, containerBorder),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
         modifier = modifier.heightIn(min = BChatDimens.DialogButtonMinHeight)
     ) {
-        Text(text = text, fontFamily = OpenSans, fontWeight = FontWeight.Normal, fontSize = 14.sp)
+        Text(text = text, fontFamily = OpenSans, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = MaterialTheme.appColors.dialogPositiveButtonText)
     }
 }
 

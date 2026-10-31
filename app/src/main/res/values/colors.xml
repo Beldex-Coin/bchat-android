@@ -423,4 +423,22 @@
     <color name="sticker_message_label_text">#ACACAC</color>
     <color name="sticker_message_timestamp">#A7A7BA</color>
     <color name="group_left_message_background">#1A1A1A</color>
+    <color name="read_button_background">#EBEBEB</color>
+    <color name="read_button_border">#000000</color>
+    <color name="drawer_blur_background">#CC1A1A1A</color>
+    <color name="disappear_icon_color">#EBEBEB</color>
+    <color name="text_color_dark">#0B0B0B</color>
+    <color name="mr_card_bg">#0B0B0B</color>
+    <color name="mr_card_stroke">#333333</color>
+    <color name="mr_title">#FFFFFF</color>
+    <color name="mr_body">#EBEBEB</color>
+    <color name="mr_close_bg">#2A2A2A</color>
+    <color name="mr_close_stroke">#3D3D3D</color>
+    <color name="mr_close_icon">#EBEBEB</color>
+    <color name="mr_decline_bg">#00000000</color>
+    <color name="mr_decline_stroke">#3D3D3D</color>
+    <color name="mr_decline_text">#8D8D8D</color>
+    <color name="mr_accept_bg">#D9D9D9</color>
+    <color name="mr_accept_stroke">#1B5E20</color>
+    <color name="mr_accept_text">#0B0B0B</color>
 </resources>

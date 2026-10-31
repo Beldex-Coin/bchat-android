@@ -107,7 +107,14 @@ class Colors() {
     var userDetailsCancelIconColor: Color = Color.Unspecified
     var userDetailsConfirmBackground: Color = Color.Unspecified
     var userDetailsBchatIdText: Color = Color.Unspecified
-    // Revamp_2026 New Chat / Groups (Phase 4)
+    var dialogPositiveButtonBorder: Color = Color.Unspecified
+    var dialogPositiveButtonText: Color = Color.Unspecified
+    var dialogNegativeButtonText: Color = Color.Unspecified
+    var messageRequestItemBackground: Color = Color.Unspecified
+    var messageRequestBackground: Color = Color.Unspecified
+    var optionBorder: Color = Color.Unspecified
+    var cancelIconTint: Color = Color.Unspecified
+    var selectedItemBackground: Color = Color.Unspecified
 }
 
 val lightColors = Colors().apply {
@@ -182,6 +189,15 @@ val lightColors = Colors().apply {
     userDetailsCancelIconColor = Color(0xFF6E6E7C)
     userDetailsConfirmBackground = Color(0xFF078720)
     userDetailsBchatIdText = Color(0xFF078720)
+    dialogPositiveButtonBorder = Color(0xFF0B0B0B)
+    dialogPositiveButtonText = Color (0xFFFFFFFF)
+    dialogNegativeButtonText = Color (0xFF555555)
+    messageRequestItemBackground = Color (0xFFF0F0F0)
+    messageRequestBackground = Color (0xFFFFFFFF)
+    optionBorder = Color (0xFFD0D0D0)
+    cancelIconTint = Color (0xFFEBEBEB)
+    selectedItemBackground = Color (0xFFFFFFFF)
+
 }
 
 val darkColors = Colors().apply {
@@ -230,7 +246,7 @@ val darkColors = Colors().apply {
     disabledNextButtonColor = Color(0xFF6C6C78)
     profileAddressCardBackground = Color(0xFF11111A)
     profileCameraIconBackgroundWithBnsTag = Color(0xFF11111A)
-    profileCameraIconBackground = Color(0xFF111119)
+    profileCameraIconBackground = Color(0xFF19)
     negativeGreenButton = Color(0x1A078727)
     negativeRedButton = Color(0x1AFF3E3E)
     negativeRedButtonBorder = Color(0xFFFF3E3E)
@@ -256,6 +272,15 @@ val darkColors = Colors().apply {
     userDetailsCancelIconColor = Color(0xFFACACAC)
     userDetailsConfirmBackground = Color(0xFF00BC33)
     userDetailsBchatIdText = Color(0xFF00BD40)
+    dialogPositiveButtonBorder = Color (0xFF0A370A)
+    dialogPositiveButtonText = Color (0xFF0B0B0B)
+    dialogNegativeButtonText = Color (0xFFACACAC)
+    messageRequestItemBackground = Color (0xFF0B0B0B)
+    messageRequestBackground = Color (0xFF061306)
+    optionBorder = Color (0xFF444444)
+    cancelIconTint = Color (0xFFACACAC)
+    selectedItemBackground = Color (0xFF111111)
+
 }
 
 

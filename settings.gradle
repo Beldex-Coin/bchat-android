@@ -11,7 +11,11 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven { url "https://google.bintray.com/flexbox-layout" }
+        // Removed: maven { url "https://google.bintray.com/flexbox-layout" }
+        // Bintray was shut down; the host now resolves to JFrog with a mismatched TLS
+        // certificate, which makes Gradle fail (instead of falling through to google())
+        // for any dependency that is not already in the local cache. flexbox:3.0.0 is
+        // published on Google Maven and resolves from google() above.
         maven {
             url "https://raw.githubusercontent.com/signalapp/maven/master/aesgcmprovider/release/"
             content {

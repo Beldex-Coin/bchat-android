@@ -51,7 +51,6 @@
             android:id="@+id/readButton"
             android:layout_width="71dp"
             android:layout_height="32dp"
-            android:backgroundTint="#0B0B0B"
             android:fontFamily="@font/open_sans_semi_bold"
             android:gravity="center"
             android:insetTop="0dp"
@@ -63,9 +62,8 @@
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
             android:textSize="14sp"
-            app:strokeColor="#078720"
-            app:strokeWidth="1dp"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.Bchat.NotchedButton" />
+            android:background="@drawable/read_button_background"
+       />
 
     </LinearLayout>
 

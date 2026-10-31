@@ -2,52 +2,36 @@ package io.beldex.bchat.home
 
 import android.content.Context
 import android.content.res.Configuration
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.graphics.Color
-import androidx.compose.foundation.border
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.ExpandCircleDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -56,17 +40,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.beldex.libbchat.messaging.contacts.Contact
+import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.noRippleCallback
-import io.beldex.bchat.compose_utils.ui.BubbledText
+import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 import io.beldex.bchat.database.model.ThreadRecord
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.R
-import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -106,8 +90,8 @@ fun MessageRequestsView(
                 text = stringResource(id = R.string.search_name_bns_bchat_id),
                 maxLines = 1,
                 softWrap = false,
-                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                overflow = TextOverflow.Ellipsis,
+                fontFamily = RobotoMono,
                 fontWeight = FontWeight.Light,
                 fontSize = 14.sp,
                 color = MaterialTheme.appColors.onboardingInputHint
@@ -121,8 +105,17 @@ fun MessageRequestsView(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(53.dp)
-                    .background(requestBannerFill)
-                    .border(0.5.dp, requestBannerAccent)
+                    .background(color = MaterialTheme.appColors.messageRequestBackground.copy(alpha = 0.5f))
+                    .drawBehind {
+                        val strokeWidth = 0.40.dp.toPx()
+
+                        drawLine(
+                            color = requestBannerAccent,
+                            start = Offset(0f, 0f),
+                            end = Offset(size.width, 0f),
+                            strokeWidth = strokeWidth
+                        )
+                    }
                     .clickable { openMessageRequests() }
                     .padding(horizontal = 20.dp)
             ) {
@@ -135,7 +128,7 @@ fun MessageRequestsView(
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
                     text = stringResource(id = if (requests.size == 1) R.string.activity_message_request_title else R.string.activity_message_requests_title),
-                    fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                    fontFamily = OpenSans,
                     fontSize = 13.5.sp,
                     color = MaterialTheme.appColors.editTextColor,
                     modifier = Modifier.weight(1f)
@@ -143,15 +136,19 @@ fun MessageRequestsView(
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
+                        .defaultMinSize(minWidth = 21.dp, minHeight = 18.dp)
                         .background(requestBannerAccent)
-                        .padding(horizontal = 5.dp, vertical = 1.dp)
+                        .padding(horizontal = 5.dp, vertical = 2.dp)
                 ) {
                     Text(
                         text = requests.size.toString(),
-                        fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                        fontFamily = OpenSans,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 9.sp,
-                        color = Color(0xFF0B0B0B)
+                        lineHeight = 12.sp,
+                        color = MaterialTheme.appColors.dialogPositiveButtonText,
+                        maxLines = 1,
+                        softWrap = false
                     )
                 }
                 Spacer(modifier = Modifier.width(12.dp))

@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -47,11 +48,13 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -80,8 +83,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Dp
@@ -109,12 +115,15 @@ import io.beldex.bchat.compose_utils.bchatBackground
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.ui.ScreenContainer
 import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.conversation.v2.dialogs.LeaveGroupDialog
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.home.NotificationSettingDialog
 import io.beldex.bchat.my_account.ui.CardContainer
+import io.beldex.bchat.my_account.ui.MyAccountScreenContainer
 import io.beldex.bchat.my_account.ui.dialogs.LockOptionsDialog
+import io.beldex.bchat.onboarding.ui.OnboardingTopBar
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import kotlinx.coroutines.launch
@@ -151,18 +160,26 @@ class SecretGroupInfoComposeActivity : BaseComponentActivity() {
 
             BChatTheme(darkTheme = isDarkTheme) {
                 Surface(
-                    color = MaterialTheme.appColors.backgroundColor,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(WindowInsets.systemBars.asPaddingValues())
+                    color = Color.Transparent,
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    val context = LocalContext.current
-                    val lifecycleOwner = LocalLifecycleOwner.current
+                    Scaffold(
+                        modifier = Modifier.bchatBackground(MaterialTheme.appColors.backgroundColor),
+                        contentWindowInsets = WindowInsets.safeContent,
+                        containerColor = Color.Transparent
+                    ) { innerPadding ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(innerPadding)
+                        ) {
+                            val context = LocalContext.current
+                            val lifecycleOwner = LocalLifecycleOwner.current
 
                     val groupID = intent?.getStringExtra(secretGroupID) ?: ""
                     val viewModelFactory = SecretGroupViewModelFactory(groupID, context)
                     val secretGroupInfoViewModel = ViewModelProvider(
-                        this, viewModelFactory
+                        this@SecretGroupInfoComposeActivity, viewModelFactory
                     )[SecretGroupInfoViewModel::class.java]
                     val groupMembers by secretGroupInfoViewModel.groupMembers.collectAsState()
 
@@ -196,6 +213,8 @@ class SecretGroupInfoComposeActivity : BaseComponentActivity() {
                                 }
                             }
                         )
+                    }
+                        }
                     }
                 }
             }
@@ -515,7 +534,8 @@ fun GroupDetailsScreen(
             },
             properties = androidx.compose.ui.window.DialogProperties(
                 usePlatformDefaultWidth = false,
-                dismissOnClickOutside = false
+                dismissOnClickOutside = false,
+                decorFitsSystemWindows = false
             )
         ) {
             val focusRequester=remember { FocusRequester() }
@@ -527,7 +547,19 @@ fun GroupDetailsScreen(
                 }
             }
 
-            io.beldex.bchat.compose_utils.ui.ScreenContainer(
+            val dialogView = LocalView.current
+            DisposableEffect(dialogView) {
+                val window = (dialogView as? androidx.compose.ui.window.DialogWindowProvider)?.window
+                val previous = window?.attributes?.softInputMode
+                window?.setSoftInputMode(
+                    android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+                )
+                onDispose {
+                    if (previous != null) window?.setSoftInputMode(previous)
+                }
+            }
+
+            ScreenContainer(
                 title = stringResource(id = R.string.search_member_title),
                 onBackClick = {
                     showSearchView(false)
@@ -535,118 +567,119 @@ fun GroupDetailsScreen(
                 },
                 modifier = Modifier
                     .fillMaxSize()
+                    .imePadding()
                     .bchatBackground(MaterialTheme.appColors.backgroundColor)
             ) {
-            Column(modifier=Modifier.padding(16.dp)) {
+                Column(modifier=Modifier.padding(16.dp)) {
 
-                BChatOutlinedTextField(
-                    value=searchQuery,
-                    onValueChange={
-                        secretGroupInfoViewModel.updateSearchQuery(it)
-                    },
-                    placeHolder=stringResource(id=R.string.search_contact).uppercase(),
-                    unFocusedContainerColor=MaterialTheme.appColors.dialogBackground,
-                    focusedContainerColor=MaterialTheme.appColors.dialogBackground,
-                    focusedBorderColor=MaterialTheme.appColors.pinBoxInactiveBorder,
-                    unFocusedBorderColor=MaterialTheme.appColors.pinBoxInactiveBorder,
-                    selectionColors=MaterialTheme.appColors.textSelectionColor,
-                    cursorColor=MaterialTheme.appColors.textSelectionColor,
-                    shape=androidx.compose.ui.graphics.RectangleShape,
-                    leadingIcon={
-                        Icon(
-                            imageVector=Icons.Default.Search,
-                            contentDescription="clear search text",
-                            tint=MaterialTheme.appColors.secondaryContentColor,
-                        )
-                    },
-                    trailingIcon={
-                        if (searchQuery.isNotEmpty()) {
+                    BChatOutlinedTextField(
+                        value=searchQuery,
+                        onValueChange={
+                            secretGroupInfoViewModel.updateSearchQuery(it)
+                        },
+                        placeHolder=stringResource(id=R.string.search_contact).uppercase(),
+                        unFocusedContainerColor=MaterialTheme.appColors.dialogBackground,
+                        focusedContainerColor=MaterialTheme.appColors.dialogBackground,
+                        focusedBorderColor=MaterialTheme.appColors.pinBoxInactiveBorder,
+                        unFocusedBorderColor=MaterialTheme.appColors.pinBoxInactiveBorder,
+                        selectionColors=MaterialTheme.appColors.textSelectionColor,
+                        cursorColor=MaterialTheme.appColors.textSelectionColor,
+                        shape=RectangleShape,
+                        leadingIcon={
                             Icon(
-                                imageVector=Icons.Default.Clear,
+                                imageVector = Icons.Default.Search,
                                 contentDescription="clear search text",
-                                tint=MaterialTheme.appColors.secondaryContentColor,
-                                modifier=Modifier.clickable {
-                                    secretGroupInfoViewModel._searchQuery.value=""
-                                }
+                                tint = Color.Gray,
                             )
-                        }
-                    },
-                    modifier=Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester)
-
-                )
-
-                LazyColumn(modifier=Modifier.padding(top=16.dp)) {
-
-                    items(
-                        items = membersToDisplay,
-                        key = { member -> member }
-                    ) { member ->
-
-                        Row(
-                            modifier=Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp)
-                                .clickable {
-                                    if (getLocalNumber(context) != member) {
-                                        selectedItem = member
-                                        showMemberOptionDialog = true
+                        },
+                        trailingIcon={
+                            if (searchQuery.isNotEmpty()) {
+                                Icon(
+                                    imageVector=Icons.Default.Clear,
+                                    contentDescription="clear search text",
+                                    tint=MaterialTheme.appColors.secondaryContentColor,
+                                    modifier=Modifier.clickable {
+                                        secretGroupInfoViewModel._searchQuery.value=""
                                     }
-                                },
-                            verticalAlignment=Alignment.CenterVertically
-                        )
-                        {
-                            Box(
-                                modifier=Modifier
-                                    .padding(1.dp)
-                                    .height(40.dp)
-                                    .width(40.dp),
-                                contentAlignment=Alignment.Center,
-                            ) {
-                                ProfilePictureComponent(
-                                    publicKey = member,
-                                    displayName = getUserDisplayName(member),
-                                    containerSize = 40.dp,
-                                    pictureMode = ProfilePictureMode.SmallPicture
                                 )
                             }
-                            Spacer(modifier=Modifier.width(16.dp))
-                            Column(modifier=Modifier.weight(1f)) {
+                        },
+                        modifier=Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester)
+
+                    )
+
+                    LazyColumn(modifier=Modifier.padding(top=16.dp)) {
+
+                        items(
+                            items = membersToDisplay,
+                            key = { member -> member }
+                        ) { member ->
+
+                            Row(
+                                modifier=Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 8.dp)
+                                    .clickable {
+                                        if (getLocalNumber(context) != member) {
+                                            selectedItem = member
+                                            showMemberOptionDialog = true
+                                        }
+                                    },
+                                verticalAlignment=Alignment.CenterVertically
+                            )
+                            {
+                                Box(
+                                    modifier=Modifier
+                                        .padding(1.dp)
+                                        .height(40.dp)
+                                        .width(40.dp),
+                                    contentAlignment=Alignment.Center,
+                                ) {
+                                    ProfilePictureComponent(
+                                        publicKey = member,
+                                        displayName = getUserDisplayName(member),
+                                        containerSize = 40.dp,
+                                        pictureMode = ProfilePictureMode.SmallPicture
+                                    )
+                                }
+                                Spacer(modifier=Modifier.width(16.dp))
+                                Column(modifier=Modifier.weight(1f)) {
+                                    Text(
+                                        text=getUserDisplayName(member).capitalizeFirstLetter(),
+                                        style=MaterialTheme.typography.bodyMedium.copy(
+                                            fontSize=16.sp,
+                                            color=MaterialTheme.appColors.textColor
+                                        ),
+                                        modifier=Modifier.padding(end=8.dp)
+                                    )
+                                }
+                                Spacer(modifier=Modifier.width(16.dp))
+                                if (groupAdmin.contains(member)) {
+                                    Image(
+                                        painter=painterResource(id=R.drawable.ic_admin_crown),
+                                        contentDescription="admin crown",
+                                        modifier=Modifier.size(18.dp)
+                                    )
+                                }
+                                Spacer(modifier=Modifier.width(8.dp))
+                            }
+                        }
+                        item {
+                            if (membersToDisplay.isEmpty()) {
                                 Text(
-                                    text=getUserDisplayName(member).capitalizeFirstLetter(),
+                                    text= stringResource(R.string.no_records_found),
                                     style=MaterialTheme.typography.bodyMedium.copy(
-                                        fontSize=16.sp,
+                                        fontSize=14.sp,
                                         color=MaterialTheme.appColors.textColor
                                     ),
-                                    modifier=Modifier.padding(end=8.dp)
+                                    modifier=Modifier.padding(16.dp)
                                 )
                             }
-                            Spacer(modifier=Modifier.width(16.dp))
-                            if (groupAdmin.contains(member)) {
-                                Image(
-                                    painter=painterResource(id=R.drawable.ic_admin_crown),
-                                    contentDescription="admin crown",
-                                    modifier=Modifier.size(18.dp)
-                                )
-                            }
-                            Spacer(modifier=Modifier.width(8.dp))
-                        }
-                    }
-                    item {
-                        if (membersToDisplay.isEmpty()) {
-                            Text(
-                                text= stringResource(R.string.no_records_found),
-                                style=MaterialTheme.typography.bodyMedium.copy(
-                                    fontSize=14.sp,
-                                    color=MaterialTheme.appColors.textColor
-                                ),
-                                modifier=Modifier.padding(16.dp)
-                            )
                         }
                     }
                 }
-            }
             }
         }
     }
@@ -701,34 +734,33 @@ fun GroupDetailsScreen(
 
         Column(modifier=Modifier.padding(12.dp)) {
 
-            LazyColumn(
-                modifier=Modifier
-                    .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
-            )
+            LazyColumn()
             {
                 item() {
                     Column(
-                        modifier=Modifier.padding(
-                            start=8.dp,
-                            top=16.dp,
-                            end=8.dp,
-                            bottom=8.dp
-                        )
+                        modifier = Modifier
+                            .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
+                            .padding(
+                                start = 8.dp,
+                                top = 16.dp,
+                                end = 8.dp,
+                                bottom = 8.dp
+                            )
                     ) {
                         NavigationItem(
                             stringResource(R.string.all_media),
-                            painterResource(id=R.drawable.ic_all_media),
-                            onItemClick={ listenerCallback?.showAllMedia(recipient) },
-                            checked=false,
-                            showSwitch=false,
+                            painterResource(id = R.drawable.ic_all_media),
+                            onItemClick = { listenerCallback?.showAllMedia(recipient) },
+                            checked = false,
+                            showSwitch = false,
                             null
                         )
                         NavigationItem(
                             stringResource(R.string.disappearing_messages),
-                            painterResource(id=R.drawable.ic_disappearing_message),
-                            onItemClick={
+                            painterResource(id = R.drawable.ic_disappearing_message),
+                            onItemClick = {
                                 if (isSecretGroupIsActive()) {
-                                    showExpireMessageDialog=true
+                                    showExpireMessageDialog = true
                                 } else {
                                     BChatToast.error(
                                         context,
@@ -737,15 +769,15 @@ fun GroupDetailsScreen(
                                     ).show()
                                 }
                             },
-                            checked=showExpirationItem != 0,
-                            showSwitch=true,
-                            subTitle=context.getString(R.string.disappearing_info),
-                            iconSize=20.dp
+                            checked = showExpirationItem != 0,
+                            showSwitch = true,
+                            subTitle = context.getString(R.string.disappearing_info),
+                            iconSize = 20.dp
                         )
                         NavigationItem(
                             stringResource(R.string.activity_edit_closed_group_title),
-                            painterResource(id=R.drawable.ic_group_edit),
-                            onItemClick={
+                            painterResource(id = R.drawable.ic_group_edit),
+                            onItemClick = {
                                 if (isSecretGroupIsActive()) {
                                     editSecretGroup(context, recipient)
                                 } else {
@@ -756,17 +788,17 @@ fun GroupDetailsScreen(
                                     ).show()
                                 }
                             },
-                            checked=false,
+                            checked = false,
                             false,
                             null,
-                            iconSize=20.dp
+                            iconSize = 20.dp
                         )
                         NavigationItem(
                             stringResource(R.string.notify_for_mentions_only),
-                            painterResource(id=R.drawable.ic_mention_only),
-                            onItemClick={
+                            painterResource(id = R.drawable.ic_mention_only),
+                            onItemClick = {
                                 if (isSecretGroupIsActive()) {
-                                    showNotificationSettingsDialog=true
+                                    showNotificationSettingsDialog = true
                                 } else {
                                     BChatToast.error(
                                         context,
@@ -776,15 +808,15 @@ fun GroupDetailsScreen(
                                 }
 
                             },
-                            checked=showNotificationSettingsItem == context.getString(R.string.notify_type_mentions),
-                            showSwitch=true,
-                            subTitle=context.getString(R.string.notification_info),
-                            iconSize=20.dp
+                            checked = showNotificationSettingsItem == context.getString(R.string.notify_type_mentions),
+                            showSwitch = true,
+                            subTitle = context.getString(R.string.notification_info),
+                            iconSize = 20.dp
                         )
 
                         Row(
-                            verticalAlignment=Alignment.CenterVertically,
-                            modifier=Modifier
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(16.dp)
                                 .clickable {
@@ -802,121 +834,150 @@ fun GroupDetailsScreen(
                                 }
                         ) {
                             Icon(
-                                painterResource(id=R.drawable.ic_leave_group),
-                                contentDescription="exit group",
-                                tint=MaterialTheme.appColors.negativeRedButtonBorder,
-                                modifier=Modifier.size(24.dp)
+                                painterResource(id = R.drawable.ic_leave_group),
+                                contentDescription = "exit group",
+                                tint = MaterialTheme.appColors.negativeRedButtonBorder,
+                                modifier = Modifier.size(24.dp)
                             )
-                            Spacer(modifier=Modifier.width(16.dp))
+                            Spacer(modifier = Modifier.width(16.dp))
                             Text(
-                                text= stringResource(R.string.leave_group),
-                                color=MaterialTheme.appColors.negativeRedButtonBorder,
+                                text = stringResource(R.string.leave_group),
+                                color = MaterialTheme.appColors.negativeRedButtonBorder,
                                 fontFamily = io.beldex.bchat.compose_utils.OpenSans,
                                 fontSize = 14.sp
                             )
                         }
-
-                        Spacer(
-                            modifier=Modifier
-                                .fillMaxWidth()
-                                .height(24.dp)
-                        )
                     }
                 }
 
                 item {
                     Divider(
-                        color=MaterialTheme.appColors.dividerColor,
-                        modifier=Modifier
+                        color = MaterialTheme.appColors.dividerColor,
+                        modifier = Modifier
                             .fillMaxWidth()
                             .alpha(0.5f)
                     )
                 }
 
                 item {
-                    Row(
-                        modifier=Modifier.padding(16.dp)
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(24.dp)
+                    )
+                }
+
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .border(
+                                1.dp,
+                                MaterialTheme.appColors.pinBoxInactiveBorder
+                            )
+                            .padding(12.dp)
                     ) {
-                        Text(
-                            text= stringResource(R.string.ConversationActivity_member_count, memberCount),
-                            color=Color.Gray,
-                            style=MaterialTheme.typography.titleSmall.copy(
-                                color=MaterialTheme.appColors.editTextPlaceholder,
-                                fontSize=16.sp,
-                                fontWeight=FontWeight(400)
-                            ),
-                            modifier=Modifier.weight(1f)
-                        )
-                        Icon(
-                            imageVector=Icons.Default.Search,
-                            contentDescription="search members",
-                            tint=Color.Gray,
-                            modifier=Modifier
-                                .size(20.dp)
-                                .clickable {
-                                    showSearchView(true)
-                                    secretGroupInfoViewModel.updateVisibleBottomSheet(true)
+
+                        // Member count and search
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    color = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
+                                    shape = RectangleShape
+                                ),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = stringResource(
+                                    R.string.ConversationActivity_member_count,
+                                    memberCount
+                                ),
+                                color = MaterialTheme.appColors.editTextPlaceholder,
+                                style = MaterialTheme.typography.titleSmall.copy(
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight(400)
+                                ),
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(horizontal = 18.dp, vertical = 12.dp)
+                            )
+
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "search members",
+                                tint = Color.Gray,
+                                modifier = Modifier
+                                    .padding(end = 16.dp)
+                                    .size(20.dp)
+                                    .clickable {
+                                        showSearchView(true)
+                                        secretGroupInfoViewModel.updateVisibleBottomSheet(true)
+                                    }
+                            )
+                        }
+
+                        // Group members list
+                        groupMembers?.members?.forEach { member ->
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 16.dp)
+                                    .clickable {
+                                        if (getLocalNumber(context) != member) {
+                                            selectedItem = member
+                                            showMemberOptionDialog = true
+                                        }
+                                    },
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .padding(1.dp)
+                                        .size(40.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    ProfilePictureComponent(
+                                        publicKey = member,
+                                        displayName = getUserDisplayName(member),
+                                        containerSize = 40.dp,
+                                        pictureMode = ProfilePictureMode.SmallPicture
+                                    )
                                 }
-                        )
+
+                                Spacer(modifier = Modifier.width(16.dp))
+
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = getUserDisplayName(member).capitalizeFirstLetter(),
+                                        style = MaterialTheme.typography.bodyMedium.copy(
+                                            fontSize = 16.sp,
+                                            color = MaterialTheme.appColors.textColor
+                                        ),
+                                        modifier = Modifier.padding(end = 8.dp)
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.width(16.dp))
+
+                                if (groupAdmin.contains(member)) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.ic_admin_crown),
+                                        contentDescription = "admin crown",
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.width(8.dp))
+                            }
+                        }
                     }
                 }
 
-                items(
-                    items = groupMembers!!.members,
-                    key = { member -> member }
-                ) { member ->
 
-                    Row(
-                        modifier=Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                            .clickable {
-                                if (getLocalNumber(context) != member) {
-                                    selectedItem = member
-                                    showMemberOptionDialog = true
-                                }
-                            },
-                        verticalAlignment=Alignment.CenterVertically,
-
-                        ) {
-                        Box(
-                            modifier=Modifier
-                                .padding(1.dp)
-                                .height(40.dp)
-                                .width(40.dp),
-                            contentAlignment=Alignment.Center,
-                        ) {
-                            ProfilePictureComponent(
-                                publicKey=member,
-                                displayName=getUserDisplayName(member),
-                                containerSize=40.dp,
-                                pictureMode=ProfilePictureMode.SmallPicture
-                            )
-                        }
-                        Spacer(modifier=Modifier.width(16.dp))
-                        Column(modifier=Modifier.weight(1f)) {
-                            Text(
-                                text=getUserDisplayName(member).capitalizeFirstLetter(),
-                                style=MaterialTheme.typography.bodyMedium.copy(
-                                    fontSize=16.sp,
-                                    color=MaterialTheme.appColors.textColor
-                                ),
-                                modifier=Modifier.padding(end=8.dp)
-                            )
-                        }
-                        Spacer(modifier=Modifier.width(16.dp))
-                        if (groupAdmin.contains(member)) {
-                            Image(
-                                painter=painterResource(id=R.drawable.ic_admin_crown),
-                                contentDescription="admin crown",
-                                modifier=Modifier.size(18.dp)
-                            )
-                        }
-                        Spacer(modifier=Modifier.width(8.dp))
-                    }
                 }
             }
-        }
     }
 }
 
@@ -943,7 +1004,7 @@ fun NavigationItem(
                 .clickable {
                     onItemClick()
                 },
-            verticalAlignment=Alignment.Top,
+            verticalAlignment=Alignment.CenterVertically,
 
             ) {
             Image(
@@ -1025,38 +1086,11 @@ private fun SecretGroupInfoScreenContainer(
             .fillMaxSize()
 
     ) {
-        Row(
-            verticalAlignment=Alignment.CenterVertically,
-            modifier=Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
-            Icon(painterResource(id=R.drawable.ic_back_arrow),
-                contentDescription=stringResource(R.string.back),
-                tint=MaterialTheme.appColors.editTextColor,
-                modifier=Modifier.clickable {
-                    if (title == context.getString(R.string.search_member_title)) {
-                        secretGroupInfoViewModel.updateVisibleBottomSheet(false)
-                        titleChange()
-                        secretGroupInfoViewModel._searchQuery.value = ""
-                    } else {
-                        onBackClick()
-                        secretGroupInfoViewModel._searchQuery.value = ""
-                    }
-                })
-
-            Spacer(modifier=Modifier.width(16.dp))
-
-            Text(
-                text=title, style=MaterialTheme.typography.titleLarge.copy(
-                    color=MaterialTheme.appColors.editTextColor,
-                    fontWeight=FontWeight.Bold,
-                    fontSize=18.sp
-                ), modifier=Modifier.weight(1f)
-            )
-
-            actionItems()
-        }
+        OnboardingTopBar(
+            title = title,
+            onBackClick = onBackClick,
+            actions = { actionItems() }
+        )
 
         Spacer(modifier=Modifier.height(12.dp))
 

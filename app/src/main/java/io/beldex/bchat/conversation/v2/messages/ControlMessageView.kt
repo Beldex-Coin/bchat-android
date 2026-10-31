@@ -91,7 +91,7 @@ class ControlMessageView : LinearLayout {
         when {
             message.isExpirationTimerUpdate -> {
                 // Figma: the timer glyph sits inline at the start of the chip, not above it.
-                inlineIcon = R.drawable.ic_timer
+                inlineIcon = R.drawable.ic_disappear_timer
                 binding.textView.textSize = 10f
                 binding.textView.setTextColor(0xFFACACAC.toInt())
             }

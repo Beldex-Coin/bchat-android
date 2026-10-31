@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/menu_container"
-    app:cardBackgroundColor="#111111"
-    app:cardCornerRadius="26dp">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardCornerRadius="26dp"
+    app:cardElevation="0dp"
+    app:strokeColor="#26FFFFFF"
+    app:strokeWidth="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -173,23 +177,22 @@
                     android:id="@+id/ui_mode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="10dp"
                     android:fontFamily="@font/open_sans_semi_bold"
-                    android:textColor="@color/drawer_text"
-                    android:textStyle="normal"
-                    android:textSize="12sp"
-                    android:clickable="true"
                     android:text="@string/dark_mode"
-                    tools:text="Dark Mode"
-                    android:focusable="true" />
+                    android:textColor="@color/drawer_text"
+                    android:textSize="12sp" />
 
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/drawer_appearance_toggle_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:track="@drawable/switch_square_track"
+                    android:checked="true"
                     android:thumb="@drawable/switch_square_thumb"
-                    android:checked="true" />
+                    app:showText="false"
+                    app:thumbTint="@null"
+                    app:track="@drawable/switch_square_track"
+                    app:trackTint="@null" />
 
             </LinearLayout>
 

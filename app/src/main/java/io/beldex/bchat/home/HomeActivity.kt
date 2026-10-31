@@ -11,12 +11,17 @@ import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
+import android.graphics.RenderEffect
+import android.graphics.RenderEffect.createBlurEffect
+import android.graphics.Shader
 import android.graphics.Typeface
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.view.Gravity
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
@@ -179,6 +184,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     private var archiveCountState by mutableStateOf(0)
     private var showConnectivityWarning by mutableStateOf(false)
     private var profileDisplayNameState by mutableStateOf("")
+
+    private var drawerContentBlurApplied = false
 
 
     @Inject
@@ -518,18 +525,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         }
 
         updateDrawerWidth()
+        binding.drawerLayout.setScrimColor(android.graphics.Color.TRANSPARENT)
         binding.drawerLayout.addDrawerListener(object : DrawerLayout.SimpleDrawerListener() {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-                updateDrawerWidth()
-                binding.navigationMenu.menuContainer.translationX = -this@HomeActivity.toPx(16) * slideOffset
+                setDrawerContentBlur(slideOffset)
             }
-
-            override fun onDrawerOpened(drawerView: View) {
-                binding.navigationMenu.menuContainer.translationX = -this@HomeActivity.toPx(16)
-            }
-
             override fun onDrawerClosed(drawerView: View) {
-                binding.navigationMenu.menuContainer.translationX = 0f
+                setDrawerContentBlur(0f)
             }
         })
         binding.navigationMenu.version.text = resources.getString(R.string.version_name).format(BuildConfig.VERSION_NAME)
@@ -652,6 +654,16 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         binding.navigationMenu.drawerProfileIcon.root.update(TextSecurePreferences.getProfileName(this))
     }
 
+    private fun setDrawerContentBlur(progress: Float) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return
+        val contentView = binding.drawerLayout.getChildAt(0) ?: return
+        val radius = 30f * progress.coerceIn(0f, 1f)
+        contentView.setRenderEffect(
+            if (radius > 0.5f)
+                RenderEffect.createBlurEffect(radius, radius, Shader.TileMode.CLAMP)
+            else null
+        )
+    }
     //New Line
     /*private fun launchSuccessLottieDialog() {
         val button = Button(this)

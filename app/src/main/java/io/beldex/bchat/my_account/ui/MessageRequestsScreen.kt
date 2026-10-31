@@ -54,6 +54,9 @@ import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.my_account.ui.dialogs.RequestBlockConfirmationDialog
 import io.beldex.bchat.util.ConfigurationMessageUtilities
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.BChatDimens
+import io.beldex.bchat.compose_utils.NotchCorner
+import io.beldex.bchat.compose_utils.singleCornerCutShape
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -188,7 +191,7 @@ fun MessageRequestsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(64.dp)
-                        .background(Color(0xFF0B0B0B))
+                        .background(color = MaterialTheme.appColors.messageRequestItemBackground)
                         .clickable { onRequestClick(recipient) }
                         .padding(horizontal = 14.dp)
                 )
@@ -262,8 +265,8 @@ fun MessageRequestItem(
             contentAlignment=Alignment.Center,
             modifier=Modifier
                 .size(32.dp)
-                .background(color=MaterialTheme.appColors.negativeRedButtonBorder.copy(alpha=0.1f), shape=notchedCornerShape(6.dp))
-                .border(1.dp, MaterialTheme.appColors.negativeRedButtonBorder, notchedCornerShape(6.dp))
+                .background(color=MaterialTheme.appColors.negativeRedButtonBorder.copy(alpha=0.1f), shape= singleCornerCutShape(BChatDimens.NotchSmall, NotchCorner.TopRight))
+                .border(1.dp, MaterialTheme.appColors.negativeRedButtonBorder)
                 .clickable {
                     deleteRequest(request)
                 }
@@ -283,8 +286,8 @@ fun MessageRequestItem(
             contentAlignment=Alignment.Center,
             modifier=Modifier
                 .size(32.dp)
-                .background(color=Color(0xFF111111), shape=notchedCornerShape(6.dp))
-                .border(1.dp, Color(0xFF444444), notchedCornerShape(6.dp))
+                .background(color=Color(0xFF111111), shape=singleCornerCutShape(BChatDimens.NotchSmall, NotchCorner.TopRight))
+                .border(1.dp, Color(0xFF444444))
                 .clickable {
                     blockRequest(request)
                 }
@@ -304,7 +307,7 @@ fun MessageRequestItem(
             contentAlignment=Alignment.Center,
             modifier=Modifier
                 .size(32.dp)
-                .background(color=MaterialTheme.appColors.userDetailsConfirmBackground, shape=notchedCornerShape(6.dp))
+                .background(color=MaterialTheme.appColors.userDetailsConfirmBackground, shape=singleCornerCutShape(BChatDimens.NotchSmall, NotchCorner.TopRight))
                 .clickable {
                     acceptRequest(request)
                 }

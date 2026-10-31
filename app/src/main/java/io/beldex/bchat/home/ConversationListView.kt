@@ -1,5 +1,6 @@
 package io.beldex.bchat.home
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -31,7 +32,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -225,27 +228,35 @@ private fun ConversationRow(
                     )
             )
 
-            DropdownMenu(
-                expanded = showMenu,
-                onDismissRequest = { showMenu = false },
-                containerColor = androidx.compose.ui.graphics.Color(0xF2111111),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(18.dp),
-                border = androidx.compose.foundation.BorderStroke(1.dp, androidx.compose.ui.graphics.Color(0x33FFFFFF)),
-                shadowElevation = 16.dp,
-                modifier = Modifier
-                    .zIndex(1f)
-                    .padding(vertical = 2.dp)
-            ) {
-                for (item in menuItemsFor(thread, isSecretGroupActive)) {
-                    ContextMenuItem(
-                        iconRes = item.iconRes,
-                        label = stringResource(item.labelRes),
-                        destructive = item.action == ConversationRowAction.Delete,
-                        onClick = {
-                            showMenu = false
-                            onAction(item.action)
+            Box(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .blur(if (showMenu) 6.dp else 0.dp)
+                ) {
+
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false },
+                        containerColor = Color(0xF2111111),
+                        border = BorderStroke(1.dp, Color(0x33FFFFFF)),
+                        shadowElevation = 16.dp,
+                        modifier = Modifier
+                            .zIndex(1f)
+                            .padding(vertical = 2.dp)
+                    ) {
+                        for (item in menuItemsFor(thread, isSecretGroupActive)) {
+                            ContextMenuItem(
+                                iconRes = item.iconRes,
+                                label = stringResource(item.labelRes),
+                                destructive = item.action == ConversationRowAction.Delete,
+                                onClick = {
+                                    showMenu = false
+                                    onAction(item.action)
+                                }
+                            )
                         }
-                    )
+                    }
                 }
             }
         }

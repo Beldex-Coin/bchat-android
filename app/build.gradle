@@ -13,7 +13,7 @@ apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 configurations.all {
     exclude module: "commons-logging"
 }
-def canonicalVersionCode = 109
+def canonicalVersionCode = 110
 def canonicalVersionName = "3.0.2"
 
 def postFixSize = 10

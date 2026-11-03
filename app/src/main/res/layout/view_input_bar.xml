@@ -1,105 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/view_input_bar_layout"
-    android:orientation="horizontal"
-    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginHorizontal="14dp"
-    android:minHeight="47dp"
+    android:orientation="vertical"
     android:background="@drawable/chat_input_field_background">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/containerCardView"
-        android:layout_width="0dp"
+    <FrameLayout
+        android:id="@+id/inputBarAdditionalContentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="0dp"
-        android:layout_weight="1"
-        app:cardBackgroundColor="@android:color/transparent"
-        app:strokeWidth="0dp"
-        app:cardElevation="0dp">
+        android:minHeight="47dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
-        <LinearLayout android:id="@+id/inputBarLinearLayout"
-            android:layout_width="match_parent"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/containerCardView"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@android:color/transparent">
+            android:layout_weight="1"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
-            <View
+            <LinearLayout
+                android:id="@+id/inputBarLinearLayout"
                 android:layout_width="match_parent"
-                android:layout_height="1px"/>
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:orientation="vertical">
 
-            <FrameLayout
-                android:id="@+id/inputBarAdditionalContentContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px" />
 
                 <RelativeLayout
-                    android:id="@+id/attachmentsButtonContainer"
-                    android:layout_width="@dimen/input_bar_button_expanded_size"
-                    android:layout_height="@dimen/input_bar_button_expanded_size"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:background="@android:color/transparent"
-                    android:layout_marginStart="4dp" />
-
-                <io.beldex.bchat.conversation.v2.input_bar.InputBarEditText
-                    android:id="@+id/inputBarEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="40dp"
-                    android:maxHeight="100dp"
-                    android:maxLines="3"
-                    android:layout_centerInParent="true"
-                    android:layout_toEndOf="@id/attachmentsButtonContainer"
-                    android:background="@null"
-                    android:gravity="center_vertical"
-                    android:fontFamily="@font/roboto_mono"
-                    android:hint="@string/ConversationActivity_message"
-                    android:textColor="@color/chat_input_icon"
-                    android:textColorHint="@color/chat_input_hint"
-                    android:paddingEnd="20dp"
-                    android:paddingStart="0dp"
-                    android:paddingTop="6dp"
-                    android:paddingBottom="6dp"
-                    android:textSize="13sp"
-                    android:inputType="textNoSuggestions|textMultiLine"
-                    android:scrollbars="vertical"
-                    android:scrollbarStyle="insideInset"/>
+                    android:layout_height="wrap_content">
 
-            </RelativeLayout>
+                    <RelativeLayout
+                        android:id="@+id/attachmentsButtonContainer"
+                        android:layout_width="@dimen/input_bar_button_expanded_size"
+                        android:layout_height="@dimen/input_bar_button_expanded_size"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="4dp"
+                        android:background="@android:color/transparent" />
 
-        </LinearLayout>
+                    <io.beldex.bchat.conversation.v2.input_bar.InputBarEditText
+                        android:id="@+id/inputBarEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_toEndOf="@id/attachmentsButtonContainer"
+                        android:background="@null"
+                        android:fontFamily="@font/roboto_mono"
+                        android:gravity="center_vertical"
+                        android:hint="@string/ConversationActivity_message"
+                        android:inputType="textNoSuggestions|textMultiLine"
+                        android:maxHeight="100dp"
+                        android:maxLines="3"
+                        android:minHeight="40dp"
+                        android:paddingStart="0dp"
+                        android:paddingTop="6dp"
+                        android:paddingEnd="20dp"
+                        android:paddingBottom="6dp"
+                        android:scrollbarStyle="insideInset"
+                        android:scrollbars="vertical"
+                        android:textColor="@color/chat_input_icon"
+                        android:textColorHint="@color/chat_input_hint"
+                        android:textSize="13sp" />
 
-    </com.google.android.material.card.MaterialCardView>
+                </RelativeLayout>
 
-    <TextView
-        android:id="@+id/noLongerParticipantTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/roboto_mono"
-        android:gravity="center"
-        android:background="@drawable/you_left_group_background"
-        android:paddingStart="22dp"
-        android:paddingTop="6dp"
-        android:paddingEnd="22dp"
-        android:paddingBottom="6dp"
-        android:textColor="@color/blocked_action_red"
-        android:textSize="11sp"
-        android:visibility="visible"
-        android:text="@string/MessageRecord_left_group"
-    />
+            </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/microphoneOrSendButtonContainer"
-        android:layout_width="@dimen/input_bar_button_expanded_size"
-        android:layout_height="@dimen/input_bar_button_expanded_size"
-        android:layout_gravity="bottom"
-        android:layout_marginEnd="4dp"/>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/noLongerParticipantTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/you_left_group_background"
+            android:fontFamily="@font/roboto_mono"
+            android:gravity="center"
+            android:paddingStart="22dp"
+            android:paddingTop="6dp"
+            android:paddingEnd="22dp"
+            android:paddingBottom="6dp"
+            android:text="@string/MessageRecord_left_group"
+            android:textColor="@color/blocked_action_red"
+            android:textSize="11sp"
+            android:visibility="visible" />
+
+        <RelativeLayout
+            android:id="@+id/microphoneOrSendButtonContainer"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom"
+            android:layout_marginEnd="4dp"
+            android:gravity="center"
+            android:padding="8dp" />
+
+    </LinearLayout>
 
 </LinearLayout>

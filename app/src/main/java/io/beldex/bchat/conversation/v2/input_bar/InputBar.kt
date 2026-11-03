@@ -2,6 +2,7 @@ package io.beldex.bchat.conversation.v2.input_bar
 
 import android.content.Context
 import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.SystemClock
 import android.text.TextWatcher
@@ -9,8 +10,10 @@ import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -58,7 +61,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
 
     private val attachmentsButton by lazy { InputBarButton(context, R.drawable.ic_chat_attach_add, isMessageBox = true) }
     private val microphoneButton by lazy { InputBarButton(context, R.drawable.ic_chat_mic, true, isMessageBox = true) }
-    private val sendButton by lazy { InputBarButton(context, R.drawable.ic_baseline_send_24, true, isMessageBox = true) }
+    private val sendButton by lazy { InputBarButton(context, R.drawable.ic_send_message, true, isMessageBox = true) }
 
     // region Lifecycle
     constructor(context: Context) : super(context) { initialize() }
@@ -70,12 +73,12 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
 
     private fun initialize() {
         binding = ViewInputBarBinding.inflate(LayoutInflater.from(context), this, true)
+        binding.inputBarAdditionalContentContainer.visibility = View.GONE
         // Attachments button
         binding.attachmentsButtonContainer.addView(attachmentsButton)
         attachmentsButton.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         attachmentsButton.isMotionEventSplittingEnabled = false
         attachmentsButton.onPress = {
-            println("clicked on attachment 12 $delegate")
             if (SystemClock.elapsedRealtime() - mLastClickTime >= 500){
                 mLastClickTime = SystemClock.elapsedRealtime()
                 toggleAttachmentOptions()
@@ -97,6 +100,9 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         binding.microphoneOrSendButtonContainer.addView(sendButton)
         sendButton.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         sendButton.isVisible = false
+        updateSendButtonBackground(false)
+        val buttonSize = toPx(32, resources)
+        sendButton.layoutParams = LayoutParams(buttonSize, buttonSize).apply { addRule(CENTER_IN_PARENT) }
         sendButton.onUp = {
             if (SystemClock.elapsedRealtime() - sendButtonLastClickTime >= 500){
                 sendButtonLastClickTime = SystemClock.elapsedRealtime()
@@ -105,6 +111,26 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         }
         // Edit text
         binding.inputBarEditText.delegate = this
+        // Update Send button immediately when the first character is typed
+        binding.inputBarEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {}
+
+            override fun onTextChanged(
+                s: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+                updateSendButtonVisibility(s)
+            }
+
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        })
         binding.inputBarEditText.requestFocus()
 
         /* Hales63 */
@@ -144,13 +170,39 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
             2
         }
     }
+
+    private fun updateSendButtonBackground(showSend: Boolean) {
+        sendButton.background = if (showSend) {
+            GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                shape = GradientDrawable.RECTANGLE
+                setColor(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.send_button_background
+                    )
+                )
+            }
+        } else {
+            null
+        }
+    }
     // endregion
 
     // region Updating
     override fun inputBarEditTextContentChanged(text: CharSequence) {
-        sendButton.isVisible = text.isNotEmpty() && text.isNotBlank()
-        microphoneButton.isVisible = text.isEmpty() || text.isBlank()
+        updateSendButtonVisibility(text)
         delegate?.inputBarEditTextContentChanged(text)
+    }
+
+
+    private fun updateSendButtonVisibility(text: CharSequence?) {
+        val showSend = !text.isNullOrEmpty() && !text.isNullOrBlank()
+
+        sendButton.isVisible = showSend
+        microphoneButton.isVisible = !showSend
+
+        updateSendButtonBackground(showSend)
     }
 
     override fun inputBarEditTextHeightChanged(newValue: Int) {
@@ -171,31 +223,67 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     // Drafting quotes and drafting link previews is mutually exclusive, i.e. you can't draft
     // a quote and a link preview at the same time.
 
-    fun draftQuote(thread: Recipient, message: MessageRecord, glide: RequestManager) {
+    fun draftQuote(
+        thread: Recipient,
+        message: MessageRecord,
+        glide: RequestManager
+    ) {
         quote = message
         linkPreview = null
         linkPreviewDraftView = null
-        binding.inputBarAdditionalContentContainer.removeAllViews()
+
+        binding.inputBarAdditionalContentContainer.apply {
+            removeAllViews()
+            visibility = View.VISIBLE
+        }
         setReplyDraftSurface(true)
+
         binding.containerCardView.radius = 0f
-        // inflate quoteview with typed array here
-        val layout = LayoutInflater.from(context).inflate(R.layout.view_quote_draft, binding.inputBarAdditionalContentContainer, false)
-        val quoteView = layout.findViewById<QuoteView>(R.id.mainQuoteViewContainer)
-        quoteView.delegate = this
-        binding.inputBarAdditionalContentContainer.addView(
-            layout,
-            ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+        val layout = LayoutInflater.from(context).inflate(
+            R.layout.view_quote_draft, binding.inputBarAdditionalContentContainer, false
         )
+        val quoteView = (layout as? QuoteView) ?: layout.findViewById(R.id.mainQuoteViewContainer)
+        layout.layoutParams = FrameLayout.LayoutParams(
+            LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT
+        )
+        quoteView.delegate = this
+        binding.inputBarAdditionalContentContainer.addView(layout)
         val attachments = (message as? MmsMessageRecord)?.slideDeck
-        val sender = if (message.isOutgoing) TextSecurePreferences.getLocalNumber(context)!! else message.individualRecipient.address.serialize()
-        quoteView.bind(sender, message.body, attachments,
-            thread, true, message.isOpenGroupInvitation, message.isPayment,message.isOutgoing,message.threadId, false, glide)
+
+        val sender = if (message.isOutgoing) {
+            TextSecurePreferences.getLocalNumber(context)!!
+        } else {
+            message.individualRecipient.address.serialize()
+        }
+
+        quoteView.bind(
+            sender,
+            message.body,
+            attachments,
+            thread,
+            true,
+            message.isOpenGroupInvitation,
+            message.isPayment,
+            message.isOutgoing,
+            message.threadId,
+            false,
+            glide
+        )
+
+        binding.inputBarAdditionalContentContainer.post {
+            binding.inputBarAdditionalContentContainer.requestLayout()
+            quoteView.requestLayout()
+        }
+
         requestLayout()
     }
-
     override fun cancelQuoteDraft(i:Int) {
         quote = null
-        binding.inputBarAdditionalContentContainer.removeAllViews()
+        binding.inputBarAdditionalContentContainer.apply {
+            removeAllViews()
+            visibility = GONE
+        }
         setReplyDraftSurface(false)
         binding.containerCardView.radius = toPx(48, resources).toFloat()
         requestLayout()
@@ -207,7 +295,10 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
 
     fun draftLinkPreview() {
         quote = null
-        binding.inputBarAdditionalContentContainer.removeAllViews()
+        binding.inputBarAdditionalContentContainer.apply {
+            removeAllViews()
+            visibility = View.VISIBLE
+        }
         setReplyDraftSurface(false)
         val linkPreviewDraftView = LinkPreviewDraftView(context)
         linkPreviewDraftView.delegate = this
@@ -223,10 +314,13 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         linkPreviewDraftView.update(glide, linkPreview)
     }
 
-    override fun cancelLinkPreviewDraft(i:Int) {
-        if (quote != null) { return }
+    override fun cancelLinkPreviewDraft(i: Int) {
+        if (quote != null) return
         linkPreview = null
-        binding.inputBarAdditionalContentContainer.removeAllViews()
+        binding.inputBarAdditionalContentContainer.apply {
+            removeAllViews()
+            visibility = View.GONE
+        }
         setReplyDraftSurface(false)
         binding.containerCardView.radius = toPx(48, resources).toFloat()
         requestLayout()
@@ -238,11 +332,28 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     private fun setReplyDraftSurface(enabled: Boolean) {
         binding.root.background = ContextCompat.getDrawable(
             context,
-            if (enabled) R.drawable.chat_reply_input_background else R.drawable.chat_input_field_background
+            if (enabled) {
+                R.drawable.chat_reply_input_background
+            } else {
+                R.drawable.chat_input_field_background
+            }
         )
+
         val horizontalPadding = if (enabled) toPx(10, resources) else 0
         val verticalPadding = if (enabled) toPx(8, resources) else 0
-        binding.root.setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding)
+
+        binding.root.setPadding(
+            horizontalPadding,
+            verticalPadding,
+            horizontalPadding,
+            verticalPadding
+        )
+
+        binding.inputBarAdditionalContentContainer.apply {
+            layoutParams = layoutParams.apply {
+                width = ViewGroup.LayoutParams.MATCH_PARENT
+            }
+        }
     }
 
     private fun showOrHideInputIfNeeded() {
@@ -250,14 +361,19 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
             setOf( binding.inputBarEditText, attachmentsButton, binding.microphoneOrSendButtonContainer, binding.containerCardView ).forEach { it.isVisible = true }
             microphoneButton.isVisible = text.isEmpty() || text.isBlank()
             sendButton.isVisible = text.isNotEmpty() && text.isNotBlank()
+            updateSendButtonBackground(sendButton.isVisible)
             binding.noLongerParticipantTextView.isVisible = false
             binding.viewInputBarLayout.background = ContextCompat.getDrawable(
-                context, R.drawable.chat_input_field_background)
+                context,
+                if (quote != null) R.drawable.chat_reply_input_background
+                else R.drawable.chat_input_field_background
+            )
         } else {
             cancelQuoteDraft(2)
             cancelLinkPreviewDraft(2)
             val views = setOf( binding.inputBarEditText, attachmentsButton, microphoneButton, sendButton, binding.microphoneOrSendButtonContainer, binding.containerCardView )
             views.forEach { it.isVisible = false }
+            updateSendButtonBackground(false)
             binding.noLongerParticipantTextView.isVisible = true
             binding.viewInputBarLayout.background = null
 

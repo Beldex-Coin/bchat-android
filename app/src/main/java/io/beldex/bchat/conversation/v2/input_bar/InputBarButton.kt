@@ -116,10 +116,15 @@ class InputBarButton : RelativeLayout {
         val size = resources.getDimension(R.dimen.input_bar_button_expanded_size).toInt()
         val layoutParams = LayoutParams(size, size)
         this.layoutParams = layoutParams
-            addView(imageViewContainer)
-            imageViewContainer.x = collapsedImageViewPosition.x
-            imageViewContainer.y = collapsedImageViewPosition.y
-            imageViewContainer.addView(imageView)
+       val containerLayoutParams = imageViewContainer.layoutParams as LayoutParams
+       if (isMessageBox) {
+           containerLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT)
+       } else {
+           imageViewContainer.x = collapsedImageViewPosition.x
+           imageViewContainer.y = collapsedImageViewPosition.y
+       }
+       addView(imageViewContainer, containerLayoutParams)
+       imageViewContainer.addView(imageView)
         val imageViewLayoutParams = imageView.layoutParams as LayoutParams
         imageViewLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT)
         imageView.layoutParams = imageViewLayoutParams

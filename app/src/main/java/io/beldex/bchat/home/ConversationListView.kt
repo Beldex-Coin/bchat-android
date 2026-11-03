@@ -1,8 +1,13 @@
 package io.beldex.bchat.home
 
+import android.graphics.Outline
+import android.graphics.Path
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
@@ -16,7 +21,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -33,12 +37,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,6 +48,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
 import com.bumptech.glide.RequestManager
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.AVATAR_NOTCH_FRACTION
 import io.beldex.bchat.compose_utils.ContextMenuItem
 import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.appColors
@@ -215,8 +218,15 @@ private fun ConversationRow(
                 )
         ) {
             AndroidView(
-                factory = { ctx -> ConversationView(ctx) },
-                update = { view -> view.bind(thread, isTyping, glide) },
+                factory = { ctx ->
+                    ConversationView(ctx).also { row ->
+                        row.findProfilePictureView()?.clipToNotchedAvatar()
+                    }
+                },
+                update = { view ->
+                    view.bind(thread, isTyping, glide)
+                    view.findProfilePictureView()?.clipToNotchedAvatar()
+                },
                 // Figma rows sit directly on the dotted background; only go opaque while swiping so the
                 // delete layer underneath doesn't show through.
                 modifier = Modifier
@@ -284,4 +294,33 @@ private fun EmptyConversationList(modifier: Modifier = Modifier) {
             modifier = Modifier.padding(top = 16.dp)
         )
     }
+}
+
+fun View.clipToNotchedAvatar() {
+    clipToOutline = true
+    outlineProvider = object : ViewOutlineProvider() {
+        override fun getOutline(view: View, outline: Outline) {
+            val w = view.width.toFloat()
+            val h = view.height.toFloat()
+            val cut = minOf(w, h) * AVATAR_NOTCH_FRACTION
+            outline.setConvexPath(Path().apply {
+                moveTo(cut, 0f)   // top-left corner cut
+                lineTo(w, 0f)
+                lineTo(w, h)
+                lineTo(0f, h)
+                lineTo(0f, cut)
+                close()
+            })
+        }
+    }
+}
+
+fun View.findProfilePictureView(): View? {
+    if (this is io.beldex.bchat.components.ProfilePictureView) return this
+    if (this is ViewGroup) {
+        for (i in 0 until childCount) {
+            getChildAt(i).findProfilePictureView()?.let { return it }
+        }
+    }
+    return null
 }

@@ -16,10 +16,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,15 +34,20 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Popup
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
+import com.bumptech.glide.Glide
 import io.beldex.bchat.R
 import io.beldex.bchat.archivechats.ArchiveChatViewModel
 import io.beldex.bchat.compose_utils.BChatTheme
@@ -55,11 +57,18 @@ import io.beldex.bchat.conversation.v2.dialogs.UnblockUserDialog
 import io.beldex.bchat.database.GroupDatabase
 import io.beldex.bchat.database.model.ThreadRecord
 import io.beldex.bchat.dependencies.DatabaseComponent
+import io.beldex.bchat.home.ConversationView
+import io.beldex.bchat.home.findProfilePictureView
+import io.beldex.bchat.home.clipToNotchedAvatar
 import io.beldex.bchat.home.NotificationSettingDialog
 import io.beldex.bchat.my_account.ui.dialogs.DeleteChatConfirmationDialog
 import io.beldex.bchat.my_account.ui.dialogs.LockOptionsDialog
+import io.beldex.bchat.util.SnapshotGlass
+import io.beldex.bchat.util.SnapshotGlassShadowPadding
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
+import io.beldex.bchat.util.WindowSnapshot
+import io.beldex.bchat.util.captureWindowSnapshot
 import kotlinx.coroutines.launch
 
 
@@ -75,6 +84,10 @@ fun ArchiveChatScreen(
 ) {
     val context=LocalContext.current
     var selectedThreadId by remember { mutableStateOf<Long?>(null) }
+    val shadowPx = with(LocalDensity.current) { SnapshotGlassShadowPadding.roundToPx() }
+    val view = LocalView.current
+    var snapshot by remember { mutableStateOf<WindowSnapshot?>(null) }
+
 
     val threadRecord = requestsList.find { it.threadId == selectedThreadId }
     var showMenu by remember { mutableStateOf(false) }
@@ -246,14 +259,11 @@ fun ArchiveChatScreen(
         threadRecord?.let { thread ->
             Popup(
                 alignment = Alignment.TopStart,
-                offset = popupOffset,
+                offset = IntOffset(popupOffset.x - shadowPx, popupOffset.y - shadowPx),
                 onDismissRequest = { showMenu = false },
             ) {
-                Card(
-                    shape = RoundedCornerShape(18.dp),
-                    colors = CardDefaults.cardColors(containerColor = androidx.compose.ui.graphics.Color(0xF2111111)),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, androidx.compose.ui.graphics.Color(0x33FFFFFF)),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
+                SnapshotGlass(
+                    snapshot = snapshot,
                     modifier = Modifier.wrapContentWidth().widthIn(max = 320.dp)
                 ) {
                     Column(
@@ -396,7 +406,10 @@ fun ArchiveChatScreen(
                                             menuPositionState = pos
                                         }
                                         selectedThreadId = archivedList.threadId
-                                        showMenu = true
+                                        captureWindowSnapshot(view) { snap ->
+                                            snapshot = snap
+                                            showMenu = true
+                                        }
                                     }
                                 )
                             }
@@ -412,8 +425,8 @@ fun ArchiveChatScreen(
                     .background(Color.Transparent)
                     .pointerInput(Unit) {
                         detectTapGestures(
-                            onTap={
-                                showMenu=false
+                            onTap = {
+                                showMenu = false
                             })
                     }
             )
@@ -428,26 +441,13 @@ fun ArchiveChatItem(
     keepArchiveChat: Boolean,
     modifier : Modifier=Modifier
 ) {
-    // Revamp_2026: archived rows are the exact same row as Home (notched avatar, mono preview,
-    // square unread badge, new mute/mention/pin icons), so reuse the shared ConversationView.
-    val glide = androidx.compose.runtime.remember(context) { com.bumptech.glide.Glide.with(context) }
-    androidx.compose.ui.viewinterop.AndroidView(
-        factory = { ctx -> io.beldex.bchat.home.ConversationView(ctx) },
-        update = { view -> view.bind(thread, false, glide) },
+    val glide = remember(context) { Glide.with(context) }
+    AndroidView(
+        factory = { ctx -> ConversationView(ctx) },
+        update = { view ->
+            view.bind(thread, false, glide)
+            view.findProfilePictureView()?.clipToNotchedAvatar()
+        },
         modifier = modifier
     )
-}
-
-private fun getDisplayName(context : Context, publicKey : String) : String {
-    val contact=
-        DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
-    return contact?.displayName(Contact.ContactContext.REGULAR, context) ?: publicKey
-}
-
-private fun getUserDisplayName(context : Context, recipient : Recipient?) : String? {
-    return if (recipient?.isLocalNumber == true) {
-        context.getString(R.string.note_to_self)
-    } else {
-        recipient?.name // Internally uses the Contact API
-    }
 }

@@ -423,4 +423,17 @@
     <attr name="reactionsPillSelectedBackground" format="color|reference"/>
     <attr name="reactionsPillNormalBackground" format="color|reference"/>
     <attr name="reactionsPillNormalTextColor" format="color|reference"/>
+
+    <declare-styleable name="GlassLayout">
+        <attr name="glass_blurSource" format="reference" />
+        <attr name="glass_cornerRadius" format="dimension" />
+        <attr name="glass_blurRadius" format="dimension" />
+        <attr name="glass_tintColor" format="color" />
+        <attr name="glass_fallbackTintColor" format="color" />
+        <attr name="glass_borderColor" format="color" />
+        <attr name="glass_liveUpdate" format="boolean" />
+        <attr name="glass_saturation" format="float" />
+        <attr name="glass_sheen" format="float" />
+        <attr name="glass_autoSource" format="boolean" />
+    </declare-styleable>
 </resources>

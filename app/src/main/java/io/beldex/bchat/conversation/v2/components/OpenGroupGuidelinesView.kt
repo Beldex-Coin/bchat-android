@@ -30,17 +30,11 @@ class OpenGroupGuidelinesView : FrameLayout {
                 guidelinesCard.setCardBackgroundColor(Color.argb(230, 17, 17, 17))
                 guidelinesCard.strokeColor = Color.parseColor("#333333")
                 guidelinesTitle.setTextColor(Color.parseColor("#EBEBEB"))
-                readButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#0B0B0B"))
-                readButton.setTextColor(Color.WHITE)
-                readButton.strokeColor = ColorStateList.valueOf(Color.parseColor("#078720"))
             } else {
                 pinIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_pinned_light))
                 guidelinesCard.setCardBackgroundColor(Color.argb(166, 240, 240, 240))
                 guidelinesCard.strokeColor = Color.parseColor("#D0D0D0")
                 guidelinesTitle.setTextColor(Color.parseColor("#222222"))
-                readButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#0B0B0B"))
-                readButton.setTextColor(Color.WHITE)
-                readButton.strokeColor = ColorStateList.valueOf(Color.parseColor("#078720"))
             }
 
             readButton.setOnClickListener {

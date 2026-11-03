@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:id="@+id/guidelinesCard"
     android:padding="0dp"
-    app:cardBackgroundColor="#A6F0F0F0"
+    app:cardBackgroundColor="#0B0B0BA6"
     app:cardCornerRadius="0dp"
     app:cardElevation="0dp"
     app:strokeColor="#D0D0D0"
@@ -44,26 +44,26 @@
             android:fontFamily="@font/open_sans_regular"
             android:maxLines="1"
             android:text="@string/ConversationActivity_open_group_guidelines"
-            android:textColor="#222222"
+            android:textColor="@color/disappear_icon_color"
             android:textSize="14sp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/readButton"
             android:layout_width="71dp"
             android:layout_height="32dp"
+            android:background="@drawable/read_button_background"
             android:fontFamily="@font/open_sans_semi_bold"
             android:gravity="center"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            android:padding="0dp"
             android:minWidth="0dp"
             android:minHeight="0dp"
+            android:padding="0dp"
             android:text="@string/open_group_guidelines_read"
             android:textAllCaps="false"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/mr_accept_text"
             android:textSize="14sp"
-            android:background="@drawable/read_button_background"
-       />
+            app:backgroundTint="@null" />
 
     </LinearLayout>
 

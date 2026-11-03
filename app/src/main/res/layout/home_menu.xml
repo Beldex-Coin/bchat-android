@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
+<io.beldex.bchat.util.GlassLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/menu_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:cardBackgroundColor="@android:color/transparent"
-    app:cardCornerRadius="26dp"
-    app:cardElevation="0dp"
-    app:strokeColor="#26FFFFFF"
-    app:strokeWidth="1dp">
+    android:elevation="0dp"
+    app:glass_cornerRadius="26dp"
+    app:glass_blurRadius="24dp"
+    app:glass_tintColor="#B3111111"
+    app:glass_borderColor="#26FFFFFF">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/drawer_panel_background"
         android:clickable="true"
         android:focusable="true">
 
@@ -214,4 +213,4 @@
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</com.google.android.material.card.MaterialCardView>
+</io.beldex.bchat.util.GlassLayout>

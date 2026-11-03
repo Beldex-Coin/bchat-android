@@ -441,4 +441,6 @@
     <color name="mr_accept_bg">#D9D9D9</color>
     <color name="mr_accept_stroke">#1B5E20</color>
     <color name="mr_accept_text">#0B0B0B</color>
+    <color name="reaction_overlay_glass_tint">#99111111</color>
+    <color name="send_button_background">#EBEBEB</color>
 </resources>

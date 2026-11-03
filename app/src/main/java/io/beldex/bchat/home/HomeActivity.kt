@@ -526,10 +526,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
 
         updateDrawerWidth()
         binding.drawerLayout.setScrimColor(android.graphics.Color.TRANSPARENT)
-        binding.drawerLayout.addDrawerListener(object : DrawerLayout.SimpleDrawerListener() {
-            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-                setDrawerContentBlur(slideOffset)
-            }
+
+        binding.navigationMenu.menuContainer.setBlurSource(binding.drawerLayout.getChildAt(0))
+
+        binding.drawerLayout.addDrawerListener(object : DrawerLayout.SimpleDrawerListener() { override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+            setDrawerContentBlur(slideOffset)
+        }
             override fun onDrawerClosed(drawerView: View) {
                 setDrawerContentBlur(0f)
             }

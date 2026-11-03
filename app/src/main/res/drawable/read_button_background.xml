@@ -4,7 +4,7 @@
     android:viewportWidth="71"
     android:viewportHeight="32">
   <path
-      android:strokeWidth="1"
+      android:strokeWidth="0.5"
       android:pathData="M0,0H64.3L71,8.3V32H6.2L0,24.9V0Z"
       android:fillColor="@color/read_button_background"
       android:strokeColor="@color/read_button_border"/>

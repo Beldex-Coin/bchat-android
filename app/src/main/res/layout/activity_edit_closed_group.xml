@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/default_bchat_background"
-    app:cardElevation="0dp"
-    app:cardCornerRadius="0dp"
     tools:context="io.beldex.bchat.groups.EditClosedGroupActivity">
 
     <LinearLayout
@@ -18,11 +16,26 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/actionbar_flat_background"
+        android:background="@drawable/bg_edit_group_toolbar"
+        android:minHeight="46dp"
+        android:theme="@style/ThemeOverlay.Bchat.EditGroupToolbar"
+        app:maxButtonHeight="46dp"
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
-        app:elevation="1dp"
-        app:titleTextAppearance="@style/TextAppearance.Bchat.DarkActionBar.TitleTextStyle" />
+        app:elevation="0dp">
+
+        <!-- Own title so it is vertically centred without Open Sans' extra font padding. -->
+        <TextView
+            android:id="@+id/editGroupTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|start"
+            android:fontFamily="@font/open_sans_regular"
+            android:includeFontPadding="false"
+            android:text="@string/activity_edit_closed_group_title"
+            android:textColor="@color/disappear_icon_color"
+            android:textSize="16sp" />
+    </androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -134,18 +147,17 @@
                 tools:visibility="visible">
 
                 <TextView
-                    android:fontFamily="@font/open_sans_medium"
+                    android:fontFamily="@font/open_sans_bold"
                     android:id="@+id/lblGroupNameDisplay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:textAlignment="center"
-                    android:textColor="@color/text"
-                    android:textSize="@dimen/medium_font_size"
-                    android:textStyle="bold"
+                    android:textColor="@color/disappear_icon_color"
+                    android:textSize="18sp"
                     android:drawablePadding="4dp"
-                    tools:text="SomeGroupName"
-                    app:drawableEndCompat="@drawable/ic_baseline_edit_group_name" />
+                    tools:text="Group Name"
+                    app:drawableEndCompat="@drawable/ic_user_detail_edit_pencil" />
 
                 <ImageView
                     android:id="@+id/lblGroupNameEditImageview"
@@ -220,27 +232,23 @@
             android:id="@+id/applyChangesContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            tools:visibility="gone">
+            android:paddingHorizontal="14dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="24dp">
 
-            <com.google.android.material.button.MaterialButton
+            <Button
                 android:id="@+id/applyChangesBtn"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_marginStart="@dimen/small_spacing"
-                android:layout_marginEnd="@dimen/small_spacing"
-                android:layout_marginTop="@dimen/small_spacing"
-                android:layout_marginBottom="@dimen/small_spacing"
-                android:backgroundTint="@color/apply_button_tint"
+                android:layout_height="58dp"
+                android:background="@drawable/bg_edit_group_apply"
+                android:enabled="false"
                 android:fontFamily="@font/roboto_mono"
+                android:stateListAnimator="@null"
                 android:text="@string/apply_changes"
                 android:textAllCaps="false"
-                android:textStyle="bold"
-                android:textColor="@color/apply_button_text"
-                app:strokeColor="#0A370A"
-                app:strokeWidth="1dp"
-                android:textSize="14sp"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.Bchat.NotchedButton" />
+                android:textColor="@color/chat_input_hint"
+                android:textSize="16sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
     </LinearLayout>
@@ -291,4 +299,4 @@
     </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
-</com.google.android.material.card.MaterialCardView>
+</FrameLayout>

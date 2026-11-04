@@ -3,100 +3,121 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/call_banner_background"
+    android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:background="@color/transparent"
-    android:padding="0dp">
+    android:paddingStart="18dp"
+    android:paddingTop="12dp"
+    android:paddingEnd="18dp"
+    android:paddingBottom="12dp">
 
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="12dp"
-        android:layout_gravity="center_vertical"
-        android:contentDescription="recipient_profile"
-        android:src="@mipmap/ic_launcher" />
+    <FrameLayout
+        android:id="@+id/avatarContainer"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginEnd="10dp">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:contentDescription="recipient_profile"
+            android:src="@mipmap/ic_launcher" />
+
+        <ImageView
+            android:id="@+id/avatarBadge"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_gravity="bottom|end"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_call_banner_avatar_badge" />
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_gravity="center_vertical">
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:ellipsize="end"
+            android:fontFamily="@font/open_sans_semi_bold"
+            android:maxLines="1"
+            android:textColor="@color/disappear_icon_color"
+            android:textSize="14sp"
+            tools:text="Person" />
 
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="#EBEBEB"
-                android:fontFamily="@font/open_sans_semi_bold"
-                android:textSize="14sp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                tools:text="Title" />
-
-            <TextView
-                android:id="@+id/text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="#8D8D8D"
-                android:fontFamily="@font/roboto_mono"
-                android:textSize="11sp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                tools:text="Subtitle" />
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/hangUpButton"
-                style="@style/Widget.Bchat.Button.Common.ProminentFilled_DeclineCall"
-                android:background="@drawable/call_notification_hangup_background"
-                android:textColor="#FF3E3E"
-                android:textAllCaps="false"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="36dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
-                android:textSize="12sp"
-                android:gravity="center"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:maxLines="1"
-                android:ellipsize="end"
-                tools:text="Hang Up"
-                tools:ignore="NestedWeights" />
-
-            <Button
-                android:id="@+id/answerButton"
-                style="@style/Widget.Bchat.Button.Common.ProminentFilled_AnswerCall"
-                android:background="@drawable/call_notification_answer_background"
-                android:textColor="#00BD40"
-                android:textAllCaps="false"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="36dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
-                android:textSize="12sp"
-                android:gravity="center"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:maxLines="1"
-                android:ellipsize="end"
-                tools:text="Answer" />
-        </LinearLayout>
+            android:layout_marginTop="1dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/open_sans_regular"
+            android:maxLines="1"
+            android:textColor="@color/contact_card_action_text"
+            android:textSize="10sp"
+            tools:text="Incoming voice call.." />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/hangUpButton"
+        android:layout_width="71dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/call_notification_hangup_background"
+        android:ellipsize="end"
+        android:fontFamily="@font/open_sans_semi_bold"
+        android:gravity="center"
+        android:maxLines="1"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:padding="0dp"
+        android:textAllCaps="false"
+        android:textColor="#FF3E3E"
+        android:textSize="11sp"
+        tools:text="Hangup" />
+
+    <Button
+        android:id="@+id/answerButton"
+        android:layout_width="71dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="7dp"
+        android:background="@drawable/call_notification_answer_background"
+        android:ellipsize="end"
+        android:fontFamily="@font/open_sans_semi_bold"
+        android:gravity="center"
+        android:maxLines="1"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:padding="0dp"
+        android:textAllCaps="false"
+        android:textColor="@color/home_row_timestamp_unread"
+        android:textSize="11sp"
+        tools:text="Answer" />
+
+    <!-- In call: running timer + end button (Figma 7546:20387) -->
+    <Chronometer
+        android:id="@+id/callTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:fontFamily="@font/open_sans_semi_bold"
+        android:textColor="@color/contact_card_action_text"
+        android:textSize="12sp"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/endCallButton"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_marginStart="10dp"
+        android:contentDescription="@string/hang_up"
+        android:src="@drawable/ic_call_banner_end_figma"
+        android:visibility="gone" />
 
 </LinearLayout>

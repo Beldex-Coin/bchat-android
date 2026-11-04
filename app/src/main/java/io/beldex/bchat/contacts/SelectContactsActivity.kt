@@ -79,9 +79,8 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                binding.searchAndClearImageview.setImageResource(
-                    if (s.isNotEmpty()) R.drawable.ic_close else R.drawable.ic_baseline_search_24
-                )
+                binding.searchAndClearImageview.setImageResource(R.drawable.ic_close)
+                binding.searchAndClearImageview.visibility = if (s.isNotEmpty()) View.VISIBLE else View.GONE
             }
         })
 
@@ -93,16 +92,10 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
             object : SelectContactsAdapter.OnSelectionChangedListener {
                 override fun onSelectionChanged(selectedCount: Int) {
                     val enabled = selectedCount > 0
-                    val backgroundColor = ResourcesCompat.getColor(
-                        resources,
-                        if (enabled) R.color.chat_message_request_accept_background else R.color.cancel_background,
-                        theme
+                    binding.addButton.isEnabled = enabled
+                    binding.addButton.setTextColor(
+                        ContextCompat.getColor(this@SelectContactsActivity, if (enabled) R.color.text_color_dark else R.color.chat_input_hint)
                     )
-                    binding.addButton.apply {
-                        isEnabled = enabled
-                        backgroundTintList = ColorStateList.valueOf(backgroundColor)
-                        setTextColor(ContextCompat.getColor(context, if (enabled) R.color.chat_message_request_accept_text else R.color.disable_button_text_color))
-                    }
                 }
             }
 

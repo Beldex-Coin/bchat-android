@@ -21,7 +21,7 @@ class SendSeedDialog(private val proceed: (() -> Unit)? = null) : BaseDialog() {
             onCancel = { dismiss() },
             confirmText = stringResource(R.string.conversation_activity__send),
             onConfirm = { send() },
-            destructive = true
+            destructive = false
         )
     }
 

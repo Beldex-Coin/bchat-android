@@ -10,21 +10,28 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/social_group_card_view"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/text_green">
+        app:cardBackgroundColor="@android:color/transparent"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="0dp">
 
         <LinearLayout
             android:id="@+id/container"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/document_view_background"
-            android:orientation="vertical"
-            android:padding="@dimen/small_spacing">
+            android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:id="@+id/invitationTile"
+                android:layout_width="@dimen/message_tile_width"
                 android:layout_height="wrap_content"
+                android:minHeight="52dp"
+                android:gravity="center_vertical"
+                android:paddingStart="15dp"
+                android:paddingTop="6dp"
+                android:paddingEnd="6dp"
+                android:paddingBottom="6dp"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -32,8 +39,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical"
-                    android:paddingHorizontal="8dp"
-                    android:paddingVertical="4dp"
+                    android:layout_marginEnd="10dp"
                     app:layout_constraintEnd_toStartOf="@id/quoteStartBarrier"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -42,15 +48,13 @@
                         android:id="@+id/titleTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/medium_spacing"
-                        android:layout_marginBottom="4dp"
+                        android:layout_marginBottom="3dp"
                         android:ellipsize="end"
-                        android:fontFamily="@font/open_sans_medium"
-                        android:maxLines="1"
-                        android:maxWidth="170dp"
+                        android:fontFamily="@font/roboto_mono"
+                        android:maxLines="2"
                         android:text="@string/ThreadRecord_open_group_invitation"
-                        android:textColor="@color/text"
-                        android:textSize="@dimen/small_font_size"
+                        android:textColor="@color/disappear_icon_color"
+                        android:textSize="12sp"
                         android:textStyle="bold"
                         android:visibility="visible"
                         tools:text="Social group invitation"
@@ -63,9 +67,10 @@
 
                         <ImageView
                             android:id="@+id/socialGroupInvitationIcon"
-                            android:layout_width="12dp"
-                            android:layout_height="12dp"
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
                             android:layout_marginEnd="4dp"
+                            app:tint="@color/chat_meta_text"
                             android:contentDescription="@string/ThreadRecord_open_group_invitation"
                             android:src="@drawable/ic_social_group_name"
                             android:visibility="visible" />
@@ -75,12 +80,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
-                            android:fontFamily="@font/open_sans_regular"
-                            android:maxWidth="240dp"
+                            android:fontFamily="@font/roboto_mono"
                             android:maxLines="1"
-                            android:minWidth="100dp"
-                            android:textColor="@color/incoming_reply_message_icon"
-                            android:textSize="@dimen/very_small_font_size"
+                            android:textColor="@color/chat_meta_text"
+                            android:textSize="10sp"
                             tools:maxLines="1"
                             tools:text="beldex" />
 
@@ -90,17 +93,17 @@
 
                 <RelativeLayout
                     android:id="@+id/InvitationIconPreviewContainer"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="@drawable/view_quote_attachment_preview_background"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@color/reply_draft_card_background"
                     android:gravity="center_vertical"
                     android:visibility="visible"
                     tools:visibility="visible">
 
                     <ImageView
                         android:id="@+id/invitationImageView"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
                         android:layout_centerInParent="true"
                         android:contentDescription="Social Group Profile"
                         android:scaleType="centerInside"
@@ -113,7 +116,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -122,14 +125,11 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginEnd="8dp"
                     android:ellipsize="middle"
-                    android:fontFamily="@font/open_sans_regular"
+                    android:fontFamily="@font/roboto_mono"
                     android:maxLines="1"
-                    android:paddingBottom="4dp"
                     android:textColor="@color/text"
-                    android:textSize="12sp"
+                    android:textSize="13sp"
                     android:visibility="visible"
                     tools:text="http://social.beldex.io/crypto" />
 
@@ -141,7 +141,7 @@
                     android:fontFamily="@font/open_sans_regular"
                     android:textColor="@color/text"
                     android:textSize="11sp"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     tools:text="12:00 pm" />
 
             </LinearLayout>

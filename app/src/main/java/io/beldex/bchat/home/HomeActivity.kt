@@ -172,6 +172,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     private val globalSearchViewModel by viewModels<GlobalSearchViewModel>()
     private val archiveChatViewModel by viewModels<ArchiveChatViewModel>()
     private val callViewModel by viewModels<CallViewModel>()
+    private var incomingCallBannerBound = false
     private val homeViewModel: HomeFragmentViewModel by viewModels()
     private val globalSearchAdapter = GlobalSearchAdapter {model ->  }
 
@@ -1481,6 +1482,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             BChatToast.error(this,getString(R.string.please_check_your_internet_connection),Toast.LENGTH_SHORT).show()
         }
         setupCallActionBar()
+        if (!incomingCallBannerBound) {
+            incomingCallBannerBound = true
+            io.beldex.bchat.webrtc.IncomingCallBanner.bind(this, binding.incomingCallBannerInclude, callViewModel)
+        }
         ApplicationContext.getInstance(this).messageNotifier.setHomeScreenVisible(false)
         if (TextSecurePreferences.getLocalNumber(this) == null) {
             return; } // This can be the case after a secondary device is auto-cleared

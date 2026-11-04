@@ -259,6 +259,26 @@ class VisibleMessageView : LinearLayout {
             }
         }
         onDoubleTap = { binding.messageContentView.root.onContentDoubleTap?.invoke() }
+        bindTimestamp(message)
+        applySelectionMode(isSelectionMode)
+    }
+
+    private fun bindTimestamp(message: MessageRecord) {
+        binding.messageTimestampTextView.text =
+            DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+        binding.messageTimestampTextView.setTextColor(
+            if (message.isOutgoing) 0xFF8D8D8D.toInt() else 0xFF737373.toInt()
+        )
+        binding.messageTimestampTick.isVisible =
+            message.isOutgoing && !message.isPending && !message.isFailed
+        val label = message.mediaLabelRes()?.let { context.getString(it) }
+        binding.messageTimestampLabelStart.text = label
+        binding.messageTimestampLabelEnd.text = label
+        binding.messageTimestampLabelStart.isVisible = label != null && message.isOutgoing
+        binding.messageTimestampLabelEnd.isVisible = label != null && !message.isOutgoing
+        val params = binding.messageTimestampContainer.layoutParams as ConstraintLayout.LayoutParams
+        params.horizontalBias = if (message.isOutgoing) 1f else 0f
+        binding.messageTimestampContainer.layoutParams = params
     }
 
     private fun isStartOfMessageCluster(current: MessageRecord, previous: MessageRecord?, isGroupThread: Boolean): Boolean {
@@ -373,10 +393,24 @@ class VisibleMessageView : LinearLayout {
 
     private fun handleIsSelectedChanged() {
         background = if (snIsSelected) {
-            ColorDrawable(context.resources.getColorWithID(R.color.message_selected, context.theme))
+            androidx.core.content.ContextCompat.getDrawable(context, R.drawable.message_selected_row_background)
         } else {
             null
         }
+        binding.messageSelectCheckbox.setImageResource(
+            if (snIsSelected) R.drawable.ic_select_checked else R.drawable.ic_select_unchecked
+        )
+    }
+
+    private fun applySelectionMode(isSelectionMode: Boolean) {
+        binding.messageSelectCheckbox.isVisible = isSelectionMode
+        binding.messageSelectCheckbox.setImageResource(
+            if (snIsSelected) R.drawable.ic_select_checked else R.drawable.ic_select_unchecked
+        )
+        val density = resources.displayMetrics.density
+        val params = binding.startSpacing.layoutParams
+        params.width = ((if (isSelectionMode) 44 else 8) * density).toInt()
+        binding.startSpacing.layoutParams = params
     }
 
     override fun onDraw(canvas: Canvas) {

@@ -121,7 +121,7 @@
         android:layout_marginBottom="4dp"
         android:fontFamily="@font/open_sans_regular"
         android:textSize="11sp"
-        android:visibility="visible"
+        android:visibility="gone"
         tools:text="12:00 pm" />
 
 </LinearLayout>

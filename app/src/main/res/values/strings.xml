@@ -1755,4 +1755,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="hops_one_description">With this option selected, messages are routed through one intermediary node.</string>
     <string name="hops_three_description">With this option selected, messages will be routed through three intermediary nodes.</string>
     <string name="write_message">Write Message</string>
+    <string name="message_label_sticker">Sticker</string>
+    <string name="call_duration_static" translatable="false">4 min</string>
+    <string name="call_card_title">Call</string>
+    <string name="messages_selected_count">%1$d Selected</string>
 </resources>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/incomingCallBanner"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="14dp"
+    android:layout_marginTop="8dp"
+    android:background="@drawable/call_banner_background"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="18dp"
+    android:paddingVertical="12dp"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <FrameLayout
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginEnd="10dp">
+
+        <ImageView
+            android:id="@+id/incomingCallAvatar"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:importantForAccessibility="no" />
+
+        <ImageView
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_gravity="bottom|end"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_call_banner_avatar_badge" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/incomingCallName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="@font/open_sans_semi_bold"
+            android:maxLines="1"
+            android:textColor="@color/disappear_icon_color"
+            android:textSize="14sp"
+            tools:text="Person" />
+
+        <TextView
+            android:id="@+id/incomingCallState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/open_sans_regular"
+            android:maxLines="1"
+            android:textColor="@color/contact_card_action_text"
+            android:textSize="10sp"
+            tools:text="Incoming voice call.." />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/incomingCallHangup"
+        android:layout_width="71dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/call_notification_hangup_background"
+        android:ellipsize="end"
+        android:fontFamily="@font/open_sans_semi_bold"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/hang_up"
+        android:textColor="#FF3E3E"
+        android:textSize="11sp" />
+
+    <TextView
+        android:id="@+id/incomingCallAnswer"
+        android:layout_width="71dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="7dp"
+        android:background="@drawable/call_notification_answer_background"
+        android:ellipsize="end"
+        android:fontFamily="@font/open_sans_semi_bold"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/answer"
+        android:textColor="@color/home_row_timestamp_unread"
+        android:textSize="11sp" />
+
+</LinearLayout>

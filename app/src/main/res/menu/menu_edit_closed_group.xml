@@ -6,7 +6,7 @@
     <item
         android:title=""
         android:id="@+id/action_apply"
-        android:icon="@drawable/ic_add_member"
+        android:icon="@drawable/ic_edit_group_add"
         app:showAsAction="always|withText"/>
 
 </menu>

@@ -45,6 +45,22 @@ public class AudioCodec {
     }
   }
 
+  private volatile int lastAmplitude = 0;
+
+  public int getAmplitude() {
+    return lastAmplitude;
+  }
+
+  private void updateAmplitude(byte[] data, int length) {
+    int peak = 0;
+    for (int i = 0; i + 1 < length; i += 2) {
+      int sample = (short) ((data[i] & 0xff) | (data[i + 1] << 8));
+      int abs = Math.abs(sample);
+      if (abs > peak) peak = abs;
+    }
+    lastAmplitude = peak;
+  }
+
   public synchronized void stop() {
     running = false;
     while (!finished) Util.wait(this, 0);
@@ -98,6 +114,7 @@ public class AudioCodec {
                                 boolean running)
   {
     int length                = audioRecord.read(audioRecordData, 0, audioRecordData.length);
+    updateAmplitude(audioRecordData, length);
     int codecInputBufferIndex = mediaCodec.dequeueInputBuffer(10 * 1000);
 
     if (codecInputBufferIndex >= 0) {

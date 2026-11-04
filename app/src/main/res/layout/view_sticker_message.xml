@@ -7,11 +7,11 @@
     android:paddingHorizontal="4dp"
     android:paddingTop="4dp">
 
-    <io.beldex.bchat.conversation.v2.utilities.ThumbnailView
+    <include
         android:id="@+id/stickerThumbnail"
-        android:layout_width="112dp"
-        android:layout_height="86dp"
-        app:thumbnail_radius="0dp" />
+        layout="@layout/thumbnail_view"
+        android:layout_width="110dp"
+        android:layout_height="94dp" />
 
     <LinearLayout
         android:id="@+id/stickerFooter"
@@ -23,6 +23,7 @@
 
         <TextView
             android:id="@+id/stickerTime"
+        android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/open_sans_regular"

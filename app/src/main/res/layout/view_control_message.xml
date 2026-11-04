@@ -12,11 +12,12 @@
         android:layout_width="wrap_content"
         android:layout_height="28dp"
         android:minWidth="110dp"
+        android:layout_marginBottom="8dp"
         android:paddingHorizontal="20dp"
         android:fontFamily="@font/roboto_mono"
         android:gravity="center"
         android:background="@drawable/date_chip_background"
-        android:textColor="#8D8D8D"
+        android:textColor="@color/chat_meta_text"
         android:textSize="@dimen/very_small_font_size"
         android:textStyle="bold"
         tools:text="@tools:sample/date/hhmm" />
@@ -55,7 +56,7 @@
         android:layout_marginBottom="5dp"
         android:elevation="5dp"
         android:visibility="gone"
-        app:cardBackgroundColor="#1A1A1A"
+        app:cardBackgroundColor="@color/group_left_message_background"
         app:cardCornerRadius="0dp"
         tools:visibility="visible">
 
@@ -104,7 +105,7 @@
         android:layout_marginEnd="@dimen/medium_spacing"
         android:elevation="5dp"
         android:visibility="gone"
-        app:cardBackgroundColor="#0A1F0F"
+        app:cardBackgroundColor="@color/sent_call_card_background"
         app:cardCornerRadius="0dp"
         tools:visibility="visible">
 
@@ -150,74 +151,86 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/call_message_bubble_background_received_end"
-        android:padding="6dp">
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <LinearLayout
+            android:id="@+id/receivedCallBubble"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:background="@drawable/call_message_bubble_background_received_end"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="8dp">
 
-            <com.google.android.material.card.MaterialCardView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="#0B0B0B"
-                app:cardCornerRadius="0dp"
-                app:cardElevation="0dp"
-                app:contentPadding="4dp">
+                android:minWidth="120dp"
+                android:background="@color/text_color_dark"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="8dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="4dp">
+                <FrameLayout
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:background="@color/message_tile_background">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/receivedCallIcon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_filled_circle_missed_call" />
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center"
+                        android:importantForAccessibility="no"
+                        app:srcCompat="@drawable/ic_call_card_phone" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="7dp"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="vertical">
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/receivedCallText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="16dp"
+                        android:ellipsize="end"
                         android:fontFamily="@font/roboto_mono"
-                        android:textColor="@color/text"
+                        android:maxLines="1"
+                        android:textColor="@color/disappear_icon_color"
                         android:textSize="12sp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/receivedCallIcon"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="Voice Call" />
+                        tools:text="Call" />
 
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/receivedCallDuration"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:fontFamily="@font/roboto_mono"
+                        android:maxLines="1"
+                        android:text="@string/call_duration_static"
+                        android:textColor="@color/message_secondary_text"
+                        android:textSize="10sp" />
                 </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+        </LinearLayout>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/received_message_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="2dp"
+                android:layout_gravity="start"
+                android:layout_marginTop="8dp"
                 android:fontFamily="@font/roboto_mono"
-                android:textColor="@color/received_message_time_color"
-                android:textSize="11sp"
-                tools:text="12:00 pm" />
-
-        </LinearLayout>
-
+                android:textColor="#737373"
+                android:textSize="10sp"
+                tools:text="12:28 PM" />
     </LinearLayout>
 
     <LinearLayout
@@ -225,72 +238,100 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/call_message_bubble_background_sent_end"
-        android:padding="6dp">
+        android:layout_marginStart="60dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <LinearLayout
+            android:id="@+id/dialledCallBubble"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:background="@drawable/call_message_bubble_background_sent_end"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="8dp">
 
-            <com.google.android.material.card.MaterialCardView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="#0B0B0B"
-                app:cardCornerRadius="0dp"
-                app:cardElevation="0dp"
-                app:contentPadding="4dp">
+                android:minWidth="120dp"
+                android:background="@color/text_color_dark"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="8dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="4dp">
+                <FrameLayout
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:background="@color/message_tile_background">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/dialledCallIcon"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_filled_circle_outgoing_call" />
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center"
+                        android:importantForAccessibility="no"
+                        app:srcCompat="@drawable/ic_call_card_phone" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="7dp"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="vertical">
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/dialledCallText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="16dp"
+                        android:ellipsize="end"
                         android:fontFamily="@font/roboto_mono"
-                        android:textColor="@color/text"
+                        android:maxLines="1"
+                        android:textColor="@color/disappear_icon_color"
                         android:textSize="12sp"
-                        app:layout_constraintStart_toEndOf="@id/dialledCallIcon"
-                        tools:text="Voice Call" />
+                        tools:text="Call" />
 
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/dialledCallDuration"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:fontFamily="@font/roboto_mono"
+                        android:maxLines="1"
+                        android:text="@string/call_duration_static"
+                        android:textColor="@color/message_secondary_text"
+                        android:textSize="10sp" />
                 </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/dialled_message_time"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="2dp"
-                android:fontFamily="@font/roboto_mono"
-                android:textColor="@color/sent_message_time_color"
-                android:textSize="11sp"
-                tools:text="12:00 pm" />
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-        </LinearLayout>
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:layout_marginEnd="3dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_msg_tick_sent" />
 
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/dialled_message_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_mono"
+                    android:textColor="@color/chat_meta_text"
+                    android:textSize="10sp"
+                    tools:text="12:28 PM" />
+            </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

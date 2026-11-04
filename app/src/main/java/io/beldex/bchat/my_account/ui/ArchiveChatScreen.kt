@@ -58,8 +58,6 @@ import io.beldex.bchat.database.GroupDatabase
 import io.beldex.bchat.database.model.ThreadRecord
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.home.ConversationView
-import io.beldex.bchat.home.findProfilePictureView
-import io.beldex.bchat.home.clipToNotchedAvatar
 import io.beldex.bchat.home.NotificationSettingDialog
 import io.beldex.bchat.my_account.ui.dialogs.DeleteChatConfirmationDialog
 import io.beldex.bchat.my_account.ui.dialogs.LockOptionsDialog
@@ -446,7 +444,6 @@ fun ArchiveChatItem(
         factory = { ctx -> ConversationView(ctx) },
         update = { view ->
             view.bind(thread, false, glide)
-            view.findProfilePictureView()?.clipToNotchedAvatar()
         },
         modifier = modifier
     )

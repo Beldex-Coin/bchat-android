@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -30,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -47,6 +49,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.compose_utils.NotchCorner
+import io.beldex.bchat.compose_utils.singleCornerCutShape
 import io.beldex.bchat.compose_utils.OutlineLight
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
@@ -66,7 +70,8 @@ fun SharedContactView(
     isQuoted: Boolean = false,
     isOutgoing: Boolean = false,
     searchQuery: String = "",
-    hasResult: Boolean = false
+    hasResult: Boolean = false,
+    showTimestamp: Boolean = true
 ) {
     val numberOfContacts = flattenData(contacts[0].address.serialize())
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -79,15 +84,15 @@ fun SharedContactView(
         Card(
             shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
             colors =CardDefaults.cardColors(
-                containerColor = backgroundColor
+                containerColor = if (isQuoted) backgroundColor else Color.Transparent
             ),
             modifier=Modifier
                 .fillMaxWidth(cardWidth)
                 .padding(
-                    start=if (isQuoted) 2.dp else 8.dp,
+                    start=if (isQuoted) 2.dp else 0.dp,
                     top=if (isQuoted) 4.dp else 0.dp,
-                    end=if (isQuoted) 2.dp else 8.dp,
-                    bottom=if (isQuoted) 4.dp else 8.dp
+                    end=if (isQuoted) 2.dp else 0.dp,
+                    bottom=if (isQuoted) 4.dp else 0.dp
                 ),
         ) {
             Column {
@@ -96,42 +101,49 @@ fun SharedContactView(
                     titleColor = titleColor,
                     subtitleColor = subtitleColor,
                     backgroundColor = backgroundColor,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp, end = 10.dp, top = 8.dp),
                     searchQuery = searchQuery,
                     isOutgoing = isOutgoing,
                     hasResult = hasResult
                 )
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(28.dp))
                 HorizontalDivider(
-                    modifier = Modifier.fillMaxWidth().height(0.5.dp),
-                    color = colorResource(if (isOutgoing) R.color.outgoing_message_divider_color else R.color.incoming_message_divider_color)
+                    modifier = Modifier.fillMaxWidth(),
+                    thickness = 0.5.dp,
+                    color = colorResource(if (isOutgoing) R.color.contact_card_divider_outgoing else R.color.contact_card_divider_incoming)
                 )
                 Row(
-                    modifier = Modifier.fillMaxWidth().height(36.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = if (isOutgoing) 16.dp else 12.dp, bottom = 10.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = if (numberOfContacts.size > 1) stringResource(R.string.view_all) else stringResource(R.string.message_now),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.bodySmall.copy(
-                            color = colorResource(R.color.contact_message_action),
+                            color = colorResource(R.color.contact_card_action_text),
                             fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                             fontWeight = FontWeight.SemiBold,
-                            fontSize = if (numberOfContacts.size > 1) 14.sp else 11.sp
+                            fontSize = 11.sp
                         )
                     )
                     if (numberOfContacts.size == 1) {
                         Icon(
                             painter = painterResource(R.drawable.ic_baseline_send_24),
                             contentDescription = null,
-                            tint = colorResource(R.color.contact_message_action),
-                            modifier = Modifier.padding(start = 6.dp).size(8.dp)
+                            tint = colorResource(R.color.contact_card_action_text),
+                            modifier = Modifier.padding(start = 6.dp).size(10.dp)
                         )
                     }
                 }
             }
         }
-        Text(
+        if (showTimestamp) Text(
             text = timeStamp,
             style = MaterialTheme.typography.bodySmall.copy(
                 color = colorResource(if (isOutgoing) R.color.timestamp_out else R.color.timestamp_in),
@@ -201,8 +213,15 @@ fun SharedContactContent(
             ?.isBnsHolder
     }
 
+    val innerBackground = colorResource(R.color.contact_card_inner_background)
+    val innerBar = colorResource(R.color.contact_card_inner_bar)
     Row(
-        modifier = modifier.padding(8.dp),
+        modifier = modifier
+            .heightIn(min = 52.dp)
+            .background(innerBackground, singleCornerCutShape(8.dp, NotchCorner.TopRight))
+            // 3dp accent bar on the tile's left edge (Figma 7546:16817)
+            .drawBehind { drawRect(innerBar, size = androidx.compose.ui.geometry.Size(3.dp.toPx(), size.height)) }
+            .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(0.8f)) {
@@ -268,12 +287,12 @@ fun SharedContactContent(
                         ProfilePictureComponent(
                             publicKey=first.address,
                             displayName=first.name,
-                            containerSize=36.dp,
+                            containerSize=38.dp,
                             pictureMode=ProfilePictureMode.SmallPicture,
                             modifier=Modifier.then(
                                 if (multiContact && getUserIsBNSHolderStatus(first.address) != true) {
                                     Modifier
-                                        .size(36.dp)
+                                        .size(38.dp)
                                         .clip(CircleShape)
                                         .border(2.dp, backgroundColor, CircleShape)
                                 } else Modifier

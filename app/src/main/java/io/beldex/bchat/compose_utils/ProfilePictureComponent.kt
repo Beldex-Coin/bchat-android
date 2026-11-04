@@ -32,10 +32,12 @@ import com.beldex.libbchat.avatars.ResourceContactPhoto
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import io.beldex.bchat.dependencies.DatabaseComponent
+import io.beldex.bchat.components.NotchedAvatarImageView
 import io.beldex.bchat.hilt.GlideProvider
 import io.beldex.bchat.util.AvatarPlaceholderGenerator
 import dagger.hilt.android.EntryPointAccessors.fromApplication
@@ -188,16 +190,16 @@ fun ProfilePicture(
             Box() {
                 AndroidView(
                     factory = { ctx ->
-                        val imageView = ImageView(ctx).apply {
+                        val imageView = NotchedAvatarImageView(ctx).apply {
                             layoutParams = ViewGroup.LayoutParams(sizePx, sizePx)
                             contentDescription = displayName
-                            clipToNotchedAvatar()
+                            scaleType = ImageView.ScaleType.CENTER_CROP
                         }
                         glide.load(signalProfilePicture)
                             .placeholder(unknownRecipientDrawable)
                             .error(setupDefaultProfileView())
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .transform(CenterInside())
+                            .transform(CenterCrop())
                             .into(imageView)
                         imageView
                     },
@@ -214,16 +216,16 @@ fun ProfilePicture(
         }else{
             AndroidView(
                 factory = { ctx ->
-                    val imageView = ImageView(ctx).apply {
+                    val imageView = NotchedAvatarImageView(ctx).apply {
                         layoutParams = ViewGroup.LayoutParams(sizePx, sizePx)
                         contentDescription = displayName
-                        clipToNotchedAvatar()
+                        scaleType = ImageView.ScaleType.CENTER_CROP
                     }
                     glide.load(signalProfilePicture)
                         .placeholder(unknownRecipientDrawable)
                         .error(setupDefaultProfileView())
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .transform(CenterInside())
+                        .transform(CenterCrop())
                         .into(imageView)
                     imageView
                 },
@@ -236,8 +238,9 @@ fun ProfilePicture(
         }.toInt()
         AndroidView(
             factory = { ctx ->
-                ImageView(ctx).apply {
+                NotchedAvatarImageView(ctx).apply {
                     layoutParams = ViewGroup.LayoutParams(sizePx, sizePx)
+                    scaleType = ImageView.ScaleType.CENTER_CROP
                     setImageDrawable(unknownDrawable)
                 }
             },

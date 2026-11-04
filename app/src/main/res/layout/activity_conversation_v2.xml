@@ -125,11 +125,11 @@
             android:layout_margin="8dp"
             android:layout_marginHorizontal="8dp"
             android:visibility="gone"
-            app:cardBackgroundColor="#1A1A1A"
+            app:cardBackgroundColor="@color/message_tile_background"
             app:cardCornerRadius="0dp"
             app:cardElevation="0dp"
             app:contentPadding="12dp"
-            app:strokeColor="#333333"
+            app:strokeColor="@color/recording_bar_border"
             app:strokeWidth="1dp"
             tools:visibility="visible">
 
@@ -165,11 +165,11 @@
                         android:hint="@string/search_name_bns_bchat_id"
                         android:fontFamily="@font/roboto_mono"
                         android:textSize="12sp"
-                        android:textColor="#EBEBEB"
+                        android:textColor="@color/disappear_icon_color"
                         android:imeOptions="actionDone"
                         android:longClickable="false"
                         android:singleLine="true"
-                        android:textColorHint="#737373"
+                        android:textColorHint="@color/chat_input_hint"
                         app:boxStrokeWidth="0dp"
                         app:boxStrokeWidthFocused="0dp" />
 
@@ -240,15 +240,20 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+        <include
+            android:id="@+id/incomingCallBannerInclude"
+            layout="@layout/view_incoming_call_banner" />
+
         <LinearLayout
             android:id="@+id/callActionBarView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="12dp"
+            android:layout_marginHorizontal="14dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/call_banner_background"
             android:orientation="vertical"
-            android:padding="12dp">
+            android:paddingHorizontal="18dp"
+            android:paddingVertical="12dp">
 
             <RelativeLayout
                 android:id="@+id/bchat_toolbar_Call"
@@ -257,25 +262,24 @@
 
                 <ImageView
                     android:id="@+id/hanUp_Call"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:background="@drawable/call_banner_end_background"
                     android:contentDescription="@string/hang_up"
-                    android:padding="6dp"
-                    android:src="@drawable/ic_fig_call_banner_end" />
+                    android:src="@drawable/ic_call_banner_end_figma" />
 
                 <TextView
                     android:id="@+id/callDuration_Call"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="12dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="10dp"
                     android:layout_toStartOf="@id/hanUp_Call"
-                    android:fontFamily="@font/roboto_mono"
-                    android:textColor="#8D8D8D"
-                    android:textSize="13sp"
+                    android:fontFamily="@font/open_sans_semi_bold"
+                    android:textColor="@color/contact_card_action_text"
+                    android:textSize="12sp"
                     tools:text="0:48" />
 
                 <TextView
@@ -289,8 +293,8 @@
                     android:fontFamily="@font/open_sans_semi_bold"
                     android:maxLines="1"
                     android:text="@string/call_in_progress"
-                    android:textColor="#EBEBEB"
-                    android:textSize="14sp" />
+                    android:textColor="@color/disappear_icon_color"
+                    android:textSize="12sp" />
 
             </RelativeLayout>
         </LinearLayout>
@@ -747,8 +751,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:layout_weight="1"
-                            android:backgroundTint="#EBEBEB"
-                            app:strokeColor="#0A370A"
+                            android:backgroundTint="@color/read_button_background"
+                            app:strokeColor="@color/primary_button_border"
                             app:strokeWidth="1dp"
                             app:shapeAppearanceOverlay="@style/ShapeAppearance.NotchedButton"
                             android:fontFamily="@font/open_sans_semi_bold"
@@ -760,11 +764,11 @@
                             android:paddingBottom="16dp"
                             android:text="@string/ConversationActivity_unblock"
                             android:textAllCaps="false"
-                            android:textColor="#0B0B0B"
+                            android:textColor="@color/text_color_dark"
                             android:textSize="14sp"
                             app:icon="@drawable/ic_unblock_user"
                             app:iconGravity="textStart"
-                            app:iconTint="#0B0B0B" />
+                            app:iconTint="@color/text_color_dark" />
 
                     </LinearLayout>
 
@@ -911,10 +915,9 @@
         android:id="@+id/reactions_shade"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/reactions_screen_light_shade_color"
+        android:background="@android:color/transparent"
         android:clickable="true"
         android:focusable="true"
-        android:foreground="@color/reactions_screen_dark_shade_color"
         android:visibility="gone"
         tools:visibility="visible" />
 

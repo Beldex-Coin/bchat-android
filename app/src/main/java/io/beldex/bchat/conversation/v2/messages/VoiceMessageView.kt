@@ -91,23 +91,23 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         cornerMask.setTopRightRadius(cornerRadii[1])
         cornerMask.setBottomRightRadius(cornerRadii[2])
         cornerMask.setBottomLeftRadius(cornerRadii[3])
-        if(message.isOutgoing) {
-            binding.voiceMessageViewLoader.indeterminateTintList = ColorStateList.valueOf(context.getColor(R.color.white))
-            binding.seekbarAudio.progressBackgroundTintList = ColorStateList.valueOf(context.getColor(R.color.outgoingMessageProgressBackgroundTintColor))
-            binding.seekbarAudio.progressTintList = ColorStateList.valueOf(context.getColor(R.color.white))
-            binding.seekbarAudio.thumbTintList = ColorStateList.valueOf(context.getColor(R.color.white))
-            binding.voiceMessageViewDurationTextView.setTextColor(context.getColor(R.color.white))
-            binding.voiceMessagePlaybackImageView.setColorFilter(context.getColor(R.color.white))
-            binding.viewVoiceMessageCard.setCardBackgroundColor(context.getColor(R.color.outgoing_call_background))
-        }else{
-            binding.voiceMessageViewLoader.indeterminateTintList = ColorStateList.valueOf(context.getColor(R.color.icon_tint))
-            binding.seekbarAudio.progressBackgroundTintList = ColorStateList.valueOf(context.getColor(R.color.incomingMessageProgressBackgroundTintColor))
-            binding.seekbarAudio.progressTintList = ColorStateList.valueOf(context.getColor(R.color.outgoingMessageProgressBackgroundTintColor))
-            binding.seekbarAudio.thumbTintList = ColorStateList.valueOf(context.getColor(R.color.outgoingMessageProgressBackgroundTintColor))
-            binding.voiceMessageViewDurationTextView.setTextColor(context.getColor(R.color.view_message_view_duration))
-            binding.voiceMessagePlaybackImageView.setColorFilter(context.getColor(R.color.icon_tint))
-            binding.viewVoiceMessageCard.setCardBackgroundColor(context.getColor(R.color.received_call_card_background))
-        }
+        val green = 0xFF00BD40.toInt()
+        binding.voiceMessageViewLoader.indeterminateTintList = ColorStateList.valueOf(green)
+        binding.seekbarAudio.progressBackgroundTintList = ColorStateList.valueOf(green)
+        binding.seekbarAudio.progressTintList = ColorStateList.valueOf(green)
+        binding.seekbarAudio.thumbTintList = ColorStateList.valueOf(0xFFEBEBEB.toInt())
+        binding.voiceMessageViewDurationTextView.setTextColor(0xFFEBEBEB.toInt())
+        binding.voiceMessagePlaybackImageView.clearColorFilter()
+        binding.voiceMessagePlaybackImageView.imageTintList = null
+        binding.viewVoiceMessageCard.setCardBackgroundColor(android.graphics.Color.TRANSPARENT)
+        val density = resources.displayMetrics.density
+        binding.voiceMessageTile.background = io.beldex.bchat.compose_utils.InnerTileDrawable(
+            notchPx = 8 * density,
+            barWidthPx = 0f,
+            fillColor = 0xFF0B0B0B.toInt(),
+            barColor = 0
+        )
+        renderIcon()
 
         // only process audio if downloaded
         if (audio.isPendingDownload || audio.isInProgress) {
@@ -233,7 +233,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
     }
 
     private fun renderIcon() {
-        val iconID = if (isPlaying) R.drawable.ic_pause_audio else R.drawable.ic_play_audio
+        val iconID = if (isPlaying) R.drawable.ic_voice_pause_circle else R.drawable.ic_voice_play_circle
         binding.voiceMessagePlaybackImageView.setImageResource(iconID)
     }
 

@@ -28,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -93,14 +92,12 @@ fun DialogPanel(
     showBorder: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val isDark = MaterialTheme.appColors.backgroundColor.luminance() < 0.5f
     val panelBrush = when {
         containerColor != null -> androidx.compose.ui.graphics.SolidColor(containerColor)
-        isDark -> androidx.compose.ui.graphics.Brush.radialGradient(
-            colors = listOf(Color(0xFF1A1A1A), Color(0xFF0B0B0B)),
+        else -> androidx.compose.ui.graphics.Brush.radialGradient(
+            colors = listOf(MaterialTheme.appColors.dialogPanelGradientStart, MaterialTheme.appColors.dialogPanelGradientEnd),
             radius = 700f
         )
-        else -> androidx.compose.ui.graphics.SolidColor(MaterialTheme.appColors.dialogBackground)
     }
     Box(
         modifier = modifier
@@ -109,7 +106,7 @@ fun DialogPanel(
             .then(
                 if (showBorder) Modifier.border(
                     1.dp,
-                    if (isDark) Color(0xFF444444) else MaterialTheme.appColors.pinBoxInactiveBorder,
+                    MaterialTheme.appColors.optionBorder,
                     shape
                 ) else Modifier
             )
@@ -187,9 +184,9 @@ fun DialogCancelButton(
     PrimaryButton(
         onClick = onClick,
         shape = notchedCornerShape(BChatDimens.NotchMedium),
-        containerColor = MaterialTheme.appColors.dialogBackground,
+        containerColor = MaterialTheme.appColors.selectedItemBackground,
         contentColor = textColor,
-        border = BorderStroke(1.dp, MaterialTheme.appColors.onboardingSecondaryButtonBorder),
+        border = BorderStroke(1.dp, MaterialTheme.appColors.dialogNegativeButtonBorder),
         contentPadding =PaddingValues(0.dp),
         modifier = modifier.heightIn(min = BChatDimens.DialogButtonMinHeight)
     ) {
@@ -210,7 +207,7 @@ fun DialogConfirmButton(
     enabled: Boolean = true
 ) {
     val containerColor = if (destructive) MaterialTheme.appColors.negativeRedButtonBorder
-    else MaterialTheme.appColors.editTextColor
+    else MaterialTheme.appColors.dialogPositiveButtonBackground
     val containerBorder = if (destructive) MaterialTheme.appColors.negativeRedButtonBorder
     else MaterialTheme.appColors.dialogPositiveButtonBorder
     PrimaryButton(
@@ -249,9 +246,9 @@ fun PopupBody(
     onClose: (() -> Unit)? = null,
     middleIcon: Painter? = null,
     confirmIcon: Painter? = null,
-    confirmContainerColor: Color = Color(0xFFE0E0E0),
-    confirmContentColor: Color = Color(0xFF0B0B0B),
-    confirmBorderColor: Color = Color(0xFF0A370A)
+    confirmContainerColor: Color = MaterialTheme.appColors.dialogPositiveButtonBackground,
+    confirmContentColor: Color = MaterialTheme.appColors.dialogPositiveButtonText,
+    confirmBorderColor: Color = MaterialTheme.appColors.dialogPositiveButtonBorder
 ) {
     Column(
         modifier = modifier
@@ -361,7 +358,7 @@ fun CloseTile(onClick: () -> Unit, modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center,
         modifier = modifier
             .size(24.dp)
-            .background(Color(0xFF222222))
+            .background(MaterialTheme.appColors.userDetailsCancelBackground)
             .clickable(onClick = onClick)
     ) {
         androidx.compose.material3.Icon(
@@ -428,11 +425,11 @@ fun DialogPrimaryButton(
         onClick = onClick,
         enabled = enabled,
         shape = notchedCornerShape(BChatDimens.NotchMedium),
-        containerColor = Color(0xFFE0E0E0),
-        contentColor = Color(0xFF0B0B0B),
+        containerColor = MaterialTheme.appColors.dialogPositiveButtonBackground,
+        contentColor = MaterialTheme.appColors.dialogPositiveButtonText,
         disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
         disabledContentColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledText,
-        border = BorderStroke(1.dp, if (enabled) Color(0xFF0A370A) else Color(0xFF333333)),
+        border = BorderStroke(1.dp, if (enabled) MaterialTheme.appColors.dialogPositiveButtonBorder else MaterialTheme.appColors.pinBoxInactiveBorder),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
         modifier = modifier.heightIn(min = BChatDimens.DialogButtonMinHeight)
     ) {

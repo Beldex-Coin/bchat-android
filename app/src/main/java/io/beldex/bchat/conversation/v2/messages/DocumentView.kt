@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.InnerTileDrawable
 import io.beldex.bchat.databinding.ViewDocumentBinding
 import io.beldex.bchat.database.model.MmsMessageRecord
 import io.beldex.bchat.util.DateUtils
@@ -36,17 +37,22 @@ class DocumentView : LinearLayout {
         }else{
             fileNameWithoutFormat
         }
-        binding.documentTitleTextView.textSize = fontSize!!.toFloat()
+        binding.documentTitleTextView.textSize = 12f
         if(fileFormat == "-"){
             binding.documentTitleTextView.text = newFileName
         }else{
             binding.documentTitleTextView.text = "$newFileName.$fileFormat"
         }
-        binding.documentTitleTextView.setTextColor(textColor)
-        binding.documentViewIconImageView.imageTintList = ColorStateList.valueOf(textColor)
-        binding.documentViewIconTextView.text = fileName.substring(
-                fileName.lastIndexOf(".") + 1
+        binding.documentTitleTextView.setTextColor(0xFFEBEBEB.toInt())
+        val contentType = document.contentType ?: ""
+        binding.documentViewIconImageView.setImageResource(
+            when {
+                contentType.startsWith("video/") -> R.drawable.ic_play_new
+                contentType.startsWith("audio/") -> R.drawable.ic_microphone
+                else -> R.drawable.ic_message_document
+            }
         )
+        binding.documentViewIconImageView.imageTintList = ColorStateList.valueOf(0xFFACACAC.toInt())
         //New Line Image Upload time show progress bar function
         if (!message.isFailed) {
             if(!message.isPending && !message.isRead && !message.isDelivered) {
@@ -60,28 +66,13 @@ class DocumentView : LinearLayout {
                 binding.gifProgress.visibility = View.VISIBLE
             }
         }
-        val backgroundColorID = if (message.isOutgoing) {
-            R.color.button_green
-        } else {
-            R.color.user_view_background
-        }
-        val backgroundColor =
-            ResourcesCompat.getColor(resources, backgroundColorID, context.theme)
-        binding.documentTypePreviewContainer.backgroundTintList =
-            ColorStateList.valueOf(backgroundColor)
-
-        binding.documentViewContainer.setBackgroundColor(resources.getColor(getContainerColor(message.isOutgoing), null))
-        if (message.isOutgoing) {
-            binding.documentViewContainer.background=ContextCompat.getDrawable(
-                context,
-                R.drawable.document_view_background
-            )
-        } else {
-            binding.documentViewContainer.background=ContextCompat.getDrawable(
-                context,
-                R.drawable.document_incoming_view_background
-            )
-        }
+        val density = resources.displayMetrics.density
+        binding.documentViewContainer.background = InnerTileDrawable(
+            notchPx = 8 * density,
+            barWidthPx = 3 * density,
+            fillColor = if (message.isOutgoing) 0xFF000800.toInt() else 0xFF0B0B0B.toInt(),
+            barColor = 0xFF444444.toInt()
+        )
 
         binding.documentViewMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
         binding.documentViewMessageTime.setTextColor(

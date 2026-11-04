@@ -190,6 +190,7 @@ import io.beldex.bchat.util.serializable
 import io.beldex.bchat.util.shortNameAndAddress
 import io.beldex.bchat.util.toPx
 import io.beldex.bchat.webrtc.CallViewModel
+import io.beldex.bchat.webrtc.IncomingCallBanner
 import io.beldex.bchat.webrtc.NetworkChangeReceiver
 import io.beldex.bchat.webrtc.WebRTCComposeActivity
 import kotlinx.coroutines.Dispatchers
@@ -319,6 +320,13 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
     private lateinit var audioRecorder: AudioRecorder
     private val stopAudioHandler = Handler(Looper.getMainLooper())
     private val stopVoiceMessageRecordingTask = Runnable { sendVoiceMessage() }
+    private val voiceAmplitudeTask = object : Runnable {
+        override fun run() {
+            if (!::audioRecorder.isInitialized || !binding.inputBarRecordingView.isTimerRunning) return
+            binding.inputBarRecordingView.addAmplitude(audioRecorder.amplitude)
+            stopAudioHandler.postDelayed(this, 100L)
+        }
+    }
     private var groupRepository : SecretGroupInfoRepository?=null
     private lateinit var reactionDelegate : ConversationReactionDelegate
     private val reactWithAnyEmojiStartPage=-1
@@ -513,9 +521,16 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
         })
     }
 
+    private var incomingCallBannerBound = false
+
     override fun onResume() {
         super.onResume()
         setupCallActionBar()
+        val incomingCallBanner = binding.incomingCallBannerInclude
+        if (!incomingCallBannerBound && incomingCallBanner != null) {
+            incomingCallBannerBound = true
+            IncomingCallBanner.bind(this, incomingCallBanner, callViewModel)
+        }
         ApplicationContext.getInstance(this).messageNotifier.setVisibleThread(viewModel.threadId)
         if (!viewModel.markAllRead())
             return
@@ -2834,7 +2849,11 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
             PICK_GIF -> {
                 intent ?: return
                 val uri=intent.data ?: return
-                val type=AttachmentManager.MediaType.GIF
+                val type=if (intent.getBooleanExtra(GiphyActivity.EXTRA_IS_STICKER, false)) {
+                    AttachmentManager.MediaType.STICKER
+                } else {
+                    AttachmentManager.MediaType.GIF
+                }
                 val width=intent.getIntExtra(GiphyActivity.EXTRA_WIDTH, 0)
                 val height=intent.getIntExtra(GiphyActivity.EXTRA_HEIGHT, 0)
                 prepMediaForSending(uri, type, width, height).addListener(mediaPreppedListener)
@@ -3061,6 +3080,9 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
             window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
             audioRecorder.startRecording()
+            binding.inputBarRecordingView.clearWaveform()
+            stopAudioHandler.removeCallbacks(voiceAmplitudeTask)
+            stopAudioHandler.postDelayed(voiceAmplitudeTask, 100L)
 
             // Limit voice messages to 5 minutes
             stopAudioHandler.postDelayed(

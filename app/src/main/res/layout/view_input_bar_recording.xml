@@ -60,7 +60,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="00:00"
-                    android:textSize="@dimen/small_font_size"
+                    android:textSize="14sp"
                     android:textStyle="bold"
                     android:textColor="@color/recording_timer_text" />
 
@@ -106,12 +106,29 @@
                 android:layout_height="32dp"
                 app:layout_constraintStart_toEndOf="@id/recordingTimer"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="72dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginEnd="52dp"
+                android:layout_marginStart="12dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:visibility="gone"
                 tools:visibility="visible"/>
+
+
+            <ImageView
+                android:id="@+id/lockedSendButton"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/record_locked_send_background"
+                android:contentDescription="@string/conversation_activity__send"
+                android:padding="7dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/send"
+                android:visibility="gone"
+                app:tint="#0B0B0B"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
             <!-- The cancel button -->
 
@@ -140,11 +157,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/timer_container"
         android:layout_marginBottom="16dp"
-        app:cardBackgroundColor="#111111"
+        app:cardBackgroundColor="@color/recording_bar_background"
         app:contentPadding="8dp"
         app:cardCornerRadius="0dp"
         app:cardElevation="0dp"
-        app:strokeColor="#333333"
+        app:strokeColor="@color/recording_bar_border"
         app:strokeWidth="1dp"
         android:visibility="gone">
 
@@ -165,7 +182,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/delete"
                 android:fontFamily="@font/roboto_mono"
-                android:textColor="#EBEBEB"
+                android:textColor="@color/disappear_icon_color"
                 android:layout_marginStart="8dp"/>
 
         </LinearLayout>
@@ -173,26 +190,28 @@
 
     <LinearLayout
         android:id="@+id/lockView"
-        android:layout_width="48dp"
+        android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:paddingVertical="16dp"
-        android:background="@drawable/view_lock_background"
+        android:paddingTop="15dp"
+        android:paddingBottom="12dp"
+        android:background="@drawable/record_lock_pill_background"
         app:layout_constraintStart_toStartOf="@id/pulseView"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/pulseView"
         android:layout_marginTop="8dp">
 
         <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_lock"
-            app:tint="@color/text" />
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_record_lock" />
 
         <ImageView
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_marginTop="4dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginTop="9dp"
+            android:importantForAccessibility="no"
             android:src="@drawable/ic_chevron_up"
             app:tint="@color/text" />
 
@@ -202,7 +221,7 @@
         android:id="@+id/pulseView"
         android:layout_width="59dp"
         android:layout_height="59dp"
-        android:alpha="0.5"
+        android:alpha="0.35"
         android:background="@drawable/circle_tintable"
         android:backgroundTint="@color/destructive"
         app:layout_constraintEnd_toEndOf="parent"
@@ -216,8 +235,7 @@
         android:id="@+id/recordButtonOverlay"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:background="@drawable/circle_tintable"
-        android:backgroundTint="@color/destructive"
+        android:background="@drawable/record_mic_circle_background"
         app:layout_constraintStart_toStartOf="@id/pulseView"
         app:layout_constraintEnd_toEndOf="@id/pulseView"
         app:layout_constraintTop_toTopOf="@id/pulseView"
@@ -226,8 +244,8 @@
 
         <ImageView
             android:id="@+id/recordButtonOverlayImageView"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             app:tint="@color/white"
             android:scaleType="centerInside"
             android:layout_centerInParent="true"

@@ -103,9 +103,9 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         WindowInsetsUtil.applyToolbarInsets(binding.toolbar)
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setHomeAsUpIndicator(
-                ThemeUtil.getThemedDrawableResId(this, R.attr.actionModeCloseDrawable))
+        supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_back)
         supportActionBar!!.title = getString(R.string.activity_edit_closed_group_title)
+        supportActionBar!!.setDisplayShowTitleEnabled(false)
 
         groupID = intent.getStringExtra(groupIDKey)!!
         val groupInfo = DatabaseComponent.get(this).groupDatabase().getGroup(groupID).get()
@@ -220,8 +220,8 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
     }
 
     private fun showApplyChangesButton(isVisible: Boolean) {
-        binding.applyChangesBtn.isVisible = isVisible
-        binding.applyChangesContainer.isVisible = isVisible
+        binding.applyChangesContainer.isVisible = true
+        binding.applyChangesBtn.isEnabled = isVisible
     }
 
     private fun checkIsOnline():Boolean{

@@ -48,7 +48,7 @@ class SelectContactsAdapter(
     ) {
         if (payloads.isNotEmpty() && payloads.contains(Payload.MEMBER_CLICKED)) {
             val member = members[position]
-            holder.view.toggleCheckbox(selectedMembers.contains(member))
+            holder.view.applyAddMemberStyle(selectedMembers.contains(member))
         } else {
             bindView(holder, position)
         }
@@ -64,9 +64,8 @@ class SelectContactsAdapter(
             val recipient = Recipient.from(context, Address.fromSerialized(member), false)
             holder.view.bind(recipient, glide, UserView.ActionIndicator.Tick, isSelected)
             holder.view.tag = member
-        } else {
-            holder.view.toggleCheckbox(isSelected)
         }
+        holder.view.applyAddMemberStyle(isSelected)
 
         holder.view.setOnClickListener {
             onMemberClick(member)

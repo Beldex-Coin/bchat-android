@@ -31,7 +31,7 @@ class DownloadDialog(private val recipient: Recipient) : BaseDialog() {
         val contact = contactDB.getContactWithBchatID(bchatID)
         val name = contact?.displayName(Contact.ContactContext.REGULAR, context) ?: bchatID
         PopupBody(
-            icon = painterResource(R.drawable.ic_download_media),
+            icon = painterResource(R.drawable.ic_pop_save_storage), // Figma 7546:8911 "Download 3"
             title = stringResource(R.string.dialog_download_title, name),
             message = boldedMessage(stringResource(R.string.dialog_download_explanation, name), name),
             cancelText = stringResource(R.string.cancel),

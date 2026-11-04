@@ -250,7 +250,7 @@
                     android:gravity="start|top"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
-                    android:paddingBottom="5dp"
+                    android:paddingBottom="8dp"
                     android:visibility="gone"
                     tools:visibility="visible"
                     android:breakStrategy="high_quality"
@@ -270,7 +270,7 @@
                     android:gravity="end"
                     android:maxLines="1"
                     android:textSize="11sp"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     tools:text="12:00 pm" />
 
             </io.beldex.bchat.util.BodyTextViewLayout>
@@ -299,7 +299,7 @@
                     android:gravity="start|top"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
-                    android:paddingBottom="5dp"
+                    android:paddingBottom="8dp"
                     android:visibility="gone"
                     tools:visibility="visible"
                     android:breakStrategy="high_quality"
@@ -317,7 +317,7 @@
                     android:gravity="end"
                     android:maxLines="1"
                     android:textSize="11sp"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     tools:text="12:00 pm" />
 
             </io.beldex.bchat.util.QuoteBodyTextViewLayout>

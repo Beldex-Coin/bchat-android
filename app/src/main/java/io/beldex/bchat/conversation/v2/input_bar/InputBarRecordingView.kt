@@ -66,6 +66,16 @@ class InputBarRecordingView : RelativeLayout {
         binding.deleteView.setOnClickListener {
             delegate?.cancelVoiceMessage()
         }
+        binding.lockedSendButton.setOnClickListener {
+            if (SystemClock.elapsedRealtime() - sendButtonLastClickTime >= 500) {
+                sendButtonLastClickTime = SystemClock.elapsedRealtime()
+                delegate?.sendVoiceMessage()
+            }
+        }
+    }
+
+    fun clearWaveform() {
+        binding.audioWaveForm.clear()
     }
 
     fun show() {
@@ -77,10 +87,13 @@ class InputBarRecordingView : RelativeLayout {
         }
         dotViewAnimation?.cancel()
         pulseAnimation?.cancel()
-        binding.recordButtonOverlayImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_filled_microphone, context.theme))
+        binding.recordButtonOverlayImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_microphone, context.theme))
         binding.recordButtonOverlay.setOnClickListener(null)
         binding.microphoneOrSendButtonContainer.isVisible = false
-        binding.audioWaveForm.visibility = View.GONE
+        binding.lockedSendButton.isVisible = false
+        binding.pulseGroup.isVisible = true
+        binding.audioWaveForm.visibility = View.VISIBLE
+        binding.inputBarMiddleContentContainer.isVisible = false
         binding.dotView.visibility = View.VISIBLE
         binding.deleteView.visibility = View.GONE
 //        binding.inputBarCancelButton.alpha = 0.0f
@@ -93,8 +106,8 @@ class InputBarRecordingView : RelativeLayout {
         animation.addUpdateListener { animator ->
             alpha = animator.animatedValue as Float
         }
-        binding.pulseView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.destructive)
-        binding.recordButtonOverlay.backgroundTintList = ContextCompat.getColorStateList(context, R.color.destructive)
+        binding.pulseView.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF3C3C3C.toInt())
+        binding.recordButtonOverlay.backgroundTintList = null
         animation.start()
         animateDotView()
         pulse()
@@ -206,17 +219,15 @@ class InputBarRecordingView : RelativeLayout {
     }
 
     private fun applyLockedVisualState() {
-        binding.recordButtonOverlayImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.send, context.theme))
-        binding.pulseView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.button_green)
-        binding.recordButtonOverlay.backgroundTintList = ContextCompat.getColorStateList(context, R.color.button_green)
-        binding.recordButtonOverlay.setOnClickListener { delegate?.sendVoiceMessage() }
-//        binding.pulseGroup.visibility = View.GONE
-        binding.microphoneOrSendButtonContainer.isVisible = true
+        binding.recordButtonOverlay.setOnClickListener(null)
+        binding.pulseGroup.isVisible = false
+        pulseAnimation?.removeAllUpdateListeners()
+        binding.microphoneOrSendButtonContainer.isVisible = false
+        binding.lockedSendButton.isVisible = true
         binding.audioWaveForm.visibility = View.VISIBLE
         binding.dotView.visibility = View.GONE
         dotViewAnimation?.repeatCount = 0
         binding.deleteView.visibility = View.VISIBLE
-//        binding.inputBarCancelButton.setOnClickListener { delegate?.cancelVoiceMessage() }
     }
 }
 

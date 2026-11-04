@@ -98,9 +98,8 @@ public class AudioRecorder {
     Util.runOnMain(() -> future.set(result));
   }
 
-  /*public float getAmplitude() {
-    if (audioCodec != null)
-      return audioCodec.getAmplitude();
-    else return -1f;
-  }*/
+  public float getAmplitude() {
+    AudioCodec codec = audioCodec;
+    return codec != null ? codec.getAmplitude() : 0f;
+  }
 }

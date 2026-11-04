@@ -22,7 +22,12 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
     private val context: Context) : ActionMode.Callback {
     var delegate: ConversationActionModeCallbackDelegate? = null
 
+    companion object {
+        private var currentMode: java.lang.ref.WeakReference<ActionMode>? = null
+    }
+
     override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+        currentMode = java.lang.ref.WeakReference(mode)
         val themedContext = ContextThemeWrapper(context, context.theme)
         val inflater = MenuInflater(themedContext)
         inflater.inflate(R.menu.menu_conversation_item_action, menu)
@@ -36,6 +41,8 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
             val menuItem = menu[i]
             menuItem.icon?.setTint(tintColor)
         }
+        // Figma 8013:5099: the delete action is red.
+        menu.findItem(R.id.menu_context_delete_message)?.icon?.mutate()?.setTint(0xFFFF3E3E.toInt())
 
         return true
     }
@@ -43,6 +50,7 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
     fun updateActionModeMenu(menu: Menu) {
         // Prepare
         val selectedItems = adapter.selectedItems
+        currentMode?.get()?.title = context.getString(R.string.messages_selected_count, selectedItems.size)
         val containsControlMessage = selectedItems.any { it.isUpdate }
         val containsContacts = selectedItems.any { it.isSharedContact }
         val hasText = selectedItems.any { it.body.isNotEmpty() }
@@ -106,6 +114,7 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
     }
 
     override fun onDestroyActionMode(mode: ActionMode) {
+        currentMode = null
         adapter.selectedItems.clear()
         adapter.notifyDataSetChanged()
         delegate?.destroyActionMode()

@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:minHeight="47dp"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/containerCardView"

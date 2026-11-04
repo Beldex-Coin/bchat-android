@@ -133,6 +133,13 @@ private fun CharSequence.toBoldAwareAnnotatedString(): androidx.compose.ui.text.
                 )
             }
         }
+        spanned.getSpans(0, spanned.length, android.text.style.ForegroundColorSpan::class.java).forEach { span ->
+            addStyle(
+                androidx.compose.ui.text.SpanStyle(color = androidx.compose.ui.graphics.Color(span.foregroundColor)),
+                spanned.getSpanStart(span),
+                spanned.getSpanEnd(span)
+            )
+        }
     }
 }
 

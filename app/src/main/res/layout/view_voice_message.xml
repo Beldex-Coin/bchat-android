@@ -4,22 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainVoiceMessageViewContainer"
     android:layout_width="250dp"
-    android:layout_height="69dp">
+    android:layout_height="wrap_content">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/viewVoiceMessageCard"
         android:layout_width="match_parent"
         android:layout_height="36dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         app:cardCornerRadius="0dp"
         app:cardElevation="0dp"
-        app:strokeColor="#0A370A"
-        app:strokeWidth="1dp"
-        app:cardBackgroundColor="#0B0B0B">
+        app:strokeWidth="0dp"
+        app:cardBackgroundColor="@android:color/transparent">
 
         <RelativeLayout
+            android:id="@+id/voiceMessageTile"
             android:layout_width="match_parent"
             android:paddingTop="6dp"
             android:paddingBottom="4dp"
@@ -47,11 +48,10 @@
 
                 <ImageView
                     android:id="@+id/voiceMessagePlaybackImageView"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
                     android:layout_centerInParent="true"
-                    android:src="@drawable/ic_play_audio"
-                    app:tint="#00BD40" />
+                    android:src="@drawable/ic_voice_play_circle" />
 
                 <ProgressBar
                     android:id="@+id/voiceMessageViewLoader"
@@ -79,7 +79,7 @@
                 android:layout_marginEnd="@dimen/small_spacing"
                 android:fontFamily="@font/roboto_mono"
                 android:textStyle="bold"
-                android:textColor="#EBEBEB"
+                android:textColor="@color/disappear_icon_color"
                 android:textSize="11sp"
                 tools:text="0:00" />
         </RelativeLayout>
@@ -97,7 +97,7 @@
         android:layout_marginEnd="16dp"
         android:fontFamily="@font/open_sans_regular"
         android:textSize="11sp"
-        android:visibility="visible"
+        android:visibility="gone"
         tools:text="12:00 pm" />
 
 </io.beldex.bchat.conversation.v2.messages.VoiceMessageView>

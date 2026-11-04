@@ -42,6 +42,8 @@ public class GiphyActivity extends PassphraseRequiredActionBarActivity
   public static final String EXTRA_IS_MMS = "extra_is_mms";
   public static final String EXTRA_WIDTH  = "extra_width";
   public static final String EXTRA_HEIGHT = "extra_height";
+  public static final String EXTRA_IS_STICKER = "extra_is_sticker";
+  private ViewPager viewPager;
 
   private GiphyGifFragment     gifFragment;
   private GiphyStickerFragment stickerFragment;
@@ -76,7 +78,7 @@ public class GiphyActivity extends PassphraseRequiredActionBarActivity
 
   TextSecurePreferences.setIsGifSearchInGridLayout(this, true);
 
-    ViewPager viewPager = ViewUtil.findById(this, R.id.giphy_pager);
+    viewPager = ViewUtil.findById(this, R.id.giphy_pager);
     TabLayout tabLayout = ViewUtil.findById(this, R.id.tab_layout);
 
     GiphyFragmentPagerAdapter adapter =
@@ -117,6 +119,8 @@ public class GiphyActivity extends PassphraseRequiredActionBarActivity
   public void onClick(final GiphyAdapter.GiphyViewHolder viewHolder) {
 
     viewHolder.gifProgress.setVisibility(View.VISIBLE);
+    // GiphyFragmentPagerAdapter: position 0 is GIFs, position 1 is Stickers.
+    final boolean isSticker = viewPager != null && viewPager.getCurrentItem() == 1;
 
     new AsyncTask<Void, Void, Uri>() {
 
@@ -159,6 +163,7 @@ public class GiphyActivity extends PassphraseRequiredActionBarActivity
         intent.setData(uri);
         intent.putExtra(EXTRA_WIDTH, viewHolder.image.getGifWidth());
         intent.putExtra(EXTRA_HEIGHT, viewHolder.image.getGifHeight());
+        intent.putExtra(EXTRA_IS_STICKER, isSticker);
 
         setResult(RESULT_OK, intent);
         finish();

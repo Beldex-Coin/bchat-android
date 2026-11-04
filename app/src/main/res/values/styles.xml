@@ -1157,4 +1157,16 @@
         <item name="cornerSizeTopRight">12dp</item>
         <item name="cornerSizeBottomLeft">12dp</item>
     </style>
+
+    <style name="Widget.Bchat.EditGroupToolbar.Nav" parent="Widget.AppCompat.Toolbar.Button.Navigation">
+        <item name="android:minHeight">46dp</item>
+        <item name="android:minWidth">46dp</item>
+    </style>
+    <style name="Widget.Bchat.EditGroupToolbar.Action" parent="Widget.AppCompat.ActionButton">
+        <item name="android:minHeight">46dp</item>
+    </style>
+    <style name="ThemeOverlay.Bchat.EditGroupToolbar" parent="">
+        <item name="toolbarNavigationButtonStyle">@style/Widget.Bchat.EditGroupToolbar.Nav</item>
+        <item name="actionButtonStyle">@style/Widget.Bchat.EditGroupToolbar.Action</item>
+    </style>
 </resources>

@@ -18,57 +18,66 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/searchCardView"
+            <LinearLayout
+                android:id="@+id/addMemberListCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/medium_spacing"
-                android:layout_marginTop="@dimen/large_spacing"
-                android:layout_marginRight="@dimen/medium_spacing"
-                app:cardBackgroundColor="#111111"
-                app:cardCornerRadius="0dp"
-                app:cardElevation="0dp">
+                android:layout_marginStart="14dp"
+                android:layout_marginTop="13dp"
+                android:layout_marginEnd="14dp"
+                android:background="@drawable/bordered_card_background"
+                android:orientation="vertical"
+                android:paddingHorizontal="12dp"
+                android:paddingTop="13dp"
+                android:paddingBottom="8dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="@drawable/search_edit_text_background">
+            <LinearLayout
+                android:id="@+id/searchCardView"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/search_edit_text_background"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp">
 
-                    <EditText
-                        android:id="@+id/searchContact"
-                        style="@style/BchatSearchEditText"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="54dp"
-                        android:gravity="center_vertical"
-                        android:hint="@string/search_contact"
-                        android:imeOptions="actionDone"
-                        android:inputType="text"
-                        android:maxLines="1"
-                        android:background="@color/transparent"
-                        android:singleLine="true" />
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="15dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_search_contact"
+                    app:tint="@color/chat_input_hint" />
 
-                    <ImageView
-                        android:id="@+id/searchAndClearImageview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center_vertical"
-                        android:src="@drawable/ic_baseline_search_24"
-                        android:layout_marginEnd="15dp"
-                        android:contentDescription="@string/search_contact" />
+                <EditText
+                    android:id="@+id/searchContact"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="11dp"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:fontFamily="@font/open_sans_regular"
+                    android:gravity="center_vertical"
+                    android:hint="@string/search_contact"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="@color/disappear_icon_color"
+                    android:textColorHint="@color/chat_input_hint"
+                    android:textSize="14sp" />
 
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
+                <ImageView
+                    android:id="@+id/searchAndClearImageview"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="@string/search_contact"
+                    android:visibility="gone" />
+            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
-                android:layout_marginTop="@dimen/small_spacing"
-                android:layout_marginBottom="@dimen/small_spacing"
                 tools:listitem="@layout/view_user"/>
 
             <LinearLayout
@@ -103,6 +112,7 @@
 
     </LinearLayout>
 
+            </LinearLayout>
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
@@ -111,26 +121,25 @@
         android:id="@+id/addButtonLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="#0B0B0B"
         android:layout_alignParentBottom="true"
-        android:padding="@dimen/small_spacing">
+        android:layout_gravity="bottom"
+        android:background="@drawable/bg_add_member_bottom_bar"
+        android:paddingHorizontal="21dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp">
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/addButton"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
+            android:layout_height="58dp"
+            android:background="@drawable/bg_edit_group_apply"
             android:enabled="false"
-            android:backgroundTint="@color/apply_button_tint"
-            android:fontFamily="@font/roboto_mono"
+            android:fontFamily="@font/open_sans_semi_bold"
+            android:stateListAnimator="@null"
             android:text="@string/add"
             android:textAllCaps="false"
-            android:textStyle="bold"
-            android:textColor="@color/apply_button_text"
-            app:strokeColor="#0A370A"
-            app:strokeWidth="1dp"
-            android:textSize="14sp"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.Bchat.NotchedButton" />
+            android:textColor="@color/chat_input_hint"
+            android:textSize="16sp" />
     </LinearLayout>
 
 </RelativeLayout>

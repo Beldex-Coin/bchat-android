@@ -9,6 +9,15 @@
     android:visibility="gone"
     tools:visibility="visible">
 
+    <View
+        android:id="@+id/selected_message_highlight"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/reaction_selected_message_highlight"
+        android:visibility="gone"
+        tools:layout_height="66dp"
+        tools:visibility="visible" />
+
     <Space
         android:id="@+id/dropdown_anchor"
         android:layout_width="0dp"

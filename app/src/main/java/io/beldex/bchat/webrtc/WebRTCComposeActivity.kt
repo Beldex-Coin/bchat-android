@@ -746,8 +746,10 @@ class WebRTCComposeActivity : BaseComponentActivity() {
             isShowCallDurationStatus -> isStatusCallDurationText
             isShowDialingStatus -> isStatusDialingText
             isShowIncomingStatus -> isStatusInComingText
+            isShowCallConnecting -> context.getString(R.string.CallNotificationBuilder_connecting)
             else -> ""
         }
+        val avatarFrameSize = if (isLandscape) profilePictureSize else if (isShowCallDurationStatus) 194.dp else 174.dp
         val toggleSpeaker: () -> Unit = {
             if (isBluetoothIsConnected) {
                 expanded = !expanded
@@ -832,7 +834,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                     CallAvatarFrame(
                                         publicKey = displayedKey,
                                         displayName = getUserDisplayName(displayedKey),
-                                        outerSize = profilePictureSize,
+                                        outerSize = avatarFrameSize,
                                         innerSize = profilePictureInnerSize,
                                         audioOff = isShowCallAudioStatus,
                                         videoOff = isShowCallVideoStatus
@@ -848,9 +850,6 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                     CallPersonName(displayedName)
                                     Spacer(modifier = Modifier.height(16.dp))
                                     CallStatusText(statusLine)
-                                    if (callLoading) {
-                                        LottieAnimation(composition, progress, modifier = Modifier.size(48.dp))
-                                    }
                                 }
                             }
                         } else {
@@ -866,7 +865,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                 CallAvatarFrame(
                                     publicKey = displayedKey,
                                     displayName = getUserDisplayName(displayedKey),
-                                    outerSize = profilePictureSize,
+                                    outerSize = avatarFrameSize,
                                     innerSize = profilePictureInnerSize,
                                     audioOff = isShowCallAudioStatus,
                                     videoOff = isShowCallVideoStatus
@@ -874,9 +873,6 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                 Spacer(modifier = Modifier.height(24.dp))
                                 CallPersonName(displayedName)
                                 Spacer(modifier = Modifier.weight(1f))
-                                if (callLoading && !isShowCallDurationStatus) {
-                                    LottieAnimation(composition, progress, modifier = Modifier.size(56.dp))
-                                }
                                 CallStatusText(statusLine)
                                 Spacer(modifier = Modifier.height(28.dp))
                             }
@@ -900,9 +896,6 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                             CallPersonName(displayedName, overVideo = true)
                             Spacer(modifier = Modifier.height(4.dp))
                             CallStatusText(statusLine, overVideo = true)
-                            if (callLoading && !isShowCallDurationStatus) {
-                                LottieAnimation(composition, progress, modifier = Modifier.size(48.dp))
-                            }
                         }
                     }
 
@@ -1173,7 +1166,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
             text = name,
             color = if (overVideo) Color.White else MaterialTheme.appColors.editTextColor,
             fontFamily = OpenSans,
-            fontSize = 28.sp,
+            fontSize = 30.sp,
             fontWeight = FontWeight.Normal,
             textAlign = TextAlign.Center,
             maxLines = 1,
@@ -1190,7 +1183,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
             text = text,
             color = if (overVideo) Color.White else MaterialTheme.appColors.editTextColor,
             fontFamily = RobotoMono,
-            fontSize = 16.sp,
+            fontSize = 18.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(vertical = 4.dp),
             style = androidx.compose.ui.text.TextStyle(

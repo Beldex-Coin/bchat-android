@@ -102,6 +102,58 @@ class UserView : LinearLayout {
         )
     }
 
+    fun applyEditGroupStyle(isAdmin: Boolean, removable: Boolean) {
+        val density = resources.displayMetrics.density
+        fun dp(v: Int) = (v * density).toInt()
+        binding.userViewLayout.background = androidx.core.content.ContextCompat.getDrawable(context, R.drawable.bordered_card_background)
+        (binding.userViewLayout.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let {
+            it.marginStart = dp(13); it.marginEnd = dp(13); it.topMargin = dp(8)
+            binding.userViewLayout.layoutParams = it
+        }
+        binding.contentView.setPadding(dp(12), dp(10), dp(12), dp(10))
+        (binding.contentView.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let {
+            it.marginEnd = 0
+            binding.contentView.layoutParams = it
+        }
+        binding.nameTextView.textSize = 14f
+        binding.nameTextView.setTextColor(androidx.core.content.ContextCompat.getColor(context, R.color.disappear_icon_color))
+        binding.nameTextView.typeface = androidx.core.content.res.ResourcesCompat.getFont(
+            context, if (isAdmin) R.font.open_sans_semi_bold else R.font.open_sans_regular
+        )
+        binding.actionIndicatorImageView.visibility = View.GONE
+        if (removable) {
+            binding.actionIndicatorImageView.visibility = View.VISIBLE
+            binding.actionIndicatorImageView.setImageResource(R.drawable.ic_edit_group_remove_member)
+            binding.actionIndicatorImageView.layoutParams = binding.actionIndicatorImageView.layoutParams.apply {
+                width = dp(32); height = dp(32)
+            }
+        }
+    }
+
+    fun applyAddMemberStyle(isSelected: Boolean) {
+        val density = resources.displayMetrics.density
+        fun dp(v: Int) = (v * density).toInt()
+        binding.userViewLayout.background = androidx.core.content.ContextCompat.getDrawable(
+            context, if (isSelected) R.drawable.bg_add_member_row_selected else R.drawable.bordered_card_background
+        )
+        (binding.userViewLayout.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let {
+            it.marginStart = 0; it.marginEnd = 0; it.topMargin = dp(8)
+            binding.userViewLayout.layoutParams = it
+        }
+        binding.contentView.setPadding(dp(12), dp(10), dp(12), dp(10))
+        (binding.contentView.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let {
+            it.marginEnd = 0
+            binding.contentView.layoutParams = it
+        }
+        binding.nameTextView.textSize = 14f
+        binding.nameTextView.setTextColor(androidx.core.content.ContextCompat.getColor(context, R.color.disappear_icon_color))
+        binding.nameTextView.typeface = androidx.core.content.res.ResourcesCompat.getFont(context, R.font.open_sans_semi_bold)
+        binding.actionIndicatorImageView.visibility = View.VISIBLE
+        binding.actionIndicatorImageView.setImageResource(
+            if (isSelected) R.drawable.ic_add_member_check_on else R.drawable.ic_add_member_check_off
+        )
+    }
+
     fun unbind() {
         binding.profilePictureView.root.recycle()
     }

@@ -202,10 +202,10 @@ class ConversationAdapter(
                         io.beldex.bchat.compose_utils.ui.ComposeMessageDialogFragment.show(
                             fragmentManager,
                             title = context.getString(R.string.call_missed_title),
-                            message = context.getString(R.string.call_missed_description, recipientName),
+                            message = callMissedMessage(context, recipientName),
                             positiveText = context.getString(R.string.ok),
                             negativeText = context.getString(R.string.cancel),
-                            iconRes = R.drawable.ic_headset_popup,
+                            iconRes = R.drawable.ic_call_card_missed,
                             onPositive = {
                                 context.startActivity(io.beldex.bchat.my_account.ui.MyAccountActivity.intentForRoute(context, io.beldex.bchat.my_account.ui.MyAccountScreens.PrivacySettingsScreen.route))
                             }
@@ -393,4 +393,23 @@ class ConversationAdapter(
 
         }.start()
     }
+}
+
+/**
+ * "Call Missed!" body (Figma 7546:2760): the quoted caller name in green and the permission name
+ * and "privacy settings." in bold. Runs that aren't found (other languages) are left plain.
+ */
+private fun callMissedMessage(context: android.content.Context, recipientName: String): CharSequence {
+    val text = context.getString(R.string.call_missed_description, recipientName)
+    val out = android.text.SpannableString(text)
+    fun style(run: String, span: () -> Any) {
+        val start = text.indexOf(run)
+        if (run.isNotEmpty() && start >= 0) {
+            out.setSpan(span(), start, start + run.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+    }
+    style(recipientName) { android.text.style.ForegroundColorSpan(androidx.core.content.ContextCompat.getColor(context, R.color.home_row_timestamp_unread)) }
+    style("\u2018Voice and video calls\u2019") { android.text.style.StyleSpan(android.graphics.Typeface.BOLD) }
+    style("privacy settings.") { android.text.style.StyleSpan(android.graphics.Typeface.BOLD) }
+    return out
 }

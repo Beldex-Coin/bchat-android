@@ -2,20 +2,20 @@ package io.beldex.bchat.conversation.v2.messages
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import io.beldex.bchat.database.model.MessageRecord
-import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.R
+import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.databinding.ViewControlMessageBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
+import io.beldex.bchat.util.DateUtils
 import java.util.Locale
 
 
@@ -75,8 +75,8 @@ class ControlMessageView : LinearLayout {
         binding.textView.textSize = 11f
         binding.receiverStatusIconTextView.textSize = fontSize.toFloat()
         binding.senderStatusIconTextView.textSize = fontSize.toFloat()
-        binding.receivedCallText.textSize = fontSize.toFloat()
-        binding.dialledCallText.textSize = fontSize.toFloat()
+        binding.receivedCallText.textSize = 12f
+        binding.dialledCallText.textSize = 12f
         binding.dateBreakTextView.textSize = fontSize.toFloat()
 
         //SteveJosephh21
@@ -92,76 +92,36 @@ class ControlMessageView : LinearLayout {
             message.isExpirationTimerUpdate -> {
                 // Figma: the timer glyph sits inline at the start of the chip, not above it.
                 inlineIcon = R.drawable.ic_disappear_timer
-                binding.textView.textSize = 10f
+                binding.textView.textSize = 11f
                 binding.textView.setTextColor(0xFFACACAC.toInt())
             }
             message.isMediaSavedNotification -> {
-                binding.iconImageView.setImageDrawable(
-                    ResourcesCompat.getDrawable(
-                        resources,
-                        R.drawable.ic_file_download_white_36dp,
-                        context.theme
-                    )
-                )
-                binding.iconImageView.visibility = View.VISIBLE
+                inlineIcon = R.drawable.ic_control_media_saved
             }
             message.isCallLog -> {
-                val drawable = when {
-                    message.isIncomingCall -> {
-                        binding.receivedCallText.text = context.resources.getString(R.string.voice_call)
-                        R.drawable.ic_filled_circle_incoming_call
-                    }
-                    message.isOutgoingCall -> {
-                        binding.dialledCallText.text = context.resources.getString(R.string.voice_call)
-                        R.drawable.ic_filled_circle_outgoing_call
-                    }
-                    message.isMissedCall -> {
-                        binding.receivedCallText.text = context.resources.getString(R.string.ThreadRecord_missed_call)
-                        R.drawable.ic_filled_circle_missed_call
-                    }
-                    message.isFirstMissedCall -> {
-                        binding.receivedCallText.text = context.resources.getString(R.string.ThreadRecord_missed_call)
-                        /*binding.receivedCallTime.text = context.resources.getString(R.string.tap_to_callback)*/
-                        R.drawable.ic_first_missed_call
-                    }
-                    else -> {
-                        R.drawable.ic_filled_circle_missed_call
-                    }
-                }
-
-                if(message.isOutgoing){
+                val isMissed = message.isMissedCall || message.isFirstMissedCall
+                val title = context.getString(if (isMissed) R.string.ThreadRecord_missed_call else R.string.call_card_title)
+                val iconRes = if (isMissed) R.drawable.ic_call_card_missed else R.drawable.ic_call_card_phone
+                val iconTint: ColorStateList? = null
+                val time = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+                if (message.isOutgoing && !isMissed) {
                     binding.dialledCallCardView.visibility = View.VISIBLE
-                    binding.dialledCallCardView.background=ContextCompat.getDrawable(
-                        context,
-                        R.drawable.call_message_bubble_background_sent_end
-                    )
-                    binding.dialledCallIcon.setImageDrawable(
-                        ResourcesCompat.getDrawable(
-                            resources,
-                            drawable,
-                            context.theme
-                        )
-                    )
-
-                    messageBody = ""
-                    binding.dialledMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
-                }else{
+                    binding.dialledCallBubble.background = VisibleMessageContentView.bubbleBackground(context, true)
+                    binding.dialledCallIcon.setImageResource(iconRes)
+                    binding.dialledCallIcon.imageTintList = iconTint
+                    binding.dialledCallText.text = title
+                    binding.dialledCallDuration.isVisible = true
+                    binding.dialledMessageTime.text = time
+                } else {
                     binding.receivedCallCardView.visibility = View.VISIBLE
-                    binding.receivedCallCardView.background=ContextCompat.getDrawable(
-                        context,
-                        R.drawable.call_message_bubble_background_received_end
-                    )
-                    binding.receivedCallIcon.setImageDrawable(
-                        ResourcesCompat.getDrawable(
-                            resources,
-                            drawable,
-                            context.theme
-                        )
-                    )
-
-                    messageBody = ""
-                    binding.receivedMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+                    binding.receivedCallBubble.background = VisibleMessageContentView.bubbleBackground(context, false)
+                    binding.receivedCallIcon.setImageResource(iconRes)
+                    binding.receivedCallIcon.imageTintList = iconTint
+                    binding.receivedCallText.text = title
+                    binding.receivedCallDuration.isVisible = !isMissed
+                    binding.receivedMessageTime.text = time
                 }
+                messageBody = ""
             }
             message.isMessageRequestResponse -> {
                 val msgRecipient=message.recipient.address.toString()
@@ -177,14 +137,12 @@ class ControlMessageView : LinearLayout {
                 }
             }
         }
-        binding.textView.isVisible = messageBody.trim().isNotEmpty()
+        val youLeftGroup = message.isOutgoing &&
+            messageBody.toString() == context.getString(R.string.MessageRecord_left_group)
+        binding.textView.isVisible = messageBody.trim().isNotEmpty() && !youLeftGroup
         binding.textView.text = messageBody
-        // Icon is sized to the text (Figma: 10dp glyph beside 10sp text) so it stays inline in the chip.
         val iconDrawable = if (inlineIcon != 0) ContextCompat.getDrawable(context, inlineIcon)?.mutate() else null
-        iconDrawable?.let {
-            val size = (binding.textView.textSize * 0.95f).toInt()
-            it.setBounds(0, 0, size, size)
-        }
+        iconDrawable?.let { it.setBounds(0, 0, it.intrinsicWidth, it.intrinsicHeight) }
         binding.textView.setCompoundDrawablesRelative(iconDrawable, null, null, null)
         binding.textView.compoundDrawablePadding = (6 * resources.displayMetrics.density).toInt()
         styleChips(messageBody)

@@ -4,4 +4,7 @@
     android:id="@+id/context_menu_list"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:minWidth="200dp" />
+    android:minWidth="189dp"
+    android:paddingTop="7dp"
+    android:paddingBottom="7dp"
+    android:clipToPadding="false" />

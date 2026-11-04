@@ -12,6 +12,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.os.Build
+import android.os.SystemClock
 import android.util.TypedValue
 import android.view.View
 import android.widget.RemoteViews
@@ -99,9 +100,9 @@ class CallNotificationBuilder {
             )
             val avatarBitmap = if (signalProfilePicture != null) {
                 val bitmap = decodeStream(signalProfilePicture.openInputStream(context, true))
-                if (bitmap != null) toNotchedBitmap(bitmap) else toNotchedBitmap(bit.bitmap)
+                if (bitmap != null) toCircleBitmap(bitmap) else toCircleBitmap(bit.bitmap)
             } else {
-                toNotchedBitmap(bit.bitmap)
+                toCircleBitmap(bit.bitmap)
             }
             contentView.setImageViewBitmap(R.id.image, avatarBitmap)
             val pendingIntent = PendingIntent.getActivity(context, 0, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
@@ -116,7 +117,7 @@ class CallNotificationBuilder {
 
             val hangUpText = localizedContext.getString(R.string.hang_up)
             val answerText = localizedContext.getString(R.string.answer)
-            val buttonTextSize = calculateButtonTextSize(localizedContext, hangUpText, answerText)
+            val buttonTextSize = 11f
 
             contentView.setTextViewText(R.id.hangUpButton, hangUpText)
             contentView.setTextViewTextSize(R.id.hangUpButton, TypedValue.COMPLEX_UNIT_SP, buttonTextSize)
@@ -137,6 +138,9 @@ class CallNotificationBuilder {
                 .setOngoing(true)
                 .setCustomContentView(contentView)
 
+            contentView.setViewVisibility(R.id.callTimer, View.GONE)
+            contentView.setViewVisibility(R.id.endCallButton, View.GONE)
+            contentView.setViewVisibility(R.id.text, View.VISIBLE)
             when (type) {
                 TYPE_INCOMING_CONNECTING -> {
                     contentView.setTextViewText(R.id.text, localizedContext.getString(R.string.CallNotificationBuilder_connecting))
@@ -146,6 +150,8 @@ class CallNotificationBuilder {
                 TYPE_INCOMING_PRE_OFFER,
                 TYPE_INCOMING_RINGING -> {
                     contentView.setTextViewText(R.id.text, localizedContext.getString(R.string.NotificationBarManager__incoming_signal_call))
+                    contentView.setViewVisibility(R.id.hangUpButton, View.VISIBLE)
+                    contentView.setViewVisibility(R.id.answerButton, View.VISIBLE)
                     contentView.setOnClickPendingIntent(R.id.hangUpButton, hangUpIntent)
                     contentView.setOnClickPendingIntent(R.id.answerButton, answerPendingIntent)
                     builder.priority = Notification.PRIORITY_MAX
@@ -153,11 +159,11 @@ class CallNotificationBuilder {
                 TYPE_OUTGOING_RINGING -> {
                     val intent = Intent(context, WebRtcCallService::class.java)
                         .setAction(WebRtcCallService.ACTION_LOCAL_HANGUP)
-
                     val establishCall = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                     contentView.setTextViewText(R.id.text, localizedContext.getString(R.string.NotificationBarManager__establishing_signal_call))
-                    contentView.setOnClickPendingIntent(R.id.text, establishCall)
-                    contentView.setViewVisibility(R.id.hangUpButton, View.GONE)
+                    contentView.setTextViewText(R.id.hangUpButton, localizedContext.getString(R.string.Permissions_deny))
+                    contentView.setViewVisibility(R.id.hangUpButton, View.VISIBLE)
+                    contentView.setOnClickPendingIntent(R.id.hangUpButton, establishCall)
                     contentView.setViewVisibility(R.id.answerButton, View.GONE)
                 }
                 TYPE_SCREEN_ON -> {
@@ -168,16 +174,35 @@ class CallNotificationBuilder {
                 else -> {
                     val intent = Intent(context, WebRtcCallService::class.java)
                         .setAction(WebRtcCallService.ACTION_LOCAL_HANGUP)
-
-                    val establishCall = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-                    contentView.setTextViewText(R.id.text, localizedContext.getString(R.string.NotificationBarManager_call_in_progress))
-                    contentView.setOnClickPendingIntent(R.id.text, establishCall)
+                    val endCall = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+                    val name = recipient?.name ?: localizedContext.getString(R.string.NotificationBarManager_call_in_progress)
+                    contentView.setTextViewText(R.id.title, localizedContext.getString(R.string.call_banner_in_call, name))
+                    contentView.setTextViewTextSize(R.id.title, TypedValue.COMPLEX_UNIT_SP, 12f)
+                    contentView.setViewVisibility(R.id.text, View.GONE)
+                    contentView.setViewVisibility(R.id.avatarContainer, View.GONE)
                     contentView.setViewVisibility(R.id.hangUpButton, View.GONE)
                     contentView.setViewVisibility(R.id.answerButton, View.GONE)
+                    contentView.setViewVisibility(R.id.callTimer, View.VISIBLE)
+                    contentView.setChronometer(R.id.callTimer, SystemClock.elapsedRealtime(), null, true)
+                    contentView.setViewVisibility(R.id.endCallButton, View.VISIBLE)
+                    contentView.setOnClickPendingIntent(R.id.endCallButton, endCall)
                 }
             }
 
             return builder.build()
+        }
+
+        private fun toCircleBitmap(source: Bitmap): Bitmap {
+            val size = minOf(source.width, source.height)
+            val output = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+            val canvas = android.graphics.Canvas(output)
+            val paint = Paint().apply { isAntiAlias = true }
+            canvas.drawCircle(size / 2f, size / 2f, size / 2f, paint)
+            paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+            val left = (source.width - size) / 2
+            val top = (source.height - size) / 2
+            canvas.drawBitmap(source, Rect(left, top, left + size, top + size), Rect(0, 0, size, size), paint)
+            return output
         }
 
         /** Avatar with the Revamp_2026 cut top-right and bottom-left corners. */

@@ -16,12 +16,11 @@ import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.CenterInside
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.util.AvatarPlaceholderGenerator.generate
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewProfilePictureBinding
-import io.beldex.bchat.compose_utils.clipToNotchedAvatar
 import com.bumptech.glide.RequestManager;
 
 class ProfilePictureView @JvmOverloads constructor(
@@ -29,16 +28,6 @@ class ProfilePictureView @JvmOverloads constructor(
 ) : RelativeLayout(context, attrs) {
     private val binding: ViewProfilePictureBinding by lazy { ViewProfilePictureBinding.bind(this) }
 
-    init {
-        post {
-            with(binding) {
-                listOf(
-                    doubleModeImageView1, doubleModeSocialGroupImageView1, largeSingleModeWithTagImageView,
-                    singleModeWithTagImageView, editGroupdoubleModeImageView1, singleModeImageView, largeSingleModeImageView
-                ).forEach { it.clipToNotchedAvatar() }
-            }
-        }
-    }
     lateinit var glide: RequestManager
     var publicKey: String? = null
     var displayName: String? = null
@@ -115,7 +104,7 @@ class ProfilePictureView @JvmOverloads constructor(
         }
         if (additionalPublicKey != null) {
             if(!isSecretGroup){
-                setProfilePictureIfNeeded(binding.doubleModeImageView1, publicKey, displayName, R.dimen.small_profile_picture_size)
+                setProfilePictureIfNeeded(binding.doubleModeSocialGroupImageView1, publicKey, displayName, R.dimen.small_profile_picture_size)
                 binding.doubleModeImageViewContainer.visibility = View.INVISIBLE
                 binding.doubleModeSocialGroupImageViewContainer.visibility = View.VISIBLE
             }else{
@@ -217,7 +206,7 @@ class ProfilePictureView @JvmOverloads constructor(
                     .placeholder(unknownRecipientDrawable)
                     .error(setupDefaultProfileView())
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .transform(CenterInside())
+                    .transform(CenterCrop())
                     .into(imageView)
             } else if (recipient.isOpenGroupRecipient && recipient.groupAvatarId == null) {
                 glide.clear(imageView)
@@ -228,7 +217,7 @@ class ProfilePictureView @JvmOverloads constructor(
                 glide.clear(imageView)
                 glide.load(placeholder)
                     .placeholder(unknownRecipientDrawable)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE).transform(CenterInside()).into(imageView)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE).transform(CenterCrop()).into(imageView)
             }
             if(isBnsTag){
                 profilePicturesCacheWithBnsTag[publicKey] = recipient.profileAvatar

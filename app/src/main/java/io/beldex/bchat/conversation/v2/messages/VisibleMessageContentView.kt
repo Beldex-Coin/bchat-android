@@ -74,6 +74,7 @@ import io.beldex.bchat.conversation.v2.utilities.ModalURLSpan
 import io.beldex.bchat.conversation.v2.utilities.TextUtilities.getIntersectedModalSpans
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.database.model.MmsMessageRecord
+import io.beldex.bchat.util.MediaUtil
 import io.beldex.bchat.mms.PartAuthority
 import com.bumptech.glide.RequestManager
 import io.beldex.bchat.util.ActivityDispatcher
@@ -446,6 +447,20 @@ class VisibleMessageContentView : MaterialCardView {
                     }
                 }
             }
+            message is MmsMessageRecord && (contactIsTrusted || message.isOutgoing) && message.isStickerMessage() -> {
+                hideBody=true
+                showQuoteBody=false
+                binding.albumThumbnailView.root.isVisible=false
+                binding.stickerMessageView.root.isVisible=true
+                binding.stickerMessageView.stickerFooter.isVisible=false
+                binding.stickerMessageView.stickerThumbnail.root.apply {
+                    setBackgroundColor(android.graphics.Color.TRANSPARENT)
+                    setImageResource(glide, message.slideDeck.thumbnailSlide!!, false, message)
+                }
+                binding.tailSendView.visibility=GONE
+                binding.tailReceiveView.visibility=GONE
+                setBackground(null)
+            }
             //Image / Video
             message is MmsMessageRecord && message.slideDeck.asAttachments().isNotEmpty() -> {
                 /*
@@ -456,7 +471,7 @@ class VisibleMessageContentView : MaterialCardView {
                     showQuoteBody=true
                     // isStart and isEnd of cluster needed for calculating the mask for full bubble image groups
                     // bind after add view because views are inflated and calculated during bind
-                    binding.albumMessageTime.isVisible=message.body.isEmpty()
+                    binding.albumMessageTime.isVisible=false // time is shown under the bubble (VisibleMessageView)
                     binding.albumMessageTime.text=
                         DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
                     binding.albumMessageTime.setTextColor(
@@ -608,7 +623,7 @@ class VisibleMessageContentView : MaterialCardView {
     private fun setBodyForQuotedMessage(message: MessageRecord, searchQuery: String?,delegate : VisibleMessageViewDelegate,visibleMessageView : VisibleMessageView, position : Int) {
         binding.quoteBodyTextViewLayout.isVisible = true
         binding.quoteBodyTextView.isVisible = true
-        binding.quoteShortMessageTime.isVisible = true
+        binding.quoteShortMessageTime.isVisible = false
             val color = getTextColor(context, message)
             binding.quoteBodyTextView.setTextColor(color)
             binding.quoteBodyTextView.setLinkTextColor(color)
@@ -717,7 +732,8 @@ class VisibleMessageContentView : MaterialCardView {
                                 )
                             },
                         searchQuery=searchQuery ?: "",
-                        hasResult = hadResult
+                        hasResult = hadResult,
+                        showTimestamp = isQuoteView
                     )
                 }
             }
@@ -926,6 +942,29 @@ class VisibleMessageContentView : MaterialCardView {
 
     // region Convenience
     companion object {
+        /** The Revamp_2026 chat bubble background, for rows drawn outside this view (call cards). */
+        fun bubbleBackground(context: Context, isOutgoing: Boolean): Drawable {
+            val colors = if (isOutgoing) {
+                intArrayOf(0xB30D1C0D.toInt(), 0xB30A2E0A.toInt(), 0xB30C190C.toInt())
+            } else {
+                intArrayOf(0x60333333, 0x60444444, 0x60333333)
+            }
+            val positions = if (isOutgoing) floatArrayOf(0f, 0.385f, 1f) else floatArrayOf(0f, 0.428f, 1f)
+            val strokeColors = if (isOutgoing) {
+                intArrayOf(0xFF005417.toInt(), 0xFF003200.toInt())
+            } else {
+                intArrayOf(0xFF222222.toInt(), 0xFF333333.toInt())
+            }
+            val density = context.resources.displayMetrics.density
+            return GradientBubbleDrawable(
+                colors, positions, strokeColors,
+                strokeWidth = 0.75f * density,
+                cutX = 13f * density,
+                cutY = 15f * density,
+                cutBottomRight = isOutgoing
+            )
+        }
+
         fun getBodySpans(
             context: Context,
             message: MessageRecord,
@@ -1087,4 +1126,22 @@ class VisibleMessageContentView : MaterialCardView {
     interface VisibleMessageContentViewDelegate {
         fun scrollToMessageIfPossible(timestamp: Long)
     }
+}
+
+internal fun MessageRecord.isStickerMessage(): Boolean {
+    if (this !is MmsMessageRecord) return false
+    if (body.isNotEmpty() || quote != null || linkPreviews.isNotEmpty()) return false
+    val slides = slideDeck.slides
+    if (slides.size != 1) return false
+    val slide = slides[0]
+    return slide.fileName.orNull() == io.beldex.bchat.mms.GifSlide.STICKER_FILE_NAME ||
+        slide.contentType.equals("image/webp", ignoreCase = true)
+}
+
+internal fun MessageRecord.mediaLabelRes(): Int? {
+    if (this !is MmsMessageRecord || isDeleted) return null
+    if (isStickerMessage()) return R.string.message_label_sticker
+    val slides = slideDeck.slides
+    if (slides.size == 1 && MediaUtil.isGif(slides[0].contentType)) return R.string.attachment_type_selector__gif
+    return null
 }

@@ -1,10 +1,5 @@
 package io.beldex.bchat.home
 
-import android.graphics.Outline
-import android.graphics.Path
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewOutlineProvider
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -48,7 +43,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
 import com.bumptech.glide.RequestManager
 import io.beldex.bchat.R
-import io.beldex.bchat.compose_utils.AVATAR_NOTCH_FRACTION
 import io.beldex.bchat.compose_utils.ContextMenuItem
 import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.appColors
@@ -218,15 +212,9 @@ private fun ConversationRow(
                 )
         ) {
             AndroidView(
-                factory = { ctx ->
-                    ConversationView(ctx).also { row ->
-                        row.findProfilePictureView()?.clipToNotchedAvatar()
-                    }
-                },
-                update = { view ->
-                    view.bind(thread, isTyping, glide)
-                    view.findProfilePictureView()?.clipToNotchedAvatar()
-                },
+                // The avatar's top-right corner cut is drawn by NotchedAvatarImageView inside the row.
+                factory = { ctx -> ConversationView(ctx) },
+                update = { view -> view.bind(thread, isTyping, glide) },
                 // Figma rows sit directly on the dotted background; only go opaque while swiping so the
                 // delete layer underneath doesn't show through.
                 modifier = Modifier
@@ -248,8 +236,8 @@ private fun ConversationRow(
                     DropdownMenu(
                         expanded = showMenu,
                         onDismissRequest = { showMenu = false },
-                        containerColor = Color(0xF2111111),
-                        border = BorderStroke(1.dp, Color(0x33FFFFFF)),
+                        containerColor = MaterialTheme.appColors.selectedItemBackground.copy(alpha = 0.95f),
+                        border = BorderStroke(1.dp, MaterialTheme.appColors.optionBorder),
                         shadowElevation = 16.dp,
                         modifier = Modifier
                             .zIndex(1f)
@@ -294,33 +282,4 @@ private fun EmptyConversationList(modifier: Modifier = Modifier) {
             modifier = Modifier.padding(top = 16.dp)
         )
     }
-}
-
-fun View.clipToNotchedAvatar() {
-    clipToOutline = true
-    outlineProvider = object : ViewOutlineProvider() {
-        override fun getOutline(view: View, outline: Outline) {
-            val w = view.width.toFloat()
-            val h = view.height.toFloat()
-            val cut = minOf(w, h) * AVATAR_NOTCH_FRACTION
-            outline.setConvexPath(Path().apply {
-                moveTo(cut, 0f)   // top-left corner cut
-                lineTo(w, 0f)
-                lineTo(w, h)
-                lineTo(0f, h)
-                lineTo(0f, cut)
-                close()
-            })
-        }
-    }
-}
-
-fun View.findProfilePictureView(): View? {
-    if (this is io.beldex.bchat.components.ProfilePictureView) return this
-    if (this is ViewGroup) {
-        for (i in 0 until childCount) {
-            getChildAt(i).findProfilePictureView()?.let { return it }
-        }
-    }
-    return null
 }

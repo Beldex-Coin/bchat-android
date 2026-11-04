@@ -51,6 +51,7 @@ class EditClosedGroupMembersAdapter(
             glide,
             if (unlocked) UserView.ActionIndicator.Menu else UserView.ActionIndicator.None,
             groupAdmin = groupAdmin)
+        viewHolder.view.applyEditGroupStyle(isAdmin = member == groupAdmin, removable = unlocked)
 
         if (unlocked) {
             viewHolder.view.setOnClickListener { this.memberClickListener?.invoke(member) }

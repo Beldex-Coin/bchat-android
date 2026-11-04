@@ -28,4 +28,5 @@
     <dimen name="react_with_any_emoji_parent_container_bottom_margin_with_tail_group_message">8dp</dimen>
     <dimen name="react_with_any_emoji_parent_container_bottom_margin">25dp</dimen>
     <dimen name="react_with_any_emoji_parent_container_bottom_margin_group_message">24dp</dimen>
+    <dimen name="message_tile_width">236dp</dimen>
 </resources>

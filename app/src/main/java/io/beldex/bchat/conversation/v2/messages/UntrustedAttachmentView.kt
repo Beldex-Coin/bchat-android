@@ -9,6 +9,7 @@ import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.conversation.v2.dialogs.DownloadDialog
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.InnerTileDrawable
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.database.model.Quote
 import io.beldex.bchat.databinding.ViewUntrustedAttachmentBinding
@@ -38,16 +39,24 @@ class UntrustedAttachmentView: LinearLayout {
     ) {
         val (iconRes, stringRes) = when (attachmentType) {
             AttachmentType.AUDIO -> R.drawable.ic_microphone to R.string.Slide_audio
-            AttachmentType.DOCUMENT -> R.drawable.ic_document_large_light to R.string.document
+            AttachmentType.DOCUMENT -> R.drawable.ic_message_document to R.string.document
             AttachmentType.MEDIA -> R.drawable.ic_image_attachment to R.string.MediaOverviewActivity_Media
         }
         val iconDrawable = ContextCompat.getDrawable(context,iconRes)!!
-        iconDrawable.mutate().setTint(textColor)
-//        val text = context.getString(R.string.UntrustedAttachmentView_download_attachment, context.getString(stringRes).toLowerCase(Locale.ROOT))
-        val text = context.getString(stringRes).lowercase(Locale.ROOT)
+        iconDrawable.mutate().setTint(ContextCompat.getColor(context, R.color.message_secondary_text))
 
         binding.untrustedAttachmentIcon.setImageDrawable(iconDrawable)
-        binding.untrustedAttachmentTitle.text = text
+        binding.untrustedAttachmentTitle.text = context.getString(stringRes)
+        binding.untrustedAttachmentSubtitle.text = context.getString(
+            R.string.UntrustedAttachmentView_download_attachment, ""
+        ).trim()
+        val density = resources.displayMetrics.density
+        binding.untrustedTile.background = InnerTileDrawable(
+            notchPx = 8 * density,
+            barWidthPx = 3 * density,
+            fillColor = ContextCompat.getColor(context, if (message.isOutgoing) R.color.message_tile_sent_background else R.color.edit_group_toolbar_bg),
+            barColor = ContextCompat.getColor(context, R.color.message_tile_bar)
+        )
 
         binding.untrustedAttachmentMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
         binding.untrustedAttachmentMessageTime.setTextColor(

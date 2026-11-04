@@ -115,6 +115,11 @@ class Colors() {
     var optionBorder: Color = Color.Unspecified
     var cancelIconTint: Color = Color.Unspecified
     var selectedItemBackground: Color = Color.Unspecified
+    // Revamp_2026 popups (Figma Revamped_White_theme "Call Missed" / "Download")
+    var dialogPanelGradientStart: Color = Color.Unspecified
+    var dialogPanelGradientEnd: Color = Color.Unspecified
+    var dialogPositiveButtonBackground: Color = Color.Unspecified
+    var dialogNegativeButtonBorder: Color = Color.Unspecified
 }
 
 val lightColors = Colors().apply {
@@ -189,7 +194,7 @@ val lightColors = Colors().apply {
     userDetailsCancelIconColor = Color(0xFF6E6E7C)
     userDetailsConfirmBackground = Color(0xFF078720)
     userDetailsBchatIdText = Color(0xFF078720)
-    dialogPositiveButtonBorder = Color(0xFF0B0B0B)
+    dialogPositiveButtonBorder = Color(0xFF078720)
     dialogPositiveButtonText = Color (0xFFFFFFFF)
     dialogNegativeButtonText = Color (0xFF555555)
     messageRequestItemBackground = Color (0xFFF0F0F0)
@@ -197,6 +202,10 @@ val lightColors = Colors().apply {
     optionBorder = Color (0xFFD0D0D0)
     cancelIconTint = Color (0xFFEBEBEB)
     selectedItemBackground = Color (0xFFFFFFFF)
+    dialogPanelGradientStart = Color(0xFFFFFFFF)
+    dialogPanelGradientEnd = Color(0xFFF0F0F0)
+    dialogPositiveButtonBackground = Color(0xFF0B0B0B)
+    dialogNegativeButtonBorder = Color(0xFFD0D0D0)
 
 }
 
@@ -280,6 +289,10 @@ val darkColors = Colors().apply {
     optionBorder = Color (0xFF444444)
     cancelIconTint = Color (0xFFACACAC)
     selectedItemBackground = Color (0xFF111111)
+    dialogPanelGradientStart = Color(0xFF1A1A1A)
+    dialogPanelGradientEnd = Color(0xFF0B0B0B)
+    dialogPositiveButtonBackground = Color(0xFFE0E0E0)
+    dialogNegativeButtonBorder = Color(0xFF8D8D8D)
 
 }
 

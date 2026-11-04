@@ -174,6 +174,10 @@
     <color name="overflow_menu_background">#F8F8F8</color>
     <color name="reaction_overlay_card_background">#F8F8F8</color>
     <color name="reaction_overlay_card_border">#C4C4C4</color>
+    <color name="reaction_selected_message_highlight">#80EBEBEB</color>
+    <color name="reaction_bar_gradient_start">#66FFFFFF</color>
+    <color name="reaction_menu_gradient_start">#66E8E8E8</color>
+    <color name="reaction_overlay_gradient_end">#66FFFFFF</color>
     <color name="reply_draft_card_background">#FFFFFF</color>
     <color name="reply_draft_secondary_text">#8D8D8D</color>
     <color name="reply_input_gradient_edge">#40FFFFFF</color>
@@ -342,4 +346,24 @@
     <color name="mr_accept_text">#FFFFFF</color>
     <color name="reaction_overlay_glass_tint">#B3FFFFFF</color>
     <color name="send_button_background">#D4D4D4</color>
+    <color name="contact_card_inner_background">#F2F2F2</color>
+    <color name="contact_card_inner_bar">#C4C4C4</color>
+    <color name="contact_card_action_text">#555555</color>
+    <color name="contact_card_divider_incoming">#A7A7BA</color>
+    <color name="contact_card_divider_outgoing">#2FA62F</color>
+    <color name="edit_group_toolbar_bg">#F0F0F0</color>
+    <color name="edit_group_toolbar_border">#E6E6E6</color>
+    <color name="add_member_search_bg">#80F0F0F0</color>
+    <color name="add_member_selected_fill">#4DFFFFFF</color>
+    <color name="add_member_bottom_bar">#FFFFFF</color>
+    <color name="message_secondary_text">#555555</color>
+    <color name="chat_meta_text">#737373</color>
+    <color name="message_tile_background">#F0F0F0</color>
+    <color name="sent_call_card_background">#D8ECDC</color>
+    <color name="date_chip_background">#E8E8E8</color>
+    <color name="date_chip_border">#F0F0F0</color>
+    <color name="primary_button_border">#078720</color>
+    <color name="call_answer_button_background">#80FFFFFF</color>
+    <color name="message_tile_sent_background">#F0F0F0</color>
+    <color name="message_tile_bar">#D4D4D4</color>
 </resources>

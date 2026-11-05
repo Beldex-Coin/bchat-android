@@ -3,5 +3,5 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="42dp" android:height="42dp"
     android:viewportWidth="42" android:viewportHeight="42">
-    <path android:pathData="M0,0 L32,0 L42,10 L42,42 L10,42 L0,32 Z" android:fillColor="#222222" />
+    <path android:pathData="M0,0 L32,0 L42,10 L42,42 L10,42 L0,32 Z" android:fillColor="@color/edit_group_toolbar_border" />
 </vector>

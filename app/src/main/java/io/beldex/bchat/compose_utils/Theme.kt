@@ -7,6 +7,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
@@ -31,7 +32,11 @@ private val lightColorScheme = lightColorScheme(
 
 @Composable
 fun BChatTheme(
-    darkTheme: Boolean = UiModeUtilities.getUserSelectedUiMode(LocalContext.current) == UiMode.NIGHT,
+    darkTheme: Boolean = when (UiModeUtilities.getUserSelectedUiMode(LocalContext.current)) {
+        UiMode.NIGHT -> true
+        UiMode.DAY -> false
+        UiMode.SYSTEM_DEFAULT -> isSystemInDarkTheme()
+    },
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit

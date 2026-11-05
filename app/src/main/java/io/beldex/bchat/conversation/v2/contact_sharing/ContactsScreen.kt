@@ -146,7 +146,7 @@ fun ContactsScreen(
                         fontSize = 14.sp,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(androidx.compose.ui.graphics.Color(0xFF1A1A1A))
+                            .background(MaterialTheme.appColors.cardTileBackground)
                             .padding(horizontal = 16.dp, vertical = 14.dp)
                     )
                 } else {

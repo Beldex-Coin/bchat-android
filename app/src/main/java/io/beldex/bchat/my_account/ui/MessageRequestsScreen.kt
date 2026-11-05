@@ -286,8 +286,8 @@ fun MessageRequestItem(
             contentAlignment=Alignment.Center,
             modifier=Modifier
                 .size(32.dp)
-                .background(color=Color(0xFF111111), shape=singleCornerCutShape(BChatDimens.NotchSmall, NotchCorner.TopRight))
-                .border(1.dp, Color(0xFF444444))
+                .background(color=MaterialTheme.appColors.selectedItemBackground, shape=singleCornerCutShape(BChatDimens.NotchSmall, NotchCorner.TopRight))
+                .border(1.dp, MaterialTheme.appColors.optionBorder)
                 .clickable {
                     blockRequest(request)
                 }
@@ -315,7 +315,7 @@ fun MessageRequestItem(
             Icon(
                 Icons.Default.Check,
                 contentDescription="",
-                tint=Color(0xFF0B0B0B),
+                tint=MaterialTheme.appColors.dialogPositiveButtonText,
                 modifier=Modifier
                     .size(16.dp)
             )

@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -59,6 +61,14 @@ fun LandingScreen(
             .fillMaxSize()
             .bchatBackground(MaterialTheme.appColors.backgroundColor, centerAlpha = 0.3f, dotAlpha = 0.1f)
     ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_landing_background_logo),
+            contentDescription = null,
+            modifier = Modifier
+                .offset(x = (-114).dp, y = 275.dp)
+                .requiredSize(width = 171.38.dp, height = 142.dp)
+                .graphicsLayer(scaleX = -1f, alpha = 0.1f)
+        )
         LandingChatSkeleton(modifier = Modifier.fillMaxSize().graphicsLayer(alpha = 0.5f))
         Column(
             modifier = Modifier
@@ -187,8 +197,10 @@ private fun LandingScreenPreview() {
 // the buttons. Coordinates are Figma px on the 390-wide frame, treated as dp; it bleeds off the right edge.
 @Composable
 private fun LandingChatSkeleton(modifier: Modifier = Modifier) {
-    val circle = Color(0xFF1A1A1A)
-    val lineColor = Color(0xFF333333)
+    val circle = MaterialTheme.appColors.cardTileBackground
+    val lineColor = MaterialTheme.appColors.pinBoxInactiveBorder
+    val cardStart = MaterialTheme.appColors.userDetailsCancelBackground
+    val cardEnd = MaterialTheme.appColors.selectedItemBackground
     Canvas(modifier = modifier) {
         fun dp(v: Float) = v.dp.toPx()
         fun card(x: Float, y: Float, w: Float, h: Float, tl: Float, tr: Float) {
@@ -204,7 +216,7 @@ private fun LandingChatSkeleton(modifier: Modifier = Modifier) {
                     )
                 )
             }
-            drawPath(path, brush = Brush.horizontalGradient(listOf(Color(0xFF222222), Color(0xFF111111)), startX = dp(x), endX = dp(x + w)))
+            drawPath(path, brush = Brush.horizontalGradient(listOf(cardStart, cardEnd), startX = dp(x), endX = dp(x + w)))
         }
         fun line(x: Float, y: Float, w: Float) =
             drawLine(lineColor, Offset(dp(x), dp(y)), Offset(dp(x + w), dp(y)), strokeWidth = dp(4.75f), cap = StrokeCap.Round)

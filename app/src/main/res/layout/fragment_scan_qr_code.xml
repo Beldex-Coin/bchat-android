@@ -30,7 +30,7 @@
             android:id="@+id/scanBottomPanel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#0B0B0B"
+            android:background="@color/home_screen_background"
             android:orientation="vertical">
 
         <LinearLayout
@@ -56,7 +56,7 @@
                 android:fontFamily="@font/roboto_mono"
                 android:padding="5dp"
                 android:text="@string/upload_from_gallery"
-                android:textColor="#ACACAC"
+                android:textColor="@color/contact_card_action_text"
                 android:textSize="14sp" />
         </LinearLayout>
 
@@ -73,7 +73,7 @@
             android:gravity="center"
             android:padding="@dimen/large_spacing"
             android:text="@string/activity_create_private_chat_scan_qr_code_explanation"
-            android:textColor="#737373"
+            android:textColor="@color/chat_input_hint"
             android:textSize="12sp" />
 
         </LinearLayout>

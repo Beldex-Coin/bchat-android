@@ -343,6 +343,7 @@
         <activity
             android:name=".contacts.SelectContactsActivity"
             android:exported="false"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".preferences.PrivacySettingsActivity"

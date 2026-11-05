@@ -170,7 +170,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minWidth="120dp"
-                android:background="@color/text_color_dark"
+                android:background="@color/call_card_inner_background"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="8dp">
@@ -178,7 +178,7 @@
                 <FrameLayout
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    android:background="@color/message_tile_background">
+                    android:background="@color/reply_draft_card_background">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/receivedCallIcon"
@@ -215,7 +215,7 @@
                         android:fontFamily="@font/roboto_mono"
                         android:maxLines="1"
                         android:text="@string/call_duration_static"
-                        android:textColor="@color/message_secondary_text"
+                        android:textColor="@color/chat_meta_text"
                         android:textSize="10sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -257,7 +257,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minWidth="120dp"
-                android:background="@color/text_color_dark"
+                android:background="@color/call_card_inner_background"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="8dp">
@@ -265,7 +265,7 @@
                 <FrameLayout
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    android:background="@color/message_tile_background">
+                    android:background="@color/reply_draft_card_background">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/dialledCallIcon"
@@ -302,7 +302,7 @@
                         android:fontFamily="@font/roboto_mono"
                         android:maxLines="1"
                         android:text="@string/call_duration_static"
-                        android:textColor="@color/message_secondary_text"
+                        android:textColor="@color/chat_meta_text"
                         android:textSize="10sp" />
                 </LinearLayout>
             </LinearLayout>

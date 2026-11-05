@@ -167,8 +167,8 @@ private fun ViewContactItem(
 
     OutlinedCard(
         shape = androidx.compose.ui.graphics.RectangleShape,
-        border = BorderStroke(width = 1.dp, color = androidx.compose.ui.graphics.Color(0xFF222222)),
-        colors = CardDefaults.cardColors(containerColor = androidx.compose.ui.graphics.Color(0xFF111111)),
+        border = BorderStroke(width = 1.dp, color = MaterialTheme.appColors.pinBoxInactiveBorder),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.selectedItemBackground),
         modifier = modifier.padding(bottom = 4.dp)
     ) {
         Row(

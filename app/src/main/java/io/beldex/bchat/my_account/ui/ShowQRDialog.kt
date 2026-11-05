@@ -116,7 +116,7 @@ fun ShowQRDialog(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
                                 .size(40.dp)
-                                .background(Color(0xFF222222), CircleShape)
+                                .background(MaterialTheme.appColors.userDetailsCancelBackground, CircleShape)
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.ic_bchat_logo),
@@ -136,16 +136,16 @@ fun ShowQRDialog(
             PrimaryButton(
                 onClick = { onShare() },
                 shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
-                containerColor = Color(0xFFE0E0E0),
-                contentColor = Color(0xFF0B0B0B),
-                border = BorderStroke(1.4.dp, Color(0xFF0A370A)),
+                containerColor = MaterialTheme.appColors.dialogPositiveButtonBackground,
+                contentColor = MaterialTheme.appColors.dialogPositiveButtonText,
+                border = BorderStroke(1.4.dp, MaterialTheme.appColors.dialogPositiveButtonBorder),
                 contentPadding = PaddingValues(0.dp),
                 modifier = Modifier.width(122.dp).height(52.dp)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_baseline_share_24),
                     contentDescription = "Share",
-                    tint = Color(0xFF0B0B0B),
+                    tint = MaterialTheme.appColors.dialogPositiveButtonText,
                     modifier = Modifier.size(18.dp)
                 )
                 Text(

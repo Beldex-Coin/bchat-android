@@ -120,8 +120,8 @@ fun ConversationHeaderActions(
                 expanded = showMenu,
                 onDismissRequest = { showMenu = false },
                 shape = RoundedCornerShape(18.dp),
-                containerColor = Color(0xF2111111),
-                border = BorderStroke(1.dp, Color(0x33FFFFFF))
+                containerColor = MaterialTheme.appColors.selectedItemBackground.copy(alpha = 0.95f),
+                border = BorderStroke(1.dp, MaterialTheme.appColors.optionBorder)
             ) {
                 for (entry in menuEntries) {
                     DropdownMenuItem(

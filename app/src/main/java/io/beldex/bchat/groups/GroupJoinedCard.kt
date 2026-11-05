@@ -29,6 +29,7 @@ import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.notchedCornerShape
+import io.beldex.bchat.compose_utils.appColors
 
 /**
  * Figma "You Joined BChat" / "You Created My secret group": a notched card shown in a brand-new
@@ -50,7 +51,7 @@ fun GroupJoinedCard(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxWidth()
-            .background(Color(0xFF0B0B0B), shape)
+            .background(MaterialTheme.appColors.messageRequestItemBackground, shape)
             .border(1.dp, Color(0xFF078720).copy(alpha = 0.7f), shape)
             .padding(vertical = 28.dp, horizontal = 16.dp)
     ) {
@@ -58,8 +59,8 @@ fun GroupJoinedCard(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .size(58.dp)
-                .background(Color(0xFF1A1A1A), notchedCornerShape(BChatDimens.NotchMedium))
-                .border(1.dp, Color(0xFF333333), notchedCornerShape(BChatDimens.NotchMedium))
+                .background(MaterialTheme.appColors.cardTileBackground, notchedCornerShape(BChatDimens.NotchMedium))
+                .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder, notchedCornerShape(BChatDimens.NotchMedium))
         ) {
             ProfilePictureComponent(
                 publicKey = publicKey,
@@ -72,9 +73,9 @@ fun GroupJoinedCard(
         Text(
             text = buildAnnotatedString {
                 append("$verb ")
-                withStyle(SpanStyle(color = Color(0xFF00BD40))) { append(groupName) }
+                withStyle(SpanStyle(color = MaterialTheme.appColors.userDetailsBchatIdText)) { append(groupName) }
             },
-            color = MaterialTheme.colorScheme.onBackground.let { Color(0xFFEBEBEB) },
+            color = MaterialTheme.appColors.editTextColor,
             fontFamily = OpenSans,
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,

@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -548,12 +549,21 @@ fun GroupDetailsScreen(
             }
 
             val dialogView = LocalView.current
+            val isDarkPalette = MaterialTheme.appColors.backgroundColor.luminance() < 0.5f
             DisposableEffect(dialogView) {
                 val window = (dialogView as? androidx.compose.ui.window.DialogWindowProvider)?.window
                 val previous = window?.attributes?.softInputMode
                 window?.setSoftInputMode(
                     android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
                 )
+                if (window != null) {
+                    window.statusBarColor = android.graphics.Color.TRANSPARENT
+                    window.navigationBarColor = android.graphics.Color.TRANSPARENT
+                    androidx.core.view.WindowCompat.getInsetsController(window, dialogView).apply {
+                        isAppearanceLightStatusBars = !isDarkPalette
+                        isAppearanceLightNavigationBars = !isDarkPalette
+                    }
+                }
                 onDispose {
                     if (previous != null) window?.setSoftInputMode(previous)
                 }
@@ -567,8 +577,11 @@ fun GroupDetailsScreen(
                 },
                 modifier = Modifier
                     .fillMaxSize()
-                    .imePadding()
                     .bchatBackground(MaterialTheme.appColors.backgroundColor)
+                    // Edge-to-edge: the background runs under the status / navigation bars while the
+                    // toolbar and content are inset below them.
+                    .windowInsetsPadding(WindowInsets.systemBars)
+                    .imePadding()
             ) {
                 Column(modifier=Modifier.padding(16.dp)) {
 

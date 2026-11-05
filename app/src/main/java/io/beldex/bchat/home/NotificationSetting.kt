@@ -82,7 +82,7 @@ fun NotificationSettingDialog(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .size(22.dp)
-                        .background(androidx.compose.ui.graphics.Color(0xCC222222))
+                        .background(MaterialTheme.appColors.nicknameCancelBackground)
                         .border(1.dp, MaterialTheme.appColors.dividerColor)
                         .clickable { onDismiss() }
                 ) {
@@ -138,9 +138,9 @@ fun NotificationSettingDialog(
                     }
                 },
                 shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
-                containerColor = androidx.compose.ui.graphics.Color(0xFFE0E0E0),
-                contentColor = androidx.compose.ui.graphics.Color(0xFF0B0B0B),
-                border = BorderStroke(1.4.dp, androidx.compose.ui.graphics.Color(0xFF0A370A)),
+                containerColor = MaterialTheme.appColors.dialogPositiveButtonBackground,
+                contentColor = MaterialTheme.appColors.dialogPositiveButtonText,
+                border = BorderStroke(1.4.dp, MaterialTheme.appColors.dialogPositiveButtonBorder),
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)

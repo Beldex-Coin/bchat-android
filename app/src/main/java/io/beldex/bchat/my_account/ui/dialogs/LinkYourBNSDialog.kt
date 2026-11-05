@@ -148,9 +148,9 @@ fun LinkYourBNSDialog(
             isVerified -> MaterialTheme.appColors.userDetailsConfirmBackground
             else -> MaterialTheme.appColors.pinBoxInactiveBorder
         }
-        val lightButton = Color(0xFFE0E0E0)
-        val darkText = Color(0xFF0B0B0B)
-        val disabledText = MaterialTheme.appColors.onboardingCaptionColor
+        val lightButton = MaterialTheme.appColors.dialogPositiveButtonBackground
+        val darkText = MaterialTheme.appColors.dialogPositiveButtonText
+        val disabledText = MaterialTheme.appColors.disabledButtonText
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -174,14 +174,14 @@ fun LinkYourBNSDialog(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .size(22.dp)
-                        .background(Color(0xCC222222))
-                        .border(1.dp, MaterialTheme.appColors.dividerColor)
+                        .background(MaterialTheme.appColors.nicknameCancelBackground)
+                        .border(1.dp, MaterialTheme.appColors.nicknameCancelBorder)
                         .clickable { onDismissRequest(false) }
                 ) {
                     androidx.compose.material3.Icon(
                         painter = painterResource(id = R.drawable.ic_close),
                         contentDescription = null,
-                        tint = MaterialTheme.appColors.editTextColor,
+                        tint = MaterialTheme.appColors.cancelIconTint,
                         modifier = Modifier.size(14.dp)
                     )
                 }
@@ -284,9 +284,9 @@ fun LinkYourBNSDialog(
                         }
                     },
                     shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
-                    containerColor = if (canVerify) lightButton else MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
+                    containerColor = if (canVerify) lightButton else MaterialTheme.appColors.disabledButtonBackground,
                     contentColor = if (canVerify) darkText else disabledText,
-                    border = if (canVerify) BorderStroke(1.dp, MaterialTheme.appColors.userDetailsConfirmBackground.copy(alpha = 0.5f)) else null,
+                    border = BorderStroke(1.dp, if (canVerify) MaterialTheme.appColors.dialogPositiveButtonBorder else MaterialTheme.appColors.disabledButtonBorder),
                     contentPadding = PaddingValues(0.dp),
                     modifier = Modifier.weight(1f).height(52.dp)
                 ) {
@@ -323,8 +323,9 @@ fun LinkYourBNSDialog(
                 enabled = isVerified,
                 containerColor = lightButton,
                 contentColor = darkText,
-                disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
+                disabledContainerColor = MaterialTheme.appColors.disabledButtonBackground,
                 disabledContentColor = disabledText,
+                border = BorderStroke(1.dp, if (isVerified) MaterialTheme.appColors.dialogPositiveButtonBorder else MaterialTheme.appColors.disabledButtonBorder),
                 contentPadding = PaddingValues(0.dp)
             ) {
                 Text(

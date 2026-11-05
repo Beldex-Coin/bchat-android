@@ -539,7 +539,7 @@ fun NewChatPopUp(
                     .background(MaterialTheme.appColors.dialogBackground)
                     .border(
                         1.dp,
-                        if (bchatIdErrorStatus) MaterialTheme.appColors.negativeRedButtonBorder else Color(0xFF444444)
+                        if (bchatIdErrorStatus) MaterialTheme.appColors.negativeRedButtonBorder else MaterialTheme.appColors.optionBorder
                     )
                     .padding(horizontal = 14.dp, vertical = 12.dp)
             ) {
@@ -596,11 +596,11 @@ fun NewChatPopUp(
                     onClick = { onStartChat(bChatId) },
                     enabled = canStart,
                     shape = notchedCornerShape(BChatDimens.NotchMedium),
-                    containerColor = Color(0xFFE0E0E0),
-                    contentColor = Color(0xFF0B0B0B),
-                    disabledContainerColor = Color(0xFF1A1A1A),
-                    disabledContentColor = Color(0xFF737373),
-                    border = if (canStart) BorderStroke(1.dp, Color(0xFF0A370A)) else null,
+                    containerColor = MaterialTheme.appColors.dialogPositiveButtonBackground,
+                    contentColor = MaterialTheme.appColors.dialogPositiveButtonText,
+                    disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
+                    disabledContentColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledText,
+                    border = if (canStart) BorderStroke(1.dp, MaterialTheme.appColors.dialogPositiveButtonBorder) else null,
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
                     modifier = Modifier
                         .weight(1f)

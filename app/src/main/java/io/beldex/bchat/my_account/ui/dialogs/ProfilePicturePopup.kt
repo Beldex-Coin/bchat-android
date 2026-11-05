@@ -172,9 +172,9 @@ fun ProfilePicturePopup(
                 PrimaryButton(
                     onClick = uploadPicture,
                     shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
-                    containerColor = Color(0xFFE0E0E0),
-                    contentColor = Color(0xFF0B0B0B),
-                    border = BorderStroke(1.4.dp, Color(0xFF0A370A)),
+                    containerColor = MaterialTheme.appColors.dialogPositiveButtonBackground,
+                    contentColor = MaterialTheme.appColors.dialogPositiveButtonText,
+                    border = BorderStroke(1.4.dp, MaterialTheme.appColors.dialogPositiveButtonBorder),
                     contentPadding = PaddingValues(0.dp),
                     modifier = Modifier.weight(1f).height(52.dp)
                 ) {

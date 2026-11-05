@@ -6,6 +6,10 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,8 +23,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -74,10 +76,10 @@ fun UserDetailsSheetContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
-            .border(0.5.dp, MaterialTheme.appColors.onboardingSecondaryButtonBorder, RectangleShape)
+            .border(0.5.dp, MaterialTheme.appColors.optionBorder, RectangleShape)
             .background(
                 Brush.radialGradient(
-                    colors = listOf(Color(0xFF1A1A1A), Color(0xFF0B0B0B)),
+                    colors = listOf(MaterialTheme.appColors.dialogPanelGradientStart, MaterialTheme.appColors.dialogPanelGradientEnd),
                     radius = 900f
                 )
             )
@@ -91,78 +93,101 @@ fun UserDetailsSheetContent(
         )
 
         if (isEditingName) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(top = 12.dp)
+            // Figma profile_Detail_1: underlined name centred in the row, cancel / save tiles on the right.
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .padding(top = 12.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp)
             ) {
-                TextField(
+                BasicTextField(
                     value = nicknameInput,
                     onValueChange = { if (it.length <= 26) onNicknameInputChange(it) },
-                    placeholder = {
-                        if (nicknameInput.isEmpty()) {
-                            Text(
-                                text = name,
-                                fontFamily = OpenSans,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 18.sp,
-                                color = MaterialTheme.appColors.editTextColor
-                            )
-                        }
-                    },
                     textStyle = TextStyle(
                         color = MaterialTheme.appColors.editTextColor,
                         fontFamily = OpenSans,
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        textDecoration = TextDecoration.Underline
                     ),
                     singleLine = true,
                     visualTransformation = CursorGapTransformation,
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = { onSaveNicknameClick() }),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedIndicatorColor = MaterialTheme.appColors.editTextColor,
-                        unfocusedIndicatorColor = MaterialTheme.appColors.editTextColor,
-                        cursorColor = MaterialTheme.appColors.editTextColor
-                    ),
+                    cursorBrush = SolidColor(MaterialTheme.appColors.editTextColor),
+                    decorationBox = { innerTextField ->
+                        Box(contentAlignment = Alignment.Center) {
+                            if (nicknameInput.isEmpty()) {
+                                Text(
+                                    text = name,
+                                    fontFamily = OpenSans,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 18.sp,
+                                    textDecoration = TextDecoration.Underline,
+                                    color = MaterialTheme.appColors.editTextColor.copy(alpha = 0.5f)
+                                )
+                            }
+                            innerTextField()
+                        }
+                    },
                     modifier = Modifier
                         .width(IntrinsicSize.Min)
-                        .widthIn(min = 1.dp, max = 220.dp)
+                        .widthIn(min = 1.dp, max = 190.dp)
                 )
 
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_close),
-                    contentDescription = stringResource(R.string.cancel),
-                    tint = MaterialTheme.appColors.editTextColor,
-                    modifier = Modifier
-                        .padding(start = 10.dp)
-                        .size(22.dp)
-                        .background(Color(0xFF222222), singleCornerCutShape(BChatDimens.NotchSmall, NotchCorner.TopRight))
-                        .padding(2.dp)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = onCancelEditClick
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(23.dp)
+                            .background(
+                                MaterialTheme.appColors.nicknameCancelBackground,
+                                singleCornerCutShape(BChatDimens.NotchSmall, NotchCorner.TopRight)
+                            )
+                            .border(
+                                0.36.dp,
+                                MaterialTheme.appColors.nicknameCancelBorder,
+                                singleCornerCutShape(BChatDimens.NotchSmall, NotchCorner.TopRight)
+                            )
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = onCancelEditClick
+                            )
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_close),
+                            contentDescription = stringResource(R.string.cancel),
+                            tint = MaterialTheme.appColors.cancelIconTint,
+                            modifier = Modifier.size(12.dp)
                         )
-                )
+                    }
 
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_done),
-                    contentDescription = stringResource(R.string.save),
-                    tint = Color(0xFF0B0B0B),
-                    modifier = Modifier
-                        .padding(start = 6.dp)
-                        .size(22.dp)
-                        .background(MaterialTheme.appColors.homeFabBackground, RectangleShape)
-                        .padding(3.dp)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = onSaveNicknameClick
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .padding(start = 8.dp)
+                            .size(22.dp)
+                            .background(MaterialTheme.appColors.userDetailsConfirmBackground, RectangleShape)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = onSaveNicknameClick
+                            )
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_done),
+                            contentDescription = stringResource(R.string.save),
+                            tint = MaterialTheme.appColors.dialogPositiveButtonText,
+                            modifier = Modifier.size(14.dp)
                         )
-                )
+                    }
+                }
             }
         } else {
             Row(
@@ -202,8 +227,8 @@ fun UserDetailsSheetContent(
                 modifier = Modifier
                     .padding(top = 20.dp)
                     .fillMaxWidth()
-                    .background(Color(0xFF111111))
-                    .border(1.dp, Color(0xFF333333))
+                    .background(MaterialTheme.appColors.selectedItemBackground)
+                    .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
@@ -215,9 +240,9 @@ fun UserDetailsSheetContent(
             PrimaryButton(
                 onClick = onMessageClick,
                 shape = notchedCornerShape(BChatDimens.NotchLarge),
-                containerColor = Color(0xFFE0E0E0),
-                contentColor = Color(0xFF0B0B0B),
-                border = BorderStroke(1.dp, Color(0xFF0A370A)),
+                containerColor = MaterialTheme.appColors.dialogPositiveButtonBackground,
+                contentColor = MaterialTheme.appColors.dialogPositiveButtonText,
+                border = BorderStroke(1.dp, MaterialTheme.appColors.dialogPositiveButtonBorder),
                 modifier = Modifier
                     .padding(top = 16.dp)
                     .fillMaxWidth()

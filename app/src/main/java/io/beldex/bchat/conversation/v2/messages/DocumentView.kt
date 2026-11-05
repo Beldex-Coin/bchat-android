@@ -43,7 +43,7 @@ class DocumentView : LinearLayout {
         }else{
             binding.documentTitleTextView.text = "$newFileName.$fileFormat"
         }
-        binding.documentTitleTextView.setTextColor(0xFFEBEBEB.toInt())
+        binding.documentTitleTextView.setTextColor(ContextCompat.getColor(context, R.color.disappear_icon_color))
         val contentType = document.contentType ?: ""
         binding.documentViewIconImageView.setImageResource(
             when {
@@ -52,7 +52,7 @@ class DocumentView : LinearLayout {
                 else -> R.drawable.ic_message_document
             }
         )
-        binding.documentViewIconImageView.imageTintList = ColorStateList.valueOf(0xFFACACAC.toInt())
+        binding.documentViewIconImageView.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.contact_card_action_text))
         //New Line Image Upload time show progress bar function
         if (!message.isFailed) {
             if(!message.isPending && !message.isRead && !message.isDelivered) {
@@ -70,8 +70,8 @@ class DocumentView : LinearLayout {
         binding.documentViewContainer.background = InnerTileDrawable(
             notchPx = 8 * density,
             barWidthPx = 3 * density,
-            fillColor = if (message.isOutgoing) 0xFF000800.toInt() else 0xFF0B0B0B.toInt(),
-            barColor = 0xFF444444.toInt()
+            fillColor = ContextCompat.getColor(context, if (message.isOutgoing) R.color.message_tile_sent_background else R.color.edit_group_toolbar_bg),
+            barColor = ContextCompat.getColor(context, R.color.message_tile_bar)
         )
 
         binding.documentViewMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)

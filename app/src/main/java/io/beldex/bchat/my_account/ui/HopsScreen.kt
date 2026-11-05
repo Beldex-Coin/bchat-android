@@ -73,7 +73,7 @@ fun HopsScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0x99111111))
+                .background(MaterialTheme.appColors.selectedItemBackground.copy(alpha = 0.6f))
                 .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
                 .padding(horizontal = 24.dp, vertical = 24.dp)
         ) {

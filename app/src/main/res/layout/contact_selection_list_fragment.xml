@@ -36,7 +36,7 @@
                     android:padding="11dp"
                     android:background="@drawable/note_to_self_tile"
                     android:src="@drawable/ic_note_to_self_row"
-                    app:tint="#EBEBEB"
+                    app:tint="@color/disappear_icon_color"
                     android:contentDescription="" />
 
                 <Space
@@ -51,7 +51,7 @@
                     android:fontFamily="@font/roboto_mono"
                     android:textStyle="bold"
                     android:textSize="14sp"
-                    android:textColor="#EBEBEB" />
+                    android:textColor="@color/disappear_icon_color" />
 
             </LinearLayout>
 

@@ -14,29 +14,51 @@ import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.ImageShader
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.drawscope.scale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import io.beldex.bchat.util.UiMode
-import io.beldex.bchat.util.UiModeUtilities
 
 private val BackgroundBase = Color(0xFF0B0B0B)
 private val DotColor = Color(0xFFD9D9D9).copy(alpha = 0.15f)
+private val LightDotColor = Color(0xFF8D8D8D)
 
 /**
  * Revamp_2026 screen background (Figma frame fills): #0B0B0B base, an elliptical radial vignette
- * centred at 43.5% of the height, and a faint dot grid (1.5dp dots every 6dp). Dark theme only;
- * light theme keeps the flat [fallback] colour.
+ * centred at 43.5% of the height, and a faint dot grid (1.5dp dots every 6dp). The white theme uses
+ * [fallback] as its base with a white glow and grey dots.
  */
 fun Modifier.bchatBackground(
     fallback: Color = BackgroundBase,
     centerAlpha: Float = 0.6f,
     dotAlpha: Float = 0.15f
 ): Modifier = composed {
-    val context = LocalContext.current
-    val isDark = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
+    val isDark = LocalAppColors.current.backgroundColor.luminance() < 0.5f
     if (!isDark) {
-        Modifier.drawBehind { drawRect(fallback) }
+        val density = LocalDensity.current
+        val lightDotBrush = remember(density.density, dotAlpha) {
+            val pitch = (6 * density.density).toInt().coerceAtLeast(2)
+            val tile = ImageBitmap(pitch, pitch, ImageBitmapConfig.Argb8888)
+            val canvas = Canvas(tile)
+            val paint = Paint().apply { color = LightDotColor.copy(alpha = (dotAlpha * 2.4f).coerceAtMost(1f)); isAntiAlias = true }
+            canvas.drawCircle(Offset(pitch / 2f, pitch / 2f), 0.75f * density.density, paint)
+            ShaderBrush(ImageShader(tile, TileMode.Repeated, TileMode.Repeated))
+        }
+        Modifier.drawBehind {
+            drawRect(fallback)
+            val rx = size.width * 0.5f
+            val ry = size.height * 0.565f
+            val center = Offset(size.width * 0.5f, size.height * 0.435f)
+            scale(scaleX = 1f, scaleY = ry / rx, pivot = center) {
+                drawRect(
+                    brush = Brush.radialGradient(
+                        colors = listOf(Color.White.copy(alpha = 0.6f), Color.Transparent),
+                        center = center,
+                        radius = rx
+                    )
+                )
+            }
+            drawRect(brush = lightDotBrush)
+        }
     } else {
         val density = LocalDensity.current
         val dotBrush = remember(density.density, dotAlpha) {

@@ -342,7 +342,7 @@ private fun GroupsSection(
                             .fillMaxWidth()
                             .height(116.dp)
                             .background(
-                                color = androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                                color = MaterialTheme.appColors.cardTileBackground,
                                 shape = androidx.compose.ui.graphics.RectangleShape
                             )
                             .padding(start = 8.dp, end = 8.dp, top = 10.dp, bottom = 10.dp)

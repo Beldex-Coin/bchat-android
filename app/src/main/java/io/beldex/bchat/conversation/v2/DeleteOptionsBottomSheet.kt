@@ -39,6 +39,8 @@ import io.beldex.bchat.compose_utils.notchedCornerShape
 import io.beldex.bchat.database.BchatContactDatabase
 import io.beldex.bchat.util.UiModeUtilities
 import javax.inject.Inject
+import androidx.compose.material3.MaterialTheme
+import io.beldex.bchat.compose_utils.appColors
 
 @AndroidEntryPoint
 class DeleteOptionsBottomSheet : BottomSheetDialogFragment() {
@@ -91,7 +93,7 @@ class DeleteOptionsBottomSheet : BottomSheetDialogFragment() {
                             ) {
                                 androidx.compose.material3.Text(
                                     text = resources.getString(R.string.delete_message_title),
-                                    color = androidx.compose.ui.graphics.Color(0xFFEBEBEB),
+                                    color = MaterialTheme.appColors.editTextColor,
                                     fontFamily = io.beldex.bchat.compose_utils.OpenSans,
                                     fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
                                     fontSize = 16.sp,
@@ -119,9 +121,9 @@ class DeleteOptionsBottomSheet : BottomSheetDialogFragment() {
     ) {
         val shape = notchedCornerShape(BChatDimens.NotchMedium)
         val red = Color(0xFFFF3E3E)
-        val accent = if (destructive) red else Color(0xFF444444)
-        val content = if (destructive) red else Color(0xFFEBEBEB)
-        val fill = if (destructive) red.copy(alpha = 0.10f) else Color(0xFF111111)
+        val accent = if (destructive) red else MaterialTheme.appColors.optionBorder
+        val content = if (destructive) red else MaterialTheme.appColors.editTextColor
+        val fill = if (destructive) red.copy(alpha = 0.10f) else MaterialTheme.appColors.selectedItemBackground
 
         Row(
             verticalAlignment = Alignment.CenterVertically,

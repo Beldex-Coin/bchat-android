@@ -1,6 +1,5 @@
 package io.beldex.bchat.conversation.v2.messages
 
-import io.beldex.bchat.util.BChatToast
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Canvas
@@ -10,19 +9,21 @@ import android.widget.RelativeLayout
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachment
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import io.beldex.bchat.audio.AudioSlidePlayer
-import io.beldex.bchat.components.CornerMask
-import io.beldex.bchat.conversation.v2.utilities.MessageBubbleUtilities
-import io.beldex.bchat.database.AttachmentDatabase
-import io.beldex.bchat.mms.AudioSlide
-import io.beldex.bchat.database.model.MmsMessageRecord
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
+import io.beldex.bchat.audio.AudioSlidePlayer
+import io.beldex.bchat.components.CornerMask
 import io.beldex.bchat.conversation.v2.messages.VisibleMessageContentView.Companion.getTimeTextColor
+import io.beldex.bchat.conversation.v2.utilities.MessageBubbleUtilities
+import io.beldex.bchat.database.AttachmentDatabase
+import io.beldex.bchat.database.model.MmsMessageRecord
 import io.beldex.bchat.databinding.ViewVoiceMessageBinding
+import io.beldex.bchat.mms.AudioSlide
+import io.beldex.bchat.util.BChatToast
 import io.beldex.bchat.util.DateUtils
 import java.util.Locale
 import java.util.concurrent.TimeUnit
@@ -91,12 +92,12 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         cornerMask.setTopRightRadius(cornerRadii[1])
         cornerMask.setBottomRightRadius(cornerRadii[2])
         cornerMask.setBottomLeftRadius(cornerRadii[3])
-        val green = 0xFF00BD40.toInt()
+        val green = ContextCompat.getColor(context, R.color.home_row_timestamp_unread)
         binding.voiceMessageViewLoader.indeterminateTintList = ColorStateList.valueOf(green)
         binding.seekbarAudio.progressBackgroundTintList = ColorStateList.valueOf(green)
         binding.seekbarAudio.progressTintList = ColorStateList.valueOf(green)
-        binding.seekbarAudio.thumbTintList = ColorStateList.valueOf(0xFFEBEBEB.toInt())
-        binding.voiceMessageViewDurationTextView.setTextColor(0xFFEBEBEB.toInt())
+        binding.seekbarAudio.thumbTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.disappear_icon_color))
+        binding.voiceMessageViewDurationTextView.setTextColor(ContextCompat.getColor(context, R.color.disappear_icon_color))
         binding.voiceMessagePlaybackImageView.clearColorFilter()
         binding.voiceMessagePlaybackImageView.imageTintList = null
         binding.viewVoiceMessageCard.setCardBackgroundColor(android.graphics.Color.TRANSPARENT)
@@ -104,7 +105,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         binding.voiceMessageTile.background = io.beldex.bchat.compose_utils.InnerTileDrawable(
             notchPx = 8 * density,
             barWidthPx = 0f,
-            fillColor = 0xFF0B0B0B.toInt(),
+            fillColor = ContextCompat.getColor(context, R.color.edit_group_toolbar_bg),
             barColor = 0
         )
         renderIcon()

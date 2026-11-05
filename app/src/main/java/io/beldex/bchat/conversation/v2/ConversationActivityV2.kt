@@ -1,6 +1,5 @@
 package io.beldex.bchat.conversation.v2
 
-import io.beldex.bchat.util.BChatToast
 import android.Manifest
 import android.animation.FloatEvaluator
 import android.animation.ValueAnimator
@@ -24,15 +23,13 @@ import android.text.Editable
 import android.util.Log
 import android.view.ActionMode
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
-import android.view.WindowManager
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
@@ -41,18 +38,19 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.DimenRes
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.loader.app.LoaderManager
@@ -101,14 +99,11 @@ import io.beldex.bchat.BaseAppCompatActivity
 import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.MediaOverviewActivity
 import io.beldex.bchat.R
-import io.beldex.bchat.WindowInsetsUtil
 import io.beldex.bchat.audio.AudioRecorder
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.ComposeDialogContainer
 import io.beldex.bchat.compose_utils.DialogType
+import io.beldex.bchat.compose_utils.ui.ComposeMessageDialogFragment
 import io.beldex.bchat.contacts.SelectContactsActivity
 import io.beldex.bchat.contactshare.SimpleTextWatcher
 import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
@@ -170,14 +165,14 @@ import io.beldex.bchat.mms.MediaConstraints
 import io.beldex.bchat.mms.Slide
 import io.beldex.bchat.mms.SlideDeck
 import io.beldex.bchat.mms.VideoSlide
-import io.beldex.bchat.permissions.Permissions
-import io.beldex.bchat.compose_utils.ui.ComposeMessageDialogFragment
 import io.beldex.bchat.my_account.ui.MyAccountActivity.Companion.intentForRoute
 import io.beldex.bchat.my_account.ui.MyAccountScreens
+import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.reactions.ReactionsDialogFragment
 import io.beldex.bchat.reactions.any.ReactWithAnyEmojiDialogFragment
 import io.beldex.bchat.service.WebRtcCallService
 import io.beldex.bchat.util.ActivityDispatcher
+import io.beldex.bchat.util.BChatToast
 import io.beldex.bchat.util.ConfigurationMessageUtilities
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.Helper
@@ -200,10 +195,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import nl.komponents.kovenant.ui.successUi
-import org.apache.commons.lang3.time.DurationFormatUtils
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
@@ -1229,18 +1222,6 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
     private fun setupInputBar() {
         binding.inputBar.delegate=this
         binding.inputBarRecordingView.delegate=this
-        // Figma attachment tray: notched #0B0B0B panel (#444 hairline) holding five notched tiles.
-        run {
-            val density = resources.displayMetrics.density
-            binding.attachmentContainer.background = io.beldex.bchat.compose_utils.NotchedDrawable(
-                14 * density, 1 * density, 0xFF0B0B0B.toInt(), 0xFF444444.toInt()
-            )
-            listOf(binding.cameraButton, binding.imageButton, binding.documentButton, binding.gifButton, binding.contactButton).forEach {
-                it.background = io.beldex.bchat.compose_utils.NotchedDrawable(
-                    8 * density, 1 * density, 0xFF1A1A1A.toInt(), 0xFF333333.toInt()
-                )
-            }
-        }
         binding.cameraButton.setOnClickListener {
             showCamera()
             toggleAttachmentOptions()
@@ -2849,11 +2830,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
             PICK_GIF -> {
                 intent ?: return
                 val uri=intent.data ?: return
-                val type=if (intent.getBooleanExtra(GiphyActivity.EXTRA_IS_STICKER, false)) {
-                    AttachmentManager.MediaType.STICKER
-                } else {
-                    AttachmentManager.MediaType.GIF
-                }
+                val type=AttachmentManager.MediaType.GIF
                 val width=intent.getIntExtra(GiphyActivity.EXTRA_WIDTH, 0)
                 val height=intent.getIntExtra(GiphyActivity.EXTRA_HEIGHT, 0)
                 prepMediaForSending(uri, type, width, height).addListener(mediaPreppedListener)

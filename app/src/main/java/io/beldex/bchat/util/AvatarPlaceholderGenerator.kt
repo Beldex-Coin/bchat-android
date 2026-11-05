@@ -24,9 +24,12 @@ object AvatarPlaceholderGenerator {
         } else {
             hash = 0
         }
-
-        val isDark = (context.resources.configuration.uiMode and
+        val isDark = when (UiModeUtilities.getUserSelectedUiMode(context)) {
+            UiMode.NIGHT -> true
+            UiMode.DAY -> false
+            UiMode.SYSTEM_DEFAULT -> (context.resources.configuration.uiMode and
                 android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
+        }
         val colorPrimary = if (isDark) 0xFF1A1A1A.toInt() else 0xFFFFFFFF.toInt()
 
         val labelText = when {

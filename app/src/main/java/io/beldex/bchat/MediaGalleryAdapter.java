@@ -17,28 +17,24 @@
 package io.beldex.bchat;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import io.beldex.bchat.database.loaders.BucketedThreadMediaLoader;
+import androidx.annotation.NonNull;
 import com.bumptech.glide.RequestManager;
-import io.beldex.bchat.mms.Slide;
-import io.beldex.bchat.util.MediaUtil;
 import com.codewaves.stickyheadergrid.StickyHeaderGridAdapter;
-
-
-import io.beldex.bchat.conversation.v2.utilities.ThumbnailView;
-import io.beldex.bchat.database.MediaDatabase.MediaRecord;
-
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.shape.ShapeAppearanceModel;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
-
-import io.beldex.bchat.R;
+import io.beldex.bchat.conversation.v2.utilities.ThumbnailView;
+import io.beldex.bchat.database.MediaDatabase.MediaRecord;
+import io.beldex.bchat.database.loaders.BucketedThreadMediaLoader;
+import io.beldex.bchat.mms.Slide;
+import io.beldex.bchat.util.MediaUtil;
 
 class MediaGalleryAdapter extends StickyHeaderGridAdapter {
 
@@ -61,6 +57,10 @@ class MediaGalleryAdapter extends StickyHeaderGridAdapter {
       super(v);
       imageView         = v.findViewById(R.id.image);
       selectedIndicator = v.findViewById(R.id.selected_indicator);
+      ShapeableImageView thumbnailImage = v.findViewById(R.id.thumbnail_image);
+      if (thumbnailImage != null) {
+        thumbnailImage.setShapeAppearanceModel(new ShapeAppearanceModel());
+      }
     }
   }
 

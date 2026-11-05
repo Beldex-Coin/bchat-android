@@ -16,6 +16,7 @@ import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beldex.libbchat.messaging.contacts.Contact
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
+import io.beldex.bchat.WindowInsetsUtil
 import io.beldex.bchat.dependencies.DatabaseComponent
 import com.bumptech.glide.Glide
 import io.beldex.bchat.R
@@ -52,12 +53,16 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
         super.onCreate(savedInstanceState, isReady)
         binding = ActivitySelectContactsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
-            v.setPadding(0, statusBar, 0, 0)
-            insets
-        }
-        supportActionBar!!.title = resources.getString(R.string.activity_select_contacts_title)
+        WindowInsetsUtil.applyToolbarInsets(binding.toolbar)
+        setSupportActionBar(binding.toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setHomeAsUpIndicator(
+            ContextCompat.getDrawable(this, R.drawable.ic_back)?.mutate()?.apply {
+                setTint(ContextCompat.getColor(this@SelectContactsActivity, R.color.disappear_icon_color))
+            }
+        )
+        supportActionBar!!.title = resources.getString(R.string.activity_edit_closed_group_add_members)
+        supportActionBar!!.setDisplayShowTitleEnabled(false)
 
         isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
         usersToExclude = intent.getStringArrayExtra(usersToExcludeKey)?.toSet() ?: setOf()

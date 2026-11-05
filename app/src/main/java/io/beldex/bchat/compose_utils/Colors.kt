@@ -120,6 +120,12 @@ class Colors() {
     var dialogPanelGradientEnd: Color = Color.Unspecified
     var dialogPositiveButtonBackground: Color = Color.Unspecified
     var dialogNegativeButtonBorder: Color = Color.Unspecified
+    var nicknameCancelBackground: Color = Color.Unspecified
+    var nicknameCancelBorder: Color = Color.Unspecified
+    var cardTileBackground: Color = Color.Unspecified
+    var disabledButtonBackground: Color = Color.Unspecified
+    var disabledButtonBorder: Color = Color.Unspecified
+    var disabledButtonText: Color = Color.Unspecified
 }
 
 val lightColors = Colors().apply {
@@ -187,8 +193,8 @@ val lightColors = Colors().apply {
     onboardingClearButtonBackground = Color(0xFFFFFFFF)
     onboardingClearButtonBorder = Color(0xFFF0F0F0)
     homeBannerText = Color(0xFF6A6A77)
-    homeFabBackground = Color(0xFF00BC33)
-    homeFabIconColor = Color(0xFF0A0A0A)
+    homeFabBackground = Color(0xFF078720)
+    homeFabIconColor = Color(0xFFF0F0F0)
     userDetailsSheetBackground = Color(0xFFF8F8F8)
     userDetailsCancelBackground = Color(0xFFECECEC)
     userDetailsCancelIconColor = Color(0xFF6E6E7C)
@@ -206,6 +212,12 @@ val lightColors = Colors().apply {
     dialogPanelGradientEnd = Color(0xFFF0F0F0)
     dialogPositiveButtonBackground = Color(0xFF0B0B0B)
     dialogNegativeButtonBorder = Color(0xFFD0D0D0)
+    nicknameCancelBackground = Color(0xCC0B0B0B)
+    nicknameCancelBorder = Color(0xFFEBEBEB)
+    cardTileBackground = Color(0xFFF0F0F0)
+    disabledButtonBackground = Color(0xFFE8E8E8)
+    disabledButtonBorder = Color(0xFFF0F0F0)
+    disabledButtonText = Color(0xFF8D8D8D)
 
 }
 
@@ -293,6 +305,12 @@ val darkColors = Colors().apply {
     dialogPanelGradientEnd = Color(0xFF0B0B0B)
     dialogPositiveButtonBackground = Color(0xFFE0E0E0)
     dialogNegativeButtonBorder = Color(0xFF8D8D8D)
+    nicknameCancelBackground = Color(0xCC222222)
+    nicknameCancelBorder = Color(0xFF444444)
+    cardTileBackground = Color(0xFF1A1A1A)
+    disabledButtonBackground = Color(0xFF1A1A1A)
+    disabledButtonBorder = Color(0xFF1A1A1A)
+    disabledButtonText = Color(0xFF737373)
 
 }
 

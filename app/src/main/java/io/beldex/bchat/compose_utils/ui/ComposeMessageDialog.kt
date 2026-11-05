@@ -103,9 +103,9 @@ fun ComposeMessageDialogContent(
                     PrimaryButton(
                         onClick = onPositive,
                         shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
-                        containerColor = androidx.compose.ui.graphics.Color(0xFFE0E0E0),
-                        contentColor = androidx.compose.ui.graphics.Color(0xFF0B0B0B),
-                        border = BorderStroke(1.dp, androidx.compose.ui.graphics.Color(0xFF0A370A)),
+                        containerColor = MaterialTheme.appColors.dialogPositiveButtonBackground,
+                        contentColor = MaterialTheme.appColors.dialogPositiveButtonText,
+                        border = BorderStroke(1.dp, MaterialTheme.appColors.dialogPositiveButtonBorder),
                         contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
                         modifier = Modifier
                             .weight(1f)

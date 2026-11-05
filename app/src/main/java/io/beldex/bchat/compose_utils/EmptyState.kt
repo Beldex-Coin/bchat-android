@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,15 +32,15 @@ fun GhostEmptyState(text: String, modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .offset(x = 77.dp, y = 0.dp)
                     .size(width = 123.dp, height = 33.dp)
-                    .background(Color(0xFF111111), ghost)
-                    .border(1.dp, Color(0xFF444444), ghost)
+                    .background(MaterialTheme.appColors.selectedItemBackground, ghost)
+                    .border(1.dp, MaterialTheme.appColors.optionBorder, ghost)
             )
             Box(
                 modifier = Modifier
                     .offset(x = 0.dp, y = 26.dp)
                     .size(width = 123.dp, height = 33.dp)
-                    .background(Color(0xFF111111), ghost)
-                    .border(1.dp, Color(0xFF444444), ghost)
+                    .background(MaterialTheme.appColors.selectedItemBackground, ghost)
+                    .border(1.dp, MaterialTheme.appColors.optionBorder, ghost)
             )
         }
         Text(

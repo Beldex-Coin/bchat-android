@@ -36,7 +36,7 @@ class OpenGroupInvitationView : LinearLayout {
         val iconID = if (message.isOutgoing) R.drawable.ic_social_group_chat else R.drawable.ic_social_group_chat
         with(binding){
             invitationImageView.setImageResource(iconID)
-            invitationImageView.imageTintList= ColorStateList.valueOf(0xFFACACAC.toInt())
+            invitationImageView.imageTintList= ColorStateList.valueOf(R.color.contact_card_action_text)
             try {
                 val mainObject = JSONObject(message.body)
                 val uniObject = mainObject.getJSONObject("kind")
@@ -57,7 +57,7 @@ class OpenGroupInvitationView : LinearLayout {
                 barColor = 0xFF444444.toInt()
             )
             socialGroupCardView.setCardBackgroundColor(ColorStateList.valueOf(android.graphics.Color.TRANSPARENT))
-            titleTextView.setTextColor(0xFFEBEBEB.toInt())
+            titleTextView.setTextColor(R.color.disappear_icon_color)
             socialGroupUrl.setTextColor(textColor)
             socialGroupMessageTime.setTextColor(textColor)
             binding.socialGroupCardView.setOnClickListener {

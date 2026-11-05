@@ -846,7 +846,7 @@ fun MyAccountNavHost(
                                 .align(alignment = Alignment.TopCenter)
                                 .padding(top = if (!isBnsHolder.isNullOrEmpty()) 0.dp else 12.dp)
                                 .size(ACCOUNT_AVATAR_SIZE)
-                                .border(1.dp, Color(0xFF000000), io.beldex.bchat.compose_utils.NotchedAvatarShape)
+                                .border(1.dp, MaterialTheme.appColors.messageRequestItemBackground, io.beldex.bchat.compose_utils.NotchedAvatarShape)
                         ) {
                             if(isProfileChanged) {
                                 ProfilePictureComponent(
@@ -897,7 +897,7 @@ fun MyAccountNavHost(
                                 .padding(start = 24.dp, top = 16.dp, end = 0.dp, bottom = 16.dp)
                                 .widthIn(max = 120.dp)
                                 .background(
-                                    color = if (showEditNameTextField) Color(0xFFE0E0E0) else Color(0xFF1A1A1A)
+                                    color = if (showEditNameTextField) MaterialTheme.appColors.dialogPositiveButtonBackground else MaterialTheme.appColors.dialogPanelGradientStart
                                 )
                                 .align(Alignment.TopEnd)
                                 .clickable {
@@ -921,7 +921,7 @@ fun MyAccountNavHost(
                             Text(
                                 text = if(showEditNameTextField) stringResource(id=R.string.menu_done_button) else stringResource(id=R.string.edit_title),
                                 style = BChatTypography.bodySmall.copy(
-                                    color = if(showEditNameTextField) Color(0xFF0B0B0B) else MaterialTheme.appColors.editTextColor,
+                                    color = if(showEditNameTextField) MaterialTheme.appColors.dialogPositiveButtonText else MaterialTheme.appColors.editTextColor,
                                     fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                                     fontWeight = FontWeight(600),
                                     fontSize = 12.sp,
@@ -1597,8 +1597,8 @@ fun ProfileCard(
                 cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.appColors.textSelectionColor),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFF111111))
-                    .border(1.dp, Color(0xFF333333))
+                    .background(MaterialTheme.appColors.selectedItemBackground)
+                    .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
                     .padding(horizontal = 14.dp, vertical = 12.dp)
             )
         }
@@ -1691,9 +1691,9 @@ fun ProfileCardKeyContainer(
             io.beldex.bchat.compose_utils.BChatDimens.NotchAccountCard,
             io.beldex.bchat.compose_utils.NotchCorner.BottomLeft
         ),
-        border = BorderStroke(1.dp, Color(0xFF444444)),
+        border = BorderStroke(1.dp, MaterialTheme.appColors.optionBorder),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF111111)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.selectedItemBackground),
     ) {
         Box(
             modifier = Modifier

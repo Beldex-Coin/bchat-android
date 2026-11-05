@@ -983,7 +983,7 @@ class VisibleMessageContentView : MaterialCardView {
             )
 
             formatted = SearchUtil.getHighlightedSpanBuilder(Locale.getDefault(),
-                { ForegroundColorSpan(if(message.isOutgoing) context.getColor(R.color.white) else context.getColor(R.color.received_message_text_color)) }, formatted, searchQuery
+                { ForegroundColorSpan(if (message.isOutgoing) context.getColor(R.color.sent_message_text_color) else context.getColor(R.color.received_message_text_color)) }, formatted, searchQuery
             )
 
             Linkify.addLinks(formatted, Linkify.WEB_URLS)
@@ -1006,7 +1006,7 @@ class VisibleMessageContentView : MaterialCardView {
 
         @ColorInt
         fun getTextColor(context: Context, message: MessageRecord): Int  = context.resources.getColorWithID(
-            if (message.isOutgoing) R.color.white else R.color.received_message_text_color,context.theme
+            if (message.isOutgoing) R.color.sent_message_text_color else R.color.received_message_text_color,context.theme
         )
 
         @ColorInt

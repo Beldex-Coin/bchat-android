@@ -64,6 +64,8 @@ fun MessageRequestsView(
 ) {
     // Revamp_2026 (Figma 7546:1780): flat full-width search band, then a green Message Requests
     // banner that opens the requests screen. ignoreRequest/openChat stay for the requests screen.
+    val bandBorder = MaterialTheme.appColors.optionBorder
+    val requestBannerAccent = MaterialTheme.appColors.userDetailsConfirmBackground
     Column(modifier = modifier) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -73,8 +75,8 @@ fun MessageRequestsView(
                 .background(MaterialTheme.appColors.dialogBackground)
                 .drawBehind {
                     val stroke = 0.75.dp.toPx()
-                    drawLine(homeBandBorder, Offset(0f, 0f), Offset(size.width, 0f), stroke)
-                    drawLine(homeBandBorder, Offset(0f, size.height), Offset(size.width, size.height), stroke)
+                    drawLine(bandBorder, Offset(0f, 0f), Offset(size.width, 0f), stroke)
+                    drawLine(bandBorder, Offset(0f, size.height), Offset(size.width, size.height), stroke)
                 }
                 .noRippleCallback { openSearch() }
                 .padding(horizontal = 20.dp)
@@ -107,12 +109,18 @@ fun MessageRequestsView(
                     .height(53.dp)
                     .background(color = MaterialTheme.appColors.messageRequestBackground.copy(alpha = 0.5f))
                     .drawBehind {
-                        val strokeWidth = 0.40.dp.toPx()
+                        val strokeWidth = 0.375.dp.toPx()
 
                         drawLine(
                             color = requestBannerAccent,
                             start = Offset(0f, 0f),
                             end = Offset(size.width, 0f),
+                            strokeWidth = strokeWidth
+                        )
+                        drawLine(
+                            color = requestBannerAccent,
+                            start = Offset(0f, size.height),
+                            end = Offset(size.width, size.height),
                             strokeWidth = strokeWidth
                         )
                     }
@@ -122,7 +130,7 @@ fun MessageRequestsView(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_message_request_banner),
                     contentDescription = null,
-                    tint = MaterialTheme.appColors.lockTimerColor,
+                    tint = MaterialTheme.appColors.dialogNegativeButtonText,
                     modifier = Modifier.size(width = 20.dp, height = 18.dp)
                 )
                 Spacer(modifier = Modifier.width(12.dp))
@@ -164,8 +172,6 @@ fun MessageRequestsView(
     }
 }
 
-private val homeBandBorder = Color(0xFF444444)
-private val requestBannerAccent = Color(0xFF00BC33)
 private val requestBannerFill = Color(0x80061306)
 
 @Composable

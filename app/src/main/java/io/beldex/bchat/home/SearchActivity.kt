@@ -349,8 +349,8 @@ private fun SearchView(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(androidx.compose.ui.graphics.Color(0xFF1A1A1A))
-                                .border(1.dp, androidx.compose.ui.graphics.Color(0xFF333333))
+                                .background(MaterialTheme.appColors.selectedItemBackground)
+                                .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
                                 .clickable { onSearchResultClick(it) }
                                 .padding(horizontal = 14.dp, vertical = 14.dp)
                         ) {
@@ -359,7 +359,7 @@ private fun SearchView(
                                 modifier = Modifier
                                     .size(42.dp)
                                     .background(
-                                        androidx.compose.ui.graphics.Color(0xFF222222),
+                                        MaterialTheme.appColors.cardTileBackground,
                                         io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall)
                                     )
                             ) {

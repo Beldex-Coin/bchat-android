@@ -50,7 +50,7 @@ fun HomeFilterChips(
                 fontSize = 10.5.sp,
                 modifier = Modifier
                     .clickable { onSelect(filter) }
-                    .background(if (isSelected) accent.copy(alpha = 0.1f) else Color(0x331A1A1A))
+                    .background(if (isSelected) accent.copy(alpha = 0.1f) else MaterialTheme.appColors.cardTileBackground.copy(alpha = 0.2f))
                     .border(0.5.dp, accent)
                     .padding(horizontal = 8.dp, vertical = 2.dp)
             )

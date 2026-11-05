@@ -9,8 +9,9 @@
     android:elevation="0dp"
     app:glass_cornerRadius="26dp"
     app:glass_blurRadius="24dp"
-    app:glass_tintColor="#B3111111"
-    app:glass_borderColor="#26FFFFFF">
+    app:glass_tintColor="@color/drawer_glass_tint"
+    app:glass_fallbackTintColor="@color/drawer_glass_fallback"
+    app:glass_borderColor="@color/drawer_glass_border">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

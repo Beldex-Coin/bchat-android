@@ -13,14 +13,15 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#0B0B0B"
+        android:background="@color/chat_header_background"
         android:padding="16dp">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/back"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            app:srcCompat="@drawable/ic_back_arrow" />
+            app:srcCompat="@drawable/ic_back_arrow"
+            app:tint="@color/chat_header_title" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/title"
@@ -29,6 +30,7 @@
             android:layout_marginStart="16dp"
             android:fontFamily="@font/open_sans_medium"
             android:text="@string/media_preview__forward_title"
+            android:textColor="@color/chat_header_title"
             android:textSize="18sp"
             tools:text="@string/media_preview__forward_title" />
 
@@ -43,9 +45,9 @@
         android:layout_marginTop="@dimen/small_spacing"
         android:layout_marginEnd="@dimen/medium_spacing"
         android:layout_marginBottom="@dimen/medium_spacing"
-        app:cardBackgroundColor="#1A1A1A"
+        app:cardBackgroundColor="@color/message_tile_background"
         app:cardElevation="0dp"
-        app:strokeColor="#333333"
+        app:strokeColor="@color/recording_bar_border"
         app:strokeWidth="1dp"
         app:cardCornerRadius="0dp">
 

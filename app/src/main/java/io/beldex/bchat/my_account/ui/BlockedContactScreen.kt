@@ -202,8 +202,8 @@ fun BlockedContactScreen(
                     showConfirmationDialog = true
                 },
                 shape = notchedCornerShape(BChatDimens.NotchLarge),
-                containerColor = MaterialTheme.appColors.editTextColor,
-                contentColor = MaterialTheme.appColors.backgroundColor,
+                containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
+                contentColor = MaterialTheme.appColors.dialogPositiveButtonText,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(58.dp)
@@ -212,7 +212,7 @@ fun BlockedContactScreen(
                 Text(
                     text = stringResource(id = R.string.unblock_selected),
                     style = MaterialTheme.typography.titleMedium.copy(
-                        color = MaterialTheme.appColors.backgroundColor,
+                        color = MaterialTheme.appColors.dialogPositiveButtonText,
                         fontFamily = RobotoMono,
                         fontWeight = FontWeight(600),
                         fontSize = 16.sp
@@ -243,10 +243,10 @@ private fun BlockedContactItem(
         shape = rowShape,
         border = if (multiSelectActivated) androidx.compose.foundation.BorderStroke(
             1.dp,
-            if (isSelected) Color(0xFF00BC33).copy(alpha = 0.5f) else Color(0xFF444444)
+            if (isSelected) MaterialTheme.appColors.userDetailsConfirmBackground.copy(alpha = 0.5f) else MaterialTheme.appColors.optionBorder
         ) else null,
         colors = CardDefaults.cardColors(
-            containerColor = if(isSelected) Color(0xFF111111) else Color.Transparent
+            containerColor = if(isSelected) MaterialTheme.appColors.selectedItemBackground else Color.Transparent
         ),
         modifier = modifier
     ) {
@@ -292,8 +292,8 @@ private fun BlockedContactItem(
                     onClick = { selectContact(!isSelected) }
                 )
             } else {
-            val unblockBg = if (isSystemInDarkTheme()) MaterialTheme.appColors.editTextColor else Color(0xFFF8F8F8)
-            val unblockText = if (isSystemInDarkTheme()) MaterialTheme.appColors.backgroundColor else MaterialTheme.appColors.editTextColor
+            val unblockBg = MaterialTheme.appColors.onboardingPrimaryButtonBackground
+            val unblockText = MaterialTheme.appColors.dialogPositiveButtonText
             Text(
                 text = stringResource(R.string.ConversationActivity_unblock),
                 style = MaterialTheme.typography.labelMedium.copy(
@@ -356,7 +356,8 @@ fun BlockedContactScreenPreviewDark() {
 /** Figma tick: a green rounded square that fills with a dark check when selected. */
 @Composable
 private fun CircleCheck(checked: Boolean, onClick: () -> Unit) {
-    val green = Color(0xFF00BC33)
+    val green = MaterialTheme.appColors.userDetailsConfirmBackground
+    val tick = MaterialTheme.appColors.dialogPositiveButtonText
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -378,7 +379,7 @@ private fun CircleCheck(checked: Boolean, onClick: () -> Unit) {
                     lineTo(size.width * 0.44f, size.height * 0.68f)
                     lineTo(size.width * 0.74f, size.height * 0.34f)
                 }
-                drawPath(path, Color(0xFF0B0B0B), style = Stroke(
+                drawPath(path, tick, style = Stroke(
                     width = stroke,
                     cap = StrokeCap.Round
                 )

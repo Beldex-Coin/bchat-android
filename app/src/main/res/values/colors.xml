@@ -467,4 +467,15 @@
     <color name="call_answer_button_background">#80061306</color>
     <color name="message_tile_sent_background">#000800</color>
     <color name="message_tile_bar">#444444</color>
+    <color name="attachment_tray_background">#A60B0B0B</color>
+    <color name="attachment_tray_border">#444444</color>
+    <color name="attachment_tile_background">#331A1A1A</color>
+    <color name="attachment_tile_border">#8C8C8C</color>
+    <color name="attachment_tile_border_start">#2E2E2E</color>
+    <color name="drawer_glass_tint">#B3111111</color>
+    <color name="drawer_glass_border">#26FFFFFF</color>
+    <color name="drawer_glass_fallback">#EB111111</color>
+    <color name="menu_border">#33FFFFFF</color>
+    <color name="sent_message_text_color">#FFFFFF</color>
+    <color name="call_card_inner_background">#0B0B0B</color>
 </resources>

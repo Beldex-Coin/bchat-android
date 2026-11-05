@@ -172,9 +172,9 @@ class ArchiveChatActivity : BaseComponentActivity() {
                                     DropdownMenu(
                                         expanded=expanded,
                                         onDismissRequest={ expanded=false },
-                                        containerColor=androidx.compose.ui.graphics.Color(0xF2111111),
+                                        containerColor=MaterialTheme.appColors.selectedItemBackground.copy(alpha = 0.95f),
                                         shape=androidx.compose.foundation.shape.RoundedCornerShape(18.dp),
-                                        border=androidx.compose.foundation.BorderStroke(1.dp, androidx.compose.ui.graphics.Color(0x33FFFFFF))
+                                        border=androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.appColors.optionBorder)
                                     ) {
                                         DropdownMenuItem(
                                             text={ Text(stringResource(R.string.archive_settings), color=MaterialTheme.appColors.editTextColor) },

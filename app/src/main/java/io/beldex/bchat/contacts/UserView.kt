@@ -140,14 +140,24 @@ class UserView : LinearLayout {
             it.marginStart = 0; it.marginEnd = 0; it.topMargin = dp(8)
             binding.userViewLayout.layoutParams = it
         }
-        binding.contentView.setPadding(dp(12), dp(10), dp(12), dp(10))
+        binding.contentView.setPadding(dp(12), dp(12), dp(15), dp(12))
         (binding.contentView.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let {
             it.marginEnd = 0
             binding.contentView.layoutParams = it
         }
+        binding.profilePictureView.root.layoutParams = binding.profilePictureView.root.layoutParams.apply {
+            width = dp(32); height = dp(32)
+        }
+        (binding.nameTextView.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let {
+            it.marginStart = dp(10)
+            binding.nameTextView.layoutParams = it
+        }
         binding.nameTextView.textSize = 14f
         binding.nameTextView.setTextColor(androidx.core.content.ContextCompat.getColor(context, R.color.disappear_icon_color))
         binding.nameTextView.typeface = androidx.core.content.res.ResourcesCompat.getFont(context, R.font.open_sans_semi_bold)
+        binding.actionIndicatorImageView.layoutParams = binding.actionIndicatorImageView.layoutParams.apply {
+            width = dp(18); height = dp(18)
+        }
         binding.actionIndicatorImageView.visibility = View.VISIBLE
         binding.actionIndicatorImageView.setImageResource(
             if (isSelected) R.drawable.ic_add_member_check_on else R.drawable.ic_add_member_check_off

@@ -77,7 +77,7 @@ fun ArchiveChatView(
         ) {
             Text(
                 text = if (count > 99) "99+" else count.toString(),
-                color = androidx.compose.ui.graphics.Color(0xFF0B0B0B),
+                color = MaterialTheme.appColors.dialogPositiveButtonText,
                 fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
                 fontWeight = FontWeight.Bold,
                 fontSize = 12.sp

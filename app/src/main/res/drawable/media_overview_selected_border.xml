@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma All Media "Selected tint" (8013:5569 / 8013:6787): 0.5dp border, #EBEBEB dark / #0B0B0B white. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@android:color/transparent" />
+    <stroke android:width="0.5dp" android:color="@color/read_button_background" />
+</shape>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma All Media selection bar "Icon / Delete" (8013:5697): 21dp red trash, same size as download/share. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="21dp"
+    android:height="21dp"
+    android:viewportWidth="21"
+    android:viewportHeight="21">
+    <path
+        android:fillColor="@color/clear_red_color"
+        android:pathData="M8.04362,2L7.60612,2.875H3.47721L3.47266,2.84766L3.03516,2.875H1.75V3.75H2.64779L3.52734,18.625H17.4727L18.3522,3.75H19.25V2.875H17.9648L17.5273,2.84766L17.5228,2.875H13.3939L12.9564,2H8.04362ZM8.58138,2.875H12.4186L12.8561,3.75H17.4727L16.6523,17.75H4.34766L3.52734,3.75H8.14388L8.58138,2.875ZM6.97266,6.35221L6.10221,6.40234L6.125,6.83529L6.5625,14.7103L6.58984,15.1478L7.46029,15.0977L7.4375,14.6647L7,6.78971L6.97266,6.35221ZM14.0273,6.35221L14,6.78971L13.5625,14.6647L13.5397,15.0977L14.4102,15.1478L14.4375,14.7103L14.875,6.83529L14.8978,6.40234L14.0273,6.35221Z" />
+</vector>

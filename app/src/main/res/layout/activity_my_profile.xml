@@ -72,6 +72,8 @@
                                 android:layout_height="wrap_content">
 
                                 <FrameLayout
+    android:clipChildren="false"
+    android:clipToPadding="false"
                                     android:id="@+id/profile_container"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"

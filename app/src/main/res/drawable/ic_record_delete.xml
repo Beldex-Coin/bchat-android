@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma recording "Delete" trash (7546:11516): 14dp, red #FF3E3E outline. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="14dp"
+    android:height="14dp"
+    android:viewportWidth="14"
+    android:viewportHeight="14">
+    <path android:strokeColor="@color/clear_red_color" android:strokeWidth="0.875"
+        android:pathData="M2.9462,5.09494C2.45334,4.43779 2.92223,3.5 3.74367,3.5H10.2563C11.0778,3.5 11.5467,4.43779 11.0538,5.09494C10.6943,5.57424 10.5,6.1572 10.5,6.75633V10.5C10.5,11.7887 9.45533,12.8333 8.16667,12.8333H5.83333C4.54467,12.8333 3.5,11.7887 3.5,10.5V6.75633C3.5,6.1572 3.30568,5.57424 2.9462,5.09494Z" />
+    <path android:strokeColor="@color/clear_red_color" android:strokeWidth="0.875" android:strokeLineCap="round" android:strokeLineJoin="round" android:pathData="M8.167,9.9165L8.167,6.4165" />
+    <path android:strokeColor="@color/clear_red_color" android:strokeWidth="0.875" android:strokeLineCap="round" android:strokeLineJoin="round" android:pathData="M5.833,9.9165L5.833,6.4165" />
+    <path android:strokeColor="@color/clear_red_color" android:strokeWidth="0.875" android:strokeLineCap="round" android:pathData="M9.33366,3.5L9.01624,2.54773C8.85744,2.07134 8.41161,1.75 7.90944,1.75H6.09121C5.58904,1.75 5.14321,2.07134 4.98441,2.54773L4.66699,3.5" />
+</vector>

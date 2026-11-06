@@ -73,6 +73,8 @@ import com.beldex.libbchat.utilities.task.ProgressDialogAsyncTask;
 import com.bumptech.glide.Glide;
 import com.codewaves.stickyheadergrid.StickyHeaderGridLayoutManager;
 import com.google.android.material.tabs.TabLayout;
+import io.beldex.bchat.compose_utils.ui.ComposeMessageDialogFragment;
+import kotlin.Unit;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -472,54 +474,37 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
                                                     recordCount,
                                                     recordCount);
 
-      AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-      LayoutInflater inflater = getLayoutInflater();
-      View dialogView = inflater.inflate(R.layout.delete_media_dialog, null);
+      // Revamp_2026: same confirmation popup as deleting selected messages in a chat
+      // (ComposeMessageDialogFragment, destructive red "Delete" button).
+      ComposeMessageDialogFragment.show(
+              getChildFragmentManager(),
+              confirmTitle,
+              confirmMessage,
+              getString(R.string.delete),
+              getString(android.R.string.cancel),
+              true,
+              () -> {
+                new ProgressDialogAsyncTask<MediaDatabase.MediaRecord, Void, Void>(getContext(),
+                        R.string.MediaOverviewActivity_Media_delete_progress_title,
+                        R.string.MediaOverviewActivity_Media_delete_progress_message)
+                {
+                  @Override
+                  protected Void doInBackground(MediaDatabase.MediaRecord... records) {
+                    if (records == null || records.length == 0) {
+                      return null;
+                    }
 
-      builder.setView(dialogView);
+                    for (MediaDatabase.MediaRecord record : records) {
+                      AttachmentUtil.deleteAttachment(getContext(), record.getAttachment());
+                    }
+                    return null;
+                  }
 
-      Button cancelButton = dialogView.findViewById(R.id.cancelButton);
-      Button deleteButton = dialogView.findViewById(R.id.deleteButton);
-      TextView title = dialogView.findViewById(R.id.titleTextView);
-      TextView contentMessage = dialogView.findViewById(R.id.deleteMessageContent);
-      title.setText(confirmTitle);
-      contentMessage.setText(confirmMessage);
-      AlertDialog alert = builder.create();
-      Objects.requireNonNull(alert.getWindow()).setBackgroundDrawableResource(R.color.transparent);
-      alert.setCanceledOnTouchOutside(true);
-      alert.show();
-
-
-      deleteButton.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-          new ProgressDialogAsyncTask<MediaDatabase.MediaRecord, Void, Void>(getContext(),
-                  R.string.MediaOverviewActivity_Media_delete_progress_title,
-                  R.string.MediaOverviewActivity_Media_delete_progress_message)
-          {
-            @Override
-            protected Void doInBackground(MediaDatabase.MediaRecord... records) {
-              if (records == null || records.length == 0) {
-                return null;
-              }
-
-              for (MediaDatabase.MediaRecord record : records) {
-                AttachmentUtil.deleteAttachment(getContext(), record.getAttachment());
-              }
-              return null;
-            }
-
-          }.execute(mediaRecords.toArray(new MediaDatabase.MediaRecord[mediaRecords.size()]));
-          alert.dismiss();
-        }
-      });
-
-      cancelButton.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-          alert.dismiss();
-        }
-      });
+                }.execute(mediaRecords.toArray(new MediaDatabase.MediaRecord[mediaRecords.size()]));
+                return Unit.INSTANCE;
+              },
+              null
+      );
     }
 
     private void handleSelectAllMedia() {

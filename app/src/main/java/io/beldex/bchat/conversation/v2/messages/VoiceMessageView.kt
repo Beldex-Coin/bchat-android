@@ -92,12 +92,14 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         cornerMask.setTopRightRadius(cornerRadii[1])
         cornerMask.setBottomRightRadius(cornerRadii[2])
         cornerMask.setBottomLeftRadius(cornerRadii[3])
-        val green = ContextCompat.getColor(context, R.color.home_row_timestamp_unread)
+        val green = ContextCompat.getColor(context, R.color.ic_self_message)
+        val knob = ContextCompat.getColor(context, R.color.read_button_background)
+        val durationTextColor = ContextCompat.getColor(context, R.color.disappear_icon_color)
         binding.voiceMessageViewLoader.indeterminateTintList = ColorStateList.valueOf(green)
         binding.seekbarAudio.progressBackgroundTintList = ColorStateList.valueOf(green)
         binding.seekbarAudio.progressTintList = ColorStateList.valueOf(green)
-        binding.seekbarAudio.thumbTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.disappear_icon_color))
-        binding.voiceMessageViewDurationTextView.setTextColor(ContextCompat.getColor(context, R.color.disappear_icon_color))
+        binding.seekbarAudio.thumbTintList = ColorStateList.valueOf(knob)
+        binding.voiceMessageViewDurationTextView.setTextColor(durationTextColor)
         binding.voiceMessagePlaybackImageView.clearColorFilter()
         binding.voiceMessagePlaybackImageView.imageTintList = null
         binding.viewVoiceMessageCard.setCardBackgroundColor(android.graphics.Color.TRANSPARENT)
@@ -105,7 +107,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         binding.voiceMessageTile.background = io.beldex.bchat.compose_utils.InnerTileDrawable(
             notchPx = 8 * density,
             barWidthPx = 0f,
-            fillColor = ContextCompat.getColor(context, R.color.edit_group_toolbar_bg),
+            fillColor = ContextCompat.getColor(context, R.color.contact_card_inner_background),
             barColor = 0
         )
         renderIcon()

@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
@@ -206,8 +207,10 @@ fun DialogConfirmButton(
     destructive: Boolean = false,
     enabled: Boolean = true
 ) {
-    val containerColor = if (destructive) MaterialTheme.appColors.negativeRedButtonBorder
+    val containerColor = if (destructive) MaterialTheme.appColors.negativeRedButtonBorder.copy(alpha = 0.1f)
     else MaterialTheme.appColors.dialogPositiveButtonBackground
+    val labelColor = if (destructive) colorResource(R.color.disappear_icon_color)
+    else MaterialTheme.appColors.dialogPositiveButtonText
     val containerBorder = if (destructive) MaterialTheme.appColors.negativeRedButtonBorder
     else MaterialTheme.appColors.dialogPositiveButtonBorder
     PrimaryButton(
@@ -220,7 +223,7 @@ fun DialogConfirmButton(
         contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
         modifier = modifier.heightIn(min = BChatDimens.DialogButtonMinHeight)
     ) {
-        Text(text = text, fontFamily = OpenSans, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = MaterialTheme.appColors.dialogPositiveButtonText)
+        Text(text = text, fontFamily = OpenSans, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = labelColor)
     }
 }
 

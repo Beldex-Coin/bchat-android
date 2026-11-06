@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma Message Detail "Resend", white theme (7762:15426): #0B0B0B fill, #078720 border. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="148dp"
+    android:height="52dp"
+    android:viewportWidth="148"
+    android:viewportHeight="52">
+    <path
+        android:fillColor="#0B0B0B"
+        android:strokeColor="#078720"
+        android:strokeWidth="1"
+        android:pathData="M0.5,0.5 L134,0.5 L147.5,13.5 L147.5,51.5 L12.9,51.5 L0.5,40.5 Z" />
+</vector>

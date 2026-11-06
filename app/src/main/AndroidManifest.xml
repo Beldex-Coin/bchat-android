@@ -505,6 +505,12 @@
             android:exported="true"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
+            android:name=".conversation.v2.forward.ForwardMessageActivity"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
+            android:exported="false"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".conversation.v2.contact_sharing.ContactSharingActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true"

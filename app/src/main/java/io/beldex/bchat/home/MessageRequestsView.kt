@@ -117,12 +117,6 @@ fun MessageRequestsView(
                             end = Offset(size.width, 0f),
                             strokeWidth = strokeWidth
                         )
-                        drawLine(
-                            color = requestBannerAccent,
-                            start = Offset(0f, size.height),
-                            end = Offset(size.width, size.height),
-                            strokeWidth = strokeWidth
-                        )
                     }
                     .clickable { openMessageRequests() }
                     .padding(horizontal = 20.dp)

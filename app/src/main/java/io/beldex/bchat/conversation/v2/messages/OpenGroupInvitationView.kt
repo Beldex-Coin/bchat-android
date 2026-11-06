@@ -5,7 +5,7 @@ import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
-import androidx.core.content.res.ResourcesCompat
+import androidx.core.content.ContextCompat
 import com.beldex.libbchat.messaging.utilities.UpdateMessageData
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.InnerTileDrawable
@@ -36,7 +36,7 @@ class OpenGroupInvitationView : LinearLayout {
         val iconID = if (message.isOutgoing) R.drawable.ic_social_group_chat else R.drawable.ic_social_group_chat
         with(binding){
             invitationImageView.setImageResource(iconID)
-            invitationImageView.imageTintList= ColorStateList.valueOf(R.color.contact_card_action_text)
+            invitationImageView.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.chat_input_attach_icon))
             try {
                 val mainObject = JSONObject(message.body)
                 val uniObject = mainObject.getJSONObject("kind")
@@ -50,14 +50,15 @@ class OpenGroupInvitationView : LinearLayout {
             socialGroupUrl.text= trimmedURL[0]
             socialGroupMessageTime.text =  DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
             val density = resources.displayMetrics.density
+            val innerFill = ContextCompat.getColor(context, R.color.contact_card_inner_background)
             invitationTile.background = InnerTileDrawable(
                 notchPx = 8 * density,
                 barWidthPx = 3 * density,
-                fillColor = if (message.isOutgoing) 0xFF000800.toInt() else 0xFF0B0B0B.toInt(),
-                barColor = 0xFF444444.toInt()
+                fillColor = if (message.isOutgoing && innerFill == 0xFF0B0B0B.toInt()) 0xFF000800.toInt() else innerFill,
+                barColor = ContextCompat.getColor(context, R.color.contact_card_inner_bar)
             )
             socialGroupCardView.setCardBackgroundColor(ColorStateList.valueOf(android.graphics.Color.TRANSPARENT))
-            titleTextView.setTextColor(R.color.disappear_icon_color)
+            titleTextView.setTextColor(ContextCompat.getColor(context, R.color.disappear_icon_color))   // #EBEBEB / #222222
             socialGroupUrl.setTextColor(textColor)
             socialGroupMessageTime.setTextColor(textColor)
             binding.socialGroupCardView.setOnClickListener {

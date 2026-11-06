@@ -55,6 +55,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -207,15 +208,18 @@ fun NewChatScreen(
                     TextField(
                         value = searchQuery,
                         placeholder = {
+                            // Figma New Chat search (7546:3366 / 7762:7105): "Search people and groups",
+                            // Roboto Mono Light 14sp, #737373 dark / #8D8D8D white.
                             Text(
-                                text = stringResource(R.string.search_name_bns_bchat_id),
-                modifier = Modifier.padding(start = 4.dp),
+                                text = stringResource(R.string.search_people_and_groups),
+                                modifier = Modifier.padding(start = 4.dp),
                                 softWrap = false,
                                 fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
-                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Light,
+                                fontSize = 14.sp,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
-                                color = MaterialTheme.appColors.onboardingInputHint
+                                color = colorResource(R.color.chat_input_hint)
                             )
                         },
                         singleLine = true,
@@ -234,7 +238,7 @@ fun NewChatScreen(
                             Icon(
                                 imageVector = Icons.Default.Clear,
                                 contentDescription = "clear search text",
-                                tint = MaterialTheme.appColors.onboardingInputHint,
+                                tint = colorResource(R.color.chat_input_hint),
                                 modifier=Modifier.clickable {
                                     if (searchQuery.isNotEmpty()) {
                                         onEvent("")
@@ -248,7 +252,7 @@ fun NewChatScreen(
                             Icon(
                                 imageVector = Icons.Default.Search,
                                 contentDescription = "search contact",
-                                tint = MaterialTheme.appColors.onboardingInputHint,
+                                tint = colorResource(R.color.chat_input_hint),
                             )
                         },
                         colors = TextFieldDefaults.colors(
@@ -641,4 +645,4 @@ fun NewChatScreenNightPreview() {
     BChatTheme {
         NewChatScreen(searchQuery, contacts,contactViewModel::onEvent, openActivity = {}, openConversation = {}, onBackPress = {}, isDarkTheme = true)
     }
-}
+}

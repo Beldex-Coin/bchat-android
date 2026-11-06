@@ -7,6 +7,8 @@
     android:orientation="vertical">
 
     <LinearLayout
+    android:clipChildren="false"
+    android:clipToPadding="false"
         android:id="@+id/contentView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

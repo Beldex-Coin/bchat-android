@@ -68,7 +68,7 @@ class MessageDetailActivity: PassphraseRequiredActionBarActivity() {
             binding.errorContainer.isVisible = true
         } else {
             binding.messageStatusTitle.text = getString(R.string.message_details_header__sent)
-            binding.messageStatusTitle.setTextColor(this.getColor(R.color.text))
+            binding.messageStatusTitle.setTextColor(this.getColor(R.color.disappear_icon_color))
             binding.errorContainer.isVisible = false
             binding.resendContainer.isVisible = false
         }
@@ -92,4 +92,4 @@ class MessageDetailActivity: PassphraseRequiredActionBarActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-}
+}

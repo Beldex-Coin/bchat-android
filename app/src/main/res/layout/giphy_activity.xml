@@ -14,88 +14,102 @@
     <LinearLayout
         android:id="@+id/giphy_panel"
         android:layout_width="match_parent"
-        android:layout_height="520dp"
+        android:layout_height="521dp"
         android:layout_gravity="bottom"
         android:background="@drawable/giphy_picker_sheet_background"
         android:orientation="vertical">
 
+        <!-- Header: "Send Gif" (Open Sans SemiBold 16) + 22dp corner-cut close button. -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="22dp"
+            android:layout_marginTop="17dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingHorizontal="18dp">
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="@font/open_sans_semi_bold"
+                android:includeFontPadding="false"
                 android:text="Send Gif"
-                android:textColor="@color/text"
+                android:textColor="@color/disappear_icon_color"
                 android:textSize="16sp" />
 
             <ImageView
                 android:id="@+id/giphy_close"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:background="@drawable/circle_touch_highlight_background"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:background="?selectableItemBackgroundBorderless"
                 android:contentDescription="@string/cancel"
-                android:padding="4dp"
-                android:src="@drawable/ic_close"
-                app:tint="@color/text" />
+                android:src="@drawable/ic_giphy_close" />
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/incoming_message_divider_color" />
+            android:layout_marginTop="10dp"
+            android:background="@color/contact_card_inner_bar" />
 
         <io.beldex.bchat.giph.ui.GiphyActivityToolbar
             android:id="@+id/giphy_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="@color/page_background" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/incoming_message_divider_color" />
+            android:layout_height="48dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/giphy_bar_background"
+            android:minHeight="48dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetEnd="0dp"
+            app:contentInsetStartWithNavigation="0dp" />
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/giphy_pager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/incoming_message_divider_color" />
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_layout"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:paddingHorizontal="10dp"
-            android:theme="@style/Widget.Bchat.TabLayout"
-            app:tabGravity="fill"
-            app:tabIndicatorHeight="0dp"
-            app:tabMode="fixed"
-            app:tabBackground="@drawable/tab_background_selector"
-            app:tabMinWidth="96dp"
-            app:tabRippleColor="@color/cell_selected"
-            app:tabSelectedTextColor="@color/button_green"
-            app:tabTextColor="@color/timestamp_in" />
+            android:layout_weight="1"
+            android:paddingStart="7.5dp"
+            android:paddingTop="7.5dp"
+            android:paddingEnd="7.5dp" />
 
         <ImageView
             android:id="@+id/giphy_logo"
             android:layout_width="match_parent"
-            android:layout_height="22dp"
-            android:background="@color/page_background"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="3dp"
+            android:layout_height="16dp"
+            android:paddingVertical="2dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/poweredby_giphy" />
+            android:src="@drawable/poweredby_giphy"
+            android:contentDescription="Powered by GIPHY" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:background="@drawable/giphy_bar_background">
+
+            <io.beldex.bchat.giph.ui.GiphyTabLayout
+                android:id="@+id/tab_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="34dp"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                app:tabBackground="@drawable/giphy_tab_background"
+                app:tabGravity="center"
+                app:tabIconTint="@color/contact_card_action_text"
+                app:tabIndicator="@null"
+                app:tabIndicatorHeight="0dp"
+                app:tabInlineLabel="true"
+                app:tabMinWidth="0dp"
+                app:tabMode="scrollable"
+                app:tabPaddingStart="23dp"
+                app:tabPaddingEnd="23dp"
+                app:tabPaddingTop="0dp"
+                app:tabPaddingBottom="0dp"
+                app:tabRippleColor="@android:color/transparent"
+                app:tabSelectedTextColor="@color/contact_card_action_text"
+                app:tabTextAppearance="@style/TextAppearance.Bchat.GiphyTab"
+                app:tabTextColor="@color/contact_card_action_text" />
+        </FrameLayout>
     </LinearLayout>
 </FrameLayout>

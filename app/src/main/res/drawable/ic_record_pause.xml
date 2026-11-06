@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma locked-recording pause (7546:11619): 24dp circle with two rounded bars, #EBEBEB / #222222. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path android:strokeColor="@color/disappear_icon_color" android:strokeWidth="1"
+        android:pathData="M2,12a10,10 0,1 0,20 0a10,10 0,1 0,-20 0Z" />
+    <path android:strokeColor="@color/disappear_icon_color" android:strokeWidth="1.57143" android:strokeLineCap="round"
+        android:pathData="M9,8.5L9,16.3571" />
+    <path android:strokeColor="@color/disappear_icon_color" android:strokeWidth="1.57143" android:strokeLineCap="round"
+        android:pathData="M14.5,8.5L14.5,16.3571" />
+</vector>

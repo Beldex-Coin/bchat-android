@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 3dp side insets give the Figma 6dp gap between the GIF and Stickers tabs. -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/giphy_tab_selected_tile"
+    android:insetLeft="3dp"
+    android:insetRight="3dp" />

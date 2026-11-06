@@ -2,16 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/save"
         android:title="@string/save"
-        android:icon="?attr/menu_save_icon"
-        app:showAsAction="always"/>
-
-    <item android:id="@+id/delete"
-        android:title="@string/delete"
-        android:icon="?attr/menu_trash_icon"
+        android:icon="@drawable/ic_media_download"
         app:showAsAction="always"/>
 
     <item android:id="@+id/select_all"
         android:title="@string/MediaOverviewActivity_Select_all"
         android:icon="?menu_selectall_icon"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/delete"
+        android:title="@string/delete"
+        android:icon="@drawable/ic_media_delete"
         app:showAsAction="always"/>
 </menu>

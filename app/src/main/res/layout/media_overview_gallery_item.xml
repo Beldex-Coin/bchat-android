@@ -2,8 +2,7 @@
 <io.beldex.bchat.components.SquareFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#222222"
+    android:background="@color/media_overview_tab_selected"
     android:layout_margin="6dp"
     android:padding="0dp">
 
@@ -17,14 +16,17 @@
         android:id="@+id/selected_indicator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/MediaOverview_Media_selected_overlay"
+        android:background="@drawable/media_overview_selected_border"
         android:visibility="gone">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/check"
-            android:layout_gravity="center"/>
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="6dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_media_checkbox_on" />
     </FrameLayout>
 
 </io.beldex.bchat.components.SquareFrameLayout>

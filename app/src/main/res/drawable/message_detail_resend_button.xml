@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma Message Detail "Resend" (7546:12553): 148x52, cut top-right + bottom-left corners,
+     light radial #F0F0F0 -> #D0D0D0 fill with a #0A370A border. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="148dp"
+    android:height="52dp"
+    android:viewportWidth="148"
+    android:viewportHeight="52">
+    <path
+        android:strokeColor="#0A370A"
+        android:strokeWidth="1"
+        android:pathData="M0.5,0.5 L134,0.5 L147.5,13.5 L147.5,51.5 L12.9,51.5 L0.5,40.5 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="148"
+                android:centerY="0"
+                android:gradientRadius="150">
+                <item android:offset="0" android:color="#FFF0F0F0" />
+                <item android:offset="1" android:color="#FFD0D0D0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+</vector>

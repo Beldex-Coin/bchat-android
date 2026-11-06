@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma 'Send Gif' selected tab tile: corner-cut (top-right + bottom-left) #1A1A1A / white tile with a @color/home_row_timestamp_unread border. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="95dp"
+    android:height="34dp"
+    android:viewportWidth="95"
+    android:viewportHeight="34">
+    <path
+        android:fillColor="@color/reply_draft_card_background"
+        android:strokeColor="@color/home_row_timestamp_unread"
+        android:strokeWidth="1"
+        android:pathData="M0.5,0.5 L87,0.5 L94.5,9 L94.5,33.5 L8,33.5 L0.5,25 Z" />
+</vector>

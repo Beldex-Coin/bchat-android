@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma All Media selection bar "Icon / Download" (8013:5706): 21dp, #EBEBEB dark / #222222 white. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="21dp"
+    android:height="21dp"
+    android:viewportWidth="21"
+    android:viewportHeight="21">
+    <path
+        android:fillColor="@color/disappear_icon_color"
+        android:pathData="M9.7,1V12.3714L6.70677,9.37813L6.10156,9.98333L6.40417,10.2859L10.1302,14.0083L14.1552,9.98333L13.55,9.37813L10.5568,12.3714V1H9.7ZM2,2.7099V18.1099H18.2568V2.7099H14.8333V3.56667H17.4V17.2531H2.85677V3.56667H5.42344V2.7099H2Z" />
+</vector>

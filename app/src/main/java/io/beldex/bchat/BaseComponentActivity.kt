@@ -2,12 +2,15 @@ package io.beldex.bchat
 
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Handler
 import android.os.Looper
 import androidx.activity.ComponentActivity
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getAppSelectedLanguage
 import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageActivityHelper
 import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper
+import io.beldex.bchat.util.UiMode
+import io.beldex.bchat.util.UiModeUtilities
 
 open class BaseComponentActivity : ComponentActivity() {
     protected override fun onResume() {
@@ -21,12 +24,22 @@ open class BaseComponentActivity : ComponentActivity() {
 
     protected override fun attachBaseContext(newBase: Context) {
         val selected = getAppSelectedLanguage(newBase)
-        super.attachBaseContext(
-            DynamicLanguageContextWrapper.updateContext(
-                newBase,
-                selected
-            )
+        val wrapped = DynamicLanguageContextWrapper.updateContext(
+            newBase,
+            selected
         )
+        super.attachBaseContext(wrapped)
+        val nightBit = when (UiModeUtilities.getUserSelectedUiMode(newBase)) {
+            UiMode.NIGHT -> Configuration.UI_MODE_NIGHT_YES
+            UiMode.DAY -> Configuration.UI_MODE_NIGHT_NO
+            UiMode.SYSTEM_DEFAULT -> null
+        }
+        if (nightBit != null) {
+            val current = wrapped.resources.configuration.uiMode
+            applyOverrideConfiguration(Configuration().apply {
+                uiMode = (current and Configuration.UI_MODE_NIGHT_MASK.inv()) or nightBit
+            })
+        }
     }
 
     // Mirrors BaseActionBarActivity's progress dialog helper, for Compose-migrated activities

@@ -1759,4 +1759,12 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="call_duration_static" translatable="false">4 min</string>
     <string name="call_card_title">Call</string>
     <string name="messages_selected_count">%1$d Selected</string>
+    <!-- Revamp_2026 Forward screen (Figma Select_contact 7546:9857) -->
+    <string name="forward_to_selected">Forward to selected</string>
+    <string name="forward_no_chats">No chats to forward to</string>
+    <string name="forward_not_possible">This message can\'t be forwarded</string>
+    <plurals name="forwarded_to_chats">
+        <item quantity="one">Forwarded to %d chat</item>
+        <item quantity="other">Forwarded to %d chats</item>
+    </plurals>
 </resources>

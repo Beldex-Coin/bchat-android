@@ -269,8 +269,16 @@ class VisibleMessageView : LinearLayout {
         binding.messageTimestampTextView.setTextColor(
             if (message.isOutgoing) 0xFF8D8D8D.toInt() else 0xFF737373.toInt()
         )
-        binding.messageTimestampTick.isVisible =
-            message.isOutgoing && !message.isPending && !message.isFailed
+        val isSending = message.isOutgoing && message.isPending
+        binding.messageSendingAnimation.isVisible = isSending
+        if (isSending) {
+            if (!binding.messageSendingAnimation.isAnimating) binding.messageSendingAnimation.playAnimation()
+        } else {
+            binding.messageSendingAnimation.cancelAnimation()
+        }
+        val (statusIcon, _) = getMessageStatusImage(message)
+        binding.messageTimestampTick.isVisible = message.isOutgoing && !isSending && statusIcon != null
+        statusIcon?.let { binding.messageTimestampTick.setImageResource(it) }
         val label = message.mediaLabelRes()?.let { context.getString(it) }
         binding.messageTimestampLabelStart.text = label
         binding.messageTimestampLabelEnd.text = label

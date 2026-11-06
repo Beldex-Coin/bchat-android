@@ -10,6 +10,8 @@
     android:background="@drawable/mention_candidate_view_background">
 
     <RelativeLayout
+    android:clipChildren="false"
+    android:clipToPadding="false"
         android:layout_width="38dp"
         android:layout_height="38dp">
 

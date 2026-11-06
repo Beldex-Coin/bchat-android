@@ -24,6 +24,8 @@
         tools:text="@tools:sample/date/hhmmss" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+    android:clipChildren="false"
+    android:clipToPadding="false"
         android:id="@+id/mainContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -98,14 +100,14 @@
             app:layout_constraintStart_toEndOf="@+id/profilePictureView"
             app:layout_constraintTop_toBottomOf="@+id/senderNameTextView">
 
+            <!-- Revamp_2026: delivery is shown once, as the tick under the bubble (messageTimestampTick).
+                 This legacy side icon is kept for the binding but sized to zero so it never shows. -->
             <ImageView
                 android:id="@+id/messageStatusImageView"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:layout_gravity="center"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:padding="2dp"
+                android:visibility="gone"
                 android:src="@drawable/ic_delivery_status_sent"
                 android:contentDescription="@string/message_status_icon_description" />
 
@@ -180,6 +182,19 @@
                 android:textSize="10sp"
                 android:visibility="gone"
                 tools:text="Sticker" />
+
+            <!-- Sending state: looping Lottie (res/raw/bchat_message_sending.json; the white-theme
+                 version lives in raw-notnight). Shown instead of the tick while a message sends. -->
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/messageSendingAnimation"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_marginEnd="3dp"
+                android:importantForAccessibility="no"
+                android:visibility="gone"
+                app:lottie_autoPlay="false"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/bchat_message_sending" />
 
             <ImageView
                 android:id="@+id/messageTimestampTick"

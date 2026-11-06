@@ -14,6 +14,8 @@
         android:orientation="horizontal">
 
         <RelativeLayout
+    android:clipChildren="false"
+    android:clipToPadding="false"
             android:layout_width="38dp"
             android:layout_height="38dp">
 

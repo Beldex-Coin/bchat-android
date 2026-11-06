@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma recording "Delete" pill (7546:11514 / 7762:14387), dark theme: 83x36 corner-cut (top-right +
+     bottom-left), #801A1A1A fill, #444444 hairline. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="83dp"
+    android:height="36dp"
+    android:viewportWidth="83"
+    android:viewportHeight="36">
+    <path
+        android:fillColor="#801A1A1A"
+        android:strokeColor="#444444"
+        android:strokeWidth="0.5"
+        android:pathData="M0.25,0.25 L75,0.25 L82.75,9 L82.75,35.75 L8,35.75 L0.25,27 Z" />
+</vector>

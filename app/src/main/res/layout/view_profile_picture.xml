@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<io.beldex.bchat.components.ProfilePictureView xmlns:android="http://schemas.android.com/apk/res/android"
+<io.beldex.bchat.components.ProfilePictureView
+    android:clipChildren="false"
+    android:clipToPadding="false" xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -47,6 +49,8 @@
 
     <RelativeLayout
         android:id="@+id/largeSingleModeWithTagContainer"
+    android:clipChildren="false"
+    android:clipToPadding="false"
         android:layout_width="@dimen/large_profile_picture_size"
         android:layout_height="@dimen/large_profile_picture_size">
         <io.beldex.bchat.components.NotchedAvatarImageView
@@ -58,10 +62,12 @@
             android:padding="0dp"/>
         <ImageView
             android:id="@+id/largeSingleModeBnsVerifiedTagImageView"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
+            android:layout_marginEnd="-10dp"
+            android:layout_marginBottom="-10dp"
             android:visibility="invisible"
             android:src="@drawable/ic_bns_verified_tag"
             android:contentDescription="@string/bns_verified_tag" />
@@ -69,6 +75,8 @@
 
     <RelativeLayout
         android:id="@+id/singleModeWithTagContainer"
+    android:clipChildren="false"
+    android:clipToPadding="false"
         android:layout_width="@dimen/medium_profile_picture_size"
         android:layout_height="@dimen/medium_profile_picture_size">
         <io.beldex.bchat.components.NotchedAvatarImageView
@@ -80,19 +88,23 @@
             android:padding="0dp"/>
         <ImageView
             android:id="@+id/singleModeBnsVerifiedTagGroupImageView"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
+            android:layout_marginEnd="-3dp"
+            android:layout_marginBottom="-3dp"
             android:visibility="invisible"
             android:src="@drawable/ic_bns_verified_tag"
             android:contentDescription="@string/bns_verified_tag" />
         <ImageView
             android:id="@+id/singleModeBnsVerifiedTagImageView"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
+            android:layout_marginEnd="-4dp"
+            android:layout_marginBottom="-4dp"
             android:visibility="invisible"
             android:src="@drawable/ic_bns_verified_tag"
             android:contentDescription="@string/bns_verified_tag" />

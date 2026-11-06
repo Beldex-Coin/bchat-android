@@ -114,18 +114,17 @@
                 tools:visibility="visible"/>
 
 
+            <!-- Locked send (Figma 7546:11463 / 7762:14336): 32dp #EBEBEB / #D4D4D4 square, dark plane. -->
             <ImageView
                 android:id="@+id/lockedSendButton"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/record_locked_send_background"
+                android:background="?selectableItemBackground"
                 android:contentDescription="@string/conversation_activity__send"
-                android:padding="7dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/send"
+                android:src="@drawable/ic_record_locked_send"
                 android:visibility="gone"
-                app:tint="#0B0B0B"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
@@ -149,44 +148,42 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-    <com.google.android.material.card.MaterialCardView
+    <!-- Figma recording "Delete" pill (7546:11512 / 7762:14385): corner-cut 36dp tile, red trash,
+         "Delete" in Open Sans SemiBold 11 (#EBEBEB / #222222). -->
+    <LinearLayout
         android:id="@+id/delete_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="36dp"
+        android:layout_marginBottom="9dp"
+        android:background="@drawable/record_delete_pill_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:minWidth="83dp"
+        android:orientation="horizontal"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/timer_container"
-        android:layout_marginBottom="16dp"
-        app:cardBackgroundColor="@color/recording_bar_background"
-        app:contentPadding="8dp"
-        app:cardCornerRadius="0dp"
-        app:cardElevation="0dp"
-        app:strokeColor="@color/recording_bar_border"
-        app:strokeWidth="1dp"
-        android:visibility="gone">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-        <LinearLayout
+        <ImageView
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_record_delete" />
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:paddingHorizontal="16dp">
-
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/ic_delete_24"/>
-
-            <com.google.android.material.textview.MaterialTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/delete"
-                android:fontFamily="@font/roboto_mono"
-                android:textColor="@color/disappear_icon_color"
-                android:layout_marginStart="8dp"/>
-
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+            android:layout_marginStart="4dp"
+            android:fontFamily="@font/open_sans_semi_bold"
+            android:includeFontPadding="false"
+            android:text="@string/delete"
+            android:textColor="@color/disappear_icon_color"
+            android:textSize="11sp" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/lockView"

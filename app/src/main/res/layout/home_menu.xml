@@ -60,6 +60,8 @@
             app:layout_constraintTop_toBottomOf="@id/drawer_settings_title">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/drawer_profile_background"
@@ -214,4 +216,4 @@
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</io.beldex.bchat.util.GlassLayout>
+</io.beldex.bchat.util.GlassLayout>

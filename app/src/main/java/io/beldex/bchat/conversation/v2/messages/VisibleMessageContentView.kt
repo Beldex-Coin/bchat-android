@@ -131,26 +131,11 @@ class VisibleMessageContentView : MaterialCardView {
         searchViewModel : SearchViewModel?,
         isSelectionMode : Boolean = false
     ) {
-        // Background
-        val isDarkUi = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
-        val background = if (isDarkUi) {
-            bubbleGradientBackground(message.isOutgoing, isStartOfMessageCluster, isEndOfMessageCluster)
-        } else {
-            getBackground(message.isOutgoing, isStartOfMessageCluster, isEndOfMessageCluster)
-        }
-        val colorID = if (message.isOutgoing) {
-            R.attr.message_sent_background_color
-        } else {
-            R.attr.message_received_background_color
-        }
-        val color = ThemeUtil.getThemedColor(context, colorID)
-        val filter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-            color,
-            BlendModeCompat.SRC_IN
-        )
-        binding.tailSendView.colorFilter = filter
-        binding.tailReceiveView.colorFilter = filter
-        if (!isDarkUi) background.colorFilter = filter
+        // Background — Revamp_2026 Bubble BG in both themes (dark 7546:10376/10427, white 7762:14149/14133):
+        // corner-cut gradient bubble with a gradient hairline; colours come from bubbleColors().
+        val background = bubbleGradientBackground(message.isOutgoing, isStartOfMessageCluster, isEndOfMessageCluster)
+        binding.tailSendView.visibility = GONE
+        binding.tailReceiveView.visibility = GONE
         setBackground(background)
 
         val mediaThumbnailMessage =
@@ -702,18 +687,8 @@ class VisibleMessageContentView : MaterialCardView {
                         ),
                         isQuoted=isQuoteView,
                         isOutgoing=message.isOutgoing,
-                        titleColor=colorResource(
-                            if (message.isOutgoing) {
-                                R.color.white
-                            } else {
-                                R.color.received_message_text_color
-                            }
-                        ),
-                        subtitleColor=if (message.isOutgoing) {
-                            TextColor
-                        } else {
-                            colorResource(R.color.received_message_text_color)
-                        },
+                        titleColor = colorResource(R.color.disappear_icon_color),
+                        subtitleColor = colorResource(R.color.chat_meta_text),
                         columnModifier=Modifier
                             .padding(bottom=4.dp)
                             .pointerInput(Unit) {
@@ -812,17 +787,7 @@ class VisibleMessageContentView : MaterialCardView {
         isStartOfMessageCluster: Boolean,
         isEndOfMessageCluster: Boolean
     ): Drawable {
-        val colors = if (isOutgoing) {
-            intArrayOf(0xB30D1C0D.toInt(), 0xB30A2E0A.toInt(), 0xB30C190C.toInt())
-        } else {
-            intArrayOf(0x60333333, 0x60444444, 0x60333333)
-        }
-        val positions = if (isOutgoing) floatArrayOf(0f, 0.385f, 1f) else floatArrayOf(0f, 0.428f, 1f)
-        val strokeColors = if (isOutgoing) {
-            intArrayOf(0xFF005417.toInt(), 0xFF003200.toInt())
-        } else {
-            intArrayOf(0xFF222222.toInt(), 0xFF333333.toInt())
-        }
+        val (colors, positions, strokeColors) = bubbleColors(context, isOutgoing)
         val density = resources.displayMetrics.density
         return GradientBubbleDrawable(
             colors, positions, strokeColors,
@@ -942,19 +907,25 @@ class VisibleMessageContentView : MaterialCardView {
 
     // region Convenience
     companion object {
-        /** The Revamp_2026 chat bubble background, for rows drawn outside this view (call cards). */
-        fun bubbleBackground(context: Context, isOutgoing: Boolean): Drawable {
-            val colors = if (isOutgoing) {
-                intArrayOf(0xB30D1C0D.toInt(), 0xB30A2E0A.toInt(), 0xB30C190C.toInt())
-            } else {
-                intArrayOf(0x60333333, 0x60444444, 0x60333333)
+        fun bubbleColors(context: Context, isOutgoing: Boolean): Triple<IntArray, FloatArray, IntArray> {
+            val white = UiModeUtilities.isDayUiMode(context)
+            val colors = when {
+                white && isOutgoing -> intArrayOf(0x6BD8ECDC, 0x8FD8ECDC.toInt(), 0x6BD8ECDC)
+                white -> intArrayOf(0x60CCCCCC, 0x60C0C0C0, 0x60CCCCCC)
+                isOutgoing -> intArrayOf(0xB30D1C0D.toInt(), 0xB30A2E0A.toInt(), 0xB30C190C.toInt())
+                else -> intArrayOf(0x60333333, 0x60444444, 0x60333333)
             }
             val positions = if (isOutgoing) floatArrayOf(0f, 0.385f, 1f) else floatArrayOf(0f, 0.428f, 1f)
-            val strokeColors = if (isOutgoing) {
-                intArrayOf(0xFF005417.toInt(), 0xFF003200.toInt())
-            } else {
-                intArrayOf(0xFF222222.toInt(), 0xFF333333.toInt())
+            val strokeColors = when {
+                white && isOutgoing -> intArrayOf(0xFF078720.toInt(), 0xFF77BD84.toInt())
+                white -> intArrayOf(0xFFE6E6E6.toInt(), 0xFFDDDDDD.toInt())
+                isOutgoing -> intArrayOf(0xFF005417.toInt(), 0xFF003200.toInt())
+                else -> intArrayOf(0xFF222222.toInt(), 0xFF333333.toInt())
             }
+            return Triple(colors, positions, strokeColors)
+        }
+        fun bubbleBackground(context: Context, isOutgoing: Boolean): Drawable {
+            val (colors, positions, strokeColors) = bubbleColors(context, isOutgoing)
             val density = context.resources.displayMetrics.density
             return GradientBubbleDrawable(
                 colors, positions, strokeColors,

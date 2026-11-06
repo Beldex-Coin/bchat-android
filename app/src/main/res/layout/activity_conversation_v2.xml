@@ -23,6 +23,8 @@
 
             <LinearLayout
                 android:id="@+id/layout_conversation"
+    android:clipChildren="false"
+    android:clipToPadding="false"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -147,24 +149,23 @@
 
                     <ImageView
                         android:id="@+id/search"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:background="?selectableItemBackgroundBorderless"
-                        android:padding="4dp"
-                        android:src="@drawable/ic_baseline_search_24"
-                        android:tint="#A7A7BA"
-                        tools:ignore="UseAppTint" />
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_marginStart="4dp"
+                        android:src="@drawable/ic_home_search"
+                        app:tint="@color/chat_input_hint"
+                        android:contentDescription="@string/SearchToolbar_search" />
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/search_query"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="8dp"
                         android:layout_weight="1"
                         android:background="@null"
-                        android:hint="@string/search_name_bns_bchat_id"
-                        android:fontFamily="@font/roboto_mono"
-                        android:textSize="12sp"
+                        android:hint="@string/SearchToolbar_search"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:textSize="14sp"
                         android:textColor="@color/disappear_icon_color"
                         android:imeOptions="actionDone"
                         android:longClickable="false"
@@ -175,46 +176,40 @@
 
                     <ImageView
                         android:id="@+id/searchDown"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
                         android:layout_gravity="center_vertical"
                         android:background="?selectableItemBackgroundBorderless"
-                        android:padding="4dp"
-                        android:src="@drawable/ic_down"
-                        android:tint="@color/accent"
-                        android:visibility="gone"
-                        tools:ignore="UseAppTint" />
+                        android:src="@drawable/ic_chat_search_down"
+                        android:visibility="gone" />
 
                     <ImageView
                         android:id="@+id/searchUp"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_marginStart="10dp"
                         android:background="?selectableItemBackgroundBorderless"
-                        android:padding="4dp"
-                        android:src="@drawable/ic_up"
-                        android:tint="@color/accent"
-                        android:visibility="gone"
-                        tools:ignore="UseAppTint" />
+                        android:src="@drawable/ic_chat_search_up"
+                        android:visibility="gone" />
 
                     <ImageView
                         android:id="@+id/close_search"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="10dp"
                         android:background="?selectableItemBackgroundBorderless"
-                        android:padding="4dp"
-                        android:src="@drawable/ic_close"
-                        android:tint="@color/red"
+                        android:src="@drawable/ic_search_close_circle"
+                        android:tint="@color/chat_input_hint"
                         android:visibility="gone"
                         tools:ignore="UseAppTint" />
 
                     <ImageView
                         android:id="@+id/searchClose"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:background="?selectableItemBackgroundBorderless"
-                        android:padding="4dp"
                         android:src="@drawable/ic_search_close_circle"
-                        android:tint="#A7A7BA"
+                        android:tint="@color/chat_input_hint"
                         tools:ignore="UseAppTint" />
 
                     <ProgressBar

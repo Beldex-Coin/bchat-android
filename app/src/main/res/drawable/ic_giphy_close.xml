@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma "Send Gif" close (7609:4001): 22dp corner-cut box (#222222 80% / #444444 border) with an #ACACAC X. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="22dp"
+    android:height="22dp"
+    android:viewportWidth="22"
+    android:viewportHeight="22">
+    <path
+        android:fillColor="@color/media_overview_tab_selected"
+        android:fillAlpha="0.8"
+        android:strokeColor="@color/contact_card_inner_bar"
+        android:strokeWidth="0.5"
+        android:pathData="M18.2607,0.755859L21.6387,3.81152V21.6387H0.755859V0.755859H18.2607Z" />
+    <path
+        android:fillColor="@color/contact_card_action_text"
+        android:fillType="evenOdd"
+        android:pathData="M7.08634,7.08634C7.36814,6.80455 7.82501,6.80455 8.1068,7.08634L11,9.97954L13.8932,7.08634C14.175,6.80455 14.6319,6.80455 14.9137,7.08634C15.1954,7.36814 15.1954,7.82501 14.9137,8.1068L12.0205,11L14.9137,13.8932C15.1954,14.175 15.1954,14.6319 14.9137,14.9137C14.6319,15.1954 14.175,15.1954 13.8932,14.9137L11,12.0205L8.1068,14.9137C7.82501,15.1954 7.36814,15.1954 7.08634,14.9137C6.80455,14.6319 6.80455,14.175 7.08634,13.8932L9.97954,11L7.08634,8.1068C6.80455,7.82501 6.80455,7.36814 7.08634,7.08634Z" />
+</vector>

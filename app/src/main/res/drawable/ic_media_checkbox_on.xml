@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma "Checkbox / On" (8013:6866): 18dp square box with a check
+     (#EBEBEB box / dark check in dark, #222222 box / white check in white). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="18dp"
+    android:height="18dp"
+    android:viewportWidth="18"
+    android:viewportHeight="18">
+    <path
+        android:fillColor="@color/disappear_icon_color"
+        android:pathData="M0,0H18V18H0Z" />
+    <path
+        android:strokeColor="@color/chat_header_background"
+        android:strokeWidth="1.4"
+        android:strokeLineCap="square"
+        android:fillColor="#00000000"
+        android:pathData="M5,9.2L7.8,12L13,6.5" />
+</vector>

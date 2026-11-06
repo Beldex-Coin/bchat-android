@@ -16,6 +16,7 @@
  */
 package io.beldex.bchat;
 
+import io.beldex.bchat.conversation.v2.forward.ForwardMessageActivity;
 import io.beldex.bchat.util.BChatToast;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -443,7 +444,10 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
   private void forward() {
     MediaItem mediaItem = getCurrentMediaItem();
 
-    if (mediaItem != null) {
+    if (mediaItem != null && mediaItem.attachment != null) {
+      startActivity(ForwardMessageActivity.intent(this, mediaItem.attachment));
+      finish();
+    } else if (mediaItem != null) {
       Intent composeIntent = new Intent(this, ShareActivity.class);
       composeIntent.putExtra(Intent.EXTRA_STREAM, mediaItem.uri);
       composeIntent.setType(mediaItem.type);

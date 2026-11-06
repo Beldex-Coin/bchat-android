@@ -14,6 +14,7 @@ import com.beldex.libbchat.avatars.ProfileContactPhoto
 import com.beldex.libbchat.avatars.ResourceContactPhoto
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.Address
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -85,6 +86,9 @@ class ProfilePictureView @JvmOverloads constructor(
     }
 
     private fun getUserIsBNSHolderStatus(publicKey: String): Boolean? {
+        if (publicKey == TextSecurePreferences.getLocalNumber(context)) {
+            return !TextSecurePreferences.getIsBNSHolder(context).isNullOrEmpty()
+        }
         val contact = DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
         return contact?.isBnsHolder
     }

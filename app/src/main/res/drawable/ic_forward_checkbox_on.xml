@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma Forward row checkbox, checked (7546:9882): filled green square with a cut-out tick. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="@color/home_row_timestamp_unread"
+        android:pathData="M21,21.0005C15,21.0005 9,21.0005 3,21.0005V3.00146C9,3.00191 15,3.00355 21,3.00049V21.0005ZM11.4395,12.9321L9.69336,11.186L8.94336,11.936L11.4395,14.4321L16.0566,9.81494L15.3066,9.06494L11.4395,12.9321Z" />
+</vector>

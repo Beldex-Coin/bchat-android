@@ -797,16 +797,32 @@ fun MyAccountNavHost(
                             modifier = if(!isBnsHolder.isNullOrEmpty()) Modifier
                                 .fillMaxWidth()
                                 .padding(top = 50.dp, bottom = 10.dp)
-                                .paint(
-                                    painterResource(id = if (isDarkMode) R.drawable.ic_bns_card_dark else R.drawable.ic_bns_card_light),
-                                    contentScale = ContentScale.FillBounds
-                                )
-                                .innerShadow(
-                                    color = if (isDarkMode) MaterialTheme.appColors.primaryButtonColor else Color(
-                                        0x8000BD40
-                                    ),
-                                    blur = if (isDarkMode) 20.dp else 10.dp,
-                                    cornersRadius = 16.dp
+                                // Figma BNS card (7546:22315 / 7762:25188): #111111 / #FFFFFF card with a
+                                // #333333 / #DDDDDD hairline and a soft diagonal green band at 20% —
+                                // a mild green glow, not a fully green card.
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(if (isDarkMode) Color(0xFF111111) else Color(0xFFFFFFFF))
+                                .drawBehind {
+                                    val stops = if (isDarkMode) arrayOf(
+                                        0f to Color(0xFF0B0B0B), 0.62f to Color(0xFF003412),
+                                        0.72f to Color(0xFF00BD40), 0.82f to Color(0xFF0B0B0B), 1f to Color(0xFF0B0B0B)
+                                    ) else arrayOf(
+                                        0f to Color(0xFFF0F0F0), 0.62f to Color(0xFFDAEDDD),
+                                        0.72f to Color(0xFFD8ECDC), 0.82f to Color(0xFFF0F0F0), 1f to Color(0xFFF0F0F0)
+                                    )
+                                    drawRect(
+                                        brush = Brush.linearGradient(
+                                            colorStops = *stops,
+                                            start = Offset(size.width * 0.99f, size.height * 0.05f),
+                                            end = Offset(0f, size.height)
+                                        ),
+                                        alpha = 0.2f
+                                    )
+                                }
+                                .border(
+                                    1.dp,
+                                    if (isDarkMode) Color(0xFF333333) else Color(0xFFDDDDDD),
+                                    RoundedCornerShape(16.dp)
                                 ) else Modifier
                                 .fillMaxWidth()
                                 .padding(top = 0.dp, bottom = 1.dp)
@@ -846,7 +862,6 @@ fun MyAccountNavHost(
                                 .align(alignment = Alignment.TopCenter)
                                 .padding(top = if (!isBnsHolder.isNullOrEmpty()) 0.dp else 12.dp)
                                 .size(ACCOUNT_AVATAR_SIZE)
-                                .border(1.dp, MaterialTheme.appColors.messageRequestItemBackground, io.beldex.bchat.compose_utils.NotchedAvatarShape)
                         ) {
                             if(isProfileChanged) {
                                 ProfilePictureComponent(
@@ -854,7 +869,8 @@ fun MyAccountNavHost(
                                     displayName = state.profileName ?: state.publicKey,
                                     containerSize = ACCOUNT_AVATAR_SIZE,
                                     pictureMode = ProfilePictureMode.LargePicture,
-                                    modifier = Modifier.fillMaxSize()
+                                    modifier = Modifier.fillMaxSize(),
+                                    showBnsBadge = false
                                 )
                                 isProfileChanged = false
                             }else{
@@ -863,7 +879,21 @@ fun MyAccountNavHost(
                                     displayName = state.profileName ?: state.publicKey,
                                     containerSize = ACCOUNT_AVATAR_SIZE,
                                     pictureMode = ProfilePictureMode.LargePicture,
-                                    modifier = Modifier.fillMaxSize()
+                                    modifier = Modifier.fillMaxSize(),
+                                    showBnsBadge = false
+                                )
+                            }
+                            // Order: picture → outline → BNS badge, so the outline sits behind the verified tick.
+                            Box(
+                                modifier = Modifier
+                                    .matchParentSize()
+                                    .border(1.dp, MaterialTheme.appColors.messageRequestItemBackground, io.beldex.bchat.compose_utils.NotchedAvatarShape)
+                            )
+                            if (!isBnsHolder.isNullOrEmpty()) {
+                                io.beldex.bchat.compose_utils.BnsVerifiedBadge(
+                                    containerSize = ACCOUNT_AVATAR_SIZE,
+                                    small = false,
+                                    modifier = Modifier.align(Alignment.BottomEnd)
                                 )
                             }
                             if (showEditNameTextField) {
@@ -1603,23 +1633,31 @@ fun ProfileCard(
             )
         }
         if(!isBnsHolder.isNullOrEmpty()){
-            Row(
+            // Figma "BNS Verified" chip (7546:22325): #0B0B0B / #F0F0F0 at 50%, green #078720 label + check.
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 5.dp, bottom = 15.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                    .padding(top = 5.dp, bottom = 10.dp),
+                contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = stringResource(R.string.bns_verified),
-                    style = MaterialTheme.typography.titleSmall.copy(
-                        color = MaterialTheme.appColors.primaryButtonColor,
-                        fontWeight = FontWeight(700),
-                        fontSize = 14.sp
-                    ),
-                    modifier = Modifier.padding(end = 5.dp)
-                )
-                Image(painter = painterResource(id = R.drawable.ic_bns_verified), contentDescription = "Bns verified", modifier = Modifier.size(14.dp))
+                Row(
+                    modifier = Modifier
+                        .background(MaterialTheme.appColors.backgroundColor.copy(alpha = 0.5f))
+                        .padding(horizontal = 12.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.bns_verified),
+                        style = MaterialTheme.typography.titleSmall.copy(
+                            color = Color(0xFF078720),
+                            fontFamily = OpenSans,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 12.sp
+                        ),
+                        modifier = Modifier.padding(end = 5.dp)
+                    )
+                    Image(painter = painterResource(id = R.drawable.ic_bns_verified), contentDescription = "Bns verified", modifier = Modifier.size(12.dp))
+                }
             }
         }else {
             Spacer(modifier = Modifier.height(10.dp))
@@ -1861,4 +1899,4 @@ fun ArchiveChatScreenContainer(
             content()
         }
     }
-}
+}

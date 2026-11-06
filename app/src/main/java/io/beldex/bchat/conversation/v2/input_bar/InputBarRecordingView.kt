@@ -95,6 +95,9 @@ class InputBarRecordingView : RelativeLayout {
         binding.audioWaveForm.visibility = View.VISIBLE
         binding.inputBarMiddleContentContainer.isVisible = false
         binding.dotView.visibility = View.VISIBLE
+        binding.dotView.setImageResource(R.drawable.recording_indicator)
+        val dotSize = (18 * resources.displayMetrics.density).toInt()
+        binding.dotView.layoutParams = binding.dotView.layoutParams.apply { width = dotSize; height = dotSize }
         binding.deleteView.visibility = View.GONE
 //        binding.inputBarCancelButton.alpha = 0.0f
         binding.inputBarMiddleContentContainer.alpha = 1.0f
@@ -225,7 +228,12 @@ class InputBarRecordingView : RelativeLayout {
         binding.microphoneOrSendButtonContainer.isVisible = false
         binding.lockedSendButton.isVisible = true
         binding.audioWaveForm.visibility = View.VISIBLE
-        binding.dotView.visibility = View.GONE
+        dotViewAnimation?.cancel()
+        binding.dotView.setImageResource(R.drawable.ic_record_pause)
+        binding.dotView.alpha = 1f
+        val iconSize = (24 * resources.displayMetrics.density).toInt()
+        binding.dotView.layoutParams = binding.dotView.layoutParams.apply { width = iconSize; height = iconSize }
+        binding.dotView.visibility = View.VISIBLE
         dotViewAnimation?.repeatCount = 0
         binding.deleteView.visibility = View.VISIBLE
     }

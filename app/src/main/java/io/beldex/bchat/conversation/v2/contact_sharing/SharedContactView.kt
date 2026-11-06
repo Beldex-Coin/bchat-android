@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -50,6 +49,7 @@ import androidx.compose.ui.unit.sp
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.NotchCorner
+import io.beldex.bchat.compose_utils.NotchedAvatarShape
 import io.beldex.bchat.compose_utils.singleCornerCutShape
 import io.beldex.bchat.compose_utils.OutlineLight
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
@@ -266,7 +266,7 @@ fun SharedContactContent(
         Spacer(modifier = Modifier.width(12.dp))
 
         if (contactList.isNotEmpty()) {
-            val multiContact = contactList.size > 1
+            val avatarBorder = innerBackground
             Box {
                 contactList.getOrNull(1)?.let { second ->
                     key(second.address) {
@@ -278,6 +278,9 @@ fun SharedContactContent(
                             modifier=Modifier
                                 .align(Alignment.TopEnd)
                                 .offset(x=3.dp, y=(-3).dp)
+                                .size(30.dp)
+                                .clip(NotchedAvatarShape)
+                                .border(1.dp, avatarBorder, NotchedAvatarShape)
                         )
                     }
                 }
@@ -289,14 +292,10 @@ fun SharedContactContent(
                             displayName=first.name,
                             containerSize=38.dp,
                             pictureMode=ProfilePictureMode.SmallPicture,
-                            modifier=Modifier.then(
-                                if (multiContact && getUserIsBNSHolderStatus(first.address) != true) {
-                                    Modifier
-                                        .size(38.dp)
-                                        .clip(CircleShape)
-                                        .border(2.dp, backgroundColor, CircleShape)
-                                } else Modifier
-                            )
+                            modifier=Modifier
+                                .size(38.dp)
+                                .clip(NotchedAvatarShape)
+                                .border(1.dp, avatarBorder, NotchedAvatarShape)
                         )
                     }
                 }

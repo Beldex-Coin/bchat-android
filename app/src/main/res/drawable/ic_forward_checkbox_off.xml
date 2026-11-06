@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma Forward row checkbox, unchecked (7546:9873): green outline square, #00BC33 dark / #078720 white. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="@color/home_row_timestamp_unread"
+        android:pathData="M21.5,21.5005H2.5V2.50146H3C9.00015,2.50191 15.0002,2.50355 21,2.50049H21.5V21.5005ZM3.5,20.5005H20.5V3.50049C14.8332,3.50313 9.16645,3.50098 3.5,3.50049V20.5005Z" />
+</vector>

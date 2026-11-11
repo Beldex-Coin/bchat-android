@@ -106,11 +106,10 @@ class ArchiveChatViewModel @Inject constructor(
 
     private fun muteConversation(thread : ThreadRecord, index : Int, context : Context) {
         val muteUntil=when (index) {
-            1 -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(2)
-            2 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)
-            3 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7)
-            4 -> Long.MAX_VALUE
-            else -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)
+            0 -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(8)
+            1 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)
+            2 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7)
+            else -> Long.MAX_VALUE
         }
         viewModelScope.launch(Dispatchers.IO) {
             thread.let {

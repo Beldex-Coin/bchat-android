@@ -471,11 +471,10 @@
     <string name="arrays__use_default">Использовать по умолчанию</string>
     <string name="arrays__use_custom">Использовать пользовательский вариант</string>
 
-    <string name="arrays__mute_for_one_hour">Отключить на 1 час</string>
-    <string name="arrays__mute_for_two_hours">Отключить на 2 часа</string>
-    <string name="arrays__mute_for_one_day">Отключить на 1 день</string>
-    <string name="arrays__mute_for_seven_days">Отключить на 7 дней</string>
-    <string name="arrays__mute_forever">Отключить навсегда</string>
+    <string name="arrays__mute_for_eight_hours">Отключить на 8 часов</string>
+    <string name="arrays__mute_for_twenty_four_hours">Отключить на 24 часа</string>
+    <string name="arrays__mute_for_one_week">Отключить на 1 неделю</string>
+    <string name="arrays__mute_forever">Всегда</string>
 
     <string name="arrays__settings_default">Settings default</string>
     <string name="arrays__enabled">Enabled</string>

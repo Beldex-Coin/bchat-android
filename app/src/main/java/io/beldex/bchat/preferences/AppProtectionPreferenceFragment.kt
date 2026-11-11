@@ -256,11 +256,9 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
             // 0-hop: route directly to the mnode (no onion layers)
             setOnionRoutingEnabled(requireContext(), false)
         } else {
-            // 1 or 3 hops: enable onion routing and apply immediately; this sets
-            // pathSize, wipes stale cached paths/guard mnodes, and proactively
-            // rebuilds so the status light and hops screen refresh right away.
+            // Keep cached paths of other sizes; open groups and other server requests may
+            // require 3 hops while chat traffic uses the selected count.
             setOnionRoutingEnabled(requireContext(), true)
-            OnionRequestAPI.setOnionRequestPathCount(selectedHopCount)
             OnionRequestAPI.rebuildPathsIfNeeded()
         }
         updateOnionRoutingSummary()

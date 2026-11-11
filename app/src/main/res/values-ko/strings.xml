@@ -439,11 +439,10 @@
     <string name="arrays__use_default">기본값 사용</string>
     <string name="arrays__use_custom">사용자 지정 사용</string>
 
-    <string name="arrays__mute_for_one_hour">1시간 동안 음소거</string>
-    <string name="arrays__mute_for_two_hours">2시간 동안 음소거</string>
-    <string name="arrays__mute_for_one_day">1일 동안 음소거</string>
-    <string name="arrays__mute_for_seven_days">7일 동안 음소거</string>
-    <string name="arrays__mute_forever">영구적으로 음소거</string>
+    <string name="arrays__mute_for_eight_hours">8시간 동안 음소거</string>
+    <string name="arrays__mute_for_twenty_four_hours">24시간 동안 음소거</string>
+    <string name="arrays__mute_for_one_week">1주일 동안 음소거</string>
+    <string name="arrays__mute_forever">항상</string>
 
     <string name="arrays__settings_default">Settings default</string>
     <string name="arrays__enabled">Enabled</string>

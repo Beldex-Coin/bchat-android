@@ -168,6 +168,21 @@ public class DefaultMessageNotifier implements MessageNotifier {
     executor.cancel();
   }
 
+  static ReactionRecord getLastNonLocalReaction(List<ReactionRecord> reactions, String localNumber) {
+    ReactionRecord lastReaction = null;
+    for (ReactionRecord reaction : reactions) {
+      if (reaction == null || Objects.equals(reaction.getAuthor(), localNumber)) {
+        continue;
+      }
+      lastReaction = reaction;
+    }
+    return lastReaction;
+  }
+
+  private static boolean shouldShowReactionNotification(Recipient threadRecipients) {
+    return threadRecipients != null && (!threadRecipients.isGroupRecipient() || threadRecipients.isClosedGroupRecipient());
+  }
+
   private void cancelActiveNotifications(@NonNull Context context) {
     NotificationManager notifications = ServiceUtil.getNotificationManager(context);
     notifications.cancel(SUMMARY_NOTIFICATION_ID);
@@ -549,7 +564,6 @@ public class DefaultMessageNotifier implements MessageNotifier {
     ringtone.play();
   }*/
 
- /* Hales63*/
   private NotificationState constructNotificationState(@NonNull  Context context,
                                                        @NonNull  Cursor cursor)
   {
@@ -656,7 +670,28 @@ public class DefaultMessageNotifier implements MessageNotifier {
           body = "👤 " + displayName;
       }
 
+      ReactionRecord lastReact = getLastNonLocalReaction(record.getReactions(), TextSecurePreferences.getLocalNumber(context));
       if (body == null || body.toString().trim().isEmpty()) {
+        if (threadRecipients != null && !threadRecipients.isMuted() && lastReact != null) {
+          Recipient reactor = Recipient.from(context, fromSerialized(lastReact.getAuthor()), false);
+          String emoji = Phrase.from(context, R.string.emojiReactsNotification)
+                  .put("emoji", lastReact.getEmoji())
+                  .format()
+                  .toString();
+          if (shouldShowReactionNotification(threadRecipients)) {
+            notificationState.addNotification(new NotificationItem(
+                    id,
+                    mms,
+                    reactor,
+                    reactor,
+                    threadRecipients,
+                    threadId,
+                    emoji,
+                    lastReact.getDateSent(),
+                    slideDeck
+            ));
+          }
+        }
         Log.d(TAG, "Skipping notification with empty body for thread: " + threadId);
         continue;
       }
@@ -681,33 +716,30 @@ public class DefaultMessageNotifier implements MessageNotifier {
           notificationState.addNotification(new NotificationItem(id, mms, recipient, conversationRecipient, threadRecipients, threadId, body, timestamp, slideDeck));
         }
 
-        ReactionRecord lastReact = null;
         for (ReactionRecord reaction : record.getReactions()) {
           if (!reaction.getAuthor().equals(TextSecurePreferences.getLocalNumber(context))) {
             lastReact = reaction;
           }
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-          if (lastReact != null) {
-            Recipient reactor = Recipient.from(context, fromSerialized(lastReact.getAuthor()), false);
-            String emoji = Phrase.from(context, R.string.emojiReactsNotification)
-                    .put("emoji", lastReact.getEmoji())
-                    .format()
-                    .toString();
-            if (threadRecipients != null && !threadRecipients.isGroupRecipient()) {
-              notificationState.addNotification(new NotificationItem(
-                      id,
-                      mms,
-                      reactor,
-                      reactor,
-                      threadRecipients,
-                      threadId,
-                      emoji,
-                      lastReact.getDateSent(),
-                      slideDeck
-              ));
-            }
+        if (lastReact != null) {
+          Recipient reactor = Recipient.from(context, fromSerialized(lastReact.getAuthor()), false);
+          String emoji = Phrase.from(context, R.string.emojiReactsNotification)
+                  .put("emoji", lastReact.getEmoji())
+                  .format()
+                  .toString();
+          if (shouldShowReactionNotification(threadRecipients)) {
+            notificationState.addNotification(new NotificationItem(
+                    id,
+                    mms,
+                    reactor,
+                    reactor,
+                    threadRecipients,
+                    threadId,
+                    emoji,
+                    lastReact.getDateSent(),
+                    slideDeck
+            ));
           }
         }
       }

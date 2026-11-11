@@ -21,7 +21,6 @@ import android.view.ViewGroup
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -32,7 +31,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -41,8 +39,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -54,7 +50,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -64,11 +59,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
@@ -79,6 +71,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -88,7 +81,6 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
@@ -100,15 +92,14 @@ import com.google.android.gms.common.util.CollectionUtils.listOf
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.BaseComponentActivity
 import io.beldex.bchat.R
-import io.beldex.bchat.compose_utils.notchedCornerShape
-import io.beldex.bchat.compose_utils.bchatBackground
-import io.beldex.bchat.compose_utils.OpenSans
-import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.BChatTheme
-import io.beldex.bchat.compose_utils.BChatTypography
+import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
+import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.bchatBackground
+import io.beldex.bchat.compose_utils.notchedCornerShape
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.permissions.Permissions
@@ -225,7 +216,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                         .padding(WindowInsets.systemBars.asPaddingValues()),
                 ) {
                     Scaffold(
-                        containerColor=MaterialTheme.colorScheme.primary,
+                        containerColor=Color.Transparent,
                     ) {
                         WebRtcCallScreen(wantsToAnswer.value, hexEncodedPublicKey,isInPictureInPictureMode.value)
                     }
@@ -779,7 +770,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .bchatBackground()
+                .bchatBackground(MaterialTheme.appColors.backgroundColor)
         ) {
             if (isInPictureInPictureMode) {
                 if (!remoteVideoView) {
@@ -792,8 +783,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                             displayName = getUserDisplayName(displayedKey),
                             outerSize = 60.dp,
                             innerSize = 48.dp,
-                            audioOff = false,
-                            videoOff = false
+                            audioOff = false
                         )
                     }
                 } else {
@@ -836,8 +826,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                         displayName = getUserDisplayName(displayedKey),
                                         outerSize = avatarFrameSize,
                                         innerSize = profilePictureInnerSize,
-                                        audioOff = isShowCallAudioStatus,
-                                        videoOff = isShowCallVideoStatus
+                                        audioOff = isShowCallAudioStatus
                                     )
                                 }
                                 Column(
@@ -867,8 +856,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                     displayName = getUserDisplayName(displayedKey),
                                     outerSize = avatarFrameSize,
                                     innerSize = profilePictureInnerSize,
-                                    audioOff = isShowCallAudioStatus,
-                                    videoOff = isShowCallVideoStatus
+                                    audioOff = isShowCallAudioStatus
                                 )
                                 Spacer(modifier = Modifier.height(24.dp))
                                 CallPersonName(displayedName)
@@ -979,8 +967,8 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                         CallActionButton(
                             label = stringResource(id = R.string.decline),
                             icon = R.drawable.ic_fig_call_decline,
-                            fill = Color(0xFF2B0A0A),
-                            stroke = Color(0xFF5A1717),
+                            fill = MaterialTheme.appColors.callDeclineBackground,
+                            stroke = MaterialTheme.appColors.callDeclineBorder,
                             tint = Color(0xFFFF3E3E),
                             contentDescription = declineCallDescription,
                             onClick = decline
@@ -988,9 +976,9 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                         CallActionButton(
                             label = stringResource(id = R.string.accept),
                             icon = R.drawable.ic_fig_call_accept,
-                            fill = Color(0xFF0A2B0F),
-                            stroke = Color(0xFF175A22),
-                            tint = Color(0xFF00BD40),
+                            fill = MaterialTheme.appColors.callAcceptBackground,
+                            stroke = MaterialTheme.appColors.callAcceptBorder,
+                            tint = MaterialTheme.appColors.userDetailsBchatIdText,
                             contentDescription = answerCallDescription,
                             onClick = answer
                         )
@@ -1002,13 +990,13 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(MaterialTheme.appColors.callBottomBackground)
-                            .border(width = 0.5.dp, color = Color(0xFF222222))
+                            .border(width = 0.5.dp, color = MaterialTheme.appColors.callTopBarBorder)
                             .padding(horizontal = 23.dp, vertical = 14.dp)
                     ) {
                         if (isShowSpeakerOption) {
                             CallControlButton(
                                 icon = if (isBluetoothIsSelected && isBluetoothIsConnected) R.drawable.ic_fig_call_bluetooth else R.drawable.ic_fig_call_speaker,
-                                tint = if (isSpeakerIsSelected || (isBluetoothIsSelected && isBluetoothIsConnected)) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.editTextColor,
+                                tint = if (isSpeakerIsSelected || (isBluetoothIsSelected && isBluetoothIsConnected)) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.callContentColor,
                                 contentDescription = speakerDescription,
                                 onClick = toggleSpeaker
                             )
@@ -1016,7 +1004,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                         if (isShowMuteOption) {
                             CallControlButton(
                                 icon = R.drawable.ic_fig_call_mic,
-                                tint = if (isMuteOptionIconChange) MaterialTheme.appColors.negativeRedButtonBorder else MaterialTheme.appColors.editTextColor,
+                                tint = if (isMuteOptionIconChange) MaterialTheme.appColors.negativeRedButtonBorder else MaterialTheme.appColors.callContentColor,
                                 contentDescription = muteDescription,
                                 enabled = isMuteOptionClickable,
                                 onClick = { enableMuteOption() }
@@ -1025,7 +1013,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                         if (isShowSwitchCameraOption) {
                             CallControlButton(
                                 icon = R.drawable.ic_fig_call_flip,
-                                tint = MaterialTheme.appColors.editTextColor,
+                                tint = MaterialTheme.appColors.callContentColor,
                                 contentDescription = switchCamDescription,
                                 enabled = isSwitchCameraFlipEnabled,
                                 onClick = { switchCamera() }
@@ -1034,7 +1022,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                         if (isShowVideoOption) {
                             CallControlButton(
                                 icon = R.drawable.ic_fig_call_video,
-                                tint = if (isSelectedVideoOption) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.editTextColor,
+                                tint = if (isSelectedVideoOption) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.callContentColor,
                                 contentDescription = enableVideoDescription,
                                 onClick = { if (isShowCallDurationStatus) enableCamera() }
                             )
@@ -1061,20 +1049,20 @@ class WebRTCComposeActivity : BaseComponentActivity() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .background(if (overVideo) Color(0xFF0B0B0B) else Color(0xFF0B0B0B).copy(alpha = 0.9f))
-                .border(width = 0.5.dp, color = Color(0xFF222222))
+                .background(if (overVideo) MaterialTheme.appColors.messageRequestItemBackground else MaterialTheme.appColors.messageRequestItemBackground.copy(alpha = 0.9f))
+                .border(width = 0.5.dp, color = MaterialTheme.appColors.callTopBarBorder)
                 .padding(horizontal = 12.dp, vertical = 14.dp)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_back_arrow),
                 contentDescription = stringResource(R.string.back),
-                tint = MaterialTheme.appColors.editTextColor,
+                tint = MaterialTheme.appColors.callContentColor,
                 modifier = Modifier.clickable(onClick = onBack)
             )
             Spacer(modifier = Modifier.width(10.dp))
             Text(
                 text = title,
-                color = MaterialTheme.appColors.editTextColor,
+                color = MaterialTheme.appColors.callContentColor,
                 fontFamily = OpenSans,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Normal
@@ -1087,41 +1075,44 @@ class WebRTCComposeActivity : BaseComponentActivity() {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .background(Color(0xFF1A1A1A), RoundedCornerShape(14.dp))
+                .background(MaterialTheme.appColors.onboardingClearButtonBackground, RoundedCornerShape(14.dp))
                 .padding(horizontal = 14.dp, vertical = 6.dp)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_fig_call_lock),
                 contentDescription = lockDescription,
-                tint = Color(0xFF8D8D8D),
+                tint = MaterialTheme.appColors.callEncryptedText,
                 modifier = Modifier.size(12.dp)
             )
             Spacer(modifier = Modifier.width(6.dp))
             Text(
                 text = stringResource(id = R.string.end_to_end_encrypted),
-                color = Color(0xFF8D8D8D),
+                color = MaterialTheme.appColors.callEncryptedText,
                 fontFamily = RobotoMono,
                 fontSize = 11.sp
             )
         }
     }
 
-    /** Notched profile frame (Figma 194x194 with a 132 photo); the badge pill shows remote mute/video-off. */
+    /**
+     * Notched profile frame (Figma 194x194 with a 132 photo). When the other person mutes their
+     * microphone, a round "muted" badge sits on the bottom edge of the photo (Figma Call / Call_1).
+     * It replaces the old "Call muted" status text; video-paused has no badge.
+     */
     @Composable
     private fun CallAvatarFrame(
         publicKey: String,
         displayName: String,
         outerSize: androidx.compose.ui.unit.Dp,
         innerSize: androidx.compose.ui.unit.Dp,
-        audioOff: Boolean,
-        videoOff: Boolean
+        audioOff: Boolean
     ) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .size(outerSize)
-                .background(Color(0xFF111111), notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchCard))
-                .border(1.dp, Color(0xFF222222), notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchCard))
+                .background(MaterialTheme.appColors.callAvatarBackground, notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchCard))
+                .border(1.dp, MaterialTheme.appColors.callAvatarBorder, notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchCard))
         ) {
             ProfilePictureComponent(
                 publicKey = publicKey,
@@ -1129,32 +1120,23 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                 containerSize = innerSize,
                 pictureMode = ProfilePictureMode.LargePicture
             )
-            if (audioOff || videoOff) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+            if (audioOff) {
+                val badgeSize = (innerSize * 0.27f).coerceIn(20.dp, 36.dp)
+                Box(
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = (outerSize - innerSize) / 2 + 6.dp)
-                        .background(Color(0xCC111111), RoundedCornerShape(50))
-                        .padding(horizontal = 14.dp, vertical = 8.dp)
+                        .align(Alignment.Center)
+                        // centre the badge just above the photo's bottom edge
+                        .offset(y = innerSize / 2 - badgeSize / 2 + 2.dp)
+                        .size(badgeSize)
+                        .background(MaterialTheme.appColors.callBadgeBackground, CircleShape)
                 ) {
-                    if (audioOff) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_fig_call_badge_volume_off),
-                            contentDescription = stringResource(R.string.call_muted),
-                            tint = Color(0xFFEBEBEB),
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
-                    if (videoOff) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_fig_call_badge_video),
-                            contentDescription = stringResource(R.string.video_paused),
-                            tint = Color(0xFFEBEBEB),
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_fig_call_badge_volume_off),
+                        contentDescription = stringResource(R.string.call_muted),
+                        tint = MaterialTheme.appColors.callContentColor,
+                        modifier = Modifier.size(badgeSize * 0.56f)
+                    )
                 }
             }
         }
@@ -1164,7 +1146,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
     private fun CallPersonName(name: String, overVideo: Boolean = false) {
         Text(
             text = name,
-            color = if (overVideo) Color.White else MaterialTheme.appColors.editTextColor,
+            color = if (overVideo) Color.White else MaterialTheme.appColors.callContentColor,
             fontFamily = OpenSans,
             fontSize = 30.sp,
             fontWeight = FontWeight.Normal,
@@ -1181,7 +1163,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
         if (text.isEmpty()) return
         Text(
             text = text,
-            color = if (overVideo) Color.White else MaterialTheme.appColors.editTextColor,
+            color = if (overVideo) Color.White else MaterialTheme.appColors.callContentColor,
             fontFamily = RobotoMono,
             fontSize = 18.sp,
             textAlign = TextAlign.Center,
@@ -1199,8 +1181,8 @@ class WebRTCComposeActivity : BaseComponentActivity() {
         contentDescription: String,
         onClick: () -> Unit,
         enabled: Boolean = true,
-        fill: Color = MaterialTheme.appColors.userDetailsCancelBackground,
-        stroke: Color = MaterialTheme.appColors.dividerColor
+        fill: Color = MaterialTheme.appColors.callControlBackground,
+        stroke: Color = MaterialTheme.appColors.callControlBorder
     ) {
         Box(
             contentAlignment = Alignment.Center,
@@ -1246,7 +1228,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
             Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = label,
-                color = MaterialTheme.appColors.editTextColor,
+                color = MaterialTheme.appColors.callContentColor,
                 fontFamily = RobotoMono,
                 fontSize = 14.sp
             )
@@ -1265,8 +1247,8 @@ class WebRTCComposeActivity : BaseComponentActivity() {
             verticalArrangement = Arrangement.spacedBy(10.dp),
             modifier = modifier
                 .fillMaxWidth()
-                .background(Color(0xFF0B0B0B))
-                .border(0.5.dp, Color(0xFF333333))
+                .background(MaterialTheme.appColors.messageRequestItemBackground)
+                .border(0.5.dp, MaterialTheme.appColors.callDeviceCardBorder)
                 .padding(14.dp)
         ) {
             AudioDeviceRow(
@@ -1290,7 +1272,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = null,
-                tint = MaterialTheme.appColors.editTextColor,
+                tint = MaterialTheme.appColors.callContentColor,
                 modifier = Modifier.size(22.dp)
             )
             Spacer(modifier = Modifier.width(12.dp))
@@ -1300,23 +1282,23 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                 modifier = Modifier
                     .weight(1f)
                     .height(42.dp)
-                    .background(if (selected) Color(0xFFEBEBEB) else Color(0xFF0B0B0B), shape)
-                    .border(1.dp, if (selected) Color(0xFFEBEBEB) else Color(0xFF444444), shape)
+                    .background(if (selected) MaterialTheme.appColors.onboardingPrimaryButtonBackground else MaterialTheme.appColors.messageRequestItemBackground, shape)
+                    .border(1.dp, if (selected) MaterialTheme.appColors.onboardingPrimaryButtonBackground else MaterialTheme.appColors.callDeviceRowBorder, shape)
                     .clickable(onClick = onClick)
                     .padding(horizontal = 18.dp)
             ) {
                 Text(
                     text = label,
-                    color = if (selected) Color(0xFF0B0B0B) else MaterialTheme.appColors.editTextColor,
+                    color = if (selected) MaterialTheme.appColors.dialogPositiveButtonText else MaterialTheme.appColors.callContentColor,
                     fontFamily = OpenSans,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.weight(1f)
                 )
                 if (selected) {
-                    Text(text = "✓", color = Color(0xFF0B0B0B), fontSize = 14.sp)
+                    Text(text = "✓", color = MaterialTheme.appColors.dialogPositiveButtonText, fontSize = 14.sp)
                 } else {
-                    Box(Modifier.size(5.dp).background(MaterialTheme.appColors.editTextColor, CircleShape))
+                    Box(Modifier.size(5.dp).background(MaterialTheme.appColors.callDeviceDot, CircleShape))
                 }
             }
         }

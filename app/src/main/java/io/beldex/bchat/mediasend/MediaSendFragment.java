@@ -219,7 +219,8 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
     String    displayName = Optional.fromNullable(recipient.getName())
                                     .or(Optional.fromNullable(recipient.getProfileName())
                                                 .or(recipient.getAddress().serialize()));
-    composeText.setHint(getString(R.string.MediaSendActivity_message_to_s, displayName));
+    // Same hint as the chat input bar (Figma "Write message here..").
+    composeText.setHint(getString(R.string.ConversationActivity_message));
     composeText.setOnEditorActionListener((v, actionId, event) -> {
       boolean isSend = actionId == EditorInfo.IME_ACTION_SEND;
       if (isSend) sendButton.performClick();

@@ -73,7 +73,10 @@
                 android:paddingTop="6dp"
                 android:paddingBottom="6dp"
                 style="@style/Signal.Text.Body"
-                android:textSize="@dimen/medium_font_size"
+                android:fontFamily="@font/roboto_mono"
+                android:textSize="13sp"
+                android:textColor="@android:color/white"
+                android:textColorHint="#ACACAC"
                 android:maxLines="3"
                 android:maxLength="240"
                 android:hint="@string/MediaSendActivity_add_a_caption"
@@ -91,73 +94,73 @@
                 tools:listitem="@layout/mediarail_media_item"
                 tools:layout_height="64dp"/>
 
+            <!-- Revamp_2026: same input bar as the chat screen (Figma "Write message here.." bar):
+                 0.5dp-bordered field, Roboto Mono 13sp, send button inside the bar. -->
             <LinearLayout
                 android:id="@+id/mediasend_compose_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="14dp"
+                android:layout_marginEnd="14dp"
                 android:layout_marginBottom="12dp"
-                android:orientation="horizontal">
+                android:minHeight="47dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:background="@drawable/chat_input_field_background">
 
-                <LinearLayout
+                <io.beldex.bchat.components.emoji.EmojiToggle
+                    android:id="@+id/mediasend_emoji_toggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/conversation_compose_height"
+                    android:layout_gravity="bottom"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="6dp"
+                    android:visibility="gone"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/conversation_activity__emoji_toggle_description" />
+
+                <io.beldex.bchat.components.ComposeText
+                    style="@style/Widget.Bchat.EditText.Compose"
+                    android:id="@+id/mediasend_compose_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:paddingStart="8dp"
+                    android:layout_marginStart="16dp"
+                    android:minHeight="40dp"
+                    android:maxLines="3"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp"
+                    android:paddingStart="0dp"
                     android:paddingEnd="8dp"
-                    android:orientation="horizontal"
-                    android:background="@drawable/compose_background_camera">
-
-                    <io.beldex.bchat.components.emoji.EmojiToggle
-                        android:id="@+id/mediasend_emoji_toggle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/conversation_compose_height"
-                        android:layout_gravity="bottom"
-                        android:paddingStart="4dp"
-                        android:paddingEnd="6dp"
-                        android:visibility="gone"
-                        android:background="?selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/conversation_activity__emoji_toggle_description" />
-
-                    <Space
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/conversation_compose_height" />
-
-                    <io.beldex.bchat.components.ComposeText
-                        style="@style/Widget.Bchat.EditText.Compose"
-                        android:id="@+id/mediasend_compose_text"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:nextFocusForward="@+id/send_button"
-                        android:nextFocusRight="@+id/send_button"
-                        android:breakStrategy="high_quality"
-                        android:hyphenationFrequency="full"
-                        tools:hint="Send TextSecure message"
-                        tools:ignore="NestedWeights">
-                        <requestFocus />
-                    </io.beldex.bchat.components.ComposeText>
-
-                </LinearLayout>
+                    android:fontFamily="@font/roboto_mono"
+                    android:textSize="13sp"
+                    android:textColor="@color/chat_input_icon"
+                    android:textColorHint="@color/chat_input_hint"
+                    android:hint="@string/ConversationActivity_message"
+                    android:nextFocusForward="@+id/mediasend_send_button"
+                    android:nextFocusRight="@+id/mediasend_send_button"
+                    android:breakStrategy="high_quality"
+                    android:hyphenationFrequency="full">
+                    <requestFocus />
+                </io.beldex.bchat.components.ComposeText>
 
                 <FrameLayout
                     android:id="@+id/mediasend_send_button_bkg"
-                    android:layout_width="@dimen/conversation_compose_height"
-                    android:layout_height="@dimen/conversation_compose_height"
-                    android:layout_marginStart="12dp"
-                    android:layout_gravity="bottom">
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginEnd="4dp">
 
                     <ImageButton
                         android:id="@+id/mediasend_send_button"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="fitXY"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:scaleType="fitCenter"
                         android:contentDescription="@string/conversation_activity__send"
-                        android:src="?conversation_transport_sms_indicator"
-                        android:background="@drawable/circle_touch_highlight_background"/>
+                        android:src="@drawable/ic_record_locked_send"
+                        android:background="?selectableItemBackgroundBorderless"/>
 
                 </FrameLayout>
 
@@ -185,4 +188,4 @@
 
     </io.beldex.bchat.components.InputAwareLayout>
 
-</FrameLayout>
+</FrameLayout>

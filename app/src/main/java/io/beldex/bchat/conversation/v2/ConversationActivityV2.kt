@@ -2830,7 +2830,11 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
             PICK_GIF -> {
                 intent ?: return
                 val uri=intent.data ?: return
-                val type=AttachmentManager.MediaType.GIF
+                val type=if (intent.getBooleanExtra(GiphyActivity.EXTRA_IS_STICKER, false)) {
+                    AttachmentManager.MediaType.STICKER
+                } else {
+                    AttachmentManager.MediaType.GIF
+                }
                 val width=intent.getIntExtra(GiphyActivity.EXTRA_WIDTH, 0)
                 val height=intent.getIntExtra(GiphyActivity.EXTRA_HEIGHT, 0)
                 prepMediaForSending(uri, type, width, height).addListener(mediaPreppedListener)

@@ -361,7 +361,7 @@ public class AttachmentManager {
   }
 
   public enum MediaType {
-    IMAGE, GIF, AUDIO, VIDEO, DOCUMENT, VCARD;
+    IMAGE, GIF, STICKER, AUDIO, VIDEO, DOCUMENT, VCARD;
 
     public @NonNull Slide createSlide(@NonNull  Context context,
                                       @NonNull  Uri     uri,
@@ -378,6 +378,7 @@ public class AttachmentManager {
       switch (this) {
       case IMAGE:    return new ImageSlide(context, uri, dataSize, width, height);
       case GIF:      return new GifSlide(context, uri, dataSize, width, height);
+      case STICKER:  return new GifSlide(context, uri, dataSize, width, height, null, GifSlide.STICKER_FILE_NAME);
       case AUDIO:    return new AudioSlide(context, uri, dataSize, false);
       case VIDEO:    return new VideoSlide(context, uri, dataSize);
       case VCARD:

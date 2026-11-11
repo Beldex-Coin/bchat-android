@@ -1013,6 +1013,7 @@
     <string name="call_banner_in_call">%1$s in call</string>
     <string name="call_banner_in_video_call">%1$s in Video call</string>
     <string name="search_gif">SEARCH GIF</string>
+    <string name="search_sticker">SEARCH STICKERS</string>
     <string name="you_joined">You Joined</string>
     <string name="you_created">You Created</string>
     <string name="today">Today</string>

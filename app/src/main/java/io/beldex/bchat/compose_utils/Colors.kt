@@ -126,6 +126,21 @@ class Colors() {
     var disabledButtonBackground: Color = Color.Unspecified
     var disabledButtonBorder: Color = Color.Unspecified
     var disabledButtonText: Color = Color.Unspecified
+    var callContentColor: Color = Color.Unspecified
+    var callTopBarBorder: Color = Color.Unspecified
+    var callEncryptedText: Color = Color.Unspecified
+    var callAvatarBackground: Color = Color.Unspecified
+    var callAvatarBorder: Color = Color.Unspecified
+    var callBadgeBackground: Color = Color.Unspecified
+    var callControlBackground: Color = Color.Unspecified
+    var callControlBorder: Color = Color.Unspecified
+    var callDeclineBackground: Color = Color.Unspecified
+    var callDeclineBorder: Color = Color.Unspecified
+    var callAcceptBackground: Color = Color.Unspecified
+    var callAcceptBorder: Color = Color.Unspecified
+    var callDeviceCardBorder: Color = Color.Unspecified
+    var callDeviceRowBorder: Color = Color.Unspecified
+    var callDeviceDot: Color = Color.Unspecified
 }
 
 val lightColors = Colors().apply {
@@ -166,7 +181,7 @@ val lightColors = Colors().apply {
     walletDashboardReceiveButtonBackground = Color(0xff078720)
     walletSyncingIcon = Color(0xffA7A7BA)
     loaderBackground = Color(0xA4000000)
-    callBottomBackground = Color(0xFFE8E8E8)
+    callBottomBackground = Color(0xBFF0F0F0)
     circularProgressBarBackground = Color(0xffEBEBEB)
     optionalTextFieldBackground = Color(0xFFF4F4F4)
     clearDataSubTitle = Color(0XFF6A6A77)
@@ -186,7 +201,7 @@ val lightColors = Colors().apply {
     onboardingPrimaryButtonDisabledBackground = Color(0xFFF8F8F8)
     onboardingPrimaryButtonDisabledText = Color(0xFF6E6E7C)
     pinBoxInactiveBorder = Color(0xFFD9D9D9)
-    callEndBackground = Color(0xFFFBE9E9)
+    callEndBackground = Color(0xFFFFFFFF)
     onboardingInputHint = Color(0xFFA7A7BA)
     onboardingCaptionColor = Color(0xFF8A8A9D)
     onboardingKeypadKeyBackground = Color(0xFFECECEC)
@@ -218,6 +233,21 @@ val lightColors = Colors().apply {
     disabledButtonBackground = Color(0xFFE8E8E8)
     disabledButtonBorder = Color(0xFFF0F0F0)
     disabledButtonText = Color(0xFF8D8D8D)
+    callContentColor = Color(0xFF222222)
+    callTopBarBorder = Color(0xFFE6E6E6)
+    callEncryptedText = Color(0xFF555555)
+    callAvatarBackground = Color(0x4DE8E8E8)
+    callAvatarBorder = Color(0xFFDDDDDD)
+    callBadgeBackground = Color(0xFFFFFFFF)
+    callControlBackground = Color(0x80EBEBEB)
+    callControlBorder = Color(0xFFD0D0D0)
+    callDeclineBackground = Color(0xFFFFFFFF)
+    callDeclineBorder = Color(0xFFFF3E3E)
+    callAcceptBackground = Color(0x80FFFFFF)
+    callAcceptBorder = Color(0xFF078720)
+    callDeviceCardBorder = Color(0xFFDDDDDD)
+    callDeviceRowBorder = Color(0xFF727272)
+    callDeviceDot = Color(0xFF444444)
 
 }
 
@@ -311,6 +341,21 @@ val darkColors = Colors().apply {
     disabledButtonBackground = Color(0xFF1A1A1A)
     disabledButtonBorder = Color(0xFF1A1A1A)
     disabledButtonText = Color(0xFF737373)
+    callContentColor = Color(0xFFEBEBEB)
+    callTopBarBorder = Color(0xFF222222)
+    callEncryptedText = Color(0xFF8D8D8D)
+    callAvatarBackground = Color(0xFF111111)
+    callAvatarBorder = Color(0xFF222222)
+    callBadgeBackground = Color(0xCC111111)
+    callControlBackground = Color(0xFF222222)
+    callControlBorder = Color(0xFF4B4B64)
+    callDeclineBackground = Color(0xFF2B0A0A)
+    callDeclineBorder = Color(0xFF5A1717)
+    callAcceptBackground = Color(0xFF0A2B0F)
+    callAcceptBorder = Color(0xFF175A22)
+    callDeviceCardBorder = Color(0xFF333333)
+    callDeviceRowBorder = Color(0xFF444444)
+    callDeviceDot = Color(0xFFEBEBEB)
 
 }
 

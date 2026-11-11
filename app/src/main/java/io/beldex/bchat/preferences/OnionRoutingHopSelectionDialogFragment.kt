@@ -133,7 +133,7 @@ class OnionRoutingHopSelectionDialogFragment : DialogFragment() {
         private const val STATE_SELECTED_HOP_COUNT = "selected_hop_count"
 
         /** Same fallback as the composable used before: one hop. */
-        private const val DEFAULT_HOP_COUNT = 1
+        private const val DEFAULT_HOP_COUNT = 3
 
         fun newInstance(currentHopCount: Int): OnionRoutingHopSelectionDialogFragment =
             OnionRoutingHopSelectionDialogFragment().apply {

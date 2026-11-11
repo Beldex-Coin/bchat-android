@@ -18,6 +18,14 @@ object OnionRoutingPreferenceUtils {
     /** SharedPreferences key of the selected hop count. */
     const val KEY_ONION_ROUTING_PATH_COUNT = "pref_onion_routing_path_count"
 
+    /** SharedPreferences key of the one-time forced-3-hop migration flag. */
+    const val KEY_ONION_ROUTING_FORCED_THREE_HOP_MIGRATION = "pref_onion_routing_forced_three_hop_migration"
+
+    const val KEY_ONION_ROUTING_APPLIED_PATH_SIZE = "pref_onion_routing_applied_path_size"
+
+    /** The hop count every installation is expected to run on: three hops. */
+    const val FORCED_HOP_COUNT = 3
+
     /**
      * SharedPreferences key of the one-time one-hop default migration flag. Once set, the
      * migration never runs again, so a hop count the user selects later is always respected

@@ -449,11 +449,10 @@
     <string name="arrays__use_default">Standard verwenden</string>
     <string name="arrays__use_custom">Verwenden Sie Benutzerdefiniert</string>
 
-    <string name="arrays__mute_for_one_hour">Für 1 Stunde stummschalten</string>
-    <string name="arrays__mute_for_two_hours">Für 2 Stunden stummschalten</string>
-    <string name="arrays__mute_for_one_day">Für 1 Tag stummschalten</string>
-    <string name="arrays__mute_for_seven_days">Für 7 Tage stummschalten</string>
-    <string name="arrays__mute_forever">Für immer stummschalten</string>
+    <string name="arrays__mute_for_eight_hours">Für 8 Stunden stummschalten</string>
+    <string name="arrays__mute_for_twenty_four_hours">Für 24 Stunden stummschalten</string>
+    <string name="arrays__mute_for_one_week">Für 1 Woche stummschalten</string>
+    <string name="arrays__mute_forever">Immer</string>
 
     <string name="arrays__settings_default">Settings default</string>
     <string name="arrays__enabled">Enabled</string>

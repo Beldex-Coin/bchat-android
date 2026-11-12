@@ -666,6 +666,14 @@
           "description":"Minor bug fixes"
         }
       ]
+    },
+    {
+      "title": "3.0.2",
+      "descriptions": [
+        {
+          "description":"Minor bug fixes"
+        }
+      ]
     }
   ]
 }

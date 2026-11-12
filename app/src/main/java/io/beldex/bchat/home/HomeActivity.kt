@@ -1321,10 +1321,16 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     private fun handlePathsBuiltEvent() { update() }
 
     private fun update() {
-        OnionRequestAPI.setOnionRequestPathCount(TextSecurePreferences.getOnionRequestPathCount(this))
         val hasPaths = OnionRequestAPI.selectedHopPaths.isNotEmpty()
         val isOnline = CheckOnline.isOnline(this)
-        showConnectivityWarning = !hasPaths && !isOnline
+        val isDirectMode = TextSecurePreferences.getOnionRequestPathCount(this) == 0 ||
+                !OnionRequestAPI.isOnionRoutingEnabled
+        val shouldShowWarning = !isDirectMode && !hasPaths && !isOnline
+        val newVisibility =
+            if (shouldShowWarning) View.VISIBLE else View.GONE
+        if (binding.hopsWarningLayout.visibility != newVisibility) {
+            binding.hopsWarningLayout.visibility = newVisibility
+        }
     }
 
     private fun isSecretGroupIsActive(recipient: Recipient):Boolean {
@@ -1713,11 +1719,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             HomeDialogType.MuteChat -> {
                 val index = data as Int
                 val muteUntil = when (index) {
-                    1 -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(2)
-                    2 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)
-                    3 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7)
-                    4 -> Long.MAX_VALUE
-                    else -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)
+                    0 -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(8)
+                    1 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)
+                    2 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7)
+                    else -> Long.MAX_VALUE
                 }
                 lifecycleScope.launch(Dispatchers.IO) {
                     threadRecord?.let {

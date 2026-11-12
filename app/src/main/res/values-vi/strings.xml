@@ -442,11 +442,10 @@
     <string name="arrays__use_default">Sử dụng mặc định</string>
     <string name="arrays__use_custom">Tùy chỉnh</string>
 
-    <string name="arrays__mute_for_one_hour">Tắt trong 1 giờ</string>
-    <string name="arrays__mute_for_two_hours">Tắt trong 2 giờ</string>
-    <string name="arrays__mute_for_one_day">Tắt trong 1 ngày</string>
-    <string name="arrays__mute_for_seven_days">Tắt trong 7 ngày</string>
-    <string name="arrays__mute_forever">Tắt vĩnh viễn</string>
+    <string name="arrays__mute_for_eight_hours">Tắt trong 8 giờ</string>
+    <string name="arrays__mute_for_twenty_four_hours">Tắt trong 24 giờ</string>
+    <string name="arrays__mute_for_one_week">Tắt trong 1 tuần</string>
+    <string name="arrays__mute_forever">Luôn luôn</string>
 
     <string name="arrays__settings_default">Settings default</string>
     <string name="arrays__enabled">Enabled</string>

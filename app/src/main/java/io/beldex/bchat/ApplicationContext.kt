@@ -184,7 +184,7 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
         init(this)
         configure(this)
         super<Application>.onCreate()
-        OnionRoutingPreferenceUtils.migrateToForcedThreeHopIfNeeded(this)
+        OnionRoutingPreferenceUtils.applyDefaultHopCountOnUpgrade(this)
         messagingModuleConfiguration=MessagingModuleConfiguration(
             this,
             storage,

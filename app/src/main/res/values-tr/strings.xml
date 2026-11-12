@@ -450,11 +450,10 @@
     <string name="arrays__use_default">Varsayılanı kullan</string>
     <string name="arrays__use_custom">Özel ayar kullan</string>
 
-    <string name="arrays__mute_for_one_hour">1 saat sessize al</string>
-    <string name="arrays__mute_for_two_hours">2 saat sessize al</string>
-    <string name="arrays__mute_for_one_day">1 gün sessize al</string>
-    <string name="arrays__mute_for_seven_days">7 gün sessize al</string>
-    <string name="arrays__mute_forever">Süresiz sessize al</string>
+    <string name="arrays__mute_for_eight_hours">8 saat sessize al</string>
+    <string name="arrays__mute_for_twenty_four_hours">24 saat sessize al</string>
+    <string name="arrays__mute_for_one_week">1 hafta sessize al</string>
+    <string name="arrays__mute_forever">Her zaman</string>
 
     <string name="arrays__settings_default">Settings default</string>
     <string name="arrays__enabled">Enabled</string>

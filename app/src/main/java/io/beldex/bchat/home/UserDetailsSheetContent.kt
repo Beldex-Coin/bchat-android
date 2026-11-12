@@ -24,7 +24,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -94,6 +101,12 @@ fun UserDetailsSheetContent(
 
         if (isEditingName) {
             // Figma profile_Detail_1: underlined name centred in the row, cancel / save tiles on the right.
+            var fieldValue by remember {
+                mutableStateOf(TextFieldValue(nicknameInput, TextRange(nicknameInput.length)))
+            }
+            if (fieldValue.text != nicknameInput) {
+                fieldValue = TextFieldValue(nicknameInput, TextRange(nicknameInput.length))
+            }
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
@@ -102,15 +115,26 @@ fun UserDetailsSheetContent(
                     .padding(horizontal = 12.dp)
             ) {
                 BasicTextField(
-                    value = nicknameInput,
-                    onValueChange = { if (it.length <= 26) onNicknameInputChange(it) },
+                    value = fieldValue,
+                    onValueChange = {
+                        if (it.text.length <= 26) {
+                            fieldValue = it
+                            onNicknameInputChange(it.text)
+                        }
+                    },
                     textStyle = TextStyle(
                         color = MaterialTheme.appColors.editTextColor,
                         fontFamily = OpenSans,
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp,
+                        lineHeight = 26.sp,
                         textAlign = TextAlign.Center,
-                        textDecoration = TextDecoration.Underline
+                        textDecoration = TextDecoration.Underline,
+                        platformStyle = PlatformTextStyle(includeFontPadding = false),
+                        lineHeightStyle = LineHeightStyle(
+                            alignment = LineHeightStyle.Alignment.Center,
+                            trim = LineHeightStyle.Trim.None
+                        )
                     ),
                     singleLine = true,
                     visualTransformation = CursorGapTransformation,
@@ -135,6 +159,7 @@ fun UserDetailsSheetContent(
                     modifier = Modifier
                         .width(IntrinsicSize.Min)
                         .widthIn(min = 1.dp, max = 190.dp)
+                        .padding(vertical = 4.dp)
                 )
 
                 Row(

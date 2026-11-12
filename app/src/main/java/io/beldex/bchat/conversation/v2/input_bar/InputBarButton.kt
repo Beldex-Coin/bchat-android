@@ -135,12 +135,14 @@ class InputBarButton : RelativeLayout {
     fun getIconID() = iconID
 
     fun expand() {
+        if (isMessageBox) return
         GlowViewUtilities.animateColorChange(context, imageViewContainer, colorID, R.color.button_green)
         imageViewContainer.animateSizeChange(R.dimen.input_bar_button_collapsed_size, R.dimen.input_bar_button_expanded_size, animationDuration)
         animateImageViewContainerPositionChange(collapsedImageViewPosition, expandedImageViewPosition)
     }
 
     fun collapse() {
+        if (isMessageBox) return
         GlowViewUtilities.animateColorChange(context, imageViewContainer, R.color.button_green, colorID)
         imageViewContainer.animateSizeChange(R.dimen.input_bar_button_expanded_size, R.dimen.input_bar_button_collapsed_size, animationDuration)
         animateImageViewContainerPositionChange(expandedImageViewPosition, collapsedImageViewPosition)

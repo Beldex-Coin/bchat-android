@@ -708,7 +708,7 @@ class VisibleMessageContentView : MaterialCardView {
                             },
                         searchQuery=searchQuery ?: "",
                         hasResult = hadResult,
-                        showTimestamp = isQuoteView
+                        showTimestamp = false
                     )
                 }
             }

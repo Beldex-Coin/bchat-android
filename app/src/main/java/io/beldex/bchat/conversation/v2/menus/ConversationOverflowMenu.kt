@@ -1,18 +1,16 @@
 package io.beldex.bchat.conversation.v2.menus
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,15 +20,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.appColors
 
 /**
@@ -59,39 +59,45 @@ fun ConversationHeaderActions(
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (expirationLabel != null) {
+            // Figma chat header timer (7546:18384 / 7762:21257): 20dp stopwatch in a 22dp box, the
+            // "5s" label in Open Sans Bold over its bottom-right with a thin halo in the header's
+            // border colour (no filled box), icon and label #EBEBEB / #222222.
+            val timerColor = colorResource(id = R.color.disappear_icon_color)
+            val haloColor = colorResource(id = R.color.chat_header_border)
+            val labelStyle = TextStyle(
+                fontFamily = OpenSans,
+                fontWeight = FontWeight.Bold,
+                fontSize = 9.sp,
+                lineHeight = 9.sp,
+                platformStyle = PlatformTextStyle(includeFontPadding = false)
+            )
             IconButton(onClick = onExpirationClick) {
-                Box(
-                    modifier = Modifier.size(22.dp),
-                    contentAlignment = Alignment.Center
-                ) {
+                Box(modifier = Modifier.size(22.dp)) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_timer_new),
                         contentDescription = stringResource(id = R.string.disappearing_messages),
-                        tint = MaterialTheme.appColors.editTextColor,
+                        tint = timerColor,
                         modifier = Modifier
-                            .size(24.dp)
-                            .align(Alignment.TopCenter)
+                            .size(20.dp)
+                            .align(Alignment.Center)
                     )
-
-                    Text(
-                        text = expirationLabel,
-                        color = Color.White,
-                        fontSize = 8.sp,
-                        fontWeight = FontWeight.Bold,
-                        lineHeight = 8.sp,
-                        textAlign = TextAlign.Center,
-                        style = LocalTextStyle.current.copy(
-                            platformStyle = PlatformTextStyle(includeFontPadding = false)
-                        ),
+                    Box(
                         modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .offset(x = 2.dp, y = 2.dp)
-                            .background(
-                                color = MaterialTheme.appColors.backgroundColor,
-                                shape = RoundedCornerShape(4.dp)
-                            )
-                            .padding(horizontal = 3.dp, vertical = 2.dp)
-                    )
+                            .align(Alignment.TopStart)
+                            .offset(x = 10.dp, y = 12.dp)
+                            .wrapContentSize(unbounded = true)
+                    ) {
+                        Text(
+                            text = expirationLabel,
+                            maxLines = 1,
+                            style = labelStyle.copy(color = haloColor, drawStyle = Stroke(width = 2.75f))
+                        )
+                        Text(
+                            text = expirationLabel,
+                            maxLines = 1,
+                            style = labelStyle.copy(color = timerColor)
+                        )
+                    }
                 }
             }
         }

@@ -14,7 +14,7 @@ class SendSeedDialog(private val proceed: (() -> Unit)? = null) : BaseDialog() {
     @Composable
     override fun Content() {
         PopupBody(
-            icon = painterResource(R.drawable.ic_seed_warning),
+            icon = painterResource(R.drawable.ic_seed_warning_triangle),
             title = stringResource(R.string.dialog_send_seed_title),
             message = AnnotatedString(stringResource(R.string.dialog_send_seed_explanation)),
             cancelText = stringResource(R.string.cancel),

@@ -40,6 +40,10 @@ fun SettingsItem(
     iconAlignTop: Boolean = false,
     /** When false the whole row is dimmed and its switch cannot be toggled. */
     rowEnabled: Boolean = true,
+    /** Optional second line under [trailingText], e.g. "(Default)" (Figma Onion Routing row). */
+    trailingSubText: String? = null,
+    /** Shows the small grey chevron after the trailing value (Figma Onion Routing row). */
+    showChevron: Boolean = false,
 ) {
     Row(
         verticalAlignment = if (iconAlignTop) Alignment.Top else Alignment.CenterVertically,
@@ -84,15 +88,52 @@ fun SettingsItem(
         trailingText?.let { value ->
             Spacer(modifier = Modifier.width(8.dp))
 
-            Text(
-                text = value,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.appColors.lockTimerColor,
-                    fontFamily = RobotoMono,
-                    fontWeight = FontWeight(600),
-                    fontSize = 14.sp
-                ),
-            )
+            if (trailingSubText != null || showChevron) {
+                // Figma: right-aligned value, "(Default)" on its own line, then a 4x8 chevron.
+                Column(horizontalAlignment = Alignment.End) {
+                    Text(
+                        text = value,
+                        textAlign = androidx.compose.ui.text.style.TextAlign.End,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = MaterialTheme.appColors.editTextColor,
+                            fontFamily = OpenSans,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 12.sp,
+                            lineHeight = 16.sp
+                        ),
+                    )
+                    trailingSubText?.let { sub ->
+                        Text(
+                            text = sub,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.End,
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                color = MaterialTheme.appColors.onboardingBodyColor,
+                                fontFamily = OpenSans,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 12.sp,
+                                lineHeight = 16.sp
+                            ),
+                        )
+                    }
+                }
+                if (showChevron) {
+                    Spacer(modifier = Modifier.width(12.dp))
+                    androidx.compose.foundation.Image(
+                        painter = painterResource(id = R.drawable.ic_settings_row_chevron),
+                        contentDescription = null,
+                    )
+                }
+            } else {
+                Text(
+                    text = value,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.appColors.lockTimerColor,
+                        fontFamily = RobotoMono,
+                        fontWeight = FontWeight(600),
+                        fontSize = 14.sp
+                    ),
+                )
+            }
         }
 
         if (containsSwitch) {
@@ -104,4 +145,4 @@ fun SettingsItem(
             )
         }
     }
-}
+}

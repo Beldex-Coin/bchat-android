@@ -40,13 +40,16 @@ class MessageDetailActivity: PassphraseRequiredActionBarActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.toolbar.title = resources.getString(R.string.message_details)
         val timestamp = intent.getLongExtra(MESSAGE_TIMESTAMP, -1L)
-        // We only show this screen for messages fail to send,
-        // so the author of the messages must be the current user.
+        // Sent messages are matched on our own address first; received messages (opened from the
+        // message options) have another author, so fall back to the message with that sent time.
         val author = Address.fromSerialized(TextSecurePreferences.getLocalNumber(this)!!)
-        messageRecord = DatabaseComponent.get(this).mmsSmsDatabase().getMessageFor(timestamp, author) ?: run {
-            finish()
-            return
-        }
+        val mmsSmsDb = DatabaseComponent.get(this).mmsSmsDatabase()
+        messageRecord = mmsSmsDb.getMessageFor(timestamp, author)
+            ?: mmsSmsDb.getNonDeletedMessageForTimestamp(timestamp)
+            ?: run {
+                finish()
+                return
+            }
         updateContent()
         binding.resendButton.setOnClickListener {
             ResendMessageUtilities.resend(messageRecord!!)
@@ -57,7 +60,8 @@ class MessageDetailActivity: PassphraseRequiredActionBarActivity() {
     fun updateContent() {
         val dateLocale = Locale.getDefault()
         val dateFormatter: SimpleDateFormat = DateUtils.getDetailedDateFormatter(this, dateLocale)
-        binding.sentTime.text = dateFormatter.format(Date(messageRecord!!.dateSent))
+        val record = messageRecord!!
+        binding.sentTime.text = dateFormatter.format(Date(if (record.isOutgoing) record.dateSent else record.dateReceived))
 
         val errorMessage = DatabaseComponent.get(this).beldexMessageDatabase().getErrorMessage(messageRecord!!.getId())
         if (errorMessage != null) {
@@ -67,7 +71,9 @@ class MessageDetailActivity: PassphraseRequiredActionBarActivity() {
             binding.resendContainer.isVisible = true
             binding.errorContainer.isVisible = true
         } else {
-            binding.messageStatusTitle.text = getString(R.string.message_details_header__sent)
+            binding.messageStatusTitle.text = getString(
+                if (record.isOutgoing) R.string.message_details_header__sent else R.string.message_details_header__received
+            )
             binding.messageStatusTitle.setTextColor(this.getColor(R.color.disappear_icon_color))
             binding.errorContainer.isVisible = false
             binding.resendContainer.isVisible = false
@@ -92,4 +98,4 @@ class MessageDetailActivity: PassphraseRequiredActionBarActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-}
+}

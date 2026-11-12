@@ -88,7 +88,7 @@ class UserView : LinearLayout {
         }
         if(groupAdmin == address){
             binding.actionIndicatorImageView.visibility = View.VISIBLE
-            binding.actionIndicatorImageView.setImageResource(R.drawable.ic_admin_crown)
+            binding.actionIndicatorImageView.setImageResource(R.drawable.ic_group_admin)
         }
     }
 

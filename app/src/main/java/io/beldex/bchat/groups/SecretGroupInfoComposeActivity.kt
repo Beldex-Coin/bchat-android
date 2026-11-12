@@ -671,9 +671,9 @@ fun GroupDetailsScreen(
                                 Spacer(modifier=Modifier.width(16.dp))
                                 if (groupAdmin.contains(member)) {
                                     Image(
-                                        painter=painterResource(id=R.drawable.ic_admin_crown),
+                                        painter=painterResource(id=R.drawable.ic_group_admin),
                                         contentDescription="admin crown",
-                                        modifier=Modifier.size(18.dp)
+                                        modifier=Modifier.size(20.dp)
                                     )
                                 }
                                 Spacer(modifier=Modifier.width(8.dp))
@@ -976,9 +976,9 @@ fun GroupDetailsScreen(
 
                                 if (groupAdmin.contains(member)) {
                                     Image(
-                                        painter = painterResource(id = R.drawable.ic_admin_crown),
+                                        painter = painterResource(id = R.drawable.ic_group_admin),
                                         contentDescription = "admin crown",
-                                        modifier = Modifier.size(18.dp)
+                                        modifier = Modifier.size(20.dp)
                                     )
                                 }
 

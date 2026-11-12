@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="4dp"
+    android:height="8dp"
+    android:viewportWidth="4"
+    android:viewportHeight="8">
+    <path
+        android:pathData="M0.793945,6.54736L3.01786,4.54922C3.17617,4.40698 3.2666,4.20416 3.2666,3.99133L3.2666,3.57573C3.2666,3.37681 3.18758,3.18605 3.04693,3.0454L0.796931,0.79541"
+        android:strokeWidth="1.125"
+        android:strokeColor="@color/contact_card_action_text"
+        android:strokeLineCap="square" />
+</vector>

@@ -209,7 +209,7 @@ private fun PortraitPinCodeScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .padding(top = 20.dp, bottom = 8.dp)
+                .padding(top = 32.dp, bottom = 8.dp)
         ) {
             Box(
                 modifier = Modifier.fillMaxWidth(0.8f)

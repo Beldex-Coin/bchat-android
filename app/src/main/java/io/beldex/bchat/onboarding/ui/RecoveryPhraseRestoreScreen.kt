@@ -115,7 +115,9 @@ fun RecoveryPhraseRestoreScreen(
                                         inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
                                         typeface = ResourcesCompat.getFont(context, R.font.roboto_mono)
                                         textSize = 14f
-                                        minLines = 3
+                                        setPadding(0, 0, 0, 0)
+                                        includeFontPadding = false
+                                        isVerticalScrollBarEnabled = true
                                         setHintTextColor(hintColor)
                                         setTextColor(textColor)
                                         gravity = android.view.Gravity.TOP or android.view.Gravity.START
@@ -133,7 +135,7 @@ fun RecoveryPhraseRestoreScreen(
                                     }
                                 },
                                 update = { editText ->
-                                    editText.hint = android.text.SpannableString(hintText.uppercase()).apply {
+                                    editText.hint = android.text.SpannableString(hintText).apply {
                                         setSpan(android.text.style.AbsoluteSizeSpan(12, true), 0, length, android.text.Spanned.SPAN_INCLUSIVE_INCLUSIVE)
                                     }
                                     if (editText.text?.toString() != mnemonic) {
@@ -144,7 +146,9 @@ fun RecoveryPhraseRestoreScreen(
                                         if (shown != mnemonic) latestOnMnemonicChange.value(shown)
                                     }
                                 },
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .height(144.dp)
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Icon(
@@ -169,7 +173,7 @@ fun RecoveryPhraseRestoreScreen(
                             textAlign = TextAlign.End,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 16.dp)
+                                .padding(top = 2.dp)
                         )
                     }
                 }

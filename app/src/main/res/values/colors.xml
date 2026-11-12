@@ -450,8 +450,8 @@
     <color name="contact_card_inner_background">#0B0B0B</color>
     <color name="contact_card_inner_bar">#444444</color>
     <color name="contact_card_action_text">#ACACAC</color>
-    <color name="contact_card_divider_incoming">#262626</color>
-    <color name="contact_card_divider_outgoing">#1D251D</color>
+    <color name="contact_card_divider_incoming">#555555</color>
+    <color name="contact_card_divider_outgoing">#555555</color>
     <color name="edit_group_toolbar_bg">#0B0B0B</color>
     <color name="edit_group_toolbar_border">#222222</color>
     <color name="add_member_search_bg">#800B0B0B</color>
@@ -478,4 +478,5 @@
     <color name="menu_border">#33FFFFFF</color>
     <color name="sent_message_text_color">#FFFFFF</color>
     <color name="call_card_inner_background">#0B0B0B</color>
+    <color name="qr_logo_background">#222222</color>
 </resources>

@@ -17,6 +17,7 @@ import io.beldex.bchat.database.model.ThreadRecord
 import io.beldex.bchat.my_account.ui.dialogs.DeleteChatConfirmationDialog
 import io.beldex.bchat.my_account.ui.dialogs.IgnoreRequestDialog
 import io.beldex.bchat.my_account.ui.dialogs.LockOptionsDialog
+import io.beldex.bchat.my_account.ui.dialogs.MuteOptionsDialog
 import io.beldex.bchat.my_account.ui.dialogs.RequestBlockConfirmationDialog
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
@@ -146,14 +147,14 @@ class ConversationActionDialog: DialogFragment() {
                             darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
                         ) {
                             val timesOption = context.resources.getStringArray(R.array.mute_durations)
-                            LockOptionsDialog(
+                            MuteOptionsDialog(
                                 title = stringResource(R.string.conversation_unmuted__mute_notifications),
                                 options = timesOption.toList(),
-                                currentValue = timesOption[argument3],
+                                currentIndex = argument3,
                                 onDismiss = {
                                     dismiss()
                                 },
-                                onValueChanged = { _, index ->
+                                onConfirm = { index ->
                                     listener?.onConfirmationWithData(dialogType, index, threadRecord,threadPosition)
                                     dismiss()
                                 }
@@ -393,4 +394,4 @@ class ConversationActionDialog: DialogFragment() {
         const val EXTRA_THREAD_POSITION = "thread_position"
         const val TAG = "ComposeDialogContainer"
     }
-}
+}

@@ -220,7 +220,9 @@ fun PrivacySettingsScreen(
                 settingTitle = stringResource(R.string.preferences__onion_routing),
                 settingIcon = painterResource(id = R.drawable.ic_onion_routing),
                 containsSwitch = false,
-                trailingText = hopsLabel(hops),
+                trailingText = hopsLabel(hops).substringBefore(" (").trim(),
+                trailingSubText = hopsLabel(hops).let { if (it.contains(" (")) "(" + it.substringAfter(" (") else null },
+                showChevron = true,
                 settingDesc = stringResource(
                     when (hops) {
                         0 -> R.string.hops_none_description

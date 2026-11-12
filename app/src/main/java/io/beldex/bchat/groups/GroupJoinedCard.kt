@@ -33,7 +33,9 @@ import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.RobotoMono
+import io.beldex.bchat.compose_utils.NotchCorner
 import io.beldex.bchat.compose_utils.notchedCornerShape
+import io.beldex.bchat.compose_utils.singleCornerCutShape
 import io.beldex.bchat.compose_utils.appColors
 
 /**
@@ -61,12 +63,13 @@ fun GroupJoinedCard(
             .padding(vertical = 28.dp, horizontal = 16.dp)
     ) {
         val isSecretGroup = GroupUtil.isClosedGroup(publicKey)
+        val tileShape = singleCornerCutShape(BChatDimens.NotchMedium, NotchCorner.TopRight)
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .size(56.dp)
-                .background(MaterialTheme.appColors.cardTileBackground, notchedCornerShape(BChatDimens.NotchMedium))
-                .border(1.dp, colorResource(R.color.contact_card_inner_bar), notchedCornerShape(BChatDimens.NotchMedium))
+                .background(MaterialTheme.appColors.cardTileBackground, tileShape)
+                .border(1.dp, colorResource(R.color.contact_card_inner_bar), tileShape)
         ) {
             if (isSecretGroup) {
                 Image(

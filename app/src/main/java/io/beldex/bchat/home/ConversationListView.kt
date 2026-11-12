@@ -165,10 +165,15 @@ private fun ConversationRow(
     onAction: (ConversationRowAction) -> Unit,
     onSwipeDelete: () -> Unit
 ) {
+    val lastSwipeDelete = remember { longArrayOf(0L) }
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = { value ->
             if (value == SwipeToDismissBoxValue.EndToStart) {
-                onSwipeDelete()
+                val now = android.os.SystemClock.elapsedRealtime()
+                if (now - lastSwipeDelete[0] > 1000L) {
+                    lastSwipeDelete[0] = now
+                    onSwipeDelete()
+                }
             }
             // Reset rather than staying dismissed: the actual delete goes through a confirmation
             // dialog (ConversationActionDialog), same as the old ItemTouchHelper swipe behavior.

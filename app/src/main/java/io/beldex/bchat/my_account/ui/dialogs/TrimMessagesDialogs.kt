@@ -20,7 +20,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -114,7 +117,8 @@ fun TrimNowDialog(
     onDismiss: () -> Unit
 ) {
     IconConfirmDialog(
-        icon = painterResource(id = R.drawable.ic_delete_all),
+        // Figma "04 Delete old messages" (8013:5549 / 8013:6767): plain red trash (#FF3E3E) in both themes.
+        icon = KeepOwnColours(painterResource(id = R.drawable.ic_media_delete)),
         title = stringResource(id = R.string.ApplicationPreferencesActivity_delete_all_old_messages_now),
         message = AnnotatedString(
             pluralStringResource(
@@ -129,4 +133,12 @@ fun TrimNowDialog(
         onConfirm = onConfirm,
         destructive = true
     )
+}
+
+private class KeepOwnColours(private val inner: Painter) : Painter() {
+    override val intrinsicSize get() = inner.intrinsicSize
+    override fun applyColorFilter(colorFilter: ColorFilter?): Boolean = true
+    override fun DrawScope.onDraw() {
+        with(inner) { draw(size) }
+    }
 }

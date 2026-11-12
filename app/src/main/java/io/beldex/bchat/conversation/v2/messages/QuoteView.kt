@@ -120,7 +120,21 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                             binding.imgContactPerson.setColorFilter(ContextCompat.getColor(context, R.color.text))
                         }
                         Mode.Regular -> {
-                            binding.imgContactPerson.setColorFilter(ContextCompat.getColor(context, if(isOutgoingMessage) R.color.sent_quoted_text_color else R.color.received_message_text_color))
+                            val hint = ContextCompat.getColor(context, R.color.chat_input_hint)
+                            binding.imgContactPerson.setColorFilter(hint)
+                            binding.contactName.setTextColor(hint)
+                            binding.contactName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+                            val mono = androidx.core.content.res.ResourcesCompat.getFont(context, R.font.roboto_mono)
+                            binding.contactName.typeface =
+                                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P)
+                                    android.graphics.Typeface.create(mono, 600, false)
+                                else android.graphics.Typeface.create(mono, android.graphics.Typeface.BOLD)
+                            val iconSize = (10 * resources.displayMetrics.density).toInt()
+                            binding.imgContactPerson.layoutParams = binding.imgContactPerson.layoutParams.apply {
+                                width = iconSize; height = iconSize
+                            }
+                            (binding.contactName.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.marginStart =
+                                (6 * resources.displayMetrics.density).toInt()
                         }
                     }
 

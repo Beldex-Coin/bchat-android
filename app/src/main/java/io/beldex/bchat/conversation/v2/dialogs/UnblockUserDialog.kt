@@ -21,6 +21,8 @@ import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.DialogCancelButton
 import io.beldex.bchat.compose_utils.DialogConfirmButton
 import io.beldex.bchat.compose_utils.DialogContainer
+import io.beldex.bchat.compose_utils.OpenSans
+import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 
@@ -33,8 +35,7 @@ fun UnblockUserDialog(
     onCancel: () -> Unit,
     modifier: Modifier = Modifier,
     negativeButtonTitle: String = stringResource(id = R.string.cancel),
-    destructive: Boolean = positiveButtonTitle == stringResource(id = R.string.decline) ||
-        title == stringResource(id = R.string.block_contact)
+    destructive: Boolean = positiveButtonTitle == stringResource(id = R.string.decline)
 ) {
     DialogContainer(
         dismissOnBackPress = true,
@@ -51,21 +52,26 @@ fun UnblockUserDialog(
                 text = title.capitalizeFirstLetter(),
                 style = MaterialTheme.typography.titleMedium.copy(
                     color = MaterialTheme.appColors.editTextColor,
+                    fontFamily = OpenSans,
                     fontWeight = FontWeight(700),
                     fontSize = 16.sp
                 ),
+                textAlign = TextAlign.Start,
+                modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(11.dp))
 
             Text(
                 text = message,
                 style = MaterialTheme.typography.bodyMedium.copy(
                     color = MaterialTheme.appColors.editTextColor,
+                    fontFamily = RobotoMono,
                     fontWeight = FontWeight(400),
                     fontSize = 14.sp
                 ),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Start,
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(16.dp))

@@ -112,6 +112,7 @@ import io.beldex.bchat.conversation.v2.contact_sharing.ViewAllContactsActivity
 import io.beldex.bchat.conversation.v2.contact_sharing.flattenData
 import io.beldex.bchat.conversation.v2.dialogs.LinkPreviewDialog
 import io.beldex.bchat.conversation.v2.dialogs.SendSeedDialog
+import io.beldex.bchat.conversation.v2.forward.ForwardMessageActivity
 import io.beldex.bchat.conversation.v2.input_bar.InputBarDelegate
 import io.beldex.bchat.conversation.v2.input_bar.InputBarRecordingViewDelegate
 import io.beldex.bchat.conversation.v2.input_bar.mentions.MentionCandidatesView
@@ -414,6 +415,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
     }
 
     private var lastProfileAvatar: String? = null
+    private var lastGroupAvatarId: Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -3772,13 +3774,12 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
 
             // Compare avatar/profile value
             val currentAvatar = threadRecipient.profileAvatar
-
-            if (lastProfileAvatar != currentAvatar) {
-                // Update profile picture
+            val currentGroupAvatarId = threadRecipient.groupAvatarId
+            if (lastProfileAvatar != currentAvatar || lastGroupAvatarId != currentGroupAvatarId) {
                 binding.profilePictureView.root.recycle()
                 binding.profilePictureView.root.update(threadRecipient)
-
                 lastProfileAvatar = currentAvatar
+                lastGroupAvatarId = currentGroupAvatarId
             }
 
             // Update conversation title
@@ -4237,16 +4238,12 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
 
     /** Forward: hands the message's text or media to the share flow, which opens the chosen chat with it ready to send. */
     private fun forwardMessage(message: MessageRecord) {
-        val intent = Intent(this, io.beldex.bchat.ShareActivity::class.java)
-        val mediaSlide = (message as? MmsMessageRecord)?.slideDeck?.slides?.firstOrNull { it.uri != null && (it.hasImage() || it.hasVideo() || it.hasAudio() || it.hasDocument()) }
-        if (mediaSlide != null) {
-            intent.putExtra(Intent.EXTRA_STREAM, mediaSlide.uri)
-            intent.type = mediaSlide.contentType
-        } else {
-            intent.putExtra(Intent.EXTRA_TEXT, message.body)
-            intent.type = "text/plain"
-        }
-        startActivity(intent)
+        startActivity(
+            ForwardMessageActivity.intent(
+                this,
+                listOf(message)
+            )
+        )
     }
 
     inner class ReactionsToolbarListener(val message : MessageRecord, val position : Int) :

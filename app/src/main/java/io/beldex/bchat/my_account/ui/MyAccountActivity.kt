@@ -1350,15 +1350,14 @@ fun MyAccountNavHost(
         composable(
             route = MyAccountScreens.RecoverySeedScreen.route
         ) {
-            var markedAsSafe by remember {
-                mutableStateOf(false)
-            }
+            val unlockState: RecoverySeedUnlockViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+            val markedAsSafe = unlockState.unlocked
             val resultLauncher =
                 rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
                     if (it.resultCode == Activity.RESULT_OK) {
-                        markedAsSafe = true
+                        unlockState.unlocked = true
                     } else {
-                        markedAsSafe = false
+                        unlockState.unlocked = false
                         BChatToast.error(context, context.getString(R.string.failed_to_authenticate), Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -1899,4 +1898,9 @@ fun ArchiveChatScreenContainer(
             content()
         }
     }
-}
+}
+
+/** Whether the recovery seed was unlocked with the PIN; survives the activity being recreated. */
+class RecoverySeedUnlockViewModel : androidx.lifecycle.ViewModel() {
+    var unlocked by mutableStateOf(false)
+}

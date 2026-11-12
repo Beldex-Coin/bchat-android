@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintSet
 import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.WorkerThread
@@ -160,6 +161,7 @@ class ConversationAdapter(
                 }
                 val contact = contactCache[senderIdHash]
                 visibleMessageView.bind(message, messageBefore, getMessageAfter(position, cursor), glide, searchQuery, contact, senderId, onAttachmentNeedsDownload,{ selectedItems.isNotEmpty() }, visibleMessageViewDelegate, position, searchViewModel, selectedItems.isNotEmpty())
+                placeReactionsBesideTimestamp(ViewVisibleMessageBinding.bind(viewHolder.view), message.isOutgoing)
                 if(isSelected) {
                     visibleMessageView.setOnMessageExpiredListener(object :
                         VisibleMessageView.OnMessageExpiredListener {
@@ -412,4 +414,34 @@ private fun callMissedMessage(context: android.content.Context, recipientName: S
     style("\u2018Voice and video calls\u2019") { android.text.style.StyleSpan(android.graphics.Typeface.BOLD) }
     style("privacy settings.") { android.text.style.StyleSpan(android.graphics.Typeface.BOLD) }
     return out
+}
+
+/**
+ * Figma chat reactions: the emoji pill sits on the timestamp row, to the left of the time on sent
+ * messages and to the right of it on received ones (it used to sit on its own row above the time).
+ * When the timestamp row is hidden the pill stays under the bubble on the message's side.
+ */
+private fun placeReactionsBesideTimestamp(binding: ViewVisibleMessageBinding, outgoing: Boolean) {
+    val emoji = binding.emojiReactionsView.root
+    if (emoji.visibility == View.GONE) return
+    val parent = binding.mainContainer
+    val time = binding.messageTimestampContainer
+    val inner = binding.messageInnerContainer
+    val gap = (6 * parent.resources.displayMetrics.density).toInt()
+    val set = ConstraintSet()
+    set.clone(parent)
+    // The time row hangs off the bubble now, not off the pill.
+    set.connect(time.id, ConstraintSet.TOP, inner.id, ConstraintSet.BOTTOM)
+    listOf(ConstraintSet.START, ConstraintSet.END, ConstraintSet.TOP, ConstraintSet.BOTTOM).forEach { set.clear(emoji.id, it) }
+    if (time.visibility == View.VISIBLE) {
+        set.connect(emoji.id, ConstraintSet.TOP, time.id, ConstraintSet.TOP)
+        set.connect(emoji.id, ConstraintSet.BOTTOM, time.id, ConstraintSet.BOTTOM)
+        if (outgoing) set.connect(emoji.id, ConstraintSet.END, time.id, ConstraintSet.START, gap)
+        else set.connect(emoji.id, ConstraintSet.START, time.id, ConstraintSet.END, gap)
+    } else {
+        set.connect(emoji.id, ConstraintSet.TOP, inner.id, ConstraintSet.BOTTOM, gap)
+        if (outgoing) set.connect(emoji.id, ConstraintSet.END, inner.id, ConstraintSet.END)
+        else set.connect(emoji.id, ConstraintSet.START, inner.id, ConstraintSet.START)
+    }
+    set.applyTo(parent)
 }

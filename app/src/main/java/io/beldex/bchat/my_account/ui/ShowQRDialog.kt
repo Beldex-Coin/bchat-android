@@ -116,7 +116,7 @@ fun ShowQRDialog(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
                                 .size(40.dp)
-                                .background(MaterialTheme.appColors.userDetailsCancelBackground, CircleShape)
+                                .background(androidx.compose.ui.res.colorResource(R.color.qr_logo_background), CircleShape)
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.ic_bchat_logo),
@@ -143,17 +143,17 @@ fun ShowQRDialog(
                 modifier = Modifier.width(122.dp).height(52.dp)
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_baseline_share_24),
+                    painter = painterResource(id = R.drawable.ic_qr_share),
                     contentDescription = "Share",
                     tint = MaterialTheme.appColors.dialogPositiveButtonText,
-                    modifier = Modifier.size(18.dp)
+                    modifier = Modifier.size(22.dp)
                 )
                 Text(
                     text = stringResource(R.string.share),
                     fontFamily = OpenSans,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
-                    modifier = Modifier.padding(start = 10.dp, end = 4.dp)
+                    modifier = Modifier.padding(start = 12.dp)
                 )
             }
 

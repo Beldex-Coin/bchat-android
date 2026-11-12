@@ -83,7 +83,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
                         nicknameInput = nicknameInput,
                         onNicknameInputChange = { nicknameInput = it },
                         onEditNameClick = {
-                            nicknameInput = ""
+                            nicknameInput = displayNameState.take(26)
                             isEditingName = true
                         },
                         onCancelEditClick = { isEditingName = false },
@@ -112,6 +112,8 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
         val window = dialog?.window ?: return
         val isLightMode = UiModeUtilities.isDayUiMode(requireContext())
         window.setDimAmount(if (isLightMode) 0.1f else 0.75f)
+        @Suppress("DEPRECATION")
+        window.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
         applyLandscapeSizing()
     }

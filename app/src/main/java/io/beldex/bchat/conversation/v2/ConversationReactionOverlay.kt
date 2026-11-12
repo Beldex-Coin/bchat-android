@@ -44,6 +44,7 @@ import io.beldex.bchat.dependencies.DatabaseComponent.Companion.get
 import io.beldex.bchat.repository.ConversationRepository
 import io.beldex.bchat.util.AnimationCompleteListener
 import io.beldex.bchat.util.DateUtils
+import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.isSharedContact
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -148,6 +149,13 @@ class ConversationReactionOverlay : FrameLayout {
         this.lastSeenDownPoint = lastSeenDownPoint
         conversationItem.scaleX = LONG_PRESS_SCALE_FACTOR
         conversationItem.scaleY = LONG_PRESS_SCALE_FACTOR
+        setBackgroundColor(
+            ContextCompat.getColor(
+                context,
+                if (UiModeUtilities.isDayUiMode(context)) R.color.transparent_black_40
+                else R.color.transparent_black_70
+            )
+        )
         visibility = INVISIBLE
         this.activity = activity
         updateSystemUiOnShow(activity)

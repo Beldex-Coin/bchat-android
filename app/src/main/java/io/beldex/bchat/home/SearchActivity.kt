@@ -234,8 +234,9 @@ private fun SearchView(
                         softWrap = false,
                         overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                         fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                        fontWeight = FontWeight.Light,
                         fontSize = 14.sp,
-                        color = MaterialTheme.appColors.onboardingInputHint
+                        color = androidx.compose.ui.res.colorResource(R.color.chat_input_hint)
                     )
                 },
                 singleLine = true,
@@ -258,9 +259,10 @@ private fun SearchView(
                 ),
                 leadingIcon = {
                     Icon(
-                        Icons.Default.Search,
+                        painter = painterResource(R.drawable.ic_home_search),
                         contentDescription = stringResource(R.string.SearchToolbar_search),
-                        tint = MaterialTheme.appColors.secondaryContentColor
+                        tint = androidx.compose.ui.res.colorResource(R.color.chat_input_hint),
+                        modifier = Modifier.size(14.dp)
                     )
                 },
                 trailingIcon = {
@@ -268,7 +270,7 @@ private fun SearchView(
                         Icon(
                             Icons.Default.Close,
                             contentDescription = stringResource(R.string.clear),
-                            tint = MaterialTheme.appColors.secondaryContentColor,
+                            tint = MaterialTheme.appColors.onboardingBodyColor,
                             modifier = Modifier.clickable(
                                 onClick = {
                                     onQueryChanged("")

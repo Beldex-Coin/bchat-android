@@ -339,6 +339,75 @@ fun ArchiveChatScreen(
                                 )
                             }
                         }
+                        if (keepArchiveChat) {
+                            if (!thread.recipient.isLocalNumber) {
+                                if (thread.recipient.isMuted) {
+                                    Row(
+                                        horizontalArrangement = Arrangement.Start,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_unmute_notification_menu),
+                                            contentDescription = "",
+                                            tint = MaterialTheme.appColors.iconTint,
+                                            modifier = Modifier.size(14.dp)
+                                        )
+                                        TextButton(onClick = {
+                                            showMenu = false
+                                            showMuteNotification = true
+                                        }) {
+                                            Text(
+                                                stringResource(id = R.string.conversation_muted__unmute),
+                                                fontSize = 12.sp
+                                            )
+                                        }
+                                    }
+                                } else {
+                                    Row(
+                                        horizontalArrangement = Arrangement.Start,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_mute_notification_menu),
+                                            contentDescription = "",
+                                            tint = MaterialTheme.appColors.iconTint,
+                                            modifier = Modifier.size(14.dp)
+                                        )
+                                        TextButton(onClick = {
+                                            showMenu = false
+                                            showMuteNotification = true
+                                        }) {
+                                            Text(
+                                                stringResource(id = R.string.MuteDialog_mute_notifications),
+                                                fontSize = 12.sp
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                            if (thread.recipient.isGroupRecipient && !thread.recipient.isMuted) {
+                                Row(
+                                    horizontalArrangement = Arrangement.Start,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_notification_settings_menu),
+                                        contentDescription = "",
+                                        tint = MaterialTheme.appColors.iconTint,
+                                        modifier = Modifier.size(14.dp)
+                                    )
+                                    TextButton(onClick = {
+                                        showMenu = false
+                                        showNotificationSettings = true
+                                    }) {
+                                        Text(
+                                            stringResource(id = R.string.RecipientPreferenceActivity_notification_settings),
+                                            fontSize = 12.sp
+                                        )
+                                    }
+                                }
+                            }
+                        }
                         if (thread.unreadCount > 0) {
                             Row(
                                 horizontalArrangement = Arrangement.Start,

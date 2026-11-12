@@ -451,11 +451,10 @@
     <string name="arrays__use_default">Usar padrão</string>
     <string name="arrays__use_custom">Usar personalizado</string>
 
-    <string name="arrays__mute_for_one_hour">Silenciar por 1 hora</string>
-    <string name="arrays__mute_for_two_hours">Silenciar por 2 horas</string>
-    <string name="arrays__mute_for_one_day">Silenciar por 1 dia</string>
-    <string name="arrays__mute_for_seven_days">Silenciar por 7 dias</string>
-    <string name="arrays__mute_forever">Silenciar para sempre</string>
+    <string name="arrays__mute_for_eight_hours">Silenciar por 8 horas</string>
+    <string name="arrays__mute_for_twenty_four_hours">Silenciar por 24 horas</string>
+    <string name="arrays__mute_for_one_week">Silenciar por 1 semana</string>
+    <string name="arrays__mute_forever">Sempre</string>
 
     <string name="arrays__settings_default">Settings default</string>
     <string name="arrays__enabled">Enabled</string>

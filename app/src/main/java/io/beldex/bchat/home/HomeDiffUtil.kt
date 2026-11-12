@@ -38,6 +38,8 @@ class HomeDiffUtil(
         if (!sameUnreads) return false
         val samePinned = oldItem.isPinned == newItem.isPinned
         if (!samePinned) return false
+        val sameMute = oldItem.mutedUntil == newItem.mutedUntil && oldItem.notifyType == newItem.notifyType
+        if (!sameMute) return false
         val sameAvatar = oldItem.recipient.profileAvatar == newItem.recipient.profileAvatar
         if (!sameAvatar) return false
 //        val sameUsername = oldItem.recipient.name == newItem.recipient.name

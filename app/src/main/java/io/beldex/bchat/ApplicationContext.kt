@@ -23,6 +23,7 @@ import com.beldex.libbchat.messaging.utilities.WindowDebouncer
 import com.beldex.libbchat.mnode.MnodeModule.Companion.configure
 import com.beldex.libbchat.utilities.Address.Companion.fromSerialized
 import com.beldex.libbchat.utilities.Device
+import com.beldex.libbchat.utilities.OnionRoutingPreferenceUtils
 import com.beldex.libbchat.utilities.ProfilePictureUtilities.upload
 import com.beldex.libbchat.utilities.SSKEnvironment.Companion.configure
 import com.beldex.libbchat.utilities.OnionRoutingPreferenceUtils
@@ -184,7 +185,7 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
         init(this)
         configure(this)
         super<Application>.onCreate()
-        OnionRoutingPreferenceUtils.migrateToForcedThreeHopIfNeeded(this)
+        OnionRoutingPreferenceUtils.applyDefaultHopCountOnUpgrade(this)
         messagingModuleConfiguration=MessagingModuleConfiguration(
             this,
             storage,

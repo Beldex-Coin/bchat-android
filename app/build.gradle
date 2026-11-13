@@ -114,7 +114,24 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                    'proguard/proguard.pro',
+                    'proguard/proguard-dagger.pro',
+                    'proguard/proguard-ez-vcard.pro',
+                    'proguard/proguard-glide.pro',
+                    'proguard/proguard-jackson.pro',
+                    'proguard/proguard-jna.pro',
+                    'proguard/proguard-klinker.pro',
+                    'proguard/proguard-okhttp.pro',
+                    'proguard/proguard-retrofit.pro',
+                    'proguard/proguard-rounded-image-view.pro',
+                    'proguard/proguard-shortcutbadger.pro',
+                    'proguard/proguard-sqlite.pro',
+                    'proguard/proguard-square-okhttp.pro',
+                    'proguard/proguard-square-okio.pro',
+                    'proguard/proguard-webrtc.pro'
             buildConfigField "boolean", "CRASHLYTICS_ENABLED", "true"
             firebaseCrashlytics {
                 // Enable processing and uploading of native symbols to Firebase servers.

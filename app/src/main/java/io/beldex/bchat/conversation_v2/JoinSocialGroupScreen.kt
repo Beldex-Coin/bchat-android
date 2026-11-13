@@ -273,8 +273,8 @@ private fun JoinSection(
             enabled = uiState.groupUrl.isNotEmpty(),
             containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
             contentColor = MaterialTheme.appColors.backgroundColor,
-            disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
-            disabledContentColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledText,
+            disabledContainerColor = MaterialTheme.appColors.disabledButtonBackground,
+            disabledContentColor = colorResource(R.color.chat_input_hint),
             modifier = Modifier
                 .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
                 .fillMaxWidth()

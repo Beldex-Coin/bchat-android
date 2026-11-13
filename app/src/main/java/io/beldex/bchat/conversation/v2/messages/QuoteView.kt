@@ -145,6 +145,9 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                         binding.mainQuoteViewContainer.setBackgroundColor(
                             resources.getColor(getContainerColor(isOutgoingMessage), null)
                         )
+                        binding.quoteViewAuthorTextView.setTextColor(
+                            resources.getColor(getAuthorTextColor(isOutgoingMessage), null)
+                        )
                     } else {
                         binding.quoteGroup.visibility = View.GONE
                         binding.quoteViewAttachmentPreviewImageView.visibility = View.GONE
@@ -410,17 +413,11 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     // endregion
 
     private fun getContainerColor(isOutgoingMessage: Boolean): Int {
-        return when {
-            isOutgoingMessage -> R.color.outgoing_call_background
-            else -> R.color.quote_view_background
-        }
+        return R.color.contact_card_inner_background
     }
 
     private fun getAuthorTextColor(isOutgoingMessage: Boolean): Int {
-        return when {
-            isOutgoingMessage -> R.color.white
-            else -> R.color.text_green
-        }
+        return R.color.text_green
     }
 
     private fun quotedTextColor(isOutgoingMessage: Boolean): Int {

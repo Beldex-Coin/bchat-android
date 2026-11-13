@@ -17,8 +17,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -61,15 +59,6 @@ fun LandingScreen(
             .fillMaxSize()
             .bchatBackground(MaterialTheme.appColors.backgroundColor, centerAlpha = 0.3f, dotAlpha = 0.1f)
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_landing_background_logo),
-            contentDescription = null,
-            modifier = Modifier
-                .offset(x = (-114).dp, y = 275.dp)
-                .requiredSize(width = 171.38.dp, height = 142.dp)
-                .graphicsLayer(scaleX = -1f, alpha = 0.1f)
-        )
-        LandingChatSkeleton(modifier = Modifier.fillMaxSize().graphicsLayer(alpha = 0.5f))
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -77,7 +66,6 @@ fun LandingScreen(
         ) {
             Column(
                 modifier = Modifier
-                    .weight(1f)
                     .padding(start = 24.dp, end = 24.dp, top = 40.dp),
                 verticalArrangement = Arrangement.Top
             ) {
@@ -121,6 +109,14 @@ fun LandingScreen(
                     modifier = Modifier.padding(top = 20.dp)
                 )
             }
+
+            LandingChatSkeleton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(vertical = 16.dp)
+                    .graphicsLayer(alpha = 0.5f)
+            )
 
             Column(
                 modifier = Modifier
@@ -202,13 +198,18 @@ private fun LandingChatSkeleton(modifier: Modifier = Modifier) {
     val cardStart = MaterialTheme.appColors.userDetailsCancelBackground
     val cardEnd = MaterialTheme.appColors.selectedItemBackground
     Canvas(modifier = modifier) {
-        fun dp(v: Float) = v.dp.toPx()
-        fun card(x: Float, y: Float, w: Float, h: Float, tl: Float, tr: Float) {
+        val contentH = (636f - 369f).dp.toPx()
+        val s = minOf(size.height / contentH, 1f)
+        val top = (size.height - contentH * s) / 2f
+        fun dp(v: Float) = v.dp.toPx() * s
+        fun x(v: Float) = v.dp.toPx() * s
+        fun y(v: Float) = (v - 369f).dp.toPx() * s + top
+        fun card(cx: Float, cy: Float, w: Float, h: Float, tl: Float, tr: Float) {
             val r = dp(19f)
             val path = androidx.compose.ui.graphics.Path().apply {
                 addRoundRect(
                     androidx.compose.ui.geometry.RoundRect(
-                        left = dp(x), top = dp(y), right = dp(x + w), bottom = dp(y + h),
+                        left = x(cx), top = y(cy), right = x(cx + w), bottom = y(cy + h),
                         topLeftCornerRadius = androidx.compose.ui.geometry.CornerRadius(dp(tl)),
                         topRightCornerRadius = androidx.compose.ui.geometry.CornerRadius(dp(tr)),
                         bottomRightCornerRadius = androidx.compose.ui.geometry.CornerRadius(r),
@@ -216,21 +217,21 @@ private fun LandingChatSkeleton(modifier: Modifier = Modifier) {
                     )
                 )
             }
-            drawPath(path, brush = Brush.horizontalGradient(listOf(cardStart, cardEnd), startX = dp(x), endX = dp(x + w)))
+            drawPath(path, brush = Brush.horizontalGradient(listOf(cardStart, cardEnd), startX = x(cx), endX = x(cx + w)))
         }
-        fun line(x: Float, y: Float, w: Float) =
-            drawLine(lineColor, Offset(dp(x), dp(y)), Offset(dp(x + w), dp(y)), strokeWidth = dp(4.75f), cap = StrokeCap.Round)
+        fun line(lx: Float, ly: Float, w: Float) =
+            drawLine(lineColor, Offset(x(lx), y(ly)), Offset(x(lx + w), y(ly)), strokeWidth = dp(4.75f), cap = StrokeCap.Round)
 
         // row 1
-        drawCircle(circle, radius = dp(27f), center = Offset(dp(93f), dp(404f)))
+        drawCircle(circle, radius = dp(27f), center = Offset(x(93f), y(404f)))
         card(139f, 369f, 325f, 69f, tl = 2.4f, tr = 19f)
         line(168f, 393f, 267f); line(168f, 415f, 267f)
         // row 2
         card(139f, 457f, 253f, 91f, tl = 19f, tr = 2.4f)
         line(168f, 481f, 195f); line(168f, 503f, 195f); line(168f, 525f, 112f)
-        drawCircle(circle, radius = dp(27f), center = Offset(dp(438f), dp(503f)))
+        drawCircle(circle, radius = dp(27f), center = Offset(x(438f), y(503f)))
         // row 3
-        drawCircle(circle, radius = dp(27f), center = Offset(dp(93f), dp(602f)))
+        drawCircle(circle, radius = dp(27f), center = Offset(x(93f), y(602f)))
         card(139f, 567f, 325f, 69f, tl = 2.4f, tr = 19f)
         line(168f, 591f, 267f); line(168f, 613f, 267f)
     }

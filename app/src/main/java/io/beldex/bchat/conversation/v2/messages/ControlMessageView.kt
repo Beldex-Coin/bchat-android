@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
@@ -146,7 +147,10 @@ class ControlMessageView : LinearLayout {
         val iconDrawable = if (inlineIcon != 0) ContextCompat.getDrawable(context, inlineIcon)?.mutate() else null
         iconDrawable?.let { it.setBounds(0, 0, it.intrinsicWidth, it.intrinsicHeight) }
         binding.textView.setCompoundDrawablesRelative(iconDrawable, null, null, null)
-        binding.textView.compoundDrawablePadding = (6 * resources.displayMetrics.density).toInt()
+        binding.textView.compoundDrawablePadding = (4 * resources.displayMetrics.density).toInt()
+        binding.textView.gravity = if (iconDrawable != null)
+            Gravity.START or Gravity.CENTER_VERTICAL
+        else Gravity.CENTER
         styleChips(messageBody)
 
         // handle long clicked if it was passed on

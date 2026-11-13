@@ -84,16 +84,10 @@ fun SharedContactView(
         Card(
             shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
             colors =CardDefaults.cardColors(
-                containerColor = if (isQuoted) backgroundColor else Color.Transparent
+                containerColor = Color.Transparent
             ),
             modifier=Modifier
-                .fillMaxWidth(cardWidth)
-                .padding(
-                    start=if (isQuoted) 2.dp else 0.dp,
-                    top=if (isQuoted) 4.dp else 0.dp,
-                    end=if (isQuoted) 2.dp else 0.dp,
-                    bottom=if (isQuoted) 4.dp else 0.dp
-                ),
+                .fillMaxWidth(cardWidth),
         ) {
             Column {
                 SharedContactContent(

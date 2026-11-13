@@ -5,11 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Column
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,30 +16,34 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.text.PlatformTextStyle
-import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -107,19 +109,27 @@ fun UserDetailsSheetContent(
             if (fieldValue.text != nicknameInput) {
                 fieldValue = TextFieldValue(nicknameInput, TextRange(nicknameInput.length))
             }
-            Box(
+            LaunchedEffect(Unit) {
+                if (nicknameInput.isEmpty() && name.isNotEmpty()) {
+                    onNicknameInputChange(name.take(26))
+                }
+            }
+            val underlineColor = MaterialTheme.appColors.editTextColor
+            BoxWithConstraints(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .padding(top = 12.dp)
                     .fillMaxWidth()
                     .padding(horizontal = 12.dp)
             ) {
+                val fieldMaxWidth = (maxWidth - 128.dp).coerceAtLeast(80.dp)
                 BasicTextField(
                     value = fieldValue,
-                    onValueChange = {
-                        if (it.text.length <= 26) {
-                            fieldValue = it
-                            onNicknameInputChange(it.text)
+                    onValueChange = { new ->
+                        val clean = if (new.text.contains('\n')) new.copy(text = new.text.replace("\n", "")) else new
+                        if (clean.text.length <= 26) {
+                            fieldValue = clean
+                            onNicknameInputChange(clean.text)
                         }
                     },
                     textStyle = TextStyle(
@@ -127,39 +137,36 @@ fun UserDetailsSheetContent(
                         fontFamily = OpenSans,
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp,
-                        lineHeight = 26.sp,
+                        lineHeight = 24.sp,
                         textAlign = TextAlign.Center,
-                        textDecoration = TextDecoration.Underline,
                         platformStyle = PlatformTextStyle(includeFontPadding = false),
                         lineHeightStyle = LineHeightStyle(
                             alignment = LineHeightStyle.Alignment.Center,
                             trim = LineHeightStyle.Trim.None
                         )
                     ),
-                    singleLine = true,
+                    singleLine = false,
+                    maxLines = 2,
                     visualTransformation = CursorGapTransformation,
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = { onSaveNicknameClick() }),
                     cursorBrush = SolidColor(MaterialTheme.appColors.editTextColor),
                     decorationBox = { innerTextField ->
                         Box(contentAlignment = Alignment.Center) {
-                            if (nicknameInput.isEmpty()) {
-                                Text(
-                                    text = name,
-                                    fontFamily = OpenSans,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 18.sp,
-                                    textDecoration = TextDecoration.Underline,
-                                    color = MaterialTheme.appColors.editTextColor.copy(alpha = 0.5f)
-                                )
-                            }
                             innerTextField()
                         }
                     },
                     modifier = Modifier
-                        .width(IntrinsicSize.Min)
-                        .widthIn(min = 1.dp, max = 190.dp)
-                        .padding(vertical = 4.dp)
+                        .padding(top = 4.dp)
+                        .widthIn(min = 24.dp, max = fieldMaxWidth)
+                        .width(IntrinsicSize.Max)
+                        .drawBehind {
+                            if (fieldValue.text.isNotEmpty()) return@drawBehind
+                            val stroke = 1.dp.toPx()
+                            val y = size.height - stroke / 2f
+                            drawLine(underlineColor, Offset(0f, y), Offset(size.width, y), stroke)
+                        }
+                        .padding(bottom = 4.dp)
                 )
 
                 Row(

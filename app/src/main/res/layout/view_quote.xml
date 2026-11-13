@@ -13,7 +13,7 @@
     android:layout_margin="8dp"
     app:contentPaddingLeft="0dp"
     app:contentPaddingRight="8dp"
-    app:cardBackgroundColor="#0B0B0B"
+    app:cardBackgroundColor="@color/contact_card_inner_background"
     >
 
 <!--    <View-->
@@ -190,4 +190,4 @@
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="contentTypeIcon,quoteViewBodyTextView,quoteViewAttachmentThumbnailImageView,quoteViewAttachmentPreviewImageView,quoteViewCancelButton"/>
 
-</io.beldex.bchat.conversation.v2.messages.QuoteView>
+</io.beldex.bchat.conversation.v2.messages.QuoteView>

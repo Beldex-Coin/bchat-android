@@ -3,7 +3,7 @@
     <item android:left="3dp">
         <shape>
             <size android:width="2dp" />
-            <solid android:color="@color/white" />
+            <solid android:color="@color/disappear_icon_color" />
         </shape>
     </item>
 </layer-list>

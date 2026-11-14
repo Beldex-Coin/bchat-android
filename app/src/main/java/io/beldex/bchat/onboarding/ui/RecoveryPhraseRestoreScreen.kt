@@ -135,9 +135,7 @@ fun RecoveryPhraseRestoreScreen(
                                     }
                                 },
                                 update = { editText ->
-                                    editText.hint = android.text.SpannableString(hintText).apply {
-                                        setSpan(android.text.style.AbsoluteSizeSpan(12, true), 0, length, android.text.Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-                                    }
+                                    editText.hint = hintText.uppercase()
                                     if (editText.text?.toString() != mnemonic) {
                                         editText.setText(mnemonic)
                                         editText.setSelection(editText.text?.length ?: 0)
@@ -145,6 +143,13 @@ fun RecoveryPhraseRestoreScreen(
                                         val shown = editText.text?.toString().orEmpty()
                                         if (shown != mnemonic) latestOnMnemonicChange.value(shown)
                                     }
+                                    val empty = editText.text.isNullOrEmpty()
+                                    val size = if (empty) 12f else 14f
+                                    if (editText.textSize != android.util.TypedValue.applyDimension(android.util.TypedValue.COMPLEX_UNIT_SP, size, editText.resources.displayMetrics)) {
+                                        editText.textSize = size
+                                    }
+                                    val top = if (empty) (1 * editText.resources.displayMetrics.density).toInt() else 0
+                                    if (editText.paddingTop != top) editText.setPadding(0, top, 0, 0)
                                 },
                                 modifier = Modifier
                                     .weight(1f)

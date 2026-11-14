@@ -308,6 +308,9 @@ class WebRTCComposeActivity : BaseComponentActivity() {
         var isShowEndCallOption by remember {
             mutableStateOf(true)
         }
+        var isCallEnding by remember {
+            mutableStateOf(false)
+        }
         var isShowVideoOption by remember {
             mutableStateOf(false)
         }
@@ -453,6 +456,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
         hangupReceiver=remember {
             object : BroadcastReceiver() {
                 override fun onReceive(p0 : Context?, p1 : Intent?) {
+                    isCallEnding=true
                     isShowDialingStatus=false
                     if (!isShowCallDurationStatus) {
                         if (TextSecurePreferences.isRemoteHangup(context)) {
@@ -733,6 +737,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
         val displayedKey = if (showLocalUserDetailsInFullScreen()) localUserPublicKey else recipientPublicKey
         val displayedName = if (showLocalUserDetailsInFullScreen()) localUserName else isPersonNameText
         val statusLine = when {
+            isCallEnding -> if (isShowCallDeclineStatus) isStatusCallDeclineText else context.getString(R.string.call_ended)
             isShowReConnecting -> isStatusReConnectingText
             isShowCallDurationStatus -> isStatusCallDurationText
             isShowDialingStatus -> isStatusDialingText
@@ -754,6 +759,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
             }
         }
         val hangUp: () -> Unit = {
+            isCallEnding = true
             context.startService(WebRtcCallService.hangupIntent(context))
         }
         val answer: () -> Unit = {
@@ -764,6 +770,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
             answerCall(context)
         }
         val decline: () -> Unit = {
+            isCallEnding = true
             context.startService(WebRtcCallService.denyCallIntent(context))
         }
 
@@ -955,7 +962,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                     }
                 }
 
-                if (isShowAnswerOption && isShowDeclineOption) {
+                if (!isCallEnding && isShowAnswerOption && isShowDeclineOption) {
                     // Incoming: Decline on the left, Accept on the right, each with its label (Figma Call_2).
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -983,7 +990,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                             onClick = answer
                         )
                     }
-                } else if (isShowVideoOption || isShowSwitchCameraOption || isShowMuteOption || isShowSpeakerOption || isShowEndCallOption) {
+                } else if (!isCallEnding && (isShowVideoOption || isShowSwitchCameraOption || isShowMuteOption || isShowSpeakerOption || isShowReConnecting)) {
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,

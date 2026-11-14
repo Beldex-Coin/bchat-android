@@ -133,6 +133,8 @@ fun DisplayNameStepScreen(
                     update = { editText ->
                         editText.hint = android.text.SpannableString(hintText.uppercase()).apply {
                             setSpan(android.text.style.AbsoluteSizeSpan(12, true), 0, length, android.text.Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                            val gap = (4 * editText.resources.displayMetrics.density).toInt()
+                            setSpan(android.text.style.LeadingMarginSpan.Standard(gap), 0, length, android.text.Spanned.SPAN_INCLUSIVE_INCLUSIVE)
                         }
                         if (editText.text?.toString() != displayName) {
                             editText.setText(displayName)

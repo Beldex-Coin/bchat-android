@@ -29,7 +29,6 @@ import androidx.loader.content.CursorLoader;
 import io.beldex.bchat.database.GroupDatabase;
 
 import com.beldex.libbchat.utilities.GroupRecord;
-import io.beldex.bchat.database.GroupDatabase;
 import io.beldex.bchat.database.ThreadDatabase;
 import io.beldex.bchat.database.model.ThreadRecord;
 import io.beldex.bchat.dependencies.DatabaseComponent;

@@ -6,7 +6,6 @@ import android.content.res.Configuration
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import io.beldex.bchat.compose_utils.DialogCancelButton
@@ -26,21 +25,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -53,10 +41,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.notchedCornerShape
@@ -76,6 +62,11 @@ import kotlinx.coroutines.delay
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
 import java.util.Locale
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.Icon
+import androidx.compose.ui.graphics.SolidColor
+import io.beldex.bchat.compose_utils.BChatDimens
+import io.beldex.bchat.compose_utils.BChatLoaderContent
 @Composable
 fun LinkYourBNSDialog(
     state: MyAccountViewModel.UIState,
@@ -178,7 +169,7 @@ fun LinkYourBNSDialog(
                         .border(1.dp, MaterialTheme.appColors.nicknameCancelBorder)
                         .clickable { onDismissRequest(false) }
                 ) {
-                    androidx.compose.material3.Icon(
+                    Icon(
                         painter = painterResource(id = R.drawable.ic_close),
                         contentDescription = null,
                         tint = MaterialTheme.appColors.cancelIconTint,
@@ -234,7 +225,7 @@ fun LinkYourBNSDialog(
                         fontSize = 12.sp
                     )
                 }
-                androidx.compose.foundation.text.BasicTextField(
+                BasicTextField(
                     value = bnsName,
                     onValueChange = {
                         bnsName = it
@@ -251,7 +242,7 @@ fun LinkYourBNSDialog(
                         fontFamily = RobotoMono,
                         fontSize = 12.sp
                     ),
-                    cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.appColors.textSelectionColor),
+                    cursorBrush = SolidColor(MaterialTheme.appColors.textSelectionColor),
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -283,7 +274,7 @@ fun LinkYourBNSDialog(
                             BChatToast.error(context, context.getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
                         }
                     },
-                    shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+                    shape = notchedCornerShape(BChatDimens.NotchMedium),
                     containerColor = if (canVerify) lightButton else MaterialTheme.appColors.disabledButtonBackground,
                     contentColor = if (canVerify) darkText else disabledText,
                     border = BorderStroke(1.dp, if (canVerify) MaterialTheme.appColors.dialogPositiveButtonBorder else MaterialTheme.appColors.disabledButtonBorder),
@@ -298,7 +289,7 @@ fun LinkYourBNSDialog(
                     )
                     if (isVerified) {
                         Spacer(modifier = Modifier.width(6.dp))
-                        androidx.compose.material3.Icon(
+                        Icon(
                             painter = painterResource(id = R.drawable.ic_toast_check),
                             contentDescription = "Bns verified",
                             tint = Color.Unspecified,
@@ -319,7 +310,7 @@ fun LinkYourBNSDialog(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
-                shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+                shape = notchedCornerShape(BChatDimens.NotchMedium),
                 enabled = isVerified,
                 containerColor = lightButton,
                 contentColor = darkText,
@@ -360,7 +351,7 @@ fun BnsNameVerifyingLoader(onDismiss: () -> Unit) {
         onDismissRequest = onDismiss,
     ) {
 
-        io.beldex.bchat.compose_utils.BChatLoaderContent(text = stringResource(id = R.string.verify_bns))
+        BChatLoaderContent(text = stringResource(id = R.string.verify_bns))
     }
 
 }

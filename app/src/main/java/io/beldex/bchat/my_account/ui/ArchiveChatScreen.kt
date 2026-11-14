@@ -44,9 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Popup
-import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.beldex.libbchat.utilities.recipients.Recipient
 import com.bumptech.glide.Glide
 import io.beldex.bchat.R
 import io.beldex.bchat.archivechats.ArchiveChatViewModel
@@ -68,6 +66,7 @@ import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.WindowSnapshot
 import io.beldex.bchat.util.captureWindowSnapshot
 import kotlinx.coroutines.launch
+import io.beldex.bchat.compose_utils.RobotoMono
 
 
 @Composable
@@ -355,7 +354,7 @@ fun ArchiveChatScreen(
                     style = MaterialTheme.typography.titleSmall.copy(
                     fontSize = 12.sp,
                     fontWeight = FontWeight(400),
-                    fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                    fontFamily = RobotoMono,
                     color = MaterialTheme.appColors.onboardingHeadlineColor
                 ),
                 textAlign = TextAlign.Start,

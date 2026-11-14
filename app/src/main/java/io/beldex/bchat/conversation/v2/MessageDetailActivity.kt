@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.core.view.isVisible
-import androidx.appcompat.widget.Toolbar
 import com.beldex.libbchat.mnode.MnodeAPI
 import io.beldex.bchat.R
 import com.beldex.libbchat.utilities.Address

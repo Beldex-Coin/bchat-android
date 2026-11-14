@@ -23,7 +23,7 @@ private fun config() = PagingConfig(
 
 fun Long.bucketed(): Long = (TIME_BUCKET - this % TIME_BUCKET) + this
 
-fun conversationPager(threadId: Long, initialKey: PageLoad? = null, db: io.beldex.bchat.database.MmsSmsDatabase, contactDb: BchatContactDatabase) = Pager(config(), initialKey = initialKey) {
+fun conversationPager(threadId: Long, initialKey: PageLoad? = null, db: MmsSmsDatabase, contactDb: BchatContactDatabase) = Pager(config(), initialKey = initialKey) {
     ConversationPagingSource(threadId, db, contactDb)
 }
 
@@ -35,7 +35,7 @@ class ConversationPagerDiffCallback: DiffUtil.ItemCallback<MessageAndContact>() 
         oldItem == newItem
 }
 
-data class MessageAndContact(val message: io.beldex.bchat.database.model.MessageRecord,
+data class MessageAndContact(val message: MessageRecord,
                              val contact: Contact?)
 
 data class PageLoad(val fromTime: Long, val toTime: Long? = null)

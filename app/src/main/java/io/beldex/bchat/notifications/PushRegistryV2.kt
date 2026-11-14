@@ -7,9 +7,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.functional.map
-import okhttp3.MediaType
 import okhttp3.Request
-import okhttp3.RequestBody
 import com.beldex.libbchat.messaging.sending_receiving.notifications.Response
 import com.beldex.libbchat.messaging.sending_receiving.notifications.Server
 import com.beldex.libbchat.messaging.sending_receiving.notifications.SubscriptionRequest

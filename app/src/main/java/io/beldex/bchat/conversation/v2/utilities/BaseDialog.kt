@@ -15,6 +15,9 @@ import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.DialogPanel
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
+import android.R
+import android.view.LayoutInflater
+import androidx.compose.foundation.layout.Box
 
 /**
  * Base for the app's small dialogs. Renders [Content] in the shared Revamp_2026 popup panel, so
@@ -30,21 +33,21 @@ open class BaseDialog : DialogFragment() {
     override fun onStart() {
         super.onStart()
         dialog?.window?.apply {
-            setBackgroundDrawableResource(android.R.color.transparent)
+            setBackgroundDrawableResource(R.color.transparent)
             setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             setDimAmount(if (UiModeUtilities.isDayUiMode(requireContext())) 0.1f else 0.75f)
         }
     }
 
     override fun onCreateView(
-        inflater: android.view.LayoutInflater,
+        inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = ComposeView(requireContext()).apply {
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
         setContent {
             BChatTheme(darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT) {
-                androidx.compose.foundation.layout.Box(
+                Box(
                     modifier = Modifier.padding(horizontal = 20.dp)
                 ) {
                     DialogPanel(modifier = Modifier.fillMaxWidth()) { this@BaseDialog.Content() }

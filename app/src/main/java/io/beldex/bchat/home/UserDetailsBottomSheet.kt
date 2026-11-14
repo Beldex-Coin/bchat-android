@@ -30,6 +30,7 @@ import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.unicodeNamePattern
 import javax.inject.Inject
+import android.view.WindowManager
 
 @AndroidEntryPoint
 class UserDetailsBottomSheet : BottomSheetDialogFragment() {
@@ -113,7 +114,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
         val isLightMode = UiModeUtilities.isDayUiMode(requireContext())
         window.setDimAmount(if (isLightMode) 0.1f else 0.75f)
         @Suppress("DEPRECATION")
-        window.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
         applyLandscapeSizing()
     }

@@ -1,16 +1,13 @@
 package io.beldex.bchat.notifications;
 
-import android.annotation.TargetApi;
 import android.app.NotificationChannel;
 import android.app.NotificationChannelGroup;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
 
@@ -27,10 +24,8 @@ import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.ServiceUtil;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libbchat.utilities.recipients.Recipient;
-import com.beldex.libbchat.utilities.recipients.Recipient.VibrateState;
 import com.beldex.libsignal.utilities.Log;
 
-import io.beldex.bchat.dependencies.DatabaseComponent;
 
 import java.util.ArrayList;
 import java.util.Arrays;

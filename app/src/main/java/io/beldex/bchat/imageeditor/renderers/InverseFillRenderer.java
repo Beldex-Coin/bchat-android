@@ -8,9 +8,6 @@ import androidx.annotation.NonNull;
 import io.beldex.bchat.imageeditor.Bounds;
 import io.beldex.bchat.imageeditor.Renderer;
 import io.beldex.bchat.imageeditor.RendererContext;
-import io.beldex.bchat.imageeditor.Bounds;
-import io.beldex.bchat.imageeditor.Renderer;
-import io.beldex.bchat.imageeditor.RendererContext;
 
 /**
  * Renders the {@link color} outside of the {@link Bounds}.

@@ -26,6 +26,7 @@ import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentScanQrCodeBinding
 import java.io.FileNotFoundException
 import java.io.InputStream
+import io.beldex.bchat.compose_utils.NotchedDrawable
 
 class ScanQRCodeFragment : Fragment() {
     private lateinit var binding: FragmentScanQrCodeBinding
@@ -56,10 +57,10 @@ class ScanQRCodeFragment : Fragment() {
         }
         // Figma "Upload from Gallery": notched #111111 button with a green hairline.
         val density = resources.displayMetrics.density
-        binding.uploadFromGalleryLayout.background = io.beldex.bchat.compose_utils.NotchedDrawable(
+        binding.uploadFromGalleryLayout.background = NotchedDrawable(
             12 * density, 1 * density, 0xFF111111.toInt(), 0xFF00BC33.toInt()
         )
-        binding.messageTextView.background = io.beldex.bchat.compose_utils.NotchedDrawable(
+        binding.messageTextView.background = NotchedDrawable(
             10 * density, 1 * density, 0xFF111111.toInt(), 0xFF333333.toInt()
         )
         binding.uploadFromGalleryLayout.setOnClickListener {

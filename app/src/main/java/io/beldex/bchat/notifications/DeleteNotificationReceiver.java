@@ -8,8 +8,6 @@ import android.os.AsyncTask;
 
 import io.beldex.bchat.ApplicationContext;
 import io.beldex.bchat.dependencies.DatabaseComponent;
-import io.beldex.bchat.ApplicationContext;
-import io.beldex.bchat.dependencies.DatabaseComponent;
 
 public class DeleteNotificationReceiver extends BroadcastReceiver {
 

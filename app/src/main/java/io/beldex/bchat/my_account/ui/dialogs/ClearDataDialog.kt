@@ -1,7 +1,6 @@
 package io.beldex.bchat.my_account.ui.dialogs
 
 import android.content.res.Configuration
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,11 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,6 +43,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import androidx.compose.foundation.layout.Arrangement
+import io.beldex.bchat.compose_utils.BChatLoader
 
 enum class Steps {
     INFO_PROMPT_DEFAULT,
@@ -258,7 +254,7 @@ fun ClearDataDialog(
                     )
                 }
                 Steps.DELETING -> {
-                    io.beldex.bchat.compose_utils.BChatLoader(size = 40.dp)
+                    BChatLoader(size = 40.dp)
 
                     Spacer(modifier = Modifier.height(24.dp))
                 }
@@ -268,7 +264,7 @@ fun ClearDataDialog(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Row(
-                    horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {

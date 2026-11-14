@@ -4,8 +4,6 @@ import androidx.annotation.NonNull;
 
 import io.beldex.bchat.imageeditor.Renderer;
 import io.beldex.bchat.imageeditor.RendererContext;
-import io.beldex.bchat.imageeditor.Renderer;
-import io.beldex.bchat.imageeditor.RendererContext;
 
 import java.lang.ref.WeakReference;
 

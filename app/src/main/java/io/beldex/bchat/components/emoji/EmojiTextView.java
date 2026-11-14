@@ -16,7 +16,6 @@ import io.beldex.bchat.components.emoji.parsing.EmojiParser;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libbchat.utilities.Util;
 import io.beldex.bchat.components.emoji.EmojiProvider.EmojiDrawable;
-import io.beldex.bchat.components.emoji.parsing.EmojiParser;
 import com.beldex.libsignal.utilities.guava.Optional;
 
 public class EmojiTextView extends AppCompatTextView {

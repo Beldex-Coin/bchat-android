@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.RobotoMono
 
 /**
  * The chat screen header's call + overflow icons (Figma `chat_menu` 7546:10498), replacing the
@@ -134,7 +135,7 @@ fun ConversationHeaderActions(
                         text = {
                             Text(
                                 text = entry.label,
-                                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                                fontFamily = RobotoMono,
                                 fontSize = 14.sp,
                                 color = MaterialTheme.appColors.editTextColor
                             )

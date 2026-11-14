@@ -1,7 +1,6 @@
 package io.beldex.bchat.crypto
 
 import android.content.Context
-import android.util.Log
 
 object MnemonicUtilities {
 

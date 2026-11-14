@@ -58,6 +58,9 @@ import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.RobotoMono
+import androidx.compose.ui.platform.LocalContext
+import io.beldex.bchat.compose_utils.BnsVerifiedBadge
+import io.beldex.bchat.compose_utils.isBnsVerified
 
 /**
  * Revamp_2026 "Forward" screen (Figma Select_contact 7546:9857 dark / 7762:12730 white):
@@ -255,9 +258,9 @@ private fun ForwardRow(target: ForwardTarget, isSelected: Boolean, onToggle: (Fo
             // No clip: the BNS verified badge overhangs the avatar's bottom-right corner.
             modifier = Modifier.size(36.dp)
         ) {
-            val context = androidx.compose.ui.platform.LocalContext.current
+            val context = LocalContext.current
             val publicKey = target.recipient.address.serialize()
-            val verified = remember(publicKey) { io.beldex.bchat.compose_utils.isBnsVerified(context, publicKey) }
+            val verified = remember(publicKey) { isBnsVerified(context, publicKey) }
             // Order: picture → outline → BNS badge, so the outline sits behind the verified tick.
             ProfilePictureComponent(
                 publicKey = publicKey,
@@ -268,7 +271,7 @@ private fun ForwardRow(target: ForwardTarget, isSelected: Boolean, onToggle: (Fo
             )
             Box(Modifier.matchParentSize().border(1.dp, avatarBorder, NotchedAvatarShape))
             if (verified) {
-                io.beldex.bchat.compose_utils.BnsVerifiedBadge(
+                BnsVerifiedBadge(
                     containerSize = 36.dp,
                     small = true,
                     modifier = Modifier.align(Alignment.BottomEnd)

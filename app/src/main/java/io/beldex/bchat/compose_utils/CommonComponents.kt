@@ -32,7 +32,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -57,6 +56,11 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import io.beldex.bchat.util.CustomCheckBox
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.Canvas
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.semantics.Role
 
 @Composable
 fun PrimaryButton(
@@ -219,14 +223,14 @@ fun BChatRadioButton(
     modifier: Modifier = Modifier
 ) {
     val ringColor = if (selected) Color(0xFF078720) else MaterialTheme.appColors.editTextColor
-    androidx.compose.foundation.layout.Box(
+    Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
             .size(24.dp)
-            .selectable(selected = selected, role = androidx.compose.ui.semantics.Role.RadioButton, onClick = onClick)
+            .selectable(selected = selected, role = Role.RadioButton, onClick = onClick)
     ) {
-        androidx.compose.foundation.Canvas(modifier = Modifier.size(17.dp)) {
-            drawCircle(color = ringColor, style = androidx.compose.ui.graphics.drawscope.Stroke(width = 1.dp.toPx()))
+        Canvas(modifier = Modifier.size(17.dp)) {
+            drawCircle(color = ringColor, style = Stroke(width = 1.dp.toPx()))
             if (selected) drawCircle(color = ringColor, radius = 5.5.dp.toPx())
         }
     }
@@ -307,14 +311,14 @@ fun BChatSwitch(
     val trackEnd = if (isDark) Color(0xFF333333) else Color(0xFFE6E6E6)
     val thumbOff = if (isDark) Color(0xFF666666) else Color(0xFF8D8D8D)
     val thumbColor = if (checked) Color(0xFF00BC33) else thumbOff
-    val thumbX by androidx.compose.animation.core.animateDpAsState(if (checked) 22.dp else 4.dp, label = "switchThumb")
+    val thumbX by animateDpAsState(if (checked) 22.dp else 4.dp, label = "switchThumb")
     Box(
         modifier = modifier
             .size(width = 40.dp, height = 22.dp)
-            .background(androidx.compose.ui.graphics.Brush.horizontalGradient(listOf(trackStart, trackEnd)))
+            .background(Brush.horizontalGradient(listOf(trackStart, trackEnd)))
             .then(
                 if (onCheckedChange != null)
-                    Modifier.toggleable(value = checked, role = androidx.compose.ui.semantics.Role.Switch, onValueChange = onCheckedChange)
+                    Modifier.toggleable(value = checked, role = Role.Switch, onValueChange = onCheckedChange)
                 else Modifier
             )
     ) {

@@ -11,7 +11,6 @@ import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
-import android.os.Build
 import android.os.SystemClock
 import android.util.TypedValue
 import android.view.View
@@ -21,8 +20,6 @@ import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Canvas
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.app.Person
-import androidx.core.graphics.drawable.IconCompat
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper
 import com.beldex.libbchat.utilities.recipients.Recipient
@@ -30,6 +27,9 @@ import io.beldex.bchat.notifications.NotificationChannels
 import io.beldex.bchat.service.WebRtcCallService
 import io.beldex.bchat.webrtc.WebRTCComposeActivity
 import io.beldex.bchat.R
+import android.graphics.Path
+import io.beldex.bchat.my_account.ui.MyAccountActivity
+import io.beldex.bchat.my_account.ui.MyAccountScreens
 
 
 class CallNotificationBuilder {
@@ -62,7 +62,7 @@ class CallNotificationBuilder {
         fun getFirstCallNotification(context: Context): Notification {
             val language = TextSecurePreferences.getAppSelectedLanguage(context)
             val localizedContext = DynamicLanguageContextWrapper.updateContext(context, language)
-            val contentIntent = io.beldex.bchat.my_account.ui.MyAccountActivity.intentForRoute(context, io.beldex.bchat.my_account.ui.MyAccountScreens.PrivacySettingsScreen.route)
+            val contentIntent = MyAccountActivity.intentForRoute(context, MyAccountScreens.PrivacySettingsScreen.route)
 
             val pendingIntent = PendingIntent.getActivity(context, 0, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
@@ -210,7 +210,7 @@ class CallNotificationBuilder {
             val output = Bitmap.createBitmap(source.width, source.height, Bitmap.Config.ARGB_8888)
             val canvas = android.graphics.Canvas(output)
             val n = source.width * 0.22f
-            val path = android.graphics.Path().apply {
+            val path = Path().apply {
                 moveTo(0f, 0f)
                 lineTo(source.width - n, 0f)
                 lineTo(source.width.toFloat(), n)
@@ -229,7 +229,7 @@ class CallNotificationBuilder {
         private fun calculateButtonTextSize(context: Context, hangUpText: String, answerText: String): Float {
             val displayMetrics = context.resources.displayMetrics
             val buttonWidthPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80f, displayMetrics)
-            val paint = android.graphics.Paint()
+            val paint = Paint()
             val maxText = if (hangUpText.length > answerText.length) hangUpText else answerText
             val startSize = 11f
             val minSize = 8f

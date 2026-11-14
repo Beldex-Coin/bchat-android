@@ -1,8 +1,6 @@
 package io.beldex.bchat.onboarding
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import io.beldex.bchat.databinding.ActivityAboutBinding
 import io.beldex.bchat.BaseActionBarActivity
 import io.beldex.bchat.R

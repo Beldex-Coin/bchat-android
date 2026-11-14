@@ -10,7 +10,6 @@ import com.davemorrissey.labs.subscaleview.decoder.ImageDecoder;
 import com.davemorrissey.labs.subscaleview.decoder.SkiaImageDecoder;
 import io.beldex.bchat.mms.PartAuthority;
 
-import io.beldex.bchat.mms.PartAuthority;
 
 import java.io.InputStream;
 

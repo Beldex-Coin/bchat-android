@@ -57,6 +57,10 @@ import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.TextColor
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.util.shortNameAndAddress
+import androidx.compose.ui.geometry.Size
+import io.beldex.bchat.compose_utils.BChatDimens
+import io.beldex.bchat.compose_utils.RobotoMono
+import io.beldex.bchat.compose_utils.notchedCornerShape
 
 @Composable
 fun SharedContactView(
@@ -82,7 +86,7 @@ fun SharedContactView(
         modifier = columnModifier
     ) {
         Card(
-            shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+            shape = notchedCornerShape(BChatDimens.NotchMedium),
             colors =CardDefaults.cardColors(
                 containerColor = Color.Transparent
             ),
@@ -121,7 +125,7 @@ fun SharedContactView(
                         overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.bodySmall.copy(
                             color = colorResource(R.color.contact_card_action_text),
-                            fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                            fontFamily = RobotoMono,
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 11.sp
                         )
@@ -214,7 +218,7 @@ fun SharedContactContent(
             .heightIn(min = 52.dp)
             .background(innerBackground, singleCornerCutShape(8.dp, NotchCorner.TopRight))
             // 3dp accent bar on the tile's left edge (Figma 7546:16817)
-            .drawBehind { drawRect(innerBar, size = androidx.compose.ui.geometry.Size(3.dp.toPx(), size.height)) }
+            .drawBehind { drawRect(innerBar, size = Size(3.dp.toPx(), size.height)) }
             .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

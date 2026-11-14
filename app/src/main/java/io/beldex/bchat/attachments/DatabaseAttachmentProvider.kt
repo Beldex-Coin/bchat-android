@@ -29,7 +29,7 @@ import io.beldex.bchat.util.MediaUtil
 import java.io.IOException
 import java.io.InputStream
 
-class DatabaseAttachmentProvider(context: Context, helper: io.beldex.bchat.database.helpers.SQLCipherOpenHelper) : io.beldex.bchat.database.Database(context, helper), MessageDataProvider {
+class DatabaseAttachmentProvider(context: Context, helper: SQLCipherOpenHelper) : Database(context, helper), MessageDataProvider {
 
     override fun getAttachmentStream(attachmentId: Long): BchatServiceAttachmentStream? {
         val attachmentDatabase = DatabaseComponent.get(context).attachmentDatabase()
@@ -72,7 +72,7 @@ class DatabaseAttachmentProvider(context: Context, helper: io.beldex.bchat.datab
                 0
             )
         ) ?: return null
-        val mediaConstraints = io.beldex.bchat.mms.MediaConstraints.getPushMediaConstraints()
+        val mediaConstraints = MediaConstraints.getPushMediaConstraints()
         val scaledAttachment = scaleAndStripExif(database, mediaConstraints, databaseAttachment) ?: return null
         return getAttachmentFor(scaledAttachment)
     }
@@ -274,10 +274,10 @@ class DatabaseAttachmentProvider(context: Context, helper: io.beldex.bchat.datab
         )
     }
 
-    private fun scaleAndStripExif(attachmentDatabase: io.beldex.bchat.database.AttachmentDatabase, constraints: io.beldex.bchat.mms.MediaConstraints, attachment: Attachment): Attachment? {
+    private fun scaleAndStripExif(attachmentDatabase: AttachmentDatabase, constraints: MediaConstraints, attachment: Attachment): Attachment? {
         return try {
             if (constraints.isSatisfied(context, attachment)) {
-                if (io.beldex.bchat.util.MediaUtil.isJpeg(attachment)) {
+                if (MediaUtil.isJpeg(attachment)) {
                     val stripped = constraints.getResizedMedia(context, attachment)
                     attachmentDatabase.updateAttachmentData(attachment, stripped)
                 } else {
@@ -297,7 +297,7 @@ class DatabaseAttachmentProvider(context: Context, helper: io.beldex.bchat.datab
     private fun getAttachmentFor(attachment: Attachment): SignalServiceAttachmentStream? {
         try {
             if (attachment.dataUri == null || attachment.size == 0L) throw IOException("Assertion failed, outgoing attachment has no data!")
-            val `is` = io.beldex.bchat.mms.PartAuthority.getAttachmentStream(context, attachment.dataUri!!)
+            val `is` = PartAuthority.getAttachmentStream(context, attachment.dataUri!!)
             return SignalServiceAttachment.newStreamBuilder()
                     .withStream(`is`)
                     .withContentType(attachment.contentType)
@@ -308,7 +308,7 @@ class DatabaseAttachmentProvider(context: Context, helper: io.beldex.bchat.datab
                     .withHeight(attachment.height)
                     .withCaption(attachment.caption)
                     .withListener { total: Long, progress: Long -> EventBus.getDefault().postSticky(
-                            io.beldex.bchat.events.PartProgressEvent(
+                            PartProgressEvent(
                                     attachment,
                                     total,
                                     progress
@@ -345,9 +345,9 @@ fun BchatServiceAttachmentPointer.toSignalPointer(): SignalServiceAttachmentPoin
 }
 
 fun DatabaseAttachment.toAttachmentStream(context: Context): BchatServiceAttachmentStream {
-    val stream = io.beldex.bchat.mms.PartAuthority.getAttachmentStream(context, this.dataUri!!)
+    val stream = PartAuthority.getAttachmentStream(context, this.dataUri!!)
     val listener = SignalServiceAttachment.ProgressListener { total: Long, progress: Long -> EventBus.getDefault().postSticky(
-            io.beldex.bchat.events.PartProgressEvent(
+            PartProgressEvent(
                     this,
                     total,
                     progress
@@ -356,10 +356,10 @@ fun DatabaseAttachment.toAttachmentStream(context: Context): BchatServiceAttachm
 
     var attachmentStream = BchatServiceAttachmentStream(stream, this.contentType, this.size, Optional.fromNullable(this.fileName), this.isVoiceNote, Optional.absent(), this.width, this.height, Optional.fromNullable(this.caption), listener)
     attachmentStream.attachmentId = this.attachmentId.rowId
-    attachmentStream.isAudio = io.beldex.bchat.util.MediaUtil.isAudio(this)
-    attachmentStream.isGif = io.beldex.bchat.util.MediaUtil.isGif(this)
-    attachmentStream.isVideo = io.beldex.bchat.util.MediaUtil.isVideo(this)
-    attachmentStream.isImage = io.beldex.bchat.util.MediaUtil.isImage(this)
+    attachmentStream.isAudio = MediaUtil.isAudio(this)
+    attachmentStream.isGif = MediaUtil.isGif(this)
+    attachmentStream.isVideo = MediaUtil.isVideo(this)
+    attachmentStream.isImage = MediaUtil.isImage(this)
 
     attachmentStream.key = ByteString.copyFrom(this.key?.toByteArray())
     attachmentStream.digest = Optional.fromNullable(this.digest)
@@ -399,9 +399,9 @@ fun DatabaseAttachment.toSignalAttachmentPointer(): SignalServiceAttachmentPoint
 }
 
 fun DatabaseAttachment.toSignalAttachmentStream(context: Context): SignalServiceAttachmentStream {
-    val stream = io.beldex.bchat.mms.PartAuthority.getAttachmentStream(context, this.dataUri!!)
+    val stream = PartAuthority.getAttachmentStream(context, this.dataUri!!)
     val listener = SignalServiceAttachment.ProgressListener { total: Long, progress: Long -> EventBus.getDefault().postSticky(
-            io.beldex.bchat.events.PartProgressEvent(
+            PartProgressEvent(
                     this,
                     total,
                     progress
@@ -423,5 +423,5 @@ fun DatabaseAttachment.toSignalAttachmentStream(context: Context): SignalService
 }
 
 fun DatabaseAttachment.shouldHaveImageSize(): Boolean {
-    return (io.beldex.bchat.util.MediaUtil.isVideo(this) || io.beldex.bchat.util.MediaUtil.isImage(this) || io.beldex.bchat.util.MediaUtil.isGif(this));
+    return (MediaUtil.isVideo(this) || MediaUtil.isImage(this) || MediaUtil.isGif(this));
 }

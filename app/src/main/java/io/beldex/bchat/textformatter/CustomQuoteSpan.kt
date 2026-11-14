@@ -8,10 +8,11 @@ import android.text.style.LeadingMarginSpan
 import androidx.core.content.ContextCompat
 import io.beldex.bchat.R
 import android.text.style.ReplacementSpan
+import android.text.style.LineBackgroundSpan
 
 class CustomQuoteSpan(
     context: Context
-) : android.text.style.LineBackgroundSpan {
+) : LineBackgroundSpan {
 
     private val stripeColor =
         ContextCompat.getColor(context, R.color.quote_gray)

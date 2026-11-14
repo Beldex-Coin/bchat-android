@@ -34,7 +34,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 
 import io.beldex.bchat.giph.ui.GiphyActivity;
 import io.beldex.bchat.mediasend.MediaSendActivity;

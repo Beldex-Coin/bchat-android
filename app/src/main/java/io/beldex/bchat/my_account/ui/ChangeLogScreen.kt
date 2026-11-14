@@ -34,7 +34,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,14 +41,10 @@ import androidx.compose.ui.unit.sp
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.RobotoMono
-import io.beldex.bchat.compose_utils.OpenSans
-import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import io.beldex.bchat.my_account.domain.ChangeLogModel
-import io.beldex.bchat.util.UiMode
-import io.beldex.bchat.util.UiModeUtilities
 
 @Composable
 fun ChangeLogScreen(
@@ -89,9 +84,9 @@ private fun LogItem(
         mutableStateOf(if (isExpanded) 180f else 0f)
     }
     Card(
-        shape = androidx.compose.ui.graphics.RectangleShape,
+        shape = RectangleShape,
         colors = CardDefaults.cardColors(
-            containerColor = androidx.compose.ui.graphics.Color.Transparent
+            containerColor = Color.Transparent
         ),
         border = BorderStroke(
             width = 1.dp,

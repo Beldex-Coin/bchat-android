@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +28,8 @@ import androidx.compose.ui.unit.sp
 import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.BChatDimens
+import io.beldex.bchat.compose_utils.notchedCornerShape
 
 @Composable
 fun WalletSyncingDialog(
@@ -86,7 +87,7 @@ fun WalletSyncingDialog(
             ) {
                 Button(
                     onClick=onDismissRequest,
-                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+                    shape = notchedCornerShape(BChatDimens.NotchMedium),
                     colors=ButtonDefaults.buttonColors(
                             containerColor=MaterialTheme.appColors.negativeGreenButton
                     ),
@@ -108,7 +109,7 @@ fun WalletSyncingDialog(
 
                 Button(
                     onClick=exit,
-                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+                    shape = notchedCornerShape(BChatDimens.NotchMedium),
                     colors=ButtonDefaults.buttonColors(
                             containerColor=MaterialTheme.appColors.primaryButtonColor
                     ),

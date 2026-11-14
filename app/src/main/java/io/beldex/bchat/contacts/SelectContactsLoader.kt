@@ -3,8 +3,9 @@ package io.beldex.bchat.contacts
 import android.content.Context
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.dependencies.DatabaseComponent
+import io.beldex.bchat.util.AsyncLoader
 
-class SelectContactsLoader(context: Context, private val usersToExclude: Set<String>) : io.beldex.bchat.util.AsyncLoader<List<String>>(context) {
+class SelectContactsLoader(context: Context, private val usersToExclude: Set<String>) : AsyncLoader<List<String>>(context) {
 
     override fun loadInBackground(): List<String> {
         val threadDb = DatabaseComponent.get(context).threadDatabase()

@@ -12,10 +12,8 @@ import com.annimon.stream.Stream;
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
-import com.beldex.libbchat.messaging.sending_receiving.MessageDecrypter;
 import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.MaterialColor;
-import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libbchat.utilities.Util;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.utilities.recipients.Recipient.RecipientSettings;
@@ -24,7 +22,6 @@ import com.beldex.libbchat.utilities.recipients.Recipient.UnidentifiedAccessMode
 import com.beldex.libsignal.utilities.Base64;
 import com.beldex.libsignal.utilities.Log;
 import com.beldex.libsignal.utilities.guava.Optional;
-import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -372,7 +369,6 @@ public class RecipientDatabase extends Database {
     recipient.setRegistered(registeredState);
     notifyRecipientListeners();
   }
-
 
 
   private void updateOrInsert(Address address, ContentValues contentValues) {

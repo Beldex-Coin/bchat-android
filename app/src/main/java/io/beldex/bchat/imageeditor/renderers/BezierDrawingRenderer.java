@@ -10,8 +10,6 @@ import androidx.annotation.Nullable;
 
 import io.beldex.bchat.imageeditor.ColorableRenderer;
 import io.beldex.bchat.imageeditor.RendererContext;
-import io.beldex.bchat.imageeditor.ColorableRenderer;
-import io.beldex.bchat.imageeditor.RendererContext;
 
 /**
  * Renders a {@link AutomaticControlPointBezierLine} with {@link #thickness}, {@link #color} and {@link #cap} end type.

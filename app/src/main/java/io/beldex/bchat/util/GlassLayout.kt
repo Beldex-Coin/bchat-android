@@ -23,6 +23,7 @@ import android.widget.FrameLayout
 import androidx.annotation.ColorInt
 import io.beldex.bchat.R
 import kotlin.math.min
+import android.util.Log
 
 
 class GlassLayout @JvmOverloads constructor(
@@ -295,7 +296,7 @@ class GlassLayout @JvmOverloads constructor(
         } catch (e: Exception) {
             // Never crash the screen because of a visual effect
             if (recording) runCatching { node.endRecording() }
-            android.util.Log.e("GlassLayout", "Blur failed, using fallback tint", e)
+            Log.e("GlassLayout", "Blur failed, using fallback tint", e)
             canvas.drawColor(fallbackTintColor)
         }
     }

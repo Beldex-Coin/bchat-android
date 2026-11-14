@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
+import io.beldex.bchat.compose_utils.BChatDimens
 
 @Composable
 fun PinCodeView(
@@ -101,7 +102,7 @@ fun PinCodeView(
                 }
 
                 Card(
-                    shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall),
+                    shape = notchedCornerShape(BChatDimens.NotchSmall),
                     border = BorderStroke(
                         // Design: filled box stroke 1px, empty box stroke 2px.
                         width = if (value.isNotEmpty() || isActiveBox) 1.dp else 2.dp,

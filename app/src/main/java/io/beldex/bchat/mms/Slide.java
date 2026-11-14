@@ -25,7 +25,6 @@ import androidx.annotation.Nullable;
 
 import io.beldex.bchat.util.MediaUtil;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentTransferProgress;
-import io.beldex.bchat.util.MediaUtil;
 import com.beldex.libsignal.utilities.guava.Optional;
 
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment;

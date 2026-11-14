@@ -41,6 +41,7 @@ import io.beldex.bchat.compose_utils.IconConfirmDialog
 import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.DialogPrimaryButton
 
 /** Edit the per-conversation message limit (Chat Settings > Conversation length limit). */
 @Composable
@@ -98,7 +99,7 @@ fun TrimLengthDialog(
                     onClick = onDismiss,
                     modifier = Modifier.weight(1f)
                 )
-                io.beldex.bchat.compose_utils.DialogPrimaryButton(
+                DialogPrimaryButton(
                     text = stringResource(id = R.string.ok),
                     onClick = { value?.let(onSave) },
                     enabled = value != null && value >= 1,

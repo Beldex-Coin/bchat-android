@@ -14,7 +14,6 @@ import com.beldex.libbchat.messaging.sending_receiving.pollers.Poller;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.utilities.Debouncer;
 import com.beldex.libsignal.utilities.ThreadUtils;
-import io.beldex.bchat.groups.OpenGroupManager;
 
 import java.util.concurrent.TimeUnit;
 
@@ -99,7 +98,7 @@ public class OptimizedMessageNotifier implements MessageNotifier {
   }
 
   @Override
-  public void updateNotification(@androidx.annotation.NonNull Context context, boolean signal, int reminderCount) {
+  public void updateNotification(@NonNull Context context, boolean signal, int reminderCount) {
     Poller beldexPoller = ApplicationContext.getInstance(context).poller;
     boolean isCaughtUp = true;
     if (beldexPoller != null) {

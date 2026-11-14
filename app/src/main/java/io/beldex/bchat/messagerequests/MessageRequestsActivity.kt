@@ -1,6 +1,5 @@
 package io.beldex.bchat.messagerequests
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.database.Cursor
 import android.os.Bundle

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.beldex.bchat.databinding.FragmentClosedGroupEditBottomSheetBinding
+import com.google.android.material.R
 
 class ClosedGroupEditingOptionsBottomSheet : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentClosedGroupEditBottomSheetBinding
@@ -26,7 +27,7 @@ class ClosedGroupEditingOptionsBottomSheet : BottomSheetDialogFragment() {
     override fun onStart() {
         super.onStart()
         val bottomSheet = dialog?.findViewById<View>(
-            com.google.android.material.R.id.design_bottom_sheet
+            R.id.design_bottom_sheet
         ) ?: return
         val behavior = BottomSheetBehavior.from(bottomSheet)
         behavior.state = BottomSheetBehavior.STATE_EXPANDED

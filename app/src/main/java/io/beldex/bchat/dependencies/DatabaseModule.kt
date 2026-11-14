@@ -7,7 +7,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import net.zetetic.database.sqlcipher.SQLiteDatabase
 import com.beldex.libbchat.database.MessageDataProvider
 import io.beldex.bchat.attachments.DatabaseAttachmentProvider
 import io.beldex.bchat.crypto.AttachmentSecret

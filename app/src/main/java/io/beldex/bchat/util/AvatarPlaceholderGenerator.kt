@@ -6,10 +6,12 @@ import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.text.TextPaint
 import android.text.TextUtils
-import io.beldex.bchat.R
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.util.*
+import android.content.res.Configuration
+import android.graphics.Path
+import io.beldex.bchat.compose_utils.AVATAR_NOTCH_FRACTION
 
 object AvatarPlaceholderGenerator {
 
@@ -28,7 +30,7 @@ object AvatarPlaceholderGenerator {
             UiMode.NIGHT -> true
             UiMode.DAY -> false
             UiMode.SYSTEM_DEFAULT -> (context.resources.configuration.uiMode and
-                android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
+                Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
         }
         val colorPrimary = if (isDark) 0xFF1A1A1A.toInt() else 0xFFFFFFFF.toInt()
 
@@ -45,8 +47,8 @@ object AvatarPlaceholderGenerator {
         val paint = Paint(Paint.ANTI_ALIAS_FLAG)
         paint.color = colorPrimary
         val size = pixelSize.toFloat()
-        val cut = size * io.beldex.bchat.compose_utils.AVATAR_NOTCH_FRACTION
-        val shape = android.graphics.Path().apply {
+        val cut = size * AVATAR_NOTCH_FRACTION
+        val shape = Path().apply {
             moveTo(0f, 0f); lineTo(size - cut, 0f); lineTo(size, cut); lineTo(size, size); lineTo(0f, size); close()
         }
         canvas.drawPath(shape, paint)

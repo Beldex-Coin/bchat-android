@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Rect
-import android.graphics.drawable.ColorDrawable
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
@@ -44,7 +43,6 @@ import io.beldex.bchat.home.UserDetailsBottomSheet
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.disableClipping
-import io.beldex.bchat.util.getColorWithID
 import io.beldex.bchat.util.isSameDayMessage
 import io.beldex.bchat.util.toDp
 import io.beldex.bchat.util.toPx
@@ -401,7 +399,7 @@ class VisibleMessageView : LinearLayout {
 
     private fun handleIsSelectedChanged() {
         background = if (snIsSelected) {
-            androidx.core.content.ContextCompat.getDrawable(context, R.drawable.message_selected_row_background)
+            ContextCompat.getDrawable(context, R.drawable.message_selected_row_background)
         } else {
             null
         }

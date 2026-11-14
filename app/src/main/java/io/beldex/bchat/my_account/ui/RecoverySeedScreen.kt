@@ -18,9 +18,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -44,6 +41,15 @@ import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.copyToClipBoard
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.RectangleShape
+import com.beldex.libbchat.utilities.TextSecurePreferences
+import io.beldex.bchat.compose_utils.BChatDimens
+import io.beldex.bchat.compose_utils.OpenSans
+import io.beldex.bchat.compose_utils.RobotoMono
+import io.beldex.bchat.compose_utils.notchedCornerShape
 
 @Composable
 fun RecoverySeedScreen(
@@ -74,10 +80,10 @@ fun RecoverySeedView(
     val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(LocalContext.current) == UiMode.NIGHT
     val activity = (context as? Activity)
     // The seed itself stays protected from screenshots, but only while this screen is showing.
-    androidx.compose.runtime.DisposableEffect(activity) {
+    DisposableEffect(activity) {
         activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         onDispose {
-            if (activity != null && !com.beldex.libbchat.utilities.TextSecurePreferences.isScreenSecurityEnabled(activity)) {
+            if (activity != null && !TextSecurePreferences.isScreenSecurityEnabled(activity)) {
                 activity.window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
             }
         }
@@ -94,7 +100,7 @@ fun RecoverySeedView(
         Image(
             painter = painterResource(id = R.drawable.ic_recovery_seed_news),
             contentDescription = "",
-            colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.appColors.onboardingHeadlineColor),
+            colorFilter = ColorFilter.tint(MaterialTheme.appColors.onboardingHeadlineColor),
             modifier = Modifier.size(68.dp)
         )
 
@@ -103,7 +109,7 @@ fun RecoverySeedView(
         Text(
             text = stringResource(id = R.string.copy_your_recovery_seed),
             color = MaterialTheme.appColors.seedInfoTextColor,
-            fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+            fontFamily = RobotoMono,
             fontWeight = FontWeight.Medium,
             fontSize = 16.sp,
             textAlign = TextAlign.Center,
@@ -121,7 +127,7 @@ fun RecoverySeedView(
             Text(
                 text = seed,
                 color = MaterialTheme.appColors.editTextColor,
-                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                fontFamily = RobotoMono,
                 fontWeight = FontWeight.Normal,
                 fontSize = 14.sp,
                 lineHeight = 21.sp,
@@ -133,18 +139,18 @@ fun RecoverySeedView(
 
         PrimaryButton(
             onClick = copyToClipBoard,
-            shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+            shape = notchedCornerShape(BChatDimens.NotchMedium),
             containerColor = MaterialTheme.appColors.dialogBackground,
             contentColor = MaterialTheme.appColors.editTextColor,
             border = BorderStroke(1.dp, MaterialTheme.appColors.onboardingSecondaryButtonBorder),
-            contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
+            contentPadding = PaddingValues(0.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(52.dp)
         ) {
             Text(
                 text = stringResource(id = R.string.copy) + " " + stringResource(id = R.string.seed),
-                fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                fontFamily = OpenSans,
                 fontWeight = FontWeight.Normal,
                 fontSize = 14.sp
             )
@@ -172,7 +178,7 @@ private fun RecoveryWarningView(
         modifier = modifier
     ) {
         OutlinedCard(
-            shape = androidx.compose.ui.graphics.RectangleShape,
+            shape = RectangleShape,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.appColors.dialogBackground
             ),
@@ -234,7 +240,7 @@ private fun RecoveryWarningView(
                     text = stringResource(id = R.string.seed_permission_important_description),
                     style = MaterialTheme.typography.labelMedium.copy(
                         color = MaterialTheme.appColors.restoreDescColor,
-                        fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                        fontFamily = RobotoMono,
                         fontWeight = FontWeight.Light,
                         fontSize = 12.sp
                     ),
@@ -255,16 +261,16 @@ private fun RecoveryWarningView(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                io.beldex.bchat.compose_utils.PrimaryButton(
+                PrimaryButton(
                     onClick = verifyPin,
-                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(10.dp),
+                    shape = notchedCornerShape(10.dp),
                     containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
                     contentColor = MaterialTheme.appColors.backgroundColor,
                     modifier = Modifier.height(48.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.seed_permission_important_confirmButton),
-                        fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                        fontFamily = RobotoMono,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
                         textAlign = TextAlign.Center

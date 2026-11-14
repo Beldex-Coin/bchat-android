@@ -2,17 +2,18 @@ package io.beldex.bchat.textformatter
 
 import android.graphics.Typeface
 import android.text.style.TypefaceSpan
+import android.text.TextPaint
 
 class MonospaceSpan : TypefaceSpan("monospace") {
-    override fun updateDrawState(ds: android.text.TextPaint) {
+    override fun updateDrawState(ds: TextPaint) {
         apply(ds)
     }
 
-    override fun updateMeasureState(paint: android.text.TextPaint) {
+    override fun updateMeasureState(paint: TextPaint) {
         apply(paint)
     }
 
-    private fun apply(paint: android.text.TextPaint) {
+    private fun apply(paint: TextPaint) {
         val old = paint.typeface
         val oldStyle = old?.style ?: 0
 

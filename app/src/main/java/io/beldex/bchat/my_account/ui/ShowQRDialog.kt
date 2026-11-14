@@ -46,6 +46,8 @@ import io.beldex.bchat.util.QRCodeUtilities
 import io.beldex.bchat.util.isValidString
 import io.beldex.bchat.util.toPx
 import io.beldex.bchat.R
+import androidx.compose.ui.res.colorResource
+import io.beldex.bchat.compose_utils.BChatDimens
 
 @Composable
 fun ShowQRDialog(
@@ -64,7 +66,7 @@ fun ShowQRDialog(
             onDismissRequest()
         },
         wrapContentWidth = isLandscape,
-        shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchCard)
+        shape = notchedCornerShape(BChatDimens.NotchCard)
     ) {
         val context = LocalContext.current
         Column(
@@ -116,7 +118,7 @@ fun ShowQRDialog(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
                                 .size(40.dp)
-                                .background(androidx.compose.ui.res.colorResource(R.color.qr_logo_background), CircleShape)
+                                .background(colorResource(R.color.qr_logo_background), CircleShape)
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.ic_bchat_logo),
@@ -135,7 +137,7 @@ fun ShowQRDialog(
             Spacer(modifier = Modifier.height(10.dp))
             PrimaryButton(
                 onClick = { onShare() },
-                shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+                shape = notchedCornerShape(BChatDimens.NotchMedium),
                 containerColor = MaterialTheme.appColors.dialogPositiveButtonBackground,
                 contentColor = MaterialTheme.appColors.dialogPositiveButtonText,
                 border = BorderStroke(1.4.dp, MaterialTheme.appColors.dialogPositiveButtonBorder),

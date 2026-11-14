@@ -18,6 +18,7 @@ import io.beldex.bchat.textformatter.TextFormatter
 import io.beldex.bchat.textformatter.TextFormatter.toUnicodeBlockQuote
 import kotlin.math.max
 import kotlin.math.min
+import android.graphics.Typeface
 
 class InputBarEditText : AppCompatEditText {
     var delegate: InputBarEditTextDelegate? = null
@@ -100,7 +101,7 @@ class InputBarEditText : AppCompatEditText {
                 val numberEnd = index + match.value.length
 
                 editable.setSpan(
-                    StyleSpan(android.graphics.Typeface.BOLD),
+                    StyleSpan(Typeface.BOLD),
                     index, numberEnd,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )

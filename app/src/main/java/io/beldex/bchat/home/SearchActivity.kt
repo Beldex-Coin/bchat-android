@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.border
@@ -25,14 +24,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -97,6 +93,12 @@ import io.beldex.bchat.util.UiModeUtilities
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.colorResource
+import io.beldex.bchat.compose_utils.BChatDimens
+import io.beldex.bchat.compose_utils.RobotoMono
+import io.beldex.bchat.compose_utils.notchedCornerShape
 
 @AndroidEntryPoint
 class SearchActivity : BaseComponentActivity() {
@@ -218,8 +220,8 @@ private fun SearchView(
         modifier = modifier
     ) {
         Card(
-            shape = androidx.compose.ui.graphics.RectangleShape,
-            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
+            shape = RectangleShape,
+            border = BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
             modifier = Modifier
                 .fillMaxWidth()
         ) {
@@ -232,11 +234,11 @@ private fun SearchView(
                         modifier = Modifier.padding(start = 4.dp),
                         maxLines = 1,
                         softWrap = false,
-                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-                        fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                        overflow = TextOverflow.Ellipsis,
+                        fontFamily = RobotoMono,
                         fontWeight = FontWeight.Light,
                         fontSize = 14.sp,
-                        color = androidx.compose.ui.res.colorResource(R.color.chat_input_hint)
+                        color = colorResource(R.color.chat_input_hint)
                     )
                 },
                 singleLine = true,
@@ -261,7 +263,7 @@ private fun SearchView(
                     Icon(
                         painter = painterResource(R.drawable.ic_home_search),
                         contentDescription = stringResource(R.string.SearchToolbar_search),
-                        tint = androidx.compose.ui.res.colorResource(R.color.chat_input_hint),
+                        tint = colorResource(R.color.chat_input_hint),
                         modifier = Modifier.size(14.dp)
                     )
                 },
@@ -362,7 +364,7 @@ private fun SearchView(
                                     .size(42.dp)
                                     .background(
                                         MaterialTheme.appColors.cardTileBackground,
-                                        io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall)
+                                        notchedCornerShape(BChatDimens.NotchSmall)
                                     )
                             ) {
                                 Icon(
@@ -376,7 +378,7 @@ private fun SearchView(
                             Text(
                                 text = stringResource(id = R.string.note_to_self),
                                 color = MaterialTheme.appColors.editTextColor,
-                                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                                fontFamily = RobotoMono,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold
                             )
@@ -504,7 +506,7 @@ private fun MessageView(
                 )
                 Text(
                     text = messageDate,
-                    fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                    fontFamily = RobotoMono,
                     fontSize = 10.sp,
                     color = MaterialTheme.appColors.onboardingCaptionColor,
                     maxLines = 1,
@@ -513,7 +515,7 @@ private fun MessageView(
             }
             Text(
                 text = annotatedText,
-                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                fontFamily = RobotoMono,
                 fontSize = 12.sp,
                 color = MaterialTheme.appColors.onboardingBodyColor,
                 maxLines = 1,
@@ -567,7 +569,7 @@ private fun GroupConversationView(
             if (model.groupRecord.isClosedGroup) {
                 Text(
                     text = membersString,
-                    fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                    fontFamily = RobotoMono,
                     fontSize = 12.sp,
                     color = MaterialTheme.appColors.onboardingBodyColor,
                     maxLines = 1,

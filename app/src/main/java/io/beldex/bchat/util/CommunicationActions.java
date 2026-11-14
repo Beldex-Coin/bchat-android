@@ -15,7 +15,6 @@ import androidx.core.app.TaskStackBuilder;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import io.beldex.bchat.conversation.v2.ConversationActivityV2;
 import io.beldex.bchat.dependencies.DatabaseComponent;
-import io.beldex.bchat.home.HomeActivity;
 
 import io.beldex.bchat.R;
 

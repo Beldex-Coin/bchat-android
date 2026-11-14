@@ -16,13 +16,13 @@ import io.beldex.bchat.conversation.v2.dialogs.UnblockUserDialog
 import io.beldex.bchat.database.model.ThreadRecord
 import io.beldex.bchat.my_account.ui.dialogs.DeleteChatConfirmationDialog
 import io.beldex.bchat.my_account.ui.dialogs.IgnoreRequestDialog
-import io.beldex.bchat.my_account.ui.dialogs.LockOptionsDialog
 import io.beldex.bchat.my_account.ui.dialogs.MuteOptionsDialog
 import io.beldex.bchat.my_account.ui.dialogs.RequestBlockConfirmationDialog
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.serializable
 import io.beldex.bchat.R
+import io.beldex.bchat.my_account.ui.dialogs.DisappearingMessagesDialog
 
 enum class HomeDialogType {
     /*DeleteRequest,
@@ -283,7 +283,7 @@ class ConversationActionDialog: DialogFragment() {
                                 }
                             }
                             val currentIndex = timesOption.indexOf(argument3).coerceAtLeast(0)
-                            io.beldex.bchat.my_account.ui.dialogs.DisappearingMessagesDialog(
+                            DisappearingMessagesDialog(
                                 options = options,
                                 initialIndex = currentIndex,
                                 onDismiss = { dismiss() },
@@ -394,4 +394,4 @@ class ConversationActionDialog: DialogFragment() {
         const val EXTRA_THREAD_POSITION = "thread_position"
         const val TAG = "ComposeDialogContainer"
     }
-}
+}

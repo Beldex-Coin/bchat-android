@@ -29,6 +29,10 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.roundToLong
+import android.app.Activity
+import android.content.ContextWrapper
+import android.graphics.Color
+import io.beldex.bchat.compose_utils.InnerTileDrawable
 
 @AndroidEntryPoint
 class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
@@ -102,9 +106,9 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         binding.voiceMessageViewDurationTextView.setTextColor(durationTextColor)
         binding.voiceMessagePlaybackImageView.clearColorFilter()
         binding.voiceMessagePlaybackImageView.imageTintList = null
-        binding.viewVoiceMessageCard.setCardBackgroundColor(android.graphics.Color.TRANSPARENT)
+        binding.viewVoiceMessageCard.setCardBackgroundColor(Color.TRANSPARENT)
         val density = resources.displayMetrics.density
-        binding.voiceMessageTile.background = io.beldex.bchat.compose_utils.InnerTileDrawable(
+        binding.voiceMessageTile.background = InnerTileDrawable(
             notchPx = 8 * density,
             barWidthPx = 0f,
             fillColor = ContextCompat.getColor(context, R.color.contact_card_inner_background),
@@ -337,8 +341,8 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
 
     private fun isActivityChangingConfigurations(): Boolean {
         var ctx: Context? = context
-        while (ctx is android.content.ContextWrapper) {
-            if (ctx is android.app.Activity) {
+        while (ctx is ContextWrapper) {
+            if (ctx is Activity) {
                 return ctx.isChangingConfigurations
             }
             ctx = ctx.baseContext

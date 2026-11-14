@@ -300,7 +300,7 @@ class RecoveryGetSeedDetailsActivity :  BaseComponentActivity() {
                     selectedNode = recoveryGetSeedDetailsActivity.autoselect(favourites)
                 } else
                     selectedNode.testRpcService()
-            } else throw java.lang.IllegalStateException()
+            } else throw IllegalStateException()
             return if (selectedNode != null && selectedNode.isValid) {
                 recoveryGetSeedDetailsActivity.setNode(selectedNode)
                 selectedNode

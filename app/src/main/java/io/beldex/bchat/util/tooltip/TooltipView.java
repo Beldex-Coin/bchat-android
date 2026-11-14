@@ -18,8 +18,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.StyleableRes;
 
 import io.beldex.bchat.R;
+import androidx.appcompat.widget.AppCompatTextView;
 
-public class TooltipView extends androidx.appcompat.widget.AppCompatTextView {
+public class TooltipView extends AppCompatTextView {
 
     private static final int NOT_PRESENT = Integer.MIN_VALUE;
     private int arrowHeight;

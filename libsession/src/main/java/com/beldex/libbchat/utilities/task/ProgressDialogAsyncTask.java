@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import androidx.annotation.NonNull;
 
 import java.lang.ref.WeakReference;
+import android.app.ProgressDialog;
 
 public abstract class ProgressDialogAsyncTask<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> {
 
@@ -41,7 +42,7 @@ public abstract class ProgressDialogAsyncTask<Params, Progress, Result> extends 
         progress = dialogFactory.create(context, title, message);
         progress.show();
       } else {
-        progress = android.app.ProgressDialog.show(context, title, message, true);
+        progress = ProgressDialog.show(context, title, message, true);
       }
     }
   }

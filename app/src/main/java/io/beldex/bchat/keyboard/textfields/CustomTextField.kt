@@ -7,9 +7,10 @@ import android.view.Gravity
 import android.view.ViewGroup
 import io.beldex.bchat.keyboard.CustomKeyboardView
 import io.beldex.bchat.keyboard.utils.ComponentUtils
+import androidx.appcompat.widget.AppCompatEditText
 
 
-class CustomTextField(context: Context): androidx.appcompat.widget.AppCompatEditText(context) {
+class CustomTextField(context: Context): AppCompatEditText(context) {
     var keyboardType: CustomKeyboardView.KeyboardType =
         CustomKeyboardView.KeyboardType.QWERTY
 

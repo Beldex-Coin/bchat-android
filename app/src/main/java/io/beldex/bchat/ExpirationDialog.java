@@ -41,7 +41,7 @@ public class ExpirationDialog extends AlertDialog {
     builder.setView(Gravity.CENTER);
     builder.setView(view);
     builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
-      int selected = ((android.widget.NumberPicker)view.findViewById(R.id.expiration_number_picker)).getValue();
+      int selected = ((NumberPicker)view.findViewById(R.id.expiration_number_picker)).getValue();
       listener.onClick(context.getResources().getIntArray(R.array.expiration_times)[selected]);
     });
     builder.setNegativeButton(android.R.string.cancel, null);

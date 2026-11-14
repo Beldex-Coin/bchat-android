@@ -9,8 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityBlockedContactBinding
+import io.beldex.bchat.PassphraseRequiredActionBarActivity
 
-class BlockedContactActivity : io.beldex.bchat.PassphraseRequiredActionBarActivity(), BlockedContactClickListener,
+class BlockedContactActivity : PassphraseRequiredActionBarActivity(), BlockedContactClickListener,
     LoaderManager.LoaderCallbacks<List<String>> {
     private lateinit var binding: ActivityBlockedContactBinding
     private var members = listOf<String>()

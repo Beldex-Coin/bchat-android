@@ -10,6 +10,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 
 import com.beldex.libbchat.utilities.ThemeUtil;
+import android.R;
 
 public final class WindowUtil {
 
@@ -19,7 +20,7 @@ public final class WindowUtil {
   public static void setLightNavigationBarFromTheme(@NonNull Activity activity) {
     if (Build.VERSION.SDK_INT < 27) return;
 
-    final boolean isLightNavigationBar = ThemeUtil.getThemedBoolean(activity, android.R.attr.windowLightNavigationBar);
+    final boolean isLightNavigationBar = ThemeUtil.getThemedBoolean(activity, R.attr.windowLightNavigationBar);
 
     if (isLightNavigationBar) setLightNavigationBar(activity.getWindow());
     else                      clearLightNavigationBar(activity.getWindow());
@@ -42,7 +43,7 @@ public final class WindowUtil {
   }
 
   public static void setLightStatusBarFromTheme(@NonNull Activity activity) {
-    final boolean isLightStatusBar = ThemeUtil.getThemedBoolean(activity, android.R.attr.windowLightStatusBar);
+    final boolean isLightStatusBar = ThemeUtil.getThemedBoolean(activity, R.attr.windowLightStatusBar);
 
     if (isLightStatusBar) setLightStatusBar(activity.getWindow());
     else                  clearLightStatusBar(activity.getWindow());

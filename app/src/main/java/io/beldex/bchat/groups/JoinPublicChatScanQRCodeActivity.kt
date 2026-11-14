@@ -4,7 +4,6 @@ import io.beldex.bchat.util.BChatToast
 import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -30,7 +29,6 @@ import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.GroupUtil
-import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.PublicKeyValidation
@@ -150,7 +148,6 @@ class JoinPublicChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
             handleQRCodeScanned(string)
         }
     }
-
 
 
     // region Updating

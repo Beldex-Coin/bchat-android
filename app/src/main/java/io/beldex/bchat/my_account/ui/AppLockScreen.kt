@@ -43,6 +43,7 @@ import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.service.KeyCachingService
 import io.beldex.bchat.R
 import java.util.concurrent.TimeUnit
+import androidx.compose.ui.graphics.RectangleShape
 
 @Composable
 fun AppLockScreen() {
@@ -125,7 +126,7 @@ fun AppLockScreen() {
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             ),
-            shape = androidx.compose.ui.graphics.RectangleShape,
+            shape = RectangleShape,
             border = BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 0.dp
@@ -168,7 +169,7 @@ fun AppLockScreen() {
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             ),
-            shape = androidx.compose.ui.graphics.RectangleShape,
+            shape = RectangleShape,
             border = BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 0.dp

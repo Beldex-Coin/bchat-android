@@ -13,7 +13,6 @@ import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
 import com.canhub.cropper.CropImageView
 import io.beldex.bchat.R
-import com.beldex.libbchat.utilities.getColorFromAttr
 import com.beldex.libsignal.utilities.ExternalStorageUtil.getImageDir
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.NoExternalStorageException

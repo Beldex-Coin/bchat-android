@@ -9,11 +9,13 @@ import io.beldex.bchat.util.setUpActionBarBchatLogo
 import java.io.IOException
 import java.io.InputStream
 import java.nio.charset.Charset
+import io.beldex.bchat.BaseActionBarActivity
+import io.beldex.bchat.changelog.ExpandableListAdapter
 
-class ChangeLogActivity : io.beldex.bchat.BaseActionBarActivity() {
+class ChangeLogActivity : BaseActionBarActivity() {
     private lateinit var binding:ActivityChangeLogBinding
 
-    lateinit var listAdapter: io.beldex.bchat.changelog.ExpandableListAdapter
+    lateinit var listAdapter: ExpandableListAdapter
     lateinit var listDataHeader: ArrayList<String>
     lateinit var listDataChild: HashMap<String, List<String>>
 
@@ -27,7 +29,7 @@ class ChangeLogActivity : io.beldex.bchat.BaseActionBarActivity() {
             prepareListData()
         
             listAdapter =
-                    io.beldex.bchat.changelog.ExpandableListAdapter(
+                    ExpandableListAdapter(
                             this@ChangeLogActivity,
                             listDataHeader,
                             listDataChild

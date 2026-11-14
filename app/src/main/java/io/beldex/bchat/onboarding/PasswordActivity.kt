@@ -57,7 +57,6 @@ import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.sql.DriverManager.println
 
 @AndroidEntryPoint
 class PasswordActivity : BaseActionBarActivity() {

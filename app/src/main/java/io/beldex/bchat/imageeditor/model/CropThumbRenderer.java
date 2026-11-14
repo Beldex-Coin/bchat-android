@@ -9,9 +9,6 @@ import io.beldex.bchat.imageeditor.Renderer;
 import io.beldex.bchat.imageeditor.RendererContext;
 
 import io.beldex.bchat.R;
-import io.beldex.bchat.imageeditor.Bounds;
-import io.beldex.bchat.imageeditor.Renderer;
-import io.beldex.bchat.imageeditor.RendererContext;
 
 import java.util.UUID;
 

@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.media.SoundPool
-import android.os.Build
 import android.os.HandlerThread
 import androidx.core.content.ContextCompat
 import com.beldex.libsignal.utilities.Log

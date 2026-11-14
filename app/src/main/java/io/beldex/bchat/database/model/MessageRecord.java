@@ -34,6 +34,7 @@ import com.beldex.libbchat.utilities.recipients.Recipient;
 
 import java.util.List;
 import java.util.Objects;
+import android.graphics.Typeface;
 
 /**
  * The base class for message record models that are displayed in
@@ -139,7 +140,7 @@ public abstract class MessageRecord extends DisplayRecord {
   protected SpannableString emphasisAdded(String sequence) {
     SpannableString spannable = new SpannableString(sequence);
     spannable.setSpan(new RelativeSizeSpan(0.9f), 0, sequence.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-    spannable.setSpan(new StyleSpan(android.graphics.Typeface.ITALIC), 0, sequence.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    spannable.setSpan(new StyleSpan(Typeface.ITALIC), 0, sequence.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
     return spannable;
   }

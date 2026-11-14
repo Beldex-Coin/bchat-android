@@ -12,8 +12,9 @@ import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
 
 import io.beldex.bchat.R;
+import androidx.appcompat.widget.AppCompatImageView;
 
-public class ExpirationTimerView extends androidx.appcompat.widget.AppCompatImageView {
+public class ExpirationTimerView extends AppCompatImageView {
 
   private long startedAt;
   private long expiresIn;

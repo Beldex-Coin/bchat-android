@@ -83,6 +83,15 @@ import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 import io.beldex.bchat.conversation_v2.NewChatScreenViewModel
 import io.beldex.bchat.conversation_v2.OpenActivity
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Dp
+import io.beldex.bchat.compose_utils.BChatLoaderContent
+import io.beldex.bchat.compose_utils.DialogCancelButton
+import io.beldex.bchat.compose_utils.OpenSans
+import io.beldex.bchat.compose_utils.PrimaryButton
+import io.beldex.bchat.compose_utils.RobotoMono
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -99,8 +108,8 @@ fun NewChatScreen(
     onStartChat: (String) -> Unit = {},
     onChatIdErrorCleared: () -> Unit = {},
     onScannedChat: (hexEncodedPublicKey: String, bnsName: String) -> Unit = { _, _ -> },
-    groupAvatarInfo: (Recipient) -> io.beldex.bchat.conversation_v2.NewChatScreenViewModel.GroupAvatarInfo =
-        { io.beldex.bchat.conversation_v2.NewChatScreenViewModel.GroupAvatarInfo(false, "", "") }
+    groupAvatarInfo: (Recipient) -> NewChatScreenViewModel.GroupAvatarInfo =
+        { NewChatScreenViewModel.GroupAvatarInfo(false, "", "") }
 ) {
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -141,7 +150,7 @@ fun NewChatScreen(
     }
 
     Scaffold(
-        containerColor = androidx.compose.ui.graphics.Color.Transparent,
+        containerColor = Color.Transparent,
         modifier = Modifier
             .bchatBackground(MaterialTheme.appColors.backgroundColor)
             .windowInsetsPadding(
@@ -155,7 +164,7 @@ fun NewChatScreen(
                 title = {
                     Text(
                         text = stringResource(id = R.string.new_chat_screen_title),
-                        fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                        fontFamily = OpenSans,
                         color = MaterialTheme.appColors.editTextColor,
                         fontWeight = FontWeight.Normal,
                         fontSize = 16.sp,
@@ -214,7 +223,7 @@ fun NewChatScreen(
                                 text = stringResource(R.string.search_people_and_groups),
                                 modifier = Modifier.padding(start = 4.dp),
                                 softWrap = false,
-                                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                                fontFamily = RobotoMono,
                                 fontWeight = FontWeight.Light,
                                 fontSize = 14.sp,
                                 maxLines = 1,
@@ -331,7 +340,7 @@ fun NewChatScreen(
 
                 Text(
                     text = stringResource(R.string.contact_list),
-                    fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                    fontFamily = OpenSans,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
                     color = MaterialTheme.appColors.onboardingBodyColor,
@@ -386,7 +395,7 @@ fun NewChatItem(
     onClickScanQRCode: () -> Unit,
     highlighted: Boolean = false,
     plainIcon: Boolean = true,
-    iconSize: androidx.compose.ui.unit.Dp = 22.dp,
+    iconSize: Dp = 22.dp,
 ){
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -423,7 +432,7 @@ fun NewChatItem(
         Text(
             text = title,
             textAlign = TextAlign.Start,
-            fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+            fontFamily = RobotoMono,
             color = color,
             fontSize = 14.sp,
             fontWeight = FontWeight.Normal,
@@ -453,7 +462,7 @@ private fun GroupContact(
     recipient: Recipient,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    groupAvatarInfo: (Recipient) -> io.beldex.bchat.conversation_v2.NewChatScreenViewModel.GroupAvatarInfo
+    groupAvatarInfo: (Recipient) -> NewChatScreenViewModel.GroupAvatarInfo
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -496,7 +505,7 @@ private fun GroupContact(
         Text(
             text = if(recipient.name != null) recipient.name.toString().capitalizeFirstLetter() else recipient.address.toString().capitalizeFirstLetter(),
             textAlign = TextAlign.Start,
-            fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+            fontFamily = OpenSans,
             color = MaterialTheme.appColors.editTextColor,
             fontSize = 14.sp,
             fontWeight = FontWeight.SemiBold,
@@ -527,7 +536,7 @@ fun NewChatPopUp(
 
             Text(
                 text = stringResource(R.string.activity_create_private_chat_title),
-                fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                fontFamily = OpenSans,
                 color = MaterialTheme.appColors.editTextColor,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
@@ -550,12 +559,12 @@ fun NewChatPopUp(
                 if (bChatId.isEmpty()) {
                     Text(
                         text = stringResource(R.string.enter_the_bchat_id).uppercase(),
-                        fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                        fontFamily = RobotoMono,
                         color = MaterialTheme.appColors.onboardingInputHint,
                         fontSize = 12.sp
                     )
                 }
-                androidx.compose.foundation.text.BasicTextField(
+                BasicTextField(
                     value = bChatId,
                     onValueChange = {
                         if (it.isNotEmpty()) {
@@ -563,12 +572,12 @@ fun NewChatPopUp(
                         }
                         bChatId = it
                     },
-                    textStyle = androidx.compose.ui.text.TextStyle(
-                        fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                    textStyle = TextStyle(
+                        fontFamily = OpenSans,
                         color = MaterialTheme.appColors.editTextColor,
                         fontSize = 14.sp
                     ),
-                    cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.appColors.textSelectionColor),
+                    cursorBrush = SolidColor(MaterialTheme.appColors.textSelectionColor),
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -576,7 +585,7 @@ fun NewChatPopUp(
             if (bchatIdErrorStatus) {
                 Text(
                     text = stringResource(R.string.enter_correct_bchat_id),
-                    fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                    fontFamily = RobotoMono,
                     color = MaterialTheme.appColors.negativeRedButtonBorder,
                     fontSize = 12.sp,
                     modifier = Modifier.padding(top = 6.dp)
@@ -589,14 +598,14 @@ fun NewChatPopUp(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                io.beldex.bchat.compose_utils.DialogCancelButton(
+                DialogCancelButton(
                     text = stringResource(id = R.string.cancel),
                     onClick = { onDismiss() },
                     modifier = Modifier.weight(1f)
                 )
 
                 val canStart = bChatId.isNotEmpty() && !bchatIdErrorStatus
-                io.beldex.bchat.compose_utils.PrimaryButton(
+                PrimaryButton(
                     onClick = { onStartChat(bChatId) },
                     enabled = canStart,
                     shape = notchedCornerShape(BChatDimens.NotchMedium),
@@ -605,14 +614,14 @@ fun NewChatPopUp(
                     disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
                     disabledContentColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledText,
                     border = if (canStart) BorderStroke(1.dp, MaterialTheme.appColors.dialogPositiveButtonBorder) else null,
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
+                    contentPadding = PaddingValues(0.dp),
                     modifier = Modifier
                         .weight(1f)
                         .height(52.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.let_s_bchat),
-                        fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                        fontFamily = OpenSans,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
                         maxLines = 1,
@@ -632,7 +641,7 @@ fun BnsLoadingPopUp(onDismiss: () -> Unit) {
         dismissOnClickOutside = false,
         onDismissRequest = onDismiss,
     ) {
-        io.beldex.bchat.compose_utils.BChatLoaderContent(text = stringResource(id = R.string.verify_bns))
+        BChatLoaderContent(text = stringResource(id = R.string.verify_bns))
     }
 }
 
@@ -645,4 +654,4 @@ fun NewChatScreenNightPreview() {
     BChatTheme {
         NewChatScreen(searchQuery, contacts,contactViewModel::onEvent, openActivity = {}, openConversation = {}, onBackPress = {}, isDarkTheme = true)
     }
-}
+}

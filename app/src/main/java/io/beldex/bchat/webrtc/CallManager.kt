@@ -36,6 +36,8 @@ import io.beldex.bchat.service.WebRtcCallService
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import nl.komponents.kovenant.functional.bind
+import android.Manifest
+import kotlinx.coroutines.flow.StateFlow
 
 class CallManager(context: Context, audioManager: AudioManagerCompat, private val storage: StorageProtocol): PeerConnection.Observer,
     SignalAudioManager.EventListener, CameraEventListener, DataChannel.Observer {
@@ -156,7 +158,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
     private var peerConnectionFactory: PeerConnectionFactory? = null
 
     private val defaultVideoAspect = MutableStateFlow(1f)
-    val remoteVideoDisplayAspect: kotlinx.coroutines.flow.StateFlow<Float>
+    val remoteVideoDisplayAspect: StateFlow<Float>
         get() = remoteRotationSink?.displayAspect ?: defaultVideoAspect
 
     fun clearPendingIceUpdates() {
@@ -198,7 +200,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
 
     fun isBusy(context: Context, callId: UUID): Boolean {
         // Make sure we have the permission before accessing the callState
-        if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
             return (
                     callId != this.callId && (
                             currentConnectionState != CallState.Idle ||

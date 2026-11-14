@@ -22,6 +22,9 @@ import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.singleCornerCutShape
 import io.beldex.bchat.compose_utils.ui.BChatPreviewContainer
+import androidx.compose.foundation.Canvas
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 
 @Composable
 fun NewChatButtons(
@@ -57,14 +60,14 @@ fun NewChatButtons(
                         )
                 ) {
                     // Figma "FAB New Chat": Plus H 10x2 and Plus V 2x10, #0A0A0A.
-                    androidx.compose.foundation.Canvas(
+                    Canvas(
                         modifier = Modifier
                             .size(10.dp)
                             .semantics { contentDescription = fabDescription }
                     ) {
                         val bar = 2.dp.toPx()
-                        drawRect(fabIconColor, topLeft = androidx.compose.ui.geometry.Offset(0f, (size.height - bar) / 2), size = androidx.compose.ui.geometry.Size(size.width, bar))
-                        drawRect(fabIconColor, topLeft = androidx.compose.ui.geometry.Offset((size.width - bar) / 2, 0f), size = androidx.compose.ui.geometry.Size(bar, size.height))
+                        drawRect(fabIconColor, topLeft = Offset(0f, (size.height - bar) / 2), size = Size(size.width, bar))
+                        drawRect(fabIconColor, topLeft = Offset((size.width - bar) / 2, 0f), size = Size(bar, size.height))
                     }
                 }
             }

@@ -12,17 +12,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,6 +34,13 @@ import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.R
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import io.beldex.bchat.compose_utils.BChatDimens
+import io.beldex.bchat.compose_utils.OpenSans
+import io.beldex.bchat.compose_utils.PrimaryButton
+import io.beldex.bchat.compose_utils.RobotoMono
+import io.beldex.bchat.compose_utils.notchedCornerShape
 
 @Composable
 fun NotificationSettingDialog(
@@ -73,12 +72,12 @@ fun NotificationSettingDialog(
                 Text(
                     text = stringResource(id = R.string.RecipientPreferenceActivity_notification_settings),
                     color = MaterialTheme.appColors.editTextColor,
-                    fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                    fontFamily = OpenSans,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f)
                 )
-                androidx.compose.foundation.layout.Box(
+                Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .size(22.dp)
@@ -100,8 +99,8 @@ fun NotificationSettingDialog(
             ) {
                 options.forEachIndexed { index, item ->
                     val selected = index == selectedItemIndex
-                    val shape = io.beldex.bchat.compose_utils.notchedCornerShape(10.dp)
-                    androidx.compose.foundation.layout.Box(
+                    val shape = notchedCornerShape(10.dp)
+                    Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -121,14 +120,14 @@ fun NotificationSettingDialog(
                         Text(
                             text = item,
                             color = if (selected) MaterialTheme.appColors.userDetailsConfirmBackground else MaterialTheme.appColors.onboardingBodyColor,
-                            fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                            fontFamily = RobotoMono,
                             fontSize = 14.sp
                         )
                     }
                 }
             }
             Spacer(modifier = Modifier.height(18.dp))
-            io.beldex.bchat.compose_utils.PrimaryButton(
+            PrimaryButton(
                 onClick = {
                     if (selectedItemIndex in options.indices) {
                         onClick(selectedItemIndex)
@@ -137,11 +136,11 @@ fun NotificationSettingDialog(
                         onDismiss()
                     }
                 },
-                shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+                shape = notchedCornerShape(BChatDimens.NotchMedium),
                 containerColor = MaterialTheme.appColors.dialogPositiveButtonBackground,
                 contentColor = MaterialTheme.appColors.dialogPositiveButtonText,
                 border = BorderStroke(1.4.dp, MaterialTheme.appColors.dialogPositiveButtonBorder),
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
+                contentPadding = PaddingValues(0.dp),
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .width(122.dp)
@@ -149,7 +148,7 @@ fun NotificationSettingDialog(
             ) {
                 Text(
                     text = stringResource(id = R.string.ok),
-                    fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                    fontFamily = RobotoMono,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 14.sp
                 )

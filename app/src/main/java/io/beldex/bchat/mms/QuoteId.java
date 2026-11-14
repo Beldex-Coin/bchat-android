@@ -8,7 +8,6 @@ import org.json.JSONObject;
 
 import io.beldex.bchat.database.model.MessageRecord;
 import com.beldex.libbchat.utilities.Address;
-import io.beldex.bchat.database.model.MessageRecord;
 import com.beldex.libsignal.utilities.Log;
 
 /**

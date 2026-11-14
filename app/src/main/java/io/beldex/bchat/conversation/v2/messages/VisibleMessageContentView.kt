@@ -9,14 +9,12 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PixelFormat
 import android.graphics.Rect
-import android.graphics.RectF
 import android.graphics.Shader
 import android.graphics.ColorFilter
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.SystemClock
 import android.text.Spannable
-import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextPaint
@@ -50,10 +48,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.BlendModeColorFilterCompat
-import androidx.core.graphics.BlendModeCompat
 import androidx.core.text.getSpans
 import androidx.core.view.isVisible
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
@@ -62,7 +57,6 @@ import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttac
 import com.beldex.libbchat.messaging.utilities.UpdateMessageData
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.beldex.libbchat.utilities.ThemeUtil
 import com.beldex.libbchat.utilities.modifyLayoutParams
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
@@ -80,13 +74,11 @@ import com.bumptech.glide.RequestManager
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.util.DateUtils
 import io.beldex.bchat.util.SearchUtil
-import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.getColorWithID
 import io.beldex.bchat.util.isSharedContact
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
-import io.beldex.bchat.compose_utils.TextColor
 import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.conversation.v2.ViewUtil.dpToPx
 import io.beldex.bchat.conversation.v2.contact_sharing.ContactModel
@@ -97,6 +89,9 @@ import io.beldex.bchat.textformatter.TextFormatter
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.util.Locale
 import kotlin.math.roundToInt
+import android.graphics.Canvas
+import android.graphics.Color
+import io.beldex.bchat.mms.GifSlide
 
 class VisibleMessageContentView : MaterialCardView {
     private val binding: ViewVisibleMessageContentBinding by lazy { ViewVisibleMessageContentBinding.bind(this) }
@@ -439,7 +434,7 @@ class VisibleMessageContentView : MaterialCardView {
                 binding.stickerMessageView.root.isVisible=true
                 binding.stickerMessageView.stickerFooter.isVisible=false
                 binding.stickerMessageView.stickerThumbnail.root.apply {
-                    setBackgroundColor(android.graphics.Color.TRANSPARENT)
+                    setBackgroundColor(Color.TRANSPARENT)
                     setImageResource(glide, message.slideDeck.thumbnailSlide!!, false, message)
                 }
                 binding.tailSendView.visibility=GONE
@@ -528,7 +523,6 @@ class VisibleMessageContentView : MaterialCardView {
                 setContactView(message, messageSelected,searchQuery, searchViewModel)
             }
         }
-
 
 
         binding.bodyTextView.isVisible = message.body.isNotEmpty() && !hideBody
@@ -753,7 +747,7 @@ class VisibleMessageContentView : MaterialCardView {
         private val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
         private val path = Path()
 
-        override fun draw(canvas: android.graphics.Canvas) {
+        override fun draw(canvas: Canvas) {
             val b = bounds
             if (b.width() <= 0 || b.height() <= 0) return
             val inset = strokeWidth / 2f
@@ -1105,7 +1099,7 @@ internal fun MessageRecord.isStickerMessage(): Boolean {
     val slides = slideDeck.slides
     if (slides.size != 1) return false
     val slide = slides[0]
-    return slide.fileName.orNull() == io.beldex.bchat.mms.GifSlide.STICKER_FILE_NAME ||
+    return slide.fileName.orNull() == GifSlide.STICKER_FILE_NAME ||
         slide.contentType.equals("image/webp", ignoreCase = true)
 }
 

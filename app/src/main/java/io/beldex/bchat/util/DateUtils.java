@@ -31,6 +31,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import io.beldex.bchat.R;
+import android.provider.Settings;
 
 /**
  * Utility methods to help display dates in a nice, easily readable way.
@@ -60,9 +61,9 @@ public class DateUtils extends android.text.format.DateUtils {
   }
   
   private static boolean isExplicit24HourFormat(Context c) {
-    String value = android.provider.Settings.System.getString(
+    String value = Settings.System.getString(
             c.getContentResolver(),
-            android.provider.Settings.System.TIME_12_24
+            Settings.System.TIME_12_24
     );
     return "24".equals(value);
   }

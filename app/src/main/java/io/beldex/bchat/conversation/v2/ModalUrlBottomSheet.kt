@@ -9,12 +9,8 @@ import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,32 +19,43 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.beldex.bchat.R
-import io.beldex.bchat.databinding.FragmentModalUrlBottomSheetBinding
 import io.beldex.bchat.util.UiModeUtilities
+import android.graphics.Color
+import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.compose_utils.DialogPanel
+import io.beldex.bchat.compose_utils.PopupBody
+import io.beldex.bchat.compose_utils.boldedMessage
+import io.beldex.bchat.util.UiMode
 
 class ModalUrlBottomSheet(private val url: String): BottomSheetDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
-        androidx.compose.ui.platform.ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                io.beldex.bchat.compose_utils.BChatTheme(
-                    darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == io.beldex.bchat.util.UiMode.NIGHT
+                BChatTheme(
+                    darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
                 ) {
-                    androidx.compose.foundation.layout.Box(
-                        modifier = androidx.compose.ui.Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+                    Box(
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
                     ) {
-                        io.beldex.bchat.compose_utils.DialogPanel(modifier = androidx.compose.ui.Modifier.fillMaxWidth()) {
-                            io.beldex.bchat.compose_utils.PopupBody(
-                                title = androidx.compose.ui.res.stringResource(R.string.dialog_open_url_title),
-                                message = io.beldex.bchat.compose_utils.boldedMessage(
-                                    androidx.compose.ui.res.stringResource(R.string.dialog_open_url_explanation, url), url
+                        DialogPanel(modifier = Modifier.fillMaxWidth()) {
+                            PopupBody(
+                                title = stringResource(R.string.dialog_open_url_title),
+                                message = boldedMessage(
+                                    stringResource(R.string.dialog_open_url_explanation, url), url
                                 ),
                                 onClose = { dismiss() },
-                                middleText = androidx.compose.ui.res.stringResource(R.string.copy),
+                                middleText = stringResource(R.string.copy),
                                 onMiddle = { copy() },
-                                middleIcon = androidx.compose.ui.res.painterResource(R.drawable.ic_pop_copy),
-                                confirmText = androidx.compose.ui.res.stringResource(R.string.dialog_open_url_title).removeSuffix("?"),
-                                confirmIcon = androidx.compose.ui.res.painterResource(R.drawable.ic_pop_open_link),
+                                middleIcon = painterResource(R.drawable.ic_pop_copy),
+                                confirmText = stringResource(R.string.dialog_open_url_title).removeSuffix("?"),
+                                confirmIcon = painterResource(R.drawable.ic_pop_open_link),
                                 onConfirm = { open() }
                             )
                         }
@@ -60,7 +67,7 @@ class ModalUrlBottomSheet(private val url: String): BottomSheetDialogFragment() 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // The Revamp_2026 panel draws its own surface; the sheet itself must be see-through.
-        (view.parent as? View)?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+        (view.parent as? View)?.setBackgroundColor(Color.TRANSPARENT)
     }
 
     private fun open() {

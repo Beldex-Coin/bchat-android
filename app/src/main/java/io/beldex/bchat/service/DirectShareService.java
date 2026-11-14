@@ -25,6 +25,7 @@ import com.bumptech.glide.Glide;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import android.R;
 
 
 public class DirectShareService extends ChooserTargetService {
@@ -54,8 +55,8 @@ public class DirectShareService extends ChooserTargetService {
                               .asBitmap()
                               .load(recipient.getContactPhoto())
                               .circleCrop()
-                              .submit(getResources().getDimensionPixelSize(android.R.dimen.notification_large_icon_width),
-                                      getResources().getDimensionPixelSize(android.R.dimen.notification_large_icon_width))
+                              .submit(getResources().getDimensionPixelSize(R.dimen.notification_large_icon_width),
+                                      getResources().getDimensionPixelSize(R.dimen.notification_large_icon_width))
                               .get();
                   } catch (InterruptedException | ExecutionException e) {
                       Log.w(TAG, e);
@@ -84,7 +85,7 @@ public class DirectShareService extends ChooserTargetService {
 
   private Bitmap getFallbackDrawable(@NonNull Recipient recipient) {
     return BitmapUtil.createFromDrawable(recipient.getFallbackContactPhotoDrawable(this, false),
-                                         getResources().getDimensionPixelSize(android.R.dimen.notification_large_icon_width),
-                                         getResources().getDimensionPixelSize(android.R.dimen.notification_large_icon_height));
+                                         getResources().getDimensionPixelSize(R.dimen.notification_large_icon_width),
+                                         getResources().getDimensionPixelSize(R.dimen.notification_large_icon_height));
   }
 }

@@ -15,6 +15,7 @@ import io.beldex.bchat.databinding.ViewIncomingCallBannerBinding
 import io.beldex.bchat.service.WebRtcCallService
 import io.beldex.bchat.util.AvatarPlaceholderGenerator
 import kotlinx.coroutines.launch
+import com.beldex.libbchat.utilities.recipients.Recipient
 
 object IncomingCallBanner {
 
@@ -88,7 +89,7 @@ object IncomingCallBanner {
     private fun loadAvatar(
         activity: AppCompatActivity,
         banner: ViewIncomingCallBannerBinding,
-        recipient: com.beldex.libbchat.utilities.recipients.Recipient?
+        recipient: Recipient?
     ) {
         val sizePx = (36 * activity.resources.displayMetrics.density).toInt()
         val placeholder: Drawable = AvatarPlaceholderGenerator.generate(

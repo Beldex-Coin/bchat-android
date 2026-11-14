@@ -3,7 +3,6 @@ package io.beldex.bchat.jobmanager.impl;
 import androidx.annotation.NonNull;
 
 import io.beldex.bchat.jobmanager.ExecutorFactory;
-import io.beldex.bchat.jobmanager.ExecutorFactory;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

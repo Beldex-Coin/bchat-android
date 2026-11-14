@@ -2,7 +2,6 @@ package io.beldex.bchat.backup
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import android.preference.PreferenceManager
 import android.preference.PreferenceManager.getDefaultSharedPreferencesName
 import com.beldex.libbchat.utilities.TextSecurePreferences

@@ -106,6 +106,9 @@ import java.util.Timer
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import kotlin.concurrent.Volatile
+import com.beldex.libbchat.utilities.task.ProgressDialogAsyncTask
+import io.beldex.bchat.compose_utils.LoadingDialog
+import java.util.Arrays
 
 @HiltAndroidApp
 class ApplicationContext:  Application(), DefaultLifecycleObserver {
@@ -196,9 +199,9 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
             textSecurePreferences, ProcessLifecycleOwner.get().lifecycle, storage
         )
         Log.i(TAG, "onCreate()")
-        com.beldex.libbchat.utilities.task.ProgressDialogAsyncTask.dialogFactory =
-            com.beldex.libbchat.utilities.task.ProgressDialogAsyncTask.DialogFactory { context, title, message ->
-                io.beldex.bchat.compose_utils.LoadingDialog.create(context, title, message)
+        ProgressDialogAsyncTask.dialogFactory =
+            ProgressDialogAsyncTask.DialogFactory { context, title, message ->
+                LoadingDialog.create(context, title, message)
             }
         startKovenant()
         initializeSecurityProvider()
@@ -488,7 +491,7 @@ class ApplicationContext:  Application(), DefaultLifecycleObserver {
                 try {
                     assets.open("emoji/emoji_search_index.json").use { inputStream ->
                         val searchIndex : List<EmojiSearchData> =
-                            java.util.Arrays.asList(
+                            Arrays.asList(
                                 *JsonUtil.fromJson<Array<EmojiSearchData>>(
                                     inputStream,
                                     Array<EmojiSearchData>::class.java

@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
+import kotlinx.coroutines.delay
 
 @HiltViewModel
 class PinCodeViewModel @Inject constructor(
@@ -123,7 +124,7 @@ class PinCodeViewModel @Inject constructor(
     private fun showPinError(message: String, clearEntry: (PinCodeState) -> PinCodeState) {
         _state.update { it.copy(errorText = message) }
         viewModelScope.launch {
-            kotlinx.coroutines.delay(1000)
+            delay(1000)
             _state.update { clearEntry(it).copy(errorText = null) }
         }
     }

@@ -2,7 +2,6 @@ package io.beldex.bchat.permissions;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,13 +11,7 @@ import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
@@ -32,16 +25,16 @@ import io.beldex.bchat.util.LRUCache;
 
 import com.beldex.libbchat.utilities.ServiceUtil;
 
-import org.w3c.dom.Text;
 
 import java.lang.ref.WeakReference;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import io.beldex.bchat.R;
+import androidx.fragment.app.FragmentActivity;
+import io.beldex.bchat.compose_utils.ui.ComposeMessageDialogFragment;
 
 public class Permissions {
 
@@ -177,12 +170,12 @@ public class Permissions {
     @SuppressWarnings("ConstantConditions")
     private void executePermissionsRequestWithRationale(PermissionsRequest request) {
       Context context = permissionObject.getContext();
-      if (!(context instanceof androidx.fragment.app.FragmentActivity)) {
+      if (!(context instanceof FragmentActivity)) {
         executeNoPermissionsRequest(request);
         return;
       }
-      io.beldex.bchat.compose_utils.ui.ComposeMessageDialogFragment.show(
-          ((androidx.fragment.app.FragmentActivity) context).getSupportFragmentManager(),
+      ComposeMessageDialogFragment.show(
+          ((FragmentActivity) context).getSupportFragmentManager(),
           rationalDialogTitle,
           rationaleDialogMessage,
           context.getString(R.string.Permissions_allow),
@@ -380,9 +373,9 @@ public class Permissions {
     public void run() {
       Context context = this.context.get();
 
-      if (context instanceof androidx.fragment.app.FragmentActivity) {
-        io.beldex.bchat.compose_utils.ui.ComposeMessageDialogFragment.show(
-            ((androidx.fragment.app.FragmentActivity) context).getSupportFragmentManager(),
+      if (context instanceof FragmentActivity) {
+        ComposeMessageDialogFragment.show(
+            ((FragmentActivity) context).getSupportFragmentManager(),
             context.getString(R.string.Permissions_permission_required),
             message,
             context.getString(R.string.Permissions_allow),

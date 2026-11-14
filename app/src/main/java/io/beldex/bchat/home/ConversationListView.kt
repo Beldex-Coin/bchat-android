@@ -47,6 +47,7 @@ import io.beldex.bchat.compose_utils.ContextMenuItem
 import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.database.model.ThreadRecord
+import android.os.SystemClock
 
 /**
  * The row's context menu actions (Figma has no spec for this — it's the existing
@@ -169,7 +170,7 @@ private fun ConversationRow(
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = { value ->
             if (value == SwipeToDismissBoxValue.EndToStart) {
-                val now = android.os.SystemClock.elapsedRealtime()
+                val now = SystemClock.elapsedRealtime()
                 if (now - lastSwipeDelete[0] > 1000L) {
                     lastSwipeDelete[0] = now
                     onSwipeDelete()
@@ -190,15 +191,15 @@ private fun ConversationRow(
             if (dismissState.dismissDirection != SwipeToDismissBoxValue.Settled) Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(androidx.compose.ui.graphics.Color(0x1AFF3E3E))
-                    .border(0.5.dp, androidx.compose.ui.graphics.Color(0xFFFF3E3E))
+                    .background(Color(0x1AFF3E3E))
+                    .border(0.5.dp, Color(0xFFFF3E3E))
                     .padding(horizontal = 24.dp),
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_delete_menu),
                     contentDescription = stringResource(R.string.delete),
-                    tint = androidx.compose.ui.graphics.Color(0xFFFF3E3E)
+                    tint = Color(0xFFFF3E3E)
                 )
             }
         }
@@ -227,7 +228,7 @@ private fun ConversationRow(
                     .background(
                         if (dismissState.dismissDirection != SwipeToDismissBoxValue.Settled)
                             MaterialTheme.appColors.backgroundColor
-                        else androidx.compose.ui.graphics.Color.Transparent
+                        else Color.Transparent
                     )
             )
 

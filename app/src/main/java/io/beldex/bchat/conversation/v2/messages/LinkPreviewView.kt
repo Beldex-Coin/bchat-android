@@ -16,7 +16,6 @@ import com.bumptech.glide.RequestManager
 import io.beldex.bchat.mms.ImageSlide
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.util.UiModeUtilities
-import io.beldex.bchat.util.toPx
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewLinkPreviewBinding
 

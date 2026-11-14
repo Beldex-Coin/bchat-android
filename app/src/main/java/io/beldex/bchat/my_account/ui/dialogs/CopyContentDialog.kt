@@ -40,6 +40,7 @@ import io.beldex.bchat.compose_utils.notchedCornerShape
 import androidx.compose.ui.graphics.Color
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.BChatDimens
 
 @Composable
 fun CopyContentDialog(
@@ -74,7 +75,7 @@ fun CopyContentDialog(
                 modifier = Modifier
                     .weight(1F)
                     .heightIn(max = 560.dp),
-                shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchCard)
+                shape = notchedCornerShape(BChatDimens.NotchCard)
             ) {
             Row(
                 modifier = Modifier

@@ -26,10 +26,10 @@ import androidx.compose.ui.unit.sp
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.OpenSans
-import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.notchedCornerShape
+import io.beldex.bchat.compose_utils.BChatDimens
 
 /**
  * Shared Revamp_2026 onboarding top bar: a back arrow + step title, matching the header row
@@ -86,7 +86,7 @@ fun OnboardingPrimaryButton(
     PrimaryButton(
         onClick = onClick,
         enabled = enabled,
-        shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchLarge),
+        shape = notchedCornerShape(BChatDimens.NotchLarge),
         containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
         contentColor = MaterialTheme.appColors.backgroundColor,
         disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,

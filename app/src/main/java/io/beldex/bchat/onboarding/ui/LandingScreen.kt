@@ -2,13 +2,11 @@ package io.beldex.bchat.onboarding.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -47,6 +45,10 @@ import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.bchatBackground
 import io.beldex.bchat.compose_utils.notchedCornerShape
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.RoundRect
+import androidx.compose.ui.graphics.Path
+import io.beldex.bchat.compose_utils.BChatDimens
 
 @Composable
 fun LandingScreen(
@@ -126,7 +128,7 @@ fun LandingScreen(
             ) {
                 PrimaryButton(
                     onClick = onCreateAccountClick,
-                    shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchLarge),
+                    shape = notchedCornerShape(BChatDimens.NotchLarge),
                     containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
                     contentColor = MaterialTheme.appColors.backgroundColor,
                     modifier = Modifier
@@ -143,7 +145,7 @@ fun LandingScreen(
 
                 PrimaryButton(
                     onClick = onRestoreAccountClick,
-                    shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchLarge),
+                    shape = notchedCornerShape(BChatDimens.NotchLarge),
                     containerColor = MaterialTheme.appColors.dialogBackground,
                     contentColor = MaterialTheme.appColors.editTextColor,
                     border = BorderStroke(1.dp, MaterialTheme.appColors.onboardingSecondaryButtonBorder),
@@ -206,14 +208,14 @@ private fun LandingChatSkeleton(modifier: Modifier = Modifier) {
         fun y(v: Float) = (v - 369f).dp.toPx() * s + top
         fun card(cx: Float, cy: Float, w: Float, h: Float, tl: Float, tr: Float) {
             val r = dp(19f)
-            val path = androidx.compose.ui.graphics.Path().apply {
+            val path = Path().apply {
                 addRoundRect(
-                    androidx.compose.ui.geometry.RoundRect(
+                    RoundRect(
                         left = x(cx), top = y(cy), right = x(cx + w), bottom = y(cy + h),
-                        topLeftCornerRadius = androidx.compose.ui.geometry.CornerRadius(dp(tl)),
-                        topRightCornerRadius = androidx.compose.ui.geometry.CornerRadius(dp(tr)),
-                        bottomRightCornerRadius = androidx.compose.ui.geometry.CornerRadius(r),
-                        bottomLeftCornerRadius = androidx.compose.ui.geometry.CornerRadius(r)
+                        topLeftCornerRadius = CornerRadius(dp(tl)),
+                        topRightCornerRadius = CornerRadius(dp(tr)),
+                        bottomRightCornerRadius = CornerRadius(r),
+                        bottomLeftCornerRadius = CornerRadius(r)
                     )
                 )
             }

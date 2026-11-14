@@ -62,7 +62,7 @@ class AttachmentUploadJob(val attachmentID: Long, val threadID: String, val mess
                 }
                 handleSuccess(attachment, keyAndResult.first, keyAndResult.second)
             }
-        } catch (e: java.lang.Exception) {
+        } catch (e: Exception) {
             if (e == Error.NoAttachment) {
                 this.handlePermanentFailure(e)
             } else {

@@ -30,8 +30,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -78,6 +76,9 @@ import io.beldex.bchat.util.PushCharacterCalculator;
 import io.beldex.bchat.util.Stopwatch;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import android.graphics.Typeface;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.ScaleXSpan;
 
 /**
  * Allows the user to edit and caption a set of media items before choosing to send them.
@@ -911,7 +912,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
         int numberEnd = index + match.group().length();
 
         editable.setSpan(
-                new StyleSpan(android.graphics.Typeface.BOLD),
+                new StyleSpan(Typeface.BOLD),
                 index,
                 numberEnd,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -976,7 +977,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
             contentStart = lineStart + 2;
 
             builder.setSpan(
-                    new android.text.style.ScaleXSpan(0f),
+                    new ScaleXSpan(0f),
                     lineStart,
                     contentStart,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -1001,7 +1002,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
 
           // Text color
           builder.setSpan(
-                  new android.text.style.ForegroundColorSpan(
+                  new ForegroundColorSpan(
                           ContextCompat.getColor(context, R.color.quote_gray)
                   ),
                   contentStart,

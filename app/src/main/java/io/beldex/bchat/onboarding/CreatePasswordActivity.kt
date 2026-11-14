@@ -15,21 +15,17 @@ import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
 import javax.inject.Inject
 import android.view.inputmethod.InputConnection
-import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.text.InputType
 import android.view.View
 import android.view.WindowManager
 import android.view.MotionEvent
-import android.view.View.OnTouchListener
 import androidx.core.widget.addTextChangedListener
 import android.text.Editable
 
 import android.text.TextWatcher
 import io.beldex.bchat.R
-import org.w3c.dom.Text
 
 
 class CreatePasswordActivity : BaseActionBarActivity() {

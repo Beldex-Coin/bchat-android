@@ -6,8 +6,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
@@ -34,12 +32,10 @@ import com.beldex.libsignal.utilities.Log;
 
 import com.beldex.libsignal.utilities.guava.Optional;
 import io.beldex.bchat.attachments.AttachmentServer;
-import io.beldex.bchat.mms.AudioSlide;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
-import io.beldex.bchat.BuildConfig;
 
 public class AudioSlidePlayer implements SensorEventListener {
 

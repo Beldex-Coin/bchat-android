@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.InnerTileDrawable

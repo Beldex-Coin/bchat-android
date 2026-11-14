@@ -28,6 +28,7 @@ import androidx.lifecycle.setViewTreeViewModelStoreOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
+import android.view.Window
 
 /**
  * Revamp_2026 loading popup ("Saving to media.."): the shared [DialogPanel] with the green
@@ -37,7 +38,7 @@ object LoadingDialog {
     @JvmStatic
     fun create(context: Context, title: String, message: String): Dialog {
         val dialog = Dialog(context)
-        dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(false)
         val view = ComposeView(context).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindowOrReleasedFromPool)

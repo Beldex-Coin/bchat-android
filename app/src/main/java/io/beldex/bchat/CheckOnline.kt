@@ -3,7 +3,6 @@ package io.beldex.bchat
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import com.beldex.libsignal.utilities.Log
 
 class CheckOnline {
 

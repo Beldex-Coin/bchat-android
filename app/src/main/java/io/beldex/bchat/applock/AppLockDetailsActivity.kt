@@ -5,17 +5,12 @@ import io.beldex.bchat.databinding.ActivityAppLockDetailsBinding
 import io.beldex.bchat.util.setUpActionBarBchatLogo
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Typeface
-import android.graphics.drawable.ColorDrawable
-import android.view.View
 import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import com.beldex.libbchat.utilities.ExpirationUtil
 import io.beldex.bchat.R
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setScreenLockEnabled
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setScreenLockTimeout
-import com.beldex.libsignal.utilities.Log
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.my_account.ui.ScreenTimeoutOptions
@@ -26,7 +21,7 @@ import java.util.concurrent.TimeUnit
 import androidx.core.graphics.drawable.toDrawable
 
 
-class AppLockDetailsActivity : io.beldex.bchat.PassphraseRequiredActionBarActivity() {
+class AppLockDetailsActivity : PassphraseRequiredActionBarActivity() {
     private lateinit var binding: ActivityAppLockDetailsBinding
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
         super.onCreate(savedInstanceState, isReady)

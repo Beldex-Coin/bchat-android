@@ -35,8 +35,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.util.ScreenSecurity
 import android.app.Activity
 import androidx.compose.foundation.clickable
 import io.beldex.bchat.ApplicationContext
@@ -45,14 +43,21 @@ import io.beldex.bchat.compose_utils.DialogConfirmButton
 import io.beldex.bchat.compose_utils.DialogCancelButton
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Arrangement
-import com.beldex.libbchat.mnode.OnionRequestAPI
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.OpenSans
-import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.notchedCornerShape
 import io.beldex.bchat.permissions.Permissions
+import androidx.compose.material3.Icon
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.AnnotatedString
+import androidx.preference.PreferenceManager
+import io.beldex.bchat.compose_utils.BChatDimens
+import io.beldex.bchat.compose_utils.BChatRadioButton
+import io.beldex.bchat.compose_utils.IconConfirmDialog
+import io.beldex.bchat.compose_utils.RobotoMono
 
 /**
  * Revamp_2026 Privacy / App Protection settings (Figma `Settings` 7546:23529), reached from the
@@ -73,7 +78,7 @@ fun PrivacySettingsScreen(
     var voiceVideoCalls by remember { mutableStateOf(TextSecurePreferences.isCallNotificationsEnabled(context)) }
     var onionRouting by remember { mutableStateOf(TextSecurePreferences.isOnionRoutingEnabled(context)) }
     var showHopsDialog by remember { mutableStateOf(false) }
-    val sharedPrefs = remember { androidx.preference.PreferenceManager.getDefaultSharedPreferences(context) }
+    val sharedPrefs = remember { PreferenceManager.getDefaultSharedPreferences(context) }
     var hops by remember {
         mutableStateOf(
             sharedPrefs.getInt("pref_onion_hops", if (TextSecurePreferences.isOnionRoutingEnabled(context)) 3 else 0)
@@ -97,10 +102,10 @@ fun PrivacySettingsScreen(
     }
 
     if (showVoiceVideoConfirm) {
-        io.beldex.bchat.compose_utils.IconConfirmDialog(
+        IconConfirmDialog(
             icon = painterResource(id = R.drawable.ic_headset_popup),
             title = stringResource(R.string.dialog_voice_video_title),
-            message = androidx.compose.ui.text.AnnotatedString(stringResource(R.string.dialog_voice_video_message)),
+            message = AnnotatedString(stringResource(R.string.dialog_voice_video_message)),
             cancelText = stringResource(R.string.cancel),
             confirmText = stringResource(R.string.dialog_voice_video_enable),
             onConfirm = {
@@ -256,7 +261,7 @@ private fun SectionTitle(title: String) {
 private fun SectionCard(content: @Composable () -> Unit) {
     Card(
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        shape = androidx.compose.ui.graphics.RectangleShape,
+        shape = RectangleShape,
         border = BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -354,10 +359,10 @@ private fun HopsDialog(selected: Int, onSelect: (Int) -> Unit, onCancel: () -> U
             Spacer(modifier = Modifier.height(16.dp))
             options.forEach { option ->
                 val isSelected = option == selected
-                val shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium)
+                val shape = notchedCornerShape(BChatDimens.NotchMedium)
                 val accent = MaterialTheme.appColors.userDetailsConfirmBackground
                 Row(
-                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 10.dp)
@@ -370,18 +375,18 @@ private fun HopsDialog(selected: Int, onSelect: (Int) -> Unit, onCancel: () -> U
                         .clickable { onSelect(option) }
                         .padding(horizontal = 20.dp)
                 ) {
-                    io.beldex.bchat.compose_utils.BChatRadioButton(selected = isSelected, onClick = { onSelect(option) })
+                    BChatRadioButton(selected = isSelected, onClick = { onSelect(option) })
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         text = hopsLabel(option),
                         color = if (isSelected) accent else MaterialTheme.appColors.onboardingBodyColor,
-                        fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                        fontFamily = RobotoMono,
                         fontSize = 16.sp
                     )
                 }
             }
             Row(modifier = Modifier.padding(top = 4.dp, bottom = 16.dp)) {
-                androidx.compose.material3.Icon(
+                Icon(
                     imageVector = Icons.Outlined.Info,
                     contentDescription = null,
                     tint = MaterialTheme.appColors.onboardingBodyColor,
@@ -397,7 +402,7 @@ private fun HopsDialog(selected: Int, onSelect: (Int) -> Unit, onCancel: () -> U
                         }
                     ),
                     color = MaterialTheme.appColors.onboardingBodyColor,
-                    fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                    fontFamily = RobotoMono,
                     fontSize = 12.sp,
                     lineHeight = 17.sp
                 )
@@ -405,9 +410,9 @@ private fun HopsDialog(selected: Int, onSelect: (Int) -> Unit, onCancel: () -> U
             DialogCancelButton(
                 text = stringResource(R.string.cancel),
                 onClick = onCancel,
-                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                fontFamily = RobotoMono,
                 textColor = MaterialTheme.appColors.editTextColor,
-                modifier = Modifier.width(162.dp).align(androidx.compose.ui.Alignment.CenterHorizontally)
+                modifier = Modifier.width(162.dp).align(Alignment.CenterHorizontally)
             )
         }
     }

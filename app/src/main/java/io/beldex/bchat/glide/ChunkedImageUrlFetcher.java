@@ -7,7 +7,6 @@ import io.beldex.bchat.giph.model.ChunkedImageUrl;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.data.DataFetcher;
-import io.beldex.bchat.giph.model.ChunkedImageUrl;
 import io.beldex.bchat.net.ChunkedDataFetcher;
 import io.beldex.bchat.net.RequestController;
 

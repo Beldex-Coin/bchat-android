@@ -23,7 +23,6 @@ import android.view.View
 import android.view.ViewOutlineProvider
 import android.view.animation.AnticipateOvershootInterpolator
 import android.view.animation.OvershootInterpolator
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
@@ -38,7 +37,6 @@ import io.beldex.bchat.util.slidetoact.SlideToActIconUtil.startIconAnimation
 import io.beldex.bchat.util.slidetoact.SlideToActIconUtil.stopIconAnimation
 import io.beldex.bchat.util.slidetoact.SlideToActIconUtil.tintIconCompat
 import io.beldex.bchat.R
-import org.webrtc.ContextUtils.getApplicationContext
 
 class SlideToActView @JvmOverloads constructor(
     context: Context,

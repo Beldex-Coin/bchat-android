@@ -59,6 +59,7 @@ import androidx.lifecycle.lifecycleScope
 import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.service.WebRtcCallService.Companion.ACTION_ICE_CONNECTED
+import android.Manifest
 
 @AndroidEntryPoint
 class WebRtcCallService: LifecycleService(), CallManager.WebRtcListener {
@@ -331,7 +332,7 @@ class WebRtcCallService: LifecycleService(), CallManager.WebRtcListener {
         registerIncomingPstnCallReceiver()
         registerWiredHeadsetStateReceiver()
         registerWantsToAnswerReceiver()
-        if (checkSelfPermission(android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+        if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 telephonyHandler.register(getSystemService(TelephonyManager::class.java))
             }
@@ -807,7 +808,7 @@ class WebRtcCallService: LifecycleService(), CallManager.WebRtcListener {
         wantsToAnswer = false
         currentTimeouts = 0
         isNetworkAvailable = false
-        if (checkSelfPermission(android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+        if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 telephonyHandler.unregister(getSystemService(TelephonyManager::class.java))
             }

@@ -35,18 +35,7 @@ import com.bumptech.glide.load.resource.gif.StreamGifDecoder;
 import com.bumptech.glide.module.AppGlideModule;
 
 import com.beldex.libbchat.avatars.ContactPhoto;
-import io.beldex.bchat.crypto.AttachmentSecret;
-import io.beldex.bchat.crypto.AttachmentSecretProvider;
-import io.beldex.bchat.giph.model.ChunkedImageUrl;
-import io.beldex.bchat.glide.ChunkedImageUrlLoader;
-import io.beldex.bchat.glide.ContactPhotoLoader;
-import io.beldex.bchat.glide.OkHttpUrlLoader;
 import io.beldex.bchat.glide.PlaceholderAvatarLoader;
-import io.beldex.bchat.glide.cache.EncryptedBitmapCacheDecoder;
-import io.beldex.bchat.glide.cache.EncryptedBitmapResourceEncoder;
-import io.beldex.bchat.glide.cache.EncryptedCacheEncoder;
-import io.beldex.bchat.glide.cache.EncryptedGifCacheDecoder;
-import io.beldex.bchat.glide.cache.EncryptedGifDrawableResourceEncoder;
 import io.beldex.bchat.mms.AttachmentStreamUriLoader.AttachmentModel;
 
 import java.io.File;

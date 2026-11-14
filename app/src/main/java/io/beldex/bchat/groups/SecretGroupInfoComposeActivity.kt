@@ -37,22 +37,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.border
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -75,7 +68,6 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -83,10 +75,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.safeContent
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.toArgb
@@ -122,13 +111,19 @@ import io.beldex.bchat.conversation.v2.dialogs.LeaveGroupDialog
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.home.NotificationSettingDialog
 import io.beldex.bchat.my_account.ui.CardContainer
-import io.beldex.bchat.my_account.ui.MyAccountScreenContainer
 import io.beldex.bchat.my_account.ui.dialogs.LockOptionsDialog
 import io.beldex.bchat.onboarding.ui.OnboardingTopBar
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import kotlinx.coroutines.launch
 import java.io.IOException
+import android.view.WindowManager
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.DialogWindowProvider
+import androidx.core.view.WindowCompat
+import io.beldex.bchat.compose_utils.OpenSans
+import io.beldex.bchat.compose_utils.RobotoMono
 
 @AndroidEntryPoint
 class SecretGroupInfoComposeActivity : BaseComponentActivity() {
@@ -514,7 +509,6 @@ fun GroupDetailsScreen(
     }
 
 
-
     fun String.capitalizeFirstLetter() : String {
         return this.replaceFirstChar { it.uppercase() }
     }
@@ -528,12 +522,12 @@ fun GroupDetailsScreen(
 
     if (isShowSearchBottomSheet) {
         // Figma "search_member": a full screen with a back arrow, a bordered search box and plain rows.
-        androidx.compose.ui.window.Dialog(
+        Dialog(
             onDismissRequest = {
                 showSearchView(false)
                 secretGroupInfoViewModel.updateVisibleBottomSheet(false)
             },
-            properties = androidx.compose.ui.window.DialogProperties(
+            properties = DialogProperties(
                 usePlatformDefaultWidth = false,
                 dismissOnClickOutside = false,
                 decorFitsSystemWindows = false
@@ -551,15 +545,15 @@ fun GroupDetailsScreen(
             val dialogView = LocalView.current
             val isDarkPalette = MaterialTheme.appColors.backgroundColor.luminance() < 0.5f
             DisposableEffect(dialogView) {
-                val window = (dialogView as? androidx.compose.ui.window.DialogWindowProvider)?.window
+                val window = (dialogView as? DialogWindowProvider)?.window
                 val previous = window?.attributes?.softInputMode
                 window?.setSoftInputMode(
-                    android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+                    WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
                 )
                 if (window != null) {
                     window.statusBarColor = android.graphics.Color.TRANSPARENT
                     window.navigationBarColor = android.graphics.Color.TRANSPARENT
-                    androidx.core.view.WindowCompat.getInsetsController(window, dialogView).apply {
+                    WindowCompat.getInsetsController(window, dialogView).apply {
                         isAppearanceLightStatusBars = !isDarkPalette
                         isAppearanceLightNavigationBars = !isDarkPalette
                     }
@@ -856,7 +850,7 @@ fun GroupDetailsScreen(
                             Text(
                                 text = stringResource(R.string.leave_group),
                                 color = MaterialTheme.appColors.negativeRedButtonBorder,
-                                fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                                fontFamily = OpenSans,
                                 fontSize = 14.sp
                             )
                         }
@@ -1193,7 +1187,7 @@ fun MemberDetailsDialog(
                                     } else item,
                                     style=MaterialTheme.typography.titleMedium.copy(
                                         color=MaterialTheme.appColors.editTextColor,
-                                        fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                                        fontFamily = RobotoMono,
                                         fontSize=14.sp,
                                         fontWeight=FontWeight(400)
                                     ),

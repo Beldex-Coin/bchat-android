@@ -30,7 +30,6 @@ import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentTransferProgress;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.UriAttachment;
 import com.beldex.libbchat.utilities.MediaTypes;
-import io.beldex.bchat.util.ResUtil;
 
 public class AudioSlide extends Slide {
 

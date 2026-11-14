@@ -1,6 +1,5 @@
 package io.beldex.bchat.conversation.v2
 
-import android.os.Build
 import android.text.Html
 import android.text.Spanned
 import android.view.LayoutInflater

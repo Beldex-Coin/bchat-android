@@ -36,6 +36,8 @@ import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.bchatBackground
+import androidx.compose.ui.graphics.Color
+import com.airbnb.lottie.compose.LottieConstants
 
 /**
  * Live "Register" onboarding step, hosted by [io.beldex.bchat.onboarding.RegisterActivity].
@@ -135,7 +137,7 @@ fun RegisterScreen(
 @Composable
 private fun RegisterKeyCard(
     label: String,
-    labelColor: androidx.compose.ui.graphics.Color,
+    labelColor: Color,
     isLoading: Boolean,
     value: String,
     onCopyClick: () -> Unit,
@@ -164,7 +166,7 @@ private fun RegisterKeyCard(
         )
         if (isLoading) {
             val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.load_animation))
-            val progress by animateLottieCompositionAsState(composition, iterations = com.airbnb.lottie.compose.LottieConstants.IterateForever)
+            val progress by animateLottieCompositionAsState(composition, iterations = LottieConstants.IterateForever)
             LottieAnimation(
                 composition = composition,
                 progress = { progress },

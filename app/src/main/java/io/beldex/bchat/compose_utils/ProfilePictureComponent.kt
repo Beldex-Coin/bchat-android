@@ -4,12 +4,9 @@ import android.graphics.drawable.Drawable
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +42,9 @@ import io.beldex.bchat.hilt.GlideProvider
 import io.beldex.bchat.util.AvatarPlaceholderGenerator
 import dagger.hilt.android.EntryPointAccessors.fromApplication
 import io.beldex.bchat.R
+import android.content.Context
+import androidx.compose.ui.res.stringResource
+import com.beldex.libbchat.utilities.TextSecurePreferences
 
 
 enum class ProfilePictureMode(val size: Dp) {
@@ -70,8 +70,8 @@ fun ProfilePictureComponent(
     val context = LocalContext.current
     fun getUserIsBNSHolderStatus(publicKey: String): Boolean? {
         // Your own account has no contact row: use the BNS name saved in preferences instead.
-        if (publicKey == com.beldex.libbchat.utilities.TextSecurePreferences.getLocalNumber(context)) {
-            return !com.beldex.libbchat.utilities.TextSecurePreferences.getIsBNSHolder(context).isNullOrEmpty()
+        if (publicKey == TextSecurePreferences.getLocalNumber(context)) {
+            return !TextSecurePreferences.getIsBNSHolder(context).isNullOrEmpty()
         }
         val contact = DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
         return contact?.isBnsHolder
@@ -303,9 +303,9 @@ fun ProfilePicture(
 }
 
 /** True when [publicKey] is BNS-verified (your own account: the BNS name saved in preferences). */
-fun isBnsVerified(context: android.content.Context, publicKey: String): Boolean {
-    if (publicKey == com.beldex.libbchat.utilities.TextSecurePreferences.getLocalNumber(context)) {
-        return !com.beldex.libbchat.utilities.TextSecurePreferences.getIsBNSHolder(context).isNullOrEmpty()
+fun isBnsVerified(context: Context, publicKey: String): Boolean {
+    if (publicKey == TextSecurePreferences.getLocalNumber(context)) {
+        return !TextSecurePreferences.getIsBNSHolder(context).isNullOrEmpty()
     }
     return DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)?.isBnsHolder == true
 }
@@ -320,7 +320,7 @@ fun BnsVerifiedBadge(containerSize: Dp, small: Boolean, modifier: Modifier = Mod
     val size = if (small) (containerSize * 0.43f).coerceIn(12.dp, 20.dp) else (containerSize * 0.36f).coerceAtLeast(20.dp)
     Image(
         painter = painterResource(id = R.drawable.ic_bns_verified_tag),
-        contentDescription = androidx.compose.ui.res.stringResource(R.string.bns_verified_tag),
+        contentDescription = stringResource(R.string.bns_verified_tag),
         modifier = modifier
             // Figma: list badge 4dp past an 18dp badge (~22%), account badge 9dp past a 30dp one (~30%).
             .offset(x = size * (if (small) 0.22f else 0.3f), y = size * (if (small) 0.22f else 0.3f))
@@ -337,4 +337,4 @@ fun ProfilePictureComponentPreview() {
         containerSize = 48.dp,
         pictureMode = ProfilePictureMode.GroupPicture
     )
-}
+}

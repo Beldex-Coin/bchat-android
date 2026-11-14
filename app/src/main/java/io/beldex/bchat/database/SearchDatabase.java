@@ -11,7 +11,6 @@ import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
 import com.beldex.libbchat.utilities.Util;
-import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
 
 import java.util.List;
 

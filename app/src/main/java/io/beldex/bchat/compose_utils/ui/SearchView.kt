@@ -1,14 +1,11 @@
 package io.beldex.bchat.compose_utils.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,6 +21,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import io.beldex.bchat.compose_utils.appColors
+import androidx.compose.ui.graphics.RectangleShape
 
 @Composable
 fun SearchView(
@@ -36,7 +34,7 @@ fun SearchView(
 ) {
     val focusRequester = remember { FocusRequester() }
     Card(
-        shape = androidx.compose.ui.graphics.RectangleShape,
+        shape = RectangleShape,
         colors=CardDefaults.cardColors(
             containerColor=MaterialTheme.appColors.dialogBackground
         ),
@@ -45,7 +43,7 @@ fun SearchView(
             .border(
                 width=1.dp,
                 color=MaterialTheme.appColors.pinBoxInactiveBorder,
-                shape=androidx.compose.ui.graphics.RectangleShape
+                shape=RectangleShape
             )
     ) {
         TextField(

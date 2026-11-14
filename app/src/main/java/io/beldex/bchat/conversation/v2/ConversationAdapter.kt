@@ -1,12 +1,8 @@
 package io.beldex.bchat.conversation.v2
 
-import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
 import android.database.Cursor
 import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.util.SparseArray
@@ -16,8 +12,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintSet
-import android.widget.Button
-import android.widget.TextView
 import androidx.annotation.WorkerThread
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -28,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.util.getOrDefault
 import androidx.core.util.set
 import androidx.lifecycle.LifecycleCoroutineScope
@@ -60,6 +53,14 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.Locale
+import android.app.Activity
+import android.text.SpannableString
+import android.text.Spanned
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
+import io.beldex.bchat.compose_utils.ui.ComposeMessageDialogFragment
+import io.beldex.bchat.my_account.ui.MyAccountActivity
+import io.beldex.bchat.my_account.ui.MyAccountScreens
 
 class ConversationAdapter(
     context: Context,
@@ -200,8 +201,8 @@ class ConversationAdapter(
                 if (message.isCallLog && message.isFirstMissedCall) {
                     viewHolder.view.setOnClickListener {
                         val recipientName = message.recipient.name?.let { "\"$it\"" } ?: "\"${message.recipient.address}\""
-                        val fragmentManager = (context as? androidx.fragment.app.FragmentActivity)?.supportFragmentManager ?: return@setOnClickListener
-                        io.beldex.bchat.compose_utils.ui.ComposeMessageDialogFragment.show(
+                        val fragmentManager = (context as? FragmentActivity)?.supportFragmentManager ?: return@setOnClickListener
+                        ComposeMessageDialogFragment.show(
                             fragmentManager,
                             title = context.getString(R.string.call_missed_title),
                             message = callMissedMessage(context, recipientName),
@@ -209,7 +210,7 @@ class ConversationAdapter(
                             negativeText = context.getString(R.string.cancel),
                             iconRes = R.drawable.ic_call_card_missed,
                             onPositive = {
-                                context.startActivity(io.beldex.bchat.my_account.ui.MyAccountActivity.intentForRoute(context, io.beldex.bchat.my_account.ui.MyAccountScreens.PrivacySettingsScreen.route))
+                                context.startActivity(MyAccountActivity.intentForRoute(context, MyAccountScreens.PrivacySettingsScreen.route))
                             }
                         )
                     }
@@ -381,7 +382,7 @@ class ConversationAdapter(
                 }
             }
 
-            (context as? android.app.Activity)?.runOnUiThread {
+            (context as? Activity)?.runOnUiThread {
 
                 val oldMatches = matchedPositions.toSet()
 
@@ -401,18 +402,18 @@ class ConversationAdapter(
  * "Call Missed!" body (Figma 7546:2760): the quoted caller name in green and the permission name
  * and "privacy settings." in bold. Runs that aren't found (other languages) are left plain.
  */
-private fun callMissedMessage(context: android.content.Context, recipientName: String): CharSequence {
+private fun callMissedMessage(context: Context, recipientName: String): CharSequence {
     val text = context.getString(R.string.call_missed_description, recipientName)
-    val out = android.text.SpannableString(text)
+    val out = SpannableString(text)
     fun style(run: String, span: () -> Any) {
         val start = text.indexOf(run)
         if (run.isNotEmpty() && start >= 0) {
-            out.setSpan(span(), start, start + run.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            out.setSpan(span(), start, start + run.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
     }
-    style(recipientName) { android.text.style.ForegroundColorSpan(androidx.core.content.ContextCompat.getColor(context, R.color.home_row_timestamp_unread)) }
-    style("\u2018Voice and video calls\u2019") { android.text.style.StyleSpan(android.graphics.Typeface.BOLD) }
-    style("privacy settings.") { android.text.style.StyleSpan(android.graphics.Typeface.BOLD) }
+    style(recipientName) { ForegroundColorSpan(ContextCompat.getColor(context, R.color.home_row_timestamp_unread)) }
+    style("\u2018Voice and video calls\u2019") { StyleSpan(Typeface.BOLD) }
+    style("privacy settings.") { StyleSpan(Typeface.BOLD) }
     return out
 }
 

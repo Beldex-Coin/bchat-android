@@ -12,6 +12,7 @@ import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.InnerTileDrawable
 import io.beldex.bchat.compose_utils.NotchedDrawable
 import io.beldex.bchat.util.UiModeUtilities
+import com.google.android.material.button.MaterialButton
 
 class DeleteMediaPopupView @JvmOverloads constructor(
     context: Context,
@@ -54,7 +55,7 @@ class DeleteMediaPopupView @JvmOverloads constructor(
     /** Buttons pick up a theme tint and shadow that would cover the Figma backgrounds. */
     private fun flat(button: View) {
         ViewCompat.setBackgroundTintList(button, null)
-        (button as? com.google.android.material.button.MaterialButton)?.backgroundTintList = null
+        (button as? MaterialButton)?.backgroundTintList = null
         button.stateListAnimator = null
         button.elevation = 0f
     }

@@ -1,13 +1,10 @@
 package io.beldex.bchat.my_account.ui
 
-import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
 import android.media.RingtoneManager
 import android.net.Uri
 import android.provider.Settings
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -45,6 +42,8 @@ import io.beldex.bchat.notifications.NotificationChannels
 import io.beldex.bchat.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import androidx.compose.ui.graphics.RectangleShape
+import io.beldex.bchat.my_account.ui.dialogs.RingtonePickerDialog
 
 /**
  * Revamp_2026 Notification Settings screen (Figma `Notification_Settings` 7546:5356), hosted by
@@ -94,7 +93,7 @@ fun NotificationSettingsScreen(
 
     var showRingtoneDialog by remember { mutableStateOf(false) }
     if (showRingtoneDialog) {
-        io.beldex.bchat.my_account.ui.dialogs.RingtonePickerDialog(
+        RingtonePickerDialog(
             currentUri = ringtoneUri,
             onDismiss = { showRingtoneDialog = false },
             onSelected = { uri ->
@@ -137,7 +136,7 @@ fun NotificationSettingsScreen(
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             ),
-            shape = androidx.compose.ui.graphics.RectangleShape,
+            shape = RectangleShape,
             border = BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
             modifier = Modifier
                 .fillMaxWidth()
@@ -197,7 +196,7 @@ fun NotificationSettingsScreen(
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             ),
-            shape = androidx.compose.ui.graphics.RectangleShape,
+            shape = RectangleShape,
             border = BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -244,7 +243,7 @@ fun NotificationSettingsScreen(
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             ),
-            shape = androidx.compose.ui.graphics.RectangleShape,
+            shape = RectangleShape,
             border = BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -318,7 +317,7 @@ fun NotificationSettingsScreen(
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             ),
-            shape = androidx.compose.ui.graphics.RectangleShape,
+            shape = RectangleShape,
             border = BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
             modifier = Modifier.fillMaxWidth()
         ) {

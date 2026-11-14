@@ -20,7 +20,6 @@ package io.beldex.bchat.crypto;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.os.Build;
 
 import androidx.annotation.NonNull;
 

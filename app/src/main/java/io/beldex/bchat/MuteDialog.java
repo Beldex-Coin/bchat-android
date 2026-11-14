@@ -2,13 +2,11 @@ package io.beldex.bchat;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Typeface;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
-import org.w3c.dom.Text;
 
 import java.util.concurrent.TimeUnit;
 
@@ -44,8 +42,6 @@ public class MuteDialog extends AlertDialog {
 //
 //    // dialog title
 //    builder.setTitle(title)
-
-
 
 
     builder.setTitle(R.string.MuteDialog_mute_notifications);

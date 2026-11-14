@@ -25,6 +25,7 @@ import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.dms.NewChatScreen
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
+import android.os.Parcelable
 
 enum class OpenActivity(val destination: String) {
     NewChat("new_chat"),
@@ -57,7 +58,7 @@ class NewChatConversationActivity: BaseComponentActivity() {
                                 putExtra(ConversationActivityV2.ADDRESS, event.address)
                                 putExtra(ConversationActivityV2.THREAD_ID, event.threadId)
                                 putExtra(ConversationActivityV2.BNS_NAME, event.bnsName)
-                                putExtra(ConversationActivityV2.URI, null as android.os.Parcelable?)
+                                putExtra(ConversationActivityV2.URI, null as Parcelable?)
                                 putExtra(ConversationActivityV2.TYPE, null as String?)
                             }
                             context.setResult(RESULT_OK, returnIntent)

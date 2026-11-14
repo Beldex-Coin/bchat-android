@@ -2,7 +2,6 @@ package io.beldex.bchat.my_account.ui.dialogs
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,17 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CameraAlt
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.ui.draw.clip
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,10 +40,10 @@ import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.notchedCornerShape
 import io.beldex.bchat.compose_utils.PrimaryButton
-import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.Image
+import io.beldex.bchat.compose_utils.BChatDimens
 
 @Composable
 fun ProfilePicturePopup(
@@ -151,7 +142,7 @@ fun ProfilePicturePopup(
                 PrimaryButton(
                     onClick = removePicture,
                     enabled = profilePictureStatus,
-                    shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+                    shape = notchedCornerShape(BChatDimens.NotchMedium),
                     containerColor = MaterialTheme.appColors.dialogBackground,
                     contentColor = MaterialTheme.appColors.editTextColor,
                     // Same dark notched look in both states (Figma); only the label dims when there is nothing to remove.
@@ -171,7 +162,7 @@ fun ProfilePicturePopup(
 
                 PrimaryButton(
                     onClick = uploadPicture,
-                    shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+                    shape = notchedCornerShape(BChatDimens.NotchMedium),
                     containerColor = MaterialTheme.appColors.dialogPositiveButtonBackground,
                     contentColor = MaterialTheme.appColors.dialogPositiveButtonText,
                     border = BorderStroke(1.4.dp, MaterialTheme.appColors.dialogPositiveButtonBorder),

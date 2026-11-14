@@ -19,7 +19,6 @@ import com.beldex.libsignal.utilities.Log;
 import io.beldex.bchat.database.RecipientDatabase;
 import io.beldex.bchat.dependencies.DatabaseComponent;
 import io.beldex.bchat.jobmanager.Job;
-import io.beldex.bchat.jobmanager.impl.NetworkConstraint;
 
 import java.io.File;
 import java.io.FileInputStream;

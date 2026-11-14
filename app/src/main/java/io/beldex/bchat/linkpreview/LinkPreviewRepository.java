@@ -13,10 +13,6 @@ import io.beldex.bchat.net.CompositeRequestController;
 import io.beldex.bchat.net.ContentProxySafetyInterceptor;
 import io.beldex.bchat.net.RequestController;
 import static com.beldex.libbchat.utilities.Util.readFully;
-import io.beldex.bchat.net.CallRequestController;
-import io.beldex.bchat.net.CompositeRequestController;
-import io.beldex.bchat.net.ContentProxySafetyInterceptor;
-import io.beldex.bchat.net.RequestController;
 import io.beldex.bchat.providers.BlobProvider;
 
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment;

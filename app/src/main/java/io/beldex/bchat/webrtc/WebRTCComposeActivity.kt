@@ -113,6 +113,11 @@ import kotlinx.coroutines.launch
 import org.apache.commons.lang3.time.DurationFormatUtils
 import org.webrtc.RendererCommon
 import org.webrtc.SurfaceViewRenderer
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Dp
+import io.beldex.bchat.compose_utils.BChatDimens
 
 
 @AndroidEntryPoint
@@ -152,7 +157,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
         if(isSystemPipEnabledAndAvailable()) {
             try {
                 pipBuilderParams?.let { enterPictureInPictureMode(it.build()) }
-            } catch (e: java.lang.Exception) {
+            } catch (e: Exception) {
                 Log.w(TAG, "System lied about having PiP available.", e)
             }
         }
@@ -1110,16 +1115,16 @@ class WebRTCComposeActivity : BaseComponentActivity() {
     private fun CallAvatarFrame(
         publicKey: String,
         displayName: String,
-        outerSize: androidx.compose.ui.unit.Dp,
-        innerSize: androidx.compose.ui.unit.Dp,
+        outerSize: Dp,
+        innerSize: Dp,
         audioOff: Boolean
     ) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .size(outerSize)
-                .background(MaterialTheme.appColors.callAvatarBackground, notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchCard))
-                .border(1.dp, MaterialTheme.appColors.callAvatarBorder, notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchCard))
+                .background(MaterialTheme.appColors.callAvatarBackground, notchedCornerShape(BChatDimens.NotchCard))
+                .border(1.dp, MaterialTheme.appColors.callAvatarBorder, notchedCornerShape(BChatDimens.NotchCard))
         ) {
             ProfilePictureComponent(
                 publicKey = publicKey,
@@ -1159,8 +1164,8 @@ class WebRTCComposeActivity : BaseComponentActivity() {
             fontWeight = FontWeight.Normal,
             textAlign = TextAlign.Center,
             maxLines = 1,
-            style = androidx.compose.ui.text.TextStyle(
-                shadow = if (overVideo) androidx.compose.ui.graphics.Shadow(Color(0x99000000), androidx.compose.ui.geometry.Offset(0f, 2f), 6f) else null
+            style = TextStyle(
+                shadow = if (overVideo) Shadow(Color(0x99000000), Offset(0f, 2f), 6f) else null
             )
         )
     }
@@ -1175,8 +1180,8 @@ class WebRTCComposeActivity : BaseComponentActivity() {
             fontSize = 18.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(vertical = 4.dp),
-            style = androidx.compose.ui.text.TextStyle(
-                shadow = if (overVideo) androidx.compose.ui.graphics.Shadow(Color(0x99000000), androidx.compose.ui.geometry.Offset(0f, 2f), 6f) else null
+            style = TextStyle(
+                shadow = if (overVideo) Shadow(Color(0x99000000), Offset(0f, 2f), 6f) else null
             )
         )
     }
@@ -1283,7 +1288,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                 modifier = Modifier.size(22.dp)
             )
             Spacer(modifier = Modifier.width(12.dp))
-            val shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall)
+            val shape = notchedCornerShape(BChatDimens.NotchSmall)
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -1363,5 +1368,5 @@ class WebRTCComposeActivity : BaseComponentActivity() {
 
 @Composable
 private fun Modifier.callControlSurface(fill: Color, stroke: Color): Modifier = this
-    .background(fill, notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium))
-    .border(1.dp, stroke, notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium))
+    .background(fill, notchedCornerShape(BChatDimens.NotchMedium))
+    .border(1.dp, stroke, notchedCornerShape(BChatDimens.NotchMedium))

@@ -15,7 +15,6 @@ import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 
-import io.beldex.bchat.components.camera.CameraView;
 import io.beldex.bchat.components.camera.CameraView.PreviewFrame;
 import com.beldex.libsignal.utilities.Log;
 import com.beldex.libbchat.utilities.Util;

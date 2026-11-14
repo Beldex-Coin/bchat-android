@@ -199,7 +199,7 @@ class DisplayNameActivity : BaseComponentActivity() {
                     selectedNode = displayNameActivity.autoselect(favourites)
                 } else
                     selectedNode.testRpcService()
-            } else throw java.lang.IllegalStateException()
+            } else throw IllegalStateException()
             return if (selectedNode != null && selectedNode.isValid) {
                 Timber.d("Testing-->12")
                 Log.d("Testing-->12 ","$selectedNode")

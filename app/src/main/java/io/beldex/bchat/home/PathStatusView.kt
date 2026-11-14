@@ -19,7 +19,6 @@ import io.beldex.bchat.R
 import io.beldex.bchat.CheckOnline
 import com.beldex.libbchat.mnode.OnionRequestAPI
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import io.beldex.bchat.util.getColorWithID
 import io.beldex.bchat.util.toPx
 
 class PathStatusView : View {

@@ -27,7 +27,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -47,7 +46,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import io.beldex.bchat.BaseComponentActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatRadioButton
 import io.beldex.bchat.compose_utils.OpenSans
@@ -57,6 +55,13 @@ import io.beldex.bchat.my_account.ui.MyAccountViewModel
 import io.beldex.bchat.service.KeyCachingService
 import io.beldex.bchat.service.WebRtcCallService
 import io.beldex.bchat.util.AppLanguageEvent
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.Icon
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import io.beldex.bchat.compose_utils.notchedCornerShape
 
 
 @Composable
@@ -133,7 +138,7 @@ fun ChooseLanguage(
         ) {
             items(visibleLanguages, key = { it.code }) { language ->
                 val isSelected = language.code == pendingCode
-                val rowShape = if (isSelected) io.beldex.bchat.compose_utils.notchedCornerShape(14.dp) else androidx.compose.ui.graphics.RectangleShape
+                val rowShape = if (isSelected) notchedCornerShape(14.dp) else RectangleShape
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -203,7 +208,7 @@ fun ChooseLanguage(
                     onBack()
                 }
             },
-            shape = io.beldex.bchat.compose_utils.notchedCornerShape(14.dp),
+            shape = notchedCornerShape(14.dp),
             containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
             contentColor = MaterialTheme.appColors.backgroundColor,
             modifier = Modifier
@@ -234,8 +239,8 @@ private fun LanguageSearchField(
             .border(1.dp, MaterialTheme.appColors.dividerColor)
             .padding(horizontal = 14.dp, vertical = 14.dp)
     ) {
-        androidx.compose.material3.Icon(
-            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_home_search),
+        Icon(
+            painter = painterResource(id = R.drawable.ic_home_search),
             contentDescription = null,
             tint = MaterialTheme.appColors.onboardingCaptionColor,
             modifier = Modifier.size(18.dp)
@@ -250,22 +255,22 @@ private fun LanguageSearchField(
                     fontSize = 12.sp
                 )
             }
-            androidx.compose.foundation.text.BasicTextField(
+            BasicTextField(
                 value = query,
                 onValueChange = onQueryChange,
                 singleLine = true,
-                textStyle = androidx.compose.ui.text.TextStyle(
+                textStyle = TextStyle(
                     color = MaterialTheme.appColors.editTextColor,
                     fontFamily = RobotoMono,
                     fontSize = 14.sp
                 ),
-                cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.appColors.textSelectionColor),
+                cursorBrush = SolidColor(MaterialTheme.appColors.textSelectionColor),
                 modifier = Modifier.fillMaxWidth()
             )
         }
         if (query.isNotEmpty()) {
-            androidx.compose.material3.Icon(
-                painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_close),
+            Icon(
+                painter = painterResource(id = R.drawable.ic_close),
                 contentDescription = null,
                 tint = MaterialTheme.appColors.editTextColor,
                 modifier = Modifier

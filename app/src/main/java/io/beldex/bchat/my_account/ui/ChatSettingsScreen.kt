@@ -36,6 +36,7 @@ import io.beldex.bchat.R
 import io.beldex.bchat.my_account.ui.dialogs.TrimLengthDialog
 import io.beldex.bchat.my_account.ui.dialogs.TrimNowDialog
 import io.beldex.bchat.util.Trimmer
+import androidx.compose.ui.graphics.RectangleShape
 
 @Composable
 fun ChatSettingsScreen(
@@ -98,7 +99,7 @@ fun ChatSettingsScreen(
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             ),
-            shape = androidx.compose.ui.graphics.RectangleShape,
+            shape = RectangleShape,
             border = BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
             modifier = Modifier
                 .fillMaxWidth()
@@ -150,7 +151,7 @@ fun ChatSettingsScreen(
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             ),
-            shape = androidx.compose.ui.graphics.RectangleShape,
+            shape = RectangleShape,
             border = BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
             modifier = Modifier
                 .fillMaxWidth()
@@ -221,7 +222,7 @@ fun ChatSettingsScreen(
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             ),
-            shape = androidx.compose.ui.graphics.RectangleShape,
+            shape = RectangleShape,
             border = BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
             modifier = Modifier
                 .fillMaxWidth()

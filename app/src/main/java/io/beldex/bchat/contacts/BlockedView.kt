@@ -11,14 +11,16 @@ import io.beldex.bchat.conversation.v2.utilities.MentionManagerUtilities
 import io.beldex.bchat.dependencies.DatabaseComponent
 import com.bumptech.glide.RequestManager;
 import io.beldex.bchat.databinding.ActivityBlockedViewBinding
+import io.beldex.bchat.database.RecipientDatabase
+import io.beldex.bchat.database.model.ThreadRecord
 
 class BlockedView : LinearLayout {
 
     private lateinit var binding: ActivityBlockedViewBinding
 
-    var recipientDatabase: io.beldex.bchat.database.RecipientDatabase? = null
+    var recipientDatabase: RecipientDatabase? = null
 
-    var thread: io.beldex.bchat.database.model.ThreadRecord? = null
+    var thread: ThreadRecord? = null
 
     // region Lifecycle
     constructor(context: Context) : super(context) {

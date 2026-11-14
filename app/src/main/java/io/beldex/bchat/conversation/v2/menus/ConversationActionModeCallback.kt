@@ -17,17 +17,18 @@ import androidx.core.view.size
 import androidx.core.view.get
 import com.beldex.libbchat.utilities.getColorFromAttr
 import io.beldex.bchat.util.isSharedContact
+import java.lang.ref.WeakReference
 
 class ConversationActionModeCallback(private val adapter: ConversationAdapter, private val threadID: Long,
     private val context: Context) : ActionMode.Callback {
     var delegate: ConversationActionModeCallbackDelegate? = null
 
     companion object {
-        private var currentMode: java.lang.ref.WeakReference<ActionMode>? = null
+        private var currentMode: WeakReference<ActionMode>? = null
     }
 
     override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-        currentMode = java.lang.ref.WeakReference(mode)
+        currentMode = WeakReference(mode)
         val themedContext = ContextThemeWrapper(context, context.theme)
         val inflater = MenuInflater(themedContext)
         inflater.inflate(R.menu.menu_conversation_item_action, menu)

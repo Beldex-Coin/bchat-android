@@ -12,7 +12,6 @@ import com.beldex.libbchat.messaging.messages.control.ExpirationTimerUpdate;
 import com.beldex.libbchat.messaging.messages.signal.IncomingMediaMessage;
 import com.beldex.libbchat.messaging.messages.signal.OutgoingExpirationUpdateMessage;
 import com.beldex.libbchat.messaging.messages.signal.OutgoingScreenShotMessage;
-import com.beldex.libbchat.messaging.messages.signal.OutgoingScreenShotMessage;
 import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.GroupUtil;
 import com.beldex.libbchat.utilities.SSKEnvironment;

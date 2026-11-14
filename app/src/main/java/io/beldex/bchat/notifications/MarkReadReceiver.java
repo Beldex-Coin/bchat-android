@@ -25,8 +25,6 @@ import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libsignal.utilities.Log;
 
-import io.beldex.bchat.dependencies.DatabaseComponent;
-import io.beldex.bchat.util.BchatMetaProtocol;
 
 import java.util.LinkedList;
 import java.util.List;

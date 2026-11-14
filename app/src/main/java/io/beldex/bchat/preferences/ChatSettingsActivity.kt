@@ -2,7 +2,6 @@ package io.beldex.bchat.preferences
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import androidx.fragment.app.DialogFragment
 import io.beldex.bchat.R
 import io.beldex.bchat.PassphraseRequiredActionBarActivity

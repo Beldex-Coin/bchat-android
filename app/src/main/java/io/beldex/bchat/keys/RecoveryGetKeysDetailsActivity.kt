@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import io.beldex.bchat.databinding.ActivityRecoveryGetKeysDetailsBinding
 import io.beldex.bchat.BaseActionBarActivity
-import io.beldex.bchat.R
 import io.beldex.bchat.onboarding.AppLockActivity
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo

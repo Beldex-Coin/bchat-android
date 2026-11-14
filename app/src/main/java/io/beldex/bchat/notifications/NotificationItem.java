@@ -14,7 +14,6 @@ import androidx.core.app.TaskStackBuilder;
 
 
 import io.beldex.bchat.conversation.v2.ConversationActivityV2;
-import io.beldex.bchat.home.HomeActivity;
 import io.beldex.bchat.mms.SlideDeck;
 
 import com.beldex.libbchat.utilities.recipients.Recipient;
@@ -85,7 +84,6 @@ public class NotificationItem {
     bundle.putParcelable(ConversationActivityV2.URI,Uri.parse("custom://"+System.currentTimeMillis()));
     intent.putExtras(bundle);
     //intent.setData((Uri.parse("custom://"+System.currentTimeMillis())));
-
 
 
     int intentFlags = PendingIntent.FLAG_UPDATE_CURRENT;

@@ -7,7 +7,6 @@ import com.beldex.libbchat.messaging.messages.control.ConfigurationMessage
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import io.beldex.bchat.crypto.IdentityKeyUtil
 
 object ConfigurationMessageUtilities {
 

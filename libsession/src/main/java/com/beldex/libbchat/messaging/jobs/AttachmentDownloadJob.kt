@@ -48,7 +48,7 @@ class AttachmentDownloadJob(val attachmentID: Long, val databaseMessageID: Long)
         val messageDataProvider = MessagingModuleConfiguration.shared.messageDataProvider
         val threadID = storage.getThreadIdForMms(databaseMessageID)
 
-        val handleFailure: (java.lang.Exception, attachmentId: AttachmentId?) -> Unit = { exception, attachment ->
+        val handleFailure: (Exception, attachmentId: AttachmentId?) -> Unit = { exception, attachment ->
             if (exception == Error.NoAttachment
                     || exception == Error.NoThread
                     || exception == Error.NoSender

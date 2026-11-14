@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import androidx.core.content.ContextCompat;
 
 import com.makeramen.roundedimageview.RoundedDrawable;
+import android.R;
 
 public class TransparentContactPhoto implements FallbackContactPhoto {
 
@@ -17,7 +18,7 @@ public class TransparentContactPhoto implements FallbackContactPhoto {
 
   @Override
   public Drawable asDrawable(Context context, int color, boolean inverted, Float padding) {
-    return RoundedDrawable.fromDrawable(ContextCompat.getDrawable(context, android.R.color.transparent));
+    return RoundedDrawable.fromDrawable(ContextCompat.getDrawable(context, R.color.transparent));
   }
 
 }

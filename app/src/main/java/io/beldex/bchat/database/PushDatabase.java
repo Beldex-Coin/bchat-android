@@ -10,7 +10,6 @@ import com.beldex.libsignal.utilities.Log;
 
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
-import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
 import com.beldex.libsignal.utilities.Base64;
 import com.beldex.libsignal.utilities.guava.Optional;
 import com.beldex.libsignal.messages.SignalServiceEnvelope;

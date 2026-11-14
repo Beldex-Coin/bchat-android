@@ -13,7 +13,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import io.beldex.bchat.util.DateUtils
@@ -21,6 +20,7 @@ import io.beldex.bchat.util.disableClipping
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewInputBarRecordingBinding
 import java.util.Date
+import android.content.res.ColorStateList
 
 class InputBarRecordingView : RelativeLayout {
     private lateinit var binding: ViewInputBarRecordingBinding
@@ -109,7 +109,7 @@ class InputBarRecordingView : RelativeLayout {
         animation.addUpdateListener { animator ->
             alpha = animator.animatedValue as Float
         }
-        binding.pulseView.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF3C3C3C.toInt())
+        binding.pulseView.backgroundTintList = ColorStateList.valueOf(0xFF3C3C3C.toInt())
         binding.recordButtonOverlay.backgroundTintList = null
         animation.start()
         animateDotView()

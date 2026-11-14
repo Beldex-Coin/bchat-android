@@ -30,7 +30,7 @@ class BlockedContactAdapter(
     class ViewHolder(val view: BlockedView) : RecyclerView.ViewHolder(view)
 
     @Inject
-    lateinit var recipientDatabase: io.beldex.bchat.database.RecipientDatabase
+    lateinit var recipientDatabase: RecipientDatabase
 
     override fun getItemCount(): Int {
         return members.size

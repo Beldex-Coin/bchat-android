@@ -15,6 +15,9 @@ import io.beldex.bchat.conversation.v2.utilities.MentionManagerUtilities
 import io.beldex.bchat.dependencies.DatabaseComponent
 import com.bumptech.glide.RequestManager
 import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
+import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 
 class UserView : LinearLayout {
     private lateinit var binding: ViewUserBinding
@@ -105,19 +108,19 @@ class UserView : LinearLayout {
     fun applyEditGroupStyle(isAdmin: Boolean, removable: Boolean) {
         val density = resources.displayMetrics.density
         fun dp(v: Int) = (v * density).toInt()
-        binding.userViewLayout.background = androidx.core.content.ContextCompat.getDrawable(context, R.drawable.bordered_card_background)
-        (binding.userViewLayout.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let {
+        binding.userViewLayout.background = ContextCompat.getDrawable(context, R.drawable.bordered_card_background)
+        (binding.userViewLayout.layoutParams as? ViewGroup.MarginLayoutParams)?.let {
             it.marginStart = dp(13); it.marginEnd = dp(13); it.topMargin = dp(8)
             binding.userViewLayout.layoutParams = it
         }
         binding.contentView.setPadding(dp(12), dp(10), dp(12), dp(10))
-        (binding.contentView.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let {
+        (binding.contentView.layoutParams as? ViewGroup.MarginLayoutParams)?.let {
             it.marginEnd = 0
             binding.contentView.layoutParams = it
         }
         binding.nameTextView.textSize = 14f
-        binding.nameTextView.setTextColor(androidx.core.content.ContextCompat.getColor(context, R.color.disappear_icon_color))
-        binding.nameTextView.typeface = androidx.core.content.res.ResourcesCompat.getFont(
+        binding.nameTextView.setTextColor(ContextCompat.getColor(context, R.color.disappear_icon_color))
+        binding.nameTextView.typeface = ResourcesCompat.getFont(
             context, if (isAdmin) R.font.open_sans_semi_bold else R.font.open_sans_regular
         )
         binding.actionIndicatorImageView.visibility = View.GONE
@@ -133,28 +136,28 @@ class UserView : LinearLayout {
     fun applyAddMemberStyle(isSelected: Boolean) {
         val density = resources.displayMetrics.density
         fun dp(v: Int) = (v * density).toInt()
-        binding.userViewLayout.background = androidx.core.content.ContextCompat.getDrawable(
+        binding.userViewLayout.background = ContextCompat.getDrawable(
             context, if (isSelected) R.drawable.bg_add_member_row_selected else R.drawable.bordered_card_background
         )
-        (binding.userViewLayout.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let {
+        (binding.userViewLayout.layoutParams as? ViewGroup.MarginLayoutParams)?.let {
             it.marginStart = 0; it.marginEnd = 0; it.topMargin = dp(8)
             binding.userViewLayout.layoutParams = it
         }
         binding.contentView.setPadding(dp(12), dp(12), dp(15), dp(12))
-        (binding.contentView.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let {
+        (binding.contentView.layoutParams as? ViewGroup.MarginLayoutParams)?.let {
             it.marginEnd = 0
             binding.contentView.layoutParams = it
         }
         binding.profilePictureView.root.layoutParams = binding.profilePictureView.root.layoutParams.apply {
             width = dp(32); height = dp(32)
         }
-        (binding.nameTextView.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let {
+        (binding.nameTextView.layoutParams as? ViewGroup.MarginLayoutParams)?.let {
             it.marginStart = dp(10)
             binding.nameTextView.layoutParams = it
         }
         binding.nameTextView.textSize = 14f
-        binding.nameTextView.setTextColor(androidx.core.content.ContextCompat.getColor(context, R.color.disappear_icon_color))
-        binding.nameTextView.typeface = androidx.core.content.res.ResourcesCompat.getFont(context, R.font.open_sans_semi_bold)
+        binding.nameTextView.setTextColor(ContextCompat.getColor(context, R.color.disappear_icon_color))
+        binding.nameTextView.typeface = ResourcesCompat.getFont(context, R.font.open_sans_semi_bold)
         binding.actionIndicatorImageView.layoutParams = binding.actionIndicatorImageView.layoutParams.apply {
             width = dp(18); height = dp(18)
         }

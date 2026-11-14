@@ -16,8 +16,6 @@ import io.beldex.bchat.scribbles.widget.ColorPaletteAdapter;
 import io.beldex.bchat.scribbles.widget.VerticalSlideColorPicker;
 
 import io.beldex.bchat.R;
-import io.beldex.bchat.scribbles.widget.ColorPaletteAdapter;
-import io.beldex.bchat.scribbles.widget.VerticalSlideColorPicker;
 
 import java.util.Arrays;
 import java.util.HashMap;

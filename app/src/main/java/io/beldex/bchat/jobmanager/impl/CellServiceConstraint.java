@@ -6,8 +6,6 @@ import androidx.annotation.NonNull;
 
 import io.beldex.bchat.jobmanager.Constraint;
 import io.beldex.bchat.sms.TelephonyServiceState;
-import io.beldex.bchat.jobmanager.Constraint;
-import io.beldex.bchat.sms.TelephonyServiceState;
 
 public class CellServiceConstraint implements Constraint {
 

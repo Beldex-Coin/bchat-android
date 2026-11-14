@@ -14,9 +14,6 @@ import android.util.Pair;
 
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment;
 import io.beldex.bchat.mms.DecryptableStreamUriLoader.DecryptableUri;
-import io.beldex.bchat.util.BitmapDecodingException;
-import io.beldex.bchat.util.BitmapUtil;
-import io.beldex.bchat.util.MediaUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

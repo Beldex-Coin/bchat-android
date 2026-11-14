@@ -41,6 +41,14 @@ import io.beldex.bchat.util.UiModeUtilities
 import javax.inject.Inject
 import androidx.compose.material3.MaterialTheme
 import io.beldex.bchat.compose_utils.appColors
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.compose_utils.CloseTile
+import io.beldex.bchat.compose_utils.DialogPanel
+import io.beldex.bchat.util.UiMode
 
 @AndroidEntryPoint
 class DeleteOptionsBottomSheet : BottomSheetDialogFragment() {
@@ -75,31 +83,31 @@ class DeleteOptionsBottomSheet : BottomSheetDialogFragment() {
             resources.getString(R.string.delete_message_for_me_and_recipient, contact)
         else resources.getString(R.string.delete_message_for_everyone)
         val showEveryone = !recipient.isLocalNumber
-        return androidx.compose.ui.platform.ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                io.beldex.bchat.compose_utils.BChatTheme(
-                    darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == io.beldex.bchat.util.UiMode.NIGHT
+                BChatTheme(
+                    darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
                 ) {
-                    io.beldex.bchat.compose_utils.DialogPanel(
-                        modifier = androidx.compose.ui.Modifier.fillMaxWidth()
+                    DialogPanel(
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        androidx.compose.foundation.layout.Column(
-                            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(10.dp),
-                            modifier = androidx.compose.ui.Modifier.padding(horizontal = 15.dp, vertical = 18.dp)
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(10.dp),
+                            modifier = Modifier.padding(horizontal = 15.dp, vertical = 18.dp)
                         ) {
-                            androidx.compose.foundation.layout.Row(
-                                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
                                 androidx.compose.material3.Text(
                                     text = resources.getString(R.string.delete_message_title),
                                     color = MaterialTheme.appColors.editTextColor,
-                                    fontFamily = io.beldex.bchat.compose_utils.OpenSans,
-                                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                                    fontFamily = OpenSans,
+                                    fontWeight = FontWeight.Bold,
                                     fontSize = 16.sp,
-                                    modifier = androidx.compose.ui.Modifier.weight(1f)
+                                    modifier = Modifier.weight(1f)
                                 )
-                                io.beldex.bchat.compose_utils.CloseTile(onClick = { onCancelTapped?.invoke() })
+                                CloseTile(onClick = { onCancelTapped?.invoke() })
                             }
                             DeleteOptionCard(forMeText, R.drawable.ic_pop_delete_me, destructive = false) { onDeleteForMeTapped?.invoke() }
                             if (showEveryone) {

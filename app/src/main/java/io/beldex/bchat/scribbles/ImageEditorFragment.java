@@ -30,6 +30,7 @@ import io.beldex.bchat.util.ParcelUtil;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 
 import static android.app.Activity.RESULT_OK;
+import androidx.core.graphics.Insets;
 
 public final class ImageEditorFragment extends Fragment implements ImageEditorHud.EventListener,
         VerticalSlideColorPicker.OnColorChangeListener,
@@ -154,7 +155,7 @@ public final class ImageEditorFragment extends Fragment implements ImageEditorHu
     refreshUniqueColors();
 
     ViewCompat.setOnApplyWindowInsetsListener(imageEditorHud, (v, insets) -> {
-      androidx.core.graphics.Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+      Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
       v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
       return insets;
     });

@@ -1,6 +1,5 @@
 package io.beldex.bchat.jobs
 
-import android.os.Build
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentId
 import org.greenrobot.eventbus.EventBus

@@ -10,7 +10,6 @@ import com.beldex.libsignal.utilities.Log;
 
 import com.bumptech.glide.load.data.StreamLocalUriFetcher;
 
-import io.beldex.bchat.util.MediaUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

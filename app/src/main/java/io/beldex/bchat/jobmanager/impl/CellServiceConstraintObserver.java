@@ -8,7 +8,6 @@ import android.telephony.ServiceState;
 import android.telephony.TelephonyManager;
 
 import io.beldex.bchat.jobmanager.ConstraintObserver;
-import io.beldex.bchat.jobmanager.ConstraintObserver;
 
 public class CellServiceConstraintObserver implements ConstraintObserver {
 

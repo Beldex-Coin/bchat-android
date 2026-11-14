@@ -9,7 +9,6 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,18 +21,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -82,6 +76,10 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.shape.RoundedCornerShape
+import io.beldex.bchat.my_account.ui.MyAccountActivity
+import io.beldex.bchat.my_account.ui.MyAccountScreens
 
 @AndroidEntryPoint
 class ArchiveChatActivity : BaseComponentActivity() {
@@ -112,7 +110,7 @@ class ArchiveChatActivity : BaseComponentActivity() {
             var showSettings by remember { mutableStateOf(false) }
 
             fun showChatSettings() {
-                val intent=io.beldex.bchat.my_account.ui.MyAccountActivity.intentForRoute(this, io.beldex.bchat.my_account.ui.MyAccountScreens.ChatSettingsScreen.route)
+                val intent=MyAccountActivity.intentForRoute(this, MyAccountScreens.ChatSettingsScreen.route)
                 push(intent)
             }
 
@@ -148,7 +146,7 @@ class ArchiveChatActivity : BaseComponentActivity() {
 
             BChatTheme(darkTheme=isDarkTheme) {
                 Surface(
-                    color=androidx.compose.ui.graphics.Color.Transparent,
+                    color=Color.Transparent,
                     modifier=Modifier
                         .fillMaxSize()
                         .bchatBackground(MaterialTheme.appColors.backgroundColor)
@@ -162,7 +160,7 @@ class ArchiveChatActivity : BaseComponentActivity() {
 
                                 Box {
                                     Icon(
-                                        painter=androidx.compose.ui.res.painterResource(id=R.drawable.ic_menu_dots),
+                                        painter=painterResource(id=R.drawable.ic_menu_dots),
                                         contentDescription=stringResource(R.string.menu),
                                         tint=MaterialTheme.appColors.editTextColor,
                                         modifier=Modifier.clickable { expanded=true }
@@ -173,8 +171,8 @@ class ArchiveChatActivity : BaseComponentActivity() {
                                         expanded=expanded,
                                         onDismissRequest={ expanded=false },
                                         containerColor=MaterialTheme.appColors.selectedItemBackground.copy(alpha = 0.95f),
-                                        shape=androidx.compose.foundation.shape.RoundedCornerShape(18.dp),
-                                        border=androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.appColors.optionBorder)
+                                        shape=RoundedCornerShape(18.dp),
+                                        border=BorderStroke(1.dp, MaterialTheme.appColors.optionBorder)
                                     ) {
                                         DropdownMenuItem(
                                             text={ Text(stringResource(R.string.archive_settings), color=MaterialTheme.appColors.editTextColor) },

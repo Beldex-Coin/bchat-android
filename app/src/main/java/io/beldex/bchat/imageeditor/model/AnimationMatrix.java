@@ -9,7 +9,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
 import io.beldex.bchat.imageeditor.CanvasMatrix;
-import io.beldex.bchat.imageeditor.CanvasMatrix;
 
 /**
  * Animation Matrix provides a matrix that animates over time down to the identity matrix.

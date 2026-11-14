@@ -211,6 +211,10 @@ import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
+import androidx.compose.runtime.mutableIntStateOf
+import com.beldex.libbchat.utilities.ExpirationUtil
+import io.beldex.bchat.groups.GroupJoinedCard
+import io.beldex.bchat.webrtc.CallBannerUtils
 
 @AndroidEntryPoint
 class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
@@ -254,7 +258,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
     private var uiJob : Job?=null
     private val callDurationFormat="HH:mm:ss"
     /** Bumped when the recipient is mutated in place (e.g. disappearing timer) so the Compose header recomposes. */
-    private val headerRefreshTick = androidx.compose.runtime.mutableIntStateOf(0)
+    private val headerRefreshTick = mutableIntStateOf(0)
 
     // -------------------- Hilt injections ----------------
     @Inject
@@ -474,7 +478,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                     if (!isPendingRequest) ConversationHeaderActions(
                         showCallIcon = showCallIcon,
                         expirationLabel = if (thread.expireMessages > 0) {
-                            com.beldex.libbchat.utilities.ExpirationUtil.getExpirationAbbreviatedDisplayValue(this@ConversationActivityV2, thread.expireMessages)
+                            ExpirationUtil.getExpirationAbbreviatedDisplayValue(this@ConversationActivityV2, thread.expireMessages)
                         } else null,
                         onExpirationClick = { showExpiringMessagesDialog(thread) },
                         menuEntries = menuEntries,
@@ -810,8 +814,8 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                             binding.callActionBarView.isVisible=false
                         } else {
                             binding.callActionBarView.isVisible=true
-                            binding.callDurationCall.text = io.beldex.bchat.webrtc.CallBannerUtils.formatDuration(System.currentTimeMillis() - startTime)
-                            binding.callInProgressCall.text = io.beldex.bchat.webrtc.CallBannerUtils.label(this@ConversationActivityV2, callViewModel)
+                            binding.callDurationCall.text = CallBannerUtils.formatDuration(System.currentTimeMillis() - startTime)
+                            binding.callInProgressCall.text = CallBannerUtils.label(this@ConversationActivityV2, callViewModel)
                         }
 
                         delay(1_000)
@@ -1549,7 +1553,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
         val name = recipient.name?.let { n -> n.replaceFirstChar { it.uppercase() } } ?: ""
         card.setContent {
             BChatTheme {
-                io.beldex.bchat.groups.GroupJoinedCard(
+                GroupJoinedCard(
                     verb = getString(if (isCreator) R.string.you_created else R.string.you_joined),
                     groupName = name,
                     kind = getString(if (isSocial) R.string.social_group_kind else R.string.secret_group_kind),

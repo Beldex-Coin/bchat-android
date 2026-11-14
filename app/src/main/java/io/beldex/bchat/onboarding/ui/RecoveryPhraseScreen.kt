@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +37,8 @@ import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.bchatBackground
 import io.beldex.bchat.compose_utils.notchedCornerShape
+import androidx.compose.ui.text.style.TextAlign
+import io.beldex.bchat.compose_utils.BChatDimens
 
 /**
  * Live seed-backup onboarding step (Figma `seed` 7546:982), hosted by
@@ -83,7 +84,7 @@ fun RecoveryPhraseScreen(
                     fontFamily = RobotoMono,
                     fontWeight = FontWeight.Normal,
                     fontSize = 18.sp,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 16.dp)
@@ -111,7 +112,7 @@ fun RecoveryPhraseScreen(
                 ) {
                     PrimaryButton(
                         onClick = onCopySeedClick,
-                        shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+                        shape = notchedCornerShape(BChatDimens.NotchMedium),
                         containerColor = MaterialTheme.appColors.dialogBackground,
                         contentColor = MaterialTheme.appColors.editTextColor,
                         border = BorderStroke(1.dp, MaterialTheme.appColors.onboardingSecondaryButtonBorder),
@@ -137,7 +138,7 @@ fun RecoveryPhraseScreen(
 
                     PrimaryButton(
                         onClick = onSaveClick,
-                        shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+                        shape = notchedCornerShape(BChatDimens.NotchMedium),
                         containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
                         contentColor = MaterialTheme.appColors.backgroundColor,
                         modifier = Modifier
@@ -160,7 +161,7 @@ fun RecoveryPhraseScreen(
                 color = MaterialTheme.appColors.onboardingCaptionColor,
                 fontFamily = OpenSans,
                 fontSize = 14.sp,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
                     .alpha(if (!seedCopied) 1f else 0f)

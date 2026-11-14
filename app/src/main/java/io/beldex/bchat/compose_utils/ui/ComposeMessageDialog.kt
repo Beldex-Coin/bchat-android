@@ -32,6 +32,19 @@ import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.notchedCornerShape
+import android.R
+import android.graphics.Typeface
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
+import android.view.LayoutInflater
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import io.beldex.bchat.compose_utils.BChatDimens
+import io.beldex.bchat.compose_utils.IconConfirmDialog
 
 @Composable
 fun ComposeMessageDialogContent(
@@ -46,7 +59,7 @@ fun ComposeMessageDialogContent(
 ) {
     val annotated = remember(message) { message.toBoldAwareAnnotatedString() }
     if (iconRes != 0 && negativeText != null) {
-        io.beldex.bchat.compose_utils.IconConfirmDialog(
+        IconConfirmDialog(
             icon = painterResource(id = iconRes),
             title = title,
             message = annotated,
@@ -102,11 +115,11 @@ fun ComposeMessageDialogContent(
                 } else {
                     PrimaryButton(
                         onClick = onPositive,
-                        shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+                        shape = notchedCornerShape(BChatDimens.NotchMedium),
                         containerColor = MaterialTheme.appColors.dialogPositiveButtonBackground,
                         contentColor = MaterialTheme.appColors.dialogPositiveButtonText,
                         border = BorderStroke(1.dp, MaterialTheme.appColors.dialogPositiveButtonBorder),
-                        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
+                        contentPadding = PaddingValues(0.dp),
                         modifier = Modifier
                             .weight(1f)
                             .height(52.dp)
@@ -120,22 +133,22 @@ fun ComposeMessageDialogContent(
 }
 
 /** Keeps bold runs from HTML-formatted strings (e.g. the call-permission description). */
-private fun CharSequence.toBoldAwareAnnotatedString(): androidx.compose.ui.text.AnnotatedString {
-    val spanned = this as? android.text.Spanned ?: return androidx.compose.ui.text.AnnotatedString(toString())
-    return androidx.compose.ui.text.buildAnnotatedString {
+private fun CharSequence.toBoldAwareAnnotatedString(): AnnotatedString {
+    val spanned = this as? Spanned ?: return AnnotatedString(toString())
+    return buildAnnotatedString {
         append(spanned.toString())
-        spanned.getSpans(0, spanned.length, android.text.style.StyleSpan::class.java).forEach { span ->
-            if (span.style == android.graphics.Typeface.BOLD || span.style == android.graphics.Typeface.BOLD_ITALIC) {
+        spanned.getSpans(0, spanned.length, StyleSpan::class.java).forEach { span ->
+            if (span.style == Typeface.BOLD || span.style == Typeface.BOLD_ITALIC) {
                 addStyle(
-                    androidx.compose.ui.text.SpanStyle(fontWeight = FontWeight.Bold),
+                    SpanStyle(fontWeight = FontWeight.Bold),
                     spanned.getSpanStart(span),
                     spanned.getSpanEnd(span)
                 )
             }
         }
-        spanned.getSpans(0, spanned.length, android.text.style.ForegroundColorSpan::class.java).forEach { span ->
+        spanned.getSpans(0, spanned.length, ForegroundColorSpan::class.java).forEach { span ->
             addStyle(
-                androidx.compose.ui.text.SpanStyle(color = androidx.compose.ui.graphics.Color(span.foregroundColor)),
+                SpanStyle(color = Color(span.foregroundColor)),
                 spanned.getSpanStart(span),
                 spanned.getSpanEnd(span)
             )
@@ -170,13 +183,13 @@ class ComposeMessageDialogFragment : DialogFragment() {
     override fun onStart() {
         super.onStart()
         dialog?.window?.apply {
-            setBackgroundDrawableResource(android.R.color.transparent)
+            setBackgroundDrawableResource(R.color.transparent)
             setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         }
     }
 
     override fun onCreateView(
-        inflater: android.view.LayoutInflater,
+        inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {

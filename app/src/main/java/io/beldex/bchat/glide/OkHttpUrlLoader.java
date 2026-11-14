@@ -10,7 +10,6 @@ import com.bumptech.glide.load.model.ModelLoaderFactory;
 import com.bumptech.glide.load.model.MultiModelLoaderFactory;
 import io.beldex.bchat.net.ContentProxySelector;
 
-import io.beldex.bchat.net.ContentProxySelector;
 
 import java.io.InputStream;
 

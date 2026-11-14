@@ -29,7 +29,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Backspace
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -42,7 +41,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -52,7 +50,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.coerceAtMost
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.beldex.bchat.compose_utils.BChatTheme
@@ -67,6 +64,11 @@ import io.beldex.bchat.compose_utils.notchedCornerShape
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.R
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.material3.CardColors
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.unit.Dp
+import io.beldex.bchat.compose_utils.BChatDimens
 
 const val EXTRA_PIN_CODE_ACTION = "action"
 
@@ -181,7 +183,7 @@ private fun PortraitPinCodeScreen(
     isDarkTheme: Boolean,
     isTablet: Boolean
 ) {
-    androidx.compose.foundation.layout.BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
     // Tall phones: the free space belongs above the lock icon (Figma), not between keypad and Next.
     val compact = maxHeight < 700.dp
     Column(
@@ -197,7 +199,7 @@ private fun PortraitPinCodeScreen(
         else if (state.step == PinCodeSteps.VerifyPin) Spacer(modifier = Modifier.height(if (compact) 24.dp else 64.dp))
         Image(
             painter = painterResource(id = R.drawable.ic_pin_lock),
-            colorFilter = if (state.errorText != null) androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.appColors.negativeRedButtonBorder) else null,
+            colorFilter = if (state.errorText != null) ColorFilter.tint(MaterialTheme.appColors.negativeRedButtonBorder) else null,
             contentDescription = "",
             modifier = Modifier
                 .height(if (isTablet) 140.dp else 66.dp)
@@ -245,7 +247,7 @@ private fun PortraitPinCodeScreen(
                         .align(Alignment.CenterHorizontally)
                         .width(164.dp)
                         .height(41.dp),
-                    shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall),
+                    shape = notchedCornerShape(BChatDimens.NotchSmall),
                     containerColor = MaterialTheme.appColors.dialogBackground,
                     contentColor = MaterialTheme.appColors.editTextColor,
                     contentPadding = PaddingValues(0.dp),
@@ -299,7 +301,7 @@ private fun PortraitPinCodeScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-                shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+                shape = notchedCornerShape(BChatDimens.NotchMedium),
                 containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
                 disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground
             ) {
@@ -323,8 +325,8 @@ private fun PinKeypadGrid(
     state: PinCodeState,
     pin: String,
     onEvent: (PinCodeEvents) -> Unit,
-    cellHeight: androidx.compose.ui.unit.Dp,
-    verticalSpacing: androidx.compose.ui.unit.Dp,
+    cellHeight: Dp,
+    verticalSpacing: Dp,
     modifier: Modifier = Modifier
 ) {
     val keyColors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.onboardingKeypadKeyBackground)
@@ -466,7 +468,7 @@ private fun LandscapePinCodeScreen(
                         .align(Alignment.CenterHorizontally)
                         .width(164.dp)
                         .height(41.dp),
-                    shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchSmall),
+                    shape = notchedCornerShape(BChatDimens.NotchSmall),
                     containerColor = MaterialTheme.appColors.dialogBackground,
                     contentColor = MaterialTheme.appColors.editTextColor,
                     contentPadding = PaddingValues(0.dp),
@@ -661,7 +663,7 @@ private fun LandscapePinCodeScreen(
                                 .onSizeChanged {
                                     buttonSize = it
                                 },
-                            shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium),
+                            shape = notchedCornerShape(BChatDimens.NotchMedium),
                             containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
                             disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground
                         ) {
@@ -717,12 +719,12 @@ fun PinCodeScreenPreview2() {
 // Revamp_2026 keypad key (Figma 7546:3797): 86x60, top-right and bottom-left corners cut.
 @Composable
 private fun PinKeyCard(
-    colors: androidx.compose.material3.CardColors,
+    colors: CardColors,
     modifier: Modifier = Modifier,
-    content: @Composable androidx.compose.foundation.layout.ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit
 ) {
     val shape = notchedCornerShape(10.dp)
-    androidx.compose.foundation.layout.Column(
+    Column(
         modifier = modifier
             .clip(shape)
             .background(MaterialTheme.appColors.onboardingKeypadKeyBackground, shape)

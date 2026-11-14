@@ -15,9 +15,6 @@ import io.beldex.bchat.imageeditor.Renderer;
 import io.beldex.bchat.imageeditor.RendererContext;
 
 import io.beldex.bchat.R;
-import io.beldex.bchat.imageeditor.Bounds;
-import io.beldex.bchat.imageeditor.Renderer;
-import io.beldex.bchat.imageeditor.RendererContext;
 
 /**
  * Renders a box outside of the current crop area using {@link R.color#crop_area_renderer_outer_color}

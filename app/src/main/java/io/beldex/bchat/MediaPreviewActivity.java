@@ -78,7 +78,6 @@ import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.utilities.recipients.RecipientModifiedListener;
 import com.beldex.libsignal.utilities.Log;
 import io.beldex.bchat.components.MediaView;
-import io.beldex.bchat.components.ZoomingImageView;
 import io.beldex.bchat.database.MediaDatabase.MediaRecord;
 import io.beldex.bchat.mediapreview.MediaPreviewViewModel;
 import io.beldex.bchat.mediapreview.MediaRailAdapter;
@@ -88,7 +87,6 @@ import com.bumptech.glide.RequestManager;
 import io.beldex.bchat.permissions.Permissions;
 import io.beldex.bchat.util.SaveAttachmentTask;
 import io.beldex.bchat.util.SaveAttachmentTask.Attachment;
-import io.beldex.bchat.WindowInsetsUtil;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -96,6 +94,8 @@ import java.util.Objects;
 import java.util.WeakHashMap;
 
 import kotlin.Unit;
+import android.Manifest;
+import android.view.ViewParent;
 
 /**
  * Activity for displaying media attachments in-app
@@ -172,7 +172,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
 
     setContentView(R.layout.media_preview_activity);
 
-    View appBarLayout = findViewById(R.id.toolbar).getParent() instanceof View ? (View) ((android.view.ViewParent) findViewById(R.id.toolbar).getParent()) : null;
+    View appBarLayout = findViewById(R.id.toolbar).getParent() instanceof View ? (View) ((ViewParent) findViewById(R.id.toolbar).getParent()) : null;
     if (appBarLayout != null) {
       ViewCompat.setOnApplyWindowInsetsListener(appBarLayout, (v, windowInsets) -> {
         int top = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()).top;
@@ -465,7 +465,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
 
     SaveAttachmentTask.showWarningDialog(this, 1, () -> {
       Permissions.with(this)
-              .request(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+              .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
               .maxSdkVersion(Build.VERSION_CODES.P)
               .withPermanentDenialDialog(getString(R.string.MediaPreviewActivity_signal_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied))
               .onAnyDenied(() -> BChatToast.error(this, R.string.MediaPreviewActivity_unable_to_write_to_external_storage_without_permission, Toast.LENGTH_LONG).show())

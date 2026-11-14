@@ -51,7 +51,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -78,7 +77,6 @@ import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.GroupUtil
-import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.PublicKeyValidation
@@ -97,6 +95,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.TextStyle
+import io.beldex.bchat.compose_utils.BChatDimens
+import io.beldex.bchat.compose_utils.OpenSans
+import io.beldex.bchat.compose_utils.RobotoMono
+import io.beldex.bchat.compose_utils.notchedCornerShape
 
 @Composable
 fun JoinSocialGroupScreen(
@@ -200,13 +205,13 @@ private fun JoinSection(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.appColors.dialogBackground
         ),
-        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
-        shape = androidx.compose.ui.graphics.RectangleShape,
+        border = BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
+        shape = RectangleShape,
         modifier = modifier
     ) {
         Text(
             text = stringResource(R.string.activity_join_public_chat_title),
-            fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+            fontFamily = OpenSans,
             color = MaterialTheme.appColors.editTextColor,
             fontSize = 14.sp,
             fontWeight = FontWeight.Normal,
@@ -221,7 +226,7 @@ private fun JoinSection(
                 Text(
                     text = stringResource(R.string.fragment_enter_chat_url_edit_text_hint).uppercase(),
                     modifier = Modifier.padding(start = 4.dp),
-                    fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                    fontFamily = RobotoMono,
                     fontWeight = FontWeight.Light,
                     color = MaterialTheme.appColors.onboardingInputHint,
                     fontSize = 12.sp
@@ -230,12 +235,12 @@ private fun JoinSection(
             onValueChange = { url ->
                 onEvent(OpenGroupEvents.GroupUrlChanged(url))
             },
-            textStyle = androidx.compose.ui.text.TextStyle(
-                fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+            textStyle = TextStyle(
+                fontFamily = OpenSans,
                 color = MaterialTheme.appColors.editTextColor,
                 fontSize = 14.sp
             ),
-            shape = androidx.compose.ui.graphics.RectangleShape,
+            shape = RectangleShape,
             singleLine = true,
             trailingIcon = {
                 Image(
@@ -269,7 +274,7 @@ private fun JoinSection(
             onClick = {
                 joinPublicChatIfPossible(uiState.groupUrl, lifecycleOwner, context)
             },
-            shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchLarge),
+            shape = notchedCornerShape(BChatDimens.NotchLarge),
             enabled = uiState.groupUrl.isNotEmpty(),
             containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
             contentColor = MaterialTheme.appColors.backgroundColor,
@@ -282,7 +287,7 @@ private fun JoinSection(
         ) {
             Text(
                 text = stringResource(id = R.string.next),
-                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                fontFamily = RobotoMono,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 16.sp
             )
@@ -310,7 +315,7 @@ private fun GroupsSection(
     Column(modifier) {
         Text(
             text = stringResource(id = R.string.or_join),
-            fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+            fontFamily = OpenSans,
             color = MaterialTheme.appColors.editTextColor,
             fontSize = 14.sp,
             fontWeight = FontWeight.Normal,
@@ -343,7 +348,7 @@ private fun GroupsSection(
                             .height(116.dp)
                             .background(
                                 color = MaterialTheme.appColors.cardTileBackground,
-                                shape = androidx.compose.ui.graphics.RectangleShape
+                                shape = RectangleShape
                             )
                             .padding(start = 8.dp, end = 8.dp, top = 10.dp, bottom = 10.dp)
                             .clickable {
@@ -388,7 +393,7 @@ private fun GroupsSection(
                             ) {
                                 Text(
                                     text = groups[i].name.take(1).uppercase(),
-                                    fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                                    fontFamily = OpenSans,
                                     fontSize = 20.sp,
                                     fontWeight = FontWeight.SemiBold,
                                     color = MaterialTheme.appColors.editTextColor
@@ -403,7 +408,7 @@ private fun GroupsSection(
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
                             textAlign = TextAlign.Center,
-                            fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                            fontFamily = OpenSans,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.appColors.editTextColor

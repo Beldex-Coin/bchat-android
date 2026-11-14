@@ -8,7 +8,6 @@ import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.all
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.jobs.BatchMessageReceiveJob
-import com.beldex.libbchat.messaging.jobs.MessageReceiveJob
 import com.beldex.libbchat.messaging.jobs.MessageReceiveParameters
 import com.beldex.libbchat.messaging.sending_receiving.pollers.ClosedGroupPollerV2
 import com.beldex.libbchat.messaging.sending_receiving.pollers.OpenGroupPollerV2

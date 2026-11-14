@@ -3,7 +3,6 @@ package io.beldex.bchat.my_account.ui
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -60,6 +59,11 @@ import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.notchedCornerShape
 import io.beldex.bchat.compose_utils.singleCornerCutShape
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun BlockedContactScreen(
@@ -124,7 +128,7 @@ fun BlockedContactScreen(
                     fontFamily = OpenSans,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                    textAlign = TextAlign.Center
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
@@ -134,7 +138,7 @@ fun BlockedContactScreen(
                     color = MaterialTheme.appColors.editTextColor,
                     fontFamily = OpenSans,
                     fontSize = 14.sp,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                    textAlign = TextAlign.Center
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -241,7 +245,7 @@ private fun BlockedContactItem(
     }
     Card(
         shape = rowShape,
-        border = if (multiSelectActivated) androidx.compose.foundation.BorderStroke(
+        border = if (multiSelectActivated) BorderStroke(
             1.dp,
             if (isSelected) MaterialTheme.appColors.userDetailsConfirmBackground.copy(alpha = 0.5f) else MaterialTheme.appColors.optionBorder
         ) else null,
@@ -362,13 +366,13 @@ private fun CircleCheck(checked: Boolean, onClick: () -> Unit) {
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .size(24.dp)
-            .clip(androidx.compose.foundation.shape.CircleShape)
+            .clip(CircleShape)
             .clickable(onClick = onClick)
     ) {
-        androidx.compose.foundation.Canvas(modifier = Modifier.size(18.dp)) {
+        Canvas(modifier = Modifier.size(18.dp)) {
             val stroke = 1.35.dp.toPx()
             // Figma "Iconex/Light/Check": an 18dp rounded square outlined in green.
-            val corner = androidx.compose.ui.geometry.CornerRadius(4.dp.toPx())
+            val corner = CornerRadius(4.dp.toPx())
             if (checked) {
                 drawRoundRect(
                     color = green,

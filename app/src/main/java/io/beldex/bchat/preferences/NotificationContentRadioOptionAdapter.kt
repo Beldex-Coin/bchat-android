@@ -1,6 +1,5 @@
 package io.beldex.bchat.preferences
 
-import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

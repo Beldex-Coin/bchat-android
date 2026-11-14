@@ -16,9 +16,6 @@ import android.view.animation.Interpolator;
 import io.beldex.bchat.imageeditor.Bounds;
 import io.beldex.bchat.imageeditor.ColorableRenderer;
 import io.beldex.bchat.imageeditor.RendererContext;
-import io.beldex.bchat.imageeditor.Bounds;
-import io.beldex.bchat.imageeditor.ColorableRenderer;
-import io.beldex.bchat.imageeditor.RendererContext;
 
 /**
  * Renders a single line of {@link #text} in ths specified {@link #color}.

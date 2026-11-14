@@ -41,6 +41,13 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import io.beldex.bchat.R
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 
 @Composable
 fun DialogContainer(
@@ -49,7 +56,7 @@ fun DialogContainer(
     onDismissRequest: () -> Unit,
     containerColor: Color? = null,
     wrapContentWidth: Boolean = false,
-    shape: androidx.compose.ui.graphics.Shape = androidx.compose.ui.graphics.RectangleShape,
+    shape: Shape = RectangleShape,
     showBorder: Boolean = true,
     content: @Composable () -> Unit
 ) {
@@ -88,14 +95,14 @@ fun DialogContainer(
 @Composable
 fun DialogPanel(
     modifier: Modifier = Modifier,
-    shape: androidx.compose.ui.graphics.Shape = androidx.compose.ui.graphics.RectangleShape,
+    shape: Shape = RectangleShape,
     containerColor: Color? = null,
     showBorder: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val panelBrush = when {
-        containerColor != null -> androidx.compose.ui.graphics.SolidColor(containerColor)
-        else -> androidx.compose.ui.graphics.Brush.radialGradient(
+        containerColor != null -> SolidColor(containerColor)
+        else -> Brush.radialGradient(
             colors = listOf(MaterialTheme.appColors.dialogPanelGradientStart, MaterialTheme.appColors.dialogPanelGradientEnd),
             radius = 700f
         )
@@ -220,7 +227,7 @@ fun DialogConfirmButton(
         containerColor = containerColor,
         contentColor = MaterialTheme.appColors.editTextColor,
         border = BorderStroke(0.5.dp, containerBorder),
-        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
+        contentPadding = PaddingValues(0.dp),
         modifier = modifier.heightIn(min = BChatDimens.DialogButtonMinHeight)
     ) {
         Text(text = text, fontFamily = OpenSans, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = labelColor)
@@ -298,8 +305,8 @@ fun PopupBody(
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
-        androidx.compose.foundation.layout.Row(
-            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
             if (cancelText != null) {
@@ -335,7 +342,7 @@ fun PopupBody(
                     containerColor = confirmContainerColor,
                     contentColor = confirmContentColor,
                     border = BorderStroke(1.dp, confirmBorderColor),
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
+                    contentPadding = PaddingValues(0.dp),
                     modifier = Modifier.weight(1f).heightIn(min = BChatDimens.DialogButtonMinHeight)
                 ) {
                     if (confirmIcon != null) {
@@ -365,7 +372,7 @@ fun CloseTile(onClick: () -> Unit, modifier: Modifier = Modifier) {
             .clickable(onClick = onClick)
     ) {
         androidx.compose.material3.Icon(
-            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_close),
+            painter = painterResource(id = R.drawable.ic_close),
             contentDescription = null,
             tint = MaterialTheme.appColors.editTextColor,
             modifier = Modifier.size(14.dp)
@@ -375,9 +382,9 @@ fun CloseTile(onClick: () -> Unit, modifier: Modifier = Modifier) {
 
 @Composable
 fun IconConfirmDialog(
-    icon: androidx.compose.ui.graphics.painter.Painter?,
+    icon: Painter?,
     title: String,
-    message: androidx.compose.ui.text.AnnotatedString,
+    message: AnnotatedString,
     cancelText: String?,
     confirmText: String,
     onCancel: () -> Unit,
@@ -404,13 +411,13 @@ fun IconConfirmDialog(
 }
 
 /** Message text with [bold] runs (e.g. a contact name) emphasised. */
-fun boldedMessage(text: String, vararg bold: String): androidx.compose.ui.text.AnnotatedString =
-    androidx.compose.ui.text.buildAnnotatedString {
+fun boldedMessage(text: String, vararg bold: String): AnnotatedString =
+    buildAnnotatedString {
         append(text)
         bold.forEach { part ->
             val start = text.indexOf(part)
             if (part.isNotEmpty() && start >= 0) {
-                addStyle(androidx.compose.ui.text.SpanStyle(fontWeight = FontWeight.Bold), start, start + part.length)
+                addStyle(SpanStyle(fontWeight = FontWeight.Bold), start, start + part.length)
             }
         }
     }
@@ -433,7 +440,7 @@ fun DialogPrimaryButton(
         disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
         disabledContentColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledText,
         border = BorderStroke(1.dp, if (enabled) MaterialTheme.appColors.dialogPositiveButtonBorder else MaterialTheme.appColors.pinBoxInactiveBorder),
-        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
+        contentPadding = PaddingValues(0.dp),
         modifier = modifier.heightIn(min = BChatDimens.DialogButtonMinHeight)
     ) {
         Text(text = text, fontFamily = RobotoMono, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)

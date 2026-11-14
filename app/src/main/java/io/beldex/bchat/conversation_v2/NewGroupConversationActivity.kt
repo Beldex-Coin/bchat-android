@@ -80,10 +80,10 @@ class NewGroupConversationActivity: BaseComponentActivity() {
                 darkTheme = isDarkTheme
             ) {
                 // A surface container using the 'background' color from the theme
-                Surface(color = androidx.compose.ui.graphics.Color.Transparent) {
+                Surface(color = Color.Transparent) {
                     Scaffold(
                         modifier = Modifier.bchatBackground(MaterialTheme.appColors.backgroundColor),
-                        containerColor = androidx.compose.ui.graphics.Color.Transparent
+                        containerColor = Color.Transparent
                     ) {
                         val navController = rememberNavController()
                         NavHost(

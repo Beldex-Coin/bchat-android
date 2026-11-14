@@ -28,7 +28,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,7 +45,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -55,8 +53,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
@@ -80,11 +76,9 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -137,7 +131,6 @@ import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.NotchCorner
 import io.beldex.bchat.compose_utils.OpenSans
-import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
@@ -168,7 +161,6 @@ import io.beldex.bchat.util.QRCodeUtilities
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.copyToClipBoard
-import io.beldex.bchat.util.getColorWithID
 import io.beldex.bchat.util.toPx
 import io.beldex.bchat.util.unicodeNamePattern
 import kotlinx.coroutines.Dispatchers
@@ -184,6 +176,14 @@ import java.io.FileOutputStream
 import java.security.SecureRandom
 import java.util.Date
 import javax.inject.Inject
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.TextStyle
+import androidx.lifecycle.ViewModel
+import io.beldex.bchat.compose_utils.BnsVerifiedBadge
+import io.beldex.bchat.compose_utils.NotchedAvatarShape
+import io.beldex.bchat.compose_utils.RobotoMono
 
 private val ACCOUNT_AVATAR_SIZE = 86.dp
 
@@ -887,10 +887,10 @@ fun MyAccountNavHost(
                             Box(
                                 modifier = Modifier
                                     .matchParentSize()
-                                    .border(1.dp, MaterialTheme.appColors.messageRequestItemBackground, io.beldex.bchat.compose_utils.NotchedAvatarShape)
+                                    .border(1.dp, MaterialTheme.appColors.messageRequestItemBackground, NotchedAvatarShape)
                             )
                             if (!isBnsHolder.isNullOrEmpty()) {
-                                io.beldex.bchat.compose_utils.BnsVerifiedBadge(
+                                BnsVerifiedBadge(
                                     containerSize = ACCOUNT_AVATAR_SIZE,
                                     small = false,
                                     modifier = Modifier.align(Alignment.BottomEnd)
@@ -952,7 +952,7 @@ fun MyAccountNavHost(
                                 text = if(showEditNameTextField) stringResource(id=R.string.menu_done_button) else stringResource(id=R.string.edit_title),
                                 style = BChatTypography.bodySmall.copy(
                                     color = if(showEditNameTextField) MaterialTheme.appColors.dialogPositiveButtonText else MaterialTheme.appColors.editTextColor,
-                                    fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                                    fontFamily = RobotoMono,
                                     fontWeight = FontWeight(600),
                                     fontSize = 12.sp,
                                 ),
@@ -1010,7 +1010,7 @@ fun MyAccountNavHost(
                                         text = stringResource(R.string.link_your_bns),
                                         style = BChatTypography.titleSmall.copy(
                                             color = bnsTextColor,
-                                            fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                                            fontFamily = RobotoMono,
                                             fontWeight = FontWeight(600),
                                             fontSize = 12.sp
                                         ),
@@ -1053,7 +1053,7 @@ fun MyAccountNavHost(
                     }
 
                     Card(
-                        shape = androidx.compose.ui.graphics.RectangleShape,
+                        shape = RectangleShape,
                         colors = CardDefaults.cardColors(
                             containerColor = Color.Transparent
                         ),
@@ -1297,7 +1297,7 @@ fun MyAccountNavHost(
                             Text(
                                 text = stringResource(id = R.string.no_blocked_contact),
                                 color = Color(0xFF737373),
-                                fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                                fontFamily = RobotoMono,
                                 fontSize = 16.sp,
                                 textAlign = TextAlign.Center
                             )
@@ -1609,7 +1609,7 @@ fun ProfileCard(
         }
         if (onShowEditName) {
             // Figma input: #111111 fill, #333333 hairline, Roboto Mono 14.
-            androidx.compose.foundation.text.BasicTextField(
+            BasicTextField(
                 value = textFieldValueState,
                 onValueChange = {
                     textFieldValueState = it
@@ -1617,13 +1617,13 @@ fun ProfileCard(
                 },
                 maxLines = 1,
                 singleLine = true,
-                textStyle = androidx.compose.ui.text.TextStyle(
+                textStyle = TextStyle(
                     color = MaterialTheme.appColors.editTextColor,
-                    fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                    fontFamily = RobotoMono,
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center
                 ),
-                cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.appColors.textSelectionColor),
+                cursorBrush = SolidColor(MaterialTheme.appColors.textSelectionColor),
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.appColors.selectedItemBackground)
@@ -1724,9 +1724,9 @@ fun ProfileCardKeyContainer(
         modifier = modifier,
         // Figma 7546:13728 "BG Corner Cut": only the bottom-left corner is cut,
         // the other three edges stay square.
-        shape = io.beldex.bchat.compose_utils.singleCornerCutShape(
-            io.beldex.bchat.compose_utils.BChatDimens.NotchAccountCard,
-            io.beldex.bchat.compose_utils.NotchCorner.BottomLeft
+        shape = singleCornerCutShape(
+            BChatDimens.NotchAccountCard,
+            NotchCorner.BottomLeft
         ),
         border = BorderStroke(1.dp, MaterialTheme.appColors.optionBorder),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
@@ -1763,7 +1763,7 @@ fun ProfileCardKeyContainer(
                     text = title,
                     style = MaterialTheme.typography.bodySmall.copy(
                         fontSize = 10.sp,
-                        fontFamily = io.beldex.bchat.compose_utils.RobotoMono,
+                        fontFamily = RobotoMono,
                         color = MaterialTheme.appColors.editTextColor,
                         fontWeight = FontWeight(600)
                     ),
@@ -1861,7 +1861,7 @@ fun CardContainer(
     content: @Composable () -> Unit
 ) {
     // Revamp_2026: settings content sits directly on the screen background (no rounded panel).
-    androidx.compose.foundation.layout.Box(modifier = modifier) {
+    Box(modifier = modifier) {
         content()
     }
 }
@@ -1901,6 +1901,6 @@ fun ArchiveChatScreenContainer(
 }
 
 /** Whether the recovery seed was unlocked with the PIN; survives the activity being recreated. */
-class RecoverySeedUnlockViewModel : androidx.lifecycle.ViewModel() {
+class RecoverySeedUnlockViewModel : ViewModel() {
     var unlocked by mutableStateOf(false)
 }

@@ -7,7 +7,6 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -28,7 +27,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -53,6 +51,8 @@ import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.bchatBackground
 import io.beldex.bchat.compose_utils.notchedCornerShape
+import android.util.TypedValue
+import android.view.Gravity
 
 /**
  * Live seed-restore onboarding step (Figma `Restore Seed` 7546:4119/4150), hosted by
@@ -120,7 +120,7 @@ fun RecoveryPhraseRestoreScreen(
                                         isVerticalScrollBarEnabled = true
                                         setHintTextColor(hintColor)
                                         setTextColor(textColor)
-                                        gravity = android.view.Gravity.TOP or android.view.Gravity.START
+                                        gravity = Gravity.TOP or Gravity.START
                                         filters = arrayOf(InputFilter { source, start, end, dest, dstart, dend ->
                                             val result = dest.substring(0, dstart) + source.subSequence(start, end) + dest.substring(dend)
                                             if (result.split(Regex("\\s+")).count { it.isNotEmpty() } > 25) "" else null
@@ -145,7 +145,7 @@ fun RecoveryPhraseRestoreScreen(
                                     }
                                     val empty = editText.text.isNullOrEmpty()
                                     val size = if (empty) 12f else 14f
-                                    if (editText.textSize != android.util.TypedValue.applyDimension(android.util.TypedValue.COMPLEX_UNIT_SP, size, editText.resources.displayMetrics)) {
+                                    if (editText.textSize != TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, size, editText.resources.displayMetrics)) {
                                         editText.textSize = size
                                     }
                                     val top = if (empty) (1 * editText.resources.displayMetrics.density).toInt() else 0

@@ -1,12 +1,7 @@
 package io.beldex.bchat.conversation_v2
 
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.layout.offset
-import io.beldex.bchat.util.BChatToast
-import android.app.Activity
 import android.content.Context
-import android.widget.Toast
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -26,15 +21,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -45,15 +35,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -63,17 +49,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.beldex.libbchat.messaging.contacts.Contact
-import com.beldex.libbchat.messaging.sending_receiving.MessageSender
-import com.beldex.libbchat.messaging.sending_receiving.groupSizeLimit
-import com.beldex.libbchat.utilities.Address
-import com.beldex.libbchat.utilities.Device
-import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.OpenSans
@@ -82,17 +62,16 @@ import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.CheckOnline
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatDimens
 import io.beldex.bchat.compose_utils.notchedCornerShape
 import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
-import io.beldex.bchat.util.isValidGroupName
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import nl.komponents.kovenant.ui.failUi
-import nl.komponents.kovenant.ui.successUi
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.TextStyle
+import io.beldex.bchat.compose_utils.BChatLoader
+import io.beldex.bchat.util.CustomCheckBox
 
 @Composable
 fun CreateSecretGroup(
@@ -210,7 +189,7 @@ fun CreateSecretGroup(
                     .clickable(enabled = true, onClick = {}),
                 contentAlignment = Alignment.Center
             ) {
-                io.beldex.bchat.compose_utils.BChatLoader(size = 44.dp)
+                BChatLoader(size = 44.dp)
             }
         }
     }
@@ -231,7 +210,7 @@ private fun GroupNameField(
                 Text(
                     text = stringResource(R.string.enter_group_name).uppercase(),
                     fontFamily = RobotoMono,
-                    fontWeight = androidx.compose.ui.text.font.FontWeight.Light,
+                    fontWeight = FontWeight.Light,
                     fontSize = 12.sp,
                     color = MaterialTheme.appColors.onboardingInputHint
                 )
@@ -247,7 +226,7 @@ private fun GroupNameField(
                 .fillMaxWidth()
                 .padding(vertical = 8.dp)
                 .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
-            shape = androidx.compose.ui.graphics.RectangleShape,
+            shape = RectangleShape,
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = MaterialTheme.appColors.dialogBackground,
                 focusedContainerColor = MaterialTheme.appColors.dialogBackground,
@@ -268,17 +247,17 @@ private fun SearchField(
     showLoader: Boolean
 ) {
     // Figma: 48dp box, 15dp search icon 12dp from the edge, text 11dp after the icon.
-    androidx.compose.foundation.text.BasicTextField(
+    BasicTextField(
         value = searchQuery,
         onValueChange = onSearchQueryChange,
         enabled = !showLoader,
         singleLine = true,
-        textStyle = androidx.compose.ui.text.TextStyle(
+        textStyle = TextStyle(
             fontFamily = RobotoMono,
             fontSize = 14.sp,
             color = MaterialTheme.appColors.editTextColor
         ),
-        cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.appColors.textSelectionColor),
+        cursorBrush = SolidColor(MaterialTheme.appColors.textSelectionColor),
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Done
@@ -307,7 +286,7 @@ private fun SearchField(
                         Text(
                             text = stringResource(R.string.search_contact).uppercase(),
                             fontFamily = RobotoMono,
-                            fontWeight = androidx.compose.ui.text.font.FontWeight.Light,
+                            fontWeight = FontWeight.Light,
                             fontSize = 12.sp,
                             maxLines = 1,
                             color = MaterialTheme.appColors.onboardingInputHint
@@ -348,7 +327,7 @@ private fun CreateGroupButton(
                 .fillMaxWidth()
                 .padding(16.dp)
                 .height(54.dp),
-            shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchLarge),
+            shape = notchedCornerShape(BChatDimens.NotchLarge),
             enabled = groupName.isNotEmpty(),
             containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
             contentColor = MaterialTheme.appColors.backgroundColor,
@@ -357,7 +336,7 @@ private fun CreateGroupButton(
         ) {
             Text(
                 text = stringResource(id = R.string.create),
-                fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                fontFamily = OpenSans,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 16.sp
             )
@@ -383,13 +362,13 @@ private fun GroupContact(
             .padding(bottom = 8.dp)
             .background(
                 color = if (isSelected) MaterialTheme.appColors.dialogBackground else Color.Transparent,
-                shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium)
+                shape = notchedCornerShape(BChatDimens.NotchMedium)
             )
             .then(
                 if (isSelected) Modifier.border(
                     width = 1.dp,
                     color = MaterialTheme.appColors.userDetailsConfirmBackground,
-                    shape = io.beldex.bchat.compose_utils.notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium)
+                    shape = notchedCornerShape(BChatDimens.NotchMedium)
                 ) else Modifier
             )
             .clickable {
@@ -416,7 +395,7 @@ private fun GroupContact(
                 text = recipient.name?.capitalizeFirstLetter()
                     ?: recipient.address.toString().capitalizeFirstLetter(),
                 textAlign = TextAlign.Start,
-                fontFamily = io.beldex.bchat.compose_utils.OpenSans,
+                fontFamily = OpenSans,
                 color = MaterialTheme.appColors.editTextColor,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -427,7 +406,7 @@ private fun GroupContact(
                 overflow = TextOverflow.Ellipsis
             )
 
-            io.beldex.bchat.util.CustomCheckBox(
+            CustomCheckBox(
                 checked = isSelected,
                 onCheckedChange = { onSelectionChanged(recipient, it) },
                 modifier = Modifier.padding(end = 16.dp)
@@ -467,5 +446,4 @@ fun CreateSecretGroupScreenPreviewLight() {
         )
     }
 }*/
-
 

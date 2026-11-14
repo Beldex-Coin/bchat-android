@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.conversation.v2.ConversationActivityV2
 

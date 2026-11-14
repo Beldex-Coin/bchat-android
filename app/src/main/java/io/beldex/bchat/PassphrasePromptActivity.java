@@ -149,7 +149,7 @@ public class PassphrasePromptActivity extends BaseActionBarActivity {
 //      }
       try {
         startActivity(nextIntent);
-      } catch (java.lang.SecurityException e) {
+      } catch (SecurityException e) {
         Log.w(TAG, "Access permission not passed from PassphraseActivity, retry sharing.", e);
       }
     }

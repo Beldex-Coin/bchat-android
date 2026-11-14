@@ -36,7 +36,7 @@ object Util {
     @JvmStatic
     fun assertMainThread() {
         if (!isMainThread()) {
-            throw java.lang.AssertionError("Main-thread assertion failed.")
+            throw AssertionError("Main-thread assertion failed.")
         }
     }
 
@@ -87,7 +87,7 @@ object Util {
             try {
                 sync.await()
             } catch (ie: InterruptedException) {
-                throw java.lang.AssertionError(ie)
+                throw AssertionError(ie)
             }
         }
     }
@@ -146,7 +146,7 @@ object Util {
 
     @JvmStatic
     fun join(list: LongArray, delimeter: String?): String {
-        val sb = java.lang.StringBuilder()
+        val sb = StringBuilder()
         for (j in list.indices) {
             if (j != 0) sb.append(delimeter)
             sb.append(list[j])
@@ -347,7 +347,7 @@ object Util {
             }
             baos.toByteArray()
         } catch (e: IOException) {
-            throw java.lang.AssertionError(e)
+            throw AssertionError(e)
         }
     }
 

@@ -9,12 +9,13 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.PopupBody
 import io.beldex.bchat.conversation.v2.utilities.BaseDialog
+import android.os.Bundle
 
 class SaveYourSeedDialogBox(
     private val showSeed: () -> Unit,
 ) : BaseDialog() {
 
-    override fun onCreate(savedInstanceState: android.os.Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isCancelable = false
     }

@@ -12,6 +12,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import io.beldex.bchat.R
 import kotlin.math.roundToInt
+import androidx.appcompat.widget.AppCompatImageView
 
 interface GlowView {
     var mainColor: Int
@@ -90,7 +91,7 @@ class PNModeView : LinearLayout, GlowView {
     // endregion
 }
 
-class NewConversationButtonImageView : androidx.appcompat.widget.AppCompatImageView, GlowView {
+class NewConversationButtonImageView : AppCompatImageView, GlowView {
     @ColorInt override var mainColor: Int = 0
     set(newValue) { field = newValue; paint.color = newValue }
     @ColorInt override var bchatShadowColor: Int = 0

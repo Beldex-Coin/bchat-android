@@ -29,6 +29,8 @@ import java.util.*
 import javax.crypto.*
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
+import io.beldex.bchat.crypto.AttachmentSecret
+import io.beldex.bchat.database.GroupReceiptDatabase
 
 object FullBackupImporter {
     /**
@@ -44,7 +46,7 @@ object FullBackupImporter {
     @WorkerThread
     @Throws(IOException::class)
     fun importFromUri(context: Context,
-                      attachmentSecret: io.beldex.bchat.crypto.AttachmentSecret,
+                      attachmentSecret: AttachmentSecret,
                       db: SQLiteDatabase,
                       fileUri: Uri,
                       passphrase: String) {
@@ -113,7 +115,7 @@ object FullBackupImporter {
     }
 
     @Throws(IOException::class)
-    private fun processAttachment(context: Context, attachmentSecret: io.beldex.bchat.crypto.AttachmentSecret,
+    private fun processAttachment(context: Context, attachmentSecret: AttachmentSecret,
                                   db: SQLiteDatabase, attachment: Attachment,
                                   inputStream: BackupRecordInputStream) {
         val partsDirectory = context.getDir(AttachmentDatabase.DIRECTORY, Context.MODE_PRIVATE)
@@ -172,7 +174,7 @@ object FullBackupImporter {
 
     private fun trimEntriesForExpiredMessages(context: Context, db: SQLiteDatabase) {
         val trimmedCondition = " NOT IN (SELECT ${io.beldex.bchat.database.MmsSmsColumns.ID} FROM ${MmsDatabase.TABLE_NAME})"
-        db.delete(io.beldex.bchat.database.GroupReceiptDatabase.TABLE_NAME, io.beldex.bchat.database.GroupReceiptDatabase.MMS_ID + trimmedCondition, null)
+        db.delete(GroupReceiptDatabase.TABLE_NAME, GroupReceiptDatabase.MMS_ID + trimmedCondition, null)
         val columns = arrayOf(AttachmentDatabase.ROW_ID, io.beldex.bchat.database.AttachmentDatabase.UNIQUE_ID)
         val where = io.beldex.bchat.database.AttachmentDatabase.MMS_ID + trimmedCondition
         db.query(AttachmentDatabase.TABLE_NAME, columns, where, null, null, null, null).use { cursor ->

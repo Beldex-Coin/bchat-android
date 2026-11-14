@@ -2,7 +2,6 @@ package io.beldex.bchat.home
 
 import io.beldex.bchat.util.BChatToast
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -14,15 +13,12 @@ import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.graphics.RenderEffect
 import android.graphics.RenderEffect.createBlurEffect
 import android.graphics.Shader
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
-import android.view.Gravity
-import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
@@ -30,13 +26,11 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.layout.Column
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
@@ -135,7 +129,6 @@ import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.parcelable
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.show
-import io.beldex.bchat.util.toPx
 import io.beldex.bchat.webrtc.CallViewModel
 import io.beldex.bchat.webrtc.NetworkChangeReceiver
 import io.beldex.bchat.webrtc.WebRTCComposeActivity
@@ -148,7 +141,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
-import org.apache.commons.lang3.time.DurationFormatUtils
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -157,8 +149,9 @@ import java.io.IOException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.jvm.java
-import kotlin.math.abs
-import kotlin.math.roundToInt
+import android.graphics.Color
+import io.beldex.bchat.webrtc.CallBannerUtils
+import io.beldex.bchat.webrtc.IncomingCallBanner
 
 
 @AndroidEntryPoint
@@ -526,7 +519,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         }
 
         updateDrawerWidth()
-        binding.drawerLayout.setScrimColor(android.graphics.Color.TRANSPARENT)
+        binding.drawerLayout.setScrimColor(Color.TRANSPARENT)
 
         binding.navigationMenu.menuContainer.setBlurSource(binding.drawerLayout.getChildAt(0))
 
@@ -1358,8 +1351,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                             binding.toolbarCall.isVisible = false
                         } else {
                             binding.toolbarCall.isVisible = true
-                            binding.callDurationCall.text = io.beldex.bchat.webrtc.CallBannerUtils.formatDuration(System.currentTimeMillis() - startTime)
-                            binding.callInProgressCall.text = io.beldex.bchat.webrtc.CallBannerUtils.label(this@HomeActivity, callViewModel)
+                            binding.callDurationCall.text = CallBannerUtils.formatDuration(System.currentTimeMillis() - startTime)
+                            binding.callInProgressCall.text = CallBannerUtils.label(this@HomeActivity, callViewModel)
                         }
 
                         delay(1_000)
@@ -1376,7 +1369,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             toolBarCall()
         }
     }
-
 
 
     override fun handleSeedReminderViewContinueButtonTapped() {
@@ -1490,7 +1482,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         setupCallActionBar()
         if (!incomingCallBannerBound) {
             incomingCallBannerBound = true
-            io.beldex.bchat.webrtc.IncomingCallBanner.bind(this, binding.incomingCallBannerInclude, callViewModel)
+            IncomingCallBanner.bind(this, binding.incomingCallBannerInclude, callViewModel)
         }
         ApplicationContext.getInstance(this).messageNotifier.setHomeScreenVisible(false)
         if (TextSecurePreferences.getLocalNumber(this) == null) {

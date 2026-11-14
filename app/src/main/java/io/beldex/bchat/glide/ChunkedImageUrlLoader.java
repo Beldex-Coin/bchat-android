@@ -8,13 +8,9 @@ import com.bumptech.glide.load.Options;
 import com.bumptech.glide.load.model.ModelLoader;
 import com.bumptech.glide.load.model.ModelLoaderFactory;
 import com.bumptech.glide.load.model.MultiModelLoaderFactory;
-import io.beldex.bchat.giph.model.ChunkedImageUrl;
 import io.beldex.bchat.net.ContentProxySafetyInterceptor;
 import io.beldex.bchat.net.ContentProxySelector;
 
-import io.beldex.bchat.giph.model.ChunkedImageUrl;
-import io.beldex.bchat.net.ContentProxySafetyInterceptor;
-import io.beldex.bchat.net.ContentProxySelector;
 
 import java.io.InputStream;
 

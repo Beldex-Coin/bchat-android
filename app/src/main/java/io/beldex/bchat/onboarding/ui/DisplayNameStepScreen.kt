@@ -39,6 +39,10 @@ import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.bchatBackground
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.LeadingMarginSpan
 
 /**
  * Live "Set your Display Name" onboarding step (Figma `display_name` 7546:1015/1036), hosted by
@@ -131,10 +135,10 @@ fun DisplayNameStepScreen(
                         }
                     },
                     update = { editText ->
-                        editText.hint = android.text.SpannableString(hintText.uppercase()).apply {
-                            setSpan(android.text.style.AbsoluteSizeSpan(12, true), 0, length, android.text.Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-                            val gap = (4 * editText.resources.displayMetrics.density).toInt()
-                            setSpan(android.text.style.LeadingMarginSpan.Standard(gap), 0, length, android.text.Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                        editText.hint = SpannableString(hintText.uppercase()).apply {
+                            setSpan(AbsoluteSizeSpan(12, true), 0, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                            val gap = (8 * editText.resources.displayMetrics.density).toInt()
+                            setSpan(LeadingMarginSpan.Standard(gap), 0, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
                         }
                         if (editText.text?.toString() != displayName) {
                             editText.setText(displayName)

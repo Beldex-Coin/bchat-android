@@ -43,6 +43,7 @@ import org.json.JSONObject;
 import java.io.Serializable;
 
 import io.beldex.bchat.R;
+import android.graphics.Typeface;
 
 /**
  * The message record model which represents thread heading messages.
@@ -131,11 +132,11 @@ public class ThreadRecord extends DisplayRecord implements Serializable {
       String draftText = context.getString(R.string.ThreadRecord_draft);
       return emphasisAdded(draftText + " " + getBody(), 0, draftText.length());
     } else if (SmsDatabase.Types.isOutgoingCall(type)) {
-      return emphasisAdded(context.getString(io.beldex.bchat.R.string.ThreadRecord_called));
+      return emphasisAdded(context.getString(R.string.ThreadRecord_called));
     } else if (SmsDatabase.Types.isIncomingCall(type)) {
-      return emphasisAdded(context.getString(io.beldex.bchat.R.string.ThreadRecord_called_you));
+      return emphasisAdded(context.getString(R.string.ThreadRecord_called_you));
     } else if (SmsDatabase.Types.isMissedCall(type)) {
-      return emphasisAdded(context.getString(io.beldex.bchat.R.string.ThreadRecord_missed_call));
+      return emphasisAdded(context.getString(R.string.ThreadRecord_missed_call));
     } else if (SmsDatabase.Types.isJoinedType(type)) {
       return emphasisAdded(context.getString(R.string.ThreadRecord_s_is_on_signal, getRecipient().toShortString()));
     } else if (SmsDatabase.Types.isExpirationTimerUpdate(type)) {
@@ -183,7 +184,7 @@ public class ThreadRecord extends DisplayRecord implements Serializable {
 
   private SpannableString emphasisAdded(CharSequence sequence, int start, int end) {
     SpannableString spannable = new SpannableString(sequence);
-    spannable.setSpan(new StyleSpan(android.graphics.Typeface.ITALIC),
+    spannable.setSpan(new StyleSpan(Typeface.ITALIC),
                       start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     return spannable;
   }

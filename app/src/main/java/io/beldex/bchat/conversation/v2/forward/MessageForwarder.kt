@@ -18,6 +18,7 @@ import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.database.model.MmsMessageRecord
 import io.beldex.bchat.dependencies.DatabaseComponent
 import kotlinx.parcelize.Parcelize
+import com.beldex.libbchat.utilities.TextSecurePreferences
 
 /**
  * One attachment to forward, carrying every value the chat's own media-send flow sets on an
@@ -126,7 +127,7 @@ object MessageForwarder {
     fun forward(context: Context, recipients: List<Recipient>, payloads: List<ForwardPayload>): Map<String, Long> {
         val db = DatabaseComponent.get(context)
         val threadDb = db.threadDatabase()
-        val self = com.beldex.libbchat.utilities.TextSecurePreferences.getLocalNumber(context)
+        val self = TextSecurePreferences.getLocalNumber(context)
         val sentTo = LinkedHashMap<String, Long>()
         for (recipient in recipients) {
             try {

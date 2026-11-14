@@ -4,15 +4,11 @@ import androidx.compose.foundation.BorderStroke
 import io.beldex.bchat.compose_utils.notchedCornerShape
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.OpenSans
-import io.beldex.bchat.R
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,7 +23,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -40,6 +35,8 @@ import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.noRippleCallback
 import io.beldex.bchat.database.model.ThreadRecord
+import io.beldex.bchat.compose_utils.BChatDimens
+import io.beldex.bchat.util.CustomCheckBox
 
 @Composable
 fun ContactItem(
@@ -49,7 +46,7 @@ fun ContactItem(
     modifier: Modifier = Modifier,
     isSharing: Boolean = true
 ) {
-    val shape = if (isSelected) notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium) else RectangleShape
+    val shape = if (isSelected) notchedCornerShape(BChatDimens.NotchMedium) else RectangleShape
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
@@ -105,7 +102,7 @@ fun ContactItem(
 
         if (isSharing) {
             Spacer(modifier = Modifier.width(10.dp))
-            io.beldex.bchat.util.CustomCheckBox(
+            CustomCheckBox(
                 checked = isSelected,
                 onCheckedChange = { contactChanged(contact, it) },
                 checkBoxSize = 20.dp

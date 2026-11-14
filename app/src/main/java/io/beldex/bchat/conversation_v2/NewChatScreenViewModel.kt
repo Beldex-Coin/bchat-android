@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlinx.coroutines.delay
 
 @HiltViewModel
 class NewChatScreenViewModel@Inject constructor(
@@ -162,7 +163,7 @@ class NewChatScreenViewModel@Inject constructor(
                                 (recipient.address.isClosedGroup && DatabaseComponent.get(context)
                                     .groupDatabase().isActive(recipient.address.toGroupString()))
                     }
-                kotlinx.coroutines.delay(3000)
+                delay(3000)
                 readUserDisplayName()
             }
         }

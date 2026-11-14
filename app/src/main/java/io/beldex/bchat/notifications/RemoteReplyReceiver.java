@@ -39,7 +39,6 @@ import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libsignal.utilities.Log;
 
-import io.beldex.bchat.dependencies.DatabaseComponent;
 
 import java.util.Collections;
 import java.util.List;

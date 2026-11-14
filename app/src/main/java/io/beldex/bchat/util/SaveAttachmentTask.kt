@@ -3,29 +3,20 @@ package io.beldex.bchat.util
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
-import android.content.DialogInterface.OnClickListener
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.text.TextUtils
-import android.view.LayoutInflater
-import android.view.View
 import android.webkit.MimeTypeMap
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import com.beldex.libbchat.utilities.task.ProgressDialogAsyncTask
 import io.beldex.bchat.compose_utils.ui.ComposeMessageDialogFragment
 import io.beldex.bchat.R
 import com.beldex.libsignal.utilities.ExternalStorageUtil
 import com.beldex.libsignal.utilities.Log
-import io.beldex.bchat.compose_utils.ComposeDialogContainer
-import io.beldex.bchat.compose_utils.DialogType
 import io.beldex.bchat.mms.PartAuthority
-import io.beldex.bchat.preferences.PrivacySettingsActivity
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -33,6 +24,7 @@ import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import androidx.fragment.app.FragmentActivity
 
 /**
  * Saves attachment files to an external storage using [MediaStore] API.
@@ -50,7 +42,7 @@ class SaveAttachmentTask : ProgressDialogAsyncTask<SaveAttachmentTask.Attachment
         @JvmStatic
         @JvmOverloads
         fun showWarningDialog(context: Context, count: Int = 1, onAcceptListener: () -> Unit = {}) {
-            val fragmentManager = (context as? androidx.fragment.app.FragmentActivity)?.supportFragmentManager ?: return
+            val fragmentManager = (context as? FragmentActivity)?.supportFragmentManager ?: return
             ComposeMessageDialogFragment.show(
                 fragmentManager,
                 title = context.getString(R.string.ConversationFragment_save_to_sd_card),

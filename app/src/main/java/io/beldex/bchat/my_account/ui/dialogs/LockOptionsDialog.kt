@@ -36,6 +36,13 @@ import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.lazyListScrollbar
 import io.beldex.bchat.compose_utils.notchedCornerShape
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import io.beldex.bchat.compose_utils.BChatDimens
+import io.beldex.bchat.compose_utils.CloseTile
+import io.beldex.bchat.compose_utils.DialogPrimaryButton
 
 @Composable
 fun LockOptionsDialog(
@@ -67,7 +74,7 @@ fun LockOptionsDialog(
 
             Spacer(modifier = Modifier.height(18.dp))
 
-            val listState = androidx.compose.foundation.lazy.rememberLazyListState()
+            val listState = rememberLazyListState()
             // Only reserve a gutter when the list really scrolls, so the scrollbar never sits on the cards.
             val scrollable = listState.canScrollForward || listState.canScrollBackward
             LazyColumn(
@@ -90,12 +97,12 @@ fun LockOptionsDialog(
                             .background(
                                 if (selected) MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground
                                 else MaterialTheme.appColors.backgroundColor,
-                                notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium)
+                                notchedCornerShape(BChatDimens.NotchMedium)
                             )
                             .border(
                                 1.dp,
                                 if (selected) accent else MaterialTheme.appColors.dividerColor,
-                                notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium)
+                                notchedCornerShape(BChatDimens.NotchMedium)
                             )
                             .clickable { onValueChanged(option, index) }
                             .padding(horizontal = 24.dp)
@@ -138,8 +145,8 @@ fun MuteOptionsDialog(
     onDismiss: () -> Unit,
     onConfirm: (Int) -> Unit
 ) {
-    var selectedIndex by androidx.compose.runtime.saveable.rememberSaveable {
-        androidx.compose.runtime.mutableIntStateOf(currentIndex.coerceIn(0, (options.size - 1).coerceAtLeast(0)))
+    var selectedIndex by rememberSaveable {
+        mutableIntStateOf(currentIndex.coerceIn(0, (options.size - 1).coerceAtLeast(0)))
     }
     DialogContainer(
         dismissOnBackPress = true,
@@ -161,10 +168,10 @@ fun MuteOptionsDialog(
                     fontSize = 16.sp,
                     modifier = Modifier.weight(1f)
                 )
-                io.beldex.bchat.compose_utils.CloseTile(onClick = onDismiss)
+                CloseTile(onClick = onDismiss)
             }
             Spacer(modifier = Modifier.height(12.dp))
-            val shape = notchedCornerShape(io.beldex.bchat.compose_utils.BChatDimens.NotchMedium)
+            val shape = notchedCornerShape(BChatDimens.NotchMedium)
             Column(
                 verticalArrangement = Arrangement.spacedBy(5.dp),
                 modifier = Modifier
@@ -173,7 +180,7 @@ fun MuteOptionsDialog(
             ) {
                 options.forEachIndexed { index, option ->
                     val selected = index == selectedIndex
-                    androidx.compose.foundation.layout.Box(
+                    Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -201,7 +208,7 @@ fun MuteOptionsDialog(
                 }
             }
             Spacer(modifier = Modifier.height(10.dp))
-            io.beldex.bchat.compose_utils.DialogPrimaryButton(
+            DialogPrimaryButton(
                 text = stringResource(id = R.string.ok),
                 onClick = { onConfirm(selectedIndex) },
                 modifier = Modifier.width(120.dp)

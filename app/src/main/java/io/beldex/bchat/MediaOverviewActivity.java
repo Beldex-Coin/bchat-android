@@ -23,9 +23,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.content.res.Resources;
-import android.graphics.Typeface;
-import android.util.TypedValue;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,7 +33,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,7 +41,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
@@ -66,7 +61,6 @@ import com.beldex.libbchat.messaging.messages.control.DataExtractionNotification
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender;
 import com.beldex.libbchat.mnode.MnodeAPI;
 import com.beldex.libbchat.utilities.Address;
-import com.beldex.libbchat.utilities.Util;
 import com.beldex.libbchat.utilities.ViewUtil;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.utilities.task.ProgressDialogAsyncTask;
@@ -80,7 +74,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 import io.beldex.bchat.conversation.v2.ConversationActivityV2;
 import io.beldex.bchat.database.CursorRecyclerViewAdapter;
@@ -93,15 +86,8 @@ import io.beldex.bchat.util.AttachmentUtil;
 import io.beldex.bchat.util.GridSpaceItemDecoration;
 import io.beldex.bchat.util.SaveAttachmentTask;
 import io.beldex.bchat.util.StickyHeaderDecoration;
-import com.beldex.libbchat.utilities.ViewUtil;
-import com.beldex.libbchat.utilities.task.ProgressDialogAsyncTask;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import kotlin.Unit;
+import android.Manifest;
 
 /**
  * Activity for displaying media attachments in-app
@@ -413,7 +399,7 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
 
       SaveAttachmentTask.showWarningDialog(context, mediaRecords.size(), () -> {
         Permissions.with(this)
-                .request(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .maxSdkVersion(Build.VERSION_CODES.P)
                 .withPermanentDenialDialog(getString(R.string.MediaPreviewActivity_signal_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied))
                 .onAnyDenied(() -> BChatToast.error(getContext(), R.string.MediaPreviewActivity_unable_to_write_to_external_storage_without_permission, Toast.LENGTH_LONG).show())

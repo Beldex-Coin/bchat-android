@@ -11,10 +11,11 @@ import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageActivityHelp
 import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
+import io.beldex.bchat.util.ScreenSecurity
 
 open class BaseComponentActivity : ComponentActivity() {
     protected override fun onResume() {
-        io.beldex.bchat.util.ScreenSecurity.apply(this)
+        ScreenSecurity.apply(this)
         super.onResume()
         DynamicLanguageActivityHelper.recreateIfNotInCorrectLanguage(
             this,

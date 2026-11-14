@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,6 +22,10 @@ import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.R
+import androidx.compose.foundation.Image
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 
 @Composable
 fun SettingsItem(
@@ -35,8 +37,8 @@ fun SettingsItem(
     settingDesc: String? = null,
     trailingText: String? = null,
     onSwitchChanged: (Boolean) -> Unit = {},
-    descTopPadding: androidx.compose.ui.unit.Dp = 2.dp,
-    iconTint: androidx.compose.ui.graphics.Color? = null,
+    descTopPadding: Dp = 2.dp,
+    iconTint: Color? = null,
     iconAlignTop: Boolean = false,
     /** When false the whole row is dimmed and its switch cannot be toggled. */
     rowEnabled: Boolean = true,
@@ -93,7 +95,7 @@ fun SettingsItem(
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
                         text = value,
-                        textAlign = androidx.compose.ui.text.style.TextAlign.End,
+                        textAlign = TextAlign.End,
                         style = MaterialTheme.typography.bodyMedium.copy(
                             color = MaterialTheme.appColors.editTextColor,
                             fontFamily = OpenSans,
@@ -105,7 +107,7 @@ fun SettingsItem(
                     trailingSubText?.let { sub ->
                         Text(
                             text = sub,
-                            textAlign = androidx.compose.ui.text.style.TextAlign.End,
+                            textAlign = TextAlign.End,
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 color = MaterialTheme.appColors.onboardingBodyColor,
                                 fontFamily = OpenSans,
@@ -118,7 +120,7 @@ fun SettingsItem(
                 }
                 if (showChevron) {
                     Spacer(modifier = Modifier.width(12.dp))
-                    androidx.compose.foundation.Image(
+                    Image(
                         painter = painterResource(id = R.drawable.ic_settings_row_chevron),
                         contentDescription = null,
                     )
@@ -145,4 +147,4 @@ fun SettingsItem(
             )
         }
     }
-}
+}

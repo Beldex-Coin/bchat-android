@@ -12,10 +12,7 @@ import com.burgstaller.okhttp.digest.DigestAuthenticator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import io.beldex.bchat.util.NodePinger;
-import io.beldex.bchat.util.OkHttpHelper;
 import com.burgstaller.okhttp.digest.Credentials;
-import io.beldex.bchat.wallet.node.LevinPeer;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -26,8 +23,6 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import lombok.Getter;
-import lombok.Setter;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -114,8 +109,6 @@ public class  NodeInfo extends Node implements Serializable {
     }
 
 
-
-
     public boolean isSelecting() {
         return selecting;
     }
@@ -167,7 +160,6 @@ public class  NodeInfo extends Node implements Serializable {
     public boolean isValid() {
         return isSuccessful() && (majorVersion >= MIN_MAJOR_VERSION) && (responseTime < Double.MAX_VALUE);
     }
-
 
 
     static public Comparator<NodeInfo> BestNodeComparator = (o1, o2) -> {
@@ -271,7 +263,6 @@ public class  NodeInfo extends Node implements Serializable {
         }
         return false;
     }
-
 
 
     public boolean testRpcService(NodePinger.Listener listener) {

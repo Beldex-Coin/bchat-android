@@ -38,6 +38,9 @@ import org.json.JSONObject
 import javax.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
+import android.graphics.Typeface
+import android.os.Build
+import android.view.ViewGroup
 
 
 // There's quite some calculation going on here. It's a bit complex so don't make changes
@@ -124,16 +127,16 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                             binding.imgContactPerson.setColorFilter(hint)
                             binding.contactName.setTextColor(hint)
                             binding.contactName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-                            val mono = androidx.core.content.res.ResourcesCompat.getFont(context, R.font.roboto_mono)
+                            val mono = ResourcesCompat.getFont(context, R.font.roboto_mono)
                             binding.contactName.typeface =
-                                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P)
-                                    android.graphics.Typeface.create(mono, 600, false)
-                                else android.graphics.Typeface.create(mono, android.graphics.Typeface.BOLD)
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+                                    Typeface.create(mono, 600, false)
+                                else Typeface.create(mono, Typeface.BOLD)
                             val iconSize = (10 * resources.displayMetrics.density).toInt()
                             binding.imgContactPerson.layoutParams = binding.imgContactPerson.layoutParams.apply {
                                 width = iconSize; height = iconSize
                             }
-                            (binding.contactName.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.marginStart =
+                            (binding.contactName.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart =
                                 (6 * resources.displayMetrics.density).toInt()
                         }
                     }

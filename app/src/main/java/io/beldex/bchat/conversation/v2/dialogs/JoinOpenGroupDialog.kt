@@ -9,16 +9,10 @@ import io.beldex.bchat.util.BChatToast
 import android.app.Activity
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
-import android.graphics.Typeface
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.StyleSpan
-import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.utilities.Address
@@ -32,7 +26,6 @@ import io.beldex.bchat.groups.OpenGroupManager
 import io.beldex.bchat.util.ConfigurationMessageUtilities
 import io.beldex.bchat.R
 import io.beldex.bchat.conversation.v2.ConversationActivityV2
-import io.beldex.bchat.databinding.DialogJoinOpenGroupBinding
 import io.beldex.bchat.groups.GroupManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

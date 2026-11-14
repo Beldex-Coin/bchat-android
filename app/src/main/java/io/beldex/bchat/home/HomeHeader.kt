@@ -38,6 +38,10 @@ import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import com.beldex.libbchat.utilities.TextSecurePreferences
+import io.beldex.bchat.compose_utils.BnsVerifiedBadge
 
 /**
  * Revamp_2026 Home header (Figma `home page` 7546:2060): "Chats" title with the profile avatar
@@ -82,8 +86,8 @@ fun HomeHeader(
                     }
                 } else {
                     SelfAvatarPlaceholder(displayName = displayName)
-                    if (!com.beldex.libbchat.utilities.TextSecurePreferences.getIsBNSHolder(LocalContext.current).isNullOrEmpty()) {
-                        io.beldex.bchat.compose_utils.BnsVerifiedBadge(
+                    if (!TextSecurePreferences.getIsBNSHolder(LocalContext.current).isNullOrEmpty()) {
+                        BnsVerifiedBadge(
                             containerSize = 29.dp,
                             small = true,
                             modifier = Modifier.align(Alignment.BottomEnd)
@@ -120,8 +124,8 @@ fun HomeHeader(
                     .fillMaxWidth()
                     .padding(horizontal = 12.dp, vertical = 6.dp)
             ) {
-                androidx.compose.foundation.Image(
-                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_warning_no_internet),
+                Image(
+                    painter = painterResource(id = R.drawable.ic_warning_no_internet),
                     contentDescription = null,
                     modifier = Modifier.size(20.dp)
                 )

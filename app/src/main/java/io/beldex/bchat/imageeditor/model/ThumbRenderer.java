@@ -2,8 +2,6 @@ package io.beldex.bchat.imageeditor.model;
 
 import io.beldex.bchat.imageeditor.Bounds;
 import io.beldex.bchat.imageeditor.Renderer;
-import io.beldex.bchat.imageeditor.Bounds;
-import io.beldex.bchat.imageeditor.Renderer;
 
 import java.util.UUID;
 

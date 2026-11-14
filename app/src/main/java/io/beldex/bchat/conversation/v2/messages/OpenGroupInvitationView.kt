@@ -17,6 +17,7 @@ import io.beldex.bchat.util.DateUtils
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.Locale
+import android.graphics.Color
 
 class OpenGroupInvitationView : LinearLayout {
     private val binding: ViewOpenGroupInvitationBinding by lazy { ViewOpenGroupInvitationBinding.bind(this) }
@@ -57,7 +58,7 @@ class OpenGroupInvitationView : LinearLayout {
                 fillColor = if (message.isOutgoing && innerFill == 0xFF0B0B0B.toInt()) 0xFF000800.toInt() else innerFill,
                 barColor = ContextCompat.getColor(context, R.color.contact_card_inner_bar)
             )
-            socialGroupCardView.setCardBackgroundColor(ColorStateList.valueOf(android.graphics.Color.TRANSPARENT))
+            socialGroupCardView.setCardBackgroundColor(ColorStateList.valueOf(Color.TRANSPARENT))
             titleTextView.setTextColor(ContextCompat.getColor(context, R.color.disappear_icon_color))   // #EBEBEB / #222222
             socialGroupUrl.setTextColor(textColor)
             socialGroupMessageTime.setTextColor(textColor)

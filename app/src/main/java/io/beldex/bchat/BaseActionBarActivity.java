@@ -22,13 +22,14 @@ import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageActivityHelp
 import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper;
 import io.beldex.bchat.R;
 import timber.log.Timber;
+import io.beldex.bchat.util.ScreenSecurity;
 
 public abstract class BaseActionBarActivity extends AppCompatActivity {
   private static final String TAG = BaseActionBarActivity.class.getSimpleName();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    io.beldex.bchat.util.ScreenSecurity.apply(this);
+    ScreenSecurity.apply(this);
     WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
     // Automatically apply navigation bar insets to the content view

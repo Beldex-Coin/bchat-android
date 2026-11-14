@@ -6,23 +6,17 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -37,12 +31,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -62,6 +54,10 @@ import io.beldex.bchat.conversation.v2.ConversationActivityV2.Companion.THREAD_I
 import io.beldex.bchat.dependencies.DatabaseComponent
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.AnnotatedString
+import io.beldex.bchat.compose_utils.PopupBody
+import io.beldex.bchat.compose_utils.RobotoMono
 
 
 class ViewAllContactsActivity : BaseAppCompatActivity() {
@@ -76,7 +72,7 @@ class ViewAllContactsActivity : BaseAppCompatActivity() {
         setContent {
             BChatTheme {
                 Surface(
-                    color = androidx.compose.ui.graphics.Color.Transparent,
+                    color = Color.Transparent,
                     modifier = Modifier.fillMaxSize()
                 ) {
                     ScreenContainer(
@@ -166,7 +162,7 @@ private fun ViewContactItem(
 ) {
 
     OutlinedCard(
-        shape = androidx.compose.ui.graphics.RectangleShape,
+        shape = RectangleShape,
         border = BorderStroke(width = 1.dp, color = MaterialTheme.appColors.pinBoxInactiveBorder),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.selectedItemBackground),
         modifier = modifier.padding(bottom = 4.dp)
@@ -204,10 +200,10 @@ private fun ViewContactItem(
                 Text(
                     formatAddresses(address),
                     maxLines=1,
-                    fontFamily=io.beldex.bchat.compose_utils.RobotoMono,
+                    fontFamily=RobotoMono,
                     fontWeight=FontWeight(400),
                     fontSize=12.sp,
-                    color=androidx.compose.ui.graphics.Color(0xFF737373),
+                    color=Color(0xFF737373),
                     overflow=TextOverflow.Ellipsis
                 )
             }
@@ -253,9 +249,9 @@ fun ChatWithContactPopUp(name: String, address : String, onDismiss: () -> Unit){
         dismissOnClickOutside = true,
         onDismissRequest = onDismiss
     ) {
-        io.beldex.bchat.compose_utils.PopupBody(
+        PopupBody(
             title = nameOfContact.capitalizeFirstLetter().ifEmpty { formatAddresses(address) },
-            message = androidx.compose.ui.text.AnnotatedString(stringResource(R.string.chat_with_contact_confirmation)),
+            message = AnnotatedString(stringResource(R.string.chat_with_contact_confirmation)),
             cancelText = stringResource(id = R.string.cancel),
             onCancel = onDismiss,
             confirmText = stringResource(id = R.string.chat),

@@ -109,7 +109,7 @@ class BchatJobDatabase(context: Context, helper: SQLCipherOpenHelper) : Database
 
     fun isJobCanceled(job: Job): Boolean {
         val database = databaseHelper.readableDatabase
-        var cursor: android.database.Cursor? = null
+        var cursor: Cursor? = null
         try {
             cursor = database.rawQuery("SELECT * FROM $bchatJobTable WHERE $jobID = ?", arrayOf( job.id!! ))
             return cursor == null || !cursor.moveToFirst()

@@ -24,6 +24,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.withFrameNanos
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -109,10 +113,15 @@ fun UserDetailsSheetContent(
             if (fieldValue.text != nicknameInput) {
                 fieldValue = TextFieldValue(nicknameInput, TextRange(nicknameInput.length))
             }
+            val focusRequester = remember { FocusRequester() }
+            val keyboard = LocalSoftwareKeyboardController.current
             LaunchedEffect(Unit) {
                 if (nicknameInput.isEmpty() && name.isNotEmpty()) {
                     onNicknameInputChange(name.take(26))
                 }
+                withFrameNanos { }
+                focusRequester.requestFocus()
+                keyboard?.show()
             }
             val underlineColor = MaterialTheme.appColors.editTextColor
             BoxWithConstraints(
@@ -157,6 +166,7 @@ fun UserDetailsSheetContent(
                         }
                     },
                     modifier = Modifier
+                        .focusRequester(focusRequester)
                         .padding(top = 4.dp)
                         .widthIn(min = 24.dp, max = fieldMaxWidth)
                         .width(IntrinsicSize.Max)

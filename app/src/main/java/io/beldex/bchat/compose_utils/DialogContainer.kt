@@ -187,14 +187,15 @@ fun DialogCancelButton(
     modifier: Modifier = Modifier,
     fontFamily: FontFamily = OpenSans,
     textColor: Color = MaterialTheme.appColors.editTextColor,
-    icon: Painter? = null
+    icon: Painter? = null,
+    borderColor: Color = MaterialTheme.appColors.dialogNegativeButtonBorder
 ) {
     PrimaryButton(
         onClick = onClick,
         shape = notchedCornerShape(BChatDimens.NotchMedium),
         containerColor = MaterialTheme.appColors.selectedItemBackground,
         contentColor = textColor,
-        border = BorderStroke(1.dp, MaterialTheme.appColors.dialogNegativeButtonBorder),
+        border = BorderStroke(1.dp, borderColor),
         contentPadding =PaddingValues(0.dp),
         modifier = modifier.heightIn(min = BChatDimens.DialogButtonMinHeight)
     ) {

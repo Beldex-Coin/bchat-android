@@ -152,6 +152,8 @@
 
     <style name="Theme.Bchat.DayNight.FlatActionBar">
         <item name="actionBarStyle">@style/Widget.Bchat.ActionBar.Flat</item>
+        <item name="toolbarStyle">@style/Widget.Bchat.Toolbar.Flat</item>
+        <item name="toolbarNavigationButtonStyle">@style/Widget.Bchat.Toolbar.Button.Navigation.Flat</item>
     </style>
 
     <!--

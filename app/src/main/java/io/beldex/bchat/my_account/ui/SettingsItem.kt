@@ -25,6 +25,7 @@ import io.beldex.bchat.R
 import androidx.compose.foundation.Image
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 
 @Composable
@@ -126,14 +127,20 @@ fun SettingsItem(
                     )
                 }
             } else {
+                // One line, right aligned: a long value (e.g. a ringtone file name) is shortened
+                // instead of squeezing the title next to it.
                 Text(
                     text = value,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.End,
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = MaterialTheme.appColors.lockTimerColor,
                         fontFamily = RobotoMono,
                         fontWeight = FontWeight(600),
                         fontSize = 14.sp
                     ),
+                    modifier = Modifier.weight(1f, fill = false)
                 )
             }
         }

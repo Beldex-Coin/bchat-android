@@ -194,9 +194,9 @@
         android:visibility="visible">
 
         <ImageView
-            android:layout_width="11dp"
-            android:layout_height="11dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
             android:src="@drawable/ic_pin" />
 
     </RelativeLayout>
-</FrameLayout>
+</FrameLayout>

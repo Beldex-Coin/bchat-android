@@ -46,6 +46,13 @@ class InputBarRecordingView : RelativeLayout {
 
     var isTimerRunning = false
     var isLocked = false
+    var isPaused = false
+        private set
+    private var pausedAt = 0L
+
+    /** Length of audio recorded so far, not counting time spent paused. */
+    val recordedMillis: Long
+        get() = (if (isPaused) pausedAt else Date().time) - startTimestamp
 
     constructor(context: Context) : super(context) { initialize() }
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { initialize() }
@@ -84,6 +91,7 @@ class InputBarRecordingView : RelativeLayout {
         isLocked = false
         if (!wasTimerRunning) {
             startTimestamp = Date().time
+            isPaused = false
         }
         dotViewAnimation?.cancel()
         pulseAnimation?.cancel()
@@ -96,6 +104,7 @@ class InputBarRecordingView : RelativeLayout {
         binding.inputBarMiddleContentContainer.isVisible = false
         binding.dotView.visibility = View.VISIBLE
         binding.dotView.setImageResource(R.drawable.recording_indicator)
+        binding.dotView.setOnClickListener(null)
         val dotSize = (18 * resources.displayMetrics.density).toInt()
         binding.dotView.layoutParams = binding.dotView.layoutParams.apply { width = dotSize; height = dotSize }
         binding.deleteView.visibility = View.GONE
@@ -134,6 +143,7 @@ class InputBarRecordingView : RelativeLayout {
         delegate?.handleVoiceMessageUIHidden()
         isTimerRunning = false
         isLocked = false
+        isPaused = false
     }
 
     private fun animateDotView() {
@@ -179,7 +189,7 @@ class InputBarRecordingView : RelativeLayout {
 
     private fun updateTimer() {
         if(isTimerRunning) {
-            val duration = (Date().time - startTimestamp) / 1000L
+            val duration = recordedMillis / 1000L
             binding.recordingViewDurationTextView.text = DateUtils.formatElapsedTime(duration)
             snHandler.postDelayed({ updateTimer() }, 500)
         }
@@ -229,13 +239,31 @@ class InputBarRecordingView : RelativeLayout {
         binding.lockedSendButton.isVisible = true
         binding.audioWaveForm.visibility = View.VISIBLE
         dotViewAnimation?.cancel()
-        binding.dotView.setImageResource(R.drawable.ic_record_pause)
+        binding.dotView.setImageResource(if (isPaused) R.drawable.ic_record_play else R.drawable.ic_record_pause)
         binding.dotView.alpha = 1f
+        // Locked recording: the pause button pauses the recording and turns into play, which resumes it.
+        binding.dotView.setOnClickListener { togglePause() }
         val iconSize = (24 * resources.displayMetrics.density).toInt()
         binding.dotView.layoutParams = binding.dotView.layoutParams.apply { width = iconSize; height = iconSize }
         binding.dotView.visibility = View.VISIBLE
         dotViewAnimation?.repeatCount = 0
         binding.deleteView.visibility = View.VISIBLE
+    }
+
+    private fun togglePause() {
+        if (!isLocked || !isTimerRunning) return
+        if (isPaused) {
+            // Shift the start so the timer carries on from where it stopped.
+            startTimestamp += Date().time - pausedAt
+            isPaused = false
+            binding.dotView.setImageResource(R.drawable.ic_record_pause)
+            delegate?.resumeVoiceMessage()
+        } else {
+            pausedAt = Date().time
+            isPaused = true
+            binding.dotView.setImageResource(R.drawable.ic_record_play)
+            delegate?.pauseVoiceMessage()
+        }
     }
 }
 
@@ -244,4 +272,6 @@ interface InputBarRecordingViewDelegate {
     fun handleVoiceMessageUIHidden()
     fun sendVoiceMessage()
     fun cancelVoiceMessage()
+    fun pauseVoiceMessage()
+    fun resumeVoiceMessage()
 }

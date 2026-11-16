@@ -10,12 +10,14 @@ import android.graphics.drawable.Drawable
 /**
  * Background with the Revamp_2026 cut corners (top-right and bottom-left), drawn at the view's real
  * size so wrap-content chips never stretch the way a fixed vector would.
+ * Pass [cutBottomLeft] = false for cards that only have the top-right corner cut.
  */
 class NotchedDrawable(
     private val notchPx: Float,
     private val strokePx: Float,
     fillColor: Int,
-    strokeColor: Int
+    strokeColor: Int,
+    private val cutBottomLeft: Boolean = true
 ) : Drawable() {
     private val fill = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = fillColor }
     private val line = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -37,8 +39,12 @@ class NotchedDrawable(
         path.lineTo(r - n, t)
         path.lineTo(r, t + n)
         path.lineTo(r, b)
-        path.lineTo(l + n, b)
-        path.lineTo(l, b - n)
+        if (cutBottomLeft) {
+            path.lineTo(l + n, b)
+            path.lineTo(l, b - n)
+        } else {
+            path.lineTo(l, b)
+        }
         path.close()
         canvas.drawPath(path, fill)
         if (strokePx > 0f) canvas.drawPath(path, line)

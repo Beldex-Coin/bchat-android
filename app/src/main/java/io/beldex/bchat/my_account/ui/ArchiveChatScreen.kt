@@ -359,7 +359,7 @@ fun ArchiveChatScreen(
                 ),
                 textAlign = TextAlign.Start,
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(start = 16.dp, end = 16.dp, top = 2.dp, bottom = 8.dp)
                     .clickable {
                         onTabChatSetting()
                     }

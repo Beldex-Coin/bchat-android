@@ -10,10 +10,6 @@ import io.beldex.bchat.util.SharedPreferenceUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChangedBy
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,7 +19,9 @@ data class ContactSharingState(
     val searchQuery: String = "",
     val contacts: List<ThreadRecord> = emptyList(),
     val filteredContacts: List<ThreadRecord> = emptyList(),
-    val selectedContacts: List<ThreadRecord> = emptyList()
+    val selectedContacts: List<ThreadRecord> = emptyList(),
+    // True until the contact list has been read, so the empty state isn't shown while loading.
+    val isLoading: Boolean = true
 )
 
 @HiltViewModel
@@ -66,40 +64,27 @@ class ContactsViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         contacts = contacts,
-                        filteredContacts = contacts
+                        filteredContacts = filter(contacts, it.searchQuery),
+                        isLoading = false
                     )
                 }
             }
         }
-        state.distinctUntilChangedBy { it.searchQuery }
-            .debounce(500)
-            .onEach { state ->
-                if (state.searchQuery.isNotEmpty()) {
-                    _state.update {
-                        it.copy(
-                            filteredContacts = it.contacts.filter { contact ->  contact.recipient.name?.contains(state.searchQuery, true) ?: false }
-                        )
-                    }
-                } else {
-                    _state.update {
-                        it.copy(
-                            filteredContacts = it.contacts
-                        )
-                    }
-                }
-            }
-            .launchIn(viewModelScope)
-
     }
 
     fun postQuery(charSequence: CharSequence?) {
         charSequence ?: return
+        val query = charSequence.toString()
+        // Filter right away: the list is in memory, and a delayed filter left the previous
+        // "no such contact" result on screen while the text was being edited or cleared.
         _state.update {
-            it.copy(
-                searchQuery = charSequence.toString()
-            )
+            it.copy(searchQuery = query, filteredContacts = filter(it.contacts, query))
         }
     }
+
+    private fun filter(contacts: List<ThreadRecord>, query: String): List<ThreadRecord> =
+        if (query.isEmpty()) contacts
+        else contacts.filter { contact -> contact.recipient.name?.contains(query, true) ?: false }
 
     fun onContactSelected(contact: ThreadRecord, isSelected: Boolean) {
         _state.update { currentState ->

@@ -104,7 +104,45 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/contactView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <ImageView
+                    android:id="@+id/imgContactPerson"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:src="@drawable/ic_contact_person"
+                    />
+
+                <TextView
+                    android:fontFamily="@font/roboto_mono"
+                    android:id="@+id/contactName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/very_small_font_size"
+                    tools:text="Sorry, gotta go fight crime again"
+                    android:layout_marginStart="4dp"/>
+
+            </LinearLayout>
+
         </LinearLayout>
+
+        <!-- Avatar of the quoted shared contact, 22dp on the right (7546:17484). -->
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/contactAvatarView"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginStart="8dp"
+            android:visibility="gone" />
 
         <RelativeLayout
             android:id="@+id/quoteViewAttachmentPreviewContainer"
@@ -137,36 +175,6 @@
 
         </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/contactView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginEnd="16dp"
-            tools:visibility="visible">
-
-            <ImageView
-                android:id="@+id/imgContactPerson"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:src="@drawable/ic_contact_person"
-                />
-
-            <TextView
-                android:fontFamily="@font/roboto_mono"
-                android:id="@+id/contactName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/text"
-                android:textSize="@dimen/very_small_font_size"
-                tools:text="Sorry, gotta go fight crime again"
-                android:layout_marginStart="4dp"
-                android:layout_weight="1"/>
-
-        </LinearLayout>
 
     </LinearLayout>
 
@@ -190,4 +198,4 @@
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="contentTypeIcon,quoteViewBodyTextView,quoteViewAttachmentThumbnailImageView,quoteViewAttachmentPreviewImageView,quoteViewCancelButton"/>
 
-</io.beldex.bchat.conversation.v2.messages.QuoteView>
+</io.beldex.bchat.conversation.v2.messages.QuoteView>

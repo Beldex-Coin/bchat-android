@@ -15,6 +15,18 @@
         <item name="background">@drawable/actionbar_flat_background</item>
     </style>
 
+    <style name="Widget.Bchat.Toolbar.Flat" parent="Widget.AppCompat.Toolbar">
+        <item name="contentInsetStartWithNavigation">0dp</item>
+        <item name="titleMarginStart">4dp</item>
+    </style>
+
+    <style name="Widget.Bchat.Toolbar.Button.Navigation.Flat" parent="Widget.AppCompat.Toolbar.Button.Navigation">
+        <item name="android:minWidth">0dp</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">4dp</item>
+        <item name="android:scaleType">centerInside</item>
+    </style>
+
     <style name="TextAppearance.Bchat.DarkActionBar.TitleTextStyle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/open_sans_medium</item>
         <item name="android:textColor">?android:textColorPrimary</item>

@@ -152,18 +152,10 @@ class VisibleMessageView : LinearLayout {
             else -> View.GONE
         }
 
-        val bottomMargin = if (isEndOfMessageCluster) resources.getDimensionPixelSize(R.dimen.small_spacing)
-        else ViewUtil.dpToPx(context,2)
-
-        if (binding.profilePictureView.root.visibility == View.GONE) {
-            val expirationParams = binding.messageInnerContainer.layoutParams as MarginLayoutParams
-            expirationParams.bottomMargin = bottomMargin
-            binding.messageInnerContainer.layoutParams = expirationParams
-        } else {
-            val avatarLayoutParams = binding.profilePictureView.root.layoutParams as MarginLayoutParams
-            avatarLayoutParams.bottomMargin = bottomMargin
-            binding.profilePictureView.root.layoutParams = avatarLayoutParams
-        }
+        val timestampParams = binding.messageTimestampContainer.layoutParams as MarginLayoutParams
+        timestampParams.bottomMargin = if (isEndOfMessageCluster) resources.getDimensionPixelSize(R.dimen.small_spacing)
+        else ViewUtil.dpToPx(context, 3)
+        binding.messageTimestampContainer.layoutParams = timestampParams
         if (isGroupThread && !message.isOutgoing) {
             if (isEndOfMessageCluster) {
                 binding.profilePictureView.root.publicKey = senderBChatID

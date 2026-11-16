@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -42,8 +43,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -58,6 +57,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -92,6 +92,7 @@ import io.beldex.bchat.compose_utils.DialogCancelButton
 import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.RobotoMono
+import io.beldex.bchat.onboarding.ui.OnboardingTopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -157,37 +158,10 @@ fun NewChatScreen(
                 WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal)
             ),
         topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.appColors.backgroundColor
-                ),
-                title = {
-                    Text(
-                        text = stringResource(id = R.string.new_chat_screen_title),
-                        fontFamily = OpenSans,
-                        color = MaterialTheme.appColors.editTextColor,
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 16.sp,
-                        textAlign = TextAlign.Start,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        onBackPress()
-                    }) {
-                        Icon(
-                            painterResource(id = R.drawable.ic_back_arrow),
-                            contentDescription = stringResource(
-                                id = R.string.back
-                            ),
-                            tint = MaterialTheme.appColors.editTextColor,
-                        )
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = MaterialTheme.appColors.backgroundColor),
+            OnboardingTopBar(
+                title = stringResource(id = R.string.new_chat_screen_title),
+                onBackClick = onBackPress,
+                modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
                 actions = {
                     IconButton(onClick = {
                         if(showSearchOption){
@@ -197,7 +171,7 @@ fun NewChatScreen(
                     }) {
                         Icon(
                             painterResource(id = R.drawable.ic_search_contact),
-                            "wallet settings",
+                            contentDescription = stringResource(R.string.search_contact),
                             tint = MaterialTheme.appColors.editTextColor
                         )
                     }
@@ -283,8 +257,9 @@ fun NewChatScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .background(MaterialTheme.appColors.dialogBackground)
-                        .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
+                        // Design card behind the icon tiles: #111111 / #333333 dark, #FFFFFF / #DDDDDD white.
+                        .background(MaterialTheme.appColors.selectedItemBackground)
+                        .border(1.dp, MaterialTheme.appColors.callDeviceCardBorder)
                         .padding(vertical = 7.dp)
                 ) {
                     NewChatItem(
@@ -354,6 +329,8 @@ fun NewChatScreen(
                     color = MaterialTheme.appColors.editTextColor,
                     padding = PaddingValues(start = 16.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),
                     highlighted = true,
+                    titleFontFamily = OpenSans,
+                    titleFontWeight = FontWeight.SemiBold,
                     onClick = {
                         openActivity(OpenActivity.InviteAFriend)
                     },
@@ -396,6 +373,8 @@ fun NewChatItem(
     highlighted: Boolean = false,
     plainIcon: Boolean = true,
     iconSize: Dp = 22.dp,
+    titleFontFamily: FontFamily = RobotoMono,
+    titleFontWeight: FontWeight = FontWeight.Normal,
 ){
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -413,12 +392,12 @@ fun NewChatItem(
             modifier = Modifier
                 .size(36.dp)
                 .background(
-                    color = MaterialTheme.appColors.userDetailsCancelBackground,
+                    color = MaterialTheme.appColors.newChatIconTileBackground,
                     shape = singleCornerCutShape(BChatDimens.NotchSmall, NotchCorner.TopRight)
                 )
                 .border(
                     1.dp,
-                    if (highlighted) MaterialTheme.appColors.userDetailsConfirmBackground else MaterialTheme.appColors.pinBoxInactiveBorder,
+                    if (highlighted) MaterialTheme.appColors.userDetailsConfirmBackground else MaterialTheme.appColors.newChatIconTileBorder,
                     singleCornerCutShape(BChatDimens.NotchSmall, NotchCorner.TopRight)
                 )
         ) {
@@ -432,10 +411,10 @@ fun NewChatItem(
         Text(
             text = title,
             textAlign = TextAlign.Start,
-            fontFamily = RobotoMono,
+            fontFamily = titleFontFamily,
             color = color,
             fontSize = 14.sp,
-            fontWeight = FontWeight.Normal,
+            fontWeight = titleFontWeight,
             modifier = Modifier
                 .weight(1f)
                 .padding(start=12.dp, end=5.dp),
@@ -613,7 +592,11 @@ fun NewChatPopUp(
                     contentColor = MaterialTheme.appColors.dialogPositiveButtonText,
                     disabledContainerColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground,
                     disabledContentColor = MaterialTheme.appColors.onboardingPrimaryButtonDisabledText,
-                    border = if (canStart) BorderStroke(1.dp, MaterialTheme.appColors.dialogPositiveButtonBorder) else null,
+                    border = BorderStroke(
+                        1.dp,
+                        if (canStart) MaterialTheme.appColors.dialogPositiveButtonBorder
+                        else MaterialTheme.appColors.callDeviceCardBorder
+                    ),
                     contentPadding = PaddingValues(0.dp),
                     modifier = Modifier
                         .weight(1f)

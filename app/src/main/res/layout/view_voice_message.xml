@@ -31,6 +31,11 @@
             <SeekBar
                 android:id="@+id/seekbar_audio"
                 style="@style/AudioSeekBar"
+                android:progressDrawable="@drawable/voice_message_seekbar_track"
+                android:thumb="@drawable/voice_message_seekbar_thumb"
+                android:minHeight="3dp"
+                android:maxHeight="3dp"
+                android:splitTrack="false"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"

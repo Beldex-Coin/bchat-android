@@ -175,7 +175,7 @@ fun JoinSocialGroupScreen(
                 launcher = joinPublicChatScanQRCodeActivityResultLauncher
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(5.dp))
 
             GroupsSection(
                 modifier = Modifier
@@ -319,7 +319,7 @@ private fun GroupsSection(
             color = MaterialTheme.appColors.editTextColor,
             fontSize = 14.sp,
             fontWeight = FontWeight.Normal,
-            modifier = Modifier.padding(vertical = 16.dp)
+            modifier = Modifier.padding(bottom = 5.dp)
         )
 
         if (groups.isEmpty()) {
@@ -347,7 +347,7 @@ private fun GroupsSection(
                             .fillMaxWidth()
                             .height(116.dp)
                             .background(
-                                color = MaterialTheme.appColors.cardTileBackground,
+                                color = MaterialTheme.appColors.dialogPanelGradientStart,
                                 shape = RectangleShape
                             )
                             .padding(start = 8.dp, end = 8.dp, top = 10.dp, bottom = 10.dp)

@@ -95,13 +95,13 @@ fun LockOptionsDialog(
                             .fillMaxWidth()
                             .height(60.dp)
                             .background(
-                                if (selected) MaterialTheme.appColors.onboardingPrimaryButtonDisabledBackground
-                                else MaterialTheme.appColors.backgroundColor,
+                                if (selected) MaterialTheme.appColors.selectedItemBackground
+                                else MaterialTheme.appColors.messageRequestItemBackground,
                                 notchedCornerShape(BChatDimens.NotchMedium)
                             )
                             .border(
-                                1.dp,
-                                if (selected) accent else MaterialTheme.appColors.dividerColor,
+                                if (selected) 0.5.dp else 1.dp,
+                                if (selected) accent else MaterialTheme.appColors.optionBorder,
                                 notchedCornerShape(BChatDimens.NotchMedium)
                             )
                             .clickable { onValueChanged(option, index) }
@@ -126,6 +126,7 @@ fun LockOptionsDialog(
                 onClick = onDismiss,
                 fontFamily = RobotoMono,
                 textColor = MaterialTheme.appColors.editTextColor,
+                borderColor = MaterialTheme.appColors.optionBorder,
                 modifier = Modifier.width(162.dp)
             )
         }

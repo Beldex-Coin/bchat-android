@@ -101,6 +101,7 @@ class ContactSharingActivity: BaseComponentActivity() {
                                     finish()
                                 },
                                 contactChanged=viewModel::onContactSelected,
+                                isLoading=state.isLoading,
                                 modifier = if (isTablet)
                                     Modifier.widthIn(max = 480.dp)
                                 else

@@ -27,7 +27,7 @@ fun CustomCheckBox(
     checkBoxBorderWidth: Dp = 1.dp,
     checkBoxBorderColorSelected: Color = MaterialTheme.appColors.userDetailsConfirmBackground,
     checkBoxBorderColorUnSelected: Color = MaterialTheme.appColors.userDetailsConfirmBackground,
-    checkBoxCheckedIconColor: Color = Color(0xFF0B0B0B),
+    checkBoxCheckedIconColor: Color = MaterialTheme.appColors.backgroundColor,
 ) {
     // Revamp_2026 checkbox: a green square outline; filled green with a dark tick when checked.
     // Fully controlled by `checked` (the previous copy kept its own state and could desync in lists).

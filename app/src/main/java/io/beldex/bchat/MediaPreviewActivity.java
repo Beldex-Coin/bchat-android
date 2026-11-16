@@ -51,6 +51,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.util.Pair;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -309,7 +312,9 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     captionContainer          = findViewById(R.id.media_preview_caption_container);
     playbackControlsContainer = findViewById(R.id.media_preview_playback_controls_container);
 
-    setSupportActionBar(findViewById(R.id.toolbar));
+    Toolbar toolbar = findViewById(R.id.toolbar);
+    toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_menu_dots));
+    setSupportActionBar(toolbar);
     ActionBar actionBar = getSupportActionBar();
     actionBar.setHomeAsUpIndicator(R.drawable.ic_back);
     actionBar.setDisplayHomeAsUpEnabled(true);
@@ -529,6 +534,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     deleteMediaPermissionDialog.show();
   }
 
+  @SuppressLint("RestrictedApi")
   @Override
   public boolean onPrepareOptionsMenu(Menu menu) {
     super.onPrepareOptionsMenu(menu);
@@ -536,6 +542,9 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     menu.clear();
     MenuInflater inflater = this.getMenuInflater();
     inflater.inflate(R.menu.media_preview, menu);
+    if (menu instanceof MenuBuilder) {
+      ((MenuBuilder) menu).setOptionalIconsVisible(true);
+    }
 
     if (!isMediaInDb()) {
       menu.findItem(R.id.media_preview__overview).setVisible(false);

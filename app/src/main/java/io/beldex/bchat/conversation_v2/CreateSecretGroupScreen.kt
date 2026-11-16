@@ -265,8 +265,8 @@ private fun SearchField(
         modifier = Modifier
             .fillMaxWidth()
             .height(48.dp)
-            .background(MaterialTheme.appColors.dialogBackground)
-            .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
+            .background(MaterialTheme.appColors.searchFieldBackground)
+            .border(1.dp, MaterialTheme.appColors.optionBorder),
         decorationBox = { innerTextField ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,

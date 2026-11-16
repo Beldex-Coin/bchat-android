@@ -118,6 +118,8 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import io.beldex.bchat.compose_utils.BChatDimens
+import io.beldex.bchat.compose_utils.NotchCorner
+import io.beldex.bchat.compose_utils.singleCornerCutShape
 
 
 @AndroidEntryPoint
@@ -1045,6 +1047,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                                 tint = Color(0xFFFF3E3E),
                                 fill = MaterialTheme.appColors.callEndBackground,
                                 stroke = MaterialTheme.appColors.negativeRedButtonBorder,
+                                strokeWidth = 0.4.dp,
                                 contentDescription = endCallDescription,
                                 onClick = hangUp
                             )
@@ -1133,21 +1136,25 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                 pictureMode = ProfilePictureMode.LargePicture
             )
             if (audioOff) {
-                val badgeSize = (innerSize * 0.27f).coerceIn(20.dp, 36.dp)
+                // Figma Call (7546:18711 / 7762:21584): 38.6 circle on a 132 photo, its top 110 down,
+                // so it straddles the photo's bottom edge. Icon 20, #ACACAC dark / #555555 white.
+                val badgeSize = (innerSize * (38.6f / 132f)).coerceIn(20.dp, 44.dp)
+                val badgeCentre = innerSize * ((110f + 19.3f) / 132f)
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .align(Alignment.Center)
-                        // centre the badge just above the photo's bottom edge
-                        .offset(y = innerSize / 2 - badgeSize / 2 + 2.dp)
+                        .offset(y = badgeCentre - innerSize / 2)
                         .size(badgeSize)
                         .background(MaterialTheme.appColors.callBadgeBackground, CircleShape)
+                        // Thin outline so the white badge stays visible over light generated avatars.
+                        .border(0.75.dp, MaterialTheme.appColors.newChatIconTileBorder, CircleShape)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_fig_call_badge_volume_off),
                         contentDescription = stringResource(R.string.call_muted),
-                        tint = MaterialTheme.appColors.callContentColor,
-                        modifier = Modifier.size(badgeSize * 0.56f)
+                        tint = MaterialTheme.appColors.dialogNegativeButtonText,
+                        modifier = Modifier.size(badgeSize * (20f / 38.6f))
                     )
                 }
             }
@@ -1194,13 +1201,15 @@ class WebRTCComposeActivity : BaseComponentActivity() {
         onClick: () -> Unit,
         enabled: Boolean = true,
         fill: Color = MaterialTheme.appColors.callControlBackground,
-        stroke: Color = MaterialTheme.appColors.callControlBorder
+        stroke: Color = MaterialTheme.appColors.callControlBorder,
+        strokeWidth: Dp = 0.75.dp
     ) {
+        // Design: 52dp tile, only the top-right corner cut (11dp), hairline border.
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .size(width = 52.dp, height = 52.dp)
-                .callControlSurface(fill, stroke)
+                .callControlSurface(fill, stroke, strokeWidth, cut = 11.dp)
                 .clickable(enabled = enabled, onClick = onClick)
         ) {
             Icon(
@@ -1227,7 +1236,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .size(68.dp)
-                    .callControlSurface(fill, stroke)
+                    .callControlSurface(fill, stroke, strokeWidth = 0.4.dp, cut = 15.dp)
                     .clickable(onClick = onClick)
             ) {
                 Icon(
@@ -1367,6 +1376,9 @@ class WebRTCComposeActivity : BaseComponentActivity() {
 }
 
 @Composable
-private fun Modifier.callControlSurface(fill: Color, stroke: Color): Modifier = this
-    .background(fill, notchedCornerShape(BChatDimens.NotchMedium))
-    .border(1.dp, stroke, notchedCornerShape(BChatDimens.NotchMedium))
+private fun Modifier.callControlSurface(fill: Color, stroke: Color, strokeWidth: Dp, cut: Dp): Modifier {
+    val shape = singleCornerCutShape(cut, NotchCorner.TopRight)
+    return this
+        .background(fill, shape)
+        .border(strokeWidth, stroke, shape)
+}

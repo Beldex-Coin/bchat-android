@@ -90,6 +90,20 @@ public class AudioRecorder {
     return future;
   }
 
+  public void pauseRecording() {
+    setPaused(true);
+  }
+
+  public void resumeRecording() {
+    setPaused(false);
+  }
+
+  private void setPaused(boolean paused) {
+    executor.execute(() -> {
+      if (audioCodec != null) audioCodec.setPaused(paused);
+    });
+  }
+
   private <T> void sendToFuture(final SettableFuture<T> future, final Exception exception) {
     Util.runOnMain(() -> future.setException(exception));
   }

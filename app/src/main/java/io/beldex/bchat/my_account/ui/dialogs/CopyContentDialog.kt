@@ -112,11 +112,11 @@ fun CopyContentDialog(
             }
             Spacer(modifier = Modifier.width(5.dp))
             Icon(
-                painter = painterResource(id = R.drawable.ic_copy),
+                painter = painterResource(id = R.drawable.ic_copy_content),
                 contentDescription = "",
                 tint = MaterialTheme.appColors.userDetailsConfirmBackground,
                 modifier = Modifier
-                    .size(16.dp)
+                    .size(18.dp)
                     .align(alignment = Alignment.CenterVertically)
                     .clickable {
                         onCopy()
@@ -124,10 +124,6 @@ fun CopyContentDialog(
             )
             }
             }
-            GreenSideBar(
-                modifier = Modifier.fillMaxHeight(0.6F),
-                color = accentColor
-            )
         }
     }
 }

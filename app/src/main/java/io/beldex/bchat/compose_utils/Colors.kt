@@ -141,6 +141,9 @@ class Colors() {
     var callDeviceCardBorder: Color = Color.Unspecified
     var callDeviceRowBorder: Color = Color.Unspecified
     var callDeviceDot: Color = Color.Unspecified
+    var searchFieldBackground: Color = Color.Unspecified
+    var newChatIconTileBackground: Color = Color.Unspecified
+    var newChatIconTileBorder: Color = Color.Unspecified
 }
 
 val lightColors = Colors().apply {
@@ -248,6 +251,9 @@ val lightColors = Colors().apply {
     callDeviceCardBorder = Color(0xFFDDDDDD)
     callDeviceRowBorder = Color(0xFF727272)
     callDeviceDot = Color(0xFF444444)
+    searchFieldBackground = Color(0x80F0F0F0)
+    newChatIconTileBackground = Color(0xFFFFFFFF)
+    newChatIconTileBorder = Color(0xFFC4C4C4)
 
 }
 
@@ -289,7 +295,7 @@ val darkColors = Colors().apply {
     walletDashboardReceiveButtonBackground = Color(0xff078720)
     walletSyncingIcon = Color(0xff65656E)
     loaderBackground = Color(0xA4000000)
-    callBottomBackground = Color(0xFF11111A)
+    callBottomBackground = Color(0xBF0B0B0B)
     circularProgressBarBackground = Color(0xff30303F)
     optionalTextFieldBackground = Color(0xFF1C1C26)
     clearDataSubTitle = Color(0XFF6A6A77)
@@ -346,16 +352,19 @@ val darkColors = Colors().apply {
     callEncryptedText = Color(0xFF8D8D8D)
     callAvatarBackground = Color(0xFF111111)
     callAvatarBorder = Color(0xFF222222)
-    callBadgeBackground = Color(0xCC111111)
-    callControlBackground = Color(0xFF222222)
-    callControlBorder = Color(0xFF4B4B64)
-    callDeclineBackground = Color(0xFF2B0A0A)
-    callDeclineBorder = Color(0xFF5A1717)
-    callAcceptBackground = Color(0xFF0A2B0F)
-    callAcceptBorder = Color(0xFF175A22)
+    callBadgeBackground = Color(0xFF1A1A1A)
+    callControlBackground = Color(0x80222222)
+    callControlBorder = Color(0xFF444444)
+    callDeclineBackground = Color(0xFF290F0F)
+    callDeclineBorder = Color(0xFFFF3E3E)
+    callAcceptBackground = Color(0x80061306)
+    callAcceptBorder = Color(0xFF00BC33)
     callDeviceCardBorder = Color(0xFF333333)
     callDeviceRowBorder = Color(0xFF444444)
     callDeviceDot = Color(0xFFEBEBEB)
+    searchFieldBackground = Color(0x800B0B0B)
+    newChatIconTileBackground = Color(0xFF222222)
+    newChatIconTileBorder = Color(0xFF333333)
 
 }
 

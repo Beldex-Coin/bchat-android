@@ -2,6 +2,6 @@
 <!-- Revamp_2026 pinned home row (Figma 7546:1780 `Frame 1485`): flat, half-opaque fill, hairline border. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="#80111111" />
-    <stroke android:width="0.75dp" android:color="@color/home_row_pinned_border" />
+    <solid android:color="@color/home_row_pinned_fill" />
+    <stroke android:width="0.75dp" android:color="@color/attachment_tray_border" />
 </shape>

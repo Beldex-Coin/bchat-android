@@ -83,6 +83,7 @@ import io.beldex.bchat.components.ProfilePictureView
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.ComposeDialogContainer
 import io.beldex.bchat.compose_utils.DialogType
+import io.beldex.bchat.compose_utils.NotchedDrawable
 import io.beldex.bchat.conversation.v2.ConversationActivityV2
 import io.beldex.bchat.conversation.v2.ConversationViewModel
 import io.beldex.bchat.conversation_v2.NewChatConversationActivity
@@ -151,7 +152,6 @@ import javax.inject.Inject
 import kotlin.jvm.java
 import android.graphics.Color
 import io.beldex.bchat.webrtc.CallBannerUtils
-import io.beldex.bchat.webrtc.IncomingCallBanner
 
 
 @AndroidEntryPoint
@@ -165,7 +165,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     private val globalSearchViewModel by viewModels<GlobalSearchViewModel>()
     private val archiveChatViewModel by viewModels<ArchiveChatViewModel>()
     private val callViewModel by viewModels<CallViewModel>()
-    private var incomingCallBannerBound = false
     private val homeViewModel: HomeFragmentViewModel by viewModels()
     private val globalSearchAdapter = GlobalSearchAdapter {model ->  }
 
@@ -377,6 +376,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
         binding.navigationMenu.profileContainer.setOnClickListener{
             openSettings()
         }
+        binding.navigationMenu.drawerProfileCard.background = NotchedDrawable(
+            13 * resources.displayMetrics.density,
+            0f,
+            ContextCompat.getColor(this, R.color.drawer_profile_background),
+            ContextCompat.getColor(this, R.color.drawer_profile_border),
+            cutBottomLeft = false
+        )
         binding.navigationMenu.drawerProfileIcon.root.setOnClickListener {
             openSettings()
         }
@@ -719,23 +725,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     }
 
     private fun setupToolbarInsets() {
-        ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar) { view, insets ->
-            val statusBarHeight =
-                insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
-            view.setPadding(0, statusBarHeight, 0, 0)
-            insets
-        }
-
-        ViewCompat.setOnApplyWindowInsetsListener(binding.toolbarCall) { view, insets ->
-            val statusBarHeight =
-                insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
-            view.setPadding(0, statusBarHeight, 0, 0)
-            insets
-        }
-
+        // The status bar space goes on the whole header column, not on one toolbar: otherwise the
+        // in-app incoming call card (above the toolbar) is drawn under the status bar and the
+        // toolbar below it gets an empty status-bar-sized gap.
         ViewCompat.setOnApplyWindowInsetsListener(binding.contentView) { view, insets ->
+            val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
             val cutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
-            view.setPadding(cutout.left, 0, cutout.right, 0)
+            view.setPadding(cutout.left, statusBarHeight, cutout.right, 0)
             insets
         }
     }
@@ -1338,25 +1334,20 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
     fun getGroup(recipient: Recipient): GroupRecord? = groupDb.getGroup(recipient.address.toGroupString()).orNull()
 
     private fun setupCallActionBar() {
-        val startTimeNew = callViewModel.callStartTime
-        if (startTimeNew == -1L) {
-            binding.toolbarCall.isVisible = false
-        } else {
-            binding.toolbarCall.isVisible = true
+        binding.toolbarCall.isVisible = CallBannerUtils.isInProgress(callViewModel)
+        if (callViewModel.callStartTime != -1L) {
+            uiJob?.cancel()
             uiJob = lifecycleScope.launch {
-                launch {
-                    while (isActive) {
-                        val startTime = callViewModel.callStartTime
-                        if (startTime == -1L) {
-                            binding.toolbarCall.isVisible = false
-                        } else {
-                            binding.toolbarCall.isVisible = true
-                            binding.callDurationCall.text = CallBannerUtils.formatDuration(System.currentTimeMillis() - startTime)
-                            binding.callInProgressCall.text = CallBannerUtils.label(this@HomeActivity, callViewModel)
-                        }
-
-                        delay(1_000)
+                while (isActive) {
+                    val inProgress = CallBannerUtils.isInProgress(callViewModel)
+                    binding.toolbarCall.isVisible = inProgress
+                    if (inProgress) {
+                        binding.callDurationCall.text = CallBannerUtils.formatDuration(System.currentTimeMillis() - callViewModel.callStartTime)
+                        binding.callInProgressCall.text = CallBannerUtils.label(this@HomeActivity, callViewModel)
+                    } else if (callViewModel.callStartTime == -1L) {
+                        break
                     }
+                    delay(1_000)
                 }
             }
         }
@@ -1480,10 +1471,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
             BChatToast.error(this,getString(R.string.please_check_your_internet_connection),Toast.LENGTH_SHORT).show()
         }
         setupCallActionBar()
-        if (!incomingCallBannerBound) {
-            incomingCallBannerBound = true
-            IncomingCallBanner.bind(this, binding.incomingCallBannerInclude, callViewModel)
-        }
         ApplicationContext.getInstance(this).messageNotifier.setHomeScreenVisible(false)
         if (TextSecurePreferences.getLocalNumber(this) == null) {
             return; } // This can be the case after a secondary device is auto-cleared

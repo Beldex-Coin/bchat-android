@@ -57,7 +57,8 @@ class ConversationView : LinearLayout {
         binding.contentView.apply {
             background = if (thread.isPinned) ContextCompat.getDrawable(context, R.drawable.home_row_pinned_background) else null
             val params = layoutParams as FrameLayout.LayoutParams
-            params.setMargins(0, 0, if (thread.isPinned) 16 else 0, 0)
+            val pinnedEndMargin = (11 * resources.displayMetrics.density).toInt()
+            params.setMargins(0, 0, if (thread.isPinned) pinnedEndMargin else 0, 0)
             layoutParams = params
         }
         val margin = when {

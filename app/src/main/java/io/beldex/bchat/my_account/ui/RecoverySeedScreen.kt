@@ -2,6 +2,14 @@ package io.beldex.bchat.my_account.ui
 
 import android.app.Activity
 import android.view.WindowManager
+import android.content.Intent
+import android.os.SystemClock
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.border
@@ -91,6 +99,20 @@ fun RecoverySeedView(
     val copyToClipBoard: () -> Unit = {
         context.copyToClipBoard("Seed", seed)
     }
+    // "Save" works like the onboarding seed screen: hand the seed to the share sheet so the user can
+    // keep it in a notes app, a password manager or a file. Ignore double taps within a second.
+    var lastSaveClickTime by remember { mutableLongStateOf(0L) }
+    val saveSeed: () -> Unit = {
+        val now = SystemClock.elapsedRealtime()
+        if (now - lastSaveClickTime >= 1000) {
+            lastSaveClickTime = now
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                putExtra(Intent.EXTRA_TEXT, seed)
+                type = "text/plain"
+            }
+            context.startActivity(Intent.createChooser(intent, context.getString(R.string.share)))
+        }
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -137,33 +159,56 @@ fun RecoverySeedView(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        PrimaryButton(
-            onClick = copyToClipBoard,
-            shape = notchedCornerShape(BChatDimens.NotchMedium),
-            containerColor = MaterialTheme.appColors.dialogBackground,
-            contentColor = MaterialTheme.appColors.editTextColor,
-            border = BorderStroke(1.dp, MaterialTheme.appColors.onboardingSecondaryButtonBorder),
-            contentPadding = PaddingValues(0.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(52.dp)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text(
-                text = stringResource(id = R.string.copy) + " " + stringResource(id = R.string.seed),
-                fontFamily = OpenSans,
-                fontWeight = FontWeight.Normal,
-                fontSize = 14.sp
-            )
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Icon(
-                painter = painterResource(id = R.drawable.ic_copy),
-                contentDescription = "",
-                tint = MaterialTheme.appColors.userDetailsConfirmBackground,
+            PrimaryButton(
+                onClick = copyToClipBoard,
+                shape = notchedCornerShape(BChatDimens.NotchMedium),
+                containerColor = MaterialTheme.appColors.selectedItemBackground,
+                contentColor = MaterialTheme.appColors.editTextColor,
+                border = BorderStroke(1.dp, MaterialTheme.appColors.optionBorder),
+                contentPadding = PaddingValues(0.dp),
                 modifier = Modifier
-                    .size(14.dp)
-            )
+                    .weight(1f)
+                    .height(52.dp)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.copy_seed),
+                    fontFamily = OpenSans,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 14.sp
+                )
+
+                Spacer(modifier = Modifier.width(6.dp))
+
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_copy),
+                    contentDescription = "",
+                    tint = MaterialTheme.appColors.userDetailsConfirmBackground,
+                    modifier = Modifier
+                        .size(12.dp)
+                )
+            }
+
+            PrimaryButton(
+                onClick = saveSeed,
+                shape = notchedCornerShape(BChatDimens.NotchMedium),
+                containerColor = MaterialTheme.appColors.dialogPositiveButtonBackground,
+                contentColor = MaterialTheme.appColors.dialogPositiveButtonText,
+                contentPadding = PaddingValues(0.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .height(52.dp)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.save),
+                    fontFamily = OpenSans,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 14.sp
+                )
+            }
         }
     }
 }
@@ -261,12 +306,16 @@ private fun RecoveryWarningView(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Design: a compact 182x52 button.
                 PrimaryButton(
                     onClick = verifyPin,
                     shape = notchedCornerShape(10.dp),
                     containerColor = MaterialTheme.appColors.onboardingPrimaryButtonBackground,
                     contentColor = MaterialTheme.appColors.backgroundColor,
-                    modifier = Modifier.height(48.dp)
+                    contentPadding = PaddingValues(horizontal = 8.dp),
+                    modifier = Modifier
+                        .width(182.dp)
+                        .height(52.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.seed_permission_important_confirmButton),

@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.zxing.BinaryBitmap
 import com.google.zxing.MultiFormatReader
@@ -58,10 +59,9 @@ class ScanQRCodeFragment : Fragment() {
         // Figma "Upload from Gallery": notched #111111 button with a green hairline.
         val density = resources.displayMetrics.density
         binding.uploadFromGalleryLayout.background = NotchedDrawable(
-            12 * density, 1 * density, 0xFF111111.toInt(), 0xFF00BC33.toInt()
-        )
-        binding.messageTextView.background = NotchedDrawable(
-            10 * density, 1 * density, 0xFF111111.toInt(), 0xFF333333.toInt()
+            12 * density, 1 * density,
+            ContextCompat.getColor(requireContext(), R.color.home_row_background),
+            ContextCompat.getColor(requireContext(), R.color.rounded_indicator)
         )
         binding.uploadFromGalleryLayout.setOnClickListener {
             binding.uploadFromGalleryLayout.isEnabled = false

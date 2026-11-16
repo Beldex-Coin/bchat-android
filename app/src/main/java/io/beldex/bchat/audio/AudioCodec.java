@@ -30,6 +30,7 @@ public class AudioCodec {
 
   private boolean running  = true;
   private boolean finished = false;
+  private volatile boolean paused = false;
 
   public AudioCodec() throws IOException {
     this.bufferSize  = AudioRecord.getMinBufferSize(SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
@@ -59,6 +60,11 @@ public class AudioCodec {
       if (abs > peak) peak = abs;
     }
     lastAmplitude = peak;
+  }
+
+  /** While paused the microphone keeps being read (so no stale audio piles up) but nothing is encoded. */
+  public void setPaused(boolean paused) {
+    this.paused = paused;
   }
 
   public synchronized void stop() {
@@ -114,6 +120,10 @@ public class AudioCodec {
                                 boolean running)
   {
     int length                = audioRecord.read(audioRecordData, 0, audioRecordData.length);
+    if (paused && running) {
+      lastAmplitude = 0;
+      return;
+    }
     updateAmplitude(audioRecordData, length);
     int codecInputBufferIndex = mediaCodec.dequeueInputBuffer(10 * 1000);
 

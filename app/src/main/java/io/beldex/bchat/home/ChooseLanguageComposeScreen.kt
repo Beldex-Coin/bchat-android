@@ -235,24 +235,27 @@ private fun LanguageSearchField(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .background(MaterialTheme.appColors.dialogBackground)
-            .border(1.dp, MaterialTheme.appColors.dividerColor)
-            .padding(horizontal = 14.dp, vertical = 14.dp)
+            .height(48.dp)
+            .background(MaterialTheme.appColors.selectedItemBackground)
+            .border(1.dp, MaterialTheme.appColors.callDeviceCardBorder)
+            .padding(horizontal = 18.dp)
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_home_search),
             contentDescription = null,
             tint = MaterialTheme.appColors.onboardingCaptionColor,
-            modifier = Modifier.size(18.dp)
+            modifier = Modifier.size(14.dp)
         )
-        Spacer(modifier = Modifier.width(10.dp))
+        Spacer(modifier = Modifier.width(11.dp))
         Box(modifier = Modifier.weight(1f)) {
             if (query.isEmpty()) {
                 Text(
                     text = stringResource(R.string.search_language).uppercase(),
                     color = MaterialTheme.appColors.onboardingInputHint,
                     fontFamily = RobotoMono,
-                    fontSize = 12.sp
+                    fontWeight = FontWeight.Light,
+                    fontSize = 14.sp,
+                    maxLines = 1
                 )
             }
             BasicTextField(

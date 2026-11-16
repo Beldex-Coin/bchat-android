@@ -24,12 +24,89 @@
             android:orientation="vertical"
             android:background="@android:color/transparent">
 
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                app:contentInsetStart="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingVertical="8dp">
+
+                    <androidx.compose.ui.platform.ComposeView
+                        android:id="@+id/homeHeader"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <RelativeLayout
+                        android:id="@+id/search_toolbar1"
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:layout_marginHorizontal="@dimen/medium_spacing"
+                        android:visibility="gone">
+
+                        <io.beldex.bchat.home.search.GlobalSearchInputLayout
+                            android:id="@+id/globalSearchInputLayout1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/searchBarLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:layout_marginHorizontal="@dimen/medium_spacing"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:id="@+id/searchBarBackButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/ic_back" />
+
+                        <TextView
+                            android:id="@+id/searchBarTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="@id/searchBarBackButton"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="55dp"
+                            android:fontFamily="@font/open_sans_bold"
+                            android:text="@string/SearchToolbar_search"
+                            android:textSize="25sp"
+                            android:textStyle="bold" />
+                    </RelativeLayout>
+
+                    <!--                <View-->
+                    <!--                    android:layout_width="match_parent"-->
+                    <!--                    android:layout_height="1px"-->
+                    <!--                    android:background="?android:dividerHorizontal"-->
+                    <!--                    android:elevation="1dp" />-->
+
+                    <io.beldex.bchat.onboarding.SeedReminderView
+                        android:id="@+id/seedReminderView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+            </androidx.appcompat.widget.Toolbar>
+            <!-- Call in progress bar sits under the Chats toolbar (7546:19713). -->
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar_Call"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="14dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="8dp"
                 android:visibility="visible"
                 android:minHeight="0dp"
                 android:background="@drawable/call_banner_background"
@@ -119,85 +196,6 @@
                             android:textSize="12sp"/>
                     </LinearLayout>
                 </LinearLayout>
-            </androidx.appcompat.widget.Toolbar>
-
-            <include
-                android:id="@+id/incomingCallBannerInclude"
-                layout="@layout/view_incoming_call_banner" />
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                app:contentInsetStart="0dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingVertical="8dp">
-
-                    <androidx.compose.ui.platform.ComposeView
-                        android:id="@+id/homeHeader"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <RelativeLayout
-                        android:id="@+id/search_toolbar1"
-                        android:layout_width="match_parent"
-                        android:layout_height="?actionBarSize"
-                        android:layout_marginHorizontal="@dimen/medium_spacing"
-                        android:visibility="gone">
-
-                        <io.beldex.bchat.home.search.GlobalSearchInputLayout
-                            android:id="@+id/globalSearchInputLayout1"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true" />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:id="@+id/searchBarLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="?actionBarSize"
-                        android:layout_marginHorizontal="@dimen/medium_spacing"
-                        android:visibility="gone">
-
-                        <ImageView
-                            android:id="@+id/searchBarBackButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:src="@drawable/ic_back" />
-
-                        <TextView
-                            android:id="@+id/searchBarTitle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="@id/searchBarBackButton"
-                            android:layout_centerVertical="true"
-                            android:layout_marginStart="55dp"
-                            android:fontFamily="@font/open_sans_bold"
-                            android:text="@string/SearchToolbar_search"
-                            android:textSize="25sp"
-                            android:textStyle="bold" />
-                    </RelativeLayout>
-
-                    <!--                <View-->
-                    <!--                    android:layout_width="match_parent"-->
-                    <!--                    android:layout_height="1px"-->
-                    <!--                    android:background="?android:dividerHorizontal"-->
-                    <!--                    android:elevation="1dp" />-->
-
-                    <io.beldex.bchat.onboarding.SeedReminderView
-                        android:id="@+id/seedReminderView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone" />
-
-                </LinearLayout>
-
             </androidx.appcompat.widget.Toolbar>
             <!--<com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/airdropIcon"

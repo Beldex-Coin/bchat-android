@@ -63,7 +63,7 @@
     <color name="bchat_version">#797984</color>
     <color name="drawer_beldex_text">#1AB51E</color>
     <color name="drawer_background">#F0F0F0</color>
-    <color name="drawer_profile_background">#E4E4E4</color>
+    <color name="drawer_profile_background">#80E0E0E0</color>
     <color name="drawer_item_border">#D9D9D9</color>
     <color name="drawer_profile_border">#D9D9D9</color>
     <color name="drawer_text">#333333</color>
@@ -383,4 +383,8 @@
     <color name="menu_border">#D0D0D0</color>
     <color name="sent_message_text_color">#222222</color>
     <color name="call_card_inner_background">#F5F5F5</color>
+    <color name="scan_qr_info_background">#66F8F8F8</color>
+    <color name="home_row_pinned_fill">#80FFFFFF</color>
+    <!-- Outline around the phone badge on the incoming call card avatar (7546:20013 / 7762:22886). -->
+    <color name="call_banner_badge_outline">#FFFFFF</color>
 </resources>

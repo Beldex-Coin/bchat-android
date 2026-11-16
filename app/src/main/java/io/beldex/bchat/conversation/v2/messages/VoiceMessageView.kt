@@ -96,7 +96,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         cornerMask.setTopRightRadius(cornerRadii[1])
         cornerMask.setBottomRightRadius(cornerRadii[2])
         cornerMask.setBottomLeftRadius(cornerRadii[3])
-        val green = ContextCompat.getColor(context, R.color.ic_self_message)
+        val green = ContextCompat.getColor(context, R.color.rounded_indicator)
         val knob = ContextCompat.getColor(context, R.color.read_button_background)
         val durationTextColor = ContextCompat.getColor(context, R.color.disappear_icon_color)
         binding.voiceMessageViewLoader.indeterminateTintList = ColorStateList.valueOf(green)

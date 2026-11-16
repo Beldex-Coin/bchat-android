@@ -2,12 +2,16 @@ package io.beldex.bchat.conversation.v2.messages
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Paint
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
+import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.key
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.content.res.use
@@ -21,6 +25,10 @@ import com.bumptech.glide.RequestManager
 import com.google.android.material.card.MaterialCardView
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.compose_utils.NotchedAvatarShape
+import io.beldex.bchat.compose_utils.ProfilePictureComponent
+import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.conversation.v2.contact_sharing.capitalizeFirstLetter
 import io.beldex.bchat.conversation.v2.contact_sharing.flattenData
 import io.beldex.bchat.conversation.v2.utilities.MentionUtilities
@@ -30,14 +38,11 @@ import io.beldex.bchat.mms.SlideDeck
 import io.beldex.bchat.textformatter.TextFormatter
 import io.beldex.bchat.util.MediaUtil
 import io.beldex.bchat.util.UiModeUtilities
-import io.beldex.bchat.util.getScreenWidth
 import io.beldex.bchat.util.shortNameAndAddress
 import io.beldex.bchat.util.toPx
 import org.json.JSONException
 import org.json.JSONObject
 import javax.inject.Inject
-import kotlin.math.max
-import kotlin.math.min
 import android.graphics.Typeface
 import android.os.Build
 import android.view.ViewGroup
@@ -144,7 +149,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                     if (mode == Mode.Regular) {
                         binding.quoteViewAttachmentPreviewContainer.visibility = View.GONE
                         binding.quoteContentType.visibility = View.GONE
-                        binding.container.orientation = LinearLayout.VERTICAL
+                        binding.container.orientation = LinearLayout.HORIZONTAL
                         binding.mainQuoteViewContainer.setBackgroundColor(
                             resources.getColor(getContainerColor(isOutgoingMessage), null)
                         )
@@ -175,24 +180,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                                 }
                             }
                             binding.contactName.text = displayName
-
-                            // Dynamic width calculation
-                            if (mode == Mode.Regular) {
-                                val paint = Paint().apply {
-                                    textSize = TypedValue.applyDimension(
-                                        TypedValue.COMPLEX_UNIT_SP,
-                                        14f,
-                                        context.resources.displayMetrics
-                                    )
-                                }
-                                val nameWidth = paint.measureText(data.name)
-                                val params = binding.contactView.layoutParams
-                                val maxWidth = max(max(350, nameWidth.toInt()), textWidth)
-                                val maxPossibleWidth =
-                                    min((getScreenWidth() * 0.6).toInt(), maxWidth)
-                                params.width = maxPossibleWidth
-                                binding.contactView.layoutParams = params
-                            }
+                            showContactAvatar(addresses.firstOrNull(), names.firstOrNull())
                         }
                     }
                     return
@@ -201,6 +189,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
             // If not JSON or type isn’t SharedContact → fallback
             binding.contactView.visibility = View.GONE
+            binding.contactAvatarView.visibility = View.GONE
             if (mode == Mode.Regular) {
                 binding.quoteContentType.visibility = View.VISIBLE
                 binding.container.orientation = LinearLayout.HORIZONTAL
@@ -211,6 +200,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         } catch (e: JSONException) {
             e.printStackTrace()
             binding.contactView.visibility = View.GONE
+            binding.contactAvatarView.visibility = View.GONE
             if (mode == Mode.Regular) {
                 binding.quoteContentType.visibility = View.VISIBLE
                 binding.container.orientation = LinearLayout.HORIZONTAL
@@ -414,6 +404,29 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         }
     }
     // endregion
+
+    private fun showContactAvatar(address: String?, name: String?) {
+        if (mode != Mode.Regular || address.isNullOrEmpty()) {
+            binding.contactAvatarView.visibility = View.GONE
+            return
+        }
+        binding.contactAvatarView.visibility = View.VISIBLE
+        binding.contactAvatarView.setContent {
+            key(address) {
+                BChatTheme {
+                    ProfilePictureComponent(
+                        publicKey = address,
+                        displayName = name ?: address,
+                        containerSize = 22.dp,
+                        pictureMode = ProfilePictureMode.SmallPicture,
+                        modifier = Modifier
+                            .size(22.dp)
+                            .clip(NotchedAvatarShape)
+                    )
+                }
+            }
+        }
+    }
 
     private fun getContainerColor(isOutgoingMessage: Boolean): Int {
         return R.color.contact_card_inner_background

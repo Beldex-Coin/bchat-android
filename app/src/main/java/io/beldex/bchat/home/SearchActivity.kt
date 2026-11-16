@@ -96,9 +96,9 @@ import java.util.Locale
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.colorResource
-import io.beldex.bchat.compose_utils.BChatDimens
 import io.beldex.bchat.compose_utils.RobotoMono
-import io.beldex.bchat.compose_utils.notchedCornerShape
+import io.beldex.bchat.compose_utils.NotchCorner
+import io.beldex.bchat.compose_utils.singleCornerCutShape
 
 @AndroidEntryPoint
 class SearchActivity : BaseComponentActivity() {
@@ -221,7 +221,7 @@ private fun SearchView(
     ) {
         Card(
             shape = RectangleShape,
-            border = BorderStroke(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder),
+            border = BorderStroke(1.dp, MaterialTheme.appColors.callDeviceCardBorder),
             modifier = Modifier
                 .fillMaxWidth()
         ) {
@@ -230,7 +230,7 @@ private fun SearchView(
                 onValueChange = onQueryChanged,
                 placeholder = {
                     Text(
-                        text = stringResource(id = R.string.search_name_bns_bchat_id),
+                        text = stringResource(id = R.string.search_people_and_groups).uppercase(),
                         modifier = Modifier.padding(start = 4.dp),
                         maxLines = 1,
                         softWrap = false,
@@ -251,8 +251,8 @@ private fun SearchView(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
-                    focusedContainerColor = MaterialTheme.appColors.dialogBackground,
-                    unfocusedContainerColor = MaterialTheme.appColors.dialogBackground,
+                    focusedContainerColor = MaterialTheme.appColors.selectedItemBackground,
+                    unfocusedContainerColor = MaterialTheme.appColors.selectedItemBackground,
                     cursorColor = MaterialTheme.appColors.primaryButtonColor,
                     selectionColors = TextSelectionColors(
                         handleColor = MaterialTheme.appColors.primaryButtonColor,
@@ -296,8 +296,14 @@ private fun SearchView(
                 .weight(1f)
         ) {
             items(
-                // Figma: "Note to Self" sits above the contacts and groups.
-                items = results.sortedBy { if (it is SearchResults.SavedMessages) 0 else 1 },
+                // "Contacts and Groups" header first, then Note to Self, then the rest in order.
+                items = results.sortedBy {
+                    when {
+                        it is SearchResults.Header && it.title == R.string.global_search_contacts_groups -> 0
+                        it is SearchResults.SavedMessages -> 1
+                        else -> 2
+                    }
+                },
                 key = {
                     when (it) {
                         is SearchResults.Contact -> {
@@ -348,13 +354,13 @@ private fun SearchView(
                         )
                     }
                     is SearchResults.SavedMessages -> {
-                        // Figma "note_to_self": square #1A1A1A row with a #333 hairline and a notched icon tile.
+                        // Figma "note_to_self": square row with a hairline and an icon tile cut at the top right only.
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(MaterialTheme.appColors.selectedItemBackground)
-                                .border(1.dp, MaterialTheme.appColors.pinBoxInactiveBorder)
+                                .background(MaterialTheme.appColors.dialogPanelGradientStart)
+                                .border(1.dp, MaterialTheme.appColors.callDeviceCardBorder)
                                 .clickable { onSearchResultClick(it) }
                                 .padding(horizontal = 14.dp, vertical = 14.dp)
                         ) {
@@ -363,8 +369,8 @@ private fun SearchView(
                                 modifier = Modifier
                                     .size(42.dp)
                                     .background(
-                                        MaterialTheme.appColors.cardTileBackground,
-                                        notchedCornerShape(BChatDimens.NotchSmall)
+                                        MaterialTheme.appColors.messageRequestItemBackground,
+                                        singleCornerCutShape(9.dp, NotchCorner.TopRight)
                                     )
                             ) {
                                 Icon(
@@ -380,7 +386,7 @@ private fun SearchView(
                                 color = MaterialTheme.appColors.editTextColor,
                                 fontFamily = RobotoMono,
                                 fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.SemiBold
                             )
                         }
                     }

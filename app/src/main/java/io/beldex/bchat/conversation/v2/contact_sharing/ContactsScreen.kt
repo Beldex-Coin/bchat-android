@@ -54,7 +54,8 @@ fun ContactsScreen(
     onSend: (List<ThreadRecord>) -> Unit,
     contactChanged: (ThreadRecord, Boolean) -> Unit,
     onBack: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isLoading: Boolean = false
 ) {
     val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(LocalContext.current) == UiMode.NIGHT
     Scaffold(
@@ -133,7 +134,9 @@ fun ContactsScreen(
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-            if (contacts.isEmpty()) {
+            if (isLoading) {
+                // Contacts are still being read; show nothing instead of an empty state.
+            } else if (contacts.isEmpty()) {
                 if (searchQuery.isNotEmpty()) {
                     Text(
                         text = stringResource(id = R.string.no_such_contact_found),
@@ -145,6 +148,14 @@ fun ContactsScreen(
                             .background(MaterialTheme.appColors.cardTileBackground)
                             .padding(horizontal = 16.dp, vertical = 14.dp)
                     )
+                    Box(
+                        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.ic_share_contact_no_result),
+                            contentDescription = stringResource(id = R.string.no_such_contact_found),
+                        )
+                    }
                 } else {
                     Box(
                         modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center

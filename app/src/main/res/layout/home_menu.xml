@@ -60,6 +60,7 @@
             app:layout_constraintTop_toBottomOf="@id/drawer_settings_title">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                 android:id="@+id/drawer_profile_card"
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:layout_width="match_parent"

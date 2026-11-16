@@ -321,7 +321,9 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
     private val voiceAmplitudeTask = object : Runnable {
         override fun run() {
             if (!::audioRecorder.isInitialized || !binding.inputBarRecordingView.isTimerRunning) return
-            binding.inputBarRecordingView.addAmplitude(audioRecorder.amplitude)
+            if (!binding.inputBarRecordingView.isPaused) {
+                binding.inputBarRecordingView.addAmplitude(audioRecorder.amplitude)
+            }
             stopAudioHandler.postDelayed(this, 100L)
         }
     }
@@ -801,25 +803,20 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
     }
 
     private fun setupCallActionBar() {
-        val startTimeNew=callViewModel.callStartTime
-        if (startTimeNew == -1L) {
-            binding.callActionBarView.isVisible=false
-        } else {
-            binding.callActionBarView.isVisible=true
-            uiJob=lifecycleScope.launch {
-                launch {
-                    while (isActive) {
-                        val startTime=callViewModel.callStartTime
-                        if (startTime == -1L) {
-                            binding.callActionBarView.isVisible=false
-                        } else {
-                            binding.callActionBarView.isVisible=true
-                            binding.callDurationCall.text = CallBannerUtils.formatDuration(System.currentTimeMillis() - startTime)
-                            binding.callInProgressCall.text = CallBannerUtils.label(this@ConversationActivityV2, callViewModel)
-                        }
-
-                        delay(1_000)
+        binding.callActionBarView.isVisible = CallBannerUtils.isInProgress(callViewModel)
+        if (callViewModel.callStartTime != -1L) {
+            uiJob?.cancel()
+            uiJob = lifecycleScope.launch {
+                while (isActive) {
+                    val inProgress = CallBannerUtils.isInProgress(callViewModel)
+                    binding.callActionBarView.isVisible = inProgress
+                    if (inProgress) {
+                        binding.callDurationCall.text = CallBannerUtils.formatDuration(System.currentTimeMillis() - callViewModel.callStartTime)
+                        binding.callInProgressCall.text = CallBannerUtils.label(this@ConversationActivityV2, callViewModel)
+                    } else if (callViewModel.callStartTime == -1L) {
+                        break
                     }
+                    delay(1_000)
                 }
             }
         }
@@ -3317,6 +3314,21 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
         }
         stopAudioHandler.removeCallbacks(stopVoiceMessageRecordingTask)
 
+    }
+
+    override fun pauseVoiceMessage() {
+        if (!::audioRecorder.isInitialized) return
+        audioRecorder.pauseRecording()
+        // The 5 minute limit counts recorded audio only, so stop the countdown while paused.
+        stopAudioHandler.removeCallbacks(stopVoiceMessageRecordingTask)
+    }
+
+    override fun resumeVoiceMessage() {
+        if (!::audioRecorder.isInitialized) return
+        audioRecorder.resumeRecording()
+        val remaining = (300_000L - binding.inputBarRecordingView.recordedMillis).coerceAtLeast(0L)
+        stopAudioHandler.removeCallbacks(stopVoiceMessageRecordingTask)
+        stopAudioHandler.postDelayed(stopVoiceMessageRecordingTask, remaining)
     }
 
     override fun onAttachmentChanged() {

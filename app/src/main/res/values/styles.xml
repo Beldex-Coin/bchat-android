@@ -1176,6 +1176,15 @@
         <item name="cornerSizeBottomLeft">12dp</item>
     </style>
 
+    <style name="Widget.Bchat.ChatToolbar.Nav" parent="Widget.AppCompat.Toolbar.Button.Navigation">
+        <item name="android:minWidth">0dp</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">6dp</item>
+        <item name="android:scaleType">center</item>
+    </style>
+    <style name="ThemeOverlay.Bchat.ChatToolbar" parent="">
+        <item name="toolbarNavigationButtonStyle">@style/Widget.Bchat.ChatToolbar.Nav</item>
+    </style>
     <style name="Widget.Bchat.EditGroupToolbar.Nav" parent="Widget.AppCompat.Toolbar.Button.Navigation">
         <item name="android:minHeight">46dp</item>
         <item name="android:minWidth">46dp</item>

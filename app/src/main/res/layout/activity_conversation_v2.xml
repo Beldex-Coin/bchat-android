@@ -17,6 +17,7 @@
             android:id="@+id/conversationActivity_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.Bchat.ChatToolbar"
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp"
             android:background="@color/chat_header_background">
@@ -39,7 +40,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginStart="7dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 

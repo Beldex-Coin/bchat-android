@@ -30,8 +30,6 @@ import io.beldex.bchat.conversation.v2.messages.QuoteViewDelegate
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.database.model.MmsMessageRecord
 import io.beldex.bchat.databinding.ViewInputBarBinding
-import io.beldex.bchat.util.UiMode
-import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.getColorWithID
 import io.beldex.bchat.util.toPx
 import android.text.Editable
@@ -164,12 +162,8 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
                 false
             })
         }
-        val isDarkMode = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
-        binding.containerCardView.strokeWidth = if (isDarkMode) {
-            0
-        } else {
-            2
-        }
+        binding.containerCardView.strokeWidth = 0
+        binding.containerCardView.radius = 0f
     }
 
     private fun updateSendButtonBackground(showSend: Boolean) {
@@ -286,7 +280,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
             visibility = GONE
         }
         setReplyDraftSurface(false)
-        binding.containerCardView.radius = toPx(48, resources).toFloat()
+        binding.containerCardView.radius = 0f
         requestLayout()
         if(i==1){
             binding.inputBarEditText.text?.clear()
@@ -305,7 +299,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         linkPreviewDraftView.delegate = this
         this.linkPreviewDraftView = linkPreviewDraftView
         binding.inputBarAdditionalContentContainer.addView(linkPreviewDraftView)
-        binding.containerCardView.radius = toPx(24, resources).toFloat()
+        binding.containerCardView.radius = 0f
         requestLayout()
     }
 
@@ -323,7 +317,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
             visibility = View.GONE
         }
         setReplyDraftSurface(false)
-        binding.containerCardView.radius = toPx(48, resources).toFloat()
+        binding.containerCardView.radius = 0f
         requestLayout()
         if(i==1){
             binding.inputBarEditText.text?.clear()

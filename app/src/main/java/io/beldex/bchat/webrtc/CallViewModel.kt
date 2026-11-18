@@ -103,6 +103,10 @@ public class CallViewModel @Inject constructor(private val callManager: CallMana
     val callStartTime: Long
         get() = callManager.callStartTime
 
+    /** Connected time so far; pauses while reconnecting and continues afterwards. */
+    val callDurationMillis: Long
+        get() = callManager.callDurationMillis
+
     /** The remote participant of the current call, if any. */
     val currentRecipient get() = callManager.recipient
 

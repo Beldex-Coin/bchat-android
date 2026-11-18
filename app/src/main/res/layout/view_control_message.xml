@@ -214,7 +214,7 @@
                         android:layout_marginTop="2dp"
                         android:fontFamily="@font/roboto_mono"
                         android:maxLines="1"
-                        android:text="@string/call_duration_static"
+                        tools:text="@string/call_duration_static"
                         android:textColor="@color/chat_meta_text"
                         android:textSize="10sp" />
                 </LinearLayout>
@@ -301,7 +301,7 @@
                         android:layout_marginTop="2dp"
                         android:fontFamily="@font/roboto_mono"
                         android:maxLines="1"
-                        android:text="@string/call_duration_static"
+                        tools:text="@string/call_duration_static"
                         android:textColor="@color/chat_meta_text"
                         android:textSize="10sp" />
                 </LinearLayout>

@@ -240,6 +240,7 @@ class WebRtcCallService: LifecycleService(), CallManager.WebRtcListener {
     private fun terminate() {
         LocalBroadcastManager.getInstance(this).sendBroadcast(Intent(WebRTCComposeActivity.ACTION_END))
         lockManager.updatePhoneState(LockManager.PhoneState.IDLE)
+        callManager.saveCallDuration()
         callManager.stop()
         wantsToAnswer = false
         currentTimeouts = 0

@@ -690,7 +690,7 @@ class WebRTCComposeActivity : BaseComponentActivity() {
                             isShowDialingStatus=false
                             isMuteOptionClickable=true
 
-                            val elapsedMs=System.currentTimeMillis() - startTime
+                            val elapsedMs=callViewModel.callDurationMillis
                             isStatusCallDurationText=DurationFormatUtils.formatDuration(elapsedMs, if (elapsedMs >= 3_600_000L) "H:mm:ss" else "m:ss")
                             CALL_DURATION=isStatusCallDurationText
                         }

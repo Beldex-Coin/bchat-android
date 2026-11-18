@@ -30,6 +30,7 @@ import com.annimon.stream.Stream;
 
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
 import net.zetetic.database.sqlcipher.SQLiteStatement;
+import io.beldex.bchat.webrtc.CallDurationBody;
 import io.beldex.bchat.database.model.ReactionRecord;
 
 
@@ -394,6 +395,22 @@ public class SmsDatabase extends MessagingDatabase {
             new String[] {newTimestamp + "", messageId + ""});
     notifyConversationListeners(threadId);
     notifyConversationListListeners();
+  }
+
+  public void appendCallDuration(long messageId, long durationMillis) {
+    SQLiteDatabase db = databaseHelper.getWritableDatabase();
+    String body = null;
+    try (Cursor cursor = db.query(TABLE_NAME, new String[] {BODY}, ID + " = ?",
+            new String[] {String.valueOf(messageId)}, null, null, null)) {
+      if (cursor == null || !cursor.moveToFirst()) return;
+      body = cursor.getString(0);
+    }
+    ContentValues values = new ContentValues();
+    values.put(BODY, CallDurationBody.append(body, durationMillis));
+    db.update(TABLE_NAME, values, ID + " = ?", new String[] {String.valueOf(messageId)});
+
+    long threadId = getThreadIdForMessage(messageId);
+    notifyConversationListeners(threadId);
   }
 
   public Pair<Long, Long> updateBundleMessageBody(long messageId, String body) {

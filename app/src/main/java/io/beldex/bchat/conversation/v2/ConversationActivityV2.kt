@@ -811,7 +811,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
                     val inProgress = CallBannerUtils.isInProgress(callViewModel)
                     binding.callActionBarView.isVisible = inProgress
                     if (inProgress) {
-                        binding.callDurationCall.text = CallBannerUtils.formatDuration(System.currentTimeMillis() - callViewModel.callStartTime)
+                        binding.callDurationCall.text = CallBannerUtils.formatDuration(callViewModel.callDurationMillis)
                         binding.callInProgressCall.text = CallBannerUtils.label(this@ConversationActivityV2, callViewModel)
                     } else if (callViewModel.callStartTime == -1L) {
                         break

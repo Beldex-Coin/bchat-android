@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import com.beldex.libbchat.database.StorageProtocol
 import com.beldex.libbchat.messaging.calls.CallMessageType
 import com.beldex.libbchat.messaging.messages.control.CallMessage
+import com.beldex.libbchat.messaging.messages.signal.IncomingTextMessage
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.Address
@@ -14,6 +15,8 @@ import com.beldex.libbchat.utilities.Debouncer
 import com.beldex.libbchat.utilities.Util
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
+import com.beldex.libsignal.utilities.guava.Optional
+import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.webrtc.audio.AudioManagerCompat
 import io.beldex.bchat.webrtc.audio.OutgoingRinger
 import io.beldex.bchat.webrtc.audio.SignalAudioManager
@@ -142,7 +145,30 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
             field = value
             _recipientEvents.value = StateEvent.RecipientUpdate(value)
         }
+    /** When the call first connected; -1 until then. Stays set while reconnecting. */
     var callStartTime: Long = -1
+
+    // Connected time is counted in segments so the timer pauses while reconnecting and continues
+    // from the same value once the connection is back.
+    private var connectedSince: Long = -1
+    private var connectedTimeBeforeSegment: Long = 0
+
+    /** Call log row created for this call (outgoing or answered incoming); -1 when none. */
+    private var currentCallMessageId: Long = -1
+
+    private val appContext: Context = context.applicationContext
+
+    /** Total connected time of the current call, not counting time spent reconnecting. */
+    val callDurationMillis: Long
+        get() {
+            if (callStartTime == -1L) return 0
+            val running = if (connectedSince != -1L) System.currentTimeMillis() - connectedSince else 0
+            return connectedTimeBeforeSegment + running
+        }
+
+    /** True while the connection is down after having been connected (timer paused). */
+    val isCallTimerPaused: Boolean
+        get() = callStartTime != -1L && connectedSince == -1L
 
     private var peerConnection: PeerConnectionWrapper? = null
     private var dataChannel: DataChannel? = null
@@ -279,8 +305,47 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         Log.d("Beldex", "New ice connection state = $newState")
         iceState = newState
         peerConnectionObservers.forEach { listener -> listener.onIceConnectionChange(newState) }
-        if (newState == PeerConnection.IceConnectionState.CONNECTED) {
-            callStartTime = System.currentTimeMillis()
+        when (newState) {
+            PeerConnection.IceConnectionState.CONNECTED,
+            PeerConnection.IceConnectionState.COMPLETED -> resumeCallTimer()
+            PeerConnection.IceConnectionState.DISCONNECTED,
+            PeerConnection.IceConnectionState.FAILED,
+            PeerConnection.IceConnectionState.CLOSED -> pauseCallTimer()
+            else -> Unit
+        }
+    }
+
+    /** Starts the timer on the first connect, or continues it after a reconnect. */
+    @Synchronized
+    private fun resumeCallTimer() {
+        val now = System.currentTimeMillis()
+        if (callStartTime == -1L) callStartTime = now
+        if (connectedSince == -1L) connectedSince = now
+    }
+
+    /** Freezes the timer at its current value while the connection is down. */
+    @Synchronized
+    private fun pauseCallTimer() {
+        if (connectedSince != -1L) {
+            connectedTimeBeforeSegment += System.currentTimeMillis() - connectedSince
+            connectedSince = -1
+        }
+    }
+
+    /**
+     * Appends the connected time to this call's message body. Must run before [stop], which clears the
+     * timer. Calls that never connected keep 0, so the card shows no duration.
+     */
+    @Synchronized
+    fun saveCallDuration() {
+        val messageId = currentCallMessageId
+        currentCallMessageId = -1
+        if (messageId == -1L || callStartTime == -1L) return
+        val duration = callDurationMillis
+        try {
+            DatabaseComponent.get(appContext).smsDatabase().appendCallDuration(messageId, duration)
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to save call duration", e)
         }
     }
 
@@ -423,6 +488,9 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
             pendingOfferTime = -1
             pendingOffer = null
             callStartTime = -1
+            connectedSince = -1
+            connectedTimeBeforeSegment = 0
+            currentCallMessageId = -1
             _audioEvents.value = StateEvent.AudioEnabled(false)
             _videoState.value = VideoState(
                 swapped = false,
@@ -620,7 +688,16 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
     }
 
     fun insertCallMessage(threadPublicKey: String, callMessageType: CallMessageType, signal: Boolean = false, sentTimestamp: Long = MnodeAPI.nowWithOffset) {
-        storage.insertCallMessage(threadPublicKey, callMessageType, sentTimestamp)
+        if (callMessageType != CallMessageType.CALL_OUTGOING && callMessageType != CallMessageType.CALL_INCOMING) {
+            storage.insertCallMessage(threadPublicKey, callMessageType, sentTimestamp)
+            return
+        }
+        // Outgoing and answered calls keep their row id so the duration can be saved when the call ends.
+        val callMessage = IncomingTextMessage.fromCallInfo(
+            callMessageType, Address.fromSerialized(threadPublicKey), Optional.absent(), sentTimestamp
+        )
+        val result = DatabaseComponent.get(appContext).smsDatabase().insertCallMessage(callMessage)
+        currentCallMessageId = result.orNull()?.messageId ?: -1
     }
 
     fun handleRemoteHangup() {

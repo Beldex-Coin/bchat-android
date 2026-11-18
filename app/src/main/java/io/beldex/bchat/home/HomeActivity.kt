@@ -1342,7 +1342,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(), SeedReminderViewDele
                     val inProgress = CallBannerUtils.isInProgress(callViewModel)
                     binding.toolbarCall.isVisible = inProgress
                     if (inProgress) {
-                        binding.callDurationCall.text = CallBannerUtils.formatDuration(System.currentTimeMillis() - callViewModel.callStartTime)
+                        binding.callDurationCall.text = CallBannerUtils.formatDuration(callViewModel.callDurationMillis)
                         binding.callInProgressCall.text = CallBannerUtils.label(this@HomeActivity, callViewModel)
                     } else if (callViewModel.callStartTime == -1L) {
                         break

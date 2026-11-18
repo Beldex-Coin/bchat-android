@@ -18,6 +18,7 @@ import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.databinding.ViewControlMessageBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.util.DateUtils
+import io.beldex.bchat.webrtc.CallDurationBody
 import java.util.Locale
 
 
@@ -107,13 +108,17 @@ class ControlMessageView : LinearLayout {
                 val iconRes = if (isMissed) R.drawable.ic_call_card_missed else R.drawable.ic_call_card_phone
                 val iconTint: ColorStateList? = null
                 val time = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+                val durationMillis = CallDurationBody.durationOf(message.body)
+                val showDuration = !isMissed && durationMillis > 0
+                val durationText = if (showDuration) formatCallDuration(context, durationMillis) else ""
                 if (message.isOutgoing && !isMissed) {
                     binding.dialledCallCardView.visibility = View.VISIBLE
                     binding.dialledCallBubble.background = VisibleMessageContentView.bubbleBackground(context, true)
                     binding.dialledCallIcon.setImageResource(iconRes)
                     binding.dialledCallIcon.imageTintList = iconTint
                     binding.dialledCallText.text = title
-                    binding.dialledCallDuration.isVisible = true
+                    binding.dialledCallDuration.isVisible = showDuration
+                    binding.dialledCallDuration.text = durationText
                     binding.dialledMessageTime.text = time
                 } else {
                     binding.receivedCallCardView.visibility = View.VISIBLE
@@ -121,7 +126,8 @@ class ControlMessageView : LinearLayout {
                     binding.receivedCallIcon.setImageResource(iconRes)
                     binding.receivedCallIcon.imageTintList = iconTint
                     binding.receivedCallText.text = title
-                    binding.receivedCallDuration.isVisible = !isMissed
+                    binding.receivedCallDuration.isVisible = showDuration
+                    binding.receivedCallDuration.text = durationText
                     binding.receivedMessageTime.text = time
                 }
                 messageBody = ""
@@ -167,4 +173,24 @@ class ControlMessageView : LinearLayout {
 
     }
     // endregion
+}
+
+private fun formatCallDuration(context: Context, durationMillis: Long): String {
+    val res = context.resources
+    val totalSeconds = ((durationMillis + 999) / 1000).coerceAtLeast(1)
+    if (totalSeconds < 60) {
+        val secs = totalSeconds.toInt()
+        return res.getQuantityString(R.plurals.call_duration_seconds, secs, secs)
+    }
+    val totalMinutes = totalSeconds / 60
+    if (totalMinutes < 60) {
+        val mins = totalMinutes.toInt()
+        return res.getQuantityString(R.plurals.call_duration_minutes, mins, mins)
+    }
+    val hours = (totalMinutes / 60).toInt()
+    val mins = (totalMinutes % 60).toInt()
+    val hoursText = res.getQuantityString(R.plurals.call_duration_hours, hours, hours)
+    if (mins == 0) return hoursText
+    val minsText = res.getQuantityString(R.plurals.call_duration_minutes, mins, mins)
+    return context.getString(R.string.call_duration_hours_minutes, hoursText, minsText)
 }

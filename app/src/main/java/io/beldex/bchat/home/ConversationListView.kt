@@ -37,6 +37,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -232,7 +233,7 @@ private fun ConversationRow(
                     )
             )
 
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier.matchParentSize()) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -242,6 +243,7 @@ private fun ConversationRow(
                     DropdownMenu(
                         expanded = showMenu,
                         onDismissRequest = { showMenu = false },
+                        offset = DpOffset(x = 104.dp, y = 0.dp),
                         containerColor = MaterialTheme.appColors.selectedItemBackground.copy(alpha = 0.95f),
                         border = BorderStroke(1.dp, MaterialTheme.appColors.optionBorder),
                         shadowElevation = 16.dp,

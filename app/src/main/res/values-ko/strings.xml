@@ -1703,4 +1703,59 @@ Your wallet password can be used to access your wallet within BChat and authenti
         <item quantity="other">구성원 %d명</item>
     </plurals>
     <string name="no_contact_found">연락처를 찾을 수 없습니다!</string>
+    <string name="delete_message_title">메시지 삭제</string>
+    <string name="landing_headline">안녕하세요,\n\n함께하게 되어 정말 기뻐요!</string>
+    <string name="call_banner_person">상대방</string>
+    <string name="call_banner_in_call">%1$s 님과 통화 중</string>
+    <string name="call_banner_in_video_call">%1$s 님과 영상 통화 중</string>
+    <string name="search_gif">GIF 검색</string>
+    <string name="search_sticker">스티커 검색</string>
+    <string name="you_joined">참여했습니다</string>
+    <string name="you_created">생성했습니다</string>
+    <string name="today">오늘</string>
+    <string name="social_group_kind">소셜 그룹</string>
+    <string name="secret_group_kind">비밀 그룹</string>
+    <string name="bluetooth_device">블루투스 기기</string>
+    <string name="mobile_speaker">휴대폰 스피커</string>
+    <string name="message_timing">메시지 시간</string>
+    <string name="enter_the_bchat_id">BChat ID 입력</string>
+    <string name="enter_correct_bchat_id">올바른 BChat ID를 입력하세요!</string>
+    <string name="home_filter_all">전체</string>
+    <string name="home_filter_social">소셜</string>
+    <string name="home_filter_groups">그룹</string>
+    <string name="search_name_bns_bchat_id">검색 // 이름, BNS, BCHAT ID</string>
+    <string name="message_now">지금 메시지 보내기</string>
+    <string name="no_contacts_yet">아직 연락처가 없습니다!</string>
+    <string name="no_such_contact_found">해당 연락처를 찾을 수 없습니다!</string>
+    <string name="choose_language_device_language">(기기 언어)</string>
+    <string name="wrong_password_try_again">비밀번호가 틀렸습니다! 다시 시도하세요.</string>
+    <string name="apply">적용</string>
+    <string name="search_language">언어 검색</string>
+    <string name="dialog_voice_video_enable">사용</string>
+    <string name="hops_none">홉 없음</string>
+    <string name="hops_one">1홉 (기본값)</string>
+    <string name="hops_three">3홉</string>
+    <string name="hops_none_description">이 옵션을 선택하면 메시지가 중계 노드를 거치지 않고 수신자의 스웜으로 직접 전송됩니다.</string>
+    <string name="hops_one_description">이 옵션을 선택하면 메시지가 하나의 중계 노드를 거쳐 전송됩니다.</string>
+    <string name="hops_three_description">이 옵션을 선택하면 메시지가 세 개의 중계 노드를 거쳐 전송됩니다.</string>
+    <string name="write_message">메시지 작성</string>
+    <string name="message_label_sticker">스티커</string>
+    <string name="call_card_title">통화</string>
+    <string name="messages_selected_count">%1$d개 선택됨</string>
+    <string name="forward_to_selected">선택한 대화에 전달</string>
+    <string name="forward_no_chats">전달할 대화가 없습니다</string>
+    <string name="forward_not_possible">이 메시지는 전달할 수 없습니다</string>
+    <plurals name="forwarded_to_chats">
+        <item quantity="other">대화 %d개에 전달했습니다</item>
+    </plurals>
+    <plurals name="call_duration_seconds">
+        <item quantity="other">%d초</item>
+    </plurals>
+    <plurals name="call_duration_minutes">
+        <item quantity="other">%d분</item>
+    </plurals>
+    <plurals name="call_duration_hours">
+        <item quantity="other">%d시간</item>
+    </plurals>
+    <string name="call_duration_hours_minutes">%1$s %2$s</string>
 </resources>

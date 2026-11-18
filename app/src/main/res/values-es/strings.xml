@@ -1721,4 +1721,67 @@ Your wallet password can be used to access your wallet within BChat and authenti
         <item quantity="other">%d miembros</item>
     </plurals>
     <string name="no_contact_found">¡No se encontró ningún contacto!</string>
+    <string name="delete_message_title">Eliminar mensaje</string>
+    <string name="landing_headline">Hola,\n\n¡nos encanta tenerTE aquí!</string>
+    <string name="call_banner_person">Persona</string>
+    <string name="call_banner_in_call">%1$s en llamada</string>
+    <string name="call_banner_in_video_call">%1$s en videollamada</string>
+    <string name="search_gif">BUSCAR GIF</string>
+    <string name="search_sticker">BUSCAR STICKERS</string>
+    <string name="you_joined">Te uniste</string>
+    <string name="you_created">Creaste</string>
+    <string name="today">Hoy</string>
+    <string name="social_group_kind">Grupo social</string>
+    <string name="secret_group_kind">Grupo secreto</string>
+    <string name="bluetooth_device">Dispositivo Bluetooth</string>
+    <string name="mobile_speaker">Altavoz del teléfono</string>
+    <string name="message_timing">Hora de los mensajes</string>
+    <string name="enter_the_bchat_id">Introduce el ID de BChat</string>
+    <string name="enter_correct_bchat_id">¡Introduce un ID de BChat válido!</string>
+    <string name="home_filter_all">Todos</string>
+    <string name="home_filter_social">Sociales</string>
+    <string name="home_filter_groups">Grupos</string>
+    <string name="search_name_bns_bchat_id">BUSCAR // NOMBRE, BNS, ID DE BCHAT</string>
+    <string name="message_now">Enviar mensaje</string>
+    <string name="no_contacts_yet">¡Aún no hay contactos!</string>
+    <string name="no_such_contact_found">¡No se encontró ningún contacto!</string>
+    <string name="choose_language_device_language">(idioma del dispositivo)</string>
+    <string name="wrong_password_try_again">¡Contraseña incorrecta! Inténtalo de nuevo.</string>
+    <string name="apply">Aplicar</string>
+    <string name="search_language">Buscar idioma</string>
+    <string name="dialog_voice_video_enable">Activar</string>
+    <string name="hops_none">Sin saltos</string>
+    <string name="hops_one">1 salto (predeterminado)</string>
+    <string name="hops_three">3 saltos</string>
+    <string name="hops_none_description">Con esta opción, los mensajes se envían directamente al enjambre del destinatario sin pasar por nodos intermediarios.</string>
+    <string name="hops_one_description">Con esta opción, los mensajes se enrutan a través de un nodo intermediario.</string>
+    <string name="hops_three_description">Con esta opción, los mensajes se enrutan a través de tres nodos intermediarios.</string>
+    <string name="write_message">Escribir mensaje</string>
+    <string name="message_label_sticker">Sticker</string>
+    <string name="call_card_title">Llamada</string>
+    <string name="messages_selected_count">%1$d seleccionados</string>
+    <string name="forward_to_selected">Reenviar a los seleccionados</string>
+    <string name="forward_no_chats">No hay chats para reenviar</string>
+    <string name="forward_not_possible">Este mensaje no se puede reenviar</string>
+    <plurals name="forwarded_to_chats">
+        <item quantity="one">Reenviado a %d chat</item>
+        <item quantity="many">Reenviado a %d chats</item>
+        <item quantity="other">Reenviado a %d chats</item>
+    </plurals>
+    <plurals name="call_duration_seconds">
+        <item quantity="one">%d s</item>
+        <item quantity="many">%d s</item>
+        <item quantity="other">%d s</item>
+    </plurals>
+    <plurals name="call_duration_minutes">
+        <item quantity="one">%d min</item>
+        <item quantity="many">%d min</item>
+        <item quantity="other">%d min</item>
+    </plurals>
+    <plurals name="call_duration_hours">
+        <item quantity="one">%d h</item>
+        <item quantity="many">%d h</item>
+        <item quantity="other">%d h</item>
+    </plurals>
+    <string name="call_duration_hours_minutes">%1$s %2$s</string>
 </resources>

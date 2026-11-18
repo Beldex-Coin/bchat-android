@@ -1719,4 +1719,63 @@ Your wallet password can be used to access your wallet within BChat and authenti
         <item quantity="other">%d Mitglieder</item>
     </plurals>
     <string name="no_contact_found">Kein Kontakt gefunden!</string>
+    <string name="delete_message_title">Nachricht löschen</string>
+    <string name="landing_headline">Hallo,\n\nschön, dass DU da bist!</string>
+    <string name="call_banner_person">Person</string>
+    <string name="call_banner_in_call">%1$s im Anruf</string>
+    <string name="call_banner_in_video_call">%1$s im Videoanruf</string>
+    <string name="search_gif">GIF SUCHEN</string>
+    <string name="search_sticker">STICKER SUCHEN</string>
+    <string name="you_joined">Du bist beigetreten</string>
+    <string name="you_created">Du hast erstellt</string>
+    <string name="today">Heute</string>
+    <string name="social_group_kind">Social-Gruppe</string>
+    <string name="secret_group_kind">Geheimgruppe</string>
+    <string name="bluetooth_device">Bluetooth-Gerät</string>
+    <string name="mobile_speaker">Lautsprecher</string>
+    <string name="message_timing">Nachrichtenzeit</string>
+    <string name="enter_the_bchat_id">BChat-ID eingeben</string>
+    <string name="enter_correct_bchat_id">Gib eine gültige BChat-ID ein!</string>
+    <string name="home_filter_all">Alle</string>
+    <string name="home_filter_social">Sozial</string>
+    <string name="home_filter_groups">Gruppen</string>
+    <string name="search_name_bns_bchat_id">SUCHEN // NAME, BNS, BCHAT-ID</string>
+    <string name="message_now">Jetzt schreiben</string>
+    <string name="no_contacts_yet">Noch keine Kontakte!</string>
+    <string name="no_such_contact_found">Kein passender Kontakt gefunden!</string>
+    <string name="choose_language_device_language">(Gerätesprache)</string>
+    <string name="wrong_password_try_again">Falsches Passwort! Versuche es erneut.</string>
+    <string name="apply">Übernehmen</string>
+    <string name="search_language">Sprache suchen</string>
+    <string name="dialog_voice_video_enable">Aktivieren</string>
+    <string name="hops_none">Keine Hops</string>
+    <string name="hops_one">1 Hop (Standard)</string>
+    <string name="hops_three">3 Hops</string>
+    <string name="hops_none_description">Bei dieser Option werden Nachrichten direkt an den Schwarm des Empfängers gesendet, ohne über Zwischenknoten geleitet zu werden.</string>
+    <string name="hops_one_description">Bei dieser Option werden Nachrichten über einen Zwischenknoten geleitet.</string>
+    <string name="hops_three_description">Bei dieser Option werden Nachrichten über drei Zwischenknoten geleitet.</string>
+    <string name="write_message">Nachricht schreiben</string>
+    <string name="message_label_sticker">Sticker</string>
+    <string name="call_card_title">Anruf</string>
+    <string name="messages_selected_count">%1$d ausgewählt</string>
+    <string name="forward_to_selected">An Ausgewählte weiterleiten</string>
+    <string name="forward_no_chats">Keine Chats zum Weiterleiten</string>
+    <string name="forward_not_possible">Diese Nachricht kann nicht weitergeleitet werden</string>
+    <plurals name="forwarded_to_chats">
+        <item quantity="one">An %d Chat weitergeleitet</item>
+        <item quantity="other">An %d Chats weitergeleitet</item>
+    </plurals>
+    <plurals name="call_duration_seconds">
+        <item quantity="one">%d Sek.</item>
+        <item quantity="other">%d Sek.</item>
+    </plurals>
+    <plurals name="call_duration_minutes">
+        <item quantity="one">%d Min.</item>
+        <item quantity="other">%d Min.</item>
+    </plurals>
+    <plurals name="call_duration_hours">
+        <item quantity="one">%d Std.</item>
+        <item quantity="other">%d Std.</item>
+    </plurals>
+    <string name="call_duration_hours_minutes">%1$s %2$s</string>
 </resources>

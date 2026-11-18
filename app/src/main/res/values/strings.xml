@@ -1000,7 +1000,7 @@
     <string name="conversation_context__menu_call">Call</string>
     <string name="ConversationActivity_call_title">Call Permissions Required</string>
     <string name="dialog_voice_video_title">Voice/Video Calls</string>
-    <string name="dialog_voice_video_message">The current implementation of voice / video calls will expose your IP address to the Beldex servers and the calling / called user.</string>
+    <string name="dialog_voice_video_message">The current implementation of voice/video calls will expose your IP address to the Beldex servers and the calling/called user.</string>
     <string name="CallNotificationBuilder_system_notification_message">Having notifications disabled will prevent you from receiving calls, go to Bchat notification settings?</string>
     <string name="dismiss">Dismiss</string>
     <string name="preferences__voice_video_calls">Voice and video calls</string>
@@ -1026,9 +1026,6 @@
     <string name="answer">Answer</string>
     <string name="back_to_call">Back to call</string>
     <string name="call_in_progress">Call in progress</string>
-    <string name="tap_to_return_to_call">Tap to Return to the Call</string>
-    <string name="preferences__clear_conversation_history">Clear conversation History</string>
-    <string name="clear_all_conversation_history_confirmation">Permanently delete all messages in every conversation? Your conversations and contacts will be kept.</string>
     <string name="message_timing">Message Timing</string>
     <string name="enter_the_bchat_id">Enter the BChat ID</string>
     <string name="enter_correct_bchat_id">Enter correct BChat ID!</string>
@@ -1759,7 +1756,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="call_duration_static" translatable="false">4 min</string>
     <string name="call_card_title">Call</string>
     <string name="messages_selected_count">%1$d Selected</string>
-    <!-- Revamp_2026 Forward screen (Figma Select_contact 7546:9857) -->
     <string name="forward_to_selected">Forward to selected</string>
     <string name="forward_no_chats">No chats to forward to</string>
     <string name="forward_not_possible">This message can\'t be forwarded</string>
@@ -1767,4 +1763,17 @@ Your wallet password can be used to access your wallet within BChat and authenti
         <item quantity="one">Forwarded to %d chat</item>
         <item quantity="other">Forwarded to %d chats</item>
     </plurals>
+    <plurals name="call_duration_seconds">
+        <item quantity="one">%d sec</item>
+        <item quantity="other">%d secs</item>
+    </plurals>
+    <plurals name="call_duration_minutes">
+        <item quantity="one">%d min</item>
+        <item quantity="other">%d mins</item>
+    </plurals>
+    <plurals name="call_duration_hours">
+        <item quantity="one">%d hr</item>
+        <item quantity="other">%d hrs</item>
+    </plurals>
+    <string name="call_duration_hours_minutes">%1$s %2$s</string>
 </resources>

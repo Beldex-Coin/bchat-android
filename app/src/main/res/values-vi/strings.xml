@@ -1704,4 +1704,59 @@ Your wallet password can be used to access your wallet within BChat and authenti
         <item quantity="other">%d thành viên</item>
     </plurals>
     <string name="no_contact_found">Không tìm thấy liên hệ nào!</string>
+    <string name="delete_message_title">Xóa tin nhắn</string>
+    <string name="landing_headline">Xin chào,\n\nchúng tôi rất vui khi có BẠN!</string>
+    <string name="call_banner_person">Người dùng</string>
+    <string name="call_banner_in_call">%1$s đang trong cuộc gọi</string>
+    <string name="call_banner_in_video_call">%1$s đang trong cuộc gọi video</string>
+    <string name="search_gif">TÌM GIF</string>
+    <string name="search_sticker">TÌM NHÃN DÁN</string>
+    <string name="you_joined">Bạn đã tham gia</string>
+    <string name="you_created">Bạn đã tạo</string>
+    <string name="today">Hôm nay</string>
+    <string name="social_group_kind">Nhóm xã hội</string>
+    <string name="secret_group_kind">Nhóm bí mật</string>
+    <string name="bluetooth_device">Thiết bị Bluetooth</string>
+    <string name="mobile_speaker">Loa điện thoại</string>
+    <string name="message_timing">Thời gian tin nhắn</string>
+    <string name="enter_the_bchat_id">Nhập ID BChat</string>
+    <string name="enter_correct_bchat_id">Nhập đúng ID BChat!</string>
+    <string name="home_filter_all">Tất cả</string>
+    <string name="home_filter_social">Xã hội</string>
+    <string name="home_filter_groups">Nhóm</string>
+    <string name="search_name_bns_bchat_id">TÌM KIẾM // TÊN, BNS, ID BCHAT</string>
+    <string name="message_now">Nhắn tin ngay</string>
+    <string name="no_contacts_yet">Chưa có liên hệ nào!</string>
+    <string name="no_such_contact_found">Không tìm thấy liên hệ nào!</string>
+    <string name="choose_language_device_language">(ngôn ngữ thiết bị)</string>
+    <string name="wrong_password_try_again">Sai mật khẩu! Vui lòng thử lại.</string>
+    <string name="apply">Áp dụng</string>
+    <string name="search_language">Tìm ngôn ngữ</string>
+    <string name="dialog_voice_video_enable">Bật</string>
+    <string name="hops_none">Không nhảy</string>
+    <string name="hops_one">1 lần nhảy (Mặc định)</string>
+    <string name="hops_three">3 lần nhảy</string>
+    <string name="hops_none_description">Khi chọn tùy chọn này, tin nhắn sẽ được gửi thẳng đến nhóm nút của người nhận mà không đi qua các nút trung gian.</string>
+    <string name="hops_one_description">Khi chọn tùy chọn này, tin nhắn sẽ được chuyển qua một nút trung gian.</string>
+    <string name="hops_three_description">Khi chọn tùy chọn này, tin nhắn sẽ được chuyển qua ba nút trung gian.</string>
+    <string name="write_message">Viết tin nhắn</string>
+    <string name="message_label_sticker">Nhãn dán</string>
+    <string name="call_card_title">Cuộc gọi</string>
+    <string name="messages_selected_count">Đã chọn %1$d</string>
+    <string name="forward_to_selected">Chuyển tiếp đến mục đã chọn</string>
+    <string name="forward_no_chats">Không có cuộc trò chuyện nào để chuyển tiếp</string>
+    <string name="forward_not_possible">Không thể chuyển tiếp tin nhắn này</string>
+    <plurals name="forwarded_to_chats">
+        <item quantity="other">Đã chuyển tiếp đến %d cuộc trò chuyện</item>
+    </plurals>
+    <plurals name="call_duration_seconds">
+        <item quantity="other">%d giây</item>
+    </plurals>
+    <plurals name="call_duration_minutes">
+        <item quantity="other">%d phút</item>
+    </plurals>
+    <plurals name="call_duration_hours">
+        <item quantity="other">%d giờ</item>
+    </plurals>
+    <string name="call_duration_hours_minutes">%1$s %2$s</string>
 </resources>

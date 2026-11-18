@@ -1703,4 +1703,59 @@ Your wallet password can be used to access your wallet within BChat and authenti
         <item quantity="other">%d メンバー</item>
     </plurals>
     <string name="no_contact_found">連絡先が見つかりません！</string>
+    <string name="delete_message_title">メッセージを削除</string>
+    <string name="landing_headline">こんにちは、\n\nようこそ、あなたを歓迎します！</string>
+    <string name="call_banner_person">相手</string>
+    <string name="call_banner_in_call">%1$s と通話中</string>
+    <string name="call_banner_in_video_call">%1$s とビデオ通話中</string>
+    <string name="search_gif">GIFを検索</string>
+    <string name="search_sticker">ステッカーを検索</string>
+    <string name="you_joined">参加しました</string>
+    <string name="you_created">作成しました</string>
+    <string name="today">今日</string>
+    <string name="social_group_kind">ソーシャルグループ</string>
+    <string name="secret_group_kind">秘密グループ</string>
+    <string name="bluetooth_device">Bluetoothデバイス</string>
+    <string name="mobile_speaker">スピーカー</string>
+    <string name="message_timing">メッセージの時刻</string>
+    <string name="enter_the_bchat_id">BChat IDを入力</string>
+    <string name="enter_correct_bchat_id">正しいBChat IDを入力してください！</string>
+    <string name="home_filter_all">すべて</string>
+    <string name="home_filter_social">ソーシャル</string>
+    <string name="home_filter_groups">グループ</string>
+    <string name="search_name_bns_bchat_id">検索 // 名前、BNS、BCHAT ID</string>
+    <string name="message_now">メッセージを送る</string>
+    <string name="no_contacts_yet">連絡先はまだありません！</string>
+    <string name="no_such_contact_found">該当する連絡先が見つかりません！</string>
+    <string name="choose_language_device_language">（端末の言語）</string>
+    <string name="wrong_password_try_again">パスワードが違います。もう一度お試しください。</string>
+    <string name="apply">適用</string>
+    <string name="search_language">言語を検索</string>
+    <string name="dialog_voice_video_enable">有効にする</string>
+    <string name="hops_none">ホップなし</string>
+    <string name="hops_one">1ホップ（デフォルト）</string>
+    <string name="hops_three">3ホップ</string>
+    <string name="hops_none_description">このオプションを選択すると、メッセージは中継ノードを経由せず、受信者のスウォームに直接送信されます。</string>
+    <string name="hops_one_description">このオプションを選択すると、メッセージは1つの中継ノードを経由して送信されます。</string>
+    <string name="hops_three_description">このオプションを選択すると、メッセージは3つの中継ノードを経由して送信されます。</string>
+    <string name="write_message">メッセージを書く</string>
+    <string name="message_label_sticker">ステッカー</string>
+    <string name="call_card_title">通話</string>
+    <string name="messages_selected_count">%1$d件選択中</string>
+    <string name="forward_to_selected">選択した相手に転送</string>
+    <string name="forward_no_chats">転送できるチャットがありません</string>
+    <string name="forward_not_possible">このメッセージは転送できません</string>
+    <plurals name="forwarded_to_chats">
+        <item quantity="other">%d件のチャットに転送しました</item>
+    </plurals>
+    <plurals name="call_duration_seconds">
+        <item quantity="other">%d秒</item>
+    </plurals>
+    <plurals name="call_duration_minutes">
+        <item quantity="other">%d分</item>
+    </plurals>
+    <plurals name="call_duration_hours">
+        <item quantity="other">%d時間</item>
+    </plurals>
+    <string name="call_duration_hours_minutes">%1$s %2$s</string>
 </resources>

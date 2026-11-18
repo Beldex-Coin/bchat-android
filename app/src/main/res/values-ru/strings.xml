@@ -1752,4 +1752,71 @@ Your wallet password can be used to access your wallet within BChat and authenti
         <item quantity="other">%d участника</item>
     </plurals>
     <string name="no_contact_found">Контакт не найден!</string>
+    <string name="delete_message_title">Удалить сообщение</string>
+    <string name="landing_headline">Привет,\n\nмы рады видеть ВАС!</string>
+    <string name="call_banner_person">Собеседник</string>
+    <string name="call_banner_in_call">%1$s на связи</string>
+    <string name="call_banner_in_video_call">%1$s на видеосвязи</string>
+    <string name="search_gif">ПОИСК GIF</string>
+    <string name="search_sticker">ПОИСК СТИКЕРОВ</string>
+    <string name="you_joined">Вы присоединились</string>
+    <string name="you_created">Вы создали</string>
+    <string name="today">Сегодня</string>
+    <string name="social_group_kind">Социальная группа</string>
+    <string name="secret_group_kind">Секретная группа</string>
+    <string name="bluetooth_device">Bluetooth-устройство</string>
+    <string name="mobile_speaker">Динамик телефона</string>
+    <string name="message_timing">Время сообщений</string>
+    <string name="enter_the_bchat_id">Введите ID BChat</string>
+    <string name="enter_correct_bchat_id">Введите правильный ID BChat!</string>
+    <string name="home_filter_all">Все</string>
+    <string name="home_filter_social">Социальные</string>
+    <string name="home_filter_groups">Группы</string>
+    <string name="search_name_bns_bchat_id">ПОИСК // ИМЯ, BNS, ID BCHAT</string>
+    <string name="message_now">Написать</string>
+    <string name="no_contacts_yet">Контактов пока нет!</string>
+    <string name="no_such_contact_found">Контакт не найден!</string>
+    <string name="choose_language_device_language">(язык устройства)</string>
+    <string name="wrong_password_try_again">Неверный пароль! Попробуйте ещё раз.</string>
+    <string name="apply">Применить</string>
+    <string name="search_language">Поиск языка</string>
+    <string name="dialog_voice_video_enable">Включить</string>
+    <string name="hops_none">Без хопов</string>
+    <string name="hops_one">1 хоп (по умолчанию)</string>
+    <string name="hops_three">3 хопа</string>
+    <string name="hops_none_description">При выборе этого варианта сообщения отправляются напрямую в рой получателя без маршрутизации через промежуточные узлы.</string>
+    <string name="hops_one_description">При выборе этого варианта сообщения проходят через один промежуточный узел.</string>
+    <string name="hops_three_description">При выборе этого варианта сообщения проходят через три промежуточных узла.</string>
+    <string name="write_message">Написать сообщение</string>
+    <string name="message_label_sticker">Стикер</string>
+    <string name="call_card_title">Звонок</string>
+    <string name="messages_selected_count">Выбрано: %1$d</string>
+    <string name="forward_to_selected">Переслать выбранным</string>
+    <string name="forward_no_chats">Нет чатов для пересылки</string>
+    <string name="forward_not_possible">Это сообщение нельзя переслать</string>
+    <plurals name="forwarded_to_chats">
+        <item quantity="one">Переслано в %d чат</item>
+        <item quantity="few">Переслано в %d чата</item>
+        <item quantity="many">Переслано в %d чатов</item>
+        <item quantity="other">Переслано в %d чата</item>
+    </plurals>
+    <plurals name="call_duration_seconds">
+        <item quantity="one">%d сек.</item>
+        <item quantity="few">%d сек.</item>
+        <item quantity="many">%d сек.</item>
+        <item quantity="other">%d сек.</item>
+    </plurals>
+    <plurals name="call_duration_minutes">
+        <item quantity="one">%d мин.</item>
+        <item quantity="few">%d мин.</item>
+        <item quantity="many">%d мин.</item>
+        <item quantity="other">%d мин.</item>
+    </plurals>
+    <plurals name="call_duration_hours">
+        <item quantity="one">%d ч</item>
+        <item quantity="few">%d ч</item>
+        <item quantity="many">%d ч</item>
+        <item quantity="other">%d ч</item>
+    </plurals>
+    <string name="call_duration_hours_minutes">%1$s %2$s</string>
 </resources>

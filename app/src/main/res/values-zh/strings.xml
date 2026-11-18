@@ -1703,4 +1703,59 @@ Your wallet password can be used to access your wallet within BChat and authenti
         <item quantity="other">%d 位成员</item>
     </plurals>
     <string name="no_contact_found">未找到聯絡人！</string>
+    <string name="delete_message_title">删除消息</string>
+    <string name="landing_headline">你好，\n\n很高兴有你加入！</string>
+    <string name="call_banner_person">联系人</string>
+    <string name="call_banner_in_call">与 %1$s 通话中</string>
+    <string name="call_banner_in_video_call">与 %1$s 视频通话中</string>
+    <string name="search_gif">搜索 GIF</string>
+    <string name="search_sticker">搜索贴纸</string>
+    <string name="you_joined">你已加入</string>
+    <string name="you_created">你已创建</string>
+    <string name="today">今天</string>
+    <string name="social_group_kind">社交群组</string>
+    <string name="secret_group_kind">秘密群组</string>
+    <string name="bluetooth_device">蓝牙设备</string>
+    <string name="mobile_speaker">手机扬声器</string>
+    <string name="message_timing">消息时间</string>
+    <string name="enter_the_bchat_id">输入 BChat ID</string>
+    <string name="enter_correct_bchat_id">请输入正确的 BChat ID！</string>
+    <string name="home_filter_all">全部</string>
+    <string name="home_filter_social">社交</string>
+    <string name="home_filter_groups">群组</string>
+    <string name="search_name_bns_bchat_id">搜索 // 名称、BNS、BCHAT ID</string>
+    <string name="message_now">立即发消息</string>
+    <string name="no_contacts_yet">暂无联系人！</string>
+    <string name="no_such_contact_found">未找到该联系人！</string>
+    <string name="choose_language_device_language">（设备语言）</string>
+    <string name="wrong_password_try_again">密码错误！请重试。</string>
+    <string name="apply">应用</string>
+    <string name="search_language">搜索语言</string>
+    <string name="dialog_voice_video_enable">启用</string>
+    <string name="hops_none">无跳数</string>
+    <string name="hops_one">1 跳（默认）</string>
+    <string name="hops_three">3 跳</string>
+    <string name="hops_none_description">选择此选项后，消息将直接发送到接收者的节点群，不经过中间节点转发。</string>
+    <string name="hops_one_description">选择此选项后，消息将经由一个中间节点转发。</string>
+    <string name="hops_three_description">选择此选项后，消息将经由三个中间节点转发。</string>
+    <string name="write_message">写消息</string>
+    <string name="message_label_sticker">贴纸</string>
+    <string name="call_card_title">通话</string>
+    <string name="messages_selected_count">已选择 %1$d 项</string>
+    <string name="forward_to_selected">转发给所选对象</string>
+    <string name="forward_no_chats">没有可转发的聊天</string>
+    <string name="forward_not_possible">此消息无法转发</string>
+    <plurals name="forwarded_to_chats">
+        <item quantity="other">已转发到 %d 个聊天</item>
+    </plurals>
+    <plurals name="call_duration_seconds">
+        <item quantity="other">%d 秒</item>
+    </plurals>
+    <plurals name="call_duration_minutes">
+        <item quantity="other">%d 分钟</item>
+    </plurals>
+    <plurals name="call_duration_hours">
+        <item quantity="other">%d 小时</item>
+    </plurals>
+    <string name="call_duration_hours_minutes">%1$s %2$s</string>
 </resources>

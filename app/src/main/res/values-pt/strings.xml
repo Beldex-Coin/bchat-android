@@ -1721,4 +1721,67 @@ Your wallet password can be used to access your wallet within BChat and authenti
         <item quantity="other">%d membros</item>
     </plurals>
     <string name="no_contact_found">Nenhum contato encontrado!</string>
+    <string name="delete_message_title">Excluir mensagem</string>
+    <string name="landing_headline">Olá,\n\nestamos muito felizes em ter VOCÊ aqui!</string>
+    <string name="call_banner_person">Pessoa</string>
+    <string name="call_banner_in_call">%1$s em chamada</string>
+    <string name="call_banner_in_video_call">%1$s em chamada de vídeo</string>
+    <string name="search_gif">PESQUISAR GIF</string>
+    <string name="search_sticker">PESQUISAR FIGURINHAS</string>
+    <string name="you_joined">Você entrou</string>
+    <string name="you_created">Você criou</string>
+    <string name="today">Hoje</string>
+    <string name="social_group_kind">Grupo social</string>
+    <string name="secret_group_kind">Grupo secreto</string>
+    <string name="bluetooth_device">Dispositivo Bluetooth</string>
+    <string name="mobile_speaker">Alto-falante do celular</string>
+    <string name="message_timing">Horário das mensagens</string>
+    <string name="enter_the_bchat_id">Digite o ID do BChat</string>
+    <string name="enter_correct_bchat_id">Digite um ID do BChat válido!</string>
+    <string name="home_filter_all">Todos</string>
+    <string name="home_filter_social">Sociais</string>
+    <string name="home_filter_groups">Grupos</string>
+    <string name="search_name_bns_bchat_id">PESQUISAR // NOME, BNS, ID DO BCHAT</string>
+    <string name="message_now">Enviar mensagem</string>
+    <string name="no_contacts_yet">Ainda não há contatos!</string>
+    <string name="no_such_contact_found">Nenhum contato encontrado!</string>
+    <string name="choose_language_device_language">(idioma do dispositivo)</string>
+    <string name="wrong_password_try_again">Senha incorreta! Tente novamente.</string>
+    <string name="apply">Aplicar</string>
+    <string name="search_language">Pesquisar idioma</string>
+    <string name="dialog_voice_video_enable">Ativar</string>
+    <string name="hops_none">Sem Hops</string>
+    <string name="hops_one">1 Hop (padrão)</string>
+    <string name="hops_three">3 Hops</string>
+    <string name="hops_none_description">Com esta opção, as mensagens são enviadas diretamente ao swarm do destinatário, sem passar por nós intermediários.</string>
+    <string name="hops_one_description">Com esta opção, as mensagens são roteadas por um nó intermediário.</string>
+    <string name="hops_three_description">Com esta opção, as mensagens são roteadas por três nós intermediários.</string>
+    <string name="write_message">Escrever mensagem</string>
+    <string name="message_label_sticker">Figurinha</string>
+    <string name="call_card_title">Chamada</string>
+    <string name="messages_selected_count">%1$d selecionadas</string>
+    <string name="forward_to_selected">Encaminhar para selecionados</string>
+    <string name="forward_no_chats">Nenhuma conversa para encaminhar</string>
+    <string name="forward_not_possible">Esta mensagem não pode ser encaminhada</string>
+    <plurals name="forwarded_to_chats">
+        <item quantity="one">Encaminhada para %d conversa</item>
+        <item quantity="many">Encaminhada para %d conversas</item>
+        <item quantity="other">Encaminhada para %d conversas</item>
+    </plurals>
+    <plurals name="call_duration_seconds">
+        <item quantity="one">%d s</item>
+        <item quantity="many">%d s</item>
+        <item quantity="other">%d s</item>
+    </plurals>
+    <plurals name="call_duration_minutes">
+        <item quantity="one">%d min</item>
+        <item quantity="many">%d min</item>
+        <item quantity="other">%d min</item>
+    </plurals>
+    <plurals name="call_duration_hours">
+        <item quantity="one">%d h</item>
+        <item quantity="many">%d h</item>
+        <item quantity="other">%d h</item>
+    </plurals>
+    <string name="call_duration_hours_minutes">%1$s %2$s</string>
 </resources>

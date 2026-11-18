@@ -1720,4 +1720,63 @@ Your wallet password can be used to access your wallet within BChat and authenti
         <item quantity="other">%d üye</item>
     </plurals>
     <string name="no_contact_found">İletişim Bulunamadı!</string>
+    <string name="delete_message_title">Mesajı sil</string>
+    <string name="landing_headline">Merhaba,\n\nSENİ aramızda görmekten çok mutluyuz!</string>
+    <string name="call_banner_person">Kişi</string>
+    <string name="call_banner_in_call">%1$s aramada</string>
+    <string name="call_banner_in_video_call">%1$s görüntülü aramada</string>
+    <string name="search_gif">GIF ARA</string>
+    <string name="search_sticker">ÇIKARTMA ARA</string>
+    <string name="you_joined">Katıldınız</string>
+    <string name="you_created">Oluşturdunuz</string>
+    <string name="today">Bugün</string>
+    <string name="social_group_kind">Sosyal grup</string>
+    <string name="secret_group_kind">Gizli grup</string>
+    <string name="bluetooth_device">Bluetooth cihazı</string>
+    <string name="mobile_speaker">Telefon hoparlörü</string>
+    <string name="message_timing">Mesaj zamanlaması</string>
+    <string name="enter_the_bchat_id">BChat Kimliğini girin</string>
+    <string name="enter_correct_bchat_id">Geçerli bir BChat Kimliği girin!</string>
+    <string name="home_filter_all">Tümü</string>
+    <string name="home_filter_social">Sosyal</string>
+    <string name="home_filter_groups">Gruplar</string>
+    <string name="search_name_bns_bchat_id">ARA // AD, BNS, BCHAT KİMLİĞİ</string>
+    <string name="message_now">Mesaj gönder</string>
+    <string name="no_contacts_yet">Henüz kişi yok!</string>
+    <string name="no_such_contact_found">Böyle bir kişi bulunamadı!</string>
+    <string name="choose_language_device_language">(cihaz dili)</string>
+    <string name="wrong_password_try_again">Yanlış şifre! Tekrar deneyin.</string>
+    <string name="apply">Uygula</string>
+    <string name="search_language">Dil ara</string>
+    <string name="dialog_voice_video_enable">Etkinleştir</string>
+    <string name="hops_none">Hops Yok</string>
+    <string name="hops_one">1 Hop (Varsayılan)</string>
+    <string name="hops_three">3 Hops</string>
+    <string name="hops_none_description">Bu seçenek seçildiğinde mesajlar, ara düğümlerden geçmeden doğrudan alıcının sürüsüne gönderilir.</string>
+    <string name="hops_one_description">Bu seçenek seçildiğinde mesajlar bir ara düğüm üzerinden yönlendirilir.</string>
+    <string name="hops_three_description">Bu seçenek seçildiğinde mesajlar üç ara düğüm üzerinden yönlendirilir.</string>
+    <string name="write_message">Mesaj yaz</string>
+    <string name="message_label_sticker">Çıkartma</string>
+    <string name="call_card_title">Arama</string>
+    <string name="messages_selected_count">%1$d seçildi</string>
+    <string name="forward_to_selected">Seçilenlere ilet</string>
+    <string name="forward_no_chats">İletilecek sohbet yok</string>
+    <string name="forward_not_possible">Bu mesaj iletilemez</string>
+    <plurals name="forwarded_to_chats">
+        <item quantity="one">%d sohbete iletildi</item>
+        <item quantity="other">%d sohbete iletildi</item>
+    </plurals>
+    <plurals name="call_duration_seconds">
+        <item quantity="one">%d sn</item>
+        <item quantity="other">%d sn</item>
+    </plurals>
+    <plurals name="call_duration_minutes">
+        <item quantity="one">%d dk</item>
+        <item quantity="other">%d dk</item>
+    </plurals>
+    <plurals name="call_duration_hours">
+        <item quantity="one">%d sa</item>
+        <item quantity="other">%d sa</item>
+    </plurals>
+    <string name="call_duration_hours_minutes">%1$s %2$s</string>
 </resources>

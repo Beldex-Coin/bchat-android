@@ -1,25 +1,27 @@
 package io.beldex.bchat.onboarding
 
 import android.Manifest
-import android.app.AlertDialog
 import android.app.NotificationManager
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.widget.Button
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.core.view.WindowCompat
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.BaseComponentActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.compose_utils.IconConfirmDialog
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.onboarding.ui.LandingScreen
 import io.beldex.bchat.permissions.Permissions
@@ -29,6 +31,8 @@ import io.beldex.bchat.util.nodelistasync.NodeListConstants
 import io.beldex.bchat.util.push
 
 class LandingActivity : BaseComponentActivity() {
+
+    private var showEnableNotification by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +47,20 @@ class LandingActivity : BaseComponentActivity() {
                     onRestoreAccountClick = { restore() },
                     onTermsClick = { link() }
                 )
+                if (showEnableNotification) {
+                    IconConfirmDialog(
+                        icon = painterResource(id = R.drawable.ic_notification_outline),
+                        title = stringResource(id = R.string.activity_settings_notifications_button_title),
+                        message = AnnotatedString(stringResource(id = R.string.notification_enable_content)),
+                        cancelText = stringResource(id = R.string.cancel),
+                        confirmText = stringResource(id = R.string.dialog_link_preview_enable_button_title),
+                        onCancel = { showEnableNotification = false },
+                        onConfirm = {
+                            showEnableNotification = false
+                            requestNotificationPermission()
+                        }
+                    )
+                }
             }
         }
 
@@ -69,26 +87,17 @@ class LandingActivity : BaseComponentActivity() {
     }
 
     private fun enableNotification() {
-        val dialog = AlertDialog.Builder(this)
-        val li = LayoutInflater.from(dialog.context)
-        val promptsView = li.inflate(R.layout.alert_notification_enable, null)
+        showEnableNotification = true
+    }
 
-        dialog.setView(promptsView)
-        val enable = promptsView.findViewById<Button>(R.id.enableButton)
-        val alertDialog: AlertDialog = dialog.create()
-        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        alertDialog.show()
-
-        enable.setOnClickListener {
-            if (!(getSystemService(
-                            NOTIFICATION_SERVICE
-                    ) as NotificationManager).areNotificationsEnabled() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
-            ) {
-                Permissions.with(this)
-                        .request(Manifest.permission.POST_NOTIFICATIONS)
-                        .execute()
-            }
-            alertDialog.dismiss()
+    private fun requestNotificationPermission() {
+        if (!(getSystemService(
+                NOTIFICATION_SERVICE
+            ) as NotificationManager).areNotificationsEnabled() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+        ) {
+            Permissions.with(this)
+                .request(Manifest.permission.POST_NOTIFICATIONS)
+                .execute()
         }
     }
 

@@ -187,20 +187,17 @@ private fun ConversationRow(
         state = dismissState,
         enableDismissFromStartToEnd = false,
         backgroundContent = {
-            // Figma destructive style: red-tinted panel, red hairline, red bin. Only while swiping, so
-            // resting rows never show it through their transparent background.
             if (dismissState.dismissDirection != SwipeToDismissBoxValue.Settled) Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color(0x1AFF3E3E))
-                    .border(0.5.dp, Color(0xFFFF3E3E))
-                    .padding(horizontal = 24.dp),
+                    .padding(end = 19.dp),
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_delete_menu),
+                    painter = painterResource(id = R.drawable.ic_selection_delete),
                     contentDescription = stringResource(R.string.delete),
-                    tint = Color(0xFFFF3E3E)
+                    tint = Color(0xFFFF3E3E),
+                    modifier = Modifier.size(22.dp)
                 )
             }
         }
@@ -222,14 +219,14 @@ private fun ConversationRow(
                 // The avatar's top-right corner cut is drawn by NotchedAvatarImageView inside the row.
                 factory = { ctx -> ConversationView(ctx) },
                 update = { view -> view.bind(thread, isTyping, glide) },
-                // Figma rows sit directly on the dotted background; only go opaque while swiping so the
-                // delete layer underneath doesn't show through.
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(
+                    .then(
                         if (dismissState.dismissDirection != SwipeToDismissBoxValue.Settled)
-                            MaterialTheme.appColors.backgroundColor
-                        else Color.Transparent
+                            Modifier
+                                .background(MaterialTheme.appColors.callBadgeBackground)
+                                .border(1.dp, MaterialTheme.appColors.callDeviceCardBorder)
+                        else Modifier
                     )
             )
 

@@ -1758,4 +1758,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
         <item quantity="other">%d 小时</item>
     </plurals>
     <string name="call_duration_hours_minutes">%1$s %2$s</string>
+    <string name="camera_access_title">允许访问相机</string>
+    <string name="camera_access_description">BChat 需要使用相机来扫描二维码。相机仅在扫描时使用。</string>
 </resources>

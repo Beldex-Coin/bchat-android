@@ -1856,4 +1856,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
         <item quantity="other">%d س</item>
     </plurals>
     <string name="call_duration_hours_minutes">%1$s %2$s</string>
+    <string name="camera_access_title">السماح بالوصول إلى الكاميرا</string>
+    <string name="camera_access_description">يحتاج BChat إلى الكاميرا لمسح رموز QR. تُستخدم فقط أثناء المسح.</string>
 </resources>

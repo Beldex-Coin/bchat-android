@@ -1758,4 +1758,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
         <item quantity="other">%d시간</item>
     </plurals>
     <string name="call_duration_hours_minutes">%1$s %2$s</string>
+    <string name="camera_access_title">카메라 접근 허용</string>
+    <string name="camera_access_description">QR 코드를 스캔하려면 BChat에 카메라 권한이 필요합니다. 카메라는 스캔하는 동안에만 사용됩니다.</string>
 </resources>

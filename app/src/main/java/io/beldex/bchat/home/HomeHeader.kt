@@ -28,26 +28,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.beldex.libbchat.avatars.AvatarHelper
 import com.beldex.libbchat.avatars.ProfileContactPhoto
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.NotchedAvatarShape
 import io.beldex.bchat.compose_utils.OpenSans
-import io.beldex.bchat.compose_utils.ProfilePictureComponent
-import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import androidx.compose.foundation.Image
 import androidx.compose.ui.res.painterResource
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.compose_utils.BnsVerifiedBadge
+import java.io.File
+import coil.request.ImageRequest
+import coil.request.CachePolicy
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.AsyncImagePainter
+import androidx.compose.ui.layout.ContentScale
 
-/**
- * Revamp_2026 Home header (Figma `home page` 7546:2060): "Chats" title with the profile avatar
- * (opens the settings drawer — no Figma redesign exists for the drawer itself, see Phase 2 plan
- * notes) and the connectivity warning banner ("You are not connected to the Hop...").
- */
 @Composable
 fun HomeHeader(
     publicKey: String,
@@ -71,28 +71,37 @@ fun HomeHeader(
                         onClick = onProfileClick
                     )
             ) {
-                if (hasProfilePhoto(publicKey)) {
-                    Box(
+                SelfAvatarPlaceholder(displayName = displayName)
+                selfPhotoFile(publicKey)?.let { file ->
+                    val painter = rememberAsyncImagePainter(
+                        ImageRequest.Builder(LocalContext.current)
+                            .data(file)
+                            .memoryCacheKey("${file.path}:${file.lastModified()}")
+                            .diskCachePolicy(CachePolicy.DISABLED)
+                            .build()
+                    )
+                    val loaded = painter.state is AsyncImagePainter.State.Success
+                    Image(
+                        painter = painter,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(29.dp)
-                            .border(0.5.dp, selfAvatarStrokeBrush(), NotchedAvatarShape)
-                    ) {
-                        ProfilePictureComponent(
-                            publicKey = publicKey,
-                            displayName = displayName,
-                            containerSize = 29.dp,
-                            pictureMode = ProfilePictureMode.SmallPicture
-                        )
-                    }
-                } else {
-                    SelfAvatarPlaceholder(displayName = displayName)
-                    if (!TextSecurePreferences.getIsBNSHolder(LocalContext.current).isNullOrEmpty()) {
-                        BnsVerifiedBadge(
-                            containerSize = 29.dp,
-                            small = true,
-                            modifier = Modifier.align(Alignment.BottomEnd)
-                        )
-                    }
+                            .clip(NotchedAvatarShape)
+                            .then(
+                                if (loaded) Modifier
+                                    .background(MaterialTheme.appColors.backgroundColor)
+                                    .border(0.5.dp, selfAvatarStrokeBrush(), NotchedAvatarShape)
+                                else Modifier
+                            )
+                    )
+                }
+                if (!TextSecurePreferences.getIsBNSHolder(LocalContext.current).isNullOrEmpty()) {
+                    BnsVerifiedBadge(
+                        containerSize = 29.dp,
+                        small = true,
+                        modifier = Modifier.align(Alignment.BottomEnd)
+                    )
                 }
             }
 
@@ -143,16 +152,17 @@ fun HomeHeader(
 }
 
 
-/** True when the user has an uploaded profile photo (same check ProfilePicture() uses). */
 @Composable
-private fun hasProfilePhoto(publicKey: String): Boolean {
+private fun selfPhotoFile(publicKey: String): File? {
     val context = LocalContext.current
     return remember(publicKey) {
         runCatching {
-            val photo = Recipient.from(context, Address.fromSerialized(publicKey), false).contactPhoto
+            val address = Address.fromSerialized(publicKey)
+            val photo = Recipient.from(context, address, false).contactPhoto
             val avatar = (photo as? ProfileContactPhoto)?.avatarObject
-            photo != null && avatar != "0" && avatar != ""
-        }.getOrDefault(false)
+            if (photo == null || avatar == "0" || avatar == "") null
+            else AvatarHelper.getAvatarFile(context, address).takeIf { it.exists() && it.length() > 0 }
+        }.getOrNull()
     }
 }
 
@@ -164,11 +174,6 @@ private fun selfAvatarStrokeBrush(): Brush =
     if (isWhiteTheme()) SolidColor(Color(0xFF078720))
     else Brush.linearGradient(listOf(Color(0xFF00D239), Color(0xFF003A00)))
 
-/**
- * Figma own-profile placeholder:
- *  - dark : fill 50% gradient #031203 → #002400 (38%) → #000E00, stroke #00D239 → #003A00, text #00BC33
- *  - white: fill 50% gradient #FFFFFF → #078720 (38%) → #FFFFFF, stroke #078720, text #078720
- */
 @Composable
 private fun SelfAvatarPlaceholder(displayName: String) {
     val white = isWhiteTheme()
@@ -186,9 +191,9 @@ private fun SelfAvatarPlaceholder(displayName: String) {
         modifier = Modifier
             .size(29.dp)
             .clip(NotchedAvatarShape)
-            .background(if (white) Color.White else Color.Black)
+            .background(if (white) Color.Transparent else Color.Black)
             .background(fill, NotchedAvatarShape, alpha = 0.5f)
-            .border(1.dp, selfAvatarStrokeBrush(), NotchedAvatarShape)
+            .border(if (white) 0.5.dp else 1.dp, selfAvatarStrokeBrush(), NotchedAvatarShape)
     ) {
         Text(
             text = selfInitials(displayName),

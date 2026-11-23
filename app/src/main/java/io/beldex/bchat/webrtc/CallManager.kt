@@ -69,6 +69,13 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
 
         private val TAG = Log.tag(CallManager::class.java)
         private const val DATA_CHANNEL_NAME = "signaling"
+
+        private val RINGING_OR_CONNECTING_STATES = setOf(
+            CallViewModel.State.CALL_PRE_INIT,
+            CallViewModel.State.CALL_RINGING,
+            CallViewModel.State.CALL_INCOMING,
+            CallViewModel.State.CALL_OUTGOING
+        )
     }
 
     private val signalAudioManager: SignalAudioManager = SignalAudioManager(context, this, audioManager)
@@ -467,6 +474,10 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
 
     fun stop() {
         val isOutgoing = currentConnectionState in CallState.OUTGOING_STATES
+        incomingRingerStarted = false
+        if (_callStateEvents.value in RINGING_OR_CONNECTING_STATES) {
+            postViewModelState(CallViewModel.State.CALL_DISCONNECTED)
+        }
         stateProcessor.processEvent(Event.Cleanup) {
             Log.d("Beldex","signalAudioManager.handleCommand 5")
             signalAudioManager.handleCommand(AudioManagerCommand.Stop(true))
@@ -556,9 +567,11 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
             this.recipient = recipient
             this.pendingOffer = offer
             this.pendingOfferTime = callTime
-            Log.d("Beldex","signalAudioManager.handleCommand 1(3)")
-            initializeAudioForCall()
-            startIncomingRinger()
+            if (!incomingRingerStarted) {
+                Log.d("Beldex","signalAudioManager.handleCommand 1(3)")
+                initializeAudioForCall()
+                startIncomingRinger()
+            }
             onSuccess()
         }
     }
@@ -662,6 +675,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         val callId = callId ?: return
         val recipient = recipient ?: return
         val userAddress = storage.getUserPublicKey() ?: return
+        postViewModelState(CallViewModel.State.CALL_DISCONNECTED)
         stateProcessor.processEvent(Event.DeclineCall) {
             MessageSender.sendNonDurably(CallMessage.endCall(callId), Address.fromSerialized(userAddress))
             MessageSender.sendNonDurably(CallMessage.endCall(callId), recipient.address)
@@ -905,7 +919,11 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         }
     }
 
+    private var incomingRingerStarted = false
+
     fun startIncomingRinger() {
+        if (incomingRingerStarted) return
+        incomingRingerStarted = true
         Log.d("Beldex","signalAudioManager.handleCommand 10")
         signalAudioManager.handleCommand(AudioManagerCommand.StartIncomingRinger(true))
     }

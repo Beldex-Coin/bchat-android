@@ -81,14 +81,14 @@ fun NotificationSettingDialog(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .size(22.dp)
-                        .background(MaterialTheme.appColors.nicknameCancelBackground)
-                        .border(1.dp, MaterialTheme.appColors.dividerColor)
+                        .background(MaterialTheme.appColors.popupCloseTileBackground)
+                        .border(1.dp, MaterialTheme.appColors.popupCloseTileBorder)
                         .clickable { onDismiss() }
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_close),
                         contentDescription = "",
-                        tint = MaterialTheme.appColors.editTextColor,
+                        tint = MaterialTheme.appColors.dialogNegativeButtonText,
                         modifier = Modifier.size(14.dp)
                     )
                 }

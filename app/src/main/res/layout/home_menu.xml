@@ -9,6 +9,7 @@
     android:elevation="0dp"
     app:glass_cornerRadius="26dp"
     app:glass_blurRadius="24dp"
+    app:glass_baseColor="@color/home_screen_background"
     app:glass_tintColor="@color/drawer_glass_tint"
     app:glass_fallbackTintColor="@color/drawer_glass_fallback"
     app:glass_borderColor="@color/drawer_glass_border">

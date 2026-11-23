@@ -38,7 +38,7 @@
             android:layout_marginStart="8dp"
             android:maxLines="2"
             android:fontFamily="@font/open_sans_regular"
-            android:textColor="#EBEBEB"
+            android:textColor="@color/chat_header_title"
             android:textSize="14sp"
             tools:text="@tools:sample/full_names" />
 
@@ -51,7 +51,7 @@
             android:maxLines="1"
             android:text="@string/tap_to_remove"
             android:fontFamily="@font/roboto_mono"
-            android:textColor="#737373"
+            android:textColor="@color/chat_input_hint"
             android:textSize="8sp" />
 
     </LinearLayout>
@@ -70,4 +70,4 @@
         app:tint="?android:textColorPrimary" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

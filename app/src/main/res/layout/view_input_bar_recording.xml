@@ -243,7 +243,7 @@
             android:id="@+id/recordButtonOverlayImageView"
             android:layout_width="22dp"
             android:layout_height="22dp"
-            app:tint="@color/white"
+            app:tint="@color/chat_header_title"
             android:scaleType="centerInside"
             android:layout_centerInParent="true"
             android:src="@drawable/ic_microphone" />

@@ -144,6 +144,13 @@ class Colors() {
     var searchFieldBackground: Color = Color.Unspecified
     var newChatIconTileBackground: Color = Color.Unspecified
     var newChatIconTileBorder: Color = Color.Unspecified
+    var bnsVerifiedButtonBackground: Color = Color.Unspecified
+    var bnsVerifiedButtonBorder: Color = Color.Unspecified
+    var bnsVerifiedButtonText: Color = Color.Unspecified
+    var cameraBadgeBackground: Color = Color.Unspecified
+    var popupCloseTileBackground: Color = Color.Unspecified
+    var popupCloseTileBorder: Color = Color.Unspecified
+    var languageSelectedBackground: Color = Color.Unspecified
 }
 
 val lightColors = Colors().apply {
@@ -254,6 +261,13 @@ val lightColors = Colors().apply {
     searchFieldBackground = Color(0x80F0F0F0)
     newChatIconTileBackground = Color(0xFFFFFFFF)
     newChatIconTileBorder = Color(0xFFC4C4C4)
+    bnsVerifiedButtonBackground = Color(0xFFFFFFFF)
+    bnsVerifiedButtonBorder = Color(0xFFD0D0D0)
+    bnsVerifiedButtonText = Color(0xFF0B0B0B)
+    cameraBadgeBackground = Color(0xFFEBEBEB)
+    popupCloseTileBackground = Color(0xCCFFFFFF)
+    popupCloseTileBorder = Color(0xFFC4C4C4)
+    languageSelectedBackground = Color(0xFFFFFFFF)
 
 }
 
@@ -365,6 +379,13 @@ val darkColors = Colors().apply {
     searchFieldBackground = Color(0x800B0B0B)
     newChatIconTileBackground = Color(0xFF222222)
     newChatIconTileBorder = Color(0xFF333333)
+    bnsVerifiedButtonBackground = Color(0xFFE0E0E0)
+    bnsVerifiedButtonBorder = Color(0xFF0A370A)
+    bnsVerifiedButtonText = Color(0xFF0B0B0B)
+    cameraBadgeBackground = Color(0xFF222222)
+    popupCloseTileBackground = Color(0xCC222222)
+    popupCloseTileBorder = Color(0xFF444444)
+    languageSelectedBackground = Color(0xFF0B1210)
 
 }
 

@@ -2,6 +2,8 @@ package io.beldex.bchat.my_account.ui
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.luminance
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -62,7 +64,6 @@ import io.beldex.bchat.compose_utils.singleCornerCutShape
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.text.style.TextAlign
 
 @Composable
@@ -246,11 +247,14 @@ private fun BlockedContactItem(
     Card(
         shape = rowShape,
         border = if (multiSelectActivated) BorderStroke(
-            1.dp,
-            if (isSelected) MaterialTheme.appColors.userDetailsConfirmBackground.copy(alpha = 0.5f) else MaterialTheme.appColors.optionBorder
+            if (isSelected) 0.5.dp else 1.dp,
+            if (isSelected) MaterialTheme.appColors.userDetailsConfirmBackground else MaterialTheme.appColors.optionBorder
         ) else null,
         colors = CardDefaults.cardColors(
-            containerColor = if(isSelected) MaterialTheme.appColors.selectedItemBackground else Color.Transparent
+            containerColor = if (isSelected) {
+                val isDark = MaterialTheme.appColors.backgroundColor.luminance() < 0.5f
+                MaterialTheme.appColors.selectedItemBackground.copy(alpha = if (isDark) 1f else 1f)
+            } else Color.Transparent
         ),
         modifier = modifier
     ) {
@@ -265,7 +269,8 @@ private fun BlockedContactItem(
                     modifier=Modifier
                             .height(36.dp)
                             .width(36.dp)
-                            .clip(NotchedAvatarShape),
+                            .clip(NotchedAvatarShape)
+                            .background(MaterialTheme.appColors.cameraBadgeBackground, NotchedAvatarShape),
                     contentAlignment=Alignment.Center,
             ) {
                 ProfilePictureComponent(
@@ -273,6 +278,11 @@ private fun BlockedContactItem(
                         displayName=contact.name.toString(),
                         containerSize=36.dp,
                         pictureMode=ProfilePictureMode.SmallPicture)
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .border(1.dp, MaterialTheme.appColors.optionBorder, NotchedAvatarShape)
+                )
             }
             Text(
                 text = contact.name ?: "",
@@ -286,6 +296,7 @@ private fun BlockedContactItem(
                     .padding(
                         start = 14.dp
                     ),
+                color = MaterialTheme.appColors.callContentColor,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -357,7 +368,7 @@ fun BlockedContactScreenPreviewDark() {
     }
 }
 
-/** Figma tick: a green rounded square that fills with a dark check when selected. */
+/** Figma tick: a green square that fills with a check when selected. */
 @Composable
 private fun CircleCheck(checked: Boolean, onClick: () -> Unit) {
     val green = MaterialTheme.appColors.userDetailsConfirmBackground
@@ -371,13 +382,8 @@ private fun CircleCheck(checked: Boolean, onClick: () -> Unit) {
     ) {
         Canvas(modifier = Modifier.size(18.dp)) {
             val stroke = 1.35.dp.toPx()
-            // Figma "Iconex/Light/Check": an 18dp rounded square outlined in green.
-            val corner = CornerRadius(4.dp.toPx())
             if (checked) {
-                drawRoundRect(
-                    color = green,
-                    cornerRadius = corner
-                )
+                drawRect(color = green)
                 val path = Path().apply {
                     moveTo(size.width * 0.27f, size.height * 0.52f)
                     lineTo(size.width * 0.44f, size.height * 0.68f)
@@ -389,9 +395,8 @@ private fun CircleCheck(checked: Boolean, onClick: () -> Unit) {
                 )
                 )
             } else {
-                drawRoundRect(
+                drawRect(
                     color = green,
-                    cornerRadius = corner,
                     style = Stroke(width = stroke)
                 )
             }

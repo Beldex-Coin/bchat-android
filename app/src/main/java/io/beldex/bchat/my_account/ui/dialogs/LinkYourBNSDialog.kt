@@ -36,7 +36,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -52,6 +51,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.LineHeightStyle
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -136,8 +136,7 @@ fun LinkYourBNSDialog(
         val dialogMaxHeight = (configuration.screenHeightDp * 0.9f).dp
         val fieldBorder = when {
             showErrorMessage -> MaterialTheme.appColors.negativeRedButtonBorder
-            isVerified -> MaterialTheme.appColors.userDetailsConfirmBackground
-            else -> MaterialTheme.appColors.pinBoxInactiveBorder
+            else -> MaterialTheme.appColors.optionBorder
         }
         val lightButton = MaterialTheme.appColors.dialogPositiveButtonBackground
         val darkText = MaterialTheme.appColors.dialogPositiveButtonText
@@ -210,42 +209,53 @@ fun LinkYourBNSDialog(
                 fontWeight = FontWeight.SemiBold
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.appColors.dialogBackground)
-                    .border(1.dp, fieldBorder)
-                    .padding(horizontal = 14.dp, vertical = 14.dp)
-            ) {
-                if (bnsName.isEmpty()) {
-                    Text(
-                        text = stringResource(R.string.bns_textfield_hint).uppercase(),
-                        color = MaterialTheme.appColors.onboardingInputHint,
-                        fontFamily = RobotoMono,
-                        fontSize = 12.sp
-                    )
-                }
-                BasicTextField(
-                    value = bnsName,
-                    onValueChange = {
-                        bnsName = it
-                        isVerified = false
-                        showErrorMessage = false
-                    },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Done
-                    ),
-                    textStyle = TextStyle(
-                        color = if (isVerified) MaterialTheme.appColors.userDetailsConfirmBackground else MaterialTheme.appColors.editTextColor,
-                        fontFamily = RobotoMono,
-                        fontSize = 12.sp
-                    ),
-                    cursorBrush = SolidColor(MaterialTheme.appColors.textSelectionColor),
-                    modifier = Modifier.fillMaxWidth()
+            val bnsFieldTextStyle = TextStyle(
+                fontFamily = RobotoMono,
+                fontSize = 12.sp,
+                lineHeight = 18.sp,
+                lineHeightStyle = LineHeightStyle(
+                    alignment = LineHeightStyle.Alignment.Center,
+                    trim = LineHeightStyle.Trim.None
                 )
-            }
+            )
+            BasicTextField(
+                value = bnsName,
+                onValueChange = {
+                    bnsName = it
+                    isVerified = false
+                    showErrorMessage = false
+                },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                ),
+
+                textStyle = bnsFieldTextStyle.copy(color = MaterialTheme.appColors.editTextColor),
+                cursorBrush = SolidColor(MaterialTheme.appColors.textSelectionColor),
+                modifier = Modifier.fillMaxWidth(),
+                decorationBox = { innerTextField ->
+                    Box(
+                        contentAlignment = Alignment.CenterStart,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 48.dp)
+                            .background(MaterialTheme.appColors.dialogBackground)
+                            .border(1.dp, fieldBorder)
+                            .padding(horizontal = 14.dp)
+                    ) {
+                        if (bnsName.isEmpty()) {
+                            Text(
+                                text = stringResource(R.string.bns_textfield_hint).uppercase(),
+                                style = bnsFieldTextStyle,
+                                color = MaterialTheme.appColors.onboardingInputHint,
+                                maxLines = 1
+                            )
+                        }
+                        innerTextField()
+                    }
+                }
+            )
             Spacer(modifier = Modifier.height(18.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -275,9 +285,24 @@ fun LinkYourBNSDialog(
                         }
                     },
                     shape = notchedCornerShape(BChatDimens.NotchMedium),
-                    containerColor = if (canVerify) lightButton else MaterialTheme.appColors.disabledButtonBackground,
-                    contentColor = if (canVerify) darkText else disabledText,
-                    border = BorderStroke(1.dp, if (canVerify) MaterialTheme.appColors.dialogPositiveButtonBorder else MaterialTheme.appColors.disabledButtonBorder),
+                    containerColor = when {
+                        isVerified -> MaterialTheme.appColors.bnsVerifiedButtonBackground
+                        canVerify -> lightButton
+                        else -> MaterialTheme.appColors.disabledButtonBackground
+                    },
+                    contentColor = when {
+                        isVerified -> MaterialTheme.appColors.bnsVerifiedButtonText
+                        canVerify -> darkText
+                        else -> disabledText
+                    },
+                    border = BorderStroke(
+                        1.dp,
+                        when {
+                            isVerified -> MaterialTheme.appColors.bnsVerifiedButtonBorder
+                            canVerify -> MaterialTheme.appColors.dialogPositiveButtonBorder
+                            else -> MaterialTheme.appColors.disabledButtonBorder
+                        }
+                    ),
                     contentPadding = PaddingValues(0.dp),
                     modifier = Modifier.weight(1f).height(52.dp)
                 ) {
@@ -288,12 +313,13 @@ fun LinkYourBNSDialog(
                         fontSize = 14.sp
                     )
                     if (isVerified) {
-                        Spacer(modifier = Modifier.width(6.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_toast_check),
+                            painter = painterResource(id = R.drawable.ic_bns_verified_check),
                             contentDescription = "Bns verified",
-                            tint = Color.Unspecified,
-                            modifier = Modifier.size(16.dp)
+                            // #00BD40 in dark, #078720 in the white theme
+                            tint = MaterialTheme.appColors.userDetailsBchatIdText,
+                            modifier = Modifier.size(18.dp)
                         )
                     }
                 }

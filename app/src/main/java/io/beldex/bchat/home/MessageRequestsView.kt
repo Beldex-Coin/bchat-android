@@ -72,7 +72,7 @@ fun MessageRequestsView(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(60.dp)
-                .background(MaterialTheme.appColors.dialogBackground)
+                .background(MaterialTheme.appColors.selectedItemBackground.copy(alpha = 0.5f))
                 .drawBehind {
                     val stroke = 0.75.dp.toPx()
                     drawLine(bandBorder, Offset(0f, 0f), Offset(size.width, 0f), stroke)

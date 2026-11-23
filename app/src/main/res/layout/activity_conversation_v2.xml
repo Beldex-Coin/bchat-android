@@ -236,10 +236,6 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <include
-            android:id="@+id/incomingCallBannerInclude"
-            layout="@layout/view_incoming_call_banner" />
-
         <LinearLayout
             android:id="@+id/callActionBarView"
             android:layout_width="match_parent"
@@ -724,7 +720,6 @@
                             android:layout_height="52dp"
                             android:layout_marginEnd="8dp"
                             android:layout_weight="1"
-                            android:backgroundTint="@color/blocked_action_red_bg"
                             android:fontFamily="@font/open_sans_semi_bold"
                             android:gravity="center"
                             android:insetTop="0dp"
@@ -735,10 +730,13 @@
                             android:paddingTop="0dp"
                             android:paddingBottom="0dp"
                             android:stateListAnimator="@null"
+                            android:elevation="0dp"
                             android:text="@string/clear_chat"
                             android:textAllCaps="false"
                             android:textColor="@color/blocked_action_red"
                             android:textSize="14sp"
+                            app:backgroundTint="@color/blocked_action_red_bg"
+                            app:elevation="0dp"
                             app:icon="@drawable/ic_clear_conversation"
                             app:iconGravity="textStart"
                             app:iconPadding="10dp"
@@ -770,7 +768,9 @@
                             android:textAllCaps="false"
                             android:textColor="@color/text_color_dark"
                             android:textSize="14sp"
-                            app:icon="@drawable/ic_unblock_user"
+                            app:icon="@drawable/ic_unblock_lock_open"
+                            app:iconSize="18dp"
+                            app:iconPadding="8dp"
                             app:iconGravity="textStart"
                             app:iconTint="@color/text_color_dark" />
 

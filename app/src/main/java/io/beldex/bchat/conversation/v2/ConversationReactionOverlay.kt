@@ -29,7 +29,6 @@ import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.LocalisedTimeUtil.toShortTwoPartString
 import io.beldex.bchat.R
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getLocalNumber
-import com.beldex.libbchat.utilities.ThemeUtil
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.components.emoji.EmojiImageView
 import io.beldex.bchat.components.emoji.RecentEmojiPageModel
@@ -819,7 +818,7 @@ class ConversationReactionOverlay : FrameLayout {
         // Delete message
         if (ConversationMenuItemHelper.userCanDeleteSelectItems(message, openGroup, userPublicKey)) {
             items += ActionItem(R.attr.menu_trash_icon,  context.resources.getString(R.string.delete), { handleActionItemClicked(Action.DELETE) },
-                R.string.delete, message.subtitle, ThemeUtil.getThemedColor(context, R.attr.menu_delete_color))
+                R.string.delete, message.subtitle, ContextCompat.getColor(context, R.color.clear_red_color))
         }
         // Ban user
         if (ConversationMenuItemHelper.userCanBanSelectUsers( message, openGroup, userPublicKey )) {

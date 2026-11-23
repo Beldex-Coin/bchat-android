@@ -483,4 +483,6 @@
     <color name="home_row_pinned_fill">#80111111</color>
     <!-- Outline around the phone badge on the incoming call card avatar (7546:20013 / 7762:22886). -->
     <color name="call_banner_badge_outline">#011901</color>
+    <color name="reaction_pill_background">#111111</color>
+    <color name="chat_search_highlight">#D9FF00</color>
 </resources>

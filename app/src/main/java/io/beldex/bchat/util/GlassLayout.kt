@@ -46,6 +46,9 @@ class GlassLayout @JvmOverloads constructor(
     @ColorInt var fallbackTintColor: Int = Color.argb(235, 17, 17, 17)
         set(value) { field = value; invalidate() }
 
+    @ColorInt var baseColor: Int = Color.TRANSPARENT
+        set(value) { field = value; invalidate() }
+
     @ColorInt var borderColor: Int = Color.argb(31, 255, 255, 255)
         set(value) { field = value; borderPaint.color = value; buildShaders(); invalidate() }
 
@@ -108,6 +111,7 @@ class GlassLayout @JvmOverloads constructor(
             fallbackTintColor =
                 getColor(R.styleable.GlassLayout_glass_fallbackTintColor, fallbackTintColor)
             borderColor = getColor(R.styleable.GlassLayout_glass_borderColor, borderColor)
+            baseColor = getColor(R.styleable.GlassLayout_glass_baseColor, baseColor)
             liveUpdate = getBoolean(R.styleable.GlassLayout_glass_liveUpdate, liveUpdate)
             blurSourceId = getResourceId(R.styleable.GlassLayout_glass_blurSource, NO_ID)
             saturation = getFloat(R.styleable.GlassLayout_glass_saturation, saturation)
@@ -288,6 +292,7 @@ class GlassLayout @JvmOverloads constructor(
             node.endRecording()
             recording = false
 
+            if (Color.alpha(baseColor) != 0) canvas.drawColor(baseColor)
             canvas.drawRenderNode(node)
             canvas.drawColor(tintColor)
             if (sheenAlpha > 0f) {

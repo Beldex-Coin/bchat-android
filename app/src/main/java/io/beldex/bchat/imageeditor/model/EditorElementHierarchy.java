@@ -106,7 +106,7 @@ final class EditorElementHierarchy {
 
     imageCrop.addElement(cropEditorElement);
 
-    EditorElement blackout = new EditorElement(new InverseFillRenderer(0xff000000));
+    EditorElement blackout = new EditorElement(InverseFillRenderer.ofColorRes(R.color.home_screen_background));
 
     blackout.getFlags()
             .setSelectable(false)

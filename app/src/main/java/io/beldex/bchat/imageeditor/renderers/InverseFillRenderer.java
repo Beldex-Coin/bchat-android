@@ -3,7 +3,9 @@ package io.beldex.bchat.imageeditor.renderers;
 import android.graphics.Path;
 import android.os.Parcel;
 import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 
 import io.beldex.bchat.imageeditor.Bounds;
 import io.beldex.bchat.imageeditor.Renderer;
@@ -18,18 +20,31 @@ public final class InverseFillRenderer implements Renderer {
 
   private final int color;
 
+  @ColorRes private final int colorRes;
+
   private final Path path = new Path();
 
   @Override
   public void render(@NonNull RendererContext rendererContext) {
     rendererContext.canvas.save();
     rendererContext.canvas.clipPath(path);
-    rendererContext.canvas.drawColor(color);
+    rendererContext.canvas.drawColor(colorRes != 0
+        ? ResourcesCompat.getColor(rendererContext.context.getResources(), colorRes, null)
+        : color);
     rendererContext.canvas.restore();
   }
 
   public InverseFillRenderer(@ColorInt int color) {
-    this.color = color;
+    this(color, 0);
+  }
+
+  public static InverseFillRenderer ofColorRes(@ColorRes int colorRes) {
+    return new InverseFillRenderer(0, colorRes);
+  }
+
+  private InverseFillRenderer(@ColorInt int color, @ColorRes int colorRes) {
+    this.color    = color;
+    this.colorRes = colorRes;
     path.toggleInverseFillType();
     path.moveTo(Bounds.LEFT, Bounds.TOP);
     path.lineTo(Bounds.RIGHT, Bounds.TOP);
@@ -39,7 +54,7 @@ public final class InverseFillRenderer implements Renderer {
   }
 
   private InverseFillRenderer(Parcel in) {
-    this(in.readInt());
+    this(in.readInt(), in.readInt());
   }
 
   @Override
@@ -67,5 +82,6 @@ public final class InverseFillRenderer implements Renderer {
   @Override
   public void writeToParcel(Parcel dest, int flags) {
     dest.writeInt(color);
+    dest.writeInt(colorRes);
   }
 }

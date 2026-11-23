@@ -69,6 +69,8 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -896,30 +898,28 @@ fun MyAccountNavHost(
                                     modifier = Modifier.align(Alignment.BottomEnd)
                                 )
                             }
-                            if (showEditNameTextField) {
-                                Box(
-                                    contentAlignment=Alignment.Center,
-                                    modifier= Modifier
-                                        .align(Alignment.BottomEnd)
-                                        .padding(end = 4.dp, bottom = 4.dp)
-                                        .size(32.dp)
-                                        .clip(CircleShape)
-                                        .background(
-                                            color = MaterialTheme.appColors.backgroundColor
-                                        )
-                                        .clickable {
-                                            showPictureDialog = true
-
-                                        }
-                                ) {
-                                    Icon(
-                                        painterResource(id=R.drawable.ic_camera_edit),
-                                        contentDescription="",
-                                        tint=MaterialTheme.appColors.editTextColor,
-                                        modifier=Modifier
-                                            .size(20.dp)
+                        }
+                        if (showEditNameTextField) {
+                            val avatarTop = if (!isBnsHolder.isNullOrEmpty()) 0.dp else 12.dp
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .align(Alignment.TopCenter)
+                                    .offset(
+                                        x = ACCOUNT_AVATAR_SIZE / 2 + 10.dp + 15.dp,
+                                        y = avatarTop + ACCOUNT_AVATAR_SIZE / 2 - 13.dp
                                     )
-                                }
+                                    .size(30.dp)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.appColors.callBadgeBackground)
+                                    .clickable { showPictureDialog = true }
+                            ) {
+                                Icon(
+                                    painterResource(id = R.drawable.ic_camera_edit),
+                                    contentDescription = "",
+                                    tint = MaterialTheme.appColors.dialogNegativeButtonText,
+                                    modifier = Modifier.size(17.dp)
+                                )
                             }
                         }
                         Box(
@@ -980,13 +980,22 @@ fun MyAccountNavHost(
                                 .height(47.dp)
                                 .clip(bnsShape)
                                 .drawBehind {
-                                    drawRect(
-                                        brush = Brush.radialGradient(
-                                            colors = listOf(bnsGradientStart, bnsGradientEnd),
-                                            center = Offset(size.width, 0f),
-                                            radius = size.width
+                                    val corner = Offset(size.width, 0f)
+                                    val glowRadius = 131.dp.toPx()
+                                    withTransform({
+                                        rotate(-12f, corner)
+                                        scale(1f, 0.455f, corner)
+                                    }) {
+                                        drawRect(
+                                            brush = Brush.radialGradient(
+                                                colors = listOf(bnsGradientStart, bnsGradientEnd),
+                                                center = corner,
+                                                radius = glowRadius
+                                            ),
+                                            topLeft = Offset(-size.width, -size.height * 6),
+                                            size = Size(size.width * 3, size.height * 14)
                                         )
-                                    )
+                                    }
                                 }
                                 .border(1.dp, bnsGreen, bnsShape)
                                 .clickable {

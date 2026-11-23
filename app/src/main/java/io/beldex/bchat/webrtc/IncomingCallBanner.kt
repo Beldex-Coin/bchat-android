@@ -98,8 +98,7 @@ object IncomingCallBanner {
         state: CallViewModel.State
     ) {
         val incoming = state == CallViewModel.State.CALL_PRE_INIT || state == CallViewModel.State.CALL_RINGING
-        val establishing = state == CallViewModel.State.CALL_OUTGOING || state == CallViewModel.State.CALL_INCOMING
-        if (!incoming && !establishing) {
+        if (!incoming) {
             banner.root.isVisible = false
             return
         }
@@ -108,34 +107,25 @@ object IncomingCallBanner {
         banner.incomingCallName.text = name
         loadAvatar(activity, banner, recipient)
 
-        if (incoming) {
-            banner.incomingCallState.setText(R.string.NotificationBarManager__incoming_signal_call)
-            banner.incomingCallHangup.setText(R.string.hang_up)
-            banner.incomingCallAnswer.isVisible = true
-            banner.incomingCallHangup.setOnClickListener {
-                activity.startService(WebRtcCallService.denyCallIntent(activity))
-                banner.root.isVisible = false
+        banner.incomingCallState.setText(R.string.NotificationBarManager__incoming_signal_call)
+        banner.incomingCallHangup.setText(R.string.hang_up)
+        banner.incomingCallAnswer.isVisible = true
+        banner.incomingCallHangup.setOnClickListener {
+            activity.startService(WebRtcCallService.denyCallIntent(activity))
+            banner.root.isVisible = false
+        }
+        banner.incomingCallAnswer.setOnClickListener {
+            val action = if (state == CallViewModel.State.CALL_PRE_INIT) {
+                WebRTCComposeActivity.ACTION_PRE_OFFER
+            } else {
+                WebRTCComposeActivity.ACTION_ANSWER
             }
-            banner.incomingCallAnswer.setOnClickListener {
-                val action = if (state == CallViewModel.State.CALL_PRE_INIT) {
-                    WebRTCComposeActivity.ACTION_PRE_OFFER
-                } else {
-                    WebRTCComposeActivity.ACTION_ANSWER
-                }
-                activity.startActivity(
-                    Intent(activity, WebRTCComposeActivity::class.java)
-                        .setAction(action)
-                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                )
-            }
-        } else {
-            banner.incomingCallState.setText(R.string.NotificationBarManager__establishing_signal_call)
-            banner.incomingCallHangup.setText(R.string.Permissions_deny)
-            banner.incomingCallAnswer.isVisible = false
-            banner.incomingCallHangup.setOnClickListener {
-                activity.startService(WebRtcCallService.hangupIntent(activity))
-                banner.root.isVisible = false
-            }
+            activity.startActivity(
+                Intent(activity, WebRTCComposeActivity::class.java)
+                    .setAction(action)
+                    .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            )
+            banner.root.isVisible = false
         }
         // Tapping the card itself opens the full-screen call UI.
         banner.root.setOnClickListener {

@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -85,13 +86,13 @@ fun ConversationHeaderActions(
                     Box(
                         modifier = Modifier
                             .align(Alignment.TopStart)
-                            .offset(x = 10.dp, y = 12.dp)
+                            .offset(x = 10.dp, y = 15.dp)
                             .wrapContentSize(unbounded = true)
                     ) {
                         Text(
                             text = expirationLabel,
                             maxLines = 1,
-                            style = labelStyle.copy(color = haloColor, drawStyle = Stroke(width = 2.75f))
+                            style = labelStyle.copy(color = haloColor, drawStyle = Stroke(width = with(LocalDensity.current) { 5.5.dp.toPx() }))
                         )
                         Text(
                             text = expirationLabel,

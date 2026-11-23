@@ -33,6 +33,7 @@ import android.os.Looper;
 import android.content.res.Configuration;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.graphics.drawable.Drawable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -313,7 +314,12 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     playbackControlsContainer = findViewById(R.id.media_preview_playback_controls_container);
 
     Toolbar toolbar = findViewById(R.id.toolbar);
-    toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_menu_dots));
+    Drawable menuDots = ContextCompat.getDrawable(this, R.drawable.ic_menu_dots);
+    if (menuDots != null) {
+      menuDots = menuDots.mutate();
+      menuDots.setTint(ContextCompat.getColor(this, R.color.chat_header_title));
+    }
+    toolbar.setOverflowIcon(menuDots);
     setSupportActionBar(toolbar);
     ActionBar actionBar = getSupportActionBar();
     actionBar.setHomeAsUpIndicator(R.drawable.ic_back);

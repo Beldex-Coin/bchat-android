@@ -37,7 +37,7 @@
             android:paddingTop="4dp"
             android:paddingEnd="4dp"
             android:paddingBottom="4dp"
-            android:textColor="@color/version_color"
+            android:textColor="@color/chat_input_hint"
             android:textSize="11sp"
             tools:visibility="visible" />
 

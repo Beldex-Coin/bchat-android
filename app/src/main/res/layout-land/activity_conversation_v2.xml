@@ -579,25 +579,35 @@
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/clear_chat"
                                 android:layout_width="0dp"
-                                android:layout_height="wrap_content"
+                                android:layout_height="52dp"
                                 android:layout_marginEnd="8dp"
                                 android:layout_weight="1"
-                                android:backgroundTint="@color/receive_payment_card_background"
                                 android:fontFamily="@font/open_sans_semi_bold"
                                 android:gravity="center"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"
                                 android:maxLines="1"
                                 android:paddingStart="8dp"
                                 android:paddingEnd="8dp"
-                                android:paddingTop="16dp"
-                                android:paddingBottom="16dp"
+                                android:paddingTop="0dp"
+                                android:paddingBottom="0dp"
+                                android:stateListAnimator="@null"
+                                android:elevation="0dp"
                                 android:text="@string/clear_chat"
                                 android:textAllCaps="false"
-                                android:textColor="@color/clear_red_color"
+                                android:textColor="@color/blocked_action_red"
                                 android:textSize="14sp"
-                                app:cornerRadius="12dp"
+                                app:backgroundTint="@color/blocked_action_red_bg"
+                                app:elevation="0dp"
                                 app:icon="@drawable/ic_clear_conversation"
                                 app:iconGravity="textStart"
-                                app:iconTint="@color/clear_red_color" />
+                                app:iconPadding="10dp"
+                                app:iconSize="20dp"
+                                app:iconTint="@color/blocked_action_red"
+                                app:rippleColor="@color/blocked_action_red"
+                                app:shapeAppearanceOverlay="@style/ShapeAppearance.ClearChatNotch"
+                                app:strokeColor="@color/blocked_action_red"
+                                app:strokeWidth="0.5dp" />
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/unblockButton"
@@ -605,7 +615,10 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="8dp"
                                 android:layout_weight="1"
-                                android:backgroundTint="@color/bchat_id_text_color"
+                                android:backgroundTint="@color/read_button_background"
+                                app:strokeColor="@color/primary_button_border"
+                                app:strokeWidth="1dp"
+                                app:shapeAppearanceOverlay="@style/ShapeAppearance.NotchedButton"
                                 android:fontFamily="@font/open_sans_semi_bold"
                                 android:gravity="center"
                                 android:maxLines="1"
@@ -615,12 +628,13 @@
                                 android:paddingBottom="16dp"
                                 android:text="@string/ConversationActivity_unblock"
                                 android:textAllCaps="false"
-                                android:textColor="@color/white"
+                                android:textColor="@color/text_color_dark"
                                 android:textSize="14sp"
-                                app:cornerRadius="12dp"
-                                app:icon="@drawable/ic_unblock_user"
+                                app:icon="@drawable/ic_unblock_lock_open"
+                                app:iconSize="18dp"
+                                app:iconPadding="8dp"
                                 app:iconGravity="textStart"
-                                app:iconTint="@color/white" />
+                                app:iconTint="@color/text_color_dark" />
 
                         </LinearLayout>
 
@@ -802,4 +816,4 @@
         android:inflatedId="@+id/conversation_reaction_scrubber"
         android:layout="@layout/conversation_reaction_scrubber" />
 
-</RelativeLayout>
+</RelativeLayout>

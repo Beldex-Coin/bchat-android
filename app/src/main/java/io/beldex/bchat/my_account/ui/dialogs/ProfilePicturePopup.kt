@@ -2,6 +2,10 @@ package io.beldex.bchat.my_account.ui.dialogs
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
+import io.beldex.bchat.compose_utils.NotchedAvatarShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,7 +46,6 @@ import io.beldex.bchat.compose_utils.notchedCornerShape
 import io.beldex.bchat.compose_utils.PrimaryButton
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.Image
 import io.beldex.bchat.compose_utils.BChatDimens
 
 @Composable
@@ -114,21 +117,36 @@ fun ProfilePicturePopup(
                     .fillMaxWidth()
             ) {
                 Box {
-                    ProfilePictureComponent(
-                        publicKey = publicKey,
-                        displayName = displayName,
-                        containerSize = ProfilePictureMode.LargePicture.size,
-                        pictureMode = ProfilePictureMode.LargePicture
-                    )
+                    Box(
+                        modifier = Modifier
+                            .size(ProfilePictureMode.LargePicture.size)
+                            .clip(NotchedAvatarShape)
+                            .background(MaterialTheme.appColors.selectedItemBackground)
+                            .border(1.dp, MaterialTheme.appColors.optionBorder, NotchedAvatarShape)
+                    ) {
+                        ProfilePictureComponent(
+                            publicKey = publicKey,
+                            displayName = displayName,
+                            containerSize = ProfilePictureMode.LargePicture.size,
+                            pictureMode = ProfilePictureMode.LargePicture
+                        )
+                    }
 
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_camera_badge),
-                        contentDescription = stringResource(id = R.string.activity_settings_profile_picture),
+                    Box(
+                        contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .size(34.dp)
                             .align(Alignment.BottomEnd)
+                            .background(MaterialTheme.appColors.cameraBadgeBackground)
                             .clickable { uploadPicture() }
-                    )
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_camera_edit),
+                            contentDescription = stringResource(id = R.string.activity_settings_profile_picture),
+                            tint = MaterialTheme.appColors.callContentColor,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
                 }
             }
 

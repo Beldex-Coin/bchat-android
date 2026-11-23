@@ -186,7 +186,6 @@ import io.beldex.bchat.util.serializable
 import io.beldex.bchat.util.shortNameAndAddress
 import io.beldex.bchat.util.toPx
 import io.beldex.bchat.webrtc.CallViewModel
-import io.beldex.bchat.webrtc.IncomingCallBanner
 import io.beldex.bchat.webrtc.NetworkChangeReceiver
 import io.beldex.bchat.webrtc.WebRTCComposeActivity
 import kotlinx.coroutines.Dispatchers
@@ -522,16 +521,9 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
         })
     }
 
-    private var incomingCallBannerBound = false
-
     override fun onResume() {
         super.onResume()
         setupCallActionBar()
-        val incomingCallBanner = binding.incomingCallBannerInclude
-        if (!incomingCallBannerBound && incomingCallBanner != null) {
-            incomingCallBannerBound = true
-            IncomingCallBanner.bind(this, incomingCallBanner, callViewModel)
-        }
         ApplicationContext.getInstance(this).messageNotifier.setVisibleThread(viewModel.threadId)
         if (!viewModel.markAllRead())
             return

@@ -102,6 +102,7 @@ class VisibleMessageContentView : MaterialCardView {
     private var documentViewLastClickTime: Long = 0
     var onLongPress: (() -> Unit)? = null
     var chatWithContact: ((ContactModel) -> Unit)? = null
+    private var bindToken = 0
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -128,6 +129,7 @@ class VisibleMessageContentView : MaterialCardView {
     ) {
         // Background — Revamp_2026 Bubble BG in both themes (dark 7546:10376/10427, white 7762:14149/14133):
         // corner-cut gradient bubble with a gradient hairline; colours come from bubbleColors().
+        val token = ++bindToken
         val background = bubbleGradientBackground(message.isOutgoing, isStartOfMessageCluster, isEndOfMessageCluster)
         binding.tailSendView.visibility = GONE
         binding.tailReceiveView.visibility = GONE
@@ -157,6 +159,7 @@ class VisibleMessageContentView : MaterialCardView {
             binding.albumThumbnailView.root.isVisible = false
             binding.openGroupInvitationView.root.isVisible = false
             binding.sharedContactView.isVisible = false
+            resetQuoteContainerWidth()
             return
         } else {
             binding.deletedMessageView.root.isVisible = false
@@ -195,26 +198,34 @@ class VisibleMessageContentView : MaterialCardView {
                 when {
                     message.slideDeck.audioSlide != null -> {
                         binding.voiceMessageView.root.post {
-                            params.width = binding.voiceMessageView.root.measuredWidth
-                            binding.quoteContainer.layoutParams = params
+                            if (token == bindToken) {
+                                params.width = binding.voiceMessageView.root.measuredWidth
+                                binding.quoteContainer.layoutParams = params
+                            }
                         }
                     }
                     message.slideDeck.documentSlide != null -> {
                         binding.documentView.root.post {
-                            params.width = binding.documentView.root.measuredWidth
-                            binding.quoteContainer.layoutParams = params
+                            if (token == bindToken) {
+                                params.width = binding.documentView.root.measuredWidth
+                                binding.quoteContainer.layoutParams = params
+                            }
                         }
                     }
                     message.slideDeck.asAttachments().isNotEmpty() -> {
                         binding.albumContainer.post {
-                            params.width = binding.albumContainer.measuredWidth
-                            binding.quoteContainer.layoutParams = params
+                            if (token == bindToken) {
+                                params.width = binding.albumContainer.measuredWidth
+                                binding.quoteContainer.layoutParams = params
+                            }
                         }
                     }
                     isSharedContact(message.body) -> {
                         binding.sharedContactView.post {
-                            params.width = binding.sharedContactView.measuredWidth
-                            binding.quoteContainer.layoutParams = params
+                            if (token == bindToken) {
+                                params.width = binding.sharedContactView.measuredWidth
+                                binding.quoteContainer.layoutParams = params
+                            }
                         }
                     }
                     else -> {
@@ -230,13 +241,15 @@ class VisibleMessageContentView : MaterialCardView {
                     binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
                     val params = binding.quoteContainer.layoutParams
                     binding.untrustedView.root.post {
-                        params.width = binding.untrustedView.root.measuredWidth
-                        binding.quoteContainer.layoutParams = params
+                        if (token == bindToken) {
+                            params.width = binding.untrustedView.root.measuredWidth
+                            binding.quoteContainer.layoutParams = params
+                        }
                     }
                     binding.quoteContainer.layoutParams = params
                     binding.quoteContainer.requestLayout()
                 } else {
-                    binding.quoteContainer.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                    resetQuoteContainerWidth()
                 }
             }
             hideBody = true
@@ -275,7 +288,7 @@ class VisibleMessageContentView : MaterialCardView {
             }
         } else {
             binding.quoteView.root.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-            binding.quoteContainer.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+            resetQuoteContainerWidth()
         }
 
         if (message is MmsMessageRecord) {
@@ -867,7 +880,17 @@ class VisibleMessageContentView : MaterialCardView {
          return ResourcesCompat.getDrawable(resources, backgroundID, context.theme)!!
      }*/
 
+    private fun resetQuoteContainerWidth() {
+        val params = binding.quoteContainer.layoutParams
+        if (params.width != LayoutParams.WRAP_CONTENT) {
+            params.width = LayoutParams.WRAP_CONTENT
+            binding.quoteContainer.layoutParams = params
+        }
+    }
+
     fun recycle() {
+        bindToken++
+        resetQuoteContainerWidth()
         arrayOf(
             binding.deletedMessageView.root,
             binding.untrustedView.root,
@@ -944,11 +967,11 @@ class VisibleMessageContentView : MaterialCardView {
                 context
             )
             formatted = SearchUtil.getHighlightedSpanBuilder(Locale.getDefault(),
-                { BackgroundColorSpan(if(message.isOutgoing) context.getColor(R.color.black) else context.getColor(R.color.incoming_message_search_query)) }, formatted, searchQuery
+                { BackgroundColorSpan(context.getColor(R.color.chat_search_highlight)) }, formatted, searchQuery
             )
 
             formatted = SearchUtil.getHighlightedSpanBuilder(Locale.getDefault(),
-                { ForegroundColorSpan(if (message.isOutgoing) context.getColor(R.color.sent_message_text_color) else context.getColor(R.color.received_message_text_color)) }, formatted, searchQuery
+                { ForegroundColorSpan(context.getColor(R.color.text_color_dark)) }, formatted, searchQuery
             )
 
             Linkify.addLinks(formatted, Linkify.WEB_URLS)

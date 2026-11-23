@@ -144,7 +144,7 @@ fun ChooseLanguage(
                         .fillMaxWidth()
                         .clip(rowShape)
                         .background(
-                            color = if (isSelected) Color(0xFF0B1210) else MaterialTheme.appColors.dialogBackground.copy(alpha = 0.9f),
+                            color = if (isSelected) MaterialTheme.appColors.languageSelectedBackground else MaterialTheme.appColors.dialogBackground.copy(alpha = 0.9f),
                             shape = rowShape
                         )
                         .border(

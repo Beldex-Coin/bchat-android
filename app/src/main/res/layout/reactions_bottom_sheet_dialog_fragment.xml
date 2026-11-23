@@ -30,7 +30,7 @@
                 android:layout_marginStart="@dimen/small_spacing"
                 android:fontFamily="@font/open_sans_semi_bold"
                 android:text="@string/reaction"
-                android:textColor="#EBEBEB"
+                android:textColor="@color/chat_header_title"
                 android:textSize="16sp" />
 
             <TextView
@@ -39,26 +39,25 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/small_spacing"
                 android:text="12"
-                android:textColor="@color/version_color"
+                android:textColor="@color/chat_input_hint"
                 android:textSize="@dimen/small_font_size" />
         </LinearLayout>
 
         <ImageView
             android:id="@+id/dismissImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:layout_gravity="end"
             android:layout_marginEnd="@dimen/small_spacing"
-            android:background="@drawable/reactions_close_tile"
-            android:padding="5dp"
-            android:src="@drawable/ic_close" />
+            android:contentDescription="@string/close"
+            android:src="@drawable/ic_reactions_close_tile" />
 
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#333333" />
+        android:background="@color/attachment_tray_border" />
 
     <androidx.recyclerview.widget.RecyclerView xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/reactions_bottom_view_recipient_recycler_all"

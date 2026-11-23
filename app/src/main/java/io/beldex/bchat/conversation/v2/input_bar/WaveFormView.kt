@@ -6,6 +6,8 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
+import io.beldex.bchat.R
+import androidx.core.content.ContextCompat
 import kotlin.math.max
 import kotlin.math.min
 
@@ -17,7 +19,9 @@ class WaveFormView(context: Context?, attr: AttributeSet?) : View(context, attr)
     private val barGap = 2f * density
     private val minBarHeight = 2f * density
 
-    private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = 0xFFEBEBEB.toInt() }
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = ContextCompat.getColor(getContext(), R.color.chat_header_title)
+    }
     private val amplitudes = ArrayList<Float>()
     private val rect = RectF()
 

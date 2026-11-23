@@ -85,7 +85,8 @@ fun DisappearingMessagesDialog(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .size(22.dp)
-                        .background(MaterialTheme.appColors.userDetailsCancelBackground)
+                        .background(MaterialTheme.appColors.nicknameCancelBackground)
+                        .border(1.dp, MaterialTheme.appColors.nicknameCancelBorder)
                         .clickable(onClick = onDismiss)
                 ) {
                     Icon(

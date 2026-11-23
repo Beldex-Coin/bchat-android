@@ -431,6 +431,7 @@
         <attr name="glass_tintColor" format="color" />
         <attr name="glass_fallbackTintColor" format="color" />
         <attr name="glass_borderColor" format="color" />
+        <attr name="glass_baseColor" format="color" />
         <attr name="glass_liveUpdate" format="boolean" />
         <attr name="glass_saturation" format="float" />
         <attr name="glass_sheen" format="float" />

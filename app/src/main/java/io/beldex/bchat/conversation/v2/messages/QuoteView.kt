@@ -320,29 +320,17 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 val w = binding.mainQuoteViewContainer.width
                 binding.container.minimumWidth = (w * 0.9).toInt()
             }
-            binding.quoteViewAttachmentPreviewImageView.imageTintList = ColorStateList.valueOf(ResourcesCompat.getColor(resources, if (outgoing) {
-                R.color.outgoing_reply_message_icon
-            } else {
-                R.color.incoming_reply_message_icon
-            }, context.theme))
-            if(mode == Mode.Regular) {
-                // Figma: the quoted attachment tile is a neutral #222222 square in both bubble types.
-                binding.quoteViewAttachmentPreviewContainer.backgroundTintList =
-                    ColorStateList.valueOf(0xFF222222.toInt())
+            val tileIconColor = ResourcesCompat.getColor(resources, R.color.contact_card_action_text, context.theme)
+            binding.quoteViewAttachmentPreviewImageView.imageTintList = ColorStateList.valueOf(tileIconColor)
+            binding.quoteViewAttachmentPreviewContainer.backgroundTintList = ColorStateList.valueOf(
+                ResourcesCompat.getColor(resources, R.color.reply_draft_card_background, context.theme)
+            )
+            if (mode == Mode.Regular) {
                 binding.quoteViewAttachmentPreviewImageView.isVisible = false
                 binding.quoteViewAttachmentThumbnailImageView.root.isVisible = false
-            }else{
-                val backgroundColorID = if (mode == Mode.Draft) {
-                    R.color.reply_draft_card_background
-                } else {
-                    R.color.quote_view_background
-                }
-                val backgroundColor =
-                    ResourcesCompat.getColor(resources, backgroundColorID, context.theme)
-                binding.quoteViewAttachmentPreviewContainer.backgroundTintList =
-                    ColorStateList.valueOf(backgroundColor)
-                binding.quoteViewAttachmentPreviewImageView.setColorFilter(resources.getColor(R.color.incoming_reply_message_icon,null))
-                binding.contentTypeIcon.setColorFilter(resources.getColor(R.color.incoming_reply_message_icon,null))
+            } else {
+                binding.quoteViewAttachmentPreviewImageView.setColorFilter(tileIconColor)
+                binding.contentTypeIcon.setColorFilter(tileIconColor)
             }
             when {
                 attachments.audioSlide != null -> {

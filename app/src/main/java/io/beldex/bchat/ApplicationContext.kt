@@ -26,7 +26,6 @@ import com.beldex.libbchat.utilities.Device
 import com.beldex.libbchat.utilities.OnionRoutingPreferenceUtils
 import com.beldex.libbchat.utilities.ProfilePictureUtilities.upload
 import com.beldex.libbchat.utilities.SSKEnvironment.Companion.configure
-import com.beldex.libbchat.utilities.OnionRoutingPreferenceUtils
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.clearAll
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getAppSelectedLanguage
